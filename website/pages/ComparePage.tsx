@@ -5,13 +5,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, X, ExternalLink, Lock, ChevronDown, ChevronUp, Award, ShieldCheck, AlertCircle } from 'lucide-react';
+import { ArrowLeft, X, ExternalLink, Lock, ChevronDown, ChevronUp, Award, AlertCircle, TrendingUp } from 'lucide-react';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { useCompareState } from '../src/contexts/UserFeaturesContext';
+import { useCommunityMember } from '../src/auth';
 import { BookmarkButton } from '../src/components/BookmarkButton';
 import { getWalletType, formatWalletTag } from '../src/utils/walletUtils';
 import { formatShortRevenue, formatPercent } from '../src/utils/formatters';
-import type { CharityProfile } from '../types';
+import { formatEvidenceForDonors, formatComponentName, stripCitations } from '../src/utils/scoreUtils';
+import type { CharityProfile, ScoreComponentDetail, ImpactDetails, AlignmentDetails } from '../types';
 
 // Category labels for human-readable display
 const CATEGORY_LABELS: Record<string, string> = {
@@ -253,23 +255,191 @@ function TextList({ items, isDark, max = 3 }: { items: string[] | null | undefin
   );
 }
 
-// Bullet list for strengths/improvements
-function BulletList({ items, isDark, type = 'strength' }: { items: string[] | null | undefined; isDark: boolean; type?: 'strength' | 'improvement' }) {
-  if (!items || items.length === 0) return <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</span>;
 
-  const icon = type === 'strength'
-    ? <ShieldCheck className="w-3 h-3 text-emerald-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
-    : <AlertCircle className="w-3 h-3 text-amber-500 flex-shrink-0 mt-0.5" aria-hidden="true" />;
+// ─── Score Analysis & Improvement Helpers ────────────────────────────────────
+
+type DimensionKey = 'impact' | 'alignment';
+
+function getDimensionDetails(charity: CharityProfile, dimension: DimensionKey): ImpactDetails | AlignmentDetails | null {
+  const sd = charity.amalEvaluation?.score_details;
+  if (!sd) return null;
+  const details = sd[dimension];
+  if (!details || !('components' in details)) return null;
+  return details as ImpactDetails | AlignmentDetails;
+}
+
+function getUnionComponentNames(charities: CharityProfile[], dimension: DimensionKey): string[] {
+  const nameSet = new Set<string>();
+  for (const c of charities) {
+    const details = getDimensionDetails(c, dimension);
+    if (details) {
+      for (const comp of details.components) {
+        nameSet.add(comp.name);
+      }
+    }
+  }
+  return Array.from(nameSet);
+}
+
+function findComponent(charity: CharityProfile, dimension: DimensionKey, componentName: string): ScoreComponentDetail | null {
+  const details = getDimensionDetails(charity, dimension);
+  if (!details) return null;
+  return details.components.find(c => c.name === componentName) || null;
+}
+
+function getImprovableComponentNames(charities: CharityProfile[]): string[] {
+  const nameSet = new Set<string>();
+  for (const dim of ['impact', 'alignment'] as DimensionKey[]) {
+    for (const c of charities) {
+      const details = getDimensionDetails(c, dim);
+      if (details) {
+        for (const comp of details.components) {
+          if (comp.improvement_value > 0) {
+            nameSet.add(comp.name);
+          }
+        }
+      }
+    }
+  }
+  return Array.from(nameSet);
+}
+
+function getTotalRecoverable(charity: CharityProfile): number {
+  let total = 0;
+  for (const dim of ['impact', 'alignment'] as DimensionKey[]) {
+    const details = getDimensionDetails(charity, dim);
+    if (details) {
+      for (const comp of details.components) {
+        total += comp.improvement_value;
+      }
+    }
+  }
+  return total;
+}
+
+function findImprovableComponent(charity: CharityProfile, componentName: string): ScoreComponentDetail | null {
+  for (const dim of ['impact', 'alignment'] as DimensionKey[]) {
+    const comp = findComponent(charity, dim, componentName);
+    if (comp && comp.improvement_value > 0) return comp;
+  }
+  return null;
+}
+
+// Status dot for component scores
+function StatusDot({ status, noData }: { status?: ScoreComponentDetail['status']; noData?: boolean }) {
+  const color = noData ? 'bg-slate-500' :
+    status === 'full' ? 'bg-emerald-500' :
+    status === 'partial' ? 'bg-amber-500' :
+    'bg-rose-400';
+  return <span className={`inline-block w-2 h-2 rounded-full flex-shrink-0 ${color}`} />;
+}
+
+// Mini progress bar for component scores
+function MiniProgressBar({ scored, possible, isDark }: { scored: number; possible: number; isDark: boolean }) {
+  const pct = possible > 0 ? Math.min(100, (scored / possible) * 100) : 0;
+  const color = pct >= 80 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : (isDark ? 'bg-slate-500' : 'bg-slate-400');
+  return (
+    <div className={`h-1 rounded-full max-w-[50px] ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`}>
+      <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
+    </div>
+  );
+}
+
+// Single component cell in the Score Analysis grid
+function ComponentCell({ component, isMember, isDark }: { component: ScoreComponentDetail | null; isMember: boolean; isDark: boolean }) {
+  if (!component) {
+    return <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</span>;
+  }
+
+  const noData = component.scored === 0 && !!component.evidence &&
+    /not (yet )?available|unknown|insufficient data/i.test(component.evidence);
 
   return (
-    <ul className="space-y-1.5">
-      {items.slice(0, 3).map((item, i) => (
-        <li key={i} className="flex gap-1.5 text-xs leading-relaxed">
-          {icon}
-          <span className={isDark ? 'text-slate-300' : 'text-slate-600'}>{item}</span>
-        </li>
-      ))}
-    </ul>
+    <div className="space-y-1">
+      <div className="flex items-center gap-1.5">
+        <StatusDot status={component.status} noData={noData} />
+        {noData ? (
+          <span className={`text-[10px] font-medium px-1 py-0.5 rounded ${isDark ? 'bg-slate-700 text-slate-400' : 'bg-slate-100 text-slate-400'}`}>
+            No Data
+          </span>
+        ) : (
+          <span className={`text-xs font-mono tabular-nums ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+            {component.scored}/{component.possible}
+          </span>
+        )}
+      </div>
+      {!noData && <MiniProgressBar scored={component.scored} possible={component.possible} isDark={isDark} />}
+      {isMember && component.evidence && !noData && (
+        <p className={`text-[11px] leading-relaxed ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+          {stripCitations(formatEvidenceForDonors(component.evidence))}
+        </p>
+      )}
+    </div>
+  );
+}
+
+// Dimension sub-header row showing dimension name + per-charity totals
+function DimensionSubHeader({ label, charities, dimension, isDark, numCharities }: {
+  label: string;
+  charities: CharityProfile[];
+  dimension: DimensionKey;
+  isDark: boolean;
+  numCharities: number;
+}) {
+  return (
+    <div
+      className={`grid gap-3 py-2 border-b ${isDark ? 'border-slate-700 bg-slate-800/30' : 'border-slate-150 bg-slate-50/50'}`}
+      style={{ gridTemplateColumns: `120px repeat(${numCharities}, minmax(0, 1fr))` }}
+    >
+      <div className={`text-xs font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+        {label}
+      </div>
+      {charities.map(c => {
+        const details = getDimensionDetails(c, dimension);
+        const max = dimension === 'impact' ? 50 : 50;
+        if (!details) return (
+          <div key={c.ein} className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</div>
+        );
+        return (
+          <div key={c.ein} className={`text-xs font-mono font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+            {details.score}/{max}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// Improvement cell for the Opportunities section
+function ImprovementCell({ component, isMember, isDark }: { component: ScoreComponentDetail | null; isMember: boolean; isDark: boolean }) {
+  if (!component || component.improvement_value <= 0) {
+    return <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</span>;
+  }
+
+  return (
+    <div className="space-y-1">
+      <span className={`inline-flex items-center text-xs font-semibold px-1.5 py-0.5 rounded ${isDark ? 'bg-amber-900/40 text-amber-400' : 'bg-amber-100 text-amber-700'}`}>
+        +{component.improvement_value}
+      </span>
+      {isMember && component.improvement_suggestion && (
+        <p className={`text-[11px] leading-relaxed ${isDark ? 'text-amber-400/70' : 'text-amber-600'}`}>
+          {component.improvement_suggestion}
+        </p>
+      )}
+    </div>
+  );
+}
+
+// Total recoverable badge
+function TotalRecoverableBadge({ total, isDark }: { total: number; isDark: boolean }) {
+  if (total <= 0) {
+    return <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</span>;
+  }
+  return (
+    <span className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded ${isDark ? 'bg-amber-900/30 text-amber-400' : 'bg-amber-100 text-amber-700'}`}>
+      <TrendingUp className="w-3 h-3" />
+      +{total} pts possible
+    </span>
   );
 }
 
@@ -302,6 +472,7 @@ export function ComparePage() {
   const { isDark } = useLandingTheme();
   const navigate = useNavigate();
   const { compareList, removeFromCompare, clearCompare } = useCompareState();
+  const isMember = useCommunityMember();
   const [charities, setCharities] = useState<CharityProfile[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -364,8 +535,6 @@ export function ComparePage() {
   }
 
   // Helper to extract data
-  const getStrengths = (c: CharityProfile) => c.amalEvaluation?.baseline_narrative?.strengths || c.amalEvaluation?.rich_narrative?.key_strengths || null;
-  const getImprovements = (c: CharityProfile) => c.amalEvaluation?.baseline_narrative?.areas_for_improvement || c.amalEvaluation?.rich_narrative?.areas_for_improvement?.map(a => typeof a === 'string' ? a : a.area) || null;
   const getDataQuality = (c: CharityProfile) => (c.amalEvaluation?.score_details as any)?.data_confidence?.data_quality_label || null;
   const getVerificationTier = (c: CharityProfile) => (c.amalEvaluation?.score_details as any)?.data_confidence?.verification_tier || null;
   const getTransparency = (c: CharityProfile) => (c.amalEvaluation?.score_details as any)?.data_confidence?.transparency_label || null;
@@ -405,10 +574,10 @@ export function ComparePage() {
             <div className={`animate-spin w-8 h-8 border-2 border-t-transparent rounded-full ${isDark ? 'border-slate-600' : 'border-slate-300'}`} />
           </div>
         ) : (
-          <div className={`rounded-xl border overflow-x-auto ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-            {/* Charity Headers */}
+          <div className={`rounded-xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+            {/* Charity Headers (sticky) */}
             <div
-              className={`grid gap-3 p-4 border-b ${isDark ? 'border-slate-800 bg-slate-800/50' : 'border-slate-100 bg-slate-50'}`}
+              className={`grid gap-3 p-4 border-b rounded-t-xl sticky top-[65px] z-30 ${isDark ? 'border-slate-800 bg-slate-900' : 'border-slate-100 bg-white'}`}
               style={{ gridTemplateColumns: `120px repeat(${numCharities}, minmax(0, 1fr))` }}
             >
               <div />
@@ -442,6 +611,7 @@ export function ComparePage() {
                 </div>
               ))}
             </div>
+            <div className="overflow-x-auto">
 
             {/* GMG Scores Section */}
             <SectionHeader title="GMG Scores" isDark={isDark} />
@@ -463,6 +633,46 @@ export function ComparePage() {
                 isDark={isDark}
               />
             </div>
+
+            {/* Score Analysis Section */}
+            <CollapsibleSection title="Score Analysis" isDark={isDark} defaultOpen>
+              <div className="px-4">
+                {(['impact', 'alignment'] as DimensionKey[]).map(dimension => {
+                  const componentNames = getUnionComponentNames(charities, dimension);
+                  if (componentNames.length === 0) return null;
+                  return (
+                    <React.Fragment key={dimension}>
+                      <DimensionSubHeader
+                        label={dimension === 'impact' ? 'Impact' : 'Alignment'}
+                        charities={charities}
+                        dimension={dimension}
+                        isDark={isDark}
+                        numCharities={numCharities}
+                      />
+                      {componentNames.map(name => (
+                        <CompareRow
+                          key={`${dimension}-${name}`}
+                          label={formatComponentName(name)}
+                          values={charities.map(c => (
+                            <ComponentCell
+                              component={findComponent(c, dimension, name)}
+                              isMember={isMember}
+                              isDark={isDark}
+                            />
+                          ))}
+                          isDark={isDark}
+                        />
+                      ))}
+                    </React.Fragment>
+                  );
+                })}
+                {!isMember && (
+                  <div className={`py-2.5 text-center ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                    <p className="text-xs">Sign in to see scoring evidence</p>
+                  </div>
+                )}
+              </div>
+            </CollapsibleSection>
 
             {/* Tags & Focus Areas */}
             <CollapsibleSection title="Tags & Focus" isDark={isDark} defaultOpen>
@@ -495,21 +705,79 @@ export function ComparePage() {
               </div>
             </CollapsibleSection>
 
-            {/* Strengths & Opportunities */}
-            <CollapsibleSection title="Strengths & Opportunities" isDark={isDark} defaultOpen>
-              <div className="px-4">
-                <CompareRow
-                  label="Strengths"
-                  values={charities.map(c => <BulletList items={getStrengths(c)} isDark={isDark} type="strength" />)}
-                  isDark={isDark}
-                />
-                <CompareRow
-                  label="Opportunities"
-                  values={charities.map(c => <BulletList items={getImprovements(c)} isDark={isDark} type="improvement" />)}
-                  isDark={isDark}
-                />
-              </div>
-            </CollapsibleSection>
+            {/* Opportunities to Improve */}
+            {(() => {
+              const improvableNames = getImprovableComponentNames(charities);
+              const hasAnyImprovable = improvableNames.length > 0 || charities.some(c => getTotalRecoverable(c) > 0);
+              if (!hasAnyImprovable) return null;
+
+              const richImprovements = charities.map(c => {
+                const rich = c.amalEvaluation?.rich_narrative?.areas_for_improvement;
+                if (!rich || rich.length === 0) return null;
+                return rich;
+              });
+              const hasRichImprovements = richImprovements.some(r => r !== null);
+
+              return (
+                <CollapsibleSection title="Opportunities to Improve" isDark={isDark} defaultOpen>
+                  <div className="px-4">
+                    <CompareRow
+                      label="Growth Potential"
+                      values={charities.map(c => <TotalRecoverableBadge total={getTotalRecoverable(c)} isDark={isDark} />)}
+                      isDark={isDark}
+                      highlight
+                    />
+                    {improvableNames.map(name => (
+                      <CompareRow
+                        key={`improve-${name}`}
+                        label={formatComponentName(name)}
+                        values={charities.map(c => (
+                          <ImprovementCell
+                            component={findImprovableComponent(c, name)}
+                            isMember={isMember}
+                            isDark={isDark}
+                          />
+                        ))}
+                        isDark={isDark}
+                      />
+                    ))}
+                    {isMember && hasRichImprovements && (
+                      <CompareRow
+                        label="Detailed Analysis"
+                        values={richImprovements.map((areas, i) => {
+                          if (!areas || areas.length === 0) {
+                            return <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</span>;
+                          }
+                          return (
+                            <ul className="space-y-1.5" key={i}>
+                              {areas.slice(0, 3).map((a, j) => {
+                                const area = typeof a === 'string' ? a : a.area;
+                                const context = typeof a === 'string' ? null : a.context;
+                                return (
+                                  <li key={j} className="flex gap-1.5 text-xs leading-relaxed">
+                                    <AlertCircle className="w-3 h-3 text-amber-500 flex-shrink-0 mt-0.5" />
+                                    <span className={isDark ? 'text-slate-300' : 'text-slate-600'}>
+                                      <strong>{area}</strong>
+                                      {context && <span className={isDark ? 'text-slate-500' : 'text-slate-400'}> — {stripCitations(context)}</span>}
+                                    </span>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          );
+                        })}
+                        isDark={isDark}
+                      />
+                    )}
+                    {!isMember && (
+                      <div className={`py-2.5 text-center ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                        <p className="text-xs">Sign in to see improvement details</p>
+                      </div>
+                    )}
+                  </div>
+                </CollapsibleSection>
+              );
+            })()}
 
             {/* Classification Section */}
             <SectionHeader title="Classification" isDark={isDark} />
@@ -589,7 +857,7 @@ export function ComparePage() {
                   label="Working Capital"
                   values={charities.map(c => {
                     const months = c.financials?.workingCapitalMonths;
-                    return months != null ? `${months.toFixed(1)} mo` : null;
+                    return months != null ? `${parseFloat(String(months)).toFixed(1)} mo` : null;
                   })}
                   isDark={isDark}
                 />
@@ -671,6 +939,7 @@ export function ComparePage() {
                 </div>
               ))}
             </div>
+            </div>{/* end overflow-x-auto */}
           </div>
         )}
       </div>

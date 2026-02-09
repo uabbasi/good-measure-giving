@@ -15,17 +15,8 @@ import {
   ScoreComponentDetail,
 } from '../../types';
 import { SourceLinkedText } from './SourceLinkedText';
-import { stripCitations } from '../utils/scoreUtils';
+import { stripCitations, formatComponentName, formatEvidenceForDonors } from '../utils/scoreUtils';
 import { getScoreBarColorClass } from '../utils/scoreConstants';
-
-/** Map pipeline component names to donor-friendly labels */
-function formatComponentName(name: string): string {
-  const nameMap: Record<string, string> = {
-    'Underserved Space': 'Funding Gap Opportunity',
-    'Funding Gap': 'Funding Gap',
-  };
-  return nameMap[name] || name;
-}
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -56,123 +47,6 @@ interface ScoreBreakdownProps {
   scoreSummary?: string | null;
   strengths?: Array<string | { point: string; detail: string; citation_ids: string[] }>;
   areasForImprovement?: Array<string | { area: string; context: string; citation_ids: string[] }>;
-}
-
-// ─── Evidence Formatting ─────────────────────────────────────────────────────
-
-/** Convert pipeline shorthand evidence to donor-friendly text */
-function formatEvidenceForDonors(evidence: string): string {
-  // Theory of change: LEVEL
-  const tocMatch = evidence.match(/^Theory of change:\s*(\w+)(?:\s*\(.*\))?$/i);
-  if (tocMatch) {
-    const level = tocMatch[1].toUpperCase();
-    const map: Record<string, string> = {
-      STRONG: 'Has a well-articulated path from activities to impact',
-      CLEAR: 'Clear connection between activities and intended outcomes',
-      DEVELOPING: 'Emerging logic connecting programs to outcomes',
-      BASIC: 'Basic framework linking activities to goals',
-      ABSENT: 'No documented path from activities to impact',
-    };
-    return map[level] || evidence;
-  }
-
-  // Board governance: LEVEL (N members)
-  const boardMatch = evidence.match(/^Board governance:\s*(\w+)\s*\((\d+|unknown)\s*members(?:,\s*(.+))?\)$/i);
-  if (boardMatch) {
-    const level = boardMatch[1].toUpperCase();
-    const members = boardMatch[2];
-    const suffix = boardMatch[3] ? ` (${boardMatch[3].trim()})` : '';
-    const adjective: Record<string, string> = {
-      STRONG: 'Strong', ADEQUATE: 'Adequate', MINIMAL: 'Minimal',
-      WEAK: 'Limited', BASELINE: 'Baseline',
-    };
-    const adj = adjective[level] || level.charAt(0) + level.slice(1).toLowerCase();
-    return members === 'unknown'
-      ? `${adj} board oversight${suffix}`
-      : `${adj} board oversight with ${members} members${suffix}`;
-  }
-
-  // Program expense ratio: N%
-  const progMatch = evidence.match(/^Program expense ratio:\s*(\d+)%$/i);
-  if (progMatch) {
-    return `${progMatch[1]}% of spending goes directly to programs`;
-  }
-  if (/^Program expense ratio:\s*unknown$/i.test(evidence)) {
-    return 'Program expense ratio not yet available';
-  }
-
-  // Working capital: N months (STATUS)
-  const wcMatch = evidence.match(/^Working capital:\s*([\d.]+)\s*months?\s*\((\w+)\)$/i);
-  if (wcMatch) {
-    const months = wcMatch[1];
-    const status = wcMatch[2].toLowerCase();
-    return `${months} months of operating reserves (${status})`;
-  }
-  if (/^Working capital:\s*unknown/i.test(evidence)) {
-    return 'Operating reserves data not available';
-  }
-
-  // Evidence & outcomes: LEVEL
-  const evidenceMatch = evidence.match(/^Evidence & outcomes:\s*(\w+)(?:\s*\(.*\))?$/i);
-  if (evidenceMatch) {
-    const level = evidenceMatch[1].toUpperCase();
-    const map: Record<string, string> = {
-      VERIFIED: 'Tracks and verifies program outcomes',
-      MEASURED: 'Measures program outcomes systematically',
-      TRACKED: 'Tracks basic program outputs',
-      UNVERIFIED: 'Outcome tracking not yet verified',
-    };
-    return map[level] || evidence;
-  }
-
-  // Delivery model: TYPE
-  const deliveryMatch = evidence.match(/^Delivery model:\s*(.+)$/i);
-  if (deliveryMatch) {
-    const model = deliveryMatch[1].trim();
-    const map: Record<string, string> = {
-      'Direct Provision': 'Delivers services directly to beneficiaries',
-      'Direct Service': 'Provides direct services to those in need',
-      'Capacity Building': 'Builds local capacity for sustained impact',
-      'Indirect': 'Works through partner organizations',
-      'Systemic Change': 'Pursues systemic change for broad impact',
-    };
-    return map[model] || `Delivers through ${model.toLowerCase()} model`;
-  }
-
-  // Cost per beneficiary: $X/beneficiary (rating for CAUSE)
-  const cpbMatch = evidence.match(/^\$([\d,.]+)\/beneficiary\s*\((\w+)\s+for\s+(.+)\)$/i);
-  if (cpbMatch) {
-    const cost = cpbMatch[1];
-    const rating = cpbMatch[2].toLowerCase();
-    return `Reaches each beneficiary at $${cost} (${rating})`;
-  }
-
-  // Cause area: NAME (X/Y)
-  const causeMatch = evidence.match(/^Cause area:\s*(.+)\s*\((\d+)\/(\d+)\)$/i);
-  if (causeMatch) {
-    const cause = causeMatch[1].trim().replace(/_/g, ' ');
-    return `Works in ${cause} — a well-studied cause area (${causeMatch[2]}/${causeMatch[3]} evidence rating)`;
-  }
-
-  // Founded YEAR (N years — X/Y)
-  const foundedMatch = evidence.match(/^Founded\s+(\d{4})\s*\((\d+)\s*years?\s*—\s*(\d+)\/(\d+)\)$/i);
-  if (foundedMatch) {
-    return `Established ${foundedMatch[1]} (${foundedMatch[2]} years of track record)`;
-  }
-
-  // Revenue: $X (Y/5 funding gap)
-  const revMatch = evidence.match(/^Revenue:\s*\$([\d,.]+[KMB]?)\s*\((\d+)\/5\s+funding gap\)$/i);
-  if (revMatch) {
-    const gapScore = parseInt(revMatch[2]);
-    const gapLabel = gapScore >= 4 ? 'high potential for additional donor impact' : 'large organization with established funding';
-    return `Annual revenue of $${revMatch[1]} — ${gapLabel}`;
-  }
-  if (/^Revenue:\s*unknown/i.test(evidence)) {
-    return 'Revenue data not yet available';
-  }
-
-  // Pass through anything we don't recognize
-  return evidence;
 }
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
