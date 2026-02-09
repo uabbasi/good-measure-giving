@@ -24,9 +24,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
   const { supabase } = useSupabase();
   const { isSignedIn, firstName } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
-
-  // Don't render sign-in UI when Supabase isn't configured
-  if (!supabase && !isSignedIn) return null;
+  const [menuPos, setMenuPos] = useState<{ top: number; right: number } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -74,6 +72,9 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
     return () => document.removeEventListener('keydown', handleTab);
   }, [showMenu]);
 
+  // Don't render sign-in UI when Supabase isn't configured
+  if (!supabase && !isSignedIn) return null;
+
   const signInWith = async (provider: 'google' | 'apple') => {
     if (!supabase) return;
     trackSignIn(provider);
@@ -93,12 +94,18 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
 
   // Signed in - show user menu (portaled to escape navbar stacking context)
   if (isSignedIn) {
-    const buttonRect = containerRef.current?.getBoundingClientRect();
+    const handleToggleMenu = () => {
+      if (!showMenu && containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setMenuPos({ top: rect.bottom + 8, right: window.innerWidth - rect.right });
+      }
+      setShowMenu(!showMenu);
+    };
 
     return (
       <div className="relative" ref={containerRef}>
         <button
-          onClick={() => setShowMenu(!showMenu)}
+          onClick={handleToggleMenu}
           className={`flex items-center gap-2 text-sm font-medium ${
             isDark
               ? 'text-slate-200 hover:text-white'
@@ -110,26 +117,26 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </button>
-        {showMenu && createPortal(
-          <div
-            className={`fixed w-48 rounded-lg shadow-lg border py-1 z-[200] ${
-              isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'
-            }`}
-            style={{
-              top: buttonRect ? buttonRect.bottom + 8 : 0,
-              right: buttonRect ? window.innerWidth - buttonRect.right : 0,
-            }}
-            ref={modalRef}
-          >
-            <button
-              onClick={signOut}
-              className={`w-full px-4 py-2 text-left text-sm ${
-                isDark ? 'text-slate-200 hover:bg-slate-700' : 'text-slate-700 hover:bg-slate-50'
+        {showMenu && menuPos && createPortal(
+          <>
+            <div className="fixed inset-0 z-[199]" onClick={() => setShowMenu(false)} />
+            <div
+              className={`fixed w-48 rounded-lg shadow-xl border py-1 z-[200] ${
+                isDark ? 'bg-slate-700 border-slate-600' : 'bg-white border-slate-200'
               }`}
+              style={{ top: menuPos.top, right: menuPos.right }}
+              ref={modalRef}
             >
-              Sign out
-            </button>
-          </div>,
+              <button
+                onClick={signOut}
+                className={`w-full px-4 py-2 text-left text-sm ${
+                  isDark ? 'text-white hover:bg-slate-600' : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                Sign out
+              </button>
+            </div>
+          </>,
           document.body
         )}
       </div>
