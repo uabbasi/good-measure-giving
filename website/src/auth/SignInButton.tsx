@@ -24,7 +24,6 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
   const { supabase } = useSupabase();
   const { isSignedIn, firstName } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
-  const [menuPos, setMenuPos] = useState<{ top: number; right: number } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -92,20 +91,12 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
     setShowMenu(false);
   };
 
-  // Signed in - show user menu (portaled to escape navbar stacking context)
+  // Signed in - show user menu
   if (isSignedIn) {
-    const handleToggleMenu = () => {
-      if (!showMenu && containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        setMenuPos({ top: rect.bottom + 8, right: window.innerWidth - rect.right });
-      }
-      setShowMenu(!showMenu);
-    };
-
     return (
       <div className="relative" ref={containerRef}>
         <button
-          onClick={handleToggleMenu}
+          onClick={() => setShowMenu(!showMenu)}
           className={`flex items-center gap-2 text-sm font-medium ${
             isDark
               ? 'text-slate-200 hover:text-white'
@@ -117,27 +108,22 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </button>
-        {showMenu && menuPos && createPortal(
-          <>
-            <div className="fixed inset-0 z-[199]" onClick={() => setShowMenu(false)} />
-            <div
-              className={`fixed w-48 rounded-lg shadow-2xl border-2 py-1 z-[200] ${
-                isDark ? 'bg-slate-600 border-slate-500' : 'bg-white border-slate-200'
+        {showMenu && (
+          <div
+            className={`absolute right-0 mt-2 w-48 rounded-lg shadow-xl border py-1 z-50 ${
+              isDark ? 'bg-slate-700 border-slate-600' : 'bg-white border-slate-200'
+            }`}
+            ref={modalRef}
+          >
+            <button
+              onClick={signOut}
+              className={`w-full px-4 py-2 text-left text-sm ${
+                isDark ? 'text-slate-200 hover:bg-slate-600' : 'text-slate-700 hover:bg-slate-50'
               }`}
-              style={{ top: menuPos.top, right: menuPos.right }}
-              ref={modalRef}
             >
-              <button
-                onClick={signOut}
-                className={`w-full px-4 py-2 text-left text-sm ${
-                  isDark ? 'text-white hover:bg-slate-500' : 'text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                Sign out
-              </button>
-            </div>
-          </>,
-          document.body
+              Sign out
+            </button>
+          </div>
         )}
       </div>
     );

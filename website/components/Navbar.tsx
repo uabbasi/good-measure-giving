@@ -22,8 +22,8 @@ export const Navbar: React.FC<NavbarProps> = ({ forceTheme: propForceTheme }) =>
 
   // Dynamic Styles
   const navClasses = isDark
-    ? "bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40"
-    : "bg-slate-50/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40";
+    ? "bg-slate-900 border-b border-slate-800 sticky top-0 z-40"
+    : "bg-slate-50 border-b border-slate-200 sticky top-0 z-40";
 
   const linkBase = isDark
     ? "text-slate-300 hover:text-white hover:bg-white/10"
