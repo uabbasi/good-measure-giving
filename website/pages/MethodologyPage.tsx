@@ -257,7 +257,7 @@ export const MethodologyPage: React.FC = () => {
                 </p>
                 <h4 className={`text-xs font-bold uppercase tracking-wider mb-2 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>What We Measure (50 points total)</h4>
                 <ul className={`text-sm space-y-1 mb-4 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  <li>{'\u2022'} <strong>Muslim donor fit</strong> (13 pts): Zakat clarity, asnaf categories, Muslim-focused mission</li>
+                  <li>{'\u2022'} <strong>Muslim donor fit</strong> (19 pts): Zakat clarity, asnaf categories, Muslim-focused mission</li>
                   <li>{'\u2022'} <strong>Cause urgency</strong> (13 pts): Humanitarian crises and extreme poverty score highest</li>
                   <li>{'\u2022'} <strong>Underserved space</strong> (7 pts): Niche causes and underserved populations</li>
                   <li>{'\u2022'} <strong>Track record</strong> (6 pts): Years of operation and demonstrated reliability</li>

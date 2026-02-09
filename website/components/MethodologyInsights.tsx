@@ -135,8 +135,8 @@ export const MethodologyInsights: React.FC<MethodologyInsightsProps> = ({ charit
           What Makes a Top-Rated Charity?
         </h3>
 
-        <div className="space-y-4">
-          {/* The key differentiator */}
+        <div className="space-y-3">
+          {/* #1: The biggest differentiator */}
           <div className={`p-4 rounded-xl ${isDark ? 'bg-emerald-900/20 border border-emerald-800/30' : 'bg-emerald-50 border border-emerald-200'}`}>
             <div className="flex items-start gap-3">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${isDark ? 'bg-emerald-600' : 'bg-emerald-500'} text-white font-bold`}>
@@ -148,39 +148,49 @@ export const MethodologyInsights: React.FC<MethodologyInsightsProps> = ({ charit
                   {biggestDiff[0] === 'alignment' && "They serve neglected communities and align with your values"}
                 </h4>
                 <p className={`text-sm ${isDark ? 'text-emerald-200/70' : 'text-emerald-700'}`}>
-                  {biggestDiff[0] === 'impact' && `Our top ${insights.exceptionalCount} charities score ${biggestDiff[1]} points higher on impact. They deliver more impact per dollar, have strong evidence quality, and room to absorb additional funding.`}
-                  {biggestDiff[0] === 'alignment' && `Our top ${insights.exceptionalCount} charities score ${biggestDiff[1]} points higher on alignment. They work in areas where your donation makes more difference.`}
+                  {biggestDiff[0] === 'impact' && `Our top ${insights.exceptionalCount} charities score ${biggestDiff[1]} points higher on Impact. They deliver more per dollar, with stronger evidence and room to absorb additional funding.`}
+                  {biggestDiff[0] === 'alignment' && `Our top ${insights.exceptionalCount} charities score ${biggestDiff[1]} points higher on Alignment. They work in urgent, underserved spaces where your donation makes more difference.`}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Secondary insights */}
-          <div className="grid md:grid-cols-2 gap-3">
-            {[
-              { key: 'impact', label: 'Impact', desc: 'Effectiveness, efficiency, evidence & governance' },
-              { key: 'alignment', label: 'Alignment', desc: 'Mission fit, cause urgency & funding gap' },
-            ]
-              .filter(({ key }) => key !== biggestDiff[0]) // Don't repeat the #1
-              .slice(0, 3)
-              .map(({ key, label, desc }) => {
-                const diff = pillarDiffs[key as keyof typeof pillarDiffs];
-                return (
-                  <div key={key} className={`p-3 rounded-lg ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`}>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className={`text-sm font-medium ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>{label}</span>
-                      <span className={`text-xs px-2 py-0.5 rounded ${
-                        diff >= 5 ? isDark ? 'bg-emerald-900/50 text-emerald-400' : 'bg-emerald-100 text-emerald-700'
-                        : diff >= 2 ? isDark ? 'bg-blue-900/50 text-blue-400' : 'bg-blue-100 text-blue-700'
-                        : isDark ? 'bg-slate-700 text-slate-400' : 'bg-slate-200 text-slate-500'
-                      }`}>
-                        +{diff} pts
-                      </span>
-                    </div>
-                    <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{desc}</p>
-                  </div>
-                );
-              })}
+          {/* #2: The other pillar */}
+          <div className={`p-4 rounded-xl ${isDark ? 'bg-emerald-900/20 border border-emerald-800/30' : 'bg-emerald-50 border border-emerald-200'}`}>
+            <div className="flex items-start gap-3">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${isDark ? 'bg-emerald-600' : 'bg-emerald-500'} text-white font-bold`}>
+                #2
+              </div>
+              <div>
+                <h4 className={`font-bold mb-1 ${isDark ? 'text-emerald-300' : 'text-emerald-800'}`}>
+                  {biggestDiff[0] === 'impact' && "They align with Muslim donor priorities"}
+                  {biggestDiff[0] === 'alignment' && "They deliver more impact per dollar"}
+                </h4>
+                <p className={`text-sm ${isDark ? 'text-emerald-200/70' : 'text-emerald-700'}`}>
+                  {biggestDiff[0] === 'impact'
+                    ? `+${pillarDiffs.alignment} points higher on Alignment \u2014 mission fit, cause urgency, and funding gap.`
+                    : `+${pillarDiffs.impact} points higher on Impact \u2014 cost efficiency, evidence quality, and financial health.`
+                  }
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* #3: Fewer red flags */}
+          <div className={`p-4 rounded-xl ${isDark ? 'bg-emerald-900/20 border border-emerald-800/30' : 'bg-emerald-50 border border-emerald-200'}`}>
+            <div className="flex items-start gap-3">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${isDark ? 'bg-emerald-600' : 'bg-emerald-500'} text-white font-bold`}>
+                #3
+              </div>
+              <div>
+                <h4 className={`font-bold mb-1 ${isDark ? 'text-emerald-300' : 'text-emerald-800'}`}>
+                  They avoid red flags
+                </h4>
+                <p className={`text-sm ${isDark ? 'text-emerald-200/70' : 'text-emerald-700'}`}>
+                  Top charities lose few or zero points to risk deductions {'\u2014'} healthy reserves, adequate board oversight, and documented outcomes.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 

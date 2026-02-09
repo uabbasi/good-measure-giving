@@ -4,8 +4,8 @@
  * Initial view: Bubbles representing cause areas, positioned by average pillar scores
  * Click to drill down: Shows all charities within that cause area
  *
- * X-axis: Impact Potential (Impact + Alignment, 0-67)
- * Y-axis: Credibility (0-33)
+ * X-axis: Alignment (0-50)
+ * Y-axis: Impact (0-50)
  */
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -127,9 +127,6 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) =
         avgAlignment: data.avgAlignment / data.charities.length,
         totalRevenue: data.totalRevenue,
         topCharity: data.topCharity,
-        // Computed positions: X = alignment (donor fit), Y = impact (effectiveness + evidence)
-        impactPotential: data.avgAlignment / data.charities.length,
-        operationalQuality: data.avgImpact / data.charities.length,
       }))
       .filter(c => c.count >= 2) // Only show causes with 2+ charities
       .sort((a, b) => b.count - a.count);
@@ -139,8 +136,8 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) =
   const bounds = useMemo(() => {
     if (causeAggregates.length === 0) return { minX: 0, maxX: 50, minY: 0, maxY: 50 };
 
-    const impacts = causeAggregates.map(c => c.impactPotential);
-    const ops = causeAggregates.map(c => c.operationalQuality);
+    const impacts = causeAggregates.map(c => c.avgAlignment);
+    const ops = causeAggregates.map(c => c.avgImpact);
 
     // Get actual range with 10% padding
     const minX = Math.min(...impacts);
@@ -394,8 +391,8 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) =
           ) : (
             // Aggregated view: cause area bubbles
             causeAggregates.map((cause) => {
-              const x = normalizeX(cause.impactPotential);
-              const y = normalizeY(cause.operationalQuality);
+              const x = normalizeX(cause.avgAlignment);
+              const y = normalizeY(cause.avgImpact);
               const size = getBubbleSize(cause.count);
               const isHovered = hoveredItem === cause.category;
 
@@ -419,7 +416,7 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) =
                       <div className="font-bold mb-1">{cause.label}</div>
                       <div className="text-slate-300 mb-2">{cause.count} charities evaluated</div>
                       <div className="text-slate-400 text-[10px]">
-                        <div>Avg Score: {Math.round((cause.impactPotential + cause.operationalQuality))} / 100</div>
+                        <div>Avg Score: {Math.round((cause.avgAlignment + cause.avgImpact))} / 100</div>
                         <div>Top: {cause.topCharity?.name} ({cause.topCharity?.amalScore})</div>
                       </div>
                       <div className="mt-2 text-emerald-400 text-[10px] font-medium">Click to explore →</div>
@@ -435,12 +432,12 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) =
 
           {/* Axis Labels */}
           <div className={`absolute -bottom-8 left-1/2 -translate-x-1/2 text-center ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-            <div className="text-[10px] font-bold uppercase tracking-wider">Impact + Alignment →</div>
-            <div className={`text-[8px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Impact Potential</div>
+            <div className="text-[10px] font-bold uppercase tracking-wider">Alignment →</div>
+            <div className={`text-[8px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Donor Fit</div>
           </div>
           <div className={`absolute -left-[4.5rem] top-1/2 -translate-y-1/2 -rotate-90 text-center whitespace-nowrap ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-            <div className="text-[10px] font-bold uppercase tracking-wider">Credibility →</div>
-            <div className={`text-[8px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Trust & Evidence</div>
+            <div className="text-[10px] font-bold uppercase tracking-wider">Impact →</div>
+            <div className={`text-[8px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Effectiveness</div>
           </div>
         </div>
       </div>
@@ -472,8 +469,8 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) =
               <button
                 key={cause.category}
                 onClick={() => {
-                  const x = normalizeX(cause.impactPotential);
-                  const y = normalizeY(cause.operationalQuality);
+                  const x = normalizeX(cause.avgAlignment);
+                  const y = normalizeY(cause.avgImpact);
                   handleCauseClick(cause.category, x, y);
                 }}
                 className="flex items-center gap-1.5 group"
