@@ -121,8 +121,8 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
           <>
             <div className="fixed inset-0 z-[199]" onClick={() => setShowMenu(false)} />
             <div
-              className={`fixed w-48 rounded-lg shadow-xl border py-1 z-[200] ${
-                isDark ? 'bg-slate-700 border-slate-600' : 'bg-white border-slate-200'
+              className={`fixed w-48 rounded-lg shadow-2xl border-2 py-1 z-[200] ${
+                isDark ? 'bg-slate-600 border-slate-500' : 'bg-white border-slate-200'
               }`}
               style={{ top: menuPos.top, right: menuPos.right }}
               ref={modalRef}
@@ -130,7 +130,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
               <button
                 onClick={signOut}
                 className={`w-full px-4 py-2 text-left text-sm ${
-                  isDark ? 'text-white hover:bg-slate-600' : 'text-slate-700 hover:bg-slate-50'
+                  isDark ? 'text-white hover:bg-slate-500' : 'text-slate-700 hover:bg-slate-50'
                 }`}
               >
                 Sign out
