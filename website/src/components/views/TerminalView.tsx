@@ -1283,7 +1283,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
                 <div className="flex justify-between items-center text-xs">
                   <span className={isDark ? 'text-slate-400' : 'text-slate-500'}>Working Capital</span>
                   <span className={`font-mono font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                    {financials.workingCapitalMonths.toFixed(1)} months
+                    {Number(financials.workingCapitalMonths).toFixed(1)} months
                   </span>
                 </div>
               </div>

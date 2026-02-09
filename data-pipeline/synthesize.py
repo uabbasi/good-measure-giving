@@ -404,6 +404,26 @@ CAUSE_AREA_TO_CATEGORY: dict[str, str] = {
 }
 
 
+CATEGORY_DISPLAY_NAMES: dict[str, str] = {
+    "HUMANITARIAN": "Humanitarian Relief",
+    "MEDICAL_HEALTH": "Medical & Health",
+    "BASIC_NEEDS": "Basic Needs",
+    "CIVIL_RIGHTS_LEGAL": "Civil Rights & Legal",
+    "RESEARCH_POLICY": "Research & Policy",
+    "ADVOCACY_CIVIC": "Advocacy & Civic",
+    "ENVIRONMENT_CLIMATE": "Environment & Climate",
+    "WOMENS_SERVICES": "Women's Services",
+    "EDUCATION_INTERNATIONAL": "International Education",
+    "EDUCATION_HIGHER_RELIGIOUS": "Higher Education",
+    "EDUCATION_K12_RELIGIOUS": "K-12 Education",
+    "RELIGIOUS_OUTREACH": "Religious Outreach",
+    "RELIGIOUS_CONGREGATION": "Religious Congregation",
+    "PHILANTHROPY_GRANTMAKING": "Philanthropy & Grantmaking",
+    "MEDIA_JOURNALISM": "Media & Journalism",
+    "SOCIAL_SERVICES": "Social Services",
+}
+
+
 def map_cause_to_category(detected_cause_area: str | None) -> str | None:
     """Map detected_cause_area to a primary_category.
 
@@ -1077,6 +1097,7 @@ def update_charities_table(
     candid_data: dict | None,
     website_data: dict | None,
     charity_repo: CharityRepository,
+    pilot_name: str | None = None,
 ) -> int:
     """Propagate basic fields from raw sources to charities table.
 
@@ -1089,6 +1110,7 @@ def update_charities_table(
         candid_data: Candid data (secondary source)
         website_data: Website data (for mission)
         charity_repo: Repository for charities table
+        pilot_name: Name from pilot_charities.txt (fallback if ProPublica/Candid fail)
 
     Returns:
         Number of fields updated
@@ -1098,7 +1120,7 @@ def update_charities_table(
     # Name from ProPublica (most authoritative) - fix records where name==EIN
     existing = charity_repo.get(ein)
     existing_name = existing.get("name", "") if existing else ""
-    ein_as_name = not existing_name or existing_name == ein or existing_name == "Unknown"
+    ein_as_name = not existing_name or existing_name == ein or existing_name == f"EIN {ein}" or existing_name == "Unknown"
     if ein_as_name:
         # Try ProPublica first, then Candid
         name = None
@@ -1108,6 +1130,8 @@ def update_charities_table(
         if not name and candid_data:
             cp = candid_data.get("candid_profile", candid_data)
             name = cp.get("name") or cp.get("organization_name")
+        if not name and pilot_name:
+            name = pilot_name
         if name and name != ein:
             updates["name"] = name
 
@@ -1164,6 +1188,7 @@ def synthesize_charity(
     ein: str,
     raw_repo: RawDataRepository,
     charity_repo: CharityRepository,
+    pilot_name: str | None = None,
 ) -> dict[str, Any]:
     """Synthesize data for a single charity with source attribution.
 
@@ -1219,7 +1244,7 @@ def synthesize_charity(
 
     # Update charities table with basic fields (city/state/zip/mission)
     # This ensures these fields propagate from raw_scraped_data to charities table
-    update_charities_table(ein, pp_data, candid_data, website_data, charity_repo)
+    update_charities_table(ein, pp_data, candid_data, website_data, charity_repo, pilot_name=pilot_name)
 
     # Get name and mission for Muslim charity detection
     name = charity.get("name", "")
@@ -1579,6 +1604,17 @@ def synthesize_charity(
                 synthesized.category_importance = category_info.get("importance")
                 synthesized.category_neglectedness = category_info.get("neglectedness")
 
+    # Sync primary_category back to charities.category for frontend display
+    if synthesized.primary_category:
+        display_name = CATEGORY_DISPLAY_NAMES.get(synthesized.primary_category, synthesized.primary_category)
+        from src.db.client import execute_query
+
+        execute_query(
+            "UPDATE charities SET category = %s WHERE ein = %s",
+            (display_name, ein),
+            fetch="none",
+        )
+
     # =========================================================================
     # Evaluation Track Detection (Phase 1: Detection + Display only)
     # Determines NEW_ORG, RESEARCH_POLICY, or STANDARD track
@@ -1738,10 +1774,16 @@ def main():
     logger = PipelineLogger("P2:Synthesize")
 
     # Determine which charities to process
+    # pilot_names maps EIN -> name from pilot_charities.txt (fallback for missing names)
+    pilot_names: dict[str, str] = {}
     if args.ein:
         eins = [args.ein]
     elif args.charities:
-        eins = load_pilot_charities(args.charities)
+        from src.utils.charity_loader import load_charities_from_file
+
+        charity_entries = load_charities_from_file(args.charities)
+        eins = [c["ein"] for c in charity_entries]
+        pilot_names = {c["ein"]: c["name"] for c in charity_entries}
     else:
         # Default: process all charities in database
         charity_repo = CharityRepository()
@@ -1781,7 +1823,7 @@ def main():
             continue
 
         try:
-            result = synthesize_charity(ein, raw_repo, charity_repo)
+            result = synthesize_charity(ein, raw_repo, charity_repo, pilot_name=pilot_names.get(ein))
         except EmptyParsedJsonError as e:
             # Critical error - abort run per spec
             print(f"\n{'=' * 60}")

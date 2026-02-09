@@ -6,7 +6,7 @@
   "mission": "ORGANIZE, ARRANGE AND PROVIDE AFFORDABLE HUMANITARIAN SERVICE IN THE FIELD OF EDUCATION, HEALTHCARE, MEDICAL RESEARCH AND SOCIAL WELFARE THROUGH NET-WOR...",
   "programs": [],
   "geographicCoverage": [],
-  "category": null,
+  "category": "K-12 Education",
   "website": "https://arqi.org",
   "location": {
     "address": "6201 N CALIFORNIA AVE STE 102",
@@ -40,7 +40,8 @@
     "programExpenseRatio": "0.8414",
     "totalAssets": 4878550,
     "totalLiabilities": null,
-    "netAssets": 4878550
+    "netAssets": 4878550,
+    "workingCapitalMonths": "785.80"
   },
   "baselineGovernance": null,
   "targeting": null,
@@ -63,18 +64,24 @@
     "reports_methodology": true,
     "reports_outcome_metrics": false
   },
-  "lastUpdated": "2026-02-07 22:35:33",
+  "lastUpdated": "2026-02-07 23:29:06",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/853547280#financials",
-      "timestamp": "2026-02-07T22:18:45",
+      "timestamp": "2026-02-07T23:28:12",
       "value": 102
+    },
+    "claims_zakat_eligible": {
+      "source_name": "Charity Website",
+      "source_url": "https://arqi.org",
+      "timestamp": "2026-01-25T20:26:03",
+      "value": false
     },
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/853547280",
-      "timestamp": "2026-02-07T22:18:45",
+      "timestamp": "2026-02-07T23:28:12",
       "value": 2021
     },
     "has_audited_financials": {
@@ -86,25 +93,25 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/853547280",
-      "timestamp": "2026-02-07T22:18:45",
+      "timestamp": "2026-02-07T23:28:12",
       "value": "X40"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/853547280#financials",
-      "timestamp": "2026-02-07T22:18:45",
+      "timestamp": "2026-02-07T23:28:12",
       "value": 0.8414
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/853547280#financials",
-      "timestamp": "2026-02-07T22:18:45",
+      "timestamp": "2026-02-07T23:28:12",
       "value": 395978
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/853547280",
-      "timestamp": "2026-02-07T22:18:45",
+      "timestamp": "2026-02-07T23:28:12",
       "value": 4559370
     },
     "working_capital_months": {
@@ -115,7 +122,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/853547280",
-      "timestamp": "2026-02-07T22:18:45",
+      "timestamp": "2026-02-07T23:28:12",
       "value": 785.8
     }
   },
@@ -126,9 +133,7 @@
   },
   "causeTags": [
     "educational",
-    "fuqara",
     "international",
-    "masakin",
     "medical",
     "research",
     "scalable-model"
@@ -145,6 +150,17 @@
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
+  "donationUrl": null,
+  "beneficiariesServedAnnually": null,
+  "evidenceQuality": {
+    "hasOutcomeMethodology": 1,
+    "hasMultiYearMetrics": null,
+    "thirdPartyEvaluated": null,
+    "evaluationSources": null,
+    "receivesFoundationGrants": null
+  },
+  "zakatClaimEvidence": null,
+  "archetype": "RESILIENCE",
   "amalEvaluation": {
     "charity_ein": "85-3547280",
     "charity_name": "Ar-Rahman Learning Center",
@@ -315,8 +331,14 @@
         {
           "field": "discovered.zakat.confidence",
           "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
+          "message": "Low confidence (0.30) for zakat discovery (threshold: 0.75)",
           "severity": "info"
+        },
+        {
+          "field": "discovered.zakat",
+          "judge": "discover_quality",
+          "message": "Zakat acceptance claimed but no evidence, URL, or direct verification provided",
+          "severity": "warning"
         },
         {
           "field": "working_capital_months",
@@ -345,14 +367,14 @@
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "CORROBORATION FAILED: Discovered via search (confidence=0.50)",
+        "claim_evidence": null,
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization provides affordable humanitarian services in education and healthcare and is categorized as Sadaqah-eligible.",
+          "claim": "The organization provides affordable humanitarian services in education and healthcare, including Quran and Arabic classes.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/853547280"
@@ -364,31 +386,31 @@
           "source_url": "https://projects.propublica.org/nonprofits/organizations/853547280"
         }
       ],
-      "amal_score_rationale": "The organization demonstrates strong financial health and efficiency, though its overall score is moderated by a lack of third-party impact verification and a specialized program scope.",
+      "amal_score_rationale": "The organization shows strong financial health and efficiency, though its overall score is moderated by a lack of external impact verification and a specialized religious focus.",
       "areas_for_improvement": [
-        "Limited external data regarding specific impact metrics and cost per beneficiary",
-        "Narrower donor alignment due to specific religious and cultural focus"
+        "Limited third-party impact data or external performance evaluations",
+        "Narrow programmatic focus primarily centered on religious education"
       ],
       "dimension_explanations": {
-        "alignment": "As a Sadaqah-eligible entity, the center aligns with donors seeking to support religious and cultural causes, specifically through Arabic and Quranic studies [1]. The alignment score is considered medium as the mission is highly specialized toward specific community needs [2].",
-        "impact": "The organization allocates 84.1% of its $4,559,370 revenue directly to programs, indicating a strong commitment to its mission of capacity building through education [2]. However, the impact score reflects a lack of specific data regarding cost per beneficiary and long-term outcomes [1]."
+        "alignment": "The organization serves a specific religious and cultural niche, making it a medium fit for general donors but highly relevant for those seeking to support Sadaqah-eligible educational initiatives [1]. Its mission covers a broad range of humanitarian fields, though current active programs are concentrated in religious instruction [2].",
+        "impact": "The center demonstrates a commitment to capacity building through its Quran and Arabic language classes [1]. While it maintains a high program expense ratio of 84.1% and substantial working capital of 785.8 months, the lack of specific cost-per-beneficiary data limits a full assessment of its direct effectiveness [2]."
       },
       "headline": "AR-Rahman Learning Center Inc provides essential religious education and humanitarian services through a robust financial framework.",
       "strengths": [
-        "High program expense ratio of 84.1% ensures the majority of funds reach direct services",
-        "Exceptional fundraising efficiency with $0.00 spent per $1 raised",
+        "High program expense ratio of 84.1% ensures the majority of funds reach core services",
+        "Exceptional fundraising efficiency of $0.00 per $1 raised",
         "Significant liquidity with 785.8 months of working capital"
       ],
-      "summary": "AR-Rahman Learning Center Inc is a non-profit organization dedicated to providing affordable education, healthcare, and social welfare services [1]. The organization reported a total revenue of $4,559,370 and maintains a program expense ratio of 84.1%, focusing its resources on core initiatives such as Quran and Arabic language classes [2]."
+      "summary": "AR-Rahman Learning Center Inc is a non-profit organization dedicated to providing affordable education, healthcare, and social welfare services [1]. In the 2023 fiscal year, the organization reported a total revenue of $4,559,370 while maintaining a program expense ratio of 84.1% [2]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "program expense ratio of 84.1%",
+          "claim": "affordable services in education, healthcare, and social welfare",
           "confidence": 0.9,
           "id": "[1]",
-          "quote": "Program Expense Ratio: 84.1%",
+          "quote": "ORGANIZE, ARRANGE AND PROVIDE AFFORDABLE HUMANITARIAN SERVICE IN THE FIELD OF EDUCATION, HEALTHCARE, MEDICAL RESEARCH AND SOCIAL WELFARE",
           "source_name": "Charity Navigator - AR-Rahman Learning Center",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/853547280"
@@ -404,7 +426,7 @@
           "source_url": "https://projects.propublica.org/nonprofits/organizations/853547280"
         }
       ],
-      "amal_score_rationale": "The organization demonstrates strong financial health and efficiency, though its overall score is moderated by a lack of third-party impact verification and a specialized program scope.",
+      "amal_score_rationale": "The organization shows strong financial health and efficiency, though its overall score is moderated by a lack of external impact verification and a specialized religious focus.",
       "amal_scores": {
         "amal_score": 42,
         "confidence_scores": {
@@ -418,18 +440,18 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Impact Transparency",
+          "area": "Excessive Working Capital",
           "citation_ids": [
             "[1]"
           ],
-          "context": "The organization currently lacks <cite id=\"1\">specific beneficiary data</cite>, making it difficult to calculate the exact cost-per-beneficiary for its educational programs."
+          "context": "The organization holds <cite id=\"1\">785.8 months of working capital</cite> based on baseline metrics, which suggests funds are being accumulated rather than deployed for immediate impact."
         },
         {
-          "area": "Excessive Capital Reserves",
+          "area": "Transparency and Governance",
           "citation_ids": [
             "[1]"
           ],
-          "context": "With <cite id=\"1\">785.8 months of working capital</cite> identified in baseline metrics, the organization holds reserves far beyond the typical 1-3 month recommendation."
+          "context": "The organization currently <cite id=\"1\">meets 0 out of 20 BBB Wise Giving Alliance standards</cite>, indicating a need for improved public disclosure and formal governance policies."
         }
       ],
       "bbb_assessment": {
@@ -465,36 +487,36 @@
           19,
           20
         ],
-        "summary": "Does not currently meet BBB Wise Giving Alliance Standards for Charity Accountability"
+        "summary": "Does not currently meet any of the 20 BBB Wise Giving Alliance Standards for Charity Accountability."
       },
       "case_against": {
         "citation_ids": [
           "[1]"
         ],
-        "mitigation_notes": "The organization is in a rapid growth phase, which may explain the accumulation of assets for future infrastructure projects.",
+        "mitigation_notes": "The organization's high asset base provides a significant opportunity for future scaling if governance is formalized.",
         "risk_factors": [
-          "<cite id=\"1\">Working capital reserves are excessively high</cite>",
-          "<cite id=\"1\">No third-party impact evaluation available</cite>"
+          "<cite id=\"1\">0/20 BBB Standards met</cite>",
+          "<cite id=\"1\">Excessive operating reserves</cite> suggesting low immediate deployment of funds"
         ],
-        "summary": "The primary concerns involve <cite id=\"1\">excessive liquidity</cite> and <cite id=\"1\">unverified outcome tracking</cite>."
+        "summary": "The primary concerns involve <cite id=\"1\">extreme financial accumulation</cite> and a lack of transparent governance structures."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 5,
-          "rating": 10
+          "form990": 6,
+          "rating": 6
         },
-        "high_confidence_count": 15,
-        "total_count": 15,
+        "high_confidence_count": 12,
+        "total_count": 12,
         "unique_sources": 2
       },
       "confidence": {
-        "data_freshness": "Data from 2023 tax year",
+        "data_freshness": "Financial data is current (2023 tax year)",
         "data_gaps": [
-          "Missing 2024 financials",
-          "No board member list"
+          "Lack of governance transparency",
+          "No audited financials"
         ],
         "level": "MODERATE",
-        "notes": "Financial data is strong, but governance and impact data are limited.",
+        "notes": "Financial metrics are strong, but organizational transparency is low.",
         "score": 60,
         "sources_used": [
           "Form 990",
@@ -505,12 +527,12 @@
         "confidence_score": 60,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing beneficiary counts",
-          "No independent board data",
-          "No audited financials"
+          "Missing board member details",
+          "No independent audit",
+          "No beneficiary counts"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 15,
+        "total_citations": 12,
         "unique_sources": 2,
         "website_last_crawled": "2025-01"
       },
@@ -519,23 +541,24 @@
           "citation_ids": [
             "[1]"
           ],
-          "explanation": "",
-          "improvement": ""
+          "explanation": "The charity aligns with Muslim donors through its focus on <cite id=\"1\">Islamic studies and Arabic education</cite>, serving a niche religious-cultural cause area.",
+          "improvement": "Alignment could be bolstered by <cite id=\"1\">documenting a clear theory of change</cite> that illustrates how its educational programs lead to long-term community welfare."
         },
         "credibility": {
           "citation_ids": [
             "[1]",
             "[2]"
           ],
-          "explanation": "Credibility is supported by <cite id=\"2\">official Form 990 filings</cite> and a <cite id=\"1\">transparent financial profile</cite> on Charity Navigator, though it lacks <cite id=\"1\">BBB Wise Giving Alliance accreditation</cite>.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"1\">track and report beneficiary counts</cite> and formalize its board governance disclosures."
+          "explanation": "While the organization is a registered 501(c)(3) with <cite id=\"2\">verified 2023 Form 990 data</cite>, its credibility is limited by a lack of independent board oversight and <cite id=\"1\">failure to meet BBB accountability standards</cite>.",
+          "improvement": "To strengthen credibility, the charity should <cite id=\"1\">disclose its board members</cite> and work toward meeting the 20 BBB Standards for Charity Accountability."
         },
         "impact": {
           "citation_ids": [
-            "[1]"
+            "[1]",
+            "[2]"
           ],
-          "explanation": "Impact is driven by a <cite id=\"1\">high program expense ratio of 84.1%</cite> and a focus on <cite id=\"1\">capacity building through education</cite>.",
-          "improvement": "The organization could improve its impact score by <cite id=\"1\">documenting a clear theory of change</cite> and seeking <cite id=\"1\">external evaluations</cite> of its educational outcomes."
+          "explanation": "Impact is driven by a <cite id=\"2\">100.0% program ratio</cite>, but overall effectiveness is obscured by a <cite id=\"1\">lack of beneficiary data</cite> and outcome tracking.",
+          "improvement": "The organization could improve its impact score by <cite id=\"1\">tracking and reporting the number of students or beneficiaries served</cite> to enable cost-per-beneficiary analysis."
         }
       },
       "donor_fit_matrix": {
@@ -544,11 +567,11 @@
           "[1]",
           "[2]"
         ],
-        "evidence_rigor": "Grade C - Financial transparency without outcome metrics",
+        "evidence_rigor": "Grade C - Unverified outcomes",
         "geographic_focus": [
           "Global"
         ],
-        "giving_style": "Capacity building / Education",
+        "giving_style": "Capacity Building",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           ""
@@ -556,7 +579,7 @@
         "zakat_status": "SADAQAH-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.159,
+        "admin_ratio": 0,
         "annual_revenue": 4559370,
         "citation_ids": [
           "[1]",
@@ -580,7 +603,7 @@
           },
           {
             "expenses": 36318,
-            "net_assets": 0,
+            "net_assets": null,
             "revenue": 105000,
             "year": 2022
           }
@@ -593,7 +616,7 @@
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct service delivery rather than grantmaking",
+        "grant_strategy": "Direct service delivery in education and social welfare",
         "is_significant_grantmaker": false,
         "regions_served": [
           "Global"
@@ -603,55 +626,56 @@
       },
       "headline": "AR-Rahman Learning Center Inc provides essential religious education and humanitarian services through a robust financial framework.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value high-growth religious educational institutions and prefer organizations with zero fundraising overhead.",
+        "best_for_summary": "Best for donors who prioritize funding religious education infrastructure and are comfortable supporting a rapidly growing organization with high cash reserves.",
         "citation_ids": [
           "[1]"
         ],
         "donor_motivations": [
           "Want to support affordable Islamic and Arabic education",
-          "Value financial efficiency where 100% of public donations reach the mission",
-          "Prefer supporting organizations with strong liquidity and long-term stability"
+          "Value organizations with zero fundraising overhead",
+          "Prefer charities with a strong asset base and long-term financial stability"
         ],
         "giving_considerations": [
-          "The organization is in a rapid growth stage with evolving governance",
-          "Donations are currently classified as Sadaqah, not Zakat",
-          "Impact is measured through service availability rather than standardized testing or RCTs"
+          "Donations contribute to a very large reserve of working capital",
+          "Limited public information on specific impact metrics or student outcomes",
+          "Governance structures are currently less transparent than larger peers"
         ],
-        "not_ideal_for": ""
+        "not_ideal_for": "Donors seeking high-transparency organizations with third-party impact evaluations or those who want their funds spent immediately rather than held in reserve."
       },
       "impact_evidence": {
         "citation_ids": [
           "[1]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects <cite id=\"1\">unverified evidence and outcomes</cite> despite strong financial health and program ratios.",
+        "evidence_grade_explanation": "Grade C reflects a <cite id=\"1\">lack of external performance evaluations</cite> and unverified outcome data.",
         "external_evaluations": [],
         "outcome_tracking_years": 0,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The center provides affordable religious education and social services to improve community welfare and cultural literacy.",
-        "why_evidence_matters": "Tracking outcomes ensures that educational programs are effectively increasing student literacy and religious knowledge."
+        "theory_of_change_summary": "The organization provides affordable religious education and social services to improve community welfare, though the causal pathway is not formally documented.",
+        "why_evidence_matters": "Evidence ensures that educational programs are effectively translating into student learning and community benefit."
       },
       "long_term_outlook": {
         "citation_ids": [
+          "[1]",
           "[2]"
         ],
         "founded_year": 2021,
         "maturity_stage": "Growth",
         "revenue_growth_3yr": 4242.3,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "The organization's <cite id=\"2\">rapid revenue growth</cite> suggests it is scaling to meet significant unmet demand for religious education.",
+        "room_for_funding_explanation": "The organization has a <cite id=\"2\">$4.6M revenue base</cite> and significant assets to expand its humanitarian and educational reach.",
         "strategic_priorities": [
-          "Expand affordable humanitarian services",
-          "Scale educational program reach"
+          "Expand affordable education",
+          "Develop healthcare and medical research services"
         ],
         "years_operating": 5
       },
       "organizational_capacity": {
         "board_size": null,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Listed",
+        "ceo_compensation": null,
+        "ceo_compensation_pct_revenue": null,
+        "ceo_name": "Not Disclosed",
         "citation_ids": [
           "[1]",
           "[2]"
@@ -661,16 +685,17 @@
         "has_conflict_policy": false,
         "has_financial_audit": false,
         "independent_board_pct": null,
-        "payroll_to_revenue_pct": 0,
+        "payroll_to_revenue_pct": null,
         "programs_count": 5,
-        "staff_per_million_revenue": 0,
+        "staff_per_million_revenue": null,
         "volunteers_count": null
       },
       "peer_comparison": {
         "citation_ids": [
+          "[1]",
           "[2]"
         ],
-        "differentiator": "Distinguished by an <cite id=\"2\">extraordinary 3-year revenue CAGR of 4242.3%</cite> compared to established peers.",
+        "differentiator": "Distinguished by a <cite id=\"2\">84.1% program expense ratio</cite> which is significantly higher than the <cite id=\"1\">peer median of 81.7%</cite>.",
         "peer_group": "Religious and Cultural Education",
         "similar_orgs": [
           "Muslim Academy of Greater Orlando",
@@ -680,45 +705,46 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar K-12 educational focus and size",
+          "differentiator": "Similar focus on K-12 education and organizational size",
           "name": "Muslim Academy of Greater Orlando"
         },
         {
-          "differentiator": "Comparable religious curriculum and scale",
+          "differentiator": "Comparable religious-cultural educational mission",
           "name": "Nur Islamic School of Louisville"
         },
         {
-          "differentiator": "Matches the religious-cultural mission profile",
+          "differentiator": "Similar scale and programmatic focus",
           "name": "Al-Arqam Islamic School"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[1]"
+            "[1]",
+            "[2]"
           ],
-          "detail": "The organization directs <cite id=\"1\">84.1% of its total expenses</cite> toward its core programs, surpassing the <cite id=\"1\">peer program ratio median of 81.7%</cite>.",
-          "point": "High Programmatic Reinvestment"
+          "detail": "The organization directs <cite id=\"2\">100.0% of its total expenses</cite> toward its educational and humanitarian programs, significantly exceeding the <cite id=\"1\">peer program ratio median of 81.7%</cite>.",
+          "point": "High Program Expense Allocation"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "Financial records indicate a <cite id=\"1\">fundraising efficiency of $0.00 per $1 raised</cite>, allowing all public contributions to be utilized for operations.",
-          "point": "Zero Fundraising Costs"
+          "detail": "The charity spends <cite id=\"1\">$0.00 to raise every $1</cite> in contributions, ensuring that donor funds are not eroded by marketing or solicitation costs.",
+          "point": "Exceptional Fundraising Efficiency"
         },
         {
           "citation_ids": [
-            "[1]"
+            "[2]"
           ],
-          "detail": "The center holds <cite id=\"1\">785.8 months of working capital</cite> in working capital, providing a significant safety net for future expansion.",
-          "point": "Robust Financial Liquidity"
+          "detail": "The organization reported <cite id=\"2\">total assets of $4,878,550</cite> in 2023, providing a substantial foundation for future programmatic expansion.",
+          "point": "Strong Asset Position"
         }
       ],
       "strengths_deep_dive": [
-        "AR-Rahman Learning Center Inc demonstrates a strong commitment to financial leaness. By reporting <cite id=\"2\">$4,559,370 in total revenue</cite> while maintaining <cite id=\"1\">zero fundraising expenses</cite>, the organization ensures that donor contributions are not diluted by marketing or solicitation costs. Its programmatic focus on <cite id=\"1\">Arabic language and Islamic studies</cite> is supported by a <cite id=\"1\">program expense ratio of 84.1%</cite>, which is notably higher than many organizations in the <cite id=\"1\">religious and cultural peer group</cite>. This efficiency is paired with an extraordinary <cite id=\"2\">revenue growth rate of 4242.3%</cite>, suggesting a rapidly scaling donor base and increasing community trust."
+        "AR-Rahman Learning Center Inc's financial profile is characterized by extreme efficiency and rapid scaling. The organization reported a <cite id=\"2\">3-year revenue CAGR of 4242.3%</cite>, moving from a small operation to one managing over <cite id=\"2\">$4.5 million in annual contributions</cite>. This growth has been managed without increasing overhead, as the <cite id=\"1\">program expense ratio remains at 100.0%</cite>. Furthermore, the organization possesses <cite id=\"1\">785.8 months of working capital</cite>, which is nearly 20 years of operating reserves at current spending levels, indicating a unique level of financial security for a religious and cultural non-profit."
       ],
-      "summary": "AR-Rahman Learning Center Inc is a religious and humanitarian organization dedicated to providing <cite id=\"1\">affordable education, healthcare, and social welfare services</cite>. Operating with a global geographic reach, the organization focuses on <cite id=\"1\">Quran classes, Arabic language instruction, and Islamic studies</cite> to foster community development. In the 2023 tax year, the organization reported <cite id=\"2\">total revenue of $4,559,370</cite>, representing a significant <cite id=\"2\">3-year revenue CAGR of 4242.3%</cite>. This rapid growth has been accompanied by a commitment to operational efficiency, as evidenced by a <cite id=\"1\">program expense ratio of 84.1%</cite>, which exceeds the <cite id=\"1\">industry standard of 75%</cite>. Furthermore, the organization maintains <cite id=\"1\">exceptional fundraising efficiency</cite>, spending <cite id=\"1\">$0.00 to raise every $1</cite> in contributions. While the organization is currently in a growth phase, it has established a massive liquidity cushion with <cite id=\"1\">785.8 months of working capital</cite>, ensuring long-term stability for its educational and social programs.",
+      "summary": "AR-Rahman Learning Center Inc is an educational and humanitarian organization that focuses on providing <cite id=\"1\">affordable services in education, healthcare, and social welfare</cite>. Based on its most recent financial filings, the organization reported <cite id=\"2\">total revenue of $4,559,370</cite> for the 2023 fiscal year. The charity operates with a primary focus on religious and cultural education, offering programs such as <cite id=\"1\">Quran classes, Arabic language instruction, and Islamic studies</cite> through both private and group settings. Financially, the organization demonstrates a high commitment to its core mission, allocating <cite id=\"2\">84.1% of its expenses toward program services</cite> according to its latest tax filings. This lean operational model is further evidenced by a <cite id=\"1\">fundraising efficiency of $0.00 per $1 raised</cite>, indicating that the organization does not currently incur significant costs to generate its contributions. While the organization has seen a massive <cite id=\"2\">revenue growth rate of 4242.3%</cite> over the last three years, it maintains an exceptionally high liquidity position with <cite id=\"1\">785.8 months of working capital</cite> held in working capital, suggesting a very conservative financial management style or a recent large influx of capital yet to be deployed.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"
