@@ -294,7 +294,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
           ═══════════════════════════════════════════════════════════════════════ */}
       <div className="lg:hidden">
         {/* Sticky mini-header with back + donate */}
-        <div className={`sticky top-0 z-40 border-b backdrop-blur-sm ${
+        <div className={`sticky top-0 z-30 border-b backdrop-blur-sm ${
           isDark
             ? 'bg-slate-900/95 border-slate-800'
             : 'bg-white/95 border-slate-200'
@@ -570,7 +570,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
       {/* ═══════════════════════════════════════════════════════════════════════
           DESKTOP TOP BAR - Hidden on mobile
           ═══════════════════════════════════════════════════════════════════════ */}
-      <div className={`hidden lg:block sticky top-0 z-40 border-b ${
+      <div className={`hidden lg:block sticky top-0 z-30 border-b ${
         isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'
       }`}>
         <div className="px-6 py-3 flex items-center justify-between">
