@@ -109,7 +109,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
           </svg>
         </button>
         {showMenu && (
-          <div className={`absolute right-0 mt-2 w-48 rounded-lg shadow-lg border py-1 z-50 ${
+          <div className={`absolute right-0 mt-2 w-48 rounded-lg shadow-lg border py-1 z-[200] ${
             isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'
           }`}>
             <button
