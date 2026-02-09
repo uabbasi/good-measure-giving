@@ -1,0 +1,361 @@
+# Charity Category Mappings
+# Maps EIN to category for category-specific scoring prompts
+# Based on Ihsan principle: Universal excellence benchmarks
+#
+# Categories (16):
+#   HUMANITARIAN, MEDICAL_HEALTH, BASIC_NEEDS, CIVIL_RIGHTS_LEGAL,
+#   RESEARCH_POLICY, ADVOCACY_CIVIC, ENVIRONMENT_CLIMATE, WOMENS_SERVICES,
+#   EDUCATION_INTERNATIONAL, EDUCATION_HIGHER_RELIGIOUS, EDUCATION_K12_RELIGIOUS,
+#   RELIGIOUS_OUTREACH, RELIGIOUS_CONGREGATION, PHILANTHROPY_GRANTMAKING,
+#   MEDIA_JOURNALISM, SOCIAL_SERVICES
+#
+# Importance levels:
+#   HIGH = Life-saving, urgent needs, existential threats
+#   MEDIUM = Significant quality of life improvements, systemic change
+#   LOW = Important community benefit but not life-threatening
+#
+# Neglectedness levels:
+#   HIGH = Severely underfunded relative to need
+#   MEDIUM = Some funding but significant gaps remain
+#   LOW = Well-funded by government or major institutional funders
+
+categories:
+  HUMANITARIAN:
+    description: "International humanitarian relief and development"
+    importance: HIGH      # Life-saving interventions in crises
+    neglectedness: MEDIUM # Major funders exist but massive unmet need
+    benchmarks:
+      - "MSF (Doctors Without Borders)"
+      - "ICRC (International Committee of the Red Cross)"
+      - "UNHCR"
+      - "World Food Programme"
+      - "Partners in Health"
+    charities:
+      "95-4453134": "Islamic Relief USA"
+      "36-4476244": "Zakat Foundation of America"
+      "31-1628040": "HHRD (Helping Hand for Relief and Development)"
+      "47-5165837": "Penny Appeal USA"
+      "04-3810161": "ICNA Relief"
+      "46-2504422": "Muslim Aid USA"
+      "87-2410117": "Human Appeal USA"
+      "20-0942434": "Baitulmaal"
+      "77-0502583": "Hidaya Foundation"
+      "38-2846307": "Mercy USA for Aid and Development"
+      "27-3175543": "United Muslim Relief (UMR)"
+      "82-1670588": "BASMAH"
+      "27-4155655": "Muslim Hands USA"
+      "47-1675693": "Support Life Foundation"
+      "45-4810098": "Pure Hands (Yemen)"
+      "88-2454707": "Heal Palestine"
+      "75-2999028": "KinderUSA"
+      "46-3973114": "International Aid Charity"
+      "53-0196605": "American Red Cross"
+      "95-1831116": "Direct Relief"
+      "13-3433452": "Doctors Without Borders (MSF)"
+      "13-3327220": "Action Against Hunger"
+      "23-7069110": "Oxfam America"
+      "06-0726487": "Save the Children"
+      "13-1685039": "CARE USA"
+      "13-5660870": "International Rescue Committee (IRC)"
+      "58-1437002": "Samaritan's Purse"
+      "52-0882226": "Anera"
+      "93-1556038": "Afghan Refugee Relief"
+      "20-4751162": "Indus Hospital"
+      "47-3564801": "Transparent Hands USA"
+      "76-0656947": "SIUT"
+
+  MEDICAL_HEALTH:
+    description: "Medical care, health services, research"
+    importance: HIGH      # Life-saving medical interventions
+    neglectedness: MEDIUM # Some funding but global health gaps remain
+    benchmarks:
+      - "Partners in Health"
+      - "St. Jude Children's Research Hospital"
+      - "Mayo Clinic"
+      - "Cleveland Clinic"
+    charities:
+      "16-1717058": "Syrian American Medical Society (SAMS)"
+      "93-1057665": "Palestine Children's Relief Fund (PCRF)"
+      "82-2517347": "MedGlobal"
+      "93-2136609": "National Assoc of Muslim Charitable Clinics"
+      "83-3464851": "SAPA (Sudanese American Physicians)"
+      "13-3626299": "Imran Khan Cancer Appeal"
+      "13-1837442": "Cancer Research Institute"
+      "20-2622550": "Fight Colorectal Cancer"
+      "47-1313957": "Khalil Center"
+      "87-1035868": "Maristan"
+      "47-2533025": "Muslim Wellness Foundation"
+
+  BASIC_NEEDS:
+    description: "Water, food security, orphan care"
+    importance: HIGH      # Essential survival needs
+    neglectedness: MEDIUM # Some programs but vast unmet need
+    benchmarks:
+      - "Water.org"
+      - "Feeding America"
+      - "SOS Children's Villages"
+    charities:
+      "22-3936753": "charity: water"
+      "94-2614101": "Second Harvest Food Bank"
+      "99-3373484": "Yateem Foundation"
+
+  CIVIL_RIGHTS_LEGAL:
+    description: "Civil rights, legal advocacy, civil liberties"
+    importance: MEDIUM    # Systemic change, protects vulnerable populations
+    neglectedness: MEDIUM # Some major orgs but Muslim civil rights underserved
+    benchmarks:
+      - "ACLU"
+      - "NAACP Legal Defense Fund"
+      - "Human Rights Watch"
+      - "Amnesty International"
+    note: "All civil rights orgs benchmarked against ACLU/NAACP LDF regardless of whose rights they defend"
+    charities:
+      # Muslim-focused civil rights
+      "77-0646756": "CAIR"
+      "77-0411194": "CAIR SFBA"
+      "30-0298794": "Muslim Advocates"
+      "01-0548371": "Muslim Legal Fund of America (MLFA)"
+      "52-2283398": "National Association of Muslim Lawyers (NAML)"
+      "20-5509305": "Muslim Bar Association of NY"
+      "95-4675391": "MPAC Foundation"
+      # General/Allied civil rights
+      "63-1135091": "Equal Justice Initiative (EJI)"
+      "32-0077563": "Innocence Project"
+      "26-1140201": "Dream.Org"
+      "58-1956686": "Project South"
+      "63-0598743": "Southern Poverty Law Center (SPLC)"
+      "13-6213516": "ACLU Foundation"
+      "83-1171525": "Link Outside (Prison Reentry)"
+      # Other civil rights (different perspective, same rubric)
+      "13-1818723": "Anti-Defamation League (ADL)"
+      "13-5628475": "Zionist Organization of America (ZOA)"
+      "52-1332702": "CAMERA"
+      "54-1586817": "American Center for Law and Justice (ACLJ)"
+      "45-2734488": "American Freedom Law Center"
+      "20-4413244": "Christians United for Israel (CUFI)"
+
+  RESEARCH_POLICY:
+    description: "Think tanks, research, policy analysis"
+    importance: MEDIUM    # Indirect but foundational for systemic change
+    neglectedness: MEDIUM # Muslim research institutions underfunded
+    benchmarks:
+      - "Brookings Institution"
+      - "Pew Research Center"
+      - "RAND Corporation"
+      - "Urban Institute"
+      - "Heritage Foundation"
+    note: "All research orgs benchmarked for rigor and methodology"
+    charities:
+      # Muslim-focused research
+      "38-3633581": "ISPU (Institute for Social Policy and Understanding)"
+      "81-2822877": "Yaqeen Institute"
+      "23-2202414": "IIIT (International Institute of Islamic Thought)"
+      "20-4097808": "The Family & Youth Institute"
+      # General research/policy
+      "23-7327730": "Heritage Foundation"
+      "52-1449368": "Center for Immigration Studies (CIS)"
+      "23-7749796": "Middle East Forum"
+      "52-1601976": "Center for Security Policy"
+      # Anti-racism research
+      "99-3032347": "Institute for Understanding Anti-Palestinian Racism"
+
+  ADVOCACY_CIVIC:
+    description: "Civic engagement, political advocacy, lobbying"
+    importance: MEDIUM    # Democratic participation and policy influence
+    neglectedness: MEDIUM # Muslim civic engagement developing
+    benchmarks:
+      - "League of Women Voters"
+      - "AARP"
+      - "NRA (for advocacy effectiveness)"
+    note: "Same advocacy rubric regardless of cause - measured by effectiveness, not ideology"
+    charities:
+      "26-1441032": "Emgage Foundation"
+      "46-2811888": "US Council of Muslim Organizations (USCMO)"
+      "02-0711284": "ACT for America"
+      "52-1136126": "FAIR (Federation for American Immigration Reform)"
+      "52-1792772": "Family Research Council"
+      "80-0835023": "Turning Point USA"
+      "95-4194642": "David Horowitz Freedom Center"
+      "20-5845679": "Clarion Project"
+      "13-4331855": "Investigative Project on Terrorism"
+      "20-8540050": "Islamic Scholarship Fund"
+
+  ENVIRONMENT_CLIMATE:
+    description: "Environmental advocacy and climate"
+    importance: HIGH      # Existential threat, affects all future generations
+    neglectedness: MEDIUM # Growing attention but still underfunded vs need
+    benchmarks:
+      - "Sierra Club"
+      - "NRDC"
+      - "Environmental Defense Fund"
+    charities:
+      "04-2535767": "Union of Concerned Scientists"
+      "94-6069890": "Sierra Club Foundation"
+      "26-1150699": "350.org"
+      "13-2654926": "NRDC"
+      "94-1730465": "Earthjustice"
+      "13-3377893": "Rainforest Alliance"
+      "47-1986437": "Green Muslims"
+
+  WOMENS_SERVICES:
+    description: "Women's shelters, DV services, health, empowerment"
+    importance: HIGH      # Urgent safety needs, protecting vulnerable
+    neglectedness: MEDIUM # Some services exist but Muslim-specific severely lacking
+    benchmarks:
+      - "RAINN"
+      - "National Network to End Domestic Violence"
+      - "Planned Parenthood"
+    note: "Same rubric applies regardless of ideological perspective"
+    charities:
+      "20-3060929": "Texas Muslim Women's Foundation (TMWF)"
+      "27-3625796": "HEART Women & Girls"
+      "26-0906163": "NAISA (North American Islamic Shelter for the Abused)"
+      "77-0442850": "Rahima Foundation"
+      "54-1660459": "Alliance Defending Freedom (ADF)"
+
+  EDUCATION_INTERNATIONAL:
+    description: "Education in developing countries"
+    importance: MEDIUM    # Long-term development, breaks poverty cycle
+    neglectedness: MEDIUM # Significant funding gaps in Muslim-majority regions
+    benchmarks:
+      - "BRAC"
+      - "Pratham"
+      - "Room to Read"
+      - "Teach for All"
+    charities:
+      "41-2046295": "The Citizens Foundation (TCF)"
+      "33-0843213": "DIL (Developments in Literacy)"
+      "45-2751655": "Iqra Fund"
+      "56-2500794": "Give Light"
+      "88-2980325": "Friends of KDSP"
+
+  EDUCATION_HIGHER_RELIGIOUS:
+    description: "Religious colleges, seminaries, graduate programs"
+    importance: LOW       # Important for community but not urgent needs
+    neglectedness: HIGH   # Islamic higher education severely underfunded in West
+    benchmarks:
+      - "University of Notre Dame"
+      - "Yeshiva University"
+      - "Brigham Young University"
+      - "Fuller Theological Seminary"
+    charities:
+      "33-0720978": "Zaytuna College"
+      "36-4398970": "Darul Qasim"
+      "82-1150290": "American Imam Academy"
+      "46-2431099": "Bayan Islamic Graduate School"
+      "46-5099190": "Ghamidi Center of Islamic Learning"
+      "83-4231488": "Najam Institute"
+      "86-1226156": "Qalam Education Fund"
+
+  EDUCATION_K12_RELIGIOUS:
+    description: "Religious K-12 schools"
+    importance: LOW       # Important for community identity, not urgent
+    neglectedness: MEDIUM # Some community funding but quality varies
+    benchmarks:
+      - "Cristo Rey Network"
+      - "Hebrew Academy"
+      - "Archdiocese school systems"
+    charities:
+      "94-3311132": "Al-Arqam Islamic School"
+      "45-5134951": "Al-Jazari Institute"
+      "85-3547280": "Ar-Rahman Learning Center"
+      "11-2925751": "Rising Stars Islamic School"
+      "61-1347154": "Nur Islamic School of Louisville"
+      "56-2620244": "Muslim Academy of Greater Orlando"
+      "81-3451645": "Poligon Education Fund"
+
+  RELIGIOUS_OUTREACH:
+    description: "Religious outreach, education, proselytizing"
+    importance: LOW       # Spiritual value, not material needs
+    neglectedness: MEDIUM # Community funded, quality varies
+    benchmarks:
+      - "Billy Graham Evangelistic Association"
+      - "Chabad"
+      - "Campus Crusade for Christ (Cru)"
+    charities:
+      "20-0310701": "Al-Furqaan Foundation"
+      "77-0412815": "ING (Islamic Networks Group)"
+      "46-4451777": "Dawat-E-Islami USA"
+      "54-1674126": "Darul Huda"
+      "72-1528691": "Ta'leef Collective"
+      "20-3144206": "Proclaiming Justice to the Nations (PJTN)"
+
+  RELIGIOUS_CONGREGATION:
+    description: "Mosques, churches, synagogues, community centers"
+    importance: LOW       # Community hub, not urgent material needs
+    neglectedness: LOW    # Sustained by local community giving
+    benchmarks:
+      - "Archdiocese of Chicago"
+      - "LDS Church (organization)"
+      - "Willow Creek/Saddleback (megachurch model)"
+      - "Park East Synagogue"
+    note: "Benchmark against highly organized religious institutions"
+    charities:
+      "83-2403741": "Al Ummah Community Center (AUCC)"
+      "23-7060038": "Muslim Community Center (MCC)"
+      "75-3163555": "Muslim Community Network"
+      "33-0992506": "Islamic Center of Irvine"
+      "95-3502914": "Islamic Center of Southern California"
+      "88-0405956": "Islamic Foundation of Nevada"
+      "81-3745284": "Muslim American Society of Greater LA"
+      "36-3200165": "Islamic Society of Northwest Suburbs Chicago"
+      "72-1128279": "Islamic Association of Arabi"
+      "45-4227947": "Center for Islamic Teachings"
+      "22-3382037": "Islamic Educational Foundation (IEF)"
+      "47-1365228": "Sachse Muslim Society"
+      "31-1267559": "MCA"
+      "20-8085421": "MCC East Bay"
+      "20-1799252": "MAS Boston"
+      "23-7065716": "Islamic Society of Greater Houston"
+      "22-2086228": "Islamic Society of Central Jersey"
+      "83-0668931": "Islamic Society of Southern California"
+      "81-2169685": "ICNAB"
+      "26-3531888": "Islamic Oasis"
+      "47-3342673": "ICNA Chicago"
+      "84-5191730": "The Mecca Center"
+      "20-4423661": "Muslim Association of Puget Sound"
+
+  PHILANTHROPY_GRANTMAKING:
+    description: "Philanthropic foundations, grantmaking"
+    importance: MEDIUM    # Multiplier effect - funds other causes
+    neglectedness: HIGH   # Muslim grantmaking infrastructure severely lacking
+    benchmarks:
+      - "Ford Foundation"
+      - "MacArthur Foundation"
+      - "Lilly Endowment"
+    charities:
+      "81-0983087": "Pillars Fund"
+      "54-1399426": "Safa Trust"
+      "56-2639095": "The Hassan Foundation"
+      "22-2413703": "Muslim Foundation"
+      "80-0508709": "ICNA Council for Social Justice"
+      "47-1666091": "IRUSA Waqf"
+
+  MEDIA_JOURNALISM:
+    description: "Media production, journalism, film"
+    importance: MEDIUM    # Information ecosystem, counters misinformation
+    neglectedness: HIGH   # Muslim media severely underrepresented
+    benchmarks:
+      - "PBS"
+      - "ProPublica"
+      - "NPR"
+    charities:
+      "77-0519274": "Unity Productions Foundation"
+      "92-1198452": "The Intercept"
+
+  SOCIAL_SERVICES:
+    description: "General social services, youth, disability, multi-service"
+    importance: MEDIUM    # Quality of life, community support
+    neglectedness: LOW    # Government + many existing nonprofits
+    benchmarks:
+      - "Catholic Charities"
+      - "Jewish Family Services"
+      - "Salvation Army"
+      - "Boys & Girls Clubs"
+    charities:
+      "36-4167433": "Inner-City Muslim Action Network (IMAN)"
+      "75-2352043": "Islamic Services Foundation"
+      "47-2864379": "Sadagat"
+      "81-3135852": "Muslim American Youth Foundation"
+      "47-3187591": "Muhsen"
+      "26-3342933": "Tayba Foundation"

@@ -1,0 +1,294 @@
+# Charity Evaluation Methodology Configuration
+# Version: 0.1.0
+# Last Updated: 2025-11-16
+
+# Impact Scoring Dimensions (5 dimensions)
+impact:
+  problem_importance:
+    weight: 0.25
+    thresholds:
+      green:  # HIGH tier indicators
+        - "Addresses critical needs (healthcare, poverty, education, disaster relief)"
+        - "Serves vulnerable populations (orphans, refugees, disabled, elderly)"
+        - "Tackles systemic problems with evidence of root cause impact"
+      yellow:  # MODERATE tier indicators
+        - "Addresses important but non-critical needs"
+        - "Serves general population with some focus on vulnerable groups"
+        - "Mixed approach between immediate relief and systemic change"
+      red:  # LOW tier indicators
+        - "Addresses non-urgent or specialized niche needs"
+        - "Limited focus on vulnerable populations"
+        - "Primarily activity-based without clear problem definition"
+
+  intervention_strength:
+    weight: 0.25
+    thresholds:
+      green:  # Evidence-based strong interventions
+        - "program_expense_ratio >= 0.75"
+        - "Demonstrates measurable outcomes (not just outputs)"
+        - "Uses evidence-based or proven intervention models"
+        - "Has theory of change documented"
+      yellow:  # Moderate evidence
+        - "program_expense_ratio >= 0.65 and < 0.75"
+        - "Reports both outputs and some outcome metrics"
+        - "Intervention logic is reasonable but not rigorously tested"
+      red:  # Weak evidence
+        - "program_expense_ratio < 0.65"
+        - "Reports only activity counts, no outcomes"
+        - "Intervention approach unclear or unproven"
+
+  scale_of_reach:
+    weight: 0.20
+    thresholds:
+      green:  # Large scale
+        - "beneficiaries_served_annually >= 10000"
+        - "Operates in multiple states or countries"
+        - "Has scalable programs with growth trajectory"
+      yellow:  # Moderate scale
+        - "beneficiaries_served_annually >= 1000 and < 10000"
+        - "Regional presence (single state or 2-3 cities)"
+        - "Some potential for scale"
+      red:  # Small scale
+        - "beneficiaries_served_annually < 1000"
+        - "Local presence only (single city or community)"
+        - "Limited scalability"
+
+  cost_effectiveness:
+    weight: 0.15
+    thresholds:
+      green:  # Strong cost-effectiveness
+        - "cost_per_beneficiary <= 100 OR cost_per_outcome_unit is competitive"
+        - "Low overhead (admin + fundraising < 25%)"
+        - "Demonstrates efficiency improvements over time"
+      yellow:  # Moderate cost-effectiveness
+        - "cost_per_beneficiary > 100 and <= 500"
+        - "Moderate overhead (25-35%)"
+        - "Stable efficiency"
+      red:  # Poor cost-effectiveness
+        - "cost_per_beneficiary > 500 OR unclear cost structure"
+        - "High overhead (> 35%)"
+        - "Declining efficiency"
+
+  long_term_benefit:
+    weight: 0.15
+    thresholds:
+      green:  # Sustainable long-term impact
+        - "Programs focus on capacity building, education, economic empowerment"
+        - "Tracks long-term outcomes (6+ months post-intervention)"
+        - "Evidence of lasting change in beneficiary lives"
+      yellow:  # Some long-term elements
+        - "Mix of short-term relief and capacity building"
+        - "Some follow-up on beneficiaries"
+        - "Reasonable likelihood of lasting impact"
+      red:  # Primarily short-term
+        - "Mostly immediate relief or one-time interventions"
+        - "No follow-up tracking"
+        - "Limited evidence of lasting change"
+
+# Confidence Scoring Dimensions (5 dimensions)
+confidence:
+  transparency:
+    weight: 0.25
+    thresholds:
+      green:  # HIGH transparency
+        - "Has Candid Transparency Seal (Gold or Platinum)"
+        - "Publishes annual reports publicly"
+        - "990 forms available and complete"
+        - "Program descriptions detailed and specific"
+      yellow:  # MODERATE transparency
+        - "Has Candid Transparency Seal (Bronze or Silver)"
+        - "Some public reporting (partial annual reports or website updates)"
+        - "990 forms available but may have gaps"
+      red:  # LOW transparency
+        - "No Candid Transparency Seal"
+        - "Minimal public reporting"
+        - "990 forms unavailable or incomplete"
+
+  accountability_governance:
+    weight: 0.25
+    thresholds:
+      green:  # Strong governance
+        - "Independent board with >= 5 members"
+        - "Documented conflict of interest policy"
+        - "Financial audit by independent CPA"
+        - "Board meets regularly (quarterly or more)"
+      yellow:  # Moderate governance
+        - "Board with 3-4 members, some independence"
+        - "Basic governance policies in place"
+        - "Financial review (not full audit)"
+      red:  # Weak governance
+        - "Small board (< 3 members) or unclear independence"
+        - "No documented governance policies"
+        - "No independent financial review"
+
+  use_of_funds:
+    weight: 0.20
+    thresholds:
+      green:  # Efficient use
+        - "program_expense_ratio >= 0.75"
+        - "admin_expense_ratio <= 0.15"
+        - "fundraising_expense_ratio <= 0.10"
+        - "Working capital is appropriate (3-12 months expenses)"
+      yellow:  # Moderate efficiency
+        - "program_expense_ratio >= 0.65 and < 0.75"
+        - "admin_expense_ratio <= 0.20"
+        - "fundraising_expense_ratio <= 0.15"
+      red:  # Poor efficiency
+        - "program_expense_ratio < 0.65"
+        - "admin_expense_ratio > 0.20 OR fundraising_expense_ratio > 0.15"
+        - "Excessive reserves or deficit concerns"
+
+  third_party_verification:
+    weight: 0.15
+    thresholds:
+      green:  # Strong external validation
+        - "charity_navigator_overall_score >= 85"
+        - "Has multiple Charity Navigator Beacons"
+        - "Receives grants from major foundations (evidence of vetting)"
+      yellow:  # Some external validation
+        - "charity_navigator_overall_score >= 70 and < 85"
+        - "Has at least one Charity Navigator Beacon"
+        - "Some foundation support"
+      red:  # Limited external validation
+        - "charity_navigator_overall_score < 70 OR not rated"
+        - "No Charity Navigator Beacons"
+        - "Limited third-party endorsements"
+
+  reporting_quality:
+    weight: 0.15
+    thresholds:
+      green:  # HIGH quality reporting
+        - "Reports outcomes with clear metrics and targets"
+        - "Provides beneficiary impact stories with data"
+        - "Tracks and reports progress over time"
+        - "Uses logic models or theory of change"
+      yellow:  # MODERATE quality
+        - "Reports mix of outputs and outcomes"
+        - "Provides some impact context"
+        - "Basic progress tracking"
+      red:  # LOW quality
+        - "Reports only activity counts (outputs)"
+        - "Generic or vague impact claims"
+        - "No systematic tracking"
+
+# Zakat Alignment Categories
+zakat:
+  eligible_categories:
+    - fuqara: "The poor (those with some possessions but below nisab)"
+    - masakin: "The destitute (those with almost nothing)"
+    - amileen: "Zakat administrators"
+    - muallafatul_quloob: "New Muslims or those being brought closer to Islam"
+    - riqab: "Freeing slaves/captives (modern: refugees, trafficked persons, prisoners of conscience)"
+    - gharimeen: "Those in debt (unable to pay)"
+    - fisabilillah: "In the path of Allah (broad interpretation: Islamic education, dawah, humanitarian)"
+    - ibnus_sabil: "Stranded travelers (modern: refugees, displaced persons)"
+
+  keyword_matching:
+    likely_eligible:
+      - "poverty alleviation"
+      - "refugee assistance"
+      - "orphan support"
+      - "food bank"
+      - "homeless services"
+      - "disaster relief"
+      - "medical assistance for underserved"
+      - "debt relief"
+      - "emergency aid"
+      - "Islamic education"
+      - "dawah"
+      - "masjid"
+      - "Quran school"
+
+    partially_eligible:
+      - "education" # May qualify if serves poor students
+      - "healthcare" # May qualify if serves poor patients
+      - "community development" # Depends on beneficiaries
+      - "youth programs" # Depends on target population
+
+    unclear:
+      - "research"
+      - "advocacy"
+      - "policy work"
+      - "environmental conservation"
+      - "animal welfare"
+
+    sadaqah_only:
+      - "arts and culture"
+      - "sports and recreation"
+      - "religious infrastructure (non-essential)"
+      - "endowment building (general)"
+
+  # Zakat Claim Verification
+  # Simple approach: Does the charity CLAIM to accept zakat?
+  # Being a Muslim charity is NOT sufficient - they must explicitly claim zakat.
+  eligibility_verification:
+    # Minimum confidence to trust the discover service's finding
+    # Filters out obvious LLM hallucinations
+    min_confidence: 0.5
+
+    # Names that definitively imply zakat acceptance (no verification needed)
+    # These are Arabic treasury terms that by definition mean zakat
+    definitive_names:
+      - "baitulmaal"
+      - "baytulmaal"
+      - "bait ul maal"
+      - "zakat foundation"
+      - "zakat fund"
+      - "zakaat"
+
+# Tier Aggregation Logic
+tier_aggregation:
+  pattern_based: true  # Use pattern logic, not numeric averaging
+  rules:
+    high:  # GREEN tier
+      condition: "At least 60% of weighted dimensions are GREEN"
+    low:  # RED tier
+      condition: "At least 50% of weighted dimensions are RED"
+    moderate:  # YELLOW tier
+      condition: "All other patterns (mixed GREEN/YELLOW/RED)"
+
+  missing_data:
+    min_data_threshold: 0.50  # Need at least 50% of dimensions with data
+    insufficient_data_label: "INSUFFICIENT_DATA"
+    default_color_for_missing: "YELLOW"  # When individual metric is missing, default to caution
+
+# LLM Configuration
+llm:
+  model: "claude-sonnet-4-5-20250929"
+  temperature: 0.2
+  max_tokens: 2000
+  batch_api: true  # Use batch processing for cost savings
+  prompt_caching: true  # Enable prompt caching
+
+  narrative_requirements:
+    - "Must cite specific metrics with source attribution"
+    - "Constructive tone, no punitive language"
+    - "Include strengths, growth opportunities, and path to next tier"
+    - "Use few-shot examples for consistency"
+    - "Temperature 0.2 for reproducibility"
+
+# Data Freshness
+data_freshness:
+  max_age_days:
+    charity_navigator: 90
+    propublica_990: 365  # IRS data updates annually
+    candid: 90
+    website: 30
+
+  stale_data_handling: "continue_with_warning"  # Options: fail, continue_with_warning, ignore
+
+# Pipeline Execution
+pipeline:
+  rate_limiting:
+    charity_navigator_delay_sec: 1.0
+    propublica_delay_sec: 0.5
+    candid_delay_sec: 1.0  # Conservative to avoid blocks
+    website_delay_sec: 2.0
+
+  failure_handling:
+    continue_on_source_failure: true
+    min_sources_required: 2  # Need at least 2 sources to produce evaluation
+
+  performance:
+    max_parallel_charities: 5
+    target_charities_per_30min: 50

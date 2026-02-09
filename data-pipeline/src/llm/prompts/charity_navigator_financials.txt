@@ -1,0 +1,38 @@
+# PROMPT: charity_navigator_financials
+# VERSION: 1.0.0
+# LAST_UPDATED: 2025-11-27
+# DESCRIPTION: Extract financial metrics from Charity Navigator HTML
+# ---PROMPT_START---
+# Charity Navigator Financial Data Extraction
+
+Extract financial metrics from the Charity Navigator HTML page. Return a JSON object with the following fields (use null for missing values):
+
+```json
+{
+  "total_revenue": <number or null>,
+  "total_expenses": <number or null>,
+  "total_assets": <number or null>,
+  "total_liabilities": <number or null>,
+  "net_assets": <number or null>,
+  "program_expenses": <number or null>,
+  "administrative_expenses": <number or null>,
+  "fundraising_expenses": <number or null>,
+  "program_expense_ratio": <decimal 0-1 or null>,
+  "admin_expense_ratio": <decimal 0-1 or null>,
+  "fundraising_expense_ratio": <decimal 0-1 or null>,
+  "working_capital_ratio": <decimal or null>,
+  "fiscal_year": <YYYY integer or null>,
+  "overall_score": <number 0-100 or null>,
+  "financial_score": <number 0-100 or null>,
+  "accountability_score": <number 0-100 or null>,
+  "ceo_compensation": <number or null>,
+  "has_financial_audit": <boolean or null>
+}
+```
+
+Rules:
+1. Extract exact values when visible in the HTML
+2. Convert percentages to decimals (e.g., 85% -> 0.85)
+3. Remove currency symbols and commas from numbers
+4. Use null for any field not found in the HTML
+5. Return ONLY the JSON object, no additional text

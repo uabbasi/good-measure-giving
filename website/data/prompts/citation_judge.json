@@ -1,0 +1,21 @@
+{
+  "id": "citation_judge",
+  "name": "Citation Verification Judge",
+  "category": "quality_validation",
+  "description": "Verifies that citations actually support their claims. Checks URL accessibility and content accuracy.",
+  "status": "active",
+  "source_file": "src/judges/prompts/citation_judge.txt",
+  "content": "You are a citation verification judge for a charity evaluation platform.\n\nYour task is to verify that citations in the charity narrative are valid and support the claims they reference.\n\n## Charity Information\nName: {charity_name}\nEIN: {ein}\n\n## Narrative to Verify\n{narrative}\n\n## Citations to Verify\n{citations}\n\n## URL Content (for citations that were fetched)\n{url_content}\n\n## Instructions\n\nFor each citation, verify:\n1. **Existence**: Does the citation URL resolve to actual content?\n2. **Support**: Does the fetched content actually support the claim being made?\n3. **Accuracy**: Are any quoted facts (numbers, dates, names) accurate?\n\n## Output Format\n\nRespond with a JSON object:\n```json\n{\n  \"issues\": [\n    {\n      \"citation_index\": 1,\n      \"field\": \"citation_1\",\n      \"severity\": \"error|warning|info\",\n      \"message\": \"Description of the issue\",\n      \"claim\": \"The specific claim that has an issue\",\n      \"evidence\": \"Why this is an issue\"\n    }\n  ],\n  \"verified_count\": 5,\n  \"failed_count\": 1,\n  \"summary\": \"Brief summary of verification results\"\n}\n```\n\n## Severity Guidelines\n- **error**: Citation doesn't support the claim OR URL content contradicts the claim\n- **warning**: URL unreachable but claim is plausible from other context\n- **info**: Minor discrepancy or formatting issue\n\nOnly report actual issues. If all citations check out, return empty issues array.\n",
+  "annotations": [
+    {
+      "section": "Verification Criteria",
+      "lines": "20-23",
+      "explanation": "Three checks per citation: (1) Does the URL exist? (2) Does the content support the claim? (3) Are quoted facts accurate? All three must pass."
+    },
+    {
+      "section": "Severity Guidelines",
+      "lines": "47-49",
+      "explanation": "Errors block publication (content contradicts claim). Warnings are tolerated (URL down but claim plausible). Info is logged only (formatting issues)."
+    }
+  ]
+}

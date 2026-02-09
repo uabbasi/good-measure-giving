@@ -1,0 +1,239 @@
+{
+  "prompts": [
+    {
+      "id": "score_judge",
+      "name": "Score Rationale Judge",
+      "category": "quality_validation",
+      "description": "Verifies that narrative rationale logically supports the assigned scores. Catches mismatches between glowing language and low scores.",
+      "status": "active"
+    },
+    {
+      "id": "citation_judge",
+      "name": "Citation Verification Judge",
+      "category": "quality_validation",
+      "description": "Verifies that citations actually support their claims. Checks URL accessibility and content accuracy.",
+      "status": "active"
+    },
+    {
+      "id": "factual_judge",
+      "name": "Factual Accuracy Judge",
+      "category": "quality_validation",
+      "description": "Cross-references facts in narratives against source data. Catches hallucinated numbers, dates, and claims.",
+      "status": "active"
+    },
+    {
+      "id": "zakat_judge",
+      "name": "Zakat Classification Judge",
+      "category": "quality_validation",
+      "description": "Validates zakat eligibility claims against source evidence. Prevents false zakat-eligible classifications.",
+      "status": "active"
+    },
+    {
+      "id": "homepage_prompt",
+      "name": "Homepage Extraction",
+      "category": "data_extraction",
+      "description": "Extracts mission, target populations, and founding year from charity homepages.",
+      "status": "active"
+    },
+    {
+      "id": "about_prompt",
+      "name": "About Page Extraction",
+      "category": "data_extraction",
+      "description": "Extracts detailed mission, vision, values, and organizational information.",
+      "status": "active"
+    },
+    {
+      "id": "programs_prompt",
+      "name": "Programs Page Extraction",
+      "category": "data_extraction",
+      "description": "Extracts program descriptions and service areas from charity program pages.",
+      "status": "active"
+    },
+    {
+      "id": "impact_prompt",
+      "name": "Impact Page Extraction",
+      "category": "data_extraction",
+      "description": "Extracts impact metrics, beneficiary counts, and outcome statistics.",
+      "status": "active"
+    },
+    {
+      "id": "donate_prompt",
+      "name": "Donation Page Extraction",
+      "category": "data_extraction",
+      "description": "Extracts tax-deductibility status and payment methods from donation pages.",
+      "status": "active"
+    },
+    {
+      "id": "contact_prompt",
+      "name": "Contact/Leadership Extraction",
+      "category": "data_extraction",
+      "description": "Extracts leadership team members, titles, and organizational structure.",
+      "status": "active"
+    },
+    {
+      "id": "zakat_prompt",
+      "name": "Zakat Page Extraction",
+      "category": "data_extraction",
+      "description": "Extracts zakat eligibility claims, asnaf categories served, and scholarly endorsements.",
+      "status": "active"
+    },
+    {
+      "id": "baseline_narrative",
+      "name": "Baseline Narrative Generator",
+      "category": "narrative_generation",
+      "description": "Generates baseline evaluation narratives with Wikipedia-style citations. Core narrative seen by all users.",
+      "status": "active"
+    },
+    {
+      "id": "rich_narrative_v2",
+      "name": "Rich Narrative Generator (v2)",
+      "category": "narrative_generation",
+      "description": "Investment memo-style deep analysis with inline citations. Premium content for logged-in users.",
+      "status": "active"
+    },
+    {
+      "id": "charity_navigator_financials",
+      "name": "Charity Navigator Financial Extractor",
+      "category": "data_extraction",
+      "description": "Extracts detailed financial metrics from Charity Navigator pages into structured schema.",
+      "status": "active"
+    },
+    {
+      "id": "category_advocacy_civic",
+      "name": "Advocacy & Civic Category Calibration",
+      "category": "category_calibration",
+      "description": "Calibrates scoring for advocacy and civic engagement organizations. Adjusts benchmarks for lobbying-adjacent work.",
+      "status": "planned"
+    },
+    {
+      "id": "category_basic_needs",
+      "name": "Basic Needs Category Calibration",
+      "category": "category_calibration",
+      "description": "Calibrates scoring for food, shelter, and emergency assistance organizations.",
+      "status": "planned"
+    },
+    {
+      "id": "category_civil_rights_legal",
+      "name": "Civil Rights & Legal Category Calibration",
+      "category": "category_calibration",
+      "description": "Calibrates scoring for civil rights and legal aid organizations.",
+      "status": "planned"
+    },
+    {
+      "id": "category_education_higher_religious",
+      "name": "Higher Religious Education Category Calibration",
+      "category": "category_calibration",
+      "description": "Calibrates scoring for Islamic seminaries, religious colleges, and scholarship programs.",
+      "status": "planned"
+    },
+    {
+      "id": "category_education_international",
+      "name": "International Education Category Calibration",
+      "category": "category_calibration",
+      "description": "Calibrates scoring for education programs in developing countries.",
+      "status": "planned"
+    },
+    {
+      "id": "category_education_k12_religious",
+      "name": "K-12 Religious Education Category Calibration",
+      "category": "category_calibration",
+      "description": "Calibrates scoring for Islamic schools, weekend programs, and youth education.",
+      "status": "planned"
+    },
+    {
+      "id": "category_environment_climate",
+      "name": "Environment & Climate Category Calibration",
+      "category": "category_calibration",
+      "description": "Calibrates scoring for environmental conservation and climate action organizations.",
+      "status": "planned"
+    },
+    {
+      "id": "category_humanitarian",
+      "name": "Humanitarian Category Calibration",
+      "category": "category_calibration",
+      "description": "Calibrates scoring for emergency response and humanitarian aid organizations.",
+      "status": "planned"
+    },
+    {
+      "id": "category_media_journalism",
+      "name": "Media & Journalism Category Calibration",
+      "category": "category_calibration",
+      "description": "Calibrates scoring for Muslim media outlets, journalism, and content creation.",
+      "status": "planned"
+    },
+    {
+      "id": "category_medical_health",
+      "name": "Medical & Health Category Calibration",
+      "category": "category_calibration",
+      "description": "Calibrates scoring for healthcare, mental health, and medical assistance organizations.",
+      "status": "planned"
+    },
+    {
+      "id": "category_philanthropy_grantmaking",
+      "name": "Philanthropy & Grantmaking Category Calibration",
+      "category": "category_calibration",
+      "description": "Calibrates scoring for donor-advised funds, foundations, and grantmaking organizations.",
+      "status": "planned"
+    },
+    {
+      "id": "category_religious_congregation",
+      "name": "Religious Congregation Category Calibration",
+      "category": "category_calibration",
+      "description": "Calibrates scoring for mosques and Islamic centers with 501(c)(3) status.",
+      "status": "planned"
+    },
+    {
+      "id": "category_religious_outreach",
+      "name": "Religious Outreach Category Calibration",
+      "category": "category_calibration",
+      "description": "Calibrates scoring for dawah, convert support, and Islamic education outreach.",
+      "status": "planned"
+    },
+    {
+      "id": "category_research_policy",
+      "name": "Research & Policy Category Calibration",
+      "category": "category_calibration",
+      "description": "Calibrates scoring for think tanks, research institutions, and policy advocacy.",
+      "status": "planned"
+    },
+    {
+      "id": "category_social_services",
+      "name": "Social Services Category Calibration",
+      "category": "category_calibration",
+      "description": "Calibrates scoring for family services, counseling, and community support organizations.",
+      "status": "planned"
+    },
+    {
+      "id": "category_womens_services",
+      "name": "Women's Services Category Calibration",
+      "category": "category_calibration",
+      "description": "Calibrates scoring for women's shelters, empowerment programs, and gender-specific services.",
+      "status": "planned"
+    }
+  ],
+  "categories": [
+    {
+      "id": "quality_validation",
+      "name": "Quality Validation",
+      "description": "Prompts that verify accuracy and consistency of generated content"
+    },
+    {
+      "id": "data_extraction",
+      "name": "Data Extraction",
+      "description": "Prompts that extract structured data from charity websites"
+    },
+    {
+      "id": "narrative_generation",
+      "name": "Narrative Generation",
+      "description": "Prompts that generate human-readable evaluations"
+    },
+    {
+      "id": "category_calibration",
+      "name": "Category Calibration",
+      "description": "Cause-specific prompts that adjust scoring benchmarks (planned)"
+    }
+  ],
+  "total_count": 30,
+  "active_count": 14,
+  "planned_count": 16
+}

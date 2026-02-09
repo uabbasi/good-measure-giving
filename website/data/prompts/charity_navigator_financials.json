@@ -1,0 +1,21 @@
+{
+  "id": "charity_navigator_financials",
+  "name": "Charity Navigator Financial Extractor",
+  "category": "data_extraction",
+  "description": "Extracts detailed financial metrics from Charity Navigator pages into structured schema.",
+  "status": "active",
+  "source_file": "src/llm/prompts/charity_navigator_financials.txt",
+  "content": "# PROMPT: charity_navigator_financials\n# VERSION: 1.0.0\n# LAST_UPDATED: 2025-11-27\n# DESCRIPTION: Extract financial metrics from Charity Navigator HTML\n# ---PROMPT_START---\n# Charity Navigator Financial Data Extraction\n\nExtract financial metrics from the Charity Navigator HTML page. Return a JSON object with the following fields (use null for missing values):\n\n```json\n{\n  \"total_revenue\": <number or null>,\n  \"total_expenses\": <number or null>,\n  \"total_assets\": <number or null>,\n  \"total_liabilities\": <number or null>,\n  \"net_assets\": <number or null>,\n  \"program_expenses\": <number or null>,\n  \"administrative_expenses\": <number or null>,\n  \"fundraising_expenses\": <number or null>,\n  \"program_expense_ratio\": <decimal 0-1 or null>,\n  \"admin_expense_ratio\": <decimal 0-1 or null>,\n  \"fundraising_expense_ratio\": <decimal 0-1 or null>,\n  \"working_capital_ratio\": <decimal or null>,\n  \"fiscal_year\": <YYYY integer or null>,\n  \"overall_score\": <number 0-100 or null>,\n  \"financial_score\": <number 0-100 or null>,\n  \"accountability_score\": <number 0-100 or null>,\n  \"ceo_compensation\": <number or null>,\n  \"has_financial_audit\": <boolean or null>\n}\n```\n\nRules:\n1. Extract exact values when visible in the HTML\n2. Convert percentages to decimals (e.g., 85% -> 0.85)\n3. Remove currency symbols and commas from numbers\n4. Use null for any field not found in the HTML\n5. Return ONLY the JSON object, no additional text\n",
+  "annotations": [
+    {
+      "section": "Financial Fields",
+      "lines": "1-20",
+      "explanation": "Extracts revenue, expenses, assets, liabilities, and efficiency ratios from CN's financial pages."
+    },
+    {
+      "section": "Score Extraction",
+      "lines": "25-35",
+      "explanation": "Extracts CN's star rating, financial score, accountability score, and beacon awards."
+    }
+  ]
+}

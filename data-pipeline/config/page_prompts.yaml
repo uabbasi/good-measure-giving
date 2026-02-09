@@ -1,0 +1,136 @@
+# LLM extraction prompts for different page types
+# Each prompt is tailored to extract specific information based on page classification
+# Prompts use Pydantic schemas defined in src/validators/ for structured validation
+
+homepage_prompt: |
+  Extract the following information from this charity homepage. Return ONLY valid JSON matching the exact schema below.
+
+  CRITICAL EXTRACTION RULES:
+  - Only extract information that is EXPLICITLY stated on the page
+  - Do NOT infer, assume, or guess values
+  - If a field is not clearly present, return null
+  - For external evaluations (GiveWell, Charity Navigator, BBB): only include if the page EXPLICITLY mentions being rated or evaluated by that organization
+  - For zakat eligibility: only set to true if the page explicitly uses the word "zakat"
+  - For scholarly endorsements: only include names explicitly mentioned as endorsing the charity
+
+  Required fields:
+  - mission: String (50-2000 characters) - The charity's mission statement
+
+  Optional fields:
+  - vision: String or null (max 2000 characters) - Vision statement if present
+  - target_populations: Array of strings (0-10 items) - High-level beneficiary populations
+  - geographic_coverage: Array of strings (0-20 items) - Geographic regions served
+  - founded_year: Integer or null (1800-2100) - Year the charity was founded
+
+  Return JSON only. Do not include explanations or markdown formatting.
+
+about_prompt: |
+  Extract the following information from this charity's about/mission page. Return ONLY valid JSON matching the exact schema below.
+
+  CRITICAL EXTRACTION RULES:
+  - Only extract information that is EXPLICITLY stated on the page
+  - Do NOT infer, assume, or guess values
+  - If a field is not clearly present, return null
+  - For external evaluations (GiveWell, Charity Navigator, BBB): only include if the page EXPLICITLY mentions being rated or evaluated by that organization
+  - For zakat eligibility: only set to true if the page explicitly uses the word "zakat"
+  - For scholarly endorsements: only include names explicitly mentioned as endorsing the charity
+
+  Required fields:
+  - mission: String (50-2000 characters) - The charity's mission statement
+
+  Optional fields:
+  - vision: String or null (max 2000 characters) - Vision statement
+  - values: Array of strings (0-10 items) - Core values
+  - target_populations: Array of strings (0-10 items) - Populations served
+  - geographic_coverage: Array of strings (0-20 items) - Geographic coverage
+
+  Return JSON only. Do not include explanations or markdown formatting.
+
+programs_prompt: |
+  Extract the following information from this charity's programs page. Return ONLY valid JSON matching the exact schema below.
+
+  Required fields:
+  - programs: Array of strings (1-20 items, each 20-500 characters) - List of program descriptions
+
+  Optional fields:
+  - target_populations: Array of strings (0-10 items) - Populations served by programs
+  - geographic_coverage: Array of strings (0-20 items) - Geographic coverage of programs
+
+  Return JSON only. Do not include explanations or markdown formatting.
+
+impact_prompt: |
+  Extract the following information from this charity's impact/results page. Return ONLY valid JSON matching the exact schema below.
+
+  CRITICAL EXTRACTION RULES:
+  - Only extract information that is EXPLICITLY stated on the page
+  - Do NOT infer, assume, or guess values
+  - If a field is not clearly present, return null
+  - For external evaluations (GiveWell, Charity Navigator, BBB): only include if the page EXPLICITLY mentions being rated or evaluated by that organization
+  - For zakat eligibility: only set to true if the page explicitly uses the word "zakat"
+  - For scholarly endorsements: only include names explicitly mentioned as endorsing the charity
+  - For impact metrics: only include numbers and statistics that are explicitly stated, never estimate or calculate
+
+  Required fields:
+  - impact_metrics: Object - Key impact metrics and statistics (flexible structure)
+
+  Optional fields:
+  - beneficiaries: String (20-1000 characters) - Description of beneficiaries served
+  - geographic_coverage: Array of strings (0-20 items) - Geographic reach of impact
+  - additional_info: String or null (max 2000 characters) - Additional impact information
+
+  Return JSON only. Do not include explanations or markdown formatting.
+
+donate_prompt: |
+  Extract the following information from this charity's donation page. Return ONLY valid JSON matching the exact schema below.
+
+  Required fields:
+  - tax_deductible: Boolean - Whether donations are tax-deductible
+
+  Optional fields:
+  - donation_methods: Array of strings (0-10 items) - Accepted methods from: credit_card, debit_card, paypal, bank_transfer, check, wire_transfer, cryptocurrency, stock_donation, donor_advised_fund, other
+  - donate_url: String or null (valid URI) - Primary donation URL
+
+  Return JSON only. Do not include explanations or markdown formatting.
+
+contact_prompt: |
+  Extract the following information from this charity's contact/team/leadership page. Return ONLY valid JSON matching the exact schema below.
+
+  Required fields:
+  - leadership: Array of objects (0-50 items) - Leadership team members
+    Each object must have:
+    - name: String (2-100 characters) - Person's name
+    - title: String (2-100 characters) - Job title or position
+    - role: String or null (max 500 characters) - Description of their role
+
+  Return JSON only. Do not include explanations or markdown formatting.
+
+zakat_prompt: |
+  Extract the following information from this charity's zakat eligibility page. Return ONLY valid JSON matching the exact schema below.
+
+  CRITICAL EXTRACTION RULES:
+  - Only extract information that is EXPLICITLY stated on the page
+  - Do NOT infer, assume, or guess values
+  - If a field is not clearly present, return null
+  - For scholarly endorsements: only include names of scholars or institutions EXPLICITLY mentioned on the page as endorsing this charity's zakat eligibility
+  - For asnaf categories: only include categories the charity EXPLICITLY claims to serve, not categories you infer from their programs
+  - For zakat eligibility: the page must explicitly use the word "zakat" or "zakah" - do not infer eligibility from general poverty relief language
+  - Do NOT assume a charity accepts zakat just because they serve poor populations
+
+  The 8 asnaf (zakat recipient categories) are:
+  1. Fuqara (the poor)
+  2. Masakin (the needy)
+  3. Amil (zakat collectors/administrators)
+  4. Muallaf (new Muslims/those inclined to Islam)
+  5. Riqab (freeing captives)
+  6. Gharimin (those in debt)
+  7. Fi Sabilillah (in the cause of Allah)
+  8. Ibn as-Sabil (travelers in need)
+
+  Optional fields:
+  - zakat_eligible_programs: Array of strings (0-20 items) - Programs the charity EXPLICITLY claims are zakat-eligible
+  - asnaf_served: Array of strings (0-8 items) - Which asnaf categories are EXPLICITLY mentioned as served (use exact names from list above)
+  - scholarly_endorsements: Array of strings (0-10 items) - Scholars, institutions, or Islamic bodies EXPLICITLY named as endorsing their zakat eligibility
+  - zakat_distribution_details: String or null (max 2000 characters) - How they handle, track, or distribute zakat funds
+  - zakat_policy_url: String or null (valid URL) - Direct link to their zakat policy page
+
+  Return JSON only. Do not include explanations or markdown formatting.

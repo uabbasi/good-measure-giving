@@ -1,0 +1,16 @@
+{
+  "id": "contact_prompt",
+  "name": "Contact/Leadership Extraction",
+  "category": "data_extraction",
+  "description": "Extracts leadership team members, titles, and organizational structure.",
+  "status": "active",
+  "source_file": "config/page_prompts.yaml",
+  "content": "Extract the following information from this charity's contact/team/leadership page. Return ONLY valid JSON matching the exact schema below.\n\nRequired fields:\n- leadership: Array of objects (0-50 items) - Leadership team members\n  Each object must have:\n  - name: String (2-100 characters) - Person's name\n  - title: String (2-100 characters) - Job title or position\n  - role: String or null (max 500 characters) - Description of their role\n\nReturn JSON only. Do not include explanations or markdown formatting.\n",
+  "annotations": [
+    {
+      "section": "Leadership Array",
+      "lines": "99-104",
+      "explanation": "Structured extraction of name, title, and role for up to 50 team members. Used for governance assessment."
+    }
+  ]
+}

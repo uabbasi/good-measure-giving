@@ -1,0 +1,16 @@
+{
+  "id": "impact_prompt",
+  "name": "Impact Page Extraction",
+  "category": "data_extraction",
+  "description": "Extracts impact metrics, beneficiary counts, and outcome statistics.",
+  "status": "active",
+  "source_file": "config/page_prompts.yaml",
+  "content": "Extract the following information from this charity's impact/results page. Return ONLY valid JSON matching the exact schema below.\n\nCRITICAL EXTRACTION RULES:\n- Only extract information that is EXPLICITLY stated on the page\n- Do NOT infer, assume, or guess values\n- If a field is not clearly present, return null\n- For external evaluations (GiveWell, Charity Navigator, BBB): only include if the page EXPLICITLY mentions being rated or evaluated by that organization\n- For zakat eligibility: only set to true if the page explicitly uses the word \"zakat\"\n- For scholarly endorsements: only include names explicitly mentioned as endorsing the charity\n- For impact metrics: only include numbers and statistics that are explicitly stated, never estimate or calculate\n\nRequired fields:\n- impact_metrics: Object - Key impact metrics and statistics (flexible structure)\n\nOptional fields:\n- beneficiaries: String (20-1000 characters) - Description of beneficiaries served\n- geographic_coverage: Array of strings (0-20 items) - Geographic reach of impact\n- additional_info: String or null (max 2000 characters) - Additional impact information\n\nReturn JSON only. Do not include explanations or markdown formatting.\n",
+  "annotations": [
+    {
+      "section": "Impact Metrics",
+      "lines": "72-75",
+      "explanation": "Only includes numbers EXPLICITLY stated on the page. Never calculates or estimates. This is a hallucination-prone field."
+    }
+  ]
+}

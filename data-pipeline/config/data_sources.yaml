@@ -1,0 +1,237 @@
+# Data Sources Configuration
+# Version: 0.1.0
+# Last Updated: 2025-11-16
+
+# Charity Navigator API Configuration
+charity_navigator:
+  enabled: true
+  api_type: "graphql"
+  base_url: "https://www.charitynavigator.org/api/graphql"
+  endpoints:
+    graphql: "https://www.charitynavigator.org/api/graphql"
+  rate_limit:
+    requests_per_second: 1
+    delay_between_requests: 1.0
+  auth:
+    type: "none"  # Public GraphQL endpoint
+  fields:
+    - overall_score
+    - financial_score
+    - accountability_score
+    - beacons
+    - program_expense_ratio
+    - admin_expense_ratio
+    - fundraising_expense_ratio
+    - working_capital_ratio
+    - ceo_compensation
+    - mission
+    - tagline
+    - website_url
+    - address
+  retry:
+    max_attempts: 3
+    backoff_factor: 2
+
+# ProPublica NonProfit Explorer (IRS 990 Data)
+propublica:
+  enabled: true
+  api_type: "rest"
+  base_url: "https://projects.propublica.org/nonprofits/api/v2"
+  endpoints:
+    search: "/search.json"
+    organization: "/organizations/{ein}.json"
+  rate_limit:
+    requests_per_second: 2
+    delay_between_requests: 0.5
+  auth:
+    type: "none"  # Public API
+  fields:
+    - total_revenue
+    - total_expenses
+    - program_expenses
+    - admin_expenses
+    - fundraising_expenses
+    - total_assets
+    - total_liabilities
+    - net_assets
+    - tax_year
+    - employees_count
+    - volunteers_count
+  retry:
+    max_attempts: 3
+    backoff_factor: 2
+
+# Candid (Web Scraping)
+candid:
+  enabled: true
+  api_type: "scraping"
+  base_url: "https://www.candid.org"
+  endpoints:
+    profile: "/profile/{ein}"
+  rate_limit:
+    requests_per_second: 1
+    delay_between_requests: 1.0  # Conservative to avoid rate limiting
+  auth:
+    type: "session"  # May require login for some fields
+    # Credentials stored in .env file
+    # CANDID_EMAIL=your_email@example.com
+    # CANDID_PASSWORD=your_password
+  scraping:
+    user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    timeout_seconds: 30
+    verify_ssl: true
+    store_raw_html: true
+    store_screenshots: false  # Optional: enable for debugging
+  sections:
+    - hero  # Organization name, tagline, location
+    - summary  # Mission, vision, strategy
+    - programs_results  # Program descriptions and outcomes
+    - financials  # Financial metrics and trends
+    - operations  # Leadership, board, staff
+  fields:
+    - organization_name
+    - tagline
+    - mission
+    - vision
+    - strategic_goals
+    - programs
+    - outcomes
+    - beneficiaries_served
+    - populations_served
+    - geographic_coverage
+    - candid_seal  # Bronze, Silver, Gold, Platinum
+    - ceo_name
+    - ceo_compensation
+    - board_size
+    - independent_board_members
+    - contact_email
+    - contact_phone
+  retry:
+    max_attempts: 2
+    backoff_factor: 3
+
+# Charity Website (LLM-Assisted Extraction)
+website:
+  enabled: true
+  api_type: "scraping_llm"
+  rate_limit:
+    requests_per_second: 0.5
+    delay_between_requests: 2.0
+  scraping:
+    user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    timeout_seconds: 30
+    verify_ssl: true
+    max_pages: 5  # Limit pages to scrape per charity
+    priority_pages:
+      - "/"  # Homepage
+      - "/about"
+      - "/mission"
+      - "/programs"
+      - "/impact"
+      - "/donate"
+  llm_extraction:
+    model: "claude-sonnet-4-5-20250929"
+    temperature: 0.1  # Very low for factual extraction
+    max_tokens: 4000
+    prompt_template: "website_parser.txt"
+  fields:
+    - mission_statement
+    - programs
+    - program_descriptions
+    - impact_metrics
+    - beneficiaries
+    - geographic_coverage
+    - donation_methods
+    - tax_deductible_info
+    - volunteer_opportunities
+    - contact_info
+  retry:
+    max_attempts: 2
+    backoff_factor: 2
+
+# CauseIQ (Web Scraping)
+causeiq:
+  enabled: true
+  api_type: "scraping"
+  base_url: "https://www.causeiq.com"
+  endpoints:
+    profile: "/organizations/{slug},{ein}/"
+  rate_limit:
+    requests_per_second: 1
+    delay_between_requests: 1.0  # Conservative to avoid rate limiting
+  auth:
+    type: "none"  # Public profiles
+  scraping:
+    user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    timeout_seconds: 30
+    verify_ssl: true
+    store_raw_html: true
+    save_debug_html: false  # Enable for troubleshooting scraper issues
+    debug_dir: "./causeiq_debug"
+  fields:
+    - organization_name
+    - description
+    - programs  # Detailed program descriptions with beneficiary counts
+    - program_areas
+    - grants_made  # UNIQUE: Grants given to other organizations
+    - grants_received  # UNIQUE: Grants received from foundations
+    - total_revenue
+    - total_expenses
+    - total_assets
+    - year_founded
+    - ntee_code
+    - ntee_description
+    - irs_subsection
+    - number_of_employees
+    - city
+    - state
+  retry:
+    max_attempts: 3
+    backoff_factor: 2
+
+# Data Storage Configuration
+storage:
+  database:
+    type: "sqlite"
+    path: "../../shared/zakaat.db"  # Relative to data-pipeline/src/
+  raw_data:
+    store_html: true
+    store_json: true
+    compression: false  # May enable if database grows large
+  cache:
+    enabled: true
+    ttl_days:
+      charity_navigator: 90
+      propublica: 365
+      candid: 90
+      causeiq: 30
+      website: 30
+
+# LLM API Configuration
+llm:
+  provider: "anthropic"
+  api_key_env: "ANTHROPIC_API_KEY"  # Read from environment variable
+  model: "claude-sonnet-4-5-20250929"
+  batch_processing:
+    enabled: true
+    batch_size: 20
+    max_wait_seconds: 300
+  prompt_caching:
+    enabled: true
+    cache_system_prompts: true
+  cost_tracking:
+    enabled: true
+    log_token_usage: true
+
+# Error Handling & Logging
+error_handling:
+  continue_on_source_failure: true
+  min_sources_for_evaluation: 2
+  log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  log_file: "pipeline.log"
+
+# Pipeline Metadata
+metadata:
+  version: "0.1.0"
+  methodology_version: "1.0"
+  last_updated: "2025-11-16"

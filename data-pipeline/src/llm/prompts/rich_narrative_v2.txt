@@ -1,0 +1,581 @@
+---
+name: rich_narrative_v3
+version: 3.0.0
+description: Investment memo-style rich narrative with inline citations
+last_updated: 2026-01-09
+---
+
+# Rich Narrative with Citations
+
+Generate a comprehensive, citation-backed evaluation for a charity. This narrative
+elaborates on the baseline evaluation with detailed analysis and source attribution.
+
+## CRITICAL: Immutable Fields
+
+The following fields are INHERITED from the baseline evaluation and MUST NOT be
+regenerated or modified. They will be injected after your generation:
+
+- headline (use exactly as provided)
+- at_a_glance (use exactly as provided)
+- amal_scores (use exactly as provided)
+- zakat_guidance (use exactly as provided)
+
+DO NOT include these fields in your output. Focus only on the enhanced narrative sections.
+
+## Citation Requirements - Wikipedia Style
+
+Use INLINE LINKED TEXT, not trailing citation markers. Wrap the specific claim text
+in a cite tag with the citation ID:
+
+- Format: `<cite id="1">linked claim text</cite>`
+- The linked text should be the SPECIFIC CLAIM being cited (2-8 words typically)
+- Minimum: 10 citations per narrative
+- Target: 15-20 citations
+
+### Correct (Wikipedia-style):
+"Islamic Relief USA has maintained <cite id="1">a four-star rating from Charity Navigator</cite>
+for over <cite id="2">15 consecutive years</cite>, reflecting strong financial health.
+The organization reported <cite id="3">$165 million in revenue in 2023</cite> with
+<cite id="4">83% directed to program expenses</cite>."
+
+### WRONG (academic-style - DO NOT USE):
+"Islamic Relief USA has maintained a four-star rating from Charity Navigator [1]..."
+
+### Deep Linking Requirements
+
+Citation URLs MUST be as specific as possible - link to the exact location where
+the evidence can be found:
+
+GOOD deep links:
+- `https://www.charitynavigator.org/ein/954453134#accountability` (specific section)
+- `https://projects.propublica.org/nonprofits/organizations/954453134` (org page)
+- `https://irusa.org/zakat/#eligibility` (specific page section)
+
+BAD shallow links:
+- `https://www.charitynavigator.org/` (homepage only)
+- `https://irusa.org` (no specific page)
+
+NEVER use these URLs (broken/deprecated):
+- Any guidestar.org URLs (site has been deprecated, URLs don't work)
+- Any candid.org profile URLs (require internal IDs we don't have)
+
+For Candid/GuideStar data (e.g., Gold Seal of Transparency):
+- You can MENTION Candid seals in the narrative text
+- Do NOT wrap Candid mentions in <cite> tags (no working URL available)
+- Example: "The charity holds a Gold Seal of Transparency from Candid" (no citation)
+
+For Charity Navigator data:
+- ALWAYS cite CN ratings with the CN URL: https://www.charitynavigator.org/ein/{EIN}
+- Example: <cite id="X">4-star rating from Charity Navigator</cite>
+
+When constructing source_url in citations:
+1. Use the FULL URL path to the specific page
+2. Add anchor fragments (#section) when citing a specific part of a page
+3. Include query parameters if they help locate the data
+4. For Form 990s, link to the specific tax year filing, not the org overview
+
+### Matching Claims to Deep Links
+
+Choose the most specific source URL for each claim type:
+
+| Claim Type | Best Source URL Pattern |
+|------------|------------------------|
+| Revenue, expenses, assets, financial data | Form 990 PDF or ProPublica filing |
+| CEO/executive compensation | Form 990 PDF (most authoritative) |
+| Ratings, accountability scores | Charity Navigator /ein/... |
+| Transparency, organizational profile | Charity Navigator or Website /about |
+| Program statistics, beneficiaries, outcomes | Annual Report PDF or Website /our-impact |
+| Mission, history, founding year | Website /about or /about-us |
+| Zakat eligibility, zakat policy | Website /zakat |
+| School counts, student numbers, impact metrics | Impact Report PDF or Website /our-impact |
+| Audited financial details | Audited Financials PDF |
+
+### Source Priority (highest to lowest confidence)
+1. **PDFs** (Form 990 PDF, Annual Report PDF, Audited Financials) - most authoritative
+2. **Form 990 filing page** on ProPublica - official IRS data
+3. **Rating agency pages** (Charity Navigator, Candid) - third-party verified
+4. **Specific website pages** (/programs, /our-impact, /about-us) - charity's own claims
+
+NEVER use the homepage (e.g., https://dil.org) for specific claims - always use the
+specific page where that data can be found (e.g., https://dil.org/our-impact for
+"214 schools" claim).
+
+## Output Structure
+
+Generate a JSON object with ONLY these fields:
+
+```json
+{
+  "summary": "500-800 word narrative with <cite id=\"1\">inline linked claims</cite> throughout...",
+
+  "strengths": [
+    {
+      "point": "Brief strength description",
+      "detail": "1-2 sentence elaboration with <cite id=\"1\">specific cited claims</cite>",
+      "citation_ids": ["[1]", "[2]"]
+    }
+  ],
+
+  "strengths_deep_dive": [
+    "Detailed paragraph with <cite id=\"2\">inline citations</cite> on key claims..."
+  ],
+
+  "areas_for_improvement": [
+    {
+      "area": "Area needing improvement",
+      "context": "Why this matters: <cite id=\"3\">specific data point</cite>",
+      "citation_ids": ["[1]", "[2]"]
+    }
+  ],
+
+  "amal_score_rationale": "The score reflects <cite id=\"1\">strong transparency ratings</cite> and <cite id=\"2\">efficient program delivery</cite>.",
+
+  "dimension_explanations": {
+    "credibility": {
+      "explanation": "Donors can trust this charity due to <cite id=\"1\">perfect accountability scores</cite>, <cite id=\"2\">independent audits</cite>, and <cite id=\"3\">outcome tracking via Candid</cite>.",
+      "improvement": "To strengthen credibility further, the charity could <cite id=\"7\">complete BBB Wise Giving Alliance accreditation</cite> and publish board meeting minutes.",
+      "citation_ids": ["[1]", "[2]", "[3]", "[7]"]
+    },
+    "impact": {
+      "explanation": "Operations show <cite id=\"4\">83% program expense ratio</cite> with <cite id=\"5\">low overhead</cite> and direct service delivery.",
+      "improvement": "Impact measurement would benefit from <cite id=\"8\">tracking cost-per-beneficiary</cite> across individual programs and commissioning independent evaluations.",
+      "citation_ids": ["[4]", "[5]", "[8]"]
+    },
+    "alignment": {
+      "explanation": "Strong fit for Muslim donors with <cite id=\"6\">verified zakat eligibility</cite> and high cause urgency.",
+      "improvement": "",
+      "citation_ids": ["[6]"]
+    }
+  },
+
+  "case_against": {
+    "summary": "Limited concerns: <cite id=\"7\">no third-party impact evaluation</cite> yet.",
+    "risk_factors": ["<cite id=\"7\">No RCT-level evidence available</cite>"],
+    "mitigation_notes": "Organization is expanding outcome measurement.",
+    "citation_ids": ["[7]"]
+  },
+
+  "peer_comparison": {
+    "peer_group": "International humanitarian organizations",
+    "differentiator": "Distinguished by <cite id=\"8\">40+ country reach</cite>.",
+    "similar_orgs": ["Organization 1", "Organization 2"],
+    "citation_ids": ["[8]"]
+  },
+
+  "donor_fit_matrix": {
+    "zakat_status": "ZAKAT-ELIGIBLE or SADAQAH-ONLY",
+    "zakat_asnaf_served": ["fuqara (poor)", "masakin (needy)"],
+    "cause_area": "HUMANITARIAN",
+    "geographic_focus": ["Palestine", "Yemen", "Syria"],
+    "giving_style": "Direct service",
+    "evidence_rigor": "Grade C - Some outcome tracking through Candid",
+    "tax_deductible": true,
+    "citation_ids": ["[1]", "[2]"]
+  },
+
+  "ideal_donor_profile": {
+    "best_for_summary": "Best for donors who want to provide emergency humanitarian relief to Muslim communities in crisis zones with zakat-eligible giving.",
+    "donor_motivations": [
+      "Want to fulfill zakat obligations with confidence",
+      "Care deeply about humanitarian crises affecting Muslims globally",
+      "Value established organizations with proven delivery capacity",
+      "Prefer direct aid over advocacy or capacity building"
+    ],
+    "giving_considerations": [
+      "Large-scale operations mean individual gifts join a pooled fund",
+      "Programs operate in regions with political instability and access challenges",
+      "Organization has strong institutional presence but limited RCT-level evidence"
+    ],
+    "not_ideal_for": "Donors seeking hyperlocal US community impact or those who require rigorous academic evidence of effectiveness",
+    "citation_ids": ["[1]", "[6]"]
+  },
+
+  "impact_evidence": {
+    "theory_of_change": "IMPLICIT",
+    "theory_of_change_summary": "How the charity creates impact...",
+    "evidence_grade": "C",
+    "evidence_grade_explanation": "Grade C means some outcome measurement but no rigorous evaluation...",
+    "rct_available": false,
+    "external_evaluations": ["Candid outcomes data"],
+    "outcome_tracking_years": 3,
+    "why_evidence_matters": "Evidence helps ensure donations create real impact...",
+    "citation_ids": ["[3]", "[4]"]
+  },
+
+  "financial_deep_dive": {
+    "annual_revenue": 165000000,
+    "program_expense_ratio": 0.83,
+    "admin_ratio": 0.10,
+    "fundraising_ratio": 0.07,
+    "reserves_months": 3.5,
+    "peer_program_ratio_median": 0.90,
+    "industry_program_ratio": 0.75,
+    "peer_count": 18,
+    "yearly_financials": [
+      {"year": 2023, "revenue": 165000000, "expenses": 155000000, "net_assets": 50000000},
+      {"year": 2022, "revenue": 128000000, "expenses": 130000000, "net_assets": 45000000},
+      {"year": 2021, "revenue": 136000000, "expenses": 125000000, "net_assets": 47000000}
+    ],
+    "revenue_cagr_3yr": 10.0,
+    "cn_financial_score": 99.0,
+    "citation_ids": ["[5]", "[6]"]
+  },
+
+  "long_term_outlook": {
+    "room_for_funding": "HIGH",
+    "room_for_funding_explanation": "Large-scale humanitarian needs exceed current capacity...",
+    "founded_year": 1993,
+    "years_operating": 32,
+    "maturity_stage": "Institution",
+    "revenue_growth_3yr": 10.0,
+    "strategic_priorities": ["Expand emergency response", "Strengthen domestic programs"],
+    "citation_ids": ["[7]"]
+  },
+
+  "organizational_capacity": {
+    "employees_count": 250,
+    "volunteers_count": 5000,
+    "ceo_name": "Anwar Khan",
+    "ceo_compensation": 350000,
+    "ceo_compensation_pct_revenue": 0.21,
+    "board_size": 9,
+    "independent_board_pct": 0.78,
+    "has_conflict_policy": true,
+    "has_financial_audit": true,
+    "geographic_reach": "40+ countries, 8 major program areas",
+    "programs_count": 8,
+    "payroll_to_revenue_pct": 15.0,
+    "staff_per_million_revenue": 1.5,
+    "citation_ids": ["[8]", "[9]"]
+  },
+
+  "similar_organizations": [
+    {"name": "Helping Hand for Relief", "differentiator": "Larger scale"},
+    {"name": "Muslim Aid USA", "differentiator": "Higher program efficiency"},
+    {"name": "ICNA Relief", "differentiator": "More domestic focus"}
+  ],
+
+  "grantmaking_profile": {
+    "is_significant_grantmaker": true,
+    "total_grants": 2500000,
+    "domestic_grants": 1500000,
+    "foreign_grants": 1000000,
+    "grant_count": 45,
+    "top_recipients": ["Partner Org 1 ($500K)", "Partner Org 2 ($300K)"],
+    "regions_served": ["Yemen", "Palestine", "Syria"],
+    "grant_strategy": "Primarily funds local implementing partners in crisis zones",
+    "citation_ids": ["[10]"]
+  },
+
+  "bbb_assessment": {
+    "meets_all_standards": true,
+    "standards_met": 20,
+    "standards_not_met": [],
+    "governance_status": "PASS",
+    "effectiveness_status": "PASS",
+    "finances_status": "PASS",
+    "audit_type": "audited",
+    "summary": "Meets all 20 BBB Wise Giving Alliance Standards for Charity Accountability",
+    "citation_ids": ["[11]"]
+  },
+
+  "data_confidence": {
+    "form_990_tax_year": 2023,
+    "ratings_last_updated": "2024-12",
+    "website_last_crawled": "2025-01",
+    "known_gaps": ["Missing 2024 Form 990", "No third-party impact evaluation"],
+    "total_citations": 15,
+    "unique_sources": 8,
+    "confidence_score": 85
+  },
+
+  "all_citations": [
+    {
+      "id": "[1]",
+      "claim": "four-star rating from Charity Navigator",
+      "source_name": "Charity Navigator - Ratings",
+      "source_url": "https://www.charitynavigator.org/ein/954453134#ratings",
+      "source_type": "rating",
+      "quote": "This charity has earned a 4/4 Star rating",
+      "access_date": "2026-01-09",
+      "confidence": 0.95
+    },
+    {
+      "id": "[2]",
+      "claim": "$165 million in revenue in 2023",
+      "source_name": "Form 990 (2023)",
+      "source_url": "https://projects.propublica.org/nonprofits/organizations/954453134/202312319349300211/full",
+      "source_type": "form990",
+      "quote": "Total Revenue: $165,235,589",
+      "access_date": "2026-01-09",
+      "confidence": 1.0
+    },
+    {
+      "id": "[3]",
+      "claim": "zakat eligibility verified",
+      "source_name": "Islamic Relief USA - Zakat",
+      "source_url": "https://irusa.org/zakat/#eligibility",
+      "source_type": "website",
+      "quote": "100% of Zakat donations used only for Zakat-eligible purposes",
+      "access_date": "2026-01-09",
+      "confidence": 0.9
+    }
+  ],
+
+  "citation_stats": {
+    "total_count": 15,
+    "by_source_type": {"rating": 3, "form990": 4, "news": 2, "website": 6},
+    "high_confidence_count": 12,
+    "unique_sources": 8
+  },
+
+  "confidence": {
+    "score": 85,
+    "level": "HIGH",
+    "data_gaps": ["Missing 2024 financials"],
+    "data_freshness": "Most data from 2023",
+    "sources_used": ["Form 990", "Charity Navigator", "Website"],
+    "notes": "Strong data availability from multiple sources"
+  }
+}
+```
+
+## Writing Guidelines
+
+### Summary Section (500-800 words)
+- Open with organization's core mission and scale
+- Use inline citations: `<cite id="X">specific claim</cite>` for all facts
+- Every number, rating, or factual claim must be wrapped in a cite tag
+- The linked text should be concise (2-8 words) - the specific claim being cited
+
+### Cite Tag Usage Examples
+CORRECT:
+- "The organization has <cite id="1">$165 million in annual revenue</cite>."
+- "They maintain <cite id="2">a perfect 100 accountability score</cite>."
+- "Programs reach <cite id="3">over 40 countries</cite> worldwide."
+
+WRONG (don't cite entire sentences):
+- "<cite id="1">The organization has $165 million in annual revenue and serves millions.</cite>"
+
+### Strengths (minimum 3)
+- Each strength needs citation support with cite tags
+- Be specific, not generic ("Strong 4-star rating" not just "Well-rated")
+- Include quantitative evidence where available
+
+### Dimension Explanations
+- Three narrative dimensions: credibility, impact, alignment
+- **impact** (scored, /50): How efficiently and effectively the charity delivers programs.
+  Use the component scores (Cost Per Beneficiary, Directness, Financial Health, etc.)
+  and their improvement suggestions to ground your explanation.
+- **alignment** (scored, /50): How well the charity fits Muslim donor priorities.
+  Use component scores (Muslim Donor Fit, Cause Urgency, Underserved Space, etc.).
+- **credibility** (narrative-only, not scored): Why donors can trust this charity.
+  Draw from Data Confidence signals (verification tier, transparency, data quality),
+  governance data, and external evaluations. Not a scored dimension.
+- Explain WHY the baseline scores were assigned
+- Wrap specific evidence in cite tags
+- Don't recalculate or change scores - explain them
+- Each dimension needs explanation + inline citations
+- **improvement**: For each dimension, include a constructive 1-2 sentence
+  suggestion for what the charity can do to improve that dimension.
+  Use cite tags to reference specific data points. Leave empty string "" if
+  the dimension is already near-perfect (score >= 90% of max).
+  Use the component-level improvement suggestions provided in Score Details.
+
+### Case Against (Constructive Limitations)
+- Focus ONLY on verifiable concerns from authoritative data:
+  - Financial efficiency (if program expense ratio < 70%)
+  - Transparency gaps (missing audits, limited reporting)
+  - Scale limitations (geographic reach, capacity constraints)
+  - Data gaps (missing outcomes, limited evidence base)
+- DO NOT cite news articles, Wikipedia controversies, or political allegations
+- Many Muslim charities face politically-motivated attacks from hostile sources
+  - These are NOT valid concerns for donor guidance
+- If no verifiable concerns exist, the case_against can be minimal
+- Include mitigation where charity is addressing concerns
+
+### Citation Quality
+- ONLY cite authoritative, verifiable sources:
+  - form990: IRS Form 990 data (ProPublica)
+  - rating: Charity Navigator, BBB, Candid, GiveWell
+  - evaluation: GiveWell, academic studies, third-party evaluations
+  - website: Charity's own website and annual reports
+- DO NOT cite:
+  - News articles (too often biased against Muslim charities)
+  - Wikipedia (editable, often contains hostile content)
+  - Advocacy/watchdog sites (often politically motivated)
+
+### CRITICAL: Claim-Quote Accuracy
+
+Every citation must have a CLAIM that is DIRECTLY SUPPORTED by the QUOTE:
+
+**Rule 1: No Subjective Qualifiers**
+- DO NOT add adjectives like "rigorous", "exceptional", "perfect" unless they appear in the source
+- BAD: claim="rigorous monitoring system" when quote="We track net usage"
+- GOOD: claim="monitoring system that tracks net usage" matches quote="We track net usage"
+
+**Rule 2: No Fabricated Sub-Scores**
+- ONLY cite scores that appear in the provided data
+- If you only have `overall_score: 94`, do NOT claim "100/100 Impact score" or any beacon sub-score
+- BAD: "perfect 100/100 Impact & Measurement score" when data only has overall_score=94
+- GOOD: "overall score of 94/100 from Charity Navigator"
+
+**Rule 3: Quote Must Support Claim**
+- The quote field must contain text that DIRECTLY supports the claim
+- If you cannot find a quote that supports the claim, DO NOT make that claim
+- BAD: claim="100% of donations go to programs" with quote="We are committed to efficiency"
+- GOOD: claim="100% of donations go to programs" with quote="100% of public donations buy nets"
+
+**Rule 4: Use Exact Numbers from Data**
+- For scores, ratios, and metrics, use the EXACT values from the provided data
+- DO NOT round, estimate, or "improve" numbers
+- If overall_score=94.0, say "94/100", not "perfect score" or "nearly 100"
+
+**Rule 5: Low/Zero/Missing Program Expense Ratio - Never Hallucinate**
+- If program_expense_ratio is null, missing, 0%, or very low (<10%), this indicates INCOMPLETE DATA
+- DO NOT invent or hallucinate any percentage (like 85%, 90%, etc.)
+- DO NOT describe this as "efficient operations" or "lean" when you have no data
+- DO NOT claim ANY specific program expense percentage when the data is null
+- Instead, note that "expense breakdown data is unavailable" or "financial breakdown is incomplete"
+- The effectiveness_score will be LOW (5 or less) in these cases - your narrative must be consistent
+- BAD: "spending 85% of its budget on programs" when program_expense_ratio is null
+- BAD: "dedicates 90% to program expenses" when program_expense_ratio is null
+- GOOD: "Financial data for expense breakdown is limited" when program ratio is null
+
+**Rule 6: Zakat Eligibility Must Match Source Data**
+- Only claim a charity is "zakat-eligible" if `charity_claims_zakat: true` in the baseline
+- If wallet_tag is "SADAQAH-ELIGIBLE", do NOT describe programs as "zakat-eligible"
+- Do NOT include "Zakat-compliant" in donor motivations unless source data confirms it
+
+## Investment Memo Sections (NEW in V3)
+
+These sections help sophisticated donors make informed giving decisions.
+
+### Using New Data Sources
+
+The Investment Memo Data now includes additional sources. Use them as follows:
+
+**BBB Wise Giving Alliance Standards** (if available):
+- Include in `organizational_capacity` section: standards met, audit status, governance policies
+- If charity fails standards, include in `case_against` with specific failed standards
+- Use BBB Review URL in citations when referencing BBB data
+- "Meets all 20 BBB standards" is a strong trust signal worth highlighting in strengths
+
+**Grantmaking Activity** (if charity makes grants):
+- If `is_grantmaker` is true, include grant activity in the summary narrative
+- For charities where >30% of expenses go to grants, this is a key differentiator
+- List top grant recipients in `similar_organizations` context when relevant
+- Foreign grants indicate international reach
+
+**Charity Navigator Ratings** (if available):
+- Use CN beacon scores (Impact, Accountability, Culture, Leadership) in dimension explanations
+- Include `overall_score` and `financial_score` in `financial_deep_dive`
+- `fundraising_efficiency` (<$0.25 per $1 raised is excellent) belongs in effectiveness discussion
+- `working_capital_ratio` (months of expenses in reserves) belongs in long_term_outlook
+- CN CEO compensation can be used in organizational_capacity
+
+**CRITICAL: CN Score Distinction**
+- `overall_score` = the aggregate CN rating (average of all beacons) - use this when citing "CN rating"
+- `cn_financial_score` = just the Accountability & Finance beacon score - NOT the overall rating
+- NEVER cite `cn_financial_score` as the "overall" or "total" CN rating
+- If `overall_score` is null/missing, do NOT claim the charity has a CN rating
+
+**Candid Outcome Metrics** (if available):
+- `metrics_count` and `max_years_tracked` indicate evidence quality
+- Include in `impact_evidence.outcome_tracking_years`
+- `evaluation_documents` count goes in `external_evaluations`
+- Charting Impact data shows strategic clarity - mention if present
+
+**Revenue Breakdown** (if available):
+- Include in financial_deep_dive narrative
+- Diversified revenue (not 100% donations) indicates sustainability
+- Program service revenue indicates earned income capability
+
+**Beneficiary Data** (if available):
+- Include beneficiaries_served in summary and impact_evidence
+- Cost metrics (e.g., "$3.50 per meal") go in effectiveness discussion
+
+### Donor Fit Matrix
+- Help donors quickly assess if this charity matches their priorities
+- Use the provided wallet_tag for zakat_status
+- List actual geographic coverage from website data
+- Explain evidence_rigor based on the evidence grade
+
+### Ideal Donor Profile (CRITICAL - NEW)
+
+This is the MOST IMPORTANT section for differentiation. Generate a DONOR-CENTRIC
+"best for" profile. This is NOT about what the charity does - it's about what
+KIND of donor would be most aligned with this charity.
+
+**Key principle**: Describe the DONOR, not the charity.
+
+Consider:
+- **Donor motivations**: Why would someone CHOOSE this charity over alternatives?
+- **Giving style**: Long-term commitment vs one-time? Monthly vs annual?
+- **Risk tolerance**: Does this charity suit cautious donors or those comfortable with uncertainty?
+- **Values alignment**: Evidence-focused? Faith-driven? Community-oriented?
+- **Not ideal for**: Be HONEST about who might prefer different options
+
+**GOOD best_for_summary examples** (describes DONOR):
+- "Best for donors who prioritize rigorous evidence of impact and want to save the most lives per dollar"
+- "Best for donors who value Islamic institutional development and want to invest in long-term community infrastructure"
+- "Best for donors who care about Palestinian humanitarian needs and want zakat-eligible direct aid"
+- "Best for donors who want to fulfill zakat through established, large-scale humanitarian operations"
+
+**BAD best_for_summary examples** (describes CHARITY - DO NOT USE):
+- "Best for international humanitarian relief" ❌ (describes work, not donor)
+- "Best for education in South Asia" ❌ (describes programs, not donor persona)
+- "Best for poverty alleviation" ❌ (describes cause, not donor profile)
+
+**donor_motivations** should answer: "I want to donate here because I..."
+**giving_considerations** should be honest about: scale, evidence gaps, access challenges, etc.
+**not_ideal_for** should be constructive: "Donors seeking X may prefer alternatives"
+
+### Impact Evidence
+- Explain what the evidence grade means in plain language
+- theory_of_change: PUBLISHED (has explicit TOC), DOCUMENTED (implied in materials), IMPLICIT (unclear)
+- If no RCTs exist, say so honestly
+- Include educational note about why evidence matters
+
+### Financial Deep-Dive
+- Use actual Form 990 data for yearly_financials
+- Compare program_expense_ratio to peer_program_ratio_median
+- Calculate revenue_cagr_3yr from the 3-year trend
+- Show how this charity compares to peers, not just industry standards
+
+### Long-Term Outlook
+- room_for_funding: HIGH (can absorb more), MEDIUM (some capacity), LOW (near capacity), UNKNOWN
+- maturity_stage: Startup (<5 yrs), Growth (5-15 yrs), Established (15-30 yrs), Institution (30+ yrs)
+- Include strategic priorities if available from website
+
+### Organizational Capacity
+- Use Form 990 data for employees, compensation
+- Calculate ceo_compensation_pct_revenue = (ceo_compensation / total_revenue) * 100
+- Use Candid data for board size and governance policies
+
+### Similar Organizations
+- Use the provided similar_orgs from Investment Memo Data
+- Each similar org should have a clear differentiator
+
+### Data Confidence
+- Be honest about data gaps
+- confidence_score: 90+ (excellent), 70-89 (good), 50-69 (moderate), <50 (limited)
+
+## Consistency Rules
+
+- DO NOT contradict baseline scores or facts
+- DO NOT recalculate AMAL scores
+- If agent discoveries reveal conflicting information, present as nuance, not contradiction
+- Reference baseline wallet tag correctly (ZAKAT-ELIGIBLE or SADAQAH-ELIGIBLE)
+
+## Data Provided
+
+{charity_data}
+
+## Available Citation Sources
+
+{citation_sources}
+
+## Baseline Context
+
+{baseline_context}

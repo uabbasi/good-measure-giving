@@ -1,0 +1,428 @@
+# Cost-Effectiveness Benchmarks by Cause Area
+# Based on GiveWell, J-PAL, CharityWatch, and sector standards
+#
+# Version: 1.0.0
+# Last Updated: 2026-01-04
+#
+# Usage:
+#   - Compare charity cost-per-beneficiary to cause-area benchmarks
+#   - Grade evidence quality using the rubric
+#   - Identify third-party verification sources
+
+benchmarks:
+  HUMANITARIAN:
+    name: "Humanitarian Aid & Disaster Relief"
+    description: "Emergency relief, food distribution, refugee assistance"
+    metrics:
+      cost_per_beneficiary:
+        good: [10, 25]         # $10-25 per person reached
+        average: [25, 50]      # $25-50 per person
+        poor: [50, null]       # >$50 per person
+        unit: "USD per beneficiary"
+        source: "CRS, USAID, WFP benchmarks"
+      cost_per_life_saved:
+        good: [3000, 3500]     # GiveWell top charity range
+        average: [3500, 5000]
+        poor: [5000, null]
+        unit: "USD per life saved"
+        source: "GiveWell 2024 analysis"
+      cost_per_meal:
+        good: [0.10, 0.25]
+        average: [0.25, 0.50]
+        poor: [0.50, null]
+        unit: "USD per meal"
+        source: "WFP, Feeding America benchmarks"
+
+  MEDICAL_HEALTH:
+    name: "Global Health & Medical"
+    description: "Healthcare delivery, disease prevention, medical interventions"
+    metrics:
+      cost_per_daly:
+        good: [50, 100]        # WHO-CHOICE highly cost-effective threshold
+        average: [100, 300]
+        poor: [300, null]
+        unit: "USD per DALY averted"
+        source: "WHO-CHOICE thresholds, GiveWell"
+      cost_per_treatment:
+        good: [1, 10]          # Deworming, vitamin A, vaccines
+        average: [10, 50]
+        poor: [50, null]
+        unit: "USD per treatment"
+        source: "J-PAL health interventions"
+      cost_per_surgery:
+        good: [50, 150]        # Mercy Ships, ReSurge
+        average: [150, 300]
+        poor: [300, null]
+        unit: "USD per corrective surgery"
+        source: "Mercy Ships, ReSurge benchmarks"
+
+  EDUCATION_K12:
+    name: "K-12 Education"
+    description: "Primary and secondary education, school programs"
+    metrics:
+      cost_per_student_year:
+        good: [50, 150]
+        average: [150, 300]
+        poor: [300, null]
+        unit: "USD per student year"
+        source: "J-PAL education research"
+      cost_per_learning_gain:
+        good: [5, 15]          # Per 0.1 SD learning gain
+        average: [15, 30]
+        poor: [30, null]
+        unit: "USD per 0.1 SD learning gain"
+        source: "Teaching at the Right Level evaluations"
+
+  EDUCATION_HIGHER:
+    name: "Higher Education & Scholarships"
+    description: "University scholarships, vocational training"
+    metrics:
+      cost_per_scholarship:
+        good: [500, 2000]
+        average: [2000, 5000]
+        poor: [5000, null]
+        unit: "USD per scholarship year"
+        source: "Sector averages"
+
+  BASIC_NEEDS:
+    name: "Basic Needs (Food, Water, Shelter)"
+    description: "Food security, water access, housing assistance"
+    metrics:
+      cost_per_water_access:
+        good: [15, 30]
+        average: [30, 50]
+        poor: [50, null]
+        unit: "USD per person-year water access"
+        source: "charity: water, Water.org"
+      cost_per_housing_unit:
+        good: [1000, 5000]
+        average: [5000, 15000]
+        poor: [15000, null]
+        unit: "USD per housing unit"
+        source: "Habitat for Humanity, sector averages"
+
+  CIVIL_RIGHTS_LEGAL:
+    name: "Civil Rights & Legal Aid"
+    description: "Legal representation, advocacy, civil liberties"
+    metrics:
+      cost_per_case:
+        good: [500, 2000]
+        average: [2000, 5000]
+        poor: [5000, null]
+        unit: "USD per legal case"
+        source: "Legal aid organization averages"
+    notes: "Cost-effectiveness harder to measure; focus on case outcomes"
+
+  ISLAMIC_EDUCATION:
+    name: "Islamic Education & Dawah"
+    description: "Quran schools, Islamic studies, religious education"
+    metrics:
+      cost_per_student_year:
+        good: [100, 300]
+        average: [300, 600]
+        poor: [600, null]
+        unit: "USD per student year"
+        source: "Sector estimates"
+    notes: "Spiritual outcomes not easily quantified"
+
+  ORPHAN_SUPPORT:
+    name: "Orphan Sponsorship & Support"
+    description: "Orphan care, education, family support"
+    metrics:
+      cost_per_child_year:
+        good: [300, 800]
+        average: [800, 1500]
+        poor: [1500, null]
+        unit: "USD per child per year"
+        source: "Sector averages"
+
+  ECONOMIC_DEVELOPMENT:
+    name: "Economic Development & Microfinance"
+    description: "Microloans, job training, income generation"
+    metrics:
+      cost_per_job_created:
+        good: [500, 2000]
+        average: [2000, 5000]
+        poor: [5000, null]
+        unit: "USD per job created"
+        source: "J-PAL economic interventions"
+      cost_per_loan:
+        good: [10, 50]         # Admin cost per loan
+        average: [50, 100]
+        poor: [100, null]
+        unit: "USD admin cost per loan"
+        source: "Microfinance industry standards"
+
+# Evidence Quality Grading Rubric
+# Based on GiveWell evidence hierarchy and academic research standards
+evidence_grade_rubric:
+  A:
+    name: "Gold Standard"
+    description: "Highest quality causal evidence"
+    criteria:
+      - "Randomized controlled trial (RCT) with adequate sample size"
+      - "Systematic review or meta-analysis of RCTs"
+      - "Published in peer-reviewed journal or replicated findings"
+    score_modifier: 2  # +2 to delivery_evidence score
+    examples:
+      - "J-PAL evaluated intervention"
+      - "GiveWell top charity"
+      - "3ie-reviewed impact evaluation"
+
+  B:
+    name: "Strong Quasi-Experimental"
+    description: "Credible causal inference with comparison groups"
+    criteria:
+      - "Difference-in-differences design"
+      - "Regression discontinuity"
+      - "Matched comparison groups with statistical controls"
+      - "Natural experiment with clear identification"
+    score_modifier: 1
+    examples:
+      - "Academic research partnership with published findings"
+      - "Government program evaluation"
+
+  C:
+    name: "Observational with Controls"
+    description: "Correlation evidence with methodological rigor"
+    criteria:
+      - "Longitudinal cohort study with baseline"
+      - "Case-control study with statistical controls"
+      - "Propensity score matching"
+      - "Well-designed survey with representative sampling"
+    score_modifier: 0  # Baseline
+    examples:
+      - "University research partnership"
+      - "External evaluator report with methodology"
+
+  D:
+    name: "Basic Before/After"
+    description: "Pre-post comparison without control group"
+    criteria:
+      - "Pre-post measurement only"
+      - "No control or comparison group"
+      - "Single time series analysis"
+      - "Trends analysis without counterfactual"
+    score_modifier: -1
+    examples:
+      - "Internal M&E with pre-post data"
+      - "Annual report with year-over-year comparisons"
+
+  E:
+    name: "Self-Reported Outcomes"
+    description: "Beneficiary data without methodology documentation"
+    criteria:
+      - "Beneficiary counts without sampling methodology"
+      - "Internal monitoring data only"
+      - "No external validation"
+      - "Output metrics presented as outcomes"
+    score_modifier: -2
+    examples:
+      - "We served 100,000 people (no methodology stated)"
+      - "Beneficiary satisfaction surveys (internal)"
+
+  F:
+    name: "Anecdotal Only"
+    description: "No systematic data collection"
+    criteria:
+      - "Testimonials and stories only"
+      - "No quantitative tracking"
+      - "Generic impact claims without specifics"
+      - "Marketing language without data support"
+    score_modifier: -3
+    examples:
+      - "Success stories on website"
+      - "Lives changed (no numbers)"
+
+# Third-Party Verification Sources
+# Ordered by credibility tier
+verification_sources:
+  tier_1_gold:
+    description: "Highest credibility - independent rigorous evaluation"
+    sources:
+      - name: "J-PAL"
+        full_name: "Abdul Latif Jameel Poverty Action Lab"
+        url: "https://www.povertyactionlab.org/"
+      - name: "GiveWell"
+        full_name: "GiveWell"
+        url: "https://www.givewell.org/"
+      - name: "IDinsight"
+        full_name: "IDinsight"
+        url: "https://www.idinsight.org/"
+      - name: "IPA"
+        full_name: "Innovations for Poverty Action"
+        url: "https://www.poverty-action.org/"
+      - name: "3ie"
+        full_name: "International Initiative for Impact Evaluation"
+        url: "https://www.3ieimpact.org/"
+    boost: 1  # +1 to delivery_evidence if verified by tier 1
+
+  tier_2_strong:
+    description: "Strong credibility - external professional evaluation"
+    sources:
+      - name: "External program audit"
+        description: "Independent program evaluation (not just financial)"
+      - name: "Academic research partnership"
+        description: "University-led research with published findings"
+      - name: "Government evaluation"
+        description: "Federal/state program assessment"
+      - name: "Major foundation due diligence"
+        description: "Ford, Gates, Hewlett, Open Philanthropy"
+    boost: 0.5
+
+  tier_3_moderate:
+    description: "Moderate credibility - accreditation or press"
+    sources:
+      - name: "Charity Navigator site visit"
+        description: "In-person verification by CN"
+      - name: "BBB Wise Giving Alliance"
+        description: "Meets BBB 20 standards"
+      - name: "Media investigation"
+        description: "Credible outlet investigative piece"
+      - name: "Industry accreditation"
+        description: "Sector-specific certification"
+    boost: 0
+
+# GiveWell Reference Data
+# Top charities with cost-effectiveness estimates (2024 data)
+# Source: https://www.givewell.org/charities/top-charities
+givewell_top_charities:
+  - name: "Against Malaria Foundation"
+    ein: "20-4654230"
+    cause_area: "MEDICAL_HEALTH"
+    intervention: "Insecticide-treated nets"
+    cost_per_net: 6
+    cost_per_life_saved: [3000, 8000]  # Range from GiveWell CEA
+    cash_multiplier: 23  # 23x as cost-effective as cash transfers
+    countries: ["DRC", "Ghana", "Guinea", "Malawi", "Nigeria", "Togo", "Uganda"]
+    staff_size: 13
+    evidence_rating: "A"  # Our grade (Exceptionally strong RCT evidence)
+    is_benchmark: true
+
+  - name: "GiveDirectly"
+    ein: "27-1661997"
+    cause_area: "BASIC_NEEDS"
+    intervention: "Unconditional cash transfers"
+    cost_per_transfer: 0.90  # $0.90 reaches recipient per $1 donated
+    cost_per_life_saved: null  # Not life-saving intervention
+    cash_multiplier: 1  # This IS the benchmark
+    evidence_rating: "A"
+    is_benchmark: true
+    notes: "GiveWell uses this as the baseline for cost-effectiveness comparison"
+
+  - name: "Helen Keller International"
+    ein: "45-4652026"
+    cause_area: "MEDICAL_HEALTH"
+    intervention: "Vitamin A supplementation"
+    cost_per_child_year: 2
+    cost_per_life_saved: [3000, 5000]
+    cash_multiplier: 18
+    evidence_rating: "A"
+    is_benchmark: true
+
+  - name: "Malaria Consortium"
+    ein: "13-3507288"
+    cause_area: "MEDICAL_HEALTH"
+    intervention: "Seasonal malaria chemoprevention"
+    cost_per_child_protected: 7
+    cost_per_life_saved: [3500, 5000]
+    cash_multiplier: 20
+    evidence_rating: "A"
+    is_benchmark: false
+
+  - name: "New Incentives"
+    ein: "45-4981287"
+    cause_area: "MEDICAL_HEALTH"
+    intervention: "Vaccination incentives (Nigeria)"
+    cost_per_infant_vaccinated: 146
+    cost_per_life_saved: [4000, 5500]
+    cash_multiplier: 15
+    evidence_rating: "A"
+    is_benchmark: false
+
+# Benchmark Cohort Analysis
+# Maps GiveWell benchmarks to comparable Muslim charities for analysis
+benchmark_cohorts:
+  health_medical:
+    benchmark_charity:
+      name: "Against Malaria Foundation"
+      ein: "20-4654230"
+      cost_per_life_saved: 5500  # Midpoint of range
+      evidence_grade: "A"
+    comparable_muslim_charities:
+      - ein: "16-1717058"
+        name: "Syrian American Medical Society (SAMS)"
+        notes: "Medical care in conflict zones"
+      - ein: "95-4453134"
+        name: "Islamic Relief USA"
+        notes: "Health programs in Africa/Middle East"
+      - ein: "31-1628040"
+        name: "Helping Hand for Relief and Development"
+        notes: "Health clinics in Pakistan, Bangladesh"
+    comparison_metrics:
+      - "cost_per_beneficiary"
+      - "cost_per_treatment"
+      - "evidence_grade"
+
+  cash_zakat:
+    benchmark_charity:
+      name: "GiveDirectly"
+      ein: "27-1661997"
+      transfer_efficiency: 0.90  # 90% reaches beneficiaries
+      evidence_grade: "A"
+    comparable_muslim_charities:
+      - ein: "36-4476244"
+        name: "Zakat Foundation of America"
+        notes: "Zakat distribution, cash assistance"
+      - ein: "47-5165837"
+        name: "Penny Appeal USA"
+        notes: "Cash aid, emergency relief"
+      - ein: "04-3810161"
+        name: "ICNA Relief"
+        notes: "Domestic zakat distribution"
+    comparison_metrics:
+      - "program_expense_ratio"
+      - "cost_per_beneficiary"
+      - "transfer_efficiency"
+
+  nutrition_food:
+    benchmark_charity:
+      name: "Helen Keller International"
+      ein: "45-4652026"
+      cost_per_child_year: 2
+      evidence_grade: "A"
+    comparable_muslim_charities:
+      - ein: "20-0942434"
+        name: "Baitulmaal"
+        notes: "Food distribution, nutrition programs"
+      - ein: "52-0882226"
+        name: "Anera"
+        notes: "Food security in Palestine, Lebanon"
+      - ein: "46-2504422"
+        name: "Muslim Aid USA"
+        notes: "Food aid in humanitarian crises"
+    comparison_metrics:
+      - "cost_per_meal"
+      - "cost_per_beneficiary"
+      - "evidence_grade"
+
+  humanitarian:
+    benchmark_charity:
+      name: "Against Malaria Foundation"  # Proxy - no perfect match
+      ein: "20-4654230"
+      cost_per_life_saved: 5500
+      evidence_grade: "A"
+    comparable_muslim_charities:
+      - ein: "95-4453134"
+        name: "Islamic Relief USA"
+        notes: "Multi-sector humanitarian"
+      - ein: "31-1628040"
+        name: "Helping Hand for Relief and Development"
+        notes: "Disaster relief, development"
+      - ein: "13-3433452"
+        name: "Doctors Without Borders"
+        notes: "Emergency medical (non-Muslim, reference)"
+    comparison_metrics:
+      - "cost_per_beneficiary"
+      - "program_expense_ratio"
+      - "evidence_grade"

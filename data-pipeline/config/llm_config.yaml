@@ -1,0 +1,113 @@
+# LLM Client Configuration (Using LiteLLM)
+# Defines model tiers and use-case specific model selection
+#
+# Now powered by LiteLLM for automatic:
+# - Retry logic with exponential backoff
+# - Parameter handling (max_tokens vs max_completion_tokens)
+# - Cost tracking
+# - Rate limiting
+# - Provider quirks (safety filters, temperature restrictions, etc.)
+
+# Model tiers: best (highest quality), backup (mid-tier), cheapest (lowest cost)
+# Priority order within each tier determines fallback sequence
+
+tiers:
+  best:
+    - gpt-4o-mini                   # Default - best available without thinking mode issues
+    - claude-sonnet-4-5             # Backup (requires credits)
+    - gpt-5-nano-2025-08-07         # Has thinking mode (reasoning only, no text)
+    - gemini-3-pro-preview          # Has thinking mode (reasoning only, no text)
+
+  backup:
+    - gemini-2.5-pro                # Mid Gemini
+    - claude-3-5-haiku-20241022     # Mid Claude
+    - gpt-4o-mini                    # Mid OpenAI
+
+  cheapest:
+    - gemini-2.0-flash-exp          # Default - free and no thinking mode issues
+    - gpt-3.5-turbo                 # Backup - cheap and reliable ($0.50/M input)
+    - gemini-2.5-flash              # Has thinking mode (reasoning only, no text)
+    - claude-3-5-haiku-20241022     # Fallback
+
+# Use-case specific model assignments (Task-Based Selection)
+# Now using LLMTask enum in llm_client.py for programmatic access
+# This config provides documentation and override capability
+
+use_cases:
+  # Website extraction - use cheapest for speed/cost
+  website_extraction:
+    tier: cheapest
+    model: gemini-2.5-flash-lite  # Primary: $0.10/M input
+    fallbacks: [claude-haiku-4-5, gpt-4o-mini]
+
+  # Charity Navigator financial extraction - use cheapest
+  cn_financial_extraction:
+    tier: cheapest
+    model: gemini-2.5-flash-lite  # Same as website extraction
+
+  # Narrative generation - USE GEMINI 3.0 FLASH (BEST VALUE)
+  narrative_generation:
+    tier: best
+    model: gemini-3-flash-preview  # Primary: Best scorer quality at lowest cost
+    fallbacks: [gemini-2.5-flash, claude-sonnet-4-5]
+    notes: |
+      Gemini 3.0 Flash provides best value based on LLM-as-Judge evaluation:
+      - Highest scorer quality (0.87 avg) at 15x lower cost than Opus
+      - Strong rationale generation for all dimensions
+      - Reliable JSON output with minimal fabrication
+
+  # PDF extraction - medium quality for financial documents
+  pdf_extraction:
+    tier: backup
+    model: gemini-2.5-flash  # Primary: $0.30/M input
+    fallbacks: [claude-sonnet-4-5, gemini-2.5-pro]
+
+  # Zakat assessment - use best for accuracy
+  zakat_assessment:
+    tier: best
+    model: claude-sonnet-4-5  # Need high accuracy for religious rulings
+
+  # Impact evaluation - use best for complex analysis
+  impact_evaluation:
+    tier: best
+    model: gemini-3-flash-preview  # Primary: Best quality/cost ratio per LLM-as-Judge
+
+  # Premium tier for top charities (Top 5-10)
+  premium_narrative:
+    tier: best
+    model: claude-sonnet-4-5  # Primary: $3.00/M input, $15.00/M output
+    fallbacks: [gemini-3-pro-preview]
+    notes: |
+      Reserved for detailed analysis of top-ranked charities.
+      Higher cost justified by public-facing visibility.
+
+  # Simple classification tasks - use cheapest
+  classification:
+    tier: cheapest
+    model: gemini-2.5-flash-lite
+
+# Global settings
+settings:
+  # Enable automatic fallback to next tier on errors
+  auto_fallback: true
+
+  # Maximum retries per model before falling back
+  max_retries_per_model: 2
+
+  # Default temperature for different task types
+  default_temperatures:
+    extraction: 0.3      # Low temperature for factual extraction
+    classification: 0.3  # Low temperature for consistent classification
+    generation: 0.7      # Higher temperature for creative text
+    analysis: 0.5        # Medium temperature for analytical tasks
+
+  # Rate limiting (requests per minute)
+  rate_limits:
+    gemini: 60
+    openai: 500
+    anthropic: 50
+
+  # Cost tracking
+  track_costs: true
+  warn_on_high_cost: true
+  high_cost_threshold_usd: 0.10  # Warn if single call > $0.10

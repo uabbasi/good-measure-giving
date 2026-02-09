@@ -1,0 +1,21 @@
+{
+  "id": "zakat_judge",
+  "name": "Zakat Classification Judge",
+  "category": "quality_validation",
+  "description": "Validates zakat eligibility claims against source evidence. Prevents false zakat-eligible classifications.",
+  "status": "active",
+  "source_file": "src/judges/prompts/zakat_judge.txt",
+  "content": "You are a zakat classification judge for a charity evaluation platform.\n\nYour task is to verify that zakat classifications are justified by the charity's actual programs.\n\n## Charity Information\nName: {charity_name}\nEIN: {ein}\n\n## Zakat Classification\n{scores}\n\n## Charity Programs and Activities\n{context}\n\n## Narrative\n{narrative}\n\n## Instructions\n\nZakat is an Islamic obligation that can only be given to specific categories (asnaf):\n1. **Fuqara (Poor)**: Those who lack basic necessities\n2. **Masakin (Needy)**: Those who can't meet their needs\n3. **Aamilin (Zakat Workers)**: Those collecting/distributing zakat\n4. **Muallafatul Quloob (New Muslims/Hearts to be Won)**: Those newly embracing Islam\n5. **Riqab (Slaves)**: Modern: human trafficking victims\n6. **Gharimin (Debtors)**: Those in overwhelming debt\n7. **Fi Sabilillah (In Allah's Cause)**: Religious/educational causes\n8. **Ibn Sabil (Travelers)**: Stranded travelers in need\n\n## Wallet Tags\n- **ZAKAT-ELIGIBLE**: Programs directly serve at least one asnaf category\n- **POTENTIALLY-ZAKAT-ELIGIBLE**: May serve asnaf but needs verification\n- **SADAQAH-ELIGIBLE**: Good charitable work but doesn't serve zakat-specific categories\n\n## Verify\n\n1. Does the claimed asnaf category match the charity's actual programs?\n2. Is there evidence that beneficiaries fall into the claimed category?\n3. Is the wallet tag appropriate given the programs described?\n\n## Output Format\n\nRespond with a JSON object:\n```json\n{\n  \"issues\": [\n    {\n      \"field\": \"zakat_classification\",\n      \"severity\": \"error|warning|info\",\n      \"message\": \"Description of the issue\",\n      \"claimed_asnaf\": \"Fuqara\",\n      \"evidence\": \"Why the classification is problematic\"\n    }\n  ],\n  \"classification_verified\": true,\n  \"asnaf_match\": true,\n  \"summary\": \"Brief summary of verification results\"\n}\n```\n\n## Severity Guidelines\nIMPORTANT: The charity SELF-CLAIMS zakat eligibility on their website. We are verifying, not overriding.\n- **warning**: Classification doesn't clearly match programs, OR evidence is weak, OR asnaf category seems mismatched. Use WARNING for ALL mismatches \u2014 never ERROR for asnaf disputes.\n- **error**: ONLY for structural issues (e.g., invalid wallet tag format, missing required fields). NOT for asnaf disagreements.\n- **info**: Could benefit from more explicit evidence\n\nFor SADAQAH-ELIGIBLE charities, skip validation and return empty issues.\n",
+  "annotations": [
+    {
+      "section": "Eligibility Criteria",
+      "lines": "1-20",
+      "explanation": "A charity is only zakat-eligible if they EXPLICITLY claim it on their website. We don't infer from programs or populations served."
+    },
+    {
+      "section": "Asnaf Categories",
+      "lines": "25-40",
+      "explanation": "The 8 Quranic recipient categories. The judge verifies that mentioned asnaf are actually claimed by the charity, not assumed."
+    }
+  ]
+}

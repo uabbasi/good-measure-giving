@@ -1,0 +1,16 @@
+{
+  "id": "donate_prompt",
+  "name": "Donation Page Extraction",
+  "category": "data_extraction",
+  "description": "Extracts tax-deductibility status and payment methods from donation pages.",
+  "status": "active",
+  "source_file": "config/page_prompts.yaml",
+  "content": "Extract the following information from this charity's donation page. Return ONLY valid JSON matching the exact schema below.\n\nRequired fields:\n- tax_deductible: Boolean - Whether donations are tax-deductible\n\nOptional fields:\n- donation_methods: Array of strings (0-10 items) - Accepted methods from: credit_card, debit_card, paypal, bank_transfer, check, wire_transfer, cryptocurrency, stock_donation, donor_advised_fund, other\n- donate_url: String or null (valid URI) - Primary donation URL\n\nReturn JSON only. Do not include explanations or markdown formatting.\n",
+  "annotations": [
+    {
+      "section": "Payment Methods",
+      "lines": "90-91",
+      "explanation": "Structured list of accepted methods: credit card, PayPal, crypto, DAF, etc. Helps donors know how they can give."
+    }
+  ]
+}

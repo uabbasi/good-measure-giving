@@ -1,0 +1,112 @@
+[project]
+name = "zakaat"
+version = "1.0.0"
+description = "Zakaat charity data collection, evaluation pipeline, and backend API"
+requires-python = ">=3.11"
+dependencies = [
+    # Core web scraping (data-pipeline)
+    "requests>=2.32.0",
+    "beautifulsoup4>=4.14.0",
+    "lxml>=6.0.0",
+    "curl-cffi>=0.13.0", # Cloudflare bypass
+    "brotli>=1.2.0", # GuideStar decompression (security: CVE decompression DoS)
+    # Data processing & validation (data-pipeline)
+    "pandas>=2.1.0",
+    "pydantic>=2.0.0",
+    "pyyaml>=6.0.0",
+    # LLM providers (data-pipeline)
+    "anthropic>=0.18.0", # Claude (GuideStar parsing, website extraction)
+    "google-generativeai>=0.8.5", # Gemini (website extraction - cheapest)
+    "google-genai>=1.0.0", # Gemini Search Grounding (agentic pipeline)
+    "openai>=1.0.0", # Optional: OpenAI (website extraction)
+    # Smart crawler (data-pipeline) - 004-smart-crawler
+    "extruct>=0.18.0", # Structured data extraction (JSON-LD, OG, microdata)
+    "trafilatura>=1.12.0", # Text cleaning (primary)
+    "readability-lxml>=0.8.1", # Text cleaning (fallback)
+    "instructor>=1.0.0", # LLM response validation
+    # Utilities (shared)
+    "python-dotenv>=1.0.0",
+    "colorama>=0.4.6", # Terminal color output
+    # Testing (shared)
+    "pytest>=7.4.0",
+    "email-validator>=2.3.0",
+    "pdfplumber>=0.11.8",
+    "litellm>=1.80.5",
+    "pymysql>=1.1.0", # DoltDB/MySQL client for database access (pure Python)
+    "tqdm>=4.66.0", # Progress bars for CLI tools
+    "click>=8.0.0", # CLI framework
+    "rich>=13.0.0", # Terminal rendering with markdown, panels, colors
+    "httpx>=0.27.0", # Modern HTTP client for URL verification
+    "playwright>=1.49.0", # JS rendering fallback for SPA pages
+    "supabase>=2.27.2",
+]
+
+[project.optional-dependencies]
+# Backend API dependencies
+backend = [
+    "fastapi>=0.115.0",  # Security: starlette DoS fixes
+    "uvicorn[standard]>=0.30.0",
+    "slowapi>=0.1.9",
+    "python-multipart>=0.0.22",  # Security fix: arbitrary file write vulnerability
+]
+
+# Development tools
+dev = [
+    "ruff>=0.1.0",  # Linting and formatting
+    "mypy>=1.0.0",  # Type checking
+]
+
+# All optional dependencies combined
+all = [
+    "zakaat[backend,dev]",
+]
+
+[project.scripts]
+# 4-phase pipeline scripts
+crawl = "src.crawl:main"
+synthesize = "src.synthesize:main"
+baseline = "src.baseline_scorer:main"
+# Export: use `uv run python export.py` (full export with all website fields)
+judge = "src.judge:main"
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W"]
+ignore = ["E501"]  # Line too long (handled by formatter)
+
+[tool.ruff.lint.per-file-ignores]
+# E402: Module level import not at top of file
+# These files use sys.path manipulation for src.* imports - this is intentional
+"data-pipeline/crawl.py" = ["E402"]
+"data-pipeline/extract.py" = ["E402"]
+"data-pipeline/synthesize.py" = ["E402"]
+"data-pipeline/baseline.py" = ["E402"]
+"data-pipeline/export.py" = ["E402"]
+"data-pipeline/judge_phase.py" = ["E402"]
+"data-pipeline/rich_phase.py" = ["E402"]
+"data-pipeline/streaming_runner.py" = ["E402"]
+"data-pipeline/data_quality_check.py" = ["E402"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+
+[tool.setuptools]
+package-dir = {"" = "data-pipeline"}
+
+[tool.setuptools.packages.find]
+where = ["data-pipeline"]
+include = ["src*"]
+namespaces = false
+
+[tool.setuptools.package-data]
+"*" = ["*.txt", "*.md", "*.yaml", "*.yml"]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"

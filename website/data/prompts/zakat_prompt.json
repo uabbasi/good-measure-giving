@@ -1,0 +1,26 @@
+{
+  "id": "zakat_prompt",
+  "name": "Zakat Page Extraction",
+  "category": "data_extraction",
+  "description": "Extracts zakat eligibility claims, asnaf categories served, and scholarly endorsements.",
+  "status": "active",
+  "source_file": "config/page_prompts.yaml",
+  "content": "Extract the following information from this charity's zakat eligibility page. Return ONLY valid JSON matching the exact schema below.\n\nCRITICAL EXTRACTION RULES:\n- Only extract information that is EXPLICITLY stated on the page\n- Do NOT infer, assume, or guess values\n- If a field is not clearly present, return null\n- For scholarly endorsements: only include names of scholars or institutions EXPLICITLY mentioned on the page as endorsing this charity's zakat eligibility\n- For asnaf categories: only include categories the charity EXPLICITLY claims to serve, not categories you infer from their programs\n- For zakat eligibility: the page must explicitly use the word \"zakat\" or \"zakah\" - do not infer eligibility from general poverty relief language\n- Do NOT assume a charity accepts zakat just because they serve poor populations\n\nThe 8 asnaf (zakat recipient categories) are:\n1. Fuqara (the poor)\n2. Masakin (the needy)\n3. Amil (zakat collectors/administrators)\n4. Muallaf (new Muslims/those inclined to Islam)\n5. Riqab (freeing captives)\n6. Gharimin (those in debt)\n7. Fi Sabilillah (in the cause of Allah)\n8. Ibn as-Sabil (travelers in need)\n\nOptional fields:\n- zakat_eligible_programs: Array of strings (0-20 items) - Programs the charity EXPLICITLY claims are zakat-eligible\n- asnaf_served: Array of strings (0-8 items) - Which asnaf categories are EXPLICITLY mentioned as served (use exact names from list above)\n- scholarly_endorsements: Array of strings (0-10 items) - Scholars, institutions, or Islamic bodies EXPLICITLY named as endorsing their zakat eligibility\n- zakat_distribution_details: String or null (max 2000 characters) - How they handle, track, or distribute zakat funds\n- zakat_policy_url: String or null (valid URL) - Direct link to their zakat policy page\n\nReturn JSON only. Do not include explanations or markdown formatting.\n",
+  "annotations": [
+    {
+      "section": "Eight Asnaf Categories",
+      "lines": "119-128",
+      "explanation": "Lists the 8 Quranic zakat recipient categories. Only includes categories the charity EXPLICITLY claims to serve."
+    },
+    {
+      "section": "Scholarly Endorsements",
+      "lines": "132",
+      "explanation": "Only includes scholars/institutions EXPLICITLY named as endorsing zakat eligibility. LLMs frequently hallucinate endorsements."
+    },
+    {
+      "section": "Inference Prevention",
+      "lines": "116-117",
+      "explanation": "Explicitly states: do NOT assume a charity accepts zakat just because they serve poor populations. Must use word 'zakat' explicitly."
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+---
+name: rich_strategic_narrative_v1
+version: 1.0.0
+description: Deep strategic analysis narrative with grounded evidence and citations
+last_updated: 2026-01-30
+---
+
+# Rich Strategic Narrative
+
+Generate a comprehensive, citation-backed strategic evaluation that goes far deeper
+than the baseline strategic narrative. This narrative provides grounded evidence for
+each strategic dimension, institutional analysis, and peer context.
+
+## CRITICAL: Immutable Fields
+
+The following fields are INHERITED from the baseline strategic evaluation and MUST NOT
+be regenerated or modified. They will be injected after your generation:
+
+- headline (use exactly as provided)
+- score_interpretation (use exactly as provided)
+- strategic scores (use exactly as provided)
+
+DO NOT include these fields in your output. Focus only on the enhanced analysis sections.
+
+## Citation Requirements
+
+Use inline citation markers: [1], [2], etc. Each citation must reference an available source.
+
+- Use EVERY available source at least once
+- Cite each source MULTIPLE times where relevant (different claims can reference the same source)
+- Target: 15-20 total citation uses across the narrative
+- Every factual claim should have a citation
+- It is fine to cite the same source [N] repeatedly for different claims
+
+## Writing Style (CRITICAL)
+
+Write ALL narrative text in plain, accessible language for a first-time donor with no
+background in philanthropy. Avoid jargon like "systemic change", "institutional capacity",
+"leverage", "multiplier effect", "sovereignty", "interventions", "theory of change",
+or "counterfactual". Instead, describe what the charity actually does in concrete terms.
+
+## Charity Information
+
+{charity_info}
+
+## Strategic Believer Scores (from baseline)
+
+{strategic_scores}
+
+## Available Sources for Citations ({num_sources} sources)
+
+{citation_sources}
+
+## Pre-computed Strategic Evidence (deterministic analysis)
+
+{strategic_evidence}
+
+## Program Data
+
+{program_data}
+
+## Financial & Operational Data
+
+{financial_data}
+
+## Outcomes & Impact
+
+{outcomes_data}
+
+## Output Format
+
+Return ONLY valid JSON (no markdown). All top-level fields are REQUIRED.
+
+{{
+  "strategic_deep_dive": {{
+    "loop_breaking_evidence": "2-3 paragraphs with citations analyzing how this charity breaks cycles of poverty. Reference specific programs, outcomes, and training models. [1][2]",
+    "multiplier_analysis": "2-3 paragraphs analyzing how each dollar creates value beyond immediate output. Reference training cascades, policy changes, or replicable models. [3]",
+    "asset_durability": "2-3 paragraphs on lasting assets built. Schools, wells, clinics, endowments, or institutional capacity that persists after funding stops. [4]",
+    "sovereignty_assessment": "2-3 paragraphs on community ownership and self-determination. Local leadership, governance structures, community-owned assets. [5]"
+  }},
+  "operational_capacity": {{
+    "institutional_maturity": "1-2 paragraphs on organizational maturity. Age, governance, professional staff, audit practices. [6]",
+    "financial_sustainability": "1-2 paragraphs on financial health. Revenue stability, reserves, diversification. [7]",
+    "execution_track_record": "1-2 paragraphs on demonstrated results. Outcomes achieved, growth trajectory, evidence of impact. [8]"
+  }},
+  "peer_comparison": {{
+    "archetype_context": "1-2 paragraphs explaining what this archetype means and how this charity compares to similar organizations. [9]",
+    "strategic_score_context": "1-2 sentences explaining what the strategic score means relative to peer charities."
+  }},
+  "strengths": [
+    {{"point": "Short strength title", "detail": "1-2 sentences with evidence [1]", "citation_ids": ["[1]"]}}
+  ],
+  "areas_for_improvement": [
+    {{"area": "Short area title", "context": "1-2 sentences explaining why this matters", "citation_ids": []}}
+  ],
+  "ideal_donor_profile": {{
+    "best_for_summary": "Best for donors who want... (1-2 sentences)",
+    "donor_motivations": ["Why a strategic donor would choose this charity"],
+    "giving_considerations": ["Key things to think about before donating"],
+    "not_ideal_for": "Who might prefer a different approach (or null)"
+  }},
+  "case_against": {{
+    "summary": "1-2 sentences presenting the honest counterargument",
+    "risk_factors": ["Specific strategic risk or limitation"],
+    "mitigation_notes": "What the charity is doing to address these (or null)"
+  }},
+  "all_citations": [
+    {{"id": "[1]", "source_name": "Source name", "source_url": "URL or null", "claim": "The specific claim"}}
+  ]
+}}
+
+Generate the strategic analysis JSON:
