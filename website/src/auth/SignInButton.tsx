@@ -91,8 +91,19 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
     setShowMenu(false);
   };
 
-  // Signed in - show user menu
+  // Signed in - show user menu (portaled to escape navbar stacking context)
   if (isSignedIn) {
+    // Compute dropdown position from the button's bounding rect
+    const getDropdownStyle = (): React.CSSProperties => {
+      if (!containerRef.current) return { top: '4rem', right: '1rem' };
+      const rect = containerRef.current.getBoundingClientRect();
+      return {
+        position: 'fixed',
+        top: rect.bottom + 8,
+        right: Math.max(8, window.innerWidth - rect.right),
+      };
+    };
+
     return (
       <div className="relative" ref={containerRef}>
         <button
@@ -108,22 +119,27 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </button>
-        {showMenu && (
-          <div
-            className={`absolute right-0 mt-2 w-48 rounded-lg shadow-xl border py-1 z-50 ${
-              isDark ? 'bg-slate-700 border-slate-600' : 'bg-white border-slate-200'
-            }`}
-            ref={modalRef}
-          >
-            <button
-              onClick={signOut}
-              className={`w-full px-4 py-2 text-left text-sm ${
-                isDark ? 'text-slate-200 hover:bg-slate-600' : 'text-slate-700 hover:bg-slate-50'
+        {showMenu && createPortal(
+          <div className="fixed inset-0 z-[9998]" onClick={() => setShowMenu(false)}>
+            <div
+              className={`w-48 rounded-lg shadow-xl border py-1 ${
+                isDark ? 'bg-slate-700 border-slate-600' : 'bg-white border-slate-200'
               }`}
+              style={getDropdownStyle()}
+              ref={modalRef}
+              onClick={(e) => e.stopPropagation()}
             >
-              Sign out
-            </button>
-          </div>
+              <button
+                onClick={signOut}
+                className={`w-full px-4 py-2 text-left text-sm ${
+                  isDark ? 'text-slate-200 hover:bg-slate-600' : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                Sign out
+              </button>
+            </div>
+          </div>,
+          document.body
         )}
       </div>
     );
