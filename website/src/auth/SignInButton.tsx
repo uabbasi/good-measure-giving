@@ -91,8 +91,10 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
     setShowMenu(false);
   };
 
-  // Signed in - show user menu
+  // Signed in - show user menu (portaled to escape navbar stacking context)
   if (isSignedIn) {
+    const buttonRect = containerRef.current?.getBoundingClientRect();
+
     return (
       <div className="relative" ref={containerRef}>
         <button
@@ -108,10 +110,17 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </button>
-        {showMenu && (
-          <div className={`absolute right-0 mt-2 w-48 rounded-lg shadow-lg border py-1 z-[200] ${
-            isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'
-          }`}>
+        {showMenu && createPortal(
+          <div
+            className={`fixed w-48 rounded-lg shadow-lg border py-1 z-[200] ${
+              isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'
+            }`}
+            style={{
+              top: buttonRect ? buttonRect.bottom + 8 : 0,
+              right: buttonRect ? window.innerWidth - buttonRect.right : 0,
+            }}
+            ref={modalRef}
+          >
             <button
               onClick={signOut}
               className={`w-full px-4 py-2 text-left text-sm ${
@@ -120,7 +129,8 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
             >
               Sign out
             </button>
-          </div>
+          </div>,
+          document.body
         )}
       </div>
     );
