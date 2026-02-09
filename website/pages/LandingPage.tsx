@@ -13,7 +13,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Scale, ArrowRight, CheckCircle, Search, ShieldCheck, FileText, TrendingUp, Target, Heart } from 'lucide-react';
+import { Scale, ArrowRight, CheckCircle, Search, ShieldCheck, TrendingUp, Target, Heart } from 'lucide-react';
 import { SignInButton } from '../src/auth/SignInButton';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { THEMES } from '../src/themes';
@@ -276,36 +276,62 @@ export const LandingPage: React.FC = () => {
 
                 </div>
 
-                {/* 4 Methodology Pillars - V2 scoring framework */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
-                  {[
-                    { label: 'Trust', subtitle: 'Can we verify claims?', score: featuredCharity?.amalEvaluation?.trust?.score ?? 0, max: 25, icon: ShieldCheck, color: 'blue' },
-                    { label: 'Evidence', subtitle: 'Do programs work?', score: featuredCharity?.amalEvaluation?.evidence?.score ?? 0, max: 25, icon: FileText, color: 'purple' },
-                    { label: 'Effective', subtitle: 'How far does $1 go?', score: featuredCharity?.amalEvaluation?.effectiveness?.score ?? 0, max: 25, icon: TrendingUp, color: 'amber' },
-                    { label: 'Fit', subtitle: 'Right for your giving?', score: featuredCharity?.amalEvaluation?.fit?.score ?? 0, max: 25, icon: Target, color: 'emerald' },
-                  ].map((item) => {
-                    const Icon = item.icon;
+                {/* Score Dimensions - Impact + Alignment + Data Confidence */}
+                <div className="grid grid-cols-3 gap-3 mb-8">
+                  {(() => {
                     const isDark = theme.id.includes('dark') || theme.id === 'warm-atmosphere';
-                    const colorStyles = {
-                      blue: { text: isDark ? 'text-blue-400' : 'text-blue-600', bg: isDark ? 'bg-blue-500/10 border-blue-500/20' : 'bg-blue-50 border-blue-100', iconBg: isDark ? 'bg-blue-500/20' : 'bg-blue-100' },
-                      purple: { text: isDark ? 'text-purple-400' : 'text-purple-600', bg: isDark ? 'bg-purple-500/10 border-purple-500/20' : 'bg-purple-50 border-purple-100', iconBg: isDark ? 'bg-purple-500/20' : 'bg-purple-100' },
-                      amber: { text: isDark ? 'text-amber-400' : 'text-amber-600', bg: isDark ? 'bg-amber-500/10 border-amber-500/20' : 'bg-amber-50 border-amber-100', iconBg: isDark ? 'bg-amber-500/20' : 'bg-amber-100' },
-                      emerald: { text: isDark ? 'text-emerald-400' : 'text-emerald-600', bg: isDark ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-emerald-50 border-emerald-100', iconBg: isDark ? 'bg-emerald-500/20' : 'bg-emerald-100' },
-                    };
-                    const colors = colorStyles[item.color as keyof typeof colorStyles];
-                    return (
-                      <div key={item.label} className={`p-4 rounded-xl text-center border ${colors.bg}`}>
-                        <div className={`w-10 h-10 mx-auto mb-3 rounded-lg flex items-center justify-center ${colors.iconBg}`}>
-                          <Icon className={`w-5 h-5 ${colors.text}`} aria-hidden="true" />
+                    const dimensions = [
+                      {
+                        label: 'Impact',
+                        subtitle: 'How far does $1 go?',
+                        score: featuredCharity?.amalEvaluation?.score_details?.impact?.score ?? 0,
+                        max: 50,
+                        icon: TrendingUp,
+                        text: isDark ? 'text-blue-400' : 'text-blue-600',
+                        bg: isDark ? 'bg-blue-500/10 border-blue-500/20' : 'bg-blue-50 border-blue-100',
+                        iconBg: isDark ? 'bg-blue-500/20' : 'bg-blue-100',
+                      },
+                      {
+                        label: 'Alignment',
+                        subtitle: 'Right for your giving?',
+                        score: featuredCharity?.amalEvaluation?.score_details?.alignment?.score ?? 0,
+                        max: 50,
+                        icon: Target,
+                        text: isDark ? 'text-emerald-400' : 'text-emerald-600',
+                        bg: isDark ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-emerald-50 border-emerald-100',
+                        iconBg: isDark ? 'bg-emerald-500/20' : 'bg-emerald-100',
+                      },
+                      {
+                        label: 'Confidence',
+                        subtitle: 'Can we verify claims?',
+                        score: null,
+                        badge: featuredCharity?.amalEvaluation?.score_details?.data_confidence?.badge ?? '—',
+                        icon: ShieldCheck,
+                        text: isDark ? 'text-purple-400' : 'text-purple-600',
+                        bg: isDark ? 'bg-purple-500/10 border-purple-500/20' : 'bg-purple-50 border-purple-100',
+                        iconBg: isDark ? 'bg-purple-500/20' : 'bg-purple-100',
+                      },
+                    ];
+                    return dimensions.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <div key={item.label} className={`p-4 rounded-xl text-center border ${item.bg}`}>
+                          <div className={`w-10 h-10 mx-auto mb-3 rounded-lg flex items-center justify-center ${item.iconBg}`}>
+                            <Icon className={`w-5 h-5 ${item.text}`} aria-hidden="true" />
+                          </div>
+                          {'badge' in item && item.badge ? (
+                            <div className={`text-xl font-bold ${item.text}`}>{item.badge}</div>
+                          ) : (
+                            <div className={`text-2xl font-bold ${item.text}`}>
+                              {item.score}<span className="text-base opacity-40 font-normal"> / {item.max}</span>
+                            </div>
+                          )}
+                          <div className={`text-xs font-medium mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{item.label}</div>
+                          <div className={`text-[10px] mt-0.5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>{item.subtitle}</div>
                         </div>
-                        <div className={`text-2xl font-bold ${colors.text}`}>
-                          {item.score}<span className="text-base opacity-40 font-normal"> / {item.max}</span>
-                        </div>
-                        <div className={`text-xs font-medium mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{item.label}</div>
-                        <div className={`text-[10px] mt-0.5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>{item.subtitle}</div>
-                      </div>
-                    );
-                  })}
+                      );
+                    });
+                  })()}
                 </div>
 
                 {/* Score Breakdown - Show the math */}
@@ -313,32 +339,25 @@ export const LandingPage: React.FC = () => {
                   <div className={`p-5 rounded-xl mb-6 ${theme.id.includes('dark') || theme.id === 'warm-atmosphere' ? 'bg-slate-900/80 border border-slate-700/50' : 'bg-slate-50 border border-slate-200'}`}>
                     <div className={`text-xs font-bold uppercase tracking-wider mb-3 ${theme.id.includes('dark') || theme.id === 'warm-atmosphere' ? 'text-slate-400' : 'text-slate-500'}`}>How This Score Was Calculated</div>
                     <div className="space-y-2 text-sm">
-                      {/* Credibility breakdown */}
-                      {featuredCharity.amalEvaluation.score_details.credibility && (
-                      <div className={`flex justify-between ${theme.id.includes('dark') || theme.id === 'warm-atmosphere' ? 'text-slate-300' : 'text-slate-600'}`}>
-                        <span>Credibility</span>
-                        <span className="font-mono">{featuredCharity.amalEvaluation.score_details.credibility.score}/33</span>
-                      </div>
-                      )}
-                      {/* Impact breakdown */}
+                      {/* Impact */}
                       {featuredCharity.amalEvaluation.score_details.impact && (
                       <div className={`flex justify-between ${theme.id.includes('dark') || theme.id === 'warm-atmosphere' ? 'text-slate-300' : 'text-slate-600'}`}>
                         <span>Impact</span>
-                        <span className="font-mono">{featuredCharity.amalEvaluation.score_details.impact.score}/33</span>
+                        <span className="font-mono">{featuredCharity.amalEvaluation.score_details.impact.score}/50</span>
                       </div>
                       )}
-                      {/* Alignment breakdown */}
+                      {/* Alignment */}
                       {featuredCharity.amalEvaluation.score_details.alignment && (
                       <div className={`flex justify-between ${theme.id.includes('dark') || theme.id === 'warm-atmosphere' ? 'text-slate-300' : 'text-slate-600'}`}>
                         <span>Alignment</span>
-                        <span className="font-mono">{featuredCharity.amalEvaluation.score_details.alignment.score}/34</span>
+                        <span className="font-mono">{featuredCharity.amalEvaluation.score_details.alignment.score}/50</span>
                       </div>
                       )}
                       {/* Risk deduction if any */}
-                      {featuredCharity.amalEvaluation.score_details.risk_deduction > 0 && (
+                      {(featuredCharity.amalEvaluation.score_details?.risks?.total_deduction ?? 0) > 0 && (
                         <div className={`flex justify-between pt-2 border-t ${theme.id.includes('dark') || theme.id === 'warm-atmosphere' ? 'border-slate-700 text-amber-400' : 'border-slate-200 text-amber-600'}`}>
                           <span>Risk adjustment</span>
-                          <span className="font-mono">-{featuredCharity.amalEvaluation.score_details.risk_deduction}</span>
+                          <span className="font-mono">-{featuredCharity.amalEvaluation.score_details?.risks?.total_deduction}</span>
                         </div>
                       )}
                       {/* Total */}
