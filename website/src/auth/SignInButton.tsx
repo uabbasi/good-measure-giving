@@ -109,10 +109,14 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
           </svg>
         </button>
         {showMenu && (
-          <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-1 z-50">
+          <div className={`absolute right-0 mt-2 w-48 rounded-lg shadow-lg border py-1 z-50 ${
+            isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'
+          }`}>
             <button
               onClick={signOut}
-              className="w-full px-4 py-2 text-left text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
+              className={`w-full px-4 py-2 text-left text-sm ${
+                isDark ? 'text-slate-200 hover:bg-slate-700' : 'text-slate-700 hover:bg-slate-50'
+              }`}
             >
               Sign out
             </button>
