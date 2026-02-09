@@ -299,21 +299,31 @@ const DimensionSection: React.FC<{
         </div>
       )}
 
-      {/* Component rows */}
-      <div className={`px-4 pb-3 divide-y ${isDark ? 'divide-slate-700/40' : 'divide-slate-200/80'}`}>
-        {details.components.map((comp) => (
-          <ComponentRow
-            key={comp.name}
-            component={comp}
-            citations={citations}
-            isSignedIn={isSignedIn}
-            isDark={isDark}
-          />
-        ))}
-      </div>
+      {/* Component rows — detailed breakdown for signed-in users only */}
+      {isSignedIn ? (
+        <div className={`px-4 pb-3 divide-y ${isDark ? 'divide-slate-700/40' : 'divide-slate-200/80'}`}>
+          {details.components.map((comp) => (
+            <ComponentRow
+              key={comp.name}
+              component={comp}
+              citations={citations}
+              isSignedIn={isSignedIn}
+              isDark={isDark}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className={`mx-4 mb-3 px-3 py-2.5 rounded-lg text-center ${
+          isDark ? 'bg-slate-700/40' : 'bg-slate-100'
+        }`}>
+          <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+            Sign in to see the full {details.components.length}-component breakdown
+          </p>
+        </div>
+      )}
 
       {/* Per-dimension improvement path */}
-      {improvementText && (
+      {isSignedIn && improvementText && (
         <div className={`mx-4 mt-2 mb-5 px-3 py-2.5 rounded-lg flex items-start gap-2 ${
           isDark ? 'bg-amber-900/15' : 'bg-amber-50'
         }`}>
@@ -321,11 +331,7 @@ const DimensionSection: React.FC<{
             isDark ? 'text-amber-400' : 'text-amber-600'
           }`} />
           <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-            {isSignedIn && hasCitations ? (
-              <SourceLinkedText text={improvementText} citations={citations} isDark={isDark} />
-            ) : (
-              stripCitations(improvementText)
-            )}
+            <SourceLinkedText text={improvementText} citations={citations} isDark={isDark} />
           </p>
         </div>
       )}
@@ -432,8 +438,8 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({
         })}
       </div>
 
-      {/* Improvement opportunities — inline below dimensions */}
-      {hasImprovements && (
+      {/* Improvement opportunities — inline below dimensions (signed-in only) */}
+      {isSignedIn && hasImprovements && (
         <div className={`mt-4 pt-3 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
           <div className={`text-xs uppercase tracking-widest font-semibold mb-3 flex items-center gap-1.5 ${
             isDark ? 'text-amber-400/80' : 'text-amber-600'
