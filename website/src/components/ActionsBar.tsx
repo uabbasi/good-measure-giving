@@ -5,9 +5,10 @@
  */
 
 import React from 'react';
-import { Plus, ExternalLink, Shield } from 'lucide-react';
+import { Plus, ExternalLink, Shield, LogIn } from 'lucide-react';
 import { BookmarkButton } from './BookmarkButton';
 import { CompareButton } from './CompareButton';
+import { useAuth, SignInButton } from '../auth';
 import { useLandingTheme } from '../../contexts/LandingThemeContext';
 
 interface ActionsBarProps {
@@ -32,6 +33,7 @@ function formatCauseArea(raw: string): string {
 
 export function ActionsBar({ charityEin, charityName, onLogDonation, variant = 'default', donateUrl, onDonateClick, walletTag, causeArea }: ActionsBarProps) {
   const { isDark } = useLandingTheme();
+  const { isSignedIn } = useAuth();
 
   // Terminal variant: Bloomberg-style compact bar
   if (variant === 'terminal') {
@@ -81,30 +83,43 @@ export function ActionsBar({ charityEin, charityName, onLogDonation, variant = '
             </div>
             {/* Action buttons */}
             <div className="flex items-center gap-3">
-              {onLogDonation && (
-                <button onClick={onLogDonation} className={terminalBtn}>
-                  <Plus className="w-3 h-3" aria-hidden="true" />
-                  <span className={isDark ? 'text-emerald-500' : 'text-emerald-600'}>Log Donation</span>
-                </button>
+              {isSignedIn ? (
+                <>
+                  {onLogDonation && (
+                    <button onClick={onLogDonation} className={terminalBtn}>
+                      <Plus className="w-3 h-3" aria-hidden="true" />
+                      <span className={isDark ? 'text-emerald-500' : 'text-emerald-600'}>Log Donation</span>
+                    </button>
+                  )}
+                  <span className={`${isDark ? 'text-slate-700' : 'text-slate-300'}`}>│</span>
+                  <CompareButton
+                    charityEin={charityEin}
+                    charityName={charityName}
+                    size="sm"
+                    className="!text-xs !font-mono !uppercase !tracking-wide"
+                  />
+                  <span className={`${isDark ? 'text-slate-700' : 'text-slate-300'}`}>│</span>
+                  <BookmarkButton
+                    charityEin={charityEin}
+                    charityName={charityName}
+                    showLabel
+                    size="sm"
+                    className="!text-xs !font-mono !uppercase !tracking-wide"
+                  />
+                </>
+              ) : (
+                <SignInButton
+                  variant="custom"
+                  isDark={isDark}
+                >
+                  <span className={`inline-flex items-center gap-1.5 px-2 py-1 text-xs font-mono uppercase tracking-wide cursor-pointer transition-colors ${
+                    isDark ? 'text-emerald-500 hover:text-emerald-400' : 'text-emerald-600 hover:text-emerald-500'
+                  }`}>
+                    <LogIn className="w-3 h-3" aria-hidden="true" />
+                    Sign in to log donations, compare & save
+                  </span>
+                </SignInButton>
               )}
-
-              <span className={`${isDark ? 'text-slate-700' : 'text-slate-300'}`}>│</span>
-
-              <CompareButton
-                charityEin={charityEin}
-                charityName={charityName}
-                size="sm"
-                className="!text-xs !font-mono !uppercase !tracking-wide"
-              />
-              <span className={`${isDark ? 'text-slate-700' : 'text-slate-300'}`}>│</span>
-
-              <BookmarkButton
-                charityEin={charityEin}
-                charityName={charityName}
-                showLabel
-                size="sm"
-                className="!text-xs !font-mono !uppercase !tracking-wide"
-              />
 
               {donateUrl && (
                 <>
@@ -172,32 +187,46 @@ export function ActionsBar({ charityEin, charityName, onLogDonation, variant = '
           </div>
           {/* Action buttons */}
           <div className="flex items-center gap-1">
-            {onLogDonation && (
-              <button
-                onClick={onLogDonation}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  isDark
-                    ? 'text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10'
-                    : 'text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50'
-                }`}
+            {isSignedIn ? (
+              <>
+                {onLogDonation && (
+                  <button
+                    onClick={onLogDonation}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                      isDark
+                        ? 'text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10'
+                        : 'text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50'
+                    }`}
+                  >
+                    <Plus className="w-4 h-4" aria-hidden="true" />
+                    Log Donation
+                  </button>
+                )}
+                <CompareButton
+                  charityEin={charityEin}
+                  charityName={charityName}
+                  size="sm"
+                />
+                <BookmarkButton
+                  charityEin={charityEin}
+                  charityName={charityName}
+                  showLabel
+                  size="sm"
+                />
+              </>
+            ) : (
+              <SignInButton
+                variant="custom"
+                isDark={isDark}
               >
-                <Plus className="w-4 h-4" aria-hidden="true" />
-                Log Donation
-              </button>
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium cursor-pointer transition-colors ${
+                  isDark ? 'text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10' : 'text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50'
+                }`}>
+                  <LogIn className="w-4 h-4" aria-hidden="true" />
+                  Sign in to log donations, compare & save
+                </span>
+              </SignInButton>
             )}
-
-            <CompareButton
-              charityEin={charityEin}
-              charityName={charityName}
-              size="sm"
-            />
-
-            <BookmarkButton
-              charityEin={charityEin}
-              charityName={charityName}
-              showLabel
-              size="sm"
-            />
           </div>
         </div>
       </div>
