@@ -305,14 +305,16 @@ class ImpactAssessment(BaseModel):
 
     Answers: How much good per dollar, and can they prove it?
 
-    Components:
-    - Cost Per Beneficiary (20 pts): Cause-adjusted benchmarks with smooth interpolation
-    - Directness (7 pts): How directly funds reach people
-    - Financial Health (7 pts): Reserves sweet spot (smooth interpolation)
-    - Program Ratio (6 pts): Smooth interpolation over ratio
-    - Evidence & Outcomes (5 pts): Absorbed from Credibility
-    - Theory of Change (3 pts): Absorbed from Credibility
-    - Governance (2 pts): Absorbed from Credibility
+    Components are re-weighted per archetype (v5.0.0):
+    - Cost Per Beneficiary: Cause-adjusted benchmarks with smooth interpolation
+    - Directness: How directly funds reach people
+    - Financial Health: Reserves sweet spot (smooth interpolation)
+    - Program Ratio: Smooth interpolation over ratio
+    - Evidence & Outcomes: Absorbed from Credibility
+    - Theory of Change: Absorbed from Credibility
+    - Governance: Absorbed from Credibility
+
+    All archetypes sum to 50.
     """
 
     score: int = Field(ge=0, le=50, description="Total Impact score (max 50)")
@@ -325,6 +327,10 @@ class ImpactAssessment(BaseModel):
     impact_design_categories: list[str] = Field(
         default_factory=list,
         description="Which keyword categories matched: resilience, leverage, durability, sovereignty",
+    )
+    rubric_archetype: str = Field(
+        default="DIRECT_SERVICE",
+        description="Archetype used for Impact weight profile (e.g. SYSTEMIC_CHANGE, EDUCATION)",
     )
 
 

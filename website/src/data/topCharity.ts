@@ -19,14 +19,14 @@ interface FeaturedCharityData extends CharityProfile {
 }
 
 export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
-  "name": "Sadagaat",
-  "ein": "47-2864379",
-  "headline": "SADAGAAT-USA empowers vulnerable communities through high-impact humanitarian programs in education, health, and water infrastructure.",
+  "name": "SIUT",
+  "ein": "76-0656947",
+  "headline": "SIUT North America Inc provides critical financial support for life-saving dialysis and kidney transplant services through the SIUT Charitable Trust.",
   "amalEvaluation": {
-    "amal_score": 89,
+    "amal_score": 87,
     "confidence_scores": {
-      "impact": 46,
-      "alignment": 43,
+      "impact": 47,
+      "alignment": 40,
       "dataConfidence": 0
     },
     "trust": {
@@ -43,19 +43,19 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
     },
     "score_details": {
       "alignment": {
-        "cause_urgency_label": "HUMANITARIAN",
+        "cause_urgency_label": "GLOBAL_HEALTH",
         "components": [
           {
-            "evidence": "Explicit zakat program (+4); Muslim-focused organization (+2); Asnaf: fuqara (+5); Operates in Muslim-majority regions (+3); Strong humanitarian service (+4)",
+            "evidence": "Accepts zakat (+2); Muslim-focused organization (+2); Asnaf: fuqara (+5); Operates in Muslim-majority regions (+3); Strong humanitarian service (+4)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Muslim Donor Fit",
             "possible": 19,
-            "scored": 18,
+            "scored": 16,
             "status": "full"
           },
           {
-            "evidence": "Cause area: Humanitarian (13/13)",
+            "evidence": "Cause area: Global Health (13/13)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Cause Urgency",
@@ -64,25 +64,25 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "status": "full"
           },
           {
-            "evidence": "Serves underserved populations (+3)",
-            "improvement_suggestion": null,
-            "improvement_value": 0,
+            "evidence": "Well-covered space with mainstream reach",
+            "improvement_suggestion": "Expand services to underserved populations or regions with limited nonprofit coverage",
+            "improvement_value": 3,
             "name": "Underserved Space",
             "possible": 7,
-            "scored": 3,
+            "scored": 0,
             "status": "partial"
           },
           {
-            "evidence": "Founded 2015 (11 years — 4/6)",
+            "evidence": "Founded 2000 (26 years — 6/6)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Track Record",
             "possible": 6,
-            "scored": 4,
+            "scored": 6,
             "status": "full"
           },
           {
-            "evidence": "Revenue: $1.3M (5/5 funding gap)",
+            "evidence": "Revenue: $5.9M (5/5 funding gap)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Funding Gap",
@@ -92,8 +92,8 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
           }
         ],
         "muslim_donor_fit_level": "HIGH",
-        "rationale": "Alignment 43/50: HIGH Muslim donor fit, humanitarian cause area",
-        "score": 43
+        "rationale": "Alignment 40/50: HIGH Muslim donor fit, global health cause area",
+        "score": 40
       },
       "data_confidence": {
         "badge": "HIGH",
@@ -108,25 +108,25 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
       "impact": {
         "components": [
           {
-            "evidence": "$0.15/beneficiary (exceptional for HUMANITARIAN)",
+            "evidence": "$1.14/beneficiary (exceptional for GLOBAL_HEALTH)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Cost Per Beneficiary",
-            "possible": 20,
-            "scored": 20,
+            "possible": 13,
+            "scored": 13,
             "status": "full"
           },
           {
-            "evidence": "Delivery model: Direct Provision",
+            "evidence": "Delivery model: Direct Service",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Directness",
-            "possible": 7,
-            "scored": 6,
+            "possible": 5,
+            "scored": 5,
             "status": "full"
           },
           {
-            "evidence": "Working capital: 3.6 months (HEALTHY)",
+            "evidence": "Working capital: 4.0 months (HEALTHY)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Financial Health",
@@ -135,12 +135,12 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "status": "full"
           },
           {
-            "evidence": "Program expense ratio: 98%",
+            "evidence": "Program expense ratio: 84%",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Program Ratio",
-            "possible": 6,
-            "scored": 6,
+            "possible": 5,
+            "scored": 5,
             "status": "full"
           },
           {
@@ -157,37 +157,38 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Theory of Change",
-            "possible": 3,
-            "scored": 3,
+            "possible": 5,
+            "scored": 5,
             "status": "full"
           },
           {
-            "evidence": "Board governance: STRONG (8 members)",
+            "evidence": "Board governance: STRONG (7 members)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
-            "possible": 2,
-            "scored": 2,
+            "possible": 10,
+            "scored": 10,
             "status": "full"
           }
         ],
-        "cost_per_beneficiary": 0.14748857142857144,
-        "directness_level": "DIRECT_PROVISION",
+        "cost_per_beneficiary": 1.1426035555555556,
+        "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "$0.15/beneficiary; Delivery: direct provision; Impact 46/50",
-        "score": 46
+        "rationale": "$1.14/beneficiary; Delivery: direct service; Impact 47/50",
+        "rubric_archetype": "DIRECT_SERVICE",
+        "score": 47
       },
       "judge_issues": [
         {
-          "field": "discovered.evaluations.confidence",
+          "field": "discovered.zakat.confidence",
           "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
-          "field": "discovered.theory_of_change.confidence",
+          "field": "discovered.outcomes.confidence",
           "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
@@ -210,15 +211,15 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "SADAGAAT-USA earns 89/100 due to exceptional impact and exceptional alignment, with zakat compliance.",
+      "score_summary": "SIUT North America Inc earns 87/100 due to exceptional impact and strong alignment, with zakat compliance.",
       "zakat": {
         "asnaf_category": "fuqara",
         "bonus_points": 0,
         "charity_claims_zakat": true,
-        "claim_evidence": "Dedicated zakat page found at https://sadagaat-usa.org/giving/zakat (Source: https://sadagaat-usa.org/giving/zakat)",
+        "claim_evidence": "Your Zakat and Sadaqah has the power to save lives. Donate to SIUTNA and help us provide free healthcare with dignity. ; Commit your Sadaqah, Zakat, and donations to SIUT North America to help build the SIUT Children's Hospital. (Source: https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE0R99H1C_4mSUQnFzV_cb0EmiiZZW5nY3rohwirR4tKAj14xR0B6nibRhPIJy5nApS_CPzR3NVSTggtK8_uJV8uhLUhA-oTbQxzCwsIuZ5zfufSVEwRgeImAq7ADZ4y2w=)",
         "notes": null
       }
     }
   },
-  "impactHighlight": "SADAGAAT-USA empowers vulnerable communities through high-impact humanitarian programs in education, health, and water infrastructure."
+  "impactHighlight": "SIUT North America Inc provides critical financial support for life-saving dialysis and kidney transplant services through the SIUT Charitable Trust."
 };

@@ -122,6 +122,10 @@ const ComponentRow: React.FC<{
   );
 };
 
+/** Format archetype name for display: SYSTEMIC_CHANGE → Systemic Change */
+const formatArchetype = (archetype: string): string =>
+  archetype.split('_').map(w => w.charAt(0) + w.slice(1).toLowerCase()).join(' ');
+
 /** Dimension section (Impact or Alignment) — always open */
 const DimensionSection: React.FC<{
   config: DimensionConfig;
@@ -139,13 +143,25 @@ const DimensionSection: React.FC<{
   const improvementText = typeof explanation === 'object' ? explanation.improvement : undefined;
   const hasCitations = typeof explanation === 'object';
 
+  // Show archetype badge for Impact dimension when non-default
+  const rubricArchetype = 'rubric_archetype' in details ? (details as ImpactDetails).rubric_archetype : undefined;
+
   return (
     <div className={`rounded-lg pb-1 ${isDark ? 'bg-slate-800/60' : 'bg-slate-50'}`}>
       {/* Dimension header with score bar */}
       <div className="p-4 pb-2">
         <div className="flex items-center justify-between mb-2">
-          <span className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
-            {config.label}
+          <span className="flex items-center gap-2">
+            <span className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              {config.label}
+            </span>
+            {rubricArchetype && (
+              <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${
+                isDark ? 'bg-indigo-900/40 text-indigo-300' : 'bg-indigo-50 text-indigo-600'
+              }`}>
+                {formatArchetype(rubricArchetype)}
+              </span>
+            )}
           </span>
           <span className={`text-sm font-mono font-bold ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
             {score}/{config.max}

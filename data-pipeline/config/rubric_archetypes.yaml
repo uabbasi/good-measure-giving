@@ -1,0 +1,86 @@
+# Rubric Archetypes — Per-Category Impact Weight Profiles
+#
+# Each archetype re-weights the same 7 Impact components (summing to 50)
+# based on what matters most for that theory of change.
+#
+# Introduced in rubric v5.0.0 (major version — scores not comparable to v4.0.0).
+#
+# Governance floor: 10 pts minimum across all archetypes.
+
+archetypes:
+  DIRECT_SERVICE:
+    description: "Organizations delivering direct humanitarian aid, medical services, or basic needs"
+    weights:
+      cost_per_beneficiary: 13
+      directness: 5
+      financial_health: 7
+      program_ratio: 5
+      evidence_outcomes: 5
+      theory_of_change: 5
+      governance: 10
+
+  SYSTEMIC_CHANGE:
+    description: "Organizations creating impact through legal advocacy, policy change, research, or environmental action"
+    weights:
+      cost_per_beneficiary: 7
+      directness: 3
+      financial_health: 7
+      program_ratio: 7
+      evidence_outcomes: 9
+      theory_of_change: 7
+      governance: 10
+
+  EDUCATION:
+    description: "Educational institutions — K-12, higher ed, international development education"
+    weights:
+      cost_per_beneficiary: 10
+      directness: 5
+      financial_health: 7
+      program_ratio: 5
+      evidence_outcomes: 6
+      theory_of_change: 7
+      governance: 10
+
+  COMMUNITY:
+    description: "Community-serving organizations — congregations, social services, outreach"
+    weights:
+      cost_per_beneficiary: 6
+      directness: 5
+      financial_health: 7
+      program_ratio: 5
+      evidence_outcomes: 10
+      theory_of_change: 7
+      governance: 10
+
+  MULTIPLIER:
+    description: "Grantmaking, philanthropy, and media organizations that multiply impact"
+    weights:
+      cost_per_beneficiary: 6
+      directness: 3
+      financial_health: 7
+      program_ratio: 7
+      evidence_outcomes: 10
+      theory_of_change: 7
+      governance: 10
+
+# Category-to-archetype mapping (16 categories → 5 archetypes)
+category_archetype_map:
+  HUMANITARIAN: DIRECT_SERVICE
+  MEDICAL_HEALTH: DIRECT_SERVICE
+  BASIC_NEEDS: DIRECT_SERVICE
+  CIVIL_RIGHTS_LEGAL: SYSTEMIC_CHANGE
+  ADVOCACY_CIVIC: SYSTEMIC_CHANGE
+  RESEARCH_POLICY: SYSTEMIC_CHANGE
+  ENVIRONMENT_CLIMATE: SYSTEMIC_CHANGE
+  EDUCATION_INTERNATIONAL: EDUCATION
+  EDUCATION_HIGHER_RELIGIOUS: EDUCATION
+  EDUCATION_K12_RELIGIOUS: EDUCATION
+  RELIGIOUS_CONGREGATION: COMMUNITY
+  RELIGIOUS_OUTREACH: COMMUNITY
+  SOCIAL_SERVICES: COMMUNITY
+  WOMENS_SERVICES: COMMUNITY
+  PHILANTHROPY_GRANTMAKING: MULTIPLIER
+  MEDIA_JOURNALISM: MULTIPLIER
+
+# Default archetype for unmapped categories
+default_archetype: DIRECT_SERVICE

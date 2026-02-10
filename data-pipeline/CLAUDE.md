@@ -222,13 +222,13 @@ data_quality_check.py         # Validate scraped data quality between phases
 src/db/                       # DoltDB repositories + version control
 src/db/dolt_client.py         # Git-like operations (commit, branch, diff)
 src/collectors/               # ProPublica, CN, Candid, Web (fetch + parse methods)
-src/scorers/v2_scorers.py     # Impact, Alignment, Risk, DataConfidence (rubric v4.0.0)
+src/scorers/v2_scorers.py     # Impact, Alignment, Risk, DataConfidence (rubric v5.0.0)
 src/parsers/charity_metrics_aggregator.py  # Data aggregation
 ```
 
-## Scoring Dimensions (GMG Score, rubric v4.0.0, 100 pts total)
+## Scoring Dimensions (GMG Score, rubric v5.0.0, 100 pts total)
 
-1. **Impact** (50 pts): CPB(20) + directness(7) + financial health(7) + program ratio(6) + evidence(5) + theory of change(3) + governance(2)
+1. **Impact** (50 pts): Weights vary by archetype (DIRECT_SERVICE, SYSTEMIC_CHANGE, EDUCATION, COMMUNITY, MULTIPLIER). See `config/rubric_archetypes.yaml`.
 2. **Alignment** (50 pts): Muslim donor fit(19) + cause urgency(13) + underserved space(7) + track record(6) + funding gap(5)
 3. **Risk** (-10 pts max): Deductions for red flags (low program spending, small board, low reserves, etc.)
 4. **Data Confidence** (0.0-1.0, outside score): verification(0.50) + transparency(0.35) + data quality(0.15)

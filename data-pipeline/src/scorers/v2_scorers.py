@@ -42,6 +42,10 @@ from src.llm.schemas.common import (
     ScoreComponent,
 )
 from src.parsers.charity_metrics_aggregator import CharityMetrics
+from src.scorers.rubric_registry import (
+    RubricConfig,
+    get_rubric_for_category,
+)
 from src.scorers.strategic_evidence import (  # noqa: F401
     StrategicEvidence,
     compute_strategic_evidence,
@@ -64,7 +68,7 @@ from src.utils.scoring_audit import (
 #   2.0.0 — 4-dimension revised (reweighted, new components)
 #   3.0.0 — 3-dimension (Credibility/33 + Impact/33 + Alignment/34)
 #   4.0.0 — 2-dimension (Impact/50 + Alignment/50 + DataConfidence signal)
-RUBRIC_VERSION = "4.0.0"
+RUBRIC_VERSION = "5.0.0"
 
 # =============================================================================
 # Constants - 2-Dimension GMG Score
@@ -884,57 +888,79 @@ class ImpactScorer:
 
     "How much good per dollar, and can they prove it?"
 
-    Components:
-    - Cost Per Beneficiary (20 pts): Cause-adjusted benchmarks with smooth interpolation
-    - Directness (7 pts): How directly funds reach people
-    - Financial Health (7 pts): Smooth interpolation with peak at 2 months
-    - Program Ratio (6 pts): Smooth interpolation over 0.0-1.0
-    - Evidence & Outcomes (5 pts): Grade-based (absorbed from Credibility)
-    - Theory of Change (3 pts): Categorical (absorbed from Credibility)
-    - Governance (2 pts): Board size (absorbed from Credibility)
+    Components (base weights, re-weighted per archetype in v5.0.0):
+    - Cost Per Beneficiary: Cause-adjusted benchmarks with smooth interpolation
+    - Directness: How directly funds reach people
+    - Financial Health: Smooth interpolation with peak at 2 months
+    - Program Ratio: Smooth interpolation over 0.0-1.0
+    - Evidence & Outcomes: Grade-based (absorbed from Credibility)
+    - Theory of Change: Categorical (absorbed from Credibility)
+    - Governance: Board size (absorbed from Credibility)
+
+    All archetypes sum to 50. Proportional scaling preserves relative ordering.
     """
 
     def __init__(self, credibility_scorer: Optional[CredibilityScorer] = None):
         self._credibility = credibility_scorer or CredibilityScorer()
 
-    def evaluate(self, metrics: CharityMetrics, cause_area: str = "DEFAULT") -> ImpactAssessment:
-        """Evaluate impact from charity metrics."""
+    def evaluate(
+        self,
+        metrics: CharityMetrics,
+        cause_area: str = "DEFAULT",
+        rubric: Optional[RubricConfig] = None,
+    ) -> ImpactAssessment:
+        """Evaluate impact from charity metrics.
+
+        Args:
+            metrics: Charity financial/operational data.
+            cause_area: Detected cause area for CPB benchmarks.
+            rubric: Archetype-specific weight profile. If None, uses DIRECT_SERVICE default.
+        """
+        if rubric is None:
+            rubric = get_rubric_for_category(None)
+
         components: list[ScoreComponent] = []
         tier = determine_revenue_tier(metrics.total_revenue)
 
         # Run internal credibility assessment to get quality-practice levels
         cred = self._credibility.evaluate(metrics)
 
-        # 1. Cost Per Beneficiary (20 pts)
-        cpb, cpb_pts, cpb_evidence = self._score_cost_per_beneficiary(metrics, cause_area)
+        # 1. Cost Per Beneficiary — raw on base scale, then scale to archetype
+        cpb, raw_cpb_pts, cpb_evidence = self._score_cost_per_beneficiary(metrics, cause_area)
+        cpb_possible = rubric.weights["cost_per_beneficiary"]
+        cpb_pts = rubric.scale_score("cost_per_beneficiary", raw_cpb_pts)
         components.append(
             ScoreComponent(
                 name="Cost Per Beneficiary",
                 scored=cpb_pts,
-                possible=20,
+                possible=cpb_possible,
                 evidence=cpb_evidence,
                 status=ComponentStatus.FULL if cpb is not None else ComponentStatus.MISSING,
                 improvement_suggestion="Track and report beneficiary counts to enable cost analysis"
                 if cpb is None
                 else None,
-                improvement_value=min(20 - cpb_pts, 10) if cpb_pts < 10 else 0,
+                improvement_value=min(cpb_possible - cpb_pts, max(1, cpb_possible // 2)) if cpb_pts < cpb_possible // 2 else 0,
             )
         )
 
-        # 2. Directness (7 pts)
-        dir_level, dir_pts = self._score_directness(metrics)
+        # 2. Directness — raw on base scale, then scale
+        dir_level, raw_dir_pts = self._score_directness(metrics)
+        dir_possible = rubric.weights["directness"]
+        dir_pts = rubric.scale_score("directness", raw_dir_pts)
         components.append(
             ScoreComponent(
                 name="Directness",
                 scored=dir_pts,
-                possible=7,
+                possible=dir_possible,
                 evidence=f"Delivery model: {dir_level.replace('_', ' ').title()}",
                 status=ComponentStatus.FULL,
             )
         )
 
-        # 3. Financial Health (7 pts) — smooth interpolation
+        # 3. Financial Health — smooth interpolation (always 7 pts across archetypes)
         fh_label, fh_pts = self._score_financial_health(metrics)
+        fh_possible = rubric.weights["financial_health"]
+        fh_pts = rubric.scale_score("financial_health", fh_pts)
         wc = metrics.working_capital_ratio
         fh_evidence = (
             f"Working capital: {wc:.1f} months ({fh_label})"
@@ -945,23 +971,25 @@ class ImpactScorer:
             ScoreComponent(
                 name="Financial Health",
                 scored=fh_pts,
-                possible=7,
+                possible=fh_possible,
                 evidence=fh_evidence,
                 status=ComponentStatus.FULL if wc is not None and wc >= 0.1 else ComponentStatus.MISSING,
                 improvement_suggestion="Build working capital reserves to 1-3 months of operating expenses"
-                if fh_pts < 5
+                if fh_pts < fh_possible * 5 // 7
                 else None,
-                improvement_value=min(7 - fh_pts, 4) if fh_pts < 5 else 0,
+                improvement_value=min(fh_possible - fh_pts, max(1, fh_possible * 4 // 7)) if fh_pts < fh_possible * 5 // 7 else 0,
             )
         )
 
-        # 4. Program Ratio (6 pts) — smooth interpolation
-        pr_pts, pr_evidence = self._score_program_ratio(metrics)
+        # 4. Program Ratio — smooth interpolation, then scale
+        raw_pr_pts, pr_evidence = self._score_program_ratio(metrics)
+        pr_possible = rubric.weights["program_ratio"]
+        pr_pts = rubric.scale_score("program_ratio", raw_pr_pts)
         components.append(
             ScoreComponent(
                 name="Program Ratio",
                 scored=pr_pts,
-                possible=6,
+                possible=pr_possible,
                 evidence=pr_evidence,
                 status=ComponentStatus.FULL
                 if metrics.program_expense_ratio is not None and metrics.program_expense_ratio >= 0.01
@@ -969,36 +997,40 @@ class ImpactScorer:
             )
         )
 
-        # 5. Evidence & Outcomes (5 pts) — absorbed from Credibility
+        # 5. Evidence & Outcomes — categorical, then scale
         eq_level = cred.evidence_quality_level
-        eq_pts = self._score_evidence_outcomes(eq_level, tier)
+        raw_eq_pts = self._score_evidence_outcomes(eq_level, tier)
+        eq_possible = rubric.weights["evidence_outcomes"]
+        eq_pts = rubric.scale_score("evidence_outcomes", raw_eq_pts)
         eq_evidence = f"Evidence & outcomes: {eq_level}"
-        if tier == "EMERGING" and eq_pts > 0 and eq_level in ("UNVERIFIED", "REPORTED"):
+        if tier == "EMERGING" and raw_eq_pts > 0 and eq_level in ("UNVERIFIED", "REPORTED"):
             eq_evidence += " (emerging org baseline)"
         components.append(
             ScoreComponent(
                 name="Evidence & Outcomes",
                 scored=eq_pts,
-                possible=5,
+                possible=eq_possible,
                 evidence=eq_evidence,
                 status=ComponentStatus.FULL
                 if eq_level in ("VERIFIED", "TRACKED")
                 else ComponentStatus.PARTIAL
-                if eq_pts >= 2
+                if eq_pts >= max(1, eq_possible * 2 // 5)
                 else ComponentStatus.MISSING,
                 improvement_suggestion="Seek external evaluation or track outcomes for 3+ years"
-                if eq_pts < 4
+                if eq_pts < eq_possible * 4 // 5
                 else None,
-                improvement_value=min(5 - eq_pts, 3) if eq_pts < 4 else 0,
+                improvement_value=min(eq_possible - eq_pts, max(1, eq_possible * 3 // 5)) if eq_pts < eq_possible * 4 // 5 else 0,
             )
         )
 
-        # 6. Theory of Change (3 pts) — absorbed from Credibility, compressed
+        # 6. Theory of Change — categorical, then scale
         toc_level = cred.theory_of_change_level
-        toc_pts = TOC_POINTS.get(toc_level, 0)
+        raw_toc_pts = TOC_POINTS.get(toc_level, 0)
         # Tier-adjusted: emerging orgs get baseline
-        if tier == "EMERGING" and toc_pts == 0 and metrics.mission:
-            toc_pts = 1
+        if tier == "EMERGING" and raw_toc_pts == 0 and metrics.mission:
+            raw_toc_pts = 1
+        toc_possible = rubric.weights["theory_of_change"]
+        toc_pts = rubric.scale_score("theory_of_change", raw_toc_pts)
         toc_evidence = f"Theory of change: {toc_level}"
         if tier == "EMERGING" and toc_level in ("ABSENT", "BASIC"):
             toc_evidence += " (emerging org baseline)"
@@ -1006,28 +1038,30 @@ class ImpactScorer:
             ScoreComponent(
                 name="Theory of Change",
                 scored=toc_pts,
-                possible=3,
+                possible=toc_possible,
                 evidence=toc_evidence,
                 status=ComponentStatus.FULL
                 if toc_level in ("STRONG", "CLEAR")
                 else ComponentStatus.PARTIAL
                 if toc_pts >= 1
                 else ComponentStatus.MISSING,
-                improvement_suggestion="Document a clear theory of change with causal pathway" if toc_pts < 3 else None,
-                improvement_value=min(3 - toc_pts, 2) if toc_pts < 3 else 0,
+                improvement_suggestion="Document a clear theory of change with causal pathway" if toc_pts < toc_possible else None,
+                improvement_value=min(toc_possible - toc_pts, max(1, toc_possible * 2 // 3)) if toc_pts < toc_possible else 0,
             )
         )
 
-        # 7. Governance (2 pts) — absorbed from Credibility
-        gov_level, gov_pts = self._score_governance(metrics, tier)
+        # 7. Governance — categorical, then scale
+        gov_level, raw_gov_pts = self._score_governance(metrics, tier)
+        gov_possible = rubric.weights["governance"]
+        gov_pts = rubric.scale_score("governance", raw_gov_pts)
         gov_evidence = f"Board governance: {gov_level} ({metrics.board_size or 'unknown'} members)"
-        if tier == "EMERGING" and gov_pts > 0 and gov_level == "WEAK":
+        if tier == "EMERGING" and raw_gov_pts > 0 and gov_level == "WEAK":
             gov_evidence = f"Board governance: baseline ({metrics.board_size or 'unknown'} members, emerging org)"
         components.append(
             ScoreComponent(
                 name="Governance",
                 scored=gov_pts,
-                possible=2,
+                possible=gov_possible,
                 evidence=gov_evidence,
                 status=ComponentStatus.FULL
                 if gov_level in ("STRONG", "ADEQUATE")
@@ -1047,6 +1081,7 @@ class ImpactScorer:
             cost_per_beneficiary=cpb,
             directness_level=dir_level,
             impact_design_categories=[],
+            rubric_archetype=rubric.archetype,
         )
 
     def _score_evidence_outcomes(self, eq_level: str, tier: str) -> int:
@@ -1298,6 +1333,10 @@ class AlignmentScorer:
                 possible=19,
                 evidence=mdf_evidence,
                 status=ComponentStatus.FULL if mdf_pts >= 12 else ComponentStatus.PARTIAL,
+                improvement_suggestion="Add a dedicated zakat page or program and highlight humanitarian dimensions of your work"
+                if mdf_pts < 12
+                else None,
+                improvement_value=min(19 - mdf_pts, 8) if mdf_pts < 12 else 0,
             )
         )
 
@@ -1311,6 +1350,10 @@ class AlignmentScorer:
                 possible=13,
                 evidence=f"Cause area: {cause_area.replace('_', ' ').title()} ({cu_pts}/13)",
                 status=ComponentStatus.FULL if cause_area != "UNKNOWN" else ComponentStatus.PARTIAL,
+                improvement_suggestion="Clearly document your primary cause area on your website"
+                if cause_area == "UNKNOWN"
+                else None,
+                improvement_value=min(13 - cu_pts, 4) if cause_area == "UNKNOWN" else 0,
             )
         )
 
@@ -1323,6 +1366,10 @@ class AlignmentScorer:
                 possible=7,
                 evidence=us_evidence,
                 status=ComponentStatus.FULL if us_pts >= 4 else ComponentStatus.PARTIAL,
+                improvement_suggestion="Expand services to underserved populations or regions with limited nonprofit coverage"
+                if us_pts < 4
+                else None,
+                improvement_value=min(7 - us_pts, 3) if us_pts < 4 else 0,
             )
         )
 
@@ -2080,12 +2127,18 @@ class AmalScorerV2:
         return self._audit_log
 
     def evaluate(
-        self, metrics: CharityMetrics, cause_area: str = "DEFAULT", evaluation_track: str = "STANDARD"
+        self, metrics: CharityMetrics, cause_area: str = "DEFAULT", evaluation_track: str = "STANDARD"  # noqa: ARG002
     ) -> AmalScoresV2:
         """Evaluate all dimensions and produce AmalScoresV2."""
+        # Look up per-category rubric for Impact weighting
+        from src.llm.category_classifier import get_charity_category
+
+        category = get_charity_category(metrics.ein)
+        rubric = get_rubric_for_category(category)
+
         # Credibility is internal — feeds DataConfidence + Impact quality-practice
         credibility = self.credibility_scorer.evaluate(metrics)
-        impact = self.impact_scorer.evaluate(metrics, cause_area)
+        impact = self.impact_scorer.evaluate(metrics, cause_area, rubric=rubric)
         alignment = self.alignment_scorer.evaluate(metrics)
         zakat_bonus = self.zakat_scorer.evaluate(metrics)
         case_against, risk_deduction = self.risk_scorer.evaluate(metrics)

@@ -203,6 +203,19 @@ def _extract_archetype(charity_data: dict | None) -> str | None:
     return classification.get("archetype")
 
 
+def _extract_rubric_archetype(evaluation: dict | None) -> str | None:
+    """Extract rubric archetype from score_details.impact.rubric_archetype."""
+    if not evaluation:
+        return None
+    score_details = evaluation.get("score_details")
+    if not score_details or not isinstance(score_details, dict):
+        return None
+    impact = score_details.get("impact")
+    if not impact or not isinstance(impact, dict):
+        return None
+    return impact.get("rubric_archetype")
+
+
 def _extract_pillar_scores(evaluation: dict | None) -> dict[str, int | float] | None:
     """Extract pillar scores from score_details for visualization.
 
@@ -307,6 +320,8 @@ def build_charity_summary(
         "foundedYear": charity_data.get("founded_year") if charity_data else None,
         # Score summary sentence (deterministic, template-based)
         "scoreSummary": _extract_score_summary(evaluation) if evaluation else None,
+        # Rubric archetype used for Impact weighting (v5.0.0+)
+        "rubricArchetype": _extract_rubric_archetype(evaluation),
         # Asnaf categories for future filtering
         "asnafServed": (charity_data.get("zakat_metadata") or {}).get("asnaf_categories_served")
         if charity_data
