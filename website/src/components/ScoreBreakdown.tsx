@@ -93,13 +93,6 @@ const ComponentRow: React.FC<{
             {component.scored}/{component.possible}
           </span>
         )}
-        {component.improvement_value > 0 && !noData && (
-          <span className={`text-xs font-semibold px-1.5 py-0.5 rounded ${
-            isDark ? 'bg-amber-900/40 text-amber-400' : 'bg-amber-100 text-amber-700'
-          }`}>
-            +{component.improvement_value}
-          </span>
-        )}
       </div>
 
       {/* Evidence — always visible, formatted for donors */}
@@ -116,10 +109,13 @@ const ComponentRow: React.FC<{
         </p>
       )}
 
-      {/* Improvement suggestion — inline */}
+      {/* Improvement suggestion — inline with recoverable points */}
       {component.improvement_value > 0 && component.improvement_suggestion && (
         <p className={`mt-1 ml-4 text-xs leading-relaxed ${isDark ? 'text-amber-400/70' : 'text-amber-600'}`}>
           → {component.improvement_suggestion}
+          <span className={`ml-1.5 font-semibold ${isDark ? 'text-amber-400' : 'text-amber-700'}`}>
+            (+{component.improvement_value})
+          </span>
         </p>
       )}
     </div>
