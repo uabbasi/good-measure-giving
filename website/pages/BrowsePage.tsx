@@ -63,6 +63,7 @@ const PRESET_FILTERS: PresetFilter[] = [
   { id: 'yemen', label: 'Yemen', tags: ['yemen'], group: 'where' },
   { id: 'afghanistan', label: 'Afghanistan', tags: ['afghanistan'], group: 'where' },
   { id: 'east-africa', label: 'East Africa', tags: ['somalia', 'sudan', 'ethiopia'], group: 'where' },
+  { id: 'sudan', label: 'Sudan', tags: ['sudan'], group: 'where' },
   { id: 'pakistan', label: 'Pakistan', tags: ['pakistan'], group: 'where' },
   { id: 'bangladesh', label: 'Bangladesh', tags: ['bangladesh'], group: 'where' },
   { id: 'india', label: 'India', tags: ['india'], group: 'where' },
@@ -724,12 +725,14 @@ export const BrowsePage: React.FC = () => {
             </div>
             <button
               onClick={switchToPowerMode}
-              className={`mt-4 inline-flex items-center gap-1.5 text-sm font-medium transition-colors ${
-                isDark ? 'text-slate-400 hover:text-emerald-400' : 'text-slate-500 hover:text-emerald-600'
+              className={`mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
+                isDark
+                  ? 'border-slate-700 text-slate-300 hover:border-emerald-600/50 hover:text-emerald-400'
+                  : 'border-slate-300 text-slate-600 hover:border-emerald-500 hover:text-emerald-600'
               }`}
             >
-              I know what I'm looking for
-              <ArrowRight className="w-4 h-4" aria-hidden="true" />
+              <SlidersHorizontal className="w-4 h-4" aria-hidden="true" />
+              Explore All Filters
             </button>
           </div>
         )}
