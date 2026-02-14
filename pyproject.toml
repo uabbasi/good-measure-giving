@@ -62,11 +62,9 @@ all = [
 ]
 
 [project.scripts]
-# 4-phase pipeline scripts
-crawl = "src.crawl:main"
-synthesize = "src.synthesize:main"
-baseline = "src.baseline_scorer:main"
-# Export: use `uv run python export.py` (full export with all website fields)
+# Canonical pipeline runner is script-based:
+# `uv run python data-pipeline/streaming_runner.py ...`
+# Keep only valid packaged CLI entrypoints here.
 judge = "src.judge:main"
 
 [tool.ruff]

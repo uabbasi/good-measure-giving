@@ -4,13 +4,18 @@ Python pipeline for collecting, parsing, scoring, and exporting Muslim charity d
 
 ## Pipeline Stages
 
-The default V2 pipeline runs 5 stages:
+Canonical production runner: `streaming_runner.py`
 
-1. `crawl.py` - Fetch raw data from sources
-2. `extract.py` - Parse raw content into validated source schemas
-3. `synthesize.py` - Reconcile sources and derive canonical fields
-4. `baseline.py` - Generate baseline scores and narratives
-5. `export.py` - Export website ready JSON datasets
+It executes the full end-to-end flow per EIN:
+
+1. `crawl` - Fetch raw data from required sources
+2. `extract` - Parse source rows into validated schemas
+3. `discover` - Run grounded discovery services
+4. `synthesize` - Reconcile and derive canonical fields
+5. `baseline` - Generate scores and baseline narrative
+6. `rich` - Generate rich narrative
+7. `judge` - Run quality judges
+8. `export` - Rebuild website data exports
 
 ## Quick Start
 
@@ -18,11 +23,14 @@ The default V2 pipeline runs 5 stages:
 cd data-pipeline
 uv sync
 
-# Run all stages
-./run_v2.sh --charities pilot_charities.txt --workers 10
+# Run canonical end-to-end pipeline
+uv run python streaming_runner.py --charities pilot_charities.txt --workers 20
 ```
 
-## Run Individual Stages
+## Standalone Phase Scripts (Debug/Targeted Reruns)
+
+Use standalone scripts for targeted debugging and reruns. For production/full runs,
+use `streaming_runner.py`.
 
 ```bash
 # Stage 1: crawl

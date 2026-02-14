@@ -28,11 +28,9 @@ Vite runs locally at `http://localhost:5173`.
 cd data-pipeline
 uv sync
 
-# Full pipeline (crawl -> process -> baseline -> rich)
-./run_v2.sh --charities pilot_charities.txt --workers 10
-
-# Export latest pipeline output for website
-uv run python export.py --charities pilot_charities.txt
+# Canonical full pipeline (crawl -> extract -> discover -> synthesize ->
+# baseline -> rich -> judge -> export)
+uv run python streaming_runner.py --charities pilot_charities.txt --workers 10
 ```
 
 ## Environment Setup

@@ -396,9 +396,9 @@ def main():
 
     print("\n✓ Extraction complete (parsed_json populated)")
     print("\nNext steps:")
-    print("  1. Run discover phase (optional): python discover.py")
-    print("  2. Run synthesize phase: python synthesize.py")
-    print("  3. Run baseline scorer: python baseline.py")
+    print("  1. Run synthesize phase: python synthesize.py")
+    print("  2. Run baseline scorer: python baseline.py")
+    print("  3. Recommended for full flow: python streaming_runner.py --charities <file>")
 
     # Exit with error if quality gate failed or any extraction failed
     if quality_failed_eins:
