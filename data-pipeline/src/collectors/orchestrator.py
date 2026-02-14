@@ -26,11 +26,6 @@ from .form990_grants import Form990GrantsCollector
 from .propublica import ProPublicaCollector
 from .web_collector import WebsiteCollector
 
-# Minimum number of successful data sources for full confidence
-# Charities with fewer sources will be marked with data_quality='partial' but still stored
-MIN_SOURCES_FULL_CONFIDENCE = 2
-
-
 def count_filled_fields(data: Dict[str, Any], prefix: str = "") -> Tuple[Set[str], int]:
     """
     Recursively count filled fields in a nested dictionary.
@@ -618,26 +613,22 @@ class DataCollectionOrchestrator:
                 report["sources_skipped"].append("website (cached)")
                 report["sources_succeeded"].append("website")
 
-        # Success criteria: ProPublica required + at least 1 other source.
-        # Exception: allow explicit ProPublica EIN-not-found and continue
-        # with other data sources.
-        propublica_missing_record = self._is_propublica_missing_record(report)
-        if "propublica" not in report["sources_succeeded"] and not propublica_missing_record:
-            self.logger.error("ProPublica fetch failed - charity cannot be processed")
+        # Strict completeness requirement:
+        # crawl is successful only when all required sources succeed.
+        required_sources = {"propublica", "charity_navigator", "candid", "form990_grants", "bbb"}
+        required_sources -= self.skip_sources
+        if "website" not in self.skip_sources and website_url:
+            required_sources.add("website")
+
+        missing_sources = sorted(src for src in required_sources if src not in report["sources_succeeded"])
+        if missing_sources:
+            details = {src: report.get("sources_failed", {}).get(src, "missing/unsuccessful") for src in missing_sources}
+            self.logger.error(f"Crawl incomplete for {ein}: required sources failed/missing: {details}")
+            report["required_sources"] = sorted(required_sources)
+            report["missing_required_sources"] = missing_sources
             return False, report
 
-        other_sources = [s for s in report["sources_succeeded"] if s != "propublica"]
-        if "propublica" in report["sources_succeeded"]:
-            if len(other_sources) < 1:
-                self.logger.error("Need at least 1 source besides ProPublica")
-                return False, report
-        else:
-            if len(report["sources_succeeded"]) < 1:
-                self.logger.error("No usable sources available after ProPublica EIN-not-found")
-                return False, report
-            report["propublica_missing_record"] = True
-            self.logger.warning("ProPublica returned EIN-not-found; proceeding with non-ProPublica sources only")
-
+        report["data_quality"] = "complete"
         return True, report
 
     def _get_or_create_charity(self, ein: str, name: Optional[str] = None, website: Optional[str] = None) -> str:
@@ -910,6 +901,7 @@ class DataCollectionOrchestrator:
             # Collect website data if we found a URL
             if discovered_url:
                 self.logger.info(f"Collecting website data from discovered URL: {discovered_url}")
+                report["sources_attempted"].append("website")
                 try:
                     success, data, error = self.website.collect_multi_page(discovered_url, ein)
                     if success:
@@ -925,36 +917,28 @@ class DataCollectionOrchestrator:
                     report["sources_failed"]["website"] = str(e)
                     self.logger.error("Website collection failed", exception=e, ein=ein)
 
-        # Per spec: Success criteria enforcement
-        # ProPublica required + at least 1 other source
-        sources_count = len(report["sources_succeeded"])
+        # Strict completeness requirement:
+        # collection is successful only when all required sources succeed.
+        required_sources = {"propublica", "charity_navigator", "candid", "form990_grants", "bbb"}
+        required_sources -= self.skip_sources
+        website_required = "website" not in self.skip_sources and (
+            bool(website_url)
+            or "website" in report.get("sources_attempted", [])
+            or "website" in report.get("sources_failed", {})
+            or "website" in report.get("sources_succeeded", [])
+        )
+        if website_required:
+            required_sources.add("website")
 
-        propublica_missing_record = self._is_propublica_missing_record(report)
-        if "propublica" not in report["sources_succeeded"] and not propublica_missing_record:
-            self.logger.error("ProPublica data required but failed - charity cannot be processed")
+        missing_sources = sorted(src for src in required_sources if src not in report["sources_succeeded"])
+        if missing_sources:
+            details = {src: report.get("sources_failed", {}).get(src, "missing/unsuccessful") for src in missing_sources}
+            self.logger.error(f"Collection incomplete for {ein}: required sources failed/missing: {details}")
+            report["required_sources"] = sorted(required_sources)
+            report["missing_required_sources"] = missing_sources
             return False, None, report
 
-        other_sources = [s for s in report["sources_succeeded"] if s != "propublica"]
-        if "propublica" in report["sources_succeeded"]:
-            if len(other_sources) < 1:
-                self.logger.error("Per spec: ProPublica + at least 1 other source required. Only ProPublica succeeded.")
-                return False, None, report
-        else:
-            if len(report["sources_succeeded"]) < 1:
-                self.logger.error("No usable sources available after ProPublica EIN-not-found")
-                return False, None, report
-            report["propublica_missing_record"] = True
-            self.logger.warning("ProPublica returned EIN-not-found; proceeding with non-ProPublica sources only")
-
-        # Data quality: partial if below ideal threshold, complete otherwise
-        if sources_count < MIN_SOURCES_FULL_CONFIDENCE:
-            self.logger.warning(
-                f"Partial data: only {sources_count} source(s) succeeded (need {MIN_SOURCES_FULL_CONFIDENCE} for full confidence). "
-                f"Data will be stored with quality_flag='partial'."
-            )
-            report["data_quality"] = "partial"
-        else:
-            report["data_quality"] = "complete"
+        report["data_quality"] = "complete"
 
         # Aggregate data into CharityMetrics
         try:

@@ -221,18 +221,25 @@ def main():
     print(f"  Database: DoltDB ({os.getenv('DOLT_HOST', '127.0.0.1')}:{os.getenv('DOLT_PORT', '3306')})")
     print("=" * 80)
 
-    # Smart caching: skip charities with valid cache
+    # Smart caching: skip charities with valid cache.
+    # Disable cache reads/writes when --skip is used so partial-source runs
+    # cannot create cache entries that mask full-source requirements later.
+    cache_enabled = len(args.skip or []) == 0
     cache_repo = PhaseCacheRepository()
     cache_skipped = []
 
     charities_to_process = []
-    for charity in charities:
-        should_run, reason = check_phase_cache(charity["ein"], "crawl", cache_repo, force=args.force)
-        if not should_run:
-            cache_skipped.append((charity["ein"], reason))
-            print(f"⊘ {charity['name'][:40]} ({charity['ein']}): Cache hit — {reason}")
-        else:
-            charities_to_process.append(charity)
+    if cache_enabled:
+        for charity in charities:
+            should_run, reason = check_phase_cache(charity["ein"], "crawl", cache_repo, force=args.force)
+            if not should_run:
+                cache_skipped.append((charity["ein"], reason))
+                print(f"⊘ {charity['name'][:40]} ({charity['ein']}): Cache hit — {reason}")
+            else:
+                charities_to_process.append(charity)
+    else:
+        charities_to_process = list(charities)
+        print("ℹ Cache disabled for this run (--skip in use)")
 
     if cache_skipped:
         print(f"\nSkipped {len(cache_skipped)} charities (cache valid), processing {len(charities_to_process)}\n")
@@ -262,7 +269,7 @@ def main():
         if success:
             results.append(result_or_error)
             # Update cache on successful crawl
-            if result_or_error.get("status") == "success":
+            if cache_enabled and result_or_error.get("status") == "success":
                 update_phase_cache(result_or_error["ein"], "crawl", cache_repo)
         else:
             # Exception occurred - create error result
@@ -328,17 +335,16 @@ def main():
     print("  2. Run synthesize phase: python synthesize.py")
     print("  3. Run baseline scorer: python baseline.py")
 
-    # Per spec: exit 0 if at least one charity processed, exit 1 if none
-    # Individual charity failures are expected and logged but don't fail the run
+    # Hard-fail semantics: any failed/error EIN should fail the batch.
     if success_count == 0:
         logger.error("Data collection failed: no charities processed successfully")
         sys.exit(1)
 
     if failed_count > 0 or error_count > 0:
-        total_charities = success_count + failed_count + error_count
-        logger.warning(
-            f"Some charities failed ({failed_count + error_count}/{total_charities}), but {success_count} succeeded"
+        logger.error(
+            f"Data collection incomplete: {failed_count + error_count} charities failed ({failed_count} failed, {error_count} errored)"
         )
+        sys.exit(1)
 
     sys.exit(0)
 

@@ -190,6 +190,10 @@ def main():
 
     args = parser.parse_args()
 
+    if args.source == "website":
+        print("Website source uses combined fetch+extract in crawl.py; nothing to do in extract.py.")
+        sys.exit(0)
+
     # Check required environment variables
     missing_env = check_environment()
     if missing_env:
@@ -237,6 +241,9 @@ def main():
     # Filter by source if specified
     if args.source:
         rows = [r for r in rows if r["source"] == args.source]
+    else:
+        # Website rows are already parsed during crawl (combined mode).
+        rows = [r for r in rows if r["source"] != "website"]
 
     if not rows:
         print("No rows found to extract.")
@@ -353,6 +360,8 @@ def main():
     from src.judges.inline_quality import run_quality_gate_batch
 
     quality_failed_eins = run_quality_gate_batch("extract", unique_eins)
+    for failed_ein in quality_failed_eins:
+        cache_repo.delete(failed_ein, "extract")
 
     # Print summary
     print("\n" + "=" * 80)
@@ -391,11 +400,12 @@ def main():
     print("  2. Run synthesize phase: python synthesize.py")
     print("  3. Run baseline scorer: python baseline.py")
 
-    # Exit with error if quality gate failed or all extractions failed
+    # Exit with error if quality gate failed or any extraction failed
     if quality_failed_eins:
         print(f"\n⛔ Exiting with error: {len(quality_failed_eins)} charities failed quality gate")
         sys.exit(1)
-    if success_count == 0 and error_count > 0:
+    if error_count > 0:
+        print(f"\n⛔ Exiting with error: {error_count} rows failed extraction")
         sys.exit(1)
 
     sys.exit(0)

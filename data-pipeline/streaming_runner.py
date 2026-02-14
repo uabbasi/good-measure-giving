@@ -544,6 +544,11 @@ def run_discovery_phase(
             success=True,
         )
         result["success"] = True
+    else:
+        # Valid run, but no discoveries to persist. Do not cache this phase.
+        result["success"] = True
+        result["skipped"] = True
+        result["skip_reason"] = "No discoveries found"
 
     result["cost_usd"] = total_cost
     result["queries_run"] = 5
@@ -684,6 +689,18 @@ def process_charity_full(
             phase_start = time.time()
             # Pass force=True to re-parse all rows (code changed or explicit --force-phase)
             extract_ok, extract_fail = extract_raw_data(ein, collectors, logger, force=True)
+            if extract_fail > 0:
+                result["phases"]["extract"] = {
+                    "success": False,
+                    "parsed": extract_ok,
+                    "failed": extract_fail,
+                    "time": round(time.time() - phase_start, 1),
+                    "cost": 0.0,
+                    "error": f"Extract failed for {extract_fail} source rows",
+                }
+                with print_lock:
+                    print(f"[{index}/{total}] ✗ {name[:40]} - Extract failed ({extract_fail} rows)")
+                return result
             result["phases"]["extract"] = {
                 "success": True,
                 "parsed": extract_ok,
@@ -732,13 +749,16 @@ def process_charity_full(
             discover_cost = discover_result.get("cost_usd", 0.0)
             result["costs"]["discover"] = discover_cost
             if discover_result.get("skipped"):
+                skip_cost = discover_cost if discover_result.get("queries_run", 0) > 0 else 0.0
                 result["phases"]["discover"] = {
                     "success": True,
                     "skipped": True,
                     "reason": discover_result.get("skip_reason", "Unknown"),
                     "time": round(time.time() - phase_start, 1),
-                    "cost": 0.0,
+                    "cost": skip_cost,
                 }
+                # No-op discovery outcomes (e.g., no discoveries/no website) must not be cached.
+                cache_repo.delete(ein, "discover")
             else:
                 # Check for discovery errors (JSON parse failures are hard errors)
                 discover_error = discover_result.get("error")
@@ -755,8 +775,21 @@ def process_charity_full(
                         print(f"[{index}/{total}] ✗ {name[:40]} - Discover failed: JSON parse error")
                     return result
 
+                if not discover_result.get("success"):
+                    result["phases"]["discover"] = {
+                        "success": False,
+                        "error": "Discovery did not produce a successful result",
+                        "queries_run": discover_result.get("queries_run", 0),
+                        "queries_succeeded": discover_result.get("queries_succeeded", 0),
+                        "time": round(time.time() - phase_start, 1),
+                        "cost": discover_cost,
+                    }
+                    with print_lock:
+                        print(f"[{index}/{total}] ✗ {name[:40]} - Discover failed")
+                    return result
+
                 result["phases"]["discover"] = {
-                    "success": discover_result.get("success", False),
+                    "success": True,
                     "queries_run": discover_result.get("queries_run", 0),
                     "queries_succeeded": discover_result.get("queries_succeeded", 0),
                     "time": round(time.time() - phase_start, 1),
@@ -1263,9 +1296,12 @@ def main():
 
     # Load pilot flags for export phase
     pilot_flags = {}
-    charities_file = args.charities if args.charities else "pilot_charities.txt"
-    if Path(charities_file).exists():
-        pilot_flags = load_pilot_charities(charities_file)
+    default_pilot_file = Path(__file__).parent / "pilot_charities.txt"
+    if default_pilot_file.exists():
+        pilot_flags.update(load_pilot_charities(str(default_pilot_file)))
+    if args.charities and Path(args.charities).exists():
+        # Overlay explicit run file on top of defaults.
+        pilot_flags.update(load_pilot_charities(args.charities))
 
     print("=" * 80)
     print(f"STREAMING PIPELINE: {len(charities)} charities × 7 phases")
@@ -1410,26 +1446,68 @@ def main():
             dolt.tag(tag_name, message=tag_message, ref=tag_ref)
             print(f"✓ Tagged: {tag_name}")
 
-    # Rebuild charities.json index file from exported charities
-    if not args.skip_export:
-        exported_eins = [r["ein"] for r in results if r.get("exported")]
-        if exported_eins:
-            summaries = []
-            for ein in exported_eins:
-                charity = charity_repo.get(ein)
-                charity_data = data_repo.get(ein)
-                evaluation = eval_repo.get(ein)
-                flags = pilot_flags.get(ein)
-                if charity:
-                    summary = build_charity_summary(
-                        charity,
-                        charity_data,
-                        evaluation,
-                        hide_from_curated=flags.hide_from_curated if flags else False,
-                    )
-                    summaries.append(summary)
+    comprehensive_export_count = 0
+    comprehensive_export_eligible = 0
+    comprehensive_export_failed = 0
+    comprehensive_export_hard_failed = False
 
-            # Write charities.json with source commit for provenance
+    # Rebuild exports from all currently exportable charities.
+    # This keeps dataset additive/non-regressive across partial reruns.
+    if not args.skip_export:
+        all_charities = charity_repo.get_all()
+        exportable_eins: list[str] = []
+        for charity in all_charities:
+            ein = charity.get("ein")
+            if not ein:
+                continue
+            evaluation = eval_repo.get(ein)
+            if not evaluation:
+                continue
+            judge_score = evaluation.get("judge_score")
+            if args.judge_threshold > 0 and (judge_score is None or judge_score < args.judge_threshold):
+                continue
+            exportable_eins.append(ein)
+
+        summaries = []
+        rebuild_failures: list[tuple[str, str]] = []
+        for ein in sorted(set(exportable_eins)):
+            flags = pilot_flags.get(ein)
+            export_result = export_charity(
+                ein,
+                charity_repo,
+                raw_repo,
+                data_repo,
+                eval_repo,
+                WEBSITE_DATA_DIR,
+                hide_from_curated=flags.hide_from_curated if flags else False,
+                pilot_name=flags.name if flags else None,
+            )
+            if not export_result.get("success"):
+                rebuild_failures.append((ein, export_result.get("error", "Unknown export error")))
+                continue
+
+            export_summary = export_result.get("summary", {})
+            export_passed, _ = run_inline_quality_check("export", ein, export_summary, {})
+            if not export_passed:
+                rebuild_failures.append((ein, "Export quality check failed"))
+                continue
+
+            summaries.append(export_summary)
+        comprehensive_export_count = len(summaries)
+        comprehensive_export_eligible = len(set(exportable_eins))
+        comprehensive_export_failed = len(rebuild_failures)
+        if rebuild_failures:
+            comprehensive_export_hard_failed = True
+            print(
+                f"⛔ Comprehensive export failed: {len(rebuild_failures)} of {len(set(exportable_eins))} "
+                "eligible charities could not be exported"
+            )
+            for failed_ein, err in rebuild_failures[:10]:
+                print(f"    {failed_ein}: {err}")
+            if len(rebuild_failures) > 10:
+                print(f"    ... and {len(rebuild_failures) - 10} more")
+        else:
+            # Write charities.json only on complete success to avoid partial/regressive index output.
             log_entries = dolt.log(1)
             source_commit = log_entries[0].hash if log_entries else None
             charities_file = WEBSITE_DATA_DIR / "charities.json"
@@ -1440,25 +1518,28 @@ def main():
                     indent=2,
                     default=str,
                 )
-            print(f"✓ Updated charities.json: {len(summaries)} charities")
+            print(
+                f"✓ Updated charities.json: {len(summaries)} charities "
+                f"(eligible={len(set(exportable_eins))}, failed={len(rebuild_failures)})"
+            )
 
-        # Sync data/ → public/data/ for Vite dev server
-        convert_script = Path(__file__).parent.parent / "website" / "scripts" / "convertData.ts"
-        if convert_script.exists():
-            try:
-                result = subprocess.run(
-                    ["npx", "tsx", str(convert_script)],
-                    cwd=convert_script.parent.parent,
-                    capture_output=True,
-                    text=True,
-                    timeout=60,
-                )
-                if result.returncode == 0:
-                    print("✓ Synced data/ → public/data/")
-                else:
-                    print(f"⚠ convertData.ts failed: {result.stderr[-200:]}")
-            except Exception as e:
-                print(f"⚠ convertData.ts skipped: {e}")
+            # Sync data/ → public/data/ for Vite dev server
+            convert_script = Path(__file__).parent.parent / "website" / "scripts" / "convertData.ts"
+            if convert_script.exists():
+                try:
+                    result = subprocess.run(
+                        ["npx", "tsx", str(convert_script)],
+                        cwd=convert_script.parent.parent,
+                        capture_output=True,
+                        text=True,
+                        timeout=60,
+                    )
+                    if result.returncode == 0:
+                        print("✓ Synced data/ → public/data/")
+                    else:
+                        print(f"⚠ convertData.ts failed: {result.stderr[-200:]}")
+                except Exception as e:
+                    print(f"⚠ convertData.ts skipped: {e}")
 
     # Summary
     print("\n" + "=" * 80)
@@ -1484,7 +1565,11 @@ def main():
             1 for r in results if r.get("phases", {}).get("export", {}).get("reason", "").startswith("Judge score")
         )
         print("\nExport summary:")
-        print(f"  Exported: {exported_count}")
+        print(f"  Exported in this run: {exported_count}")
+        print(
+            f"  Comprehensive index size: {comprehensive_export_count} "
+            f"(eligible={comprehensive_export_eligible}, failed={comprehensive_export_failed})"
+        )
         print(f"  Skipped (judge < {args.judge_threshold}): {skipped_judge}")
 
     # Cost summary
@@ -1501,7 +1586,9 @@ def main():
     if success_count > 0:
         print(f"Estimated 150 charities: ${avg_cost * 150:.2f}")
 
-    sys.exit(0 if success_count == len(results) else 1)
+    if comprehensive_export_hard_failed:
+        print("\n⛔ Exiting with error: comprehensive export rebuild was incomplete")
+    sys.exit(0 if success_count == len(results) and not comprehensive_export_hard_failed else 1)
 
 
 if __name__ == "__main__":
