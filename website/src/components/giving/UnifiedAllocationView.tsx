@@ -10,7 +10,7 @@
 
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, X, Check, GripVertical, ChevronDown } from 'lucide-react';
+import { Plus, X, Check, GripVertical, ChevronDown, ArrowRight } from 'lucide-react';
 import {
   DndContext,
   DragOverlay,
@@ -353,37 +353,45 @@ export function UnifiedAllocationView({
   const [charitySearchQuery, setCharitySearchQuery] = useState('');
   const [zakatLens, setZakatLens] = useState(false);
   const [collapsedBuckets, setCollapsedBuckets] = useState<Set<string>>(new Set());
+  const [onboardingDismissed, setOnboardingDismissed] = useState(false);
   const [target, setTarget] = useState(initialTarget?.toString() || '');
   const [saving, setSaving] = useState(false);
   const [buckets, setBuckets] = useState<Array<{
     id: string; tagId: string; label: string; percent: number; color: string;
   }>>([]);
   const [assignments, setAssignments] = useState<Map<string, string>>(new Map());
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const targetInputRef = useRef<HTMLInputElement | null>(null);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasInitialized = useRef(false);
 
-  // Sync props on initial load only
+  // Sync profile props once when we actually have saved data.
   useEffect(() => {
-    if (initialTarget && !hasInitialized.current) setTarget(initialTarget.toString());
-  }, [initialTarget]);
+    if (hasInitialized.current) return;
+    const hasInitialData =
+      (initialTarget ?? 0) > 0 ||
+      initialBuckets.length > 0 ||
+      initialAssignments.length > 0;
+    if (!hasInitialData) return;
+
+    setTarget(initialTarget && initialTarget > 0 ? initialTarget.toString() : '');
+    setBuckets(initialBuckets.map((b, i) => {
+      const tag = ALL_TAGS.find(t => t.id === b.tags?.[0]) || { id: b.tags?.[0] || '', label: b.name };
+      return { id: b.id, tagId: tag.id, label: tag.label, percent: b.percentage || 0, color: b.color || COLORS[i % COLORS.length] };
+    }));
+
+    const map = new Map<string, string>();
+    initialAssignments.forEach(a => map.set(a.ein, a.bucketId));
+    setAssignments(map);
+    hasInitialized.current = true;
+  }, [initialTarget, initialBuckets, initialAssignments]);
 
   useEffect(() => {
-    if (initialBuckets.length > 0 && !hasInitialized.current) {
-      setBuckets(initialBuckets.map((b, i) => {
-        const tag = ALL_TAGS.find(t => t.id === b.tags?.[0]) || { id: b.tags?.[0] || '', label: b.name };
-        return { id: b.id, tagId: tag.id, label: tag.label, percent: b.percentage || 0, color: b.color || COLORS[i % COLORS.length] };
-      }));
-    }
-  }, [initialBuckets]);
-
-  useEffect(() => {
-    if (initialAssignments.length > 0 && !hasInitialized.current) {
-      const map = new Map<string, string>();
-      initialAssignments.forEach(a => map.set(a.ein, a.bucketId));
-      setAssignments(map);
-      hasInitialized.current = true;
-    }
-  }, [initialAssignments]);
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const targetNum = parseInt(target) || 0;
   const totalPct = buckets.reduce((s, b) => s + b.percent, 0);
@@ -395,7 +403,6 @@ export function UnifiedAllocationView({
     const b = newBuckets || buckets;
     const t = newTarget ?? targetNum;
     const a = newAssignments || assignments;
-    if (b.length === 0 && t === 0) return;
 
     saveTimeoutRef.current = setTimeout(async () => {
       setSaving(true);
@@ -434,6 +441,23 @@ export function UnifiedAllocationView({
   }, [buckets, donations, charityToBucket]);
 
   const totalGiven = Array.from(bucketGiven.values()).reduce((s, v) => s + v, 0);
+  const hasTarget = targetNum > 0;
+  const hasCategories = buckets.length > 0;
+  const hasSavedCharities = bookmarkedCharities.length > 0;
+  const hasLoggedDonation = donations.length > 0;
+  const showOnboarding =
+    !onboardingDismissed &&
+    (!hasTarget || !hasCategories || !hasSavedCharities || !hasLoggedDonation);
+
+  const onboardingStep = !hasTarget
+    ? 1
+    : !hasCategories
+    ? 2
+    : !hasSavedCharities
+    ? 3
+    : !hasLoggedDonation
+    ? 4
+    : 0;
 
   // Zakat eligibility helper
   const isZakatEligible = useCallback((walletTag: string | null) => {
@@ -508,14 +532,41 @@ export function UnifiedAllocationView({
   const handleBlur = () => triggerSave();
   const handleKeyDown = (e: React.KeyboardEvent) => { if (e.key === 'Enter') { (e.target as HTMLInputElement).blur(); triggerSave(); } };
 
+  const handleOnboardingAction = () => {
+    if (onboardingStep === 1) {
+      targetInputRef.current?.focus();
+      targetInputRef.current?.select();
+      return;
+    }
+
+    if (onboardingStep === 2) {
+      setShowPicker(true);
+      setShowCharitySearch(false);
+      return;
+    }
+
+    if (onboardingStep === 3) {
+      setShowCharitySearch(true);
+      setShowPicker(false);
+      return;
+    }
+
+    if (onboardingStep === 4) {
+      const first = bookmarkedCharities[0];
+      onLogDonation(first?.ein, first?.name);
+    }
+  };
+
   // Add a suggested charity (bookmark + assign to bucket)
   const onAddSuggestion = async (ein: string, name: string, bucketId: string) => {
     if (onAddCharity) {
       await onAddCharity(ein, name, bucketId);
       // Also update local assignments
-      const newAssignments = new Map(assignments);
-      newAssignments.set(ein, bucketId);
-      setAssignments(newAssignments);
+      setAssignments(prev => {
+        const next = new Map(prev);
+        next.set(ein, bucketId);
+        return next;
+      });
     }
   };
 
@@ -580,6 +631,7 @@ export function UnifiedAllocationView({
             <div className={`flex items-center border ${isDark ? 'bg-slate-800/80 border-slate-700' : 'bg-white border-slate-200'} rounded-lg px-3 py-1.5 shadow-sm`}>
               <span className={`text-sm font-medium ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>$</span>
               <input
+                ref={targetInputRef}
                 type="text"
                 inputMode="numeric"
                 value={target}
@@ -659,6 +711,63 @@ export function UnifiedAllocationView({
         </div>
       </div>
 
+      {/* Guided onboarding */}
+      {showOnboarding && (
+        <div className={`px-4 py-3 border-b ${border} ${isDark ? 'bg-emerald-500/5' : 'bg-emerald-50/60'}`}>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className={`text-xs font-semibold uppercase tracking-wide ${isDark ? 'text-emerald-400' : 'text-emerald-700'}`}>
+                Getting Started
+              </p>
+              <p className={`text-sm mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                Step {onboardingStep} of 4: {
+                  onboardingStep === 1 ? 'Set your annual zakat target' :
+                  onboardingStep === 2 ? 'Create at least one category' :
+                  onboardingStep === 3 ? 'Add your first charity' :
+                  'Log your first donation'
+                }
+              </p>
+            </div>
+            <button
+              onClick={() => setOnboardingDismissed(true)}
+              className={`text-xs font-medium px-2 py-1 rounded border transition-colors ${
+                isDark
+                  ? 'text-slate-400 border-slate-700 hover:bg-slate-800 hover:text-slate-300'
+                  : 'text-slate-500 border-slate-200 hover:bg-white hover:text-slate-700'
+              }`}
+            >
+              Dismiss
+            </button>
+          </div>
+
+          <div className="mt-3 flex items-center gap-2">
+            {[1, 2, 3, 4].map(step => {
+              const complete = step === 1 ? hasTarget : step === 2 ? hasCategories : step === 3 ? hasSavedCharities : hasLoggedDonation;
+              const active = step === onboardingStep;
+              return (
+                <div
+                  key={step}
+                  className={`h-1.5 rounded-full transition-all ${complete ? 'bg-emerald-500' : active ? 'bg-emerald-300' : isDark ? 'bg-slate-700' : 'bg-slate-200'}`}
+                  style={{ width: active ? 52 : 28 }}
+                />
+              );
+            })}
+
+            <button
+              onClick={handleOnboardingAction}
+              className={`ml-2 inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg shadow-sm transition-colors ${
+                isDark
+                  ? 'bg-emerald-600 text-white hover:bg-emerald-500'
+                  : 'bg-emerald-600 text-white hover:bg-emerald-700'
+              }`}
+            >
+              Continue
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Charity search */}
       {showCharitySearch && (
         <div className={`px-4 py-4 border-b ${border} ${isDark ? 'bg-slate-800/30' : 'bg-blue-50/30'}`}>
@@ -721,9 +830,15 @@ export function UnifiedAllocationView({
                     <div className="flex items-center gap-1">
                       {buckets.length > 0 ? (
                         <select
-                          onChange={e => {
-                            if (e.target.value && onAddCharity) {
-                              onAddCharity(c.ein, c.name, e.target.value);
+                          onChange={async e => {
+                            const selectedBucketId = e.target.value;
+                            if (selectedBucketId && onAddCharity) {
+                              await onAddCharity(c.ein, c.name, selectedBucketId);
+                              setAssignments(prev => {
+                                const next = new Map(prev);
+                                next.set(c.ein, selectedBucketId);
+                                return next;
+                              });
                               setCharitySearchQuery('');
                             }
                           }}

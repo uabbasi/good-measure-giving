@@ -45,7 +45,67 @@ export function ActionsBar({ charityEin, charityName, onLogDonation, variant = '
 
     return (
       <div className={`border-b ${isDark ? 'border-slate-800/50 bg-slate-950' : 'border-slate-200 bg-slate-100'}`}>
-        <div className="px-6">
+        {/* Mobile quick actions */}
+        <div className={`sm:hidden sticky top-16 z-30 border-b ${isDark ? 'border-slate-800 bg-slate-950/95' : 'border-slate-200 bg-white/95'} backdrop-blur`}>
+          <div className="px-3 py-2.5">
+            <div className="flex items-center gap-2">
+              {isSignedIn ? (
+                <>
+                  {onLogDonation && (
+                    <button
+                      onClick={onLogDonation}
+                      className={`flex-1 inline-flex items-center justify-center gap-2 px-3 py-2.5 min-h-[44px] rounded-lg text-sm font-semibold transition-colors ${
+                        isDark
+                          ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/25'
+                          : 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
+                      }`}
+                    >
+                      <Plus className="w-4 h-4" />
+                      Log Donation
+                    </button>
+                  )}
+                  <BookmarkButton
+                    charityEin={charityEin}
+                    charityName={charityName}
+                    showLabel
+                    fullWidth
+                    size="md"
+                    className="flex-1"
+                  />
+                </>
+              ) : (
+                <SignInButton variant="custom" isDark={isDark}>
+                  <span className={`w-full inline-flex items-center justify-center gap-2 px-3 py-2.5 min-h-[44px] rounded-lg text-sm font-semibold cursor-pointer ${
+                    isDark
+                      ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                      : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                  }`}>
+                    <LogIn className="w-4 h-4" />
+                    Sign in to save & log
+                  </span>
+                </SignInButton>
+              )}
+              {donateUrl && (
+                <a
+                  href={donateUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={onDonateClick}
+                  className={`inline-flex items-center justify-center gap-2 px-3 py-2.5 min-h-[44px] rounded-lg text-sm font-semibold whitespace-nowrap ${
+                    isDark
+                      ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                      : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                  }`}
+                >
+                  Donate
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="hidden sm:block px-6">
           <div className="flex items-center justify-between py-2">
             {/* Cause Area + Wallet Tag (left side) */}
             <div className="flex items-center gap-2">
@@ -149,7 +209,51 @@ export function ActionsBar({ charityEin, charityName, onLogDonation, variant = '
 
   return (
     <div className={`border-b ${isDark ? 'border-slate-800 bg-slate-900/50' : 'border-slate-200 bg-slate-50/50'}`}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Mobile quick actions */}
+      <div className={`sm:hidden sticky top-16 z-30 border-b ${isDark ? 'border-slate-800 bg-slate-900/95' : 'border-slate-200 bg-white/95'} backdrop-blur`}>
+        <div className="px-3 py-2.5">
+          <div className="flex items-center gap-2">
+            {isSignedIn ? (
+              <>
+                {onLogDonation && (
+                  <button
+                    onClick={onLogDonation}
+                    className={`flex-1 inline-flex items-center justify-center gap-2 px-3 py-2.5 min-h-[44px] rounded-lg text-sm font-semibold transition-colors ${
+                      isDark
+                        ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/25'
+                        : 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
+                    }`}
+                  >
+                    <Plus className="w-4 h-4" />
+                    Log Donation
+                  </button>
+                )}
+                <BookmarkButton
+                  charityEin={charityEin}
+                  charityName={charityName}
+                  showLabel
+                  fullWidth
+                  size="md"
+                  className="flex-1"
+                />
+              </>
+            ) : (
+              <SignInButton variant="custom" isDark={isDark}>
+                <span className={`w-full inline-flex items-center justify-center gap-2 px-3 py-2.5 min-h-[44px] rounded-lg text-sm font-semibold cursor-pointer ${
+                  isDark
+                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                    : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                }`}>
+                  <LogIn className="w-4 h-4" />
+                  Sign in to save & log
+                </span>
+              </SignInButton>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="hidden sm:block max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between py-2.5">
           {/* Cause Area + Wallet Tag (left side) */}
           <div className="flex items-center gap-2">

@@ -282,11 +282,14 @@ export function ProfilePage() {
                 await addBookmark(ein);
                 // Add the assignment to profile
                 const currentAssignments = profile?.charityBucketAssignments || [];
+                const nextAssignments = bucketId
+                  ? [
+                      ...currentAssignments.filter(a => a.charityEin !== ein),
+                      { charityEin: ein, bucketId },
+                    ]
+                  : currentAssignments.filter(a => a.charityEin !== ein);
                 await updateProfile({
-                  charityBucketAssignments: [
-                    ...currentAssignments.filter(a => a.charityEin !== ein),
-                    { charityEin: ein, bucketId },
-                  ],
+                  charityBucketAssignments: nextAssignments,
                 });
               }}
               onRemoveCharity={async (ein) => {

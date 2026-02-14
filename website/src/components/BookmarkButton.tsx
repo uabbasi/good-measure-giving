@@ -14,6 +14,7 @@ interface BookmarkButtonProps {
   charityName?: string;
   size?: 'sm' | 'md' | 'lg';
   showLabel?: boolean;
+  fullWidth?: boolean;
   className?: string;
 }
 
@@ -22,6 +23,7 @@ export function BookmarkButton({
   charityName,
   size = 'md',
   showLabel = false,
+  fullWidth = false,
   className = '',
 }: BookmarkButtonProps) {
   const { isDark } = useLandingTheme();
@@ -42,6 +44,12 @@ export function BookmarkButton({
     sm: 'p-1',
     md: 'p-1.5',
     lg: 'p-2',
+  };
+
+  const labelledButtonClasses = {
+    sm: 'inline-flex items-center gap-1.5 px-2.5 py-1.5 min-h-[40px]',
+    md: 'inline-flex items-center gap-1.5 px-3 py-2 min-h-[44px]',
+    lg: 'inline-flex items-center gap-2 px-3.5 py-2.5 min-h-[48px]',
   };
 
   const handleClick = async (e: React.MouseEvent) => {
@@ -79,7 +87,7 @@ export function BookmarkButton({
         aria-pressed={bookmarked}
         title={label}
         className={`
-          ${buttonSizeClasses[size]}
+          ${showLabel ? labelledButtonClasses[size] : buttonSizeClasses[size]}
           rounded-full
           transition-all duration-200
           ${isDark
@@ -88,6 +96,7 @@ export function BookmarkButton({
           }
           ${isAnimating ? 'scale-125' : 'scale-100'}
           ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+          ${fullWidth ? 'w-full justify-center' : ''}
           focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2
           ${isDark ? 'focus:ring-offset-slate-800' : 'focus:ring-offset-white'}
         `}
@@ -116,13 +125,13 @@ export function BookmarkButton({
             />
           </svg>
         )}
-      </button>
 
-      {showLabel && (
-        <span className={`ml-1 text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-          {bookmarked ? 'Saved' : 'Save'}
-        </span>
-      )}
+        {showLabel && (
+          <span className={`text-sm font-medium ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+            {bookmarked ? 'Saved' : 'Save'}
+          </span>
+        )}
+      </button>
 
       {/* Sign-in hint tooltip */}
       {showSignInHint && (
