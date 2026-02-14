@@ -620,6 +620,10 @@ class DataCollectionOrchestrator:
         if "website" not in self.skip_sources and website_url:
             required_sources.add("website")
 
+        if "bbb" in required_sources and self._is_bbb_not_found(ein, report):
+            required_sources.remove("bbb")
+            report.setdefault("sources_optional_missing", []).append("bbb:not_found")
+
         missing_sources = sorted(src for src in required_sources if src not in report["sources_succeeded"])
         if missing_sources:
             details = {src: report.get("sources_failed", {}).get(src, "missing/unsuccessful") for src in missing_sources}
@@ -930,6 +934,10 @@ class DataCollectionOrchestrator:
         if website_required:
             required_sources.add("website")
 
+        if "bbb" in required_sources and self._is_bbb_not_found(ein, report):
+            required_sources.remove("bbb")
+            report.setdefault("sources_optional_missing", []).append("bbb:not_found")
+
         missing_sources = sorted(src for src in required_sources if src not in report["sources_succeeded"])
         if missing_sources:
             details = {src: report.get("sources_failed", {}).get(src, "missing/unsuccessful") for src in missing_sources}
@@ -1128,6 +1136,27 @@ class DataCollectionOrchestrator:
         if not isinstance(error, str):
             return False
         return "organization not found for ein" in error.lower()
+
+    def _is_bbb_not_found(self, ein: str, report: Dict[str, Any]) -> bool:
+        """Return True when BBB explicitly reports charity not found."""
+        error = (report.get("sources_failed", {}) or {}).get("bbb")
+        candidates: list[str] = []
+        if isinstance(error, str):
+            candidates.append(error)
+
+        # Backoff/permanent-failure skip paths may hide the original BBB error text.
+        row = self.raw_data_repo.get_by_source(ein, "bbb")
+        if isinstance(row, dict):
+            for field in ("last_failure_reason", "error_message"):
+                value = row.get(field)
+                if isinstance(value, str):
+                    candidates.append(value)
+
+        for candidate in candidates:
+            lower = candidate.lower()
+            if "not found" in lower and "bbb" in lower:
+                return True
+        return False
 
     def _aggregate_metrics(self, ein: str, raw_data: Dict[str, Any]) -> CharityMetrics:
         """

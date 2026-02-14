@@ -148,8 +148,13 @@ def _build_awards(
 
 def _extract_donate_url(raw_sources: dict[str, dict]) -> str | None:
     """Extract a well-formed donation URL from raw website data."""
-    website_data = raw_sources.get("website", {})
-    url = website_data.get("donate_url") or website_data.get("donation_page_url")
+    website_data = raw_sources.get("website", {}) or {}
+    if not isinstance(website_data, dict):
+        return None
+    website_profile = website_data.get("website_profile", website_data)
+    if not isinstance(website_profile, dict):
+        return None
+    url = website_profile.get("donate_url") or website_profile.get("donation_page_url")
     if not url or not isinstance(url, str):
         return None
     try:
@@ -216,6 +221,76 @@ def _extract_rubric_archetype(evaluation: dict | None) -> str | None:
     return impact.get("rubric_archetype")
 
 
+def _is_truncated_text(value: str | None) -> bool:
+    """Detect text that is likely UI-truncated."""
+    return isinstance(value, str) and value.rstrip().endswith("...")
+
+
+def _choose_best_mission(*candidates: Any) -> str | None:
+    """Choose the best available mission, preferring non-truncated longer text."""
+    cleaned: list[str] = []
+    for candidate in candidates:
+        if isinstance(candidate, str):
+            text = candidate.strip()
+            if text:
+                cleaned.append(text)
+
+    if not cleaned:
+        return None
+
+    non_truncated = [text for text in cleaned if not _is_truncated_text(text)]
+    pool = non_truncated or cleaned
+    return max(pool, key=len)
+
+
+def _clean_program_list(programs: Any) -> list[str]:
+    """Normalize program lists and remove placeholders."""
+    if not isinstance(programs, list):
+        return []
+    cleaned: list[str] = []
+    seen: set[str] = set()
+    for item in programs:
+        if not isinstance(item, str):
+            continue
+        text = item.strip()
+        if not text:
+            continue
+        if re.match(r"^Program \d+$", text, flags=re.IGNORECASE):
+            continue
+        key = text.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        cleaned.append(text)
+    return cleaned
+
+
+def _is_grounding_redirect(url: Any) -> bool:
+    """Return True for Google grounding redirect URLs."""
+    return (
+        isinstance(url, str)
+        and "vertexaisearch.cloud.google.com" in url
+        and "grounding-api-redirect" in url
+    )
+
+
+def _normalize_source_attribution_urls(source_attribution: Any, fallback_website: str | None) -> Any:
+    """Replace non-canonical grounding redirect URLs with charity website URLs."""
+    if not isinstance(source_attribution, dict):
+        return source_attribution
+
+    normalized: dict[str, Any] = {}
+    for field, meta in source_attribution.items():
+        if not isinstance(meta, dict):
+            normalized[field] = meta
+            continue
+        updated = dict(meta)
+        if _is_grounding_redirect(updated.get("source_url")):
+            updated["source_url"] = fallback_website
+        normalized[field] = updated
+    return normalized
+
+
 def _extract_pillar_scores(evaluation: dict | None) -> dict[str, int | float] | None:
     """Extract pillar scores from score_details for visualization.
 
@@ -257,6 +332,7 @@ def build_charity_summary(
     charity: dict,
     charity_data: dict | None,
     evaluation: dict | None,
+    raw_sources: dict[str, dict] | None = None,
     hide_from_curated: bool = False,
 ) -> dict[str, Any]:
     """Build summary record for charities.json."""
@@ -278,12 +354,39 @@ def build_charity_summary(
         if not headline and baseline_narrative and isinstance(baseline_narrative, dict):
             headline = baseline_narrative.get("headline")
 
+    website_profile = {}
+    candid_profile = {}
+    cn_profile = {}
+    if raw_sources and isinstance(raw_sources.get("website"), dict):
+        website_raw = raw_sources.get("website", {})
+        website_profile = website_raw.get("website_profile", website_raw)
+        if not isinstance(website_profile, dict):
+            website_profile = {}
+    if raw_sources and isinstance(raw_sources.get("candid"), dict):
+        candid_raw = raw_sources.get("candid", {})
+        candid_profile = candid_raw.get("candid_profile", candid_raw)
+        if not isinstance(candid_profile, dict):
+            candid_profile = {}
+    if raw_sources and isinstance(raw_sources.get("charity_navigator"), dict):
+        cn_raw = raw_sources.get("charity_navigator", {})
+        cn_profile = cn_raw.get("cn_profile", cn_raw)
+        if not isinstance(cn_profile, dict):
+            cn_profile = {}
+
+    best_mission = _choose_best_mission(
+        charity.get("mission"),
+        website_profile.get("mission"),
+        website_profile.get("mission_statement"),
+        candid_profile.get("mission"),
+        cn_profile.get("mission"),
+    )
+
     return {
         "id": charity["ein"],
         "ein": charity["ein"],
         "name": charity.get("name") or charity["ein"],
         "tier": tier,
-        "mission": charity.get("mission"),
+        "mission": best_mission,
         "headline": headline,  # Fallback description from baseline/rich narrative
         "category": charity.get("category"),
         "website": charity.get("website"),
@@ -354,6 +457,11 @@ def build_charity_detail(
     pp_data = raw_sources.get("propublica", {})
     pp_profile = pp_data.get("propublica_990", pp_data)
 
+    website_data = raw_sources.get("website", {})
+    website_profile = website_data.get("website_profile", website_data) if isinstance(website_data, dict) else {}
+    if not isinstance(website_profile, dict):
+        website_profile = {}
+
     bbb_data = raw_sources.get("bbb", {})
     bbb_profile = bbb_data.get("bbb_profile", bbb_data)
 
@@ -363,10 +471,17 @@ def build_charity_detail(
     cn_is_rated = cn_profile.get("cn_is_rated", False)
     cn_has_scores = cn_profile.get("overall_score") is not None
 
-    # Build programs list (filter out Candid placeholders like "Program 1", "Program 2")
-    programs = []
-    if candid_profile.get("programs"):
-        programs = [p for p in candid_profile["programs"] if not re.match(r"^Program \d+$", p)]
+    website_programs = _clean_program_list(website_profile.get("programs"))
+    candid_programs = _clean_program_list(candid_profile.get("programs"))
+    programs = website_programs if len(website_programs) >= len(candid_programs) else candid_programs
+
+    best_mission = _choose_best_mission(
+        charity.get("mission"),
+        website_profile.get("mission"),
+        website_profile.get("mission_statement"),
+        candid_profile.get("mission"),
+        cn_profile.get("mission"),
+    )
 
     # NOTE: populationsServed removed - was 65% unreliable from naive keyword matching
     # See Task #3 audit: candid scraper matches "men", "communities" etc. anywhere in page text
@@ -381,7 +496,7 @@ def build_charity_detail(
         "ein": charity["ein"],
         "name": charity.get("name") or charity["ein"],
         "tier": tier,
-        "mission": charity.get("mission") or candid_profile.get("mission") or cn_profile.get("mission"),
+        "mission": best_mission,
         "programs": programs,
         # "populationsServed" removed - data quality too low (65% unreliable)
         "geographicCoverage": geographic,
@@ -474,7 +589,11 @@ def build_charity_detail(
         # E-003: Use None instead of datetime.now() - don't fake update timestamps
         "lastUpdated": evaluation.get("updated_at") if evaluation else None,
         # Source attribution - maps field name to {source_name, source_url, value, timestamp}
-        "sourceAttribution": charity_data.get("source_attribution") if charity_data else None,
+        "sourceAttribution": (
+            _normalize_source_attribution_urls(charity_data.get("source_attribution"), charity.get("website"))
+            if charity_data
+            else None
+        ),
         # Category fields for donor discovery (MECE primary category + metadata)
         "primaryCategory": charity_data.get("primary_category") if charity_data else None,
         "categoryMetadata": {
@@ -573,7 +692,7 @@ def export_charity(
             raw_sources[rd["source"]] = rd["parsed_json"]
 
     # Build summary
-    summary = build_charity_summary(charity, charity_data, evaluation, hide_from_curated)
+    summary = build_charity_summary(charity, charity_data, evaluation, raw_sources, hide_from_curated)
 
     # Build detail
     detail = build_charity_detail(charity, charity_data, evaluation, raw_sources, hide_from_curated)

@@ -21,6 +21,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 from dotenv import load_dotenv
 
@@ -471,6 +472,19 @@ def build_source_url(
     Returns:
         The source URL or None if no URL available
     """
+    def _normalize_website_evidence_url(url: str | None, fallback: str | None = None) -> str | None:
+        if not url:
+            return fallback
+        try:
+            parsed = urlparse(url)
+            if parsed.scheme not in ("http", "https") or not parsed.netloc:
+                return fallback
+            if "vertexaisearch.cloud.google.com" in parsed.netloc and "grounding-api-redirect" in parsed.path:
+                return fallback
+            return url
+        except Exception:
+            return fallback
+
     ein_clean = ein.replace("-", "")
 
     if source_name == "propublica":
@@ -483,7 +497,7 @@ def build_source_url(
         return candid_url
     elif source_name == "website":
         # Website URL comes from charities.website
-        return website_url
+        return _normalize_website_evidence_url(website_url)
     elif source_name == "form990_grants":
         # Form 990 grants come from ProPublica XML - link to main ProPublica page
         return f"https://projects.propublica.org/nonprofits/organizations/{ein_clean}"
@@ -1424,6 +1438,12 @@ def synthesize_charity(
             discovered_profile = discovered_data.get("discovered_profile", discovered_data)
             zakat_info = discovered_profile.get("zakat", {}) if discovered_profile else {}
             zakat_url = zakat_info.get("accepts_zakat_url") if zakat_info else None
+            if (
+                isinstance(zakat_url, str)
+                and "vertexaisearch.cloud.google.com" in zakat_url
+                and "grounding-api-redirect" in zakat_url
+            ):
+                zakat_url = None
         source_attribution["claims_zakat_eligible"] = create_attribution(
             "claims_zakat_eligible",
             synthesized.claims_zakat_eligible,

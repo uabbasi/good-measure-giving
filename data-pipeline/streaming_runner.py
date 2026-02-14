@@ -1506,40 +1506,71 @@ def main():
                 print(f"    {failed_ein}: {err}")
             if len(rebuild_failures) > 10:
                 print(f"    ... and {len(rebuild_failures) - 10} more")
-        else:
-            # Write charities.json only on complete success to avoid partial/regressive index output.
-            log_entries = dolt.log(1)
-            source_commit = log_entries[0].hash if log_entries else None
-            charities_file = WEBSITE_DATA_DIR / "charities.json"
-            with open(charities_file, "w") as f:
-                json.dump(
-                    {"source_commit": source_commit, "charities": summaries},
-                    f,
-                    indent=2,
-                    default=str,
-                )
-            print(
-                f"✓ Updated charities.json: {len(summaries)} charities "
-                f"(eligible={len(set(exportable_eins))}, failed={len(rebuild_failures)})"
-            )
 
-            # Sync data/ → public/data/ for Vite dev server
-            convert_script = Path(__file__).parent.parent / "website" / "scripts" / "convertData.ts"
-            if convert_script.exists():
-                try:
-                    result = subprocess.run(
-                        ["npx", "tsx", str(convert_script)],
-                        cwd=convert_script.parent.parent,
-                        capture_output=True,
-                        text=True,
-                        timeout=60,
-                    )
-                    if result.returncode == 0:
-                        print("✓ Synced data/ → public/data/")
-                    else:
-                        print(f"⚠ convertData.ts failed: {result.stderr[-200:]}")
-                except Exception as e:
-                    print(f"⚠ convertData.ts skipped: {e}")
+        # Always refresh charities.json so successfully exported charities don't drift
+        # from per-charity files when a subset of EINs fails rebuild.
+        existing_by_ein: dict[str, dict] = {}
+        charities_file = WEBSITE_DATA_DIR / "charities.json"
+        if charities_file.exists():
+            try:
+                with open(charities_file) as f:
+                    existing_payload = json.load(f)
+                existing_charities = (
+                    existing_payload.get("charities", [])
+                    if isinstance(existing_payload, dict)
+                    else existing_payload
+                )
+                if isinstance(existing_charities, list):
+                    existing_by_ein = {
+                        row.get("ein"): row
+                        for row in existing_charities
+                        if isinstance(row, dict) and row.get("ein")
+                    }
+            except Exception as e:
+                print(f"⚠ Could not read existing charities.json for merge: {e}")
+
+        for summary in summaries:
+            ein = summary.get("ein")
+            if ein:
+                existing_by_ein[ein] = summary
+
+        merged_summaries = [
+            existing_by_ein[ein]
+            for ein in sorted(set(exportable_eins))
+            if ein in existing_by_ein
+        ]
+
+        log_entries = dolt.log(1)
+        source_commit = log_entries[0].hash if log_entries else None
+        with open(charities_file, "w") as f:
+            json.dump(
+                {"source_commit": source_commit, "charities": merged_summaries},
+                f,
+                indent=2,
+                default=str,
+            )
+        print(
+            f"✓ Updated charities.json: {len(merged_summaries)} charities "
+            f"(eligible={len(set(exportable_eins))}, rebuilt={len(summaries)}, failed={len(rebuild_failures)})"
+        )
+
+        # Sync data/ → public/data/ for Vite dev server
+        convert_script = Path(__file__).parent.parent / "website" / "scripts" / "convertData.ts"
+        if convert_script.exists():
+            try:
+                result = subprocess.run(
+                    ["npx", "tsx", str(convert_script)],
+                    cwd=convert_script.parent.parent,
+                    capture_output=True,
+                    text=True,
+                    timeout=60,
+                )
+                if result.returncode == 0:
+                    print("✓ Synced data/ → public/data/")
+                else:
+                    print(f"⚠ convertData.ts failed: {result.stderr[-200:]}")
+            except Exception as e:
+                print(f"⚠ convertData.ts skipped: {e}")
 
     # Summary
     print("\n" + "=" * 80)

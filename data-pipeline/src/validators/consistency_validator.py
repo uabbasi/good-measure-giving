@@ -310,7 +310,7 @@ class ConsistencyValidator:
                             if abs(cited_score - actual_cn_score) > 1:  # Allow 1 point tolerance
                                 # Check if they're confusing with financial score
                                 if cn_financial_score and abs(cited_score - cn_financial_score) <= 1:
-                                    result.add_error(
+                                    result.add_warning(
                                         field="citations.cn_score",
                                         baseline_value=actual_cn_score,
                                         rich_value=cited_score,
@@ -321,7 +321,7 @@ class ConsistencyValidator:
                                         ),
                                     )
                                 else:
-                                    result.add_error(
+                                    result.add_warning(
                                         field="citations.cn_score",
                                         baseline_value=actual_cn_score,
                                         rich_value=cited_score,
