@@ -2,38 +2,35 @@
  * Authentication hook - returns current auth state
  */
 
-import { useSupabase } from './SupabaseProvider';
+import { useFirebaseAuth } from './FirebaseProvider';
 
 interface AuthState {
   isLoaded: boolean;
   isSignedIn: boolean;
   email: string | null;
   firstName: string | null;
+  uid: string | null;
 }
 
 export const useAuth = (): AuthState => {
-  const { session, isLoading } = useSupabase();
+  const { user, isLoading } = useFirebaseAuth();
 
   if (isLoading) {
-    return { isLoaded: false, isSignedIn: false, email: null, firstName: null };
+    return { isLoaded: false, isSignedIn: false, email: null, firstName: null, uid: null };
   }
 
-  if (!session) {
-    return { isLoaded: true, isSignedIn: false, email: null, firstName: null };
+  if (!user) {
+    return { isLoaded: true, isSignedIn: false, email: null, firstName: null, uid: null };
   }
 
-  const user = session.user;
-  // OAuth providers put name in user_metadata
-  const metadata = user.user_metadata || {};
-  const firstName = metadata.full_name?.split(' ')[0]
-    || metadata.name?.split(' ')[0]
-    || null;
+  const firstName = user.displayName?.split(' ')[0] || null;
 
   return {
     isLoaded: true,
     isSignedIn: true,
     email: user.email ?? null,
     firstName,
+    uid: user.uid,
   };
 };
 

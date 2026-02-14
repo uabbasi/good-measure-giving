@@ -58,7 +58,7 @@ function TabButton({
 
 export function ProfilePage() {
   const { isDark } = useLandingTheme();
-  const { isSignedIn, isLoaded, firstName, user } = useAuth();
+  const { isSignedIn, isLoaded, firstName, email } = useAuth();
   const { bookmarks, isLoading: bookmarksLoading, addBookmark, removeBookmark } = useBookmarkState();
   const { profile, isLoading: profileLoading, updateProfile } = useProfileState();
   const { summaries, loading: charitiesLoading } = useCharities();
@@ -196,14 +196,14 @@ export function ProfilePage() {
         <div className={`rounded-xl border p-6 mb-6 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
           <div className="flex items-center gap-4">
             <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl font-semibold ${isDark ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-700'}`}>
-              {firstName ? firstName[0].toUpperCase() : user?.email?.[0]?.toUpperCase() || '?'}
+              {firstName ? firstName[0].toUpperCase() : email?.[0]?.toUpperCase() || '?'}
             </div>
             <div className="flex-grow">
               <h1 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 {firstName || 'Welcome'}
               </h1>
               <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                {user?.email}
+                {email}
               </p>
             </div>
             <button

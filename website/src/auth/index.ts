@@ -1,11 +1,11 @@
 /**
- * Auth module - Supabase-based authentication
+ * Auth module - Firebase-based authentication
  *
- * Requires VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in environment.
+ * Requires VITE_FIREBASE_API_KEY and VITE_FIREBASE_PROJECT_ID in environment.
  */
 
-export { SupabaseProvider } from './SupabaseProvider';
-export { useSupabase } from './SupabaseProvider';
+export { FirebaseProvider } from './FirebaseProvider';
+export { useFirebaseAuth, useFirebaseData } from './FirebaseProvider';
 export { useAuth, useCommunityMember } from './useAuth';
 export { SignInButton } from './SignInButton';
 export { CommunityGate, JoinCommunityPrompt } from './CommunityGate';

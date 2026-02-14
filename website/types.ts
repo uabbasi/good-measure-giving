@@ -1085,7 +1085,7 @@ export interface CharityBucketAssignment {
   bucketId: string;
 }
 
-// User profile stored in Supabase
+// User profile stored in Firestore
 export interface UserProfile {
   id: string; // UUID, FK to auth.users
   givingPriorities: GivingPriorities; // LEGACY - use givingBuckets instead

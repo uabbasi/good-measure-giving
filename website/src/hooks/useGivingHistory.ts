@@ -4,7 +4,8 @@
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useSupabase } from '../auth/SupabaseProvider';
+import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, orderBy, query, Timestamp } from 'firebase/firestore';
+import { useFirebaseData } from '../auth/FirebaseProvider';
 import type { GivingHistoryEntry } from '../../types';
 
 export interface DonationInput {
@@ -55,58 +56,56 @@ interface UseGivingHistoryResult {
   refreshDonations: () => Promise<void>;
 }
 
-// Convert snake_case DB row to camelCase
-function dbToDonation(row: Record<string, unknown>): GivingHistoryEntry {
+function docToDonation(data: Record<string, unknown>, docId: string, userId: string): GivingHistoryEntry {
   return {
-    id: row.id as string,
-    userId: row.user_id as string,
-    charityEin: row.charity_ein as string | null,
-    charityName: row.charity_name as string,
-    amount: Number(row.amount),
-    date: row.date as string,
-    category: row.category as 'zakat' | 'sadaqah' | 'other',
-    zakatYear: row.zakat_year as number | null,
-    paymentSource: row.payment_source as string | null,
-    receiptReceived: (row.receipt_received as boolean) ?? false,
-    taxDeductible: (row.tax_deductible as boolean) ?? true,
-    matchEligible: (row.match_eligible as boolean) ?? false,
-    matchStatus: row.match_status as 'submitted' | 'received' | null,
-    matchAmount: row.match_amount ? Number(row.match_amount) : null,
-    notes: row.notes as string | null,
-    createdAt: row.created_at as string,
+    id: docId,
+    userId,
+    charityEin: (data.charityEin as string) || null,
+    charityName: data.charityName as string,
+    amount: Number(data.amount),
+    date: data.date as string,
+    category: data.category as 'zakat' | 'sadaqah' | 'other',
+    zakatYear: (data.zakatYear as number) || null,
+    paymentSource: (data.paymentSource as string) || null,
+    receiptReceived: (data.receiptReceived as boolean) ?? false,
+    taxDeductible: (data.taxDeductible as boolean) ?? true,
+    matchEligible: (data.matchEligible as boolean) ?? false,
+    matchStatus: (data.matchStatus as 'submitted' | 'received') || null,
+    matchAmount: data.matchAmount != null ? Number(data.matchAmount) : null,
+    notes: (data.notes as string) || null,
+    createdAt: data.createdAt instanceof Timestamp
+      ? data.createdAt.toDate().toISOString()
+      : (data.createdAt as string) || new Date().toISOString(),
   };
 }
 
-// Convert camelCase input to snake_case for DB
-function inputToDb(input: DonationInput): Record<string, unknown> {
+function inputToFirestore(input: DonationInput): Record<string, unknown> {
   return {
-    charity_ein: input.charityEin ?? null,
-    charity_name: input.charityName,
+    charityEin: input.charityEin ?? null,
+    charityName: input.charityName,
     amount: input.amount,
     date: input.date,
     category: input.category,
-    zakat_year: input.zakatYear ?? null,
-    payment_source: input.paymentSource ?? null,
-    receipt_received: input.receiptReceived ?? false,
-    tax_deductible: input.taxDeductible ?? true,
-    match_eligible: input.matchEligible ?? false,
-    match_status: input.matchStatus ?? null,
-    match_amount: input.matchAmount ?? null,
+    zakatYear: input.zakatYear ?? null,
+    paymentSource: input.paymentSource ?? null,
+    receiptReceived: input.receiptReceived ?? false,
+    taxDeductible: input.taxDeductible ?? true,
+    matchEligible: input.matchEligible ?? false,
+    matchStatus: input.matchStatus ?? null,
+    matchAmount: input.matchAmount ?? null,
     notes: input.notes ?? null,
   };
 }
 
 export function useGivingHistory(): UseGivingHistoryResult {
-  const { supabase, session } = useSupabase();
+  const { db, userId } = useFirebaseData();
   const [donations, setDonations] = useState<GivingHistoryEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const userId = session?.user?.id;
-
   // Fetch all donations
   const fetchDonations = useCallback(async () => {
-    if (!supabase || !userId) {
+    if (!db || !userId) {
       setDonations([]);
       setIsLoading(false);
       return;
@@ -116,21 +115,17 @@ export function useGivingHistory(): UseGivingHistoryResult {
     setError(null);
 
     try {
-      const { data, error: fetchError } = await supabase
-        .from('giving_history')
-        .select('*')
-        .eq('user_id', userId)
-        .order('date', { ascending: false });
-
-      if (fetchError) throw fetchError;
-      setDonations((data || []).map(dbToDonation));
+      const colRef = collection(db, 'users', userId, 'giving_history');
+      const q = query(colRef, orderBy('date', 'desc'));
+      const snapshot = await getDocs(q);
+      setDonations(snapshot.docs.map(d => docToDonation(d.data(), d.id, userId)));
     } catch (err) {
       console.error('Error fetching donations:', err);
       setError(err instanceof Error ? err.message : 'Failed to load donations');
     } finally {
       setIsLoading(false);
     }
-  }, [supabase, userId]);
+  }, [db, userId]);
 
   useEffect(() => {
     fetchDonations();
@@ -138,23 +133,18 @@ export function useGivingHistory(): UseGivingHistoryResult {
 
   // Add a new donation
   const addDonation = useCallback(async (input: DonationInput): Promise<GivingHistoryEntry> => {
-    if (!supabase || !userId) {
+    if (!db || !userId) {
       throw new Error('Not authenticated');
     }
 
     setError(null);
 
     try {
-      const dbData = { ...inputToDb(input), user_id: userId };
-      const { data, error: insertError } = await supabase
-        .from('giving_history')
-        .insert(dbData)
-        .select()
-        .single();
+      const colRef = collection(db, 'users', userId, 'giving_history');
+      const data = { ...inputToFirestore(input), createdAt: Timestamp.now() };
+      const docRef = await addDoc(colRef, data);
 
-      if (insertError) throw insertError;
-
-      const newDonation = dbToDonation(data);
+      const newDonation = docToDonation(data, docRef.id, userId);
       // Insert at correct position based on date
       setDonations(prev => {
         const updated = [...prev, newDonation];
@@ -167,43 +157,27 @@ export function useGivingHistory(): UseGivingHistoryResult {
       setError(message);
       throw new Error(message);
     }
-  }, [supabase, userId]);
+  }, [db, userId]);
 
   // Update an existing donation
   const updateDonation = useCallback(async (id: string, updates: Partial<DonationInput>) => {
-    if (!supabase || !userId) {
+    if (!db || !userId) {
       throw new Error('Not authenticated');
     }
 
     const existing = donations.find(d => d.id === id);
     if (!existing) throw new Error('Donation not found');
 
-    // Optimistic update
-    const dbUpdates: Record<string, unknown> = {};
-    if (updates.charityEin !== undefined) dbUpdates.charity_ein = updates.charityEin;
-    if (updates.charityName !== undefined) dbUpdates.charity_name = updates.charityName;
-    if (updates.amount !== undefined) dbUpdates.amount = updates.amount;
-    if (updates.date !== undefined) dbUpdates.date = updates.date;
-    if (updates.category !== undefined) dbUpdates.category = updates.category;
-    if (updates.zakatYear !== undefined) dbUpdates.zakat_year = updates.zakatYear;
-    if (updates.paymentSource !== undefined) dbUpdates.payment_source = updates.paymentSource;
-    if (updates.receiptReceived !== undefined) dbUpdates.receipt_received = updates.receiptReceived;
-    if (updates.taxDeductible !== undefined) dbUpdates.tax_deductible = updates.taxDeductible;
-    if (updates.matchEligible !== undefined) dbUpdates.match_eligible = updates.matchEligible;
-    if (updates.matchStatus !== undefined) dbUpdates.match_status = updates.matchStatus;
-    if (updates.matchAmount !== undefined) dbUpdates.match_amount = updates.matchAmount;
-    if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
-
     setError(null);
 
     try {
-      const { error: updateError } = await supabase
-        .from('giving_history')
-        .update(dbUpdates)
-        .eq('id', id)
-        .eq('user_id', userId);
+      const docRef = doc(db, 'users', userId, 'giving_history', id);
+      // Build partial update from provided fields
+      const firestoreUpdates = Object.fromEntries(
+        Object.entries(updates).filter(([, v]) => v !== undefined)
+      );
 
-      if (updateError) throw updateError;
+      await updateDoc(docRef, firestoreUpdates);
 
       // Refresh to get updated data with correct sorting
       await fetchDonations();
@@ -213,11 +187,11 @@ export function useGivingHistory(): UseGivingHistoryResult {
       setError(message);
       throw new Error(message);
     }
-  }, [supabase, userId, donations, fetchDonations]);
+  }, [db, userId, donations, fetchDonations]);
 
   // Delete a donation
   const deleteDonation = useCallback(async (id: string) => {
-    if (!supabase || !userId) {
+    if (!db || !userId) {
       throw new Error('Not authenticated');
     }
 
@@ -229,13 +203,8 @@ export function useGivingHistory(): UseGivingHistoryResult {
     setError(null);
 
     try {
-      const { error: deleteError } = await supabase
-        .from('giving_history')
-        .delete()
-        .eq('id', id)
-        .eq('user_id', userId);
-
-      if (deleteError) throw deleteError;
+      const docRef = doc(db, 'users', userId, 'giving_history', id);
+      await deleteDoc(docRef);
     } catch (err) {
       // Rollback
       setDonations(prev => [...prev, existing].sort((a, b) =>
@@ -246,7 +215,7 @@ export function useGivingHistory(): UseGivingHistoryResult {
       setError(message);
       throw new Error(message);
     }
-  }, [supabase, userId, donations]);
+  }, [db, userId, donations]);
 
   // Get summary for a specific year
   const getYearSummary = useCallback((year: number): YearSummary => {

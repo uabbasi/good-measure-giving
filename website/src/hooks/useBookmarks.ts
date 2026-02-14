@@ -5,7 +5,8 @@
 
 import { useCallback, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useSupabase } from '../auth/SupabaseProvider';
+import { collection, doc, getDocs, setDoc, deleteDoc, updateDoc, orderBy, query, Timestamp } from 'firebase/firestore';
+import { useFirebaseData } from '../auth/FirebaseProvider';
 import type { Bookmark } from '../../types';
 
 interface UseBookmarksResult {
@@ -22,21 +23,21 @@ interface UseBookmarksResult {
   refreshBookmarks: () => Promise<void>;
 }
 
-// Convert snake_case DB row to camelCase
-function dbToBookmark(row: Record<string, unknown>): Bookmark {
+function docToBookmark(docData: Record<string, unknown>, docId: string, userId: string): Bookmark {
   return {
-    id: row.id as string,
-    userId: row.user_id as string,
-    charityEin: row.charity_ein as string,
-    notes: row.notes as string | null,
-    createdAt: row.created_at as string,
+    id: docId,
+    userId,
+    charityEin: docData.charityEin as string,
+    notes: (docData.notes as string) || null,
+    createdAt: docData.createdAt instanceof Timestamp
+      ? docData.createdAt.toDate().toISOString()
+      : (docData.createdAt as string) || new Date().toISOString(),
   };
 }
 
 export function useBookmarks(): UseBookmarksResult {
-  const { supabase, session } = useSupabase();
+  const { db, userId } = useFirebaseData();
   const queryClient = useQueryClient();
-  const userId = session?.user?.id;
 
   const bookmarksQueryKey = ['bookmarks', userId];
 
@@ -44,18 +45,14 @@ export function useBookmarks(): UseBookmarksResult {
   const { data: bookmarks = [], isLoading, error: queryError } = useQuery({
     queryKey: bookmarksQueryKey,
     queryFn: async () => {
-      if (!supabase || !userId) return [];
+      if (!db || !userId) return [];
 
-      const { data, error: fetchError } = await supabase
-        .from('bookmarks')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
-
-      if (fetchError) throw fetchError;
-      return (data || []).map(dbToBookmark);
+      const colRef = collection(db, 'users', userId, 'bookmarks');
+      const q = query(colRef, orderBy('createdAt', 'desc'));
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(d => docToBookmark(d.data(), d.id, userId));
     },
-    enabled: !!supabase && !!userId,
+    enabled: !!db && !!userId,
   });
 
   const error = queryError
@@ -70,23 +67,23 @@ export function useBookmarks(): UseBookmarksResult {
   // Add bookmark mutation
   const addMutation = useMutation({
     mutationFn: async ({ ein, notes }: { ein: string; notes?: string }) => {
-      if (!supabase || !userId) throw new Error('Not authenticated');
+      if (!db || !userId) throw new Error('Not authenticated');
 
-      const { data, error: insertError } = await supabase
-        .from('bookmarks')
-        .insert({ user_id: userId, charity_ein: ein, notes: notes || null })
-        .select()
-        .single();
-
-      if (insertError) throw insertError;
-      return dbToBookmark(data);
+      const docRef = doc(db, 'users', userId, 'bookmarks', ein);
+      const data = {
+        charityEin: ein,
+        notes: notes || null,
+        createdAt: Timestamp.now(),
+      };
+      await setDoc(docRef, data);
+      return docToBookmark({ ...data, createdAt: data.createdAt }, ein, userId);
     },
     onMutate: async ({ ein, notes }) => {
       await queryClient.cancelQueries({ queryKey: bookmarksQueryKey });
       const previous = queryClient.getQueryData<Bookmark[]>(bookmarksQueryKey);
 
       const optimistic: Bookmark = {
-        id: `temp-${Date.now()}`,
+        id: ein,
         userId: userId!,
         charityEin: ein,
         notes: notes || null,
@@ -108,15 +105,10 @@ export function useBookmarks(): UseBookmarksResult {
   // Remove bookmark mutation
   const removeMutation = useMutation({
     mutationFn: async (ein: string) => {
-      if (!supabase || !userId) throw new Error('Not authenticated');
+      if (!db || !userId) throw new Error('Not authenticated');
 
-      const { error: deleteError } = await supabase
-        .from('bookmarks')
-        .delete()
-        .eq('user_id', userId)
-        .eq('charity_ein', ein);
-
-      if (deleteError) throw deleteError;
+      const docRef = doc(db, 'users', userId, 'bookmarks', ein);
+      await deleteDoc(docRef);
     },
     onMutate: async (ein) => {
       await queryClient.cancelQueries({ queryKey: bookmarksQueryKey });
@@ -140,15 +132,10 @@ export function useBookmarks(): UseBookmarksResult {
   // Update notes mutation
   const updateNotesMutation = useMutation({
     mutationFn: async ({ ein, notes }: { ein: string; notes: string | null }) => {
-      if (!supabase || !userId) throw new Error('Not authenticated');
+      if (!db || !userId) throw new Error('Not authenticated');
 
-      const { error: updateError } = await supabase
-        .from('bookmarks')
-        .update({ notes })
-        .eq('user_id', userId)
-        .eq('charity_ein', ein);
-
-      if (updateError) throw updateError;
+      const docRef = doc(db, 'users', userId, 'bookmarks', ein);
+      await updateDoc(docRef, { notes });
     },
     onMutate: async ({ ein, notes }) => {
       await queryClient.cancelQueries({ queryKey: bookmarksQueryKey });

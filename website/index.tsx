@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { SupabaseProvider } from './src/auth';
+import { FirebaseProvider } from './src/auth';
 import { initializeAnalytics } from './src/utils/analytics';
 import App from './App';
 
@@ -14,8 +14,8 @@ initializeAnalytics();
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
-    <SupabaseProvider>
+    <FirebaseProvider>
       <App />
-    </SupabaseProvider>
+    </FirebaseProvider>
   </React.StrictMode>
 );

@@ -31,9 +31,9 @@ export default defineConfig(({ mode }) => {
                 if (id.includes('react-dom') || id.includes('react-router') || id.includes('/react/')) {
                   return 'vendor';
                 }
-                // Supabase
-                if (id.includes('@supabase')) {
-                  return 'supabase';
+                // Firebase
+                if (id.includes('firebase')) {
+                  return 'firebase';
                 }
                 // Charts - must be with vendor since recharts uses React.forwardRef
                 if (id.includes('recharts') || id.includes('d3-') || id.includes('victory')) {

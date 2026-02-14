@@ -11,7 +11,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Flag, X, Send, CheckCircle } from 'lucide-react';
 import { useAuth } from '../auth/useAuth';
-import { useSupabase } from '../auth/SupabaseProvider';
+import { useFirebaseData } from '../auth/FirebaseProvider';
+import { collection, addDoc, Timestamp } from 'firebase/firestore';
 
 interface ReportIssueButtonProps {
   charityId: string;
@@ -48,15 +49,15 @@ export const ReportIssueButton: React.FC<ReportIssueButtonProps> = ({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
-  const { user } = useAuth();
-  const { supabase } = useSupabase();
+  const { email: userEmail, uid } = useAuth();
+  const { db } = useFirebaseData();
 
   // Pre-fill email if user is logged in
   useEffect(() => {
-    if (user?.email && !email) {
-      setEmail(user.email);
+    if (userEmail && !email) {
+      setEmail(userEmail);
     }
-  }, [user, email]);
+  }, [userEmail, email]);
 
   // Close on escape key
   useEffect(() => {
@@ -91,26 +92,20 @@ export const ReportIssueButton: React.FC<ReportIssueButtonProps> = ({
     setError(null);
 
     try {
-      // Submit to Supabase
-      if (supabase) {
-        const { error: insertError } = await supabase
-          .from('reported_issues')
-          .insert({
-            charity_id: charityId,
-            charity_name: charityName,
-            issue_type: issueType,
-            description: description.trim(),
-            reporter_email: email?.trim() || null,
-            reporter_user_id: user?.id || null,
-          });
-
-        if (insertError) {
-          console.error('Failed to submit report:', insertError);
-          throw insertError;
-        }
+      // Submit to Firestore
+      if (db) {
+        await addDoc(collection(db, 'reported_issues'), {
+          charityId,
+          charityName,
+          issueType,
+          description: description.trim(),
+          reporterEmail: email?.trim() || null,
+          reporterUserId: uid || null,
+          createdAt: Timestamp.now(),
+        });
       } else {
-        // Fallback: log to console if Supabase not configured
-        console.log('Report submitted (Supabase not configured):', {
+        // Fallback: log to console if Firebase not configured
+        console.log('Report submitted (Firebase not configured):', {
           charityId,
           charityName,
           issueType,

@@ -4,7 +4,8 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { useSupabase } from './SupabaseProvider';
+import { GoogleAuthProvider, OAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+import { auth, isConfigured } from './firebase';
 import { useAuth } from './useAuth';
 import { trackSignIn } from '../utils/analytics';
 
@@ -21,7 +22,6 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
   children,
   isDark = false
 }) => {
-  const { supabase } = useSupabase();
   const { isSignedIn, firstName } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -71,23 +71,28 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
     return () => document.removeEventListener('keydown', handleTab);
   }, [showMenu]);
 
-  // Don't render sign-in UI when Supabase isn't configured
-  if (!supabase && !isSignedIn) return null;
+  // Don't render sign-in UI when Firebase isn't configured
+  if (!isConfigured && !isSignedIn) return null;
 
   const signInWith = async (provider: 'google' | 'apple') => {
-    if (!supabase) return;
+    if (!auth) return;
     trackSignIn(provider);
-    await supabase.auth.signInWithOAuth({
-      provider,
-      options: {
-        redirectTo: window.location.origin,
-      },
-    });
+    const authProvider = provider === 'google'
+      ? new GoogleAuthProvider()
+      : new OAuthProvider('apple.com');
+    try {
+      await signInWithPopup(auth, authProvider);
+    } catch (err: unknown) {
+      // User closed popup or other auth error
+      if (err instanceof Error && (err as { code?: string }).code !== 'auth/popup-closed-by-user') {
+        console.error('Sign-in error:', err);
+      }
+    }
   };
 
-  const signOut = async () => {
-    if (!supabase) return;
-    await supabase.auth.signOut();
+  const handleSignOut = async () => {
+    if (!auth) return;
+    await signOut(auth);
     setShowMenu(false);
   };
 
@@ -130,7 +135,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
               onClick={(e) => e.stopPropagation()}
             >
               <button
-                onClick={signOut}
+                onClick={handleSignOut}
                 className={`w-full px-4 py-2 text-left text-sm ${
                   isDark ? 'text-slate-200 hover:bg-slate-600' : 'text-slate-700 hover:bg-slate-50'
                 }`}

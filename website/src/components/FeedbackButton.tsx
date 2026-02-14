@@ -3,13 +3,14 @@
  *
  * - Floats in bottom-right corner on all pages
  * - Detects if on a charity page and pre-fills charity info
- * - Stores feedback in Supabase reported_issues table
+ * - Stores feedback in Firestore reported_issues collection
  */
 
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X, Send, CheckCircle } from 'lucide-react';
 import { useAuth } from '../auth/useAuth';
-import { useSupabase } from '../auth/SupabaseProvider';
+import { useFirebaseData } from '../auth/FirebaseProvider';
+import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { useLandingTheme } from '../../contexts/LandingThemeContext';
 
 type FeedbackType = 'data_error' | 'outdated_info' | 'missing_info' | 'general_feedback' | 'feature_request' | 'other';
@@ -43,8 +44,8 @@ export const FeedbackButton: React.FC<FeedbackButtonProps> = ({ inline = false }
   const [error, setError] = useState<string | null>(null);
   const [charityContext, setCharityContext] = useState<CharityContext | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
-  const { user } = useAuth();
-  const { supabase } = useSupabase();
+  const { email: userEmail, uid } = useAuth();
+  const { db } = useFirebaseData();
   const { isDark } = useLandingTheme();
 
   // Detect if we're on a charity page
@@ -71,10 +72,10 @@ export const FeedbackButton: React.FC<FeedbackButtonProps> = ({ inline = false }
 
   // Pre-fill email if user is logged in
   useEffect(() => {
-    if (user?.email && !email) {
-      setEmail(user.email);
+    if (userEmail && !email) {
+      setEmail(userEmail);
     }
-  }, [user, email]);
+  }, [userEmail, email]);
 
   // Close on escape
   useEffect(() => {
@@ -105,24 +106,18 @@ export const FeedbackButton: React.FC<FeedbackButtonProps> = ({ inline = false }
     setError(null);
 
     try {
-      if (supabase) {
-        const { error: insertError } = await supabase
-          .from('reported_issues')
-          .insert({
-            charity_id: charityContext?.id || 'general',
-            charity_name: charityContext?.name || 'General Feedback',
-            issue_type: feedbackType,
-            description: description.trim(),
-            reporter_email: email?.trim() || null,
-            reporter_user_id: user?.id || null,
-          });
-
-        if (insertError) {
-          console.error('Failed to submit feedback:', insertError);
-          throw insertError;
-        }
+      if (db) {
+        await addDoc(collection(db, 'reported_issues'), {
+          charityId: charityContext?.id || 'general',
+          charityName: charityContext?.name || 'General Feedback',
+          issueType: feedbackType,
+          description: description.trim(),
+          reporterEmail: email?.trim() || null,
+          reporterUserId: uid || null,
+          createdAt: Timestamp.now(),
+        });
       } else {
-        console.log('Feedback submitted (Supabase not configured):', {
+        console.log('Feedback submitted (Firebase not configured):', {
           charityContext,
           feedbackType,
           description,
