@@ -459,7 +459,7 @@ export const MethodologyPage: React.FC = () => {
           </p>
 
           {/* Score Summary — aligned with scoreConstants.ts thresholds */}
-          <div className={`grid grid-cols-4 gap-4 mb-8 p-4 rounded-xl ${isDark ? 'bg-slate-800/50' : 'bg-slate-100'}`}>
+          <div className={`grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 p-4 rounded-xl ${isDark ? 'bg-slate-800/50' : 'bg-slate-100'}`}>
             <div className="text-center">
               <div className={`text-2xl font-bold tabular-nums ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>{scoreBuckets.exceptional}</div>
               <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>75+ Exceptional</div>

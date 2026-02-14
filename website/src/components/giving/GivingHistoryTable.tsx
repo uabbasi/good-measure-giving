@@ -178,7 +178,7 @@ export function GivingHistoryTable({
       </div>
 
       {/* Summary */}
-      <div className={`flex items-center gap-6 text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+      <div className={`flex flex-wrap items-center gap-x-6 gap-y-2 text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
         <span>{filteredDonations.length} donations</span>
         <span>Total: <strong className={isDark ? 'text-white' : 'text-slate-900'}>{formatCurrency(totals.amount)}</strong></span>
         {totals.matched > 0 && (
@@ -203,7 +203,7 @@ export function GivingHistoryTable({
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full min-w-[860px] text-sm">
             <thead>
               <tr className={`border-b ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
                 <th className={`text-left py-3 px-2 font-medium ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Date</th>

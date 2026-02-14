@@ -257,7 +257,7 @@ export const LandingPage: React.FC = () => {
               <div className={`relative p-8 rounded-2xl shadow-2xl backdrop-blur-sm ${theme.id.includes('dark') || theme.id === 'warm-atmosphere' ? 'bg-slate-800/90 border border-slate-600/50 ring-1 ring-white/10' : 'bg-white border border-slate-200 ring-1 ring-slate-100'}`}>
 
                 {/* Header with charity info and main score */}
-                <div className={`flex justify-between items-start mb-8 pb-6 border-b ${theme.id.includes('dark') || theme.id === 'warm-atmosphere' ? 'border-slate-700/50' : 'border-slate-100'}`}>
+                <div className={`flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8 pb-6 border-b ${theme.id.includes('dark') || theme.id === 'warm-atmosphere' ? 'border-slate-700/50' : 'border-slate-100'}`}>
 
                   <div className="flex-1">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 mb-3">
@@ -268,7 +268,7 @@ export const LandingPage: React.FC = () => {
                     <div className={`text-sm line-clamp-2 ${theme.id.includes('dark') || theme.id === 'warm-atmosphere' ? 'text-slate-400' : 'text-slate-500'}`}>{featuredCharity?.headline || ''}</div>
                   </div>
 
-                  <div className="text-right pl-4">
+                  <div className="text-left sm:text-right sm:pl-4">
                     <div className="text-5xl font-bold text-emerald-500 leading-none">{featuredCharity?.amalEvaluation?.amal_score ?? '—'}</div>
                     <div className={`text-lg font-normal ${theme.id.includes('dark') || theme.id === 'warm-atmosphere' ? 'text-slate-500' : 'text-slate-400'}`}>/ 100</div>
                     <div className={`text-xs font-semibold uppercase tracking-wider mt-1 ${theme.id.includes('dark') || theme.id === 'warm-atmosphere' ? 'text-slate-400' : 'text-slate-500'}`}>GMG Score</div>
@@ -277,7 +277,7 @@ export const LandingPage: React.FC = () => {
                 </div>
 
                 {/* Score Dimensions - Impact + Alignment + Data Confidence */}
-                <div className="grid grid-cols-3 gap-3 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
                   {(() => {
                     const isDark = theme.id.includes('dark') || theme.id === 'warm-atmosphere';
                     const dimensions = [

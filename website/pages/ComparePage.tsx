@@ -575,9 +575,10 @@ export function ComparePage() {
           </div>
         ) : (
           <div className={`rounded-xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+            <div className="overflow-x-auto">
             {/* Charity Headers (sticky) */}
             <div
-              className={`grid gap-3 p-4 border-b rounded-t-xl sticky top-[65px] z-30 ${isDark ? 'border-slate-800 bg-slate-900' : 'border-slate-100 bg-white'}`}
+              className={`grid min-w-[720px] gap-3 p-4 border-b rounded-t-xl sticky top-[65px] z-30 ${isDark ? 'border-slate-800 bg-slate-900' : 'border-slate-100 bg-white'}`}
               style={{ gridTemplateColumns: `120px repeat(${numCharities}, minmax(0, 1fr))` }}
             >
               <div />
@@ -611,7 +612,7 @@ export function ComparePage() {
                 </div>
               ))}
             </div>
-            <div className="overflow-x-auto">
+            <div className="min-w-[720px]">
 
             {/* GMG Scores Section */}
             <SectionHeader title="GMG Scores" isDark={isDark} />
@@ -939,6 +940,7 @@ export function ComparePage() {
                 </div>
               ))}
             </div>
+            </div>{/* end min-width compare content */}
             </div>{/* end overflow-x-auto */}
           </div>
         )}

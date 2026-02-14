@@ -154,7 +154,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
         onClick={() => setShowMenu(false)}
       />
       {/* Modal */}
-      <div ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="signin-modal-title" className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md mx-4 bg-white rounded-2xl shadow-2xl z-[101] overflow-hidden overscroll-contain">
+      <div ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="signin-modal-title" className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-md max-h-[calc(100vh-2rem)] bg-white rounded-2xl shadow-2xl z-[101] overflow-y-auto overscroll-contain">
         {/* Header with logo */}
         <div className="px-8 pt-8 pb-6 text-center border-b border-slate-100">
           <div className="flex justify-center mb-4">

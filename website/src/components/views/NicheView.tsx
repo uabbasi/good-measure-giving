@@ -894,7 +894,7 @@ export const NicheView: React.FC<NicheViewProps> = ({ charity, currentView, onVi
                       <div className={isDark ? 'bg-slate-500' : 'bg-slate-400'} style={{ width: `${adminRatio}%` }} />
                       <div className="bg-amber-500" style={{ width: `${fundRatio}%` }} />
                     </div>
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
                         <div className="flex items-center gap-2 mb-1">
                           <span className="w-3 h-3 rounded-full bg-emerald-500" />
@@ -1019,7 +1019,7 @@ export const NicheView: React.FC<NicheViewProps> = ({ charity, currentView, onVi
                           )}
                         </div>
                       )}
-                      <div className="grid grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         {!!rich.organizational_capacity.board_size && (
                           <div>
                             <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-gray-400'}`}>Board Size</p>

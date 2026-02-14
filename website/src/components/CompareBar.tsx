@@ -28,13 +28,14 @@ export function CompareBar() {
       className={`
         fixed bottom-0 left-0 right-0 z-40
         border-t shadow-lg
+        pb-[env(safe-area-inset-bottom)]
         ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}
       `}
     >
       <div className="max-w-5xl mx-auto px-4 py-3">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           {/* Selected charities */}
-          <div className="flex-1 flex items-center gap-3 overflow-x-auto">
+          <div className="flex-1 flex items-center gap-2 overflow-x-auto pb-1 sm:gap-3 sm:pb-0">
             <span className={`text-sm font-medium whitespace-nowrap ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
               Compare ({compareCount}/3):
             </span>
@@ -53,7 +54,7 @@ export function CompareBar() {
                 <button
                   onClick={() => removeFromCompare(charity!.ein)}
                   className={`
-                    p-0.5 rounded transition-colors
+                    p-1 rounded transition-colors
                     ${isDark
                       ? 'hover:bg-slate-700 text-slate-400 hover:text-slate-200'
                       : 'hover:bg-slate-200 text-slate-500 hover:text-slate-700'
@@ -83,11 +84,11 @@ export function CompareBar() {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex w-full items-center gap-2 sm:w-auto sm:flex-shrink-0">
             <button
               onClick={clearCompare}
               className={`
-                px-3 py-2 text-sm font-medium rounded-lg transition-colors
+                flex-1 px-3 py-2 text-sm font-medium rounded-lg transition-colors sm:flex-none
                 ${isDark
                   ? 'text-slate-400 hover:text-white hover:bg-slate-800'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
@@ -99,7 +100,7 @@ export function CompareBar() {
             <Link
               to="/compare"
               className={`
-                inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors
+                inline-flex flex-1 items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors sm:flex-none
                 ${compareCount >= 2
                   ? 'bg-emerald-600 text-white hover:bg-emerald-700'
                   : `cursor-not-allowed ${isDark ? 'bg-slate-700 text-slate-500' : 'bg-slate-200 text-slate-400'}`

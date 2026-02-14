@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ThemedLogo } from './logos';
 import { Menu, X } from 'lucide-react';
@@ -35,6 +35,11 @@ export const Navbar: React.FC<NavbarProps> = ({ forceTheme: propForceTheme }) =>
 
   const getLinkClasses = (path: string) =>
     `px-4 py-2 rounded-lg text-sm transition-colors ${location.pathname === path ? linkActive : linkBase}`;
+
+  // Ensure the mobile drawer closes after route changes.
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
 
   return (
     <>

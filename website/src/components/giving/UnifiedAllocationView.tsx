@@ -185,7 +185,7 @@ function DraggableCharityRow({
       className={`border-b ${border} group transition-all ${isDragging ? 'z-50 shadow-lg' : ''} ${isDark ? 'hover:bg-slate-800/40' : 'hover:bg-slate-50'} ${dimmed ? 'pointer-events-auto' : ''}`}
     >
       <td className={`${cell} w-0 pr-0`} style={{ borderLeft: bucketColor ? `4px solid ${bucketColor}40` : undefined }}>
-        <button {...listeners} {...attributes} className={`cursor-grab active:cursor-grabbing p-1 rounded-md opacity-30 group-hover:opacity-100 transition-opacity ${isDark ? 'hover:bg-slate-700' : 'hover:bg-slate-200'}`}>
+        <button {...listeners} {...attributes} className={`cursor-grab active:cursor-grabbing p-1 rounded-md opacity-100 sm:opacity-30 sm:group-hover:opacity-100 transition-opacity ${isDark ? 'hover:bg-slate-700' : 'hover:bg-slate-200'}`}>
           <GripVertical className="w-3.5 h-3.5" />
         </button>
       </td>
@@ -222,7 +222,7 @@ function DraggableCharityRow({
         <span className={given > 0 ? 'font-semibold text-emerald-600' : isDark ? 'text-slate-600' : 'text-slate-300'}>{given > 0 ? fmt(given) : '—'}</span>
       </td>
       <td className={`${cell} text-right`}>
-        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center justify-end gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
           <button
             onClick={() => onLogDonation(charity.ein, charity.name)}
             className={`text-[11px] font-semibold px-2.5 py-1 rounded-md border transition-colors ${
@@ -300,7 +300,7 @@ function GhostSuggestionRow({
       <td className={cell}></td>
       <td className={cell}></td>
       <td className={`${cell} text-right`}>
-        <span className={`text-[10px] font-semibold px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity ${
+        <span className={`text-[10px] font-semibold px-2 py-1 rounded-md opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity ${
           isDark ? 'text-emerald-400 bg-emerald-500/10' : 'text-emerald-600 bg-emerald-50'
         }`}>+ Add</span>
       </td>
@@ -622,8 +622,8 @@ export function UnifiedAllocationView({
   return (
     <div className={`rounded-xl border overflow-hidden text-sm ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'} shadow-sm`}>
       {/* Header bar - gradient accent */}
-      <div className={`flex items-center justify-between px-4 py-3.5 border-b ${border} ${isDark ? 'bg-gradient-to-r from-slate-800/50 to-slate-900' : 'bg-gradient-to-r from-slate-50 to-white'}`}>
-        <div className="flex items-center gap-4">
+      <div className={`flex flex-col gap-3 px-4 py-3.5 border-b sm:flex-row sm:items-center sm:justify-between ${border} ${isDark ? 'bg-gradient-to-r from-slate-800/50 to-slate-900' : 'bg-gradient-to-r from-slate-50 to-white'}`}>
+        <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
           <div className="flex items-center gap-2.5">
             <div className={`flex items-center gap-1.5 px-2 py-1 rounded-md ${isDark ? 'bg-emerald-500/10' : 'bg-emerald-50'}`}>
               <span className={`text-[10px] font-bold tracking-wide ${isDark ? 'text-emerald-500' : 'text-emerald-600'}`}>ZAKAT</span>
@@ -670,7 +670,7 @@ export function UnifiedAllocationView({
             </div>
           )}
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex w-full flex-wrap items-center gap-1.5 sm:w-auto sm:justify-end">
           {saving && (
             <span className={`text-[10px] px-2 py-1 rounded ${isDark ? 'text-emerald-400 bg-emerald-500/10' : 'text-emerald-600 bg-emerald-50'}`}>
               Saving...
@@ -926,12 +926,14 @@ export function UnifiedAllocationView({
 
       {/* Table with drag-and-drop */}
       {targetNum > 0 && (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-        >
+        <div className="overflow-x-auto">
+          <div className="min-w-[780px]">
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+            >
           <table className="w-full">
             <thead>
               <tr className={`border-b-2 ${border} ${isDark ? 'bg-slate-800/50' : 'bg-slate-50'}`}>
@@ -1073,7 +1075,7 @@ export function UnifiedAllocationView({
                       </div>
                     </td>
                     <td className={cell}>
-                      <button onClick={() => remove(b.id)} className={`opacity-0 group-hover:opacity-100 p-1.5 -m-1 rounded-lg transition-all ${isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'}`}>
+                      <button onClick={() => remove(b.id)} className={`opacity-100 sm:opacity-0 sm:group-hover:opacity-100 p-1.5 -m-1 rounded-lg transition-all ${isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'}`}>
                         <X className={`w-3.5 h-3.5 ${isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'}`} />
                       </button>
                     </td>
@@ -1250,7 +1252,9 @@ export function UnifiedAllocationView({
               </div>
             )}
           </DragOverlay>
-        </DndContext>
+            </DndContext>
+          </div>
+        </div>
       )}
 
       {/* Empty states */}
