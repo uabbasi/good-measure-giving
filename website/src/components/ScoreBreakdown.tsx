@@ -60,6 +60,68 @@ const isDataUnavailable = (component: ScoreComponentDetail): boolean =>
   component.scored === 0 && !!component.evidence &&
   /not (yet )?available|unknown|insufficient data/i.test(component.evidence);
 
+const isFinancialHealthComponent = (component: ScoreComponentDetail): boolean => {
+  const n = component.name.toLowerCase();
+  return n.includes('financial health') || n.includes('financial_health');
+};
+
+const extractWorkingCapitalMonths = (evidence: string): number | null => {
+  const match = evidence.match(/working capital:\s*(-?\d+(?:\.\d+)?)\s*months/i);
+  if (!match) return null;
+  const months = Number.parseFloat(match[1]);
+  return Number.isFinite(months) ? months : null;
+};
+
+const getFinancialHealthContext = (component: ScoreComponentDetail): {
+  benchmark: string;
+  current: string;
+  replacementSuggestion: string;
+} => {
+  const benchmark = 'What good looks like: usually 1-3 months of operating reserves, plus strong program spending.';
+  const months = extractWorkingCapitalMonths(component.evidence || '');
+
+  if (months === null) {
+    return {
+      benchmark,
+      current: 'Current reserves are not reported.',
+      replacementSuggestion: 'Publish working-capital reserves and target at least a 1-3 month operating buffer.',
+    };
+  }
+
+  const monthLabel = `${months.toFixed(1)} months`;
+  if (months < 1) {
+    return {
+      benchmark,
+      current: `Current reserves: ${monthLabel} (below target).`,
+      replacementSuggestion: 'Increase reserves toward the 1-3 month target to reduce service disruption risk.',
+    };
+  }
+  if (months <= 3) {
+    return {
+      benchmark,
+      current: `Current reserves: ${monthLabel} (within target range).`,
+      replacementSuggestion: 'Maintain reserves in the 1-3 month target range while preserving program delivery.',
+    };
+  }
+
+  return {
+    benchmark,
+    current: `Current reserves: ${monthLabel} (above target range).`,
+    replacementSuggestion: 'Reserves are above the 1-3 month target; consider deploying more to programs or document a long-term reserve policy.',
+  };
+};
+
+const normalizeImprovementSuggestion = (component: ScoreComponentDetail): string | null => {
+  const suggestion = component.improvement_suggestion?.trim();
+  if (!suggestion) return null;
+
+  if (isFinancialHealthComponent(component) && /build working capital reserves to 1-3 months/i.test(suggestion)) {
+    return getFinancialHealthContext(component).replacementSuggestion;
+  }
+
+  return suggestion;
+};
+
 const ratioToHarveyLevel = (ratio: number): HarveyLevel => {
   if (ratio >= 0.8) return 4;
   if (ratio >= 0.6) return 3;
@@ -119,7 +181,7 @@ const HarveyBall: React.FC<{
   const resolvedTone = tone || levelToTone(level);
   const palette = getHarveyPalette(resolvedTone, isDark);
   const deg = HARVEY_DEGREES[level];
-  const sizeClass = size === 'sm' ? 'w-4 h-4' : size === 'lg' ? 'w-9 h-9' : 'w-6 h-6';
+  const sizeClass = size === 'sm' ? 'w-3.5 h-3.5' : size === 'lg' ? 'w-7 h-7' : 'w-5 h-5';
 
   return (
     <span
@@ -138,6 +200,9 @@ const ComponentRow: React.FC<{
   isDark: boolean;
 }> = ({ component, citations, isSignedIn, isDark }) => {
   const noData = isDataUnavailable(component);
+  const isFinancialHealth = isFinancialHealthComponent(component);
+  const financialHealthContext = isFinancialHealth ? getFinancialHealthContext(component) : null;
+  const improvementSuggestion = normalizeImprovementSuggestion(component);
   const ratio = component.possible > 0 ? component.scored / component.possible : 0;
   const level = noData ? 0 : ratioToHarveyLevel(ratio);
   const tone = noData ? 'neutral' : levelToTone(level);
@@ -155,6 +220,15 @@ const ComponentRow: React.FC<{
         </span>
       </div>
 
+      {financialHealthContext && (
+        <div className={`mt-1 ml-6 text-[11px] leading-relaxed ${
+          isDark ? 'text-slate-400' : 'text-slate-600'
+        }`}>
+          <p><strong>{financialHealthContext.benchmark}</strong></p>
+          <p className={isDark ? 'text-slate-500' : 'text-slate-500'}>{financialHealthContext.current}</p>
+        </div>
+      )}
+
       {component.evidence && !noData && (
         <p className={`mt-1 ml-6 text-xs leading-relaxed ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
           {(() => {
@@ -168,9 +242,9 @@ const ComponentRow: React.FC<{
         </p>
       )}
 
-      {component.improvement_suggestion && (
+      {improvementSuggestion && (
         <p className={`mt-1 ml-6 text-xs leading-relaxed ${isDark ? 'text-amber-300/80' : 'text-amber-700'}`}>
-          {component.improvement_suggestion}
+          {improvementSuggestion}
         </p>
       )}
     </div>
@@ -215,7 +289,7 @@ const DimensionSection: React.FC<{
             )}
           </span>
           <span className="inline-flex items-center gap-2">
-            <HarveyBall level={level} tone={tone} isDark={isDark} size="lg" label={`${config.label}: ${levelToLabel(level)}`} />
+            <HarveyBall level={level} tone={tone} isDark={isDark} size="md" label={`${config.label}: ${levelToLabel(level)}`} />
             <span className={`text-sm font-bold ${palette.text}`}>{levelToLabel(level)}</span>
           </span>
         </div>

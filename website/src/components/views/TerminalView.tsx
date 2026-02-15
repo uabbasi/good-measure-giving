@@ -724,42 +724,32 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
           );
         })()}
 
-        {/* === Mobile Section 3: Methodology Details (collapsible) === */}
+        {/* === Mobile Section 3: Methodology Details (always open) === */}
         {amal?.score_details && (
           <div className={`rounded-2xl overflow-hidden ${
             isDark ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-slate-200'
           }`}>
-            <button
-              onClick={() => toggleSection('score')}
-              className={`w-full p-4 flex items-center justify-between ${
-                isDark ? 'hover:bg-slate-800/50' : 'hover:bg-slate-50'
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <span className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>Methodology details</span>
-              </div>
-              <ChevronDown className={`w-5 h-5 transition-transform ${openSections.has('score') ? 'rotate-180' : ''} ${isDark ? 'text-slate-400' : 'text-slate-500'}`} />
-            </button>
-            {openSections.has('score') && (
-              <div className="px-2 pb-2">
-                <ScoreBreakdown
-                  scoreDetails={amal.score_details}
-                  confidenceScores={scores}
-                  amalScore={amalScore}
-                  citations={citations}
-                  isSignedIn={isSignedIn}
-                  isDark={isDark}
-                  dimensionExplanations={rich?.dimension_explanations || baseline?.dimension_explanations}
-                  amalScoreRationale={isSignedIn ? rich?.amal_score_rationale : undefined}
-                  scoreSummary={charity.scoreSummary}
-                  strengths={isSignedIn ? rich?.strengths : baseline?.strengths}
-                  areasForImprovement={
-                    (isSignedIn ? rich?.areas_for_improvement : baseline?.areas_for_improvement) as
-                      Array<string | { area: string; context: string; citation_ids: string[] }> | undefined
-                  }
-                />
-              </div>
-            )}
+            <div className={`px-4 pt-4 text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              Methodology details
+            </div>
+            <div className="px-2 pb-2">
+              <ScoreBreakdown
+                scoreDetails={amal.score_details}
+                confidenceScores={scores}
+                amalScore={amalScore}
+                citations={citations}
+                isSignedIn={isSignedIn}
+                isDark={isDark}
+                dimensionExplanations={rich?.dimension_explanations || baseline?.dimension_explanations}
+                amalScoreRationale={isSignedIn ? rich?.amal_score_rationale : undefined}
+                scoreSummary={charity.scoreSummary}
+                strengths={isSignedIn ? rich?.strengths : baseline?.strengths}
+                areasForImprovement={
+                  (isSignedIn ? rich?.areas_for_improvement : baseline?.areas_for_improvement) as
+                    Array<string | { area: string; context: string; citation_ids: string[] }> | undefined
+                }
+              />
+            </div>
           </div>
         )}
 
@@ -1668,12 +1658,12 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
             );
           })()}
 
-          {/* === Section 3: Methodology Details === */}
+          {/* === Section 3: Methodology Details (always open) === */}
           {amal?.score_details && (
-            <details className={`mb-6 rounded-lg border ${isDark ? 'border-slate-700 bg-slate-900/40' : 'border-slate-200 bg-white'}`}>
-              <summary className={`cursor-pointer list-none px-4 py-3 text-sm font-semibold ${isDark ? 'text-slate-200 hover:bg-slate-800/40' : 'text-slate-700 hover:bg-slate-50'}`}>
+            <div className={`mb-6 rounded-lg border ${isDark ? 'border-slate-700 bg-slate-900/40' : 'border-slate-200 bg-white'}`}>
+              <div className={`px-4 py-3 text-sm font-semibold ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
                 Methodology details
-              </summary>
+              </div>
               <div className="px-2 pb-2">
                 <ScoreBreakdown
                   scoreDetails={amal.score_details}
@@ -1692,7 +1682,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
                   }
                 />
               </div>
-            </details>
+            </div>
           )}
 
           {/* === Evidence Quality Checklist === */}
