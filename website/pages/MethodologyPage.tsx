@@ -102,7 +102,7 @@ export const MethodologyPage: React.FC = () => {
           <div className={`rounded-2xl p-6 ${isDark ? 'bg-emerald-900/20 border border-emerald-800/30' : 'bg-emerald-50 border border-emerald-200'}`}>
             <h2 className={`text-lg font-bold mb-3 [text-wrap:balance] ${isDark ? 'text-emerald-400' : 'text-emerald-800'}`}>TL;DR</h2>
             <p className={`text-lg leading-relaxed ${isDark ? 'text-emerald-100' : 'text-emerald-900'}`}>
-              We aggregate data from <strong>multiple sources</strong>: IRS Form 990 filings (via ProPublica API), Charity Navigator ratings, Candid transparency seals, BBB accreditation status, and charity websites. We score on two dimensions: <strong>Impact</strong> (how much good does each dollar do?) and <strong>Alignment</strong> (is this the right fit for Muslim donors?), with up to 10 points deducted for serious risks. A separate <strong>Data Confidence</strong> signal tells you how much data we had to work with. Most charities score 50-70. Above 75 is exceptional.
+              We aggregate data from <strong>multiple sources</strong>: IRS Form 990 filings (via ProPublica API), Charity Navigator ratings, Candid transparency seals, BBB accreditation status, and charity websites. We score on two dimensions: <strong>Impact</strong> (how much good does each dollar do?) and <strong>Alignment</strong> (is this the right fit for Muslim donors?), with up to 10 points deducted for serious risks. A separate <strong>Data Confidence</strong> signal tells you how much data we had to work with. Scores above 75 are exceptional, and most organizations cluster in the middle score bands.
             </p>
           </div>
         </section>
@@ -186,7 +186,8 @@ export const MethodologyPage: React.FC = () => {
           </p>
           <div className={`rounded-xl p-4 mb-8 ${isDark ? 'bg-slate-800 border border-slate-700' : 'bg-slate-100'}`}>
             <p className={`text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-              <strong>How to read scores:</strong> Most charities score 50-70. Scores above 75 are exceptional.
+              <strong>How to read scores:</strong> Scores above 75 are exceptional, and most organizations
+              cluster in the middle score bands.
               A score below 50 doesn{'\u2019'}t mean {'\u201C'}bad{'\u201D'} {'\u2014'} it usually means we don{'\u2019'}t have enough data yet, or the charity
               is newer and still building its track record.
             </p>
@@ -213,21 +214,25 @@ export const MethodologyPage: React.FC = () => {
                 </p>
                 <h4 className={`text-xs font-bold uppercase tracking-wider mb-2 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>What We Measure (50 points total)</h4>
                 <ul className={`text-sm space-y-1 mb-4 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  <li>{'\u2022'} <strong>Cost per beneficiary</strong> (20 pts): Cause-adjusted benchmarks with smooth interpolation</li>
-                  <li>{'\u2022'} <strong>Directness</strong> (7 pts): Direct service vs indirect approaches</li>
-                  <li>{'\u2022'} <strong>Financial health</strong> (7 pts): Working capital ratio (sweet spot: 1-2 months reserves)</li>
-                  <li>{'\u2022'} <strong>Program ratio</strong> (6 pts): Percentage of spending on actual programs</li>
-                  <li>{'\u2022'} <strong>Evidence & outcomes</strong> (5 pts): Verified {'\u2192'} Tracked {'\u2192'} Measured {'\u2192'} Reported {'\u2192'} Unverified</li>
-                  <li>{'\u2022'} <strong>Theory of change</strong> (3 pts): Has a documented logic model?</li>
-                  <li>{'\u2022'} <strong>Governance</strong> (2 pts): Board size and oversight</li>
+                  <li>{'\u2022'} <strong>Cost per beneficiary</strong> (6-13 pts): Cause-adjusted benchmarks with smooth interpolation</li>
+                  <li>{'\u2022'} <strong>Directness</strong> (3-5 pts): Direct service vs indirect approaches</li>
+                  <li>{'\u2022'} <strong>Financial health</strong> (7 pts): Working capital ratio (resilient range is generally ~3-12 months)</li>
+                  <li>{'\u2022'} <strong>Program ratio</strong> (5-7 pts): Percentage of spending on actual programs</li>
+                  <li>{'\u2022'} <strong>Evidence & outcomes</strong> (5-10 pts): Verified {'\u2192'} Tracked {'\u2192'} Measured {'\u2192'} Reported {'\u2192'} Unverified</li>
+                  <li>{'\u2022'} <strong>Theory of change</strong> (5-7 pts): Has a documented logic model?</li>
+                  <li>{'\u2022'} <strong>Governance</strong> (10 pts): Board size and oversight</li>
                 </ul>
+                <p className={`text-xs mb-4 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
+                  Impact always totals 50 points, but these component weights are rebalanced by archetype
+                  (for example direct-service vs systemic-change organizations).
+                </p>
 
                 <h4 className={`text-xs font-bold uppercase tracking-wider mb-2 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Cause-Adjusted Benchmarks</h4>
                 <div className={`text-xs space-y-1 mb-4 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                   <p><strong>Food:</strong> &lt;$0.25/meal excellent, $0.25-0.50 good</p>
                   <p><strong>Education:</strong> &lt;$100/student/yr excellent, $100-300 good</p>
                   <p><strong>Healthcare:</strong> &lt;$25/patient (primary), &lt;$500 (surgical)</p>
-                  <p><strong>Humanitarian:</strong> &lt;$75/beneficiary excellent, $75-175 good</p>
+                  <p><strong>Humanitarian:</strong> &lt;$25/beneficiary excellent, $25-75 good (with conflict-zone adjustment)</p>
                 </div>
 
                 <div className={`rounded-lg p-3 mb-4 ${isDark ? 'bg-amber-900/20 border border-amber-800/30' : 'bg-amber-50 border border-amber-200'}`}>
@@ -436,9 +441,9 @@ export const MethodologyPage: React.FC = () => {
               </div>
               <h3 className={`font-bold mb-3 ${isDark ? 'text-white' : 'text-slate-900'}`}>The {'\u201C'}Case Against{'\u201D'}</h3>
               <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Every evaluation {'\u2014'} even for our highest-rated charities {'\u2014'} includes a section documenting limitations
-                and concerns. This isn{'\u2019'}t about being negative; it{'\u2019'}s about being honest. If a charity lacks rigorous
-                impact studies, we say so. If there{'\u2019'}s a governance concern, we flag it. You deserve the full picture.
+                Every evaluation includes structured risk checks and any applicable point deductions.
+                Some profiles also include expanded narrative limitations. If a charity lacks rigorous
+                impact studies or has governance concerns, we flag that in the evaluation data.
               </p>
             </div>
           </div>
@@ -780,8 +785,8 @@ export const MethodologyPage: React.FC = () => {
               <div>
                 <h4 className={`font-bold mb-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>Full Transparency: View Our AI Prompts</h4>
                 <p className={`text-sm mb-3 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  We publish every prompt we use {'\u2014'} from data extraction to narrative generation to quality validation.
-                  See exactly what instructions we give to AI models and how we prevent hallucinations.
+                  We publish core prompts and prompt annotations {'\u2014'} from data extraction to narrative generation to quality validation.
+                  See how we instruct models and where we continue expanding prompt-level transparency.
                 </p>
                 <Link
                   to="/prompts"

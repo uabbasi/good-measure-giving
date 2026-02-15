@@ -541,7 +541,7 @@ class CredibilityScorer:
                 possible=10,
                 evidence=ver_reason,
                 status=ComponentStatus.FULL if ver_tier != "NONE" else ComponentStatus.MISSING,
-                improvement_suggestion="Submit for Charity Navigator evaluation or update Candid profile"
+                improvement_suggestion="Submit for Charity Navigator evaluation or update your Candid profile."
                 if ver_pts < 7
                 else None,
                 improvement_value=min(10 - ver_pts, 5) if ver_pts < 7 else 0,
@@ -567,7 +567,7 @@ class CredibilityScorer:
                 else ComponentStatus.PARTIAL
                 if trans_pts >= 1
                 else ComponentStatus.MISSING,
-                improvement_suggestion="Work toward Candid Gold/Platinum seal" if trans_pts < 6 else None,
+                improvement_suggestion="Work toward a Candid Gold or Platinum seal." if trans_pts < 6 else None,
                 improvement_value=min(7 - trans_pts, 4) if trans_pts < 6 else 0,
             )
         )
@@ -600,7 +600,9 @@ class CredibilityScorer:
                 else ComponentStatus.PARTIAL
                 if toc_pts >= 2
                 else ComponentStatus.MISSING,
-                improvement_suggestion="Document a clear theory of change with causal pathway" if toc_pts < 4 else None,
+                improvement_suggestion="Document a clear theory of change with an explicit causal pathway."
+                if toc_pts < 4
+                else None,
                 improvement_value=min(5 - toc_pts, 3) if toc_pts < 4 else 0,
             )
         )
@@ -621,7 +623,7 @@ class CredibilityScorer:
                 else ComponentStatus.PARTIAL
                 if eq_pts >= 2
                 else ComponentStatus.MISSING,
-                improvement_suggestion="Seek external evaluation or track outcomes for 3+ years"
+                improvement_suggestion="Seek external evaluation or track outcomes over at least 3 years."
                 if eq_pts < 4
                 else None,
                 improvement_value=min(5 - eq_pts, 3) if eq_pts < 4 else 0,
@@ -644,7 +646,9 @@ class CredibilityScorer:
                 else ComponentStatus.PARTIAL
                 if gov_pts >= 1
                 else ComponentStatus.MISSING,
-                improvement_suggestion="Expand board to 5+ members for stronger governance" if gov_pts < 2 else None,
+                improvement_suggestion="Expand the board to at least 5 members to strengthen governance."
+                if gov_pts < 2
+                else None,
                 improvement_value=max(0, 2 - gov_pts) if gov_pts < 2 else 0,
             )
         )
@@ -937,7 +941,7 @@ class ImpactScorer:
                 possible=cpb_possible,
                 evidence=cpb_evidence,
                 status=ComponentStatus.FULL if cpb is not None else ComponentStatus.MISSING,
-                improvement_suggestion="Track and report beneficiary counts to enable cost analysis"
+                improvement_suggestion="Publish beneficiary counts consistently so cost-effectiveness can be assessed."
                 if cpb is None
                 else None,
                 improvement_value=min(cpb_possible - cpb_pts, max(1, cpb_possible // 2)) if cpb_pts < cpb_possible // 2 else 0,
@@ -1018,7 +1022,7 @@ class ImpactScorer:
                 else ComponentStatus.PARTIAL
                 if eq_pts >= max(1, eq_possible * 2 // 5)
                 else ComponentStatus.MISSING,
-                improvement_suggestion="Seek external evaluation or track outcomes for 3+ years"
+                improvement_suggestion="Seek external evaluation or track outcomes over at least 3 years."
                 if eq_pts < eq_possible * 4 // 5
                 else None,
                 improvement_value=min(eq_possible - eq_pts, max(1, eq_possible * 3 // 5)) if eq_pts < eq_possible * 4 // 5 else 0,
@@ -1047,7 +1051,9 @@ class ImpactScorer:
                 else ComponentStatus.PARTIAL
                 if toc_pts >= 1
                 else ComponentStatus.MISSING,
-                improvement_suggestion="Document a clear theory of change with causal pathway" if toc_pts < toc_possible else None,
+                improvement_suggestion="Document a clear theory of change with an explicit causal pathway."
+                if toc_pts < toc_possible
+                else None,
                 improvement_value=min(toc_possible - toc_pts, max(1, toc_possible * 2 // 3)) if toc_pts < toc_possible else 0,
             )
         )
@@ -1278,34 +1284,33 @@ class ImpactScorer:
         ratio = metrics.working_capital_ratio
         if ratio is None or ratio < 0.1:
             return (
-                "Publish operating-reserve levels and adopt a board-approved reserve policy "
-                "(typically 3-12 months for most nonprofits)."
+                "Publish current reserve levels and a board-approved reserve policy "
+                "(often 3-12 months for most nonprofits)."
             )
 
         if label == "CRITICAL":
             return (
-                "Increase operating reserves to reduce continuity risk; target at least ~3 months "
-                "unless a different policy is explicitly justified."
+                "Increase operating reserves to reduce continuity risk; set a board-approved minimum "
+                "(typically at least 3 months)."
             )
         if label == "LEAN":
             return (
-                "Strengthen reserves toward a resilient policy range (commonly 3-12 months), "
-                "based on revenue volatility and program obligations."
+                "Build reserves toward your board-approved target range (often 3-12 months), "
+                "adjusted for revenue volatility and obligations."
             )
         if label == "RESERVE_MODEL":
             return (
-                "Distinguish restricted/endowment reserves from operating reserves and publish "
+                "Separate restricted/endowment funds from operating reserves and publish "
                 "a clear reserve-use policy."
             )
         if label == "HIGH":
             return (
-                "Document why reserves above your policy target are intentional "
-                "(e.g., restrictions, volatility, planned commitments) and define deployment triggers."
+                "If reserves are above policy target, document why and publish triggers for planned deployment."
             )
         if label == "EXCESSIVE":
             return (
-                "Publish a capital deployment plan so very high reserves are intentionally used for mission delivery "
-                "while preserving a prudent safety buffer."
+                "Publish a time-bound plan to deploy excess unrestricted reserves into mission delivery, "
+                "while keeping a clear operating reserve floor."
             )
         return None
 
@@ -1405,6 +1410,12 @@ class AlignmentScorer:
 
         # 1. Muslim Donor Fit (19 pts)
         mdf_pts, mdf_level, mdf_evidence = self._score_muslim_donor_fit(metrics)
+        mdf_improvement = None
+        if mdf_pts < 12:
+            if metrics.zakat_claim_detected:
+                mdf_improvement = "Clarify zakat allocation policy and eligible use categories for donors."
+            else:
+                mdf_improvement = "Add a dedicated zakat page or clearly state whether donations are zakat-eligible."
         components.append(
             ScoreComponent(
                 name="Muslim Donor Fit",
@@ -1412,9 +1423,7 @@ class AlignmentScorer:
                 possible=19,
                 evidence=mdf_evidence,
                 status=ComponentStatus.FULL if mdf_pts >= 12 else ComponentStatus.PARTIAL,
-                improvement_suggestion="Add a dedicated zakat page or program and highlight humanitarian dimensions of your work"
-                if mdf_pts < 12
-                else None,
+                improvement_suggestion=mdf_improvement,
                 improvement_value=min(19 - mdf_pts, 8) if mdf_pts < 12 else 0,
             )
         )
@@ -1429,7 +1438,7 @@ class AlignmentScorer:
                 possible=13,
                 evidence=f"Cause area: {cause_area.replace('_', ' ').title()} ({cu_pts}/13)",
                 status=ComponentStatus.FULL if cause_area != "UNKNOWN" else ComponentStatus.PARTIAL,
-                improvement_suggestion="Clearly document your primary cause area on your website"
+                improvement_suggestion="Clearly document your primary cause area on your website."
                 if cause_area == "UNKNOWN"
                 else None,
                 improvement_value=min(13 - cu_pts, 4) if cause_area == "UNKNOWN" else 0,
@@ -1445,7 +1454,7 @@ class AlignmentScorer:
                 possible=7,
                 evidence=us_evidence,
                 status=ComponentStatus.FULL if us_pts >= 4 else ComponentStatus.PARTIAL,
-                improvement_suggestion="Expand services to underserved populations or regions with limited nonprofit coverage"
+                improvement_suggestion="Expand services to underserved populations or geographies with limited nonprofit coverage."
                 if us_pts < 4
                 else None,
                 improvement_value=min(7 - us_pts, 3) if us_pts < 4 else 0,

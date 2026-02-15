@@ -1088,7 +1088,7 @@ def evaluate_charity(
     evaluation_track = charity_data.get("evaluation_track", "STANDARD") if charity_data else "STANDARD"
 
     # =========================================================================
-    # 1. GMG Scoring (3 dimensions + risk)
+    # 1. GMG Scoring (2 dimensions + risk; data confidence is a separate signal)
     # =========================================================================
     scores = scorer.evaluate(metrics, evaluation_track=evaluation_track)
 

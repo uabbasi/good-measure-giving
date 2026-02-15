@@ -40,14 +40,14 @@ export const FAQPage: React.FC = () => {
     {
       category: 'general',
       q: "Do you evaluate mosques and Islamic centers?",
-      a: "Currently, we focus on 501(c)(3) charitable organizations. Most mosques are religious organizations (501(c)(3) with religious exemptions) and have different reporting requirements \u2014 they\u2019re often not required to file Form 990s, which means we have less data to work with. We may expand to include mosques in the future, but our current methodology is optimized for charitable organizations with standard Form 990 filings."
+      a: "We primarily evaluate 501(c)(3) charitable organizations with standard public filings, but we do include some Islamic centers and mosque-like organizations when enough reliable data is available. Coverage is still strongest where Form 990 and third-party profile data are robust, so some congregational organizations remain harder to assess confidently."
     },
 
     // Methodology
     {
       category: 'methodology',
       q: "What is the GMG Score?",
-      a: "The GMG Score is our 0-100 rating built from two dimensions, each worth 50 points: Impact (how effectively does this charity use donations to create measurable change?) and Alignment (is this the right charity for Muslim donors?). We also apply risk deductions (up to -10 points) for serious concerns like very low program spending or governance problems. Alongside the score, a Data Confidence signal (High, Medium, or Low) tells you how much public data supports the evaluation. Most charities score 50-70; scores above 75 indicate exceptional performance."
+      a: "The GMG Score is our 0-100 rating built from two dimensions, each worth 50 points: Impact (how effectively does this charity use donations to create measurable change?) and Alignment (is this the right charity for Muslim donors?). We also apply risk deductions (up to -10 points) for serious concerns like very low program spending or governance problems. Alongside the score, a Data Confidence signal (High, Medium, or Low) tells you how much public data supports the evaluation. Scores above 75 indicate exceptional performance, while many organizations cluster in the middle score bands."
     },
     {
       category: 'methodology',
@@ -62,7 +62,7 @@ export const FAQPage: React.FC = () => {
     {
       category: 'methodology',
       q: "What does \u2018Impact\u2019 measure?",
-      a: "Impact (50 points) measures how effectively a charity turns donations into real-world change. The largest component is cost per beneficiary (20 points), comparing each charity against cause-adjusted benchmarks for similar organizations. We also evaluate directness of service delivery (7 points), financial health and reserves (7 points), program expense ratio (6 points), evidence and outcome tracking (5 points), theory of change (3 points), and governance quality (2 points). Evidence quality is assessed on a five-level scale: Verified (independent third-party evaluation), Tracked (3+ years of outcome data), Measured (1-2 years of data), Reported (basic output tracking only), and Unverified (no structured tracking)."
+      a: "Impact (50 points) measures how effectively a charity turns donations into real-world change. We score the same seven components for every charity (cost per beneficiary, directness, financial health, program ratio, evidence/outcomes, theory of change, governance), but the exact weights are archetype-adjusted by charity type. In the current rubric, for example, governance is always 10 points, while cost per beneficiary ranges by archetype. Evidence quality is assessed on a five-level scale: Verified (independent third-party evaluation), Tracked (3+ years of outcome data), Measured (1-2 years of data), Reported (basic output tracking only), and Unverified (no structured tracking)."
     },
     {
       category: 'methodology',
@@ -72,12 +72,12 @@ export const FAQPage: React.FC = () => {
     {
       category: 'methodology',
       q: "Why don\u2019t you just use overhead ratios like other evaluators?",
-      a: "Because overhead ratios can be misleading. An organization can have a 95% program expense ratio while doing something completely ineffective. Conversely, a legal advocacy organization might have higher administrative costs because lawyers are expensive \u2014 but win cases protecting millions of Muslims. Here\u2019s a real example: a food bank with 92% program spending might distribute food recipients don\u2019t need, while a civil rights organization with 75% program spending might achieve far greater impact. We include program ratio in our Impact dimension (6 of 50 points), but cost per beneficiary (20 points) and evidence of outcomes (5 points) matter far more."
+      a: "Because overhead ratios can be misleading. An organization can have a 95% program expense ratio while doing something ineffective. Conversely, a legal advocacy organization might have higher administrative costs because lawyers are expensive \u2014 but still deliver major impact. We include program ratio as one part of Impact, but we also score cost-effectiveness, outcomes evidence, financial health, theory of change, and governance. In short: we evaluate whether programs work, not just how spending is labeled."
     },
     {
       category: 'methodology',
       q: "How do you handle charities working in conflict zones?",
-      a: "We explicitly account for the higher costs of operating in places like Gaza, Syria, Yemen, or other difficult environments. Security, logistics, and compliance costs are legitimately higher in these areas. Our cause-adjusted benchmarks automatically account for this context when evaluating cost per beneficiary \u2014 the single largest scoring component at 20 of 50 Impact points. We don\u2019t penalize organizations for these necessary expenses the way some general evaluators do."
+      a: "We explicitly account for the higher costs of operating in places like Gaza, Syria, Yemen, or other difficult environments. Security, logistics, and compliance costs are legitimately higher in these areas. Our cost-per-beneficiary benchmarks are cause-adjusted and include conflict-zone adjustments, so organizations aren\u2019t penalized for necessary operating conditions."
     },
 
     // AI & Technology
@@ -109,7 +109,7 @@ export const FAQPage: React.FC = () => {
     {
       category: 'ai',
       q: "Can I see the actual prompts you use?",
-      a: "Yes! We publish every prompt we use at /prompts — from data extraction to narrative generation to quality validation. You can see exactly what instructions we give to AI models, how we prevent hallucinations, and what safeguards ensure accuracy. We currently have 14 active prompts and 16 planned category-specific calibration prompts. This is part of our commitment to radical transparency."
+      a: "Yes. We publish our core prompts and prompt annotations at /prompts \u2014 including data extraction, narrative generation, and quality validation flows. You can inspect how we instruct models and where additional prompt coverage is still being added. We currently list 14 active prompts and 16 planned category-specific calibration prompts."
     },
 
     // Zakat

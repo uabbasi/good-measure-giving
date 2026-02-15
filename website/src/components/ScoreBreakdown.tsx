@@ -121,7 +121,7 @@ const getFinancialHealthContext = (component: ScoreComponentDetail): {
   return {
     benchmark,
     current: `Current reserves: ${monthLabel} (very high).`,
-    replacementSuggestion: 'Clarify long-term reserve purpose and publish a capital deployment plan so excess liquidity does not sit idle.',
+    replacementSuggestion: 'Publish a time-bound plan to deploy excess unrestricted reserves into mission delivery, while keeping a clear operating reserve floor.',
   };
 };
 
@@ -136,6 +136,13 @@ const normalizeImprovementSuggestion = (component: ScoreComponentDetail): string
       /build working capital reserves down to 1-3 months/i.test(suggestion) ||
       /reduce(?:ing)? .*working capital.*1-3 months/i.test(suggestion)
     )
+  ) {
+    return getFinancialHealthContext(component).replacementSuggestion;
+  }
+
+  if (
+    isFinancialHealthComponent(component) &&
+    /capital deployment plan.*excess reserves.*operating reserve target/i.test(suggestion)
   ) {
     return getFinancialHealthContext(component).replacementSuggestion;
   }

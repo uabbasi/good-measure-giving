@@ -479,10 +479,43 @@ class CrossSourceCorroborator:
         discovered_accepts = discovered_zakat.get("accepts_zakat", False)
         discovered_url = discovered_zakat.get("accepts_zakat_url", "")
         discovered_confidence = discovered_zakat.get("zakat_verification_confidence", 0.0)
+        discovered_evidence = (discovered_zakat.get("accepts_zakat_evidence") or "").strip()
 
         if discovered_accepts and discovered_confidence >= 0.5:
             sources.append("discovered_profile")
             reasons.append(f"Discovered via search (confidence={discovered_confidence:.2f})")
+
+        # Source 1b: Explicit discovered-language evidence.
+        # Some sites mention zakat on giving pages that are missed by website extraction.
+        # If discovery returns clear first-party positive phrasing, count this as an
+        # explicit evidence signal (still gated by minimum discovery confidence).
+        has_discovered_explicit_zakat_evidence = False
+        if discovered_accepts and discovered_confidence >= 0.5 and discovered_evidence:
+            evidence_lower = discovered_evidence.lower()
+            positive_patterns = [
+                "zakat eligible",
+                "zakat-eligible",
+                "we are zakat",
+                "accepts zakat",
+                "accept zakat",
+                "your zakat contributions",
+                "pay your zakat",
+                "give your zakat",
+            ]
+            negative_patterns = [
+                "not zakat eligible",
+                "not zakat-eligible",
+                "do not accept zakat",
+                "does not accept zakat",
+                "don't accept zakat",
+                "not zakat compliant",
+            ]
+            if any(p in evidence_lower for p in positive_patterns) and not any(
+                n in evidence_lower for n in negative_patterns
+            ):
+                has_discovered_explicit_zakat_evidence = True
+                sources.append("discovered_explicit_zakat_text")
+                reasons.append("Discovered evidence includes explicit zakat-acceptance language")
 
         # Source 2: Check if URL explicitly contains 'zakat'
         if discovered_url and "zakat" in discovered_url.lower():
@@ -548,7 +581,13 @@ class CrossSourceCorroborator:
             if "zakat" in zakat_evidence:
                 has_website_zakat_evidence = True
 
-        passed = has_direct_verification or name_has_zakat or has_website_zakat_evidence or len(unique_sources) >= 2
+        passed = (
+            has_direct_verification
+            or name_has_zakat
+            or has_website_zakat_evidence
+            or has_discovered_explicit_zakat_evidence
+            or len(unique_sources) >= 2
+        )
 
         if not passed and len(unique_sources) == 1:
             logger.warning(

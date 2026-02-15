@@ -92,7 +92,7 @@ export const AboutPage: React.FC = () => {
         <section>
           <h2 className={`text-2xl mb-4 ${headingClass}`}>Where Our Data Comes From</h2>
           <p className={`mb-4 ${bodyClass}`}>
-            We don't rely on charity self-reporting. Our pipeline aggregates data from multiple independent sources:
+            We don't rely only on charity self-reporting. Our pipeline aggregates data from multiple independent sources:
           </p>
           <div className={`${cardClass} space-y-3`}>
             {[
@@ -123,11 +123,11 @@ export const AboutPage: React.FC = () => {
             </div>
             <div>
               <p className={bodyClass}>
-                We use AI to synthesize large volumes of public data into structured evaluations. Every prompt, scoring rubric, and decision rule is published on our{' '}
+                We use AI to synthesize large volumes of public data into structured evaluations. Core prompts, scoring rubrics, and decision rules are published on our{' '}
                 <Link to="/prompts" className="text-emerald-600 hover:text-emerald-500 underline underline-offset-2">
                   AI Transparency page
                 </Link>
-                . The pipeline is deterministic: same data in, same scores out. AI writes the narratives; the methodology, weights, and data sources are all human-designed.
+                . The pipeline is deterministic: same data in, same scores out. AI writes the narratives; the methodology, weights, and data sources are human-designed.
               </p>
             </div>
           </div>
