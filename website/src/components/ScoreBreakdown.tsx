@@ -1,7 +1,6 @@
 /**
- * ScoreBreakdown: Unified "Score Analysis" section.
- * Combines score rationale, dimension breakdowns with inline evidence,
- * strengths, and improvement opportunities into one cohesive block.
+ * ScoreBreakdown: Qualitative "Methodology Signals" section.
+ * Uses Harvey balls and narrative evidence, intentionally hiding numeric scores.
  */
 
 import React from 'react';
@@ -16,9 +15,6 @@ import {
 } from '../../types';
 import { SourceLinkedText } from './SourceLinkedText';
 import { stripCitations, formatComponentName, formatEvidenceForDonors } from '../utils/scoreUtils';
-import { getScoreBarColorClass } from '../utils/scoreConstants';
-
-// ─── Types ───────────────────────────────────────────────────────────────────
 
 interface DimensionConfig {
   key: 'impact' | 'alignment';
@@ -49,23 +45,92 @@ interface ScoreBreakdownProps {
   areasForImprovement?: Array<string | { area: string; context: string; citation_ids: string[] }>;
 }
 
-// ─── Sub-components ──────────────────────────────────────────────────────────
+type HarveyLevel = 0 | 1 | 2 | 3 | 4;
+type HarveyTone = 'good' | 'mixed' | 'caution' | 'neutral';
 
-/** Check if a component's evidence indicates data is entirely missing */
+const HARVEY_DEGREES: Record<HarveyLevel, number> = {
+  0: 0,
+  1: 90,
+  2: 180,
+  3: 270,
+  4: 360,
+};
+
 const isDataUnavailable = (component: ScoreComponentDetail): boolean =>
   component.scored === 0 && !!component.evidence &&
   /not (yet )?available|unknown|insufficient data/i.test(component.evidence);
 
-/** Status dot: green for full, amber for partial, grey for no data, red for missing */
-const StatusDot: React.FC<{ status: ScoreComponentDetail['status']; noData?: boolean }> = ({ status, noData }) => {
-  const color = noData ? 'bg-slate-500' :
-    status === 'full' ? 'bg-emerald-500' :
-    status === 'partial' ? 'bg-amber-500' :
-    'bg-rose-400';
-  return <span className={`inline-block w-2 h-2 rounded-full flex-shrink-0 ${color}`} />;
+const ratioToHarveyLevel = (ratio: number): HarveyLevel => {
+  if (ratio >= 0.8) return 4;
+  if (ratio >= 0.6) return 3;
+  if (ratio >= 0.4) return 2;
+  if (ratio >= 0.2) return 1;
+  return 0;
 };
 
-/** Single component row — evidence always visible, no collapsible */
+const levelToTone = (level: HarveyLevel): HarveyTone => {
+  if (level >= 3) return 'good';
+  if (level === 2) return 'mixed';
+  if (level <= 1) return 'caution';
+  return 'neutral';
+};
+
+const levelToLabel = (level: HarveyLevel): string => {
+  if (level === 4) return 'Strong';
+  if (level === 3) return 'Good';
+  if (level === 2) return 'Mixed';
+  if (level === 1) return 'Limited';
+  return 'Minimal';
+};
+
+const getHarveyPalette = (tone: HarveyTone, isDark: boolean): {
+  fill: string;
+  empty: string;
+  border: string;
+  text: string;
+} => {
+  if (tone === 'good') {
+    return isDark
+      ? { fill: '#34d399', empty: '#334155', border: 'border-emerald-700/70', text: 'text-emerald-300' }
+      : { fill: '#059669', empty: '#e2e8f0', border: 'border-emerald-300', text: 'text-emerald-700' };
+  }
+  if (tone === 'mixed') {
+    return isDark
+      ? { fill: '#f59e0b', empty: '#334155', border: 'border-amber-700/70', text: 'text-amber-300' }
+      : { fill: '#d97706', empty: '#e2e8f0', border: 'border-amber-300', text: 'text-amber-700' };
+  }
+  if (tone === 'caution') {
+    return isDark
+      ? { fill: '#fb7185', empty: '#334155', border: 'border-rose-700/70', text: 'text-rose-300' }
+      : { fill: '#e11d48', empty: '#e2e8f0', border: 'border-rose-300', text: 'text-rose-700' };
+  }
+  return isDark
+    ? { fill: '#94a3b8', empty: '#334155', border: 'border-slate-600', text: 'text-slate-300' }
+    : { fill: '#64748b', empty: '#e2e8f0', border: 'border-slate-300', text: 'text-slate-700' };
+};
+
+const HarveyBall: React.FC<{
+  level: HarveyLevel;
+  tone?: HarveyTone;
+  isDark: boolean;
+  size?: 'sm' | 'md' | 'lg';
+  label?: string;
+}> = ({ level, tone, isDark, size = 'md', label }) => {
+  const resolvedTone = tone || levelToTone(level);
+  const palette = getHarveyPalette(resolvedTone, isDark);
+  const deg = HARVEY_DEGREES[level];
+  const sizeClass = size === 'sm' ? 'w-4 h-4' : size === 'lg' ? 'w-9 h-9' : 'w-6 h-6';
+
+  return (
+    <span
+      aria-label={label || levelToLabel(level)}
+      title={label || levelToLabel(level)}
+      className={`inline-block rounded-full border ${sizeClass} ${palette.border}`}
+      style={{ background: `conic-gradient(${palette.fill} ${deg}deg, ${palette.empty} ${deg}deg)` }}
+    />
+  );
+};
+
 const ComponentRow: React.FC<{
   component: ScoreComponentDetail;
   citations: RichCitation[];
@@ -73,31 +138,25 @@ const ComponentRow: React.FC<{
   isDark: boolean;
 }> = ({ component, citations, isSignedIn, isDark }) => {
   const noData = isDataUnavailable(component);
+  const ratio = component.possible > 0 ? component.scored / component.possible : 0;
+  const level = noData ? 0 : ratioToHarveyLevel(ratio);
+  const tone = noData ? 'neutral' : levelToTone(level);
+  const palette = getHarveyPalette(tone, isDark);
 
   return (
-    <div className={`py-3`}>
-      {/* Header: name + score + status + improvement badge */}
+    <div className="py-3">
       <div className="flex items-center gap-2">
-        <StatusDot status={component.status} noData={noData} />
-        <span className={`flex-1 text-sm ${noData ? (isDark ? 'text-slate-500' : 'text-slate-400') : (isDark ? 'text-slate-300' : 'text-slate-700')}`}>
+        <HarveyBall level={level} tone={tone} isDark={isDark} size="sm" />
+        <span className={`flex-1 text-sm ${noData ? (isDark ? 'text-slate-500' : 'text-slate-400') : (isDark ? 'text-slate-200' : 'text-slate-700')}`}>
           {formatComponentName(component.name)}
         </span>
-        {noData ? (
-          <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${
-            isDark ? 'bg-slate-700 text-slate-400' : 'bg-slate-100 text-slate-400'
-          }`}>
-            No Data
-          </span>
-        ) : (
-          <span className={`text-sm font-mono tabular-nums ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-            {component.scored}/{component.possible}
-          </span>
-        )}
+        <span className={`text-[11px] font-semibold ${palette.text}`}>
+          {noData ? 'No Data' : levelToLabel(level)}
+        </span>
       </div>
 
-      {/* Evidence — always visible, formatted for donors */}
       {component.evidence && !noData && (
-        <p className={`mt-1 ml-4 text-xs leading-relaxed ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+        <p className={`mt-1 ml-6 text-xs leading-relaxed ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
           {(() => {
             const formatted = formatEvidenceForDonors(component.evidence);
             return isSignedIn ? (
@@ -109,24 +168,18 @@ const ComponentRow: React.FC<{
         </p>
       )}
 
-      {/* Improvement suggestion — inline with recoverable points */}
-      {component.improvement_value > 0 && component.improvement_suggestion && (
-        <p className={`mt-1 ml-4 text-xs leading-relaxed ${isDark ? 'text-amber-400/70' : 'text-amber-600'}`}>
-          → {component.improvement_suggestion}
-          <span className={`ml-1.5 font-semibold ${isDark ? 'text-amber-400' : 'text-amber-700'}`}>
-            (+{component.improvement_value})
-          </span>
+      {component.improvement_suggestion && (
+        <p className={`mt-1 ml-6 text-xs leading-relaxed ${isDark ? 'text-amber-300/80' : 'text-amber-700'}`}>
+          {component.improvement_suggestion}
         </p>
       )}
     </div>
   );
 };
 
-/** Format archetype name for display: SYSTEMIC_CHANGE → Systemic Change */
 const formatArchetype = (archetype: string): string =>
   archetype.split('_').map(w => w.charAt(0) + w.slice(1).toLowerCase()).join(' ');
 
-/** Dimension section (Impact or Alignment) — always open */
 const DimensionSection: React.FC<{
   config: DimensionConfig;
   details: ImpactDetails | AlignmentDetails;
@@ -135,47 +188,42 @@ const DimensionSection: React.FC<{
   isSignedIn: boolean;
   isDark: boolean;
 }> = ({ config, details, explanation, citations, isSignedIn, isDark }) => {
-  const score = details.score;
-  const pct = config.max > 0 ? (score / config.max) * 100 : 0;
-  const barColor = getScoreBarColorClass(score, config.max);
+  const ratio = config.max > 0 ? details.score / config.max : 0;
+  const level = ratioToHarveyLevel(ratio);
+  const tone = levelToTone(level);
+  const palette = getHarveyPalette(tone, isDark);
 
   const explanationText = typeof explanation === 'object' ? explanation.explanation : explanation;
   const improvementText = typeof explanation === 'object' ? explanation.improvement : undefined;
   const hasCitations = typeof explanation === 'object';
-
-  // Show archetype badge for Impact dimension when non-default
   const rubricArchetype = 'rubric_archetype' in details ? (details as ImpactDetails).rubric_archetype : undefined;
 
   return (
     <div className={`rounded-lg pb-1 ${isDark ? 'bg-slate-800/60' : 'bg-slate-50'}`}>
-      {/* Dimension header with score bar */}
       <div className="p-4 pb-2">
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-2 gap-3">
           <span className="flex items-center gap-2">
             <span className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
               {config.label}
             </span>
             {rubricArchetype && (
               <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${
-                isDark ? 'bg-indigo-900/40 text-indigo-300' : 'bg-indigo-50 text-indigo-600'
+                isDark ? 'bg-indigo-900/40 text-indigo-300' : 'bg-indigo-50 text-indigo-700'
               }`}>
                 {formatArchetype(rubricArchetype)}
               </span>
             )}
           </span>
-          <span className={`text-sm font-mono font-bold ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
-            {score}/{config.max}
+          <span className="inline-flex items-center gap-2">
+            <HarveyBall level={level} tone={tone} isDark={isDark} size="lg" label={`${config.label}: ${levelToLabel(level)}`} />
+            <span className={`text-sm font-bold ${palette.text}`}>{levelToLabel(level)}</span>
           </span>
-        </div>
-        <div className={`h-1.5 rounded-full ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`}>
-          <div className={`h-full rounded-full transition-all ${barColor}`} style={{ width: `${pct}%` }} />
         </div>
       </div>
 
-      {/* Dimension explanation */}
       {explanationText && (
-        <div className={`px-4 pb-2`}>
-          <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+        <div className="px-4 pb-2">
+          <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
             {isSignedIn && hasCitations ? (
               <SourceLinkedText text={explanationText} citations={citations} isDark={isDark} />
             ) : (
@@ -185,7 +233,6 @@ const DimensionSection: React.FC<{
         </div>
       )}
 
-      {/* Component rows — detailed breakdown for signed-in users only */}
       {isSignedIn ? (
         <div className={`px-4 pb-3 divide-y ${isDark ? 'divide-slate-700/40' : 'divide-slate-200/80'}`}>
           {details.components.map((comp) => (
@@ -203,12 +250,11 @@ const DimensionSection: React.FC<{
           isDark ? 'bg-slate-700/40' : 'bg-slate-100'
         }`}>
           <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-            Sign in to see the full {details.components.length}-component breakdown
+            Sign in to see the full component-level assessment
           </p>
         </div>
       )}
 
-      {/* Per-dimension improvement path */}
       {isSignedIn && improvementText && (
         <div className={`mx-4 mt-2 mb-5 px-3 py-2.5 rounded-lg flex items-start gap-2 ${
           isDark ? 'bg-amber-900/15' : 'bg-amber-50'
@@ -225,11 +271,14 @@ const DimensionSection: React.FC<{
   );
 };
 
-// ─── Main Component ──────────────────────────────────────────────────────────
+const getRiskSignal = (riskDeduction: number): { label: string; level: HarveyLevel; tone: HarveyTone } => {
+  if (riskDeduction <= -4) return { label: 'High Risk Flags', level: 1, tone: 'caution' };
+  if (riskDeduction <= -1) return { label: 'Moderate Risk Flags', level: 2, tone: 'mixed' };
+  return { label: 'Low Risk Flags', level: 4, tone: 'good' };
+};
 
 export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({
   scoreDetails,
-  amalScore,
   citations,
   isSignedIn,
   isDark,
@@ -240,7 +289,7 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({
   areasForImprovement,
 }) => {
   const dataConfidence = scoreDetails.data_confidence;
-  const riskDeduction = scoreDetails.risk_deduction || 0;
+  const riskSignal = getRiskSignal(scoreDetails.risk_deduction || 0);
   const hasStrengths = strengths && strengths.length > 0;
   const hasImprovements = areasForImprovement && areasForImprovement.length > 0;
 
@@ -248,14 +297,12 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({
     <div className={`rounded-lg border p-4 md:p-6 mb-6 ${
       isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'
     }`}>
-      {/* Section header */}
       <div className={`text-xs uppercase tracking-widest font-semibold mb-3 ${
-        isDark ? 'text-slate-500' : 'text-slate-400'
+        isDark ? 'text-slate-500' : 'text-slate-500'
       }`}>
-        Score Analysis
+        Methodology Signals
       </div>
 
-      {/* Score rationale */}
       {amalScoreRationale && (
         <p className={`text-sm leading-relaxed mb-4 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
           {isSignedIn ? (
@@ -271,9 +318,8 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({
         </p>
       )}
 
-      {/* Strengths — compact row above dimensions */}
       {hasStrengths && (
-        <div className={`mb-4 grid grid-cols-1 md:grid-cols-2 gap-3`}>
+        <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-3">
           {strengths!.map((strength, i) => {
             const isRichFormat = typeof strength === 'object';
             const displayText = isSignedIn
@@ -297,19 +343,17 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({
         </div>
       )}
 
-      {/* Dimension explainer */}
-      <p className={`text-xs leading-relaxed mb-4 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-        <strong className={isDark ? 'text-slate-400' : 'text-slate-500'}>Impact</strong> measures how effectively they use funds. <strong className={isDark ? 'text-slate-400' : 'text-slate-500'}>Alignment</strong> measures how well they match Muslim donor priorities.
+      <p className={`text-xs leading-relaxed mb-4 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
+        <strong className={isDark ? 'text-slate-300' : 'text-slate-700'}>Impact</strong> reflects how effectively programs convert resources into outcomes.
+        {' '}
+        <strong className={isDark ? 'text-slate-300' : 'text-slate-700'}>Alignment</strong> reflects fit with Muslim donor priorities.
       </p>
 
-      {/* Dimension sections */}
       <div className="space-y-5">
         {DIMENSIONS.map((dim) => {
           const details = scoreDetails[dim.key];
           if (!details || !('components' in details)) return null;
-
           const explanation = dimensionExplanations?.[dim.key];
-
           return (
             <DimensionSection
               key={dim.key}
@@ -324,11 +368,10 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({
         })}
       </div>
 
-      {/* Improvement opportunities — inline below dimensions (signed-in only) */}
       {isSignedIn && hasImprovements && (
         <div className={`mt-4 pt-3 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
           <div className={`text-xs uppercase tracking-widest font-semibold mb-3 flex items-center gap-1.5 ${
-            isDark ? 'text-amber-400/80' : 'text-amber-600'
+            isDark ? 'text-amber-400/80' : 'text-amber-700'
           }`}>
             <TrendingUp className="w-3 h-3" />
             Room to Grow
@@ -356,19 +399,17 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({
         </div>
       )}
 
-      {/* Footer: Risk deduction + Data Confidence */}
       <div className={`mt-4 pt-3 border-t flex flex-wrap items-center gap-x-6 gap-y-2 text-xs ${
-        isDark ? 'border-slate-700 text-slate-500' : 'border-slate-200 text-slate-400'
+        isDark ? 'border-slate-700 text-slate-400' : 'border-slate-200 text-slate-600'
       }`}>
-        {riskDeduction !== 0 && (
-          <span className="flex items-center gap-1">
-            <AlertTriangle className="w-3 h-3" />
-            Risk: {riskDeduction > 0 ? '-' : '+'}{Math.abs(riskDeduction)} pts
-          </span>
-        )}
+        <span className="inline-flex items-center gap-2">
+          <AlertTriangle className="w-3 h-3" />
+          <HarveyBall level={riskSignal.level} tone={riskSignal.tone} isDark={isDark} size="sm" label={riskSignal.label} />
+          <span>{riskSignal.label}</span>
+        </span>
         {dataConfidence && (
           <span>
-            Data Confidence: {dataConfidence.badge}
+            Data Confidence: <strong className={isDark ? 'text-slate-200' : 'text-slate-700'}>{dataConfidence.badge}</strong>
           </span>
         )}
       </div>

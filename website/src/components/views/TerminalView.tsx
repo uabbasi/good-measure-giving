@@ -737,11 +737,6 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
             >
               <div className="flex items-center gap-3">
                 <span className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>Methodology details</span>
-                {amal.score_details.impact && (
-                  <span className={`text-xs font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                    Impact {amal.score_details.impact.score}/50 · Alignment {amal.score_details.alignment?.score ?? '—'}/50
-                  </span>
-                )}
               </div>
               <ChevronDown className={`w-5 h-5 transition-transform ${openSections.has('score') ? 'rotate-180' : ''} ${isDark ? 'text-slate-400' : 'text-slate-500'}`} />
             </button>
