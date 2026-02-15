@@ -219,7 +219,7 @@ export const BrowsePage: React.FC = () => {
   const [showMoreFilters, setShowMoreFilters] = useState(false);
   const [showCauseFilters, setShowCauseFilters] = useState(false);
   const [selectedPathId, setSelectedPathId] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<'relevance' | 'name' | 'revenue' | 'program' | 'evidence'>('evidence');
+  const [sortBy, setSortBy] = useState<'score' | 'relevance' | 'name' | 'revenue' | 'program' | 'evidence'>('score');
 
   // Set page title
   useEffect(() => {
@@ -398,11 +398,25 @@ export const BrowsePage: React.FC = () => {
   const sortedCharities = useMemo(() => {
     const sorted = [...filteredCharities];
     switch (sortBy) {
+      case 'score':
+        sorted.sort((a, b) => {
+          const scoreDiff = getScore(b) - getScore(a);
+          if (scoreDiff !== 0) return scoreDiff;
+          const aUi = a.ui_signals_v1 || deriveUISignalsFromCharity(a);
+          const bUi = b.ui_signals_v1 || deriveUISignalsFromCharity(b);
+          const aRank = getEvidenceStageRank(aUi.evidence_stage);
+          const bRank = getEvidenceStageRank(bUi.evidence_stage);
+          if (bRank !== aRank) return bRank - aRank;
+          return a.name.localeCompare(b.name);
+        });
+        break;
       case 'relevance':
         sorted.sort((a, b) => {
           const aRel = getRelevanceScore(a);
           const bRel = getRelevanceScore(b);
           if (bRel !== aRel) return bRel - aRel;
+          const scoreDiff = getScore(b) - getScore(a);
+          if (scoreDiff !== 0) return scoreDiff;
           const byName = a.name.localeCompare(b.name);
           if (byName !== 0) return byName;
           return (a.ein || '').localeCompare(b.ein || '');
@@ -532,7 +546,7 @@ export const BrowsePage: React.FC = () => {
     setShowCauseFilters(path.showCauseFilters || false);
     setSelectedPathId(path.id);
     setBrowseStyle(path.targetMode);
-    setSortBy('relevance');
+    setSortBy('score');
 
     // Persist power mode preference
     if (path.targetMode === 'power') {
@@ -543,7 +557,7 @@ export const BrowsePage: React.FC = () => {
   // Switch to power mode (full filters)
   const switchToPowerMode = () => {
     setBrowseStyle('power');
-    if (!selectedPathId) setSortBy('evidence');
+    if (!selectedPathId) setSortBy('score');
     localStorage.setItem(BROWSE_STYLE_KEY, 'power');
   };
 
@@ -553,7 +567,7 @@ export const BrowsePage: React.FC = () => {
     setActivePresets(new Set());
     setShowCauseFilters(false);
     setSelectedPathId(null);
-    setSortBy('evidence');
+    setSortBy('score');
     // Clear power mode preference when explicitly returning to guided
     localStorage.removeItem(BROWSE_STYLE_KEY);
   };
@@ -1028,6 +1042,7 @@ export const BrowsePage: React.FC = () => {
                     : 'bg-white border-slate-200 text-slate-700'
                 }`}
               >
+                <option value="score">Overall</option>
                 <option value="relevance">Path Relevance</option>
                 <option value="evidence">Evidence Stage</option>
                 <option value="name">Name A-Z</option>

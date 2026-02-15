@@ -118,6 +118,31 @@ const TAGS = {
 
 const ALL_TAGS = [...TAGS.geography, ...TAGS.cause, ...TAGS.population];
 const COLORS = ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444', '#ec4899', '#06b6d4', '#84cc16'];
+const PERCENT_DECIMALS = 2;
+const PERCENT_EPSILON = 0.01;
+
+function clampPercent(value: number): number {
+  return Math.max(0, Math.min(100, value));
+}
+
+function roundPercent(value: number): number {
+  return Math.round(value * (10 ** PERCENT_DECIMALS)) / (10 ** PERCENT_DECIMALS);
+}
+
+function parsePercentInput(raw: string): number {
+  const sanitized = raw.replace(/[^0-9.]/g, '');
+  const [whole, ...fractionParts] = sanitized.split('.');
+  const normalized = fractionParts.length > 0 ? `${whole || '0'}.${fractionParts.join('')}` : whole;
+  const parsed = Number.parseFloat(normalized);
+  if (!Number.isFinite(parsed)) return 0;
+  return roundPercent(clampPercent(parsed));
+}
+
+function formatPercent(value: number): string {
+  const rounded = roundPercent(value);
+  if (Number.isInteger(rounded)) return rounded.toString();
+  return rounded.toFixed(PERCENT_DECIMALS).replace(/\.?0+$/, '');
+}
 
 // Draggable charity row
 function DraggableCharityRow({
@@ -182,7 +207,7 @@ function DraggableCharityRow({
     <tr
       ref={setNodeRef}
       style={style}
-      className={`border-b ${border} group transition-all ${isDragging ? 'z-50 shadow-lg' : ''} ${isDark ? 'hover:bg-slate-800/40' : 'hover:bg-slate-50'} ${dimmed ? 'pointer-events-auto' : ''}`}
+      className={`hidden sm:table-row border-b ${border} group transition-all ${isDragging ? 'z-50 shadow-lg' : ''} ${isDark ? 'hover:bg-slate-800/40' : 'hover:bg-slate-50'} ${dimmed ? 'pointer-events-auto' : ''}`}
     >
       <td className={`${cell} w-0 pr-0`} style={{ borderLeft: bucketColor ? `4px solid ${bucketColor}40` : undefined }}>
         <button {...listeners} {...attributes} className={`cursor-grab active:cursor-grabbing p-1 rounded-md opacity-100 sm:opacity-30 sm:group-hover:opacity-100 transition-opacity ${isDark ? 'hover:bg-slate-700' : 'hover:bg-slate-200'}`}>
@@ -249,6 +274,135 @@ function DraggableCharityRow({
   );
 }
 
+function MobileCharityAllocationRow({
+  charity,
+  given,
+  target,
+  categoryTarget,
+  currentBucketId,
+  bucketOptions,
+  isDark,
+  onLogDonation,
+  onSetTarget,
+  onMoveCharity,
+  onRemove,
+}: {
+  charity: BookmarkedCharity;
+  given: number;
+  target?: number;
+  categoryTarget: number;
+  currentBucketId: string | null;
+  bucketOptions: Array<{ id: string; label: string }>;
+  isDark: boolean;
+  onLogDonation: (ein: string, name: string) => void;
+  onSetTarget?: (ein: string, amount: number) => void | Promise<void>;
+  onMoveCharity?: (ein: string, bucketId: string | null) => void;
+  onRemove?: (ein: string) => void | Promise<void>;
+}) {
+  const [localTarget, setLocalTarget] = useState<string>(target ? String(target) : '');
+  const inputStyle = `bg-transparent border-0 focus:outline-none focus:ring-0 p-0 ${isDark ? 'text-slate-200 placeholder-slate-600' : 'text-slate-700 placeholder-slate-300'}`;
+  const currentTarget = target || 0;
+  const shareOfCategory = categoryTarget > 0 ? roundPercent((currentTarget / categoryTarget) * 100) : 0;
+
+  useEffect(() => {
+    setLocalTarget(target ? String(target) : '');
+  }, [target]);
+
+  const commitTarget = () => {
+    if (!onSetTarget) return;
+    const amount = parseInt(localTarget.replace(/\D/g, '')) || 0;
+    void onSetTarget(charity.ein, amount);
+  };
+
+  const onTargetKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      (e.target as HTMLInputElement).blur();
+    }
+  };
+
+  const onBucketChange = (value: string) => {
+    if (!onMoveCharity) return;
+    const nextBucketId = value || null;
+    if (nextBucketId === currentBucketId) return;
+    onMoveCharity(charity.ein, nextBucketId);
+  };
+
+  return (
+    <div className={`rounded-md border px-2 py-1.5 ${isDark ? 'border-slate-700 bg-slate-800/40' : 'border-slate-200 bg-slate-50/60'}`}>
+      <div className="flex items-center justify-between gap-2">
+        <Link
+          to={`/charity/${charity.ein}`}
+          className={`min-w-0 truncate text-[12px] font-medium ${isDark ? 'text-slate-200 hover:text-white' : 'text-slate-700 hover:text-slate-900'} hover:underline`}
+        >
+          {charity.name}
+        </Link>
+        <div className="shrink-0 flex items-center gap-1">
+          <button
+            onClick={() => onLogDonation(charity.ein, charity.name)}
+            className={`text-[10px] font-semibold px-2 py-1 rounded-md border transition-colors ${
+              isDark
+                ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20'
+                : 'text-emerald-600 border-emerald-200 bg-emerald-50 hover:bg-emerald-100'
+            }`}
+          >
+            + Log
+          </button>
+          {onRemove && (
+            <button
+              onClick={() => void onRemove(charity.ein)}
+              className={`p-1 rounded-md transition-colors ${isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'}`}
+              aria-label={`Remove ${charity.name}`}
+            >
+              <X className={`w-3.5 h-3.5 ${isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'}`} />
+            </button>
+          )}
+        </div>
+      </div>
+      <div className="mt-1.5 flex items-center justify-between gap-2">
+        <span className={`text-[10px] ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
+          {categoryTarget > 0
+            ? `Given ${fmt(given)} • ${formatPercent(shareOfCategory)}% of category`
+            : `Given ${fmt(given)}`}
+        </span>
+        <div className={`inline-flex items-center px-2 py-1 rounded-md border ${isDark ? 'border-slate-700 bg-slate-900/60' : 'border-slate-200 bg-white'}`}>
+          <span className={`text-[11px] mr-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>$</span>
+          <input
+            type="text"
+            inputMode="numeric"
+            value={localTarget}
+            onChange={e => setLocalTarget(e.target.value.replace(/\D/g, ''))}
+            onBlur={commitTarget}
+            onKeyDown={onTargetKeyDown}
+            className={`w-14 text-right ${inputStyle} text-[12px] font-semibold tabular-nums`}
+            placeholder="0"
+            aria-label={`Target for ${charity.name}`}
+          />
+        </div>
+      </div>
+      {onMoveCharity && bucketOptions.length > 0 && (
+        <div className="mt-1.5 flex items-center justify-between gap-2">
+          <span className={`text-[10px] ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Category</span>
+          <select
+            value={currentBucketId || ''}
+            onChange={e => onBucketChange(e.target.value)}
+            className={`max-w-[10rem] text-[11px] rounded-md border px-2 py-1 ${
+              isDark
+                ? 'bg-slate-900 border-slate-700 text-slate-300'
+                : 'bg-white border-slate-200 text-slate-700'
+            }`}
+            aria-label={`Category for ${charity.name}`}
+          >
+            <option value="">Needs category</option>
+            {bucketOptions.map(option => (
+              <option key={option.id} value={option.id}>{option.label}</option>
+            ))}
+          </select>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Droppable category zone
 function DroppableCategory({ id, color, children, isDark }: { id: string; color: string; children: React.ReactNode; isDark: boolean }) {
   const { isOver, setNodeRef } = useDroppable({ id });
@@ -279,7 +433,7 @@ function GhostSuggestionRow({
   return (
     <tr
       onClick={onAdd}
-      className={`border-b border-dashed cursor-pointer transition-all group ${
+      className={`hidden sm:table-row border-b border-dashed cursor-pointer transition-all group ${
         isDark
           ? 'border-slate-700/50 text-slate-600 hover:text-slate-300 hover:bg-emerald-500/5'
           : 'border-slate-200 text-slate-400 hover:text-slate-600 hover:bg-emerald-50/50'
@@ -360,6 +514,7 @@ export function UnifiedAllocationView({
     id: string; tagId: string; label: string; percent: number; color: string;
   }>>([]);
   const [assignments, setAssignments] = useState<Map<string, string>>(new Map());
+  const [charityTargetDrafts, setCharityTargetDrafts] = useState<Map<string, number>>(new Map());
   const targetInputRef = useRef<HTMLInputElement | null>(null);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasInitialized = useRef(false);
@@ -394,7 +549,15 @@ export function UnifiedAllocationView({
   }, []);
 
   const targetNum = parseInt(target) || 0;
-  const totalPct = buckets.reduce((s, b) => s + b.percent, 0);
+  const totalPct = roundPercent(buckets.reduce((s, b) => s + b.percent, 0));
+  const isTotalBalanced = Math.abs(totalPct - 100) <= PERCENT_EPSILON;
+  const isTotalUnder = totalPct < 100 - PERCENT_EPSILON;
+  const isTotalOver = totalPct > 100 + PERCENT_EPSILON;
+  const totalPctLabel = formatPercent(totalPct);
+  const mobileBucketOptions = useMemo(
+    () => buckets.map(bucket => ({ id: bucket.id, label: bucket.label })),
+    [buckets]
+  );
   const usedTags = new Set(buckets.map(b => b.tagId));
 
   // Auto-save with debounce
@@ -427,6 +590,29 @@ export function UnifiedAllocationView({
     }
     return result;
   }, [bookmarkedCharities, buckets, assignments]);
+
+  const getCharityTarget = useCallback((ein: string): number => {
+    const draft = charityTargetDrafts.get(ein);
+    if (draft !== undefined) return draft;
+    return charityTargets?.get(ein) || 0;
+  }, [charityTargetDrafts, charityTargets]);
+
+  // Clear optimistic draft values once parent props reflect the same saved target.
+  useEffect(() => {
+    if (!charityTargets) return;
+    setCharityTargetDrafts(prev => {
+      if (prev.size === 0) return prev;
+      const next = new Map(prev);
+      let changed = false;
+      prev.forEach((draft, ein) => {
+        if ((charityTargets.get(ein) || 0) === draft) {
+          next.delete(ein);
+          changed = true;
+        }
+      });
+      return changed ? next : prev;
+    });
+  }, [charityTargets]);
 
   const unassigned = useMemo(() => bookmarkedCharities.filter(c => !charityToBucket.has(c.ein)), [bookmarkedCharities, charityToBucket]);
 
@@ -539,22 +725,112 @@ export function UnifiedAllocationView({
   };
 
   const setPct = (id: string, v: number) => {
-    const newBuckets = buckets.map(b => b.id === id ? { ...b, percent: Math.max(0, Math.min(100, v)) } : b);
+    const newBuckets = buckets.map(b => b.id === id ? { ...b, percent: roundPercent(clampPercent(v)) } : b);
     setBuckets(newBuckets);
   };
 
   const setTargetAmt = (id: string, amt: number) => {
     if (targetNum === 0) return;
-    const pct = Math.round((amt / targetNum) * 100);
-    const newBuckets = buckets.map(b => b.id === id ? { ...b, percent: Math.max(0, Math.min(100, pct)) } : b);
+    const pct = roundPercent(clampPercent((amt / targetNum) * 100));
+    const newBuckets = buckets.map(b => b.id === id ? { ...b, percent: pct } : b);
     setBuckets(newBuckets);
+  };
+
+  const handleSetCharityTarget = useCallback(async (ein: string, amount: number) => {
+    const normalized = Math.max(0, amount);
+    setCharityTargetDrafts(prev => {
+      const next = new Map(prev);
+      next.set(ein, normalized);
+      return next;
+    });
+
+    const bucketId = charityToBucket.get(ein);
+    if (bucketId && targetNum > 0) {
+      const bucketTargetSum = bookmarkedCharities.reduce((sum, charity) => {
+        if (charityToBucket.get(charity.ein) !== bucketId) return sum;
+        if (charity.ein === ein) return sum + normalized;
+        return sum + getCharityTarget(charity.ein);
+      }, 0);
+      const syncedPct = roundPercent(clampPercent((bucketTargetSum / targetNum) * 100));
+      const newBuckets = buckets.map(bucket => (
+        bucket.id === bucketId ? { ...bucket, percent: syncedPct } : bucket
+      ));
+      setBuckets(newBuckets);
+      triggerSave(newBuckets);
+    }
+
+    if (!onSetCharityTarget) return;
+    try {
+      await onSetCharityTarget(ein, normalized);
+    } catch {
+      // Revert optimistic value on failure.
+      setCharityTargetDrafts(prev => {
+        const next = new Map(prev);
+        next.delete(ein);
+        return next;
+      });
+    }
+  }, [bookmarkedCharities, buckets, charityToBucket, getCharityTarget, onSetCharityTarget, targetNum, triggerSave]);
+
+  const distributeRemainingEvenly = () => {
+    if (buckets.length === 0 || !isTotalUnder) return;
+    const remaining = 100 - totalPct;
+    const perBucket = remaining / buckets.length;
+    let newBuckets = buckets.map((bucket, i) => {
+      const increment = i === buckets.length - 1
+        ? remaining - (perBucket * (buckets.length - 1))
+        : perBucket;
+      return { ...bucket, percent: roundPercent(clampPercent(bucket.percent + increment)) };
+    });
+    const correctedTotal = roundPercent(newBuckets.reduce((sum, bucket) => sum + bucket.percent, 0));
+    const correction = roundPercent(100 - correctedTotal);
+    if (newBuckets.length > 0 && Math.abs(correction) > PERCENT_EPSILON) {
+      const last = newBuckets[newBuckets.length - 1];
+      newBuckets = [
+        ...newBuckets.slice(0, -1),
+        { ...last, percent: roundPercent(clampPercent(last.percent + correction)) },
+      ];
+    }
+    setBuckets(newBuckets);
+    triggerSave(newBuckets);
   };
 
   const move = (ein: string, bid: string | null) => {
     const newAssignments = new Map(assignments);
     bid ? newAssignments.set(ein, bid) : newAssignments.delete(ein);
     setAssignments(newAssignments);
-    triggerSave(undefined, undefined, newAssignments);
+    const hasAnyCharityTargets = bookmarkedCharities.some(charity => getCharityTarget(charity.ein) > 0);
+    if (!hasAnyCharityTargets || targetNum === 0) {
+      triggerSave(undefined, undefined, newAssignments);
+      return;
+    }
+
+    const validBucketIds = new Set(buckets.map(bucket => bucket.id));
+    const resolveBucket = (charity: BookmarkedCharity): string | null => {
+      const assignedBucketId = newAssignments.get(charity.ein);
+      if (assignedBucketId && validBucketIds.has(assignedBucketId)) return assignedBucketId;
+      for (const bucket of buckets) {
+        if ((charity.causeTags || []).includes(bucket.tagId)) return bucket.id;
+      }
+      return null;
+    };
+
+    const sumByBucket = new Map<string, number>();
+    bookmarkedCharities.forEach(charity => {
+      const bucketId = resolveBucket(charity);
+      if (!bucketId) return;
+      sumByBucket.set(bucketId, (sumByBucket.get(bucketId) || 0) + getCharityTarget(charity.ein));
+    });
+
+    const syncedBuckets = buckets.map(bucket => {
+      const bucketTargetSum = sumByBucket.get(bucket.id) || 0;
+      return {
+        ...bucket,
+        percent: roundPercent(clampPercent((bucketTargetSum / targetNum) * 100)),
+      };
+    });
+    setBuckets(syncedBuckets);
+    triggerSave(syncedBuckets, undefined, newAssignments);
   };
 
   const handleBlur = () => triggerSave();
@@ -933,8 +1209,236 @@ export function UnifiedAllocationView({
 
       {/* Table with drag-and-drop */}
       {targetNum > 0 && (
-        <div className="overflow-x-auto">
-          <div className="min-w-[780px]">
+        <>
+        <div className="sm:hidden px-3 py-3 space-y-2.5">
+          {buckets.map(b => {
+            const amt = Math.round(targetNum * b.percent / 100);
+            const gvn = bucketGiven.get(b.id) || 0;
+            const pct = amt > 0 ? Math.min(100, Math.round(gvn / amt * 100)) : 0;
+            const chars = bookmarkedCharities.filter(c => charityToBucket.get(c.ein) === b.id);
+            const charityTargetsSum = chars.reduce((sum, c) => sum + getCharityTarget(c.ein), 0);
+            const visibleChars = zakatLens
+              ? chars.filter(c => isZakatEligible(c.walletTag))
+              : chars;
+            const displayCount = visibleChars.length;
+            const bookmarkedEins = new Set(bookmarkedCharities.map(c => c.ein));
+            const suggestions = charities
+              .filter(c => {
+                const tags = (c as any).causeTags || [];
+                return tags.includes(b.tagId) && !bookmarkedEins.has(c.ein);
+              })
+              .sort((a, c) => ((c as any).amalScore || 0) - ((a as any).amalScore || 0))
+              .slice(0, 3)
+              .map(c => ({ ein: c.ein, name: c.name, amalScore: (c as any).amalScore || null }));
+            const bucketHasZakatCharities = zakatStats.bucketHasZakat.get(b.id) || false;
+            const categoryDimmed = zakatLens && !bucketHasZakatCharities;
+
+            return (
+              <div
+                key={b.id}
+                className={`rounded-lg border p-3 ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'} ${categoryDimmed ? 'opacity-50' : ''}`}
+                style={{ borderLeft: `4px solid ${b.color}` }}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2.5 h-2.5 rounded-full" style={{ background: b.color }} />
+                      <span className={`font-semibold text-sm truncate ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>{b.label}</span>
+                    </div>
+                    <div className={`mt-1 text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
+                      {displayCount} {displayCount === 1 ? 'charity' : 'charities'} • Given {fmt(gvn)} • {pct}%
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => remove(b.id)}
+                    className={`p-1 -m-1 rounded-md transition-colors ${isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'}`}
+                    aria-label={`Remove ${b.label}`}
+                  >
+                    <X className={`w-3.5 h-3.5 ${isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'}`} />
+                  </button>
+                </div>
+
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  <div>
+                    <label className={`block text-[10px] font-semibold uppercase tracking-wide mb-1 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>%</label>
+                    <div className={`inline-flex w-full items-center justify-end px-2 py-1 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'}`}>
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        value={b.percent || ''}
+                        onChange={e => setPct(b.id, parsePercentInput(e.target.value))}
+                        onBlur={handleBlur}
+                        onKeyDown={handleKeyDown}
+                        className={`w-12 text-right ${inputStyle} font-semibold tabular-nums`}
+                        placeholder="0"
+                      />
+                      <span className={`text-[11px] ml-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>%</span>
+                    </div>
+                  </div>
+                  <div>
+                    <label className={`block text-[10px] font-semibold uppercase tracking-wide mb-1 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Target</label>
+                    <div className="flex flex-col items-end gap-0.5">
+                      <div className={`inline-flex w-full items-center justify-end px-2 py-1 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'}`}>
+                        <span className={`text-[11px] mr-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>$</span>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          value={amt || ''}
+                          onChange={e => setTargetAmt(b.id, parseInt(e.target.value.replace(/\D/g, '')) || 0)}
+                          onBlur={handleBlur}
+                          onKeyDown={handleKeyDown}
+                          className={`w-16 text-right ${inputStyle} font-semibold tabular-nums`}
+                          placeholder="0"
+                        />
+                      </div>
+                      {charityTargetsSum > 0 && (
+                        <span className={`text-[10px] tabular-nums ${
+                          charityTargetsSum === amt
+                            ? 'text-emerald-500'
+                            : charityTargetsSum > amt
+                            ? 'text-amber-500'
+                            : isDark ? 'text-slate-500' : 'text-slate-400'
+                        }`}>
+                          {fmt(charityTargetsSum)} allocated
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className={`mt-2 h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`}>
+                  <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(pct, 100)}%`, background: `linear-gradient(90deg, ${b.color}, ${b.color}cc)` }} />
+                </div>
+
+                <div className={`mt-2.5 pt-2 border-t ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
+                  <div className={`text-[10px] font-semibold uppercase tracking-wide ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
+                    Charities
+                  </div>
+                  {visibleChars.length > 0 ? (
+                    <div className="mt-1.5 space-y-1.5">
+                      {visibleChars.map(c => {
+                        const cGiven = donations
+                          .filter(d => d.charityEin === c.ein)
+                          .reduce((sum, d) => sum + d.amount, 0);
+                        return (
+                          <MobileCharityAllocationRow
+                            key={c.ein}
+                            charity={c}
+                            given={cGiven}
+                            target={getCharityTarget(c.ein)}
+                            categoryTarget={amt}
+                            currentBucketId={b.id}
+                            bucketOptions={mobileBucketOptions}
+                            isDark={isDark}
+                            onLogDonation={onLogDonation}
+                            onSetTarget={handleSetCharityTarget}
+                            onMoveCharity={move}
+                            onRemove={onRemoveCharity}
+                          />
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className={`mt-1.5 text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                      No charities in this category yet.
+                    </div>
+                  )}
+                  {showSuggestions && suggestions.length > 0 && (
+                    <div className={`mt-2.5 pt-2 border-t ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
+                      <div className={`text-[10px] font-semibold uppercase tracking-wide mb-1.5 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
+                        Suggestions
+                      </div>
+                      <div className="space-y-1.5">
+                        {suggestions.map(s => (
+                          <div key={s.ein} className="flex items-center justify-between gap-2">
+                            <div className="min-w-0 flex items-center gap-1.5">
+                              <span className={`text-[12px] truncate ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>{s.name}</span>
+                              <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-semibold border ${
+                                isDark ? 'bg-slate-800 border-slate-700 text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-500'
+                              }`}>
+                                {s.amalScore || '—'}
+                              </span>
+                            </div>
+                            <button
+                              onClick={() => onAddSuggestion(s.ein, s.name, b.id)}
+                              className={`shrink-0 text-[10px] px-2 py-1 rounded-md font-semibold border transition-colors ${
+                                isDark
+                                  ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20'
+                                  : 'text-emerald-600 border-emerald-200 bg-emerald-50 hover:bg-emerald-100'
+                              }`}
+                            >
+                              + Add
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+
+          {buckets.length > 0 && (
+            <div className={`rounded-lg border px-3 py-2.5 ${isDark ? 'bg-slate-800/60 border-slate-700' : 'bg-slate-100/80 border-slate-200'}`}>
+              <div className="flex items-center justify-between">
+                <span className={`font-semibold ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>Total</span>
+                <span className={`font-bold tabular-nums px-2 py-0.5 rounded ${
+                  isTotalBalanced
+                    ? isDark ? 'text-emerald-400 bg-emerald-500/10' : 'text-emerald-600 bg-emerald-50'
+                    : isTotalOver
+                    ? isDark ? 'text-amber-400 bg-amber-500/10' : 'text-amber-600 bg-amber-50'
+                    : isDark ? 'text-red-400 bg-red-500/10' : 'text-red-600 bg-red-50'
+                }`}>
+                  {totalPctLabel}%
+                </span>
+              </div>
+              <div className={`mt-1 text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                Target {fmt(Math.round(targetNum * totalPct / 100))} • Given {fmt(totalGiven)}
+              </div>
+            </div>
+          )}
+
+          {!isTotalBalanced && buckets.length > 0 && (
+            <div className={`rounded-lg border px-3 py-2.5 ${isDark ? 'border-red-500/20 bg-red-500/5' : 'border-red-100 bg-red-50/50'}`}>
+              <div className="flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full ${isTotalUnder ? 'bg-red-500' : 'bg-amber-500'} animate-pulse`} />
+                <span className={`text-xs font-medium ${isDark ? 'text-red-400' : 'text-red-600'}`}>
+                  {isTotalUnder
+                    ? `${formatPercent(100 - totalPct)}% unallocated (${fmt(Math.round(targetNum * (100 - totalPct) / 100))})`
+                    : `${formatPercent(totalPct - 100)}% over-allocated`
+                  }
+                </span>
+              </div>
+              {isTotalUnder && (
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={distributeRemainingEvenly}
+                    className={`text-[11px] px-2.5 py-1.5 rounded-lg font-semibold border transition-colors ${
+                      isDark
+                        ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+                        : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm'
+                    }`}
+                  >
+                    Distribute evenly
+                  </button>
+                  <button
+                    onClick={() => setShowPicker(true)}
+                    className={`text-[11px] px-2.5 py-1.5 rounded-lg font-semibold shadow-sm transition-colors ${
+                      isDark
+                        ? 'bg-emerald-600 text-white hover:bg-emerald-500'
+                        : 'bg-emerald-500 text-white hover:bg-emerald-600'
+                    }`}
+                  >
+                    + Category
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+        <div className="hidden sm:block overflow-x-auto">
+          <div className="min-w-full sm:min-w-[780px]">
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
@@ -944,13 +1448,13 @@ export function UnifiedAllocationView({
           <table className="w-full">
             <thead>
               <tr className={`border-b-2 ${border} ${isDark ? 'bg-slate-800/50' : 'bg-slate-50'}`}>
-                <th className={`${headerCell} w-6`}></th>
+                <th className={`${headerCell} w-6 hidden sm:table-cell`}></th>
                 <th className={`${headerCell} text-left`}>Category</th>
                 <th className={`${headerCell} text-right w-20`}>%</th>
                 <th className={`${headerCell} text-right w-24`}>Target</th>
-                <th className={`${headerCell} text-right w-20`}>Given</th>
-                <th className={`${headerCell} w-28`}>Progress</th>
-                <th className={`${headerCell} w-8`}></th>
+                <th className={`${headerCell} text-right w-20 hidden sm:table-cell`}>Given</th>
+                <th className={`${headerCell} w-28 hidden sm:table-cell`}>Progress</th>
+                <th className={`${headerCell} w-8 hidden sm:table-cell`}></th>
               </tr>
             </thead>
             {buckets.map(b => {
@@ -959,7 +1463,7 @@ export function UnifiedAllocationView({
               const pct = amt > 0 ? Math.min(100, Math.round(gvn / amt * 100)) : 0;
               const chars = bookmarkedCharities.filter(c => charityToBucket.get(c.ein) === b.id);
               // Sum of charity targets within this bucket
-              const charityTargetsSum = chars.reduce((sum, c) => sum + (charityTargets?.get(c.ein) || 0), 0);
+              const charityTargetsSum = chars.reduce((sum, c) => sum + getCharityTarget(c.ein), 0);
               // Count for display - filters by zakat eligibility when lens is active
               const displayCount = zakatLens
                 ? chars.filter(c => isZakatEligible(c.walletTag)).length
@@ -993,7 +1497,7 @@ export function UnifiedAllocationView({
                       borderLeft: `4px solid ${b.color}`,
                     }}
                   >
-                    <td className={cell}>
+                    <td className={`${cell} hidden sm:table-cell`}>
                       {chars.length > 0 && (
                         <ChevronDown
                           className={`w-4 h-4 transition-transform ${isCollapsed ? '-rotate-90' : ''} ${isDark ? 'text-slate-500' : 'text-slate-400'}`}
@@ -1001,36 +1505,52 @@ export function UnifiedAllocationView({
                       )}
                     </td>
                     <td
-                      className={`${cell} cursor-pointer select-none`}
+                      className={`${cell} sm:cursor-pointer select-none`}
                       onClick={() => chars.length > 0 && toggleCollapse(b.id)}
                     >
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-3 h-3 rounded-md shadow-sm" style={{ background: b.color }} />
-                        <span className="font-semibold">{b.label}</span>
-                        {displayCount > 0 && (
-                          <span
-                            className={`text-[10px] px-2 py-0.5 rounded-full font-semibold border`}
-                            style={{
-                              backgroundColor: `${b.color}15`,
-                              borderColor: `${b.color}30`,
-                              color: b.color,
-                            }}
-                          >
-                            {displayCount} {displayCount === 1 ? 'charity' : 'charities'}
-                          </span>
-                        )}
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-3 h-3 rounded-md shadow-sm" style={{ background: b.color }} />
+                          <span className="font-semibold truncate">{b.label}</span>
+                          {displayCount > 0 && (
+                            <span
+                              className="text-[10px] px-2 py-0.5 rounded-full font-semibold border"
+                              style={{
+                                backgroundColor: `${b.color}15`,
+                                borderColor: `${b.color}30`,
+                                color: b.color,
+                              }}
+                            >
+                              {displayCount} {displayCount === 1 ? 'charity' : 'charities'}
+                            </span>
+                          )}
+                        </div>
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            remove(b.id);
+                          }}
+                          className={`sm:hidden p-1 -m-1 rounded-md transition-colors ${isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'}`}
+                          aria-label={`Remove ${b.label}`}
+                        >
+                          <X className={`w-3.5 h-3.5 ${isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'}`} />
+                        </button>
+                      </div>
+                      <div className={`sm:hidden mt-1 text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
+                        Given {fmt(gvn)} • {pct}%
                       </div>
                     </td>
                     <td className={`${cell} text-right`}>
                       <div className={`inline-flex items-center px-2 py-0.5 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'}`}>
                         <input
                           type="text"
-                          inputMode="numeric"
+                          inputMode="decimal"
                           value={b.percent || ''}
-                          onChange={e => setPct(b.id, parseInt(e.target.value.replace(/\D/g, '')) || 0)}
+                          onChange={e => setPct(b.id, parsePercentInput(e.target.value))}
                           onBlur={handleBlur}
                           onKeyDown={handleKeyDown}
-                          className={`w-8 text-right ${inputStyle} font-semibold tabular-nums`}
+                          className={`w-12 text-right ${inputStyle} font-semibold tabular-nums`}
                           placeholder="0"
                         />
                         <span className={`text-[11px] ml-0.5 font-medium ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>%</span>
@@ -1064,10 +1584,10 @@ export function UnifiedAllocationView({
                         )}
                       </div>
                     </td>
-                    <td className={`${cell} text-right tabular-nums`}>
+                    <td className={`${cell} text-right tabular-nums hidden sm:table-cell`}>
                       <span className={gvn > 0 ? 'font-medium' : isDark ? 'text-slate-600' : 'text-slate-300'}>{fmt(gvn)}</span>
                     </td>
-                    <td className={`${cell}`}>
+                    <td className={`${cell} hidden sm:table-cell`}>
                       <div className="flex items-center gap-2.5">
                         <div className={`flex-1 h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-slate-700' : 'bg-slate-200'} shadow-inner`}>
                           <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(pct, 100)}%`, background: `linear-gradient(90deg, ${b.color}, ${b.color}cc)` }} />
@@ -1081,7 +1601,7 @@ export function UnifiedAllocationView({
                         )}
                       </div>
                     </td>
-                    <td className={cell}>
+                    <td className={`${cell} hidden sm:table-cell`}>
                       <button onClick={() => remove(b.id)} className={`opacity-100 sm:opacity-0 sm:group-hover:opacity-100 p-1.5 -m-1 rounded-lg transition-all ${isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'}`}>
                         <X className={`w-3.5 h-3.5 ${isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'}`} />
                       </button>
@@ -1098,11 +1618,11 @@ export function UnifiedAllocationView({
                         bucketId={b.id}
                         bucketColor={b.color}
                         given={cGvn}
-                        target={charityTargets?.get(c.ein)}
+                        target={getCharityTarget(c.ein)}
                         isDark={isDark}
                         onLogDonation={onLogDonation}
                         onRemove={onRemoveCharity}
-                        onSetTarget={onSetCharityTarget}
+                        onSetTarget={handleSetCharityTarget}
                         dimmed={zakatLens && !charityIsZakat}
                       />
                     );
@@ -1123,55 +1643,44 @@ export function UnifiedAllocationView({
             {buckets.length > 0 && (
               <tbody>
                 <tr className={`border-t-2 ${border} ${isDark ? 'bg-slate-800/60' : 'bg-slate-100/80'}`}>
-                  <td className={cell}></td>
+                  <td className={`${cell} hidden sm:table-cell`}></td>
                   <td className={`${cell} font-bold text-base`}>Total</td>
                   <td className={`${cell} text-right`}>
                     <span className={`font-bold text-base tabular-nums px-2.5 py-1 rounded-lg ${
-                      totalPct === 100
+                      isTotalBalanced
                         ? isDark ? 'text-emerald-400 bg-emerald-500/10' : 'text-emerald-600 bg-emerald-50'
-                        : totalPct > 100
+                        : isTotalOver
                         ? isDark ? 'text-amber-400 bg-amber-500/10' : 'text-amber-600 bg-amber-50'
                         : isDark ? 'text-red-400 bg-red-500/10' : 'text-red-600 bg-red-50'
                     }`}>
-                      {totalPct}%
+                      {totalPctLabel}%
                     </span>
                   </td>
                   <td className={`${cell} text-right font-bold text-base tabular-nums`}>{fmt(Math.round(targetNum * totalPct / 100))}</td>
-                  <td className={`${cell} text-right font-bold text-base tabular-nums`}>
+                  <td className={`${cell} text-right font-bold text-base tabular-nums hidden sm:table-cell`}>
                     <span className="text-emerald-600">{fmt(totalGiven)}</span>
                   </td>
-                  <td className={cell}></td>
-                  <td className={cell}></td>
+                  <td className={`${cell} hidden sm:table-cell`}></td>
+                  <td className={`${cell} hidden sm:table-cell`}></td>
                 </tr>
                 {/* Warning row when not at 100% */}
-                {totalPct !== 100 && (
-                  <tr className={`border-t ${isDark ? 'border-red-500/20 bg-red-500/5' : 'border-red-100 bg-red-50/50'}`}>
+                {!isTotalBalanced && (
+                  <tr className={`hidden sm:table-row border-t ${isDark ? 'border-red-500/20 bg-red-500/5' : 'border-red-100 bg-red-50/50'}`}>
                     <td colSpan={7} className="px-4 py-2.5">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${totalPct < 100 ? 'bg-red-500' : 'bg-amber-500'} animate-pulse`} />
+                          <div className={`w-2 h-2 rounded-full ${isTotalUnder ? 'bg-red-500' : 'bg-amber-500'} animate-pulse`} />
                           <span className={`text-xs font-medium ${isDark ? 'text-red-400' : 'text-red-600'}`}>
-                            {totalPct < 100
-                              ? `${100 - totalPct}% unallocated (${fmt(Math.round(targetNum * (100 - totalPct) / 100))})`
-                              : `${totalPct - 100}% over-allocated`
+                            {isTotalUnder
+                              ? `${formatPercent(100 - totalPct)}% unallocated (${fmt(Math.round(targetNum * (100 - totalPct) / 100))})`
+                              : `${formatPercent(totalPct - 100)}% over-allocated`
                             }
                           </span>
                         </div>
-                        {totalPct < 100 && (
+                        {isTotalUnder && (
                           <div className="flex items-center gap-2">
                             <button
-                              onClick={() => {
-                                if (buckets.length === 0) return;
-                                const remaining = 100 - totalPct;
-                                const perBucket = Math.floor(remaining / buckets.length);
-                                const extra = remaining % buckets.length;
-                                const newBuckets = buckets.map((b, i) => ({
-                                  ...b,
-                                  percent: b.percent + perBucket + (i < extra ? 1 : 0)
-                                }));
-                                setBuckets(newBuckets);
-                                triggerSave(newBuckets);
-                              }}
+                              onClick={distributeRemainingEvenly}
                               className={`text-[11px] px-3 py-1.5 rounded-lg font-semibold border transition-colors ${
                                 isDark
                                   ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
@@ -1196,12 +1705,52 @@ export function UnifiedAllocationView({
                     </td>
                   </tr>
                 )}
+                {!isTotalBalanced && (
+                  <tr className={`sm:hidden border-t ${isDark ? 'border-red-500/20 bg-red-500/5' : 'border-red-100 bg-red-50/50'}`}>
+                    <td colSpan={3} className="px-3 py-2.5">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-2 h-2 rounded-full ${isTotalUnder ? 'bg-red-500' : 'bg-amber-500'} animate-pulse`} />
+                        <span className={`text-xs font-medium ${isDark ? 'text-red-400' : 'text-red-600'}`}>
+                          {isTotalUnder
+                            ? `${formatPercent(100 - totalPct)}% unallocated (${fmt(Math.round(targetNum * (100 - totalPct) / 100))})`
+                            : `${formatPercent(totalPct - 100)}% over-allocated`
+                          }
+                        </span>
+                      </div>
+                      {isTotalUnder && (
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
+                          <button
+                            onClick={distributeRemainingEvenly}
+                            className={`text-[11px] px-2.5 py-1.5 rounded-lg font-semibold border transition-colors ${
+                              isDark
+                                ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+                                : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm'
+                            }`}
+                          >
+                            Distribute evenly
+                          </button>
+                          <button
+                            onClick={() => setShowPicker(true)}
+                            className={`text-[11px] px-2.5 py-1.5 rounded-lg font-semibold shadow-sm transition-colors ${
+                              isDark
+                                ? 'bg-emerald-600 text-white hover:bg-emerald-500'
+                                : 'bg-emerald-500 text-white hover:bg-emerald-600'
+                            }`}
+                          >
+                            + Category
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                )}
               </tbody>
             )}
           </table>
 
           {/* Uncategorized - droppable zone inside DndContext */}
           {(unassigned.length > 0 || activeCharity) && (
+            <div className="hidden sm:block">
             <DroppableUncategorized isDark={isDark} isActive={!!activeCharity}>
               <div className={`px-4 py-2.5 flex items-center gap-2.5 border-t ${isDark ? 'bg-amber-500/5 border-amber-500/20' : 'bg-amber-50/70 border-amber-200/50'}`}>
                 <div className="w-2.5 h-2.5 rounded-md bg-amber-500" />
@@ -1228,11 +1777,11 @@ export function UnifiedAllocationView({
                           charity={c}
                           bucketId={null}
                           given={cGvn}
-                          target={charityTargets?.get(c.ein)}
+                          target={getCharityTarget(c.ein)}
                           isDark={isDark}
                           onLogDonation={onLogDonation}
                           onRemove={onRemoveCharity}
-                          onSetTarget={onSetCharityTarget}
+                          onSetTarget={handleSetCharityTarget}
                           dimmed={zakatLens && !charityIsZakat}
                         />
                       );
@@ -1241,6 +1790,7 @@ export function UnifiedAllocationView({
                 </table>
               )}
             </DroppableUncategorized>
+            </div>
           )}
 
           {/* Drag overlay - shows what's being dragged */}
@@ -1260,6 +1810,41 @@ export function UnifiedAllocationView({
             )}
           </DragOverlay>
             </DndContext>
+          </div>
+        </div>
+        </>
+      )}
+
+      {targetNum > 0 && unassigned.length > 0 && (
+        <div className={`sm:hidden px-3 pb-3`}>
+          <div className={`rounded-lg border px-3 py-2.5 ${isDark ? 'border-amber-500/30 bg-amber-500/5' : 'border-amber-100 bg-amber-50/50'}`}>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-amber-500" />
+              <span className={`text-xs font-semibold ${isDark ? 'text-amber-400' : 'text-amber-700'}`}>
+                Needs Category ({unassigned.length})
+              </span>
+            </div>
+            <div className="mt-2 space-y-1.5">
+              {unassigned.map(c => {
+                const cGiven = donations.filter(d => d.charityEin === c.ein).reduce((sum, d) => sum + d.amount, 0);
+                return (
+                  <MobileCharityAllocationRow
+                    key={c.ein}
+                    charity={c}
+                    given={cGiven}
+                    target={getCharityTarget(c.ein)}
+                    categoryTarget={0}
+                    currentBucketId={null}
+                    bucketOptions={mobileBucketOptions}
+                    isDark={isDark}
+                    onLogDonation={onLogDonation}
+                    onSetTarget={handleSetCharityTarget}
+                    onMoveCharity={move}
+                    onRemove={onRemoveCharity}
+                  />
+                );
+              })}
+            </div>
           </div>
         </div>
       )}

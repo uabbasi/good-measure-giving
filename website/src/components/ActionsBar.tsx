@@ -25,13 +25,25 @@ interface ActionsBarProps {
   walletTag?: string | null;
   /** Cause area (e.g. 'RELIGIOUS_CULTURAL') */
   causeArea?: string | null;
+  /** Render mobile quick actions (sm:hidden row). Disable when mobile actions are rendered elsewhere. */
+  showMobileQuickActions?: boolean;
 }
 
 function formatCauseArea(raw: string): string {
   return raw.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase()).replace(/\bAnd\b/g, '&');
 }
 
-export function ActionsBar({ charityEin, charityName, onLogDonation, variant = 'default', donateUrl, onDonateClick, walletTag, causeArea }: ActionsBarProps) {
+export function ActionsBar({
+  charityEin,
+  charityName,
+  onLogDonation,
+  variant = 'default',
+  donateUrl,
+  onDonateClick,
+  walletTag,
+  causeArea,
+  showMobileQuickActions = true,
+}: ActionsBarProps) {
   const { isDark } = useLandingTheme();
   const { isSignedIn } = useAuth();
 
@@ -44,8 +56,9 @@ export function ActionsBar({ charityEin, charityName, onLogDonation, variant = '
     }`;
 
     return (
-      <div className={`border-b ${isDark ? 'border-slate-800/50 bg-slate-950' : 'border-slate-200 bg-slate-100'}`}>
+      <div className={`${showMobileQuickActions ? '' : 'hidden sm:block'} border-b ${isDark ? 'border-slate-800/50 bg-slate-950' : 'border-slate-200 bg-slate-100'}`}>
         {/* Mobile quick actions */}
+        {showMobileQuickActions && (
         <div className={`sm:hidden sticky top-16 z-30 border-b ${isDark ? 'border-slate-800 bg-slate-950/95' : 'border-slate-200 bg-white/95'} backdrop-blur`}>
           <div className="px-3 py-2.5">
             <div className="flex items-center gap-2">
@@ -104,8 +117,9 @@ export function ActionsBar({ charityEin, charityName, onLogDonation, variant = '
             </div>
           </div>
         </div>
+        )}
 
-        <div className="hidden sm:block px-6">
+        <div className={`${showMobileQuickActions ? 'hidden sm:block' : ''} px-6`}>
           <div className="flex items-center justify-between py-2">
             {/* Cause Area + Wallet Tag (left side) */}
             <div className="flex items-center gap-2">
@@ -208,8 +222,9 @@ export function ActionsBar({ charityEin, charityName, onLogDonation, variant = '
   }
 
   return (
-    <div className={`border-b ${isDark ? 'border-slate-800 bg-slate-900/50' : 'border-slate-200 bg-slate-50/50'}`}>
+    <div className={`${showMobileQuickActions ? '' : 'hidden sm:block'} border-b ${isDark ? 'border-slate-800 bg-slate-900/50' : 'border-slate-200 bg-slate-50/50'}`}>
       {/* Mobile quick actions */}
+      {showMobileQuickActions && (
       <div className={`sm:hidden sticky top-16 z-30 border-b ${isDark ? 'border-slate-800 bg-slate-900/95' : 'border-slate-200 bg-white/95'} backdrop-blur`}>
         <div className="px-3 py-2.5">
           <div className="flex items-center gap-2">
@@ -252,8 +267,9 @@ export function ActionsBar({ charityEin, charityName, onLogDonation, variant = '
           </div>
         </div>
       </div>
+      )}
 
-      <div className="hidden sm:block max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className={`${showMobileQuickActions ? 'hidden sm:block' : ''} max-w-6xl mx-auto px-4 sm:px-6 lg:px-8`}>
         <div className="flex items-center justify-between py-2.5">
           {/* Cause Area + Wallet Tag (left side) */}
           <div className="flex items-center gap-2">

@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:ios": "vite --host 127.0.0.1 --port 3000 --strictPort",
+    "ios:open": "bash scripts/open-ios-simulator.sh http://127.0.0.1:3000",
+    "dev:ios:sim": "bash scripts/dev-ios-simulator.sh",
     "prebuild": "node scripts/syncUiSignalsConfig.mjs && tsx scripts/convertData.ts",
     "build": "vite build",
     "postbuild": "tsx scripts/generateSitemap.ts && tsx scripts/prerender.ts",

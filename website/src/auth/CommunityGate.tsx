@@ -87,7 +87,7 @@ export const JoinCommunityPrompt: React.FC<{ className?: string }> = ({
 
         {/* Reassurance text */}
         <p className={`text-xs mt-4 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-          Free forever. We just want to stay connected with thoughtful donors.
+          Membership helps us stay connected with thoughtful donors.
         </p>
       </div>
     </div>

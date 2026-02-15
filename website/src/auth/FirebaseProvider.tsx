@@ -40,6 +40,22 @@ export const FirebaseProvider: React.FC<Props> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const fakeAuthEnabled = import.meta.env.DEV && import.meta.env.VITE_FAKE_AUTH === 'true';
+    if (fakeAuthEnabled) {
+      const fakeUser = {
+        uid: import.meta.env.VITE_FAKE_AUTH_UID || 'dev-fake-user',
+        email: import.meta.env.VITE_FAKE_AUTH_EMAIL || 'dev@example.com',
+        displayName: import.meta.env.VITE_FAKE_AUTH_NAME || 'Dev User',
+      } as User;
+
+      setUser(fakeUser);
+      setIsLoading(false);
+      if (import.meta.env.DEV) {
+        console.warn('Using fake auth user from VITE_FAKE_AUTH=true');
+      }
+      return;
+    }
+
     if (!auth) {
       if (import.meta.env.DEV) {
         console.warn('Firebase not configured - auth disabled');

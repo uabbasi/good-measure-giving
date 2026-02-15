@@ -10,7 +10,30 @@ npm install
 npm run dev
 ```
 
-Default local URL: `http://localhost:5173`
+Default local URL: `http://localhost:3000`
+
+## iOS Simulator (Xcode)
+
+Use iOS Simulator to validate mobile layout and interactions:
+
+```bash
+cd website
+npm run dev:ios:sim
+```
+
+This command:
+- starts the Vite dev server on `http://127.0.0.1:3000`
+- boots an iPhone simulator (or uses a booted one)
+- opens Safari in the simulator at your local URL
+
+If the server is already running, just open the simulator URL:
+
+```bash
+npm run ios:open
+```
+
+Optional:
+- set `IOS_SIM_DEVICE=<device-udid>` to target a specific simulator
 
 ## Build
 
@@ -47,6 +70,19 @@ Common values:
 Notes:
 - `VITE_*` values are embedded client side at build time
 - Never put private secrets in `VITE_*` variables
+
+Dev-only fake login (for UI testing):
+
+```bash
+# in website/.env
+VITE_FAKE_AUTH=true
+VITE_FAKE_AUTH_UID=dev-fake-user
+VITE_FAKE_AUTH_EMAIL=dev@example.com
+VITE_FAKE_AUTH_NAME=Dev User
+```
+
+- Works in `npm run dev` (including `npm run dev:ios:sim`) to show a signed-in user without real Firebase auth
+- Intended for UI/gating checks; Firestore-backed writes still require real Firebase config
 
 ## Deployment
 

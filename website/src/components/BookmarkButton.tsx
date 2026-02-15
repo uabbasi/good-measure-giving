@@ -16,6 +16,8 @@ interface BookmarkButtonProps {
   showLabel?: boolean;
   fullWidth?: boolean;
   className?: string;
+  buttonClassName?: string;
+  labelClassName?: string;
 }
 
 export function BookmarkButton({
@@ -25,6 +27,8 @@ export function BookmarkButton({
   showLabel = false,
   fullWidth = false,
   className = '',
+  buttonClassName = '',
+  labelClassName = '',
 }: BookmarkButtonProps) {
   const { isDark } = useLandingTheme();
   const { isSignedIn } = useAuth();
@@ -99,6 +103,7 @@ export function BookmarkButton({
           ${fullWidth ? 'w-full justify-center' : ''}
           focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2
           ${isDark ? 'focus:ring-offset-slate-800' : 'focus:ring-offset-white'}
+          ${buttonClassName}
         `}
       >
         {bookmarked ? (
@@ -127,7 +132,7 @@ export function BookmarkButton({
         )}
 
         {showLabel && (
-          <span className={`text-sm font-medium ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+          <span className={`text-sm font-medium ${isDark ? 'text-slate-300' : 'text-slate-700'} ${labelClassName}`}>
             {bookmarked ? 'Saved' : 'Save'}
           </span>
         )}

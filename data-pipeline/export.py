@@ -717,8 +717,88 @@ def _build_evidence_quality(charity_data: dict | None) -> dict | None:
     return None
 
 
-def _extract_zakat_claim_evidence(charity_data: dict | None) -> list[str] | None:
-    """Extract zakat claim evidence, filtering out corroboration failures."""
+def _normalize_public_url(url: Any) -> str | None:
+    """Return a safe public URL, excluding grounding redirect links."""
+    if not isinstance(url, str):
+        return None
+    candidate = url.strip()
+    if not candidate:
+        return None
+    if _is_grounding_redirect(candidate):
+        return None
+    parsed = urlparse(candidate)
+    if parsed.scheme not in ("http", "https") or not parsed.netloc:
+        return None
+    return candidate
+
+
+def _select_canonical_zakat_url(
+    charity_data: dict | None, evaluation: dict | None, fallback_website: str | None
+) -> str | None:
+    """Choose the best canonical URL for zakat evidence/source display.
+
+    Priority:
+    1) Baseline narrative citations explicitly tied to zakat/donate claims
+    2) Source attribution for claims_zakat_eligible
+    3) Charity website fallback
+    """
+    # 1) Baseline narrative citations
+    if isinstance(evaluation, dict):
+        baseline = evaluation.get("baseline_narrative")
+        citations = baseline.get("all_citations") if isinstance(baseline, dict) else None
+        if isinstance(citations, list):
+            zakat_candidate = None
+            donate_candidate = None
+            generic_candidate = None
+            for citation in citations:
+                if not isinstance(citation, dict):
+                    continue
+                url = _normalize_public_url(citation.get("source_url"))
+                if not url:
+                    continue
+                claim = str(citation.get("claim") or "").lower()
+                source_name = str(citation.get("source_name") or "").lower()
+                if "zakat" in claim or "zakat" in source_name:
+                    zakat_candidate = url
+                    break
+                if ("/donate" in url.lower() or " donate" in source_name) and not donate_candidate:
+                    donate_candidate = url
+                if not generic_candidate:
+                    generic_candidate = url
+            if zakat_candidate:
+                return zakat_candidate
+            if donate_candidate:
+                return donate_candidate
+            if generic_candidate:
+                return generic_candidate
+
+    # 2) Source attribution for claims_zakat_eligible
+    if isinstance(charity_data, dict):
+        source_attribution = charity_data.get("source_attribution")
+        if isinstance(source_attribution, dict):
+            zakat_meta = source_attribution.get("claims_zakat_eligible")
+            if isinstance(zakat_meta, dict):
+                url = _normalize_public_url(zakat_meta.get("source_url"))
+                if url:
+                    return url
+
+    # 3) Charity website fallback
+    return _normalize_public_url(fallback_website)
+
+
+def _rewrite_evidence_source(evidence: str, canonical_url: str | None) -> str:
+    """Rewrite evidence source annotation to use canonical URL only."""
+    # Drop any trailing source clause from upstream evidence text.
+    cleaned = re.sub(r"\s*\(Source:\s*https?://[^)]+\)\s*$", "", evidence, flags=re.IGNORECASE).strip()
+    if canonical_url:
+        return f"{cleaned} (Source: {canonical_url})"
+    return cleaned
+
+
+def _extract_zakat_claim_evidence(
+    charity_data: dict | None, evaluation: dict | None = None, fallback_website: str | None = None
+) -> list[str] | None:
+    """Extract zakat claim evidence with canonical URLs and no grounding redirects."""
     if not charity_data:
         return None
     evidence = charity_data.get("zakat_claim_evidence")
@@ -728,7 +808,18 @@ def _extract_zakat_claim_evidence(charity_data: dict | None) -> list[str] | None
         evidence = [evidence]
     if not isinstance(evidence, list):
         return None
-    filtered = [e for e in evidence if isinstance(e, str) and not e.startswith("CORROBORATION FAILED:")]
+    canonical_url = _select_canonical_zakat_url(charity_data, evaluation, fallback_website)
+
+    filtered = []
+    for item in evidence:
+        if not isinstance(item, str):
+            continue
+        if item.startswith("CORROBORATION FAILED:"):
+            continue
+        rewritten = _rewrite_evidence_source(item, canonical_url)
+        if rewritten:
+            filtered.append(rewritten)
+
     return filtered if filtered else None
 
 
@@ -753,6 +844,27 @@ def _extract_rubric_archetype(evaluation: dict | None) -> str | None:
     if not impact or not isinstance(impact, dict):
         return None
     return impact.get("rubric_archetype")
+
+
+def _normalize_score_details_zakat_sources(
+    score_details: dict[str, Any] | None, canonical_url: str | None
+) -> dict[str, Any] | None:
+    """Normalize score_details.zakat.claim_evidence to canonical URL."""
+    if not isinstance(score_details, dict):
+        return score_details
+
+    normalized = dict(score_details)
+    zakat = normalized.get("zakat")
+    if not isinstance(zakat, dict):
+        return normalized
+
+    zakat_normalized = dict(zakat)
+    claim_evidence = zakat_normalized.get("claim_evidence")
+    if isinstance(claim_evidence, str) and claim_evidence.strip():
+        zakat_normalized["claim_evidence"] = _rewrite_evidence_source(claim_evidence, canonical_url)
+
+    normalized["zakat"] = zakat_normalized
+    return normalized
 
 
 def _is_truncated_text(value: str | None) -> bool:
@@ -1171,11 +1283,21 @@ def build_charity_detail(
         # P1: Evidence quality signals for scoring transparency
         "evidenceQuality": _build_evidence_quality(charity_data),
         # P1: Zakat claim evidence (filtered)
-        "zakatClaimEvidence": _extract_zakat_claim_evidence(charity_data),
+        "zakatClaimEvidence": _extract_zakat_claim_evidence(
+            charity_data,
+            evaluation=evaluation,
+            fallback_website=charity.get("website"),
+        ),
         # P2: Strategic archetype (e.g., RESILIENCE, LEVERAGE)
         "archetype": _extract_archetype(charity_data),
         "ui_signals_v1": ui_signals_v1,
     }
+
+    canonical_zakat_url = _select_canonical_zakat_url(
+        charity_data,
+        evaluation,
+        charity.get("website"),
+    )
 
     # Add AMAL evaluation if available
     if evaluation:
@@ -1187,7 +1309,9 @@ def build_charity_detail(
             "evaluation_date": evaluation.get("evaluated_at"),
             "rubric_version": evaluation.get("rubric_version"),
             "confidence_scores": evaluation.get("confidence_scores"),
-            "score_details": evaluation.get("score_details"),  # Full scorer output
+            "score_details": _normalize_score_details_zakat_sources(
+                evaluation.get("score_details"), canonical_zakat_url
+            ),  # Full scorer output
             "baseline_narrative": evaluation.get("baseline_narrative"),
         }
         # Include rich_narrative whenever it exists in the database

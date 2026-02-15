@@ -147,7 +147,7 @@ export const PromptsPage: React.FC = () => {
           </div>
 
           <p className={`text-lg leading-relaxed mb-6 max-w-3xl ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-            We believe in radical transparency. Every prompt we use to evaluate charities is published here.
+            We believe in radical transparency. We publish our core prompts and prompt annotations here, and continue expanding coverage.
             You can see exactly what instructions we give to AI models, how we prevent hallucinations,
             and what safeguards ensure accuracy.
           </p>
