@@ -81,6 +81,18 @@ export function formatComponentName(name: string): string {
 
 /** Convert pipeline shorthand evidence to donor-friendly text */
 export function formatEvidenceForDonors(evidence: string): string {
+  const removeScoringArtifacts = (text: string): string =>
+    text
+      // Remove point-style score annotations: (+4), (-2), (+1.5)
+      .replace(/\s*\(\s*[+-]\d+(?:\.\d+)?\s*\)/g, '')
+      // Remove ratio score annotations: (4/13), (3/5 funding gap), etc.
+      .replace(/\s*\(\s*\d+(?:\.\d+)?\s*\/\s*\d+(?:\.\d+)?[^)]*\)/g, '')
+      // Normalize separators/spacing after removals
+      .replace(/\s*;\s*/g, '; ')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/;\s*$/g, '')
+      .trim();
+
   // Theory of change: LEVEL
   const tocMatch = evidence.match(/^Theory of change:\s*(\w+)(?:\s*\(.*\))?$/i);
   if (tocMatch) {
@@ -170,7 +182,14 @@ export function formatEvidenceForDonors(evidence: string): string {
   const causeMatch = evidence.match(/^Cause area:\s*(.+)\s*\((\d+)\/(\d+)\)$/i);
   if (causeMatch) {
     const cause = causeMatch[1].trim().replace(/_/g, ' ');
-    return `Works in ${cause} — a well-studied cause area (${causeMatch[2]}/${causeMatch[3]} evidence rating)`;
+    const numerator = Number.parseFloat(causeMatch[2]);
+    const denominator = Number.parseFloat(causeMatch[3]);
+    const ratio = denominator > 0 ? (numerator / denominator) : 0;
+    const qualifier =
+      ratio >= 0.66 ? 'a comparatively stronger evidence base'
+      : ratio >= 0.4 ? 'a mixed evidence base'
+      : 'a more limited evidence base';
+    return `Works in ${cause} — ${qualifier}`;
   }
 
   // Founded YEAR (N years — X/Y)
@@ -191,7 +210,7 @@ export function formatEvidenceForDonors(evidence: string): string {
   }
 
   // Pass through anything we don't recognize
-  return evidence;
+  return removeScoringArtifacts(evidence);
 }
 
 export const generateFallbackImprovement = (
