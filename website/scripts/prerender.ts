@@ -7,7 +7,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import { execSync, spawn, type ChildProcess } from 'child_process';
+import { spawn, type ChildProcess } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -278,6 +278,31 @@ function writePrerenderedFromBaseHtml(metas: PageMeta[]): number {
   return written;
 }
 
+function resolvePrerenderMode(): { mode: 'browser' | 'static'; reason: string } {
+  const explicitMode = (process.env.PRERENDER_MODE || '').trim().toLowerCase();
+  if (explicitMode === 'browser') {
+    return { mode: 'browser', reason: 'PRERENDER_MODE=browser' };
+  }
+  if (explicitMode === 'static' || explicitMode === 'fallback' || explicitMode === 'none') {
+    return { mode: 'static', reason: `PRERENDER_MODE=${explicitMode}` };
+  }
+
+  const isCloudflarePages =
+    process.env.CF_PAGES === '1' ||
+    !!process.env.CF_PAGES_BRANCH ||
+    !!process.env.CF_PAGES_URL;
+  const isCi = process.env.CI === '1' || process.env.CI === 'true';
+
+  if (isCloudflarePages) {
+    return { mode: 'static', reason: 'Cloudflare Pages environment detected' };
+  }
+  if (isCi) {
+    return { mode: 'static', reason: 'CI environment detected' };
+  }
+
+  return { mode: 'browser', reason: 'default local build behavior' };
+}
+
 async function prerenderPages() {
   // Load charity data
   const charitiesIndex = JSON.parse(fs.readFileSync(CHARITIES_JSON, 'utf-8'));
@@ -308,8 +333,9 @@ async function prerenderPages() {
 
   console.log(`Prerender: ${metas.length} pages (${metas.length - charities.length} static + ${charities.length} charities)`);
 
-  if (process.env.CF_PAGES === '1') {
-    console.log('Cloudflare Pages detected; using fallback prerender (no headless browser).');
+  const prerenderMode = resolvePrerenderMode();
+  if (prerenderMode.mode === 'static') {
+    console.log(`Using fallback prerender (no headless browser): ${prerenderMode.reason}.`);
     const written = writePrerenderedFromBaseHtml(metas);
     console.log(`Prerender complete: ${written} pages written to dist/`);
     return;
@@ -317,11 +343,9 @@ async function prerenderPages() {
 
   // Dynamic import for puppeteer (ESM)
   const puppeteer = await import('puppeteer');
-  // Start preview server
-  console.log('Starting preview server...');
-  const server = await startPreviewServer();
+  let browser: Awaited<ReturnType<typeof puppeteer.default.launch>> | null = null;
+  let server: ChildProcess | null = null;
   try {
-    let browser;
     try {
       browser = await puppeteer.default.launch({
         headless: true,
@@ -333,6 +357,10 @@ async function prerenderPages() {
       console.log(`Prerender complete: ${written} pages written to dist/`);
       return;
     }
+
+    // Start preview server
+    console.log('Starting preview server...');
+    server = await startPreviewServer();
 
     // Process pages with concurrency limit
     let completed = 0;
@@ -377,10 +405,10 @@ async function prerenderPages() {
 
     await Promise.all(pages.map((page) => worker(page)));
 
-    await browser.close();
     console.log(`Prerender complete: ${completed} pages written to dist/`);
   } finally {
-    server.kill();
+    if (server) server.kill();
+    if (browser) await browser.close().catch(() => undefined);
   }
 }
 
