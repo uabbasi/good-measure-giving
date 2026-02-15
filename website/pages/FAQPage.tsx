@@ -35,7 +35,7 @@ export const FAQPage: React.FC = () => {
     {
       category: 'general',
       q: "Can I request a charity to be evaluated?",
-      a: "Yes! We\u2019re actively expanding our database. Email us at hello@goodmeasuregiving.org with the organization\u2019s name and EIN, and we\u2019ll add it to our pipeline. Priority is given to registered 501(c)(3) organizations serving Muslim communities."
+      a: "Yes! Use the \u2018Suggest a Charity\u2019 option in our feedback form, available in the footer or on the browse page. Include the organization\u2019s name and EIN if available. You can also email us at hello@goodmeasuregiving.org. Priority is given to registered 501(c)(3) organizations serving Muslim communities."
     },
     {
       category: 'general',
@@ -52,7 +52,7 @@ export const FAQPage: React.FC = () => {
     {
       category: 'methodology',
       q: "Why do I see qualitative labels instead of a big number?",
-      a: "We intentionally prioritize qualitative signals to avoid false precision. A charity now shows an archetype (what kind of organization it is), an evidence stage (Verified, Established, Building, or Limited Evidence), four signal states (Evidence, Financial Health, Donor Fit, Risk), and a recommendation cue (High Confidence, Good Signals, Mixed Signals, or Limited Signals). The numeric score still exists and is available in collapsed methodology details, but it is no longer the primary cue for browsing."
+      a: "We intentionally prioritize qualitative signals to avoid false precision. A charity now shows an archetype (what kind of organization it is), an evidence stage (Verified, Established, Building, or Limited Evidence), four signal states (Evidence, Financial Health, Donor Fit, Risk), and a recommendation cue (Maximum Alignment, Strong Alignment, Mixed Signals, or Needs Verification). The numeric score still exists and is available in collapsed methodology details, but it is no longer the primary cue for browsing."
     },
     {
       category: 'methodology',
@@ -62,7 +62,7 @@ export const FAQPage: React.FC = () => {
     {
       category: 'methodology',
       q: "What does \u2018Impact\u2019 measure?",
-      a: "Impact (50 points) measures how effectively a charity turns donations into real-world change. We score the same seven components for every charity (cost per beneficiary, directness, financial health, program ratio, evidence/outcomes, theory of change, governance), but the exact weights are archetype-adjusted by charity type. In the current rubric, for example, governance is always 10 points, while cost per beneficiary ranges by archetype. Evidence quality is assessed on a five-level scale: Verified (independent third-party evaluation), Tracked (3+ years of outcome data), Measured (1-2 years of data), Reported (basic output tracking only), and Unverified (no structured tracking)."
+      a: "Impact (50 points) assesses organizational health indicators that research associates with effective programs. We score the same seven components for every charity (cost per beneficiary, directness, financial health, program ratio, evidence/outcomes, theory of change, governance), but the exact weights are archetype-adjusted by charity type. Most sub-components (financial health, governance, program ratio) are organizational health indicators rather than direct outcome measurements. Where charities provide verified outcome data through independent evaluation, we weight it more heavily. Evidence quality is assessed on a five-level scale: Verified (independent third-party evaluation), Tracked (3+ years of outcome data), Measured (1-2 years of data), Reported (basic output tracking only), and Unverified (no structured tracking)."
     },
     {
       category: 'methodology',
@@ -178,7 +178,12 @@ export const FAQPage: React.FC = () => {
     {
       category: 'data',
       q: "What if I think an evaluation is wrong?",
-      a: "We welcome feedback. If you believe we\u2019ve made an error or missed important information, please email us at hello@goodmeasuregiving.org with specifics. We\u2019ll review the data and update our evaluation if warranted. Our goal is accuracy, not defending our initial assessments."
+      a: "We welcome feedback. Use the Report Issue button on any charity page to flag specific errors, or the feedback button to share general concerns. You can also email us at hello@goodmeasuregiving.org with specifics. We\u2019ll review the data and update our evaluation if warranted. Our goal is accuracy, not defending our initial assessments."
+    },
+    {
+      category: 'data',
+      q: "What if I represent a charity that\u2019s been evaluated?",
+      a: "We welcome organization feedback. Use the \u2018Tell us more\u2019 link on your charity\u2019s page or the Report Issue button to share corrections, context, or updated information. Our process: we receive your submission, review it against our data sources, and update the evaluation when warranted. Organization submissions may be reviewed before publication."
     },
     {
       category: 'data',

@@ -4,7 +4,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { GoogleAuthProvider, OAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+import { GoogleAuthProvider, OAuthProvider, signInWithPopup, signInWithRedirect, signOut } from 'firebase/auth';
 import { auth, isConfigured } from './firebase';
 import { useAuth } from './useAuth';
 import { trackSignIn } from '../utils/analytics';
@@ -29,27 +29,16 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
 
   const closeModal = useCallback(() => setShowMenu(false), []);
 
-  // Close on outside click or Escape key
+  // Close on Escape key (backdrop click handled inline)
   useEffect(() => {
     if (!showMenu) return;
-
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node;
-      const clickedInsideTrigger = containerRef.current?.contains(target);
-      const clickedInsideModal = modalRef.current?.contains(target);
-      if (!clickedInsideTrigger && !clickedInsideModal) closeModal();
-    };
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') closeModal();
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, [showMenu, closeModal]);
 
   // Focus trap: on modal open, focus first button; cycle Tab within modal
@@ -71,6 +60,8 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
     return () => document.removeEventListener('keydown', handleTab);
   }, [showMenu]);
 
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
   const signInWith = async (provider: 'google' | 'apple') => {
     if (!auth || !isConfigured) return;
     trackSignIn(provider);
@@ -78,9 +69,12 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
       ? new GoogleAuthProvider()
       : new OAuthProvider('apple.com');
     try {
-      await signInWithPopup(auth, authProvider);
+      if (isMobile) {
+        await signInWithRedirect(auth, authProvider);
+      } else {
+        await signInWithPopup(auth, authProvider);
+      }
     } catch (err: unknown) {
-      // User closed popup or other auth error
       if (err instanceof Error && (err as { code?: string }).code !== 'auth/popup-closed-by-user') {
         console.error('Sign-in error:', err);
       }
@@ -148,15 +142,13 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
   }
 
   // Signed out - show sign in modal (centered overlay, rendered via portal)
+  // Modal nested inside backdrop to avoid iOS Safari z-index touch event bug
   const SignInModal = () => createPortal(
-    <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/50 z-[100]"
-        onClick={() => setShowMenu(false)}
-      />
-      {/* Modal */}
-      <div ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="signin-modal-title" className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-md max-h-[calc(100vh-2rem)] bg-white rounded-2xl shadow-2xl z-[101] overflow-y-auto overscroll-contain">
+    <div
+      className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center"
+      onClick={() => setShowMenu(false)}
+    >
+      <div ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="signin-modal-title" onClick={(e) => e.stopPropagation()} className="relative w-[calc(100%-2rem)] max-w-md max-h-[calc(100vh-2rem)] bg-white rounded-2xl shadow-2xl overflow-y-auto overscroll-contain">
         {/* Header with logo */}
         <div className="px-8 pt-8 pb-6 text-center border-b border-slate-100">
           <div className="flex justify-center mb-4">
@@ -180,7 +172,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
             <>
               <button
                 onClick={() => signInWith('google')}
-                className="w-full flex items-center justify-center gap-3 px-6 py-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-colors"
+                className="w-full flex items-center justify-center gap-3 px-6 py-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-colors select-none touch-manipulation"
               >
                 <svg className="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -192,7 +184,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
               </button>
               <button
                 onClick={() => signInWith('apple')}
-                className="w-full flex items-center justify-center gap-3 px-6 py-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-colors"
+                className="w-full flex items-center justify-center gap-3 px-6 py-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-colors select-none touch-manipulation"
               >
                 <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
@@ -225,7 +217,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
           </svg>
         </button>
       </div>
-    </>,
+    </div>,
     document.body
   );
 

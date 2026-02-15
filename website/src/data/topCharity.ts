@@ -21,7 +21,7 @@ interface FeaturedCharityData extends CharityProfile {
 export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
   "name": "SIUT",
   "ein": "76-0656947",
-  "headline": "SIUT North America Inc provides critical financial support for life-saving kidney transplants and dialysis services at the SIUT Charitable Trust.",
+  "headline": "SIUT North America Inc provides critical financial support for life-saving kidney transplants and dialysis treatments at the SIUT Charitable Trust in Karachi.",
   "amalEvaluation": {
     "amal_score": 89,
     "confidence_scores": {
@@ -178,6 +178,26 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 45
       },
+      "judge_issues": [
+        {
+          "field": "discovered.zakat.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -190,10 +210,10 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
         "asnaf_category": "fuqara",
         "bonus_points": 0,
         "charity_claims_zakat": true,
-        "claim_evidence": "Your Zakat and Sadaqah has the power to save lives. Donate to SIUTNA and help us provide free healthcare with dignity. ; Commit your Sadaqah, Zakat, and donations to SIUT North America to help build the SIUT Children's Hospital. (Source: https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE0R99H1C_4mSUQnFzV_cb0EmiiZZW5nY3rohwirR4tKAj14xR0B6nibRhPIJy5nApS_CPzR3NVSTggtK8_uJV8uhLUhA-oTbQxzCwsIuZ5zfufSVEwRgeImAq7ADZ4y2w=)",
+        "claim_evidence": "SIUT North America, Inc. has a 'Select a campaign' option on Kindful that includes 'Zakat'. Additionally, Feeling Blessed states, 'Your Zakat and Sadaqah has the power to save lives. Donate to SIUTNA and help us provide free healthcare with dignity.' (Source: https://siutna.org/ways-to-donate/)",
         "notes": null
       }
     }
   },
-  "impactHighlight": "SIUT North America Inc provides critical financial support for life-saving kidney transplants and dialysis services at the SIUT Charitable Trust."
+  "impactHighlight": "SIUT North America Inc provides critical financial support for life-saving kidney transplants and dialysis treatments at the SIUT Charitable Trust in Karachi."
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Sun, Moon } from 'lucide-react';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
@@ -6,6 +6,7 @@ import { FeedbackButton } from '../src/components/FeedbackButton';
 
 export const Footer: React.FC = () => {
   const { isDark, toggleTheme } = useLandingTheme();
+  const [showSuggest, setShowSuggest] = useState(false);
 
   return (
     <footer className={`border-t py-8 ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-100 border-slate-200'}`}>
@@ -30,6 +31,12 @@ export const Footer: React.FC = () => {
             <Link to="/prompts" className={`hover:text-emerald-600 transition-colors ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               AI Transparency
             </Link>
+            <button
+              onClick={() => setShowSuggest(true)}
+              className={`hover:text-emerald-600 transition-colors ${isDark ? 'text-slate-400' : 'text-slate-500'}`}
+            >
+              Suggest a Charity
+            </button>
             <a href="mailto:hello@goodmeasuregiving.org" className={`hover:text-emerald-600 transition-colors ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               Contact
             </a>
@@ -49,6 +56,15 @@ export const Footer: React.FC = () => {
           Rigorous charity research for Muslim donors.
         </p>
       </div>
+
+      {/* Suggest a Charity modal */}
+      {showSuggest && (
+        <FeedbackButton
+          defaultOpen
+          initialFeedbackType="suggest_charity"
+          onClose={() => setShowSuggest(false)}
+        />
+      )}
     </footer>
   );
 };

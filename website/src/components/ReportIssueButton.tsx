@@ -5,6 +5,7 @@
  * - Data errors
  * - Outdated information
  * - Missing information
+ * - Organization feedback (I represent this charity)
  * - Other issues
  */
 
@@ -13,6 +14,9 @@ import { Flag, X, Send, CheckCircle } from 'lucide-react';
 import { useAuth } from '../auth/useAuth';
 import { useFirebaseData } from '../auth/FirebaseProvider';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
+
+const SUBMISSION_COUNT_KEY = 'gmg-submission-count';
+const SUBMISSION_CAP = 5;
 
 interface ReportIssueButtonProps {
   charityId: string;
@@ -23,16 +27,34 @@ interface ReportIssueButtonProps {
   className?: string;
   /** Dark mode */
   isDark?: boolean;
+  /** Pre-select an issue type when opening */
+  initialIssueType?: IssueType;
+  /** If true, open the modal immediately on mount (no trigger button rendered) */
+  defaultOpen?: boolean;
+  /** Called when the modal closes (useful with defaultOpen) */
+  onClose?: () => void;
 }
 
-type IssueType = 'data_error' | 'outdated_info' | 'missing_info' | 'other';
+type IssueType = 'data_error' | 'outdated_info' | 'missing_info' | 'organization_feedback' | 'other';
 
 const ISSUE_TYPES: { value: IssueType; label: string; description: string }[] = [
   { value: 'data_error', label: 'Data Error', description: 'Incorrect information displayed' },
   { value: 'outdated_info', label: 'Outdated Info', description: 'Information needs updating' },
   { value: 'missing_info', label: 'Missing Info', description: 'Important information not shown' },
+  { value: 'organization_feedback', label: 'Org Feedback', description: 'I represent this charity' },
   { value: 'other', label: 'Other', description: 'Something else' },
 ];
+
+function getSessionSubmissionCount(): number {
+  if (typeof window === 'undefined') return 0;
+  return parseInt(sessionStorage.getItem(SUBMISSION_COUNT_KEY) || '0', 10);
+}
+
+function incrementSessionSubmissionCount(): void {
+  if (typeof window === 'undefined') return;
+  const current = getSessionSubmissionCount();
+  sessionStorage.setItem(SUBMISSION_COUNT_KEY, (current + 1).toString());
+}
 
 export const ReportIssueButton: React.FC<ReportIssueButtonProps> = ({
   charityId,
@@ -40,17 +62,30 @@ export const ReportIssueButton: React.FC<ReportIssueButtonProps> = ({
   variant = 'icon',
   className = '',
   isDark = false,
+  initialIssueType,
+  defaultOpen = false,
+  onClose,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(defaultOpen);
   const [issueType, setIssueType] = useState<IssueType | ''>('');
   const [description, setDescription] = useState('');
   const [email, setEmail] = useState('');
+  const [orgRole, setOrgRole] = useState('');
+  const [evidenceUrl, setEvidenceUrl] = useState('');
+  // Honeypot anti-spam: silent discard if filled. Shows success UI but writes nothing.
+  const [honeypot, setHoneypot] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lastSubmitTime, setLastSubmitTime] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
   const { email: userEmail, uid } = useAuth();
   const { db } = useFirebaseData();
+
+  const closeModal = () => {
+    setIsOpen(false);
+    onClose?.();
+  };
 
   // Pre-fill email if user is logged in
   useEffect(() => {
@@ -59,10 +94,17 @@ export const ReportIssueButton: React.FC<ReportIssueButtonProps> = ({
     }
   }, [userEmail, email]);
 
+  // Apply initialIssueType when modal opens
+  useEffect(() => {
+    if (isOpen && initialIssueType) {
+      setIssueType(initialIssueType);
+    }
+  }, [isOpen, initialIssueType]);
+
   // Close on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsOpen(false);
+      if (e.key === 'Escape') closeModal();
     };
     if (isOpen) {
       document.addEventListener('keydown', handleEscape);
@@ -77,59 +119,99 @@ export const ReportIssueButton: React.FC<ReportIssueButtonProps> = ({
   // Close on outside click
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-      setIsOpen(false);
+      closeModal();
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Cooldown: prevent rapid re-submission
+    const now = Date.now();
+    if (now - lastSubmitTime < 3000) {
+      setError('Please wait a moment before submitting again.');
+      return;
+    }
+
+    // Session cap check
+    if (getSessionSubmissionCount() >= SUBMISSION_CAP) {
+      setError('Thank you for your feedback \u2014 you\u2019ve been very active! Please email us at hello@goodmeasuregiving.org for additional submissions.');
+      return;
+    }
+
     if (!issueType || !description.trim()) {
       setError('Please select an issue type and provide a description');
       return;
     }
 
+    // Validate org feedback fields
+    if (issueType === 'organization_feedback') {
+      if (evidenceUrl.trim() && !/^https?:\/\//.test(evidenceUrl.trim())) {
+        setError('Supporting link must start with http:// or https://');
+        return;
+      }
+    }
+
     setIsSubmitting(true);
     setError(null);
+    setLastSubmitTime(now);
 
     try {
-      // Submit to Firestore
-      if (db) {
-        await addDoc(collection(db, 'reported_issues'), {
+      // Honeypot check: if filled, show success but skip writes
+      if (honeypot) {
+        console.debug('Submission filtered');
+      } else {
+        // Build Firestore payload
+        const payload: Record<string, unknown> = {
           charityId,
           charityName,
           issueType,
-          description: description.trim(),
+          description: description.trim().slice(0, 3000),
           reporterEmail: email?.trim() || null,
           reporterUserId: uid || null,
           createdAt: Timestamp.now(),
-        });
-      } else {
-        // Fallback: log to console if Firebase not configured
-        console.log('Report submitted (Firebase not configured):', {
-          charityId,
-          charityName,
-          issueType,
-          description,
-          email: email || undefined,
-        });
-      }
+        };
 
-      // Track the report event
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'report_issue', {
-          charity_id: charityId,
-          issue_type: issueType,
-        });
+        // Add org feedback fields
+        if (issueType === 'organization_feedback') {
+          payload.submitterRole = 'org_representative';
+          payload.orgRole = orgRole.trim().slice(0, 120) || null;
+          payload.evidenceUrl = evidenceUrl.trim() || null;
+        }
+
+        if (db) {
+          await addDoc(collection(db, 'reported_issues'), payload);
+        } else {
+          console.log('Report submitted (Firebase not configured):', payload);
+        }
+
+        // Track the report event
+        if (typeof window !== 'undefined' && window.gtag) {
+          if (issueType === 'organization_feedback') {
+            window.gtag('event', 'organization_feedback_submit', {
+              charity_id: charityId,
+            });
+          } else {
+            window.gtag('event', 'report_issue', {
+              charity_id: charityId,
+              issue_type: issueType,
+            });
+          }
+        }
+
+        incrementSessionSubmissionCount();
       }
 
       setIsSubmitted(true);
       setTimeout(() => {
-        setIsOpen(false);
-        // Reset form after close
+        closeModal();
         setTimeout(() => {
           setIsSubmitted(false);
           setIssueType('');
           setDescription('');
+          setOrgRole('');
+          setEvidenceUrl('');
+          setHoneypot('');
           setError(null);
         }, 300);
       }, 2000);
@@ -140,14 +222,24 @@ export const ReportIssueButton: React.FC<ReportIssueButtonProps> = ({
     }
   };
 
+  const isOrgFeedback = issueType === 'organization_feedback';
+
   const buttonClasses = variant === 'text'
     ? `hover:underline ${isDark ? 'hover:text-slate-300' : 'hover:text-slate-600'}`
     : `inline-flex items-center gap-1.5 text-sm ${
         isDark ? 'text-slate-500 hover:text-slate-400' : 'text-slate-400 hover:text-slate-600'
       }`;
 
+  const inputClasses = `w-full px-3 py-2 rounded-lg text-sm border transition-colors ${
+    isDark
+      ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-500 focus:border-emerald-500'
+      : 'bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-emerald-500'
+  } focus:outline-none focus:ring-1 focus:ring-emerald-500`;
+
   return (
     <>
+      {/* Trigger (hidden when defaultOpen - modal only) */}
+      {!defaultOpen && (
       <button
         onClick={() => setIsOpen(true)}
         className={`${buttonClasses} ${className}`}
@@ -165,6 +257,7 @@ export const ReportIssueButton: React.FC<ReportIssueButtonProps> = ({
           </>
         )}
       </button>
+      )}
 
       {isOpen && (
         <div
@@ -173,7 +266,7 @@ export const ReportIssueButton: React.FC<ReportIssueButtonProps> = ({
         >
           <div
             ref={modalRef}
-            className={`w-full max-w-md rounded-xl shadow-xl ${
+            className={`w-full max-w-md rounded-xl shadow-xl max-h-[90vh] overflow-y-auto ${
               isDark ? 'bg-slate-800' : 'bg-white'
             }`}
           >
@@ -185,7 +278,7 @@ export const ReportIssueButton: React.FC<ReportIssueButtonProps> = ({
                 Report an Issue
               </h2>
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={closeModal}
                 className={`p-1 rounded-lg transition-colors ${
                   isDark ? 'hover:bg-slate-700 text-slate-400' : 'hover:bg-slate-100 text-slate-500'
                 }`}
@@ -208,6 +301,18 @@ export const ReportIssueButton: React.FC<ReportIssueButtonProps> = ({
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Honeypot anti-spam: silent discard if filled. Shows success UI but writes nothing. */}
+                  <input
+                    type="text"
+                    name="website_url_confirm"
+                    value={honeypot}
+                    onChange={e => setHoneypot(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    style={{ position: 'absolute', left: '-9999px' }}
+                    aria-hidden="true"
+                  />
+
                   {/* Charity name (read-only) */}
                   <div>
                     <label className={`block text-xs uppercase tracking-wide font-medium mb-1 ${
@@ -256,25 +361,66 @@ export const ReportIssueButton: React.FC<ReportIssueButtonProps> = ({
                     </div>
                   </div>
 
+                  {/* Organization feedback: role field */}
+                  {isOrgFeedback && (
+                    <div>
+                      <label className={`block text-xs uppercase tracking-wide font-medium mb-1 ${
+                        isDark ? 'text-slate-400' : 'text-slate-500'
+                      }`}>
+                        Your role at the organization
+                      </label>
+                      <input
+                        type="text"
+                        value={orgRole}
+                        onChange={e => setOrgRole(e.target.value.slice(0, 120))}
+                        placeholder="e.g. Executive Director"
+                        maxLength={120}
+                        className={inputClasses}
+                      />
+                    </div>
+                  )}
+
                   {/* Description */}
                   <div>
                     <label className={`block text-xs uppercase tracking-wide font-medium mb-1 ${
                       isDark ? 'text-slate-400' : 'text-slate-500'
                     }`}>
-                      Description *
+                      {isOrgFeedback ? 'What would you like us to know? *' : 'Description *'}
                     </label>
                     <textarea
                       value={description}
-                      onChange={e => setDescription(e.target.value)}
-                      placeholder="Please describe the issue..."
+                      onChange={e => setDescription(e.target.value.slice(0, 3000))}
+                      placeholder={isOrgFeedback ? 'Share corrections, context, or updated information...' : 'Please describe the issue...'}
                       rows={3}
-                      className={`w-full px-3 py-2 rounded-lg text-sm border transition-colors ${
-                        isDark
-                          ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-500 focus:border-emerald-500'
-                          : 'bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-emerald-500'
-                      } focus:outline-none focus:ring-1 focus:ring-emerald-500`}
+                      maxLength={3000}
+                      className={inputClasses}
                     />
                   </div>
+
+                  {/* Organization feedback: evidence URL */}
+                  {isOrgFeedback && (
+                    <div>
+                      <label className={`block text-xs uppercase tracking-wide font-medium mb-1 ${
+                        isDark ? 'text-slate-400' : 'text-slate-500'
+                      }`}>
+                        Supporting links (optional)
+                      </label>
+                      <input
+                        type="url"
+                        value={evidenceUrl}
+                        onChange={e => setEvidenceUrl(e.target.value)}
+                        placeholder="https://..."
+                        className={inputClasses}
+                      />
+                    </div>
+                  )}
+
+                  {/* Organization feedback: process note */}
+                  {isOrgFeedback && (
+                    <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                      We review organization feedback and update evaluations when warranted.
+                    </p>
+                  )}
 
                   {/* Email (optional) */}
                   <div>
@@ -288,11 +434,7 @@ export const ReportIssueButton: React.FC<ReportIssueButtonProps> = ({
                       value={email}
                       onChange={e => setEmail(e.target.value)}
                       placeholder="your@email.com"
-                      className={`w-full px-3 py-2 rounded-lg text-sm border transition-colors ${
-                        isDark
-                          ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-500 focus:border-emerald-500'
-                          : 'bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-emerald-500'
-                      } focus:outline-none focus:ring-1 focus:ring-emerald-500`}
+                      className={inputClasses}
                     />
                     <p className={`text-xs mt-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
                       We'll only contact you if we need more information

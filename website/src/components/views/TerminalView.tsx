@@ -45,6 +45,7 @@ import { deriveUISignalsFromCharity, getArchetypeDescription, stripCitations } f
 import { ScoreBreakdown } from '../ScoreBreakdown';
 import { RecommendationCue } from '../RecommendationCue';
 import { SignalConstellation } from '../SignalConstellation';
+import { OrganizationEngagement } from '../OrganizationEngagement';
 
 interface TerminalViewProps {
   charity: CharityProfile;
@@ -185,9 +186,13 @@ function getDifferentiatorTags(charity: CharityProfile, isDark: boolean): Array<
   const tags: Array<{ label: string; priority: number; colorClass: string }> = [];
   const extended = charity as any;
   const allCauseTags = (charity.causeTags || []).map((t: string) => t.toLowerCase());
+  const alignmentScore = charity.amalEvaluation?.confidence_scores?.alignment || 0;
 
   if (extended.impactTier === 'HIGH') {
-    tags.push({ label: 'High Impact', priority: 2, colorClass: isDark ? 'bg-rose-900/50 text-rose-400' : 'bg-rose-100 text-rose-700' });
+    tags.push({ label: 'Maximum Leverage', priority: 2, colorClass: isDark ? 'bg-rose-900/50 text-rose-400' : 'bg-rose-100 text-rose-700' });
+  }
+  if (alignmentScore >= 42) {
+    tags.push({ label: 'Maximum Alignment', priority: 2, colorClass: isDark ? 'bg-emerald-900/50 text-emerald-400' : 'bg-emerald-100 text-emerald-700' });
   }
   if (allCauseTags.includes('emergency-response')) {
     tags.push({ label: 'Emergency', priority: 3, colorClass: isDark ? 'bg-orange-900/50 text-orange-400' : 'bg-orange-100 text-orange-700' });
@@ -251,6 +256,12 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
   const scores = amal?.confidence_scores;
   const financials = charity.financials || charity.rawData?.financials;
   const revenue = financials?.totalRevenue || charity.rawData?.total_revenue;
+  const beneficiariesCount = charity.beneficiariesServedAnnually;
+  const beneficiarySourceUrl = (charity as any)?.sourceAttribution?.beneficiaries_served_annually?.source_url;
+  const beneficiariesVerified = charity.beneficiariesConfidence === 'verified'
+    || (typeof beneficiarySourceUrl === 'string' && beneficiarySourceUrl.startsWith('http'));
+  const beneficiariesExcludedFromScoring = charity.beneficiariesExcludedFromScoring
+    ?? Boolean(beneficiariesCount && !beneficiariesVerified);
 
   // Create a lookup map from charity names to their IDs (case-insensitive)
   const charityNameToId = useMemo(() => {
@@ -1036,15 +1047,38 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
           })()}
 
           {/* Beneficiaries Served (self-reported) */}
-          {charity.beneficiariesServedAnnually != null && charity.beneficiariesServedAnnually > 0 && (
+          {beneficiariesCount != null && beneficiariesCount > 0 && (
             <div className={`mb-6 p-3 rounded-lg ${isDark ? 'bg-slate-800/50' : 'bg-slate-50'}`}>
               <div className={`text-2xl font-mono font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                {charity.beneficiariesServedAnnually.toLocaleString()}
+                {beneficiariesCount.toLocaleString()}
               </div>
               <div className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
                 Beneficiaries Served Annually
                 <span className={`ml-1 italic ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>(self-reported)</span>
               </div>
+              {!beneficiariesVerified && (
+                <div className={`mt-1.5 flex items-center gap-1 text-xs ${isDark ? 'text-amber-400' : 'text-amber-700'}`}>
+                  <AlertTriangle className="w-3 h-3" />
+                  <span>No cited source yet; excluded from cost-per-beneficiary scoring</span>
+                </div>
+              )}
+              {beneficiariesVerified && beneficiarySourceUrl && (
+                <a
+                  href={beneficiarySourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`mt-1.5 inline-flex items-center gap-1 text-xs underline underline-offset-2 ${
+                    isDark ? 'text-slate-400 hover:text-slate-200' : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  View beneficiary source
+                </a>
+              )}
+              {beneficiariesExcludedFromScoring && !beneficiariesVerified && (
+                <div className={`mt-1 text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
+                  Ranking favors verified cost signals when available.
+                </div>
+              )}
             </div>
           )}
 
@@ -2366,7 +2400,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
                   <span className="font-mono">{rich.citation_stats.unique_sources}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>High Confidence</span>
+                  <span>Strong Sources</span>
                   <span className={`font-mono ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
                     {rich.citation_stats.high_confidence_count}
                   </span>
@@ -2499,6 +2533,15 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
             className={`font-medium ${isDark ? 'text-slate-500 hover:text-slate-300' : 'text-slate-400 hover:text-slate-600'}`}
           />
         </div>
+      </div>
+
+      {/* Organization Engagement */}
+      <div className="px-4 lg:px-6 pb-4">
+        <OrganizationEngagement
+          charityName={charity.name}
+          charityEin={charity.ein!}
+          isDark={isDark}
+        />
       </div>
 
       {/* Donation Modal */}

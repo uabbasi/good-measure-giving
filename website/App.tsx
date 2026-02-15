@@ -7,6 +7,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { LandingThemeProvider, useLandingTheme } from './contexts/LandingThemeContext';
 import { UserFeaturesProvider } from './src/contexts/UserFeaturesContext';
 import { Navbar } from './components/Navbar';
+import { BetaBanner } from './src/components/BetaBanner';
 import { Footer } from './components/Footer';
 const LandingPage = lazy(() => import('./pages/LandingPage').then(m => ({ default: m.LandingPage })));
 const BrowsePage = lazy(() => import('./pages/BrowsePage').then(m => ({ default: m.BrowsePage })));
@@ -56,6 +57,7 @@ const AppContent: React.FC = () => {
         Skip to main content
       </a>
       <Navbar />
+      <BetaBanner />
       <main id="main" className="flex-grow">
         <Suspense fallback={null}>
           <Routes>

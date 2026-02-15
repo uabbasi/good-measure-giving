@@ -31,10 +31,10 @@ const getTopCharities = (charities: any[]) => {
 };
 
 const CUE_DISPLAY_LABELS: Record<string, string> = {
-  'Strong Match': 'High Confidence',
-  'Good Match': 'Good Signals',
+  'Strong Match': 'Maximum Alignment',
+  'Good Match': 'Strong Alignment',
   'Mixed Signals': 'Mixed Signals',
-  'Limited Match': 'Limited Signals',
+  'Limited Match': 'Needs Verification',
 };
 
 export const MethodologyPage: React.FC = () => {
@@ -88,7 +88,7 @@ export const MethodologyPage: React.FC = () => {
               How We Evaluate Charities
             </h1>
             <p className={`text-xl max-w-3xl mx-auto leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              A 100-point framework measuring what matters: how much good each dollar does,
+              A 100-point framework measuring what matters: how effectively each charity is set up to deliver results,
               and whether it{'\u2019'}s the right fit for Muslim donors. No jargon, full transparency.
             </p>
           </div>
@@ -102,7 +102,7 @@ export const MethodologyPage: React.FC = () => {
           <div className={`rounded-2xl p-6 ${isDark ? 'bg-emerald-900/20 border border-emerald-800/30' : 'bg-emerald-50 border border-emerald-200'}`}>
             <h2 className={`text-lg font-bold mb-3 [text-wrap:balance] ${isDark ? 'text-emerald-400' : 'text-emerald-800'}`}>TL;DR</h2>
             <p className={`text-lg leading-relaxed ${isDark ? 'text-emerald-100' : 'text-emerald-900'}`}>
-              We aggregate data from <strong>multiple sources</strong>: IRS Form 990 filings (via ProPublica API), Charity Navigator ratings, Candid transparency seals, BBB accreditation status, and charity websites. We score on two dimensions: <strong>Impact</strong> (how much good does each dollar do?) and <strong>Alignment</strong> (is this the right fit for Muslim donors?), with up to 10 points deducted for serious risks. A separate <strong>Data Confidence</strong> signal tells you how much data we had to work with. Scores above 75 are exceptional, and most organizations cluster in the middle score bands.
+              We aggregate data from <strong>multiple sources</strong>: IRS Form 990 filings (via ProPublica API), Charity Navigator ratings, Candid transparency seals, BBB accreditation status, and charity websites. We score on two dimensions: <strong>Impact</strong> (how effectively is the charity set up to deliver results?) and <strong>Alignment</strong> (is this the right fit for Muslim donors?), with up to 10 points deducted for serious risks. A separate <strong>Data Confidence</strong> signal tells you how much data we had to work with. Scores above 75 are exceptional, and most organizations cluster in the middle score bands.
             </p>
           </div>
         </section>
@@ -120,7 +120,7 @@ export const MethodologyPage: React.FC = () => {
               We ask two questions that matter more:
             </p>
             <ul className={`text-lg leading-relaxed space-y-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-              <li><strong>Impact:</strong> How much good does each dollar do? (cost efficiency, proven outcomes, financial health, governance)</li>
+              <li><strong>Impact:</strong> How effectively is this charity set up to deliver results? (cost efficiency, evidence practices, financial health, governance)</li>
               <li><strong>Alignment:</strong> Is this the right charity for Muslim donors? (cause urgency, donor fit, funding gap, track record)</li>
             </ul>
             <p className={`text-lg leading-relaxed mt-6 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
@@ -204,13 +204,13 @@ export const MethodologyPage: React.FC = () => {
                   </div>
                   <span className="text-blue-200 text-sm">50 points</span>
                 </div>
-                <p className="text-blue-200 text-sm mt-1">How much good does each dollar do?</p>
+                <p className="text-blue-200 text-sm mt-1">How effectively is this charity set up to deliver results?</p>
               </div>
               <div className="p-6">
                 <p className={`text-sm mb-4 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Impact combines cost efficiency, proven outcomes, financial health, and governance
-                  into a single question: how much good does each dollar actually produce, and can
-                  the organization prove it?
+                  Impact assesses organizational health indicators {'\u2014'} cost efficiency, financial stewardship,
+                  evidence practices, and governance {'\u2014'} that research associates with effective programs.
+                  Most sub-components are structural proxies, not direct outcome measurements.
                 </p>
                 <h4 className={`text-xs font-bold uppercase tracking-wider mb-2 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>What We Measure (50 points total)</h4>
                 <ul className={`text-sm space-y-1 mb-4 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
@@ -247,6 +247,14 @@ export const MethodologyPage: React.FC = () => {
                     <strong>What{'\u2019'}s a {'\u201C'}Theory of Change{'\u201D'}?</strong> It{'\u2019'}s the charity{'\u2019'}s explanation of <em>why</em> their
                     approach should work {'\u2014'} the logical steps from {'\u201C'}what we do{'\u201D'} to {'\u201C'}lives improved.{'\u201D'}
                     Charities that have written this down tend to be more thoughtful about whether their programs actually work.
+                  </p>
+                </div>
+                <div className={`rounded-lg p-3 mt-3 ${isDark ? 'bg-slate-800 border border-slate-700' : 'bg-slate-100 border border-slate-200'}`}>
+                  <p className={`text-xs ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                    <strong>A note on what Impact measures:</strong> Most Impact sub-components (financial health, governance,
+                    program ratio) are organizational health indicators, not measurements of direct outcomes.
+                    They tell us whether a charity is well-positioned to deliver results, not whether it has
+                    definitively achieved them. Where charities provide verified outcome data, we weight it accordingly.
                   </p>
                 </div>
               </div>

@@ -12,6 +12,7 @@ import { useAuth } from '../src/auth/useAuth';
 import { SignInButton } from '../src/auth/SignInButton';
 import { useSearchParams } from 'react-router-dom';
 import { deriveUISignalsFromCharity, getEvidenceStageRank } from '../src/utils/scoreUtils';
+import { FeedbackButton } from '../src/components/FeedbackButton';
 
 // Theme indices: soft-noor (light) = 4, warm-atmosphere (dark) = 2
 const LIGHT_THEME_INDEX = 4;
@@ -72,8 +73,8 @@ const PRESET_FILTERS: PresetFilter[] = [
   { id: 'usa', label: 'USA', tags: ['usa'], group: 'where' },
 
   // ⭐ Quality Filters
-  { id: 'strong-match', label: 'High Confidence', recommendationCues: ['Strong Match'], group: 'quality',
-    description: 'High-confidence profiles with strong donor fit and low risk according to our qualitative cue rules.' },
+  { id: 'strong-match', label: 'Maximum Alignment', recommendationCues: ['Strong Match'], group: 'quality',
+    description: 'Profiles with strong mission match, lower observed risk, and higher evidence confidence.' },
   { id: 'zakat', label: 'Zakat Eligible', zakatEligible: true, group: 'quality',
     description: 'Verified to serve zakat-eligible beneficiaries (fuqara, masakin, refugees) with proper fund segregation.' },
   { id: 'cost-effective', label: '85%+ to Programs', minEfficiency: 0.85, group: 'quality',
@@ -130,7 +131,7 @@ interface GuidedPath {
   description: string;
   icon: 'heart' | 'book' | 'zap' | 'compass';
   presets?: string[];           // Preset IDs to activate
-  showCauseFilters?: boolean;   // For "Choose a Cause" path
+  showCauseFilters?: boolean;   // For "What do they do?" path
   targetMode: 'simple' | 'power';  // Which view mode to enter
 }
 
@@ -145,16 +146,16 @@ const GUIDED_PATHS: GuidedPath[] = [
   },
   {
     id: 'cause',
-    label: 'Choose a Cause',
-    description: 'Education, Relief, Advocacy...',
+    label: 'What do they do?',
+    description: 'Program areas and interventions',
     icon: 'book',
     showCauseFilters: true,
     targetMode: 'simple',
   },
   {
     id: 'impact',
-    label: 'Maximize Impact',
-    description: 'High-confidence charities with lower risk',
+    label: 'Maximum Leverage',
+    description: 'Mission-aligned charities with stronger signals',
     icon: 'zap',
     presets: ['strong-match'],
     targetMode: 'simple',
@@ -165,6 +166,40 @@ const GUIDED_PATHS: GuidedPath[] = [
     description: 'See all evaluated charities',
     icon: 'compass',
     targetMode: 'power',
+  },
+];
+
+interface DonorIntent {
+  id: string;
+  label: string;
+  description: string;
+  presets: string[];
+}
+
+const DONOR_INTENTS: DonorIntent[] = [
+  {
+    id: 'immediate-relief',
+    label: 'Immediate Relief',
+    description: 'Urgent aid for people in crisis right now.',
+    presets: ['direct-relief', 'focus-humanitarian', 'emergency'],
+  },
+  {
+    id: 'long-term-uplift',
+    label: 'Long-Term Uplift',
+    description: 'Education and development that reduce future dependency.',
+    presets: ['root-causes', 'education', 'focus-education-k12', 'focus-education-higher', 'focus-economic'],
+  },
+  {
+    id: 'maximum-leverage',
+    label: 'Maximum Leverage',
+    description: 'Policy, research, and scalable models that compound impact.',
+    presets: ['systemic', 'focus-research', 'focus-advocacy', 'strong-evidence'],
+  },
+  {
+    id: 'community-institutions',
+    label: 'Community Institutions',
+    description: 'Durable local infrastructure and ecosystem builders.',
+    presets: ['focus-community', 'grantmakers', 'established'],
   },
 ];
 
@@ -204,6 +239,10 @@ export const BrowsePage: React.FC = () => {
     return new Set();
   });
   const [viewMode, setViewMode] = useState<'browse' | 'search'>('browse');
+  const [selectedIntentId, setSelectedIntentId] = useState<string | null>(() => {
+    const intentParam = searchParams.get('intent');
+    return DONOR_INTENTS.some(i => i.id === intentParam) ? intentParam : null;
+  });
   // Browse style: 'guided' (entry), 'simple' (results with minimal UI), 'power' (full filters)
   const [browseStyle, setBrowseStyle] = useState<'guided' | 'simple' | 'power'>(() => {
     const modeParam = searchParams.get('mode');
@@ -220,6 +259,7 @@ export const BrowsePage: React.FC = () => {
   const [showCauseFilters, setShowCauseFilters] = useState(false);
   const [selectedPathId, setSelectedPathId] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'score' | 'relevance' | 'name' | 'revenue' | 'program' | 'evidence'>('score');
+  const [showSuggestCharity, setShowSuggestCharity] = useState(false);
 
   // Set page title
   useEffect(() => {
@@ -236,12 +276,15 @@ export const BrowsePage: React.FC = () => {
     if (browseStyle !== 'guided') {
       params.set('mode', browseStyle);
     }
+    if (selectedIntentId) {
+      params.set('intent', selectedIntentId);
+    }
     const newSearch = params.toString();
     const currentSearch = searchParams.toString();
     if (newSearch !== currentSearch) {
       setSearchParams(params, { replace: true });
     }
-  }, [activePresets, browseStyle, setSearchParams]);
+  }, [activePresets, browseStyle, selectedIntentId, setSearchParams]);
 
   // Get public charities (rich + baseline tiers, excludes hidden)
   const publicCharities = useMemo(() =>
@@ -364,8 +407,9 @@ export const BrowsePage: React.FC = () => {
     const uiSignals = charity.ui_signals_v1 || deriveUISignalsFromCharity(charity);
     const confidence = getConfidenceBadge(charity);
 
-    // Relevance is only meaningful after a guided-path intent is selected.
-    if (!selectedPathId) return 0;
+    const selectedIntent = selectedIntentId ? DONOR_INTENTS.find(i => i.id === selectedIntentId) : null;
+    // Relevance is only meaningful after path or donor intent is selected.
+    if (!selectedPathId && !selectedIntent) return 0;
 
     let intentScore = 0;
     if (selectedPathId === 'zakat') {
@@ -373,7 +417,7 @@ export const BrowsePage: React.FC = () => {
     } else if (selectedPathId === 'cause') {
       const causeMatches = Array.from(activePresets)
         .map(id => PRESET_FILTERS.find(p => p.id === id))
-        .filter((p): p is PresetFilter => !!p && p.group === 'how')
+        .filter((p): p is PresetFilter => !!p && (p.group === 'focus' || p.group === 'how'))
         .filter(p => matchesPreset(charity as any, p)).length;
       intentScore = causeMatches > 0 ? Math.min(70, 50 + (causeMatches - 1) * 20) : 0;
     } else if (selectedPathId === 'impact') {
@@ -381,6 +425,16 @@ export const BrowsePage: React.FC = () => {
         + (uiSignals.recommendation_cue === 'Strong Match' ? 40 : 0)
         + ((uiSignals.evidence_stage === 'Verified' || uiSignals.evidence_stage === 'Established') ? 20 : 0)
         + (uiSignals.signal_states.risk === 'Strong' ? 10 : 0);
+    }
+
+    if (selectedIntent) {
+      const intentPresetMatches = selectedIntent.presets
+        .map(id => PRESET_FILTERS.find(p => p.id === id))
+        .filter((p): p is PresetFilter => !!p)
+        .filter(p => matchesPreset(charity as any, p)).length;
+      if (intentPresetMatches > 0) {
+        intentScore += Math.min(35, 20 + (intentPresetMatches - 1) * 7);
+      }
     }
 
     const filterMatches = Array.from(activePresets)
@@ -447,7 +501,7 @@ export const BrowsePage: React.FC = () => {
         break;
     }
     return sorted;
-  }, [filteredCharities, sortBy, selectedPathId, activePresets]);
+  }, [filteredCharities, sortBy, selectedPathId, activePresets, selectedIntentId]);
 
   // Track search queries (debounced to avoid tracking every keystroke)
   useEffect(() => {
@@ -534,6 +588,7 @@ export const BrowsePage: React.FC = () => {
   const clearFilters = () => {
     setSearchQuery('');
     setActivePresets(new Set());
+    setSelectedIntentId(null);
   };
 
   // Handle guided path selection
@@ -543,6 +598,7 @@ export const BrowsePage: React.FC = () => {
     } else {
       setActivePresets(new Set());
     }
+    setSelectedIntentId(null);
     setShowCauseFilters(path.showCauseFilters || false);
     setSelectedPathId(path.id);
     setBrowseStyle(path.targetMode);
@@ -565,6 +621,7 @@ export const BrowsePage: React.FC = () => {
   const returnToGuided = () => {
     setBrowseStyle('guided');
     setActivePresets(new Set());
+    setSelectedIntentId(null);
     setShowCauseFilters(false);
     setSelectedPathId(null);
     setSortBy('score');
@@ -572,7 +629,7 @@ export const BrowsePage: React.FC = () => {
     localStorage.removeItem(BROWSE_STYLE_KEY);
   };
 
-  const hasActiveFilters = searchQuery || activePresets.size > 0;
+  const hasActiveFilters = searchQuery || activePresets.size > 0 || selectedIntentId;
 
   if (loading) {
     return (
@@ -615,7 +672,7 @@ export const BrowsePage: React.FC = () => {
         {/* Header Section - hidden on mobile for density, shown on desktop */}
         <div className="hidden sm:flex mb-2 sm:mb-4 flex-wrap items-center justify-between gap-2">
           <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold font-merriweather transition-colors [text-wrap:balance] ${theme.textMain}`}>
-            High-Impact Muslim Charities
+            Explore Muslim Charities
           </h1>
           <div className={`flex items-center gap-2 text-sm font-medium ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
             {searchQuery ? (
@@ -703,6 +760,54 @@ export const BrowsePage: React.FC = () => {
           </div>
         )}
 
+        {/* Donor Intent Chips - statement-of-purpose matching */}
+        {viewMode === 'browse' && browseStyle !== 'guided' && (
+          <div className={`mb-4 rounded-xl p-3 sm:p-4 ${isDark ? 'bg-slate-900/70 border border-slate-800' : 'bg-white border border-slate-200'}`}>
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <h3 className={`text-sm font-semibold ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
+                Match my purpose
+              </h3>
+              {selectedIntentId && (
+                <button
+                  onClick={() => { setSelectedIntentId(null); if (!selectedPathId) setSortBy('score'); }}
+                  className={`text-xs underline underline-offset-2 ${isDark ? 'text-slate-400 hover:text-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
+                >
+                  Clear purpose
+                </button>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {DONOR_INTENTS.map((intent) => {
+                const isActive = selectedIntentId === intent.id;
+                return (
+                  <button
+                    key={intent.id}
+                    onClick={() => {
+                      setSelectedIntentId(prev => prev === intent.id ? null : intent.id);
+                      setSortBy('relevance');
+                    }}
+                    title={intent.description}
+                    className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
+                      isActive
+                        ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/25'
+                        : isDark
+                          ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-emerald-600/50'
+                          : 'bg-slate-50 border border-slate-200 text-slate-700 hover:border-emerald-400'
+                    }`}
+                  >
+                    {intent.label}
+                  </button>
+                );
+              })}
+            </div>
+            {selectedIntentId && (
+              <p className={`mt-2 text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                {DONOR_INTENTS.find(i => i.id === selectedIntentId)?.description}
+              </p>
+            )}
+          </div>
+        )}
+
         {/* Guided Entry - shown in browse mode when browseStyle is 'guided' */}
         {viewMode === 'browse' && browseStyle === 'guided' && (
           <div className="mb-6">
@@ -784,14 +889,14 @@ export const BrowsePage: React.FC = () => {
               </button>
             </div>
 
-            {/* Cause filter chips - only shown for "Choose a Cause" path */}
+            {/* Cause filter chips - only shown for "What do they do?" path */}
             {showCauseFilters && (
               <div className={`rounded-xl p-3 sm:p-4 ${isDark ? 'bg-gradient-to-br from-emerald-900/30 to-slate-900 border border-emerald-800/30' : 'bg-gradient-to-br from-emerald-50 to-white border border-emerald-200'}`}>
                 <h3 className={`text-sm font-bold mb-3 ${isDark ? 'text-emerald-400' : 'text-emerald-800'}`}>
-                  Choose a cause
+                  What do they do?
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {groupedPresets['how'].map((preset) => {
+                  {groupedPresets['focus'].map((preset) => {
                     const isActive = activePresets.has(preset.id);
                     return (
                       <button
@@ -813,7 +918,7 @@ export const BrowsePage: React.FC = () => {
               </div>
             )}
 
-            {/* Active filter indicator + passive lens badge for non-cause paths */}
+            {/* Active filter indicator + quick access to donor-signal filters for non-cause paths */}
             {!showCauseFilters && (
               <div className="flex flex-wrap items-center gap-2">
                 {activePresets.size > 0 && (
@@ -822,27 +927,37 @@ export const BrowsePage: React.FC = () => {
                     {Array.from(activePresets).map(presetId => {
                       const preset = PRESET_FILTERS.find(p => p.id === presetId);
                       return preset ? (
-                        <span
+                        <button
                           key={presetId}
+                          type="button"
+                          onClick={() => togglePreset(presetId)}
+                          title={`Remove ${preset.label}`}
                           className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium ${
                             isDark
-                              ? 'bg-emerald-900/50 text-emerald-300 border border-emerald-800/50'
-                              : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                              ? 'bg-emerald-900/50 text-emerald-300 border border-emerald-800/50 hover:bg-emerald-900/70'
+                              : 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
                           }`}
                         >
                           {preset.label}
-                        </span>
+                          <X className="w-3 h-3" aria-hidden="true" />
+                        </button>
                       ) : null;
                     })}
                   </>
                 )}
-                <span className={`inline-flex items-center px-3 py-1.5 rounded-lg text-sm ${
-                  isDark
-                    ? 'bg-slate-800 text-slate-400 border border-slate-700'
-                    : 'bg-slate-100 text-slate-500 border border-slate-200'
-                }`}>
-                  Qualitative Signals
-                </span>
+                <button
+                  type="button"
+                  onClick={switchToPowerMode}
+                  title="Open donor-signal filters"
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                    isDark
+                      ? 'bg-slate-800 text-slate-300 border border-slate-700 hover:border-emerald-700/60 hover:text-emerald-300'
+                      : 'bg-slate-100 text-slate-600 border border-slate-200 hover:border-emerald-400 hover:text-emerald-700'
+                  }`}
+                >
+                  Donor Signals
+                  <SlidersHorizontal className="w-3.5 h-3.5" aria-hidden="true" />
+                </button>
               </div>
             )}
           </div>
@@ -862,14 +977,14 @@ export const BrowsePage: React.FC = () => {
             Back to guided view
           </button>
 
-          {/* Cause filter bar - shown when coming from "Choose a Cause" path */}
+          {/* Cause filter bar - shown when coming from "What do they do?" path */}
           {showCauseFilters && (
             <div className={`rounded-xl p-3 sm:p-4 mb-2 sm:mb-3 ${isDark ? 'bg-gradient-to-br from-emerald-900/30 to-slate-900 border border-emerald-800/30' : 'bg-gradient-to-br from-emerald-50 to-white border border-emerald-200'}`}>
               <h3 className={`text-sm font-bold mb-2 sm:mb-3 ${isDark ? 'text-emerald-400' : 'text-emerald-800'}`}>
-                Choose a cause
+                What do they do?
               </h3>
               <div className="flex flex-wrap gap-2">
-                {groupedPresets['how'].map((preset) => {
+                {groupedPresets['focus'].map((preset) => {
                   const isActive = activePresets.has(preset.id);
                   return (
                     <button
@@ -1028,9 +1143,18 @@ export const BrowsePage: React.FC = () => {
         {/* Sort + Results Summary */}
         {sortedCharities.length > 0 && (
           <div className={`flex items-center justify-between mb-3 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-            <span className="text-sm">
-              {sortedCharities.length} {sortedCharities.length === 1 ? 'charity' : 'charities'}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-sm">
+                {sortedCharities.length} {sortedCharities.length === 1 ? 'charity' : 'charities'}
+              </span>
+              {selectedIntentId && (
+                <span className={`text-[11px] px-2 py-0.5 rounded-full ${
+                  isDark ? 'bg-emerald-900/40 text-emerald-300' : 'bg-emerald-100 text-emerald-700'
+                }`}>
+                  Purpose: {DONOR_INTENTS.find(i => i.id === selectedIntentId)?.label}
+                </span>
+              )}
+            </div>
             <div className="flex items-center gap-2">
               <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Sort by</span>
               <select
@@ -1043,7 +1167,7 @@ export const BrowsePage: React.FC = () => {
                 }`}
               >
                 <option value="score">Overall</option>
-                <option value="relevance">Path Relevance</option>
+                <option value="relevance">Purpose Match</option>
                 <option value="evidence">Evidence Stage</option>
                 <option value="name">Name A-Z</option>
                 <option value="revenue">Revenue</option>
@@ -1090,6 +1214,30 @@ export const BrowsePage: React.FC = () => {
             </div>
           )}
         </section>
+
+        {/* Suggest a Charity CTA */}
+        {sortedCharities.length > 0 && (
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => setShowSuggestCharity(true)}
+              className={`text-sm transition-colors ${
+                isDark ? 'text-slate-500 hover:text-emerald-400' : 'text-slate-400 hover:text-emerald-600'
+              }`}
+            >
+              Don{'\u2019'}t see your charity?{' '}
+              <span className="underline underline-offset-2">Suggest one.</span>
+            </button>
+          </div>
+        )}
+
+        {/* Suggest a Charity modal */}
+        {showSuggestCharity && (
+          <FeedbackButton
+            defaultOpen
+            initialFeedbackType="suggest_charity"
+            onClose={() => setShowSuggestCharity(false)}
+          />
+        )}
 
         {/* Sign-in CTA for unauthenticated users */}
         {!isSignedIn && sortedCharities.length > 0 && (

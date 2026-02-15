@@ -446,7 +446,7 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({
       )}
 
       <p className={`text-xs leading-relaxed mb-4 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-        <strong className={isDark ? 'text-slate-300' : 'text-slate-700'}>Impact</strong> reflects how effectively programs convert resources into outcomes.
+        <strong className={isDark ? 'text-slate-300' : 'text-slate-700'}>Impact</strong> assesses organizational indicators associated with effective programs.
         {' '}
         <strong className={isDark ? 'text-slate-300' : 'text-slate-700'}>Alignment</strong> reflects fit with Muslim donor priorities.
       </p>

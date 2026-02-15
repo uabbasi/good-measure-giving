@@ -50,6 +50,7 @@ import { deriveUISignalsFromCharity, getArchetypeDescription } from '../../utils
 import { getEvidenceStageClasses, getEvidenceStageLabel } from '../../utils/scoreConstants';
 import { RecommendationCue } from '../RecommendationCue';
 import { SignalConstellation } from '../SignalConstellation';
+import { OrganizationEngagement } from '../OrganizationEngagement';
 
 
 interface NicheViewProps {
@@ -189,7 +190,7 @@ const TABS: { id: TabId; label: string; icon: React.ElementType }[] = [
 
 // Dimension config (2-dimension framework)
 const DIMENSION_CONFIG = {
-  impact: { label: 'Impact', icon: TrendingUp, description: 'Effectiveness & efficiency', max: 50 },
+  impact: { label: 'Impact', icon: TrendingUp, description: 'Organizational effectiveness', max: 50 },
   alignment: { label: 'Alignment', icon: Target, description: 'Mission & donor fit', max: 50 },
 } as const;
 
@@ -218,6 +219,10 @@ export const NicheView: React.FC<NicheViewProps> = ({ charity, currentView, onVi
   const scoreDetails = amal?.score_details;
   const financials = charity.financials || charity.rawData?.financials;
   const revenue = financials?.totalRevenue || charity.rawData?.total_revenue;
+  const beneficiariesCount = charity.beneficiariesServedAnnually;
+  const beneficiarySourceUrl = (charity as any)?.sourceAttribution?.beneficiaries_served_annually?.source_url;
+  const beneficiariesVerified = charity.beneficiariesConfidence === 'verified'
+    || (typeof beneficiarySourceUrl === 'string' && beneficiarySourceUrl.startsWith('http'));
   const citations = rich?.all_citations || baseline?.all_citations || [];
   const theoryOfChangeCitations = useMemo(
     () => getTheoryOfChangeCitations(citations as NarrativeCitation[]),
@@ -489,12 +494,30 @@ export const NicheView: React.FC<NicheViewProps> = ({ charity, currentView, onVi
                     <Card id="quick-facts">
                       <SectionHeader title="Quick Facts" icon={FileText} />
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {charity.beneficiariesServedAnnually != null && charity.beneficiariesServedAnnually > 0 && (
+                        {beneficiariesCount != null && beneficiariesCount > 0 && (
                           <div className="flex items-start gap-3">
                             <Heart className={`w-5 h-5 mt-0.5 ${isDark ? 'text-slate-500' : 'text-gray-400'}`} aria-hidden="true" />
                             <div>
                               <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-gray-400'}`}>Beneficiaries Served Annually <span className="italic">(self-reported)</span></p>
-                              <p className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>{charity.beneficiariesServedAnnually.toLocaleString()}</p>
+                              <p className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>{beneficiariesCount.toLocaleString()}</p>
+                              {!beneficiariesVerified && (
+                                <p className={`mt-0.5 inline-flex items-center gap-1 text-xs ${isDark ? 'text-amber-400' : 'text-amber-700'}`}>
+                                  <AlertTriangle className="w-3 h-3" />
+                                  No cited source yet; excluded from CPB scoring
+                                </p>
+                              )}
+                              {beneficiariesVerified && beneficiarySourceUrl && (
+                                <a
+                                  href={beneficiarySourceUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className={`mt-0.5 inline-block text-xs underline underline-offset-2 ${
+                                    isDark ? 'text-slate-400 hover:text-slate-200' : 'text-slate-500 hover:text-slate-700'
+                                  }`}
+                                >
+                                  View source
+                                </a>
+                              )}
                             </div>
                           </div>
                         )}
@@ -1233,6 +1256,15 @@ export const NicheView: React.FC<NicheViewProps> = ({ charity, currentView, onVi
             className={`font-medium ${isDark ? 'text-slate-500 hover:text-slate-300' : 'text-gray-400 hover:text-gray-600'}`}
           />
         </div>
+      </div>
+
+      {/* Organization Engagement */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
+        <OrganizationEngagement
+          charityName={charity.name}
+          charityEin={charity.ein!}
+          isDark={isDark}
+        />
       </div>
 
       {/* Donation Modal */}
