@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Lock, Sparkles, Info } from 'lucide-react';
+import { ArrowRight, Lock, Info, Heart, Users, BookOpen, Zap, Compass, ShieldCheck, Landmark } from 'lucide-react';
 import { CharityProfile } from '../../types';
 import { useLandingTheme } from '../../contexts/LandingThemeContext';
-import { getWalletType, formatWalletTag, getWalletStyles } from '../utils/walletUtils';
-import { isUnderReview, getUnderReviewStyles, getScoreColorClass } from '../utils/scoreConstants';
-import { getScoreRating } from '../utils/scoreUtils';
+import { getWalletType } from '../utils/walletUtils';
+import { getEvidenceStageClasses, getEvidenceStageLabel, getGivingTagClasses, getHowTagClasses } from '../utils/scoreConstants';
+import { deriveUISignalsFromCharity } from '../utils/scoreUtils';
 import { trackCharityCardClick } from '../utils/analytics';
 import { BookmarkButton } from './BookmarkButton';
 import { CompareButton } from './CompareButton';
@@ -103,6 +103,65 @@ const formatCauseTag = (tag: string): string => {
   return mapping[tag] || tag.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 };
 
+type PrimaryTag = {
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+};
+
+const getWhoTag = (causeTags: string[], asnafServed: string[] | null | undefined): PrimaryTag | null => {
+  if (causeTags.includes('refugees')) return { label: 'Refugees', icon: Users };
+  if (causeTags.includes('orphans')) return { label: 'Orphans', icon: Users };
+  if (causeTags.includes('women')) return { label: 'Women & Girls', icon: Users };
+  if (causeTags.includes('youth')) return { label: 'Youth', icon: Users };
+  if (causeTags.includes('converts') || (asnafServed || []).includes('Muallaf')) return { label: 'Converts', icon: Users };
+  if (causeTags.includes('prisoners')) return { label: 'Prisoners', icon: Users };
+  if (causeTags.includes('widows')) return { label: 'Widows', icon: Users };
+  if ((asnafServed || []).some(a => ['Fuqara', 'Masakin'].includes(a))) return { label: 'Low-Income', icon: Users };
+  return null;
+};
+
+const getHowTag = (causeTags: string[], programFocusTags: string[] | null | undefined, archetypeLabel: string): PrimaryTag => {
+  const focus = programFocusTags || [];
+  if (causeTags.includes('emergency-response')) return { label: 'Emergency Relief', icon: Zap };
+  if (causeTags.includes('advocacy') || causeTags.includes('legal-aid') || causeTags.includes('systemic-change')) {
+    return { label: 'Advocacy & Policy', icon: Compass };
+  }
+  if (causeTags.includes('grantmaking') || archetypeLabel === 'Grantmaker') return { label: 'Grantmaking', icon: Landmark };
+  if (
+    causeTags.includes('educational') ||
+    focus.includes('education-k12') ||
+    focus.includes('education-higher') ||
+    archetypeLabel.includes('Education')
+  ) {
+    return { label: 'Education', icon: BookOpen };
+  }
+  if (focus.includes('research-policy') || causeTags.includes('research')) return { label: 'Research & Policy', icon: Compass };
+  if (causeTags.includes('medical') || causeTags.includes('food') || causeTags.includes('water-sanitation')) {
+    return { label: 'Direct Services', icon: Heart };
+  }
+  return { label: 'Community Programs', icon: Users };
+};
+
+const getCueDisplayLabel = (cue: string): string => {
+  if (cue === 'Strong Match') return 'High Confidence';
+  if (cue === 'Good Match') return 'Good Signals';
+  if (cue === 'Limited Match') return 'Limited Signals';
+  return 'Mixed Signals';
+};
+
+const getShortLabel = (label: string): string => {
+  const mapping: Record<string, string> = {
+    'Zakat Eligible': 'Zakat',
+    'Women & Girls': 'Women',
+    'Emergency Relief': 'Relief',
+    'Advocacy & Policy': 'Policy',
+    'Research & Policy': 'Research',
+    'Direct Services': 'Service',
+    'Community Programs': 'Community',
+  };
+  return mapping[label] || label;
+};
+
 
 interface CharityCardProps {
   charity: CharityProfile;
@@ -154,23 +213,23 @@ const TooltipBadge: React.FC<{
 export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = false, compact = false, position }) => {
   const { isDark } = useLandingTheme();
   const amal = charity.amalEvaluation;
-
-  // AMAL score (single scoring framework)
-  const score: number | null = amal?.amal_score ?? null;
-  const maxScore = 100;
-  const scoreColorClass = score != null ? getScoreColorClass(score, isDark) : '';
+  const uiSignals = charity.ui_signals_v1 || deriveUISignalsFromCharity(charity);
+  const archetypeLabel = uiSignals.archetype_label;
+  const evidenceStage = uiSignals.evidence_stage;
+  const evidenceStageLabel = getEvidenceStageLabel(evidenceStage);
 
   const walletType = getWalletType(amal?.wallet_tag);
-  // Only show wallet badge for zakat-eligible charities (binary classification)
-  const walletStyles = walletType === 'zakat'
-    ? getWalletStyles(amal?.wallet_tag, isDark)
-    : null;
-  const WalletIcon = walletType === 'zakat' ? Lock : null;
+  // Systematic families:
+  // - Giving tags: green family (emerald/teal)
+  // - How tags: purple family (with rose for emergency)
+  // - Evidence tags: lower-ink border style for readability
+  const givingTypeClasses = getGivingTagClasses(walletType === 'zakat' ? 'zakat' : 'sadaqah', isDark);
 
   // Get extended charity data (headline, revenue, primaryCategory, causeTags, impact indicators)
   const extendedCharity = charity as CharityProfile & {
     primaryCategory?: string | null;
     causeTags?: string[] | null;
+    programFocusTags?: string[] | null;
     headline?: string | null;
     totalRevenue?: number | null;
     impactTier?: string | null;
@@ -178,7 +237,6 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
     evaluationTrack?: string | null;
     foundedYear?: number | null;
   };
-  const primaryCategory = formatPrimaryCategory(extendedCharity.primaryCategory);
   const headline = extendedCharity.headline || amal?.baseline_narrative?.headline;
   const revenue = formatRevenue(extendedCharity.totalRevenue || charity.financials?.totalRevenue || charity.rawData?.total_revenue);
   const programRatio = charity.financials?.programExpenseRatio || charity.rawData?.program_expense_ratio;
@@ -193,6 +251,11 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
   const causeTags = (extendedCharity.causeTags || [])
     .filter(tag => !excludeTags.has(tag))
     .slice(0, 2);  // Show max 2 tags
+  const allCauseTags = extendedCharity.causeTags || [];
+  const howTag = getHowTag(allCauseTags, extendedCharity.programFocusTags, archetypeLabel);
+  const givingTypeTag: PrimaryTag = walletType === 'zakat'
+    ? { label: 'Zakat Eligible', icon: Lock }
+    : { label: 'Sadaqah', icon: Heart };
 
   // Differentiator tags: prioritized list of impact/approach indicators (max 2)
   // Each tag has a unique color scheme and optional tooltip for special tracks
@@ -204,7 +267,7 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
     tooltip?: string;    // Explanatory tooltip for special evaluation tracks
   };
   const differentiatorTags: DifferentiatorTag[] = [];
-  const allCauseTags = extendedCharity.causeTags || [];
+  
 
   // Get pillar scores for evidence-based tags
   const pillarScores = (charity as CharityProfile & {
@@ -314,9 +377,6 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
     .sort((a, b) => a.priority - b.priority)
     .slice(0, 2);
 
-  // Abbreviated wallet tag for mobile (e.g., "Zakat" instead of "Zakat Eligible")
-  const walletTagShort = amal?.wallet_tag ? formatWalletTag(amal.wallet_tag).split(' ')[0] : null;
-
   return (
     <>
       {/* Mobile: Compact Horizontal Layout */}
@@ -334,56 +394,37 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
             : 'border-slate-200 bg-white active:bg-slate-50'
         }`}
       >
-        {/* Score Column - Fixed Width Left */}
-        <div className="flex-shrink-0 w-11 text-center">
-          {score != null && !isUnderReview(score) ? (
-            <>
-              <div className={`text-xl font-bold ${scoreColorClass} leading-none`}>{score}</div>
-              <div className={`text-[10px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>/{maxScore}</div>
-              <div className={`text-[9px] font-medium ${scoreColorClass}`}>{getScoreRating(score)}</div>
-            </>
-          ) : score != null ? (
-            <div className={`text-[9px] font-semibold px-1 py-0.5 rounded ${getUnderReviewStyles(isDark).bg} ${getUnderReviewStyles(isDark).text}`}>No Data</div>
-          ) : (
-            <div className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>--</div>
-          )}
-        </div>
-
-        {/* Name + Headline - Flex Grow */}
         <div className="flex-1 min-w-0">
-          <h3 className={`font-bold text-sm line-clamp-2 ${
-            isDark ? 'text-white' : 'text-slate-900'
-          }`}>
-            {charity.name}
-          </h3>
+          <div className="flex items-start justify-between gap-2">
+            <h3 className={`font-bold text-sm line-clamp-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              {charity.name}
+            </h3>
+            {revenue && (
+              <span className={`text-[10px] font-medium whitespace-nowrap ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                {revenue}
+              </span>
+            )}
+          </div>
+
+          <div className="mt-1 flex flex-wrap items-center gap-1">
+            <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-semibold border ${givingTypeClasses}`}>
+              <givingTypeTag.icon className="w-2.5 h-2.5" aria-hidden="true" />
+              {getShortLabel(givingTypeTag.label)}
+            </span>
+            <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-semibold border ${getHowTagClasses(howTag.label, isDark)}`}>
+              <howTag.icon className="w-2.5 h-2.5" aria-hidden="true" />
+              {getShortLabel(howTag.label)}
+            </span>
+            <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-semibold border ${getEvidenceStageClasses(evidenceStage, isDark)}`}>
+              <ShieldCheck className="w-2.5 h-2.5" aria-hidden="true" />
+              {evidenceStageLabel}
+            </span>
+          </div>
+
           {headline && (
-            <p className={`text-xs truncate ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+            <p className={`text-xs line-clamp-2 mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               {headline}
             </p>
-          )}
-        </div>
-
-        {/* Tags Column - Stacked Right */}
-        <div className="flex-shrink-0 flex flex-col items-end gap-1">
-          {walletStyles && WalletIcon && walletTagShort && (
-            <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold uppercase rounded ${walletStyles.bg} ${walletStyles.text}`}>
-              <WalletIcon className="w-2.5 h-2.5" aria-hidden="true" />
-              {walletTagShort}
-            </span>
-          )}
-          {topDifferentiators.length > 0 && (
-            <span className={`px-1.5 py-0.5 text-[9px] font-bold uppercase rounded ${
-              isDark ? topDifferentiators[0].colorDark : topDifferentiators[0].colorLight
-            }`}>
-              {topDifferentiators[0].label}
-            </span>
-          )}
-          {!topDifferentiators.length && primaryCategory && (
-            <span className={`px-1.5 py-0.5 text-[9px] font-medium rounded ${
-              isDark ? 'bg-slate-700 text-slate-400' : 'bg-slate-100 text-slate-500'
-            }`}>
-              {primaryCategory}
-            </span>
           )}
         </div>
 
@@ -420,51 +461,24 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
         }`}
       >
         <div className={`flex-1 flex flex-col ${compact ? 'p-4' : 'p-6'}`}>
-          {/* Header: Category + Wallet Tag + Location tags */}
+          {/* Header: donor-useful primary tags */}
           <div className="flex flex-wrap items-center gap-2 mb-3">
-            {primaryCategory && (
-              <span className={`px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded ${
-                isDark ? 'bg-slate-700 text-slate-400' : 'bg-slate-100 text-slate-500'
-              }`}>
-                {primaryCategory}
-              </span>
-            )}
-            {walletStyles && WalletIcon && (
-              <span className={`inline-flex items-center gap-1 px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded border ${walletStyles.bg} ${walletStyles.text} ${walletStyles.border}`}>
-                <WalletIcon className="w-3 h-3" aria-hidden="true" />
-                {formatWalletTag(amal?.wallet_tag)}
-              </span>
-            )}
-            {topDifferentiators.map(tag => (
-              <TooltipBadge
-                key={tag.label}
-                label={tag.label}
-                tooltip={tag.tooltip}
-                colorClass={isDark ? tag.colorDark : tag.colorLight}
-                isDark={isDark}
-              />
-            ))}
-            {causeTags.filter(() => topDifferentiators.length < 2).slice(0, 2 - topDifferentiators.length).map(tag => (
-              <span key={tag} className={`px-2 py-1 text-[10px] font-medium rounded ${
-                isDark ? 'bg-slate-700/50 text-slate-500' : 'bg-slate-50 text-slate-400'
-              }`}>
-                {formatCauseTag(tag)}
-              </span>
-            ))}
-            {/* Asnaf categories (zakat-eligible charities) */}
-            {charity.asnafServed && charity.asnafServed.length > 0 && walletType === 'zakat' && (
-              charity.asnafServed.slice(0, 2).map(asnaf => (
-                <span key={asnaf} className={`px-2 py-1 text-[10px] font-medium rounded ${
-                  isDark ? 'bg-emerald-900/30 text-emerald-500' : 'bg-emerald-50 text-emerald-600'
-                }`}>
-                  {asnaf}
-                </span>
-              ))
-            )}
+            <span className={`inline-flex items-center gap-1 px-2 py-1 text-[10px] font-semibold border rounded ${givingTypeClasses}`}>
+              <givingTypeTag.icon className="w-3 h-3" aria-hidden="true" />
+              {getShortLabel(givingTypeTag.label)}
+            </span>
+            <span className={`inline-flex items-center gap-1 px-2 py-1 text-[10px] font-semibold border rounded ${getHowTagClasses(howTag.label, isDark)}`}>
+              <howTag.icon className="w-3 h-3" aria-hidden="true" />
+              {getShortLabel(howTag.label)}
+            </span>
+            <span className={`inline-flex items-center gap-1 px-2 py-1 text-[10px] font-semibold border rounded ${getEvidenceStageClasses(evidenceStage, isDark)}`}>
+              <ShieldCheck className="w-3 h-3" aria-hidden="true" />
+              {evidenceStageLabel}
+            </span>
           </div>
 
-          {/* Name and score */}
-          <div className="flex justify-between items-start mb-3">
+          {/* Name + bookmark */}
+          <div className="flex justify-between items-start mb-2">
             <h3 className={`font-bold font-merriweather leading-tight transition-colors flex-1 pr-4 ${
               compact ? 'text-base' : featured ? 'text-xl' : 'text-lg'
             } ${isDark ? 'text-white group-hover:text-emerald-400' : 'text-slate-900 group-hover:text-emerald-700'}`}>
@@ -476,24 +490,12 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
                 charityName={charity.name}
                 size="md"
               />
-              {score != null && !isUnderReview(score) && (
-                <div className="text-right">
-                  <div className={`font-bold ${scoreColorClass} leading-none ${compact ? 'text-2xl' : 'text-3xl'}`}>{score}</div>
-                  <div className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>/ {maxScore}</div>
-                  <div className={`text-xs font-medium ${scoreColorClass}`}>{getScoreRating(score)}</div>
-                </div>
-              )}
-              {score != null && isUnderReview(score) && (
-                <div className={`text-xs font-semibold px-2 py-1 rounded ${getUnderReviewStyles(isDark).bg} ${getUnderReviewStyles(isDark).text}`}>
-                  Insufficient Data
-                </div>
-              )}
             </div>
           </div>
 
-          {/* Headline - what they do (1 line, truncated) */}
+          {/* Headline - narrative-first */}
           {headline && (
-            <p className={`text-sm leading-relaxed line-clamp-2 mt-auto ${
+            <p className={`text-sm leading-relaxed line-clamp-3 mt-auto ${
               isDark ? 'text-slate-400' : 'text-slate-600'
             }`}>
               {headline}

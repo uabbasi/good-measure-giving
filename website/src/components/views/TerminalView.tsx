@@ -38,9 +38,11 @@ import { InlineViewToggle } from '../CharityViewPicker';
 import { SourceLinkedText } from '../SourceLinkedText';
 import { ActionsBar } from '../ActionsBar';
 import { AddDonationModal } from '../giving/AddDonationModal';
-import { isUnderReview, isInsufficientData, getScoreColorClass, getScoreBarColorClass } from '../../utils/scoreConstants';
-import { getScoreRating, stripCitations } from '../../utils/scoreUtils';
+import { getCauseCategoryTagClasses, getEvidenceStageClasses, getEvidenceStageLabel } from '../../utils/scoreConstants';
+import { deriveUISignalsFromCharity, stripCitations } from '../../utils/scoreUtils';
 import { ScoreBreakdown } from '../ScoreBreakdown';
+import { RecommendationCue } from '../RecommendationCue';
+import { SignalConstellation } from '../SignalConstellation';
 
 interface TerminalViewProps {
   charity: CharityProfile;
@@ -141,8 +143,6 @@ const categorizeTags = (tags: string[] | null | undefined): {
 
   return { populations, geography, interventions, changeTypes };
 };
-
-// getScoreRating moved to utils/scoreUtils.ts
 
 /** Clean up raw NTEE program descriptions to human-readable labels */
 function formatProgramTag(raw: string): string {
@@ -284,8 +284,8 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
   const strengths = rich?.strengths || baseline?.strengths || [];
   const headline = rich?.headline || baseline?.headline || '';
   const isZakatEligible = amal?.wallet_tag?.includes('ZAKAT');
+  const uiSignals = charity.ui_signals_v1 || deriveUISignalsFromCharity(charity);
   const amalScore = amal?.amal_score || 0;
-  const showScore = amalScore && !isInsufficientData(amalScore);
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-slate-950' : 'bg-slate-100'}`}>
@@ -402,9 +402,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
                   <div className="flex flex-wrap items-center gap-1">
                     <span className={`text-xs w-16 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Pop:</span>
                     {tagCategories.populations.slice(0, 3).map(tag => (
-                      <span key={tag} className={`px-1.5 py-0.5 rounded text-xs ${
-                        isDark ? 'bg-emerald-900/40 text-emerald-400' : 'bg-emerald-50 text-emerald-700'
-                      }`}>
+                      <span key={tag} className={`px-1.5 py-0.5 rounded text-xs border ${getCauseCategoryTagClasses('population', isDark)}`}>
                         {formatTag(tag)}
                       </span>
                     ))}
@@ -414,9 +412,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
                   <div className="flex flex-wrap items-center gap-1">
                     <span className={`text-xs w-16 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Service:</span>
                     {tagCategories.interventions.slice(0, 3).map(tag => (
-                      <span key={tag} className={`px-1.5 py-0.5 rounded text-xs ${
-                        isDark ? 'bg-amber-900/40 text-amber-400' : 'bg-amber-50 text-amber-700'
-                      }`}>
+                      <span key={tag} className={`px-1.5 py-0.5 rounded text-xs border ${getCauseCategoryTagClasses('intervention', isDark)}`}>
                         {formatTag(tag)}
                       </span>
                     ))}
@@ -426,9 +422,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
                   <div className="flex flex-wrap items-center gap-1">
                     <span className={`text-xs w-16 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Region:</span>
                     {tagCategories.geography.slice(0, 3).map(tag => (
-                      <span key={tag} className={`px-1.5 py-0.5 rounded text-xs ${
-                        isDark ? 'bg-blue-900/40 text-blue-400' : 'bg-blue-50 text-blue-700'
-                      }`}>
+                      <span key={tag} className={`px-1.5 py-0.5 rounded text-xs border ${getCauseCategoryTagClasses('geography', isDark)}`}>
                         {formatTag(tag)}
                       </span>
                     ))}
@@ -438,9 +432,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
                   <div className="flex flex-wrap items-center gap-1">
                     <span className={`text-xs w-16 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Approach:</span>
                     {tagCategories.changeTypes.slice(0, 3).map(tag => (
-                      <span key={tag} className={`px-1.5 py-0.5 rounded text-xs ${
-                        isDark ? 'bg-purple-900/40 text-purple-400' : 'bg-purple-50 text-purple-700'
-                      }`}>
+                      <span key={tag} className={`px-1.5 py-0.5 rounded text-xs border ${getCauseCategoryTagClasses('approach', isDark)}`}>
                         {formatTag(tag)}
                       </span>
                     ))}
@@ -450,23 +442,16 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
             );
           })()}
 
-          {/* Score + Zakat Badge Row */}
-          <div className="flex items-center gap-4 mt-5">
-            {showScore ? (
-              <div className={`text-4xl font-mono font-bold ${getScoreColorClass(amalScore, isDark)}`}>
-                {amalScore}
-              </div>
-            ) : amalScore ? (
-              <div className={`px-3 py-1.5 rounded-lg text-sm font-semibold ${isDark ? 'bg-amber-900/30 text-amber-400' : 'bg-amber-50 text-amber-700'}`}>
-                Insufficient Data
-              </div>
-            ) : null}
-            <div className="flex flex-col gap-1">
-              {showScore ? (
-                <span className={`text-sm font-medium ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
-                  {getScoreRating(amalScore)} Rating
-                </span>
-              ) : null}
+          {/* Qualitative Snapshot Row */}
+          <div className="mt-5 space-y-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className={`px-2 py-1 rounded text-xs font-semibold border ${isDark ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-slate-100 text-slate-600 border-slate-200'}`}>
+                {uiSignals.archetype_label}
+              </span>
+              <span className={`px-2 py-1 rounded text-xs font-semibold border ${getEvidenceStageClasses(uiSignals.evidence_stage, isDark)}`}>
+                {getEvidenceStageLabel(uiSignals.evidence_stage)}
+              </span>
+              <RecommendationCue cue={uiSignals.recommendation_cue} rationale={null} isDark={isDark} compact />
               <span className={`inline-flex items-center gap-1.5 text-sm ${
                 isZakatEligible
                   ? isDark ? 'text-emerald-400' : 'text-emerald-600'
@@ -475,23 +460,15 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
                 <Shield className="w-3.5 h-3.5" />
                 {isZakatEligible ? 'Zakat Eligible' : 'Sadaqah'}
               </span>
-              {/* Zakat claim evidence */}
-              {isZakatEligible && charity.zakatClaimEvidence && charity.zakatClaimEvidence.length > 0 && (
-                <p className={`text-xs leading-relaxed mt-1 ${isDark ? 'text-emerald-400/70' : 'text-emerald-600/70'}`}>
-                  {charity.zakatClaimEvidence[0]}
-                </p>
-              )}
             </div>
+            <SignalConstellation signals={uiSignals.signal_states} isDark={isDark} compact showLabels={false} />
+            {/* Zakat claim evidence */}
+            {isZakatEligible && charity.zakatClaimEvidence && charity.zakatClaimEvidence.length > 0 && (
+              <p className={`text-xs leading-relaxed ${isDark ? 'text-emerald-400/70' : 'text-emerald-600/70'}`}>
+                {charity.zakatClaimEvidence[0]}
+              </p>
+            )}
           </div>
-
-          {/* Insufficient Data explanation (score summary now lives in Score Analysis) */}
-          {!showScore && amalScore ? (
-            <p className={`mt-2 text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-              {charity.evaluationTrack === 'NEW_ORG'
-                ? 'We are still gathering data for this emerging organization. A full score will be published when sufficient information is available.'
-                : 'Insufficient publicly available data to generate a reliable score. We continue monitoring for new filings and disclosures.'}
-            </p>
-          ) : null}
 
           {/* Full-width Donate CTA */}
           <a
@@ -747,8 +724,8 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
           );
         })()}
 
-        {/* === Mobile Section 3: Score Breakdown (collapsible) === */}
-        {amal?.score_details && showScore && (
+        {/* === Mobile Section 3: Methodology Details (collapsible) === */}
+        {amal?.score_details && (
           <div className={`rounded-2xl overflow-hidden ${
             isDark ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-slate-200'
           }`}>
@@ -759,7 +736,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
               }`}
             >
               <div className="flex items-center gap-3">
-                <span className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>Score Breakdown</span>
+                <span className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>Methodology details</span>
                 {amal.score_details.impact && (
                   <span className={`text-xs font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                     Impact {amal.score_details.impact.score}/50 · Alignment {amal.score_details.alignment?.score ?? '—'}/50
@@ -926,130 +903,21 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
         <aside className={`lg:col-span-3 pl-6 pr-4 py-4 border-b lg:border-b-0 lg:border-r ${
           isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'
         }`}>
-          {/* Score Section */}
-          {(() => {
-            const hasGmgScore = !!amal?.amal_score;
-            const scorePublishable = hasGmgScore && !isInsufficientData(amal!.amal_score);
-            const scoreValue = scorePublishable ? amal!.amal_score : null;
-            const scoreLabel = 'GMG Score';
-            const scoreColor = scoreValue ? getScoreColorClass(scoreValue, isDark) : '';
-            const interpretation = isSignedIn && rich?.amal_score_rationale && scorePublishable
-              ? rich.amal_score_rationale : null;
+          {/* Qualitative Snapshot */}
+          <div className="mb-4 space-y-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className={`px-2 py-1 rounded text-[11px] font-semibold border ${isDark ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-slate-100 text-slate-600 border-slate-200'}`}>
+                {uiSignals.archetype_label}
+              </span>
+              <span className={`px-2 py-1 rounded text-[11px] font-semibold border ${getEvidenceStageClasses(uiSignals.evidence_stage, isDark)}`}>
+                {getEvidenceStageLabel(uiSignals.evidence_stage)}
+              </span>
+            </div>
+            <RecommendationCue cue={uiSignals.recommendation_cue} rationale={uiSignals.recommendation_rationale} isDark={isDark} />
+            <SignalConstellation signals={uiSignals.signal_states} isDark={isDark} showLabels />
+          </div>
 
-            if (!hasGmgScore) return null;
-
-            return (
-              <div className="mb-4">
-                {scoreValue != null ? (
-                  <>
-                    <div className={`flex items-center gap-1.5 mb-1`}>
-                      <svg width="14" height="14" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0 rounded-[3px]">
-                        <defs><linearGradient id="gmg_mini" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#10b981" /><stop offset="100%" stopColor="#047857" /></linearGradient></defs>
-                        <rect width="40" height="40" rx="10" fill="url(#gmg_mini)" />
-                        <g transform="translate(20, 20)"><rect x="-9" y="-9" width="18" height="18" rx="1" stroke="white" strokeWidth="2.5" fill="none" /><rect x="-9" y="-9" width="18" height="18" rx="1" stroke="white" strokeWidth="2.5" fill="none" transform="rotate(45)" /><circle cx="0" cy="0" r="3" fill="white" /></g>
-                      </svg>
-                      <span className={`text-xs uppercase tracking-widest ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-                        {scoreLabel}
-                      </span>
-                    </div>
-                    <div className="flex items-baseline gap-2">
-                      <div className={`text-5xl font-mono font-bold ${scoreColor}`}>
-                        {scoreValue}
-                      </div>
-                      <span className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>/100</span>
-                    </div>
-                    <div className={`mt-2 h-1.5 rounded-full ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`}>
-                      <div className={`h-full rounded-full transition-all ${getScoreBarColorClass(scoreValue, 100)}`} style={{ width: `${scoreValue}%` }} />
-                    </div>
-                    <div className="flex items-center justify-between mt-1.5">
-                      <span className={`text-xs font-medium ${scoreColor}`}>
-                        {getScoreRating(scoreValue)}
-                      </span>
-                      {(() => {
-                        const badge = amal?.score_details?.data_confidence?.badge;
-                        const confidenceScore = rich?.data_confidence?.confidence_score;
-                        if (!badge && !confidenceScore) return null;
-                        const level = badge || (confidenceScore && confidenceScore >= 70 ? 'HIGH' : confidenceScore && confidenceScore >= 40 ? 'MEDIUM' : 'LOW');
-                        const badgeStyles = level === 'HIGH'
-                          ? isDark ? 'bg-emerald-900/30 text-emerald-400 border-emerald-800/50' : 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                          : level === 'MEDIUM'
-                          ? isDark ? 'bg-blue-900/30 text-blue-400 border-blue-800/50' : 'bg-blue-50 text-blue-700 border-blue-200'
-                          : isDark ? 'bg-amber-900/30 text-amber-400 border-amber-800/50' : 'bg-amber-50 text-amber-700 border-amber-200';
-                        return (
-                          <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border ${badgeStyles}`}>
-                            {level} confidence
-                          </span>
-                        );
-                      })()}
-                    </div>
-                    {/* Compact confidence details */}
-                    {isSignedIn && rich?.data_confidence && (
-                      <div className={`mt-3 pt-3 border-t space-y-1.5 text-xs ${isDark ? 'border-slate-700 text-slate-500' : 'border-slate-200 text-slate-400'}`}>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          {rich.data_confidence.total_citations != null && (
-                            <span className="font-mono">{rich.data_confidence.total_citations} citations</span>
-                          )}
-                          {rich.data_confidence.total_citations != null && rich.data_confidence.unique_sources != null && (
-                            <span>·</span>
-                          )}
-                          {rich.data_confidence.unique_sources != null && (
-                            <span className="font-mono">{rich.data_confidence.unique_sources} sources</span>
-                          )}
-                        </div>
-                        {rich.confidence?.sources_used && rich.confidence.sources_used.length > 0 && (
-                          <div className={isDark ? 'text-slate-400' : 'text-slate-500'}>
-                            {rich.confidence.sources_used.join(', ')}
-                          </div>
-                        )}
-                        {(() => {
-                          const gaps = rich?.confidence?.data_gaps || [];
-                          const realGaps = gaps.filter((g: string) =>
-                            !g.toLowerCase().includes('none') && g.toLowerCase() !== 'n/a' && g.trim() !== ''
-                          );
-                          if (realGaps.length === 0) {
-                            const hasFinancials = charity.financials?.totalRevenue != null;
-                            return hasFinancials ? (
-                              <div className={`flex items-center gap-1 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
-                                <CheckCircle2 className="w-3 h-3" />
-                                <span>Complete data</span>
-                              </div>
-                            ) : null;
-                          }
-                          return (
-                            <div>
-                              <span className={`flex items-center gap-1 ${isDark ? 'text-amber-400' : 'text-amber-600'}`}>
-                                <AlertCircle className="w-3 h-3" />
-                                Gaps:
-                              </span>
-                              {realGaps.map((gap: string, i: number) => (
-                                <div key={i} className="ml-4">• {gap}</div>
-                              ))}
-                            </div>
-                          );
-                        })()}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <div className={`inline-flex px-3 py-1.5 rounded-lg text-sm font-semibold ${isDark ? 'bg-amber-900/30 text-amber-400' : 'bg-amber-50 text-amber-700'}`}>
-                      Insufficient Data
-                    </div>
-                    <div className={`text-xs uppercase tracking-widest mt-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-                      {scoreLabel}
-                    </div>
-                    <p className={`mt-2 text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                      {charity.evaluationTrack === 'NEW_ORG'
-                        ? 'We are still gathering data for this emerging organization. A full score will be published when sufficient information is available.'
-                        : 'Insufficient publicly available data to generate a reliable score. We continue monitoring for new filings and disclosures.'}
-                    </p>
-                  </>
-                )}
-              </div>
-            );
-          })()}
-
-          {/* Divider between score and focus areas */}
+          {/* Divider between qualitative snapshot and focus areas */}
           <div className={`mb-5 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`} />
 
           {/* Tag Categories - Bullet-separated layout */}
@@ -1805,24 +1673,31 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
             );
           })()}
 
-          {/* === Section 3: Score Breakdown === */}
-          {amal?.score_details && showScore && (
-            <ScoreBreakdown
-              scoreDetails={amal.score_details}
-              confidenceScores={scores}
-              amalScore={amalScore}
-              citations={citations}
-              isSignedIn={isSignedIn}
-              isDark={isDark}
-              dimensionExplanations={rich?.dimension_explanations || baseline?.dimension_explanations}
-              amalScoreRationale={isSignedIn ? rich?.amal_score_rationale : undefined}
-              scoreSummary={charity.scoreSummary}
-              strengths={isSignedIn ? rich?.strengths : baseline?.strengths}
-              areasForImprovement={
-                (isSignedIn ? rich?.areas_for_improvement : baseline?.areas_for_improvement) as
-                  Array<string | { area: string; context: string; citation_ids: string[] }> | undefined
-              }
-            />
+          {/* === Section 3: Methodology Details === */}
+          {amal?.score_details && (
+            <details className={`mb-6 rounded-lg border ${isDark ? 'border-slate-700 bg-slate-900/40' : 'border-slate-200 bg-white'}`}>
+              <summary className={`cursor-pointer list-none px-4 py-3 text-sm font-semibold ${isDark ? 'text-slate-200 hover:bg-slate-800/40' : 'text-slate-700 hover:bg-slate-50'}`}>
+                Methodology details
+              </summary>
+              <div className="px-2 pb-2">
+                <ScoreBreakdown
+                  scoreDetails={amal.score_details}
+                  confidenceScores={scores}
+                  amalScore={amalScore}
+                  citations={citations}
+                  isSignedIn={isSignedIn}
+                  isDark={isDark}
+                  dimensionExplanations={rich?.dimension_explanations || baseline?.dimension_explanations}
+                  amalScoreRationale={isSignedIn ? rich?.amal_score_rationale : undefined}
+                  scoreSummary={charity.scoreSummary}
+                  strengths={isSignedIn ? rich?.strengths : baseline?.strengths}
+                  areasForImprovement={
+                    (isSignedIn ? rich?.areas_for_improvement : baseline?.areas_for_improvement) as
+                      Array<string | { area: string; context: string; citation_ids: string[] }> | undefined
+                  }
+                />
+              </div>
+            </details>
           )}
 
           {/* === Evidence Quality Checklist === */}
