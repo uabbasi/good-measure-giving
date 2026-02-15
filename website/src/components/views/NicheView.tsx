@@ -46,7 +46,7 @@ import { ActionsBar } from '../ActionsBar';
 import { AddDonationModal } from '../giving/AddDonationModal';
 import { useCharities } from '../../hooks/useCharities';
 import { useGivingHistory } from '../../hooks/useGivingHistory';
-import { deriveUISignalsFromCharity } from '../../utils/scoreUtils';
+import { deriveUISignalsFromCharity, getArchetypeDescription } from '../../utils/scoreUtils';
 import { getEvidenceStageClasses, getEvidenceStageLabel } from '../../utils/scoreConstants';
 import { RecommendationCue } from '../RecommendationCue';
 import { SignalConstellation } from '../SignalConstellation';
@@ -56,6 +56,13 @@ interface NicheViewProps {
   charity: CharityProfile;
   currentView?: import('../CharityViewPicker').ViewType;
   onViewChange?: (view: import('../CharityViewPicker').ViewType) => void;
+}
+
+interface NarrativeCitation {
+  id?: string;
+  source_name?: string;
+  source_url?: string | null;
+  claim?: string;
 }
 
 // Convert numeric score to letter grade
@@ -156,6 +163,22 @@ const formatPrimaryCategory = (category: string | null | undefined): string | nu
   return mapping[category] || category.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
 };
 
+const getTheoryOfChangeCitations = (citations: NarrativeCitation[], limit = 2): NarrativeCitation[] => {
+  if (!citations || citations.length === 0) return [];
+  const tocPattern = /(theory of change|our model|logic model|impact framework|impact report|evaluation and learning)/i;
+  const ranked = citations
+    .filter(c => !!c.source_url)
+    .map(c => {
+      const haystack = `${c.claim || ''} ${c.source_name || ''} ${c.source_url || ''}`;
+      return { citation: c, score: tocPattern.test(haystack) ? 2 : 0 };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  const matched = ranked.filter(r => r.score > 0).slice(0, limit).map(r => r.citation);
+  if (matched.length > 0) return matched;
+  return ranked.slice(0, limit).map(r => r.citation);
+};
+
 // Top-level tabs (consolidated to 3)
 type TabId = 'overview' | 'impact' | 'organization';
 const TABS: { id: TabId; label: string; icon: React.ElementType }[] = [
@@ -196,6 +219,10 @@ export const NicheView: React.FC<NicheViewProps> = ({ charity, currentView, onVi
   const financials = charity.financials || charity.rawData?.financials;
   const revenue = financials?.totalRevenue || charity.rawData?.total_revenue;
   const citations = rich?.all_citations || baseline?.all_citations || [];
+  const theoryOfChangeCitations = useMemo(
+    () => getTheoryOfChangeCitations(citations as NarrativeCitation[]),
+    [citations]
+  );
   const uiSignals = charity.ui_signals_v1 || deriveUISignalsFromCharity(charity);
 
   // Build charity lookup for similar orgs
@@ -297,7 +324,10 @@ export const NicheView: React.FC<NicheViewProps> = ({ charity, currentView, onVi
             {/* Qualitative snapshot */}
             <div className={`rounded-xl border px-3 py-2 ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-slate-200'}`}>
               <div className="flex flex-wrap items-center gap-2">
-                <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${isDark ? 'bg-slate-700 text-slate-200' : 'bg-white text-slate-600 border border-slate-200'}`}>
+                <span
+                  className={`px-2 py-0.5 rounded-full text-xs font-semibold ${isDark ? 'bg-slate-700 text-slate-200' : 'bg-white text-slate-600 border border-slate-200'}`}
+                  title={getArchetypeDescription(uiSignals.archetype_code || charity.archetype)}
+                >
                   {uiSignals.archetype_label}
                 </span>
                 <span className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${getEvidenceStageClasses(uiSignals.evidence_stage, isDark)}`}>
@@ -667,7 +697,30 @@ export const NicheView: React.FC<NicheViewProps> = ({ charity, currentView, onVi
                     {rich.impact_evidence.theory_of_change_summary && (
                       <div className={`p-3 rounded-lg mb-4 ${isDark ? 'bg-slate-800' : 'bg-gray-50'}`}>
                         <h4 className={`text-sm font-semibold mb-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>Theory of Change</h4>
-                        <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>{rich.impact_evidence.theory_of_change_summary}</p>
+                        <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>
+                          <SourceLinkedText text={rich.impact_evidence.theory_of_change_summary} citations={citations} isDark={isDark} />
+                        </p>
+                        {theoryOfChangeCitations.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {theoryOfChangeCitations.map((c, i) => (
+                              <a
+                                key={`${c.id || 'toc'}-${i}`}
+                                href={c.source_url || undefined}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] border ${
+                                  isDark
+                                    ? 'border-emerald-800/60 text-emerald-400 hover:bg-emerald-900/20'
+                                    : 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
+                                }`}
+                                title={c.source_name || 'Source'}
+                              >
+                                {(c.source_name || `Source ${i + 1}`).replace(/^Charity Website\s*-\s*/i, '')}
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     )}
                     <div className="grid grid-cols-2 gap-3">
@@ -690,8 +743,29 @@ export const NicheView: React.FC<NicheViewProps> = ({ charity, currentView, onVi
                   <Card id="theory-of-change">
                     <SectionHeader title="Theory of Change" icon={Target} />
                     <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-gray-700'}`}>
-                      {(charity as any).theoryOfChange}
+                      <SourceLinkedText text={(charity as any).theoryOfChange} citations={citations} isDark={isDark} />
                     </p>
+                    {theoryOfChangeCitations.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {theoryOfChangeCitations.map((c, i) => (
+                          <a
+                            key={`${c.id || 'toc-fallback'}-${i}`}
+                            href={c.source_url || undefined}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] border ${
+                              isDark
+                                ? 'border-emerald-800/60 text-emerald-400 hover:bg-emerald-900/20'
+                                : 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
+                            }`}
+                            title={c.source_name || 'Source'}
+                          >
+                            {(c.source_name || `Source ${i + 1}`).replace(/^Charity Website\s*-\s*/i, '')}
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </Card>
                 )}
 

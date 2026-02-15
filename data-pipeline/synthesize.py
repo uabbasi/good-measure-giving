@@ -448,6 +448,47 @@ def map_cause_to_category(detected_cause_area: str | None) -> str | None:
     return None
 
 
+def infer_category_from_internal_tags(
+    cause_tags: list[str] | None,
+    program_focus_tags: list[str] | None,
+) -> str | None:
+    """Infer primary category from internal taxonomy tags before coarse fallbacks."""
+    tag_set = {t.lower() for t in (cause_tags or [])}
+    focus_set = {t.lower() for t in (program_focus_tags or [])}
+
+    if {"research-policy"} & focus_set:
+        return "RESEARCH_POLICY"
+    if {"advocacy-legal"} & focus_set:
+        return "CIVIL_RIGHTS_LEGAL"
+    if {"arts-culture-media"} & focus_set:
+        return "MEDIA_JOURNALISM"
+    if {"grantmaking"} & tag_set:
+        return "PHILANTHROPY_GRANTMAKING"
+    if {"religious-services"} & focus_set:
+        return "RELIGIOUS_OUTREACH"
+    if {"education-k12"} & focus_set:
+        return "EDUCATION_K12_RELIGIOUS"
+    if {"education-higher"} & focus_set:
+        return "EDUCATION_HIGHER_RELIGIOUS"
+    if {"educational"} & tag_set:
+        return "EDUCATION_INTERNATIONAL"
+    if {"medical", "healthcare-direct"} & (tag_set | focus_set):
+        return "MEDICAL_HEALTH"
+    if {"water-sanitation", "food", "shelter", "orphans", "homeless", "low-income"} & tag_set:
+        return "BASIC_NEEDS"
+    if {"refugees", "emergency-response", "direct-relief", "humanitarian-relief", "refugee-services"} & (
+        tag_set | focus_set
+    ):
+        return "HUMANITARIAN"
+    if {"advocacy", "systemic-change"} & tag_set:
+        return "ADVOCACY_CIVIC"
+    if {"community-services"} & focus_set:
+        return "SOCIAL_SERVICES"
+    if {"women"} & tag_set:
+        return "WOMENS_SERVICES"
+    return None
+
+
 # ============================================================================
 # Source Attribution Helpers
 # ============================================================================
@@ -1504,15 +1545,10 @@ def synthesize_charity(
                 "timestamp": source_timestamps.get("propublica") or datetime.now(timezone.utc).isoformat(),
             }
 
-    # S-003: Track cause_detection_source based on how detected_cause_area was set
-    # Per spec: 'keywords', 'ntee_fallback', or 'unknown'
+    # S-003: Track cause_detection_source based on internal classification signals.
+    # NTEE is metadata only and is not used for cause classification.
     if synthesized.detected_cause_area:
-        # CharityMetricsAggregator detects cause area via keyword matching
-        synthesized.cause_detection_source = "keywords"
-    elif synthesized.ntee_code:
-        # Cause area not detected via keywords, but NTEE code exists
-        # Could potentially map NTEE to a cause area as fallback
-        synthesized.cause_detection_source = "ntee_fallback"
+        synthesized.cause_detection_source = "internal_signals"
     else:
         synthesized.cause_detection_source = "unknown"
 
@@ -1604,7 +1640,7 @@ def synthesize_charity(
 
     # =========================================================================
     # Primary Category Assignment (MECE - for donor discovery)
-    # Priority: Manual YAML mapping > Automatic detection from cause area
+    # Priority: Manual YAML mapping > Internal taxonomy tags > Cause-area fallback
     # =========================================================================
     manual_category = get_charity_category(ein)
     if manual_category:
@@ -1615,8 +1651,11 @@ def synthesize_charity(
             synthesized.category_importance = category_info.get("importance")
             synthesized.category_neglectedness = category_info.get("neglectedness")
     else:
-        # Fallback: map detected_cause_area to primary_category
-        auto_category = map_cause_to_category(synthesized.detected_cause_area)
+        # First fallback: infer from internal tags/focus extracted from program text/site signals.
+        auto_category = infer_category_from_internal_tags(synthesized.cause_tags, synthesized.program_focus_tags)
+        if not auto_category:
+            # Final fallback: coarse cause-area mapping.
+            auto_category = map_cause_to_category(synthesized.detected_cause_area)
         if auto_category:
             synthesized.primary_category = auto_category
             category_info = get_category_info(auto_category)
@@ -1692,6 +1731,10 @@ def synthesize_charity(
         metrics.working_capital_ratio = synthesized.working_capital_months
     if synthesized.founded_year and not metrics.founded_year:
         metrics.founded_year = synthesized.founded_year
+    # Prefer internal taxonomy for downstream scoring/UI over external NTEE-only mappings.
+    metrics.primary_category = synthesized.primary_category
+    metrics.cause_tags = synthesized.cause_tags or []
+    metrics.program_focus_tags = synthesized.program_focus_tags or []
 
     # Serialize enriched metrics as JSON blob
     synthesized.metrics_json = metrics.model_dump(mode="json")

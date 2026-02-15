@@ -286,6 +286,16 @@ export const getArchetypeLabel = (archetypeCode: string | null | undefined): str
   return key.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
 };
 
+export const getArchetypeDescription = (archetypeCode: string | null | undefined): string => {
+  if (!archetypeCode) {
+    return 'General profile used when there is not enough information to assign a specific archetype.';
+  }
+  const key = archetypeCode.toUpperCase();
+  const mapped = (uiSignalsConfig as any).archetype_descriptions?.[key] as string | undefined;
+  if (mapped) return mapped;
+  return `Archetype: ${getArchetypeLabel(key)}`;
+};
+
 const deriveSignalStates = (charity: SummaryLike): UISignalsV1['signal_states'] => {
   const scoreDetails: any = charity.amalEvaluation?.score_details || {};
   const evidenceRatio = getComponentRatio(scoreDetails, 'impact', 'Evidence & Outcomes') ?? 0;

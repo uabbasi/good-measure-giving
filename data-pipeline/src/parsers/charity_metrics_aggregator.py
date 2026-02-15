@@ -257,6 +257,13 @@ class CharityMetrics(BaseModel):
         None, description="Detected cause area (GLOBAL_HEALTH, HUMANITARIAN, EDUCATION_GLOBAL, etc.)"
     )
     cause_area_confidence: float = Field(0.0, description="Confidence in cause area detection (0-1)")
+    primary_category: Optional[str] = Field(
+        None, description="Internal primary category (e.g., ADVOCACY_CIVIC, BASIC_NEEDS)"
+    )
+    cause_tags: List[str] = Field(default_factory=list, description="Internal cause tags for donor discovery")
+    program_focus_tags: List[str] = Field(
+        default_factory=list, description="Internal program focus tags for cross-category matching"
+    )
     conflict_zones: List[str] = Field(
         default_factory=list, description="Conflict zones where charity operates (for risk scoring)"
     )
@@ -1497,124 +1504,72 @@ class CharityMetricsAggregator:
             metrics_data["zakat_claim_evidence"] = zakat_evidence
 
         # ====================================================================
-        # Detect Cause Area from NTEE Code
+        # Detect Cause Area from internal content signals
         # ====================================================================
-        # Two-level NTEE mapping: specific 2-char codes override 1-char prefix.
-        # Reference: https://nccs.urban.org/publication/irs-activity-codes
-        #
-        # Some 1-char prefixes are too broad. E.g., "R" = Civil Rights/Advocacy
-        # but R20-R29 includes Children's Rights orgs doing direct services.
-        ntee_specific_overrides = {
-            # R-prefix overrides: children's service orgs miscategorized as advocacy
-            "R2": "DOMESTIC_POVERTY",  # R20-R29: Children's Rights → direct services
-            # O-prefix: already correct (Youth Development → DOMESTIC_POVERTY)
-            # P-prefix overrides: some human services are domestic poverty
-            "P3": "DOMESTIC_POVERTY",  # P30-P39: Children/Youth Services
-            "P4": "DOMESTIC_POVERTY",  # P40-P49: Family Services
-            "P6": "DOMESTIC_POVERTY",  # P60-P69: Emergency Assistance
-            "P7": "DOMESTIC_POVERTY",  # P70-P79: Residential Care
-            # B8: Scholarships/Awards — cause depends on mission, not mechanism.
-            # Skip NTEE mapping so keyword classifier picks up the actual cause.
-            "B8": None,
-        }
-
-        ntee_to_cause_area = {
-            # Health (E, F, G, H)
-            "E": "GLOBAL_HEALTH",  # Health - General
-            "F": "GLOBAL_HEALTH",  # Mental Health
-            "G": "GLOBAL_HEALTH",  # Diseases/Disorders
-            "H": "GLOBAL_HEALTH",  # Medical Research
-            # Human Services - Humanitarian/Poverty (I, J, K, L, M, N, O, P)
-            "I": "DOMESTIC_POVERTY",  # Crime/Legal-Related
-            "J": "DOMESTIC_POVERTY",  # Employment
-            "K": "EXTREME_POVERTY",  # Food/Agriculture/Nutrition
-            "L": "DOMESTIC_POVERTY",  # Housing/Shelter
-            "M": "HUMANITARIAN",  # Disaster Preparedness/Relief
-            "N": "DOMESTIC_POVERTY",  # Recreation/Sports
-            "O": "DOMESTIC_POVERTY",  # Youth Development
-            "P": "HUMANITARIAN",  # Human Services - Multipurpose
-            # International (Q)
-            "Q": "HUMANITARIAN",  # International/Foreign Affairs
-            # Education (B)
-            "B": "EDUCATION_GLOBAL",  # Education
-            # Environment (C, D)
-            "C": "ADVOCACY",  # Environment
-            "D": "ADVOCACY",  # Animal-Related
-            # Arts/Culture (A)
-            "A": "RELIGIOUS_CULTURAL",  # Arts/Culture/Humanities
-            # Religion (X)
-            "X": "RELIGIOUS_CULTURAL",  # Religion-Related
-            # Philanthropy (T)
-            "T": "HUMANITARIAN",  # Philanthropy/Voluntarism
-            # Public/Society Benefit (R, S, U, V, W, Y, Z)
-            "R": "ADVOCACY",  # Civil Rights/Advocacy
-            "S": "ADVOCACY",  # Community Improvement
-            "U": "ADVOCACY",  # Science/Technology
-            "V": "ADVOCACY",  # Social Science
-            "W": "HUMANITARIAN",  # Public/Society Benefit
-            "Y": "DOMESTIC_POVERTY",  # Mutual Benefit
-            "Z": "UNKNOWN",  # Unknown
-        }
-
-        # Try to detect cause area
+        # NTEE is intentionally excluded from cause classification because it is
+        # too coarse and often misaligned with current program reality.
         detected_cause = None
         cause_confidence = 0.0
 
-        # 1. From Candid NTEE code (most reliable)
-        if candid_profile:
-            ntee_code = candid_profile.get("ntee_code")
-            if ntee_code and len(ntee_code) >= 1:
-                code_upper = ntee_code.upper()
-                # Check 2-char specific override first, then 1-char prefix
-                prefix2 = code_upper[:2] if len(code_upper) >= 2 else None
-                if prefix2 and prefix2 in ntee_specific_overrides:
-                    # Explicit override — None means "skip NTEE, use keywords"
-                    detected_cause = ntee_specific_overrides[prefix2]
-                else:
-                    detected_cause = ntee_to_cause_area.get(code_upper[0])
-                if detected_cause:
-                    cause_confidence = 0.8  # High confidence from NTEE
+        text_content = " ".join(
+            [
+                metrics_data.get("name") or "",
+                metrics_data.get("mission") or "",
+                " ".join(metrics_data.get("programs", [])),
+            ]
+        ).lower()
 
-        # 2. From mission/programs keywords (fallback)
-        if not detected_cause:
-            text_content = " ".join(
-                [
-                    metrics_data.get("mission") or "",
-                    " ".join(metrics_data.get("programs", [])),
-                ]
-            ).lower()
+        cause_keywords = {
+            "GLOBAL_HEALTH": ["health", "medical", "disease", "hospital", "clinic", "vaccine"],
+            "HUMANITARIAN": ["relief", "disaster", "emergency", "refugee", "humanitarian", "crisis"],
+            "EXTREME_POVERTY": ["poverty", "hunger", "food", "water", "sanitation", "basic needs"],
+            "EDUCATION_GLOBAL": ["education", "school", "literacy", "learning", "student", "teacher"],
+            "DOMESTIC_POVERTY": ["homeless", "housing", "job training", "domestic", "community"],
+            "ADVOCACY": [
+                "advocacy",
+                "rights",
+                "policy",
+                "awareness",
+                "campaign",
+                "representation",
+                "civic",
+                "public interest",
+                "congressional",
+            ],
+            "RELIGIOUS_CULTURAL": ["mosque", "islamic", "religious", "faith", "spiritual", "cultural"],
+        }
 
-            cause_keywords = {
-                "GLOBAL_HEALTH": ["health", "medical", "disease", "hospital", "clinic", "vaccine"],
-                "HUMANITARIAN": ["relief", "disaster", "emergency", "refugee", "humanitarian", "crisis"],
-                "EXTREME_POVERTY": ["poverty", "hunger", "food", "water", "sanitation", "basic needs"],
-                "EDUCATION_GLOBAL": ["education", "school", "literacy", "learning", "student", "teacher"],
-                "DOMESTIC_POVERTY": ["homeless", "housing", "job training", "domestic", "community"],
-                "ADVOCACY": [
-                    "advocacy",
-                    "rights",
-                    "policy",
-                    "awareness",
-                    "campaign",
-                    "representation",
-                    "civic",
-                    "public interest",
-                    "congressional",
-                ],
-                "RELIGIOUS_CULTURAL": ["mosque", "islamic", "religious", "faith", "spiritual", "cultural"],
+        best_match = None
+        best_count = 0
+        for cause, keywords in cause_keywords.items():
+            count = sum(1 for kw in keywords if kw in text_content)
+            if count > best_count:
+                best_count = count
+                best_match = cause
+
+        if best_match and best_count >= 2:
+            detected_cause = best_match
+            cause_confidence = min(0.7, 0.18 * best_count)
+
+        # GiveWell remains a secondary fallback only when internal signals are weak.
+        if not detected_cause and givewell_profile and givewell_profile.get("cause_area"):
+            gw_cause = givewell_profile.get("cause_area", "").upper()
+            givewell_cause_map = {
+                "MEDICAL_HEALTH": "GLOBAL_HEALTH",
+                "HEALTH": "GLOBAL_HEALTH",
+                "GLOBAL HEALTH": "GLOBAL_HEALTH",
+                "MALARIA": "GLOBAL_HEALTH",
+                "DEWORMING": "GLOBAL_HEALTH",
+                "NUTRITION": "GLOBAL_HEALTH",
+                "CASH_TRANSFERS": "EXTREME_POVERTY",
+                "POVERTY": "EXTREME_POVERTY",
+                "POVERTY ALLEVIATION": "EXTREME_POVERTY",
+                "ANIMAL WELFARE": "ADVOCACY",
+                "CLIMATE CHANGE": "ADVOCACY",
             }
-
-            best_match = None
-            best_count = 0
-            for cause, keywords in cause_keywords.items():
-                count = sum(1 for kw in keywords if kw in text_content)
-                if count > best_count:
-                    best_count = count
-                    best_match = cause
-
-            if best_match and best_count >= 2:
-                detected_cause = best_match
-                cause_confidence = min(0.6, 0.2 * best_count)  # Lower confidence from keywords
+            detected_cause = givewell_cause_map.get(gw_cause, gw_cause)
+            if detected_cause:
+                cause_confidence = max(cause_confidence, 0.5)
 
         metrics_data["detected_cause_area"] = detected_cause
         metrics_data["cause_area_confidence"] = cause_confidence
@@ -1705,21 +1660,6 @@ class CharityMetricsAggregator:
             metrics_data["givewell_cost_per_life_saved"] = givewell_profile.get("cost_per_life_saved")
             metrics_data["givewell_cost_effectiveness_multiplier"] = givewell_profile.get("cash_benchmark_multiplier")
             metrics_data["givewell_cause_area"] = givewell_profile.get("cause_area")
-
-            # Also set detected_cause_area from GiveWell if not already set
-            if not metrics_data.get("detected_cause_area") and givewell_profile.get("cause_area"):
-                gw_cause = givewell_profile.get("cause_area", "").upper()
-                # Map GiveWell cause areas to our categories
-                givewell_cause_map = {
-                    "MEDICAL_HEALTH": "GLOBAL_HEALTH",
-                    "HEALTH": "GLOBAL_HEALTH",
-                    "CASH_TRANSFERS": "EXTREME_POVERTY",
-                    "POVERTY": "EXTREME_POVERTY",
-                    "MALARIA": "GLOBAL_HEALTH",
-                    "DEWORMING": "GLOBAL_HEALTH",
-                    "NUTRITION": "GLOBAL_HEALTH",
-                }
-                metrics_data["detected_cause_area"] = givewell_cause_map.get(gw_cause, gw_cause)
 
             # GiveWell top charities should be marked as third-party evaluated
             if givewell_profile.get("is_top_charity"):

@@ -56,6 +56,11 @@ export const FAQPage: React.FC = () => {
     },
     {
       category: 'methodology',
+      q: "What does “Sovereignty Builder” mean?",
+      a: "Sovereignty Builder is an archetype for organizations focused on Muslim civic power and representation. These groups typically work on voter engagement, policy influence, legal rights, or institution-building so communities can shape decisions that affect their lives."
+    },
+    {
+      category: 'methodology',
       q: "What does \u2018Impact\u2019 measure?",
       a: "Impact (50 points) measures how effectively a charity turns donations into real-world change. The largest component is cost per beneficiary (20 points), comparing each charity against cause-adjusted benchmarks for similar organizations. We also evaluate directness of service delivery (7 points), financial health and reserves (7 points), program expense ratio (6 points), evidence and outcome tracking (5 points), theory of change (3 points), and governance quality (2 points). Evidence quality is assessed on a five-level scale: Verified (independent third-party evaluation), Tracked (3+ years of outcome data), Measured (1-2 years of data), Reported (basic output tracking only), and Unverified (no structured tracking)."
     },

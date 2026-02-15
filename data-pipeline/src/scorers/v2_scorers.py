@@ -1361,6 +1361,44 @@ class AlignmentScorer:
             self._audit_log = get_audit_log()
         return self._audit_log
 
+    def _derive_cause_area(self, metrics: CharityMetrics) -> str:
+        """Derive cause area with internal taxonomy first, external detection as fallback."""
+        primary = (getattr(metrics, "primary_category", None) or "").upper()
+        cause_tags = [t.lower() for t in (getattr(metrics, "cause_tags", None) or [])]
+        focus_tags = [t.lower() for t in (getattr(metrics, "program_focus_tags", None) or [])]
+
+        # Internal category mapping (preferred)
+        primary_map = {
+            "ADVOCACY_CIVIC": "ADVOCACY",
+            "CIVIL_RIGHTS_LEGAL": "ADVOCACY",
+            "RESEARCH_POLICY": "ADVOCACY",
+            "MEDIA_JOURNALISM": "ADVOCACY",
+            "ENVIRONMENT_CLIMATE": "ADVOCACY",
+            "HUMANITARIAN": "HUMANITARIAN",
+            "BASIC_NEEDS": "EXTREME_POVERTY",
+            "SOCIAL_SERVICES": "DOMESTIC_POVERTY",
+            "WOMENS_SERVICES": "DOMESTIC_POVERTY",
+            "MEDICAL_HEALTH": "GLOBAL_HEALTH",
+            "PHILANTHROPY_GRANTMAKING": "RELIGIOUS_CULTURAL",
+            "RELIGIOUS_CONGREGATION": "RELIGIOUS_CULTURAL",
+            "RELIGIOUS_OUTREACH": "RELIGIOUS_CULTURAL",
+        }
+        if primary.startswith("EDUCATION_"):
+            return "EDUCATION_GLOBAL"
+        if primary in primary_map:
+            return primary_map[primary]
+
+        # Tag-level override for advocacy/systemic organizations.
+        if (
+            "advocacy" in cause_tags
+            or "systemic-change" in cause_tags
+            or "advocacy-legal" in focus_tags
+            or "research-policy" in focus_tags
+        ):
+            return "ADVOCACY"
+
+        return metrics.detected_cause_area or "UNKNOWN"
+
     def evaluate(self, metrics: CharityMetrics) -> AlignmentAssessment:
         """Evaluate alignment from charity metrics."""
         components: list[ScoreComponent] = []
@@ -1382,7 +1420,7 @@ class AlignmentScorer:
         )
 
         # 2. Cause Urgency (13 pts)
-        cause_area = metrics.detected_cause_area or "UNKNOWN"
+        cause_area = self._derive_cause_area(metrics)
         cu_pts = CAUSE_URGENCY_POINTS.get(cause_area, 6)
         components.append(
             ScoreComponent(

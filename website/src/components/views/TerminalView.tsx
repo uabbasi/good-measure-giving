@@ -39,7 +39,7 @@ import { SourceLinkedText } from '../SourceLinkedText';
 import { ActionsBar } from '../ActionsBar';
 import { AddDonationModal } from '../giving/AddDonationModal';
 import { getCauseCategoryTagClasses, getEvidenceStageClasses, getEvidenceStageLabel } from '../../utils/scoreConstants';
-import { deriveUISignalsFromCharity, stripCitations } from '../../utils/scoreUtils';
+import { deriveUISignalsFromCharity, getArchetypeDescription, stripCitations } from '../../utils/scoreUtils';
 import { ScoreBreakdown } from '../ScoreBreakdown';
 import { RecommendationCue } from '../RecommendationCue';
 import { SignalConstellation } from '../SignalConstellation';
@@ -48,6 +48,13 @@ interface TerminalViewProps {
   charity: CharityProfile;
   currentView?: import('../CharityViewPicker').ViewType;
   onViewChange?: (view: import('../CharityViewPicker').ViewType) => void;
+}
+
+interface NarrativeCitation {
+  id?: string;
+  source_name?: string;
+  source_url?: string | null;
+  claim?: string;
 }
 
 // Format currency helper
@@ -110,6 +117,22 @@ const formatTag = (tag: string): string => {
   return tag.split('-').map(word =>
     word.charAt(0).toUpperCase() + word.slice(1)
   ).join(' ');
+};
+
+const getTheoryOfChangeCitations = (citations: NarrativeCitation[], limit = 2): NarrativeCitation[] => {
+  if (!citations || citations.length === 0) return [];
+  const tocPattern = /(theory of change|our model|logic model|impact framework|impact report|evaluation and learning)/i;
+  const ranked = citations
+    .filter(c => !!c.source_url)
+    .map(c => {
+      const haystack = `${c.claim || ''} ${c.source_name || ''} ${c.source_url || ''}`;
+      return { citation: c, score: tocPattern.test(haystack) ? 2 : 0 };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  const matched = ranked.filter(r => r.score > 0).slice(0, limit).map(r => r.citation);
+  if (matched.length > 0) return matched;
+  return ranked.slice(0, limit).map(r => r.citation);
 };
 
 // Categorize cause tags into 4 categories
@@ -219,6 +242,10 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
   const idealDonorProfile = rich?.ideal_donor_profile;
   // Check both rich and baseline narratives for citations
   const citations = rich?.all_citations || baseline?.all_citations || [];
+  const theoryOfChangeCitations = useMemo(
+    () => getTheoryOfChangeCitations(citations as NarrativeCitation[]),
+    [citations]
+  );
   const scores = amal?.confidence_scores;
   const financials = charity.financials || charity.rawData?.financials;
   const revenue = financials?.totalRevenue || charity.rawData?.total_revenue;
@@ -445,7 +472,10 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
           {/* Qualitative Snapshot Row */}
           <div className="mt-5 space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <span className={`px-2 py-1 rounded text-xs font-semibold border ${isDark ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-slate-100 text-slate-600 border-slate-200'}`}>
+              <span
+                className={`px-2 py-1 rounded text-xs font-semibold border ${isDark ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-slate-100 text-slate-600 border-slate-200'}`}
+                title={getArchetypeDescription(uiSignals.archetype_code || charity.archetype)}
+              >
                 {uiSignals.archetype_label}
               </span>
               <span className={`px-2 py-1 rounded text-xs font-semibold border ${getEvidenceStageClasses(uiSignals.evidence_stage, isDark)}`}>
@@ -584,14 +614,8 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
             {charity.archetype && (
               <span className={`hidden sm:inline-flex px-2 py-0.5 rounded text-xs font-semibold ${
                 isDark ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-500'
-              }`}>
-                {({
-                  'RESILIENCE': 'Community Resilience',
-                  'LEVERAGE': 'Strategic Leverage',
-                  'SOVEREIGNTY': 'Sovereignty Builder',
-                  'ASSET_CREATION': 'Asset Creator',
-                  'DIRECT_SERVICE': 'Direct Service',
-                } as Record<string, string>)[charity.archetype] || charity.archetype}
+              }`} title={getArchetypeDescription(uiSignals.archetype_code || charity.archetype)}>
+                {uiSignals.archetype_label}
               </span>
             )}
             {/* Differentiator Tags */}
@@ -891,7 +915,10 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
           {/* Qualitative Snapshot */}
           <div className="mb-4 space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <span className={`px-2 py-1 rounded text-[11px] font-semibold border ${isDark ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-slate-100 text-slate-600 border-slate-200'}`}>
+              <span
+                className={`px-2 py-1 rounded text-[11px] font-semibold border ${isDark ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-slate-100 text-slate-600 border-slate-200'}`}
+                title={getArchetypeDescription(uiSignals.archetype_code || charity.archetype)}
+              >
                 {uiSignals.archetype_label}
               </span>
               <span className={`px-2 py-1 rounded text-[11px] font-semibold border ${getEvidenceStageClasses(uiSignals.evidence_stage, isDark)}`}>
@@ -1394,6 +1421,42 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
                 )}
               </div>
 
+              {rich.impact_evidence.theory_of_change_summary && (
+                <div className={`mt-3 pt-3 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
+                  <div className={`text-xs font-semibold mb-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                    Theory of Change Summary
+                  </div>
+                  <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                    <SourceLinkedText
+                      text={rich.impact_evidence.theory_of_change_summary}
+                      citations={citations}
+                      isDark={isDark}
+                    />
+                  </p>
+                  {theoryOfChangeCitations.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {theoryOfChangeCitations.map((c, i) => (
+                        <a
+                          key={`${c.id || 'toc'}-${i}`}
+                          href={c.source_url || undefined}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] border ${
+                            isDark
+                              ? 'border-emerald-800/60 text-emerald-400 hover:bg-emerald-900/20'
+                              : 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
+                          }`}
+                          title={c.source_name || 'Source'}
+                        >
+                          {(c.source_name || `Source ${i + 1}`).replace(/^Charity Website\s*-\s*/i, '')}
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* External Evaluations */}
               {rich.impact_evidence.external_evaluations && rich.impact_evidence.external_evaluations.length > 0 && (
                 <div className={`mt-2 pt-2 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
@@ -1731,8 +1794,29 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
                 Theory of Change
               </div>
               <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                {charity.theoryOfChange}
+                <SourceLinkedText text={charity.theoryOfChange} citations={citations} isDark={isDark} />
               </p>
+              {theoryOfChangeCitations.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {theoryOfChangeCitations.map((c, i) => (
+                    <a
+                      key={`${c.id || 'toc-fallback'}-${i}`}
+                      href={c.source_url || undefined}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] border ${
+                        isDark
+                          ? 'border-emerald-800/60 text-emerald-400 hover:bg-emerald-900/20'
+                          : 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
+                      }`}
+                      title={c.source_name || 'Source'}
+                    >
+                      {(c.source_name || `Source ${i + 1}`).replace(/^Charity Website\s*-\s*/i, '')}
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 

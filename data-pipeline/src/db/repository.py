@@ -95,7 +95,7 @@ class CharityData:
     # Cause area fields (from synthesize spec)
     cause_tags: list[str] | None = None
     ntee_code: str | None = None
-    cause_detection_source: str | None = None  # 'keywords', 'ntee_fallback', or 'unknown'
+    cause_detection_source: str | None = None  # 'internal_signals' or 'unknown'
     # Derived fields
     is_conflict_zone: bool | None = None
     working_capital_months: float | None = None

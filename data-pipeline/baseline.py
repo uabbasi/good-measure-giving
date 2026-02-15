@@ -351,11 +351,36 @@ def build_charity_metrics(
 
     logger = logging.getLogger(__name__)
 
+    def _apply_synth_overrides(metrics: CharityMetrics, data: dict | None) -> CharityMetrics:
+        """Apply scorer-relevant fields from synthesized charity_data.
+
+        Keeps baseline aligned with current internal taxonomy even when metrics_json
+        was generated before taxonomy/scoring updates.
+        """
+        if not data:
+            return metrics
+        metrics.is_muslim_focused = data.get("muslim_charity_fit") == "high"
+        metrics.primary_category = data.get("primary_category")
+        metrics.cause_tags = data.get("cause_tags") or []
+        metrics.program_focus_tags = data.get("program_focus_tags") or []
+        if data.get("working_capital_months") is not None:
+            metrics.working_capital_ratio = data.get("working_capital_months")
+        if data.get("founded_year") and not metrics.founded_year:
+            metrics.founded_year = data.get("founded_year")
+
+        zakat_meta = data.get("zakat_metadata") or {}
+        if zakat_meta:
+            metrics.zakat_categories_served = zakat_meta.get("asnaf_categories_served")
+            metrics.zakat_policy_url = zakat_meta.get("zakat_policy_url")
+            metrics.zakat_verification_confidence = zakat_meta.get("verification_confidence")
+            metrics.islamic_identity_signals = zakat_meta.get("islamic_identity_signals")
+        return metrics
+
     # Primary path: deserialize from metrics_json blob (set by synthesis)
     if charity_data and charity_data.get("metrics_json"):
         try:
             metrics = CharityMetrics(**charity_data["metrics_json"])
-            return metrics
+            return _apply_synth_overrides(metrics, charity_data)
         except Exception as e:
             logger.warning(f"Failed to deserialize metrics_json for {ein}: {e}, falling back to re-aggregation")
 
@@ -380,24 +405,7 @@ def build_charity_metrics(
         discovered_profile=discovered_data.get("discovered_profile", discovered_data) if discovered_data else None,
     )
 
-    # Enrich with synthesized data (fallback path only)
-    if charity_data:
-        metrics.is_muslim_focused = charity_data.get("muslim_charity_fit") == "high"
-
-        if charity_data.get("working_capital_months") is not None:
-            metrics.working_capital_ratio = charity_data.get("working_capital_months")
-
-        if not metrics.founded_year and charity_data.get("founded_year"):
-            metrics.founded_year = charity_data.get("founded_year")
-
-        zakat_meta = charity_data.get("zakat_metadata") or {}
-        if zakat_meta:
-            metrics.zakat_categories_served = zakat_meta.get("asnaf_categories_served")
-            metrics.zakat_policy_url = zakat_meta.get("zakat_policy_url")
-            metrics.zakat_verification_confidence = zakat_meta.get("verification_confidence")
-            metrics.islamic_identity_signals = zakat_meta.get("islamic_identity_signals")
-
-    return metrics
+    return _apply_synth_overrides(metrics, charity_data)
 
 
 def generate_baseline_narrative(

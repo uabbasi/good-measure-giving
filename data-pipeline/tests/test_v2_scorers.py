@@ -319,6 +319,30 @@ class TestAlignmentScorer:
         result = scorer.evaluate(m)
         assert _component_pts(result, "Cause Urgency") == 13
 
+    def test_cause_urgency_prefers_internal_primary_category(self):
+        """Internal taxonomy should override detected_cause_area when available."""
+        m = _base_metrics(
+            detected_cause_area="HUMANITARIAN",
+            primary_category="ADVOCACY_CIVIC",
+            cause_tags=["advocacy", "systemic-change"],
+            program_focus_tags=["advocacy-legal"],
+        )
+        scorer = AlignmentScorer()
+        result = scorer.evaluate(m)
+        assert _component_pts(result, "Cause Urgency") == 6
+
+    def test_cause_urgency_advocacy_from_tags(self):
+        """Advocacy tags should map urgency to ADVOCACY even if detected cause is missing."""
+        m = _base_metrics(
+            detected_cause_area=None,
+            primary_category=None,
+            cause_tags=["advocacy"],
+            program_focus_tags=["research-policy"],
+        )
+        scorer = AlignmentScorer()
+        result = scorer.evaluate(m)
+        assert _component_pts(result, "Cause Urgency") == 6
+
     def test_funding_gap_small_org(self):
         """Revenue < $1M → 5 pts (maximum gap)."""
         m = _base_metrics(total_revenue=500_000)

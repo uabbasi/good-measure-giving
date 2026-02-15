@@ -17,6 +17,17 @@ export const uiSignalsConfig = {
     "SOVEREIGNTY": "Sovereignty Builder",
     "ASSET_CREATION": "Asset Creator"
   },
+  "archetype_descriptions": {
+    "DIRECT_SERVICE": "Delivers direct aid and services to people in need.",
+    "SYSTEMIC_CHANGE": "Targets root causes through policy, legal, or systems reform.",
+    "EDUCATION": "Builds long-term capacity through education and training.",
+    "COMMUNITY": "Strengthens local institutions and community support systems.",
+    "MULTIPLIER": "Amplifies impact by funding and coordinating other organizations.",
+    "LEVERAGE": "Uses strategic advocacy to drive outsized social outcomes.",
+    "RESILIENCE": "Builds long-term resilience for communities facing recurring pressures.",
+    "SOVEREIGNTY": "Builds Muslim civic power and representation so communities shape policy and public life.",
+    "ASSET_CREATION": "Creates durable assets and institutions that compound impact over time."
+  },
   "signals": {
     "evidence": {
       "strong_ratio": 0.7,
@@ -71,4 +82,4 @@ export const uiSignalsConfig = {
   }
 } as const;
 export const UI_SIGNALS_CONFIG_VERSION = "2026-02-15";
-export const UI_SIGNALS_CONFIG_HASH = "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6";
+export const UI_SIGNALS_CONFIG_HASH = "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f";
