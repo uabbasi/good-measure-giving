@@ -5,6 +5,7 @@
 // Data hooks
 export { useCharities, useCharity, useCharitySearch } from './useCharities';
 export type { CharitySummary } from './useCharities';
+export { useCalibrationReport } from './useCalibrationReport';
 
 // User feature hooks
 export { useBookmarks } from './useBookmarks';

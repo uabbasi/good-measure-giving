@@ -2,7 +2,7 @@
   "id": "58-1454716",
   "ein": "58-1454716",
   "name": "The Carter Center",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "It seeks to prevent and resolve conflicts, enhance freedom and democracy, and improve health.",
   "programs": [
     "Conflict Resolution Program",
@@ -59,7 +59,11 @@
     "netAssets": 1128083345,
     "workingCapitalMonths": "91.00"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 43,
+    "independentBoardMembers": null,
+    "ceoCompensation": 425000
+  },
   "targeting": {
     "populationsServed": [
       "Communities",
@@ -79,7 +83,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-09 21:38:43",
+  "lastUpdated": "2026-02-14 19:36:07",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -1151,6 +1155,25 @@
     "Organization is in zakat denylist (partners but doesn't collect directly)"
   ],
   "archetype": "SOVEREIGNTY",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Promising",
+    "archetype_code": "SOVEREIGNTY",
+    "archetype_label": "Sovereignty Builder",
+    "evidence_stage": "Building",
+    "signal_states": {
+      "evidence": "Limited",
+      "financial_health": "Limited",
+      "donor_fit": "Moderate",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "58-1454716",
     "charity_name": "The Carter Center",
@@ -1249,7 +1272,7 @@
           },
           {
             "evidence": "Working capital: 91.0 months (EXCESSIVE)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
+            "improvement_suggestion": "Publish a capital deployment plan so very high reserves are intentionally used for mission delivery while preserving a prudent safety buffer.",
             "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
@@ -1300,44 +1323,6 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 36
       },
-      "judge_issues": [
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[1].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'oig.usaid.gov' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[2].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'charitywatch.org' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
@@ -1353,7 +1338,7 @@
         ],
         "total_deduction": -2
       },
-      "score_summary": "The Carter Center Inc earns 63/100 due to strong impact and good alignment (minor risk deductions applied).",
+      "score_summary": "The Carter Center Inc shows strong impact and good alignment (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -1365,565 +1350,40 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The Carter Center seeks to prevent and resolve conflicts, enhance freedom and democracy, and improve health.",
+          "claim": "The Carter Center operates programs in conflict resolution and democracy with high fundraising efficiency.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/581454716"
         },
         {
-          "claim": "The organization accepts general charitable donations (sadaqah) for its humanitarian missions.",
+          "claim": "The organization accepts general charitable donations (sadaqah) to support its global missions.",
           "id": "[2]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://secure.cartercenter.org/site/Donation2?df_id=1220"
         },
         {
-          "claim": "The organization reported total revenue of $153,773,756 and operates major programs in conflict resolution and democracy.",
+          "claim": "The charity reported total revenue of $153,773,756, a program expense ratio of 81.4%, and 91.0 months of working capital.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/581454716"
         }
       ],
-      "amal_score_rationale": "The organization earns a 63/100 reflecting high financial stability and program efficiency, balanced by a medium alignment score for specific donor demographics.",
+      "amal_score_rationale": "The Carter Center earns a 63/100 due to its high financial efficiency and significant global impact, though its alignment score is moderated by a general humanitarian focus rather than specific niche donor fit.",
       "areas_for_improvement": [
-        "Limited specific alignment with traditional Muslim donor priorities",
-        "Moderate data confidence regarding long-term impact metrics"
+        "Transparency regarding specific Muslim-interest donor alignment and sadaqah-specific reporting",
+        "Increasing data confidence through more frequent third-party impact evaluations"
       ],
       "dimension_explanations": {
-        "alignment": "The organization is classified as sadaqah-eligible, offering a medium fit for donors interested in humanitarian cause urgency [2]. While it has a strong track record in international diplomacy, its alignment with specific religious giving frameworks is moderate [1].",
-        "impact": "The Center demonstrates high effectiveness through its capacity-building model, maintaining a total revenue of $153,773,756 to support its global health and peace programs [3]. With a program expense ratio of 81.4%, the organization prioritizes direct service delivery over administrative overhead [1]."
+        "alignment": "The Center is classified as sadaqah-eligible, aligning with donors interested in urgent humanitarian causes such as conflict resolution and democracy [2]. While it maintains a strong track record, its alignment score of 29/50 reflects a medium donor fit for those seeking specific religious-centric programming [1][2].",
+        "impact": "The organization demonstrates high effectiveness with a program expense ratio of 81.4% and a total revenue of $153,773,756 dedicated to large-scale humanitarian interventions [3]. Its capacity-building model focuses on long-term sustainability in health and peace, maintaining a substantial 91.0 months of working capital to ensure program continuity [1][3]."
       },
-      "headline": "The Carter Center Inc works to advance global peace and health through conflict resolution, democracy enhancement, and disease prevention.",
+      "headline": "The Carter Center Inc works to advance global peace and health by resolving conflicts, enhancing democracy, and combating neglected tropical diseases.",
       "strengths": [
-        "High program expense ratio of 81.4% ensuring most funds reach mission-critical work",
-        "Exceptional fundraising efficiency at $0.08 per $1 raised",
-        "Extensive financial runway with 91.0 months of working capital"
+        "High program expense ratio of 81.4%, ensuring the majority of funds support direct services [3]",
+        "Exceptional fundraising efficiency, spending only $0.08 to raise every $1 [1]",
+        "Robust financial stability with 91.0 months of working capital [3]"
       ],
-      "summary": "Founded by former U.S. President Jimmy Carter and Rosalynn Carter, the organization seeks to prevent and resolve conflicts, enhance freedom and democracy, and improve global health [1]. The Center operates major initiatives including the Conflict Resolution Program and the Democracy Program to foster international stability [3]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "1982 by former U.S. President Jimmy Carter and Rosalynn Carter",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "founded in 1982 by former U.S. President Jimmy Carter and former First Lady Rosalynn Carter",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/581454716"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$153,773,756 in total revenue",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: $153,773,756",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/581454716"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 81.4%",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Program service expenses: $124,960,323 / Total expenses: $148,740,967",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/581454716"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Conflict Resolution and Democracy Programs",
-          "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Programs include Conflict Resolution, Democracy, and Human Rights",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/581454716"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Guinea worm disease eradication",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Eradicate the parasitic infection Guinea worm disease",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/581454716"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$114.1 million in public contributions",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Contributions and grants: $114,140,910",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/581454716"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.08 to raise every $1",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Fundraising Efficiency: $0.08",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/581454716"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "international grantmaking and direct service delivery",
-          "confidence": 0.95,
-          "id": "[8]",
-          "quote": "Grants and other assistance to governments and organizations outside the US",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/581454716"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "111 foreign recipients",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Total number of foreign recipients: 111",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/581454716"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "91.0 months of working capital",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Working Capital Ratio: 91.0 months",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/581454716"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total assets exceeding $1.15 billion",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Total assets: $1,153,764,230",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/581454716"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cost per beneficiary of approximately $0.12",
-          "confidence": 0.9,
-          "id": "[12]",
-          "quote": "Cost Per Beneficiary: $0.12",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/581454716"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "43-member board",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Number of voting members of the governing body: 43",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/581454716"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "95% independent members",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Independent Board Members: 95%",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/581454716"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified 3rd-party outcome evaluations",
-          "confidence": 0.85,
-          "id": "[15]",
-          "quote": "Evidence & Outcomes: Unverified",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/581454716"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "BBB Wise Giving Alliance profile",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Standards Met: 0/20",
-          "source_name": "BBB Give.org",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/health/carter-center-in-atlanta-ga-9999-52017"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "international service and aid to travelers (ibn sabil)",
-          "confidence": 0.8,
-          "id": "[17]",
-          "quote": "Areas Served: International",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/581454716"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "highlighting the humanitarian dimensions of its work",
-          "confidence": 0.9,
-          "id": "[18]",
-          "quote": "Cause Area: Humanitarian",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/581454716"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "11.9% revenue growth",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "3-Year Revenue CAGR: 11.9%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/581454716"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Paige Alexander",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Paige Alexander, CEO",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/581454716"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a 63/100 reflecting high financial stability and program efficiency, balanced by a medium alignment score for specific donor demographics.",
-      "amal_scores": {
-        "amal_score": 63,
-        "confidence_scores": {
-          "alignment": 29,
-          "data_confidence": 0.6,
-          "impact": 36
-        },
-        "confidence_tier": "MEDIUM",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Excessive Working Capital",
-          "citation_ids": [
-            "[10]"
-          ],
-          "context": "The organization holds <cite id=\"10\">91.0 months of operating reserves</cite>, which significantly exceeds the standard 1-3 month recommendation for non-profits."
-        },
-        {
-          "area": "Transparency and External Evaluation",
-          "citation_ids": [
-            "[15]"
-          ],
-          "context": "While the Center tracks internal metrics, it currently lacks <cite id=\"15\">verified 3rd-party outcome evaluations</cite> for its long-term impact tracking."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[16]"
-        ],
-        "effectiveness_status": "UNVERIFIED",
-        "finances_status": "UNVERIFIED",
-        "governance_status": "UNVERIFIED",
-        "meets_all_standards": false,
-        "review_url": "https://give.org/charity-reviews/health/carter-center-in-atlanta-ga-9999-52017",
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "The organization has a <cite id=\"16\">BBB Wise Giving Alliance profile</cite> but has not yet been verified against all 20 standards."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[10]"
-        ],
-        "mitigation_notes": "The organization manages large-scale, multi-decade health eradication goals that require long-term financial commitments.",
-        "risk_factors": [
-          "<cite id=\"10\">Working capital reserves exceed 7 years of operations</cite>"
-        ],
-        "summary": "The primary concern is the <cite id=\"10\">excessive accumulation of net assets</cite> relative to annual spending, which may suggest a lower immediate funding gap."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 9,
-          "rating": 10,
-          "website": 1
-        },
-        "high_confidence_count": 18,
-        "total_count": 20,
-        "unique_sources": 3
-      },
-      "confidence": {
-        "data_freshness": "Data current through 2023 tax year",
-        "data_gaps": [
-          "Missing 3rd-party impact evaluation",
-          "Incomplete BBB verification"
-        ],
-        "level": "MEDIUM",
-        "notes": "Financial data is highly reliable, but impact and transparency metrics are limited.",
-        "score": 60,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "BBB Give.org"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 60,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing 3rd-party impact evaluation",
-          "Incomplete BBB verification"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 20,
-        "unique_sources": 3,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[17]",
-            "[18]"
-          ],
-          "explanation": "The organization aligns with humanitarian values through <cite id=\"17\">international service and aid to travelers (ibn sabil)</cite> contexts.",
-          "improvement": "The charity could improve alignment by <cite id=\"18\">highlighting the humanitarian dimensions of its work</cite> specifically for Muslim donor audiences."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]",
-            "[13]",
-            "[16]"
-          ],
-          "explanation": "Donors can trust the organization due to its <cite id=\"1\">44-year track record</cite> and leadership by a <cite id=\"13\">large, independent board of 43 members</cite>.",
-          "improvement": "To strengthen credibility, the charity should <cite id=\"16\">pursue a full BBB Wise Giving Alliance accreditation</cite> to verify all 20 standards of accountability."
-        },
-        "impact": {
-          "citation_ids": [
-            "[3]",
-            "[12]",
-            "[15]"
-          ],
-          "explanation": "The Center demonstrates high efficiency with a <cite id=\"12\">$0.12 cost per beneficiary</cite> and a <cite id=\"3\">81.4% program ratio</cite>.",
-          "improvement": "Impact measurement would benefit from <cite id=\"15\">tracking outcomes for 3+ years</cite> through external evaluations to verify long-term programmatic success."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[1]",
-          "[17]"
-        ],
-        "evidence_rigor": "Grade C - Strong internal tracking with documented theory of change",
-        "geographic_focus": [
-          "International",
-          "Africa",
-          "Latin America"
-        ],
-        "giving_style": "Institutional investment",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "Humanitarian service",
-          "Ibn sabil (travelers/displaced)"
-        ],
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.08,
-        "annual_revenue": 153773756,
-        "citation_ids": [
-          "[2]",
-          "[3]",
-          "[7]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0.08,
-        "industry_program_ratio": 0.75,
-        "peer_count": 58,
-        "peer_program_ratio_median": 0.897,
-        "program_expense_ratio": 0.8142,
-        "reserves_months": 91,
-        "revenue_cagr_3yr": 11.9,
-        "working_capital_months": 91,
-        "yearly_financials": [
-          {
-            "expenses": 148740967,
-            "net_assets": 1128083345,
-            "revenue": 153773756,
-            "year": 2023
-          },
-          {
-            "expenses": 122018775,
-            "net_assets": 1128906686,
-            "revenue": 130854588,
-            "year": 2022
-          },
-          {
-            "expenses": 108733948,
-            "net_assets": 1240075213,
-            "revenue": 122766211,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[9]"
-        ],
-        "domestic_grants": 772216,
-        "foreign_grants": 7792011,
-        "grant_count": 122,
-        "grant_strategy": "Funds a mix of domestic election reform and international health/peace partners.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "International"
-        ],
-        "top_recipients": [
-          "Team Democracy Action ($200K)",
-          "Root Change ($150K)"
-        ],
-        "total_grants": 8564227
-      },
-      "headline": "The Carter Center Inc works to advance global peace and health through conflict resolution, democracy enhancement, and disease prevention.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value long-term institutional stability and want to support the total eradication of specific global diseases through a high-capacity organization.",
-        "citation_ids": [
-          "[1]",
-          "[10]"
-        ],
-        "donor_motivations": [
-          "Want to support legacy-driven humanitarian work",
-          "Value high-level diplomatic and peace-building efforts",
-          "Prefer organizations with massive financial security and low fundraising overhead",
-          "Interested in global health milestones like disease eradication"
-        ],
-        "giving_considerations": [
-          "The organization has very high reserves, meaning your gift is part of a large endowment-style pool",
-          "Focus is on high-level capacity building rather than local community-led aid",
-          "Not a faith-based organization, though its work aligns with universal humanitarian values"
-        ],
-        "not_ideal_for": "Donors seeking to fulfill specific Zakat obligations or those who prefer supporting smaller, grassroots organizations with immediate funding gaps."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[15]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects a clear theory of change and internal tracking, but a lack of independent, third-party impact evaluations.",
-        "external_evaluations": [
-          "None verified"
-        ],
-        "outcome_tracking_years": 0,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "The Center uses high-level diplomacy and technical health expertise to remove systemic barriers to peace and health.",
-        "why_evidence_matters": "Rigorous evidence ensures that large-scale interventions are achieving the intended health and peace outcomes efficiently."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[19]"
-        ],
-        "founded_year": 1982,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": 11.9,
-        "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "While the Center has high reserves, its <cite id=\"19\">11.9% revenue growth</cite> shows increasing capacity for large-scale health projects.",
-        "strategic_priorities": [
-          "Guinea Worm Eradication",
-          "Global Democracy Monitoring"
-        ],
-        "years_operating": 44
-      },
-      "organizational_capacity": {
-        "board_size": 43,
-        "ceo_compensation": 2894283,
-        "ceo_compensation_pct_revenue": 1.88,
-        "ceo_name": "Paige Alexander",
-        "citation_ids": [
-          "[13]",
-          "[14]",
-          "[20]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "International (Global)",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 0.95,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[1]",
-          "[5]"
-        ],
-        "differentiator": "Distinguished by its <cite id=\"1\">presidential founding</cite> and unique focus on <cite id=\"5\">parasitic disease eradication</cite>.",
-        "peer_group": "International Humanitarian Organizations",
-        "similar_orgs": [
-          "Human Rights Watch, Inc.",
-          "Save the Children Federation"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "More focused on legal advocacy",
-          "name": "Human Rights Watch, Inc."
-        },
-        {
-          "differentiator": "More focused on direct healthcare delivery",
-          "name": "Save the Children Federation"
-        },
-        {
-          "differentiator": "Smaller scale, focused on Yemen",
-          "name": "Pure Hands"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[7]"
-          ],
-          "detail": "The organization maintains a highly efficient development model, spending just <cite id=\"7\">$0.08 per $1 raised</cite>, well below industry averages.",
-          "point": "Exceptional Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[10]"
-          ],
-          "detail": "The Center holds <cite id=\"10\">91.0 months of working capital</cite>, providing extreme long-term stability for its multi-year health initiatives.",
-          "point": "Robust Financial Reserves"
-        },
-        {
-          "citation_ids": [
-            "[3]"
-          ],
-          "detail": "With a <cite id=\"3\">81.4% program expense ratio</cite>, the vast majority of funding directly supports global peace and health programs.",
-          "point": "High Programmatic Investment"
-        }
-      ],
-      "strengths_deep_dive": [
-        "The Carter Center's financial health is anchored by its massive asset base and efficient operations. The organization reported <cite id=\"11\">total assets exceeding $1.15 billion</cite> in 2023, which supports its long-term mission. Its programmatic reach is significant, particularly in its health initiatives where it has achieved a <cite id=\"12\">cost per beneficiary of approximately $0.12</cite> in specific contexts. Furthermore, the organization demonstrates strong governance through a <cite id=\"13\">43-member board</cite> with <cite id=\"14\">95% independent members</cite>, ensuring diverse oversight for its complex international operations."
-      ],
-      "summary": "The Carter Center, founded in <cite id=\"1\">1982 by former U.S. President Jimmy Carter and Rosalynn Carter</cite>, is a major international institution dedicated to resolving conflicts and improving global health. The organization reported <cite id=\"2\">$153,773,756 in total revenue</cite> for the 2023 fiscal year, maintaining a robust <cite id=\"3\">program expense ratio of 81.4%</cite>. Its operations are divided into two primary pillars: Peace and Health. The Peace programs include the <cite id=\"4\">Conflict Resolution and Democracy Programs</cite>, which monitor elections and mediate international disputes. The Health programs are renowned for their work in <cite id=\"5\">Guinea worm disease eradication</cite>, which is on the verge of becoming the second human disease in history to be eliminated. Financed largely through <cite id=\"6\">$114.1 million in public contributions</cite> and significant investment income, the Center operates with exceptional efficiency, spending only <cite id=\"7\">$0.08 to raise every $1</cite> in donations. This lean fundraising model ensures that the vast majority of resources are directed toward its <cite id=\"8\">international grantmaking and direct service delivery</cite>, which reached <cite id=\"9\">111 foreign recipients</cite> in the most recent reporting period.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "Founded by former U.S. President Jimmy Carter and Rosalynn Carter, the organization operates the Conflict Resolution Program and the Democracy Program to prevent violence and ensure fair elections [1][3]. The Center is recognized for its commitment to improving global health and human rights through direct field operations and capacity building [1]."
     }
   }
 }

@@ -2,7 +2,7 @@
   "id": "11-3013369",
   "ein": "11-3013369",
   "name": "Abdul Sattar Edhi International Foundation",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "PROVIDE SHELTER,CLOTHING,FOOD TO POOR AND THE NEEDY PEOPLE AROUND THE WORLD.",
   "programs": [
     "High Ways Project (25 KILOMETER)"
@@ -45,7 +45,11 @@
     "netAssets": 27402805,
     "workingCapitalMonths": "120.50"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 4,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Victims"
@@ -64,7 +68,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-09 21:34:02",
+  "lastUpdated": "2026-02-14 19:35:36",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -164,6 +168,25 @@
   "evidenceQuality": null,
   "zakatClaimEvidence": null,
   "archetype": "DIRECT_SERVICE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "DIRECT_SERVICE",
+    "archetype_label": "Frontline Relief",
+    "evidence_stage": "Verified",
+    "signal_states": {
+      "evidence": "Limited",
+      "financial_health": "Limited",
+      "donor_fit": "Moderate",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "11-3013369",
     "charity_name": "Abdul Sattar Edhi International Foundation",
@@ -262,7 +285,7 @@
           },
           {
             "evidence": "Working capital: 120.5 months (EXCESSIVE)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
+            "improvement_suggestion": "Publish a capital deployment plan so very high reserves are intentionally used for mission delivery while preserving a prudent safety buffer.",
             "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
@@ -313,44 +336,6 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 20
       },
-      "judge_issues": [
-        {
-          "field": "baseline_narrative.amal_score_rationale",
-          "judge": "score",
-          "message": "The rationale mentions \"excellent financial efficiency and liquidity\" but doesn't explicitly connect this to the high program expense ratio and working capital, which are key drivers of the financial health component of the impact score.",
-          "severity": "info"
-        },
-        {
-          "field": "impact.rationale",
-          "judge": "score",
-          "message": "The rationale mentions \"direct provision\" but doesn't explicitly connect this to the directness component score of 4/5. It also doesn't mention the negative impact of excessive working capital (120.5 months) on the overall impact score.",
-          "severity": "info"
-        },
-        {
-          "field": "source.website",
-          "judge": "data_completeness",
-          "message": "Critical source 'website' failed: No data found on any pages",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "working_capital_months",
-          "judge": "synthesize_quality",
-          "message": "Extremely high working capital (120.5 months) may indicate hoarding or data error",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
@@ -373,7 +358,7 @@
         ],
         "total_deduction": -2
       },
-      "score_summary": "Abdul Sattar Edhi International Foundation Inc earns 52/100 due to good alignment and moderate impact (minor risk deductions applied).",
+      "score_summary": "Abdul Sattar Edhi International Foundation Inc shows good alignment and moderate impact (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -385,364 +370,34 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The foundation reported total revenue of $5,752,945, a 95.1% program expense ratio, and mission activities including the High Ways Project.",
+          "claim": "The organization reported total revenue of $5,752,945 and a program expense ratio of 95.1%.",
           "id": "[1]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/113013369"
         },
         {
-          "claim": "Financial metadata indicates the organization holds 120.5 months of working capital and a fundraising efficiency of $0.00 per $1 raised.",
+          "claim": "The foundation holds 120.5 months of working capital and a fundraising efficiency of $0.00 per $1 raised.",
           "id": "[2]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/113013369"
         }
       ],
-      "amal_score_rationale": "The foundation earns a moderate overall score due to its excellent financial efficiency and liquidity, balanced against a lack of detailed third-party impact verification.",
+      "amal_score_rationale": "The organization earns a moderate score due to its excellent financial efficiency and low overhead, though its overall impact score is tempered by a lack of detailed third-party verification of program outcomes.",
       "areas_for_improvement": [
-        "Limited public documentation regarding specific impact metrics and cost-per-beneficiary data",
-        "Narrow programmatic focus disclosed in financial filings relative to total revenue"
+        "Limited public documentation regarding specific impact metrics or cost-per-beneficiary data",
+        "High concentration of assets in working capital relative to annual program spending"
       ],
       "dimension_explanations": {
-        "alignment": "The charity aligns with humanitarian urgency by addressing basic needs like food and shelter through sadaqah-eligible donations [1]. It maintains a medium donor fit as it serves a broad international population, though more detailed reporting on specific regional activities would strengthen alignment for targeted giving [2].",
-        "impact": "The organization demonstrates a direct provision model, spending 95.1% of its $5,752,945 revenue on programs such as the High Ways Project [1]. While financial health is strong with 120.5 months of working capital, there is limited external data to verify specific long-term outcomes for beneficiaries [2]."
+        "alignment": "As a Sadaqah-eligible entity, the organization aligns well with donors seeking to support urgent humanitarian causes and infrastructure in underserved regions [1].",
+        "impact": "The foundation demonstrates a commitment to direct provision, allocating 95.1% of its $5,752,945 revenue directly to programs such as the High Ways Project [1][2]. While financial health is strong with 120.5 months of working capital, there is limited external data available to verify the specific long-term effectiveness of its interventions [2]."
       },
-      "headline": "Abdul Sattar Edhi International Foundation Inc provides essential humanitarian relief through a highly efficient financial model that directs the vast majority of funds to direct aid.",
+      "headline": "The Abdul Sattar Edhi International Foundation Inc provides essential humanitarian relief and infrastructure support to vulnerable populations globally.",
       "strengths": [
-        "Exceptional program expense ratio of 95.1%, ensuring most funds reach those in need",
-        "Highly efficient fundraising operations with a cost of $0.00 per $1 raised",
-        "Robust liquidity with 120.5 months of working capital available"
+        "High program expense ratio of 95.1%, ensuring the vast majority of funds reach charitable programs [1]",
+        "Exceptional fundraising efficiency with a cost of $0.00 per $1 raised [2]",
+        "Robust financial reserves equivalent to 120.5 months of working capital [2]"
       ],
-      "summary": "The organization is dedicated to providing shelter, clothing, and food to impoverished populations globally [1]. With a total revenue of $5,752,945, the foundation operates significant infrastructure projects, including its High Ways Project [1][2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $5,752,945",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "Total revenue: $5,752,945",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/113013369"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "95.1% program expense ratio",
-          "confidence": 0.95,
-          "id": "[2]",
-          "quote": "Program Expense Ratio: 100.0%",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/113013369"
-        }
-      ],
-      "amal_score_rationale": "The foundation earns a moderate overall score due to its excellent financial efficiency and liquidity, balanced against a lack of detailed third-party impact verification.",
-      "amal_scores": {
-        "amal_score": 52,
-        "confidence_scores": {
-          "alignment": 34,
-          "data_confidence": 0.8,
-          "impact": 20
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Impact Transparency",
-          "citation_ids": [
-            "[2]"
-          ],
-          "context": "There is <cite id=\"2\">no public data on beneficiary counts</cite>, making it difficult to calculate the exact cost-effectiveness of its programs."
-        },
-        {
-          "area": "Excessive Liquidity",
-          "citation_ids": [
-            "[2]"
-          ],
-          "context": "The organization holds <cite id=\"2\">120.5 months of working capital</cite>, which far exceeds the industry standard of 1-3 months, suggesting funds could be deployed more rapidly."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "none",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "This organization is not currently evaluated by the BBB Wise Giving Alliance."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "mitigation_notes": "The foundation's long history and massive asset base mitigate the risk of operational failure.",
-        "risk_factors": [
-          "<cite id=\"2\">Working capital exceeds 10 years of expenses</cite>",
-          "<cite id=\"2\">No third-party outcome tracking available</cite>"
-        ],
-        "summary": "The primary concerns involve <cite id=\"2\">excessive capital retention</cite> and a lack of external impact evaluations."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 7,
-          "rating": 8
-        },
-        "high_confidence_count": 15,
-        "total_count": 15,
-        "unique_sources": 2
-      },
-      "confidence": {
-        "data_freshness": "Data from 2023 tax year",
-        "data_gaps": [
-          "Missing impact metrics",
-          "No audited financials"
-        ],
-        "level": "HIGH",
-        "notes": "Financial data is highly consistent across sources.",
-        "score": 80,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 80,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "No beneficiary data",
-          "No audited financials",
-          "No theory of change"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 2,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[1]"
-          ],
-          "explanation": "The charity is a strong fit for those seeking to support <cite id=\"1\">humanitarian relief in Pakistan</cite> and other Muslim-majority regions through <cite id=\"1\">sadaqah</cite>.",
-          "improvement": "The organization could improve alignment by <cite id=\"1\">expanding services to underserved populations</cite> or regions with limited current nonprofit coverage."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]",
-            "[2]"
-          ],
-          "explanation": "Donors can trust the organization's fiscal integrity due to its <cite id=\"2\">Silver Seal of Transparency from Candid</cite> and a <cite id=\"2\">95.1% independent board of directors</cite>.",
-          "improvement": "To strengthen credibility, the charity could <cite id=\"2\">publish audited financial statements</cite> and document a clear theory of change."
-        },
-        "impact": {
-          "citation_ids": [
-            "[2]"
-          ],
-          "explanation": "The foundation utilizes a <cite id=\"2\">direct provision model</cite> with a <cite id=\"2\">95.1% to 95.1% program ratio</cite>, ensuring minimal leakage to administrative costs.",
-          "improvement": "Impact measurement would benefit from <cite id=\"2\">tracking and reporting beneficiary counts</cite> to enable a more rigorous cost-per-beneficiary analysis."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "evidence_rigor": "Grade C - Financial transparency without outcome data",
-        "geographic_focus": [
-          "Pakistan"
-        ],
-        "giving_style": "Direct service",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "",
-          ""
-        ],
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 5752945,
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0,
-        "industry_program_ratio": 0.75,
-        "peer_count": 58,
-        "peer_program_ratio_median": 0.897,
-        "program_expense_ratio": 0.9512,
-        "reserves_months": 127.9,
-        "revenue_cagr_3yr": -4,
-        "transparency_score": 70,
-        "working_capital_months": 120.5,
-        "yearly_financials": [
-          {
-            "expenses": 2728410,
-            "net_assets": 27402805,
-            "revenue": 5752945,
-            "year": 2023
-          },
-          {
-            "expenses": 2684795,
-            "net_assets": 24378270,
-            "revenue": 8966892,
-            "year": 2022
-          },
-          {
-            "expenses": 677537,
-            "net_assets": 17964339,
-            "revenue": 6246447,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct implementation of services rather than grantmaking",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "Pakistan"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "Abdul Sattar Edhi International Foundation Inc provides essential humanitarian relief through a highly efficient financial model that directs the vast majority of funds to direct aid.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize extreme financial efficiency and want their sadaqah to support established humanitarian infrastructure in Pakistan.",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "donor_motivations": [
-          "Value organizations with zero fundraising overhead",
-          "Prefer direct provision of food and shelter",
-          "Want to support the legacy of the Edhi foundation's work",
-          "Prioritize long-term organizational stability over rapid fund deployment"
-        ],
-        "giving_considerations": [
-          "The organization holds very high cash reserves",
-          "Detailed impact reports with beneficiary numbers are not currently public",
-          "Focus is primarily on direct aid rather than advocacy"
-        ],
-        "not_ideal_for": ""
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects high financial transparency and direct service delivery, but a lack of verified outcome metrics.",
-        "external_evaluations": [],
-        "outcome_tracking_years": 0,
-        "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The foundation operates on the principle that direct provision of basic needs (food, shelter, clothing) leads to immediate poverty alleviation.",
-        "why_evidence_matters": "Evidence ensures that the high volume of aid translates into long-term improvements for beneficiaries."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "founded_year": null,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": -4,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "While reserves are high, the scale of humanitarian need in Pakistan allows for significant expansion of services.",
-        "strategic_priorities": [
-          "Expand emergency relief",
-          "Maintain infrastructure projects"
-        ],
-        "years_operating": 35
-      },
-      "organizational_capacity": {
-        "board_size": 4,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Disclosed",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "employees_count": 0,
-        "geographic_reach": "Pakistan and Global",
-        "has_conflict_policy": true,
-        "has_financial_audit": false,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 0,
-        "programs_count": 3,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "differentiator": "Distinguished by a <cite id=\"2\">95.1% program ratio</cite> compared to a <cite id=\"2\">peer median of 89.7%</cite>.",
-        "peer_group": "International Humanitarian Organizations",
-        "similar_orgs": [
-          "BASMAH",
-          "ICNA Relief",
-          "Penny Appeal USA"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on humanitarian relief and size",
-          "name": "BASMAH"
-        },
-        {
-          "differentiator": "Larger organization with more domestic US services",
-          "name": "ICNA Relief"
-        },
-        {
-          "differentiator": "Larger international reach and higher fundraising spend",
-          "name": "Penny Appeal USA"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[2]"
-          ],
-          "detail": "The foundation maintains a <cite id=\"2\">95.1% program expense ratio</cite>, ensuring that all reported functional expenses directly support humanitarian services.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[2]"
-          ],
-          "detail": "The organization operates with <cite id=\"2\">$0.00 spent to raise every $1</cite>, a rare level of efficiency that maximizes the impact of donor contributions.",
-          "point": "Zero-Cost Fundraising"
-        },
-        {
-          "citation_ids": [
-            "[2]"
-          ],
-          "detail": "The charity holds <cite id=\"2\">120.5 months of working capital</cite> in working capital, providing immense long-term stability.",
-          "point": "Robust Financial Reserves"
-        }
-      ],
-      "strengths_deep_dive": [
-        "The foundation's financial model is built on extreme overhead suppression. According to its <cite id=\"1\">2023 Form 990</cite>, the organization generated <cite id=\"1\">$5,699,902 from contributions</cite> while maintaining <cite id=\"1\">total liabilities of only $25,000</cite>. This fiscal conservatism has allowed the organization to accumulate <cite id=\"1\">over $27 million in net assets</cite>, ensuring it can sustain its <cite id=\"1\">global relief efforts</cite> even during periods of economic volatility. Furthermore, the <cite id=\"2\">95.1% independent board</cite> provides a layer of oversight that supports its high accountability standards."
-      ],
-      "summary": "The Abdul Sattar Edhi International Foundation Inc is a humanitarian organization dedicated to providing <cite id=\"1\">shelter, clothing, and food to poor and needy people</cite> globally. Operating with a lean financial model, the foundation reported <cite id=\"1\">total revenue of $5,752,945</cite> in the 2023 tax year. The organization is characterized by its <cite id=\"2\">extraordinary 95.1% program expense ratio</cite>, indicating that every dollar of functional expense is directed toward its core mission of humanitarian relief. This efficiency is further highlighted by a <cite id=\"2\">fundraising efficiency of $0.00 per $1 raised</cite>, suggesting that the foundation relies on organic support or zero-cost solicitation methods. While the organization maintains a <cite id=\"1\">significant asset base of $27,427,805</cite>, its primary operations focus on direct provision of aid, including infrastructure initiatives such as its <cite id=\"1\">High Ways Project</cite> and emergency services in Pakistan.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "Operating as a Sadaqah-eligible organization, the foundation focuses on providing food, clothing, and shelter to the needy while maintaining a significant High Ways Project [1]. In the 2023 fiscal year, the organization reported a total revenue of $5,752,945 to support its international humanitarian mission [1][2]."
     }
   }
 }

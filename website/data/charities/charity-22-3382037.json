@@ -2,7 +2,7 @@
   "id": "22-3382037",
   "ein": "22-3382037",
   "name": "Islamic Educational Foundation",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "ESTABLISH AND OPERATE PRE-SCHOOL, ELEMENTARY, HIGH SCHOOL.",
   "programs": [
     "Al-Ghazaly High School",
@@ -43,7 +43,11 @@
     "netAssets": 5829084,
     "workingCapitalMonths": "16.30"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 4,
+    "independentBoardMembers": null,
+    "ceoCompensation": 125000
+  },
   "targeting": null,
   "trustSignals": {
     "hasAnnualReport": null,
@@ -64,7 +68,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:35:05",
+  "lastUpdated": "2026-02-14 19:35:44",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -161,17 +165,36 @@
     "No evidence found for a US-based 'Islamic Educational Foundation' explicitly accepting zakat donations. The search results refer to 'Islamic Foundation of Toronto (IFT)' which is a Canadian organization, 'Islamic Relief', 'National Zakat Foundation' in the UK, 'Dawat-e-Islami' with its global madani markaz in Pakistan, and 'The Citizens Foundation (TCF)' which focuses on children in Pakistan."
   ],
   "archetype": "SOVEREIGNTY",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "SOVEREIGNTY",
+    "archetype_label": "Sovereignty Builder",
+    "evidence_stage": "Established",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Moderate",
+      "donor_fit": "Limited",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "22-3382037",
     "charity_name": "Islamic Educational Foundation",
-    "amal_score": 49,
+    "amal_score": 54,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:16:01",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 22,
       "data_confidence": 0.6,
-      "impact": 28
+      "impact": 33
     },
     "score_details": {
       "alignment": {
@@ -259,11 +282,11 @@
           },
           {
             "evidence": "Working capital: 16.3 months (HIGH)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 4,
+            "improvement_suggestion": "Document why reserves above your policy target are intentional (e.g., restrictions, volatility, planned commitments) and define deployment triggers.",
+            "improvement_value": 1,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 1,
+            "scored": 6,
             "status": "full"
           },
           {
@@ -306,42 +329,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 28/50",
+        "rationale": "Delivery: capacity building; Impact 33/50",
         "rubric_archetype": "COMMUNITY",
-        "score": 28
+        "score": 33
       },
-      "judge_issues": [
-        {
-          "field": "impact_rationale",
-          "judge": "score",
-          "message": "The rationale mentions a lack of third-party impact verification resulting in a medium impact score, but the 'Evidence & Outcomes' component in the score details is marked as 'VERIFIED' and scored 10/10. This suggests a contradiction or missing information in the rationale.",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -1,
       "risks": {
         "overall_risk_level": "LOW",
@@ -357,7 +348,7 @@
         ],
         "total_deduction": -1
       },
-      "score_summary": "Islamic Education Foundation of New Jersey Inc earns 49/100 due to good impact and moderate alignment (minor risk deductions applied).",
+      "score_summary": "Islamic Education Foundation of New Jersey Inc shows good impact and moderate alignment (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -369,553 +360,40 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization focuses on religious and cultural education and maintains specific financial health metrics.",
+          "claim": "The organization operates Al-Ghazaly High School and Al-Hikmah Elementary School and maintains specific financial metrics including working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/223382037"
         },
         {
-          "claim": "The foundation reported total revenue of $4,637,834 and operates Al-Ghazaly High School and Al-Hikmah Elementary School with a 71.5% program expense ratio.",
+          "claim": "The foundation reported total revenue of $4,637,834 and a program expense ratio of 71.5%.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/223382037"
         },
         {
-          "claim": "The organization accepts charitable contributions and provides options for general giving.",
+          "claim": "The organization accepts donations through various methods including general charitable giving and sadaqah.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.iefschools.org/donate"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate score due to solid financial stability and efficient fundraising, balanced against limited transparency in impact reporting and a specialized religious-cultural focus.",
+      "amal_score_rationale": "The organization earns a moderate score due to its solid financial stability and efficient fundraising, though its overall impact score is tempered by a program expense ratio that suggests room for operational optimization.",
       "areas_for_improvement": [
-        "Limited public documentation regarding specific impact metrics and program outcomes",
-        "Lower alignment for donors seeking high-urgency humanitarian interventions"
+        "program expense ratio of 71.5% is below the industry benchmark for high-performing educational charities",
+        "Limited public documentation regarding specific long-term impact metrics or student outcomes"
       ],
       "dimension_explanations": {
-        "alignment": "As a religious and cultural institution, the organization offers a specific donor fit for those interested in Islamic education and sadaqah-eligible giving [3]. The alignment score reflects its specialized focus rather than broad-scale humanitarian urgency [1].",
-        "impact": "The foundation demonstrates a commitment to capacity building by allocating a 71.5% program expense ratio toward its educational facilities [2]. While it holds 16.3 months of working capital, the lack of third-party impact verification results in a medium impact score [1]."
+        "alignment": "The organization shows moderate alignment for donors seeking to support religious and cultural education, though it may have lower fit for those prioritizing urgent humanitarian relief [1]. It is categorized as sadaqah-eligible, providing a pathway for general voluntary charity within the New Jersey Muslim community [3].",
+        "impact": "The foundation demonstrates moderate impact through capacity building, utilizing a total revenue of $4,637,834 to operate its school systems [2]. While it maintains a healthy 16.3 months of working capital, its program expense ratio of 71.5% indicates that nearly 30% of funds are directed toward administrative or non-programmatic costs [1][2]."
       },
-      "headline": "The Islamic Education Foundation of New Jersey Inc provides comprehensive faith-based education through its network of elementary and secondary schools.",
+      "headline": "The Islamic Education Foundation of New Jersey Inc provides comprehensive faith-based academic instruction through its network of elementary and high school programs.",
       "strengths": [
-        "Maintains a high fundraising efficiency of $0.00 per $1 raised",
-        "Strong liquidity with 16.3 months of working capital available"
+        "Strong short-term liquidity with 16.3 months of working capital available",
+        "High fundraising efficiency with $0.00 spent per $1 raised",
+        "Established educational track record across multiple grade levels"
       ],
-      "summary": "The Islamic Education Foundation of New Jersey Inc is a non-profit organization dedicated to establishing and operating pre-school, elementary, and high school programs [1]. The foundation manages Al-Ghazaly High School and Al-Hikmah Elementary School to serve the educational needs of the community [2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "operating since 1983",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "Founded: 1983",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/223382037"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Al-Ghazaly High School and Al-Hikmah Elementary School",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "ESTABLISH AND OPERATE PRE-SCHOOL, ELEMENTARY, HIGH SCHOOL",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/223382037"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $4,637,834",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total revenue: 4,637,834",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/223382037"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "71.5% program expense ratio",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Program service expenses: 4,281,367 / Total expenses: 4,281,367",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/223382037"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program service revenue totaling $4,279,911",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Program service revenue: 4,279,911",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/223382037"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$246,990 in public contributions",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Contributions and grants: 246,990",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/223382037"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total assets of $5,926,529",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Total assets: 5,926,529",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/223382037"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "MAP Testing conducted twice annually",
-          "confidence": 0.9,
-          "id": "[8]",
-          "quote": "MAP Testing conducted twice annually",
-          "source_name": "IEF Schools Calendar",
-          "source_type": "website",
-          "source_url": "https://www.iefschools.org/s/_ALH23-24-Calendar.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "top 20% of private STEM high schools",
-          "confidence": 0.85,
-          "id": "[9]",
-          "quote": "Nationally Top 20% Private STEM High Schools",
-          "source_name": "External Discovery - Awards",
-          "source_type": "website",
-          "source_url": "https://www.iefschools.org"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.00 per $1 raised",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Fundraising Efficiency: $0.00",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/223382037"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "16.3 months of working capital",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Working Capital: 16.3 months",
-          "source_name": "Baseline Financial Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/223382037"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Cognia certified",
-          "confidence": 0.95,
-          "id": "[12]",
-          "quote": "IEF Schools are Cognia certified",
-          "source_name": "External Discovery - Accreditation",
-          "source_type": "website",
-          "source_url": "https://www.iefschools.org"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "exceptional accreditation score of 352",
-          "confidence": 0.95,
-          "id": "[13]",
-          "quote": "accredited by Cognia with an exceptional score of 352",
-          "source_name": "External Discovery - Accreditation",
-          "source_type": "website",
-          "source_url": "https://www.iefschools.org"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer program ratio median of 81.7%",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Peer Program Ratio Median: 81.7%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/223382037"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "rated as minimal with only 4 members",
-          "confidence": 0.9,
-          "id": "[15]",
-          "quote": "Board governance: MINIMAL (4 members)",
-          "source_name": "Score Details - Governance",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/223382037"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "missing beneficiary data",
-          "confidence": 0.9,
-          "id": "[16]",
-          "quote": "No beneficiary data; moderate program ratio",
-          "source_name": "Score Details - Impact",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/223382037"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "strong Islamic identity",
-          "confidence": 0.9,
-          "id": "[17]",
-          "quote": "Muslim-focused organization (+2); Islamic identity (+1)",
-          "source_name": "Score Details - Alignment",
-          "source_type": "website",
-          "source_url": "https://www.iefschools.org"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Sadaqah-eligible only",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Wallet Tag: SADAQAH-ELIGIBLE",
-          "source_name": "Baseline Context",
-          "source_type": "website",
-          "source_url": "https://www.iefschools.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "highlighting the humanitarian dimensions",
-          "confidence": 0.8,
-          "id": "[19]",
-          "quote": "highlight humanitarian dimensions of your work",
-          "source_name": "Score Details - Improvement",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/223382037"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a moderate score due to solid financial stability and efficient fundraising, balanced against limited transparency in impact reporting and a specialized religious-cultural focus.",
-      "amal_scores": {
-        "amal_score": 49,
-        "confidence_scores": {
-          "alignment": 22,
-          "data_confidence": 0.6,
-          "impact": 28
-        },
-        "confidence_tier": "MEDIUM",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Governance Transparency",
-          "citation_ids": [
-            "[15]"
-          ],
-          "context": "The organization's board governance is currently <cite id=\"15\">rated as minimal with only 4 members</cite>, which may limit diverse oversight."
-        },
-        {
-          "area": "Impact Reporting",
-          "citation_ids": [
-            "[16]"
-          ],
-          "context": "There is <cite id=\"16\">missing beneficiary data</cite>, making it difficult to calculate the specific cost-per-student impact."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[2]"
-        ],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": null,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "The organization has audited financial statements but is not currently evaluated by the BBB Wise Giving Alliance."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[15]",
-          "[16]"
-        ],
-        "mitigation_notes": "The foundation's long history and successful accreditation suggest strong internal management despite limited public reporting.",
-        "risk_factors": [
-          "<cite id=\"15\">Small board size (4 members)</cite> may limit independent oversight.",
-          "<cite id=\"16\">Lack of public beneficiary data</cite> prevents efficiency benchmarking."
-        ],
-        "summary": "The primary concerns involve <cite id=\"15\">limited governance oversight</cite> and a lack of detailed impact metrics for public review."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 7,
-          "rating": 7,
-          "website": 5
-        },
-        "high_confidence_count": 16,
-        "total_count": 19,
-        "unique_sources": 3
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023; accreditation from 2023-2025",
-        "data_gaps": [
-          "Missing 2024 financials",
-          "No beneficiary counts",
-          "Limited board size"
-        ],
-        "level": "MEDIUM",
-        "notes": "Strong financial data but limited impact metrics.",
-        "score": 60,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 60,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing specific beneficiary counts",
-          "Small board size"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 19,
-        "unique_sources": 3,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[17]",
-            "[18]",
-            "[19]"
-          ],
-          "explanation": "While the organization has a <cite id=\"17\">strong Islamic identity</cite>, it scores lower on alignment for general donors because it is <cite id=\"18\">Sadaqah-eligible only</cite> and focuses on a niche religious-cultural cause.",
-          "improvement": "The foundation could improve alignment by <cite id=\"19\">highlighting the humanitarian dimensions</cite> of its scholarship programs for needy students."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]",
-            "[12]",
-            "[15]"
-          ],
-          "explanation": "Donors can find confidence in the foundation's <cite id=\"1\">40-year track record</cite> and its <cite id=\"12\">Cognia accreditation</cite>. However, credibility is tempered by <cite id=\"15\">minimal board size</cite> and a lack of public transparency seals.",
-          "improvement": "To strengthen credibility, the foundation should <cite id=\"15\">expand its board of directors</cite> and pursue a Candid Seal of Transparency."
-        },
-        "impact": {
-          "citation_ids": [
-            "[4]",
-            "[8]",
-            "[16]"
-          ],
-          "explanation": "The foundation delivers high-quality education with <cite id=\"4\">71.5% of expenses</cite> going to programs and <cite id=\"8\">regular academic testing</cite> to ensure outcomes.",
-          "improvement": "Impact measurement would benefit from <cite id=\"16\">tracking and reporting specific beneficiary counts</cite> to enable a clear cost-per-beneficiary analysis."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "RELIGIOUS_CULTURAL",
-        "citation_ids": [
-          "[1]",
-          "[18]"
-        ],
-        "evidence_rigor": "Grade B - Accredited academic outcomes",
-        "geographic_focus": [
-          "USA (New Jersey)"
-        ],
-        "giving_style": "Institutional Support",
-        "tax_deductible": true,
-        "zakat_asnaf_served": null,
-        "zakat_status": "SADAQAH-ONLY"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 4637834,
-        "citation_ids": [
-          "[2]",
-          "[11]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0,
-        "industry_program_ratio": 75,
-        "peer_count": 35,
-        "peer_program_ratio_median": 81.7,
-        "program_expense_ratio": 0.7154,
-        "reserves_months": 16.3,
-        "revenue_cagr_3yr": 12.5,
-        "working_capital_months": 16.3,
-        "yearly_financials": [
-          {
-            "expenses": 4281367,
-            "net_assets": 5829084,
-            "revenue": 4637834,
-            "year": 2023
-          },
-          {
-            "expenses": 3790928,
-            "net_assets": 2476609,
-            "revenue": 4370006,
-            "year": 2022
-          },
-          {
-            "expenses": 3729491,
-            "net_assets": 712030,
-            "revenue": 3661999,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct service provider; does not primarily make grants.",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "USA"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "The Islamic Education Foundation of New Jersey Inc provides comprehensive faith-based education through its network of elementary and secondary schools.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value long-term investment in Islamic educational infrastructure and want to support established schools with high academic standards.",
-        "citation_ids": [
-          "[1]",
-          "[4]",
-          "[18]"
-        ],
-        "donor_motivations": [
-          "Want to support faith-based STEM education",
-          "Value institutional longevity and proven academic track records",
-          "Prefer organizations with zero fundraising overhead",
-          "Interested in domestic community building in the US"
-        ],
-        "giving_considerations": [
-          "",
-          "The organization is a mature institution with significant tuition-based revenue",
-          "Focus is localized to the New Jersey educational landscape"
-        ],
-        "not_ideal_for": ""
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[8]",
-          "[12]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B reflects <cite id=\"12\">Cognia certification</cite> and the use of <cite id=\"8\">standardized MAP testing</cite> to track student progress over time.",
-        "external_evaluations": [
-          "Cognia Accreditation Report"
-        ],
-        "outcome_tracking_years": 40,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "The foundation creates impact by providing a dual-curriculum environment that fosters both academic excellence and Islamic identity, validated through <cite id=\"12\">external accreditation</cite>.",
-        "why_evidence_matters": "Accreditation ensures that the educational services provided meet national standards for quality and student growth."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[12]"
-        ],
-        "founded_year": 1983,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": 12.5,
-        "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "While tuition covers most costs, expansion of STEM programs and scholarships requires additional philanthropic support.",
-        "strategic_priorities": [
-          "Maintain Cognia accreditation",
-          "Enhance STEM curriculum",
-          "Expand Quranic studies"
-        ],
-        "years_operating": 43
-      },
-      "organizational_capacity": {
-        "board_size": 4,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": "Not Publicly Listed",
-        "citation_ids": [
-          "[2]",
-          "[15]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "New Jersey, USA",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "4",
-          "10",
-          "14"
-        ],
-        "differentiator": "IEF stands out with a <cite id=\"4\">71.5% program ratio</cite> and <cite id=\"10\">zero fundraising costs</cite> compared to the <cite id=\"14\">81.7% peer median</cite>.",
-        "peer_group": "Religious and Cultural Education",
-        "similar_orgs": [
-          "Islamic Society of Northwest Suburbs of Chicago",
-          "Islamic Foundation of Nevada",
-          "MAS Boston Society"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar K-12 focus and size",
-          "name": "Islamic Society of Northwest Suburbs of Chicago"
-        },
-        {
-          "differentiator": "Similar religious and educational services",
-          "name": "Islamic Foundation of Nevada"
-        },
-        {
-          "differentiator": "Focus on religious services and community education",
-          "name": "MAS Boston Society"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[10]"
-          ],
-          "detail": "The organization maintains a <cite id=\"10\">fundraising efficiency of $0.00 per $1 raised</cite>, ensuring that donor contributions are not eroded by solicitation costs.",
-          "point": "Exceptional Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[11]"
-          ],
-          "detail": "IEF holds <cite id=\"11\">16.3 months of working capital</cite>, providing a significant safety net against economic volatility.",
-          "point": "Robust Financial Liquidity"
-        },
-        {
-          "citation_ids": [
-            "[12]",
-            "[13]"
-          ],
-          "detail": "The schools are <cite id=\"12\">Cognia certified</cite>, with Al-Ghazaly and Al-Hikmah achieving an <cite id=\"13\">exceptional accreditation score of 352</cite>.",
-          "point": "Academic Accreditation"
-        }
-      ],
-      "strengths_deep_dive": [
-        "The Islamic Education Foundation's primary strength lies in its institutional maturity and financial stability. Having <cite id=\"1\">operated for over 40 years</cite>, it has built a substantial asset base, with <cite id=\"7\">net assets exceeding $5.8 million</cite> as of 2023. This stability is paired with high operational efficiency; the organization reports a <cite id=\"4\">71.5% program expense ratio</cite>, which is significantly higher than the <cite id=\"14\">peer program ratio median of 81.7%</cite> for religious and cultural organizations. Furthermore, its ability to generate <cite id=\"5\">over $4.2 million in program service revenue</cite> suggests a sustainable model that does not rely solely on volatile philanthropic giving."
-      ],
-      "summary": "The Islamic Education Foundation of New Jersey Inc (IEF) is a long-standing educational institution that has been <cite id=\"1\">operating since 1983</cite>. The foundation manages a comprehensive faith-based academic network, including <cite id=\"2\">Al-Ghazaly High School and Al-Hikmah Elementary School</cite>, which provide integrated Islamic and secular curricula. Financially, the organization demonstrates significant scale for a regional educational body, reporting <cite id=\"3\">total revenue of $4,637,834</cite> in the 2023 tax year. A notable feature of its financial model is its <cite id=\"4\">71.5% program expense ratio</cite>, indicating that all reported functional expenses are directed toward its educational mission. The foundation's primary revenue stream is <cite id=\"5\">program service revenue totaling $4,279,911</cite>, largely derived from tuition and school-related activities, supplemented by <cite id=\"6\">$246,990 in public contributions</cite>. IEF maintains a strong balance sheet with <cite id=\"7\">total assets of $5,926,529</cite> and minimal liabilities, ensuring long-term stability for its student body. Academically, the schools utilize standardized <cite id=\"8\">MAP Testing conducted twice annually</cite> to monitor student progress and maintain high standards, contributing to its status as being among the <cite id=\"9\">top 20% of private STEM high schools</cite>.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "The Islamic Education Foundation of New Jersey Inc operates educational institutions including Al-Ghazaly High School and Al-Hikmah Elementary School to provide pre-school through high school education [1][2]. The organization facilitates community support through sadaqah and general charitable giving to maintain its academic infrastructure [3]."
     }
   }
 }

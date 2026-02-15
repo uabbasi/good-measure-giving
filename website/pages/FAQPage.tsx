@@ -51,6 +51,11 @@ export const FAQPage: React.FC = () => {
     },
     {
       category: 'methodology',
+      q: "Why do I see qualitative labels instead of a big number?",
+      a: "We intentionally prioritize qualitative signals to avoid false precision. A charity now shows an archetype (what kind of organization it is), an evidence stage (Verified, Established, Building, or Limited Evidence), four signal states (Evidence, Financial Health, Donor Fit, Risk), and a recommendation cue (High Confidence, Good Signals, Mixed Signals, or Limited Signals). The numeric score still exists and is available in collapsed methodology details, but it is no longer the primary cue for browsing."
+    },
+    {
+      category: 'methodology',
       q: "What does \u2018Impact\u2019 measure?",
       a: "Impact (50 points) measures how effectively a charity turns donations into real-world change. The largest component is cost per beneficiary (20 points), comparing each charity against cause-adjusted benchmarks for similar organizations. We also evaluate directness of service delivery (7 points), financial health and reserves (7 points), program expense ratio (6 points), evidence and outcome tracking (5 points), theory of change (3 points), and governance quality (2 points). Evidence quality is assessed on a five-level scale: Verified (independent third-party evaluation), Tracked (3+ years of outcome data), Measured (1-2 years of data), Reported (basic output tracking only), and Unverified (no structured tracking)."
     },

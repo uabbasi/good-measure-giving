@@ -2,7 +2,7 @@
   "id": "47-3187591",
   "ein": "47-3187591",
   "name": "Muhsen",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Muhsen is a nonprofit umbrella organization serving children and adults with any intellectual, mental, or physical disability. Muhsens aim is to establi...",
   "programs": [
     "Awareness Campaigns",
@@ -49,7 +49,11 @@
     "netAssets": 3359199,
     "workingCapitalMonths": "37.90"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 5,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": null,
     "geographicCoverage": [
@@ -59,7 +63,7 @@
   },
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-09 21:35:59",
+  "lastUpdated": "2026-02-14 19:36:05",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -176,17 +180,36 @@
     "Dedicated zakat page found at https://muhsen.org/zakat (Source: https://muhsen.org/zakat)"
   ],
   "archetype": "SOVEREIGNTY",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "SOVEREIGNTY",
+    "archetype_label": "Sovereignty Builder",
+    "evidence_stage": "Established",
+    "signal_states": {
+      "evidence": "Moderate",
+      "financial_health": "Limited",
+      "donor_fit": "Moderate",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "47-3187591",
     "charity_name": "Muhsen",
-    "amal_score": 48,
+    "amal_score": 49,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:26:23",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 31,
       "data_confidence": 0.85,
-      "impact": 18
+      "impact": 19
     },
     "score_details": {
       "alignment": {
@@ -274,11 +297,11 @@
           },
           {
             "evidence": "Working capital: 37.9 months (EXCESSIVE)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
+            "improvement_suggestion": "Publish a capital deployment plan so very high reserves are intentionally used for mission delivery while preserving a prudent safety buffer.",
             "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 0,
+            "scored": 1,
             "status": "full"
           },
           {
@@ -321,42 +344,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "INDIRECT",
         "impact_design_categories": [],
-        "rationale": "Delivery: indirect; Impact 18/50",
+        "rationale": "Delivery: indirect; Impact 19/50",
         "rubric_archetype": "COMMUNITY",
-        "score": 18
+        "score": 19
       },
-      "judge_issues": [
-        {
-          "field": "zakat.evidence",
-          "judge": "crawl_quality",
-          "message": "ZAKAT-ELIGIBLE claimed but no explicit zakat evidence found on website",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[0].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'vertexaisearch.cloud.google.com' is not a known trusted evaluator",
-          "severity": "info"
-        }
-      ],
       "risk_deduction": -1,
       "risks": {
         "overall_risk_level": "LOW",
@@ -372,7 +363,7 @@
         ],
         "total_deduction": -1
       },
-      "score_summary": "Muhsen earns 48/100 due to good alignment and limited impact, with zakat compliance (minor risk deductions applied).",
+      "score_summary": "Muhsen shows good alignment and limited impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": "amil",
         "bonus_points": 0,
@@ -384,460 +375,76 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Muhsen has a Charity Navigator score of 86.5/100 and a program expense ratio of 59.7%.",
+          "claim": "Muhsen holds a Charity Navigator score of 86.5/100.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/473187591"
         },
         {
-          "claim": "The organization is Zakat-eligible and maintains a formal zakat policy.",
+          "claim": "The organization is zakat-eligible and maintains a specific zakat policy.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://muhsen.org/zakat"
         },
         {
-          "claim": "Total revenue for the period was $1,881,273.",
+          "claim": "Total revenue was $1,881,273 with a program expense ratio of 59.7%.",
           "id": "[3]",
           "source_name": "Form 990 (2022)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/473187591"
         },
         {
-          "claim": "Muhsen operates as an umbrella organization for Muslims with special education needs and manages active weekend schools.",
+          "claim": "Muhsen operates active weekend schools and manages volunteers in CA, IL, and TX.",
           "id": "[4]",
           "source_name": "MUHSEN Toolkit/Media Kit",
           "source_url": "https://muhsen.org/wp-content/uploads/2024/08/MUHSEN_MediaKit_091224.pdf"
         },
         {
-          "claim": "The organization tracks needs survey respondents and manages registered volunteers in CA, IL, and TX.",
+          "claim": "The organization tracks total diagnoses through a comprehensive needs survey.",
+          "id": "[5]",
+          "source_name": "MUHSEN Toolkit/Media Kit",
+          "source_url": "https://muhsen.org/wp-content/uploads/2024/08/MUHSEN_MediaKit_091224.pdf"
+        },
+        {
+          "claim": "Programs include awareness campaigns and accommodation services for individuals with disabilities.",
+          "id": "[6]",
+          "source_name": "MUHSEN Toolkit/Media Kit",
+          "source_url": "https://muhsen.org/wp-content/uploads/2024/08/MUHSEN_MediaKit_091224.pdf"
+        },
+        {
+          "claim": "Organizational data includes tracking metrics for special education needs.",
+          "id": "[7]",
+          "source_name": "MUHSEN Toolkit/Media Kit",
+          "source_url": "https://muhsen.org/wp-content/uploads/2024/08/MUHSEN_MediaKit_091224.pdf"
+        },
+        {
+          "claim": "The organization utilizes registered volunteers to support its mission across various regions.",
           "id": "[8]",
           "source_name": "MUHSEN Toolkit/Media Kit",
           "source_url": "https://muhsen.org/wp-content/uploads/2024/08/MUHSEN_MediaKit_091224.pdf"
+        },
+        {
+          "claim": "Muhsen provides multiple donation options and giving methods for supporters.",
+          "id": "[9]",
+          "source_name": "Charity Website - Donate",
+          "source_url": "https://giving.muhsen.org/-/XVAWFZLA"
         }
       ],
-      "amal_score_rationale": "Muhsen earns a moderate overall score due to its unique niche in the Muslim community and strong financial stability, though its program spending ratio and indirect impact model suggest room for operational growth.",
+      "amal_score_rationale": "Muhsen earns a moderate overall score due to its unique humanitarian focus and strong financial stability, though its program spending ratio and indirect impact model suggest room for operational optimization.",
       "areas_for_improvement": [
-        "program expense ratio of 59.7% is lower than industry benchmarks for direct-service charities",
-        "Indirect impact model may result in less direct oversight of individual beneficiary outcomes"
+        "program expense ratio of 59.7% is lower than industry benchmarks for high-impact charities",
+        "Indirect impact model limits the directness of service delivery metrics"
       ],
       "dimension_explanations": {
-        "alignment": "Muhsen shows medium alignment for donors seeking to support humanitarian causes within the Muslim community, specifically addressing the urgent need for disability inclusion [2][4]. The organization is Zakat-eligible and maintains a high data confidence level of 0.85, though its specific donor fit is rated as medium [1][2].",
-        "impact": "The organization demonstrates moderate impact through indirect services such as awareness campaigns and community toolkits, maintaining a program expense ratio of 59.7% [1][3]. While it tracks total diagnoses and manages active weekend schools, the cost per beneficiary is not publicly specified, leading to an impact score of 18/50 [4][8]."
+        "alignment": "Muhsen shows medium donor alignment as a specialized humanitarian cause within the Muslim community, offering a clear zakat policy for eligible programs [2][9]. Its track record is supported by active volunteer bases in California, Illinois, and Texas, addressing the urgent need for disability inclusion in religious spaces [8].",
+        "impact": "The organization demonstrates moderate impact through an indirect service model, tracking total diagnoses and needs survey data to inform its advocacy [5][7]. While it maintains a Charity Navigator score of 86.5/100 and a total revenue of $1,881,273, its program expense ratio is 59.7%, indicating that a significant portion of funds is directed toward administrative or growth needs rather than direct programming [1][3]."
       },
-      "headline": "Muhsen serves as a vital umbrella organization dedicated to establishing inclusive communities for Muslims with disabilities through specialized education and advocacy.",
+      "headline": "Muhsen serves as a leading umbrella organization dedicated to establishing inclusive environments for Muslims with intellectual, mental, and physical disabilities.",
       "strengths": [
-        "High fundraising efficiency with only $0.09 spent per $1 raised",
-        "Strong liquidity with 37.9 months of working capital available",
+        "High fundraising efficiency of $0.09 per $1 raised",
+        "Strong liquidity with 37.9 months of working capital",
         "Established network of active weekend schools and volunteers across multiple states"
       ],
-      "summary": "Muhsen (Muslims Understanding & Helping Special Education Needs) provides comprehensive support for children and adults with intellectual, mental, or physical disabilities [4]. The organization is recognized as Zakat-eligible and maintains a Charity Navigator score of 86.5/100, reflecting its commitment to accountability and financial health [1][2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "Charity Navigator score of 86.5/100",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "Overall Score 86.5/100; Accountability & Finance: 73; Culture & Community: 100",
-          "source_name": "Charity Navigator - Muhsen",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/473187591"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "zakat-eligible",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "MUHSEN is a Zakat eligible organization.",
-          "source_name": "Muhsen - Zakat",
-          "source_type": "website",
-          "source_url": "https://muhsen.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $1,881,273",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total revenue: $1,881,273",
-          "source_name": "ProPublica - Muhsen Form 990",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/473187591"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "inclusive communities for Muslims with disabilities",
-          "confidence": 0.9,
-          "id": "[4]",
-          "quote": "MUHSEN's aim is to establish inclusive communities for Muslims with disabilities.",
-          "source_name": "MUHSEN Media Kit",
-          "source_type": "website",
-          "source_url": "https://muhsen.org/wp-content/uploads/2024/08/MUHSEN_MediaKit_091224.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "intellectual, mental, or physical disabilities",
-          "confidence": 0.95,
-          "id": "[5]",
-          "quote": "serving children and adults with any intellectual, mental, or physical disability.",
-          "source_name": "MUHSEN Media Kit",
-          "source_type": "website",
-          "source_url": "https://muhsen.org/wp-content/uploads/2024/08/MUHSEN_MediaKit_091224.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "15 active weekend schools",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Active Weekend Schools: 15",
-          "source_name": "MUHSEN Media Kit",
-          "source_type": "website",
-          "source_url": "https://muhsen.org/wp-content/uploads/2024/08/MUHSEN_MediaKit_091224.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "needs survey tracking 2,314 diagnoses",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Total Diagnoses Tracked in Needs Survey: 2314",
-          "source_name": "MUHSEN Media Kit",
-          "source_type": "website",
-          "source_url": "https://muhsen.org/wp-content/uploads/2024/08/MUHSEN_MediaKit_091224.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "502 registered volunteers",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Active Volunteers in CA, IL, TX: 502",
-          "source_name": "MUHSEN Media Kit",
-          "source_type": "website",
-          "source_url": "https://muhsen.org/wp-content/uploads/2024/08/MUHSEN_MediaKit_091224.pdf"
-        }
-      ],
-      "amal_score_rationale": "Muhsen earns a moderate overall score due to its unique niche in the Muslim community and strong financial stability, though its program spending ratio and indirect impact model suggest room for operational growth.",
-      "amal_scores": {
-        "amal_score": 48,
-        "confidence_scores": {
-          "alignment": 31,
-          "data_confidence": 0.85,
-          "impact": 18
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Program Expense Ratio",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "The <cite id=\"1\">program expense ratio of 59.7%</cite> is lower than the <cite id=\"1\">peer median of 89.7%</cite>, suggesting high administrative or reserve allocations."
-        },
-        {
-          "area": "Excessive Capital Reserves",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "Holding <cite id=\"1\">37.9 months of working capital</cite> may indicate that funds are being accumulated rather than deployed for immediate impact."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[1]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "Maintains high governance standards with an independent board and audited financials."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "mitigation_notes": "The organization's high revenue growth of <cite id=\"3\">32.7% CAGR</cite> may explain the temporary accumulation of reserves as they scale operations.",
-        "risk_factors": [
-          "<cite id=\"1\">program expense ratio of 59.7%</cite> is below the 75% industry standard",
-          "<cite id=\"1\">37.9 months of working capital</cite> suggests under-utilization of available funds"
-        ],
-        "summary": "The primary concern is financial deployment efficiency, as evidenced by a <cite id=\"1\">program ratio below 60%</cite> and <cite id=\"1\">excessive working capital</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 3,
-          "rating": 6,
-          "website": 6
-        },
-        "high_confidence_count": 15,
-        "total_count": 15,
-        "unique_sources": 5
-      },
-      "confidence": {
-        "data_freshness": "Financials from 2022, Program data from 2024",
-        "data_gaps": [
-          "Missing 2023 financial breakdown",
-          "No external impact evaluation"
-        ],
-        "level": "HIGH",
-        "notes": "Strong alignment between website claims and third-party ratings.",
-        "score": 85,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "MUHSEN Media Kit",
-          "Candid"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 85,
-        "form_990_tax_year": 2022,
-        "known_gaps": [
-          "Missing 2023 Form 990",
-          "No third-party impact evaluation"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 5,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[2]"
-          ],
-          "explanation": "Strong fit for Muslim donors as it is <cite id=\"2\">zakat-eligible</cite> and serves the <cite id=\"2\">masakin and fuqara</cite> within the disability community.",
-          "improvement": "The charity could improve alignment by <cite id=\"2\">adding a dedicated zakat page</cite> that highlights the specific humanitarian dimensions of its work."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]",
-            "[3]"
-          ],
-          "explanation": "Donors can trust Muhsen due to its <cite id=\"1\">86.86.5/100 from Charity Navigator rating</cite> and its status as a <cite id=\"3\">501(c)(3) tax-exempt organization</cite> with a Platinum Candid seal.",
-          "improvement": "To strengthen credibility, the charity could <cite id=\"1\">improve its financial score</cite> by better aligning its program-to-administrative expense ratios with industry standards."
-        },
-        "impact": {
-          "citation_ids": [
-            "[1]",
-            "[4]",
-            "[6]"
-          ],
-          "explanation": "Impact is demonstrated through the management of <cite id=\"6\">15 schools</cite> and <cite id=\"4\">accommodation services</cite>, though the <cite id=\"1\">59.7% program ratio</cite> limits the impact score.",
-          "improvement": "Impact measurement would benefit from <cite id=\"1\">tracking cost-per-beneficiary</cite> and documenting a clear <cite id=\"4\">theory of change</cite>."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[2]",
-          "[3]",
-          "[4]"
-        ],
-        "evidence_rigor": "Grade C - Outcome tracking via Candid and internal surveys",
-        "geographic_focus": [
-          "United States",
-          "Canada"
-        ],
-        "giving_style": "Community Infrastructure",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "masakin (needy)",
-          "fuqara (poor)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 1881273,
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "cn_financial_score": 73,
-        "cn_overall_score": 86.5,
-        "fundraising_ratio": 0.09,
-        "industry_program_ratio": 0.75,
-        "peer_count": 58,
-        "peer_program_ratio_median": 0.897,
-        "program_expense_ratio": 0.5966,
-        "reserves_months": 37.9,
-        "revenue_cagr_3yr": 32.7,
-        "transparency_score": 100,
-        "working_capital_months": 37.9,
-        "yearly_financials": [
-          {
-            "expenses": 1064675,
-            "net_assets": 3359199,
-            "revenue": 1881273,
-            "year": 2022
-          },
-          {
-            "expenses": 559454,
-            "net_assets": 2541851,
-            "revenue": 1601299,
-            "year": 2021
-          },
-          {
-            "expenses": 454775,
-            "net_assets": 1674588,
-            "revenue": 1068112,
-            "year": 2020
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[4]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct program implementation and mosque certification",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "United States",
-          "Canada"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "Muhsen serves as a vital umbrella organization dedicated to establishing inclusive communities for Muslims with disabilities through specialized education and advocacy.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support long-term institutional inclusivity for Muslims with disabilities and value high organizational transparency over immediate direct-aid ratios.",
-        "citation_ids": [
-          "[1]",
-          "[2]",
-          "[3]"
-        ],
-        "donor_motivations": [
-          "Want to address the often-overlooked needs of disabled Muslims in mosques",
-          "Value a Platinum-level transparency rating from Candid",
-          "Prefer supporting domestic infrastructure and educational programs",
-          "Looking for zakat-eligible opportunities in the disability sector"
-        ],
-        "giving_considerations": [
-          "The charity is in a growth phase with a 32.7% revenue CAGR",
-          "A significant portion of funds is currently held in reserves",
-          "The impact is often indirect through mosque training and school support"
-        ],
-        "not_ideal_for": "Donors who prioritize organizations with a 90%+ program expense ratio or those seeking international emergency relief."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[7]",
-          "[8]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects consistent tracking of <cite id=\"7\">beneficiary diagnoses</cite> and <cite id=\"8\">volunteer numbers</cite>, but lacks independent third-party impact evaluations.",
-        "external_evaluations": [
-          "Candid Outcome Metrics"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Muhsen creates impact by training community leaders, certifying mosques, and operating weekend schools to integrate individuals with disabilities into the fabric of Muslim society.",
-        "why_evidence_matters": "Evidence ensures that mosque certifications and weekend schools actually lead to better social outcomes for individuals with disabilities."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[3]",
-          "[7]"
-        ],
-        "founded_year": null,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": 32.7,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"3\">32.7% revenue CAGR</cite> and a growing <cite id=\"7\">needs survey database</cite>, Muhsen has significant room to expand its school network and mosque certifications.",
-        "strategic_priorities": [
-          "Expand weekend school network",
-          "Increase mosque certifications",
-          "Enhance Special Needs Hajj services"
-        ],
-        "years_operating": 11
-      },
-      "organizational_capacity": {
-        "board_size": 5,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": "Not Listed",
-        "citation_ids": [
-          "[1]",
-          "[4]",
-          "[8]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "United States and Canada",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 0.77,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": 502
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[4]"
-        ],
-        "differentiator": "Distinguished by its <cite id=\"4\">exclusive focus on special education needs</cite> within the Muslim community, a niche not covered by larger relief groups.",
-        "peer_group": "Humanitarian & Religious Services",
-        "similar_orgs": [
-          "Muslim American Youth Foundation",
-          "Tayba Foundation",
-          "Islamic Society of Central Jersey"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Focuses on youth religious services rather than disability-specific needs",
-          "name": "Muslim American Youth Foundation"
-        },
-        {
-          "differentiator": "Focuses on incarcerated Muslims rather than disability advocacy",
-          "name": "Tayba Foundation"
-        },
-        {
-          "differentiator": "Local community center vs. Muhsen's national umbrella model",
-          "name": "Islamic Society of Central Jersey"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The organization spends only <cite id=\"1\">$0.04 to raise every $1</cite>, significantly outperforming many humanitarian peers.",
-          "point": "Exceptional Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[6]",
-            "[8]"
-          ],
-          "detail": "Muhsen has successfully established <cite id=\"6\">15 active weekend schools</cite> and mobilized <cite id=\"8\">over 500 volunteers</cite> in key states.",
-          "point": "Strong Community Infrastructure"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The charity holds a Platinum Seal of Transparency from Candid and a <cite id=\"1\">perfect 100/100 Culture & Community score</cite> from Charity Navigator.",
-          "point": "High Transparency Standards"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Muhsen's primary strength lies in its specialized niche and operational efficiency. While many organizations focus on general relief, Muhsen has built a <cite id=\"7\">database of 2,314 diagnoses</cite> to tailor its services to the specific needs of the disability community. Their financial model is remarkably lean in terms of acquisition, with <cite id=\"3\">fundraising efficiency of $0.09 per $1 raised</cite> according to baseline metrics, and even lower at <cite id=\"1\">$0.04 according to recent Charity Navigator data</cite>. This allows a higher portion of contributions to be directed toward their <cite id=\"4\">National Resource Directory</cite> and mosque accommodation services."
-      ],
-      "summary": "Muhsen (Muslims Understanding & Helping Special Education Needs) serves as a vital umbrella organization dedicated to establishing <cite id=\"4\">inclusive communities for Muslims with disabilities</cite> through specialized education and advocacy. The organization addresses a critical gap in the American Muslim landscape by providing support for individuals with <cite id=\"5\">intellectual, mental, or physical disabilities</cite>. With a <cite id=\"1\">Charity Navigator score of 86.5/100</cite>, Muhsen demonstrates a strong commitment to organizational culture and accountability. Financially, the charity reported <cite id=\"3\">total revenue of $1,881,273</cite> in its most recent filing, maintaining a high degree of liquidity with <cite id=\"1\">37.9 months of working capital</cite>. Their operational model is built on a robust network of <cite id=\"6\">15 active weekend schools</cite> and a dedicated force of <cite id=\"8\">502 registered volunteers</cite> across California, Illinois, and Texas. Beyond education, Muhsen facilitates <cite id=\"4\">Special Needs Hajj and Umrah trips</cite> and provides <cite id=\"4\">Empathetic Resolution Training</cite> to help mosques become more accessible. The organization also maintains a <cite id=\"7\">needs survey tracking 2,314 diagnoses</cite>, allowing for data-driven advocacy and service planning.",
-      "zakat_guidance": {
-        "classification": "amil",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "Muhsen (Muslims Understanding & Helping Special Education Needs) provides specialized programs including weekend schools, awareness campaigns, and accommodation services to support individuals with special needs [4][6]. The organization is recognized as zakat-eligible, allowing donors to fulfill their religious obligations while supporting disability advocacy [2]."
     }
   }
 }

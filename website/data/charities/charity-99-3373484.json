@@ -2,7 +2,7 @@
   "id": "99-3373484",
   "ein": "99-3373484",
   "name": "Yateem Foundation",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Providing food and shelter to displaced orphans in Syria to return to their original cities",
   "programs": [
     "Orphan Sponsorship",
@@ -59,7 +59,7 @@
   },
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-09 21:33:24",
+  "lastUpdated": "2026-02-14 19:36:27",
   "sourceAttribution": {
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
@@ -120,6 +120,25 @@
     "Found 'zakat al-fitr' on https://yateemfoundationusa.org/our-support/ (https://yateemfoundationusa.org/our-support/); Website donation methods mention zakat"
   ],
   "archetype": "DIRECT_SERVICE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "DIRECT_SERVICE",
+    "archetype_label": "Frontline Relief",
+    "evidence_stage": "Early",
+    "signal_states": {
+      "evidence": "Moderate",
+      "financial_health": "Limited",
+      "donor_fit": "Moderate",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "99-3373484",
     "charity_name": "Yateem Foundation",
@@ -218,7 +237,7 @@
           },
           {
             "evidence": "Working capital: unknown (UNKNOWN)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
+            "improvement_suggestion": "Publish operating-reserve levels and adopt a board-approved reserve policy (typically 3-12 months for most nonprofits).",
             "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
@@ -269,26 +288,6 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 16
       },
-      "judge_issues": [
-        {
-          "field": "financial.new_org",
-          "judge": "data_completeness",
-          "message": "New organization - Form 990 not yet due",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -296,7 +295,7 @@
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "Yateem Foundation USA earns 47/100 due to good alignment and limited impact, with zakat compliance.",
+      "score_summary": "Yateem Foundation USA shows good alignment and limited impact, with zakat compliance.",
       "zakat": {
         "asnaf_category": "masakin",
         "bonus_points": 0,
@@ -308,501 +307,39 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity provides food, shelter, and orphan sponsorship to displaced children in Syria and accepts Zakat-eligible donations.",
+          "claim": "The charity provides food, shelter, and orphan sponsorship for displaced children in Syria and is Zakat-eligible.",
           "id": "[1]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://yateemfoundationusa.org/our-support/"
         },
         {
-          "claim": "Yateem Foundation USA is a registered nonprofit identified by EIN 99-3373484.",
+          "claim": "Financial data including revenue and expenses are reported under EIN 99-3373484.",
+          "id": "[2]",
+          "source_name": "Form 990 (2025)",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/993373484"
+        },
+        {
+          "claim": "The organization is listed as a registered non-profit with available profile metadata.",
           "id": "[3]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/993373484"
         }
       ],
-      "amal_score_rationale": "The organization receives a moderate score reflecting its focus on an urgent humanitarian cause, though it is limited by low data confidence and a lack of detailed financial metrics.",
+      "amal_score_rationale": "The organization receives a moderate score due to its direct humanitarian focus on a high-urgency cause, though its overall rating is constrained by limited financial transparency and low data confidence.",
       "areas_for_improvement": [
-        "Limited public data regarding long-term program effectiveness",
-        "Low data confidence due to sparse financial reporting and third-party verification"
+        "Limited public financial data and third-party verification",
+        "Low data confidence regarding long-term impact metrics"
       ],
       "dimension_explanations": {
-        "alignment": "With a score of 31/50, the charity shows medium alignment with donor interests due to its Zakat-eligible status and the high urgency of the Syrian humanitarian crisis [1].",
-        "impact": "The foundation's impact score of 16/50 reflects a model of direct provision for displaced orphans, though specific cost-per-beneficiary data and evidence of long-term outcomes are currently unavailable [1][3]."
+        "alignment": "The organization shows medium alignment for donors due to its focus on a high-urgency humanitarian cause in Syria and its Zakat-eligible status [1]. However, the track record is difficult to verify extensively through available public filings [2][3].",
+        "impact": "The foundation's impact is characterized by the direct provision of aid to orphans, though specific cost-per-beneficiary data is currently unavailable [1][2]. The low impact score reflects a lack of third-party evidence regarding long-term outcomes and program effectiveness [3]."
       },
-      "headline": "Yateem Foundation USA provides critical humanitarian aid to displaced Syrian orphans with the goal of returning them to their original cities.",
+      "headline": "Yateem Foundation USA provides critical humanitarian aid and shelter to displaced orphans in Syria to facilitate their return to their home cities.",
       "strengths": [
-        "Direct provision of essential needs like food and shelter to vulnerable populations",
-        "Offers Zakat-eligible giving opportunities for Muslim donors",
-        "Clear focus on a high-urgency humanitarian cause"
+        "Direct provision of essential services including food and shelter to vulnerable populations",
+        "Zakat-eligible status for Muslim donors seeking religious compliance in their giving"
       ],
-      "summary": "Based in the United States, Yateem Foundation USA focuses on providing food, shelter, and essential services to children displaced by conflict in Syria [1]. The organization operates through orphan sponsorship and seasonal assistance projects to address immediate humanitarian needs [1][3]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "displaced Syrian orphans",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "providing food and shelter to displaced orphans in Syria",
-          "source_name": "Charity Website - Support",
-          "source_type": "website",
-          "source_url": "https://yateemfoundationusa.org/our-support/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Syria and T\u00fcrkiye",
-          "confidence": 0.9,
-          "id": "[2]",
-          "quote": "Orphanage in T\u00fcrkiye. Building a village for Syrian orphans",
-          "source_name": "Charity Website - Support",
-          "source_type": "website",
-          "source_url": "https://yateemfoundationusa.org/our-support/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "direct provision of food and shelter",
-          "confidence": 0.9,
-          "id": "[3]",
-          "quote": "Providing food and shelter to displaced orphans",
-          "source_name": "Charity Website - Support",
-          "source_type": "website",
-          "source_url": "https://yateemfoundationusa.org/our-support/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "orphan sponsorship",
-          "confidence": 0.9,
-          "id": "[4]",
-          "quote": "Orphan Sponsorship",
-          "source_name": "Charity Website - Support",
-          "source_type": "website",
-          "source_url": "https://yateemfoundationusa.org/our-support/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Ramadan Project",
-          "confidence": 0.9,
-          "id": "[5]",
-          "quote": "Ramadan Project",
-          "source_name": "Charity Website - Support",
-          "source_type": "website",
-          "source_url": "https://yateemfoundationusa.org/our-support/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "building a village for Syrian orphans",
-          "confidence": 0.9,
-          "id": "[6]",
-          "quote": "Building a village for Syrian orphans",
-          "source_name": "Charity Website - Support",
-          "source_type": "website",
-          "source_url": "https://yateemfoundationusa.org/our-support/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "founded in 2024",
-          "confidence": 0.8,
-          "id": "[7]",
-          "quote": "Founded 2024 (2 years)",
-          "source_name": "AMAL Internal Data",
-          "source_type": "website",
-          "source_url": "https://yateemfoundationusa.org/our-support/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Zakat-eligible giving opportunities",
-          "confidence": 0.9,
-          "id": "[8]",
-          "quote": "Accepts zakat (+2); Asnaf: masakin (+5)",
-          "source_name": "Charity Website - Support",
-          "source_type": "website",
-          "source_url": "https://yateemfoundationusa.org/our-support/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Haverford",
-          "confidence": 0.95,
-          "id": "[9]",
-          "quote": "Haverford, PA",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/993373484"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "direct service delivery",
-          "confidence": 0.85,
-          "id": "[10]",
-          "quote": "Delivery model: Direct Provision",
-          "source_name": "AMAL Internal Data",
-          "source_type": "website",
-          "source_url": "https://yateemfoundationusa.org/our-support/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "clear theory of change",
-          "confidence": 0.85,
-          "id": "[11]",
-          "quote": "Theory of change: CLEAR",
-          "source_name": "AMAL Internal Data",
-          "source_type": "website",
-          "source_url": "https://yateemfoundationusa.org/our-support/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "orphanage in T\u00fcrkiye",
-          "confidence": 0.9,
-          "id": "[12]",
-          "quote": "Orphanage in T\u00fcrkiye",
-          "source_name": "Charity Website - Support",
-          "source_type": "website",
-          "source_url": "https://yateemfoundationusa.org/our-support/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "insufficient data for cost-per-beneficiary calculation",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Insufficient data for cost-per-beneficiary calculation",
-          "source_name": "AMAL Internal Data",
-          "source_type": "website",
-          "source_url": "https://yateemfoundationusa.org/our-support/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "working capital is currently unknown",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Working capital: unknown (UNKNOWN)",
-          "source_name": "AMAL Internal Data",
-          "source_type": "website",
-          "source_url": "https://yateemfoundationusa.org/our-support/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "high-urgency mission",
-          "confidence": 0.9,
-          "id": "[15]",
-          "quote": "Cause area: Humanitarian (13/13)",
-          "source_name": "AMAL Internal Data",
-          "source_type": "website",
-          "source_url": "https://yateemfoundationusa.org/our-support/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "low data confidence (0.10)",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Data Confidence (LOW, 0.1)",
-          "source_name": "AMAL Internal Data",
-          "source_type": "website",
-          "source_url": "https://yateemfoundationusa.org/our-support/"
-        }
-      ],
-      "amal_score_rationale": "The organization receives a moderate score reflecting its focus on an urgent humanitarian cause, though it is limited by low data confidence and a lack of detailed financial metrics.",
-      "amal_scores": {
-        "amal_score": 47,
-        "confidence_scores": {
-          "alignment": 31,
-          "data_confidence": 0.1,
-          "impact": 16
-        },
-        "confidence_tier": "LOW",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Financial Transparency and Reporting",
-          "citation_ids": [
-            "[13]"
-          ],
-          "context": "There is <cite id=\"13\">insufficient data for cost-per-beneficiary calculation</cite>, making it difficult for donors to assess relative efficiency."
-        },
-        {
-          "area": "Working Capital Reserves",
-          "citation_ids": [
-            "[14]"
-          ],
-          "context": "The organization's <cite id=\"14\">working capital is currently unknown</cite>, posing a risk to long-term operational sustainability."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "none",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "This organization has not yet been evaluated by the BBB Wise Giving Alliance."
-      },
-      "case_against": {
-        "citation_ids": [
-          "7",
-          "13",
-          "14",
-          "16"
-        ],
-        "mitigation_notes": "As an emerging organization, Yateem Foundation USA is still establishing the reporting frameworks necessary for higher transparency scores.",
-        "risk_factors": [
-          "<cite id=\"13\">No data available for cost-per-beneficiary</cite>",
-          "<cite id=\"14\">Unknown working capital reserves</cite>",
-          "<cite id=\"7\">Emerging organization status (founded 2024)</cite>"
-        ],
-        "summary": "The primary concern is the <cite id=\"16\">lack of financial transparency</cite> and the organization's very short operational history."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 0,
-          "rating": 1,
-          "website": 19
-        },
-        "high_confidence_count": 16,
-        "total_count": 20,
-        "unique_sources": 3
-      },
-      "confidence": {
-        "data_freshness": "Website data from 2025",
-        "data_gaps": [
-          "Missing Form 990",
-          "No program expense ratio",
-          "No audited financials"
-        ],
-        "level": "LOW",
-        "notes": "As a new organization, financial transparency is the primary data gap.",
-        "score": 10,
-        "sources_used": [
-          "Website",
-          "Charity Navigator Profile"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 10,
-        "form_990_tax_year": 2025,
-        "known_gaps": [
-          "Missing program expense ratio",
-          "No cost-per-beneficiary data",
-          "No independent audit"
-        ],
-        "ratings_last_updated": "2025-01",
-        "total_citations": 20,
-        "unique_sources": 3,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[8]",
-            "[15]",
-            "[20]"
-          ],
-          "explanation": "Alignment is a relative strength (31/50) due to <cite id=\"8\">verified Zakat eligibility</cite> and a focus on <cite id=\"15\">high-urgency humanitarian aid</cite> for underserved Muslim populations.",
-          "improvement": "The charity could improve by <cite id=\"20\">adding a dedicated Zakat policy page</cite> to its website to clarify asnaf distribution."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[16]",
-            "[17]",
-            "[18]"
-          ],
-          "explanation": "Credibility is currently limited by <cite id=\"16\">low data confidence (0.10)</cite> and the absence of third-party verification. While the mission is clear, the organization lacks <cite id=\"17\">independent audits</cite> or a public track record of financial accountability.",
-          "improvement": "To strengthen credibility, the charity should <cite id=\"18\">publish audited financial statements</cite> and establish a transparent board governance structure."
-        },
-        "impact": {
-          "citation_ids": [
-            "[10]",
-            "[13]",
-            "[19]"
-          ],
-          "explanation": "The impact score of 16/50 is driven by a <cite id=\"10\">direct provision model</cite> and a clear theory of change, but is hampered by <cite id=\"13\">missing beneficiary data</cite> and an unknown program expense ratio.",
-          "improvement": "The foundation should <cite id=\"19\">track and report beneficiary counts</cite> to enable cost-effectiveness analysis and build working capital reserves."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[1]",
-          "[8]"
-        ],
-        "evidence_rigor": "Grade C - Emerging organization with implicit outcomes",
-        "geographic_focus": [
-          "Syria",
-          "T\u00fcrkiye"
-        ],
-        "giving_style": "Direct service / Infrastructure",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "masakin (needy)",
-          "orphans"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": null,
-        "annual_revenue": null,
-        "citation_ids": [
-          "[13]",
-          "[14]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": null,
-        "industry_program_ratio": 0.75,
-        "peer_count": 58,
-        "peer_program_ratio_median": 0.897,
-        "program_expense_ratio": null,
-        "reserves_months": null,
-        "revenue_cagr_3yr": null,
-        "yearly_financials": []
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct implementation of programs rather than grantmaking",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "Syria",
-          "T\u00fcrkiye"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "Yateem Foundation USA provides critical humanitarian aid to displaced Syrian orphans with the goal of returning them to their original cities.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize direct humanitarian aid to Syrian orphans and are comfortable supporting an emerging organization with a high-urgency mission.",
-        "citation_ids": [
-          "[1]",
-          "[7]",
-          "[8]"
-        ],
-        "donor_motivations": [
-          "Want to fulfill Zakat obligations through orphan care",
-          "Prioritize direct provision of food and shelter over advocacy",
-          "Deeply concerned about the Syrian humanitarian crisis"
-        ],
-        "giving_considerations": [
-          "The organization is in a growth phase with limited financial history",
-          "Impact is concentrated in specific geographic zones (Syria/T\u00fcrkiye)",
-          "Detailed efficiency metrics are not yet available"
-        ],
-        "not_ideal_for": "Donors who require long-term audited financial trends or those seeking organizations with large global overhead and established third-party ratings."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[3]",
-          "[6]",
-          "13"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects an emerging organization with a clear mission but <cite id=\"13\">unverified outcome data</cite> and no external evaluations.",
-        "external_evaluations": [],
-        "outcome_tracking_years": 0,
-        "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "The foundation creates impact by providing <cite id=\"3\">immediate relief (food/shelter)</cite> and building <cite id=\"6\">long-term infrastructure (villages)</cite> to stabilize displaced children.",
-        "why_evidence_matters": "Evidence ensures that direct aid effectively leads to the long-term goal of returning orphans to their original communities."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[6]",
-          "[7]"
-        ],
-        "founded_year": 2024,
-        "maturity_stage": "Startup",
-        "revenue_growth_3yr": null,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "As an emerging organization in a high-need crisis zone, there is significant capacity to absorb funds for <cite id=\"6\">village construction</cite>.",
-        "strategic_priorities": [
-          "Building a village for Syrian orphans",
-          "Expanding orphan sponsorship"
-        ],
-        "years_operating": 2
-      },
-      "organizational_capacity": {
-        "board_size": null,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": null,
-        "citation_ids": [
-          "[2]",
-          "[3]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Syria and T\u00fcrkiye",
-        "has_conflict_policy": false,
-        "has_financial_audit": false,
-        "independent_board_pct": null,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[6]"
-        ],
-        "differentiator": "Focuses specifically on <cite id=\"6\">orphan village infrastructure</cite> in Syria, whereas peers often focus on broader food distribution.",
-        "peer_group": "International Humanitarian Relief",
-        "similar_orgs": [
-          "GiveDirectly, Inc",
-          "Baitulmaal, Inc.",
-          "Feeding America"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Larger scale and established financial history",
-          "name": "Baitulmaal, Inc."
-        },
-        {
-          "differentiator": "Focuses on direct cash transfers rather than infrastructure",
-          "name": "GiveDirectly, Inc"
-        },
-        {
-          "differentiator": "Domestic US focus compared to international relief",
-          "name": "Feeding America"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]",
-            "[3]"
-          ],
-          "detail": "The foundation targets the <cite id=\"1\">critical needs of displaced orphans</cite> in high-conflict zones, a demographic with extreme vulnerability.",
-          "point": "High-Urgency Humanitarian Focus"
-        },
-        {
-          "citation_ids": [
-            "[3]",
-            "[10]"
-          ],
-          "detail": "Impact is generated through <cite id=\"10\">direct provision</cite> of essential services like housing and food rather than indirect advocacy.",
-          "point": "Direct Service Delivery Model"
-        },
-        {
-          "citation_ids": [
-            "[1]",
-            "[8]"
-          ],
-          "detail": "The organization offers <cite id=\"8\">Zakat-eligible opportunities</cite>, specifically serving the 'masakin' (needy) asnaf through its orphan care programs.",
-          "point": "Zakat-Eligible Programming"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Yateem Foundation USA distinguishes itself through a <cite id=\"11\">clear theory of change</cite> focused on the holistic rehabilitation of orphans. By maintaining an <cite id=\"12\">orphanage in T\u00fcrkiye</cite> and developing a dedicated village in Syria, the organization provides a continuum of care that spans from immediate <cite id=\"5\">seasonal assistance</cite> to long-term residential stability. This direct intervention approach ensures that donor funds are converted into tangible assets like <cite id=\"3\">shelter and nutrition</cite> for a population that is often underserved by larger international NGOs."
-      ],
-      "summary": "Yateem Foundation USA is a humanitarian organization dedicated to supporting <cite id=\"1\">displaced Syrian orphans</cite> with the ultimate goal of facilitating their return to their original cities. Operating primarily in <cite id=\"2\">Syria and T\u00fcrkiye</cite>, the foundation addresses the acute needs of children affected by conflict through a model of <cite id=\"3\">direct provision of food and shelter</cite>. Their programmatic scope includes <cite id=\"4\">orphan sponsorship</cite>, seasonal assistance projects, and a dedicated <cite id=\"5\">Ramadan Project</cite> to ensure food security during holy months. A central pillar of their long-term strategy involves <cite id=\"6\">building a village for Syrian orphans</cite>, moving beyond emergency relief toward stable, community-based care. Despite its high-urgency mission, the organization is in an emerging stage, having been <cite id=\"7\">founded in 2024</cite>. While it provides <cite id=\"8\">Zakat-eligible giving opportunities</cite> for Muslim donors, its current operational footprint is concentrated, with administrative roots in <cite id=\"9\">Haverford</cite>. The charity's impact model is characterized by <cite id=\"10\">direct service delivery</cite>, though comprehensive financial transparency remains a work in progress as the organization matures.",
-      "zakat_guidance": {
-        "classification": "masakin",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "Yateem Foundation USA is a non-profit organization dedicated to supporting displaced Syrian orphans through food, shelter, and long-term reintegration programs [1]. The organization is recognized as Zakat-eligible, offering donors various ways to contribute to seasonal assistance and orphan sponsorship projects [1][3]."
     }
   }
 }

@@ -2,7 +2,7 @@
   "id": "20-4751162",
   "ein": "20-4751162",
   "name": "Indus Hospital",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Friends of Indus Hospital, Inc (FOIH) is a US-based 501(c)(3) registered charity. We strive to create awareness about the healthcare needs of underprivileged patients and raise funds to provide them with equitable care. By supporting healthcare efforts in Pakistan, FOIH is helping to ensure that vulnerable individuals have access to the healthcare they need, regardless of financial or other barriers.\nThrough annual fundraising initiatives, community events, and awareness drives, we seek to mobilize a strong tradition of community giving and a shared commitment to changing the paradigm of healthcare delivery in Pakistan.\nFOIH is an initiative taken by Americans of Pakistani origin expatriates and supported by a wider community across the USA.\nAll donations given to FOIH are eligible for tax deduction under US law.",
   "programs": [
     "Primary Healthcare",
@@ -61,7 +61,11 @@
     "netAssets": 2682475,
     "workingCapitalMonths": "1.80"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 14,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Victims",
@@ -87,7 +91,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-09 21:33:14",
+  "lastUpdated": "2026-02-14 19:35:43",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -204,17 +208,36 @@
     "Fulfill your Islamic obligation of Zakat with Friends of Indus Hospital. Donate Now. Friends of Indus Hospital, Inc (FOIH) is a US-based 501(c) (3) registered charity. Your Zakat contributes directly to sustaining free, quality healthcare as 70% of patients at Indus Hospital & Health Network are Zakat-Eligible. Friends of Indus Hospital collects Zakat on behalf of patients treated at Indus Hospital & Health Network. By supporting healthcare initiatives like those at Indus Hospital, Zakat donors contribute to the healing and preservation of life, fulfilling a noble Islamic obligation. (Source: https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG4y1BRIkBgZlJXTzpd25CICuFllZpKE-58B-C4KnDAPjyhjFrL2VAEdM9U1XhWOkosuiCmBXllT9CUoEUmAi4jGDxdKOC2J6_dmy5OGIs=)"
   ],
   "archetype": "DIRECT_SERVICE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "High Conviction",
+    "archetype_code": "DIRECT_SERVICE",
+    "archetype_label": "Frontline Relief",
+    "evidence_stage": "Established",
+    "signal_states": {
+      "evidence": "Moderate",
+      "financial_health": "Moderate",
+      "donor_fit": "Strong",
+      "risk": "Strong"
+    },
+    "recommendation_cue": "Strong Match",
+    "recommendation_rationale": "Strong donor fit, low risk profile, and credible supporting evidence for outcomes.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "20-4751162",
     "charity_name": "Indus Hospital",
-    "amal_score": 81,
+    "amal_score": 78,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:11:23",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 41,
       "data_confidence": 1,
-      "impact": 40
+      "impact": 37
     },
     "score_details": {
       "alignment": {
@@ -301,12 +324,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 1.8 months (OPTIMAL)",
-            "improvement_suggestion": null,
-            "improvement_value": 0,
+            "evidence": "Working capital: 1.8 months (LEAN)",
+            "improvement_suggestion": "Strengthen reserves toward a resilient policy range (commonly 3-12 months), based on revenue volatility and program obligations.",
+            "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 6,
+            "scored": 3,
             "status": "full"
           },
           {
@@ -349,60 +372,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "Delivery: direct service; Impact 40/50",
+        "rationale": "Delivery: direct service; Impact 37/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 40
+        "score": 37
       },
-      "judge_issues": [
-        {
-          "field": "propublica.expense_ratio",
-          "judge": "crawl_quality",
-          "message": "Expenses ($18,389,915) exceed revenue ($14,742,480) by 25%",
-          "severity": "warning"
-        },
-        {
-          "field": "website.ein",
-          "judge": "crawl_quality",
-          "message": "Website EIN (46-3441441) doesn't match expected (20-4751162)",
-          "severity": "warning"
-        },
-        {
-          "field": "website.website_profile.ein",
-          "judge": "extract_quality",
-          "message": "EIN mismatch: expected 20-4751162, got 46-3441441",
-          "severity": "warning"
-        },
-        {
-          "field": "multi_source.ein_consistency",
-          "judge": "extract_quality",
-          "message": "Multiple different EINs found across sources: {'463441441', '204751162'}",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -410,7 +383,7 @@
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "Friends of Indus Hospital Inc earns 81/100 due to strong alignment and strong impact, with zakat compliance.",
+      "score_summary": "Friends of Indus Hospital Inc shows strong alignment and strong impact, with zakat compliance.",
       "zakat": {
         "asnaf_category": "fuqara",
         "bonus_points": 0,
@@ -422,396 +395,40 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Friends of Indus Hospital Inc holds a 95.75/100 rating and maintains a program expense ratio of 86.8%.",
+          "claim": "The charity holds a 95.75/100 score and maintains an 86.8% program expense ratio.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/204751162"
         },
         {
-          "claim": "The organization offers various donation methods and confirms its status as a Zakat-eligible entity.",
+          "claim": "The organization is Zakat-eligible and offers specific giving methods for healthcare programs.",
           "id": "[2]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://foihus.org/general-donation/"
         },
         {
-          "claim": "The organization reported total revenue of $14,742,480 and funds programs including prosthetic limbs and neonatal care.",
+          "claim": "Total revenue reached $14,742,480 with a fundraising efficiency of $0.11 per $1 raised.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/204751162"
         }
       ],
-      "amal_score_rationale": "The organization earns a high score due to its exceptional transparency, efficient use of funds for direct medical services, and strong alignment with donor values through Zakat eligibility.",
+      "amal_score_rationale": "The organization achieves a high overall rating due to its exceptional financial efficiency and direct service model that addresses urgent global health needs in Pakistan.",
       "areas_for_improvement": [
-        "Limited liquidity with working capital covering only 1.8 months of operations"
+        "Limited working capital of 1.8 months",
+        "Dependency on international health infrastructure for direct impact"
       ],
       "dimension_explanations": {
-        "alignment": "Alignment is rated highly as the organization addresses the urgent global health needs of underserved communities and offers Zakat-eligible giving options that resonate strongly with Muslim donors [2]. The charity maintains a transparent track record with a high accountability score from third-party evaluators [1].",
-        "impact": "The charity demonstrates high impact through direct service delivery, reporting total revenue of $14,742,480 which supports specialized programs like neonatal care and prosthetic services [1][3]. Its high program expense ratio of 86.8% ensures that the vast majority of funds directly benefit patient care in Pakistan [1]."
+        "alignment": "There is strong alignment for Muslim donors as the organization is Zakat-eligible and addresses the high-urgency cause of global health [2]. The charity maintains a high donor fit by providing transparent donation options for specific religious and humanitarian needs [2].",
+        "impact": "The charity demonstrates high impact by directing 86.8% of its expenses toward programs like prosthetic limbs, neonatal care, and safe births [1][3]. Its direct service model ensures that $14,742,480 in revenue is utilized effectively, maintaining a high Charity Navigator score of 95.75/100 [1]."
       },
-      "headline": "Friends of Indus Hospital Inc provides a vital lifeline of free, quality healthcare to underserved populations in Pakistan through a robust network of medical facilities.",
+      "headline": "Friends of Indus Hospital Inc supports the delivery of free, high-quality healthcare to underserved populations in Pakistan through the Indus Hospital and Health Network.",
       "strengths": [
-        "High financial efficiency with a program expense ratio of 86.8%",
-        "Strong fundraising efficiency, spending only $0.11 to raise every $1",
-        "Exceptional Charity Navigator score of 95.75/100"
+        "High program expense ratio of 86.8%",
+        "Strong fundraising efficiency of $0.11 per $1 raised",
+        "High Charity Navigator score of 95.75/100"
       ],
-      "summary": "Friends of Indus Hospital Inc is a U.S.-based 501(c)(3) organization dedicated to supporting the Indus Hospital and Health Network's mission of providing premium healthcare services at no cost to patients in Pakistan [1][3]. The organization facilitates critical medical programs, including prosthetic limb distribution, neonatal care, and safe birth initiatives, while maintaining Zakat-eligible status for donors [2][3]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "95.75/100 overall score from Charity Navigator",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "Overall Score 95.75/100",
-          "source_name": "Charity Navigator - Friends of Indus Hospital",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/204751162"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100% of Zakat and Sadaqah donations",
-          "confidence": 0.9,
-          "id": "[2]",
-          "quote": "100% of your Zakat and Sadaqah goes towards the treatment of patients.",
-          "source_name": "FOIH - General Donation",
-          "source_type": "website",
-          "source_url": "https://foihus.org/general-donation/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$14,742,480 in total revenue",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total revenue: $14,742,480",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/204751162"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Candid Platinum Seal of Transparency",
-          "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Platinum Seal of Transparency",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/204751162"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a high score due to its exceptional transparency, efficient use of funds for direct medical services, and strong alignment with donor values through Zakat eligibility.",
-      "amal_scores": {
-        "amal_score": 81,
-        "confidence_scores": {
-          "alignment": 41,
-          "data_confidence": 1,
-          "impact": 40
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Liquidity and Reserves",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "The organization maintains <cite id=\"1\">1.8 months of working capital</cite>, which is slightly below the industry ideal for large-scale international operations."
-        },
-        {
-          "area": "Impact Reporting Granularity",
-          "citation_ids": [
-            "[4]"
-          ],
-          "context": "While program ratios are high, there is a need to <cite id=\"4\">track and report specific beneficiary counts</cite> to enable more precise cost-per-beneficiary analysis."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[1]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "The organization maintains high governance standards with a fully independent board."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "mitigation_notes": "The organization's high revenue growth (24.1%) helps mitigate liquidity risks by ensuring a steady influx of new capital.",
-        "risk_factors": [
-          "<cite id=\"1\">Working capital covers less than 3 months</cite> of operations"
-        ],
-        "summary": "Limited concerns exist regarding <cite id=\"1\">short-term liquidity</cite> and the absence of <cite id=\"4\">external impact evaluations</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 4,
-          "rating": 8,
-          "website": 3
-        },
-        "high_confidence_count": 15,
-        "total_count": 15,
-        "unique_sources": 4
-      },
-      "confidence": {
-        "data_freshness": "Data current through 2023 tax year",
-        "data_gaps": [
-          "Beneficiary counts not explicitly quantified"
-        ],
-        "level": "HIGH",
-        "notes": "Strong alignment between financial filings and third-party ratings.",
-        "score": 85,
-        "sources_used": [
-          "Charity Navigator",
-          "Form 990",
-          "Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 85,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing specific beneficiary counts",
-          "No external clinical audit"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 4,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[2]"
-          ],
-          "explanation": "The charity is a strong fit for Muslim donors, offering <cite id=\"2\">verified Zakat-eligible giving options</cite> for the poor (fuqara) and needy (masakin).",
-          "improvement": ""
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]",
-            "[4]"
-          ],
-          "explanation": "Donors can trust FOIH due to its <cite id=\"1\">95.95.75/100 from Charity Navigator score</cite> and its <cite id=\"1\">100% independent board governance</cite>.",
-          "improvement": "To strengthen credibility further, the charity could <cite id=\"4\">seek external third-party evaluations</cite> of its clinical outcomes in Pakistan."
-        },
-        "impact": {
-          "citation_ids": [
-            "[1]",
-            "[4]"
-          ],
-          "explanation": "Operations are highly efficient with a <cite id=\"1\">86.8% program expense ratio</cite> reported in recent filings and <cite id=\"1\">low fundraising overhead</cite>.",
-          "improvement": "Impact measurement would benefit from <cite id=\"4\">tracking outcomes for 3+ consecutive years</cite> to demonstrate long-term health improvements."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "GLOBAL_HEALTH",
-        "citation_ids": [
-          "[2]",
-          "[4]"
-        ],
-        "evidence_rigor": "Grade C - Outcome tracking via Candid",
-        "geographic_focus": [
-          "Pakistan"
-        ],
-        "giving_style": "Direct service",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.229,
-        "annual_revenue": 14742480,
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "cn_financial_score": 86,
-        "cn_overall_score": 95.75,
-        "fundraising_ratio": 0.11,
-        "industry_program_ratio": 0.75,
-        "peer_count": 14,
-        "peer_program_ratio_median": 0.846,
-        "program_expense_ratio": 0.8675,
-        "reserves_months": 2.4,
-        "revenue_cagr_3yr": 24.1,
-        "transparency_score": 100,
-        "working_capital_months": 1.8,
-        "yearly_financials": [
-          {
-            "expenses": 18389915,
-            "net_assets": 2682475,
-            "revenue": 14742480,
-            "year": 2023
-          },
-          {
-            "expenses": 13381697,
-            "net_assets": 6329910,
-            "revenue": 15469885,
-            "year": 2022
-          },
-          {
-            "expenses": 8506127,
-            "net_assets": 4241722,
-            "revenue": 9579244,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Directly funds its own hospital network operations",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "Pakistan"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "Friends of Indus Hospital Inc provides a vital lifeline of free, quality healthcare to underserved populations in Pakistan through a robust network of medical facilities.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to provide high-quality, free medical care to the underserved in Pakistan through a Zakat-compliant and fiscally efficient institution.",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "donor_motivations": [
-          "Want to fulfill Zakat obligations through healthcare services",
-          "Value high financial transparency and low fundraising costs",
-          "Care about systemic health issues like childhood cancer and neonatal mortality",
-          "Prefer supporting established networks with a large physical footprint"
-        ],
-        "giving_considerations": [
-          "Donations support a specific network (Indus Hospital) rather than diverse partners",
-          "The organization focuses on direct service delivery rather than medical research",
-          "Rapid growth requires consistent donor support to maintain liquidity"
-        ],
-        "not_ideal_for": "Donors seeking to fund medical research or those looking for a charity with multi-country geographic diversification."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[4]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects that the organization <cite id=\"4\">tracks 6 outcome metrics</cite> but lacks independent RCT-level evaluations.",
-        "external_evaluations": [
-          "Candid outcomes data"
-        ],
-        "outcome_tracking_years": 1,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "FOIH supports a network that provides free healthcare to remove financial barriers, leading to improved community health outcomes.",
-        "why_evidence_matters": "Evidence ensures that free medical services are resulting in successful patient recoveries and long-term health stability."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[3]",
-          "[4]"
-        ],
-        "founded_year": null,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": 24.1,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"3\">24.1% revenue CAGR</cite> and expanding hospital network needs, the charity can effectively absorb additional capital.",
-        "strategic_priorities": [
-          "Expand Primary Healthcare",
-          "Strengthen Childhood Cancer programs"
-        ],
-        "years_operating": 19
-      },
-      "organizational_capacity": {
-        "board_size": 14,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": "Not Listed",
-        "citation_ids": [
-          "[1]",
-          "[4]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Pakistan",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "differentiator": "FOIH maintains a <cite id=\"1\">fundraising efficiency of $0.11</cite>, which is significantly better than many peers in the global health space.",
-        "peer_group": "Global Health Organizations",
-        "similar_orgs": [
-          "Heal Palestine",
-          "UNICEF USA",
-          "Baitulmaal, Inc."
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Focuses on Palestinian healthcare needs",
-          "name": "Heal Palestine"
-        },
-        {
-          "differentiator": "Broader global reach and advocacy focus",
-          "name": "UNICEF USA"
-        },
-        {
-          "differentiator": "Wider range of humanitarian services beyond health",
-          "name": "Baitulmaal, Inc."
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The organization maintains a high <cite id=\"1\">program expense ratio of 86.8%</cite>, ensuring the vast majority of funds reach medical facilities in Pakistan.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "FOIH demonstrates lean operations, spending only <cite id=\"1\">$0.11 to raise every $1</cite> in public support.",
-          "point": "High Fundraising Productivity"
-        },
-        {
-          "citation_ids": [
-            "[1]",
-            "[4]"
-          ],
-          "detail": "The charity holds a <cite id=\"4\">Candid Platinum Seal of Transparency</cite> and features a <cite id=\"1\">100% independent board of 14 members</cite>.",
-          "point": "Strong Governance and Transparency"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Friends of Indus Hospital Inc distinguishes itself through a combination of high-volume service delivery and rigorous accountability. Their <cite id=\"1\">perfect 100/100 scores in Culture and Leadership</cite> from Charity Navigator reflect a mature organizational structure capable of managing complex international health programs. Financially, the organization has shown significant growth with a <cite id=\"3\">3-year revenue CAGR of 24.1%</cite>, indicating strong donor trust and expanding capacity. Furthermore, their commitment to transparency is evidenced by <cite id=\"4\">tracking 6 distinct outcome metrics</cite> via Candid, allowing donors to see the tangible results of their contributions in real-time."
-      ],
-      "summary": "Friends of Indus Hospital Inc (FOIH) serves as a critical financial and strategic pillar for the Indus Hospital and Health Network, providing <cite id=\"1\">free, quality healthcare to underserved populations</cite> across Pakistan. As a U.S.-based 501(c)(3) nonprofit, FOIH enables the delivery of specialized medical services including <cite id=\"4\">childhood cancer treatment, neonatal care, and safe birth initiatives</cite> to those who would otherwise lack access to premium medical facilities. The organization demonstrates exceptional fiscal responsibility, maintaining a <cite id=\"1\">95.75/100 overall score from Charity Navigator</cite>, which places it among the top tier of international health charities. In the 2023 fiscal year, FOIH managed <cite id=\"3\">$14,742,480 in total revenue</cite>, primarily driven by <cite id=\"3\">$9.2 million in public contributions</cite>. This funding supports a direct service model that eliminates the financial barrier to healthcare, ensuring that <cite id=\"2\">100% of Zakat and Sadaqah donations</cite> are utilized for patient care and medical infrastructure. By focusing on high-impact areas such as <cite id=\"4\">prosthetic limb distribution and primary healthcare</cite>, FOIH addresses systemic health inequities in one of the world's most populous Muslim-majority nations.",
-      "zakat_guidance": {
-        "classification": "fuqara",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "Friends of Indus Hospital Inc is a U.S.-based nonprofit that raised $14,742,480 in total revenue to fund specialized medical programs in Pakistan [3]. The organization is recognized as Zakat-eligible, allowing donors to fulfill their religious obligations while supporting critical health services [2]."
     }
   }
 }

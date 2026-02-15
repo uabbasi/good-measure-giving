@@ -2,7 +2,7 @@
   "id": "77-0502583",
   "ein": "77-0502583",
   "name": "Hidaya Foundation",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "PROVIDE EDUCATIONAL, SOCIAL WELFARE AND CHARITABLE ASSISTANCE TO ECONOMICALLY DEPRESSED AREAS",
   "programs": [
     "Education",
@@ -49,7 +49,11 @@
     "netAssets": 4326134,
     "workingCapitalMonths": "3.50"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": null,
+    "independentBoardMembers": null,
+    "ceoCompensation": 150000
+  },
   "targeting": null,
   "trustSignals": {
     "hasAnnualReport": null,
@@ -70,7 +74,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:36:27",
+  "lastUpdated": "2026-02-14 19:36:13",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -339,17 +343,36 @@
     "Dedicated zakat page found at https://www.hidaya.org/zakat (Source: https://www.hidaya.org/zakat)"
   ],
   "archetype": "RESILIENCE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "RESILIENCE",
+    "archetype_label": "Community Resilience",
+    "evidence_stage": "Building",
+    "signal_states": {
+      "evidence": "Limited",
+      "financial_health": "Strong",
+      "donor_fit": "Strong",
+      "risk": "Limited"
+    },
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "77-0502583",
     "charity_name": "Hidaya Foundation",
-    "amal_score": 69,
+    "amal_score": 68,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:26:41",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 40,
       "data_confidence": 0.6,
-      "impact": 31
+      "impact": 30
     },
     "score_details": {
       "alignment": {
@@ -436,12 +459,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 3.5 months (HEALTHY)",
+            "evidence": "Working capital: 3.5 months (RESILIENT)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 6,
+            "scored": 5,
             "status": "full"
           },
           {
@@ -484,18 +507,10 @@
         "cost_per_beneficiary": 35.223033591731266,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "$35.22/beneficiary; Delivery: direct service; Impact 31/50",
+        "rationale": "$35.22/beneficiary; Delivery: direct service; Impact 30/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 31
+        "score": 30
       },
-      "judge_issues": [
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        }
-      ],
       "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
@@ -511,7 +526,7 @@
         ],
         "total_deduction": -2
       },
-      "score_summary": "HIDAYA FOUNDATION earns 69/100 due to strong alignment and good impact, with zakat compliance (minor risk deductions applied).",
+      "score_summary": "HIDAYA FOUNDATION shows strong alignment and good impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": "fuqara",
         "bonus_points": 0,
@@ -523,13 +538,13 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The foundation provides educational and social welfare assistance and reports specific financial efficiency metrics.",
+          "claim": "The foundation provides educational and social welfare assistance and maintains specific financial efficiency metrics.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/770502583"
         },
         {
-          "claim": "The organization is Zakat-eligible and follows specific policies for asnaf categories.",
+          "claim": "The charity is Zakat-eligible and follows specific policies for distribution to asnaf categories.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.hidaya.org/zakat"
@@ -541,598 +556,40 @@
           "source_url": "https://projects.propublica.org/nonprofits/organizations/770502583"
         },
         {
-          "claim": "Audited financials confirm the foundation's revenue and expense allocations.",
+          "claim": "The foundation maintains a fundraising efficiency of $0.02 per $1 raised.",
           "id": "[5]",
           "source_name": "Financial Statement (2024)",
           "source_url": "https://www.hidaya.org/documents/financials/HF_FS_2024.pdf"
         },
         {
-          "claim": "The foundation maintains a fundraising efficiency of $0.02 per $1 raised and 3.5 months of working capital.",
+          "claim": "Financial records confirm the allocation of funds toward program services and social welfare.",
           "id": "[6]",
           "source_name": "Financial Statement (2023)",
           "source_url": "https://www.hidaya.org/documents/financials/HF_FS_2023.pdf"
         },
         {
-          "claim": "The foundation offers multiple donation options and giving methods for donors.",
+          "claim": "The foundation offers various giving methods for donors to support humanitarian and educational causes.",
           "id": "[7]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.hidaya.org/donate-now/"
         }
       ],
-      "amal_score_rationale": "The foundation earns a 69/100 score due to its outstanding financial efficiency and strong humanitarian alignment, though its overall impact score is moderated by its direct service model's cost-per-beneficiary metrics.",
+      "amal_score_rationale": "The foundation earns a score of 68/100 due to its high program efficiency and strong humanitarian alignment, though its overall impact score is moderated by a cost per beneficiary of approximately $35.22.",
       "areas_for_improvement": [
-        "Working capital reserves are relatively lean at 3.5 months, which may limit long-term financial cushioning.",
-        "Impact measurement could benefit from more granular third-party verification to move beyond medium data confidence."
+        "Working capital reserves are limited to 3.5 months, which may impact long-term financial sustainability during economic downturns.",
+        "Data confidence is currently at a medium level (0.6), suggesting room for increased transparency in impact reporting."
       ],
       "dimension_explanations": {
-        "alignment": "Scoring 40/50 in alignment, the organization is a high-fit choice for humanitarian-focused donors, particularly within the Muslim community due to its Zakat-eligible status and adherence to asnaf categories [2][7]. Its mission to support economically depressed areas aligns with urgent global humanitarian needs [1][3].",
-        "impact": "The foundation demonstrates a balanced impact profile with a score of 31/50, characterized by a direct service model that maintains a program expense ratio of 95.0% [3][5]. While it operates with a lean 3.5 months of working capital, its fundraising efficiency of $0.02 per $1 raised indicates a highly optimized internal structure for delivering aid [1][6]."
+        "alignment": "Hidaya Foundation shows high donor fit for those seeking humanitarian causes, specifically through its Zakat-eligible programs and focus on economically depressed areas [2][7]. The organization's mission focuses on urgent humanitarian needs including education and environment [1][3].",
+        "impact": "The organization demonstrates a direct service model with a total revenue of $15,472,301 and a program expense ratio of 95.0% [3][6]. While the cost per beneficiary is calculated at $35.22, the foundation maintains a lean operation with a fundraising efficiency of $0.02 per $1 raised [1][5]."
       },
       "headline": "Hidaya Foundation provides critical humanitarian aid and social welfare services to economically depressed regions through a highly efficient, Zakat-eligible operational model.",
       "strengths": [
         "Exceptional program expense ratio of 95.0%, ensuring the vast majority of funds reach beneficiaries.",
         "High fundraising efficiency with a cost of only $0.02 per $1 raised.",
-        "Strong alignment for Muslim donors through verified Zakat eligibility and diverse giving options."
+        "Strong alignment with Muslim donor requirements through verified Zakat eligibility."
       ],
-      "summary": "The Hidaya Foundation is a non-profit organization dedicated to providing educational, social welfare, and charitable assistance to impoverished communities [1][3]. With a total revenue of $15,472,301, the foundation operates as a Zakat-eligible entity, allowing Muslim donors to fulfill their religious obligations through various humanitarian programs [2][6]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "1999",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "founded in 1999",
-          "source_name": "Charity Website - About",
-          "source_type": "website",
-          "source_url": "https://www.hidaya.org/about-us/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "educational, social welfare, and charitable assistance",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "PROVIDE EDUCATIONAL, SOCIAL WELFARE AND CHARITABLE ASSISTANCE TO ECONOMICALLY DEPRESSED AREAS",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/770502583"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $15,472,301",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total revenue: 15,472,301",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/770502583"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 95.0%",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Program expense ratio: 95.0%",
-          "source_name": "Financial Statement (2023)",
-          "source_type": "website",
-          "source_url": "https://www.hidaya.org/documents/financials/HF_FS_2023.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Pakistan, Bangladesh, Sri Lanka, Afghanistan, and several African nations",
-          "confidence": 0.95,
-          "id": "[5]",
-          "quote": "Pakistan, Bangladesh, Sri Lanka, Afghanistan, Cameroon, Guinea, Gambia, Zimbabwe, Ethiopia, Somalia",
-          "source_name": "Charity Website - Programs",
-          "source_type": "website",
-          "source_url": "https://www.hidaya.org/about-us/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Zakat-eligible entity",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Hidaya Foundation accepts Zakat donations",
-          "source_name": "Charity Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://www.hidaya.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fuqara, masakin, and fisabilillah",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Zakat Categories: fuqara, masakin, fisabilillah",
-          "source_name": "Charity Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://www.hidaya.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.02 per $1 raised",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Fundraising Efficiency: $0.02 per $1 raised",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/770502583"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "self-employment and healthcare programs",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Programs: Education, Social Welfare, Environment, Health Care, Self Employment",
-          "source_name": "Charity Website - Programs",
-          "source_type": "website",
-          "source_url": "https://www.hidaya.org/about-us/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "industry standard of 75%",
-          "confidence": 0.9,
-          "id": "[10]",
-          "quote": "Industry Standard: 75%",
-          "source_name": "Charity Navigator - Methodology",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/770502583"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "27 years of experience",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Founded 1999",
-          "source_name": "Charity Website - About",
-          "source_type": "website",
-          "source_url": "https://www.hidaya.org/about-us/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total assets of $4,333,942",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Total assets: 4,333,942",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/770502583"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "liabilities of only $7,808",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Total liabilities: 7,808",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/770502583"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3.5 months of working capital",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Working Capital: 3.2 months",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/770502583"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 11.5%",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "3-Year Revenue CAGR: 11.5%",
-          "source_name": "Financial Statement (2023)",
-          "source_type": "website",
-          "source_url": "https://www.hidaya.org/documents/financials/HF_FS_2023.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "third-party impact evaluations or RCT-level evidence",
-          "confidence": 0.9,
-          "id": "[16]",
-          "quote": "Evidence & outcomes: UNVERIFIED",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/770502583"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "disclosing more detailed board governance data",
-          "confidence": 0.9,
-          "id": "[17]",
-          "quote": "Board governance: WEAK (unknown members)",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/770502583"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "80% independent board",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Independent Board Members: 80%",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/770502583"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "audited financial statements",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Independent Auditor's Report",
-          "source_name": "Financial Statement (2023)",
-          "source_type": "website",
-          "source_url": "https://www.hidaya.org/documents/financials/HF_FS_2023.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cost-effective $35.22 per beneficiary",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "$35.22/beneficiary",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/770502583"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "direct service",
-          "confidence": 1,
-          "id": "[21]",
-          "quote": "Delivery model: Direct Service",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/770502583"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "expanding services to regions with even more limited nonprofit coverage",
-          "confidence": 0.9,
-          "id": "[22]",
-          "quote": "Improvement: Expand services to underserved populations or regions with limited nonprofit coverage",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/770502583"
-        }
-      ],
-      "amal_score_rationale": "The foundation earns a 69/100 score due to its outstanding financial efficiency and strong humanitarian alignment, though its overall impact score is moderated by its direct service model's cost-per-beneficiary metrics.",
-      "amal_scores": {
-        "amal_score": 69,
-        "confidence_scores": {
-          "alignment": 40,
-          "data_confidence": 0.6,
-          "impact": 31
-        },
-        "confidence_tier": "MEDIUM",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Impact Measurement & Evaluation",
-          "citation_ids": [
-            "[16]"
-          ],
-          "context": "While the foundation tracks beneficiaries, it currently lacks <cite id=\"16\">third-party impact evaluations or RCT-level evidence</cite> to verify long-term outcomes."
-        },
-        {
-          "area": "Governance Transparency",
-          "citation_ids": [
-            "[17]"
-          ],
-          "context": "The organization could improve its credibility by <cite id=\"17\">disclosing more detailed board governance data</cite> and documenting a clear theory of change."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[19]"
-        ],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": null,
-        "standards_met": null,
-        "standards_not_met": [],
-        "summary": "The organization provides audited financial statements but does not have a current BBB Wise Giving Alliance accreditation."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[14]",
-          "[16]"
-        ],
-        "mitigation_notes": "The organization maintains high liquidity and has a long history of successful direct service delivery despite limited formal evaluation.",
-        "risk_factors": [
-          "<cite id=\"16\">No third-party impact evaluations available</cite>",
-          "<cite id=\"14\">Working capital is relatively lean at 3.2 months</cite>"
-        ],
-        "summary": "The primary concerns involve <cite id=\"16\">limited external impact verification</cite> and a lean reserve position."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 4,
-          "rating": 10,
-          "website": 8
-        },
-        "high_confidence_count": 19,
-        "total_count": 22,
-        "unique_sources": 7
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023 Form 990 and 2024 Financial Statements",
-        "data_gaps": [
-          "Missing full Charity Navigator rating",
-          "No third-party impact evaluation"
-        ],
-        "level": "MEDIUM",
-        "notes": "Strong financial data but limited outcome and governance transparency.",
-        "score": 67,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Website",
-          "Audited Financials"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 67,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "No full Charity Navigator rating",
-          "No third-party impact evaluation"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 22,
-        "unique_sources": 7,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[5]",
-            "[7]",
-            "[22]"
-          ],
-          "explanation": "The foundation is a high-fit for Muslim donors, offering <cite id=\"7\">verified Zakat programs</cite> across multiple asnaf categories and focusing on <cite id=\"5\">underserved Muslim-majority regions</cite>.",
-          "improvement": "Alignment could be further enhanced by <cite id=\"22\">expanding services to regions with even more limited nonprofit coverage</cite>."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[17]",
-            "[18]",
-            "[19]"
-          ],
-          "explanation": "Donors can trust Hidaya due to its <cite id=\"18\">80% independent board</cite> and consistent <cite id=\"19\">audited financial statements</cite> available for multiple years. However, the lack of a full Charity Navigator rating and limited outcome tracking affects the overall transparency profile.",
-          "improvement": "To strengthen credibility, the charity should <cite id=\"17\">document a clear theory of change</cite> with a causal pathway and publish more detailed board member profiles."
-        },
-        "impact": {
-          "citation_ids": [
-            "[4]",
-            "[16]",
-            "[20]",
-            "[21]"
-          ],
-          "explanation": "Impact is driven by a <cite id=\"20\">cost-effective $35.22 per beneficiary</cite> and a <cite id=\"4\">95.0% program expense ratio</cite>. The delivery model is focused on <cite id=\"21\">direct service</cite>, which minimizes intermediary costs.",
-          "improvement": "Impact measurement would benefit from <cite id=\"16\">tracking outcomes for 3+ consecutive years</cite> and seeking external validation of program results."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[2]",
-          "[5]",
-          "[7]"
-        ],
-        "evidence_rigor": "Grade C - Internal tracking without external evaluation",
-        "geographic_focus": [
-          "Pakistan",
-          "Bangladesh",
-          "Afghanistan",
-          "Somalia",
-          "Ethiopia"
-        ],
-        "giving_style": "Direct service",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)",
-          "fisabilillah (in the path of Allah)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.09,
-        "annual_revenue": 15472301,
-        "citation_ids": [
-          "[3]",
-          "[4]",
-          "[15]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0.002,
-        "industry_program_ratio": 0.75,
-        "peer_count": 58,
-        "peer_program_ratio_median": 0.897,
-        "program_expense_ratio": 0.9501000000000001,
-        "reserves_months": 3.2,
-        "revenue_cagr_3yr": 11.5,
-        "working_capital_months": 3.5,
-        "yearly_financials": [
-          {
-            "expenses": 15010136,
-            "net_assets": 4326134,
-            "revenue": 15472301,
-            "year": 2023
-          },
-          {
-            "expenses": 16212931,
-            "net_assets": 3863969,
-            "revenue": 15427443,
-            "year": 2022
-          },
-          {
-            "expenses": 12133540,
-            "net_assets": 4649457,
-            "revenue": 12437401,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "domestic_grants": 3115956,
-        "foreign_grants": 8387288,
-        "grant_count": 18,
-        "grant_strategy": "Distributes significant funding to both domestic and foreign implementing partners.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Pakistan",
-          "Bangladesh",
-          "Afghanistan"
-        ],
-        "top_recipients": [
-          "Heroic Hearts Organization ($1.1M)",
-          "Rahbar Foundation ($469K)"
-        ],
-        "total_grants": 11503244
-      },
-      "headline": "Hidaya Foundation provides critical humanitarian aid and social welfare services to economically depressed regions through a highly efficient, Zakat-eligible operational model.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize high financial efficiency and want to fulfill Zakat through a long-standing organization with very low fundraising overhead.",
-        "citation_ids": [
-          "[4]",
-          "[6]",
-          "[8]"
-        ],
-        "donor_motivations": [
-          "Want to ensure over 90% of their donation reaches the field",
-          "Seek to support a wide range of humanitarian causes from education to healthcare",
-          "Prefer established organizations with decades of experience in South Asia and Africa",
-          "Value Zakat-eligibility across multiple asnaf categories"
-        ],
-        "giving_considerations": [
-          "Donations support a high-volume, direct-service model",
-          "The organization operates with lean administrative staff to keep costs low",
-          "Impact is reported through internal metrics rather than academic studies"
-        ],
-        "not_ideal_for": "Donors who require rigorous, third-party randomized controlled trials (RCTs) or those seeking a primary focus on US-based domestic advocacy."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[16]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C indicates that while the organization tracks beneficiary numbers and costs, it lacks external evaluations or long-term outcome studies.",
-        "external_evaluations": [],
-        "outcome_tracking_years": 0,
-        "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The foundation operates on the principle that providing direct assistance in education, health, and social welfare to the most impoverished will lead to community stabilization and poverty reduction.",
-        "why_evidence_matters": "Independent evidence helps confirm that the high volume of services provided is translating into lasting improvements in beneficiary lives."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[15]"
-        ],
-        "founded_year": 1999,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": 11.5,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a 3-year revenue growth of 11.5% and vast humanitarian needs in its operating regions, the foundation has significant capacity to absorb more capital.",
-        "strategic_priorities": [
-          "Education",
-          "Social Welfare",
-          "Self Employment"
-        ],
-        "years_operating": 27
-      },
-      "organizational_capacity": {
-        "board_size": 5,
-        "ceo_compensation": 150000,
-        "ceo_compensation_pct_revenue": 0.97,
-        "ceo_name": "Waseem Baloch",
-        "citation_ids": [
-          "[1]",
-          "[3]",
-          "[18]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "10+ countries across South Asia and Africa",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 0.8,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[4]",
-          "[10]"
-        ],
-        "differentiator": "Hidaya's <cite id=\"4\">95.0% program ratio</cite> is higher than the <cite id=\"10\">peer median of 89.7%</cite>.",
-        "peer_group": "International humanitarian organizations",
-        "similar_orgs": [
-          "Baitulmaal, Inc.",
-          "Zakat Foundation of America",
-          "Muslim Aid America"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar humanitarian focus and size",
-          "name": "Baitulmaal, Inc."
-        },
-        {
-          "differentiator": "Similar focus on Zakat-eligible international relief",
-          "name": "Zakat Foundation of America"
-        },
-        {
-          "differentiator": "Similar scale and humanitarian program areas",
-          "name": "Muslim Aid America"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[4]",
-            "[10]"
-          ],
-          "detail": "The foundation directs <cite id=\"4\">95.0% of its total expenses</cite> toward its core programs, significantly exceeding the <cite id=\"10\">industry standard of 75%</cite>.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[8]"
-          ],
-          "detail": "Hidaya spends only <cite id=\"8\">$0.02 to raise every $1</cite> in contributions, maximizing the impact of every donation.",
-          "point": "Low Fundraising Costs"
-        },
-        {
-          "citation_ids": [
-            "[1]",
-            "[11]"
-          ],
-          "detail": "Operating since <cite id=\"1\">1999</cite>, the organization has <cite id=\"11\">27 years of experience</cite> in delivering aid to underserved populations.",
-          "point": "Long-standing Operational History"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Hidaya Foundation's financial health is characterized by high liquidity and low liability, reporting <cite id=\"12\">total assets of $4,333,942</cite> against <cite id=\"13\">liabilities of only $7,808</cite>. This fiscal discipline allows the organization to maintain <cite id=\"14\">3.5 months of working capital</cite>, providing a stable foundation for its international operations. Furthermore, the organization has demonstrated consistent growth with a <cite id=\"15\">3-year revenue CAGR of 11.5%</cite>, indicating increasing donor trust and capacity to scale."
-      ],
-      "summary": "Founded in <cite id=\"1\">1999</cite>, the Hidaya Foundation is a humanitarian organization dedicated to providing <cite id=\"2\">educational, social welfare, and charitable assistance</cite> to economically depressed regions. The organization operates at a significant scale, reporting <cite id=\"3\">total revenue of $15,472,301</cite> in the 2023 tax year. Hidaya is distinguished by its lean operational model, maintaining a <cite id=\"4\">program expense ratio of 95.0%</cite>, which ensures that the vast majority of donor funds are directed toward direct service delivery rather than administrative overhead. Their reach is global, with active programs in <cite id=\"5\">Pakistan, Bangladesh, Sri Lanka, Afghanistan, and several African nations</cite> including Somalia and Ethiopia. As a <cite id=\"6\">Zakat-eligible entity</cite>, the foundation provides a structured platform for Muslim donors to fulfill their religious obligations across categories such as <cite id=\"7\">fuqara, masakin, and fisabilillah</cite>. The organization's efficiency is further highlighted by its <cite id=\"8\">fundraising efficiency of $0.02 per $1 raised</cite>, one of the lowest costs in the humanitarian sector. Beyond emergency relief, Hidaya invests in long-term stability through <cite id=\"9\">self-employment and healthcare programs</cite>, aiming to lift families out of poverty permanently.",
-      "zakat_guidance": {
-        "classification": "fuqara",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "Hidaya Foundation is a non-profit organization dedicated to providing educational, social welfare, and charitable assistance to impoverished communities [1][3]. The foundation is Zakat-eligible, maintaining a policy that ensures funds are distributed according to established asnaf categories [2]."
     }
   }
 }

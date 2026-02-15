@@ -2,7 +2,7 @@
   "id": "45-2751655",
   "ein": "45-2751655",
   "name": "Iqra Fund",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Iqra Fund provides preschool programs for communities to teach children ages four to six years old basic language, social, and formal learning skills to help them succeed in primary school.",
   "programs": [
     "Community Engagement",
@@ -51,7 +51,11 @@
     "netAssets": 464965,
     "workingCapitalMonths": "6.80"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 20,
+    "independentBoardMembers": null,
+    "ceoCompensation": 92165
+  },
   "targeting": {
     "populationsServed": [
       "Men",
@@ -84,7 +88,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:35:06",
+  "lastUpdated": "2026-02-14 19:35:58",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -219,17 +223,36 @@
     "Dedicated zakat page found at https://www.iqrafund.org/donate (Source: https://www.iqrafund.org/donate)"
   ],
   "archetype": "RESILIENCE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "High Conviction",
+    "archetype_code": "RESILIENCE",
+    "archetype_label": "Community Resilience",
+    "evidence_stage": "Established",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Strong",
+      "donor_fit": "Moderate",
+      "risk": "Strong"
+    },
+    "recommendation_cue": "Strong Match",
+    "recommendation_rationale": "Strong donor fit, low risk profile, and credible supporting evidence for outcomes.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "45-2751655",
     "charity_name": "Iqra Fund",
-    "amal_score": 79,
+    "amal_score": 82,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:22:49",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 34,
       "data_confidence": 1,
-      "impact": 45
+      "impact": 48
     },
     "score_details": {
       "alignment": {
@@ -316,12 +339,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 6.8 months (COMFORTABLE)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 3,
+            "evidence": "Working capital: 6.8 months (RESILIENT)",
+            "improvement_suggestion": null,
+            "improvement_value": 0,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 4,
+            "scored": 7,
             "status": "full"
           },
           {
@@ -364,42 +387,10 @@
         "cost_per_beneficiary": 138.0922,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "$138.09/beneficiary; Delivery: capacity building; Impact 45/50",
+        "rationale": "$138.09/beneficiary; Delivery: capacity building; Impact 48/50",
         "rubric_archetype": "EDUCATION",
-        "score": 45
+        "score": 48
       },
-      "judge_issues": [
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[3].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'togetherwomenrise.org' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -407,7 +398,7 @@
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "Iqra Fund earns 79/100 due to exceptional impact and good alignment, with zakat compliance.",
+      "score_summary": "Iqra Fund shows exceptional impact and good alignment, with zakat compliance.",
       "zakat": {
         "asnaf_category": "amil",
         "bonus_points": 0,
@@ -419,13 +410,13 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Iqra Fund holds a 100.0/100 rating for accountability and financial health.",
+          "claim": "The charity holds a 100.0/100 score for accountability and financial health.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/452751655"
         },
         {
-          "claim": "The charity is zakat-eligible and provides information on zakat policy and asnaf categories.",
+          "claim": "The organization is Zakat-eligible and accepts Zakat donations.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.iqrafund.org/donate"
@@ -437,597 +428,46 @@
           "source_url": "https://projects.propublica.org/nonprofits/organizations/452751655"
         },
         {
-          "claim": "Funds are used for tuition assistance and program staff in the region.",
+          "claim": "The organization provides transparent access to annual reports and financial filings.",
+          "id": "[4]",
+          "source_name": "Charity Website - Financials",
+          "source_url": "https://www.iqrafund.org/financials"
+        },
+        {
+          "claim": "Funds are utilized for tuition assistance and program staff in the region.",
           "id": "[5]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://cdn.prod.website-files.com/57f687c9ce15901853df7008/670ec2c77ecf4bd3a9a0eed6_IQRA%20FUND_2023_990_Tax%20Returns.pdf"
         },
         {
-          "claim": "The organization continues to prioritize tuition assistance and related educational expenses.",
-          "id": "[7]",
-          "source_name": "Form 990 (2024)",
-          "source_url": "https://cdn.prod.website-files.com/57f687c9ce15901853df7008/691f5318be6576bfffc4a7cd_Iqra%20Fund%20Taxes%20-%20Final%20Form%20990%20for%20Public%20Inspection.pdf"
-        },
-        {
-          "claim": "Programs have successfully supported girls in primary through secondary school and increased village enrollment rates.",
+          "claim": "The organization supports girls in primary through secondary school and increases village enrollment rates.",
           "id": "[8]",
           "source_name": "Form 990 (2020)",
           "source_url": "https://cdn.prod.website-files.com/57f687c9ce15901853df7008/622630a110c9c1cbbe365591_2020%20Form%20990%20-%20Public%20Copy.pdf"
         },
         {
-          "claim": "The charity offers various donation options including zakat-eligible giving methods.",
+          "claim": "Donors have various giving methods including options for Zakat.",
           "id": "[10]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.iqrafund.org/donate"
         }
       ],
-      "amal_score_rationale": "Iqra Fund earns a strong score due to its perfect financial health rating, high impact in the urgent cause of global education, and clear zakat eligibility for Muslim donors.",
+      "amal_score_rationale": "Iqra Fund earns a high overall rating due to its perfect financial transparency score and its high-impact focus on global education urgency.",
       "areas_for_improvement": [
-        "Expanding the donor base to increase total annual revenue beyond $991,974",
-        "Increasing working capital reserves beyond the current 6.8 months for long-term sustainability"
+        "Expand public reporting on long-term secondary school graduation rates beyond tuition assistance metrics.",
+        "Increase working capital reserves to exceed the current 6.8 months for greater long-term sustainability."
       ],
       "dimension_explanations": {
-        "alignment": "Iqra Fund shows high alignment for donors interested in global education urgency, specifically targeting girls' secondary education and preschool readiness [1][8]. The charity's zakat-eligible status and clear policy on asnaf categories make it a high-fit option for faith-based giving [2][10].",
-        "impact": "The organization demonstrates high impact through capacity building, focusing on teacher professional development and early childhood education to improve village enrollment rates [1][8]. With a program expense ratio of 85.9%, the charity efficiently utilizes its $991,974 in total revenue to provide tuition assistance and support program staff in the region [3][5][7]."
+        "alignment": "Iqra Fund shows high alignment for Muslim donors as a Zakat-eligible entity addressing the urgent cause of global education [2][10]. With total revenue of $991,974 and 6.8 months of working capital, it maintains a stable track record of service delivery [3][4].",
+        "impact": "The organization demonstrates high impact through capacity building, maintaining a program expense ratio of 85.9% and achieving a perfect 100.0/100 rating from Charity Navigator [1][3]. Its programs focus on preschool readiness and teacher professional development to ensure long-term educational quality [5][8]."
       },
-      "headline": "Iqra Fund empowers underserved communities through comprehensive educational support and early childhood development programs.",
+      "headline": "Iqra Fund empowers underserved communities through comprehensive educational support, focusing on early childhood development and gender equality in schooling.",
       "strengths": [
-        "Maintains a perfect Charity Navigator score of 100.0/100 for accountability and finance",
-        "High program expense ratio of 85.9% ensuring funds reach beneficiaries",
-        "Exceptional fundraising efficiency at only $0.07 per $1 raised"
+        "Maintains a perfect Charity Navigator score of 100.0/100, reflecting exceptional transparency and financial health.",
+        "High program expense ratio of 85.9%, ensuring the vast majority of funds directly support educational initiatives.",
+        "Strong fundraising efficiency, spending only $0.07 to raise every $1."
       ],
-      "summary": "Iqra Fund provides preschool programs for children ages four to six to establish foundational language and social skills, while also supporting primary and secondary education for girls [1][3]. The organization is recognized for its high financial transparency and is zakat-eligible, allowing donors to fulfill religious obligations through educational empowerment [2][10]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "perfect 100/100 overall score from Charity Navigator",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "Overall Score 100/100",
-          "source_name": "Charity Navigator - Iqra Fund",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/452751655"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "founding in 2011",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "founded in 2011",
-          "source_name": "Iqra Fund Website",
-          "source_type": "website",
-          "source_url": "https://www.iqrafund.org/financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "teacher training, community engagement, and student success initiatives",
-          "confidence": 0.95,
-          "id": "[3]",
-          "quote": "Programs: Community Engagement, Teacher Training & Development, Learning Environments, Student Success",
-          "source_name": "Iqra Fund Programs",
-          "source_type": "website",
-          "source_url": "https://www.iqrafund.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $991,974",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Total Revenue: $991,974",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/452751655"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 85.9%",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Program Expense Ratio: 84.7%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/452751655"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "tuition assistance for students",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Tuition assistance and related expenses: 27357",
-          "source_name": "Form 990 (2024)",
-          "source_type": "form990",
-          "source_url": "https://cdn.prod.website-files.com/57f687c9ce15901853df7008/691f5318be6576bfffc4a7cd_Iqra%20Fund%20Taxes%20-%20Final%20Form%20990%20for%20Public%20Inspection.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "perfect 100.0/100 from Charity Navigator",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Accountability & Finance: 100/100",
-          "source_name": "Charity Navigator - Accountability",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/452751655#accountability"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified zakat-eligible pathway",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "Iqra Fund - Donate",
-          "source_type": "website",
-          "source_url": "https://www.iqrafund.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fuqara, masakin, and fisabilillah",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Zakat Categories: fuqara, masakin, fisabilillah",
-          "source_name": "Iqra Fund - Zakat Policy",
-          "source_type": "website",
-          "source_url": "https://www.iqrafund.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "supporting girls through secondary school",
-          "confidence": 0.95,
-          "id": "[10]",
-          "quote": "Girls supported in primary through secondary school",
-          "source_name": "Form 990 (2020)",
-          "source_type": "form990",
-          "source_url": "https://cdn.prod.website-files.com/57f687c9ce15901853df7008/622630a110c9c1cbbe365591_2020%20Form%20990%20-%20Public%20Copy.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Candid Seal: platinum",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/452751655"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.07 per $1 raised",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Fundraising Efficiency: $0.07 per $1 raised",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/452751655"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "board of 20 members",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Board Size: 20",
-          "source_name": "Candid Governance Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/452751655"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "88% of board members being independent",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Independent Board Members: 88%",
-          "source_name": "Charity Navigator - Governance",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/452751655"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cost per beneficiary of $138.09",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "$138.09/beneficiary (exceptional for EDUCATION_GLOBAL)",
-          "source_name": "Impact Analysis",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/452751655"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "6.8 months of working capital",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Working Capital: 6.8 months",
-          "source_name": "Charity Navigator - Liquidity",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/452751655"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "CEO's compensation of $92,165",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "CEO (Genevieve Walsh): $92,165",
-          "source_name": "Charity Navigator - Compensation",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/452751655"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "teacher training and learning environment programs",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Programs: Teacher Training & Development, Learning Environments",
-          "source_name": "Iqra Fund Website",
-          "source_type": "website",
-          "source_url": "https://www.iqrafund.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "concentrated in Pakistan",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Areas Served: Pakistan",
-          "source_name": "Iqra Fund - About",
-          "source_type": "website",
-          "source_url": "https://www.iqrafund.org/financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer median of 78.4%",
-          "confidence": 1,
-          "id": "[23]",
-          "quote": "Peer Program Ratio Median: 78.4%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/452751655"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "active outcome tracking of two key metrics",
-          "confidence": 1,
-          "id": "[24]",
-          "quote": "Outcome Metrics Tracked: 2",
-          "source_name": "Candid Outcomes",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/452751655"
-        }
-      ],
-      "amal_score_rationale": "Iqra Fund earns a strong score due to its perfect financial health rating, high impact in the urgent cause of global education, and clear zakat eligibility for Muslim donors.",
-      "amal_scores": {
-        "amal_score": 79,
-        "confidence_scores": {
-          "alignment": 34,
-          "data_confidence": 1,
-          "impact": 45
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Revenue Diversification and Scale",
-          "citation_ids": [
-            "[4]",
-            "[18]"
-          ],
-          "context": "With <cite id=\"4\">annual revenue of $991,974</cite>, the organization is relatively small; expanding the donor base could help scale their <cite id=\"18\">teacher training and learning environment programs</cite>."
-        },
-        {
-          "area": "Geographic Concentration",
-          "citation_ids": [
-            "[19]"
-          ],
-          "context": "Currently, operations are <cite id=\"19\">concentrated in Pakistan</cite>; expanding to other underserved regions could mitigate country-specific risks."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[1]",
-          "[11]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "The organization demonstrates high accountability through its perfect Charity Navigator score and Platinum Candid status."
-      },
-      "case_against": {
-        "citation_ids": [
-          "4",
-          "16",
-          "19"
-        ],
-        "mitigation_notes": "The organization maintains <cite id=\"16\">over 11 months of operating reserves</cite> to mitigate short-term funding or access disruptions.",
-        "risk_factors": [
-          "<cite id=\"19\">Geographic concentration in Pakistan</cite> creates exposure to local political and economic instability."
-        ],
-        "summary": "The primary limitation is the organization's <cite id=\"4\">sub-$1M revenue scale</cite>, which may limit its ability to respond to large-scale educational crises."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 1,
-          "form990": 4,
-          "rating": 12,
-          "website": 7
-        },
-        "high_confidence_count": 24,
-        "total_count": 24,
-        "unique_sources": 7
-      },
-      "confidence": {
-        "data_freshness": "Data current through 2023 Form 990 and 2024 ratings",
-        "data_gaps": [
-          "No multi-country operations"
-        ],
-        "level": "HIGH",
-        "notes": "Extremely high transparency and accountability metrics from multiple third-party sources.",
-        "score": 95,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Candid",
-          "Iqra Fund Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 95,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Limited multi-country data"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 24,
-        "unique_sources": 7,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[8]",
-            "[9]",
-            "[22]"
-          ],
-          "explanation": "Strong alignment for Muslim donors through <cite id=\"8\">verified zakat eligibility</cite> and focus on <cite id=\"9\">asnaf categories including fisabilillah</cite>.",
-          "improvement": "Alignment could be improved by <cite id=\"22\">expanding services to more underserved populations</cite> within the region to address the highest-need areas."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[7]",
-            "[11]",
-            "[20]"
-          ],
-          "explanation": "Donors can have high confidence due to the <cite id=\"11\">Candid Platinum Seal</cite> and <cite id=\"7\">perfect scores across all Charity Navigator beacons</cite>, including Leadership and Culture.",
-          "improvement": "To further enhance credibility, the organization could publish more frequent <cite id=\"20\">external impact evaluations</cite> of its long-term student outcomes."
-        },
-        "impact": {
-          "citation_ids": [
-            "[5]",
-            "[15]",
-            "[21]"
-          ],
-          "explanation": "The charity demonstrates high impact through an <cite id=\"5\">84.7% program ratio</cite> and a <cite id=\"15\">low cost of $138.09 per beneficiary</cite>.",
-          "improvement": "Impact could be strengthened by <cite id=\"21\">building working capital reserves</cite> to ensure multi-year funding for students in secondary education."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "EDUCATION_GLOBAL",
-        "citation_ids": [
-          "[2]",
-          "[8]",
-          "[9]"
-        ],
-        "evidence_rigor": "Grade B - Outcome tracking with clear Theory of Change",
-        "geographic_focus": [
-          "Pakistan"
-        ],
-        "giving_style": "Capacity Building & Direct Tuition Support",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara",
-          "masakin",
-          "fisabilillah"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.083,
-        "annual_revenue": 991974,
-        "citation_ids": [
-          "[4]",
-          "[5]",
-          "[16]",
-          "[23]"
-        ],
-        "cn_financial_score": 100,
-        "cn_overall_score": 100,
-        "fundraising_ratio": 0.07,
-        "industry_program_ratio": 0.75,
-        "peer_count": 12,
-        "peer_program_ratio_median": 0.784,
-        "program_expense_ratio": 0.8592,
-        "reserves_months": 11.3,
-        "revenue_cagr_3yr": 6.6,
-        "transparency_score": 100,
-        "working_capital_months": 6.8,
-        "yearly_financials": [
-          {
-            "expenses": 815097,
-            "net_assets": 464965,
-            "revenue": 991974,
-            "year": 2023
-          },
-          {
-            "expenses": 689716,
-            "net_assets": 4803798,
-            "revenue": 4852467,
-            "year": 2022
-          },
-          {
-            "expenses": 412922,
-            "net_assets": 688704,
-            "revenue": 873538,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[7]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 27357,
-        "grant_count": 1,
-        "grant_strategy": "Provides tuition assistance and related educational expenses to students in Pakistan",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "Pakistan"
-        ],
-        "top_recipients": [
-          "Foreign Educational Partner ($27,357)"
-        ],
-        "total_grants": 27357
-      },
-      "headline": "Iqra Fund empowers underserved communities through comprehensive educational support and early childhood development programs.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize high financial accountability and want to support early childhood education and girls' schooling in Pakistan through a zakat-eligible vehicle.",
-        "citation_ids": [
-          "[1]",
-          "[8]",
-          "[19]"
-        ],
-        "donor_motivations": [
-          "Want to fulfill zakat through educational empowerment",
-          "Value organizations with perfect transparency ratings",
-          "Prefer lean operations with low fundraising overhead",
-          "Focus on long-term poverty alleviation through literacy"
-        ],
-        "giving_considerations": [
-          "Gifts support a smaller, highly specialized organization",
-          "Focus is exclusively on Pakistan",
-          "Strong emphasis on preschool and foundational skills"
-        ],
-        "not_ideal_for": "Donors seeking large-scale multi-country humanitarian relief or those looking for domestic US-based educational programs."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[1]",
-          "[3]",
-          "[24]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B reflects <cite id=\"24\">active outcome tracking of two key metrics</cite> and a clear, documented theory of change.",
-        "external_evaluations": [
-          "Candid Outcome Metrics"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "Iqra Fund creates impact by providing <cite id=\"1\">preschool programs</cite> to build foundational skills, <cite id=\"3\">training local teachers</cite>, and providing <cite id=\"6\">tuition assistance</cite> to ensure students can progress through secondary school.",
-        "why_evidence_matters": "Evidence ensures that educational interventions actually lead to improved literacy and social outcomes for children."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[2]",
-          "[4]",
-          "[18]"
-        ],
-        "founded_year": 2011,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": 6.6,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"4\">revenue under $1M</cite> and high cause urgency, the organization has significant capacity to absorb more funds to expand its <cite id=\"18\">learning environment programs</cite>.",
-        "strategic_priorities": [
-          "Expand preschool access",
-          "Increase teacher training capacity",
-          "Strengthen secondary school support for girls"
-        ],
-        "years_operating": 15
-      },
-      "organizational_capacity": {
-        "board_size": 20,
-        "ceo_compensation": 92165,
-        "ceo_compensation_pct_revenue": 9.29,
-        "ceo_name": "Genevieve Walsh",
-        "citation_ids": [
-          "[13]",
-          "[14]",
-          "[17]",
-          "[19]"
-        ],
-        "employees_count": 102,
-        "geographic_reach": "Pakistan",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 0.88,
-        "payroll_to_revenue_pct": 14.1,
-        "programs_count": 5,
-        "staff_per_million_revenue": 102.8,
-        "volunteers_count": 0
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[5]",
-          "[23]"
-        ],
-        "differentiator": "Distinguished by a <cite id=\"5\">program expense ratio of 85.9%</cite>, which exceeds the <cite id=\"23\">peer median of 78.4%</cite>.",
-        "peer_group": "Global Education Nonprofits",
-        "similar_orgs": [
-          "Developments in Literacy",
-          "Dar-us-Sakina",
-          "Friends of KDSP"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Larger scale with similar K-12 focus in Pakistan",
-          "name": "Developments in Literacy"
-        },
-        {
-          "differentiator": "Smaller scale, similar focus on underserved populations",
-          "name": "Dar-us-Sakina"
-        },
-        {
-          "differentiator": "Focuses on special education within the same region",
-          "name": "Friends of KDSP"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]",
-            "[11]"
-          ],
-          "detail": "The organization maintains a <cite id=\"1\">perfect 100/100 overall score from Charity Navigator</cite> and holds a <cite id=\"11\">Platinum Seal of Transparency from Candid</cite>.",
-          "point": "Exceptional Accountability and Transparency"
-        },
-        {
-          "citation_ids": [
-            "[5]",
-            "[12]"
-          ],
-          "detail": "Iqra Fund operates with a <cite id=\"5\">program expense ratio of 85.9%</cite> and an impressive <cite id=\"12\">fundraising efficiency of $0.07 per $1 raised</cite>.",
-          "point": "High Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[13]",
-            "[14]"
-          ],
-          "detail": "The charity is overseen by a <cite id=\"13\">board of 20 members</cite>, with <cite id=\"14\">88% of board members being independent</cite>.",
-          "point": "Strong Governance Structure"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Iqra Fund's operational model is characterized by extreme leaness and high impact per dollar. The organization reports a <cite id=\"15\">cost per beneficiary of $138.09</cite>, which is considered exceptional for the global education sector. Their financial stability is further evidenced by <cite id=\"16\">6.8 months of working capital</cite> in reserves, providing a significant buffer for program continuity in the volatile regions of Pakistan where they operate. Furthermore, the <cite id=\"17\">CEO's compensation of $92,165</cite> is modest relative to the organization's high accountability standards and complex international operations."
-      ],
-      "summary": "Iqra Fund is a specialized educational nonprofit that focuses on providing <cite id=\"1\">preschool programs for children ages four to six</cite> in underserved regions of Pakistan. Since its <cite id=\"2\">founding in 2011</cite>, the organization has developed a comprehensive model that includes <cite id=\"3\">teacher training, community engagement, and student success initiatives</cite>. The charity is highly efficient, reporting <cite id=\"4\">total revenue of $991,974</cite> in 2023 while maintaining a <cite id=\"5\">program expense ratio of 85.9%</cite>. This ensures that the vast majority of donor contributions directly fund educational access and <cite id=\"6\">tuition assistance for students</cite>. Iqra Fund is particularly notable for its <cite id=\"7\">perfect 100.0/100 from Charity Navigator</cite>, reflecting a gold standard in accountability and financial health. For Muslim donors, the organization provides a <cite id=\"8\">verified zakat-eligible pathway</cite> to support educational empowerment, specifically serving the <cite id=\"9\">fuqara, masakin, and fisabilillah</cite> categories. By focusing on early childhood development and <cite id=\"10\">supporting girls through secondary school</cite>, Iqra Fund addresses long-term poverty cycles through foundational literacy and social skills.",
-      "zakat_guidance": {
-        "classification": "amil",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "Iqra Fund provides preschool programs and primary through secondary school support to help children, particularly girls, succeed in formal learning environments [1][8]. The organization is recognized for its high financial accountability and is Zakat-eligible, allowing donors to fulfill religious obligations through educational empowerment [2][10]."
     }
   }
 }

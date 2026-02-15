@@ -2,7 +2,7 @@
   "id": "83-2222109",
   "ein": "83-2222109",
   "name": "Paani",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Our mission is to provide temporary relief where we can and work toward building permanent solutions to the most complex problems that countries like Pakistan are facing. We strive to combine evidence-based initiatives with cultural competency to ensure that community members feel comfortable\nand empowered in our presence.",
   "programs": [
     "Water Wells"
@@ -45,7 +45,11 @@
     "netAssets": 1132584,
     "workingCapitalMonths": "5.90"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 2,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Men",
@@ -68,7 +72,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-09 21:34:04",
+  "lastUpdated": "2026-02-14 19:36:17",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -171,17 +175,36 @@
   "evidenceQuality": null,
   "zakatClaimEvidence": null,
   "archetype": "ASSET_CREATION",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Well Documented Low Score",
+    "archetype_code": "ASSET_CREATION",
+    "archetype_label": "Asset Creator",
+    "evidence_stage": "Established",
+    "signal_states": {
+      "evidence": "Moderate",
+      "financial_health": "Moderate",
+      "donor_fit": "Moderate",
+      "risk": "Limited"
+    },
+    "recommendation_cue": "Limited Match",
+    "recommendation_rationale": "Evidence quality is well documented, but results are weak on the current rubric dimensions.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "83-2222109",
     "charity_name": "Paani",
-    "amal_score": 36,
+    "amal_score": 39,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-02-04 20:46:02",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 29,
       "data_confidence": 1,
-      "impact": 13
+      "impact": 16
     },
     "score_details": {
       "alignment": {
@@ -268,12 +291,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 5.9 months (HEALTHY)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 3,
+            "evidence": "Working capital: 5.9 months (RESILIENT)",
+            "improvement_suggestion": null,
+            "improvement_value": 0,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 4,
+            "scored": 7,
             "status": "full"
           },
           {
@@ -316,36 +339,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 13/50",
+        "rationale": "Delivery: capacity building; Impact 16/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 13
+        "score": 16
       },
-      "judge_issues": [
-        {
-          "field": "source.website",
-          "judge": "data_completeness",
-          "message": "Critical source 'website' failed: No data found on any pages",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -6,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -368,7 +365,7 @@
         ],
         "total_deduction": -6
       },
-      "score_summary": "Paani earns 36/100 due to good alignment and limited impact (significant risk deductions applied).",
+      "score_summary": "Paani shows good alignment and limited impact (significant risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -380,7 +377,7 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Paani holds a 91.75/100 rating and focuses on water well programs in Pakistan.",
+          "claim": "Paani holds a Charity Navigator score of 91.75/100 and holds 5.9 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/832222109"
@@ -392,350 +389,22 @@
           "source_url": "https://projects.propublica.org/nonprofits/organizations/832222109"
         }
       ],
-      "amal_score_rationale": "Paani earns a moderate overall score due to its high transparency and fundraising efficiency, balanced against a lower program expense ratio and limited third-party impact verification.",
+      "amal_score_rationale": "The organization maintains high transparency and financial health ratings, though its overall score is moderated by a medium program expense ratio and a focus on capacity building rather than direct service delivery.",
       "areas_for_improvement": [
         "program expense ratio of 61.6% is lower than industry leaders",
-        "Limited evidence of direct impact measurement or cost-per-beneficiary data"
+        "Limited evidence of direct impact measurement beyond capacity building"
       ],
       "dimension_explanations": {
-        "alignment": "With an alignment score of 29/50, Paani demonstrates a medium fit for donors interested in humanitarian water crises [1]. As a sadaqah-eligible organization, it serves as a verified pathway for general charitable giving toward urgent humanitarian needs in Pakistan [1].",
-        "impact": "The organization's impact score of 13/50 reflects its focus on capacity building through water well construction, though it currently lacks specific cost-per-beneficiary data [1]. While the charity maintains a 91.91.75/100 from Charity Navigator score, its program expense ratio is 61.6%, indicating a significant portion of funds are directed toward administrative or other non-programmatic costs [1][2]."
+        "alignment": "The organization addresses a high-urgency humanitarian cause and is identified as Sadaqah-eligible, offering a medium fit for donors seeking to support water security in Muslim-majority regions [1]. Its track record is supported by a high data confidence level and a fundraising efficiency of $0.00 per $1 raised [1][2].",
+        "impact": "Paani focuses on capacity building through water well construction, achieving a program expense ratio of 61.6% [1][2]. While the organization demonstrates strong financial health with 5.9 months of working capital, its impact score reflects a need for more direct evidence of long-term beneficiary outcomes [1]."
       },
       "headline": "Paani provides sustainable access to clean and safe drinking water for underserved communities in Pakistan through the implementation of water well programs.",
       "strengths": [
-        "High fundraising efficiency with $0.00 spent to raise $1",
-        "Strong financial health with 5.9 months of working capital",
-        "High data confidence and transparency ratings"
+        "High Charity Navigator score of 91.75/100 for accountability and finance",
+        "Exceptional fundraising efficiency of $0.00 per $1 raised",
+        "Strong short-term liquidity with 5.9 months of working capital"
       ],
-      "summary": "Paani is a humanitarian organization dedicated to addressing the global water crisis, primarily focusing its efforts on infrastructure projects in Pakistan [1]. In the 2023 fiscal year, the organization reported a total revenue of $2,547,511 to support its mission of providing clean water access [2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "overall score of 91.91.75/100 from Charity Navigator",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "Overall Score & Rating 91.75",
-          "source_name": "Charity Navigator - Paani",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/832222109"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $2,547,511",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: $2,547,511",
-          "source_name": "Form 990 (2023) - ProPublica",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/832222109"
-        }
-      ],
-      "amal_score_rationale": "Paani earns a moderate overall score due to its high transparency and fundraising efficiency, balanced against a lower program expense ratio and limited third-party impact verification.",
-      "amal_scores": {
-        "amal_score": 36,
-        "confidence_scores": {
-          "alignment": 29,
-          "data_confidence": 1,
-          "impact": 13
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Board Governance Expansion",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "The current <cite id=\"1\">board consists of only 2 members</cite>, which is below the recommended minimum for robust oversight and risk mitigation."
-        },
-        {
-          "area": "Program Expense Allocation",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "While tax filings show a high ratio, Charity Navigator identifies a <cite id=\"1\">program expense ratio of 61.6%</cite>, which is lower than the <cite id=\"1\">peer median of 89.7%</cite>."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "BBB assessment data is currently unavailable for this organization."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "mitigation_notes": "The organization maintains high transparency and has no reported conflicts of interest.",
-        "risk_factors": [
-          "<cite id=\"1\">Board too small (2 members)</cite>",
-          "<cite id=\"1\">program expense ratio of 61.6%</cite> is below the <cite id=\"1\">industry standard of 75%</cite>"
-        ],
-        "summary": "The primary concerns involve governance and financial reporting consistency. The <cite id=\"1\">board size of 2</cite> is a significant risk factor for organizational stability."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 5,
-          "rating": 10
-        },
-        "high_confidence_count": 15,
-        "total_count": 15,
-        "unique_sources": 2
-      },
-      "confidence": {
-        "data_freshness": "Data current through 2023 tax year",
-        "data_gaps": [
-          "Missing detailed employee counts"
-        ],
-        "level": "HIGH",
-        "notes": "Strong alignment between third-party ratings and tax data.",
-        "score": 85,
-        "sources_used": [
-          "Charity Navigator",
-          "Form 990"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 85,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Small board size",
-          "Inconsistent program ratio reporting"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 2,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[1]"
-          ],
-          "explanation": "Paani is a strong fit for donors interested in <cite id=\"1\">humanitarian water projects</cite> in Muslim-majority regions like Pakistan, though it is <cite id=\"1\">Sadaqah-eligible only</cite>.",
-          "improvement": "The organization could improve alignment by <cite id=\"1\">highlighting the humanitarian dimensions</cite> of its work to better serve the specific interests of Muslim donors."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]"
-          ],
-          "explanation": "Donors can find confidence in Paani's <cite id=\"1\">Platinum Seal of Transparency</cite> and its <cite id=\"1\">91.75/100 overall rating</cite> from Charity Navigator. The organization also holds a <cite id=\"1\">perfect 100 score for Culture & Community</cite>.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"1\">expand its board of directors</cite> beyond the current two members to enhance independent oversight."
-        },
-        "impact": {
-          "citation_ids": [
-            "[1]"
-          ],
-          "explanation": "The organization focuses on <cite id=\"1\">water infrastructure in Pakistan</cite>, but currently lacks <cite id=\"1\">cost-per-beneficiary data</cite> to fully validate its efficiency relative to peers.",
-          "improvement": "Impact measurement would benefit from <cite id=\"1\">tracking specific outcome metrics</cite> over a 3-year period and documenting a formal <cite id=\"1\">theory of change</cite>."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "evidence_rigor": "Grade C - Outcome metrics tracked via Candid",
-        "geographic_focus": [
-          "Pakistan"
-        ],
-        "giving_style": "Infrastructure/Capacity Building",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          ""
-        ],
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.123,
-        "annual_revenue": 2547511,
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "cn_financial_score": 80,
-        "cn_overall_score": 91.75,
-        "fundraising_ratio": 0.001,
-        "industry_program_ratio": 0.75,
-        "peer_count": 58,
-        "peer_program_ratio_median": 0.897,
-        "program_expense_ratio": 0.616,
-        "reserves_months": 7.4,
-        "revenue_cagr_3yr": 24.7,
-        "transparency_score": 100,
-        "working_capital_months": 5.9,
-        "yearly_financials": [
-          {
-            "expenses": 2290621,
-            "net_assets": 1132584,
-            "revenue": 2547511,
-            "year": 2023
-          },
-          {
-            "expenses": 1900542,
-            "net_assets": 940571,
-            "revenue": 2811138,
-            "year": 2022
-          },
-          {
-            "expenses": 1742734,
-            "net_assets": 22415,
-            "revenue": 1638522,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct implementation of water projects",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "Pakistan"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "Paani provides sustainable access to clean and safe drinking water for underserved communities in Pakistan through the implementation of water well programs.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support high-growth, transparent water infrastructure projects in Pakistan through a lean, Sadaqah-eligible organization.",
-        "citation_ids": [
-          "[1]"
-        ],
-        "donor_motivations": [
-          "Value high transparency and Platinum-level reporting",
-          "Prefer organizations with extremely low fundraising overhead",
-          "Want to support sustainable water access in Pakistan",
-          "Comfortable with growth-stage organizations"
-        ],
-        "giving_considerations": [
-          "Donations are treated as Sadaqah, not Zakat",
-          "The organization is still maturing its governance and board structure",
-          "Impact is focused on long-term infrastructure rather than immediate relief"
-        ],
-        "not_ideal_for": ""
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects that the organization <cite id=\"1\">tracks 4 outcome metrics</cite> but lacks an external evaluation or a 3-year data trend.",
-        "external_evaluations": [
-          "Candid Platinum Profile"
-        ],
-        "outcome_tracking_years": 1,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Paani creates impact by building community-led water solutions to increase safe water access in Pakistan.",
-        "why_evidence_matters": "Evidence ensures that water wells remain functional and actually improve health outcomes for the community."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "founded_year": null,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": 24.7,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"2\">24.7% revenue growth rate</cite> and high demand for water in Pakistan, the organization can absorb additional capital.",
-        "strategic_priorities": [
-          "Sustainable community-led water solutions",
-          "Expanding access in underserved regions"
-        ],
-        "years_operating": 8
-      },
-      "organizational_capacity": {
-        "board_size": 2,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Listed",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Pakistan",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 1,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "differentiator": "Distinguished by <cite id=\"1\">exceptional fundraising efficiency ($0.01/$1)</cite> compared to larger peers like Action Against Hunger.",
-        "peer_group": "Humanitarian Water & Sanitation",
-        "similar_orgs": [
-          "Ehsaas Foundation",
-          "BASMAH",
-          "Action Against Hunger USA"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Smaller scale, similar size",
-          "name": "Ehsaas Foundation"
-        },
-        {
-          "differentiator": "Larger scale, similar focus",
-          "name": "BASMAH"
-        },
-        {
-          "differentiator": "Much larger, global reach",
-          "name": "Action Against Hunger USA"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The organization demonstrates remarkable efficiency in its development efforts, spending only <cite id=\"1\">$0.00 per $1 raised</cite> of revenue.",
-          "point": "Exceptional Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "Paani maintains <cite id=\"1\">5.9 months of working capital</cite> in working capital, providing a significant buffer for project continuity.",
-          "point": "Strong Short-Term Liquidity"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The charity has earned the <cite id=\"1\">Candid Platinum Seal of Transparency</cite> and a <cite id=\"1\">perfect 100 score for Leadership</cite>.",
-          "point": "High Transparency Standards"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Paani\u2019s financial model is characterized by its ability to scale without a corresponding increase in fundraising costs. The organization reported <cite id=\"2\">$2,547,511 in total contributions</cite> for 2023 while maintaining a <cite id=\"1\">fundraising efficiency of $0.01</cite>. This suggests a highly effective volunteer or digital-first outreach strategy. Furthermore, the organization has shown strong growth, evidenced by a <cite id=\"2\">3-year revenue CAGR of 24.7%</cite>, moving from $1.6 million in 2021 to over $2.5 million in 2023. This growth is supported by a <cite id=\"1\">100% independent board</cite>, ensuring that governance is not compromised during its expansion phase."
-      ],
-      "summary": "Paani is a humanitarian organization dedicated to addressing the global water crisis, primarily focusing its efforts on infrastructure projects in Pakistan. The organization operates with a mission to provide sustainable access to clean and safe drinking water in underserved communities through the implementation of water well programs. In the 2023 fiscal year, Paani reported a <cite id=\"2\">total revenue of $2,547,511</cite>, reflecting a significant capacity to mobilize resources for its cause. Despite its growth, the organization maintains <cite id=\"1\">high fundraising efficiency</cite>, spending <cite id=\"1\">$0.01 to raise every $1</cite> in contributions. This lean fundraising model ensures that the vast majority of donor support is available for organizational activities. Currently, the charity holds an <cite id=\"1\">overall score of 91.91.75/100 from Charity Navigator</cite>, bolstered by <cite id=\"1\">perfect scores of 100 in both Culture and Leadership</cite> beacons. While the organization has demonstrated strong financial health with <cite id=\"1\">5.9 months of working capital</cite>, its program expense ratio remains a point of nuance for donors. According to tax filings, the <cite id=\"2\">program expense ratio is 61.6%</cite>, though third-party analysts like Charity Navigator calculate a lower <cite id=\"1\">program expense ratio of 61.6%</cite> based on specific reporting classifications. Paani has achieved a <cite id=\"1\">Platinum Seal of Transparency from Candid</cite>, the highest level available, indicating a strong commitment to public disclosure. The organization\u2019s impact is centered on capacity building, specifically through the construction of water infrastructure that serves as a long-term resource for local communities in Pakistan.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "Paani is a non-profit organization dedicated to addressing the global water crisis, primarily focusing its efforts on infrastructure projects in Pakistan [1]. In the 2023 fiscal year, the organization reported a total revenue of $2,547,511 to support its mission of providing safe drinking water [2]."
     }
   }
 }

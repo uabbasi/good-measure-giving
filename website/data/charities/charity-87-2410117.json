@@ -2,7 +2,7 @@
   "id": "87-2410117",
   "ein": "87-2410117",
   "name": "Human Appeal USA",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Human Appeal USA is a non-profit organization working across the globe to strengthen humanity\u2019s fight against poverty, social injustice and natural disaster. Through the provision of immediate relief and the establishment of self-sustaining development programs, we aim to invest in real, effective solutions. \n\nHuman Appeal USA is here for every human. Our work is focused at home as well as abroad, with our ongoing mission of poverty alleviation through dignified means.",
   "programs": [
     "Emergency Relief",
@@ -53,7 +53,11 @@
     "netAssets": 5503813,
     "workingCapitalMonths": "10.70"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 1,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Adults",
@@ -85,7 +89,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:33:14",
+  "lastUpdated": "2026-02-14 19:36:23",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -240,17 +244,36 @@
     "Dedicated zakat page found at https://humanappealusa.org/donate (Source: https://humanappealusa.org/donate)"
   ],
   "archetype": "DIRECT_SERVICE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "DIRECT_SERVICE",
+    "archetype_label": "Frontline Relief",
+    "evidence_stage": "Verified",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Limited",
+      "donor_fit": "Strong",
+      "risk": "Limited"
+    },
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "87-2410117",
     "charity_name": "Human Appeal USA",
-    "amal_score": 59,
+    "amal_score": 64,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:09:36",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 40,
       "data_confidence": 0.85,
-      "impact": 26
+      "impact": 31
     },
     "score_details": {
       "alignment": {
@@ -337,12 +360,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 10.7 months (HIGH)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 4,
+            "evidence": "Working capital: 10.7 months (RESILIENT)",
+            "improvement_suggestion": null,
+            "improvement_value": 0,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 1,
+            "scored": 6,
             "status": "full"
           },
           {
@@ -385,54 +408,10 @@
         "cost_per_beneficiary": 3.46444115168282,
         "directness_level": "DIRECT_PROVISION",
         "impact_design_categories": [],
-        "rationale": "$3.46/beneficiary; Delivery: direct provision; Impact 26/50",
+        "rationale": "$3.46/beneficiary; Delivery: direct provision; Impact 31/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 26
+        "score": 31
       },
-      "judge_issues": [
-        {
-          "field": "risks.risk_summary",
-          "judge": "score",
-          "message": "The risk summary only mentions the small board size, but the risk deduction is -7. The rationale should also mention the lack of outcome measurement or metrics tracking, which is also listed as a risk.",
-          "severity": "warning"
-        },
-        {
-          "field": "multi_source.revenue_divergence",
-          "judge": "crawl_quality",
-          "message": "Revenue diverges >50% across sources ($10,889,699 - $35,399,389)",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -7,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -455,7 +434,7 @@
         ],
         "total_deduction": -7
       },
-      "score_summary": "Human Appeal Inc earns 59/100 due to strong alignment and moderate impact, with zakat compliance (significant risk deductions applied).",
+      "score_summary": "Human Appeal Inc shows strong alignment and good impact, with zakat compliance (significant risk deductions applied).",
       "zakat": {
         "asnaf_category": "fuqara",
         "bonus_points": 0,
@@ -467,7 +446,7 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Human Appeal Inc has a Charity Navigator score of 90.75/100 and reported a program expense ratio of 50.3%.",
+          "claim": "Human Appeal Inc holds a Charity Navigator score of 90.75/100 and reports a program expense ratio of 50.3%.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/872410117"
@@ -479,556 +458,58 @@
           "source_url": "https://projects.propublica.org/nonprofits/organizations/872410117"
         },
         {
-          "claim": "The organization is Zakat-eligible and follows specific Zakat policies and asnaf categories.",
+          "claim": "The organization is zakat-eligible and follows specific zakat policies and asnaf categories.",
           "id": "[3]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://humanappealusa.org/donate"
         },
         {
-          "claim": "Human Appeal tracks people helped through Zakat-funded programs.",
+          "claim": "Human Appeal tracks impact through beneficiary counts and people helped via Zakat funds.",
           "id": "[4]",
           "source_name": "Impact Report (2024)",
           "source_url": "https://humanappealusa.org/media/uovo1nza/impact-report-2024-final.pdf"
         },
         {
-          "claim": "The organization provides access to healthcare services and clean water.",
+          "claim": "The charity provided access to healthcare services and clean water to thousands of beneficiaries.",
           "id": "[5]",
           "source_name": "Annual Report (2022)",
           "source_url": "https://humanappealusa.org/media/twsay2ih/humanappealannualreport2022usav3.pdf"
         },
         {
-          "claim": "Human Appeal provided emergency support in Gaza and seasonal support during Ramadan and Winter.",
+          "claim": "Human Appeal provided critical support during Ramadan, Qurbani, and winter, including Gaza emergency aid.",
           "id": "[6]",
           "source_name": "Annual Report (2023)",
           "source_url": "https://humanappealusa.org/media/dxjph1lm/final-annual-report-2023-charity-commission-1.pdf"
         },
         {
-          "claim": "The charity performed cataract surgeries in Somalia and provided extensive aid in Gaza.",
+          "claim": "The organization performed cataract surgeries in Somalia and delivered aid in Gaza.",
           "id": "[7]",
           "source_name": "Annual Report (2023)",
           "source_url": "https://humanappeal.org.uk/media/yahlkswq/final-annual-report-2023-charity-commission.pdf"
         },
         {
-          "claim": "Human Appeal offers various donation options and giving methods for humanitarian relief.",
+          "claim": "Donors can contribute through various methods including zakat and general donations.",
           "id": "[8]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://humanappealusa.org/donate"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its high transparency and strong alignment with humanitarian causes, though its financial efficiency metrics regarding program spending and fundraising costs impact the total rating.",
+      "amal_score_rationale": "The organization earns a GMG score of 64/100, reflecting a high alignment with humanitarian causes and strong data confidence, balanced by moderate financial efficiency metrics.",
       "areas_for_improvement": [
-        "Lower program expense ratio of 50.3% compared to industry benchmarks",
-        "High fundraising costs with an efficiency of $1.00 per $1 raised"
+        "Improve the program expense ratio, which currently stands at 50.3%",
+        "Enhance fundraising efficiency to reduce the cost of $1.00 per $1 raised"
       ],
       "dimension_explanations": {
-        "alignment": "The charity shows high alignment for donors interested in urgent humanitarian causes and Islamic giving, as it is Zakat-eligible and supports asnaf categories [3][8]. Its mission focuses on critical global needs such as healthcare in Somalia and clean water access [5][7].",
-        "impact": "Human Appeal provides direct provision of services including child welfare, education, and emergency relief, particularly in high-conflict zones like Gaza [4][6][7]. While the organization demonstrates a clear track record of reaching beneficiaries, its impact score reflects a program expense ratio of 50.3% and a fundraising efficiency of $1.00 per $1 raised [1][2]."
+        "alignment": "The charity shows high alignment for donors seeking humanitarian impact, particularly within the Muslim community due to its clear zakat policy and asnaf categories [3][8]. Its focus on high-urgency areas such as disaster relief and winter support aligns with immediate global needs [6][7].",
+        "impact": "Human Appeal demonstrates direct impact through the provision of healthcare, clean water, and emergency food aid, reaching millions of beneficiaries globally [4][5]. While the organization successfully delivers critical services like cataract surgeries and Gaza emergency support, its financial impact is tempered by a program expense ratio of 50.3% and a fundraising efficiency of $1.00 per $1 raised [1][2][7]."
       },
-      "headline": "Human Appeal Inc is a global humanitarian organization dedicated to alleviating poverty and providing emergency relief through Zakat-eligible programming.",
+      "headline": "Human Appeal Inc is a global humanitarian organization dedicated to alleviating poverty and providing emergency relief through zakat-eligible programming.",
       "strengths": [
-        "High Charity Navigator score of 90.75/100 indicating strong transparency and accountability",
-        "Robust liquidity with 10.7 months of working capital available",
-        "Verified Zakat-eligible status for Muslim donors seeking religious compliance"
+        "High Charity Navigator score of 90.75/100 for accountability and finance",
+        "Strong liquidity with 10.7 months of working capital",
+        "Direct provision of aid in high-urgency humanitarian zones like Gaza and Somalia"
       ],
-      "summary": "Human Appeal Inc is a non-profit organization that works globally to strengthen humanity\u2019s fight against poverty, social injustice, and natural disasters [1][2]. The organization reported a total revenue of $10,889,699 and maintains a high level of accountability with a Charity Navigator score of 90.75/100 [1][2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "operating since 1991",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "Founded: 1991",
-          "source_name": "Human Appeal Website",
-          "source_type": "website",
-          "source_url": "https://humanappealusa.org/about-us"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$10,889,699 in total revenue",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: $10,889,699",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/872410117"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified Zakat eligibility",
-          "confidence": 0.95,
-          "id": "[3]",
-          "quote": "Zakat-eligible programming for fuqara and masakin",
-          "source_name": "Human Appeal - Donate",
-          "source_type": "website",
-          "source_url": "https://humanappealusa.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "emergency relief, food security, and water and sanitation",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Programs: Emergency Relief, Food Security, Water & Sanitation",
-          "source_name": "Impact Report (2024)",
-          "source_type": "evaluation",
-          "source_url": "https://humanappealusa.org/media/uovo1nza/impact-report-2024-final.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "371,780 individuals through Gaza emergency relief",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Gaza emergency support: 371,780",
-          "source_name": "Annual Report (2023)",
-          "source_type": "evaluation",
-          "source_url": "https://humanappealusa.org/media/dxjph1lm/final-annual-report-2023-charity-commission-1.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "2.6 million people via Zakat-funded programs",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "People helped via Zakat: 2,620,000",
-          "source_name": "Impact Report (2024)",
-          "source_type": "evaluation",
-          "source_url": "https://humanappealusa.org/media/uovo1nza/impact-report-2024-final.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "90.75/100 overall score from Charity Navigator",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Overall Score: 90.75/100",
-          "source_name": "Charity Navigator - Human Appeal",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/872410117"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $1.00 per $1 raised",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Fundraising Efficiency: $1.00",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/872410117"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "10.7 months of working capital",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Working Capital: 10.7 months",
-          "source_name": "Charity Navigator - Accountability",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/872410117"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$3.46 per beneficiary",
-          "confidence": 0.9,
-          "id": "[10]",
-          "quote": "$3.46/beneficiary (exceptional for HUMANITARIAN)",
-          "source_name": "AMAL Impact Analysis",
-          "source_type": "evaluation",
-          "source_url": "https://humanappealusa.org/media/uovo1nza/impact-report-2024-final.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "access to clean water for 1,014,282 people",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "People with access to clean water: 1,014,282",
-          "source_name": "Annual Report (2022)",
-          "source_type": "evaluation",
-          "source_url": "https://humanappealusa.org/media/twsay2ih/humanappealannualreport2022usav3.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "one-to-one orphan sponsorship",
-          "confidence": 0.9,
-          "id": "[12]",
-          "quote": "Child Welfare - Our one-to-one orphan sponsorship helps some of the most vulnerable children",
-          "source_name": "Candid Profile",
-          "source_type": "website",
-          "source_url": "https://humanappealusa.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "too small with only 1 member",
-          "confidence": 0.9,
-          "id": "[13]",
-          "quote": "Board governance: WEAK (1 members)",
-          "source_name": "AMAL Governance Review",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/872410117"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Silver Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Candid Seal: silver",
-          "source_name": "Candid - Human Appeal",
-          "source_type": "rating",
-          "source_url": "https://humanappealusa.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 50.3%",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Program Expense Ratio (CN): 50.3%",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/872410117"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "expanding services to underserved regions",
-          "confidence": 0.85,
-          "id": "[16]",
-          "quote": "Improvement: Expand services to underserved populations",
-          "source_name": "AMAL Alignment Analysis",
-          "source_type": "website",
-          "source_url": "https://humanappealusa.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "268.1% revenue CAGR",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "3-Year Revenue CAGR: 268.1%",
-          "source_name": "Financial Trend Analysis",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/872410117"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its high transparency and strong alignment with humanitarian causes, though its financial efficiency metrics regarding program spending and fundraising costs impact the total rating.",
-      "amal_scores": {
-        "amal_score": 59,
-        "confidence_scores": {
-          "alignment": 40,
-          "data_confidence": 0.85,
-          "impact": 26
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Fundraising Efficiency",
-          "citation_ids": [
-            "[8]"
-          ],
-          "context": "The organization currently spends <cite id=\"8\">$1.00 to raise every $1 in contributions</cite>, which is significantly higher than the industry standard for efficient fundraising."
-        },
-        {
-          "area": "Board Governance",
-          "citation_ids": [
-            "[13]"
-          ],
-          "context": "The organization's board is noted as being <cite id=\"13\">too small with only 1 member</cite> listed in recent filings, which limits independent oversight."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "BBB assessment data not currently available for this entity."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[8]",
-          "[13]",
-          "[15]"
-        ],
-        "mitigation_notes": "The organization maintains high liquidity, which mitigates immediate financial risk from high fundraising costs.",
-        "risk_factors": [
-          "<cite id=\"8\">High fundraising expense ratio</cite>",
-          "<cite id=\"13\">Insufficient board size for a $10M+ organization</cite>"
-        ],
-        "summary": "The primary concerns involve <cite id=\"15\">high overhead costs</cite> and a <cite id=\"13\">minimalist board structure</cite> that may pose long-term governance risks."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 4,
-          "form990": 3,
-          "rating": 7,
-          "website": 3
-        },
-        "high_confidence_count": 15,
-        "total_count": 17,
-        "unique_sources": 7
-      },
-      "confidence": {
-        "data_freshness": "Data current through 2023 Form 990 and 2024 Impact Report",
-        "data_gaps": [
-          "Missing detailed employee count",
-          "Board size discrepancy in filings"
-        ],
-        "level": "HIGH",
-        "notes": "Strong alignment between financial filings and impact reporting.",
-        "score": 85,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Annual Reports",
-          "Impact Reports"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 85,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Small board size",
-          "High fundraising costs"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 17,
-        "unique_sources": 7,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[3]",
-            "[16]"
-          ],
-          "explanation": "The organization is a premier fit for Muslim donors, offering <cite id=\"3\">verified Zakat eligibility</cite> and serving specific asnaf categories including the <cite id=\"3\">poor (fuqara) and needy (masakin)</cite>.",
-          "improvement": "Alignment could be further enhanced by <cite id=\"16\">expanding services to underserved regions</cite> with limited existing nonprofit coverage."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[7]",
-            "[13]",
-            "[14]"
-          ],
-          "explanation": "Human Appeal is a highly transparent organization holding a <cite id=\"14\">Silver Seal of Transparency from Candid</cite> and maintaining <cite id=\"7\">50.3% independent board members</cite> according to Charity Navigator.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"13\">expand its board of directors</cite> to meet standard governance benchmarks for independent oversight."
-        },
-        "impact": {
-          "citation_ids": [
-            "[5]",
-            "[10]",
-            "[15]"
-          ],
-          "explanation": "Impact is driven by a <cite id=\"10\">low cost-per-beneficiary of $3.46</cite> and a direct provision model that reached <cite id=\"5\">3.4 million people in 2024</cite>.",
-          "improvement": "The charity could improve its impact score by <cite id=\"15\">increasing its program expense ratio</cite>, which currently stands at 50.3% according to Charity Navigator's analysis."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[3]",
-          "[4]",
-          "[5]"
-        ],
-        "evidence_rigor": "Grade B - Verified outcomes and impact reporting",
-        "geographic_focus": [
-          "Palestine",
-          "Gaza",
-          "Syria",
-          "Yemen",
-          "Pakistan"
-        ],
-        "giving_style": "Direct Service / Emergency Relief",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 10889699,
-        "citation_ids": [
-          "[2]",
-          "[7]",
-          "[9]"
-        ],
-        "cn_financial_score": 65,
-        "cn_overall_score": 90.75,
-        "fundraising_ratio": 0,
-        "industry_program_ratio": 0.75,
-        "peer_count": 58,
-        "peer_program_ratio_median": 0.897,
-        "program_expense_ratio": 0.5029,
-        "reserves_months": 10.7,
-        "revenue_cagr_3yr": 268.1,
-        "transparency_score": 70,
-        "working_capital_months": 10.7,
-        "yearly_financials": [
-          {
-            "expenses": 6186410,
-            "net_assets": 5503813,
-            "revenue": 10889699,
-            "year": 2023
-          },
-          {
-            "expenses": 2157891,
-            "net_assets": 800524,
-            "revenue": 2958315,
-            "year": 2022
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 15127413,
-        "grant_count": 1,
-        "grant_strategy": "Funds international relief efforts through global network partners.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Global"
-        ],
-        "top_recipients": [
-          "International Implementing Partners"
-        ],
-        "total_grants": 15127413
-      },
-      "headline": "Human Appeal Inc is a global humanitarian organization dedicated to alleviating poverty and providing emergency relief through Zakat-eligible programming.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to fulfill Zakat obligations through an established global institution with a proven ability to deliver aid in high-conflict zones like Gaza and Yemen.",
-        "citation_ids": [
-          "[3]",
-          "[8]",
-          "[13]"
-        ],
-        "donor_motivations": [
-          "Want to ensure Zakat reaches the most vulnerable (fuqara and masakin)",
-          "Value long-term institutional stability and 30+ years of experience",
-          "Prioritize organizations with high liquidity and emergency response capacity",
-          "Care about direct aid delivery rather than advocacy"
-        ],
-        "giving_considerations": [
-          "Donations support a large-scale operation with significant fundraising costs",
-          "The organization focuses on high-volume, low-cost aid delivery",
-          "Ideal for those comfortable with a 'direct provision' model of charity"
-        ],
-        "not_ideal_for": "Donors who prioritize low fundraising overhead or those seeking organizations with large, multi-member governing boards."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[4]",
-          "[5]",
-          "[7]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "The organization provides detailed annual impact reports with verified beneficiary counts across multiple years.",
-        "external_evaluations": [
-          "Charity Navigator Impact Beacon"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Human Appeal utilizes a direct provision model to address immediate humanitarian needs while building long-term resilience through water, health, and livelihood programs.",
-        "why_evidence_matters": "Verified beneficiary data ensures that funds are reaching the intended populations in crisis zones."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[17]"
-        ],
-        "founded_year": 1991,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": 268.1,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"17\">268.1% revenue CAGR</cite>, the organization is in a rapid growth phase and can absorb significant capital for expanding emergency responses.",
-        "strategic_priorities": [
-          "Gaza emergency response",
-          "Expansion of clean water access",
-          "Orphan sponsorship growth"
-        ],
-        "years_operating": 35
-      },
-      "organizational_capacity": {
-        "board_size": 1,
-        "ceo_compensation": 207660,
-        "ceo_compensation_pct_revenue": 1.91,
-        "ceo_name": "Not Listed",
-        "citation_ids": [
-          "[2]",
-          "[7]"
-        ],
-        "employees_count": 0,
-        "geographic_reach": "Global (Palestine, Syria, Yemen, Somalia, etc.)",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 0,
-        "programs_count": 5,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 0
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[10]"
-        ],
-        "differentiator": "Human Appeal stands out for its <cite id=\"10\">extremely low cost per beneficiary ($3.46)</cite> compared to the peer median.",
-        "peer_group": "International Humanitarian Relief",
-        "similar_orgs": [
-          "Baitulmaal, Inc.",
-          "Helping Hand for Relief and Development",
-          "Zakat Foundation of America"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on orphan care and international relief",
-          "name": "Baitulmaal, Inc."
-        },
-        {
-          "differentiator": "Larger scale with similar humanitarian focus",
-          "name": "Helping Hand for Relief and Development"
-        },
-        {
-          "differentiator": "Stronger domestic US presence",
-          "name": "Zakat Foundation of America"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[10]"
-          ],
-          "detail": "The organization delivers aid at a highly competitive rate of <cite id=\"10\">$3.46 per beneficiary</cite>, which is considered exceptional for the humanitarian sector.",
-          "point": "Exceptional Cost-Efficiency per Beneficiary"
-        },
-        {
-          "citation_ids": [
-            "[9]"
-          ],
-          "detail": "Human Appeal maintains robust liquidity with <cite id=\"9\">10.7 months of working capital</cite> held in working capital, providing a significant buffer for emergency responses.",
-          "point": "Strong Financial Stability"
-        },
-        {
-          "citation_ids": [
-            "[7]"
-          ],
-          "detail": "The charity earned <cite id=\"7\">perfect 100/100 scores in both Culture and Leadership</cite> from Charity Navigator, reflecting strong internal governance and transparency.",
-          "point": "High Accountability and Leadership"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Human Appeal's operational strength lies in its ability to mobilize resources rapidly across diverse sectors. Their water and sanitation initiatives provided <cite id=\"11\">access to clean water for 1,014,282 people</cite> in a single reporting cycle, while their healthcare programs reached <cite id=\"11\">839,272 individuals</cite>. The organization's <cite id=\"1\">35-year track record</cite> has allowed it to build deep institutional knowledge, particularly in <cite id=\"12\">one-to-one orphan sponsorship</cite> which serves as a lifeline for vulnerable children by covering food, clothing, and school materials."
-      ],
-      "summary": "Human Appeal Inc is an established global humanitarian organization that has been <cite id=\"1\">operating since 1991</cite> to alleviate poverty and respond to natural disasters. The organization manages a significant scale of operations, reporting <cite id=\"2\">$10,889,699 in total revenue</cite> for the 2023 fiscal year. Their work is characterized by a broad geographic reach, providing critical aid in high-conflict and disaster-prone regions including <cite id=\"3\">Palestine, Yemen, Syria, and Afghanistan</cite>. Human Appeal distinguishes itself through a multi-sectoral approach, managing programs in <cite id=\"4\">emergency relief, food security, and water and sanitation</cite>. In 2023 alone, the organization demonstrated substantial impact by supporting <cite id=\"5\">371,780 individuals through Gaza emergency relief</cite> and reaching over <cite id=\"6\">2.6 million people via Zakat-funded programs</cite>. While the organization maintains a strong <cite id=\"7\">90.75/100 overall score from Charity Navigator</cite>, its financial model relies heavily on direct fundraising, resulting in a <cite id=\"8\">fundraising efficiency of $1.00 per $1 raised</cite>. Despite these costs, the charity's ability to deliver aid at scale is evidenced by its <cite id=\"9\">10.7 months of working capital</cite>, ensuring operational stability during humanitarian crises.",
-      "zakat_guidance": {
-        "classification": "fuqara",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "Human Appeal Inc operates as a non-profit organization focused on strengthening humanity's fight against poverty, social injustice, and natural disasters [1][2]. The organization manages diverse programs including child welfare, education, and emergency relief, maintaining a zakat-eligible status for Muslim donors [3][8]."
     }
   }
 }

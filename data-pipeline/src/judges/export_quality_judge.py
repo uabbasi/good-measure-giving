@@ -6,6 +6,8 @@ Deterministic validation rules that don't require LLM:
 - E-J-003: Tier validity - must be one of: baseline, rich, hidden
 - E-J-004: Pillar scores completeness - if present, impact (0-50) and alignment (0-50) required
 - E-J-005: Score consistency - pillar sum should match amal_score (with risk tolerance)
+  - Default: impact + alignment
+  - Legacy: impact + alignment + credibility (when present)
 - E-J-006: Multi-lens score bounds - strategicScore/zakatScore in [0, 100]
 - E-J-007: Multi-lens evaluation structure - if scores present, evaluations should exist
 
@@ -24,8 +26,9 @@ VALID_TIERS = {"baseline", "rich", "hidden"}
 # EIN format regex: 2 digits, hyphen, 7 digits
 EIN_PATTERN = re.compile(r"^\d{2}-\d{7}$")
 
-# Maximum points per pillar dimension (2-dimension GMG framework)
+# Maximum points per required pillar dimension (default framework)
 MAX_PILLAR_SCORES = {"impact": 50, "alignment": 50}
+OPTIONAL_PILLAR_SCORES = {"credibility": 50}
 
 
 class ExportQualityJudge(BaseJudge):
@@ -204,7 +207,7 @@ class ExportQualityJudge(BaseJudge):
             )
             return issues
 
-        # Check all 3 dimensions are present (GMG framework)
+        # Required dimensions in the default framework
         missing_dims = [d for d in MAX_PILLAR_SCORES if d not in pillar_scores]
 
         if missing_dims:
@@ -222,7 +225,7 @@ class ExportQualityJudge(BaseJudge):
             )
             return issues
 
-        # Check each dimension is within valid range
+        # Validate required dimension ranges
         for dim, max_score in MAX_PILLAR_SCORES.items():
             score = pillar_scores.get(dim)
             if score is None:
@@ -249,6 +252,43 @@ class ExportQualityJudge(BaseJudge):
                         severity=Severity.ERROR,
                         field=f"pillarScores.{dim}",
                         message=f"Pillar score '{dim}'={score} outside valid range [0, {max_score}]",
+                        details={
+                            "value": score,
+                            "valid_range": [0, max_score],
+                            "rule": "E-J-004",
+                        },
+                    )
+                )
+
+        # Validate optional legacy dimensions if present
+        for dim, max_score in OPTIONAL_PILLAR_SCORES.items():
+            if dim not in pillar_scores:
+                continue
+            score = pillar_scores.get(dim)
+            if score is None:
+                issues.append(
+                    ValidationIssue(
+                        severity=Severity.ERROR,
+                        field=f"pillarScores.{dim}",
+                        message=f"Optional pillar score '{dim}' is None",
+                        details={"rule": "E-J-004"},
+                    )
+                )
+            elif not isinstance(score, (int, float)):
+                issues.append(
+                    ValidationIssue(
+                        severity=Severity.ERROR,
+                        field=f"pillarScores.{dim}",
+                        message=f"Optional pillar score '{dim}' must be numeric, got {type(score).__name__}",
+                        details={"value": str(score), "rule": "E-J-004"},
+                    )
+                )
+            elif score < 0 or score > max_score:
+                issues.append(
+                    ValidationIssue(
+                        severity=Severity.ERROR,
+                        field=f"pillarScores.{dim}",
+                        message=f"Optional pillar score '{dim}'={score} outside valid range [0, {max_score}]",
                         details={
                             "value": score,
                             "valid_range": [0, max_score],
@@ -284,11 +324,15 @@ class ExportQualityJudge(BaseJudge):
             )
             return issues
 
-        # Calculate pillar sum (2-dimension GMG framework)
+        # Calculate pillar sums
         try:
             impact = pillar_scores.get("impact", 0) or 0
             alignment = pillar_scores.get("alignment", 0) or 0
+            credibility = pillar_scores.get("credibility")
             pillar_sum = impact + alignment
+            pillar_sum_with_credibility = (
+                pillar_sum + credibility if isinstance(credibility, (int, float)) else None
+            )
         except (TypeError, ValueError):
             return issues  # Non-numeric values caught by E-J-004
 
@@ -297,19 +341,27 @@ class ExportQualityJudge(BaseJudge):
         min_expected = amal_score  # With max risk deduction
         max_expected = amal_score + 10  # With no risk deduction
 
-        if pillar_sum < min_expected - 0.01 or pillar_sum > max_expected + 0.01:
+        two_pillar_in_range = min_expected - 0.01 <= pillar_sum <= max_expected + 0.01
+        three_pillar_in_range = (
+            isinstance(pillar_sum_with_credibility, (int, float))
+            and min_expected - 0.01 <= pillar_sum_with_credibility <= max_expected + 0.01
+        )
+
+        if not two_pillar_in_range and not three_pillar_in_range:
             issues.append(
                 ValidationIssue(
                     severity=Severity.ERROR,
                     field="amalScore",
                     message=f"Pillar sum ({pillar_sum}) inconsistent with amalScore ({amal_score})",
                     details={
-                        "pillar_sum": pillar_sum,
+                        "pillar_sum_impact_alignment": pillar_sum,
+                        "pillar_sum_impact_alignment_credibility": pillar_sum_with_credibility,
                         "amal_score": amal_score,
                         "expected_range": f"[{min_expected}, {max_expected}]",
                         "pillar_breakdown": {
                             "impact": impact,
                             "alignment": alignment,
+                            "credibility": credibility,
                         },
                         "rule": "E-J-005",
                     },

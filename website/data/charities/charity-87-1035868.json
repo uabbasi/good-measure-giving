@@ -2,7 +2,7 @@
   "id": "87-1035868",
   "ein": "87-1035868",
   "name": "Maristan",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "To provide Community Mental Health",
   "programs": [
     "Maristan Clinic",
@@ -42,7 +42,11 @@
     "netAssets": 511126,
     "workingCapitalMonths": "13.30"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 1,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": null,
   "trustSignals": null,
   "websiteEvidenceSignals": {
@@ -55,7 +59,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": false
   },
-  "lastUpdated": "2026-02-09 21:35:43",
+  "lastUpdated": "2026-02-14 19:36:21",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -149,17 +153,36 @@
     "Found 'zakat eligible' on https://maristan.org/ (https://maristan.org/)"
   ],
   "archetype": "SOVEREIGNTY",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Limited Basis",
+    "archetype_code": "SOVEREIGNTY",
+    "archetype_label": "Sovereignty Builder",
+    "evidence_stage": "Early",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Limited",
+      "donor_fit": "Moderate",
+      "risk": "Limited"
+    },
+    "recommendation_cue": "Limited Match",
+    "recommendation_rationale": "Limited match due to weaker results and/or higher uncertainty; review methodology details before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "87-1035868",
     "charity_name": "Maristan",
-    "amal_score": 44,
+    "amal_score": 49,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:20:40",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 31,
       "data_confidence": 0.3,
-      "impact": 18
+      "impact": 23
     },
     "score_details": {
       "alignment": {
@@ -247,11 +270,11 @@
           },
           {
             "evidence": "Working capital: 13.3 months (HIGH)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 4,
+            "improvement_suggestion": "Document why reserves above your policy target are intentional (e.g., restrictions, volatility, planned commitments) and define deployment triggers.",
+            "improvement_value": 1,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 1,
+            "scored": 6,
             "status": "full"
           },
           {
@@ -294,36 +317,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 18/50",
+        "rationale": "Delivery: capacity building; Impact 23/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 18
+        "score": 23
       },
-      "judge_issues": [
-        {
-          "field": "financial.program_expense_ratio",
-          "judge": "data_completeness",
-          "message": "Missing program_expense_ratio - effectiveness score may be artificially low",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -5,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -339,7 +336,7 @@
         ],
         "total_deduction": -5
       },
-      "score_summary": "Maristan earns 44/100 due to good alignment and limited impact, with zakat compliance (minor risk deductions applied).",
+      "score_summary": "Maristan shows good alignment and moderate impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -351,395 +348,46 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Maristan reported total revenue of $618,632 and holds 13.3 months of working capital.",
+          "claim": "The organization holds 13.3 months of working capital and a data confidence level of 0.3.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/871035868"
         },
         {
-          "claim": "The organization demonstrates a fundraising efficiency of $0.11 per $1 raised.",
+          "claim": "Maristan reported total revenue of $618,632 and fundraising efficiency of $0.11 per $1 raised.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/871035868"
         },
         {
-          "claim": "Maristan's primary programs include the Maristan Clinic and Education and Training initiatives.",
+          "claim": "Maristan's programs include the Maristan Clinic and Education and Training initiatives.",
           "id": "[3]",
           "source_name": "Download Job Description PDF",
           "source_url": "https://maristan.org/wp-content/uploads/2025/10/maristan_clinician_description_102025.pdf"
         },
         {
-          "claim": "The organization is zakat-eligible and offers multiple donation options for supporters.",
+          "claim": "The charity is zakat-eligible and provides multiple donation options for supporters.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://maristan.org/"
         }
       ],
-      "amal_score_rationale": "The overall score reflects a balance between efficient fundraising and strong working capital against a lack of transparent impact data and third-party evaluations.",
+      "amal_score_rationale": "Maristan earns a moderate overall score due to its specialized focus on global health and strong fundraising efficiency, though its total score is limited by low data confidence and a lack of detailed impact evidence.",
       "areas_for_improvement": [
-        "Limited public data regarding long-term impact metrics and cost per beneficiary",
-        "Relatively low data confidence score due to limited third-party verification"
+        "Low data confidence due to limited third-party verification and public documentation",
+        "Need for more transparent reporting on program expense ratios and direct impact metrics"
       ],
       "dimension_explanations": {
-        "alignment": "Maristan shows medium alignment for Muslim donors due to its zakat-eligible status and focus on global health urgency [4]. However, the overall alignment is tempered by limited historical data and a low data confidence rating of 0.3 [1].",
-        "impact": "The organization focuses on capacity building through its Maristan Clinic and education programs [3]. While it maintains a total revenue of $618,632 and efficient fundraising operations, the direct cost per beneficiary remains unavailable, leading to a medium-low impact score [1][2]."
+        "alignment": "Maristan shows medium alignment for Muslim donors as a zakat-eligible entity addressing the urgent global health cause of mental health [4]. However, the track record is still developing, and data confidence remains low at 0.3 [1].",
+        "impact": "The organization focuses on capacity building through clinical services and professional training [3]. While it maintains a healthy 13.3 months of working capital, the overall impact score is moderate because cost-per-beneficiary data is currently unavailable [1][2]."
       },
-      "headline": "Maristan is a community-focused mental health organization dedicated to providing culturally sensitive clinical care and education.",
+      "headline": "Maristan is a community mental health organization dedicated to providing culturally sensitive clinical care and educational training.",
       "strengths": [
         "Strong short-term liquidity with 13.3 months of working capital available",
-        "High fundraising efficiency with a cost of only $0.11 per $1 raised",
+        "High fundraising efficiency with only $0.11 spent to raise every $1",
         "Zakat-eligible status for Muslim donors"
       ],
-      "summary": "Maristan operates as a mental health resource providing clinical services and specialized training programs to the community [1][3]. The organization is recognized as zakat-eligible, allowing donors to fulfill their religious obligations through various giving methods [4]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "13.3 months of working capital",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "Working Capital: 13.3 months",
-          "source_name": "Charity Navigator - Maristan",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/871035868"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $618,632",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: 618,632",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/871035868"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Maristan Clinic and Healing Circles",
-          "confidence": 0.95,
-          "id": "[3]",
-          "quote": "Programs: Maristan Clinic, Education and Training, Research, Healing Circles",
-          "source_name": "Maristan Program Description",
-          "source_type": "website",
-          "source_url": "https://maristan.org/wp-content/uploads/2025/10/maristan_clinician_description_102025.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "zakat-eligible",
-          "confidence": 0.9,
-          "id": "[4]",
-          "quote": "Zakat-eligible status for Muslim donors",
-          "source_name": "Maristan Website",
-          "source_type": "website",
-          "source_url": "https://maristan.org/"
-        }
-      ],
-      "amal_score_rationale": "The overall score reflects a balance between efficient fundraising and strong working capital against a lack of transparent impact data and third-party evaluations.",
-      "amal_scores": {
-        "amal_score": 44,
-        "confidence_scores": {
-          "alignment": 31,
-          "data_confidence": 0.3,
-          "impact": 18
-        },
-        "confidence_tier": "LOW",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Governance Structure",
-          "citation_ids": [
-            "[2]"
-          ],
-          "context": "The organization currently operates with a <cite id=\"2\">very small board of 1 member</cite>, which presents risks to long-term oversight."
-        },
-        {
-          "area": "Financial Transparency",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "There is <cite id=\"1\">incomplete expense breakdown data</cite> available, making it difficult to verify the exact program expense ratio."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "none",
-        "citation_ids": [],
-        "effectiveness_status": "UNREVIEWED",
-        "finances_status": "UNREVIEWED",
-        "governance_status": "UNREVIEWED",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "The organization has not yet been reviewed by the BBB Wise Giving Alliance."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "mitigation_notes": "The organization is in a rapid growth phase and may be in the process of formalizing these structures.",
-        "risk_factors": [
-          "<cite id=\"2\">Board size of 1 member</cite> creates significant key-person risk",
-          "<cite id=\"1\">Incomplete expense breakdown</cite> prevents verification of program efficiency"
-        ],
-        "summary": "The primary concerns involve <cite id=\"2\">governance risks</cite> due to a small board and <cite id=\"1\">limited financial transparency</cite> regarding program spending."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 4,
-          "rating": 4,
-          "website": 4
-        },
-        "high_confidence_count": 8,
-        "total_count": 12,
-        "unique_sources": 4
-      },
-      "confidence": {
-        "data_freshness": "2023 Form 990 data used",
-        "data_gaps": [
-          "Missing detailed expense breakdown",
-          "Single-member board"
-        ],
-        "level": "LOW",
-        "notes": "Financial growth is clear, but governance and transparency metrics are currently low.",
-        "score": 30,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 30,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing detailed expense breakdown",
-          "Small board size",
-          "No independent audit"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 12,
-        "unique_sources": 4,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[3]",
-            "[4]"
-          ],
-          "explanation": "Strong alignment with Muslim donors through <cite id=\"4\">verified zakat eligibility</cite> and a focus on <cite id=\"3\">culturally sensitive mental health</cite>.",
-          "improvement": "Adding a <cite id=\"4\">dedicated zakat page</cite> that explains the specific asnaf served would further enhance donor alignment."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]",
-            "[2]"
-          ],
-          "explanation": "Credibility is currently limited by <cite id=\"1\">low data confidence (0.3)</cite> and a <cite id=\"2\">single-member board</cite>, though the organization has achieved a <cite id=\"1\">Candid Platinum Seal</cite> for transparency.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"2\">expand its board of directors</cite> and provide a more detailed breakdown of functional expenses."
-        },
-        "impact": {
-          "citation_ids": [
-            "[1]",
-            "[3]"
-          ],
-          "explanation": "Impact is driven by <cite id=\"3\">direct clinical service delivery</cite> and capacity building, though <cite id=\"1\">cost-per-beneficiary data is currently missing</cite>.",
-          "improvement": "The organization should <cite id=\"1\">track and report beneficiary counts</cite> to enable a more rigorous analysis of its cost-effectiveness."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "GLOBAL_HEALTH",
-        "citation_ids": [
-          "[2]",
-          "[4]"
-        ],
-        "evidence_rigor": "Grade C - Verified outcomes but developing theory of change",
-        "geographic_focus": [
-          "USA"
-        ],
-        "giving_style": "Growth-stage investment",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "masakin (needy)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 618632,
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0.11,
-        "industry_program_ratio": 0.75,
-        "peer_count": 14,
-        "peer_program_ratio_median": 0.846,
-        "program_expense_ratio": 0,
-        "reserves_months": 10,
-        "revenue_cagr_3yr": 376,
-        "working_capital_months": 13.3,
-        "yearly_financials": [
-          {
-            "expenses": 462544,
-            "net_assets": 511126,
-            "revenue": 618632,
-            "year": 2023
-          },
-          {
-            "expenses": 196192,
-            "net_assets": 0,
-            "revenue": 129957,
-            "year": 2022
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct service provider, not a grantmaker",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "USA"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "Maristan is a community-focused mental health organization dedicated to providing culturally sensitive clinical care and education.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support the growth of culturally specific mental health infrastructure within the American Muslim community.",
-        "citation_ids": [
-          "[1]",
-          "[2]",
-          "[3]"
-        ],
-        "donor_motivations": [
-          "Value the integration of Islamic principles with clinical psychology",
-          "Want to fulfill zakat through mental health services",
-          "Comfortable supporting a high-growth, early-stage organization"
-        ],
-        "giving_considerations": [
-          "The organization is still scaling its governance and reporting",
-          "Gifts support a unique niche in the global health landscape",
-          "High liquidity suggests the organization is stable but needs more program data"
-        ],
-        "not_ideal_for": "Donors who require long-established institutions with large, independent boards and decades of audited financial history."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "The organization has <cite id=\"1\">verified outcomes</cite> but lacks the longitudinal data or cost-per-beneficiary metrics required for a higher grade.",
-        "external_evaluations": [],
-        "outcome_tracking_years": 2,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Maristan creates impact by providing <cite id=\"3\">culturally sensitive clinical care</cite> and training professionals to handle <cite id=\"3\">community-specific mental health crises</cite>.",
-        "why_evidence_matters": "Evidence ensures that mental health interventions are both clinically effective and culturally appropriate."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[2]",
-          "[3]"
-        ],
-        "founded_year": 2022,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": 376,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"2\">376.0% growth rate</cite> and expanding programs, the organization can absorb significant capital to scale its clinic.",
-        "strategic_priorities": [
-          "Expand Maristan Clinic",
-          "Scale Suicide Response Training"
-        ],
-        "years_operating": 4
-      },
-      "organizational_capacity": {
-        "board_size": 1,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Listed",
-        "citation_ids": [
-          "[2]",
-          "[3]"
-        ],
-        "employees_count": 0,
-        "geographic_reach": "USA",
-        "has_conflict_policy": false,
-        "has_financial_audit": false,
-        "independent_board_pct": 0,
-        "payroll_to_revenue_pct": 0,
-        "programs_count": 5,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 0
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[2]",
-          "[3]"
-        ],
-        "differentiator": "Distinguished by its <cite id=\"3\">Islamic-integrated clinical model</cite> and high <cite id=\"2\">376.0% revenue growth</cite>.",
-        "peer_group": "Global Health & Mental Health",
-        "similar_orgs": [
-          "Muslim Wellness Foundation",
-          "Khalil Center",
-          "National Association of Muslim Charitable Clinics"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus and size",
-          "name": "Muslim Wellness Foundation"
-        },
-        {
-          "differentiator": "Larger scale clinical operations",
-          "name": "Khalil Center"
-        },
-        {
-          "differentiator": "Broader medical focus",
-          "name": "National Association of Muslim Charitable Clinics"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The organization maintains <cite id=\"1\">13.3 months of working capital</cite>, providing a robust buffer for its emerging operations.",
-          "point": "Strong Financial Liquidity"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "Maristan demonstrates high efficiency, spending only <cite id=\"1\">$0.11 to raise every $1</cite> in contributions.",
-          "point": "High Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[3]"
-          ],
-          "detail": "Offers unique services like <cite id=\"3\">Suicide Response Certification Training</cite> and <cite id=\"3\">Healing Circles</cite> tailored for the community.",
-          "point": "Specialized Program Portfolio"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Maristan's financial health is characterized by exceptional growth and efficiency for a young organization. Its <cite id=\"2\">revenue increased from $129,957 to $618,632</cite> in just one year, a <cite id=\"2\">376.0% growth rate</cite> that indicates strong community buy-in. Furthermore, its <cite id=\"1\">fundraising efficiency of $0.11 per $1 raised</cite> is significantly better than many established peers, ensuring that the vast majority of donor funds are available for its <cite id=\"3\">clinical and research missions</cite>."
-      ],
-      "summary": "Maristan is a community-focused mental health organization that addresses the specific psychological needs of the Muslim community through <cite id=\"1\">clinical care, education, and research</cite>. Based in the United States, the organization provides a range of specialized services including the <cite id=\"3\">Maristan Clinic and Healing Circles</cite>, alongside professional training such as <cite id=\"3\">Suicide Response Certification</cite>. In the 2023 fiscal year, the organization reported <cite id=\"2\">total revenue of $618,632</cite>, representing a significant <cite id=\"2\">376.0% three-year revenue CAGR</cite> from its initial operations. Maristan operates with a focus on <cite id=\"3\">culturally sensitive clinical care</cite>, bridging the gap between traditional Islamic healing and modern psychological practices. The organization is <cite id=\"4\">zakat-eligible</cite>, offering a specialized avenue for Muslim donors to support mental health initiatives that align with religious requirements. While the organization is in a growth phase, it maintains <cite id=\"1\">13.3 months of working capital</cite>, ensuring short-term operational stability as it expands its <cite id=\"3\">education and training programs</cite>.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "Maristan operates as a community mental health provider through its Maristan Clinic and dedicated education and training programs [3]. In the 2023 fiscal year, the organization reported a total revenue of $618,632 [2]. The charity is recognized as zakat-eligible, offering donors the option to contribute through various giving methods [4]."
     }
   }
 }

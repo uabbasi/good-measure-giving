@@ -2,6 +2,19 @@
 
 AMAL evaluates charities across four dimensions, weighted equally, with deductions for red flags.
 
+## Qualitative-First UX Layer
+
+The numeric rubric remains the scoring engine, but donor-facing surfaces now prioritize qualitative signals:
+
+- `archetype_label`: what kind of organization this is
+- `evidence_stage`: how strong and mature the evidence base is (`Verified`, `Established`, `Building`, `Early`)
+- `signal_states`: four qualitative signals (`Evidence`, `Financial Health`, `Donor Fit`, `Risk`) as `Strong` / `Moderate` / `Limited`
+- `recommendation_cue`: action-oriented cue (`Strong Match`, `Good Match`, `Mixed Signals`, `Limited Match`)
+- `assessment_label`: composite summary (`High Conviction`, `Promising`, `Context Dependent`, `Well Documented Low Score`, `Limited Basis`)
+
+These are exported in `ui_signals_v1`, versioned by `schema_version`, `config_version`, and `config_hash`.
+Numeric details remain available in collapsed methodology sections for advanced users.
+
 **Score = Trust + Evidence + Effectiveness + Fit + Risk**
 
 | Dimension | Points | The Question |

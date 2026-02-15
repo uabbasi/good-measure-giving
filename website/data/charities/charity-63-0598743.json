@@ -2,7 +2,7 @@
   "id": "63-0598743",
   "ein": "63-0598743",
   "name": "Southern Poverty Law Center",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "A new SPLC report outlines the difficult trade-offs Georgia counties have been forced to accept to deliver legally compliant elections. It recommends several concrete steps to stabilize democracy in the state.",
   "programs": [
     "Intelligence Project",
@@ -48,7 +48,11 @@
     "netAssets": 711333304,
     "workingCapitalMonths": "69.90"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 12,
+    "independentBoardMembers": null,
+    "ceoCompensation": 466934
+  },
   "targeting": {
     "populationsServed": [
       "Victims",
@@ -79,7 +83,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:39:30",
+  "lastUpdated": "2026-02-14 19:36:09",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -347,6 +351,25 @@
     "Organization is in zakat denylist (partners but doesn't collect directly)"
   ],
   "archetype": "LEVERAGE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Promising",
+    "archetype_code": "LEVERAGE",
+    "archetype_label": "Strategic Advocacy",
+    "evidence_stage": "Established",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Limited",
+      "donor_fit": "Limited",
+      "risk": "Strong"
+    },
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "63-0598743",
     "charity_name": "Southern Poverty Law Center",
@@ -445,7 +468,7 @@
           },
           {
             "evidence": "Working capital: 69.9 months (EXCESSIVE)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
+            "improvement_suggestion": "Publish a capital deployment plan so very high reserves are intentionally used for mission delivery while preserving a prudent safety buffer.",
             "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
@@ -496,26 +519,6 @@
         "rubric_archetype": "SYSTEMIC_CHANGE",
         "score": 31
       },
-      "judge_issues": [
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -523,7 +526,7 @@
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "Southern Poverty Law Center Inc earns 55/100 due to good impact and moderate alignment.",
+      "score_summary": "Southern Poverty Law Center Inc shows good impact and moderate alignment.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -535,632 +538,58 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The SPLC works toward equal justice and reports a 71.6% program expense ratio.",
+          "claim": "The Southern Poverty Law Center is a nonprofit organization focused on civil rights and equal justice.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/630598743"
         },
         {
-          "claim": "The organization blocked discriminatory bills and protected naturalized citizens from purges.",
+          "claim": "The organization works to block discriminatory bills and protect naturalized citizens.",
           "id": "[2]",
           "source_name": "Download full report",
           "source_url": "https://www.splcenter.org/wp-content/uploads/2025/05/2024-impact-report.pdf"
         },
         {
-          "claim": "The Learning for Justice project (formerly Teaching Tolerance) secured legal settlements to protect students.",
+          "claim": "The Learning for Justice project (formerly Teaching Tolerance) has successfully secured legal settlements to protect students.",
           "id": "[3]",
           "source_name": "Bullied: A Student, a School and a Case that Made History.",
           "source_url": "https://www.learningforjustice.org/sites/default/files/kits/Bullied_booklet_FINAL.pdf"
         },
         {
-          "claim": "The organization accepts general charitable donations (sadaqah) to support its mission.",
+          "claim": "SPLC identified growth rates and disparities in the application of the Baker Act in Florida.",
+          "id": "[4]",
+          "source_name": "The Baker Act",
+          "source_url": "https://www.splcenter.org/wp-content/uploads/2024/10/com_special_report_baker_act_costly_and_cruel.pdf"
+        },
+        {
+          "claim": "The organization accepts general charitable donations and sadaqah.",
           "id": "[5]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.splcenter.org/"
         },
         {
-          "claim": "The organization reported total revenue of $169,857,376 and high fundraising efficiency.",
+          "claim": "The organization reported total revenue of $169,857,376 in 2023.",
           "id": "[6]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/630598743"
         }
       ],
-      "amal_score_rationale": "The SPLC earns a moderate score of 55/100, reflecting exceptional financial stability and fundraising efficiency balanced against a lower alignment for donors seeking specific Muslim-led or faith-based initiatives.",
+      "amal_score_rationale": "The organization earns a moderate score due to its significant financial reserves and established advocacy track record, though its alignment with specific religious donor needs is limited.",
       "areas_for_improvement": [
-        "Alignment with specific Muslim donor priorities is currently rated as low",
-        "program expense ratio of 71.6% is lower than some top-tier advocacy peers"
+        "program expense ratio of 71.6% is lower than some high-performing peer benchmarks",
+        "Limited direct alignment with specific Muslim community donor priorities"
       ],
       "dimension_explanations": {
-        "alignment": "While the SPLC has a long track record in civil rights advocacy, its alignment for Muslim donors is considered low due to its status as a secular advocacy group rather than a community-specific organization [1]. Donors may contribute via sadaqah to support its general justice mission [5].",
-        "impact": "The organization demonstrates moderate impact through capacity building, successfully blocking discriminatory bills and securing legal settlements for students [2][3]. Financially, the SPLC reported a total revenue of $169,857,376 and maintains a program expense ratio of 71.6% [1][6]."
+        "alignment": "Alignment is considered medium as the organization focuses on broad civil rights advocacy rather than specific community-based services [2]. While it offers sadaqah-eligible giving opportunities for those interested in social justice, it lacks a specialized fit for donors seeking traditional religious charitable frameworks [5].",
+        "impact": "The SPLC demonstrates impact through capacity building and advocacy, such as identifying disparities in the Baker Act and securing legal settlements for students [3][4]. While it maintains a program expense ratio of 71.6%, its high data confidence is supported by detailed financial reporting and impact documentation [2][6]."
       },
-      "headline": "The Southern Poverty Law Center is a civil rights organization dedicated to seeking equal justice and opportunity through litigation, education, and monitoring extremist groups.",
+      "headline": "The Southern Poverty Law Center works to advance equal justice and opportunity through legal advocacy, monitoring extremist groups, and educational initiatives.",
       "strengths": [
-        "Strong financial liquidity with 69.9 months of working capital",
-        "High fundraising efficiency with a cost of only $0.10 per $1 raised",
-        "Proven track record in legal advocacy and blocking discriminatory legislation"
+        "Maintains a high fundraising efficiency of $0.10 per $1 raised",
+        "Strong liquidity with 69.9 months of working capital available",
+        "Diverse program portfolio including the Intelligence Project and Learning for Justice"
       ],
-      "summary": "The Southern Poverty Law Center (SPLC) works toward a future where the ideals of equal justice are a reality for all [1]. Through its Intelligence Project and Learning for Justice programs, the organization tracks hate groups and provides educational resources to foster inclusive communities [2][3]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "seek equal justice and opportunity",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "The Southern Poverty Law Center's goals are to fight hate, to teach tolerance, and to seek justice.",
-          "source_name": "SPLC Mission",
-          "source_type": "website",
-          "source_url": "https://www.splcenter.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "1971",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "founded in 1971",
-          "source_name": "SPLC About Us",
-          "source_type": "website",
-          "source_url": "https://www.splcenter.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$169,857,376 in total revenue",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total revenue: $169,857,376",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/630598743"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "blocked or amended 151 discriminatory bills",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Discriminatory bills blocked or amended: 151",
-          "source_name": "2024 Impact Report",
-          "source_type": "evaluation",
-          "source_url": "https://www.splcenter.org/wp-content/uploads/2025/05/2024-impact-report.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "protected 3,200 naturalized citizens from voter purges",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Naturalized citizens protected from purge: 3200",
-          "source_name": "2024 Impact Report",
-          "source_type": "evaluation",
-          "source_url": "https://www.splcenter.org/wp-content/uploads/2025/05/2024-impact-report.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$749,083,798 in total assets",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Total assets: $749,083,798",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/630598743"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 71.6%",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Program service expenses: $93,923,193 / Total expenses: $122,131,443",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/630598743"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer program ratio median of 81.5%",
-          "confidence": 0.9,
-          "id": "[8]",
-          "quote": "Peer Program Ratio Median: 81.5%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/630598743"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.10 per $1 raised",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Fundraising Efficiency: $0.10",
-          "source_name": "Charity Navigator Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/630598743"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "69.9 months of working capital",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Working Capital: 69.9 months",
-          "source_name": "Charity Navigator Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/630598743"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$900,000 legal settlement",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Legal Settlement: 900000",
-          "source_name": "Bullied Booklet",
-          "source_type": "evaluation",
-          "source_url": "https://www.learningforjustice.org/sites/default/files/kits/Bullied_booklet_FINAL.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "152.6% growth rate in Baker Act usage",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Identification of Baker Act growth rate: 152.6%",
-          "source_name": "Baker Act Report",
-          "source_type": "evaluation",
-          "source_url": "https://www.splcenter.org/wp-content/uploads/2024/10/com_special_report_baker_act_costly_and_cruel.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100% independent board of directors",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Independent Board Members: 100%",
-          "source_name": "Charity Navigator Governance",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/630598743"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "strong governance",
-          "confidence": 0.9,
-          "id": "[14]",
-          "quote": "Board Size: 12",
-          "source_name": "Charity Navigator Governance",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/630598743"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "low alignment score",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Alignment 24/50: LOW Muslim donor fit",
-          "source_name": "AMAL Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/630598743"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Candid Seal: platinum",
-          "source_name": "Candid Profile",
-          "source_type": "website",
-          "source_url": "https://www.splcenter.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "20 BBB Wise Giving Alliance Standards",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Standards Met: 0/20",
-          "source_name": "BBB Charity Review",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/law-public-interest/southern-poverty-law-center-in-montgomery-al-9999-106"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "4 specific outcome metrics",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Outcome Metrics Tracked: 4",
-          "source_name": "Candid Outcomes",
-          "source_type": "website",
-          "source_url": "https://www.splcenter.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "tracking and reporting specific beneficiary counts",
-          "confidence": 0.9,
-          "id": "[19]",
-          "quote": "Improvement: Track and report beneficiary counts",
-          "source_name": "AMAL Improvement Suggestions",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/630598743"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "SADAQAH-ELIGIBLE",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Wallet Tag: SADAQAH-ELIGIBLE",
-          "source_name": "AMAL Wallet Tag",
-          "source_type": "website",
-          "source_url": "https://www.splcenter.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "dedicated zakat programs",
-          "confidence": 0.9,
-          "id": "[21]",
-          "quote": "Improvement: Add a dedicated zakat page or program",
-          "source_name": "AMAL Alignment Rationale",
-          "source_type": "website",
-          "source_url": "https://www.splcenter.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "highlighting the humanitarian dimensions",
-          "confidence": 0.9,
-          "id": "[22]",
-          "quote": "highlight humanitarian dimensions of your work",
-          "source_name": "AMAL Alignment Rationale",
-          "source_type": "website",
-          "source_url": "https://www.splcenter.org/"
-        }
-      ],
-      "amal_score_rationale": "The SPLC earns a moderate score of 55/100, reflecting exceptional financial stability and fundraising efficiency balanced against a lower alignment for donors seeking specific Muslim-led or faith-based initiatives.",
-      "amal_scores": {
-        "amal_score": 55,
-        "confidence_scores": {
-          "alignment": 24,
-          "data_confidence": 0.95,
-          "impact": 31
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Excessive Capital Reserves",
-          "citation_ids": [
-            "[10]"
-          ],
-          "detail": "With <cite id=\"10\">69.9 months of working capital</cite>, the organization holds reserves far beyond the industry standard of 1-3 months, which may suggest a lower immediate need for new funding."
-        },
-        {
-          "area": "Program Expense Efficiency",
-          "citation_ids": [
-            "[7]",
-            "[8]"
-          ],
-          "detail": "The <cite id=\"7\">71.6% program expense ratio</cite> is lower than the <cite id=\"8\">peer median of 81.5%</cite>, indicating room to redirect more resources from administration to direct advocacy."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[17]"
-        ],
-        "effectiveness_status": "FAIL",
-        "finances_status": "FAIL",
-        "governance_status": "FAIL",
-        "meets_all_standards": false,
-        "review_url": "https://give.org/charity-reviews/law-public-interest/southern-poverty-law-center-in-montgomery-al-9999-106",
-        "standards_met": 0,
-        "standards_not_met": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          17,
-          18,
-          19,
-          20
-        ],
-        "summary": "Does not currently meet BBB Wise Giving Alliance Standards for Charity Accountability"
-      },
-      "case_against": {
-        "citation_ids": [
-          "[10]",
-          "[17]"
-        ],
-        "mitigation_notes": "The SPLC's large endowment allows it to take on multi-year litigation against well-funded extremist groups that smaller charities could not afford.",
-        "risk_factors": [
-          "<cite id=\"10\">69.9 months of working capital</cite> suggests the organization is not in urgent need of liquidity.",
-          "<cite id=\"17\">Failure to meet BBB Wise Giving Alliance standards</cite> at the time of review."
-        ],
-        "summary": "The primary concern for donors is the <cite id=\"10\">excessive accumulation of net assets</cite> relative to annual spending."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 4,
-          "form990": 4,
-          "rating": 9,
-          "website": 5
-        },
-        "high_confidence_count": 18,
-        "total_count": 22,
-        "unique_sources": 6
-      },
-      "confidence": {
-        "data_freshness": "Financials from 2023, Impact from 2024",
-        "data_gaps": [
-          "Missing Charity Navigator star rating",
-          "Missing beneficiary counts"
-        ],
-        "level": "HIGH",
-        "notes": "Very high financial data quality but limited impact-per-dollar metrics.",
-        "score": 95,
-        "sources_used": [
-          "Form 990",
-          "Impact Reports",
-          "Charity Navigator",
-          "BBB",
-          "Candid"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 95,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "No Charity Navigator star rating",
-          "No beneficiary count data"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 22,
-        "unique_sources": 6,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[20]",
-            "[21]",
-            "[22]"
-          ],
-          "explanation": "The charity is <cite id=\"20\">SADAQAH-ELIGIBLE</cite> but has low specific alignment for Muslim donors as it lacks <cite id=\"21\">dedicated zakat programs</cite> or a primary focus on Muslim community needs.",
-          "improvement": "The organization could improve alignment by <cite id=\"22\">highlighting the humanitarian dimensions</cite> of its work that specifically protect Muslim civil rights in the US."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[16]",
-            "[13]",
-            "[2]",
-            "[17]"
-          ],
-          "explanation": "Donors can trust the SPLC due to its <cite id=\"16\">Platinum Seal of Transparency from Candid</cite> and its <cite id=\"13\">100% independent board</cite> of 12 members. The organization has a <cite id=\"2\">55-year track record</cite> of consistent operation.",
-          "improvement": "To strengthen credibility, the organization could work toward meeting all <cite id=\"17\">20 BBB Wise Giving Alliance Standards</cite>, as current records show 0/20 standards met."
-        },
-        "impact": {
-          "citation_ids": [
-            "[4]",
-            "[18]",
-            "[7]",
-            "[19]"
-          ],
-          "explanation": "The SPLC demonstrates impact through <cite id=\"4\">blocking 151 discriminatory bills</cite> and tracking <cite id=\"18\">4 specific outcome metrics</cite> via Candid. However, the <cite id=\"7\">71.6% program ratio</cite> is moderate for its size.",
-          "improvement": "Impact measurement would benefit from <cite id=\"19\">tracking and reporting specific beneficiary counts</cite> to enable a more accurate cost-per-beneficiary analysis."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "ADVOCACY",
-        "citation_ids": [
-          "[20]",
-          "[2]"
-        ],
-        "evidence_rigor": "Grade B - Documented legislative and legal outcomes",
-        "geographic_focus": [
-          "USA",
-          "Alabama",
-          "Florida",
-          "Georgia",
-          "Louisiana",
-          "Mississippi"
-        ],
-        "giving_style": "Long-term institutional support",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "None"
-        ],
-        "zakat_status": "SADAQAH-ONLY"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.131,
-        "annual_revenue": 169857376,
-        "citation_ids": [
-          "[6]",
-          "[10]",
-          "[8]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0.1,
-        "industry_program_ratio": 0.75,
-        "peer_count": 21,
-        "peer_program_ratio_median": 0.815,
-        "program_expense_ratio": 0.7162000000000001,
-        "reserves_months": 69.9,
-        "revenue_cagr_3yr": 13.1,
-        "transparency_score": 100,
-        "working_capital_months": 69.9,
-        "yearly_financials": [
-          {
-            "expenses": 122131443,
-            "net_assets": 711333304,
-            "revenue": 169857376,
-            "year": 2023
-          },
-          {
-            "expenses": 111043025,
-            "net_assets": 686956930,
-            "revenue": 140350982,
-            "year": 2022
-          },
-          {
-            "expenses": 106617578,
-            "net_assets": 769727566,
-            "revenue": 132750377,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[6]"
-        ],
-        "domestic_grants": 1785000,
-        "foreign_grants": 0,
-        "grant_count": 19,
-        "grant_strategy": "Funds academic research and advocacy partnerships",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "USA"
-        ],
-        "top_recipients": [
-          "American University ($850K)",
-          "New Venture Fund ($275K)"
-        ],
-        "total_grants": 1785000
-      },
-      "headline": "The Southern Poverty Law Center is a civil rights organization dedicated to seeking equal justice and opportunity through litigation, education, and monitoring extremist groups.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize long-term civil rights infrastructure and want to fund legal advocacy against extremism in the United States.",
-        "citation_ids": [
-          "[10]",
-          "[20]"
-        ],
-        "donor_motivations": [
-          "Want to support large-scale litigation against hate groups",
-          "Value established institutions with deep historical roots",
-          "Prefer funding systemic policy change over direct service",
-          "Value high fundraising efficiency and financial stability"
-        ],
-        "giving_considerations": [
-          "The organization has very high reserves and does not have an immediate funding gap",
-          "Focus is domestic (US) with a heavy emphasis on the Deep South",
-          ""
-        ],
-        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those who prefer their donations to be spent immediately rather than added to an endowment."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[18]",
-          "[4]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "The organization tracks clear outcomes such as bills blocked and legal settlements, though cost-per-beneficiary metrics are absent.",
-        "external_evaluations": [
-          "Candid Outcome Metrics",
-          "Impact Reports"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "The SPLC uses a combination of monitoring, litigation, and education to dismantle white supremacy and strengthen intersectional movements.",
-        "why_evidence_matters": "Evidence in advocacy ensures that legal strategies are actually resulting in policy changes and protection for marginalized groups."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[2]",
-          "[10]"
-        ],
-        "founded_year": 1971,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": 13.1,
-        "room_for_funding": "LOW",
-        "room_for_funding_explanation": "With nearly 69.9 months of working capital in reserve, the organization has low immediate room for new funding compared to peers.",
-        "strategic_priorities": [
-          "Fighting Hate",
-          "Teaching Tolerance",
-          "Seeking Justice"
-        ],
-        "years_operating": 55
-      },
-      "organizational_capacity": {
-        "board_size": 12,
-        "ceo_compensation": 466934,
-        "ceo_compensation_pct_revenue": 0.27,
-        "ceo_name": "Margaret Huang",
-        "citation_ids": [
-          "[6]",
-          "[13]"
-        ],
-        "employees_count": 400,
-        "geographic_reach": "United States (Focus on AL, FL, GA, LA, MS)",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 2.49,
-        "programs_count": 4,
-        "staff_per_million_revenue": 2.35,
-        "volunteers_count": 0
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[6]"
-        ],
-        "differentiator": "Distinguished by its <cite id=\"6\">massive $749 million asset base</cite> and specialized focus on tracking hate groups.",
-        "peer_group": "Civil Rights Advocacy Organizations",
-        "similar_orgs": [
-          "ACLU Foundation",
-          "Innocence Project",
-          "Project South"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Broader civil liberties focus beyond hate groups",
-          "name": "ACLU Foundation"
-        },
-        {
-          "differentiator": "Specific focus on wrongful convictions",
-          "name": "Innocence Project"
-        },
-        {
-          "differentiator": "More grassroots community organizing focus",
-          "name": "Project South"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[10]"
-          ],
-          "detail": "The organization maintains <cite id=\"10\">69.9 months of working capital</cite>, ensuring long-term sustainability for complex legal battles.",
-          "point": "Exceptional Financial Stability"
-        },
-        {
-          "citation_ids": [
-            "[9]"
-          ],
-          "detail": "SPLC spends only <cite id=\"9\">$0.10 to raise every $1</cite>, significantly outperforming many large-scale advocacy peers.",
-          "point": "High Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[4]"
-          ],
-          "detail": "The SPLC's advocacy efforts resulted in <cite id=\"4\">151 discriminatory bills being blocked or amended</cite> in a single year.",
-          "point": "Proven Legislative Impact"
-        }
-      ],
-      "strengths_deep_dive": [
-        "The SPLC's strength lies in its dual-track approach of immediate legal intervention and long-term educational shifts. Their legal advocacy has secured significant victories, such as a <cite id=\"11\">$900,000 legal settlement</cite> in a landmark case. Simultaneously, their research capacity is demonstrated by identifying a <cite id=\"12\">152.6% growth rate in Baker Act usage</cite>, highlighting systemic issues in mental health law enforcement. This data-driven approach is supported by a <cite id=\"13\">100% independent board of directors</cite>, ensuring robust oversight of their <cite id=\"6\">$749 million asset base</cite>."
-      ],
-      "summary": "The Southern Poverty Law Center (SPLC) is a premier civil rights organization that has operated for over five decades to <cite id=\"1\">seek equal justice and opportunity</cite> through litigation and education. Founded in <cite id=\"2\">1971</cite>, the organization has evolved into a multi-faceted advocacy powerhouse, reporting <cite id=\"3\">$169,857,376 in total revenue</cite> in its most recent fiscal year. The SPLC's work is structured around four primary pillars: the Intelligence Project, which monitors extremist groups; Learning for Justice, which provides anti-bias resources; and comprehensive Legal and Policy Advocacy. In 2024 alone, the organization successfully <cite id=\"4\">blocked or amended 151 discriminatory bills</cite> across its focus states. Beyond legislative work, the SPLC provides critical protection for vulnerable populations, including efforts that <cite id=\"5\">protected 3,200 naturalized citizens from voter purges</cite>. Financially, the organization maintains an exceptionally strong balance sheet with <cite id=\"6\">$749,083,798 in total assets</cite>, providing a level of stability rare in the nonprofit sector. While its <cite id=\"7\">program expense ratio of 71.6%</cite> meets industry standards, it remains slightly below the <cite id=\"8\">peer program ratio median of 81.5%</cite> for similar advocacy groups. The organization is highly efficient in its outreach, maintaining a <cite id=\"9\">fundraising efficiency of $0.10 per $1 raised</cite>, ensuring that the vast majority of donor contributions are available for its core mission of fighting hate and seeking justice.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "The Southern Poverty Law Center (SPLC) is a nonprofit organization dedicated to making the ideals of equal justice a reality through litigation and education [1][2]. In the 2023 fiscal year, the organization reported a total revenue of $169,857,376 to support its mission-driven programs [6]."
     }
   }
 }

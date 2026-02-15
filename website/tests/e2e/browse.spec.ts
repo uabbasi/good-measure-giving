@@ -68,7 +68,7 @@ test.describe('Browse page', () => {
     await expect(page.locator('[role="tablist"]').first()).toBeVisible({ timeout: 10000 });
   });
 
-  test('charity cards show score or Under Review badge', async ({ page }) => {
+  test('charity cards show qualitative badges/signals', async ({ page }) => {
     await enterPowerMode(page);
 
     const cards = page.locator(CHARITY_CARD);

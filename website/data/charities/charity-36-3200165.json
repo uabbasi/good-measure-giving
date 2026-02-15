@@ -2,7 +2,7 @@
   "id": "36-3200165",
   "ein": "36-3200165",
   "name": "Islamic Society of Northwest Suburbs of Chicago",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Teaching and reading of the holy Quran, daily and Friday congregations, Islamic Education for Children and perform marriages and funeral services",
   "programs": [
     "Religious Services",
@@ -54,7 +54,11 @@
     "netAssets": 10918031,
     "workingCapitalMonths": "117.30"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 4,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Children"
@@ -63,7 +67,7 @@
   },
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-09 21:37:08",
+  "lastUpdated": "2026-02-14 19:35:53",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -151,17 +155,36 @@
     "The Islamic Society of Northwest Suburbs (ISNS) explicitly states, \"Donate your ZAKAT to ISNS\" and provides methods for donation including mailing a check, dropping it off in a Zakah drop box, and an online Zakat Request form. They also have a 'Zakah Committee'. (Source: https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEr-QOAlaTAz8LEo8cQ8DlG45doyUBd26Mt0abRpz31opnn0gBjVUk2JEYNDGvNOiU9__wZra--15Td9lG74AIG0HO-N1OhjvJA_X2YxnnIH2oJgBv8T-hixYZaK9hNefmP_DpXu5x4pgdXGwKNZw==)"
   ],
   "archetype": "SOVEREIGNTY",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "SOVEREIGNTY",
+    "archetype_label": "Sovereignty Builder",
+    "evidence_stage": "Early",
+    "signal_states": {
+      "evidence": "Limited",
+      "financial_health": "Strong",
+      "donor_fit": "Moderate",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "36-3200165",
     "charity_name": "Islamic Society of Northwest Suburbs of Chicago",
-    "amal_score": 50,
+    "amal_score": 51,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:27:58",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 31,
       "data_confidence": 0.3,
-      "impact": 21
+      "impact": 22
     },
     "score_details": {
       "alignment": {
@@ -248,12 +271,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 117.3 months (ENDOWMENT)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 3,
+            "evidence": "Working capital: 117.3 months (RESERVE_MODEL)",
+            "improvement_suggestion": "Distinguish restricted/endowment reserves from operating reserves and publish a clear reserve-use policy.",
+            "improvement_value": 2,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 4,
+            "scored": 5,
             "status": "full"
           },
           {
@@ -296,42 +319,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 21/50",
+        "rationale": "Delivery: capacity building; Impact 22/50",
         "rubric_archetype": "COMMUNITY",
-        "score": 21
+        "score": 22
       },
-      "judge_issues": [
-        {
-          "field": "bbb.name_match",
-          "judge": "crawl_quality",
-          "message": "BBB name 'Boys & Girls Clubs of the Northwest Suburbs' may not match 'Islamic Society of Northwest Suburbs of Chicago' (similarity: 40%)",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
@@ -354,7 +345,7 @@
         ],
         "total_deduction": -2
       },
-      "score_summary": "Islamic Society of Northwest Suburbs of Chicago earns 50/100 due to good alignment and moderate impact, with zakat compliance (minor risk deductions applied).",
+      "score_summary": "Islamic Society of Northwest Suburbs of Chicago shows good alignment and moderate impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": "masakin",
         "bonus_points": 0,
@@ -366,577 +357,40 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization focuses on Quranic teaching, daily congregations, and Islamic education for children.",
+          "claim": "The organization provides religious services, Quranic teaching, and early childhood education programs.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/363200165"
         },
         {
-          "claim": "The organization reported total revenue of $4,092,615, a 92.5% program expense ratio, and 117.3 months of working capital.",
+          "claim": "The charity reported total revenue of $4,092,615, a program expense ratio of 92.5%, and 117.3 months of working capital.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/363200165"
         },
         {
-          "claim": "The organization offers various donation options and is recognized as zakat-eligible.",
+          "claim": "The organization offers various donation options and is identified as zakat-eligible.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://isns.org/donation-for-construction/"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate score due to its exceptional financial efficiency and strong alignment with donor needs, though it is limited by low data transparency and a lack of independent impact verification.",
+      "amal_score_rationale": "The organization demonstrates strong financial health and efficiency, though its overall score is moderated by low data confidence and limited evidence of direct impact beyond capacity building.",
       "areas_for_improvement": [
-        "Limited third-party impact data and external evaluations",
-        "Low data confidence score due to limited public documentation"
+        "Limited external data regarding long-term impact metrics and program outcomes",
+        "Low data confidence score suggests a need for increased transparency in public reporting"
       ],
       "dimension_explanations": {
-        "alignment": "ISNS shows high alignment for Muslim donors as a zakat-eligible institution providing essential religious services such as funeral rites and marriages [1][3]. The organization maintains a high donor fit despite the low data confidence score [2].",
-        "impact": "The organization focuses on capacity building through its Little Scholar Early Childhood Program and religious services [1]. While it demonstrates strong financial health with 117.3 months of working capital, the lack of third-party impact metrics results in a medium impact score [2]."
+        "alignment": "ISNS shows high donor fit for those seeking to support local Muslim infrastructure and is recognized as zakat-eligible [3]. The alignment score is balanced by the specific religious and cultural urgency of its mission within the Northwest Chicago suburbs [1].",
+        "impact": "The organization focuses on capacity building through religious services and the Little Scholar Early Childhood Program [1]. While it maintains a high program expense ratio of 92.5% and significant working capital of 117.3 months, the impact score reflects a lack of third-party verification and low data confidence [2]."
       },
-      "headline": "The Islamic Society of Northwest Suburbs of Chicago provides comprehensive religious services and early childhood education to the regional Muslim community.",
+      "headline": "The Islamic Society of Northwest Suburbs of Chicago serves as a vital community hub providing comprehensive religious services and early childhood Islamic education.",
       "strengths": [
         "High program expense ratio of 92.5% ensures the vast majority of funds directly support community services",
         "Exceptional fundraising efficiency with a cost of only $0.01 per $1 raised",
-        "Strong liquidity position with 117.3 months of working capital"
+        "Robust financial reserves with 117.3 months of working capital"
       ],
-      "summary": "The Islamic Society of Northwest Suburbs of Chicago (ISNS) is a religious non-profit dedicated to the teaching of the Holy Quran, daily congregations, and Islamic education for children [1]. In the 2023 fiscal year, the organization reported a total revenue of $4,092,615 while maintaining a high program expense ratio of 92.5% [2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "founding in 1974",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "Founded: 1974",
-          "source_name": "Charity Navigator - ISNS",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/363200165"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "daily and Friday congregations",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "daily and Friday congregations",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/363200165"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Islamic education for children",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Islamic Education for Children",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/363200165"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Little Scholar program",
-          "confidence": 0.9,
-          "id": "[4]",
-          "quote": "Little Scholar Early Childhood Program",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://isns.org/donation-for-construction/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "marriages and funeral services",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "perform marriages and funeral services",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/363200165"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $4,092,615",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Total revenue: $4,092,615",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/363200165"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 39.9%",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Revenue 2021-2023 trend",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/363200165"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "92.5% of expenses are categorized as program-related",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Program service expenses: 92.5%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/363200165"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "exceptional fundraising efficiency",
-          "confidence": 0.95,
-          "id": "[9]",
-          "quote": "Fundraising Efficiency: $0.00",
-          "source_name": "Charity Navigator - ISNS",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/363200165"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.01 to raise every $1",
-          "confidence": 0.95,
-          "id": "[10]",
-          "quote": "Fundraising Efficiency: $0.01",
-          "source_name": "Charity Navigator - ISNS",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/363200165"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "92.5% independent board members",
-          "confidence": 0.95,
-          "id": "[11]",
-          "quote": "Independent Board Members: 92.5%",
-          "source_name": "Charity Navigator - ISNS",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/363200165"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "zakat services for the poor and needy",
-          "confidence": 0.9,
-          "id": "[12]",
-          "quote": "Zakat Services",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://isns.org/donation-for-construction/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$10,918,031 in net assets",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Net assets or fund balances: $10,918,031",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/363200165"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "working capital ratio",
-          "confidence": 0.95,
-          "id": "[14]",
-          "quote": "Working Capital: 141.8 months",
-          "source_name": "Charity Navigator - ISNS",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/363200165"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$10,997,666 in total assets",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Total assets: $10,997,666",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/363200165"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$79,635 in total liabilities",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Total liabilities: $79,635",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/363200165"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "no public tracking of beneficiary counts",
-          "confidence": 0.8,
-          "id": "[17]",
-          "quote": "No beneficiary data",
-          "source_name": "GMG Evaluation Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/363200165"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "low data confidence (0.3)",
-          "confidence": 0.8,
-          "id": "[18]",
-          "quote": "Data confidence: 0.3",
-          "source_name": "GMG Evaluation Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/363200165"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "publishing audited financial statements",
-          "confidence": 0.8,
-          "id": "[19]",
-          "quote": "Improvement: Seek external evaluation",
-          "source_name": "GMG Evaluation Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/363200165"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "track and report the number of students and congregants served",
-          "confidence": 0.8,
-          "id": "[20]",
-          "quote": "Improvement: Track and report beneficiary counts",
-          "source_name": "GMG Evaluation Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/363200165"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer median of 80.0%",
-          "confidence": 0.9,
-          "id": "[21]",
-          "quote": "Peer Program Ratio Median: 80.0%",
-          "source_name": "GMG Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/363200165"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a moderate score due to its exceptional financial efficiency and strong alignment with donor needs, though it is limited by low data transparency and a lack of independent impact verification.",
-      "amal_scores": {
-        "amal_score": 50,
-        "confidence_scores": {
-          "alignment": 31,
-          "data_confidence": 0.3,
-          "impact": 21
-        },
-        "confidence_tier": "LOW",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Impact Measurement and Reporting",
-          "citation_ids": [
-            "[17]"
-          ],
-          "context": "There is currently <cite id=\"17\">no public tracking of beneficiary counts</cite> or external impact evaluations."
-        },
-        {
-          "area": "Transparency and Documentation",
-          "citation_ids": [
-            "[18]"
-          ],
-          "context": "The organization has <cite id=\"18\">low data confidence (0.3)</cite> due to a lack of published theory of change or audited financials."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "none",
-        "citation_ids": [],
-        "effectiveness_status": "UNREVIEWED",
-        "finances_status": "UNREVIEWED",
-        "governance_status": "UNREVIEWED",
-        "meets_all_standards": false,
-        "review_url": "https://give.org/charity-reviews/children-youth/boys-and-girls-clubs-of-the-northwest-suburbs-in-carpentersville-il-0654-1000095281",
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "This organization has not yet been reviewed against BBB Wise Giving Alliance standards."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[17]",
-          "[18]",
-          "[19]"
-        ],
-        "mitigation_notes": "The organization's 50-year track record and high asset base mitigate some concerns regarding operational stability.",
-        "risk_factors": [
-          "<cite id=\"17\">No data on number of beneficiaries served</cite>",
-          "<cite id=\"19\">Absence of audited financial statements</cite>"
-        ],
-        "summary": "The primary concern is the <cite id=\"18\">lack of transparent impact reporting</cite> and formal outcome measurement."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 9,
-          "rating": 10,
-          "website": 2
-        },
-        "high_confidence_count": 19,
-        "total_count": 21,
-        "unique_sources": 3
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023 Form 990",
-        "data_gaps": [
-          "Missing audited financials",
-          "Missing beneficiary counts",
-          "Missing theory of change"
-        ],
-        "level": "LOW",
-        "notes": "Financial efficiency is high, but transparency on impact is very limited.",
-        "score": 30,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 30,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "No audited financials",
-          "No beneficiary counts",
-          "No theory of change"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 21,
-        "unique_sources": 3,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[12]",
-            "[3]"
-          ],
-          "explanation": "Strong alignment for Muslim donors due to <cite id=\"12\">verified zakat eligibility</cite> and a focus on <cite id=\"3\">Islamic education</cite>.",
-          "improvement": ""
-        },
-        "credibility": {
-          "citation_ids": [
-            "[11]",
-            "[18]",
-            "[19]"
-          ],
-          "explanation": "While ISNS is an established institution with <cite id=\"11\">92.5% board independence</cite>, its credibility is limited by <cite id=\"18\">low data transparency</cite> and a lack of third-party audits.",
-          "improvement": "The charity could improve by <cite id=\"19\">publishing audited financial statements</cite> and documenting a formal theory of change."
-        },
-        "impact": {
-          "citation_ids": [
-            "[8]",
-            "[17]",
-            "[20]"
-          ],
-          "explanation": "Impact is driven by <cite id=\"8\">92.5% program expense</cite>, though the lack of <cite id=\"17\">beneficiary data</cite> makes it difficult to assess cost-effectiveness.",
-          "improvement": "To improve, the organization should <cite id=\"20\">track and report the number of students and congregants served</cite> annually."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "RELIGIOUS_CULTURAL",
-        "citation_ids": [
-          "[2]",
-          "[12]"
-        ],
-        "evidence_rigor": "Grade C - Self-reported financial data only",
-        "geographic_focus": [
-          "Northwest Suburbs of Chicago"
-        ],
-        "giving_style": "Community Infrastructure",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)",
-          "amil (zakat collectors)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 4092615,
-        "citation_ids": [
-          "[6]",
-          "[7]",
-          "[13]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0,
-        "industry_program_ratio": 0.75,
-        "peer_count": 35,
-        "peer_program_ratio_median": 0.8,
-        "program_expense_ratio": 0.9248999999999999,
-        "reserves_months": 117.3,
-        "revenue_cagr_3yr": 39.9,
-        "working_capital_months": 117.3,
-        "yearly_financials": [
-          {
-            "expenses": 1116996,
-            "net_assets": 10918031,
-            "revenue": 4092615,
-            "year": 2023
-          },
-          {
-            "expenses": 700642,
-            "net_assets": 7942210,
-            "revenue": 2764659,
-            "year": 2022
-          },
-          {
-            "expenses": 542535,
-            "net_assets": 5878193,
-            "revenue": 2092486,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct service provider",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "Local"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "The Islamic Society of Northwest Suburbs of Chicago provides comprehensive religious services and early childhood education to the regional Muslim community.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value long-term community institutional stability and want their zakat to support local religious infrastructure with zero overhead.",
-        "citation_ids": [
-          "[1]",
-          "[8]",
-          "[12]"
-        ],
-        "donor_motivations": [
-          "Want to support local Islamic education and prayer spaces",
-          "Value organizations with a multi-decade track record",
-          "Prioritize high program-to-overhead ratios",
-          "Seek to fulfill zakat through a trusted local masjid"
-        ],
-        "giving_considerations": [
-          "Donations support a large endowment/asset base rather than immediate relief",
-          "Limited reporting on specific social outcomes or beneficiary metrics",
-          "Focus is primarily on the Northwest Chicago suburban community"
-        ],
-        "not_ideal_for": "Donors seeking high-transparency international relief or those who require rigorous third-party impact evaluations."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[17]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects high financial efficiency but a total lack of <cite id=\"17\">external outcome tracking</cite>.",
-        "external_evaluations": [],
-        "outcome_tracking_years": 0,
-        "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "ISNS creates impact by providing the physical and educational infrastructure necessary for the practice and transmission of Islamic faith.",
-        "why_evidence_matters": "Evidence ensures that educational programs are effectively meeting the needs of the youth community."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[7]",
-          "[3]"
-        ],
-        "founded_year": 1974,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": 39.9,
-        "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "While assets are high, the <cite id=\"7\">39.9% growth rate</cite> suggests expanding community needs.",
-        "strategic_priorities": [
-          "Construction and expansion of facilities",
-          "Islamic education"
-        ],
-        "years_operating": 52
-      },
-      "organizational_capacity": {
-        "board_size": 4,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Listed",
-        "citation_ids": [
-          "[2]",
-          "[11]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Northwest Suburbs of Chicago",
-        "has_conflict_policy": true,
-        "has_financial_audit": false,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[8]",
-          "[21]"
-        ],
-        "differentiator": "ISNS maintains a <cite id=\"8\">100.0% program ratio</cite>, significantly higher than the <cite id=\"21\">peer median of 80.0%</cite>.",
-        "peer_group": "Religious and Cultural Organizations",
-        "similar_orgs": [
-          "Islamic Educational Foundation",
-          "Islamic Foundation of Nevada",
-          "MAS Boston Society"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on K-12 education",
-          "name": "Islamic Educational Foundation"
-        },
-        {
-          "differentiator": "Similar regional religious service model",
-          "name": "Islamic Foundation of Nevada"
-        },
-        {
-          "differentiator": "Similar community-hub approach",
-          "name": "MAS Boston Society"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[8]",
-            "[10]"
-          ],
-          "detail": "The organization maintains a <cite id=\"8\">92.5% program expense ratio</cite> and a fundraising cost of just <cite id=\"10\">$0.01 per $1 raised</cite>.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[1]",
-            "[5]"
-          ],
-          "detail": "Operating since <cite id=\"1\">1974</cite>, ISNS has over five decades of experience in <cite id=\"5\">religious and social service delivery</cite>.",
-          "point": "Deep Institutional Maturity"
-        },
-        {
-          "citation_ids": [
-            "[13]",
-            "[14]"
-          ],
-          "detail": "The charity holds <cite id=\"13\">$10,918,031 in net assets</cite>, providing a massive <cite id=\"14\">working capital ratio</cite> for long-term stability.",
-          "point": "Strong Liquidity and Reserves"
-        }
-      ],
-      "strengths_deep_dive": [
-        "ISNS exhibits a unique financial profile characterized by extremely low overhead and high asset accumulation. In 2023, the organization managed <cite id=\"15\">$10,997,666 in total assets</cite> against only <cite id=\"16\">$79,635 in total liabilities</cite>. This fiscal conservatism is paired with aggressive growth, as seen in the <cite id=\"7\">39.9% revenue CAGR</cite>. Their ability to scale while maintaining <cite id=\"8\">92.5% program expense</cite> suggests a volunteer-heavy or highly subsidized operational model that maximizes the impact of every dollar donated for <cite id=\"12\">zakat and community services</cite>."
-      ],
-      "summary": "The Islamic Society of Northwest Suburbs of Chicago (ISNS) is a long-standing religious institution that has served the regional Muslim community since its <cite id=\"1\">founding in 1974</cite>. The organization operates as a multi-functional community hub, providing <cite id=\"2\">daily and Friday congregations</cite>, specialized <cite id=\"3\">Islamic education for children</cite>, and early childhood development through its <cite id=\"4\">Little Scholar program</cite>. Beyond religious services, ISNS facilitates essential community rites including <cite id=\"5\">marriages and funeral services</cite>. Financially, the organization demonstrated significant growth in the 2023 fiscal year, reporting <cite id=\"6\">total revenue of $4,092,615</cite>, which represents a <cite id=\"7\">3-year revenue CAGR of 39.9%</cite>. This growth is supported by a highly efficient operational model where <cite id=\"8\">92.5% of expenses are categorized as program-related</cite>, ensuring that donor contributions are directed almost entirely toward community services and infrastructure. The organization maintains <cite id=\"9\">exceptional fundraising efficiency</cite>, spending only <cite id=\"10\">$0.01 to raise every $1</cite> in contributions. With <cite id=\"11\">92.5% independent board members</cite> and a focus on <cite id=\"12\">zakat services for the poor and needy</cite>, ISNS functions as both a spiritual center and a social safety net for the Northwest Suburbs of Chicago.",
-      "zakat_guidance": {
-        "classification": "masakin",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "The Islamic Society of Northwest Suburbs of Chicago (ISNS) is a religious non-profit dedicated to the teaching of the holy Quran, daily congregations, and funeral services [1]. In the 2023 fiscal year, the organization reported a total revenue of $4,092,615 while maintaining a high program expense ratio of 92.5% [2]."
     }
   }
 }

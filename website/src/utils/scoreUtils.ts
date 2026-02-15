@@ -4,6 +4,8 @@
  */
 
 import { cleanNarrativeText } from './cleanNarrativeText';
+import type { CharityProfile, UISignalsV1, UISignalState } from '../../types';
+import { uiSignalsConfig, UI_SIGNALS_CONFIG_HASH, UI_SIGNALS_CONFIG_VERSION } from '../generated/uiSignalsConfig';
 
 /**
  * Numeric score → human-readable rating label
@@ -229,4 +231,233 @@ export const generateFallbackImprovement = (
   }
 
   return null;
+};
+
+type SummaryLike = {
+  ein?: string;
+  id?: string;
+  archetype?: string | null;
+  rubricArchetype?: string | null;
+  foundedYear?: number | null;
+  evaluationTrack?: string | null;
+  amalScore?: number | null;
+  amalEvaluation?: CharityProfile['amalEvaluation'];
+  ui_signals_v1?: UISignalsV1 | null;
+  evidenceQuality?: CharityProfile['evidenceQuality'] | null;
+};
+
+const SIGNAL_ORDER: Record<UISignalState, number> = {
+  Strong: 3,
+  Moderate: 2,
+  Limited: 1,
+};
+
+const EVIDENCE_STAGE_ORDER: Record<string, number> = {
+  Verified: 4,
+  Established: 3,
+  Building: 2,
+  Early: 1,
+};
+
+const normalizeConfidenceBadge = (raw: string | null | undefined): 'HIGH' | 'MEDIUM' | 'LOW' => {
+  const value = (raw || '').toUpperCase();
+  if (value === 'HIGH') return 'HIGH';
+  if (value === 'MEDIUM' || value === 'MODERATE') return 'MEDIUM';
+  return 'LOW';
+};
+
+const getComponentRatio = (
+  scoreDetails: CharityProfile['amalEvaluation'] extends { score_details?: infer T } ? T : any,
+  dimension: 'impact' | 'alignment' | 'credibility',
+  name: string
+): number | null => {
+  const details: any = (scoreDetails as any)?.[dimension];
+  const components: any[] = details?.components || [];
+  const comp = components.find(c => typeof c?.name === 'string' && c.name.toLowerCase() === name.toLowerCase());
+  if (!comp || typeof comp.scored !== 'number' || typeof comp.possible !== 'number' || comp.possible <= 0) return null;
+  return Math.max(0, Math.min(1, comp.scored / comp.possible));
+};
+
+export const getArchetypeLabel = (archetypeCode: string | null | undefined): string => {
+  if (!archetypeCode) return 'General Profile';
+  const key = archetypeCode.toUpperCase();
+  const mapped = (uiSignalsConfig.archetype_labels as Record<string, string | undefined>)[key];
+  if (mapped) return mapped;
+  return key.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+};
+
+const deriveSignalStates = (charity: SummaryLike): UISignalsV1['signal_states'] => {
+  const scoreDetails: any = charity.amalEvaluation?.score_details || {};
+  const evidenceRatio = getComponentRatio(scoreDetails, 'impact', 'Evidence & Outcomes') ?? 0;
+  const financialRatio = getComponentRatio(scoreDetails, 'impact', 'Financial Health') ?? 0;
+  const programRatio = getComponentRatio(scoreDetails, 'impact', 'Program Ratio') ?? 0;
+  const governanceRatio = getComponentRatio(scoreDetails, 'impact', 'Governance');
+
+  const donorFitLevel = ((scoreDetails?.alignment?.muslim_donor_fit_level as string | undefined) || 'LOW').toUpperCase();
+  const alignmentScore = (scoreDetails?.alignment?.score as number | undefined)
+    ?? (charity.amalEvaluation?.confidence_scores?.alignment as number | undefined)
+    ?? 0;
+  const riskDeduction = (scoreDetails?.risk_deduction as number | undefined)
+    ?? (scoreDetails?.risks?.total_deduction as number | undefined)
+    ?? 0;
+
+  const evidenceCfg = uiSignalsConfig.signals.evidence;
+  const evidence: UISignalState =
+    evidenceRatio >= evidenceCfg.strong_ratio
+      ? 'Strong'
+      : evidenceRatio >= evidenceCfg.moderate_ratio_min
+        ? 'Moderate'
+        : 'Limited';
+
+  const financialCfg = uiSignalsConfig.signals.financial_health;
+  const financial_health: UISignalState =
+    financialRatio >= financialCfg.strong_min && programRatio >= financialCfg.strong_min
+      ? 'Strong'
+      : financialRatio < financialCfg.moderate_min || programRatio < financialCfg.moderate_min
+        ? 'Limited'
+        : 'Moderate';
+
+  const donorFitCfg = uiSignalsConfig.signals.donor_fit;
+  const donor_fit: UISignalState =
+    donorFitLevel === 'HIGH' && alignmentScore >= donorFitCfg.strong_alignment_min
+      ? 'Strong'
+      : donorFitLevel === 'MODERATE' || alignmentScore >= donorFitCfg.moderate_alignment_min
+        ? 'Moderate'
+        : 'Limited';
+
+  const riskCfg = uiSignalsConfig.signals.risk;
+  const risk: UISignalState =
+    riskDeduction === 0 && governanceRatio != null && governanceRatio >= riskCfg.governance_strong_min
+      ? 'Strong'
+      : riskDeduction <= riskCfg.deduction_limited_max || (governanceRatio != null && governanceRatio < riskCfg.governance_moderate_min)
+        ? 'Limited'
+        : 'Moderate';
+
+  return { evidence, financial_health, donor_fit, risk };
+};
+
+const deriveEvidenceStage = (
+  confidence: 'HIGH' | 'MEDIUM' | 'LOW',
+  foundedYear: number | null | undefined,
+  evaluationTrack: string | null | undefined,
+  thirdPartyEvaluated: boolean,
+  evidenceSignal: UISignalState
+): UISignalsV1['evidence_stage'] => {
+  const currentYear = new Date().getFullYear();
+  const yearsOperating = foundedYear ? currentYear - foundedYear : null;
+  if (confidence === 'HIGH' && !!yearsOperating && yearsOperating >= 10 && thirdPartyEvaluated) return 'Verified';
+  if (confidence === 'HIGH' || (confidence === 'MEDIUM' && evidenceSignal === 'Strong')) return 'Established';
+  if (confidence === 'MEDIUM') return 'Building';
+  if (confidence === 'LOW' || evaluationTrack === 'NEW_ORG') return 'Early';
+  return 'Early';
+};
+
+const deriveCue = (
+  score: number,
+  confidence: 'HIGH' | 'MEDIUM' | 'LOW',
+  riskSignal: UISignalState
+): UISignalsV1['recommendation_cue'] => {
+  const riskLevel = riskSignal === 'Strong' ? 'LOW' : riskSignal === 'Moderate' ? 'MODERATE' : 'HIGH';
+  if (score < uiSignalsConfig.recommendation_cue.limited_match.score_max_exclusive || (confidence === 'LOW' && riskLevel === 'HIGH')) return 'Limited Match';
+  if (score >= uiSignalsConfig.recommendation_cue.strong_match.score_min && confidence === 'HIGH' && riskLevel === 'LOW') return 'Strong Match';
+  if (score >= uiSignalsConfig.recommendation_cue.good_match.score_min && (confidence === 'HIGH' || confidence === 'MEDIUM') && (riskLevel === 'LOW' || riskLevel === 'MODERATE')) {
+    return 'Good Match';
+  }
+  return 'Mixed Signals';
+};
+
+const deriveAssessmentLabel = (
+  cue: UISignalsV1['recommendation_cue'],
+  stage: UISignalsV1['evidence_stage']
+): UISignalsV1['assessment_label'] => {
+  if (cue === 'Limited Match' && (stage === 'Verified' || stage === 'Established')) return 'Well Documented Low Score';
+  if (cue === 'Strong Match' && (stage === 'Verified' || stage === 'Established')) return 'High Conviction';
+  if (cue === 'Good Match' && (stage === 'Verified' || stage === 'Established' || stage === 'Building')) return 'Promising';
+  if (cue === 'Mixed Signals') return 'Context Dependent';
+  return 'Limited Basis';
+};
+
+const buildCueRationale = (cue: UISignalsV1['recommendation_cue']): string => {
+  if (cue === 'Strong Match') return 'Strong donor fit, low risk profile, and credible supporting evidence for outcomes.';
+  if (cue === 'Good Match') return 'Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.';
+  if (cue === 'Limited Match') return 'Limited match due to weaker results and/or higher uncertainty; review methodology details before deciding.';
+  return 'Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.';
+};
+
+export const deriveUISignalsFromSummary = (charity: SummaryLike): UISignalsV1 => {
+  const scoreDetails: any = charity.amalEvaluation?.score_details || {};
+  const confidence = normalizeConfidenceBadge(
+    scoreDetails?.data_confidence?.badge || charity.amalEvaluation?.confidence_tier || null
+  );
+  const signals = deriveSignalStates(charity);
+  const thirdPartyEvaluated = Boolean(charity.evidenceQuality?.thirdPartyEvaluated);
+  const stage = deriveEvidenceStage(
+    confidence,
+    charity.foundedYear,
+    charity.evaluationTrack,
+    thirdPartyEvaluated,
+    signals.evidence
+  );
+  const score = charity.amalScore ?? charity.amalEvaluation?.amal_score ?? 0;
+  const cue = deriveCue(score, confidence, signals.risk);
+  const archetypeCode = charity.archetype || charity.rubricArchetype || null;
+
+  return {
+    schema_version: uiSignalsConfig.schema_version,
+    config_version: UI_SIGNALS_CONFIG_VERSION,
+    config_hash: UI_SIGNALS_CONFIG_HASH,
+    assessment_label: deriveAssessmentLabel(cue, stage),
+    archetype_code: archetypeCode,
+    archetype_label: getArchetypeLabel(archetypeCode),
+    evidence_stage: stage,
+    signal_states: signals,
+    recommendation_cue: cue,
+    recommendation_rationale: buildCueRationale(cue),
+    used_fallback: true,
+    fallback_reasons: ['missing_ui_signals_v1'],
+  };
+};
+
+export const deriveUISignalsFromCharity = (charity: CharityProfile): UISignalsV1 => {
+  if (charity.ui_signals_v1) return charity.ui_signals_v1;
+  return deriveUISignalsFromSummary({
+    id: charity.id,
+    ein: charity.ein,
+    archetype: charity.archetype,
+    foundedYear: charity.foundedYear,
+    evaluationTrack: charity.evaluationTrack,
+    amalEvaluation: charity.amalEvaluation,
+    amalScore: charity.amalEvaluation?.amal_score ?? 0,
+    evidenceQuality: charity.evidenceQuality,
+  });
+};
+
+export const getEvidenceStageRank = (stage: string | null | undefined): number => {
+  if (!stage) return 0;
+  return EVIDENCE_STAGE_ORDER[stage] || 0;
+};
+
+export const getSignalStrengthScore = (signals: UISignalsV1['signal_states']): number => {
+  return (
+    SIGNAL_ORDER[signals.evidence] +
+    SIGNAL_ORDER[signals.financial_health] +
+    SIGNAL_ORDER[signals.donor_fit] +
+    SIGNAL_ORDER[signals.risk]
+  );
+};
+
+export const getRecommendationCue = (charity: CharityProfile): UISignalsV1['recommendation_cue'] => {
+  return deriveUISignalsFromCharity(charity).recommendation_cue;
+};
+
+export const getEvidenceStage = (charity: CharityProfile): UISignalsV1['evidence_stage'] => {
+  return deriveUISignalsFromCharity(charity).evidence_stage;
+};
+
+export const getSignalStates = (charity: CharityProfile): UISignalsV1['signal_states'] => {
+  return deriveUISignalsFromCharity(charity).signal_states;
+};
+
+export const getAssessmentLabel = (charity: CharityProfile): UISignalsV1['assessment_label'] => {
+  return deriveUISignalsFromCharity(charity).assessment_label;
 };

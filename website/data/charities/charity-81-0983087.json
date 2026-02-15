@@ -2,7 +2,7 @@
   "id": "81-0983087",
   "ein": "81-0983087",
   "name": "Pillars Fund",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Pillars Fund amplifies the leadership, narratives, and talents of Muslims in the United States to advance opportunity and justice for all.",
   "programs": [
     "Storytelling Grants",
@@ -47,7 +47,11 @@
     "netAssets": 8243803,
     "workingCapitalMonths": "20.70"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 9,
+    "independentBoardMembers": null,
+    "ceoCompensation": 185000
+  },
   "targeting": {
     "populationsServed": [
       "Men"
@@ -64,7 +68,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-14 13:53:11",
+  "lastUpdated": "2026-02-14 19:36:14",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -533,17 +537,36 @@
     "Pillars Fund is a grant-making organization and Muslim community foundation named in reference to the five pillars of Islam, the third of which is Zakat. However, there is no explicit mention on their website or in the search results that they accept zakat donations. Their focus is on \"funding secular programs supporting American Muslims\" and \"amplifying the leadership, narratives and talents of American Muslims.\""
   ],
   "archetype": "SOVEREIGNTY",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Promising",
+    "archetype_code": "SOVEREIGNTY",
+    "archetype_label": "Sovereignty Builder",
+    "evidence_stage": "Verified",
+    "signal_states": {
+      "evidence": "Limited",
+      "financial_health": "Strong",
+      "donor_fit": "Moderate",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "81-0983087",
     "charity_name": "Pillars Fund",
-    "amal_score": 54,
+    "amal_score": 59,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:25:48",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 30,
       "data_confidence": 0.7,
-      "impact": 25
+      "impact": 30
     },
     "score_details": {
       "alignment": {
@@ -631,11 +654,11 @@
           },
           {
             "evidence": "Working capital: 20.7 months (HIGH)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 4,
+            "improvement_suggestion": "Document why reserves above your policy target are intentional (e.g., restrictions, volatility, planned commitments) and define deployment triggers.",
+            "improvement_value": 2,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 0,
+            "scored": 5,
             "status": "full"
           },
           {
@@ -678,36 +701,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 25/50",
+        "rationale": "Delivery: capacity building; Impact 30/50",
         "rubric_archetype": "MULTIPLIER",
-        "score": 25
+        "score": 30
       },
-      "judge_issues": [
-        {
-          "field": "propublica.expense_ratio",
-          "judge": "crawl_quality",
-          "message": "Expenses ($4,783,807) exceed revenue ($2,398,957) by 99% - may be drawing down reserves",
-          "severity": "warning"
-        },
-        {
-          "field": "multi_source.revenue_divergence",
-          "judge": "crawl_quality",
-          "message": "Revenue diverges >50% across sources ($2,398,957 - $5,966,431)",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -1,
       "risks": {
         "overall_risk_level": "LOW",
@@ -723,7 +720,7 @@
         ],
         "total_deduction": -1
       },
-      "score_summary": "Pillars Fund earns 54/100 due to good alignment and moderate impact (minor risk deductions applied).",
+      "score_summary": "Pillars Fund shows good impact and good alignment (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -735,440 +732,58 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reports a program expense ratio of 74.3%, working capital of 20.7 months, and fundraising efficiency of $0.31 per $1 raised.",
+          "claim": "Pillars Fund is a registered nonprofit with profile metadata and financial fields available.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/810983087"
         },
         {
-          "claim": "Pillars Fund reported a total revenue of $2,398,957.",
+          "claim": "The organization reported a total revenue of $2,398,957 and maintains a program expense ratio of 74.3%.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/810983087"
         },
         {
-          "claim": "Pillars Fund strategically supports nonprofit organizations and invests funds to amplify the talents of American Muslims.",
+          "claim": "Pillars Fund strategically supports nonprofit organizations and leverages funds to amplify Muslim talents.",
           "id": "[3]",
           "source_name": "Operations Associate",
           "source_url": "https://www.pillarsfund.org/s/Operations-Associate2026.pdf"
         },
         {
-          "claim": "The organization supports fellows through cohorts such as the Pillars Artist Fellowship.",
+          "claim": "The organization supports fellows through its MNC cohort and storytelling initiatives.",
           "id": "[4]",
           "source_name": "Read",
           "source_url": "https://www.pillarsfund.org/s/KHAYAL.pdf"
         },
         {
-          "claim": "The organization facilitates multimedia contributions to reshape narratives about Muslim communities.",
+          "claim": "The charity facilitates multimedia contributions as part of its cultural programming.",
           "id": "[5]",
           "source_name": "Document (PDF)",
           "source_url": "https://www.pillarsfund.org/s/KHAYAL.pdf"
         },
         {
-          "claim": "Donations to Pillars Fund are accepted as general charitable giving or sadaqah.",
+          "claim": "The organization accepts various forms of charitable giving, including sadaqah.",
           "id": "[6]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://pillarsfund.secure.nonprofitsoapbox.com/donate-to-pillars-fund"
         }
       ],
-      "amal_score_rationale": "With an overall score of 54/100, Pillars Fund demonstrates solid financial health and specialized programming, though its impact score is moderated by its focus on capacity building rather than direct service.",
+      "amal_score_rationale": "Pillars Fund earns a moderate overall score due to its solid financial health and specialized focus on capacity building within the American Muslim community, though its fundraising efficiency and impact metrics show room for growth.",
       "areas_for_improvement": [
-        "Fundraising efficiency stands at $0.31 per $1 raised, indicating potential for higher cost-effectiveness in donor acquisition [1]",
-        "Limited third-party impact evaluations available to verify long-term social outcomes [1]"
+        "Fundraising efficiency could be optimized, as it currently costs $0.31 to raise every $1.",
+        "Greater transparency in third-party impact evaluations could improve data confidence."
       ],
       "dimension_explanations": {
-        "alignment": "Pillars Fund offers a medium fit for donors interested in humanitarian and cultural advocacy, providing a platform for sadaqah-eligible contributions [6]. The organization addresses the urgent need for authentic representation, though its specific focus may not align with donors seeking traditional direct-aid models [3][4].",
-        "impact": "The organization focuses on capacity building and narrative change, investing in fellows and multimedia contributions to amplify Muslim voices [3][5]. While it maintains a healthy program expense ratio of 74.3%, the direct impact on beneficiaries is categorized as capacity building, which often requires longer-term qualitative assessment [1][2]."
+        "alignment": "Pillars Fund offers a medium fit for donors interested in humanitarian and cultural advocacy, providing various ways to contribute through sadaqah and general charitable giving [6]. Its mission to amplify Muslim voices addresses a critical need for representation, though its specific focus may differ from traditional direct-aid organizations [3].",
+        "impact": "The organization demonstrates a commitment to capacity building by investing in multimedia contributions and supporting cohorts of fellows through its Artist Fellowship and storytelling programs [4][5]. Financially, the charity maintains a program expense ratio of 74.3%, ensuring the majority of its $2,398,957 revenue directly supports its initiatives [2]."
       },
-      "headline": "Pillars Fund empowers American Muslim communities by strategically investing in storytelling and leadership to reshape national narratives.",
+      "headline": "Pillars Fund empowers American Muslim communities by strategically investing in nonprofit organizations and creative storytellers to amplify their civic and cultural contributions.",
       "strengths": [
-        "Maintains a strong program expense ratio of 74.3%, ensuring the majority of funds support direct initiatives [1]",
-        "Robust financial stability with 20.7 months of working capital available [1]",
-        "Diverse programming including the Pillars Artist Fellowship and Storytelling Grants to support Muslim creators [3][4]"
+        "Strong financial stability with 20.7 months of working capital available to sustain operations.",
+        "High programmatic focus with a program expense ratio of 74.3%.",
+        "Diverse programming ranging from storytelling grants to professional artist fellowships."
       ],
-      "summary": "Pillars Fund is a nonprofit organization dedicated to amplifying the talents of American Muslims and strengthening their relations with all Americans through strategic grantmaking [1][3]. In the most recent fiscal period, the organization reported a total revenue of $2,398,957 to support its mission-driven initiatives [2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "amplifying the talents of American Muslims",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "Pillars Fund empowers American Muslim communities by strategically investing in storytelling and leadership",
-          "source_name": "Charity Navigator - Pillars Fund",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/810983087"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $2,398,957",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total Revenue: $2,398,957",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/810983087"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "invested and leveraged $30 million",
-          "confidence": 0.95,
-          "id": "[5]",
-          "quote": "Funds invested and leveraged: 30000000",
-          "source_name": "Operations Associate 2026",
-          "source_type": "website",
-          "source_url": "https://www.pillarsfund.org/s/Operations-Associate2026.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of -53.4%",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Revenue: [11056329, 3855611, 2398957]",
-          "source_name": "Internal Financial Analysis",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/810983087"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 74.3%",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Program Expense Ratio: 74.3%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/810983087"
-        }
-      ],
-      "amal_score_rationale": "With an overall score of 54/100, Pillars Fund demonstrates solid financial health and specialized programming, though its impact score is moderated by its focus on capacity building rather than direct service.",
-      "amal_scores": {
-        "amal_score": 54,
-        "confidence_scores": {
-          "alignment": 30,
-          "data_confidence": 0.7,
-          "impact": 25
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Fundraising Efficiency",
-          "citation_ids": [
-            "[1]",
-            "[16]"
-          ],
-          "context": "The organization spends <cite id=\"16\">$0.31 to raise every $1</cite>, which is higher than the peer median and suggests room for optimizing donor acquisition costs."
-        },
-        {
-          "area": "Impact Measurement",
-          "citation_ids": [
-            "[1]",
-            "[17]"
-          ],
-          "context": "While the theory of change is clear, there is <cite id=\"17\">no verified third-party impact evaluation</cite> or long-term outcome tracking currently available."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": null,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "BBB assessment data is not currently available for this organization."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[1]",
-          "[7]",
-          "[10]",
-          "[17]"
-        ],
-        "mitigation_notes": "The organization's high level of <cite id=\"10\">working capital (20.7 months)</cite> acts as a significant buffer against revenue fluctuations.",
-        "risk_factors": [
-          "<cite id=\"7\">3-year revenue CAGR of -53.4%</cite> indicates potential sustainability challenges.",
-          "<cite id=\"17\">Lack of RCT-level evidence</cite> for social outcomes."
-        ],
-        "summary": "The primary concerns involve <cite id=\"7\">significant revenue volatility</cite> and a lack of external evidence regarding the long-term effectiveness of narrative-change work."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 12,
-          "rating": 8,
-          "website": 5
-        },
-        "high_confidence_count": 22,
-        "total_count": 25,
-        "unique_sources": 6
-      },
-      "confidence": {
-        "data_freshness": "Data current through 2023 tax year",
-        "data_gaps": [
-          "Missing beneficiary data",
-          "No external impact evaluation"
-        ],
-        "level": "HIGH",
-        "notes": "Financial data is highly reliable; impact data is limited to outputs rather than outcomes.",
-        "score": 70,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Pillars Fund Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 70,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing specific beneficiary counts",
-          "No third-party impact evaluation"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 25,
-        "unique_sources": 6,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[1]",
-            "[22]",
-            "[23]"
-          ],
-          "explanation": "",
-          "improvement": "Alignment could be strengthened by <cite id=\"23\">expanding services to underserved populations</cite> in regions with limited existing nonprofit coverage."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]",
-            "[2]",
-            "[18]",
-            "[19]",
-            "[20]"
-          ],
-          "explanation": "Pillars Fund demonstrates transparency by maintaining a <cite id=\"18\">Bronze Seal of Transparency from Candid</cite> and providing <cite id=\"2\">full Form 990 disclosures</cite>. The board consists of <cite id=\"19\">9 members</cite>, with <cite id=\"20\">88% serving as independent members</cite>, ensuring strong oversight.",
-          "improvement": "To enhance credibility, the organization could work toward a higher Candid seal and <cite id=\"17\">commission an independent evaluation</cite> of its grantmaking impact."
-        },
-        "impact": {
-          "citation_ids": [
-            "[1]",
-            "[8]",
-            "[21]"
-          ],
-          "explanation": "The organization is highly efficient with its current resources, maintaining a <cite id=\"8\">74.3% program ratio</cite>. However, the impact score is tempered by <cite id=\"21\">missing beneficiary data</cite> which prevents a full cost-per-beneficiary analysis.",
-          "improvement": "The fund should <cite id=\"21\">track and report specific beneficiary counts</cite> to enable more rigorous cost-effectiveness analysis for donors."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "evidence_rigor": "Grade C - Theory of change documented but outcomes unverified",
-        "geographic_focus": [
-          "United States"
-        ],
-        "giving_style": "Strategic Grantmaking",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fi sabilillah"
-        ],
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.04,
-        "annual_revenue": 2398957,
-        "citation_ids": [
-          "[2]",
-          "[7]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0.31,
-        "industry_program_ratio": 0.75,
-        "peer_count": 58,
-        "peer_program_ratio_median": 0.897,
-        "program_expense_ratio": 0.7426,
-        "reserves_months": 20.7,
-        "revenue_cagr_3yr": -53.4,
-        "transparency_score": 50,
-        "working_capital_months": 20.7,
-        "yearly_financials": [
-          {
-            "expenses": 4783807,
-            "net_assets": 8243803,
-            "revenue": 2398957,
-            "year": 2023
-          },
-          {
-            "expenses": 4338145,
-            "net_assets": 10628653,
-            "revenue": 3855611,
-            "year": 2022
-          },
-          {
-            "expenses": 2415365,
-            "net_assets": 11111187,
-            "revenue": 11056329,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "domestic_grants": 2425000,
-        "foreign_grants": 0,
-        "grant_count": 45,
-        "grant_strategy": "Strategic investment in domestic nonprofit organizations and individual creators.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "United States"
-        ],
-        "top_recipients": [
-          "Inner City Muslim Action Net ($155K)",
-          "Detroit Revival Engaging Mus ($145K)",
-          "Defending Rights and Dissent ($135K)"
-        ],
-        "total_grants": 2425000
-      },
-      "headline": "Pillars Fund empowers American Muslim communities by strategically investing in storytelling and leadership to reshape national narratives.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value long-term cultural influence and want to invest in the intellectual and creative infrastructure of the American Muslim community.",
-        "citation_ids": [
-          "[1]",
-          "[7]"
-        ],
-        "donor_motivations": [
-          "Want to support Muslim representation in media and arts",
-          "Value strategic grantmaking over direct service delivery",
-          "Interested in systemic narrative change within the US",
-          "Prefer supporting established domestic leadership"
-        ],
-        "giving_considerations": [
-          "Donations support a portfolio of other nonprofits and artists",
-          "Impact is measured in cultural shifts rather than immediate relief",
-          "Organization is currently navigating a period of revenue contraction"
-        ],
-        "not_ideal_for": "Donors seeking immediate emergency relief (e.g., food/medicine) or those requiring rigorous academic proof of impact."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[1]",
-          "[25]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "The organization has a <cite id=\"25\">clear theory of change</cite> but lacks independent evaluations to confirm long-term social outcomes.",
-        "external_evaluations": [],
-        "outcome_tracking_years": 0,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Pillars Fund creates impact by identifying high-potential Muslim leaders and organizations, providing them with capital and platforms to influence mainstream American culture.",
-        "why_evidence_matters": "Evidence ensures that investments in 'narrative change' actually result in reduced prejudice or increased community safety."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[7]"
-        ],
-        "founded_year": null,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": -53.4,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"7\">revenue decline of over 50%</cite>, the organization has significant capacity to absorb new funding to restore its grantmaking levels.",
-        "strategic_priorities": [
-          "Expand Artist Fellowships",
-          "Stabilize revenue base",
-          "Strengthen media partnerships"
-        ],
-        "years_operating": 10
-      },
-      "organizational_capacity": {
-        "board_size": 9,
-        "ceo_compensation": 257228,
-        "ceo_compensation_pct_revenue": 10.7,
-        "ceo_name": "Kashif Shaikh",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "United States",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 0.88,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 3,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[8]",
-          "[24]"
-        ],
-        "differentiator": "Pillars Fund maintains a <cite id=\"8\">74.3% program ratio</cite>, which is higher than the <cite id=\"24\">peer median of 89.7%</cite>.",
-        "peer_group": "Humanitarian & Advocacy",
-        "similar_orgs": [
-          "Muslim Foundation",
-          "IRUSA Waqf",
-          "Muslim Legal Fund of America"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar faith-based focus but different geographic scope",
-          "name": "Muslim Foundation"
-        },
-        {
-          "differentiator": "Focuses on legal advocacy rather than cultural storytelling",
-          "name": "Muslim Legal Fund of America"
-        },
-        {
-          "differentiator": "Endowment-based model for long-term sustainability",
-          "name": "IRUSA Waqf"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[2]",
-            "[8]"
-          ],
-          "detail": "The organization directs an impressive <cite id=\"8\">74.3% of its expenses toward programs</cite>, significantly exceeding the industry standard of 75%.",
-          "point": "High Programmatic Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[1]",
-            "[10]"
-          ],
-          "detail": "Pillars Fund maintains <cite id=\"10\">20.7 months of working capital</cite>, providing exceptional financial stability for its grantmaking commitments.",
-          "point": "Strong Liquidity and Reserves"
-        },
-        {
-          "citation_ids": [
-            "[2]",
-            "[11]"
-          ],
-          "detail": "In 2023, the fund distributed <cite id=\"11\">$2,425,000 in domestic grants</cite> across 45 different recipients to support community leadership.",
-          "point": "Strategic Grantmaking Reach"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Pillars Fund excels in its role as a specialized grantmaker, focusing on high-impact domestic distributions. Their 2023 tax filings reveal a commitment to local leadership, with top grants including <cite id=\"12\">$155,000 to the Inner City Muslim Action Network</cite> and <cite id=\"13\">$145,000 to Detroit Revival Engaging Muslims</cite>. Beyond financial support, their fellowship model provides tangible outcomes for creators, such as supporting a <cite id=\"14\">cohort of 6 fellows</cite> who contributed <cite id=\"15\">6 multimedia contributions</cite> to the cultural landscape. This dual approach of institutional grantmaking and individual talent development allows them to influence narrative change at multiple levels of society."
-      ],
-      "summary": "Pillars Fund is a strategic grantmaking organization dedicated to <cite id=\"1\">amplifying the talents of American Muslims</cite> and reshaping national narratives through leadership and storytelling. Operating as a <cite id=\"2\">philanthropic partner for Muslim creators</cite>, the organization reported <cite id=\"3\">total revenue of $2,398,957</cite> in the 2023 fiscal year. Their model focuses on <cite id=\"4\">investing in nonprofit organizations</cite> and individual fellows who challenge stereotypes and build community power. Pillars Fund has demonstrated significant financial scale, having <cite id=\"5\">invested and leveraged $30 million</cite> to date to support its mission. The organization's work is divided into key pillars, including <cite id=\"6\">Storytelling Grants and the Pillars Artist Fellowship</cite>, which provide direct support to Muslim artists and media professionals. Despite a <cite id=\"7\">3-year revenue CAGR of -53.4%</cite>, the organization maintains a <cite id=\"8\">program expense ratio of 74.3%</cite>, indicating that the vast majority of its current spending is directed toward its core grantmaking and fellowship activities. By focusing on <cite id=\"9\">capacity building and narrative change</cite>, Pillars Fund serves as a critical bridge between the American Muslim community and the broader media and philanthropic landscapes.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "Pillars Fund is a nonprofit organization dedicated to strengthening relations between American Muslims and the broader public through strategic grantmaking and artist fellowships [1][3]. In the most recent fiscal year, the organization reported a total revenue of $2,398,957 to support its mission of amplifying Muslim talents and leadership [2]."
     }
   }
 }

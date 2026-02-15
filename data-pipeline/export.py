@@ -12,10 +12,13 @@ Usage:
 """
 
 import argparse
+import hashlib
 import json
 import re
+import shutil
 import sys
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
@@ -41,7 +44,9 @@ from src.judges.schemas.verdict import Severity
 
 # Output directory
 WEBSITE_DATA_DIR = Path(__file__).parent.parent / "website" / "data"
+WEBSITE_PUBLIC_DATA_DIR = Path(__file__).parent.parent / "website" / "public" / "data"
 PILOT_CHARITIES_FILE = Path(__file__).parent / "pilot_charities.txt"
+UI_SIGNALS_CONFIG_FILE = Path(__file__).parent / "config" / "ui_signals.yaml"
 
 # Beacons to exclude (not really awards)
 # - "Profile Managed" = just means nonprofit manages their CN profile
@@ -50,6 +55,535 @@ EXCLUDED_BEACONS = {"Profile Managed", "Encompass Award"}
 
 # Valid tier values
 VALID_TIERS = {"baseline", "rich", "hidden"}
+_RISK_SIGNAL_ORDER = ("Strong", "Moderate", "Limited")
+
+
+def _load_ui_signals_config() -> dict[str, Any]:
+    """Load canonical qualitative UI signal policy from YAML."""
+    if not UI_SIGNALS_CONFIG_FILE.exists():
+        raise FileNotFoundError(f"Missing UI signals config: {UI_SIGNALS_CONFIG_FILE}")
+    with open(UI_SIGNALS_CONFIG_FILE) as f:
+        cfg = yaml.safe_load(f)
+    if not isinstance(cfg, dict):
+        raise ValueError("ui_signals.yaml must contain a top-level mapping")
+    return cfg
+
+
+def _compute_config_hash(cfg: dict[str, Any]) -> str:
+    """Compute deterministic config hash for auditability."""
+    canonical = json.dumps(cfg, sort_keys=True, separators=(",", ":"))
+    return f"sha256:{hashlib.sha256(canonical.encode('utf-8')).hexdigest()}"
+
+
+def _mirror_export_to_public_data(output_dir: Path) -> None:
+    """Mirror website/data exports to website/public/data for the frontend runtime."""
+    if output_dir.resolve() != WEBSITE_DATA_DIR.resolve():
+        return
+    WEBSITE_PUBLIC_DATA_DIR.mkdir(parents=True, exist_ok=True)
+    shutil.copytree(output_dir, WEBSITE_PUBLIC_DATA_DIR, dirs_exist_ok=True)
+
+
+def _safe_upper(value: Any) -> str | None:
+    if isinstance(value, str):
+        cleaned = value.strip()
+        return cleaned.upper() if cleaned else None
+    return None
+
+
+def _normalize_confidence_badge(raw_badge: Any) -> str:
+    badge = _safe_upper(raw_badge)
+    if badge in {"HIGH", "MEDIUM", "LOW"}:
+        return badge
+    if badge in {"MODERATE", "MID"}:
+        return "MEDIUM"
+    if badge in {"INSUFFICIENT_DATA", "NONE", "UNKNOWN", None}:
+        return "LOW"
+    return "LOW"
+
+
+def _extract_score_details(evaluation: dict | None) -> dict[str, Any]:
+    if not evaluation:
+        return {}
+    score_details = evaluation.get("score_details")
+    return score_details if isinstance(score_details, dict) else {}
+
+
+def _extract_component(
+    score_details: dict[str, Any], dimension: str, candidates: tuple[str, ...]
+) -> dict[str, Any] | None:
+    details = score_details.get(dimension)
+    if not isinstance(details, dict):
+        return None
+    components = details.get("components")
+    if not isinstance(components, list):
+        return None
+    candidate_lc = {c.lower() for c in candidates}
+    for component in components:
+        if not isinstance(component, dict):
+            continue
+        name = component.get("name")
+        if isinstance(name, str) and name.strip().lower() in candidate_lc:
+            return component
+    return None
+
+
+def _component_ratio(component: dict[str, Any] | None) -> float | None:
+    if not isinstance(component, dict):
+        return None
+    scored = component.get("scored")
+    possible = component.get("possible")
+    try:
+        scored_f = float(scored)
+        possible_f = float(possible)
+    except (TypeError, ValueError):
+        return None
+    if possible_f <= 0:
+        return None
+    return max(0.0, min(1.0, scored_f / possible_f))
+
+
+def _extract_third_party_evaluated(charity_data: dict | None, score_details: dict[str, Any]) -> bool:
+    if isinstance(charity_data, dict) and charity_data.get("third_party_evaluated") is True:
+        return True
+    evidence = score_details.get("evidence")
+    if isinstance(evidence, dict) and evidence.get("third_party_evaluated") is True:
+        return True
+    impact_ev = _extract_component(score_details, "impact", ("Evidence & Outcomes",))
+    if isinstance(impact_ev, dict):
+        ev = impact_ev.get("evidence")
+        if isinstance(ev, str) and "VERIFIED" in ev.upper():
+            return True
+    return False
+
+
+def _extract_alignment_score(evaluation: dict | None, score_details: dict[str, Any]) -> float:
+    alignment = score_details.get("alignment")
+    if isinstance(alignment, dict):
+        score = alignment.get("score")
+        if isinstance(score, (int, float)):
+            return float(score)
+    confidence_scores = evaluation.get("confidence_scores") if isinstance(evaluation, dict) else None
+    if isinstance(confidence_scores, dict):
+        score = confidence_scores.get("alignment")
+        if isinstance(score, (int, float)):
+            return float(score)
+    return 0.0
+
+
+def _extract_donor_fit_level(score_details: dict[str, Any]) -> str:
+    alignment = score_details.get("alignment")
+    if isinstance(alignment, dict):
+        level = _safe_upper(alignment.get("muslim_donor_fit_level"))
+        if level in {"HIGH", "MODERATE", "LOW"}:
+            return level
+        if level in {"MEDIUM", "MID"}:
+            return "MODERATE"
+    return "LOW"
+
+
+def _extract_risk_deduction(score_details: dict[str, Any]) -> float:
+    if isinstance(score_details.get("risk_deduction"), (int, float)):
+        return float(score_details["risk_deduction"])
+    risks = score_details.get("risks")
+    if isinstance(risks, dict) and isinstance(risks.get("total_deduction"), (int, float)):
+        return float(risks["total_deduction"])
+    return 0.0
+
+
+def _extract_governance_ratio(score_details: dict[str, Any]) -> float | None:
+    governance = _extract_component(score_details, "impact", ("Governance",))
+    ratio = _component_ratio(governance)
+    if ratio is not None:
+        return ratio
+    credibility = _extract_component(score_details, "credibility", ("Governance",))
+    return _component_ratio(credibility)
+
+
+def _derive_archetype_label(archetype_code: str | None, cfg: dict[str, Any]) -> str:
+    default = "General Profile"
+    if not archetype_code:
+        return default
+    mapping = cfg.get("archetype_labels")
+    if isinstance(mapping, dict):
+        label = mapping.get(archetype_code)
+        if isinstance(label, str) and label.strip():
+            return label
+    return archetype_code.replace("_", " ").title()
+
+
+def _derive_evidence_signal_state(score_details: dict[str, Any], cfg: dict[str, Any]) -> str:
+    signal_cfg = (cfg.get("signals") or {}).get("evidence", {})
+    strong_ratio = float(signal_cfg.get("strong_ratio", 0.70))
+    moderate_ratio_min = float(signal_cfg.get("moderate_ratio_min", 0.40))
+    strong_grades = {str(g).upper() for g in signal_cfg.get("strong_grades", ["A", "B"])}
+    moderate_grades = {str(g).upper() for g in signal_cfg.get("moderate_grades", ["C"])}
+
+    legacy_ev = score_details.get("evidence")
+    if isinstance(legacy_ev, dict):
+        grade = _safe_upper(legacy_ev.get("evidence_grade"))
+        if grade in strong_grades:
+            return "Strong"
+        if grade in moderate_grades:
+            return "Moderate"
+        if grade:
+            return "Limited"
+
+    evidence_component = _extract_component(score_details, "impact", ("Evidence & Outcomes",))
+    ratio = _component_ratio(evidence_component)
+    if ratio is None:
+        return "Limited"
+    if ratio >= strong_ratio:
+        return "Strong"
+    if ratio >= moderate_ratio_min:
+        return "Moderate"
+    return "Limited"
+
+
+def _derive_financial_signal_state(score_details: dict[str, Any], cfg: dict[str, Any]) -> str:
+    signal_cfg = (cfg.get("signals") or {}).get("financial_health", {})
+    strong_min = float(signal_cfg.get("strong_min", 0.70))
+    moderate_min = float(signal_cfg.get("moderate_min", 0.40))
+
+    financial = _component_ratio(_extract_component(score_details, "impact", ("Financial Health",)))
+    program = _component_ratio(_extract_component(score_details, "impact", ("Program Ratio",)))
+
+    if financial is None or program is None:
+        return "Limited"
+    if financial >= strong_min and program >= strong_min:
+        return "Strong"
+    if financial < moderate_min or program < moderate_min:
+        return "Limited"
+    return "Moderate"
+
+
+def _derive_donor_fit_signal_state(evaluation: dict | None, score_details: dict[str, Any], cfg: dict[str, Any]) -> str:
+    signal_cfg = (cfg.get("signals") or {}).get("donor_fit", {})
+    strong_alignment_min = float(signal_cfg.get("strong_alignment_min", 35))
+    moderate_alignment_min = float(signal_cfg.get("moderate_alignment_min", 25))
+
+    donor_fit = _extract_donor_fit_level(score_details)
+    alignment = _extract_alignment_score(evaluation, score_details)
+
+    if donor_fit == "HIGH" and alignment >= strong_alignment_min:
+        return "Strong"
+    if donor_fit == "MODERATE" or alignment >= moderate_alignment_min:
+        return "Moderate"
+    return "Limited"
+
+
+def _derive_risk_signal_state(score_details: dict[str, Any], cfg: dict[str, Any]) -> str:
+    risk_cfg = (cfg.get("signals") or {}).get("risk", {})
+    governance_strong_min = float(risk_cfg.get("governance_strong_min", 0.60))
+    governance_moderate_min = float(risk_cfg.get("governance_moderate_min", 0.40))
+    deduction_moderate_min = float(risk_cfg.get("deduction_moderate_min", -3))
+    deduction_moderate_max = float(risk_cfg.get("deduction_moderate_max", -1))
+    deduction_limited_max = float(risk_cfg.get("deduction_limited_max", -4))
+
+    deduction = _extract_risk_deduction(score_details)
+    governance_ratio = _extract_governance_ratio(score_details)
+
+    if deduction == 0 and governance_ratio is not None and governance_ratio >= governance_strong_min:
+        return "Strong"
+    if deduction <= deduction_limited_max or (governance_ratio is not None and governance_ratio < governance_moderate_min):
+        return "Limited"
+    if deduction_moderate_min <= deduction <= deduction_moderate_max or (
+        governance_ratio is not None and governance_moderate_min <= governance_ratio < governance_strong_min
+    ):
+        return "Moderate"
+    return "Moderate"
+
+
+def _risk_level_from_signal(risk_signal: str) -> str:
+    if risk_signal == "Strong":
+        return "LOW"
+    if risk_signal == "Moderate":
+        return "MODERATE"
+    return "HIGH"
+
+
+def _derive_evidence_stage(
+    confidence_badge: str,
+    founded_year: int | None,
+    third_party_evaluated: bool,
+    evaluation_track: str | None,
+    evidence_signal: str,
+) -> str:
+    current_year = datetime.now(UTC).year
+    years_operating = current_year - founded_year if isinstance(founded_year, int) and founded_year > 0 else None
+
+    if confidence_badge == "HIGH" and bool(years_operating and years_operating >= 10) and third_party_evaluated:
+        return "Verified"
+    if confidence_badge == "HIGH" or (confidence_badge == "MEDIUM" and evidence_signal == "Strong"):
+        return "Established"
+    if confidence_badge == "MEDIUM":
+        return "Building"
+    if confidence_badge == "LOW" or _safe_upper(evaluation_track) == "NEW_ORG":
+        return "Early"
+    return "Early"
+
+
+def _derive_recommendation_cue(score: float, confidence_badge: str, risk_level: str, cfg: dict[str, Any]) -> str:
+    cue_cfg = cfg.get("recommendation_cue", {})
+    limited_max = float((cue_cfg.get("limited_match") or {}).get("score_max_exclusive", 30))
+    strong_min = float((cue_cfg.get("strong_match") or {}).get("score_min", 75))
+    good_min = float((cue_cfg.get("good_match") or {}).get("score_min", 60))
+
+    # Precedence: Limited -> Strong -> Good -> Mixed Signals
+    if score < limited_max or (confidence_badge == "LOW" and risk_level == "HIGH"):
+        return "Limited Match"
+    if score >= strong_min and confidence_badge == "HIGH" and risk_level == "LOW":
+        return "Strong Match"
+    if score >= good_min and confidence_badge in {"HIGH", "MEDIUM"} and risk_level in {"LOW", "MODERATE"}:
+        return "Good Match"
+    return "Mixed Signals"
+
+
+def _derive_assessment_label(cue: str, stage: str) -> str:
+    if cue == "Limited Match" and stage in {"Verified", "Established"}:
+        return "Well Documented Low Score"
+    if cue == "Strong Match" and stage in {"Verified", "Established"}:
+        return "High Conviction"
+    if cue == "Good Match" and stage in {"Verified", "Established", "Building"}:
+        return "Promising"
+    if cue == "Mixed Signals":
+        return "Context Dependent"
+    return "Limited Basis"
+
+
+def _build_recommendation_rationale(cue: str, signals: dict[str, str], stage: str) -> str:
+    if cue == "Strong Match":
+        return "Strong donor fit, low risk profile, and credible supporting evidence for outcomes."
+    if cue == "Good Match":
+        return "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places."
+    if cue == "Limited Match":
+        if stage in {"Verified", "Established"}:
+            return "Evidence quality is well documented, but results are weak on the current rubric dimensions."
+        return "Limited match due to weaker results and/or higher uncertainty; review methodology details before deciding."
+    return "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding."
+
+
+def _derive_ui_signals_v1(
+    charity: dict[str, Any], charity_data: dict | None, evaluation: dict | None, cfg: dict[str, Any], config_hash: str
+) -> dict[str, Any] | None:
+    """Derive donor-facing qualitative signals from existing scored fields."""
+    if not evaluation:
+        return None
+
+    score_details = _extract_score_details(evaluation)
+    score = float(evaluation.get("amal_score") or 0)
+    confidence_badge = _normalize_confidence_badge(
+        (score_details.get("data_confidence") or {}).get("badge")
+        or evaluation.get("confidence_tier")
+    )
+
+    archetype_code = _safe_upper(_extract_archetype(charity_data) or _extract_rubric_archetype(evaluation))
+    archetype_label = _derive_archetype_label(archetype_code, cfg)
+
+    signal_states = {
+        "evidence": _derive_evidence_signal_state(score_details, cfg),
+        "financial_health": _derive_financial_signal_state(score_details, cfg),
+        "donor_fit": _derive_donor_fit_signal_state(evaluation, score_details, cfg),
+        "risk": _derive_risk_signal_state(score_details, cfg),
+    }
+    risk_level = _risk_level_from_signal(signal_states["risk"])
+
+    founded_year = charity_data.get("founded_year") if isinstance(charity_data, dict) else None
+    evaluation_track = charity_data.get("evaluation_track") if isinstance(charity_data, dict) else None
+    third_party_evaluated = _extract_third_party_evaluated(charity_data, score_details)
+    evidence_stage = _derive_evidence_stage(
+        confidence_badge=confidence_badge,
+        founded_year=founded_year if isinstance(founded_year, int) else None,
+        third_party_evaluated=third_party_evaluated,
+        evaluation_track=evaluation_track if isinstance(evaluation_track, str) else None,
+        evidence_signal=signal_states["evidence"],
+    )
+
+    recommendation_cue = _derive_recommendation_cue(score, confidence_badge, risk_level, cfg)
+    assessment_label = _derive_assessment_label(recommendation_cue, evidence_stage)
+    recommendation_rationale = _build_recommendation_rationale(recommendation_cue, signal_states, evidence_stage)
+
+    fallback_reasons: list[str] = []
+    if not score_details:
+        fallback_reasons.append("missing_score_details")
+    if not archetype_code:
+        fallback_reasons.append("missing_archetype")
+    if _extract_governance_ratio(score_details) is None:
+        fallback_reasons.append("missing_governance_component")
+
+    return {
+        "schema_version": str(cfg.get("schema_version", "1.0.0")),
+        "config_version": str(cfg.get("config_version", "unknown")),
+        "config_hash": config_hash,
+        "assessment_label": assessment_label,
+        "archetype_code": archetype_code,
+        "archetype_label": archetype_label,
+        "evidence_stage": evidence_stage,
+        "signal_states": signal_states,
+        "recommendation_cue": recommendation_cue,
+        "recommendation_rationale": recommendation_rationale,
+        "used_fallback": len(fallback_reasons) > 0,
+        "fallback_reasons": fallback_reasons or None,
+    }
+
+
+def _safe_pct(numerator: int, denominator: int) -> float:
+    if denominator <= 0:
+        return 0.0
+    return round((numerator / denominator) * 100.0, 2)
+
+
+def _build_calibration_report(
+    summaries: list[dict[str, Any]], cfg: dict[str, Any], config_hash: str, source_commit: str | None
+) -> dict[str, Any]:
+    """Build deterministic calibration report from exported summaries."""
+    total = len(summaries)
+    cue_dist: dict[str, int] = {}
+    stage_dist: dict[str, int] = {}
+    label_dist: dict[str, int] = {}
+    signal_dist: dict[str, dict[str, int]] = {
+        "evidence": {},
+        "financial_health": {},
+        "donor_fit": {},
+        "risk": {},
+    }
+    by_track: dict[str, dict[str, int]] = {}
+    missing_signals = {k: 0 for k in signal_dist}
+    fallback_count = 0
+    near_threshold_count = 0
+    near_threshold_bounds = (30.0, 60.0, 75.0)
+
+    for summary in summaries:
+        ui = summary.get("ui_signals_v1")
+        if not isinstance(ui, dict):
+            fallback_count += 1
+            continue
+
+        if ui.get("used_fallback") is True:
+            fallback_count += 1
+
+        cue = ui.get("recommendation_cue")
+        stage = ui.get("evidence_stage")
+        label = ui.get("assessment_label")
+
+        if isinstance(cue, str):
+            cue_dist[cue] = cue_dist.get(cue, 0) + 1
+        if isinstance(stage, str):
+            stage_dist[stage] = stage_dist.get(stage, 0) + 1
+        if isinstance(label, str):
+            label_dist[label] = label_dist.get(label, 0) + 1
+
+        states = ui.get("signal_states")
+        if isinstance(states, dict):
+            for key in signal_dist:
+                value = states.get(key)
+                if isinstance(value, str):
+                    signal_dist[key][value] = signal_dist[key].get(value, 0) + 1
+                else:
+                    missing_signals[key] += 1
+        else:
+            for key in signal_dist:
+                missing_signals[key] += 1
+
+        track = summary.get("evaluationTrack") if isinstance(summary.get("evaluationTrack"), str) else "UNKNOWN"
+        if track not in by_track:
+            by_track[track] = {"count": 0}
+        by_track[track]["count"] += 1
+        if isinstance(cue, str):
+            key = f"cue::{cue}"
+            by_track[track][key] = by_track[track].get(key, 0) + 1
+        if isinstance(stage, str):
+            key = f"stage::{stage}"
+            by_track[track][key] = by_track[track].get(key, 0) + 1
+
+        score = summary.get("amalScore")
+        if isinstance(score, (int, float)) and any(abs(float(score) - b) <= 2 for b in near_threshold_bounds):
+            near_threshold_count += 1
+
+    fallback_rate = _safe_pct(fallback_count, total)
+    near_threshold_rate = _safe_pct(near_threshold_count, total)
+
+    calibration_cfg = (cfg.get("calibration") or {}).get("warning_thresholds", {})
+    fallback_warn = float(calibration_cfg.get("fallback_rate_warn_pct", 5))
+    cue_skew_warn = float(calibration_cfg.get("cue_skew_warn_pct", 60))
+    missing_warn = float(calibration_cfg.get("missing_signal_warn_pct", 3))
+    near_threshold_warn = float(calibration_cfg.get("near_threshold_warn_pct", 20))
+    stage_concentration_warn = float(calibration_cfg.get("stage_concentration_warn_pct", 50))
+    hard_fail_cfg = calibration_cfg.get("hard_fail", {})
+    fallback_hard_fail = float(hard_fail_cfg.get("fallback_rate_pct", 20))
+    missing_hard_fail = float(hard_fail_cfg.get("missing_signal_pct", 10))
+
+    warnings: list[str] = []
+    if fallback_rate > fallback_warn:
+        warnings.append(f"High fallback rate — {fallback_count} charities using client-side derivation")
+
+    for cue, count in cue_dist.items():
+        pct = _safe_pct(count, total)
+        if pct > cue_skew_warn:
+            warnings.append(f"Cue skew — '{cue}' assigned to {pct}% of charities")
+
+    for signal_name, missing in missing_signals.items():
+        pct = _safe_pct(missing, total)
+        if pct > missing_warn:
+            warnings.append(f"Missing signal — '{signal_name}' absent for {missing} charities")
+
+    if near_threshold_rate > near_threshold_warn:
+        warnings.append(f"Boundary clustering — {near_threshold_rate}% near cue thresholds")
+
+    for stage, count in stage_dist.items():
+        pct = _safe_pct(count, total)
+        if pct > stage_concentration_warn:
+            warnings.append(f"Stage concentration — '{stage}' covers {pct}% of charities")
+
+    hard_fail_reasons: list[str] = []
+    if fallback_rate > fallback_hard_fail:
+        hard_fail_reasons.append(
+            f"Fallback rate {fallback_rate}% exceeds hard limit {fallback_hard_fail}%"
+        )
+    for signal_name, missing in missing_signals.items():
+        pct = _safe_pct(missing, total)
+        if pct > missing_hard_fail:
+            hard_fail_reasons.append(
+                f"Missing signal {signal_name} rate {pct}% exceeds hard limit {missing_hard_fail}%"
+            )
+
+    return {
+        "metadata": {
+            "generated_at": datetime.now(UTC).isoformat(),
+            "dolt_commit": source_commit,
+            "schema_version": str(cfg.get("schema_version", "1.0.0")),
+            "config_version": str(cfg.get("config_version", "unknown")),
+            "config_hash": config_hash,
+            "total_charities": total,
+        },
+        "distributions": {
+            "assessment_label": label_dist,
+            "evidence_stage": stage_dist,
+            "recommendation_cue": cue_dist,
+            "signal_states": signal_dist,
+        },
+        "by_evaluation_track": by_track,
+        "fallback": {
+            "count": fallback_count,
+            "rate_pct": fallback_rate,
+        },
+        "missing_signals": {
+            key: {
+                "count": value,
+                "rate_pct": _safe_pct(value, total),
+            }
+            for key, value in missing_signals.items()
+        },
+        "near_threshold": {
+            "count": near_threshold_count,
+            "rate_pct": near_threshold_rate,
+            "boundaries": list(near_threshold_bounds),
+        },
+        "warnings": warnings,
+        "guardrail_status": {
+            "hard_fail": len(hard_fail_reasons) > 0,
+            "reasons": hard_fail_reasons,
+        },
+    }
 
 
 def run_export_quality_check(summary: dict[str, Any]) -> tuple[bool, list[dict]]:
@@ -294,7 +828,8 @@ def _normalize_source_attribution_urls(source_attribution: Any, fallback_website
 def _extract_pillar_scores(evaluation: dict | None) -> dict[str, int | float] | None:
     """Extract pillar scores from score_details for visualization.
 
-    2-dimension framework: impact/50, alignment/50, plus dataConfidence (0.0-1.0).
+    Default 2-dimension framework: impact/50, alignment/50, plus dataConfidence (0.0-1.0).
+    Legacy records may also include credibility/50.
     """
     if not evaluation:
         return None
@@ -313,6 +848,13 @@ def _extract_pillar_scores(evaluation: dict | None) -> dict[str, int | float] | 
         "impact": impact,
         "alignment": alignment,
     }
+    credibility = score_details.get("credibility", {}).get("score")
+    if credibility is None:
+        confidence_scores = evaluation.get("confidence_scores")
+        if isinstance(confidence_scores, dict):
+            credibility = confidence_scores.get("credibility")
+    if isinstance(credibility, (int, float)):
+        result["credibility"] = float(credibility)
     if data_confidence is not None:
         result["dataConfidence"] = data_confidence
     return result
@@ -334,6 +876,7 @@ def build_charity_summary(
     evaluation: dict | None,
     raw_sources: dict[str, dict] | None = None,
     hide_from_curated: bool = False,
+    ui_signals_v1: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Build summary record for charities.json."""
 
@@ -429,6 +972,7 @@ def build_charity_summary(
         "asnafServed": (charity_data.get("zakat_metadata") or {}).get("asnaf_categories_served")
         if charity_data
         else None,
+        "ui_signals_v1": ui_signals_v1,
     }
 
 
@@ -438,6 +982,7 @@ def build_charity_detail(
     evaluation: dict | None,
     raw_sources: dict[str, dict],
     hide_from_curated: bool = False,
+    ui_signals_v1: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Build detailed record for individual charity JSON."""
 
@@ -629,6 +1174,7 @@ def build_charity_detail(
         "zakatClaimEvidence": _extract_zakat_claim_evidence(charity_data),
         # P2: Strategic archetype (e.g., RESILIENCE, LEVERAGE)
         "archetype": _extract_archetype(charity_data),
+        "ui_signals_v1": ui_signals_v1,
     }
 
     # Add AMAL evaluation if available
@@ -661,6 +1207,8 @@ def export_charity(
     data_repo: CharityDataRepository,
     eval_repo: EvaluationRepository,
     output_dir: Path,
+    ui_signals_config: dict[str, Any],
+    config_hash: str,
     hide_from_curated: bool = False,
     pilot_name: str | None = None,
 ) -> dict[str, Any]:
@@ -684,6 +1232,9 @@ def export_charity(
     # Get evaluation
     evaluation = eval_repo.get(ein)
 
+    # Build deterministic qualitative UI signals from scored fields
+    ui_signals_v1 = _derive_ui_signals_v1(charity, charity_data, evaluation, ui_signals_config, config_hash)
+
     # Get raw sources for detail view
     raw_data = raw_repo.get_for_charity(ein)
     raw_sources: dict[str, dict] = {}
@@ -692,10 +1243,24 @@ def export_charity(
             raw_sources[rd["source"]] = rd["parsed_json"]
 
     # Build summary
-    summary = build_charity_summary(charity, charity_data, evaluation, raw_sources, hide_from_curated)
+    summary = build_charity_summary(
+        charity,
+        charity_data,
+        evaluation,
+        raw_sources,
+        hide_from_curated,
+        ui_signals_v1=ui_signals_v1,
+    )
 
     # Build detail
-    detail = build_charity_detail(charity, charity_data, evaluation, raw_sources, hide_from_curated)
+    detail = build_charity_detail(
+        charity,
+        charity_data,
+        evaluation,
+        raw_sources,
+        hide_from_curated,
+        ui_signals_v1=ui_signals_v1,
+    )
 
     # Write individual charity file
     charities_dir = output_dir / "charities"
@@ -1133,10 +1698,13 @@ def main():
     raw_repo = RawDataRepository()
     data_repo = CharityDataRepository()
     eval_repo = EvaluationRepository()
+    ui_signals_config = _load_ui_signals_config()
+    config_hash = _compute_config_hash(ui_signals_config)
 
     print(f"\n{'=' * 60}")
     print(f"EXPORT: {len(eins)} CHARITIES")
     print(f"  Output: {output_dir}")
+    print(f"  UI config: v{ui_signals_config.get('config_version', 'unknown')} ({config_hash[:20]}...)")
     print(f"{'=' * 60}\n")
 
     # Export each charity
@@ -1154,6 +1722,8 @@ def main():
             data_repo,
             eval_repo,
             output_dir,
+            ui_signals_config=ui_signals_config,
+            config_hash=config_hash,
             hide_from_curated=flags.hide_from_curated,
             pilot_name=flags.name,
         )
@@ -1193,10 +1763,28 @@ def main():
             default=str,
         )
 
+    # Write calibration report
+    calibration_report = _build_calibration_report(
+        summaries=summaries,
+        cfg=ui_signals_config,
+        config_hash=config_hash,
+        source_commit=source_commit,
+    )
+    calibration_file = output_dir / "calibration-report.json"
+    with open(calibration_file, "w") as f:
+        json.dump(calibration_report, f, indent=2, default=str)
+
     # Export prompts for transparency page
     print("\n  Exporting prompts...")
     prompts_result = export_prompts(output_dir)
     print(f"    Exported {prompts_result['exported']} prompts to {prompts_result['output_dir']}")
+    _mirror_export_to_public_data(output_dir)
+    if output_dir.resolve() == WEBSITE_DATA_DIR.resolve():
+        print(f"  Synced website runtime data to {WEBSITE_PUBLIC_DATA_DIR}")
+    if calibration_report.get("warnings"):
+        print(f"  Calibration warnings: {len(calibration_report['warnings'])}")
+        for warning in calibration_report["warnings"]:
+            print(f"    - {warning}")
 
     # Summary
     print(f"\n{'=' * 60}")
@@ -1211,8 +1799,15 @@ def main():
             print(f"    {ein}: {error}")
     print("\n  Output files:")
     print(f"    {charities_file}")
+    print(f"    {calibration_file}")
     print(f"    {output_dir}/charities/charity-*.json")
     print(f"    {output_dir}/prompts/*.json")
+
+    if calibration_report.get("guardrail_status", {}).get("hard_fail"):
+        print("\n  HARD FAIL: calibration guardrails breached")
+        for reason in calibration_report.get("guardrail_status", {}).get("reasons", []):
+            print(f"    - {reason}")
+        sys.exit(1)
 
     if failed_charities:
         sys.exit(1)

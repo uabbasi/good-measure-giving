@@ -2,7 +2,7 @@
   "id": "20-0310701",
   "ein": "20-0310701",
   "name": "Al-Furqaan Foundation",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "To inform and educate all the residents of the United States the truth about Islam and its core principals and to counter the negative media information...",
   "programs": [
     "Furqaan Project",
@@ -47,7 +47,11 @@
     "netAssets": 5332724,
     "workingCapitalMonths": "25.10"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 2,
+    "independentBoardMembers": null,
+    "ceoCompensation": 32495
+  },
   "targeting": null,
   "trustSignals": {
     "hasAnnualReport": null,
@@ -68,7 +72,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:37:05",
+  "lastUpdated": "2026-02-14 19:35:37",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -168,17 +172,36 @@
     "Al-Furqaan Foundation explicitly states on its website, \"Donate your zakat today.\" Additionally, their donation process includes an option to \"Choose the number of boxes and select Zakat/Sadaqa.\" (Source: https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEBjWAK0zqWlugQIsksws1AKc8PoifQa4YsHLMt1pvHcY9K6i1-JJNxaT4C2M0WJTWpcdrdyL157Sq5LSPUAlND5RX6W9TdTWmDoo_eerQ0u-ouOS2NhA==)"
   ],
   "archetype": "DIRECT_SERVICE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "DIRECT_SERVICE",
+    "archetype_label": "Frontline Relief",
+    "evidence_stage": "Building",
+    "signal_states": {
+      "evidence": "Limited",
+      "financial_health": "Moderate",
+      "donor_fit": "Moderate",
+      "risk": "Limited"
+    },
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "20-0310701",
     "charity_name": "Al-Furqaan Foundation",
-    "amal_score": 36,
+    "amal_score": 40,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:28:32",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 31,
       "data_confidence": 0.6,
-      "impact": 12
+      "impact": 16
     },
     "score_details": {
       "alignment": {
@@ -265,12 +288,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 25.1 months (EXCESSIVE)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 4,
+            "evidence": "Working capital: 25.1 months (HIGH)",
+            "improvement_suggestion": "Document why reserves above your policy target are intentional (e.g., restrictions, volatility, planned commitments) and define deployment triggers.",
+            "improvement_value": 3,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 0,
+            "scored": 4,
             "status": "full"
           },
           {
@@ -313,42 +336,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 12/50",
+        "rationale": "Delivery: capacity building; Impact 16/50",
         "rubric_archetype": "COMMUNITY",
-        "score": 12
+        "score": 16
       },
-      "judge_issues": [
-        {
-          "field": "amal_score_rationale",
-          "judge": "score",
-          "message": "The rationale states that the score reflects strong internal financial efficiency and liquidity, but the 'Financial Health' component of the impact score is 0/7 due to excessive working capital. This should be mentioned in the rationale.",
-          "severity": "info"
-        },
-        {
-          "field": "risks.risk_summary",
-          "judge": "score",
-          "message": "The risk summary mentions the small board size as the key concern, which is accurate. However, the impact section of the score details also mentions the small board size as a governance issue, contributing to the low impact score. This connection could be made more explicit in the rationale.",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        }
-      ],
       "risk_deduction": -7,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -378,7 +369,7 @@
         ],
         "total_deduction": -7
       },
-      "score_summary": "AL-FURQAAN FOUNDATION earns 36/100 due to good alignment and limited impact, with zakat compliance (significant risk deductions applied).",
+      "score_summary": "AL-FURQAAN FOUNDATION shows good alignment and limited impact, with zakat compliance (significant risk deductions applied).",
       "zakat": {
         "asnaf_category": "muallaf",
         "bonus_points": 0,
@@ -390,430 +381,53 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The foundation operates as a nonprofit focused on Islamic education and maintains specific financial efficiency metrics.",
+          "claim": "The organization is identified as Al-Furqaan Foundation with specific program names and financial metadata.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/200310701"
         },
         {
-          "claim": "The organization reported total revenue of $3,249,437 and a program expense ratio of 89.3%.",
+          "claim": "The foundation reported total revenue of $3,249,437, a program expense ratio of 89.3%, and 25.1 months of working capital.",
           "id": "[2]",
           "source_name": "Form 990 (2020)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/200310701"
         },
         {
-          "claim": "Audited financials confirm the value of book distribution and the organization's asset base.",
+          "claim": "Audited financials confirm the value of book distribution and organizational assets.",
           "id": "[3]",
           "source_name": "Financial Statement (2019)",
           "source_url": "https://furqaan.org/wp-content/uploads/2025/02/Audited-Financials-12-31-19.pdf"
         },
         {
-          "claim": "The foundation manages programs including the Furqaan Project and offers various online products to the public.",
+          "claim": "The foundation offers various online products and manages programs like the Furqaan Project and The Clear Islam.",
           "id": "[4]",
           "source_name": "Click here",
           "source_url": "https://furqaan.org/wp-content/uploads/2025/02/990-A.pdf"
         },
         {
-          "claim": "The organization is Zakat-eligible and provides multiple methods for donor contributions.",
+          "claim": "The organization provides various donation options and is designated as Zakat-eligible.",
           "id": "[5]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://furqaan.org/donate/"
         }
       ],
-      "amal_score_rationale": "The foundation earns a score of 36/100, reflecting strong internal financial efficiency and liquidity balanced against a need for more direct evidence of program impact.",
+      "amal_score_rationale": "The foundation earns a score of 40/100, reflecting strong internal financial efficiency and liquidity balanced against a need for more robust external impact data and third-party verification.",
       "areas_for_improvement": [
-        "Limited third-party impact verification for long-term educational outcomes",
-        "Moderate data confidence due to reliance on older financial filings"
+        "Limited third-party impact verification and outcome data",
+        "Moderate data confidence score of 0.6"
       ],
       "dimension_explanations": {
-        "alignment": "As a Zakat-eligible entity, the foundation offers a medium fit for donors focused on religious and cultural causes [5]. It demonstrates a consistent track record in its niche, though the urgency is categorized as religious-cultural rather than immediate humanitarian relief [1][4].",
-        "impact": "The organization focuses on capacity building through the distribution of religious materials and online products [3][4]. While it maintains a high program expense ratio of 89.3%, the direct cost per beneficiary and long-term effectiveness of its educational outreach remain difficult to quantify with available data [1][2]."
+        "alignment": "With an alignment score of 31/50, the charity shows medium donor fit for those prioritizing religious education and cultural outreach [5]. The mission focuses on the urgent religious cause of countering misinformation, though the overall track record is supported by moderate data confidence [1][4].",
+        "impact": "The foundation demonstrates a medium impact score of 16/50, primarily focused on capacity building through the distribution of religious literature and online products [3][4]. While financial health is strong with 25.1 months of working capital, there is a lack of independent cost-per-beneficiary data to verify direct effectiveness [1][2]."
       },
-      "headline": "Al-Furqaan Foundation is a Zakat-eligible organization dedicated to educating the American public about the core principles of Islam through large-scale media and distribution initiatives.",
+      "headline": "Al-Furqaan Foundation is a religious non-profit dedicated to educating the American public on the core principles of Islam through large-scale distribution of literature and community outreach.",
       "strengths": [
-        "High program expense ratio of 89.3% ensuring most funds reach core initiatives",
+        "High program expense ratio of 89.3% ensuring most funds reach core missions",
         "Exceptional fundraising efficiency of $0.01 per $1 raised",
-        "Strong liquidity with 25.1 months of working capital"
+        "Strong liquidity with 25.1 months of working capital available",
+        "Designated as Zakat-eligible for Muslim donors"
       ],
-      "summary": "Based in the United States, Al-Furqaan Foundation operates key programs such as the Furqaan Project and Furqaan Dawah Center to counter negative media narratives regarding Islam [1][4]. The organization reported a total revenue of $3,249,437 and maintains Zakat-eligible status for donors seeking to support religious and cultural education [2][5]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "educating the American public about the core principles of Islam",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "To inform and educate all the residents of the United States the truth about Islam",
-          "source_name": "Charity Navigator - Al-Furqaan Foundation",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/200310701"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $3,249,437",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: $3,249,437",
-          "source_name": "Form 990 (2020)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/200310701"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "book distribution value of $855,697",
-          "confidence": 0.95,
-          "id": "[3]",
-          "quote": "Book distribution value: 855697",
-          "source_name": "Audited Financials (2019)",
-          "source_type": "evaluation",
-          "source_url": "https://furqaan.org/wp-content/uploads/2025/02/Audited-Financials-12-31-19.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Furqaan Project, Furqaan Dawah Center, and Dawah in Braille",
-          "confidence": 0.9,
-          "id": "[4]",
-          "quote": "Programs: Furqaan Project, Furqaan Dawah Center, The Clear Islam, Islam in Prison, Dawah in Braille",
-          "source_name": "Al-Furqaan Foundation Programs",
-          "source_type": "website",
-          "source_url": "https://furqaan.org/wp-content/uploads/2025/02/990-A.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "accepts Zakat",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "Al-Furqaan Foundation Donate",
-          "source_type": "website",
-          "source_url": "https://furqaan.org/donate/"
-        }
-      ],
-      "amal_score_rationale": "The foundation earns a score of 36/100, reflecting strong internal financial efficiency and liquidity balanced against a need for more direct evidence of program impact.",
-      "amal_scores": {
-        "amal_score": 36,
-        "confidence_scores": {
-          "alignment": 31,
-          "data_confidence": 0.6,
-          "impact": 12
-        },
-        "confidence_tier": "MEDIUM",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Board Governance",
-          "citation_ids": [
-            "[2]"
-          ],
-          "context": "The organization currently operates with a <cite id=\"2\">board size of only 2 members</cite>, which limits independent oversight and diverse perspectives."
-        },
-        {
-          "area": "Outcome Transparency",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "There is a <cite id=\"1\">lack of third-party impact evaluations</cite> or public metrics regarding the long-term educational effectiveness of its distributed materials."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[3]"
-        ],
-        "effectiveness_status": "UNVERIFIED",
-        "finances_status": "PASS",
-        "governance_status": "UNVERIFIED",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "The organization provides audited financial statements but has not been fully vetted against all 20 BBB standards."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "mitigation_notes": "The foundation maintains a high program ratio, suggesting that despite high reserves, active spending on mission-critical work continues.",
-        "risk_factors": [
-          "<cite id=\"2\">Board consists of only 2 members</cite>, posing a risk to independent oversight.",
-          "<cite id=\"1\">Working capital of 25.1 months</cite> may suggest funds are being held rather than deployed for immediate impact."
-        ],
-        "summary": "The primary concerns involve <cite id=\"2\">governance structure</cite> and <cite id=\"1\">excessive capital reserves</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 2,
-          "form990": 6,
-          "rating": 4,
-          "website": 3
-        },
-        "high_confidence_count": 12,
-        "total_count": 15,
-        "unique_sources": 5
-      },
-      "confidence": {
-        "data_freshness": "Financials from 2020 tax year",
-        "data_gaps": [
-          "Financial data is from 2020",
-          "Small board size"
-        ],
-        "level": "MODERATE",
-        "notes": "Strong program ratio but governance and data freshness are areas of concern.",
-        "score": 60,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Audited Financials",
-          "Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 60,
-        "form_990_tax_year": 2020,
-        "known_gaps": [
-          "Missing recent 2021-2023 Form 990s",
-          "No third-party impact evaluation"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 5,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[5]"
-          ],
-          "explanation": "The foundation is a strong fit for donors prioritizing dawah, as it <cite id=\"5\">accepts Zakat</cite> and serves the <cite id=\"5\">fi-sabilillah asnaf</cite>.",
-          "improvement": "Alignment could be enhanced by <cite id=\"5\">creating a dedicated Zakat transparency page</cite> detailing how funds are distributed across the eight asnaf."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]",
-            "[2]",
-            "[3]"
-          ],
-          "explanation": "Donors can verify the foundation's history through its <cite id=\"1\">founding in 2003</cite> and its <cite id=\"3\">audited financial statements</cite>. However, credibility is tempered by a <cite id=\"2\">small board of directors</cite>.",
-          "improvement": "To strengthen credibility, the foundation should <cite id=\"2\">expand its board to at least five independent members</cite> to ensure robust governance."
-        },
-        "impact": {
-          "citation_ids": [
-            "[1]",
-            "[2]"
-          ],
-          "explanation": "Impact is driven by a <cite id=\"2\">89.3% program expense ratio</cite>, though it is currently classified as <cite id=\"1\">capacity building</cite> rather than direct service.",
-          "improvement": "The foundation could improve its impact score by <cite id=\"1\">tracking and reporting specific beneficiary counts</cite> to enable cost-per-beneficiary analysis."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "RELIGIOUS_CULTURAL",
-        "citation_ids": [
-          "[1]",
-          "[5]"
-        ],
-        "evidence_rigor": "Grade C - Financial transparency without external impact evaluation",
-        "geographic_focus": [
-          "United States",
-          "Canada"
-        ],
-        "giving_style": "Capacity Building / Dawah",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara",
-          "masakin",
-          "amil",
-          "muallaf",
-          "riqab",
-          "gharimin",
-          "fisabilillah"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.085,
-        "annual_revenue": 3249437,
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0.001,
-        "industry_program_ratio": 0.75,
-        "peer_count": 35,
-        "peer_program_ratio_median": 0.8,
-        "program_expense_ratio": 0.8929,
-        "reserves_months": 22.7,
-        "revenue_cagr_3yr": -4.1,
-        "working_capital_months": 25.1,
-        "yearly_financials": [
-          {
-            "expenses": 2547450,
-            "net_assets": 5332724,
-            "revenue": 3249437,
-            "year": 2020
-          },
-          {
-            "expenses": 3089194,
-            "net_assets": 4630425,
-            "revenue": 3370459,
-            "year": 2019
-          },
-          {
-            "expenses": 2817673,
-            "net_assets": 4349156,
-            "revenue": 3533036,
-            "year": 2018
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct implementation of dawah and distribution programs",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "North America"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "Al-Furqaan Foundation is a Zakat-eligible organization dedicated to educating the American public about the core principles of Islam through large-scale media and distribution initiatives.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize dawah (outreach) and the distribution of Islamic literature as a means of countering misinformation.",
-        "citation_ids": [
-          "[1]",
-          "[2]",
-          "[4]"
-        ],
-        "donor_motivations": [
-          "Want to support the distribution of the Quran and Islamic texts",
-          "Value high financial efficiency where 89.3% of expenses goes to programs",
-          "Care about providing religious resources to incarcerated Muslims",
-          "Prefer supporting established organizations with a 20+ year track record"
-        ],
-        "giving_considerations": [
-          "The organization holds very high cash reserves (over 22 months)",
-          "Governance is centralized within a very small board",
-          "Impact is measured by output (books distributed) rather than behavioral change"
-        ],
-        "not_ideal_for": "Donors seeking rigorous academic evidence of impact or those who prefer organizations with large, independent governing boards."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects strong output data (e.g., book distribution value) but a lack of independent outcome evaluations.",
-        "external_evaluations": [
-          "None documented"
-        ],
-        "outcome_tracking_years": 0,
-        "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "By distributing high-quality Islamic literature and media, the foundation aims to correct misconceptions about Islam and provide spiritual support to marginalized groups.",
-        "why_evidence_matters": "Evidence ensures that the distribution of literature effectively leads to increased understanding and positive social outcomes."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "founded_year": 2003,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": -4.1,
-        "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "While the foundation has high reserves, its <cite id=\"2\">revenue has declined at a CAGR of -4.1%</cite>, suggesting a need for renewed donor support to maintain its distribution scale.",
-        "strategic_priorities": [
-          "Expand digital dawah products",
-          "Increase prison outreach"
-        ],
-        "years_operating": 23
-      },
-      "organizational_capacity": {
-        "board_size": 2,
-        "ceo_compensation": 32495,
-        "ceo_compensation_pct_revenue": 1,
-        "ceo_name": "Mohammed W Sayeed",
-        "citation_ids": [
-          "[1]",
-          "[2]",
-          "[4]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "United States and Canada",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 0,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "differentiator": "Distinguished by its <cite id=\"2\">89.3% program ratio</cite>, which exceeds the <cite id=\"1\">peer median of 80.0%</cite>.",
-        "peer_group": "Religious and Cultural Education",
-        "similar_orgs": [
-          "Dawat-E-Islami USA",
-          "Ta'leef Collective"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on religious services and education",
-          "name": "Dawat-E-Islami USA"
-        },
-        {
-          "differentiator": "Focuses more on community building and convert support",
-          "name": "Ta'leef Collective"
-        },
-        {
-          "differentiator": "More localized community focus",
-          "name": "Islamic Society of Northwest Suburbs"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[2]"
-          ],
-          "detail": "The organization allocates <cite id=\"2\">89.3% of its total expenses</cite> directly to its educational and distribution programs.",
-          "point": "High Program Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "Al-Furqaan Foundation spends only <cite id=\"1\">$0.01 to raise every $1</cite> in contribution revenue, far outperforming industry benchmarks.",
-          "point": "Exceptional Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[2]"
-          ],
-          "detail": "The foundation holds <cite id=\"2\">$9,389,287 in total assets</cite>, providing significant infrastructure for its media and distribution projects.",
-          "point": "Robust Asset Base"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Al-Furqaan Foundation's primary strength lies in its specialized distribution network. Through its 'Clear Islam' and 'Islam in Prison' programs, it has established a <cite id=\"4\">comprehensive pipeline for religious literature</cite> that reaches underserved populations. Its financial model is characterized by <cite id=\"1\">25.1 months of working capital</cite>, which is significantly higher than the 1-3 month industry standard, suggesting an extremely conservative fiscal approach that ensures long-term sustainability for its <cite id=\"4\">online products and physical distribution centers</cite>."
-      ],
-      "summary": "founded in 2003, Al-Furqaan Foundation is an Illinois-based non-profit dedicated to <cite id=\"1\">educating the American public about the core principles of Islam</cite>. The organization operates through a multi-faceted delivery model that includes the <cite id=\"4\">Furqaan Project, Furqaan Dawah Center, and Dawah in Braille</cite>, specifically designed to counter negative media narratives and provide accessible religious literature. Financially, the foundation demonstrates a high level of operational focus, reporting <cite id=\"2\">total revenue of $3,249,437</cite> with a <cite id=\"2\">program expense ratio of 89.3%</cite>. This indicates that the vast majority of donor contributions are directed toward its core mission of distribution and education rather than administrative overhead. The foundation also maintains a significant <cite id=\"3\">book distribution value of $855,697</cite>, highlighting its role as a major provider of Islamic literature in North America. While the organization serves a niche in the religious and cultural sector, it maintains <cite id=\"1\">strong liquidity with 25.1 months of working capital</cite>, providing a stable financial cushion for its ongoing dawah and prison outreach initiatives.",
-      "zakat_guidance": {
-        "classification": "muallaf",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "The organization operates several key initiatives including the Furqaan Project, the Furqaan Dawah Center, and The Clear Islam to provide educational resources and counter negative media narratives [1][4]. In the most recent reporting period, the foundation generated total revenue of $3,249,437 while maintaining a high program expense ratio of 89.3% [2]."
     }
   }
 }

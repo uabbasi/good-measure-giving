@@ -2,7 +2,7 @@
   "id": "32-0077563",
   "ein": "32-0077563",
   "name": "Innocence Project",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "By entering your email address, you agree to receive emails from the Innocence Project. By entering your phone number, you agree to receive recurring automated promotional and personalized marketing text messages (e.g. cart reminders) from The Innocence Project at the cell number used when signing up. Consent is not a condition of any purchase. Reply HELP for help and STOP to cancel. Msg frequency varies. Msg & data rates may apply. View Terms\u00a0& Privacy.",
   "programs": [
     "Post-conviction Litigation",
@@ -51,7 +51,11 @@
     "netAssets": 91012864,
     "workingCapitalMonths": "41.70"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 17,
+    "independentBoardMembers": null,
+    "ceoCompensation": 420072
+  },
   "targeting": {
     "populationsServed": [
       "Men"
@@ -77,7 +81,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:39:18",
+  "lastUpdated": "2026-02-14 19:35:52",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -188,6 +192,25 @@
     "Organization is in zakat denylist (partners but doesn't collect directly)"
   ],
   "archetype": "LEVERAGE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "LEVERAGE",
+    "archetype_label": "Strategic Advocacy",
+    "evidence_stage": "Established",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Limited",
+      "donor_fit": "Limited",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "32-0077563",
     "charity_name": "Innocence Project",
@@ -286,7 +309,7 @@
           },
           {
             "evidence": "Working capital: 41.7 months (EXCESSIVE)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
+            "improvement_suggestion": "Publish a capital deployment plan so very high reserves are intentionally used for mission delivery while preserving a prudent safety buffer.",
             "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
@@ -337,26 +360,6 @@
         "rubric_archetype": "SYSTEMIC_CHANGE",
         "score": 34
       },
-      "judge_issues": [
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
@@ -372,7 +375,7 @@
         ],
         "total_deduction": -2
       },
-      "score_summary": "The Innocence Project Inc earns 48/100 due to good impact and limited alignment (minor risk deductions applied).",
+      "score_summary": "The Innocence Project Inc shows good impact and limited alignment (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -384,430 +387,58 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The Innocence Project holds a 100.0/100 rating and a 74.6% program expense ratio.",
+          "claim": "The charity has a 100.0/100 score and a program expense ratio of 74.6%.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/320077563"
         },
         {
-          "claim": "The organization reported total revenue of $32,455,846 and holds 41.7 months of working capital.",
+          "claim": "Total revenue is $32,455,846 and the mission involves freeing the wrongly convicted.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/320077563"
         },
         {
-          "claim": "The organization reviews intake letters to identify potential cases of wrongful conviction.",
+          "claim": "The organization reviews intake letters as part of its litigation process.",
           "id": "[3]",
           "source_name": "Form 990 (2016)",
           "source_url": "https://www.innocenceproject.org/wp-content/uploads/2018/01/IP990-FINAL.pdf"
         },
         {
-          "claim": "The Innocence Project achieves exonerations through post-conviction litigation.",
+          "claim": "The organization tracks metrics related to exonerations achieved.",
           "id": "[4]",
           "source_name": "Form 990 (2019)",
           "source_url": "https://innocenceproject.org/wp-content/uploads/2021/08/IP990_Signed_Ex.pdf"
         },
         {
-          "claim": "The organization tracks the number of people exonerated as a key performance metric.",
-          "id": "[5]",
-          "source_name": "Form 990 (2017)",
-          "source_url": "https://www.innocenceproject.org/wp-content/uploads/2019/08/IRS-Form-990_Filed-Copy-To-Distribute.pdf"
+          "claim": "The project focuses on achieving full exonerations for its clients.",
+          "id": "[6]",
+          "source_name": "Form 990 (2015)",
+          "source_url": "https://www.innocenceproject.org/wp-content/uploads/2017/05/IP-FY16-990-and-audit.pdf"
         },
         {
-          "claim": "The organization accepts general charitable donations and sadaqah.",
+          "claim": "The organization offers various donation options for charitable giving.",
           "id": "[7]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://innocenceproject.org/donate/"
         }
       ],
-      "amal_score_rationale": "The organization maintains excellent financial health and transparency, though its specialized legal focus results in a high cost per direct beneficiary and lower alignment with traditional humanitarian aid priorities.",
+      "amal_score_rationale": "The organization earns a moderate overall score because while its financial health and transparency are flawless, its specific focus on domestic legal reform may not align with all donor profiles.",
       "areas_for_improvement": [
-        "High cost per beneficiary due to the complex nature of legal and systemic reform",
-        "Limited alignment for donors specifically seeking international or poverty-relief causes"
+        "High cost per beneficiary due to the complex, long-term nature of legal litigation",
+        "Lower alignment for donors specifically seeking international poverty relief or traditional religious causes"
       ],
       "dimension_explanations": {
-        "alignment": "The project focuses on domestic justice reform, which is categorized as a domestic poverty and civil rights urgency [1]. While it offers a reputable pathway for sadaqah, the alignment score is medium (16/50) because the mission is specialized toward legal reform rather than direct service for the most vulnerable global populations [7].",
-        "impact": "The organization demonstrates high effectiveness in systemic change, achieving a significant number of exonerations through DNA evidence and legal advocacy [4][5]. While the cost per beneficiary is calculated at $86,746.42, this reflects the intensive resources required for long-term litigation and policy shifts [2]. The project maintains a program expense ratio of 74.6%, ensuring the majority of its $32,455,846 in total revenue supports its core mission [1][2]."
+        "alignment": "Alignment is considered medium as the cause focuses on domestic justice and poverty issues rather than international relief [1]. For those interested in supporting justice through voluntary sadaqah, the organization provides various giving methods [7]. However, the specific focus on the U.S. legal system may result in a lower fit for donors prioritizing other global humanitarian sectors.",
+        "impact": "The organization demonstrates high effectiveness in systemic change, focusing on exonerations and legislative reform [4][6]. It operates with a total revenue of $32,455,846 and directs a program expense ratio of 74.6% toward its core mission [1][2]. While the cost per beneficiary is high at $86,746.42, this reflects the intensive legal resources required for post-conviction litigation [3]."
       },
       "headline": "The Innocence Project works to exonerate the wrongly convicted and reform the criminal justice system through DNA testing and policy advocacy.",
       "strengths": [
-        "Perfect Charity Navigator score of 100.0/100",
-        "Exceptional fundraising efficiency of $0.11 per $1 raised",
-        "Strong liquidity with 41.7 months of working capital"
+        "Maintains a perfect 100.0/100 rating from Charity Navigator for transparency and financial health",
+        "High fundraising efficiency with only $0.11 spent for every $1 raised",
+        "Exceptional financial stability with 41.7 months of working capital available"
       ],
-      "summary": "The Innocence Project Inc is a national nonprofit dedicated to freeing innocent individuals and preventing future wrongful convictions [2]. The organization operates through post-conviction litigation and systemic policy reform to address flaws in the justice system [1][3]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "perfect 100.0/100 from Charity Navigator",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "Overall Score & Rating 100/100",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/320077563"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$32,455,846 in total revenue",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: $32,455,846",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/320077563"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "over 220 exonerations",
-          "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Exonerations achieved: 220",
-          "source_name": "Form 990 (2019)",
-          "source_type": "form990",
-          "source_url": "https://innocenceproject.org/wp-content/uploads/2021/08/IP990_Signed_Ex.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "200 people exonerated",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "PEOPLE EXONERATED: 200",
-          "source_name": "Form 990 (2017)",
-          "source_type": "form990",
-          "source_url": "https://www.innocenceproject.org/wp-content/uploads/2019/08/IRS-Form-990_Filed-Copy-To-Distribute.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "post-conviction litigation, policy reform, and strategic litigation",
-          "confidence": 0.9,
-          "id": "[10]",
-          "quote": "Programs: Post-conviction Litigation, Policy Reform, Strategic Litigation",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://innocenceproject.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cost per beneficiary is approximately $86,746",
-          "confidence": 0.85,
-          "id": "[11]",
-          "quote": "$86746.42/beneficiary",
-          "source_name": "Internal Score Rationale",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/320077563"
-        }
-      ],
-      "amal_score_rationale": "The organization maintains excellent financial health and transparency, though its specialized legal focus results in a high cost per direct beneficiary and lower alignment with traditional humanitarian aid priorities.",
-      "amal_scores": {
-        "amal_score": 48,
-        "confidence_scores": {
-          "alignment": 16,
-          "data_confidence": 0.6,
-          "impact": 34
-        },
-        "confidence_tier": "MEDIUM",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Excessive Capital Reserves",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "The organization holds <cite id=\"1\">41.7 months of working capital</cite> in reserve, which is significantly higher than the industry standard of 1-3 months, suggesting capital could be deployed more aggressively."
-        },
-        {
-          "area": "High Cost per Direct Beneficiary",
-          "citation_ids": [
-            "[11]"
-          ],
-          "context": "Due to the complexity of DNA litigation, the <cite id=\"11\">cost per beneficiary is approximately $86,746</cite>, which may be high for donors focused on high-volume direct service."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[1]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "The organization maintains high standards of governance and financial oversight."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[11]"
-        ],
-        "mitigation_notes": "The organization\u2019s legal cases often span decades, requiring long-term financial commitments.",
-        "risk_factors": [
-          "<cite id=\"11\">Working capital of 41.7 months</cite> exceeds standard efficiency benchmarks."
-        ],
-        "summary": "The primary concern is the <cite id=\"11\">excessive accumulation of net assets</cite> relative to annual spending."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 2,
-          "form990": 6,
-          "rating": 5,
-          "website": 2
-        },
-        "high_confidence_count": 13,
-        "total_count": 15,
-        "unique_sources": 6
-      },
-      "confidence": {
-        "data_freshness": "Financial data is from 2023 tax year",
-        "data_gaps": [
-          "No 2024 financial data available yet"
-        ],
-        "level": "HIGH",
-        "notes": "Extremely high financial transparency from third-party raters.",
-        "score": 85,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Official Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 85,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "No specific Muslim donor outreach data"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 6,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[11]"
-          ],
-          "explanation": "",
-          "improvement": "The charity could <cite id=\"11\">highlight the humanitarian dimensions</cite> of its work to better resonate with faith-based donors interested in social justice."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]"
-          ],
-          "explanation": "Donors can place high trust in this charity due to its <cite id=\"1\">100.0/100 from Charity Navigator score</cite> and <cite id=\"1\">100% independent board governance</cite>.",
-          "improvement": "Credibility is already at a maximum level based on third-party ratings."
-        },
-        "impact": {
-          "citation_ids": [
-            "[1]",
-            "[11]"
-          ],
-          "explanation": "The organization maintains a <cite id=\"1\">program expense ratio of 74.6%</cite>, which is competitive with the <cite id=\"11\">peer median of 83.8%</cite> for domestic advocacy groups.",
-          "improvement": "The organization could improve impact efficiency by <cite id=\"11\">reducing working capital reserves</cite> to the recommended 1-3 months to increase immediate program output."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "CRIMINAL JUSTICE REFORM",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "evidence_rigor": "Grade A - Verified Exonerations and Policy Wins",
-        "geographic_focus": [
-          "USA"
-        ],
-        "giving_style": "Systemic Change",
-        "tax_deductible": true,
-        "zakat_asnaf_served": null,
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.063,
-        "annual_revenue": 32455846,
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "cn_financial_score": 100,
-        "cn_overall_score": 100,
-        "fundraising_ratio": 0.11,
-        "industry_program_ratio": 0.75,
-        "peer_count": 23,
-        "peer_program_ratio_median": 0.838,
-        "program_expense_ratio": 0.7458,
-        "reserves_months": 41.7,
-        "revenue_cagr_3yr": -9.8,
-        "working_capital_months": 41.7,
-        "yearly_financials": [
-          {
-            "expenses": 26212682,
-            "net_assets": 91012864,
-            "revenue": 32455846,
-            "year": 2023
-          },
-          {
-            "expenses": 23028732,
-            "net_assets": 87208274,
-            "revenue": 42317102,
-            "year": 2022
-          },
-          {
-            "expenses": 18549932,
-            "net_assets": 71773982,
-            "revenue": 39853614,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct legal service and policy advocacy rather than grantmaking",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "USA"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "The Innocence Project works to exonerate the wrongly convicted and reform the criminal justice system through DNA testing and policy advocacy.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize systemic criminal justice reform and value organizations with the highest possible third-party accountability ratings.",
-        "citation_ids": [
-          "[1]",
-          "[11]"
-        ],
-        "donor_motivations": [
-          "Want to support DNA-based exonerations of the innocent",
-          "Value long-term policy advocacy over short-term relief",
-          "Prefer charities with perfect transparency and financial health scores",
-          "Interested in civil rights and legal reform within the US"
-        ],
-        "giving_considerations": [
-          "Donations support complex, multi-year legal litigation",
-          "The organization is extremely well-funded with large reserves",
-          "Impact is measured in systemic changes and individual freedom rather than volume of services"
-        ],
-        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those looking for international humanitarian aid."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[1]",
-          "[4]"
-        ],
-        "evidence_grade": "A",
-        "evidence_grade_explanation": "The organization provides direct, verifiable evidence of impact through <cite id=\"4\">documented exonerations</cite> and <cite id=\"10\">legislative victories</cite>.",
-        "external_evaluations": [
-          "Charity Navigator 100/100"
-        ],
-        "outcome_tracking_years": 32,
-        "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "The Innocence Project uses DNA evidence to prove innocence, which simultaneously exposes systemic failures, providing the leverage needed to pass laws that prevent future wrongful convictions.",
-        "why_evidence_matters": "In legal advocacy, evidence of exoneration is the ultimate proof of a successful intervention."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[10]",
-          "[11]"
-        ],
-        "founded_year": 1992,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": -9.8,
-        "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "While the organization has <cite id=\"2\">$91 million in net assets</cite>, the scale of wrongful convictions in the US remains a massive, under-addressed challenge.",
-        "strategic_priorities": [
-          "Post-conviction Litigation",
-          "Policy Reform",
-          "Strategic Litigation"
-        ],
-        "years_operating": 34
-      },
-      "organizational_capacity": {
-        "board_size": 17,
-        "ceo_compensation": 420072,
-        "ceo_compensation_pct_revenue": 1.29,
-        "ceo_name": "Christina Swarns",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "employees_count": 100,
-        "geographic_reach": "United States",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 25,
-        "programs_count": 5,
-        "staff_per_million_revenue": 3,
-        "volunteers_count": 0
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "differentiator": "Distinguished by a <cite id=\"1\">perfect 100/100 financial score</cite> which is rare even among high-performing peers.",
-        "peer_group": "Domestic Advocacy and Legal Reform",
-        "similar_orgs": [
-          "Project South",
-          "Southern Poverty Law Center",
-          "CAIR California"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Focuses on social justice advocacy in the Southern US",
-          "name": "Project South"
-        },
-        {
-          "differentiator": "Broader focus on hate groups and civil rights litigation",
-          "name": "Southern Poverty Law Center"
-        },
-        {
-          "differentiator": "Specific focus on civil rights for the Muslim community",
-          "name": "CAIR California"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The organization holds a <cite id=\"1\">perfect overall score of 100/100</cite> from Charity Navigator, reflecting top-tier transparency and governance.",
-          "point": "Exceptional Financial Accountability"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The project demonstrates remarkable efficiency, spending only <cite id=\"1\">$0.11 to raise every $1</cite> in charitable contributions.",
-          "point": "High Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "With <cite id=\"1\">41.7 months of working capital</cite>, the organization possesses significant long-term financial sustainability to pursue multi-year legal battles.",
-          "point": "Strong Liquidity and Stability"
-        }
-      ],
-      "strengths_deep_dive": [
-        "The Innocence Project's strength lies in its dual-track approach of individual exonerations and systemic reform. While it has achieved <cite id=\"5\">200 people exonerated</cite> by 2017, its policy work has led to hundreds of legislative changes. This impact is supported by a <cite id=\"1\">100% independent board</cite> and a <cite id=\"1\">perfect score in Leadership and Adaptability</cite>. Their financial health is further evidenced by <cite id=\"2\">$105,843,645 in total assets</cite>, providing a massive endowment-like cushion for their high-stakes legal work."
-      ],
-      "summary": "The Innocence Project is a national nonprofit organization dedicated to exonerating the wrongly convicted through DNA testing and reforming the criminal justice system to prevent future injustice. Founded in <cite id=\"1\">1992</cite>, the organization has grown into a leading legal and policy institution that has helped achieve <cite id=\"4\">over 220 exonerations</cite> as of recent reporting cycles. The organization operates a multi-pronged strategy including <cite id=\"10\">post-conviction litigation, policy reform, and strategic litigation</cite> to address systemic flaws such as eyewitness misidentification and false confessions. Financially, the organization is exceptionally robust, maintaining a <cite id=\"1\">perfect 100.0/100 from Charity Navigator</cite>. In the 2023 tax year, the Innocence Project reported <cite id=\"2\">$32,455,846 in total revenue</cite>, with a significant portion of its funding coming from <cite id=\"2\">$26,644,804 in public contributions</cite>. The organization maintains a <cite id=\"1\">program expense ratio of 74.6%</cite>, ensuring that the vast majority of donor funds are directed toward its core legal and advocacy missions. Beyond direct litigation, the project serves as a critical research hub, utilizing <cite id=\"10\">data science and research</cite> to identify trends in wrongful convictions and advocating for legislative changes across the United States.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "The Innocence Project, Inc. is a national nonprofit dedicated to freeing innocent individuals and preventing future wrongful convictions [2]. With a mission focused on post-conviction litigation and systemic policy reform, the organization has achieved a perfect Charity Navigator score of 100.0/100 for its accountability and financial health [1]."
     }
   }
 }

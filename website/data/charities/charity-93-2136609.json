@@ -2,7 +2,7 @@
   "id": "93-2136609",
   "ein": "93-2136609",
   "name": "National Association of Muslim Charitable Clinics",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": null,
   "programs": [
     "Uniting healthcare organizations",
@@ -50,7 +50,11 @@
     "netAssets": null,
     "workingCapitalMonths": null
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 2,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": null,
   "trustSignals": null,
   "websiteEvidenceSignals": {
@@ -63,7 +67,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": false
   },
-  "lastUpdated": "2026-02-09 21:33:50",
+  "lastUpdated": "2026-02-14 19:36:23",
   "sourceAttribution": {
     "founded_year": {
       "source_name": "ProPublica Form 990",
@@ -114,6 +118,25 @@
   "evidenceQuality": null,
   "zakatClaimEvidence": null,
   "archetype": "LEVERAGE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Limited Basis",
+    "archetype_code": "LEVERAGE",
+    "archetype_label": "Strategic Advocacy",
+    "evidence_stage": "Early",
+    "signal_states": {
+      "evidence": "Moderate",
+      "financial_health": "Limited",
+      "donor_fit": "Limited",
+      "risk": "Limited"
+    },
+    "recommendation_cue": "Limited Match",
+    "recommendation_rationale": "Limited match due to weaker results and/or higher uncertainty; review methodology details before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "93-2136609",
     "charity_name": "National Association of Muslim Charitable Clinics",
@@ -212,7 +235,7 @@
           },
           {
             "evidence": "Working capital: unknown (UNKNOWN)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
+            "improvement_suggestion": "Publish operating-reserve levels and adopt a board-approved reserve policy (typically 3-12 months for most nonprofits).",
             "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
@@ -263,32 +286,6 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 14
       },
-      "judge_issues": [
-        {
-          "field": "financial.form990_exempt",
-          "judge": "data_completeness",
-          "message": "Religious organization (Form 990-exempt) - limited financial data available",
-          "severity": "info"
-        },
-        {
-          "field": "mission",
-          "judge": "basic_info",
-          "message": "Missing mission: Mission statement needed for donor understanding",
-          "severity": "warning"
-        },
-        {
-          "field": "bbb.name_match",
-          "judge": "crawl_quality",
-          "message": "BBB name 'Virginia Association of Free and Charitable Clinics' may not match 'National Association of Muslim Charitable Clinics' (similarity: 60%)",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        }
-      ],
       "risk_deduction": -5,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -304,7 +301,7 @@
         ],
         "total_deduction": -5
       },
-      "score_summary": "National Association of Muslim Charitable Clinics earns 32/100 due to moderate alignment and limited impact (minor risk deductions applied).",
+      "score_summary": "National Association of Muslim Charitable Clinics shows moderate alignment and limited impact (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -316,352 +313,39 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization focuses on uniting healthcare organizations and supporting member clinics.",
+          "claim": "The organization focuses on uniting healthcare organizations and supporting member organizations.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/932136609"
         },
         {
-          "claim": "Financial data including revenue and program expense ratios are currently unavailable or not reported.",
+          "claim": "Financial data and program expense metrics are currently unavailable or not reported for this entity.",
           "id": "[2]",
           "source_name": "Form 990 (2025)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/932136609"
         },
         {
-          "claim": "The organization accepts general charitable donations (sadaqah) to support its operations.",
+          "claim": "The organization accepts general charitable donations (sadaqah) to support its collaborative healthcare programs.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://naomcc.org/Donations"
         }
       ],
-      "amal_score_rationale": "The overall score reflects a significant lack of available financial data and program transparency, resulting in low data confidence. While the organization addresses urgent global health needs, its specific impact and donor alignment remain difficult to verify.",
+      "amal_score_rationale": "The organization receives a score of 32/100 due to significant data gaps and a lack of third-party financial verification, resulting in low data confidence.",
       "areas_for_improvement": [
-        "Limited public disclosure of financial performance metrics",
-        "Lack of a formal mission statement in public filings"
+        "Limited public disclosure of financial performance and program outcomes",
+        "Lack of a defined mission statement in public filings"
       ],
       "dimension_explanations": {
-        "alignment": "Alignment is considered medium as the organization addresses the urgent cause of global health, yet it demonstrates a low fit for typical Muslim donor expectations due to limited transparency [1]. The charity is identified as sadaqah-eligible for those looking to support general healthcare initiatives [3].",
-        "impact": "The organization's impact score is low due to a lack of cost-per-beneficiary data and a primary focus on capacity building rather than direct service delivery [1][2]. There is currently no third-party verification available to confirm the effectiveness of its member support programs [1]."
+        "alignment": "With an alignment score of 23/50, the charity addresses the urgent cause of global health, but currently demonstrates low fit for Muslim donors due to limited transparency regarding its specific charitable activities [1][3].",
+        "impact": "The organization's impact score of 14/50 reflects its role in capacity building for other clinics, though there is a lack of evidence regarding cost per beneficiary or specific program effectiveness [1][2]."
       },
-      "headline": "The National Association of Muslim Charitable Clinics serves as a unifying network for healthcare organizations to enhance community wellness.",
+      "headline": "The National Association of Muslim Charitable Clinics serves as a unifying network for healthcare organizations to enhance community-based medical services.",
       "strengths": [
-        "Facilitates collaboration between diverse healthcare providers",
-        "Offers specialized support programs for member clinics"
+        "Serves as a central hub for uniting diverse healthcare organizations",
+        "Provides structured support programs for member clinics"
       ],
-      "summary": "The National Association of Muslim Charitable Clinics (NAOMCC) focuses on uniting various healthcare organizations to foster collaboration and shared resources [1]. The organization provides dedicated support for its member organizations to strengthen the infrastructure of charitable medical services [1][3]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "unifying network for healthcare organizations",
-          "confidence": 0.8,
-          "id": "[1]",
-          "quote": "unifying network for healthcare organizations to enhance community wellness",
-          "source_name": "Charity Navigator - NAOMCC",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/932136609"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "financial data from ProPublica",
-          "confidence": 0.9,
-          "id": "[2]",
-          "quote": "Tax Year 2025",
-          "source_name": "Form 990 (2025)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/932136609"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "providing support for member organizations",
-          "confidence": 0.9,
-          "id": "[3]",
-          "quote": "Support for member organizations",
-          "source_name": "NAOMCC Website",
-          "source_type": "website",
-          "source_url": "https://naomcc.org/Donations"
-        }
-      ],
-      "amal_score_rationale": "The overall score reflects a significant lack of available financial data and program transparency, resulting in low data confidence. While the organization addresses urgent global health needs, its specific impact and donor alignment remain difficult to verify.",
-      "amal_scores": {
-        "amal_score": 32,
-        "confidence_scores": {
-          "alignment": 23,
-          "data_confidence": 0.05,
-          "impact": 14
-        },
-        "confidence_tier": "LOW",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Financial Transparency",
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "There is <cite id=\"1\">limited public disclosure</cite> of detailed financial performance metrics and expense ratios."
-        },
-        {
-          "area": "Governance Structure",
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The current board is <cite id=\"1\">limited to 2 members</cite>, which is below the standard for robust independent oversight."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[1]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "review_url": "https://give.org/charity-reviews/health/virginia-association-of-free-and-charitable-clinics-in-richmond-va-9999-52752",
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "Meets all 20 BBB Wise Giving Alliance Standards for Charity Accountability"
-      },
-      "case_against": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "mitigation_notes": "Donors should view this as a high-risk, emerging capacity-building entity.",
-        "risk_factors": [
-          "<cite id=\"1\">Board size of only 2 members</cite>",
-          "<cite id=\"1\">Unknown program expense ratio</cite>"
-        ],
-        "summary": "The primary concerns involve <cite id=\"1\">limited financial transparency</cite> and a <cite id=\"1\">small governance board</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 1,
-          "rating": 8,
-          "website": 3
-        },
-        "high_confidence_count": 4,
-        "total_count": 12,
-        "unique_sources": 3
-      },
-      "confidence": {
-        "data_freshness": "Data from 2025/2026",
-        "data_gaps": [
-          "Missing program expense ratio",
-          "Missing beneficiary counts"
-        ],
-        "level": "LOW",
-        "notes": "Extremely limited financial transparency and governance data.",
-        "score": 5,
-        "sources_used": [
-          "Charity Navigator",
-          "Form 990",
-          "Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 5,
-        "form_990_tax_year": 2025,
-        "known_gaps": [
-          "Missing program expense ratio",
-          "Missing beneficiary counts",
-          "Small board size"
-        ],
-        "ratings_last_updated": "2026-01",
-        "total_citations": 12,
-        "unique_sources": 3,
-        "website_last_crawled": "2026-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[1]"
-          ],
-          "explanation": "Alignment is scored at 23/50, reflecting <cite id=\"1\">high cause urgency</cite> in health but a <cite id=\"1\">low Muslim donor fit</cite> due to the lack of specific religious giving pathways.",
-          "improvement": "The organization could improve alignment by <cite id=\"1\">expanding services to underserved populations</cite> with limited existing coverage."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]"
-          ],
-          "explanation": "Credibility is currently limited by <cite id=\"1\">low data confidence (0.05)</cite> and a lack of verified third-party ratings. While the organization <cite id=\"1\">meets all 20 BBB standards</cite>, the small board size of <cite id=\"1\">2 members</cite> presents a governance risk.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"1\">expand its board of directors</cite> and increase public financial disclosures."
-        },
-        "impact": {
-          "citation_ids": [
-            "[1]"
-          ],
-          "explanation": "The impact score of 14/50 is driven by a <cite id=\"1\">capacity-building delivery model</cite>. However, there is <cite id=\"1\">insufficient data for cost-per-beneficiary</cite> calculations and unknown program ratios.",
-          "improvement": "Impact measurement would benefit from <cite id=\"1\">tracking and reporting beneficiary counts</cite> to enable rigorous cost analysis."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "GLOBAL_HEALTH",
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "evidence_rigor": "Grade D - Emerging data",
-        "geographic_focus": [
-          "USA"
-        ],
-        "giving_style": "Capacity Building",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [],
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": null,
-        "annual_revenue": null,
-        "citation_ids": [
-          "[1]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": null,
-        "industry_program_ratio": 0.75,
-        "peer_count": 14,
-        "peer_program_ratio_median": 0.846,
-        "program_expense_ratio": null,
-        "reserves_months": null,
-        "revenue_cagr_3yr": null,
-        "yearly_financials": []
-      },
-      "grantmaking_profile": {
-        "citation_ids": [],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "N/A",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "USA"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "The National Association of Muslim Charitable Clinics serves as a unifying network for healthcare organizations to enhance community wellness.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support the structural growth of Muslim healthcare institutions in the US through sadaqah.",
-        "citation_ids": [
-          "[1]"
-        ],
-        "donor_motivations": [
-          "Value long-term infrastructure over immediate direct aid",
-          "Want to support a network of clinics rather than a single location",
-          "Interested in advocacy and professional training within the health sector"
-        ],
-        "giving_considerations": [
-          "Financial data is currently limited",
-          "Impact is indirect (capacity building)",
-          "Organization is in an early maturity stage"
-        ],
-        "not_ideal_for": ""
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "evidence_grade": "D",
-        "evidence_grade_explanation": "Evidence is currently unverified with <cite id=\"1\">insufficient data for cost-per-beneficiary</cite> analysis.",
-        "external_evaluations": [],
-        "outcome_tracking_years": 0,
-        "rct_available": false,
-        "theory_of_change": "DEVELOPING",
-        "theory_of_change_summary": "NAOMCC aims to improve community health by <cite id=\"1\">strengthening the operational capacity</cite> of member clinics through training and advocacy.",
-        "why_evidence_matters": "Evidence ensures that capacity-building efforts actually result in better patient outcomes at the clinic level."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "founded_year": 2023,
-        "maturity_stage": "Startup",
-        "revenue_growth_3yr": null,
-        "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "As an emerging network, there is significant room to absorb funding for <cite id=\"1\">expanding advocacy and training</cite>.",
-        "strategic_priorities": [
-          "Expand member support",
-          "Increase advocacy efforts"
-        ],
-        "years_operating": 3
-      },
-      "organizational_capacity": {
-        "board_size": 2,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": null,
-        "citation_ids": [
-          "[1]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "USA",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": null,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "differentiator": "Focuses on <cite id=\"1\">capacity building for Muslim clinics</cite> rather than direct patient care.",
-        "peer_group": "Global Health Organizations",
-        "similar_orgs": [
-          "Muslim Wellness Foundation",
-          "Maristan",
-          "Imran Khan Cancer Appeal USA"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on healthcare direct services",
-          "name": "Muslim Wellness Foundation"
-        },
-        {
-          "differentiator": "Focuses on mental health within the same size bracket",
-          "name": "Maristan"
-        },
-        {
-          "differentiator": "Larger organization with direct clinical operations",
-          "name": "Imran Khan Cancer Appeal USA"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "Effectively <cite id=\"1\">unites diverse healthcare organizations</cite> to share resources and best practices.",
-          "point": "Network Collaboration"
-        },
-        {
-          "citation_ids": [
-            "[3]"
-          ],
-          "detail": "Provides <cite id=\"3\">specialized support programs</cite> and training for member clinics to enhance service delivery.",
-          "point": "Operational Support"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "Operates within <cite id=\"1\">global health</cite>, a sector with high humanitarian need and urgency.",
-          "point": "High Cause Urgency"
-        }
-      ],
-      "strengths_deep_dive": [
-        "NAOMCC's primary strength lies in its ability to act as a force multiplier for smaller clinics. By focusing on <cite id=\"1\">resource pooling and advocacy</cite>, the organization addresses systemic inefficiencies in charitable healthcare. It offers <cite id=\"3\">education and training</cite> that helps member clinics navigate complex regulatory environments. Furthermore, its role in <cite id=\"1\">uniting healthcare organizations</cite> ensures that community wellness initiatives are coordinated rather than fragmented."
-      ],
-      "summary": "The National Association of Muslim Charitable Clinics (NAOMCC) operates as a <cite id=\"1\">unifying network for healthcare organizations</cite> dedicated to enhancing community wellness across the United States. As a capacity-building entity, NAOMCC focuses on <cite id=\"1\">uniting healthcare organizations</cite> to foster collaboration and resource pooling among diverse providers. The organization's primary mission involves <cite id=\"3\">providing support for member organizations</cite> to strengthen the infrastructure of charitable medical services. By offering <cite id=\"1\">education and training</cite> alongside advocacy efforts, NAOMCC seeks to improve the operational standards of clinics serving vulnerable populations. While the organization is an emerging entity in the <cite id=\"1\">global health cause area</cite>, it serves a critical role in <cite id=\"3\">fostering collaboration</cite> between clinics that might otherwise operate in isolation. Currently, the organization's impact is primarily realized through <cite id=\"1\">advocacy and resource pooling</cite> rather than direct patient care, positioning it as a backbone support structure for the Muslim charitable healthcare sector.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "The National Association of Muslim Charitable Clinics (NAOMCC) functions as a representative body for healthcare organizations, focusing on uniting various medical entities to improve service delivery [1]. The organization provides dedicated support for its member organizations through specialized programs and collaborative initiatives [1][3]."
     }
   }
 }

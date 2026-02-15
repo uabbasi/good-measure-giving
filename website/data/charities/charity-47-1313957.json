@@ -2,7 +2,7 @@
   "id": "47-1313957",
   "ein": "47-1313957",
   "name": "Khalil Center",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Our wellness centers integrate Islamic spiritual approaches into professional psychology to help achieve optimal, holistic health by providing a wide variety of mental health services.",
   "programs": [
     "Clinical Services",
@@ -41,7 +41,11 @@
     "netAssets": 476806,
     "workingCapitalMonths": "2.40"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 3,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Men"
@@ -65,7 +69,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:35:37",
+  "lastUpdated": "2026-02-14 19:36:03",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -170,17 +174,36 @@
     "Dedicated zakat page found at https://khalilcenter.com/donate/zakat (Source: https://khalilcenter.com/donate/zakat)"
   ],
   "archetype": "LEVERAGE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "LEVERAGE",
+    "archetype_label": "Strategic Advocacy",
+    "evidence_stage": "Early",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Moderate",
+      "donor_fit": "Strong",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "47-1313957",
     "charity_name": "Khalil Center",
-    "amal_score": 69,
+    "amal_score": 66,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:24:17",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 39,
       "data_confidence": 0.3,
-      "impact": 31
+      "impact": 28
     },
     "score_details": {
       "alignment": {
@@ -267,12 +290,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 2.4 months (OPTIMAL)",
-            "improvement_suggestion": null,
-            "improvement_value": 0,
+            "evidence": "Working capital: 2.4 months (LEAN)",
+            "improvement_suggestion": "Strengthen reserves toward a resilient policy range (commonly 3-12 months), based on revenue volatility and program obligations.",
+            "improvement_value": 3,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 7,
+            "scored": 4,
             "status": "full"
           },
           {
@@ -315,36 +338,10 @@
         "cost_per_beneficiary": 907.8735741444867,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "$907.87/beneficiary; Delivery: capacity building; Impact 31/50",
+        "rationale": "$907.87/beneficiary; Delivery: capacity building; Impact 28/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 31
+        "score": 28
       },
-      "judge_issues": [
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -1,
       "risks": {
         "overall_risk_level": "LOW",
@@ -360,7 +357,7 @@
         ],
         "total_deduction": -1
       },
-      "score_summary": "Khalil Foundation earns 69/100 due to strong alignment and good impact, with zakat compliance (minor risk deductions applied).",
+      "score_summary": "Khalil Foundation shows strong alignment and good impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": "amil",
         "bonus_points": 0,
@@ -372,433 +369,58 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The Khalil Foundation reported total revenue of $2,272,898 and a program expense ratio of 71.2%.",
+          "claim": "The Khalil Foundation is registered under EIN 47-1313957 and provides clinical mental health services.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/471313957"
         },
         {
-          "claim": "The organization is zakat-eligible and follows specific asnaf categories for distribution.",
+          "claim": "The charity is zakat-eligible and maintains a specific zakat policy for asnaf categories.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://khalilcenter.com/donate/zakat"
         },
         {
-          "claim": "Financial data confirms fundraising efficiency of $0.01 per $1 raised and working capital of 2.4 months.",
+          "claim": "The organization reported total revenue of $2,272,898 and a program expense ratio of 71.2%.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/471313957"
         },
         {
-          "claim": "The center provides clinical appointments and professional training scholarships.",
+          "claim": "The center tracks clinical appointments and provides professional training scholarships.",
           "id": "[4]",
           "source_name": "Annual Report (2022)",
           "source_url": "https://khalilcenter.com/assets/pdf/khalil-center-annual-report-2022_digital-v3.pdf"
         },
         {
-          "claim": "The organization delivers total psychotherapy sessions and didactic trainings.",
+          "claim": "The organization delivers psychotherapy sessions and didactic trainings as part of its core programming.",
           "id": "[5]",
           "source_name": "Annual Report (2025)",
           "source_url": "https://khalilcenter.com/assets/khalil-center-annual-report-2025-digital.pdf"
         },
         {
-          "claim": "The charity offers various donation options and giving methods for supporters.",
+          "claim": "The foundation offers multiple giving methods and donation options for supporters.",
           "id": "[6]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://khalilcenter.com/donate"
         }
       ],
-      "amal_score_rationale": "The organization earns a 69/100 score due to its high alignment with humanitarian needs and efficient fundraising, though its overall impact score is moderated by a high cost per beneficiary.",
+      "amal_score_rationale": "The foundation earns a moderate overall score of 66/100, reflecting high alignment with Muslim donor needs and efficient fundraising, balanced against low data confidence and modest financial reserves.",
       "areas_for_improvement": [
-        "Limited working capital of 2.4 months suggests a need for larger cash reserves",
-        "Low data confidence score indicates a need for more transparent third-party reporting"
+        "Limited liquidity with only 2.4 months of working capital available",
+        "Low data confidence due to limited third-party verification of impact metrics"
       ],
       "dimension_explanations": {
-        "alignment": "With an alignment score of 39/50, the charity shows high donor fit by addressing urgent humanitarian needs through a faith-based psychological framework [2]. It maintains a clear track record of community education and clinical service delivery tailored to the Muslim community [4][5].",
-        "impact": "The foundation demonstrates a program expense ratio of 71.2%, directing the majority of its $2,272,898 in total revenue toward clinical appointments and professional training [1][3][4]. While it successfully delivers psychotherapy sessions, the impact score of 31/50 reflects a relatively high cost per beneficiary of approximately $907.87 [5]."
+        "alignment": "Alignment is high (39/50) due to the organization's specific focus on humanitarian mental health needs within a faith-based framework [2]. The charity is explicitly zakat-eligible, offering donors a way to fulfill religious obligations through professional psychological support services [2][6].",
+        "impact": "The organization demonstrates a capacity-building approach by delivering psychotherapy sessions and didactic trainings, though the cost per beneficiary remains relatively high at approximately $907.87 [4][5]. While the program expense ratio is solid at 71.2%, the low data confidence score of 0.3 suggests a need for more rigorous external evaluation of long-term clinical outcomes [1][3]."
       },
-      "headline": "The Khalil Foundation integrates psychological sciences with Islamic theology to provide professional mental health services and community education.",
+      "headline": "The Khalil Foundation integrates spiritual wellness with psychological expertise to provide faith-based mental health services to the Muslim community.",
       "strengths": [
         "High fundraising efficiency with a cost of only $0.01 per $1 raised",
-        "Strong alignment with Muslim donor values through specialized zakat-eligible clinical services",
-        "Direct impact through the delivery of psychotherapy sessions and professional didactic trainings"
+        "Verified zakat-eligible status with a dedicated policy for asnaf categories",
+        "Strong programmatic focus with 71.2% of expenses directed toward clinical and educational services"
       ],
-      "summary": "The Khalil Foundation, operating as the Khalil Center, provides clinical mental health services and community-based psychological education [1][4]. The organization is recognized as zakat-eligible, utilizing a specific zakat policy to support eligible beneficiaries in need of mental health care [2][6]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "founding in 2010",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "Founded: 2010",
-          "source_name": "Charity Navigator - Khalil Foundation",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/471313957"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "dedicated zakat policy",
-          "confidence": 0.95,
-          "id": "[2]",
-          "quote": "Khalil Center utilizes Zakat funds for those who are eligible (Fuqara and Masakin)",
-          "source_name": "Khalil Center - Zakat",
-          "source_type": "website",
-          "source_url": "https://khalilcenter.com/donate/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $2,272,898",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total revenue: $2,272,898",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/471313957"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "13,065 scheduled clinical appointments",
-          "confidence": 0.9,
-          "id": "[4]",
-          "quote": "Clinical appointments scheduled: 13065",
-          "source_name": "Annual Report (2022)",
-          "source_type": "website",
-          "source_url": "https://khalilcenter.com/assets/pdf/khalil-center-annual-report-2022_digital-v3.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "70,136 total psychotherapy sessions",
-          "confidence": 0.9,
-          "id": "[5]",
-          "quote": "Total Psychotherapy Sessions Delivered: 70136",
-          "source_name": "Annual Report (2025)",
-          "source_type": "website",
-          "source_url": "https://khalilcenter.com/assets/khalil-center-annual-report-2025-digital.pdf"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a 69/100 score due to its high alignment with humanitarian needs and efficient fundraising, though its overall impact score is moderated by a high cost per beneficiary.",
-      "amal_scores": {
-        "amal_score": 69,
-        "confidence_scores": {
-          "alignment": 39,
-          "data_confidence": 0.3,
-          "impact": 31
-        },
-        "confidence_tier": "LOW",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Limited Cash Reserves",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "The organization maintains approximately <cite id=\"1\">2.4 months of working capital</cite>, which is below the ideal threshold for long-term financial resilience."
-        },
-        {
-          "area": "Transparency and Data Confidence",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "Current data confidence is low due to <cite id=\"1\">limited third-party reporting</cite> and the lack of a full rating from major charity evaluators."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "none",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "The organization is not currently evaluated by the BBB Wise Giving Alliance."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "mitigation_notes": "The organization mitigates these risks through a diversified revenue stream, including <cite id=\"3\">significant program service revenue</cite>.",
-        "risk_factors": [
-          "<cite id=\"1\">Working capital of only 2.4 months</cite> creates vulnerability to funding fluctuations.",
-          "<cite id=\"1\">Low data confidence score (0.3)</cite> due to missing third-party verifications."
-        ],
-        "summary": "The primary concerns involve <cite id=\"1\">low financial liquidity</cite> and <cite id=\"1\">limited transparency data</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 4,
-          "rating": 5,
-          "website": 6
-        },
-        "high_confidence_count": 10,
-        "total_count": 15,
-        "unique_sources": 5
-      },
-      "confidence": {
-        "data_freshness": "Most data from 2023 and 2025 reports",
-        "data_gaps": [
-          "Missing 2024 financials",
-          "No third-party audit",
-          "Limited transparency"
-        ],
-        "level": "LOW",
-        "notes": "Low confidence due to lack of external verification and transparency seals.",
-        "score": 30,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Website",
-          "Annual Reports"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 30,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing full Charity Navigator rating",
-          "Limited transparency data",
-          "No audited financials"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 5,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[1]",
-            "[2]"
-          ],
-          "explanation": "Alignment is high due to <cite id=\"2\">verified zakat eligibility</cite> and a mission that specifically serves <cite id=\"2\">underserved Muslim populations</cite> in the humanitarian cause area of mental health.",
-          "improvement": "Alignment could be further enhanced by <cite id=\"1\">expanding services to regions</cite> with even more limited nonprofit coverage."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]",
-            "[3]"
-          ],
-          "explanation": "The foundation is a <cite id=\"1\">legally recognized 501(c)(3)</cite> with a <cite id=\"3\">100% independent board of directors</cite>, though its overall credibility is currently limited by <cite id=\"1\">low data confidence (0.3)</cite> and a lack of comprehensive third-party audits available in the public domain.",
-          "improvement": "To strengthen credibility, the charity should seek <cite id=\"1\">full rating status on Charity Navigator</cite> and publish audited financial statements annually."
-        },
-        "impact": {
-          "citation_ids": [
-            "[1]",
-            "[3]",
-            "[5]"
-          ],
-          "explanation": "Impact is driven by a <cite id=\"3\">71.2% program expense ratio</cite> and a high volume of direct services, including <cite id=\"5\">70,136 psychotherapy sessions</cite>. The cost per beneficiary is estimated at <cite id=\"1\">$907.87</cite>, which is standard for professional clinical interventions.",
-          "improvement": "The organization could improve its impact score by <cite id=\"1\">increasing its working capital</cite> from the current 2.4 months to a more stable 6-month reserve."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "evidence_rigor": "Grade C - Verified outcomes through annual reporting",
-        "geographic_focus": [
-          "USA",
-          "Canada",
-          "Pakistan"
-        ],
-        "giving_style": "Direct clinical service and capacity building",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.202,
-        "annual_revenue": 2272898,
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0.001,
-        "industry_program_ratio": 0.75,
-        "peer_count": 58,
-        "peer_program_ratio_median": 0.897,
-        "program_expense_ratio": 0.7125,
-        "reserves_months": 1.2,
-        "revenue_cagr_3yr": -0.7,
-        "working_capital_months": 2.4,
-        "yearly_financials": [
-          {
-            "expenses": 2395291,
-            "net_assets": 476806,
-            "revenue": 2272898,
-            "year": 2023
-          },
-          {
-            "expenses": 2496248,
-            "net_assets": 599199,
-            "revenue": 2676049,
-            "year": 2022
-          },
-          {
-            "expenses": 2277900,
-            "net_assets": 419398,
-            "revenue": 2305215,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct service provider, not a grantmaking foundation",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "USA",
-          "Canada"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "The Khalil Foundation integrates psychological sciences with Islamic theology to provide professional mental health services and community education.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize mental health as a humanitarian necessity and want to support zakat-eligible clinical services for the Muslim community.",
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "donor_motivations": [
-          "Want to address the mental health crisis within the Muslim community",
-          "Value the integration of Islamic spirituality with modern psychology",
-          "Prefer organizations with extremely low fundraising overhead",
-          "Seek to fulfill zakat through professional healthcare services"
-        ],
-        "giving_considerations": [
-          "The organization has a 3-year revenue CAGR of -0.7%, suggesting a plateau in growth",
-          "Donations support a mix of charitable care and professional training infrastructure",
-          "Financial reserves are leaner than larger humanitarian institutions"
-        ],
-        "not_ideal_for": "Donors who require a 4-star Charity Navigator rating or those looking for high-growth startup charities."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[5]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects consistent <cite id=\"5\">outcome tracking of sessions and trainings</cite> without a formal third-party Randomized Controlled Trial (RCT).",
-        "external_evaluations": [
-          "Annual Report Outcomes"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "The Khalil Center utilizes a 'capacity building' model, training professionals in <cite id=\"5\">Islamically integrated models</cite> while providing direct <cite id=\"5\">psychotherapy and didactic education</cite> to reduce community trauma.",
-        "why_evidence_matters": "Tracking session volume and training reach ensures that clinical resources are effectively reaching the intended beneficiaries."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "founded_year": 2010,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": -0.7,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"3\">$2.3M revenue base</cite> and a <cite id=\"1\">high funding gap</cite>, the organization has significant capacity to expand its clinical footprint.",
-        "strategic_priorities": [
-          "Expand clinical services",
-          "Scale didactic trainings",
-          "Increase working capital"
-        ],
-        "years_operating": 16
-      },
-      "organizational_capacity": {
-        "board_size": 3,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": "Not listed in provided data",
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "USA, Canada, Pakistan, UK, Turkey, Qatar",
-        "has_conflict_policy": true,
-        "has_financial_audit": false,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 4,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[1]",
-          "[5]"
-        ],
-        "differentiator": "Distinguished by its <cite id=\"1\">$0.01 fundraising efficiency</cite> and specialized focus on <cite id=\"5\">Islamically integrated psychotherapy</cite>.",
-        "peer_group": "Healthcare and Humanitarian Services",
-        "similar_orgs": [
-          "IMANA",
-          "SAPA",
-          "Muslim Wellness Foundation"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Broader medical focus vs specific mental health integration",
-          "name": "IMANA"
-        },
-        {
-          "differentiator": "Similar size but different geographic primary focus",
-          "name": "SAPA"
-        },
-        {
-          "differentiator": "Smaller organization with more community-centric focus",
-          "name": "Muslim Wellness Foundation"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The organization spends only <cite id=\"1\">$0.01 to raise every $1</cite> in contributions, significantly outperforming industry benchmarks for lean operations.",
-          "point": "Exceptional Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[4]",
-            "[5]"
-          ],
-          "detail": "The center has successfully scaled its operations to deliver <cite id=\"5\">70,136 psychotherapy sessions</cite> and manage over <cite id=\"4\">13,065 scheduled clinical appointments</cite> in a single year.",
-          "point": "High-Volume Clinical Impact"
-        },
-        {
-          "citation_ids": [
-            "[2]"
-          ],
-          "detail": "The foundation maintains a <cite id=\"2\">dedicated zakat policy</cite> that directs funds to <cite id=\"2\">eligible poor and needy (fuqara and masakin)</cite> individuals seeking mental health services.",
-          "point": "Verified Zakat Integration"
-        }
-      ],
-      "strengths_deep_dive": [
-        "The Khalil Center's impact is rooted in its ability to bridge the gap between professional clinical standards and spiritual needs. Their <cite id=\"5\">School of Islamic Psychology & Research</cite> provides a formal framework for this integration, while their direct services are backed by a <cite id=\"3\">100% independent board</cite> ensuring objective governance. Financially, the organization maintains <cite id=\"3\">total assets of $1,019,702</cite>, supporting a stable platform for its <cite id=\"1\">geographic coverage across the USA, Canada, and Pakistan</cite>."
-      ],
-      "summary": "The Khalil Foundation, operating as the Khalil Center, is a specialized mental health organization that integrates <cite id=\"5\">psychological sciences with Islamic theology</cite> to serve the Muslim community. Since its <cite id=\"1\">founding in 2010</cite>, the organization has expanded its reach across <cite id=\"1\">multiple states including California, New York, and Illinois</cite>, as well as international locations. The charity reported <cite id=\"3\">total revenue of $2,272,898</cite> in 2023, primarily driven by <cite id=\"3\">$1,476,207 in program service revenue</cite>, reflecting a model that combines charitable contributions with fee-for-service clinical care. The center maintains a <cite id=\"3\">program expense ratio of 71.2%</cite>, ensuring that the majority of funds directly support its core missions of <cite id=\"5\">psychotherapy, community education, and professional training</cite>. Notably, the organization demonstrates exceptional fiscal discipline in its development efforts, maintaining a <cite id=\"1\">fundraising efficiency of $0.01 per $1 raised</cite>. Beyond direct clinical care, the Khalil Center acts as a capacity builder for the broader community, having <cite id=\"5\">delivered 324 didactic trainings</cite> and providing <cite id=\"5\">70,136 total psychotherapy sessions</cite> as of its most recent reporting. This dual focus on individual healing and systemic education positions the foundation as a critical infrastructure piece for Muslim mental health in the West.",
-      "zakat_guidance": {
-        "classification": "amil",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "The Khalil Foundation, operating as the Khalil Center, provides specialized clinical mental health services and community education rooted in Islamic principles [1][4]. In the most recent fiscal period, the organization reported a total revenue of $2,272,898 to support its psychological and spiritual wellness programs [3]."
     }
   }
 }

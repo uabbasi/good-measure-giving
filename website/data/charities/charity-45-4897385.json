@@ -2,7 +2,7 @@
   "id": "45-4897385",
   "ein": "45-4897385",
   "name": "Ehsaas Foundation",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Relief of Poverty and Help the Poor in Time of Crisis",
   "programs": [
     "Ration",
@@ -59,7 +59,7 @@
   },
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-09 21:34:18",
+  "lastUpdated": "2026-02-14 19:35:57",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -154,17 +154,36 @@
     "Ehsaas is a not-for-profit aid and development organization with 16 years of grass-roots experience in several countries around the world especially in Pakistan."
   ],
   "archetype": "DIRECT_SERVICE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Limited Basis",
+    "archetype_code": "DIRECT_SERVICE",
+    "archetype_label": "Frontline Relief",
+    "evidence_stage": "Early",
+    "signal_states": {
+      "evidence": "Limited",
+      "financial_health": "Strong",
+      "donor_fit": "Moderate",
+      "risk": "Limited"
+    },
+    "recommendation_cue": "Limited Match",
+    "recommendation_rationale": "Limited match due to weaker results and/or higher uncertainty; review methodology details before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "45-4897385",
     "charity_name": "Ehsaas Foundation",
-    "amal_score": 55,
+    "amal_score": 58,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-02-04 20:45:55",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 32,
       "data_confidence": 0.3,
-      "impact": 24
+      "impact": 27
     },
     "score_details": {
       "alignment": {
@@ -251,12 +270,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 6.5 months (COMFORTABLE)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 3,
+            "evidence": "Working capital: 6.5 months (RESILIENT)",
+            "improvement_suggestion": null,
+            "improvement_value": 0,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 4,
+            "scored": 7,
             "status": "full"
           },
           {
@@ -299,42 +318,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "DIRECT_PROVISION",
         "impact_design_categories": [],
-        "rationale": "Delivery: direct provision; Impact 24/50",
+        "rationale": "Delivery: direct provision; Impact 27/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 24
+        "score": 27
       },
-      "judge_issues": [
-        {
-          "field": "source.website",
-          "judge": "data_completeness",
-          "message": "Critical source 'website' failed: No data found on any pages",
-          "severity": "warning"
-        },
-        {
-          "field": "propublica.expense_ratio",
-          "judge": "crawl_quality",
-          "message": "Expenses ($1,880,017) exceed revenue ($1,324,818) by 42% - may be drawing down reserves",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -1,
       "risks": {
         "overall_risk_level": "LOW",
@@ -350,7 +337,7 @@
         ],
         "total_deduction": -1
       },
-      "score_summary": "Ehsaas Foundation Inc earns 55/100 due to good alignment and moderate impact (minor risk deductions applied).",
+      "score_summary": "Ehsaas Foundation Inc shows good alignment and moderate impact (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -362,513 +349,34 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Ehsaas Foundation Inc is dedicated to the relief of poverty and is categorized as a humanitarian organization.",
+          "claim": "Ehsaas Foundation Inc focuses on the relief of poverty and humanitarian programs like Ration and Qurbani.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/454897385"
         },
         {
-          "claim": "The charity reported total revenue of $1,324,818, a program expense ratio of 87.8%, and operates Ration and Qurbani programs.",
+          "claim": "The charity reported total revenue of $1,324,818, a program expense ratio of 87.8%, working capital of 6.5 months, and fundraising efficiency of $0.00 per $1 raised.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/454897385"
         }
       ],
-      "amal_score_rationale": "The charity earns a moderate overall score due to its efficient financial management and high program spending, though its total score is tempered by limited external data and a lack of detailed impact reporting.",
+      "amal_score_rationale": "The charity demonstrates strong financial efficiency and a clear humanitarian focus, though its overall score is tempered by limited external data and a moderate impact directness rating.",
       "areas_for_improvement": [
-        "Limited public data regarding specific impact metrics and cost per beneficiary",
-        "Low data confidence score suggests a need for increased transparency and third-party verification"
+        "Limited public data regarding specific cost-per-beneficiary metrics",
+        "Low data confidence due to reliance on basic financial filings without third-party impact verification"
       ],
       "dimension_explanations": {
-        "alignment": "Ehsaas Foundation Inc aligns with humanitarian causes by addressing urgent needs through sadaqah-eligible giving [1]. The alignment score reflects a medium fit for donors due to the direct nature of the aid, though the track record is based on limited available documentation [2].",
-        "impact": "The organization demonstrates a commitment to direct provision, spending 87.8% of its $1,324,818 revenue on programs like Ration and Qurbani [2]. While financial health is stable with 6.5 months of working capital, the lack of specific cost-per-beneficiary data results in a medium impact score [1]."
+        "alignment": "With a humanitarian focus on urgent poverty relief, the organization shows medium alignment for donors seeking to provide sadaqah [1]. The mission is centered on crisis help and poverty relief, though the track record is primarily evidenced through standard financial disclosures [2].",
+        "impact": "The organization focuses on direct provision of aid, such as food rations, which contributes to an impact score of 27/50 [1]. While it maintains a high program expense ratio of 87.8%, the lack of specific cost-per-beneficiary data results in a lower data confidence level [2]."
       },
-      "headline": "Ehsaas Foundation Inc provides critical humanitarian relief through direct poverty alleviation and food security programs.",
+      "headline": "Ehsaas Foundation Inc provides critical humanitarian relief through direct food assistance and seasonal programs for those in crisis.",
       "strengths": [
-        "High program expense ratio of 87.8% ensures the vast majority of funds reach those in need",
-        "Exceptional fundraising efficiency with a cost of $0.00 per $1 raised"
+        "High program expense ratio of 87.8% ensures the majority of funds reach those in need",
+        "Exceptional fundraising efficiency of $0.00 per $1 raised",
+        "Strong liquidity with 6.5 months of working capital"
       ],
-      "summary": "Ehsaas Foundation Inc is a non-profit organization dedicated to the relief of poverty and assisting the poor during times of crisis [1]. The organization operates key programs including Ration distribution and Qurbani services to address immediate humanitarian needs [2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "relief of poverty and helping the poor in times of crisis",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "Relief of Poverty and Help the Poor in Time of Crisis",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/454897385"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "ration distribution and Qurbani services",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Ration distribution and Qurbani services",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/454897385"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Bangladesh, Turkey, India, Pakistan, and Mali",
-          "confidence": 0.9,
-          "id": "[3]",
-          "quote": "Areas Served: Bangladesh, Turkey, India, Pakistan, Mali",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/454897385"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $1,324,818",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Total revenue: $1,324,818",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/454897385"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "public contributions",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Contributions: $1,324,818",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/454897385"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.00 per $1 raised",
-          "confidence": 0.95,
-          "id": "[6]",
-          "quote": "Fundraising Efficiency: $0.00",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/454897385"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 87.8%",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Program Expense Ratio: 87.8%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/454897385"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$1,633,400 in total assets",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Total assets: $1,633,400",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/454897385"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "working capital ratio of 6.5 months",
-          "confidence": 0.9,
-          "id": "[9]",
-          "quote": "Working Capital Ratio (years): 1.4",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/454897385"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "liabilities of $612,684",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Total liabilities: $612,684",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/454897385"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "-17.4% revenue CAGR",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Revenue: 2021: $1.94M, 2023: $1.32M",
-          "source_name": "Internal Financial Analysis",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/454897385"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "independent board membership of 60%",
-          "confidence": 0.9,
-          "id": "[12]",
-          "quote": "Independent Board Members: 60%",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/454897385"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "no public data regarding beneficiary counts",
-          "confidence": 0.8,
-          "id": "[13]",
-          "quote": "Missing beneficiary data",
-          "source_name": "Impact Analysis",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/454897385"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "low data confidence score of 0.30",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Data Confidence: 0.3",
-          "source_name": "AMAL Evaluation Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/454897385"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "industry standard of 75%",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Industry Standard: 75%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/454897385"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "establishing a dedicated sadaqah-giving framework",
-          "confidence": 0.9,
-          "id": "[16]",
-          "quote": "Improvement: Add a dedicated zakat page or program",
-          "source_name": "Alignment Improvement Suggestion",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/454897385"
-        }
-      ],
-      "amal_score_rationale": "The charity earns a moderate overall score due to its efficient financial management and high program spending, though its total score is tempered by limited external data and a lack of detailed impact reporting.",
-      "amal_scores": {
-        "amal_score": 55,
-        "confidence_scores": {
-          "alignment": 32,
-          "data_confidence": 0.3,
-          "impact": 24
-        },
-        "confidence_tier": "LOW",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Financial Transparency and Reporting",
-          "citation_ids": [
-            "[7]"
-          ],
-          "context": "The current <cite id=\"7\">program expense ratio of 87.8%</cite> in tax filings is significantly lower than the peer median of 89.7%, suggesting a need for more precise financial reporting."
-        },
-        {
-          "area": "Impact Measurement",
-          "citation_ids": [
-            "[13]"
-          ],
-          "context": "There is currently <cite id=\"13\">no public data regarding beneficiary counts</cite>, making it difficult to assess the cost-effectiveness of ration distributions."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "none",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "This organization is not currently evaluated by the BBB Wise Giving Alliance."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[11]",
-          "[14]"
-        ],
-        "mitigation_notes": "The organization maintains high reserves (6.5 months) which mitigates the risk of immediate service disruption due to revenue decline.",
-        "risk_factors": [
-          "<cite id=\"11\">Three-year revenue growth is -17.4%</cite>",
-          "<cite id=\"14\">Low data confidence (0.30) due to limited transparency</cite>"
-        ],
-        "summary": "The primary concerns involve <cite id=\"11\">declining revenue trends</cite> and a lack of granular impact data."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 7,
-          "rating": 9
-        },
-        "high_confidence_count": 14,
-        "total_count": 16,
-        "unique_sources": 2
-      },
-      "confidence": {
-        "data_freshness": "Financial data current through 2023 tax year",
-        "data_gaps": [
-          "Missing audited financials",
-          "Inconsistent program expense reporting",
-          "No beneficiary metrics"
-        ],
-        "level": "LOW",
-        "notes": "Evaluation is limited by low transparency and lack of third-party impact verification.",
-        "score": 30,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 30,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "No audited financials",
-          "No beneficiary data",
-          "Low program expense ratio in 990"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 16,
-        "unique_sources": 2,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[1]",
-            "[3]",
-            "[16]"
-          ],
-          "explanation": "The organization shows medium alignment for Muslim donors by serving <cite id=\"3\">Muslim-majority regions</cite> and addressing <cite id=\"1\">high-urgency humanitarian needs</cite>.",
-          "improvement": "Alignment could be strengthened by <cite id=\"16\">establishing a dedicated sadaqah-giving framework</cite> that clearly outlines the impact of faith-based contributions."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]",
-            "[13]",
-            "[14]"
-          ],
-          "explanation": "Credibility is currently limited by a <cite id=\"14\">low data confidence score of 0.30</cite> and the lack of a full rating from Charity Navigator. While the organization is <cite id=\"1\">legally registered and files Form 990s</cite>, the absence of third-party audits or Candid transparency seals limits external verification.",
-          "improvement": "To improve credibility, the foundation should <cite id=\"13\">publish audited financial statements</cite> and pursue a Candid Seal of Transparency."
-        },
-        "impact": {
-          "citation_ids": [
-            "[2]",
-            "[7]",
-            "[13]",
-            "[15]"
-          ],
-          "explanation": "The impact score is driven by <cite id=\"2\">direct provision of aid</cite> and a clear theory of change. However, the <cite id=\"7\">87.8% program ratio</cite> reported in 2023 filings is a concern compared to the <cite id=\"15\">industry standard of 75%</cite>.",
-          "improvement": "The charity could improve this dimension by <cite id=\"13\">tracking and reporting specific outcomes</cite> such as the number of individuals fed or households supported."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "evidence_rigor": "Grade C - Clear theory of change but no outcome data",
-        "geographic_focus": [
-          "Bangladesh",
-          "Turkey",
-          "India",
-          "Pakistan",
-          "Mali"
-        ],
-        "giving_style": "Direct service",
-        "tax_deductible": true,
-        "zakat_asnaf_served": null,
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.734,
-        "annual_revenue": 1324818,
-        "citation_ids": [
-          "[4]",
-          "[7]",
-          "[11]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0,
-        "industry_program_ratio": 0.75,
-        "peer_count": 58,
-        "peer_program_ratio_median": 0.897,
-        "program_expense_ratio": 0.8775,
-        "reserves_months": 16.8,
-        "revenue_cagr_3yr": -17.4,
-        "working_capital_months": 6.5,
-        "yearly_financials": [
-          {
-            "expenses": 1880017,
-            "net_assets": 1020716,
-            "revenue": 1324818,
-            "year": 2023
-          },
-          {
-            "expenses": 1128191,
-            "net_assets": 1575915,
-            "revenue": 1888221,
-            "year": 2022
-          },
-          {
-            "expenses": 1140610,
-            "net_assets": 815885,
-            "revenue": 1941774,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct provision of services rather than grantmaking",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "International"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "Ehsaas Foundation Inc provides critical humanitarian relief through direct poverty alleviation and food security programs.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize low-overhead fundraising and want to support direct food aid in diverse international crisis zones through sadaqah.",
-        "citation_ids": [
-          "[6]",
-          "[7]",
-          "[11]"
-        ],
-        "donor_motivations": [
-          "Value organizations where $0.00 is spent on professional fundraisers",
-          "Want to support immediate relief like Qurbani and food rations",
-          "Prefer supporting mid-sized organizations with established geographic footprints"
-        ],
-        "giving_considerations": [
-          "The organization has a declining revenue trend (-17.4% CAGR)",
-          "Financial reporting in tax filings shows a lower program ratio than peers",
-          "Limited public evidence of long-term impact beyond immediate relief"
-        ],
-        "not_ideal_for": ""
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[13]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects a clear delivery model but a <cite id=\"13\">lack of verified outcome metrics</cite> or external evaluations.",
-        "external_evaluations": [],
-        "outcome_tracking_years": 0,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "The organization provides direct food and crisis relief to reduce immediate suffering and poverty in vulnerable communities.",
-        "why_evidence_matters": "Evidence ensures that food distribution programs effectively reach the most vulnerable without significant leakage."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[11]"
-        ],
-        "founded_year": 2014,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": -17.4,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With <cite id=\"11\">revenue declining by 17.4%</cite>, the organization has significant capacity to absorb new funding to restore previous service levels.",
-        "strategic_priorities": [
-          "Poverty relief",
-          "Crisis assistance",
-          "Food security"
-        ],
-        "years_operating": 12
-      },
-      "organizational_capacity": {
-        "board_size": 5,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": "Not Disclosed",
-        "citation_ids": [
-          "[3]",
-          "[12]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Bangladesh, Turkey, India, Pakistan, Mali",
-        "has_conflict_policy": true,
-        "has_financial_audit": false,
-        "independent_board_pct": 0.6,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 2,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[6]",
-          "[15]"
-        ],
-        "differentiator": "Distinguished by <cite id=\"6\">zero-cost fundraising</cite> but lags behind the <cite id=\"15\">89.7% peer program ratio median</cite>.",
-        "peer_group": "International Humanitarian Relief",
-        "similar_orgs": [
-          "KinderUSA",
-          "International Aid Charity",
-          "Rebuilding Alliance"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus and size",
-          "name": "KinderUSA"
-        },
-        {
-          "differentiator": "Similar humanitarian scope",
-          "name": "International Aid Charity"
-        },
-        {
-          "differentiator": "Smaller organization with similar relief focus",
-          "name": "Rebuilding Alliance"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[6]"
-          ],
-          "detail": "The organization operates with a <cite id=\"6\">cost of $0.00 per $1 raised</cite>, ensuring that no donor funds are diverted to professional fundraising fees.",
-          "point": "Exceptional Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[9]"
-          ],
-          "detail": "The foundation maintains <cite id=\"9\">6.5 months of working capital</cite> in working capital, which is well above the industry standard for humanitarian relief.",
-          "point": "Strong Liquidity and Reserves"
-        },
-        {
-          "citation_ids": [
-            "[3]"
-          ],
-          "detail": "Despite its mid-sized revenue, the charity manages programs across <cite id=\"3\">five countries including Mali and Turkey</cite>.",
-          "point": "Broad Geographic Reach"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Ehsaas Foundation Inc demonstrates a high degree of financial stability, evidenced by its <cite id=\"8\">$1,633,400 in total assets</cite> against <cite id=\"10\">liabilities of $612,684</cite>. This strong balance sheet allows the organization to sustain operations even during periods of revenue volatility, such as the <cite id=\"11\">-17.4% revenue CAGR</cite> observed over the last three years. Furthermore, the organization's governance structure includes an <cite id=\"12\">independent board membership of 60%</cite>, providing a baseline level of oversight for its international relief activities."
-      ],
-      "summary": "Ehsaas Foundation Inc is a humanitarian organization dedicated to the <cite id=\"1\">relief of poverty and helping the poor in times of crisis</cite>. The organization focuses on direct service delivery, primarily through <cite id=\"2\">ration distribution and Qurbani services</cite> to address food insecurity in regions including <cite id=\"3\">Bangladesh, Turkey, India, Pakistan, and Mali</cite>. In the 2023 fiscal year, the foundation reported <cite id=\"4\">total revenue of $1,324,818</cite>, which was entirely sourced from <cite id=\"5\">public contributions</cite>. A defining characteristic of its financial model is its <cite id=\"6\">fundraising efficiency of $0.00 per $1 raised</cite>, indicating that the organization does not incur traditional fundraising costs to generate its revenue. While the foundation maintains a <cite id=\"7\">program expense ratio of 87.8%</cite> according to its most recent tax filings, other reporting suggests a higher internal allocation toward direct services. The organization currently holds <cite id=\"8\">$1,633,400 in total assets</cite> and maintains a <cite id=\"9\">working capital ratio of 6.5 months</cite>, providing a significant financial cushion for its international operations.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "Ehsaas Foundation Inc is a non-profit organization dedicated to the relief of poverty and assisting the poor during times of crisis [1]. The organization reported a total revenue of $1,324,818 and operates primary programs including Ration distribution and Qurbani services [2]."
     }
   }
 }

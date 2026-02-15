@@ -12,8 +12,11 @@ import { useCommunityMember } from '../src/auth';
 import { BookmarkButton } from '../src/components/BookmarkButton';
 import { getWalletType, formatWalletTag } from '../src/utils/walletUtils';
 import { formatShortRevenue, formatPercent } from '../src/utils/formatters';
-import { formatEvidenceForDonors, formatComponentName, stripCitations } from '../src/utils/scoreUtils';
+import { deriveUISignalsFromCharity, formatEvidenceForDonors, formatComponentName, stripCitations } from '../src/utils/scoreUtils';
+import { getEvidenceStageLabel } from '../src/utils/scoreConstants';
 import type { CharityProfile, ScoreComponentDetail, ImpactDetails, AlignmentDetails } from '../types';
+import { RecommendationCue } from '../src/components/RecommendationCue';
+import { SignalConstellation } from '../src/components/SignalConstellation';
 
 // Category labels for human-readable display
 const CATEGORY_LABELS: Record<string, string> = {
@@ -614,29 +617,57 @@ export function ComparePage() {
             </div>
             <div className="min-w-[720px]">
 
-            {/* GMG Scores Section */}
-            <SectionHeader title="GMG Scores" isDark={isDark} />
+            {/* Evaluation Signals Section */}
+            <SectionHeader title="Evaluation Signals" isDark={isDark} />
             <div className="px-4">
               <CompareRow
-                label="Overall Score"
-                values={charities.map(c => <ScoreBadge score={c.amalEvaluation?.amal_score} isDark={isDark} />)}
+                label="Archetype"
+                values={charities.map(c => (c.ui_signals_v1 || deriveUISignalsFromCharity(c)).archetype_label)}
                 isDark={isDark}
                 highlight
               />
               <CompareRow
-                label="Impact"
-                values={charities.map(c => <DimensionScore score={c.amalEvaluation?.confidence_scores?.impact} max={50} isDark={isDark} />)}
+                label="Evidence Stage"
+                values={charities.map(c => getEvidenceStageLabel((c.ui_signals_v1 || deriveUISignalsFromCharity(c)).evidence_stage))}
                 isDark={isDark}
               />
               <CompareRow
-                label="Alignment"
-                values={charities.map(c => <DimensionScore score={c.amalEvaluation?.confidence_scores?.alignment} max={50} isDark={isDark} />)}
+                label="Recommendation"
+                values={charities.map(c => {
+                  const ui = c.ui_signals_v1 || deriveUISignalsFromCharity(c);
+                  return <RecommendationCue cue={ui.recommendation_cue} rationale={null} isDark={isDark} compact />;
+                })}
+                isDark={isDark}
+              />
+              <CompareRow
+                label="Signals"
+                values={charities.map(c => {
+                  const ui = c.ui_signals_v1 || deriveUISignalsFromCharity(c);
+                  return <SignalConstellation signals={ui.signal_states} isDark={isDark} compact showLabels={false} />;
+                })}
                 isDark={isDark}
               />
             </div>
 
-            {/* Score Analysis Section */}
-            <CollapsibleSection title="Score Analysis" isDark={isDark} defaultOpen>
+            {/* Detailed Assessment Section */}
+            <CollapsibleSection title="Detailed Assessment" isDark={isDark} defaultOpen={false}>
+              <div className="px-4">
+                <CompareRow
+                  label="GMG Score"
+                  values={charities.map(c => <ScoreBadge score={c.amalEvaluation?.amal_score} isDark={isDark} />)}
+                  isDark={isDark}
+                />
+                <CompareRow
+                  label="Impact"
+                  values={charities.map(c => <DimensionScore score={c.amalEvaluation?.confidence_scores?.impact} max={50} isDark={isDark} />)}
+                  isDark={isDark}
+                />
+                <CompareRow
+                  label="Alignment"
+                  values={charities.map(c => <DimensionScore score={c.amalEvaluation?.confidence_scores?.alignment} max={50} isDark={isDark} />)}
+                  isDark={isDark}
+                />
+              </div>
               <div className="px-4">
                 {(['impact', 'alignment'] as DimensionKey[]).map(dimension => {
                   const componentNames = getUnionComponentNames(charities, dimension);

@@ -2,7 +2,7 @@
   "id": "88-3709826",
   "ein": "88-3709826",
   "name": "Saylani Welfare Trust Usa",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Saylani Welfare International Trust has been working since 1999 to improve the conditions of the less privileged, helpless, and handicapped individuals ...",
   "programs": [
     "Dastarkhwan (Daily Food)",
@@ -60,7 +60,11 @@
     "netAssets": 100730,
     "workingCapitalMonths": "0.70"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 5,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Needy",
@@ -73,7 +77,7 @@
   },
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-09 21:38:14",
+  "lastUpdated": "2026-02-14 19:36:21",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -194,17 +198,36 @@
     "On the \"USA - Donations\" page of Saylani Welfare Trust, \"Sadqah & Zakat\" is explicitly listed as a donation category. Additionally, the Donation FAQs section includes the question, \"Can I pay my zakat donation or only sadqa (non-zakat) donaitons are accepted?\" (Source: https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGP77zAG90-w2bZSgGF7htcZNo20nddZRJoQ-f_QJOsu7hiu1Kn1bAATmFaCrMo7coLkQEdqfHYh7mleoBgwnyL1q4dqifqnOqrmprIsYIMOfMFl8CQBbkP8caWU9CUuw==)"
   ],
   "archetype": "DIRECT_SERVICE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "DIRECT_SERVICE",
+    "archetype_label": "Frontline Relief",
+    "evidence_stage": "Established",
+    "signal_states": {
+      "evidence": "Limited",
+      "financial_health": "Limited",
+      "donor_fit": "Strong",
+      "risk": "Limited"
+    },
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "88-3709826",
     "charity_name": "Saylani Welfare Trust Usa",
-    "amal_score": 70,
+    "amal_score": 69,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-02-04 20:28:28",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 39,
       "data_confidence": 0.95,
-      "impact": 35
+      "impact": 34
     },
     "score_details": {
       "alignment": {
@@ -291,12 +314,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 0.7 months (TIGHT)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
+            "evidence": "Working capital: 0.7 months (CRITICAL)",
+            "improvement_suggestion": "Increase operating reserves to reduce continuity risk; target at least ~3 months unless a different policy is explicitly justified.",
             "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 2,
+            "scored": 1,
             "status": "full"
           },
           {
@@ -339,24 +362,10 @@
         "cost_per_beneficiary": 9.59742,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "$9.60/beneficiary; Delivery: direct service; Impact 35/50",
+        "rationale": "$9.60/beneficiary; Delivery: direct service; Impact 34/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 35
+        "score": 34
       },
-      "judge_issues": [
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -4,
       "risks": {
         "overall_risk_level": "MODERATE",
@@ -386,7 +395,7 @@
         ],
         "total_deduction": -4
       },
-      "score_summary": "Saylani Welfare Trust USA earns 70/100 due to strong alignment and strong impact, with zakat compliance (minor risk deductions applied).",
+      "score_summary": "Saylani Welfare Trust USA shows strong alignment and good impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": "fuqara",
         "bonus_points": 0,
@@ -398,517 +407,40 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity reported total revenue of $1,727,397 and a program expense ratio of 98.8%.",
+          "claim": "The charity reported total revenue of $1,727,397 and operates programs like Saylani Dastarkhwan.",
           "id": "[1]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/883709826"
         },
         {
-          "claim": "The organization holds a 90.5/100 score with a fundraising efficiency of $0.00 per $1 raised and 0.7 months of working capital.",
+          "claim": "The organization has a 90.5/100 score, a 98.8% program expense ratio, 0.7 months of working capital, and $0.00 fundraising efficiency.",
           "id": "[2]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/883709826"
         },
         {
-          "claim": "The organization is Zakat-eligible and provides daily food through the Dastarkhwan program.",
+          "claim": "The organization provides various donation options including Zakat-eligible giving methods.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.saylaniwelfare.com/donate"
         }
       ],
-      "amal_score_rationale": "The charity earns a 70/100 GMG score due to its high program efficiency and direct service model, though its overall score is tempered by low working capital reserves.",
+      "amal_score_rationale": "The charity demonstrates a high commitment to direct service delivery and financial transparency, though its low working capital reserves suggest a need for stronger long-term financial cushioning.",
       "areas_for_improvement": [
-        "Limited working capital of 0.7 months, indicating a need for greater cash reserves",
-        "Dependency on immediate donations to sustain ongoing operations"
+        "Limited liquidity with only 0.7 months of working capital",
+        "Dependency on immediate cash flow for operations"
       ],
       "dimension_explanations": {
-        "alignment": "Saylani Welfare Trust USA shows high donor fit for those seeking Zakat-eligible causes that address extreme poverty [3]. The organization has a long-standing track record since 1999 of serving vulnerable populations through medical and nutritional support [1][3].",
-        "impact": "The organization demonstrates high financial efficiency with a program expense ratio of 98.8% and a total revenue of $1,727,397 [1][2]. While it provides direct services like the Saylani Dastarkhwan food program, its financial health is constrained by having only 0.7 months of working capital [2]."
+        "alignment": "With a focus on extreme poverty and Zakat-eligible programs, the charity offers a high donor fit for those seeking to fulfill religious obligations or support urgent humanitarian needs [3]. Its long-standing track record since 1999 reinforces its reliability in the social welfare sector [1].",
+        "impact": "The organization achieves a high impact by directing 98.8% of its $1,727,397 total revenue toward its programs, such as daily food services and medical aid [1][2]. This direct service model ensures that nearly every dollar donated goes toward alleviating extreme poverty [2]."
       },
-      "headline": "Saylani Welfare Trust USA provides critical humanitarian relief and food security to the less privileged with an exceptional focus on direct program spending.",
+      "headline": "Saylani Welfare Trust USA provides critical humanitarian relief and food security to the less privileged with an exceptional focus on direct program delivery.",
       "strengths": [
-        "Exceptional program expense ratio of 98.8%, ensuring nearly all funds reach those in need",
-        "High fundraising efficiency with $0.00 spent to raise every $1",
-        "Verified Zakat-eligible status for Muslim donors"
+        "Exceptional program expense ratio of 98.8%",
+        "Highly efficient fundraising with $0.00 spent per $1 raised",
+        "Zakat-eligible status for Muslim donors"
       ],
-      "summary": "Established as a branch of an international trust operating since 2022, Saylani Welfare Trust USA focuses on improving conditions for the handicapped and helpless through medical services and daily food programs [1][3]. The organization maintains a high Charity Navigator score of 90.5/100, reflecting its commitment to financial accountability and transparency [2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "$1,727,397 in total revenue",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "Total revenue: $1,727,397",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/883709826"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "98.8% program expense ratio",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Program service expenses: $1,668,326 (100% of total expenses)",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/883709826"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.00 spent to raise every $1",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "$0.00 per $1 raised",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/883709826"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "overall score of 90.90.5/100 from Charity Navigator",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Overall Score 90.5/100",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/883709826"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "direct service delivery in Pakistan",
-          "confidence": 0.9,
-          "id": "[5]",
-          "quote": "Saylani Welfare International Trust has been operating since 2022 to improve the conditions of the less privileged... in Pakistan",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://www.saylaniwelfare.com/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Gold Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Candid Seal: Gold",
-          "source_name": "Candid",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/883709826"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 1263.3%",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Revenue growth from $126,706 to $1,727,397",
-          "source_name": "Form 990 Analysis",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/883709826"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "only 0.7 months of working capital",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Working Capital Ratio (months): 0.7",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/883709826"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "no documented theory of change",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Theory of change: ABSENT",
-          "source_name": "AMAL Score Analysis",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/883709826"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "accountability score of 90",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Accountability: 81",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/883709826"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cost per beneficiary of $9.60",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "$9.60/beneficiary",
-          "source_name": "AMAL Score Analysis",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/883709826"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "accepts Zakat",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://www.saylaniwelfare.com/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "eight specific asnaf categories",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Zakat Categories: fuqara, masakin, amil, muallaf, riqab, gharimin, fisabilillah, ibn_sabil",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://www.saylaniwelfare.com/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "expanding services to more underserved regions",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Improvement: Expand services to underserved populations",
-          "source_name": "AMAL Score Analysis",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/883709826"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer median of 98.3%",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Peer Program Ratio Median: 98.3%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/883709826"
-        }
-      ],
-      "amal_score_rationale": "The charity earns a 70/100 GMG score due to its high program efficiency and direct service model, though its overall score is tempered by low working capital reserves.",
-      "amal_scores": {
-        "amal_score": 70,
-        "confidence_scores": {
-          "alignment": 39,
-          "data_confidence": 0.95,
-          "impact": 35
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Liquidity and Reserves",
-          "citation_ids": [
-            "[8]"
-          ],
-          "context": "The organization has <cite id=\"8\">only 0.7 months of working capital</cite>, which creates risk during funding fluctuations."
-        },
-        {
-          "area": "Impact Documentation",
-          "citation_ids": [
-            "[9]"
-          ],
-          "context": "There is currently <cite id=\"9\">no documented theory of change</cite> or long-term outcome tracking available for public review."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": null,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "BBB assessment data is not currently available for this entity."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[8]",
-          "[9]"
-        ],
-        "mitigation_notes": "The organization's rapid revenue growth may eventually allow for the accumulation of safer reserve levels.",
-        "risk_factors": [
-          "<cite id=\"8\">Extremely low working capital (0.7 months)</cite>",
-          "<cite id=\"9\">Lack of verified long-term outcome data</cite>"
-        ],
-        "summary": "The primary concern is financial sustainability; with <cite id=\"8\">less than one month of operating reserves</cite>, the charity is highly vulnerable to economic shifts."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 4,
-          "rating": 8,
-          "website": 3
-        },
-        "high_confidence_count": 15,
-        "total_count": 15,
-        "unique_sources": 3
-      },
-      "confidence": {
-        "data_freshness": "Data from 2023 Form 990 and 2024 Charity Navigator ratings",
-        "data_gaps": [
-          "Missing employee count",
-          "No third-party impact evaluation"
-        ],
-        "level": "HIGH",
-        "notes": "Extremely high financial transparency and efficiency metrics.",
-        "score": 95,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 95,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing employee count",
-          "No third-party impact evaluation",
-          "Limited historical financial data"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 3,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[12]",
-            "[13]",
-            "[14]"
-          ],
-          "explanation": "The charity is a high fit for Muslim donors as it <cite id=\"12\">accepts Zakat</cite> and serves <cite id=\"13\">eight specific asnaf categories</cite> including the poor and needy.",
-          "improvement": "Alignment could be further improved by <cite id=\"14\">expanding services to more underserved regions</cite> with limited existing nonprofit coverage."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[4]",
-            "[6]",
-            "[9]",
-            "[10]"
-          ],
-          "explanation": "Donors can trust this charity due to its <cite id=\"4\">90.90.5/100 from Charity Navigator rating</cite> and its <cite id=\"6\">Gold Seal of Transparency</cite>. The organization also maintains an <cite id=\"10\">accountability score of 90</cite>.",
-          "improvement": "To strengthen credibility, the charity should <cite id=\"9\">document a clear theory of change</cite> and seek external evaluations of its programs."
-        },
-        "impact": {
-          "citation_ids": [
-            "[2]",
-            "[8]",
-            "[11]"
-          ],
-          "explanation": "Impact is driven by a <cite id=\"11\">cost per beneficiary of $9.60</cite>, which is considered exceptional for extreme poverty interventions. The <cite id=\"2\">100.0% program ratio</cite> ensures maximum resource flow to the field.",
-          "improvement": "The charity should <cite id=\"8\">build working capital reserves to 1-3 months</cite> to ensure organizational stability."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "EXTREME_POVERTY",
-        "citation_ids": [
-          "[1]",
-          "[12]",
-          "[13]"
-        ],
-        "evidence_rigor": "Grade C - Exceptional cost-efficiency but unverified outcomes",
-        "geographic_focus": [
-          "Pakistan"
-        ],
-        "giving_style": "Direct service",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)",
-          "amil",
-          "muallaf",
-          "riqab",
-          "gharimin",
-          "fisabilillah",
-          "ibn_sabil"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 1727397,
-        "citation_ids": [
-          "[1]",
-          "[4]",
-          "[7]",
-          "[8]"
-        ],
-        "cn_financial_score": 81,
-        "cn_overall_score": 90.5,
-        "fundraising_ratio": 0,
-        "industry_program_ratio": 0.75,
-        "peer_count": 3,
-        "peer_program_ratio_median": 0.983,
-        "program_expense_ratio": 0.9878,
-        "reserves_months": 0.7,
-        "revenue_cagr_3yr": 1263.3,
-        "transparency_score": 85,
-        "working_capital_months": 0.7,
-        "yearly_financials": [
-          {
-            "expenses": 1668326,
-            "net_assets": 100730,
-            "revenue": 1727397,
-            "year": 2023
-          },
-          {
-            "expenses": 85047,
-            "net_assets": 0,
-            "revenue": 126706,
-            "year": 2022
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 2815000,
-        "grant_count": 1,
-        "grant_strategy": "Funds its international parent organization to implement direct services.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Pakistan"
-        ],
-        "top_recipients": [
-          "Saylani Welfare International Trust (Pakistan)"
-        ],
-        "total_grants": 2815000
-      },
-      "headline": "Saylani Welfare Trust USA provides critical humanitarian relief and food security to the less privileged with an exceptional focus on direct program spending.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize maximum financial efficiency and want their zakat to fund direct, low-cost humanitarian services in Pakistan.",
-        "citation_ids": [
-          "[2]",
-          "[8]",
-          "[12]"
-        ],
-        "donor_motivations": [
-          "Want 100% of their donation to reach the field",
-          "Value high-volume, low-cost interventions like daily meals",
-          "Seek to support established Pakistani welfare institutions",
-          "Prioritize fulfilling Zakat through verified asnaf categories"
-        ],
-        "giving_considerations": [
-          "Gifts support a high-growth organization with tight liquidity",
-          "Impact is measured in outputs (meals/services) rather than long-term RCT data",
-          "Operations are concentrated specifically in Pakistan"
-        ],
-        "not_ideal_for": "Donors seeking high cash reserves for organizational stability or those requiring academic-grade impact evaluations."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[11]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects exceptional output efficiency ($9.60 per beneficiary) but a lack of external evaluations or multi-year outcome tracking.",
-        "external_evaluations": [],
-        "outcome_tracking_years": 0,
-        "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The organization operates on the logic that providing immediate food, medical, and educational relief to the 'helpless' directly reduces the suffering of those in extreme poverty.",
-        "why_evidence_matters": "Evidence ensures that high-volume feeding and medical programs are creating lasting changes in beneficiary welfare."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[7]"
-        ],
-        "founded_year": null,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": 1263.3,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"7\">CAGR of 1263.3%</cite> and massive unmet need in Pakistan, the charity can absorb significantly more capital.",
-        "strategic_priorities": [
-          "Expand Dastarkhwan food program",
-          "Scale IT Education (SMIT)",
-          "Improve medical service reach"
-        ],
-        "years_operating": 3
-      },
-      "organizational_capacity": {
-        "board_size": 5,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Listed",
-        "citation_ids": [
-          "[1]",
-          "[4]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Pakistan",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": null,
-        "payroll_to_revenue_pct": 0,
-        "programs_count": 5,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[2]",
-          "[15]"
-        ],
-        "differentiator": "Distinguished by a <cite id=\"2\">100.0% program ratio</cite> compared to a <cite id=\"15\">peer median of 98.3%</cite>.",
-        "peer_group": "Extreme Poverty Relief",
-        "similar_orgs": [
-          "Abdul Sattar Edhi International Foundation",
-          "Islamic Society of Central Jersey",
-          "GiveDirectly, Inc"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar humanitarian focus and size",
-          "name": "Abdul Sattar Edhi International Foundation"
-        },
-        {
-          "differentiator": "Similar community service focus",
-          "name": "Islamic Society of Central Jersey"
-        },
-        {
-          "differentiator": "Larger scale with more rigorous RCT evidence",
-          "name": "GiveDirectly, Inc"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[2]"
-          ],
-          "detail": "The organization maintains a <cite id=\"2\">98.8% program expense ratio</cite>, ensuring no donor funds are diverted to administrative overhead.",
-          "point": "Maximum Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[3]"
-          ],
-          "detail": "Saylani spends <cite id=\"3\">$0.00 to raise every $1</cite>, maximizing the impact of every contribution.",
-          "point": "Zero-Cost Fundraising"
-        },
-        {
-          "citation_ids": [
-            "[4]"
-          ],
-          "detail": "The charity earned a <cite id=\"4\">90.5/100 overall score from Charity Navigator</cite>, including a perfect score of 100 for Culture.",
-          "point": "Strong Accountability Rating"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Saylani Welfare Trust USA's financial model is built on extreme directness. According to their <cite id=\"1\">2023 Form 990</cite>, the organization managed to allocate its entire revenue toward program services. This is supported by a <cite id=\"6\">Gold Seal of Transparency from Candid</cite>, which reflects their willingness to share comprehensive data. Furthermore, their <cite id=\"7\">3-year revenue CAGR of 1263.3%</cite> indicates a rapidly scaling organization that has successfully tapped into donor trust to expand its reach in Pakistan."
-      ],
-      "summary": "Saylani Welfare Trust USA operates as a critical humanitarian bridge, providing essential services to the less privileged in Pakistan. The organization has demonstrated explosive growth, reporting <cite id=\"1\">$1,727,397 in total revenue</cite> for the 2023 tax year, a significant increase from the previous period. Their operations are characterized by an <cite id=\"2\">exceptional program expense ratio of 98.8%</cite>, meaning every dollar of revenue is directed toward their core missions of food security, medical services, and education. This financial efficiency is further highlighted by a <cite id=\"3\">fundraising efficiency of $0.00 spent to raise every $1</cite>, a rare metric that indicates a highly lean operation or significant volunteer-led support. The charity holds an <cite id=\"4\">overall score of 90.90.5/100 from Charity Navigator</cite>, which validates its commitment to accountability and transparency. Their primary impact is felt through the 'Dastarkhwan' program, which provides daily meals, and their expanding IT education initiatives designed to break the cycle of poverty. By focusing on <cite id=\"5\">direct service delivery in Pakistan</cite>, Saylani ensures that aid reaches the most vulnerable populations, including the handicapped and those in extreme poverty.",
-      "zakat_guidance": {
-        "classification": "fuqara",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "Established as part of a mission dating back to 1999, Saylani Welfare Trust USA works to improve conditions for handicapped and impoverished individuals through initiatives like the Saylani Dastarkhwan [1]. The organization maintains a high level of financial accountability, earning a 90.5/100 rating from Charity Navigator [2]."
     }
   }
 }

@@ -16,6 +16,8 @@ import {
   Target
 } from 'lucide-react';
 import { useCharities } from '../src/hooks/useCharities';
+import { useCalibrationReport } from '../src/hooks/useCalibrationReport';
+import { getEvidenceStageLabel } from '../src/utils/scoreConstants';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { MethodologyInsights } from '../components/MethodologyInsights';
 import { CauseAreaMatrix } from '../components/CauseAreaMatrix';
@@ -28,6 +30,13 @@ const getTopCharities = (charities: any[]) => {
     .slice(0, 12);
 };
 
+const CUE_DISPLAY_LABELS: Record<string, string> = {
+  'Strong Match': 'High Confidence',
+  'Good Match': 'Good Signals',
+  'Mixed Signals': 'Mixed Signals',
+  'Limited Match': 'Limited Signals',
+};
+
 export const MethodologyPage: React.FC = () => {
   React.useEffect(() => {
     document.title = 'Our Methodology | Good Measure Giving';
@@ -35,6 +44,7 @@ export const MethodologyPage: React.FC = () => {
   }, []);
   const { isDark } = useLandingTheme();
   const { charities, summaries, loading } = useCharities();
+  const { report: calibrationReport } = useCalibrationReport();
 
   // Get top-performing charities for showcase
   const topCharities = useMemo(() => getTopCharities(charities), [charities]);
@@ -477,6 +487,50 @@ export const MethodologyPage: React.FC = () => {
               <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>&lt;30 Emerging</div>
             </div>
           </div>
+
+          {/* Calibration Snapshot */}
+          {calibrationReport && (
+            <div className={`rounded-xl border p-4 mb-8 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <h3 className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>Calibration Snapshot</h3>
+                <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
+                  {new Date(calibrationReport.metadata.generated_at).toLocaleDateString()} · config {calibrationReport.metadata.config_version}
+                </p>
+              </div>
+              {calibrationReport.warnings.length > 0 && (
+                <div className={`mb-3 rounded-lg border p-3 ${isDark ? 'bg-amber-900/20 border-amber-800/40 text-amber-300' : 'bg-amber-50 border-amber-200 text-amber-800'}`}>
+                  <p className="text-xs font-semibold mb-1">Calibration warnings</p>
+                  <ul className="text-xs space-y-1">
+                    {calibrationReport.warnings.map((warning, idx) => (
+                      <li key={idx}>• {warning}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div>
+                  <p className={`text-[11px] uppercase tracking-wider ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Fallback</p>
+                  <p className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>{calibrationReport.fallback.rate_pct}%</p>
+                </div>
+                <div>
+                  <p className={`text-[11px] uppercase tracking-wider ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Near Threshold</p>
+                  <p className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>{calibrationReport.near_threshold.rate_pct}%</p>
+                </div>
+                <div>
+                  <p className={`text-[11px] uppercase tracking-wider ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Top Cue</p>
+                  <p className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {CUE_DISPLAY_LABELS[Object.entries(calibrationReport.distributions.recommendation_cue).sort((a, b) => b[1] - a[1])[0]?.[0] || ''] || '—'}
+                  </p>
+                </div>
+                <div>
+                  <p className={`text-[11px] uppercase tracking-wider ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Top Stage</p>
+                  <p className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {getEvidenceStageLabel(Object.entries(calibrationReport.distributions.evidence_stage).sort((a, b) => b[1] - a[1])[0]?.[0] || '') || '—'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Insights Visualization */}
           {loading ? (

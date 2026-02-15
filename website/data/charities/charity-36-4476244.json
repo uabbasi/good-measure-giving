@@ -2,7 +2,7 @@
   "id": "36-4476244",
   "ein": "36-4476244",
   "name": "Zakat Foundation of America",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Zakat Foundation of America fosters charitable giving to alleviate the immediate needs of poor communities and to establish long-term development projec...",
   "programs": [
     "Water",
@@ -54,7 +54,11 @@
     "netAssets": 28191082,
     "workingCapitalMonths": "17.60"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 5,
+    "independentBoardMembers": null,
+    "ceoCompensation": 135692
+  },
   "targeting": {
     "populationsServed": [
       "Needy",
@@ -102,7 +106,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:32:07",
+  "lastUpdated": "2026-02-14 19:35:56",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -1043,17 +1047,36 @@
     "Organization name implies zakat acceptance ('zakat foundation')"
   ],
   "archetype": "ASSET_CREATION",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Promising",
+    "archetype_code": "ASSET_CREATION",
+    "archetype_label": "Asset Creator",
+    "evidence_stage": "Verified",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Strong",
+      "donor_fit": "Strong",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "36-4476244",
     "charity_name": "Zakat Foundation of America",
-    "amal_score": 73,
+    "amal_score": 78,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:03:34",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 42,
       "data_confidence": 0.9,
-      "impact": 33
+      "impact": 38
     },
     "score_details": {
       "alignment": {
@@ -1141,11 +1164,11 @@
           },
           {
             "evidence": "Working capital: 17.6 months (HIGH)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 4,
+            "improvement_suggestion": "Document why reserves above your policy target are intentional (e.g., restrictions, volatility, planned commitments) and define deployment triggers.",
+            "improvement_value": 2,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 0,
+            "scored": 5,
             "status": "full"
           },
           {
@@ -1188,30 +1211,10 @@
         "cost_per_beneficiary": 1734.9,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "$1734.90/beneficiary; Delivery: direct service; Impact 33/50",
+        "rationale": "$1734.90/beneficiary; Delivery: direct service; Impact 38/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 33
+        "score": 38
       },
-      "judge_issues": [
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "baseline_narrative.jargon",
-          "judge": "narrative_quality",
-          "message": "Jargon detected in baseline narrative: 'asnaf categories'",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
@@ -1227,7 +1230,7 @@
         ],
         "total_deduction": -2
       },
-      "score_summary": "ZAKAT FOUNDATION OF AMERICA earns 73/100 due to strong alignment and good impact, with zakat compliance (minor risk deductions applied).",
+      "score_summary": "ZAKAT FOUNDATION OF AMERICA shows strong alignment and strong impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": "fuqara",
         "bonus_points": 0,
@@ -1239,442 +1242,58 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Financial fields including program expense ratio and working capital.",
+          "claim": "The organization maintains a 91.6% program expense ratio and 17.6 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/364476244"
         },
         {
-          "claim": "The organization is zakat-eligible and follows specific zakat policies.",
+          "claim": "The organization is zakat-eligible and follows specific asnaf categories for distribution.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.zakat.org/donate"
         },
         {
-          "claim": "Total revenue of $29,498,054 and fundraising efficiency of $0.04 per $1 raised.",
+          "claim": "Total revenue for the period was $29,498,054.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/364476244"
         },
         {
-          "claim": "Mission to alleviate immediate needs and establish long-term development projects.",
+          "claim": "The mission involves alleviating immediate needs and establishing long-term development projects.",
           "id": "[4]",
           "source_name": "Zakat Policy",
           "source_url": "https://cdn.zakat.org/public-assets/zakat-foundation-of-america-public-zakat-policy-draft-version-1.0.pdf"
         },
         {
-          "claim": "Details regarding orphan sponsorship and seasonal feeding programs.",
+          "claim": "Programs include orphan sponsorship and seasonal feeding initiatives.",
           "id": "[5]",
           "source_name": "Zakat Handbook",
           "source_url": "https://cdn.zakat.org/wp-content/uploads/zakat-book-1.pdf"
         },
         {
-          "claim": "Information on donation options and giving methods.",
-          "id": "[13]",
-          "source_name": "Charity Website - Donate",
-          "source_url": "https://www.zakat.org/donate"
+          "claim": "The foundation provides a structured framework for religious charitable giving and humanitarian aid.",
+          "id": "[6]",
+          "source_name": "Zakat Handbook",
+          "source_url": "https://cdn.zakat.org/wp-content/uploads/zakat-book-1.pdf"
         }
       ],
-      "amal_score_rationale": "The organization earns a solid 73/100 due to its high financial efficiency and strong alignment with donor values, though its impact score is moderated by the high cost of direct service delivery.",
+      "amal_score_rationale": "With a GMG score of 78/100, the organization demonstrates strong financial health and high alignment with donor expectations for humanitarian urgency and religious compliance.",
       "areas_for_improvement": [
-        "High cost per beneficiary relative to some peer humanitarian benchmarks",
-        "Opportunities to further increase transparency regarding specific program outcomes"
+        "High cost per beneficiary relative to some large-scale international aid benchmarks.",
+        "Enhancing public transparency regarding specific third-party impact evaluations."
       ],
       "dimension_explanations": {
-        "alignment": "With a high donor fit, the organization is a primary choice for those seeking zakat-eligible giving opportunities [2]. It addresses high-urgency humanitarian causes and maintains a strong financial position with 17.6 months of working capital, ensuring long-term stability [1][3].",
-        "impact": "The foundation demonstrates a commitment to direct service, maintaining a program expense ratio of 91.6% [1][3]. While the cost per beneficiary is calculated at 1734.9, the organization manages a diverse portfolio including orphan sponsorship and seasonal feeding programs to address urgent humanitarian needs [4][5]."
+        "alignment": "Scoring 42/50 in alignment, the foundation shows high donor fit for those seeking zakat-eligible causes and urgent humanitarian intervention [2]. The organization maintains a clear zakat policy and handbook to guide the distribution of funds for orphan sponsorship and seasonal feeding programs, establishing a reliable track record in the sector [4][6].",
+        "impact": "The organization achieves a high impact score of 38/50 by focusing on direct service delivery, maintaining a total revenue of $29,498,054 to fund its global operations [1][3]. Its financial health is robust, characterized by a 91.6% program expense ratio and a significant reserve of 17.6 months in working capital, which ensures organizational stability during crises [1]."
       },
-      "headline": "Zakat Foundation of America provides direct humanitarian relief and long-term development to vulnerable communities worldwide through zakat-eligible programs.",
+      "headline": "Zakat Foundation of America provides direct humanitarian relief and long-term development to vulnerable global communities through highly efficient charitable operations.",
       "strengths": [
-        "High program expense ratio of 91.6% ensuring most funds reach beneficiaries",
-        "Exceptional fundraising efficiency at only $0.04 per $1 raised",
-        "Strong liquidity with 17.6 months of working capital"
+        "High program expense ratio of 91.6%, ensuring the vast majority of funds reach those in need.",
+        "Exceptional fundraising efficiency with a cost of only $0.04 per $1 raised.",
+        "Strong liquidity position with 17.6 months of working capital available."
       ],
-      "summary": "The Zakat Foundation of America is a humanitarian organization dedicated to alleviating the immediate needs of poor communities while establishing sustainable development projects [4]. The organization is officially zakat-eligible, allowing donors to fulfill their religious obligations through various asnaf categories [2][13]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "17.6 months of working capital",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "Working Capital Ratio: 17.6 months",
-          "source_name": "Charity Navigator - Zakat Foundation",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/364476244"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "zakat-eligible institution",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Zakat Foundation of America is a zakat-eligible organization",
-          "source_name": "Zakat Foundation - Donate",
-          "source_type": "website",
-          "source_url": "https://www.zakat.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $29,498,054",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total Revenue: $29,498,054",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/364476244"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "alleviating the immediate needs of poor communities",
-          "confidence": 0.9,
-          "id": "[4]",
-          "quote": "fosters charitable giving to alleviate the immediate needs of poor communities",
-          "source_name": "Zakat Policy Draft",
-          "source_type": "evaluation",
-          "source_url": "https://cdn.zakat.org/public-assets/zakat-foundation-of-america-public-zakat-policy-draft-version-1.0.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "emergency relief, orphan care, and food security",
-          "confidence": 0.95,
-          "id": "[13]",
-          "quote": "Programs: Water, Education, Food Security, Emergency Relief, Orphan Care",
-          "source_name": "Zakat Foundation - Programs",
-          "source_type": "website",
-          "source_url": "https://www.zakat.org/donate"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a solid 73/100 due to its high financial efficiency and strong alignment with donor values, though its impact score is moderated by the high cost of direct service delivery.",
-      "amal_scores": {
-        "amal_score": 73,
-        "confidence_scores": {
-          "alignment": 42,
-          "data_confidence": 0.9,
-          "impact": 33
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Cost Efficiency per Beneficiary",
-          "citation_ids": [
-            "[4]"
-          ],
-          "context": "The current <cite id=\"4\">cost per beneficiary is $1,734.90</cite>, which is higher than some peer humanitarian benchmarks."
-        },
-        {
-          "area": "Geographic Expansion",
-          "citation_ids": [
-            "[4]"
-          ],
-          "context": "There is an opportunity to <cite id=\"4\">expand services to underserved regions</cite> with limited existing nonprofit coverage."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[1]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": null,
-        "standards_met": null,
-        "standards_not_met": [],
-        "summary": "The organization maintains high governance standards with an <cite id=\"1\">83% independent board</cite> and audited financials."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[4]"
-        ],
-        "mitigation_notes": "The organization's focus on long-term development projects often requires higher per-capita investment than simple emergency aid.",
-        "risk_factors": [
-          "<cite id=\"4\">Cost per beneficiary of $1,734.90</cite> may limit the total number of individuals served."
-        ],
-        "summary": "The primary concern is the <cite id=\"4\">high cost per beneficiary</cite> compared to high-efficiency humanitarian peers."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 2,
-          "form990": 6,
-          "rating": 4,
-          "website": 3
-        },
-        "high_confidence_count": 15,
-        "total_count": 15,
-        "unique_sources": 5
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023 tax year",
-        "data_gaps": [
-          "Missing full Charity Navigator star rating"
-        ],
-        "level": "HIGH",
-        "notes": "Strong financial and programmatic data available.",
-        "score": 90,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Zakat Policy PDF",
-          "Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 90,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "No Charity Navigator overall star rating",
-          "Limited employee count data"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 5,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[2]",
-            "[13]"
-          ],
-          "explanation": "Alignment is very high due to <cite id=\"2\">verified zakat eligibility</cite> and a focus on <cite id=\"13\">high-urgency humanitarian zones</cite>.",
-          "improvement": ""
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]",
-            "[4]"
-          ],
-          "explanation": "ZF maintains high credibility through its <cite id=\"1\">Gold Seal of Transparency</cite> and a board where <cite id=\"1\">83% of members are independent</cite>.",
-          "improvement": "Credibility could be further enhanced by publishing more detailed <cite id=\"4\">third-party impact evaluations</cite> for its major international programs."
-        },
-        "impact": {
-          "citation_ids": [
-            "[3]",
-            "[4]"
-          ],
-          "explanation": "Impact is driven by <cite id=\"3\">direct service delivery</cite> and a high program ratio, though the <cite id=\"4\">$1,734.90 cost per beneficiary</cite> suggests room for efficiency gains.",
-          "improvement": "To improve impact scores, the charity should focus on <cite id=\"4\">reducing the average cost per beneficiary</cite> through economies of scale."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[2]",
-          "[3]"
-        ],
-        "evidence_rigor": "Grade B - Verified outcomes and strong theory of change",
-        "geographic_focus": [
-          "Palestine",
-          "Syria",
-          "Iraq",
-          "Yemen",
-          "United States"
-        ],
-        "giving_style": "Direct service and grantmaking",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara",
-          "masakin",
-          "amil",
-          "muallaf",
-          "riqab",
-          "gharimin",
-          "fisabilillah",
-          "ibn_sabil"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.063,
-        "annual_revenue": 29498054,
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0.034,
-        "industry_program_ratio": 0.75,
-        "peer_count": 58,
-        "peer_program_ratio_median": 0.897,
-        "program_expense_ratio": 0.9159,
-        "reserves_months": 17.6,
-        "revenue_cagr_3yr": 18.7,
-        "transparency_score": 85,
-        "working_capital_months": 17.6,
-        "yearly_financials": [
-          {
-            "expenses": 19207320,
-            "net_assets": 28191082,
-            "revenue": 29498054,
-            "year": 2023
-          },
-          {
-            "expenses": 15054708,
-            "net_assets": 17882245,
-            "revenue": 19208557,
-            "year": 2022
-          },
-          {
-            "expenses": 16699500,
-            "net_assets": 13731847,
-            "revenue": 20921666,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "domestic_grants": 1932910,
-        "foreign_grants": 11898186,
-        "grant_count": 100,
-        "grant_strategy": "Distributes significant funding to international partners for direct service implementation.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Global",
-          "United States"
-        ],
-        "top_recipients": [
-          "Zakat Foundation Institute ($548K)",
-          "UC Berkeley Foundation ($169K)"
-        ],
-        "total_grants": 13831096
-      },
-      "headline": "Zakat Foundation of America provides direct humanitarian relief and long-term development to vulnerable communities worldwide through zakat-eligible programs.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to fulfill their zakat through a large-scale, established organization that balances immediate emergency relief with long-term development.",
-        "citation_ids": [
-          "[2]",
-          "[3]",
-          "[4]"
-        ],
-        "donor_motivations": [
-          "Want to fulfill zakat across all eight asnaf categories",
-          "Value high financial transparency and low fundraising overhead",
-          "Prefer organizations with a strong track record in Muslim-majority crisis zones"
-        ],
-        "giving_considerations": [
-          "Donations support a mix of direct services and grants to local partners",
-          "The organization has a high per-beneficiary cost due to its development focus",
-          "Strong liquidity suggests the organization is financially stable"
-        ],
-        "not_ideal_for": "Donors seeking the absolute lowest cost-per-life-saved metrics or those looking for small, grassroots-only operations."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[1]",
-          "[4]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "The organization has <cite id=\"4\">verified evidence and outcomes</cite> with a documented strategic approach to development.",
-        "external_evaluations": [
-          "Candid Gold Transparency metrics"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "ZF utilizes a <cite id=\"4\">strong theory of change</cite> that links immediate charitable giving to long-term individual and community growth.",
-        "why_evidence_matters": "Evidence ensures that high-cost interventions are actually resulting in the promised long-term community development."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[3]",
-          "[4]"
-        ],
-        "founded_year": null,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": 18.7,
-        "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "With a <cite id=\"3\">revenue CAGR of 18.7%</cite> and high liquidity, the organization is well-positioned to expand its footprint.",
-        "strategic_priorities": [
-          "Expand services to underserved populations",
-          "Maintain high programmatic reinvestment"
-        ],
-        "years_operating": 23
-      },
-      "organizational_capacity": {
-        "board_size": 5,
-        "ceo_compensation": 135692,
-        "ceo_compensation_pct_revenue": 0.46,
-        "ceo_name": "Halil Demir",
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Global (Africa, Middle East, Europe, USA)",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 0.83,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "differentiator": "ZF's <cite id=\"3\">90.3% program ratio</cite> is slightly above the <cite id=\"1\">peer median of 89.7%</cite>.",
-        "peer_group": "Humanitarian Relief Organizations",
-        "similar_orgs": [
-          "Baitulmaal, Inc.",
-          "ICNA Relief",
-          "UNRWA"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on orphan care and humanitarian relief",
-          "name": "Baitulmaal, Inc."
-        },
-        {
-          "differentiator": "Stronger focus on domestic US social services",
-          "name": "ICNA Relief"
-        },
-        {
-          "differentiator": "Larger scale with a specific focus on Palestinian refugees",
-          "name": "UNRWA"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]",
-            "[3]"
-          ],
-          "detail": "The organization directs <cite id=\"3\">90.3% of its total expenses</cite> toward program services, exceeding the <cite id=\"1\">industry standard of 75%</cite>.",
-          "point": "High Programmatic Reinvestment"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "ZF demonstrates lean operations by spending only <cite id=\"1\">$0.04 to raise every $1</cite> in charitable contributions.",
-          "point": "Exceptional Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The foundation maintains <cite id=\"1\">17.6 months of working capital</cite>, providing significant stability for long-term development projects.",
-          "point": "Robust Financial Liquidity"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Zakat Foundation of America's financial health is anchored by a <cite id=\"3\">3-year revenue CAGR of 18.7%</cite>, indicating strong growth and donor trust. This growth is matched by a commitment to transparency, as evidenced by their <cite id=\"1\">Gold Seal of Transparency from Candid</cite>. Furthermore, the organization acts as a significant grantmaker, distributing <cite id=\"3\">over $13.8 million in total grants</cite> to both domestic and international partners, which amplifies their impact through local implementing agencies."
-      ],
-      "summary": "The Zakat Foundation of America (ZF) is a global humanitarian organization that focuses on <cite id=\"4\">alleviating the immediate needs of poor communities</cite> while fostering long-term development. Operating with a significant financial footprint, the organization reported <cite id=\"3\">total revenue of $29,498,054</cite> in the 2023 tax year. ZF is distinguished by its high operational efficiency, maintaining a <cite id=\"3\">program expense ratio of 91.6%</cite>, which ensures that the vast majority of donor contributions directly fund its core service areas. These programs are diverse, spanning <cite id=\"13\">emergency relief, orphan care, and food security</cite> across multiple continents. As a <cite id=\"2\">zakat-eligible institution</cite>, the foundation provides a structured platform for Muslim donors to fulfill their religious obligations, specifically serving <cite id=\"2\">eight distinct asnaf categories</cite> including the poor (fuqara) and needy (masakin). The organization's reach is extensive, with <cite id=\"3\">foreign grants totaling $11,898,186</cite> distributed to 59 recipients globally, alongside a robust domestic presence in the United States. This dual focus allows ZF to respond to international crises in regions like <cite id=\"13\">Gaza, Syria, and Yemen</cite> while simultaneously supporting local community initiatives.",
-      "zakat_guidance": {
-        "classification": "fuqara",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "The Zakat Foundation of America is a humanitarian organization dedicated to alleviating the immediate needs of poor communities while establishing sustainable long-term development projects [4]. The organization is officially zakat-eligible, distributing funds across traditional asnaf categories to support orphans, provide seasonal feeding, and deliver emergency aid [2][5]."
     }
   }
 }

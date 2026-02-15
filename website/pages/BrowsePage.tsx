@@ -7,11 +7,11 @@ import { THEMES } from '../src/themes';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { Search, X, LayoutGrid, ChevronDown, ChevronUp, SlidersHorizontal, Heart, BookOpen, Zap, Compass, ArrowRight } from 'lucide-react';
 import { useCharities } from '../src/hooks/useCharities';
-import { SCORE_THRESHOLD_UNDER_REVIEW, SCORE_THRESHOLD_TOP_RATED } from '../src/utils/scoreConstants';
 import { trackSearch } from '../src/utils/analytics';
 import { useAuth } from '../src/auth/useAuth';
 import { SignInButton } from '../src/auth/SignInButton';
 import { useSearchParams } from 'react-router-dom';
+import { deriveUISignalsFromCharity, getEvidenceStageRank } from '../src/utils/scoreUtils';
 
 // Theme indices: soft-noor (light) = 4, warm-atmosphere (dark) = 2
 const LIGHT_THEME_INDEX = 4;
@@ -29,6 +29,8 @@ interface PresetFilter {
   zakatEligible?: boolean;   // Match charities with zakat classification
   established?: boolean;     // 25+ years of operation
   strongEvidence?: boolean;  // Evidence pillar score >= 24
+  recommendationCues?: string[]; // Match qualitative recommendation cues
+  evidenceStages?: string[]; // Match evidence stages
   group: 'how' | 'what' | 'who' | 'where' | 'focus' | 'quality';
   description?: string;      // Educational text shown in context banner
   insight?: string;          // Short insight for the "how" filters
@@ -70,8 +72,8 @@ const PRESET_FILTERS: PresetFilter[] = [
   { id: 'usa', label: 'USA', tags: ['usa'], group: 'where' },
 
   // ⭐ Quality Filters
-  { id: 'top-rated', label: 'Top Rated (80+)', minScore: SCORE_THRESHOLD_TOP_RATED, group: 'quality',
-    description: 'Charities scoring 80+ demonstrate exceptional governance, transparency, and measurable impact.' },
+  { id: 'strong-match', label: 'High Confidence', recommendationCues: ['Strong Match'], group: 'quality',
+    description: 'High-confidence profiles with strong donor fit and low risk according to our qualitative cue rules.' },
   { id: 'zakat', label: 'Zakat Eligible', zakatEligible: true, group: 'quality',
     description: 'Verified to serve zakat-eligible beneficiaries (fuqara, masakin, refugees) with proper fund segregation.' },
   { id: 'cost-effective', label: '85%+ to Programs', minEfficiency: 0.85, group: 'quality',
@@ -152,9 +154,9 @@ const GUIDED_PATHS: GuidedPath[] = [
   {
     id: 'impact',
     label: 'Maximize Impact',
-    description: 'Top-rated charities (80+)',
+    description: 'High-confidence charities with lower risk',
     icon: 'zap',
-    presets: ['top-rated'],
+    presets: ['strong-match'],
     targetMode: 'simple',
   },
   {
@@ -174,14 +176,12 @@ const getScore = (charity: CharityProfile): number => {
   return charity.amalEvaluation?.amal_score || 0;
 };
 
-// Sort charities by AMAL score
-const sortByScore = (charities: CharityProfile[]): CharityProfile[] => {
-  return [...charities].sort((a, b) => {
-    const aScore = getScore(a);
-    const bScore = getScore(b);
-    if (bScore !== aScore) return bScore - aScore;
-    return a.name.localeCompare(b.name);
-  });
+const getRecommendationRank = (cue: string | null | undefined): number => {
+  if (cue === 'Strong Match') return 4;
+  if (cue === 'Good Match') return 3;
+  if (cue === 'Mixed Signals') return 2;
+  if (cue === 'Limited Match') return 1;
+  return 0;
 };
 
 export const BrowsePage: React.FC = () => {
@@ -219,7 +219,7 @@ export const BrowsePage: React.FC = () => {
   const [showMoreFilters, setShowMoreFilters] = useState(false);
   const [showCauseFilters, setShowCauseFilters] = useState(false);
   const [selectedPathId, setSelectedPathId] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<'score' | 'name' | 'revenue' | 'program'>('score');
+  const [sortBy, setSortBy] = useState<'relevance' | 'name' | 'revenue' | 'program' | 'evidence'>('evidence');
 
   // Set page title
   useEffect(() => {
@@ -256,20 +256,65 @@ export const BrowsePage: React.FC = () => {
     [publicCharities]
   );
 
-  // Count of default view (70+ lens score, excluding hidden) - used for context banner
+  // Count of default browseable set (excludes hidden/curated-hidden)
   const defaultViewCount = useMemo(() =>
-    evaluatedCharities.filter(c =>
-      getScore(c) >= SCORE_THRESHOLD_UNDER_REVIEW && !c.hideFromCurated
-    ).length,
+    evaluatedCharities.filter(c => !c.hideFromCurated).length,
     [evaluatedCharities]
   );
 
   // Current year for established calculation
   const currentYear = new Date().getFullYear();
 
+  const getConfidenceBadge = (charity: CharityProfile): 'HIGH' | 'MEDIUM' | 'LOW' => {
+    const raw = ((charity.amalEvaluation?.score_details as any)?.data_confidence?.badge
+      || charity.amalEvaluation?.confidence_tier
+      || 'LOW') as string;
+    const normalized = raw.toUpperCase();
+    if (normalized === 'HIGH') return 'HIGH';
+    if (normalized === 'MEDIUM' || normalized === 'MODERATE') return 'MEDIUM';
+    return 'LOW';
+  };
+
+  const matchesPreset = (
+    charity: CharityProfile & {
+      causeTags?: string[] | null;
+      programFocusTags?: string[] | null;
+      zakatClassification?: string | null;
+      foundedYear?: number | null;
+    },
+    preset: PresetFilter
+  ): boolean => {
+    const uiSignals = charity.ui_signals_v1 || deriveUISignalsFromCharity(charity);
+    const score = getScore(charity);
+
+    if ((preset.minScore ?? 0) > 0 && score < (preset.minScore ?? 0)) return false;
+    if (preset.minEfficiency && (charity.financials?.programExpenseRatio || 0) < preset.minEfficiency) return false;
+    if (preset.walletTag && charity.amalEvaluation?.wallet_tag !== preset.walletTag) return false;
+    if (preset.zakatEligible && !(charity.zakatClassification || charity.amalEvaluation?.wallet_tag === 'ZAKAT-ELIGIBLE')) return false;
+    if (preset.established) {
+      const yearsOperating = charity.foundedYear ? currentYear - charity.foundedYear : 0;
+      if (yearsOperating < 25) return false;
+    }
+    if (preset.strongEvidence) {
+      const evidenceScore = charity.amalEvaluation?.confidence_scores?.evidence || 0;
+      if (evidenceScore < 24) return false;
+    }
+    if (preset.recommendationCues?.length && !preset.recommendationCues.includes(uiSignals.recommendation_cue)) return false;
+    if (preset.evidenceStages?.length && !preset.evidenceStages.includes(uiSignals.evidence_stage)) return false;
+    if (preset.tags?.length) {
+      const charityTags = charity.causeTags || [];
+      if (!preset.tags.some(tag => charityTags.includes(tag))) return false;
+    }
+    if (preset.programFocusTags?.length) {
+      const charityFocusTags = charity.programFocusTags || [];
+      if (!preset.programFocusTags.some(tag => charityFocusTags.includes(tag))) return false;
+    }
+    return true;
+  };
+
   // Apply filtering logic:
-  // - Default view: 70+ score only
-  // - Search: finds ALL charities (including <70)
+  // - Default view: all browseable evaluated charities
+  // - Search: finds ALL charities
   // - Stacked presets: AND all active filters together
   const filteredCharities = useMemo(() => {
     const extendedCharities = evaluatedCharities as (CharityProfile & {
@@ -296,12 +341,12 @@ export const BrowsePage: React.FC = () => {
     // Get all active presets
     const presets = Array.from(activePresets).map(id => PRESET_FILTERS.find(p => p.id === id)).filter(Boolean) as PresetFilter[];
 
-    // Determine minimum score (highest minScore among active presets, or threshold default)
+    // Determine minimum score (only when preset explicitly requires it)
     const minScore = presets.length > 0
-      ? Math.max(SCORE_THRESHOLD_UNDER_REVIEW, ...presets.map(p => p.minScore ?? SCORE_THRESHOLD_UNDER_REVIEW))
-      : SCORE_THRESHOLD_UNDER_REVIEW;
+      ? Math.max(0, ...presets.map(p => p.minScore ?? 0))
+      : 0;
 
-    // Start with score filter (lens-aware)
+    // Start with baseline set
     let results = extendedCharities.filter(c => getScore(c) >= minScore);
 
     // Always hide charities marked hideFromCurated - only searchable, never browsable
@@ -309,65 +354,60 @@ export const BrowsePage: React.FC = () => {
 
     // Apply each preset's filters (AND logic - charity must match ALL active presets)
     for (const preset of presets) {
-      // Apply tag filter if preset has tags (causeTags)
-      if (preset.tags && preset.tags.length > 0) {
-        results = results.filter(c => {
-          const charityTags = c.causeTags || [];
-          return preset.tags!.some(tag => charityTags.includes(tag));
-        });
-      }
-
-      // Apply program focus tag filter if preset has programFocusTags
-      if (preset.programFocusTags && preset.programFocusTags.length > 0) {
-        results = results.filter(c => {
-          const charityFocusTags = c.programFocusTags || [];
-          return preset.programFocusTags!.some(tag => charityFocusTags.includes(tag));
-        });
-      }
-
-      // Apply efficiency filter if preset has minEfficiency
-      if (preset.minEfficiency) {
-        results = results.filter(c => (c.financials?.programExpenseRatio || 0) >= preset.minEfficiency!);
-      }
-
-      // Apply wallet tag filter if preset has walletTag
-      if (preset.walletTag) {
-        results = results.filter(c => c.amalEvaluation?.wallet_tag === preset.walletTag);
-      }
-
-      // Apply zakat eligibility filter
-      if (preset.zakatEligible) {
-        results = results.filter(c =>
-          c.zakatClassification ||
-          c.amalEvaluation?.wallet_tag === 'ZAKAT-ELIGIBLE'
-        );
-      }
-
-      // Apply established filter (25+ years)
-      if (preset.established) {
-        results = results.filter(c => {
-          const yearsOperating = c.foundedYear ? currentYear - c.foundedYear : 0;
-          return yearsOperating >= 25;
-        });
-      }
-
-      // Apply strong evidence filter (evidence pillar >= 24)
-      if (preset.strongEvidence) {
-        results = results.filter(c => {
-          const evidenceScore = c.amalEvaluation?.confidence_scores?.evidence || 0;
-          return evidenceScore >= 24;
-        });
-      }
-
+      results = results.filter(c => matchesPreset(c, preset));
     }
 
     return results;
   }, [evaluatedCharities, searchQuery, activePresets, currentYear]);
 
+  const getRelevanceScore = (charity: CharityProfile): number => {
+    const uiSignals = charity.ui_signals_v1 || deriveUISignalsFromCharity(charity);
+    const confidence = getConfidenceBadge(charity);
+
+    // Relevance is only meaningful after a guided-path intent is selected.
+    if (!selectedPathId) return 0;
+
+    let intentScore = 0;
+    if (selectedPathId === 'zakat') {
+      intentScore = charity.amalEvaluation?.wallet_tag === 'ZAKAT-ELIGIBLE' ? 70 : 0;
+    } else if (selectedPathId === 'cause') {
+      const causeMatches = Array.from(activePresets)
+        .map(id => PRESET_FILTERS.find(p => p.id === id))
+        .filter((p): p is PresetFilter => !!p && p.group === 'how')
+        .filter(p => matchesPreset(charity as any, p)).length;
+      intentScore = causeMatches > 0 ? Math.min(70, 50 + (causeMatches - 1) * 20) : 0;
+    } else if (selectedPathId === 'impact') {
+      intentScore = 0
+        + (uiSignals.recommendation_cue === 'Strong Match' ? 40 : 0)
+        + ((uiSignals.evidence_stage === 'Verified' || uiSignals.evidence_stage === 'Established') ? 20 : 0)
+        + (uiSignals.signal_states.risk === 'Strong' ? 10 : 0);
+    }
+
+    const filterMatches = Array.from(activePresets)
+      .map(id => PRESET_FILTERS.find(p => p.id === id))
+      .filter((p): p is PresetFilter => !!p)
+      .filter(p => matchesPreset(charity as any, p)).length;
+    const filterScore = Math.min(20, filterMatches * 5);
+    const confidenceBonus = confidence === 'HIGH' ? 8 : confidence === 'MEDIUM' ? 4 : 0;
+    const cueBonus = uiSignals.recommendation_cue === 'Strong Match' ? 2 : uiSignals.recommendation_cue === 'Good Match' ? 1 : 0;
+
+    return intentScore + filterScore + confidenceBonus + cueBonus;
+  };
+
   // Sort charities by selected sort option
   const sortedCharities = useMemo(() => {
     const sorted = [...filteredCharities];
     switch (sortBy) {
+      case 'relevance':
+        sorted.sort((a, b) => {
+          const aRel = getRelevanceScore(a);
+          const bRel = getRelevanceScore(b);
+          if (bRel !== aRel) return bRel - aRel;
+          const byName = a.name.localeCompare(b.name);
+          if (byName !== 0) return byName;
+          return (a.ein || '').localeCompare(b.ein || '');
+        });
+        break;
       case 'name':
         sorted.sort((a, b) => a.name.localeCompare(b.name));
         break;
@@ -377,18 +417,23 @@ export const BrowsePage: React.FC = () => {
       case 'program':
         sorted.sort((a, b) => (b.financials?.programExpenseRatio || 0) - (a.financials?.programExpenseRatio || 0));
         break;
-      case 'score':
+      case 'evidence':
       default:
         sorted.sort((a, b) => {
-          const aScore = getScore(a);
-          const bScore = getScore(b);
-          if (bScore !== aScore) return bScore - aScore;
+          const aUi = a.ui_signals_v1 || deriveUISignalsFromCharity(a);
+          const bUi = b.ui_signals_v1 || deriveUISignalsFromCharity(b);
+          const aRank = getEvidenceStageRank(aUi.evidence_stage);
+          const bRank = getEvidenceStageRank(bUi.evidence_stage);
+          if (bRank !== aRank) return bRank - aRank;
+          const aCue = getRecommendationRank(aUi.recommendation_cue);
+          const bCue = getRecommendationRank(bUi.recommendation_cue);
+          if (bCue !== aCue) return bCue - aCue;
           return a.name.localeCompare(b.name);
         });
         break;
     }
     return sorted;
-  }, [filteredCharities, sortBy]);
+  }, [filteredCharities, sortBy, selectedPathId, activePresets]);
 
   // Track search queries (debounced to avoid tracking every keystroke)
   useEffect(() => {
@@ -415,52 +460,12 @@ export const BrowsePage: React.FC = () => {
 
     // Helper to apply a single preset's filters to a set of charities
     const applyPresetFilter = (charities: typeof extendedCharities, preset: PresetFilter) => {
-      let results = charities;
-      const minScore = preset.minScore ?? SCORE_THRESHOLD_UNDER_REVIEW;
-      if (minScore > SCORE_THRESHOLD_UNDER_REVIEW) {
-        results = results.filter(c => getScore(c) >= minScore);
-      }
-      if (preset.minEfficiency) {
-        results = results.filter(c => (c.financials?.programExpenseRatio || 0) >= preset.minEfficiency!);
-      }
-      if (preset.walletTag) {
-        results = results.filter(c => c.amalEvaluation?.wallet_tag === preset.walletTag);
-      }
-      if (preset.zakatEligible) {
-        results = results.filter(c =>
-          c.zakatClassification || c.amalEvaluation?.wallet_tag === 'ZAKAT-ELIGIBLE'
-        );
-      }
-      if (preset.tags && preset.tags.length > 0) {
-        results = results.filter(c => {
-          const charityTags = c.causeTags || [];
-          return preset.tags!.some(tag => charityTags.includes(tag));
-        });
-      }
-      if (preset.programFocusTags && preset.programFocusTags.length > 0) {
-        results = results.filter(c => {
-          const charityFocusTags = c.programFocusTags || [];
-          return preset.programFocusTags!.some(tag => charityFocusTags.includes(tag));
-        });
-      }
-      if (preset.established) {
-        results = results.filter(c => {
-          const yearsOperating = c.foundedYear ? currentYear - c.foundedYear : 0;
-          return yearsOperating >= 25;
-        });
-      }
-      if (preset.strongEvidence) {
-        results = results.filter(c => {
-          const evidenceScore = c.amalEvaluation?.confidence_scores?.evidence || 0;
-          return evidenceScore >= 24;
-        });
-      }
-      return results;
+      return charities.filter(c => matchesPreset(c, preset));
     };
 
-    // Base set: all charities meeting minimum score and not hidden
+    // Base set: all browseable charities
     const baseCharities = extendedCharities.filter(c =>
-      getScore(c) >= SCORE_THRESHOLD_UNDER_REVIEW && !c.hideFromCurated
+      !c.hideFromCurated
     );
 
     // Get all active preset objects
@@ -527,6 +532,7 @@ export const BrowsePage: React.FC = () => {
     setShowCauseFilters(path.showCauseFilters || false);
     setSelectedPathId(path.id);
     setBrowseStyle(path.targetMode);
+    setSortBy('relevance');
 
     // Persist power mode preference
     if (path.targetMode === 'power') {
@@ -537,6 +543,7 @@ export const BrowsePage: React.FC = () => {
   // Switch to power mode (full filters)
   const switchToPowerMode = () => {
     setBrowseStyle('power');
+    if (!selectedPathId) setSortBy('evidence');
     localStorage.setItem(BROWSE_STYLE_KEY, 'power');
   };
 
@@ -546,6 +553,7 @@ export const BrowsePage: React.FC = () => {
     setActivePresets(new Set());
     setShowCauseFilters(false);
     setSelectedPathId(null);
+    setSortBy('evidence');
     // Clear power mode preference when explicitly returning to guided
     localStorage.removeItem(BROWSE_STYLE_KEY);
   };
@@ -819,7 +827,7 @@ export const BrowsePage: React.FC = () => {
                     ? 'bg-slate-800 text-slate-400 border border-slate-700'
                     : 'bg-slate-100 text-slate-500 border border-slate-200'
                 }`}>
-                  GMG Score
+                  Qualitative Signals
                 </span>
               </div>
             )}
@@ -1020,7 +1028,8 @@ export const BrowsePage: React.FC = () => {
                     : 'bg-white border-slate-200 text-slate-700'
                 }`}
               >
-                <option value="score">Score</option>
+                <option value="relevance">Path Relevance</option>
+                <option value="evidence">Evidence Stage</option>
                 <option value="name">Name A-Z</option>
                 <option value="revenue">Revenue</option>
                 <option value="program">Program %</option>
@@ -1029,7 +1038,7 @@ export const BrowsePage: React.FC = () => {
           </div>
         )}
 
-        {/* Charity Grid - sorted by score, with score-based badges */}
+        {/* Charity Grid */}
         <section>
           {sortedCharities.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4">
@@ -1060,7 +1069,7 @@ export const BrowsePage: React.FC = () => {
                     isDark ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-emerald-600 text-white hover:bg-emerald-700'
                   }`}
                 >
-                  Browse all highly rated charities
+                  Browse all evaluated charities
                 </button>
               )}
             </div>

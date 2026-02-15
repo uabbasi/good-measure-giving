@@ -2,7 +2,7 @@
   "id": "04-2535767",
   "ein": "04-2535767",
   "name": "Union of Concerned Scientists",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Energy UCS is working to speed the transition to clean energy and advance the technology and policy innovations necessary to support a just, safe, low-carbon, and climate-resilient power system that equitably serves people and communities.",
   "programs": [
     "Global Security",
@@ -52,7 +52,11 @@
     "netAssets": 61915117,
     "workingCapitalMonths": "15.00"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 18,
+    "independentBoardMembers": null,
+    "ceoCompensation": 353104
+  },
   "targeting": {
     "populationsServed": [
       "Communities",
@@ -82,7 +86,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:39:57",
+  "lastUpdated": "2026-02-14 19:35:38",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -321,17 +325,36 @@
     "Organization is in zakat denylist (partners but doesn't collect directly)"
   ],
   "archetype": "LEVERAGE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Promising",
+    "archetype_code": "LEVERAGE",
+    "archetype_label": "Strategic Advocacy",
+    "evidence_stage": "Verified",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Strong",
+      "donor_fit": "Limited",
+      "risk": "Strong"
+    },
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "04-2535767",
     "charity_name": "Union of Concerned Scientists",
-    "amal_score": 59,
+    "amal_score": 64,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:42:48",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 21,
       "data_confidence": 1,
-      "impact": 38
+      "impact": 43
     },
     "score_details": {
       "alignment": {
@@ -419,11 +442,11 @@
           },
           {
             "evidence": "Working capital: 15.0 months (HIGH)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 4,
+            "improvement_suggestion": "Document why reserves above your policy target are intentional (e.g., restrictions, volatility, planned commitments) and define deployment triggers.",
+            "improvement_value": 2,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 0,
+            "scored": 5,
             "status": "full"
           },
           {
@@ -466,66 +489,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 38/50",
+        "rationale": "Delivery: capacity building; Impact 43/50",
         "rubric_archetype": "SYSTEMIC_CHANGE",
-        "score": 38
+        "score": 43
       },
-      "judge_issues": [
-        {
-          "field": "propublica.expense_ratio",
-          "judge": "crawl_quality",
-          "message": "Expenses ($49,563,981) exceed revenue ($41,698,808) by 19%",
-          "severity": "warning"
-        },
-        {
-          "field": "charity_navigator.expense_ratio",
-          "judge": "crawl_quality",
-          "message": "Expenses ($50,279,313) exceed revenue ($41,916,878) by 20%",
-          "severity": "warning"
-        },
-        {
-          "field": "website.ein",
-          "judge": "crawl_quality",
-          "message": "Website EIN (04-2454013) doesn't match expected (04-2535767)",
-          "severity": "warning"
-        },
-        {
-          "field": "website.website_profile.ein",
-          "judge": "extract_quality",
-          "message": "EIN mismatch: expected 04-2535767, got 04-2454013",
-          "severity": "warning"
-        },
-        {
-          "field": "multi_source.ein_consistency",
-          "judge": "extract_quality",
-          "message": "Multiple different EINs found across sources: {'042454013', '042535767'}",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -533,7 +500,7 @@
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "Union of Concerned Scientists, Inc. earns 59/100 due to strong impact and moderate alignment.",
+      "score_summary": "Union of Concerned Scientists, Inc. shows exceptional impact and moderate alignment.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -545,578 +512,47 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization earned a Charity Navigator score of 99.5/100 and has a low alignment score for specific donor niches.",
+          "claim": "The charity holds a 99.5/100 score and focuses on accountability and financial health.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/042535767"
         },
         {
-          "claim": "Total revenue was $41,698,808 with a program expense ratio of 87.8%.",
+          "claim": "The organization reported Total Revenue of $41,698,808, a program expense ratio of 87.8%, 15.0 months of working capital, and Fundraising Efficiency of $0.07 per $1 raised.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/042535767"
         },
         {
-          "claim": "UCS identifies transmission costs for reallocation to support energy infrastructure and policy innovations.",
+          "claim": "UCS identifies transmission costs for reallocation and works on power system innovations.",
           "id": "[3]",
           "source_name": "recent UCS report",
           "source_url": "https://www.ucs.org/sites/default/files/2025-09/PJM%20Data%20Center%20Issue%20Brief%20-%20Sep%202025.pdf"
         },
         {
-          "claim": "The organization offers various donation methods for general charitable giving and Sadaqah.",
+          "claim": "The organization provides multiple donation options and methods for general charitable giving.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.ucs.org/about/ways-give"
         }
       ],
-      "amal_score_rationale": "The organization achieves a GMG score of 59/100, reflecting a balance between its elite financial health and its specialized role as a capacity-building advocacy group. While its financial metrics are nearly perfect, its alignment score is moderated by its focus on policy rather than direct humanitarian service.",
+      "amal_score_rationale": "The organization earns a moderate overall score due to its stellar financial transparency and efficiency, though its focus on high-level advocacy results in a lower alignment for donors seeking direct humanitarian impact.",
       "areas_for_improvement": [
-        "Limited direct alignment for donors specifically seeking traditional Muslim-focused causes or high-directness service delivery",
-        "Reliance on long-term policy advocacy which may have delayed measurable outcomes compared to direct aid"
+        "Limited direct alignment with specific Muslim donor preferences or community-focused giving frameworks",
+        "Focus on long-term advocacy and capacity building may result in less immediate, direct service impact"
       ],
       "dimension_explanations": {
-        "alignment": "The organization's alignment score of 21/50 reflects a low donor fit for those seeking traditional religious or community-specific programming, though it addresses the urgent cause of climate advocacy [1]. Contributions are considered Sadaqah-eligible for those wishing to support environmental and global security initiatives [4].",
-        "impact": "UCS demonstrates high capacity-building impact through technical research, such as identifying transmission cost reallocations to support clean energy infrastructure [3]. Its financial health is robust, characterized by a program expense ratio of 87.8% and a high data confidence rating [1][2]."
+        "alignment": "Alignment is rated at 21/50, reflecting a medium score because while the cause of climate resilience is urgent, the advocacy-based model represents a low fit for donors prioritizing direct service [1]. As a sadaqah-eligible organization, it offers various ways to give for general charitable purposes but does not provide specific pathways for religious-obligatory giving [4].",
+        "impact": "The organization demonstrates high capacity-building effectiveness, scoring 43/50, by utilizing its Total Revenue of $41,698,808 to influence large-scale energy systems and transmission cost reallocations [2][3]. Its financial health is robust, characterized by a program expense ratio of 87.8% and 15.0 months of working capital, ensuring long-term stability for its scientific advocacy [1][2]."
       },
-      "headline": "The Union of Concerned Scientists, Inc. leverages rigorous technical analysis and advocacy to accelerate the transition to a just, low-carbon, and climate-resilient power system.",
+      "headline": "The Union of Concerned Scientists, Inc. leverages rigorous technical analysis and advocacy to accelerate the transition to a just, safe, and climate-resilient power system.",
       "strengths": [
-        "High program expense ratio of 87.8%, ensuring the vast majority of funds support direct advocacy and research",
-        "Exceptional fundraising efficiency with a cost of only $0.07 per $1 raised",
-        "Strong liquidity position with 15.0 months of working capital available"
+        "Exceptional financial health with a Charity Navigator score of 99.5/100",
+        "High operational efficiency with a program expense ratio of 87.8%",
+        "Strong liquidity maintaining 15.0 months of working capital",
+        "Highly efficient fundraising operations costing only $0.07 per $1 raised"
       ],
-      "summary": "The Union of Concerned Scientists (UCS) is a science-based advocacy organization that reported a total revenue of $41,698,808 to support its mission of advancing clean energy and global security [2]. The organization maintains a high level of financial accountability, earning a Charity Navigator score of 99.5/100 [1]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "1969",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "Founded: 1969",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/042535767"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$41,698,808 in total revenue",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total Revenue: $41,698,808",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/042535767"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "87.8% program expense ratio",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Program Service Expenses: $43,715,430 / Total Expenses: $49,563,981",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/042535767"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "climate and energy, clean transportation, and global security",
-          "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Our programs include Climate & Energy, Clean Transportation, Global Security..",
-          "source_name": "UCS Website - Programs",
-          "source_type": "website",
-          "source_url": "https://www.ucs.org/about/ways-give"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "99.5/100 overall score from Charity Navigator",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Overall Score: 99.50",
-          "source_name": "Charity Navigator - Ratings",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/042535767"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Platinum Transparency 2024",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/042535767"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$637,100 in domestic grants",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Grants and other assistance to domestic organizations: $637,100",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/042535767"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.07 to raise every $1",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Fundraising Efficiency: $0.07",
-          "source_name": "Charity Navigator - Financial",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/042535767"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "all 20 BBB Wise Giving Alliance Standards",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "This charity meets all 20 Standards for Charity Accountability",
-          "source_name": "BBB Wise Giving Alliance",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/environment/union-of-concerned-scientists-in-cambridge-ma-9999-1123"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "95% independent board",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Independent Board Members: 95%",
-          "source_name": "Charity Navigator - Accountability",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/042535767"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "15.0 months of working capital",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Working Capital Ratio: 15.0 months",
-          "source_name": "Charity Navigator - Financial",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/042535767"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "perfect 100/100 marks in Accountability, Culture, and Leadership",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Accountability & Finance: 100, Culture & Community: 100, Leadership & Adaptability: 100",
-          "source_name": "Charity Navigator - Beacons",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/042535767"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$4.35 billion in transmission costs",
-          "confidence": 0.9,
-          "id": "[13]",
-          "quote": "Transmission costs identified for reallocation: 4356300000",
-          "source_name": "UCS PJM Data Center Issue Brief",
-          "source_type": "evaluation",
-          "source_url": "https://www.ucs.org/sites/default/files/2025-09/PJM%20Data%20Center%20Issue%20Brief%20-%20Sep%202025.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "no specific beneficiary count data",
-          "confidence": 0.85,
-          "id": "[14]",
-          "quote": "No beneficiary data; high program ratio suggests efficient delivery",
-          "source_name": "Amal Baseline Evaluation",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/042535767"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of -19.3%",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "3-Year Revenue CAGR: -19.3%",
-          "source_name": "Amal Financial Analysis",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/042535767"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "advocacy-based delivery model",
-          "confidence": 0.9,
-          "id": "[16]",
-          "quote": "Delivery model: Capacity Building / Advocacy",
-          "source_name": "Amal Baseline Evaluation",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/042535767"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "regulatory modifications and risk identification",
-          "confidence": 0.9,
-          "id": "[17]",
-          "quote": "Regulatory modifications: 4; Registrations vacated by court: 3",
-          "source_name": "EPA/UCS Outcome Reports",
-          "source_type": "evaluation",
-          "source_url": "https://www.epa.gov/sites/production/files/2020-03/documents/supplemental_notice_of_strengthening_transparency_in_regulatory_science.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "US-based advocacy",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Areas Served: United States",
-          "source_name": "UCS Website - About",
-          "source_type": "website",
-          "source_url": "https://www.ucs.org/about/ways-give"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "highlighting the humanitarian dimensions",
-          "confidence": 0.8,
-          "id": "[19]",
-          "quote": "Improvement: highlight humanitarian dimensions of your work",
-          "source_name": "Amal Alignment Suggestions",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/042535767"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer median of 81.5%",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Peer Program Ratio Median: 81.5%",
-          "source_name": "Amal Peer Benchmarking",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/042535767"
-        }
-      ],
-      "amal_score_rationale": "The organization achieves a GMG score of 59/100, reflecting a balance between its elite financial health and its specialized role as a capacity-building advocacy group. While its financial metrics are nearly perfect, its alignment score is moderated by its focus on policy rather than direct humanitarian service.",
-      "amal_scores": {
-        "amal_score": 59,
-        "confidence_scores": {
-          "alignment": 21,
-          "data_confidence": 1,
-          "impact": 38
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Beneficiary Data Reporting",
-          "citation_ids": [
-            "[14]"
-          ],
-          "context": "While program spending is high, there is <cite id=\"14\">no specific beneficiary count data</cite> available, making cost-per-person analysis difficult."
-        },
-        {
-          "area": "Revenue Diversification",
-          "citation_ids": [
-            "[15]"
-          ],
-          "context": "The organization experienced a <cite id=\"15\">3-year revenue CAGR of -19.3%</cite>, suggesting a need to stabilize its funding base."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[9]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "review_url": "https://give.org/charity-reviews/environment/union-of-concerned-scientists-in-cambridge-ma-9999-1123",
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "Meets all 20 BBB Wise Giving Alliance Standards for Charity Accountability"
-      },
-      "case_against": {
-        "citation_ids": [
-          "[15]",
-          "[14]"
-        ],
-        "mitigation_notes": "The organization maintains high net assets of over $61 million to buffer against revenue fluctuations.",
-        "risk_factors": [
-          "<cite id=\"15\">3-year revenue CAGR of -19.3%</cite>",
-          "<cite id=\"14\">Lack of direct beneficiary metrics</cite>"
-        ],
-        "summary": "The primary concern for donors is the <cite id=\"15\">recent decline in revenue</cite> and the inherent difficulty in measuring the immediate impact of <cite id=\"16\">policy advocacy</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 3,
-          "form990": 6,
-          "rating": 9,
-          "website": 2
-        },
-        "high_confidence_count": 18,
-        "total_count": 20,
-        "unique_sources": 4
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023 tax year; ratings from late 2024",
-        "data_gaps": [
-          "Missing 2024 Form 990",
-          "Lack of specific beneficiary counts"
-        ],
-        "level": "HIGH",
-        "notes": "Extremely high confidence in financial and accountability metrics due to multiple third-party verifications.",
-        "score": 95,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "BBB Wise Giving Alliance",
-          "UCS Reports"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 95,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Declining revenue trend",
-          "No direct beneficiary counts"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 20,
-        "unique_sources": 4,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[18]",
-            "[19]"
-          ],
-          "explanation": "Alignment is lower for traditional Muslim giving as the organization focuses on <cite id=\"18\">US-based advocacy</cite> rather than international humanitarian relief.",
-          "improvement": "The organization could improve alignment by <cite id=\"19\">highlighting the humanitarian dimensions</cite> of climate change on vulnerable global Muslim populations."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[9]",
-            "[6]",
-            "[10]",
-            "[12]"
-          ],
-          "explanation": "Donors can place high trust in UCS due to its <cite id=\"9\">20/20 BBB standards compliance</cite>, <cite id=\"6\">Platinum Candid status</cite>, and <cite id=\"10\">independent board oversight</cite>.",
-          "improvement": "Credibility is already at a peak level; maintaining current <cite id=\"12\">perfect scores in leadership and culture</cite> is the priority."
-        },
-        "impact": {
-          "citation_ids": [
-            "[3]",
-            "[17]",
-            "[14]"
-          ],
-          "explanation": "Impact is driven by <cite id=\"3\">high program spending (88.2%)</cite> and verified outcomes in <cite id=\"17\">regulatory modifications and risk identification</cite>.",
-          "improvement": "Impact measurement would benefit from <cite id=\"14\">tracking and reporting specific beneficiary counts</cite> to enable more granular cost-effectiveness analysis."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "ADVOCACY",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "evidence_rigor": "Grade B - Strong theory of change and documented policy outcomes",
-        "geographic_focus": [
-          "United States"
-        ],
-        "giving_style": "Research and Policy Advocacy",
-        "tax_deductible": true,
-        "zakat_asnaf_served": null,
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.048,
-        "annual_revenue": 41698808,
-        "citation_ids": [
-          "[2]",
-          "[15]",
-          "[11]"
-        ],
-        "cn_financial_score": 100,
-        "cn_overall_score": 99.5,
-        "fundraising_ratio": 0.07,
-        "industry_program_ratio": 0.75,
-        "peer_count": 21,
-        "peer_program_ratio_median": 0.815,
-        "program_expense_ratio": 0.8785,
-        "reserves_months": 14.2,
-        "revenue_cagr_3yr": -19.3,
-        "transparency_score": 100,
-        "working_capital_months": 15,
-        "yearly_financials": [
-          {
-            "expenses": 49563981,
-            "net_assets": 61915117,
-            "revenue": 41698808,
-            "year": 2023
-          },
-          {
-            "expenses": 54771427,
-            "net_assets": 64654937,
-            "revenue": 48698312,
-            "year": 2022
-          },
-          {
-            "expenses": 44644043,
-            "net_assets": 80411051,
-            "revenue": 64025005,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "domestic_grants": 637100,
-        "foreign_grants": 0,
-        "grant_count": 14,
-        "grant_strategy": "Supports partner organizations that align with technical and policy advocacy goals",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "United States"
-        ],
-        "top_recipients": [
-          "Social and Environmental Entrepreneurs ($367,500)",
-          "The Partnership Project Inc ($100,000)"
-        ],
-        "total_grants": 637100
-      },
-      "headline": "The Union of Concerned Scientists, Inc. leverages rigorous technical analysis and advocacy to accelerate the transition to a just, low-carbon, and climate-resilient power system.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value scientific rigor and want to fund long-term systemic change in climate policy and global security through a highly transparent institution.",
-        "citation_ids": [
-          "[1]",
-          "[15]"
-        ],
-        "donor_motivations": [
-          "Believe in science-based solutions for environmental crises",
-          "Prioritize high financial efficiency and low fundraising overhead",
-          "Want to support advocacy that influences US federal and state regulations",
-          "Value established organizations with a 50+ year track record"
-        ],
-        "giving_considerations": [
-          "Donations support policy research rather than direct humanitarian aid",
-          "Impact is often realized over years through legislative or regulatory shifts",
-          "The organization is currently navigating a period of revenue contraction"
-        ],
-        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those looking for immediate, tangible direct service delivery like food or medical aid."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[13]",
-          "[17]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B reflects verified policy outcomes and a strong theory of change, though it lacks the randomized evaluations found in direct-service charities.",
-        "external_evaluations": [
-          "Charity Navigator Impact Score",
-          "Candid Outcomes"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "UCS uses independent science to develop policy solutions and mobilizes experts to advocate for a healthy and safe planet.",
-        "why_evidence_matters": "In advocacy, evidence demonstrates that technical analysis actually leads to regulatory changes and cost reallocations."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[15]"
-        ],
-        "founded_year": 1969,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": -19.3,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Declining revenue trends suggest a high capacity to absorb new funding to restore program scale.",
-        "strategic_priorities": [
-          "Clean energy transition",
-          "Science-based democracy",
-          "Global security"
-        ],
-        "years_operating": 57
-      },
-      "organizational_capacity": {
-        "board_size": 18,
-        "ceo_compensation": 353104,
-        "ceo_compensation_pct_revenue": 0.85,
-        "ceo_name": "Johanna Chao Kreilick",
-        "citation_ids": [
-          "[2]",
-          "[10]"
-        ],
-        "employees_count": 200,
-        "geographic_reach": "United States",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 0.95,
-        "payroll_to_revenue_pct": 35,
-        "programs_count": 5,
-        "staff_per_million_revenue": 4.8,
-        "volunteers_count": 0
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[3]",
-          "[20]"
-        ],
-        "differentiator": "UCS stands out with a <cite id=\"3\">program expense ratio of 87.8%</cite>, significantly higher than the <cite id=\"20\">peer median of 81.5%</cite>.",
-        "peer_group": "Environmental Advocacy Organizations",
-        "similar_orgs": [
-          "Innocence Project",
-          "Rainforest Alliance",
-          "350.org"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Focuses on legal advocacy rather than environmental science",
-          "name": "Innocence Project"
-        },
-        {
-          "differentiator": "More focus on international certification and field work",
-          "name": "Rainforest Alliance"
-        },
-        {
-          "differentiator": "Heavier focus on grassroots mobilization vs technical research",
-          "name": "350.org"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[3]",
-            "[8]"
-          ],
-          "detail": "The organization maintains a <cite id=\"3\">program expense ratio of 87.8%</cite> and spends only <cite id=\"8\">$0.07 to raise every $1</cite>.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[9]",
-            "[10]"
-          ],
-          "detail": "UCS meets <cite id=\"9\">all 20 BBB Wise Giving Alliance Standards</cite> and features a <cite id=\"10\">95% independent board</cite>.",
-          "point": "Robust Governance and Transparency"
-        },
-        {
-          "citation_ids": [
-            "[11]"
-          ],
-          "detail": "The charity holds <cite id=\"11\">15.0 months of working capital</cite>, providing significant resilience for long-term advocacy campaigns.",
-          "point": "Strong Liquidity and Stability"
-        }
-      ],
-      "strengths_deep_dive": [
-        "The Union of Concerned Scientists demonstrates a sophisticated operational model that prioritizes technical rigor and accountability. Their <cite id=\"5\">99.99.5/100 from Charity Navigator score</cite> is supported by perfect 100/100 marks in <cite id=\"12\">Accountability, Culture, and Leadership</cite>. This institutional strength allows them to tackle complex regulatory issues, such as identifying <cite id=\"13\">$4.35 billion in transmission costs</cite> for potential reallocation to improve power system resilience. Their long-standing history since <cite id=\"1\">1969</cite> provides a stable platform for multi-year policy interventions that many younger advocacy groups cannot sustain."
-      ],
-      "summary": "Founded in <cite id=\"1\">1969</cite>, the Union of Concerned Scientists (UCS) is a premier science-based advocacy organization dedicated to solving the planet's most pressing environmental and safety problems. The organization reported <cite id=\"2\">$41,698,808 in total revenue</cite> for the 2023 tax year, leveraging these funds to drive technical analysis and policy innovation. UCS operates with high financial efficiency, maintaining an <cite id=\"3\">87.8% program expense ratio</cite>, which ensures that the vast majority of donor contributions directly support its research and advocacy initiatives. Their work spans critical areas including <cite id=\"4\">climate and energy, clean transportation, and global security</cite>. The organization is highly regarded for its transparency and accountability, holding a <cite id=\"5\">99.5/100 overall score from Charity Navigator</cite> and a <cite id=\"6\">Platinum Seal of Transparency from Candid</cite>. Beyond its internal research, UCS acts as a strategic funder, distributing <cite id=\"7\">$637,100 in domestic grants</cite> to partner organizations to amplify its impact on the transition to a low-carbon power system.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "The Union of Concerned Scientists, Inc. (UCS) is a non-profit organization dedicated to advancing policy innovations for clean energy, global security, and clean transportation [1][3]. In the 2023 fiscal year, the organization reported a Total Revenue of $41,698,808 to support its mission of fostering a low-carbon future [2]."
     }
   }
 }

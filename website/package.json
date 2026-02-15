@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "tsx scripts/convertData.ts",
+    "prebuild": "node scripts/syncUiSignalsConfig.mjs && tsx scripts/convertData.ts",
     "build": "vite build",
     "postbuild": "tsx scripts/generateSitemap.ts && tsx scripts/prerender.ts",
     "preview": "vite preview",
+    "pretest": "node scripts/syncUiSignalsConfig.mjs",
     "convert-data": "tsx scripts/convertData.ts",
     "test": "vitest",
     "test:ui": "vitest --ui",

@@ -2,7 +2,7 @@
   "id": "23-7069110",
   "ein": "23-7069110",
   "name": "Oxfam America",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Oxfam is a global organization that fights inequality to end poverty and injustice. We offer lifesaving\nsupport in times of crisis and advocate for economic justice, gender equality, and climate action. We\ndemand equal rights and equal treatment so that everyone can thrive, not just survive. The future is\nequal.",
   "programs": [
     "Lifesaving Support",
@@ -53,7 +53,11 @@
     "netAssets": 55776240,
     "workingCapitalMonths": "8.00"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 22,
+    "independentBoardMembers": null,
+    "ceoCompensation": 496921
+  },
   "targeting": {
     "populationsServed": [
       "Communities",
@@ -88,7 +92,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:39:02",
+  "lastUpdated": "2026-02-14 19:35:48",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -1512,17 +1516,36 @@
     "Organization is in zakat denylist (partners but doesn't collect directly)"
   ],
   "archetype": "LEVERAGE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "High Conviction",
+    "archetype_code": "LEVERAGE",
+    "archetype_label": "Strategic Advocacy",
+    "evidence_stage": "Verified",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Moderate",
+      "donor_fit": "Moderate",
+      "risk": "Strong"
+    },
+    "recommendation_cue": "Strong Match",
+    "recommendation_rationale": "Strong donor fit, low risk profile, and credible supporting evidence for outcomes.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "23-7069110",
     "charity_name": "Oxfam America",
-    "amal_score": 71,
+    "amal_score": 75,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:36:25",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 32,
       "data_confidence": 1,
-      "impact": 39
+      "impact": 43
     },
     "score_details": {
       "alignment": {
@@ -1609,12 +1632,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 8.0 months (COMFORTABLE)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 4,
+            "evidence": "Working capital: 8.0 months (RESILIENT)",
+            "improvement_suggestion": null,
+            "improvement_value": 0,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 3,
+            "scored": 7,
             "status": "full"
           },
           {
@@ -1657,30 +1680,10 @@
         "cost_per_beneficiary": 79.01068775790921,
         "directness_level": "DIRECT_PROVISION",
         "impact_design_categories": [],
-        "rationale": "$79.01/beneficiary; Delivery: direct provision; Impact 39/50",
+        "rationale": "$79.01/beneficiary; Delivery: direct provision; Impact 43/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 39
+        "score": 43
       },
-      "judge_issues": [
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -1688,7 +1691,7 @@
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "Oxfam AmericaHQ earns 71/100 due to strong impact and good alignment.",
+      "score_summary": "Oxfam AmericaHQ shows exceptional impact and good alignment.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -1700,651 +1703,64 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Oxfam America holds a Charity Navigator score of 99.33333333333333/100 and demonstrates high financial health.",
+          "claim": "Oxfam America holds a Charity Navigator score of 99.33333333333333/100 and a program expense ratio of 72.3%.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/237069110"
         },
         {
-          "claim": "The organization provides funds to local partners to empower people in the development of their communities.",
+          "claim": "The organization provides funds and empowers poor people through international relief and economic justice programs.",
           "id": "[2]",
           "source_name": "Download our most recent financial audit",
           "source_url": "https://webassets.oxfamamerica.org/media/documents/OA_Consolidated_Financial_Statements_2024.pdf"
         },
         {
-          "claim": "Oxfam's programs have resulted in new laws passed with civil society input and the training of journalists.",
+          "claim": "Oxfam's programs have successfully influenced new laws through CSO input and journalist training.",
           "id": "[3]",
           "source_name": "Download NORAD Ghana Final Project Evaluation Report",
           "source_url": "https://s3.amazonaws.com/oxfam-us/www/static/media/files/NORAD_Ghana_Final_Project_Evaluation_Report.pdf"
         },
         {
-          "claim": "The organization's advocacy work led to the adoption of legislative amendments.",
+          "claim": "The organization tracks impact through metrics such as unique viewers of the Civilinfo platform.",
+          "id": "[4]",
+          "source_name": "Download NORAD Mozambique Final Project Evaluation Report",
+          "source_url": "https://s3.amazonaws.com/oxfam-us/www/static/media/files/NORAD_Mozambique_Final_Project_Evaluation_Report.pdf"
+        },
+        {
+          "claim": "Oxfam's advocacy work led to the adoption of legislative amendments.",
           "id": "[5]",
           "source_name": "Download NORAD Tanzania Final Project Evaluation Report",
           "source_url": "https://s3.amazonaws.com/oxfam-us/www/static/media/files/NORAD_Tanzania_Final_Project_Evaluation_Report.pdf"
         },
         {
-          "claim": "Oxfam America offers various giving methods for general charitable support and Sadaqah.",
+          "claim": "Oxfam America accepts general donations and sadaqah for its humanitarian missions.",
           "id": "[6]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.oxfamamerica.org/"
         },
         {
-          "claim": "The organization reported total revenue of $83,115,051 and a program expense ratio of 72.3%.",
+          "claim": "The organization reported total revenue of $83,115,051 and holds 8.0 months of working capital.",
           "id": "[7]",
           "source_name": "Form 990 (2024)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/237069110"
         }
       ],
-      "amal_score_rationale": "Oxfam America earns a GMG score of 71/100 due to its exceptional financial transparency and proven track record in humanitarian relief, though its alignment score reflects a medium fit for specific donor segments.",
+      "amal_score_rationale": "Oxfam America earns a GMG Score of 75/100 due to its exceptional financial health and proven track record in legislative advocacy and direct humanitarian provision. While highly effective, its alignment score reflects a medium fit for donors seeking specific religious-centric giving pathways.",
       "areas_for_improvement": [
-        "Enhancing direct donor alignment for specific niche audiences",
-        "Increasing the program expense ratio beyond the current 72.3% to maximize direct service delivery"
+        "Moderate alignment for donors specifically seeking high-urgency religious-specific causes",
+        "program expense ratio of 72.3% leaves room for growth compared to top-tier efficiency benchmarks"
       ],
       "dimension_explanations": {
-        "alignment": "Oxfam America shows medium alignment for Muslim donors as a Sadaqah-eligible organization focused on urgent humanitarian causes [6]. Its long-standing track record in international relief and economic justice aligns with general charitable values, supported by high data confidence and transparent financial reporting [1][2].",
-        "impact": "The organization demonstrates high impact through direct provision of aid and legislative advocacy, such as securing legislative amendments in Tanzania and training journalists in Ghana to improve governance [3][5]. With a total revenue of $83,115,051, the charity maintains a program expense ratio of 72.3%, directing significant resources toward its core mission of poverty alleviation [1][7]."
+        "alignment": "Oxfam is classified as SADAQAH-ELIGIBLE, offering a medium donor fit for those prioritizing humanitarian urgency and systemic economic justice [6]. Its work aligns with general charitable values of poverty alleviation and community empowerment, though it does not facilitate specific religious tax-compliance pathways [2][6].",
+        "impact": "The organization demonstrates high impact through direct provision of aid and successful policy advocacy, such as securing legislative amendments in Tanzania and training journalists in Ghana [3][5]. With a program expense ratio of 72.3%, Oxfam maintains a cost per beneficiary of approximately 79.01068775790921, supported by high-confidence data from independent evaluations [1][4]."
       },
-      "headline": "Oxfam America empowers local communities to lead their own development through international relief and economic justice initiatives.",
+      "headline": "Oxfam America empowers marginalized communities through direct international relief and systemic economic justice initiatives.",
       "strengths": [
-        "High financial health and accountability rating of 99.99.33333333333333/100 from Charity Navigator",
-        "Strong working capital reserve of 8.0 months to ensure operational stability",
-        "Efficient fundraising operations with a cost of only $0.19 per $1 raised"
+        "High financial transparency and accountability score of 99.33333333333333/100",
+        "Strong liquidity with 8.0 months of working capital available",
+        "Efficient fundraising operations spending only $0.19 per $1 raised"
       ],
-      "summary": "Oxfam America is a global organization that partners with local groups to provide lifesaving support and funds, ensuring poor people play a central role in community development [2][6]. The organization operates with a focus on international relief and economic justice, maintaining high standards of financial accountability and transparency [1][7]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "1942",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "Founded: 1942",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://www.oxfamamerica.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "lifesaving support, economic justice, and climate action",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Programs: Lifesaving Support, Economic Justice, Gender Equality, Climate Action",
-          "source_name": "Charity Website - Programs",
-          "source_type": "website",
-          "source_url": "https://www.oxfamamerica.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "empowering local organizations",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Oxfam works with local organizations, providing funds and empowering poor people",
-          "source_name": "Charity Website - Mission",
-          "source_type": "website",
-          "source_url": "https://www.oxfamamerica.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "99.33333333333333/100 overall score from Charity Navigator",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Overall Score: 99.33/100",
-          "source_name": "Charity Navigator - Oxfam America",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/237069110"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $83,115,051",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Total Revenue: $83,115,051",
-          "source_name": "Form 990 (2024)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/237069110"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$81,728,263 in public contributions",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Contributions: $81,728,263",
-          "source_name": "Form 990 (2024)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/237069110"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Gaza, Afghanistan, and Mali",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Geographic Coverage: Gaza, Afghanistan, Mali, Senegal, Uganda",
-          "source_name": "Charity Website - Geography",
-          "source_type": "website",
-          "source_url": "https://www.oxfamamerica.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.19 to raise every $1",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Fundraising Efficiency: $0.19 per $1 raised",
-          "source_name": "Charity Navigator - Financial",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/237069110"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$19,868,856 in total grants",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Total Grants: $19,868,856",
-          "source_name": "Form 990 (2024)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/237069110"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$19,412,103 directed toward foreign recipients",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Foreign Grants: $19,412,103",
-          "source_name": "Form 990 (2024)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/237069110"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Candid Seal: platinum",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/237069110"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "8.0 months of working capital",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Working capital: 8.0 months",
-          "source_name": "Charity Navigator - Financial",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/237069110"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "two new laws passed with CSO input",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "New laws passed with CSO input: 2",
-          "source_name": "NORAD Ghana Evaluation Report",
-          "source_type": "evaluation",
-          "source_url": "https://s3.amazonaws.com/oxfam-us/www/static/media/files/NORAD_Ghana_Final_Project_Evaluation_Report.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "legislative amendments adopted",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Legislative amendments adopted",
-          "source_name": "NORAD Tanzania Evaluation Report",
-          "source_type": "evaluation",
-          "source_url": "https://s3.amazonaws.com/oxfam-us/www/static/media/files/NORAD_Tanzania_Final_Project_Evaluation_Report.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100% independent board members",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Independent Board Members: 100%",
-          "source_name": "Charity Navigator - Governance",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/237069110"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "CSO capacity ratings",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "CSO/Media capacity rating (1-5 scale): 3.5",
-          "source_name": "NORAD Mozambique Evaluation Report",
-          "source_type": "evaluation",
-          "source_url": "https://s3.amazonaws.com/oxfam-us/www/static/media/files/NORAD_Mozambique_Final_Project_Evaluation_Report.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "digital platform engagement",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Unique viewers of Civilinfo platform: 5661",
-          "source_name": "NORAD Mozambique Evaluation Report",
-          "source_type": "evaluation",
-          "source_url": "https://s3.amazonaws.com/oxfam-us/www/static/media/files/NORAD_Mozambique_Final_Project_Evaluation_Report.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 72.3%",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Program Expense Ratio: 72.3%",
-          "source_name": "Form 990 (2024)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/237069110"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer median of 89.7%",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Peer Program Ratio Median: 89.7%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/237069110"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of -9.1%",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "3-Year Revenue CAGR: -9.1%",
-          "source_name": "Financial Trends",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/237069110"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "audited financial statements",
-          "confidence": 1,
-          "id": "[21]",
-          "quote": "Consolidated Financial Statements",
-          "source_name": "Oxfam Consolidated Financial Statements 2024",
-          "source_type": "evaluation",
-          "source_url": "https://webassets.oxfamamerica.org/media/documents/OA_Consolidated_Financial_Statements_2024.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cost per beneficiary of $79.01",
-          "confidence": 1,
-          "id": "[22]",
-          "quote": "$79.01/beneficiary",
-          "source_name": "Impact Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/237069110"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "highlighting the humanitarian dimensions",
-          "confidence": 0.9,
-          "id": "[23]",
-          "quote": "highlight humanitarian dimensions of your work",
-          "source_name": "Alignment Improvement",
-          "source_type": "website",
-          "source_url": "https://www.oxfamamerica.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "empowering poor people to play a central role",
-          "confidence": 1,
-          "id": "[24]",
-          "quote": "empowering poor people to play a central role in the development",
-          "source_name": "Charity Website - Mission",
-          "source_type": "website",
-          "source_url": "https://www.oxfamamerica.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified outcome metrics",
-          "confidence": 1,
-          "id": "[25]",
-          "quote": "Outcome Metrics Tracked: 5",
-          "source_name": "Candid Outcome Tracking",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/237069110"
-        }
-      ],
-      "amal_score_rationale": "Oxfam America earns a GMG score of 71/100 due to its exceptional financial transparency and proven track record in humanitarian relief, though its alignment score reflects a medium fit for specific donor segments.",
-      "amal_scores": {
-        "amal_score": 71,
-        "confidence_scores": {
-          "alignment": 32,
-          "data_confidence": 1,
-          "impact": 39
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Program Expense Efficiency",
-          "citation_ids": [
-            "[18]",
-            "[19]"
-          ],
-          "context": "The current <cite id=\"18\">program expense ratio of 72.3%</cite> is below the <cite id=\"19\">peer median of 89.7%</cite> for humanitarian organizations."
-        },
-        {
-          "area": "Revenue Stability",
-          "citation_ids": [
-            "[20]"
-          ],
-          "context": "The organization has experienced a <cite id=\"20\">3-year revenue CAGR of -9.1%</cite>, indicating a contraction in funding that may impact long-term scaling."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[4]",
-          "[21]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "Maintains high governance standards with 100% independent board oversight."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[12]",
-          "[18]",
-          "[19]",
-          "[20]"
-        ],
-        "mitigation_notes": "The organization's high <cite id=\"12\">working capital (8 months)</cite> mitigates immediate risks from declining revenue.",
-        "risk_factors": [
-          "<cite id=\"20\">Negative revenue growth (-9.1%)</cite> over the last three years",
-          "<cite id=\"19\">Program spending significantly below peer median</cite>"
-        ],
-        "summary": "The primary concern is the <cite id=\"18\">72.3% program expense ratio</cite>, which suggests a higher portion of funds is spent on administration compared to similar large-scale relief groups."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 5,
-          "form990": 7,
-          "rating": 9,
-          "website": 4
-        },
-        "high_confidence_count": 25,
-        "total_count": 25,
-        "unique_sources": 7
-      },
-      "confidence": {
-        "data_freshness": "Data includes 2024 Form 990 and 2024 Audited Financials",
-        "data_gaps": [
-          "None"
-        ],
-        "level": "HIGH",
-        "notes": "Extremely high data availability with recent audited financials and external impact reports.",
-        "score": 95,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Audited Financials",
-          "Impact Evaluations"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 95,
-        "form_990_tax_year": 2024,
-        "known_gaps": [
-          "None significant"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 25,
-        "unique_sources": 7,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[7]",
-            "[23]"
-          ],
-          "explanation": "Oxfam provides a <cite id=\"7\">strong fit for donors interested in Muslim-majority regions</cite> like Gaza and Afghanistan, though it lacks specific faith-based designations.",
-          "improvement": "Alignment could be strengthened by <cite id=\"23\">highlighting the humanitarian dimensions</cite> of their work in underserved Muslim-majority populations."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[11]",
-            "[15]",
-            "[21]"
-          ],
-          "explanation": "Donors can trust Oxfam due to its <cite id=\"15\">fully independent board</cite>, <cite id=\"11\">Platinum Candid status</cite>, and <cite id=\"21\">audited financial statements</cite> that confirm high governance standards.",
-          "improvement": "Credibility is already high; maintaining this requires continued <cite id=\"11\">annual outcome reporting through Candid</cite>."
-        },
-        "impact": {
-          "citation_ids": [
-            "[18]",
-            "[22]"
-          ],
-          "explanation": "Operations are effective with a <cite id=\"22\">cost per beneficiary of $79.01</cite>, which is considered excellent for complex humanitarian work.",
-          "improvement": "To improve impact scores, the charity should aim to <cite id=\"18\">increase its program expense ratio</cite> closer to the industry standard of 75%."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[7]",
-          "[13]",
-          "[21]"
-        ],
-        "evidence_rigor": "Grade B - Verified outcomes and published evaluations",
-        "geographic_focus": [
-          "Gaza",
-          "Afghanistan",
-          "Africa",
-          "USA"
-        ],
-        "giving_style": "Direct service and Advocacy",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "",
-          ""
-        ],
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.127,
-        "annual_revenue": 83115051,
-        "citation_ids": [
-          "[5]",
-          "[7]",
-          "[20]"
-        ],
-        "cn_financial_score": 98,
-        "cn_overall_score": 99.33333333333333,
-        "fundraising_ratio": 0.19,
-        "industry_program_ratio": 0.75,
-        "peer_count": 58,
-        "peer_program_ratio_median": 0.897,
-        "program_expense_ratio": 0.7232999999999999,
-        "reserves_months": 8,
-        "revenue_cagr_3yr": -9.1,
-        "transparency_score": 100,
-        "working_capital_months": 8,
-        "yearly_financials": [
-          {
-            "expenses": 84094310,
-            "net_assets": 55776240,
-            "revenue": 83115051,
-            "year": 2024
-          },
-          {
-            "expenses": 99899149,
-            "net_assets": 54205947,
-            "revenue": 81357087,
-            "year": 2023
-          },
-          {
-            "expenses": 103482494,
-            "net_assets": 74512131,
-            "revenue": 100583862,
-            "year": 2022
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[5]"
-        ],
-        "domestic_grants": 456753,
-        "foreign_grants": 19412103,
-        "grant_count": 162,
-        "grant_strategy": "Empowers local organizations by providing direct funding for community-led development.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Global",
-          "USA"
-        ],
-        "top_recipients": [
-          "Oxfam America Action Fund ($262K)",
-          "North Carolina Justice Center ($32K)"
-        ],
-        "total_grants": 19868856
-      },
-      "headline": "Oxfam America empowers local communities to lead their own development through international relief and economic justice initiatives.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value long-standing institutional stability and want to support systemic change through both direct aid and policy advocacy in global crisis zones.",
-        "citation_ids": [
-          "[18]",
-          "[20]"
-        ],
-        "donor_motivations": [
-          "Want to support established organizations with deep roots in local communities",
-          "Value high transparency and independent board oversight",
-          "Interested in addressing the root causes of poverty through economic justice",
-          "Prefer giving sadaqah to a multi-sectoral international NGO"
-        ],
-        "giving_considerations": [
-          "A significant portion of the budget (over 30%) goes to non-programmatic costs",
-          "The organization is currently seeing a decline in total annual revenue",
-          "Impact is achieved through a mix of direct delivery and sub-granting to local partners"
-        ],
-        "not_ideal_for": "Donors seeking a 100% donation model or those specifically looking to fulfill Zakat obligations through a faith-certified pathway."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[13]",
-          "[17]",
-          "[24]",
-          "[25]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B reflects <cite id=\"25\">verified outcome metrics</cite> and multiple <cite id=\"13\">external project evaluations</cite> showing legislative and social impact.",
-        "external_evaluations": [
-          "NORAD Ghana Evaluation",
-          "NORAD Mozambique Evaluation",
-          "NORAD Tanzania Evaluation"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "Oxfam utilizes an integrated approach to combat poverty by <cite id=\"24\">empowering poor people to play a central role</cite> in their own development while advocating for systemic policy shifts.",
-        "why_evidence_matters": "Evidence ensures that interventions like training journalists or passing laws lead to actual poverty reduction."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[20]"
-        ],
-        "founded_year": 1942,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": -9.1,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With <cite id=\"20\">revenue declining by 9.1%</cite>, the organization has significant capacity to absorb new funding to restore program scales.",
-        "strategic_priorities": [
-          "Climate Action",
-          "Gender Equality",
-          "Economic Justice"
-        ],
-        "years_operating": 84
-      },
-      "organizational_capacity": {
-        "board_size": 22,
-        "ceo_compensation": 496921,
-        "ceo_compensation_pct_revenue": 0.6,
-        "ceo_name": "Abby Maxman",
-        "citation_ids": [
-          "[4]",
-          "[5]",
-          "[7]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Global (Africa, Asia, Americas, Middle East)",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 3.29,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[1]",
-          "[8]"
-        ],
-        "differentiator": "Distinguished by an <cite id=\"1\">80+ year history</cite> and a <cite id=\"8\">highly efficient fundraising cost of $0.19 per $1</cite>.",
-        "peer_group": "International Humanitarian Organizations",
-        "similar_orgs": [
-          "ICNA Relief",
-          "United Muslim Relief",
-          "Helping Hand for Relief and Development"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "More domestic US focus",
-          "name": "ICNA Relief"
-        },
-        {
-          "differentiator": "Explicitly faith-based mission",
-          "name": "United Muslim Relief"
-        },
-        {
-          "differentiator": "Higher program expense ratio",
-          "name": "Helping Hand for Relief and Development"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[4]",
-            "[11]"
-          ],
-          "detail": "Oxfam holds a <cite id=\"11\">Platinum Seal of Transparency from Candid</cite> and a <cite id=\"4\">near-perfect Charity Navigator rating</cite>, reflecting rigorous governance standards.",
-          "point": "Exceptional Accountability and Transparency"
-        },
-        {
-          "citation_ids": [
-            "[12]"
-          ],
-          "detail": "The organization maintains <cite id=\"12\">8.0 months of working capital</cite>, providing a significant buffer to sustain programs during economic volatility.",
-          "point": "Strong Operational Liquidity"
-        },
-        {
-          "citation_ids": [
-            "[13]",
-            "[14]"
-          ],
-          "detail": "Evaluations show tangible systemic wins, such as <cite id=\"13\">two new laws passed with CSO input</cite> in Ghana and <cite id=\"14\">legislative amendments adopted</cite> in Tanzania.",
-          "point": "Proven Impact in Advocacy and Policy"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Oxfam America's strength lies in its ability to combine large-scale resource mobilization with localized execution. By maintaining <cite id=\"15\">100% independent board members</cite>, the organization ensures objective oversight of its <cite id=\"5\">$83.1 million budget</cite>. Their impact is not merely anecdotal; they track specific outcomes such as <cite id=\"16\">CSO capacity ratings</cite> and <cite id=\"17\">digital platform engagement</cite> in Mozambique, demonstrating a commitment to data-driven development that goes beyond simple aid delivery."
-      ],
-      "summary": "Founded in <cite id=\"1\">1942</cite>, Oxfam America has established itself as a cornerstone of global humanitarian efforts, focusing on <cite id=\"2\">lifesaving support, economic justice, and climate action</cite>. The organization operates with a dual approach: providing immediate emergency relief while simultaneously <cite id=\"3\">empowering local organizations</cite> to lead long-term development within their own communities. This strategy is backed by a robust financial infrastructure, evidenced by a <cite id=\"4\">99.33333333333333/100 overall score from Charity Navigator</cite>. In the 2024 fiscal year, the organization reported <cite id=\"5\">total revenue of $83,115,051</cite>, primarily driven by <cite id=\"6\">$81,728,263 in public contributions</cite>. While its reach is vast, covering regions such as <cite id=\"7\">Gaza, Afghanistan, and Mali</cite>, Oxfam maintains a disciplined fundraising model, spending only <cite id=\"8\">$0.19 to raise every $1</cite>. Beyond direct aid, the organization is a significant grantmaker, distributing <cite id=\"9\">$19,868,856 in total grants</cite> during the last reporting period, with <cite id=\"10\">$19,412,103 directed toward foreign recipients</cite> to support localized humanitarian interventions.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "Oxfam America is a global organization that partners with local entities to provide lifesaving support and foster long-term development in impoverished regions [2]. The organization reported a total revenue of $83,115,051 and maintains a high level of financial accountability, evidenced by its Charity Navigator score of 99.33333333333333/100 [1][7]."
     }
   }
 }

@@ -2,7 +2,7 @@
   "id": "38-3633581",
   "ein": "38-3633581",
   "name": "INSTITUTE FOR SOCIAL POLICY AND UNDERSTANDING",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "ISPU PROVIDES OBJECTIVE RESEARCH AND EDUCATION ABOUT AMERICAN MUSLIMS TO SUPPORT WELL-INFORMED DIALOGUE AND DECISION-MAKING. ISPU IS A NONPARTISAN, NONPROFIT ORGANIZATION THAT BUILDS UNDERSTANDING AND STRENGTHENS COMMUNITIES BY LAYING A FOUNDATION OF FACTS.",
   "programs": [
     "American Muslim Poll",
@@ -51,7 +51,11 @@
     "netAssets": 2418521,
     "workingCapitalMonths": "22.60"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 13,
+    "independentBoardMembers": null,
+    "ceoCompensation": 165000
+  },
   "targeting": {
     "populationsServed": [
       "Adults",
@@ -80,7 +84,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": false
   },
-  "lastUpdated": "2026-02-09 21:32:24",
+  "lastUpdated": "2026-02-14 19:35:56",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -196,17 +200,36 @@
   },
   "zakatClaimEvidence": null,
   "archetype": "LEVERAGE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "LEVERAGE",
+    "archetype_label": "Strategic Advocacy",
+    "evidence_stage": "Established",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Moderate",
+      "donor_fit": "Limited",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "38-3633581",
     "charity_name": "INSTITUTE FOR SOCIAL POLICY AND UNDERSTANDING",
-    "amal_score": 49,
+    "amal_score": 53,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:17:01",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 24,
       "data_confidence": 1,
-      "impact": 26
+      "impact": 30
     },
     "score_details": {
       "alignment": {
@@ -294,11 +317,11 @@
           },
           {
             "evidence": "Working capital: 22.6 months (HIGH)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 4,
+            "improvement_suggestion": "Document why reserves above your policy target are intentional (e.g., restrictions, volatility, planned commitments) and define deployment triggers.",
+            "improvement_value": 3,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 0,
+            "scored": 4,
             "status": "full"
           },
           {
@@ -341,30 +364,10 @@
         "cost_per_beneficiary": 66797.07142857143,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "$66797.07/beneficiary; Delivery: capacity building; Impact 26/50",
+        "rationale": "$66797.07/beneficiary; Delivery: capacity building; Impact 30/50",
         "rubric_archetype": "SYSTEMIC_CHANGE",
-        "score": 26
+        "score": 30
       },
-      "judge_issues": [
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -1,
       "risks": {
         "overall_risk_level": "LOW",
@@ -380,7 +383,7 @@
         ],
         "total_deduction": -1
       },
-      "score_summary": "INSTITUTE FOR SOCIAL POLICY AND UNDERSTANDING earns 49/100 due to moderate impact and moderate alignment (minor risk deductions applied).",
+      "score_summary": "INSTITUTE FOR SOCIAL POLICY AND UNDERSTANDING shows good impact and moderate alignment (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -392,7 +395,7 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "ISPU holds a Charity Navigator score of 98.25/100 and focuses on research and education programs.",
+          "claim": "ISPU holds a 98.25/100 rating and holds 22.6 months of working capital with a fundraising efficiency of $0.17 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/383633581"
@@ -404,370 +407,28 @@
           "source_url": "https://projects.propublica.org/nonprofits/organizations/383633581"
         },
         {
-          "claim": "ISPU provides options for general charitable giving and sadaqah to support its research initiatives.",
+          "claim": "ISPU offers various donation methods for supporters to contribute sadaqah to their research and education programs.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.ispu.org/donate/"
         }
       ],
-      "amal_score_rationale": "ISPU earns a moderate overall score because while its financial health and transparency are exceptional, its specialized focus on advocacy and research results in a high cost per beneficiary and lower direct donor alignment.",
+      "amal_score_rationale": "ISPU demonstrates exceptional financial health and transparency, though its overall score is moderated by the high costs associated with specialized policy research and a low direct donor fit for those seeking traditional humanitarian aid.",
       "areas_for_improvement": [
-        "High cost per beneficiary due to the nature of research and capacity-building programs",
-        "Lower alignment for traditional Muslim donors seeking direct-aid impact"
+        "High cost per beneficiary due to the nature of high-level research and advocacy work",
+        "Limited direct service impact as the mission focuses on capacity building and policy"
       ],
       "dimension_explanations": {
-        "alignment": "The organization serves a specific niche in advocacy and social policy, which may offer lower alignment for donors prioritizing urgent humanitarian needs [1]. ISPU accepts general charitable giving and sadaqah to support its mission of informing public discourse [3].",
-        "impact": "ISPU focuses on capacity building and research rather than direct service delivery, resulting in a program expense ratio of 72.9% [1][2]. While the organization is highly efficient in its operations, the nature of policy research leads to a higher cost per beneficiary compared to direct-aid charities [1]."
+        "alignment": "The organization serves a critical role in advocacy and public education, though it may have a low donor fit for those prioritizing direct poverty relief [1]. As a sadaqah-eligible institution, it provides a platform for general charitable giving to support the American Muslim narrative [3].",
+        "impact": "ISPU focuses on capacity building through research, resulting in a program expense ratio of 72.9% [2]. While the organization is highly efficient in its operations, the cost per beneficiary is relatively high at approximately $66,797, reflecting the intensive nature of policy advocacy and academic study [1][2]."
       },
-      "headline": "The Institute for Social Policy and Understanding (ISPU) provides objective research and education to support well-informed dialogue regarding American Muslims.",
+      "headline": "The Institute for Social Policy and Understanding (ISPU) provides objective research and education to foster well-informed decision-making regarding American Muslims.",
       "strengths": [
-        "High Charity Navigator score of 98.25/100 indicating strong governance",
-        "Excellent fundraising efficiency of $0.17 per $1 raised",
-        "Robust working capital of 22.6 months providing long-term stability"
+        "High financial accountability with a Charity Navigator score of 98.25/100",
+        "Strong liquidity with 22.6 months of working capital",
+        "Efficient fundraising operations spending only $0.17 per $1 raised"
       ],
-      "summary": "founded in 2004, ISPU conducts research to equip decision-makers and inform the public through evidence-based data [1]. The organization reported a total revenue of $1,624,938 and maintains a high level of financial transparency and accountability [2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "98.25/100 overall score from Charity Navigator",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "Overall Score 98.25/100",
-          "source_name": "Charity Navigator - ISPU",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/383633581"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $1,624,938",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total Revenue: $1,624,938",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/383633581"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "American Muslim Poll",
-          "confidence": 0.95,
-          "id": "[3]",
-          "quote": "Programs: American Muslim Poll",
-          "source_name": "ISPU Website",
-          "source_type": "website",
-          "source_url": "https://www.ispu.org/donate/"
-        }
-      ],
-      "amal_score_rationale": "ISPU earns a moderate overall score because while its financial health and transparency are exceptional, its specialized focus on advocacy and research results in a high cost per beneficiary and lower direct donor alignment.",
-      "amal_scores": {
-        "amal_score": 49,
-        "confidence_scores": {
-          "alignment": 24,
-          "data_confidence": 1,
-          "impact": 26
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Program Expense Ratio",
-          "citation_ids": [
-            "[1]",
-            "[2]"
-          ],
-          "context": "At <cite id=\"2\">72.9%</cite>, the program expense ratio is slightly below the <cite id=\"1\">peer median of 81.5%</cite> for advocacy organizations."
-        },
-        {
-          "area": "High Cost Per Beneficiary",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "The nature of high-level research results in a <cite id=\"1\">cost per beneficiary of approximately $66,797</cite>, which may be high for donors used to direct-aid models."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[1]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": null,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "Maintains high internal standards for financial reporting and board independence."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "mitigation_notes": "The organization's high fundraising efficiency and massive reserves mitigate risks of financial instability.",
-        "risk_factors": [
-          "<cite id=\"1\">program expense ratio of 72.9%</cite> is lower than the 81.5% peer median."
-        ],
-        "summary": "The primary concern for donors is the <cite id=\"1\">high cost per beneficiary</cite> and a program ratio that sits below peer benchmarks."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 4,
-          "rating": 8,
-          "website": 3
-        },
-        "high_confidence_count": 15,
-        "total_count": 15,
-        "unique_sources": 3
-      },
-      "confidence": {
-        "data_freshness": "2023 Form 990 and 2024 CN Rating",
-        "data_gaps": [
-          "Missing Theory of Change document"
-        ],
-        "level": "HIGH",
-        "notes": "Financial and governance data is highly reliable.",
-        "score": 90,
-        "sources_used": [
-          "Charity Navigator",
-          "Form 990",
-          "ISPU Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 90,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "No explicit Theory of Change document",
-          "Limited beneficiary count data"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 3,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[1]",
-            "[3]"
-          ],
-          "explanation": "Alignment is moderate as the organization is <cite id=\"1\">Muslim-focused</cite> but operates in the <cite id=\"1\">advocacy and research space</cite>, which typically sees lower urgency scores than emergency relief.",
-          "improvement": "Alignment for faith-driven donors could be strengthened by <cite id=\"3\">highlighting the humanitarian dimensions</cite> of their research findings."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]",
-            "[2]"
-          ],
-          "explanation": "ISPU is highly credible, evidenced by its <cite id=\"1\">Candid Platinum Seal</cite> and <cite id=\"1\">perfect 98/100 accountability score</cite>. The organization undergoes <cite id=\"1\">independent audits</cite> and maintains full transparency regarding its <cite id=\"2\">$159,509 executive compensation</cite>.",
-          "improvement": "To further enhance credibility, the organization could publish a formal <cite id=\"1\">Theory of Change document</cite> to explicitly map its research outputs to long-term social outcomes."
-        },
-        "impact": {
-          "citation_ids": [
-            "[1]"
-          ],
-          "explanation": "Impact is driven by capacity building, with <cite id=\"1\">72.9% of expenses</cite> directed to programs. While the <cite id=\"1\">cost per beneficiary is high</cite>, the systemic influence of their research on policy and media is substantial.",
-          "improvement": "Impact scores could improve by <cite id=\"1\">reducing working capital reserves</cite> toward the 1-3 month industry standard to deploy more capital into active research programs."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "ADVOCACY",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "evidence_rigor": "Grade B - Outcome tracking with 5 metrics",
-        "geographic_focus": [
-          "United States"
-        ],
-        "giving_style": "Research and Capacity Building",
-        "tax_deductible": true,
-        "zakat_asnaf_served": null,
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.101,
-        "annual_revenue": 1624938,
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "cn_financial_score": 100,
-        "cn_overall_score": 98.25,
-        "fundraising_ratio": 0.17,
-        "industry_program_ratio": 0.75,
-        "peer_count": 21,
-        "peer_program_ratio_median": 0.815,
-        "program_expense_ratio": 0.7287,
-        "reserves_months": 23.8,
-        "revenue_cagr_3yr": 7.7,
-        "transparency_score": 100,
-        "working_capital_months": 22.6,
-        "yearly_financials": [
-          {
-            "expenses": 1283279,
-            "net_assets": 2418521,
-            "revenue": 1624938,
-            "year": 2023
-          },
-          {
-            "expenses": 1291771,
-            "net_assets": 2068841,
-            "revenue": 1665156,
-            "year": 2022
-          },
-          {
-            "expenses": 888722,
-            "net_assets": 1723950,
-            "revenue": 1401317,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct implementation of research and education programs",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "United States"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "The Institute for Social Policy and Understanding (ISPU) provides objective research and education to support well-informed dialogue regarding American Muslims.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value data-driven advocacy and want to invest in the long-term intellectual infrastructure of the American Muslim community.",
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "donor_motivations": [
-          "Believe in the power of research to change public narrative",
-          "Want to support evidence-based policy making",
-          "Value institutional transparency and high governance standards",
-          "Prefer domestic US-focused community empowerment"
-        ],
-        "giving_considerations": [
-          "Donations support research cycles rather than immediate direct aid",
-          "The organization has very high cash reserves",
-          "Impact is measured through influence and education rather than individual lives saved"
-        ],
-        "not_ideal_for": "Donors seeking to fulfill Zakat obligations or those looking for immediate humanitarian relief like food or medical aid."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "ISPU tracks <cite id=\"1\">5 specific outcome metrics</cite> and demonstrates a willingness to review feedback practices.",
-        "external_evaluations": [
-          "GreatNonprofits Top-Rated"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "ISPU generates a foundation of fact to educate the public and equip change agents to take evidence-based action.",
-        "why_evidence_matters": "In advocacy, evidence ensures that community narratives are based on data rather than stereotypes."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "founded_year": null,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": 7.7,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "As a small-to-mid-sized research institute, additional funding allows for expanded polling and deeper policy analysis.",
-        "strategic_priorities": [
-          "American Muslim Poll",
-          "Reimagining Muslim Spaces"
-        ],
-        "years_operating": 22
-      },
-      "organizational_capacity": {
-        "board_size": 13,
-        "ceo_compensation": 159509,
-        "ceo_compensation_pct_revenue": 9.8,
-        "ceo_name": "Meira Neggaz",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "United States",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "differentiator": "Distinguished by its <cite id=\"1\">22.6 months of working capital</cite>, which is significantly higher than peers like Yaqeen Institute.",
-        "peer_group": "Research and Advocacy Organizations",
-        "similar_orgs": [
-          "The Family & Youth Institute",
-          "International Institute of Islamic Thought",
-          "Yaqeen Institute for Islamic Research"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Smaller scale research focus",
-          "name": "The Family & Youth Institute"
-        },
-        {
-          "differentiator": "Academic and policy focus",
-          "name": "International Institute of Islamic Thought"
-        },
-        {
-          "differentiator": "Focus on religious and theological research",
-          "name": "Yaqeen Institute for Islamic Research"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "ISPU holds a <cite id=\"1\">98.25/100 overall score from Charity Navigator</cite> and has achieved the <cite id=\"1\">Candid Platinum Seal of Transparency</cite>.",
-          "point": "Exceptional Governance and Transparency"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The organization spends only <cite id=\"1\">$0.17 to raise every $1</cite>, significantly outperforming many peers in the advocacy space.",
-          "point": "High Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "With <cite id=\"1\">22.6 months of working capital</cite>, ISPU maintains a robust cushion that supports long-term research projects.",
-          "point": "Strong Financial Reserves"
-        }
-      ],
-      "strengths_deep_dive": [
-        "ISPU's operational strength is rooted in its commitment to institutional transparency and independent oversight. The organization maintains an <cite id=\"1\">independent board of 13 members</cite>, ensuring diverse perspectives and rigorous governance. This is reflected in their <cite id=\"1\">perfect 98/100 scores</cite> across Charity Navigator's Accountability, Culture, and Leadership beacons. Furthermore, their research has achieved significant reach, with data showing their work has been <cite id=\"1\">featured extensively in media</cite> and used by community change agents to take evidence-based action."
-      ],
-      "summary": "The Institute for Social Policy and Understanding (ISPU) is a research-driven organization dedicated to providing <cite id=\"1\">objective research and education about American Muslims</cite> to support well-informed dialogue and decision-making. Since its inception, ISPU has positioned itself as a critical resource for policymakers and community leaders, maintaining a <cite id=\"1\">perfect 98/100 score in Accountability & Finance</cite> from Charity Navigator. In the 2023 fiscal year, the organization reported <cite id=\"2\">total revenue of $1,624,938</cite>, with the vast majority of funding derived from <cite id=\"2\">contributions totaling $1,604,748</cite>. The organization's work is centered on high-impact research initiatives such as the <cite id=\"3\">American Muslim Poll</cite> and the <cite id=\"3\">Reimagining Muslim Spaces (RMS)</cite> project, which aim to generate a foundation of fact for a more inclusive society. Financially, ISPU demonstrates exceptional stability, holding <cite id=\"1\">22.6 months of working capital</cite> in working capital, ensuring that its research cycles are protected from short-term funding fluctuations.",
-      "zakat_guidance": {
-        "classification": "amil",
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "founded in 2004, ISPU conducts rigorous research to equip decision-makers and inform the public through data-driven insights [1]. The organization operates with a focus on transparency, maintaining a high Charity Navigator score of 98.25/100 and offering various sadaqah-eligible giving options [1][3]."
     }
   }
 }

@@ -2,7 +2,7 @@
   "id": "47-1666091",
   "ein": "47-1666091",
   "name": "IRUSA Waqf",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "ESTABLISH A POOL OF CAPITAL THAT ENSURES THE LONG-TERM SUSTAINABILITY OF IRUSA AND ENABLES THE CHARITY IN ACHIEVING ITS OBJECTIVES.",
   "programs": [
     "Waqf IRUSA Endowment",
@@ -46,7 +46,11 @@
     "netAssets": 15258779,
     "workingCapitalMonths": "392.90"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 4,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Men"
@@ -67,7 +71,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:37:39",
+  "lastUpdated": "2026-02-14 19:36:02",
   "sourceAttribution": {
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
@@ -166,17 +170,36 @@
     "IRUSA collects and distributes Zakat to those who are most in need, in accordance with Islamic guidelines. When you give your Zakat through IRUSA, its powerful, impactful, and its potential grows by multiples. IRUSA has a 'Scholar-Verified Zakat Policy' and a '2025 IRUSA | Zakat Catalog Book'. The 'IRUSA ZAKAT POLICY' outlines their positions on 'the collection, handling, programming, and disbursement of funds intended to be used for Zakat, in accordance with Islamic Law (shari'ah)'. (Source: https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFQ8SuPfUz5BS-fW4TTMV-LH0ul6LSUJq_OcLZvgTF2mMXVaNPjCeZJISriI5AHROJ6SO7lq5_9irHkHy_rJEhwOp8Ua6R9ZbxmJH9-7NrDN7qh)"
   ],
   "archetype": "ASSET_CREATION",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "ASSET_CREATION",
+    "archetype_label": "Asset Creator",
+    "evidence_stage": "Early",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Strong",
+      "donor_fit": "Strong",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "47-1666091",
     "charity_name": "IRUSA Waqf",
-    "amal_score": 82,
+    "amal_score": 83,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:31:25",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 43,
       "data_confidence": 0.3,
-      "impact": 40
+      "impact": 41
     },
     "score_details": {
       "alignment": {
@@ -263,12 +286,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 392.9 months (ENDOWMENT)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 3,
+            "evidence": "Working capital: 392.9 months (RESERVE_MODEL)",
+            "improvement_suggestion": "Distinguish restricted/endowment reserves from operating reserves and publish a clear reserve-use policy.",
+            "improvement_value": 2,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 4,
+            "scored": 5,
             "status": "full"
           },
           {
@@ -311,72 +334,10 @@
         "cost_per_beneficiary": 5.703166853146853,
         "directness_level": "DIRECT_PROVISION",
         "impact_design_categories": [],
-        "rationale": "$5.70/beneficiary; Delivery: direct provision; Impact 40/50",
+        "rationale": "$5.70/beneficiary; Delivery: direct provision; Impact 41/50",
         "rubric_archetype": "MULTIPLIER",
-        "score": 40
+        "score": 41
       },
-      "judge_issues": [
-        {
-          "field": "financial.program_expense_ratio",
-          "judge": "data_completeness",
-          "message": "Missing program_expense_ratio - effectiveness score may be artificially low",
-          "severity": "warning"
-        },
-        {
-          "field": "website.ein",
-          "judge": "crawl_quality",
-          "message": "Website EIN (95-4453134) doesn't match expected (47-1666091)",
-          "severity": "warning"
-        },
-        {
-          "field": "website.website_profile.ein",
-          "judge": "extract_quality",
-          "message": "EIN mismatch: expected 47-1666091, got 95-4453134",
-          "severity": "warning"
-        },
-        {
-          "field": "multi_source.ein_consistency",
-          "judge": "extract_quality",
-          "message": "Multiple different EINs found across sources: {'954453134', '471666091'}",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "working_capital_months",
-          "judge": "synthesize_quality",
-          "message": "Extremely high working capital (392.9 months) may indicate hoarding or data error",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -1,
       "risks": {
         "overall_risk_level": "LOW",
@@ -392,7 +353,7 @@
         ],
         "total_deduction": -1
       },
-      "score_summary": "Irusa Waqf earns 82/100 due to exceptional alignment and strong impact, with zakat compliance (minor risk deductions applied).",
+      "score_summary": "Irusa Waqf shows exceptional alignment and strong impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": "amil",
         "bonus_points": 0,
@@ -404,562 +365,46 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Irusa Waqf maintains a program expense ratio of 77.2% and holds 392.9 months of working capital.",
+          "claim": "Irusa Waqf is an endowment fund associated with Islamic Relief USA with specific financial metadata.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/471666091"
         },
         {
-          "claim": "The charity reported total revenue of $1,912,900 and a fundraising efficiency of $0.08 per $1 raised.",
+          "claim": "The charity reported total revenue of $1,912,900, a program expense ratio of 77.2%, fundraising efficiency of $0.08 per $1 raised, and 392.9 months of working capital.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/471666091"
         },
         {
-          "claim": "The Waqf IRUSA Endowment is designed to ensure long-term sustainability and support emergency response.",
+          "claim": "The Waqf IRUSA Endowment establishes a pool of capital for long-term sustainability and objectives.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://secure.irusa.org/donate/islamic-relief-waqf"
         },
         {
-          "claim": "The organization provides Zakat-eligible donation options for humanitarian relief.",
+          "claim": "The organization provides Zakat-eligible giving options for donors.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://irusa.org/zakat"
         }
       ],
-      "amal_score_rationale": "The charity demonstrates strong financial health and high alignment with humanitarian causes, though its overall score is tempered by low data confidence and limited external verification.",
+      "amal_score_rationale": "The charity earns a strong overall standing due to its high alignment with humanitarian causes and efficient fundraising, though its total score is tempered by low data confidence.",
       "areas_for_improvement": [
-        "Limited third-party data availability resulting in low data confidence scores",
-        "Transparency could be enhanced through more detailed public impact reporting"
+        "Low data confidence score suggests a need for increased transparency or third-party verification",
+        "program expense ratio of 77.2% is functional but has room for optimization compared to top-tier peers"
       ],
       "dimension_explanations": {
-        "alignment": "Irusa Waqf shows high alignment for Muslim donors through its Zakat-eligible status and focus on urgent humanitarian relief [3][4]. The mission to provide a permanent endowment ensures a consistent track record for supporting Islamic Relief USA's global objectives [1][3].",
-        "impact": "The organization focuses on direct provision of aid with a calculated cost per beneficiary of approximately 5.70, reflecting an efficient use of its 77.2% program expense ratio [1][2]. While financial metrics like its 392.9 months of working capital indicate extreme long-term sustainability, the low data confidence score suggests a need for more rigorous third-party evidence of program outcomes [1]."
+        "alignment": "Irusa Waqf shows high alignment for Muslim donors as a Zakat-eligible institution addressing urgent humanitarian needs [3][4]. The mission focuses on the sustainable 'Waqf' model of Islamic endowment, which provides a permanent source of support for charitable objectives [3].",
+        "impact": "The organization demonstrates a high impact through direct provision of aid and a cost-effective model, spending 77.2% of its budget on programs [1][2]. Its financial health is bolstered by an extraordinary 392.9 months of working capital, ensuring resilience during humanitarian crises [2]."
       },
-      "headline": "Irusa Waqf serves as a critical endowment fund designed to ensure the long-term sustainability and emergency response capabilities of Islamic Relief USA.",
+      "headline": "Irusa Waqf serves as a sustainable endowment fund designed to ensure the long-term humanitarian impact and operational stability of Islamic Relief USA.",
       "strengths": [
-        "High program expense ratio of 77.2% dedicated to mission-related activities",
-        "Exceptional fundraising efficiency with a cost of only $0.08 per $1 raised",
-        "Robust financial stability with 392.9 months of working capital"
+        "High fundraising efficiency with a cost of only $0.08 per $1 raised",
+        "Exceptional liquidity with 392.9 months of working capital",
+        "Designated as a Zakat-eligible organization for Muslim donors"
       ],
-      "summary": "Irusa Waqf is a Zakat-eligible organization established to create a pool of capital that supports the ongoing humanitarian objectives of Islamic Relief USA [1][4]. In the most recent fiscal period, the charity reported a total revenue of $1,912,900 while maintaining a diverse portfolio of programs including the Waqf IRUSA Endowment and dedicated emergency response initiatives [2][3]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "1993",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "Founded: 1993",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://secure.irusa.org/donate/islamic-relief-waqf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "establishing a pool of capital",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "ESTABLISH A POOL OF CAPITAL THAT ENSURES THE LONG-TERM SUSTAINABILITY OF IRUSA",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/471666091"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $1,912,900",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total Revenue: $1,912,900",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/471666091"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.08 per $1 raised",
-          "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Fundraising Efficiency: $0.08",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/471666091"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Waqf IRUSA Endowment programs",
-          "confidence": 0.9,
-          "id": "[5]",
-          "quote": "Programs: Waqf IRUSA Endowment",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://secure.irusa.org/donate/islamic-relief-waqf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "over 10 countries including Yemen, Gaza, and Sudan",
-          "confidence": 0.9,
-          "id": "[6]",
-          "quote": "Geographic Coverage: USA, Sudan, Gaza, Pakistan, Yemen, Lebanon, Morocco, Sri Lanka, Jamaica, Afghanistan",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://secure.irusa.org/donate/islamic-relief-waqf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$15,291,521",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Total Assets: $15,291,521",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/471666091"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "392.9 months of working capital",
-          "confidence": 0.95,
-          "id": "[8]",
-          "quote": "Working Capital: 392.9 months",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/471666091"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified as Zakat-eligible",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "Charity Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://irusa.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$32,742",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Total Liabilities: $32,742",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/471666091"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "sponsoring 29,204 orphans",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Orphans sponsored: 29204",
-          "source_name": "Form 990 (2023) PDF",
-          "source_type": "form990",
-          "source_url": "https://irusa.org/wp-content/uploads/2024/11/2023-Islamic-Relief-USA-990-Public-Inspection-Copy-SIGNED.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100% independent board",
-          "confidence": 0.95,
-          "id": "[12]",
-          "quote": "Independent Board Members: 100%",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/471666091"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "low data confidence (0.30)",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Data confidence is 0.30 (LOW)",
-          "source_name": "AMAL Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/471666091"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "4 board members",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Board Size: 4",
-          "source_name": "AMAL Score Details",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/471666091"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 77.2%",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Program expense ratio: 77%",
-          "source_name": "AMAL Score Details",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/471666091"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$5.70",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "$5.70/beneficiary",
-          "source_name": "AMAL Score Details",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/471666091"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "expanding services to more underserved regions",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Improvement: Expand services to underserved populations",
-          "source_name": "AMAL Score Details",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/471666091"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of -28.3%",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "3-Year Revenue CAGR: -28.3%",
-          "source_name": "AMAL Score Details",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/471666091"
-        }
-      ],
-      "amal_score_rationale": "The charity demonstrates strong financial health and high alignment with humanitarian causes, though its overall score is tempered by low data confidence and limited external verification.",
-      "amal_scores": {
-        "amal_score": 82,
-        "confidence_scores": {
-          "alignment": 43,
-          "data_confidence": 0.3,
-          "impact": 40
-        },
-        "confidence_tier": "LOW",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Data Transparency and Public Reporting",
-          "citation_ids": [
-            "[13]"
-          ],
-          "detail": "The organization currently has <cite id=\"13\">low data confidence (0.30)</cite> due to limited third-party transparency data and missing public impact metrics."
-        },
-        {
-          "area": "Board Governance Size",
-          "citation_ids": [
-            "[14]"
-          ],
-          "detail": "With only <cite id=\"14\">4 board members</cite>, the governance structure is considered minimal for an organization managing a $15M endowment."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[2]"
-        ],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": null,
-        "standards_met": null,
-        "standards_not_met": [],
-        "summary": "The organization provides audited financial statements but does not currently have a BBB Wise Giving Alliance rating."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[13]",
-          "[18]"
-        ],
-        "mitigation_notes": "The organization's high asset base of $15M mitigates the risk of revenue fluctuations.",
-        "risk_factors": [
-          "<cite id=\"18\">Significant revenue decline over three years</cite>",
-          "<cite id=\"13\">Low data confidence score</cite>"
-        ],
-        "summary": "The primary concern is the <cite id=\"13\">limited public transparency</cite> and the <cite id=\"18\">3-year revenue CAGR of -28.3%</cite>, indicating declining revenue trends."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 9,
-          "rating": 5,
-          "website": 4
-        },
-        "high_confidence_count": 15,
-        "total_count": 18,
-        "unique_sources": 4
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023 Form 990",
-        "data_gaps": [
-          "Missing full Charity Navigator rating",
-          "Limited public impact reporting",
-          "Declining revenue trend"
-        ],
-        "level": "LOW",
-        "notes": "While financial health is strong, transparency and growth metrics are currently low.",
-        "score": 30,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Charity Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 30,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Low transparency score",
-          "Declining revenue trend",
-          "Small board size"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 18,
-        "unique_sources": 4,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[9]",
-            "[6]",
-            "[17]"
-          ],
-          "explanation": "Strong fit for Muslim donors due to <cite id=\"9\">Zakat eligibility</cite> and a focus on high-urgency <cite id=\"6\">humanitarian crises in the Muslim world</cite>.",
-          "improvement": "Alignment could be further improved by <cite id=\"17\">expanding services to more underserved regions</cite> with limited existing nonprofit coverage."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[12]",
-            "[13]"
-          ],
-          "explanation": "Donors can trust the organization's longevity and its <cite id=\"12\">100% independent board</cite>, though credibility is currently limited by <cite id=\"13\">low data transparency</cite> and a lack of external ratings.",
-          "improvement": "To strengthen credibility, the charity should seek a full rating from Charity Navigator and increase public disclosure of audited financials."
-        },
-        "impact": {
-          "citation_ids": [
-            "[15]",
-            "[16]",
-            "[13]"
-          ],
-          "explanation": "The organization shows high efficiency with a <cite id=\"15\">program expense ratio of 77.2%</cite> and a low cost-per-beneficiary of <cite id=\"16\">$5.70</cite>.",
-          "improvement": "Impact measurement would benefit from <cite id=\"13\">expanding public impact reporting</cite> to include more granular outcome data across all 10+ countries of operation."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[9]",
-          "[6]"
-        ],
-        "evidence_rigor": "Grade B - Verified outcomes with internal tracking",
-        "geographic_focus": [
-          "USA",
-          "Sudan",
-          "Gaza",
-          "Pakistan",
-          "Yemen"
-        ],
-        "giving_style": "Endowment / Long-term sustainability",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara",
-          "masakin",
-          "amil",
-          "muallaf",
-          "riqab",
-          "gharimin",
-          "fisabilillah",
-          "ibn_sabil"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": null,
-        "annual_revenue": 1912900,
-        "citation_ids": [
-          "[2]",
-          "[18]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0.08,
-        "industry_program_ratio": 0.75,
-        "peer_count": 58,
-        "peer_program_ratio_median": 0.897,
-        "program_expense_ratio": 0,
-        "reserves_months": 392.9,
-        "revenue_cagr_3yr": -28.3,
-        "working_capital_months": 392.9,
-        "yearly_financials": [
-          {
-            "expenses": 466041,
-            "net_assets": 15258779,
-            "revenue": 1912900,
-            "year": 2023
-          },
-          {
-            "expenses": 629164,
-            "net_assets": 13326893,
-            "revenue": -928827,
-            "year": 2022
-          },
-          {
-            "expenses": 518588,
-            "net_assets": 17678398,
-            "revenue": 3720978,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "domestic_grants": null,
-        "foreign_grants": null,
-        "grant_count": null,
-        "grant_strategy": "Funds the operational objectives and emergency response of Islamic Relief USA",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "International",
-          "United States"
-        ],
-        "top_recipients": [
-          "Islamic Relief USA"
-        ],
-        "total_grants": null
-      },
-      "headline": "Irusa Waqf serves as a critical endowment fund designed to ensure the long-term sustainability and emergency response capabilities of Islamic Relief USA.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to invest in the long-term financial infrastructure of Islamic humanitarian work through a Zakat-eligible endowment.",
-        "citation_ids": [
-          "[4]",
-          "[18]",
-          "[1]"
-        ],
-        "donor_motivations": [
-          "Want to ensure their Zakat supports long-term institutional stability",
-          "Value low-overhead operations with high fundraising efficiency",
-          "Prefer supporting an established organization with a 30-year track record"
-        ],
-        "giving_considerations": [
-          "Gifts contribute to a large endowment pool rather than immediate spending",
-          "Revenue has shown a downward trend recently",
-          "Limited third-party transparency data available"
-        ],
-        "not_ideal_for": "Donors seeking high-growth startups or those who require exhaustive third-party transparency ratings like a full Charity Navigator score."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[11]",
-          "[2]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "Evidence is verified through internal reporting and Form 990 disclosures of beneficiary counts.",
-        "external_evaluations": [
-          "Internal outcome tracking"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "The organization uses an endowment model to provide a stable capital base that funds direct humanitarian provision and emergency response.",
-        "why_evidence_matters": "Evidence ensures that endowment payouts are effectively reaching the intended asnaf categories."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[18]"
-        ],
-        "founded_year": 1993,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": -28.3,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "As an endowment, the organization has unlimited capacity to absorb capital to increase its annual humanitarian payouts.",
-        "strategic_priorities": [
-          "Expand Waqf IRUSA Endowment",
-          "Strengthen emergency response payouts"
-        ],
-        "years_operating": 33
-      },
-      "organizational_capacity": {
-        "board_size": 4,
-        "ceo_compensation": 146530,
-        "ceo_compensation_pct_revenue": 7.66,
-        "ceo_name": "Not Disclosed",
-        "citation_ids": [
-          "[2]",
-          "[6]",
-          "[12]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "10+ countries including USA, Sudan, and Yemen",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[8]"
-        ],
-        "differentiator": "Distinguished by its <cite id=\"8\">extreme working capital reserves</cite> compared to the peer median.",
-        "peer_group": "Humanitarian Organizations",
-        "similar_orgs": [
-          "Muslim Foundation",
-          "Pillars Fund",
-          "IMANA"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar size and faith-based focus",
-          "name": "Muslim Foundation"
-        },
-        {
-          "differentiator": "Similar faith-based grantmaking/endowment model",
-          "name": "Pillars Fund"
-        },
-        {
-          "differentiator": "Similar focus on international humanitarian relief",
-          "name": "IMANA"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[4]"
-          ],
-          "detail": "The organization operates with a remarkably low overhead, spending only <cite id=\"4\">$0.08 to raise every $1</cite> in contributions.",
-          "point": "Exceptional Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[8]"
-          ],
-          "detail": "As an endowment, the charity maintains <cite id=\"8\">392.9 months of working capital</cite>, ensuring extreme resilience against economic fluctuations.",
-          "point": "Robust Long-Term Financial Stability"
-        },
-        {
-          "citation_ids": [
-            "[9]"
-          ],
-          "detail": "The organization is <cite id=\"9\">verified as Zakat-eligible</cite>, serving eight specific asnaf categories including the poor and needy.",
-          "point": "Verified Zakat Compliance"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Irusa Waqf's primary strength lies in its institutional maturity and financial health. Founded in <cite id=\"1\">1993</cite>, it has over three decades of operational history. Its financial position is anchored by <cite id=\"7\">total assets exceeding $15 million</cite>, with minimal liabilities of only <cite id=\"10\">$32,742</cite>. This allows the organization to focus on high-impact direct provision, such as <cite id=\"11\">sponsoring 29,204 orphans</cite> in a single year. Furthermore, the organization demonstrates strong governance with a <cite id=\"12\">100% independent board</cite>, ensuring that endowment funds are managed with high levels of oversight and accountability."
-      ],
-      "summary": "Irusa Waqf serves as the strategic endowment arm of Islamic Relief USA, established in <cite id=\"1\">1993</cite> to ensure the long-term sustainability of humanitarian efforts. The organization functions by <cite id=\"2\">establishing a pool of capital</cite> that enables the parent charity to achieve its objectives through both immediate emergency response and long-term development. In the 2023 fiscal year, the organization reported <cite id=\"3\">total revenue of $1,912,900</cite>, a figure that reflects its role as a specialized funding vehicle rather than a high-volume public fundraising entity. Despite its endowment structure, the charity maintains high operational efficiency, reporting <cite id=\"4\">fundraising efficiency of $0.08 per $1 raised</cite>. This lean model allows the organization to direct significant resources toward its core mission, which includes <cite id=\"5\">Waqf IRUSA Endowment programs</cite>, Ramadan food aid, and orphan support. The organization\u2019s reach is extensive, supporting projects in <cite id=\"6\">over 10 countries including Yemen, Gaza, and Sudan</cite>. By managing assets of <cite id=\"7\">$15,291,521</cite>, Irusa Waqf provides a financial safety net that allows for rapid mobilization during crises while funding consistent, multi-year development projects.",
-      "zakat_guidance": {
-        "classification": "amil",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "Irusa Waqf is a specialized endowment entity that manages a pool of capital to support the ongoing objectives and emergency response programs of Islamic Relief USA [1][2]. The organization reported a total revenue of $1,912,900 and maintains a focus on long-term financial sustainability through its Waqf IRUSA Endowment [2][3]."
     }
   }
 }

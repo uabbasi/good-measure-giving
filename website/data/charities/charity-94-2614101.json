@@ -2,7 +2,7 @@
   "id": "94-2614101",
   "ein": "94-2614101",
   "name": "Second Harvest Food Bank",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Summer Meals Second Harvest works with school districts and community partners to maximize the use of federally funded school meals.",
   "programs": [
     "Grocery Programs",
@@ -52,7 +52,11 @@
     "netAssets": 220725276,
     "workingCapitalMonths": "9.50"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 17,
+    "independentBoardMembers": null,
+    "ceoCompensation": 345000
+  },
   "targeting": {
     "populationsServed": [
       "Adults",
@@ -87,7 +91,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:36:15",
+  "lastUpdated": "2026-02-14 19:36:26",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -843,17 +847,36 @@
     "Second Harvest of Silicon Valley's donation pages and general information do not explicitly mention accepting zakat donations, nor do they have dedicated zakat funds or campaigns."
   ],
   "archetype": "DIRECT_SERVICE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Promising",
+    "archetype_code": "DIRECT_SERVICE",
+    "archetype_label": "Frontline Relief",
+    "evidence_stage": "Verified",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Strong",
+      "donor_fit": "Moderate",
+      "risk": "Strong"
+    },
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "94-2614101",
     "charity_name": "Second Harvest Food Bank",
-    "amal_score": 67,
+    "amal_score": 72,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:25:48",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 31,
       "data_confidence": 1,
-      "impact": 36
+      "impact": 41
     },
     "score_details": {
       "alignment": {
@@ -940,12 +963,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 9.5 months (HIGH)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 4,
+            "evidence": "Working capital: 9.5 months (RESILIENT)",
+            "improvement_suggestion": null,
+            "improvement_value": 0,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 1,
+            "scored": 6,
             "status": "full"
           },
           {
@@ -988,48 +1011,10 @@
         "cost_per_beneficiary": 528.784528,
         "directness_level": "DIRECT_PROVISION",
         "impact_design_categories": [],
-        "rationale": "$528.78/beneficiary; Delivery: direct provision; Impact 36/50",
+        "rationale": "$528.78/beneficiary; Delivery: direct provision; Impact 41/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 36
+        "score": 41
       },
-      "judge_issues": [
-        {
-          "field": "bbb.name_match",
-          "judge": "crawl_quality",
-          "message": "BBB name 'Second Harvest Food Bank of North Central Ohio' may not match 'Second Harvest Food Bank' (similarity: 57%)",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -1037,7 +1022,7 @@
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "Second Harvest of Silicon Valley earns 67/100 due to strong impact and good alignment.",
+      "score_summary": "Second Harvest of Silicon Valley shows strong impact and good alignment.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -1049,596 +1034,46 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a 100/100 rating and holds 9.5 months of working capital.",
+          "claim": "The charity holds a 100/100 score and maintains a 94.8% program expense ratio and 9.5 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/942614101"
         },
         {
-          "claim": "The organization reported total revenue of $286,205,684 and a program expense ratio of 94.8%.",
+          "claim": "The organization reported total revenue of $286,205,684 and a fundraising efficiency of $0.03 per $1 raised.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/942614101"
         },
         {
-          "claim": "The organization serves a high volume of average monthly clients through its hunger-relief programs.",
+          "claim": "The organization serves a high volume of average monthly clients through its food distribution programs.",
           "id": "[3]",
           "source_name": "Form 990 (2021)",
           "source_url": "https://www.shfb.org/wp-content/uploads/2023/05/SHSV-2021-Form-990-Public-Disclosure-Copy.pdf"
         },
         {
-          "claim": "The charity offers various donation options for general charitable giving and sadaqah.",
+          "claim": "The organization offers various donation options for general charitable giving and sadaqah.",
           "id": "[5]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.shfb.org/give-help/donate-money/"
         }
       ],
-      "amal_score_rationale": "The organization earns a 67/100 due to its perfect financial health rating and direct impact model, though its alignment score is moderated by a medium donor fit for specific religious giving requirements.",
+      "amal_score_rationale": "The organization earns a 72/100 due to its exceptional financial health and direct impact on extreme poverty, though its alignment score is moderated by a medium donor fit for specific religious giving preferences.",
       "areas_for_improvement": [
-        "High cost per beneficiary relative to some international relief models",
+        "High cost per beneficiary relative to some international relief programs",
         "Limited specific outreach or specialized programs tailored for the Muslim donor community"
       ],
       "dimension_explanations": {
-        "alignment": "The organization addresses the urgent cause of extreme poverty and food insecurity in Silicon Valley [3]. While it is a highly reputable secular charity suitable for sadaqah, it has a medium donor fit as it does not offer specific religious giving pathways or zakat-certified programs [5].",
-        "impact": "The charity demonstrates high effectiveness with a 100.0/100 from Charity Navigator score and a program expense ratio of 94.8% [1][2]. While the cost per beneficiary is approximately $528.78, the organization provides direct provision of essential services and holds 9.5 months of working capital to ensure operational stability [1]."
+        "alignment": "The organization addresses the urgent cause of extreme poverty and food insecurity in Silicon Valley [3]. While it is a highly reputable sadaqah-eligible option for donors, its alignment score of 31/50 reflects a medium donor fit as it is a secular organization without specific religious pathways [5].",
+        "impact": "The charity demonstrates high effectiveness with a 94.8% program expense ratio and a direct provision model that serves thousands of monthly clients [1][3]. While the cost per beneficiary is $528.78, the organization maintains a perfect 100/100 financial health rating and 9.5 months of working capital [1][2]."
       },
-      "headline": "Second Harvest of Silicon Valley is a high-impact food bank dedicated to ending hunger through direct grocery provision and federal meal program optimization.",
+      "headline": "Second Harvest of Silicon Valley is a top-rated food bank dedicated to ending hunger through direct grocery programs and federally funded school meal initiatives.",
       "strengths": [
         "Exceptional program expense ratio of 94.8%, ensuring the vast majority of funds go directly to hunger relief",
         "High fundraising efficiency with a cost of only $0.03 per $1 raised",
         "Strong liquidity with 9.5 months of working capital available"
       ],
-      "summary": "Second Harvest of Silicon Valley operates as a primary hunger-relief organization, distributing nutritious food through grocery programs and community partnerships [1][3]. The organization reported a total revenue of $286,205,684 and maintains a high level of financial transparency and efficiency [2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "1974",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "founded in 1974",
-          "source_name": "Charity Website - About",
-          "source_type": "website",
-          "source_url": "https://www.shfb.org/about-us/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $286,205,684",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: $286,205,684",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/942614101"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "direct grocery programs, community partnerships, and CalFresh outreach",
-          "confidence": 0.95,
-          "id": "[3]",
-          "quote": "Programs: Grocery Programs, Community Partners, School and Summer Meals, CalFresh Outreach",
-          "source_name": "Charity Website - Programs",
-          "source_type": "website",
-          "source_url": "https://www.shfb.org/get-food/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 94.8%",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Program service expenses: $264,488,194 / Total expenses: $279,585,829",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/942614101"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "average of 500,000 clients monthly",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Average monthly clients served: 500,000",
-          "source_name": "Form 990 (2021)",
-          "source_type": "form990",
-          "source_url": "https://www.shfb.org/wp-content/uploads/2023/05/SHSV-2021-Form-990-Public-Disclosure-Copy.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "perfect 100/100 overall score from Charity Navigator",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Overall Score: 100/100",
-          "source_name": "Charity Navigator - Ratings",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/942614101"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Candid Platinum Seal of Transparency",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Platinum Seal of Transparency",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/942614101"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.03 to raise every $1",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Fundraising Efficiency: $0.03",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/942614101#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "9.5 months of working capital",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Working Capital Ratio: 9.6 months",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/942614101#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "94% independent board",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Independent Board Members: 94%",
-          "source_name": "Charity Navigator - Accountability",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/942614101#accountability"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$126,143,515 in grants and assistance to domestic organizations",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Grants and assistance to domestic organizations: 126,143,515",
-          "source_name": "Form 990 (2022)",
-          "source_type": "form990",
-          "source_url": "https://www.shfb.org/wp-content/uploads/2024/05/SHSV-2022-Form-990-Public-Disclosure-filing.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cost per beneficiary is $528.78",
-          "confidence": 0.9,
-          "id": "[12]",
-          "quote": "$528.78/beneficiary (average for EXTREME_POVERTY)",
-          "source_name": "AMAL Score Rationale",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/942614101"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of -5.8%",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "3-Year Revenue CAGR: -5.8%",
-          "source_name": "Financial Trends Data",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/942614101"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100 largest U.S. charities",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "The 100 Largest U.S. Charities",
-          "source_name": "External Discoveries",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/942614101"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "meets all 20 BBB Wise Giving Alliance standards",
-          "confidence": 0.95,
-          "id": "[15]",
-          "quote": "Meets All 20 Standards: Yes",
-          "source_name": "BBB Wise Giving Alliance",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/human-services/second-harvest-food-bank-of-north-central-ohio-in-lorain-oh-9999-52984"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "independent audits",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Audit Status: audited",
-          "source_name": "BBB Wise Giving Alliance",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/human-services/second-harvest-food-bank-of-north-central-ohio-in-lorain-oh-9999-52984"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "documented theory of change",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Theory of Change Documented: Yes",
-          "source_name": "Candid Outcome Tracking",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/942614101"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "tracking more than 4 outcome metrics",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Outcome Metrics Tracked: 4",
-          "source_name": "Candid Outcome Tracking",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/942614101"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "",
-          "confidence": 0.9,
-          "id": "[19]",
-          "quote": "",
-          "source_name": "Alignment Components",
-          "source_type": "website",
-          "source_url": "https://www.shfb.org/about-us/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "add a dedicated page highlighting its humanitarian dimensions",
-          "confidence": 0.85,
-          "id": "[20]",
-          "quote": "Improvement: Add a dedicated zakat page or program and highlight humanitarian dimensions",
-          "source_name": "Alignment Improvement Suggestions",
-          "source_type": "website",
-          "source_url": "https://www.shfb.org/about-us/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer median of 98.3%",
-          "confidence": 1,
-          "id": "[21]",
-          "quote": "Peer Program Ratio Median: 98.3%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "evaluation",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/942614101"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a 67/100 due to its perfect financial health rating and direct impact model, though its alignment score is moderated by a medium donor fit for specific religious giving requirements.",
-      "amal_scores": {
-        "amal_score": 67,
-        "confidence_scores": {
-          "alignment": 31,
-          "data_confidence": 1,
-          "impact": 36
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "High Cost Per Beneficiary",
-          "citation_ids": [
-            "[12]"
-          ],
-          "detail": "The current <cite id=\"12\">cost per beneficiary is $528.78</cite>, which is higher than many international relief models due to the high cost of living and logistics in Silicon Valley."
-        },
-        {
-          "area": "Negative Revenue Growth",
-          "citation_ids": [
-            "[13]"
-          ],
-          "detail": "The organization has experienced a <cite id=\"13\">3-year revenue CAGR of -5.8%</cite>, suggesting a need to diversify or revitalize its donor base following pandemic-era peaks."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[15]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "review_url": "https://give.org/charity-reviews/human-services/second-harvest-food-bank-of-north-central-ohio-in-lorain-oh-9999-52984",
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "Meets all 20 BBB Wise Giving Alliance Standards for Charity Accountability"
-      },
-      "case_against": {
-        "citation_ids": [
-          "[13]",
-          "[12]",
-          "[9]"
-        ],
-        "mitigation_notes": "The charity maintains <cite id=\"9\">strong reserves (9.6 months)</cite> to mitigate revenue fluctuations.",
-        "risk_factors": [
-          "<cite id=\"13\">Revenue has decreased by 5.8% annually</cite> over the last three years.",
-          "<cite id=\"12\">High operational costs</cite> inherent to the Silicon Valley region."
-        ],
-        "summary": "The primary concerns involve <cite id=\"13\">declining revenue trends</cite> and a high-cost domestic delivery model that may be less efficient than international alternatives."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 3,
-          "form990": 6,
-          "rating": 8,
-          "website": 4
-        },
-        "high_confidence_count": 19,
-        "total_count": 21,
-        "unique_sources": 6
-      },
-      "confidence": {
-        "data_freshness": "Data current through 2023 Form 990 and 2024 ratings",
-        "data_gaps": [
-          "No zakat-specific policy",
-          "Negative revenue growth trend"
-        ],
-        "level": "HIGH",
-        "notes": "Extremely high data availability with perfect transparency scores.",
-        "score": 95,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "BBB Wise Giving Alliance",
-          "Candid",
-          "Charity Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 95,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "No zakat-specific policy",
-          "Negative revenue growth trend"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 21,
-        "unique_sources": 6,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[19]",
-            "[20]"
-          ],
-          "explanation": "",
-          "improvement": "To improve alignment, the charity could <cite id=\"20\">add a dedicated page highlighting its humanitarian dimensions</cite> to better resonate with Muslim donor priorities."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[6]",
-            "[14]",
-            "[15]",
-            "[16]"
-          ],
-          "explanation": "Donors can place high trust in this institution due to its <cite id=\"6\">100.0/100 from Charity Navigator rating</cite> and its status as one of the <cite id=\"14\">100 largest U.S. charities</cite>. It <cite id=\"15\">meets all 20 BBB Wise Giving Alliance standards</cite> and undergoes annual <cite id=\"16\">independent audits</cite>.",
-          "improvement": ""
-        },
-        "impact": {
-          "citation_ids": [
-            "[4]",
-            "[12]",
-            "[17]",
-            "[18]"
-          ],
-          "explanation": "The charity demonstrates high impact through <cite id=\"4\">94.8% program expense</cite> and a <cite id=\"17\">documented theory of change</cite>. However, the <cite id=\"12\">$528.78 cost per beneficiary</cite> limits the impact score compared to lower-cost interventions.",
-          "improvement": "Impact measurement could be enhanced by <cite id=\"18\">tracking more than 4 outcome metrics</cite> via Candid to provide deeper insights into long-term food security shifts."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "EXTREME_POVERTY",
-        "citation_ids": [
-          "[1]",
-          "[17]"
-        ],
-        "evidence_rigor": "Grade B - Verified outcomes and documented theory of change",
-        "geographic_focus": [
-          "San Mateo County, CA",
-          "Santa Clara County, CA"
-        ],
-        "giving_style": "Direct service and grocery provision",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "",
-          ""
-        ],
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.024,
-        "annual_revenue": 286205684,
-        "citation_ids": [
-          "[2]",
-          "[3]",
-          "[4]",
-          "[13]"
-        ],
-        "cn_financial_score": 100,
-        "cn_overall_score": 100,
-        "fundraising_ratio": 0.03,
-        "industry_program_ratio": 0.75,
-        "peer_count": 3,
-        "peer_program_ratio_median": 0.983,
-        "program_expense_ratio": 0.9477,
-        "reserves_months": 9.6,
-        "revenue_cagr_3yr": -5.8,
-        "transparency_score": 100,
-        "working_capital_months": 9.5,
-        "yearly_financials": [
-          {
-            "expenses": 279585829,
-            "net_assets": 220725276,
-            "revenue": 286205684,
-            "year": 2023
-          },
-          {
-            "expenses": 269435476,
-            "net_assets": 206553705,
-            "revenue": 312571305,
-            "year": 2022
-          },
-          {
-            "expenses": 278667068,
-            "net_assets": 181458059,
-            "revenue": 322406704,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "domestic_grants": 452843,
-        "foreign_grants": 0,
-        "grant_count": 79,
-        "grant_strategy": "Supports local community partners and faith-based organizations to expand food access points.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "California, USA"
-        ],
-        "top_recipients": [
-          "Ecumenical Hunger Program ($85,958)",
-          "Muslim Sisters Helping ($74,757)"
-        ],
-        "total_grants": 452843
-      },
-      "headline": "Second Harvest of Silicon Valley is a high-impact food bank dedicated to ending hunger through direct grocery provision and federal meal program optimization.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize high-transparency, domestic hunger relief in the U.S. and value established institutions with perfect accountability ratings.",
-        "citation_ids": [
-          "[6]",
-          "[12]"
-        ],
-        "donor_motivations": [
-          "Want to support local community members in Silicon Valley",
-          "Value charities with a Platinum Seal of Transparency",
-          "Prefer organizations with low fundraising overhead",
-          "Seeking to provide nutritious food directly to families"
-        ],
-        "giving_considerations": [
-          "",
-          "The organization is a large-scale institution, not a grassroots startup",
-          "Costs per beneficiary are higher due to the U.S. domestic context"
-        ],
-        "not_ideal_for": "Donors specifically looking to fulfill zakat obligations or those seeking the highest possible number of lives saved per dollar through international interventions."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[5]",
-          "[17]",
-          "[18]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B reflects verified outcome tracking and a documented theory of change, though it lacks independent RCT-level evaluations.",
-        "external_evaluations": [
-          "2 external evaluation documents"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "The charity uses a multi-channel distribution model to provide immediate food access while advocating for federal meal program optimization to create systemic change.",
-        "why_evidence_matters": "Evidence ensures that the 500,000 clients served monthly are receiving effective support that moves them toward food security."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[13]",
-          "[18]"
-        ],
-        "founded_year": 1974,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": -5.8,
-        "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "While revenue has dipped, the high cost of living in the service area maintains a constant demand for expanded services.",
-        "strategic_priorities": [
-          "Transition to sustainable working",
-          "Increase community-deep impact",
-          "Empower workplace"
-        ],
-        "years_operating": 52
-      },
-      "organizational_capacity": {
-        "board_size": 17,
-        "ceo_compensation": 751276,
-        "ceo_compensation_pct_revenue": 0.26,
-        "ceo_name": "Leslie Bacho",
-        "citation_ids": [
-          "[2]",
-          "[10]",
-          "[16]"
-        ],
-        "employees_count": 250,
-        "geographic_reach": "San Mateo and Santa Clara Counties",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 0.94,
-        "payroll_to_revenue_pct": 8.5,
-        "programs_count": 5,
-        "staff_per_million_revenue": 0.87,
-        "volunteers_count": 10000
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[4]",
-          "[21]"
-        ],
-        "differentiator": "Second Harvest maintains a <cite id=\"4\">94.6% program ratio</cite>, which is highly competitive, though slightly below the <cite id=\"21\">peer median of 98.3%</cite> for its specific category.",
-        "peer_group": "Extreme Poverty & Humanitarian Relief",
-        "similar_orgs": [
-          "Feeding America",
-          "Habitat for Humanity International",
-          "ICNA Relief"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "National network scope",
-          "name": "Feeding America"
-        },
-        {
-          "differentiator": "Focus on housing infrastructure",
-          "name": "Habitat for Humanity International"
-        },
-        {
-          "differentiator": "Stronger Muslim community focus",
-          "name": "ICNA Relief"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[4]"
-          ],
-          "detail": "The organization directs <cite id=\"4\">94.6% of its total expenses</cite> toward its hunger-relief programs, far exceeding industry standards.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[8]"
-          ],
-          "detail": "Second Harvest spends only <cite id=\"8\">$0.03 to raise every $1</cite> in charitable contributions, maximizing the impact of every dollar donated.",
-          "point": "Highly Efficient Fundraising"
-        },
-        {
-          "citation_ids": [
-            "[9]"
-          ],
-          "detail": "The charity maintains <cite id=\"9\">9.5 months of working capital</cite>, providing a strong safety net to ensure service continuity during economic downturns.",
-          "point": "Robust Operational Liquidity"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Second Harvest's operational excellence is validated by its <cite id=\"6\">perfect 100/100 score across all Charity Navigator beacons</cite>, including Impact, Accountability, and Leadership. This rating is supported by a governance structure featuring a <cite id=\"10\">94% independent board</cite> and rigorous financial oversight. Their impact is further amplified through significant grantmaking, providing <cite id=\"11\">$126,143,515 in grants and assistance to domestic organizations</cite> in 2022 to strengthen the local hunger-relief ecosystem."
-      ],
-      "summary": "Founded in <cite id=\"1\">1974</cite>, Second Harvest of Silicon Valley has evolved into one of the largest food banks in the United States, serving as a critical lifeline for residents in San Mateo and Santa Clara counties. The organization operates with a mission to end hunger through a multi-pronged approach that includes <cite id=\"2\">direct grocery programs, community partnerships, and CalFresh outreach</cite>. In the 2023 fiscal year, the charity managed a <cite id=\"3\">total revenue of $286,205,684</cite>, demonstrating significant scale in its operations. Its efficiency is notable, maintaining a <cite id=\"4\">program expense ratio of 94.8%</cite>, which ensures that the vast majority of resources are converted into food assistance. Beyond direct distribution, the organization serves an <cite id=\"5\">average of 500,000 clients monthly</cite>, utilizing a sophisticated logistics network to provide nutritious meals to families, seniors, and students. Their commitment to transparency is reflected in a <cite id=\"6\">perfect 100/100 overall score from Charity Navigator</cite> and the <cite id=\"7\">Candid Platinum Seal of Transparency</cite>. By focusing on both immediate relief and long-term advocacy, Second Harvest addresses the root causes of food insecurity in one of the nation's most expensive regions.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "Second Harvest of Silicon Valley provides essential food assistance to residents of Santa Clara and San Mateo counties through grocery programs and community partnerships [1][3]. The organization reported a total revenue of $286,205,684 and maintains a high level of financial transparency, earning a perfect 100.0/100 from Charity Navigator [1][2]."
     }
   }
 }

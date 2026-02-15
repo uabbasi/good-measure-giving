@@ -2,7 +2,7 @@
   "id": "82-1670588",
   "ein": "82-1670588",
   "name": "BASMAH",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "When you brighten a life, you ignite change that extends far beyond one person. Each individual touched goes on to inspire and uplift those around them, creating a ripple effect of hope and transformation. At BASMAH, we are committed to brightening as many lives as possible\u2014because every life changed brings the world one step closer to a brighter future.",
   "programs": [
     "Feeding Program",
@@ -58,7 +58,11 @@
     "netAssets": null,
     "workingCapitalMonths": "0.80"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 3,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Needy",
@@ -101,7 +105,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:32:15",
+  "lastUpdated": "2026-02-14 19:36:16",
   "sourceAttribution": {
     "candid_seal": {
       "source_name": "Candid",
@@ -208,6 +212,25 @@
     "Dedicated zakat page found at https://basmah-bd.org/zakat (Source: https://basmah-bd.org/zakat)"
   ],
   "archetype": "RESILIENCE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Promising",
+    "archetype_code": "RESILIENCE",
+    "archetype_label": "Community Resilience",
+    "evidence_stage": "Established",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Limited",
+      "donor_fit": "Strong",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "82-1670588",
     "charity_name": "BASMAH",
@@ -305,8 +328,8 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 0.8 months (TIGHT)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
+            "evidence": "Working capital: 0.8 months (CRITICAL)",
+            "improvement_suggestion": "Increase operating reserves to reduce continuity risk; target at least ~3 months unless a different policy is explicitly justified.",
             "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
@@ -357,38 +380,6 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 32
       },
-      "judge_issues": [
-        {
-          "field": "financial.program_expense_ratio",
-          "judge": "data_completeness",
-          "message": "Missing program_expense_ratio - effectiveness score may be artificially low",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "baseline_narrative.jargon",
-          "judge": "narrative_quality",
-          "message": "Jargon detected in baseline narrative: 'asnaf categories'",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
@@ -404,7 +395,7 @@
         ],
         "total_deduction": -2
       },
-      "score_summary": "Bangladesh American Society of Muslim Aid for Humanity Inc earns 70/100 due to strong alignment and good impact, with zakat compliance (minor risk deductions applied).",
+      "score_summary": "Bangladesh American Society of Muslim Aid for Humanity Inc shows strong alignment and good impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": "fuqara",
         "bonus_points": 0,
@@ -416,597 +407,46 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity is Zakat-eligible and follows specific asnaf categories for distribution.",
+          "claim": "The charity is zakat-eligible and maintains specific policies regarding asnaf categories.",
           "id": "[1]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://basmah-bd.org/zakat"
         },
         {
-          "claim": "The organization reported total revenue of $4,195,860 and operates medical and educational programs.",
+          "claim": "The organization reported total revenue of $4,195,860 and holds 0.8 months of working capital.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/821670588"
         },
         {
-          "claim": "The organization holds 0.8 months of working capital and a fundraising efficiency of $0.00 per $1 raised.",
+          "claim": "BASMAH operates medical centers for Rohingya refugees, educational facilities, and orphan centers.",
           "id": "[3]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/821670588"
         },
         {
-          "claim": "The charity provides multiple giving methods and donation options for supporters.",
+          "claim": "The organization provides various giving methods and donation options for humanitarian aid.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://basmah-bd.org/donate/"
         }
       ],
-      "amal_score_rationale": "The organization earns a 70/100 score due to its high alignment with donor values and direct impact on urgent humanitarian causes, though its low working capital suggests a need for stronger financial buffers.",
+      "amal_score_rationale": "The organization earns a 70/100 score due to its high-impact direct services and strong alignment with Muslim donor values, though its lower working capital affects the overall financial health score.",
       "areas_for_improvement": [
-        "Limited liquidity with only 0.8 months of working capital available",
+        "Limited liquidity with only 0.8 months of working capital",
         "Need for increased financial reserves to ensure long-term operational stability"
       ],
       "dimension_explanations": {
-        "alignment": "Alignment is high because the organization serves urgent advocacy and humanitarian needs while offering a high fit for Muslim donors through Zakat-eligible programs [1][4]. Its focus on both immediate relief and long-term stability aligns with core charitable principles [1].",
-        "impact": "The charity demonstrates moderate impact by maintaining a low cost per beneficiary of approximately $14.42 while managing total revenue of $4,195,860 [2]. While the direct service model is effective, the organization's financial health is constrained by having only 0.8 months of working capital [3]."
+        "alignment": "The charity shows high alignment with donor needs by offering Zakat-eligible programs that adhere to specific asnaf categories [1]. Its focus on the Rohingya crisis and educational advocacy addresses urgent humanitarian needs, making it a high-fit option for donors seeking to support vulnerable Muslim populations [4].",
+        "impact": "BASMAH demonstrates effectiveness through direct service delivery, maintaining a cost per beneficiary of approximately $14.42 [3]. While the organization successfully managed $4,195,860 in total revenue, its working capital is currently limited to 0.8 months, suggesting a need for stronger cash reserves to sustain its medical and orphan centers [2]."
       },
-      "headline": "The Bangladesh American Society of Muslim Aid for Humanity Inc (BASMAH) provides direct humanitarian relief and long-term stability for vulnerable communities and Rohingya refugees.",
+      "headline": "The Bangladesh American Society of Muslim Aid for Humanity (BASMAH) provides critical humanitarian relief and sustainable development programs for Rohingya refugees and underserved communities in Bangladesh.",
       "strengths": [
-        "High fundraising efficiency with $0.00 spent to raise every $1",
+        "High fundraising efficiency with a cost of $0.00 per $1 raised",
         "Direct service model providing essential medical and educational infrastructure",
-        "Clear Zakat distribution framework for Muslim donors"
+        "Zakat-eligible status with clear policies for donor compliance"
       ],
-      "summary": "BASMAH focuses on empowering individuals through medical centers, educational facilities, and orphan care to transition from short-term aid to sustainable independence [2][3]. The organization is Zakat-eligible, maintaining a dedicated policy to distribute funds according to established asnaf categories [1]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "Zakat-eligible programs for the poor and needy",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "Zakat donations are used for Zakat-eligible purposes",
-          "source_name": "Charity Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://basmah-bd.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "financial data for the 2023 tax year",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total Revenue: $4,195,860",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/821670588"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "founded in 2018",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Founded: 2018",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/821670588"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 42.1%",
-          "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Revenue growth from $2M to $4.2M over three years",
-          "source_name": "Internal Financial Analysis",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/821670588"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$4,195,860 in total revenue",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Total Revenue: $4,195,860",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/821670588"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "medical centers, educational facilities, and orphan care programs",
-          "confidence": 0.9,
-          "id": "[6]",
-          "quote": "Programs include Feeding, Education, and Rohingya Crisis Response",
-          "source_name": "Charity Website - Programs",
-          "source_type": "website",
-          "source_url": "https://basmah-bd.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Candid Seal: Platinum",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/821670588"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified Zakat distribution framework",
-          "confidence": 0.9,
-          "id": "[8]",
-          "quote": "BASMAH distributes Zakat according to Islamic principles",
-          "source_name": "Charity Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://basmah-bd.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "the poor (fuqara), the needy (masakin), and wayfarers (ibn sabil)",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Zakat Categories: fuqara, masakin, ibn_sabil",
-          "source_name": "Charity Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://basmah-bd.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "exceptional fundraising efficiency",
-          "confidence": 0.95,
-          "id": "[10]",
-          "quote": "Fundraising Efficiency: $0.00",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/821670588"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.00 spent to raise every $1",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Fundraising Efficiency: $0.00",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/821670588"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "underserved populations in crisis zones",
-          "confidence": 0.9,
-          "id": "[12]",
-          "quote": "Empowering people in communities facing crisis",
-          "source_name": "Charity Website - Mission",
-          "source_type": "website",
-          "source_url": "https://basmah-bd.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Palestine, Syria, and Turkey",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Areas Served: Morocco, Bangladesh, Turkey, Syria, Palestinian Territory",
-          "source_name": "Charity Website - Areas Served",
-          "source_type": "website",
-          "source_url": "https://basmah-bd.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cost per beneficiary of approximately $14.42",
-          "confidence": 0.85,
-          "id": "[14]",
-          "quote": "$14.42/beneficiary",
-          "source_name": "Internal Impact Data",
-          "source_type": "website",
-          "source_url": "https://basmah-bd.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Special Consultative Status",
-          "confidence": 0.9,
-          "id": "[15]",
-          "quote": "Special Consultative Status",
-          "source_name": "External Awards Discovery",
-          "source_type": "website",
-          "source_url": "https://basmah-bd.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "2025 Top-Rated Non-Profit Award from GreatNonprofits",
-          "confidence": 0.95,
-          "id": "[16]",
-          "quote": "BASMAH received the 2025 Top-Rated Non-Profit Award",
-          "source_name": "GreatNonprofits Awards",
-          "source_type": "website",
-          "source_url": "https://basmah-bd.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "0.8 months of working capital",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Working capital: 0.8 months",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/821670588"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "board size of only 3 members",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Number of voting members of the governing body: 3",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/821670588"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "long-term community self-reliance",
-          "confidence": 0.9,
-          "id": "[19]",
-          "quote": "Short-term help is great but long-term stability is our goal",
-          "source_name": "Charity Website - Vision",
-          "source_type": "website",
-          "source_url": "https://basmah-bd.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "tracks outcome metrics",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Outcome Metrics Tracked: 1",
-          "source_name": "Candid Outcome Tracking",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/821670588"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer program ratio median of 81.5%",
-          "confidence": 1,
-          "id": "[21]",
-          "quote": "Peer Program Ratio Median: 81.5%",
-          "source_name": "Peer Benchmark Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/821670588"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a 70/100 score due to its high alignment with donor values and direct impact on urgent humanitarian causes, though its low working capital suggests a need for stronger financial buffers.",
-      "amal_scores": {
-        "amal_score": 70,
-        "confidence_scores": {
-          "alignment": 40,
-          "data_confidence": 0.95,
-          "impact": 32
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Financial Liquidity and Reserves",
-          "citation_ids": [
-            "[17]"
-          ],
-          "context": "The organization currently operates with <cite id=\"17\">0.8 months of working capital</cite>, which is significantly below the recommended 3-6 month safety margin for humanitarian agencies."
-        },
-        {
-          "area": "Governance Expansion",
-          "citation_ids": [
-            "[18]"
-          ],
-          "context": "With a <cite id=\"18\">board size of only 3 members</cite>, the organization lacks the diverse oversight typically found in institutions of this financial scale."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "Not specified",
-        "citation_ids": [
-          "[16]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "BASMAH is an <cite id=\"16\">Accredited Charity by the Better Business Bureau</cite>, adhering to standards for accountability."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[4]",
-          "[17]",
-          "[18]"
-        ],
-        "mitigation_notes": "The organization's rapid <cite id=\"4\">42.1% revenue growth</cite> suggests strong donor confidence, which may eventually allow for the accumulation of larger reserves.",
-        "risk_factors": [
-          "<cite id=\"17\">Working capital of less than one month</cite> creates operational vulnerability.",
-          "<cite id=\"18\">Small board size (3 members)</cite> limits strategic diversity and oversight."
-        ],
-        "summary": "The primary concerns involve <cite id=\"17\">limited financial liquidity</cite> and <cite id=\"18\">minimal governance oversight</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 5,
-          "rating": 8,
-          "website": 8
-        },
-        "high_confidence_count": 19,
-        "total_count": 21,
-        "unique_sources": 4
-      },
-      "confidence": {
-        "data_freshness": "Data current as of 2023 Tax Year and 2025 Awards",
-        "data_gaps": [
-          "Missing detailed program expense breakdown",
-          "No independent audit available"
-        ],
-        "level": "HIGH",
-        "notes": "Strong alignment between financial filings and organizational claims.",
-        "score": 85,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Candid",
-          "Charity Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 85,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Incomplete expense breakdown in digital filings",
-          "Small board size"
-        ],
-        "ratings_last_updated": "2025-01",
-        "total_citations": 21,
-        "unique_sources": 4,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[9]",
-            "[13]"
-          ],
-          "explanation": "BASMAH is highly aligned with Muslim donor priorities, offering <cite id=\"9\">Zakat-eligible programs for the poor and needy</cite> in <cite id=\"13\">Muslim-majority regions</cite>.",
-          "improvement": ""
-        },
-        "credibility": {
-          "citation_ids": [
-            "[7]",
-            "[16]",
-            "[18]",
-            "[19]"
-          ],
-          "explanation": "Donors can trust BASMAH due to its <cite id=\"7\">Platinum Seal of Transparency</cite> and its status as an <cite id=\"16\">Accredited Charity by the Better Business Bureau</cite>. However, the <cite id=\"18\">minimal board size</cite> presents a long-term governance risk.",
-          "improvement": "To strengthen credibility, the charity should <cite id=\"18\">expand its board of directors</cite> to include more independent members and publish a formal <cite id=\"19\">theory of change document</cite>."
-        },
-        "impact": {
-          "citation_ids": [
-            "[6]",
-            "[14]",
-            "[17]",
-            "[20]"
-          ],
-          "explanation": "Impact is driven by a <cite id=\"6\">direct service model</cite> that achieves a low <cite id=\"14\">cost of $14.42 per beneficiary</cite>. The organization <cite id=\"20\">tracks outcome metrics</cite> through Candid, showing a commitment to results.",
-          "improvement": "Impact scores would improve by <cite id=\"17\">building working capital reserves</cite> to ensure program continuity during funding fluctuations."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN / ADVOCACY",
-        "citation_ids": [
-          "[1]",
-          "[13]",
-          "[20]"
-        ],
-        "evidence_rigor": "Grade C - Outcome tracking via Candid with documented theory of change",
-        "geographic_focus": [
-          "Bangladesh",
-          "Palestine",
-          "Syria",
-          "Turkey"
-        ],
-        "giving_style": "Direct service and emergency relief",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)",
-          "ibn sabil (wayfarer)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": null,
-        "annual_revenue": 4195860,
-        "citation_ids": [
-          "[2]",
-          "[4]",
-          "[5]",
-          "[17]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0,
-        "industry_program_ratio": 0.75,
-        "peer_count": 21,
-        "peer_program_ratio_median": 0.815,
-        "program_expense_ratio": 0,
-        "reserves_months": 0.8,
-        "revenue_cagr_3yr": 42.1,
-        "transparency_score": 100,
-        "working_capital_months": 0.8,
-        "yearly_financials": [
-          {
-            "expenses": 4541420,
-            "net_assets": 303644,
-            "revenue": 4195860,
-            "year": 2023
-          },
-          {
-            "expenses": 3626878,
-            "net_assets": 0,
-            "revenue": 3666170,
-            "year": 2022
-          },
-          {
-            "expenses": 1960918,
-            "net_assets": 0,
-            "revenue": 2077483,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]",
-          "[6]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct implementation of services through owned facilities",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "Bangladesh",
-          "Palestine"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "The Bangladesh American Society of Muslim Aid for Humanity Inc (BASMAH) provides direct humanitarian relief and long-term stability for vulnerable communities and Rohingya refugees.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support high-growth, Zakat-eligible humanitarian relief for Rohingya refugees and Palestinian communities with maximum fundraising efficiency.",
-        "citation_ids": [
-          "[3]",
-          "[7]",
-          "[11]",
-          "[17]",
-          "[18]"
-        ],
-        "donor_motivations": [
-          "Want to ensure 100% of the donation goes toward programs without fundraising overhead",
-          "Prioritize aid for the Rohingya crisis and other underserved Muslim populations",
-          "Value organizations with high transparency ratings like the Candid Platinum seal"
-        ],
-        "giving_considerations": [
-          "The organization is relatively young (founded 2018) and in a high-growth phase",
-          "Financial reserves are currently tight, meaning the charity relies on consistent cash flow",
-          "Governance is centralized within a small board of three individuals"
-        ],
-        "not_ideal_for": "Donors seeking an established institution with decades of financial reserves or those who prefer large, multi-national boards for oversight."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[6]",
-          "[19]",
-          "[20]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects that the organization <cite id=\"20\">tracks outcome metrics</cite> and has a documented theory of change, though independent third-party evaluations are not yet public.",
-        "external_evaluations": [
-          "Candid Outcome Metrics"
-        ],
-        "outcome_tracking_years": 1,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "BASMAH aims to empower individuals by providing <cite id=\"6\">immediate medical and educational aid</cite> while building infrastructure for <cite id=\"19\">long-term community self-reliance</cite>.",
-        "why_evidence_matters": "Evidence ensures that direct service models actually result in the promised 'long-term stability' for refugees."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[3]",
-          "[4]",
-          "[13]"
-        ],
-        "founded_year": 2018,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": 42.1,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With <cite id=\"4\">42.1% annual growth</cite> and expanding operations in <cite id=\"13\">Palestine and Syria</cite>, the organization has significant capacity to absorb new capital.",
-        "strategic_priorities": [
-          "Expand emergency response",
-          "Increase working capital reserves"
-        ],
-        "years_operating": 8
-      },
-      "organizational_capacity": {
-        "board_size": 3,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Disclosed",
-        "citation_ids": [
-          "[2]",
-          "[13]",
-          "[18]"
-        ],
-        "employees_count": 0,
-        "geographic_reach": "Bangladesh, Palestine, Syria, Turkey, Morocco",
-        "has_conflict_policy": true,
-        "has_financial_audit": false,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 0,
-        "programs_count": 5,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 0
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[11]",
-          "[21]"
-        ],
-        "differentiator": "Distinguished by <cite id=\"11\">zero-cost fundraising efficiency</cite> compared to a <cite id=\"21\">peer program ratio median of 81.5%</cite>.",
-        "peer_group": "Humanitarian Advocacy and Relief",
-        "similar_orgs": [
-          "Abdul Sattar Edhi International Foundation",
-          "KinderUSA",
-          "International Rescue Committee"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar humanitarian focus and size",
-          "name": "Abdul Sattar Edhi International Foundation"
-        },
-        {
-          "differentiator": "Focus on children in crisis zones",
-          "name": "KinderUSA"
-        },
-        {
-          "differentiator": "Much larger global scale",
-          "name": "International Rescue Committee"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[11]"
-          ],
-          "detail": "The organization reports a <cite id=\"11\">fundraising efficiency of $0.00 per $1 raised</cite>, ensuring that donor contributions are not eroded by high solicitation costs.",
-          "point": "Exceptional Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[4]",
-            "[5]"
-          ],
-          "detail": "BASMAH has demonstrated significant capacity to absorb funding, with a <cite id=\"4\">3-year revenue CAGR of 42.1%</cite> as it expands its geographic reach.",
-          "point": "Strong Growth and Scalability"
-        },
-        {
-          "citation_ids": [
-            "[7]"
-          ],
-          "detail": "The charity holds the <cite id=\"7\">Candid Platinum Seal of Transparency</cite>, the highest level of disclosure offered by the platform.",
-          "point": "High Transparency Standards"
-        }
-      ],
-      "strengths_deep_dive": [
-        "BASMAH's operational model is characterized by its <cite id=\"6\">direct delivery of services</cite>, which minimizes intermediary costs and allows for a highly competitive <cite id=\"14\">cost per beneficiary of approximately $14.42</cite>. This efficiency is particularly notable given the organization's focus on <cite id=\"12\">complex humanitarian environments</cite> like the Rohingya refugee camps. Furthermore, the organization has secured <cite id=\"15\">Special Consultative Status</cite> and received the <cite id=\"16\">2025 Top-Rated Non-Profit Award from GreatNonprofits</cite>, signaling strong external validation of its community impact and governance."
-      ],
-      "summary": "The Bangladesh American Society of Muslim Aid for Humanity Inc (BASMAH) is a humanitarian organization dedicated to providing <cite id=\"1\">direct relief and long-term stability</cite> for vulnerable populations, with a primary focus on <cite id=\"2\">Rohingya refugees and impoverished communities</cite> in Bangladesh. Founded in <cite id=\"3\">2018</cite>, the organization has rapidly scaled its operations, achieving a <cite id=\"4\">3-year revenue CAGR of 42.1%</cite> and reporting <cite id=\"5\">$4,195,860 in total revenue</cite> for the 2023 tax year. BASMAH operates through a direct service model, managing <cite id=\"6\">medical centers, educational facilities, and orphan care programs</cite> designed to transition beneficiaries from emergency aid to sustainable independence. The organization maintains a <cite id=\"7\">Platinum Seal of Transparency from Candid</cite>, reflecting a high level of public disclosure regarding its mission and outcomes. For Muslim donors, BASMAH provides a <cite id=\"8\">verified Zakat distribution framework</cite>, ensuring funds are allocated to eligible categories including <cite id=\"9\">the poor (fuqara), the needy (masakin), and wayfarers (ibn sabil)</cite>. Despite its growth, the organization maintains <cite id=\"10\">exceptional fundraising efficiency</cite>, reporting <cite id=\"11\">$0.00 spent to raise every $1</cite> in its most recent filings. This lean operational structure is paired with a focus on <cite id=\"12\">underserved populations in crisis zones</cite>, including recent expansions into <cite id=\"13\">Palestine, Syria, and Turkey</cite> for emergency response.",
-      "zakat_guidance": {
-        "classification": "fuqara",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "BASMAH focuses on empowering marginalized populations through long-term stability initiatives, including medical centers, educational facilities, and orphan care [3]. In the 2023 fiscal year, the organization reported a total revenue of $4,195,860 to support its diverse humanitarian programs [2]."
     }
   }
 }

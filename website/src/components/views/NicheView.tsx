@@ -43,10 +43,13 @@ import { ReportIssueButton } from '../ReportIssueButton';
 import { InlineViewToggle } from '../CharityViewPicker';
 import { SourceLinkedText } from '../SourceLinkedText';
 import { ActionsBar } from '../ActionsBar';
-import { SCORE_THRESHOLD_UNDER_REVIEW } from '../../utils/scoreConstants';
 import { AddDonationModal } from '../giving/AddDonationModal';
 import { useCharities } from '../../hooks/useCharities';
 import { useGivingHistory } from '../../hooks/useGivingHistory';
+import { deriveUISignalsFromCharity } from '../../utils/scoreUtils';
+import { getEvidenceStageClasses, getEvidenceStageLabel } from '../../utils/scoreConstants';
+import { RecommendationCue } from '../RecommendationCue';
+import { SignalConstellation } from '../SignalConstellation';
 
 
 interface NicheViewProps {
@@ -193,6 +196,7 @@ export const NicheView: React.FC<NicheViewProps> = ({ charity, currentView, onVi
   const financials = charity.financials || charity.rawData?.financials;
   const revenue = financials?.totalRevenue || charity.rawData?.total_revenue;
   const citations = rich?.all_citations || baseline?.all_citations || [];
+  const uiSignals = charity.ui_signals_v1 || deriveUISignalsFromCharity(charity);
 
   // Build charity lookup for similar orgs
   const charityNameToCharity = useMemo(() => {
@@ -244,12 +248,6 @@ export const NicheView: React.FC<NicheViewProps> = ({ charity, currentView, onVi
   const adminRatio = hasExpenseData && financials?.adminExpenses ? ((financials.adminExpenses / totalExpenses) * 100) : 0;
   const fundRatio = hasExpenseData && financials?.fundraisingExpenses ? ((financials.fundraisingExpenses / totalExpenses) * 100) : 0;
 
-  // Overall grade
-  const overallScore = amal?.amal_score ?? 0;
-  const overallGrade = scoreToGrade(overallScore);
-  const overallColors = getGradeColors(overallGrade.grade, isDark);
-
-
   // Card wrapper component
   const Card: React.FC<{ children: React.ReactNode; className?: string; id?: string }> = ({ children, className = '', id }) => (
     <div id={id} className={`rounded-xl p-5 ${isDark ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-gray-200'} ${className}`}>
@@ -296,8 +294,20 @@ export const NicheView: React.FC<NicheViewProps> = ({ charity, currentView, onVi
           </Link>
 
           <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-            {/* Overall Grade */}
-            <GradeBadge score={overallScore} size="lg" />
+            {/* Qualitative snapshot */}
+            <div className={`rounded-xl border px-3 py-2 ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-slate-200'}`}>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${isDark ? 'bg-slate-700 text-slate-200' : 'bg-white text-slate-600 border border-slate-200'}`}>
+                  {uiSignals.archetype_label}
+                </span>
+                <span className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${getEvidenceStageClasses(uiSignals.evidence_stage, isDark)}`}>
+                  {getEvidenceStageLabel(uiSignals.evidence_stage)}
+                </span>
+              </div>
+              <div className="mt-2">
+                <RecommendationCue cue={uiSignals.recommendation_cue} rationale={null} isDark={isDark} compact />
+              </div>
+            </div>
 
             {/* Name and Meta */}
             <div className="flex-1 min-w-0">
@@ -315,19 +325,11 @@ export const NicheView: React.FC<NicheViewProps> = ({ charity, currentView, onVi
                     Neglected Cause
                   </span>
                 )}
-                {charity.archetype && (
-                  <span className={`px-2 py-0.5 rounded-full text-xs ${isDark ? 'bg-slate-800 text-slate-400' : 'bg-gray-100 text-gray-500'}`}>
-                    {({
-                      'RESILIENCE': 'Community Resilience',
-                      'LEVERAGE': 'Strategic Leverage',
-                      'SOVEREIGNTY': 'Sovereignty Builder',
-                      'ASSET_CREATION': 'Asset Creator',
-                      'DIRECT_SERVICE': 'Direct Service',
-                    } as Record<string, string>)[charity.archetype] || charity.archetype}
-                  </span>
-                )}
               </div>
               <h1 className={`text-xl lg:text-2xl font-bold [text-wrap:balance] ${isDark ? 'text-white' : 'text-gray-900'}`}>{charity.name}</h1>
+              <div className="mt-2">
+                <SignalConstellation signals={uiSignals.signal_states} isDark={isDark} compact />
+              </div>
               {getCharityAddress(charity) && (
                 <p className={`flex items-center gap-1 text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>
                   <MapPin className="w-3 h-3" aria-hidden="true" />
@@ -394,31 +396,15 @@ export const NicheView: React.FC<NicheViewProps> = ({ charity, currentView, onVi
                     <Card id="report-card">
                       <SectionHeader title="Report Card" icon={Award} />
                       <div className="flex flex-col lg:flex-row lg:items-center gap-6">
-                        {/* Overall Grade */}
+                        {/* Qualitative summary */}
                         <div className="text-center">
-                          <GradeBadge score={overallScore} size="lg" />
-                          <p className={`text-sm mt-2 font-medium ${isDark ? 'text-slate-300' : 'text-gray-700'}`}>Overall Grade</p>
-                          {overallScore >= SCORE_THRESHOLD_UNDER_REVIEW ? (
-                            <>
-                              <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-gray-400'}`}>{overallScore}/100</p>
-                              {charity.scoreSummary && (
-                                <p className={`mt-2 text-xs leading-relaxed max-w-[200px] ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>
-                                  {charity.scoreSummary}
-                                </p>
-                              )}
-                            </>
-                          ) : (
-                            <>
-                              <div className={`mt-1 inline-flex px-2 py-0.5 rounded text-xs font-semibold ${isDark ? 'bg-amber-900/30 text-amber-400' : 'bg-amber-50 text-amber-700'}`}>
-                                Preliminary
-                              </div>
-                              <p className={`mt-2 text-xs leading-relaxed max-w-[200px] ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>
-                                {charity.evaluationTrack === 'NEW_ORG'
-                                  ? 'Preliminary evaluation under emerging-org rubric.'
-                                  : 'Preliminary score — methodology being calibrated for this profile.'}
-                              </p>
-                            </>
-                          )}
+                          <span className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold border ${getEvidenceStageClasses(uiSignals.evidence_stage, isDark)}`}>
+                            {getEvidenceStageLabel(uiSignals.evidence_stage)}
+                          </span>
+                          <p className={`text-sm mt-2 font-medium ${isDark ? 'text-slate-300' : 'text-gray-700'}`}>{uiSignals.assessment_label}</p>
+                          <p className={`mt-2 text-xs leading-relaxed max-w-[220px] ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>
+                            {uiSignals.recommendation_rationale}
+                          </p>
                         </div>
                         {/* Dimension Grades Grid */}
                         <div className="flex-1 grid grid-cols-2 gap-4">

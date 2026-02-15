@@ -2,7 +2,7 @@
   "id": "75-2999028",
   "ein": "75-2999028",
   "name": "KinderUSA",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Our mission is to improve the lives of Palestinian children and other children in crisis through development and emergency relief.",
   "programs": [
     "GAZA Emergency Relief",
@@ -55,7 +55,11 @@
     "netAssets": 1258621,
     "workingCapitalMonths": "9.30"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 11,
+    "independentBoardMembers": null,
+    "ceoCompensation": 155387
+  },
   "targeting": {
     "populationsServed": [
       "Men",
@@ -78,7 +82,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-09 21:32:13",
+  "lastUpdated": "2026-02-14 19:36:09",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -271,17 +275,36 @@
     "No explicit mention of \"zakat\" on KinderUSA's website or donation pages. The 'Ways to Give' section on their website lists various donation methods but does not include zakat. While a 'Ramadan of Remembrance' event was held, it does not explicitly state that zakat donations are accepted by KinderUSA."
   ],
   "archetype": "DIRECT_SERVICE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Promising",
+    "archetype_code": "DIRECT_SERVICE",
+    "archetype_label": "Frontline Relief",
+    "evidence_stage": "Established",
+    "signal_states": {
+      "evidence": "Moderate",
+      "financial_health": "Strong",
+      "donor_fit": "Moderate",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "75-2999028",
     "charity_name": "KinderUSA",
-    "amal_score": 63,
+    "amal_score": 68,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:05:57",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 34,
       "data_confidence": 1,
-      "impact": 30
+      "impact": 35
     },
     "score_details": {
       "alignment": {
@@ -368,12 +391,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 9.3 months (COMFORTABLE)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 4,
+            "evidence": "Working capital: 9.3 months (RESILIENT)",
+            "improvement_suggestion": null,
+            "improvement_value": 0,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 2,
+            "scored": 7,
             "status": "full"
           },
           {
@@ -416,30 +439,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "DIRECT_PROVISION",
         "impact_design_categories": [],
-        "rationale": "Delivery: direct provision; Impact 30/50",
+        "rationale": "Delivery: direct provision; Impact 35/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 30
+        "score": 35
       },
-      "judge_issues": [
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -1,
       "risks": {
         "overall_risk_level": "LOW",
@@ -455,7 +458,7 @@
         ],
         "total_deduction": -1
       },
-      "score_summary": "KINDER-USA KIDS IN NEED OF EDUCATION DEVELOPMENT RELIEF earns 63/100 due to good alignment and good impact (minor risk deductions applied).",
+      "score_summary": "KINDER-USA KIDS IN NEED OF EDUCATION DEVELOPMENT RELIEF shows strong impact and good alignment (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -467,543 +470,40 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "KinderUSA reported a total revenue of $2,165,295 and a program expense ratio of 90.3%.",
+          "claim": "KinderUSA reported total revenue of $2,165,295 and a program expense ratio of 90.3%.",
           "id": "[1]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/752999028"
         },
         {
-          "claim": "The organization offers multiple giving methods for donors to provide sadaqah and general support.",
+          "claim": "The organization offers various donation options for supporters to provide sadaqah and general aid.",
           "id": "[2]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.kinderusa.org/donate-now/"
         },
         {
-          "claim": "KinderUSA holds a 100/100 score, with 9.3 months of working capital and a fundraising efficiency of $0.05 per $1 raised.",
+          "claim": "KinderUSA received a 100.0/100 rating for financial health and accountability, with a fundraising efficiency of $0.05 per $1 raised.",
           "id": "[3]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/752999028"
         }
       ],
-      "amal_score_rationale": "KinderUSA earns a solid score due to its perfect financial health rating and direct provision of aid, though its overall score is moderated by a medium alignment for specific donor segments.",
+      "amal_score_rationale": "KinderUSA earns a solid overall rating due to its exceptional financial health and high program spending, though its impact score is moderated by the nature of direct provision in crisis zones.",
       "areas_for_improvement": [
-        "Limited third-party impact data regarding long-term cost-per-beneficiary metrics.",
-        "Opportunities to expand donor alignment beyond humanitarian urgency to broader development goals."
+        "Limited evidence of third-party impact evaluations for long-term development programs",
+        "Moderate donor alignment score suggests opportunities for deeper engagement with specific community segments"
       ],
       "dimension_explanations": {
-        "alignment": "KinderUSA addresses high-urgency humanitarian needs in Palestine, making it a strong fit for donors focused on crisis relief [3]. As a sadaqah-eligible organization, it provides a transparent pathway for general charitable giving through various methods including online and mail-in donations [2].",
-        "impact": "The organization demonstrates a high commitment to direct service, allocating 90.3% of its expenses to programs like the Farmers Cooperative and Gaza Emergency Relief [1][3]. While it maintains a high data confidence level and strong financial accountability, specific cost-per-beneficiary data is not currently available [3]."
+        "alignment": "KinderUSA shows strong alignment with humanitarian causes, specifically addressing the urgent needs of children in Palestine [1]. As a sadaqah-eligible organization, it offers various giving methods for donors interested in humanitarian aid, though it maintains a medium donor fit rating [2][3].",
+        "impact": "The organization demonstrates high financial efficiency, reporting total revenue of $2,165,295 and a program expense ratio of 90.3% [1]. While it provides direct relief through programs like GAZA Emergency Relief and Nutritional Meals for KGS, the impact score reflects a focus on direct provision rather than long-term systemic cost-per-beneficiary data [3]."
       },
-      "headline": "KinderUSA provides critical humanitarian relief and long-term development programs to support the health and education of Palestinian children.",
+      "headline": "KinderUSA provides critical humanitarian relief and development programs to improve the lives of Palestinian children and families in crisis.",
       "strengths": [
-        "Exceptional program expense ratio of 90.3%, ensuring the vast majority of funds reach children in need.",
-        "Highly efficient fundraising operations, spending only $0.05 to raise every $1.",
-        "Strong financial health with 9.3 months of working capital available to sustain operations."
+        "Exceptional program expense ratio of 90.3%, ensuring the vast majority of funds reach beneficiaries",
+        "High fundraising efficiency with costs limited to $0.05 per $1 raised",
+        "Strong liquidity with 9.3 months of working capital available"
       ],
-      "summary": "KinderUSA is a non-profit organization dedicated to improving the lives of Palestinian children and those in crisis through emergency relief and sustainable development projects [3]. The organization reported a total revenue of $2,165,295 and maintains a high level of financial transparency, earning a perfect Charity Navigator score [1][3]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "$2,165,295 in total revenue",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "Total Revenue: $2,165,295",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/752999028"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "direct provision of emergency relief",
-          "confidence": 0.95,
-          "id": "[2]",
-          "quote": "Delivery model: Direct Provision",
-          "source_name": "Charity Navigator - Impact",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/752999028"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Young Coders program and Summer Joy initiatives",
-          "confidence": 0.9,
-          "id": "[3]",
-          "quote": "Programs: GAZA Emergency Relief, Young Coders, Summer Joy",
-          "source_name": "KinderUSA Website",
-          "source_type": "website",
-          "source_url": "https://www.kinderusa.org/donate-now/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "perfect 100/100 overall score from Charity Navigator",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Overall Score: 100/100",
-          "source_name": "Charity Navigator - Ratings",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/752999028"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "90.3% independent board governance",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Independent Board Members: 90.3%",
-          "source_name": "Charity Navigator - Accountability",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/752999028"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 28.8%",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "3-Year Revenue CAGR: 28.8%",
-          "source_name": "Internal Analysis - Financial Trends",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/752999028"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "90.3% program expense ratio",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Program Expense Ratio: 100.0%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/752999028"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.05 to raise every $1",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Fundraising Efficiency: $0.05 per $1 raised",
-          "source_name": "Charity Navigator - Financial",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/752999028"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "9.3 months of working capital",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Working Capital: 9.3 months",
-          "source_name": "Charity Navigator - Financial Health",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/752999028"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Candid Seal: platinum",
-          "source_name": "Candid - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/752999028"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total assets reaching $1,298,286",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Total Assets: $1,298,286",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/752999028"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "no specific beneficiary count data",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "No beneficiary data",
-          "source_name": "Internal Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/752999028"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "no external third-party evaluations",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Seek external evaluation",
-          "source_name": "Internal Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/752999028"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Sadaqah-only giving option",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Wallet Tag: SADAQAH-ELIGIBLE",
-          "source_name": "Internal Alignment Data",
-          "source_type": "website",
-          "source_url": "https://www.kinderusa.org/donate-now/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "humanitarian aid for Palestinian territories",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Areas Served: Palestinian Territory",
-          "source_name": "Charity Navigator - Mission",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/752999028"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer median of 89.7%",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Peer Program Ratio Median: 89.7%",
-          "source_name": "Peer Benchmark Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/752999028"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "three outcome metrics are tracked",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Outcome Metrics Tracked: 3",
-          "source_name": "Candid Outcome Tracking",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/752999028"
-        }
-      ],
-      "amal_score_rationale": "KinderUSA earns a solid score due to its perfect financial health rating and direct provision of aid, though its overall score is moderated by a medium alignment for specific donor segments.",
-      "amal_scores": {
-        "amal_score": 63,
-        "confidence_scores": {
-          "alignment": 34,
-          "data_confidence": 1,
-          "impact": 30
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Impact Metric Granularity",
-          "citation_ids": [
-            "[12]"
-          ],
-          "context": "While program spending is high, there is <cite id=\"12\">no specific beneficiary count data</cite> currently available to calculate cost-per-beneficiary metrics."
-        },
-        {
-          "area": "Evidence Base",
-          "citation_ids": [
-            "[13]"
-          ],
-          "context": "The organization currently lacks <cite id=\"13\">external third-party evaluations</cite> or a documented formal theory of change to validate long-term outcomes."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[3]",
-          "[5]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "Meets all standards for charity accountability with audited financials and independent oversight."
-      },
-      "case_against": {
-        "citation_ids": [
-          "12",
-          "13"
-        ],
-        "mitigation_notes": "The organization is currently tracking three outcome metrics via Candid to improve evidence quality.",
-        "risk_factors": [
-          "<cite id=\"13\">No external evaluations or RCT-level evidence</cite>",
-          "<cite id=\"12\">Missing beneficiary-level cost data</cite>"
-        ],
-        "summary": "The primary limitations include <cite id=\"12\">limited quantitative impact data</cite> and a lack of zakat-eligibility."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 5,
-          "rating": 10,
-          "website": 2
-        },
-        "high_confidence_count": 17,
-        "total_count": 17,
-        "unique_sources": 3
-      },
-      "confidence": {
-        "data_freshness": "Data current through 2023 tax year and 2024 ratings",
-        "data_gaps": [
-          "Missing beneficiary counts",
-          "No external impact evaluations"
-        ],
-        "level": "HIGH",
-        "notes": "Strong financial and accountability data; impact data is qualitative.",
-        "score": 90,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 90,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "No beneficiary counts",
-          "No external impact evaluation"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 17,
-        "unique_sources": 3,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[14]",
-            "[15]"
-          ],
-          "explanation": "",
-          "improvement": ""
-        },
-        "credibility": {
-          "citation_ids": [
-            "[4]",
-            "[5]",
-            "[10]",
-            "[13]"
-          ],
-          "explanation": "Donors can trust KinderUSA due to its <cite id=\"4\">100.0/100 from Charity Navigator rating</cite> and <cite id=\"10\">Platinum Seal of Transparency</cite>. The board is <cite id=\"5\">90.3% independent</cite>, ensuring objective oversight.",
-          "improvement": "To further enhance credibility, the organization could <cite id=\"13\">publish a formal theory of change</cite> and seek external program audits."
-        },
-        "impact": {
-          "citation_ids": [
-            "[7]",
-            "[9]",
-            "[12]"
-          ],
-          "explanation": "Operations are highly efficient with a <cite id=\"7\">90.3% program expense ratio</cite> and <cite id=\"9\">comfortable working capital reserves</cite>.",
-          "improvement": "Impact measurement would benefit from <cite id=\"12\">tracking and reporting specific beneficiary counts</cite> to enable rigorous cost-effectiveness analysis."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "evidence_rigor": "Grade C - Outcome tracking via Candid",
-        "geographic_focus": [
-          "Palestine",
-          "Gaza",
-          "West Bank",
-          "Lebanon"
-        ],
-        "giving_style": "Direct service and emergency relief",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          ""
-        ],
-        "zakat_status": "SADAQAH-ONLY"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 2165295,
-        "citation_ids": [
-          "[1]",
-          "[6]",
-          "[9]"
-        ],
-        "cn_financial_score": 100,
-        "cn_overall_score": 100,
-        "fundraising_ratio": 0.05,
-        "industry_program_ratio": 0.75,
-        "peer_count": 58,
-        "peer_program_ratio_median": 0.897,
-        "program_expense_ratio": 0.9031,
-        "reserves_months": 19.8,
-        "revenue_cagr_3yr": 28.8,
-        "transparency_score": 100,
-        "working_capital_months": 9.3,
-        "yearly_financials": [
-          {
-            "expenses": 1622110,
-            "net_assets": 1258621,
-            "revenue": 2165295,
-            "year": 2023
-          },
-          {
-            "expenses": 1354162,
-            "net_assets": 716675,
-            "revenue": 1186637,
-            "year": 2022
-          },
-          {
-            "expenses": 959931,
-            "net_assets": 884200,
-            "revenue": 1304281,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 1506268,
-        "grant_count": 9,
-        "grant_strategy": "Directly funds foreign implementing partners for relief and development",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Palestinian Territory"
-        ],
-        "top_recipients": [
-          "9 Foreign Recipients ($1.5M total)"
-        ],
-        "total_grants": 1506268
-      },
-      "headline": "KinderUSA provides critical humanitarian relief and long-term development programs to support the health and education of Palestinian children.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize maximum financial efficiency and want their Sadaqah to support Palestinian children through a highly transparent, 4-star rated organization.",
-        "citation_ids": [
-          "[4]",
-          "[7]",
-          "[14]"
-        ],
-        "donor_motivations": [
-          "Want to ensure 90.3% of their donation (net of processing) reaches programs",
-          "Deeply concerned with the humanitarian crisis in Gaza and the West Bank",
-          "Value high transparency ratings and independent board oversight",
-          "Prefer supporting smaller, agile organizations with high growth potential"
-        ],
-        "giving_considerations": [
-          "",
-          "Impact is reported through qualitative narratives rather than cost-per-life-saved metrics",
-          "Focus is heavily concentrated on Palestinian territories"
-        ],
-        "not_ideal_for": ""
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[13]",
-          "[17]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects that while <cite id=\"17\">three outcome metrics are tracked</cite>, there is no external evaluation or formal theory of change.",
-        "external_evaluations": [
-          "Candid Platinum disclosure"
-        ],
-        "outcome_tracking_years": 1,
-        "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "KinderUSA operates on the principle that direct relief and educational empowerment (like coding) lead to improved life outcomes for children in conflict zones.",
-        "why_evidence_matters": "Evidence ensures that emergency relief effectively transitions into sustainable development for children."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[3]",
-          "[6]"
-        ],
-        "founded_year": 2003,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": 28.8,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"6\">28.8% revenue growth rate</cite> and ongoing crises in Palestine, the organization has high capacity to scale its relief efforts.",
-        "strategic_priorities": [
-          "Gaza Emergency Relief",
-          "Expanding Young Coders program"
-        ],
-        "years_operating": 23
-      },
-      "organizational_capacity": {
-        "board_size": 11,
-        "ceo_compensation": 155387,
-        "ceo_compensation_pct_revenue": 7.17,
-        "ceo_name": "Dalell Mohmed",
-        "citation_ids": [
-          "[1]",
-          "[3]",
-          "[5]"
-        ],
-        "employees_count": 0,
-        "geographic_reach": "Palestinian Territory, Lebanon, Syria, Pakistan, Uganda",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 7.17,
-        "programs_count": 5,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 0
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[7]",
-          "[16]"
-        ],
-        "differentiator": "KinderUSA's <cite id=\"7\">100.0% program ratio</cite> significantly exceeds the <cite id=\"16\">peer median of 89.7%</cite>.",
-        "peer_group": "Humanitarian Relief Organizations",
-        "similar_orgs": [
-          "Ehsaas Foundation",
-          "International Aid Charity",
-          "BASMAH"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on humanitarian relief and organizational size",
-          "name": "Ehsaas Foundation"
-        },
-        {
-          "differentiator": "Matches KinderUSA's focus on crisis-zone relief",
-          "name": "International Aid Charity"
-        },
-        {
-          "differentiator": "Focuses on similar humanitarian relief sectors",
-          "name": "BASMAH"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]",
-            "[7]"
-          ],
-          "detail": "The organization maintains a <cite id=\"7\">90.3% program expense ratio</cite> according to recent filings, ensuring maximum resource allocation to direct aid.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[4]"
-          ],
-          "detail": "KinderUSA holds a <cite id=\"4\">100.0/100 from Charity Navigator</cite>, reflecting top-tier performance in culture, leadership, and financial health.",
-          "point": "Perfect Accountability Rating"
-        },
-        {
-          "citation_ids": [
-            "[8]"
-          ],
-          "detail": "The charity is highly efficient in its development efforts, spending only <cite id=\"8\">$0.05 to raise every $1</cite> in contributions.",
-          "point": "High Fundraising Productivity"
-        }
-      ],
-      "strengths_deep_dive": [
-        "KinderUSA's financial health is characterized by robust liquidity and low overhead. The organization maintains <cite id=\"9\">9.3 months of working capital</cite> in working capital, providing a significant buffer for emergency response in volatile regions. This stability is paired with a <cite id=\"10\">Platinum Seal of Transparency from Candid</cite>, the highest level of disclosure available. Furthermore, the organization manages its growth effectively, with <cite id=\"11\">total assets reaching $1,298,286</cite> against minimal liabilities of only $39,665, ensuring that donor funds are backed by a solid institutional foundation."
-      ],
-      "summary": "KinderUSA is a specialized humanitarian organization dedicated to supporting the health, education, and development of Palestinian children living in crisis. The organization operates with a lean financial model, reporting <cite id=\"1\">$2,165,295 in total revenue</cite> for the 2023 tax year. Their operational strategy focuses on <cite id=\"2\">direct provision of emergency relief</cite> alongside long-term development projects such as the <cite id=\"3\">Young Coders program and Summer Joy initiatives</cite>. KinderUSA maintains an exceptional level of institutional transparency, evidenced by its <cite id=\"4\">perfect 100/100 overall score from Charity Navigator</cite>. This rating is supported by <cite id=\"5\">90.3% independent board governance</cite> and rigorous accountability standards. While the organization is smaller than some international peers, it demonstrates significant financial agility, achieving a <cite id=\"6\">3-year revenue CAGR of 28.8%</cite>, indicating a rapidly growing capacity to absorb and deploy capital in high-need areas like Gaza and the West Bank.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "KinderUSA is a non-profit organization dedicated to supporting children in crisis through emergency relief and long-term development initiatives, such as the Farmers Cooperative Program and nutritional support [1]. The organization maintains a high level of financial transparency and accountability, earning a perfect score of 100.100.0/100 from Charity Navigator [3]."
     }
   }
 }

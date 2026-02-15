@@ -2,7 +2,7 @@
   "id": "20-3069841",
   "ein": "20-3069841",
   "name": "Against Malaria Foundation",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "We help protect people from malaria We fund long-lasting insecticidal nets LLINs and work with distribution partners to ensure they are used. We track and report on net use and impact.",
   "programs": [
     "Long-lasting insecticidal net (LLIN) funding",
@@ -50,7 +50,11 @@
     "netAssets": 48459,
     "workingCapitalMonths": "0.00"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 4,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Communities",
@@ -81,7 +85,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:39:50",
+  "lastUpdated": "2026-02-14 19:35:45",
   "sourceAttribution": {
     "candid_seal": {
       "source_name": "Candid",
@@ -199,6 +203,25 @@
     "Organization is in zakat denylist (partners but doesn't collect directly)"
   ],
   "archetype": "LEVERAGE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Promising",
+    "archetype_code": "LEVERAGE",
+    "archetype_label": "Strategic Advocacy",
+    "evidence_stage": "Verified",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Limited",
+      "donor_fit": "Moderate",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "20-3069841",
     "charity_name": "Against Malaria Foundation",
@@ -297,7 +320,7 @@
           },
           {
             "evidence": "Working capital: unknown (UNKNOWN)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
+            "improvement_suggestion": "Publish operating-reserve levels and adopt a board-approved reserve policy (typically 3-12 months for most nonprofits).",
             "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
@@ -348,32 +371,6 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 37
       },
-      "judge_issues": [
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -381,7 +378,7 @@
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "Against Malaria Foundation (US) earns 64/100 due to strong impact and moderate alignment.",
+      "score_summary": "Against Malaria Foundation (US) shows strong impact and moderate alignment.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -393,439 +390,64 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a 94.0/100 score, a 100.0% program expense ratio, and $0.00 fundraising efficiency.",
+          "claim": "The charity has a score of 94.0/100 and a fundraising efficiency of $0.00 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/203069841"
         },
         {
-          "claim": "The organization reported total revenue of $62,286,888.",
+          "claim": "Total revenue is $62,286,888 with a 100.0% program expense ratio.",
           "id": "[2]",
           "source_name": "Form 990 (2024)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/203069841"
         },
         {
-          "claim": "The foundation tracks LLINs originally distributed and monitors households to ensure program outcomes.",
+          "claim": "The organization funds and provides long-lasting insecticidal nets (LLINs) to households.",
           "id": "[3]",
           "source_name": "12-month PDCU \u2013 Planning Document",
           "source_url": "https://www.againstmalaria.com/images/00/21/21706.pdf"
         },
         {
-          "claim": "The organization uses smartphone surveys to monitor net usage and hanging status.",
+          "claim": "AMF uses smartphone surveys to monitor net usage and hanging status.",
           "id": "[4]",
           "source_name": "12-month PDCU Smartphone survey process and screenshots",
           "source_url": "https://www.againstmalaria.com/images/00/20/20428.pdf"
         },
         {
-          "claim": "Technical reports verify the percentage of nets found in very good condition and currently hung.",
+          "claim": "Technical reports track the condition of nets and the percentage of nets still hung after distribution.",
           "id": "[5]",
           "source_name": "12-month PDCU \u2013 Technical Report",
           "source_url": "https://www.againstmalaria.com/images/00/21/21829.pdf"
         },
         {
-          "claim": "The organization conducts household visits for monitoring within six months of distribution.",
+          "claim": "Monitoring includes visiting households to verify net presence and utility.",
           "id": "[6]",
           "source_name": "6-month PDCU - Technical Report",
           "source_url": "https://www.againstmalaria.com/images/00/21/21828.pdf"
         },
         {
-          "claim": "The organization provides various donation options for general charitable giving (sadaqah).",
+          "claim": "The charity offers general donation options for those wishing to contribute.",
           "id": "[7]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.againstmalaria.com/Donate.aspx"
         }
       ],
-      "amal_score_rationale": "The organization earns a 64/100 due to its exceptional financial efficiency and high impact score, though its alignment score is moderated by a low specific fit for Muslim donor-targeted initiatives.",
+      "amal_score_rationale": "The organization earns a 64/100 due to its world-class financial efficiency and evidence-based impact, though its alignment score is moderated by a lack of specialized donor features.",
       "areas_for_improvement": [
-        "Limited specific alignment with Muslim donor preferences or specialized sadaqah-focused reporting",
-        "Focus is restricted to a single intervention type (LLINs), which may limit broader health system capacity building"
+        "Limited alignment with specific Muslim donor preferences or specialized giving pathways",
+        "Focus is restricted to a single intervention type (LLINs) rather than broader health systems"
       ],
       "dimension_explanations": {
-        "alignment": "While the cause of global health is urgent, the organization has a low donor fit for those seeking specific Islamic charitable structures, though it remains a highly transparent option for general sadaqah [7]. The foundation's track record is established through detailed planning documents and household monitoring across distribution zones [3][6].",
-        "impact": "The foundation demonstrates high effectiveness by maintaining a Charity Navigator score of 94.0/100 and providing transparent data on net usage and hanging status through smartphone surveys and technical reports [1][4][5]. Its financial model is highly efficient, reporting a total revenue of $62,286,888 with zero fundraising costs [1][2]."
+        "alignment": "While the cause of global health is of high urgency, the organization has low alignment for donors seeking specific religious giving frameworks, as it does not offer specialized pathways for traditional charitable structures [7]. However, it remains a highly efficient option for general sadaqah contributions due to its $0.00 fundraising cost per $1 raised [1][2].",
+        "impact": "The foundation demonstrates high impact through a cost-effective model that provides protection for approximately $0.18 per beneficiary [1]. Its programs are backed by rigorous data, including 6-month and 12-month post-distribution check-ups (PDCUs) that track net usage, hanging status, and physical condition to ensure long-term effectiveness [4][5][6]."
       },
-      "headline": "The Against Malaria Foundation (US) provides life-saving protection against malaria by funding and distributing long-lasting insecticidal nets to high-risk populations.",
+      "headline": "The Against Malaria Foundation (US) provides life-saving protection through the funding and distribution of long-lasting insecticidal nets to combat malaria globally.",
       "strengths": [
-        "Maintains a 100.0% program expense ratio, directing all public funds to net distribution [1]",
-        "Exceptional fundraising efficiency with $0.00 spent per $1 raised [1]",
-        "Rigorous post-distribution monitoring including 6-month and 12-month technical reports [5][6]"
+        "Exceptional financial efficiency with a 100.0% program expense ratio",
+        "Rigorous post-distribution monitoring using smartphone technology and technical reports",
+        "High transparency with a Charity Navigator score of 94.0/100"
       ],
-      "summary": "The Against Malaria Foundation (US) focuses on the procurement and distribution of long-lasting insecticidal nets (LLINs) to prevent the spread of malaria [3]. The organization reported a total revenue of $62,286,888 and maintains a 100.0% program expense ratio, ensuring that all public donations are directed toward net programs [1][2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "overall score of 94.0/100 from Charity Navigator",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "Overall Score 94/100",
-          "source_name": "Charity Navigator - Against Malaria Foundation",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/203069841"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$62,286,888 in total revenue",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: $62,286,888",
-          "source_name": "Form 990 (2024)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/203069841"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Africa, Asia, and South America",
-          "confidence": 0.9,
-          "id": "[3]",
-          "quote": "Areas Served: South America, Africa, Asia",
-          "source_name": "AMF Website - Geographic Coverage",
-          "source_type": "website",
-          "source_url": "https://www.againstmalaria.com/Donate.aspx"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100.0% of public donations",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Program Expense Ratio: 100.0%",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/203069841#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "net hanging status and the physical state of repair",
-          "confidence": 0.95,
-          "id": "[5]",
-          "quote": "Nets found in very good condition; Nets hung",
-          "source_name": "12-month PDCU Technical Report",
-          "source_type": "evaluation",
-          "source_url": "https://www.againstmalaria.com/images/00/21/21829.pdf"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a 64/100 due to its exceptional financial efficiency and high impact score, though its alignment score is moderated by a low specific fit for Muslim donor-targeted initiatives.",
-      "amal_scores": {
-        "amal_score": 64,
-        "confidence_scores": {
-          "alignment": 27,
-          "data_confidence": 1,
-          "impact": 37
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Financial Reserves",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "The organization currently holds <cite id=\"16\">0.0 months of working capital</cite> in working capital, which may pose a risk to long-term sustainability."
-        },
-        {
-          "area": "Governance Structure",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "With a <cite id=\"17\">board size of only 4 members</cite>, the governance structure is minimal compared to other organizations of similar revenue scale."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[1]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "The organization maintains high accountability standards and publishes audited financials."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "mitigation_notes": "The 100% program ratio model means the charity intentionally spends its funding on nets rather than accumulating large reserves.",
-        "risk_factors": [
-          "<cite id=\"16\">Zero months of working capital</cite> available",
-          "<cite id=\"21\">Revenue decline over the last three years</cite>"
-        ],
-        "summary": "The primary concerns involve <cite id=\"16\">low financial reserves</cite> and a <cite id=\"21\">negative 3-year revenue CAGR of -19.4%</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 3,
-          "form990": 4,
-          "rating": 5,
-          "website": 3
-        },
-        "high_confidence_count": 15,
-        "total_count": 15,
-        "unique_sources": 7
-      },
-      "confidence": {
-        "data_freshness": "2024 Form 990 data included",
-        "data_gaps": [
-          "None significant"
-        ],
-        "level": "HIGH",
-        "notes": "Extremely high financial transparency.",
-        "score": 90,
-        "sources_used": [
-          "Charity Navigator",
-          "Form 990",
-          "Technical Reports"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 90,
-        "form_990_tax_year": 2024,
-        "known_gaps": [
-          "Minimal board size",
-          "Negative revenue growth"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 7,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[3]"
-          ],
-          "explanation": "While the charity operates in <cite id=\"3\">Muslim-majority regions</cite> like Guinea and Burkina Faso, it lacks a <cite id=\"20\">dedicated sadaqah-focused reporting</cite> or faith-based outreach.",
-          "improvement": "The charity could <cite id=\"20\">highlight the humanitarian dimensions</cite> of its work in Muslim-majority countries to better resonate with faith-driven donors."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]"
-          ],
-          "explanation": "Donors can trust this charity due to its <cite id=\"8\">94.0/100 from Charity Navigator score</cite> and its <cite id=\"19\">Platinum Seal of Transparency</cite> from Candid.",
-          "improvement": "To strengthen credibility, the charity could <cite id=\"17\">expand its board of directors</cite> beyond the current four members to enhance oversight."
-        },
-        "impact": {
-          "citation_ids": [
-            "[1]"
-          ],
-          "explanation": "Operations are highly efficient with a <cite id=\"4\">100.0% program expense ratio</cite> and <cite id=\"13\">verified cost-effectiveness of $0.18 per beneficiary</cite>.",
-          "improvement": "Impact resilience could be improved by <cite id=\"16\">building working capital reserves</cite> to 1-0.0 months of working capital."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "GLOBAL_HEALTH",
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "evidence_rigor": "Grade A - Rigorous post-distribution monitoring and technical reporting",
-        "geographic_focus": [
-          "Africa",
-          "Asia",
-          "South America"
-        ],
-        "giving_style": "Evidence-based / Direct aid",
-        "tax_deductible": true,
-        "zakat_asnaf_served": null,
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": null,
-        "annual_revenue": 62286888,
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "cn_financial_score": 76,
-        "cn_overall_score": 94,
-        "fundraising_ratio": 0,
-        "industry_program_ratio": 0.75,
-        "peer_count": 14,
-        "peer_program_ratio_median": 0.846,
-        "program_expense_ratio": 1,
-        "reserves_months": 0,
-        "revenue_cagr_3yr": -19.4,
-        "transparency_score": 100,
-        "working_capital_months": 0,
-        "yearly_financials": [
-          {
-            "expenses": 62239002,
-            "net_assets": 48459,
-            "revenue": 62286888,
-            "year": 2024
-          },
-          {
-            "expenses": 36567460,
-            "net_assets": 573,
-            "revenue": 36567715,
-            "year": 2023
-          },
-          {
-            "expenses": 95884183,
-            "net_assets": 318,
-            "revenue": 95777874,
-            "year": 2022
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]",
-          "[3]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 62239002,
-        "grant_count": 10,
-        "grant_strategy": "Funds the procurement and distribution of LLINs through local partners",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Guinea",
-          "DRC",
-          "South Sudan",
-          "Tanzania"
-        ],
-        "top_recipients": [
-          "International implementing partners"
-        ],
-        "total_grants": 62239002
-      },
-      "headline": "The Against Malaria Foundation (US) provides life-saving protection against malaria by funding and distributing long-lasting insecticidal nets to high-risk populations.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize maximum financial efficiency and want to ensure every cent of their donation goes directly to life-saving supplies.",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "donor_motivations": [
-          "Want to see a 100.0% program expense ratio",
-          "Value rigorous data and technical monitoring reports",
-          "Prefer simple, proven interventions like malaria nets",
-          "Looking for the highest possible impact per dollar spent"
-        ],
-        "giving_considerations": [
-          "Donations are used for nets, not for building local health infrastructure",
-          "The organization has a very narrow focus on a single disease",
-          "Revenue has seen a recent downward trend"
-        ],
-        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those who prefer supporting multi-service community development projects."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[3]",
-          "[4]"
-        ],
-        "evidence_grade": "A",
-        "evidence_grade_explanation": "Grade A due to <cite id=\"12\">extensive technical reports</cite> and <cite id=\"15\">smartphone-based monitoring</cite> of net usage.",
-        "external_evaluations": [
-          "2 external evaluation documents"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "AMF funds LLINs and works with partners to ensure they are used, tracking impact through <cite id=\"10\">post-distribution check-ups</cite>.",
-        "why_evidence_matters": "Evidence ensures that nets are not just delivered, but are actually hung and protecting families from malaria."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[2]",
-          "[3]"
-        ],
-        "founded_year": 2003,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": -19.4,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Malaria remains a leading cause of death in target regions, and AMF's <cite id=\"21\">declining revenue</cite> suggests a significant gap in funding for planned distributions.",
-        "strategic_priorities": [
-          "Expand net distribution in high-burden countries",
-          "Enhance PDCU data accuracy"
-        ],
-        "years_operating": 23
-      },
-      "organizational_capacity": {
-        "board_size": 4,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Listed",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "employees_count": 0,
-        "geographic_reach": "South America, Africa, Asia",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 0,
-        "programs_count": 4,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 0
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "differentiator": "AMF's <cite id=\"4\">100.0% program ratio</cite> significantly exceeds the <cite id=\"22\">peer median of 84.6%</cite>.",
-        "peer_group": "Global Health Organizations",
-        "similar_orgs": [
-          "Syrian American Medical Society Foundation",
-          "Palestine Childrens Relief Fund"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Broader healthcare focus",
-          "name": "Syrian American Medical Society Foundation"
-        },
-        {
-          "differentiator": "Specific geographic focus on Palestine",
-          "name": "Palestine Childrens Relief Fund"
-        },
-        {
-          "differentiator": "Smaller scale, research-focused",
-          "name": "Cancer Research Institute"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]",
-            "[2]"
-          ],
-          "detail": "The organization maintains a <cite id=\"4\">100.0% program expense ratio</cite> and spends <cite id=\"9\">$0.00 to raise every $1</cite> in public funds.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[4]",
-            "[5]",
-            "[6]"
-          ],
-          "detail": "AMF conducts <cite id=\"10\">post-distribution check-ups</cite> to ensure nets are <cite id=\"11\">properly hung and utilized</cite> by beneficiaries.",
-          "point": "Rigorous Impact Monitoring"
-        },
-        {
-          "citation_ids": [
-            "[1]",
-            "[3]"
-          ],
-          "detail": "The charity holds a <cite id=\"8\">94/100 rating from Charity Navigator</cite> and provides <cite id=\"12\">detailed technical reports</cite> for its distributions.",
-          "point": "High Transparency and Accountability"
-        }
-      ],
-      "strengths_deep_dive": [
-        "The Against Malaria Foundation's primary strength lies in its radical transparency and cost-effectiveness. By focusing on a single, high-impact intervention, they achieve a <cite id=\"13\">cost per beneficiary of approximately $0.18</cite>, which is considered exceptional within the global health sector. Their accountability is further demonstrated by <cite id=\"14\">100% independent board members</cite> and a commitment to publishing <cite id=\"15\">smartphone-based survey data</cite> from the field, showing exactly how many nets remain in 'very good' condition months after distribution."
-      ],
-      "summary": "The Against Malaria Foundation (US) is a highly specialized global health organization that focuses exclusively on the procurement and distribution of <cite id=\"1\">long-lasting insecticidal nets (LLINs)</cite> to prevent malaria. Founded in <cite id=\"2\">2003</cite>, the organization has established itself as a global leader in evidence-based humanitarian aid, operating across <cite id=\"3\">Africa, Asia, and South America</cite>. AMF is distinguished by its unique financial model, which ensures that <cite id=\"4\">100.0% of public donations</cite> are used directly to purchase nets, while administrative and fundraising costs are covered by a small group of private donors. In the 2024 tax year, the organization reported <cite id=\"5\">$62,286,888 in total revenue</cite>, all of which was derived from contributions. The foundation's impact is verified through a <cite id=\"6\">rigorous post-distribution monitoring (PDCU) process</cite>, which includes technical reports at 6, 12, 18, and 24-month intervals to track net usage and condition. For example, monitoring efforts have tracked metrics such as <cite id=\"7\">net hanging status and the physical state of repair</cite> across thousands of households. This data-driven approach has earned the charity an <cite id=\"8\">overall score of 94.0/100 from Charity Navigator</cite> and a Platinum Seal of Transparency from Candid.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "The Against Malaria Foundation (AMF) focuses on the procurement and distribution of long-lasting insecticidal nets (LLINs) to protect populations at high risk of malaria [3]. The organization maintains a high level of transparency and financial efficiency, reporting total revenue of $62,286,888 [1][2]."
     }
   }
 }

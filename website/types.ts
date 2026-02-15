@@ -468,6 +468,74 @@ export interface ConfidenceScores {
   fit?: number;
 }
 
+export type UISignalState = 'Strong' | 'Moderate' | 'Limited';
+export type UIEvidenceStage = 'Verified' | 'Established' | 'Building' | 'Early';
+export type UIRecommendationCue = 'Strong Match' | 'Good Match' | 'Mixed Signals' | 'Limited Match';
+export type UIAssessmentLabel =
+  | 'High Conviction'
+  | 'Promising'
+  | 'Context Dependent'
+  | 'Well Documented Low Score'
+  | 'Limited Basis';
+
+export interface UISignalsV1 {
+  schema_version: string;
+  config_version: string;
+  config_hash: string;
+  assessment_label: UIAssessmentLabel;
+  archetype_code?: string | null;
+  archetype_label: string;
+  evidence_stage: UIEvidenceStage;
+  signal_states: {
+    evidence: UISignalState;
+    financial_health: UISignalState;
+    donor_fit: UISignalState;
+    risk: UISignalState;
+  };
+  recommendation_cue: UIRecommendationCue;
+  recommendation_rationale: string;
+  used_fallback?: boolean;
+  fallback_reasons?: string[] | null;
+}
+
+export interface CalibrationReport {
+  metadata: {
+    generated_at: string;
+    dolt_commit?: string | null;
+    schema_version: string;
+    config_version: string;
+    config_hash: string;
+    total_charities: number;
+  };
+  distributions: {
+    assessment_label: Record<string, number>;
+    evidence_stage: Record<string, number>;
+    recommendation_cue: Record<string, number>;
+    signal_states: {
+      evidence: Record<string, number>;
+      financial_health: Record<string, number>;
+      donor_fit: Record<string, number>;
+      risk: Record<string, number>;
+    };
+  };
+  by_evaluation_track: Record<string, Record<string, number>>;
+  fallback: {
+    count: number;
+    rate_pct: number;
+  };
+  missing_signals: Record<string, { count: number; rate_pct: number }>;
+  near_threshold: {
+    count: number;
+    rate_pct: number;
+    boundaries: number[];
+  };
+  warnings: string[];
+  guardrail_status: {
+    hard_fail: boolean;
+    reasons: string[];
+  };
+}
+
 // Score component — atomic scoring unit within a dimension
 export interface ScoreComponentDetail {
   name: string;
@@ -1018,6 +1086,8 @@ export interface CharityProfile {
     populationsServed?: string[] | null;
     geographicCoverage?: string[] | null;
   } | null;
+  // Donor-facing qualitative signals (v1 contract)
+  ui_signals_v1?: UISignalsV1 | null;
 }
 
 // ============================================================================

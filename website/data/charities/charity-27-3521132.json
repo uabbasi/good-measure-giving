@@ -2,7 +2,7 @@
   "id": "27-3521132",
   "ein": "27-3521132",
   "name": "World Central Kitchen",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Donate",
   "programs": [
     "Emergency Food Relief",
@@ -50,7 +50,11 @@
     "netAssets": 158652424,
     "workingCapitalMonths": "6.90"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 7,
+    "independentBoardMembers": null,
+    "ceoCompensation": 320000
+  },
   "targeting": {
     "populationsServed": [
       "Victims",
@@ -84,7 +88,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": false
   },
-  "lastUpdated": "2026-02-09 21:38:42",
+  "lastUpdated": "2026-02-14 19:35:50",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -228,17 +232,36 @@
     "Organization is in zakat denylist (partners but doesn't collect directly)"
   ],
   "archetype": "DIRECT_SERVICE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Promising",
+    "archetype_code": "DIRECT_SERVICE",
+    "archetype_label": "Frontline Relief",
+    "evidence_stage": "Verified",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Strong",
+      "donor_fit": "Moderate",
+      "risk": "Strong"
+    },
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "27-3521132",
     "charity_name": "World Central Kitchen",
-    "amal_score": 69,
+    "amal_score": 72,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:42:06",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 33,
       "data_confidence": 0.95,
-      "impact": 36
+      "impact": 39
     },
     "score_details": {
       "alignment": {
@@ -325,12 +348,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 6.9 months (COMFORTABLE)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 3,
+            "evidence": "Working capital: 6.9 months (RESILIENT)",
+            "improvement_suggestion": null,
+            "improvement_value": 0,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 4,
+            "scored": 7,
             "status": "full"
           },
           {
@@ -373,36 +396,10 @@
         "cost_per_beneficiary": 4222.071046875,
         "directness_level": "DIRECT_PROVISION",
         "impact_design_categories": [],
-        "rationale": "$4222.07/beneficiary; Delivery: direct provision; Impact 36/50",
+        "rationale": "$4222.07/beneficiary; Delivery: direct provision; Impact 39/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 36
+        "score": 39
       },
-      "judge_issues": [
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -410,7 +407,7 @@
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "World Central Kitchen, Inc. earns 69/100 due to strong impact and good alignment.",
+      "score_summary": "World Central Kitchen, Inc. shows strong impact and good alignment.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -422,591 +419,58 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "WCK reports a program expense ratio of 92.5% and fundraising efficiency of $0.05 per $1 raised.",
+          "claim": "The organization maintains a 92.5% program expense ratio.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/273521132"
         },
         {
-          "claim": "The organization provides information regarding its eligibility for charitable giving such as Sadaqah.",
+          "claim": "The organization is eligible for general charitable giving (sadaqah).",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://wck.org/zakat"
         },
         {
-          "claim": "Total revenue for the period was $241,549,612 with 6.9 months of working capital.",
+          "claim": "Total revenue is $241,549,612 and fundraising efficiency is $0.05 per $1 raised.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/273521132"
         },
         {
-          "claim": "WCK programs include Climate-Related Responses, Disaster Relief, and Emergency Food Relief.",
+          "claim": "WCK focuses on emergency food relief and disaster response programs.",
           "id": "[4]",
           "source_name": "Download Form",
           "source_url": "http://wck.org/wp-content/uploads/2025/10/ZrO0wUaF0TcGIwn__WCKContributionForm.pdf"
         },
         {
-          "claim": "The organization is first to the frontlines providing fresh meals in response to crises.",
+          "claim": "The organization was founded by Chef Jos\u00e9 Andr\u00e9s to provide fresh meals on the frontlines of crises.",
           "id": "[5]",
           "source_name": "Hurricanes, Hot Meals & Helicopters: A WCK Graphic Novel",
           "source_url": "http://wck.org/wp-content/uploads/2025/10/24b230a6-9c33-4aad-9f05-73bb1b4c7c95_Graphic_Novella_Hurricanes_Hot_Meals_Helicopters.pdf"
         },
         {
-          "claim": "WCK offers various methods for general charitable donations to support its mission.",
+          "claim": "Donation options are available for general humanitarian support.",
           "id": "[6]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://wck.org/donate"
         }
       ],
-      "amal_score_rationale": "With a score of 69/100, WCK demonstrates strong financial health and operational transparency, though its focus on immediate crisis relief results in a higher cost-per-impact ratio compared to developmental aid.",
+      "amal_score_rationale": "WCK earns a strong score of 72/100 due to its massive operational scale and high financial transparency, though the high cost per beneficiary impacts its total efficiency rating.",
       "areas_for_improvement": [
-        "High cost per beneficiary relative to long-term food security programs due to the nature of emergency logistics",
-        "Limited specific alignment with traditional Islamic giving frameworks beyond general humanitarian aid"
+        "High cost per beneficiary relative to traditional dry-good food distribution models",
+        "Medium alignment for donors specifically seeking niche religious-focused programming"
       ],
       "dimension_explanations": {
-        "alignment": "The organization maintains high data confidence and a proven track record in responding to global emergencies [1][5].",
-        "impact": "WCK achieves a high impact score of 36/50 through direct provision of meals in high-stakes environments, supported by a 92.5% program expense ratio [1][3]. While the cost per beneficiary is calculated at 4222.071046875, this reflects the complex logistics of delivering hot meals in active disaster zones [4][5]."
+        "alignment": "WCK offers a medium donor fit for those seeking humanitarian urgency, as it is a primary responder to global crises [5]. While the organization is sadaqah-eligible, it does not maintain specific zakat-certified pathways, making it best suited for general charitable giving [2][6].",
+        "impact": "The organization demonstrates high impact through direct provision of meals, maintaining a 92.5% program expense ratio [1][3]. While the cost per beneficiary is calculated at approximately $4,222.07, this reflects the complex logistics of providing fresh, hot meals in active disaster zones rather than shelf-stable goods [4][5]."
       },
-      "headline": "World Central Kitchen is a rapid-response humanitarian organization providing fresh meals to communities on the frontlines of crises and natural disasters.",
+      "headline": "World Central Kitchen provides immediate, chef-prepared food relief to communities on the frontlines of humanitarian, climate, and humanitarian crises.",
       "strengths": [
-        "High program expense ratio of 92.5%, ensuring most funds reach those in need",
+        "High program expense ratio of 92.5%, ensuring the vast majority of funds reach the field",
         "Exceptional fundraising efficiency with a cost of only $0.05 per $1 raised",
         "Strong liquidity with 6.9 months of working capital available for rapid deployment"
       ],
-      "summary": "founded in 2010 by Chef Jos\u00e9 Andr\u00e9s, World Central Kitchen (WCK) specializes in emergency food relief, climate-related responses, and disaster relief operations [4][5]. The organization reported a total revenue of $241,549,612 and maintains a high level of operational efficiency by directing the vast majority of its resources toward direct program services [1][3]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "emergency food relief during crises",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "World Central Kitchen (WCK) is first to the frontlines, providing meals in response to humanitarian, climate, and community crises.",
-          "source_name": "Charity Navigator - WCK",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273521132"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$241,549,612 in total revenue",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: $241,549,612",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/273521132"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "direct provision of fresh meals",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "WCK is first to the frontlines providing fresh meals in response to crises.",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/273521132"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Gaza, Ukraine, and the United States",
-          "confidence": 0.9,
-          "id": "[4]",
-          "quote": "WCK has provided more than 400 million meals. in Ukraine, Gaza, and across the US.",
-          "source_name": "WCK Contribution Form",
-          "source_type": "website",
-          "source_url": "http://wck.org/wp-content/uploads/2025/10/ZrO0wUaF0TcGIwn__WCKContributionForm.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "92.5% program expense ratio",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Program service expenses: $270,163,893 / Total expenses: $277,007,098",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/273521132"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "exceptional fundraising efficiency",
-          "confidence": 0.95,
-          "id": "[6]",
-          "quote": "Fundraising Efficiency: $0.03",
-          "source_name": "Charity Navigator - WCK",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273521132"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.05 to raise every $1",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "cost of only $0.05 per $1 raised",
-          "source_name": "Baseline Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273521132"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "rapid deployment of resources",
-          "confidence": 0.9,
-          "id": "[8]",
-          "quote": "WCK is a frontline force that shows up with the urgency of now.",
-          "source_name": "WCK Graphic Novel",
-          "source_type": "website",
-          "source_url": "http://wck.org/wp-content/uploads/2025/10/24b230a6-9c33-4aad-9f05-73bb1b4c7c95_Graphic_Novella_Hurricanes_Hot_Meals_Helicopters.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "6.9 months of working capital",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "6.9 months of working capital available",
-          "source_name": "Baseline Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273521132"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "active presence in Gaza, Lebanon, and Egypt",
-          "confidence": 0.95,
-          "id": "[10]",
-          "quote": "Geographic Coverage: Gaza, West Bank, Lebanon, Egypt",
-          "source_name": "WCK Programs",
-          "source_type": "website",
-          "source_url": "http://wck.org/wp-content/uploads/2025/10/ZrO0wUaF0TcGIwn__WCKContributionForm.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "industry standard of 75%",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Industry Standard: 75%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273521132"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 40.2%",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "3-Year Revenue CAGR: 40.2%",
-          "source_name": "Financial Trends",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/273521132"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100% independent board members",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Independent Board Members: 100%",
-          "source_name": "Charity Navigator - Governance",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273521132"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Candid Seal: PLATINUM",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273521132"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "local culinary mobilization",
-          "confidence": 0.9,
-          "id": "[15]",
-          "quote": "WCK partners with local chefs and restaurants to provide meals.",
-          "source_name": "WCK Graphic Novel",
-          "source_type": "website",
-          "source_url": "http://wck.org/wp-content/uploads/2025/10/24b230a6-9c33-4aad-9f05-73bb1b4c7c95_Graphic_Novella_Hurricanes_Hot_Meals_Helicopters.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cost of $4,222.07 per beneficiary",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Cost Per Beneficiary: $4222.07/beneficiary",
-          "source_name": "Impact Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273521132"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "add a dedicated zakat page",
-          "confidence": 0.9,
-          "id": "[17]",
-          "quote": "Improvement: Add a dedicated zakat page or program",
-          "source_name": "Alignment Improvement",
-          "source_type": "website",
-          "source_url": "https://wck.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "meeting all 20 BBB Wise Giving Alliance standards",
-          "confidence": 0.95,
-          "id": "[18]",
-          "quote": "Standards Met: 0/20",
-          "source_name": "BBB Review",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/relief-development/world-central-kitchen-in-washington-dc-9999-53338"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "specific outcome metrics",
-          "confidence": 0.9,
-          "id": "[19]",
-          "quote": "Outcome Metrics Tracked: 1",
-          "source_name": "Candid Outcomes",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273521132"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Chefs for Gaza",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Programs: Chefs For Gaza",
-          "source_name": "WCK Programs",
-          "source_type": "website",
-          "source_url": "http://wck.org/wp-content/uploads/2025/10/ZrO0wUaF0TcGIwn__WCKContributionForm.pdf"
-        }
-      ],
-      "amal_score_rationale": "With a score of 69/100, WCK demonstrates strong financial health and operational transparency, though its focus on immediate crisis relief results in a higher cost-per-impact ratio compared to developmental aid.",
-      "amal_scores": {
-        "amal_score": 69,
-        "confidence_scores": {
-          "alignment": 33,
-          "data_confidence": 0.95,
-          "impact": 36
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "High Cost Per Beneficiary",
-          "citation_ids": [
-            "[16]"
-          ],
-          "detail": "The nature of emergency logistics results in a <cite id=\"16\">cost of $4,222.07 per beneficiary</cite>, which is higher than long-term development programs."
-        },
-        {
-          "area": "Limited Islamic Giving Integration",
-          "citation_ids": [
-            "[17]"
-          ],
-          "detail": "While serving many Muslim-majority areas, the organization could <cite id=\"17\">add a dedicated zakat page</cite> to better serve donors seeking specific religious compliance."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[18]"
-        ],
-        "effectiveness_status": "PENDING",
-        "finances_status": "PENDING",
-        "governance_status": "PENDING",
-        "meets_all_standards": false,
-        "review_url": "https://give.org/charity-reviews/relief-development/world-central-kitchen-in-washington-dc-9999-53338",
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "Currently has a profile with BBB Wise Giving Alliance but has not yet been verified against all 20 standards."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[16]",
-          "[18]"
-        ],
-        "mitigation_notes": "WCK's high costs are a direct result of operating in active conflict zones where traditional supply chains have collapsed.",
-        "risk_factors": [
-          "<cite id=\"16\">High cost per beneficiary ($4,222.07)</cite> compared to non-emergency food programs",
-          "<cite id=\"18\">Currently meets 0 of 20 BBB standards</cite> due to pending review"
-        ],
-        "summary": "The primary concerns involve <cite id=\"16\">high operational costs</cite> inherent to disaster zones and <cite id=\"18\">incomplete BBB accreditation</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 5,
-          "rating": 10,
-          "website": 5
-        },
-        "high_confidence_count": 18,
-        "total_count": 20,
-        "unique_sources": 6
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023 Form 990",
-        "data_gaps": [
-          "Missing full BBB accreditation",
-          "No Charity Navigator star rating"
-        ],
-        "level": "HIGH",
-        "notes": "Extremely high financial transparency and recent data availability.",
-        "score": 95,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Candid",
-          "WCK Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 95,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Incomplete BBB review",
-          "No Charity Navigator star rating"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 20,
-        "unique_sources": 6,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[10]",
-            "[17]"
-          ],
-          "explanation": "The charity is a strong fit for humanitarian-focused donors due to its <cite id=\"10\">active presence in Gaza, Lebanon, and Egypt</cite>.",
-          "improvement": "Alignment with Muslim donors would be strengthened by <cite id=\"17\">highlighting the humanitarian dimensions</cite> of their work through a dedicated faith-based giving portal."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[13]",
-            "[14]",
-            "[18]"
-          ],
-          "explanation": "Donors can trust WCK due to its <cite id=\"14\">Platinum Seal of Transparency</cite> and a board composed of <cite id=\"13\">100% independent members</cite>.",
-          "improvement": "To further enhance credibility, the organization could work toward <cite id=\"18\">meeting all 20 BBB Wise Giving Alliance standards</cite>, as current reviews are incomplete."
-        },
-        "impact": {
-          "citation_ids": [
-            "[3]",
-            "[5]",
-            "[16]"
-          ],
-          "explanation": "Operations are highly direct, with <cite id=\"3\">direct provision of meals</cite> and a <cite id=\"5\">92.5% program ratio</cite>.",
-          "improvement": "Impact efficiency could be improved by <cite id=\"16\">optimizing emergency logistics</cite> to reduce the high average cost per beneficiary served."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[1]",
-          "[14]"
-        ],
-        "evidence_rigor": "Grade B - Verified outcomes with high transparency",
-        "geographic_focus": [
-          "USA",
-          "Ukraine",
-          "Gaza",
-          "Lebanon"
-        ],
-        "giving_style": "Emergency Response",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          ""
-        ],
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.02,
-        "annual_revenue": 241549612,
-        "citation_ids": [
-          "[3]",
-          "[12]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0.005,
-        "industry_program_ratio": 0.75,
-        "peer_count": 58,
-        "peer_program_ratio_median": 0.897,
-        "program_expense_ratio": 0.9247,
-        "reserves_months": 6.9,
-        "revenue_cagr_3yr": 40.2,
-        "transparency_score": 100,
-        "working_capital_months": 6.9,
-        "yearly_financials": [
-          {
-            "expenses": 277007098,
-            "net_assets": 158652424,
-            "revenue": 241549612,
-            "year": 2023
-          },
-          {
-            "expenses": 441481991,
-            "net_assets": 189843086,
-            "revenue": 519165161,
-            "year": 2022
-          },
-          {
-            "expenses": 79002314,
-            "net_assets": 112406525,
-            "revenue": 122852447,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 34948191,
-        "grant_count": 2,
-        "grant_strategy": "Funds local entities to scale meal production rapidly.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "International crisis zones"
-        ],
-        "top_recipients": [
-          "Foreign implementing partners"
-        ],
-        "total_grants": 34948191
-      },
-      "headline": "World Central Kitchen is a rapid-response humanitarian organization providing fresh meals to communities on the frontlines of crises and natural disasters.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize immediate, life-saving food intervention in active conflict zones and value high-growth, high-efficiency operations.",
-        "citation_ids": [
-          "[5]",
-          "[7]",
-          "[10]"
-        ],
-        "donor_motivations": [
-          "Want to see their donation used immediately for frontline relief",
-          "Value organizations that provide fresh, dignified meals rather than just dry goods",
-          "Prefer charities with extremely low fundraising overhead",
-          "Care about humanitarian crises in Gaza and other conflict-affected regions"
-        ],
-        "giving_considerations": [
-          "Donations support high-cost emergency logistics",
-          "Organization is not specifically structured for zakat compliance",
-          "Focus is on immediate relief rather than long-term systemic change"
-        ],
-        "not_ideal_for": "Donors seeking traditional zakat-certified pathways or those focused on long-term agricultural development."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[14]",
-          "[19]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "WCK tracks <cite id=\"19\">specific outcome metrics</cite> and maintains a <cite id=\"14\">Platinum Candid status</cite>, though emergency settings limit long-term longitudinal studies.",
-        "external_evaluations": [
-          "Candid Platinum Metrics"
-        ],
-        "outcome_tracking_years": 1,
-        "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "WCK uses a 'Chefs for' model to mobilize local resources and professional chefs to provide immediate, fresh nutrition to disaster victims.",
-        "why_evidence_matters": "Evidence ensures that meal delivery actually reaches the most vulnerable populations in chaotic environments."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[12]",
-          "[20]"
-        ],
-        "founded_year": 2010,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": 40.2,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Ongoing crises in Gaza and Ukraine require massive, sustained capital for meal production.",
-        "strategic_priorities": [
-          "Emergency Food Relief",
-          "Smart Solutions (Clean Cooking)",
-          "Chefs for Gaza"
-        ],
-        "years_operating": 16
-      },
-      "organizational_capacity": {
-        "board_size": 7,
-        "ceo_compensation": 320000,
-        "ceo_compensation_pct_revenue": 0.13,
-        "ceo_name": "Erin Gore",
-        "citation_ids": [
-          "[1]",
-          "[3]",
-          "[13]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Global operations including USA, Gaza, and Ukraine",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[5]",
-          "[11]"
-        ],
-        "differentiator": "WCK's <cite id=\"5\">92.5% program ratio</cite> significantly outperforms the <cite id=\"11\">peer median of 89.7%</cite>.",
-        "peer_group": "International Humanitarian Relief",
-        "similar_orgs": [
-          "Action Against Hunger USA",
-          "Pure Hands",
-          "Anera"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "More focus on long-term malnutrition research",
-          "name": "Action Against Hunger USA"
-        },
-        {
-          "differentiator": "Specialized focus on Yemen relief",
-          "name": "Pure Hands"
-        },
-        {
-          "differentiator": "Longer history of infrastructure in Palestine",
-          "name": "Anera"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[5]",
-            "[11]"
-          ],
-          "detail": "The organization directs <cite id=\"5\">92.5% of its total expenses</cite> toward direct program services, significantly exceeding the <cite id=\"11\">industry standard of 75%</cite>.",
-          "point": "Exceptional Program Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[1]",
-            "[9]"
-          ],
-          "detail": "WCK maintains <cite id=\"9\">6.9 months of working capital</cite>, providing a robust cushion for <cite id=\"1\">immediate disaster response</cite> without waiting for new fundraising cycles.",
-          "point": "Strong Financial Liquidity"
-        },
-        {
-          "citation_ids": [
-            "[12]"
-          ],
-          "detail": "The charity has demonstrated a <cite id=\"12\">3-year revenue CAGR of 40.2%</cite>, reflecting a rapidly expanding capacity to address global food insecurity.",
-          "point": "High Revenue Growth"
-        }
-      ],
-      "strengths_deep_dive": [
-        "World Central Kitchen's operational model is built on extreme agility and financial transparency. By maintaining <cite id=\"13\">100% independent board members</cite>, the organization ensures rigorous oversight of its <cite id=\"2\">$241.5 million budget</cite>. Their commitment to transparency is further evidenced by a <cite id=\"14\">Platinum Seal of Transparency from Candid</cite>. Unlike many humanitarian peers, WCK focuses on <cite id=\"15\">local culinary mobilization</cite>, which not only provides nutrition but supports local economies during recovery phases."
-      ],
-      "summary": "founded in 2010 by Chef Jos\u00e9 Andr\u00e9s, World Central Kitchen (WCK) has emerged as a premier rapid-response humanitarian organization specializing in <cite id=\"1\">emergency food relief during crises</cite>. The organization operates with a high degree of financial efficiency, reporting <cite id=\"2\">$241,549,612 in total revenue</cite> for the 2023 tax year. WCK is distinguished by its operational model of <cite id=\"3\">direct provision of fresh meals</cite> rather than shelf-stable rations, deploying to frontlines in regions including <cite id=\"4\">Gaza, Ukraine, and the United States</cite>. Financial data indicates that the charity maintains a <cite id=\"5\">92.5% program expense ratio</cite>, ensuring that the vast majority of donor contributions are utilized for frontline services. Furthermore, the organization demonstrates <cite id=\"6\">exceptional fundraising efficiency</cite>, spending only <cite id=\"7\">$0.05 to raise every $1</cite> in charitable support. This lean administrative structure allows for <cite id=\"8\">rapid deployment of resources</cite> when natural disasters or conflicts occur. WCK also maintains significant liquidity, with <cite id=\"9\">6.9 months of working capital</cite> available to sustain operations during sudden-onset emergencies. While the organization is not a traditional faith-based charity, its work in <cite id=\"10\">underserved regions like Gaza and Lebanon</cite> aligns with the humanitarian values of many Muslim donors seeking to provide immediate relief to communities in distress.",
-      "zakat_guidance": {
-        "classification": "muallaf",
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "founded in 2010 by Chef Jos\u00e9 Andr\u00e9s, World Central Kitchen (WCK) specializes in being the first to respond to disasters by providing fresh meals to those in need [4][5]. The organization operates with a high level of financial efficiency, reporting total revenue of $241,549,612 to support its global emergency food relief programs [3]."
     }
   }
 }

@@ -2,7 +2,7 @@
   "id": "13-1837442",
   "ein": "13-1837442",
   "name": "Cancer Research Institute",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "The Clinical Innovator provides funding for clinician-scientists aiming to launch innovative phase I/II or phase II clinical studies using novel immunotherapies.",
   "programs": [
     "CRI Irvington Postdoctoral Fellowships",
@@ -59,7 +59,11 @@
     "netAssets": 67995854,
     "workingCapitalMonths": "21.20"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 34,
+    "independentBoardMembers": null,
+    "ceoCompensation": 350000
+  },
   "targeting": {
     "populationsServed": [
       "Men"
@@ -88,7 +92,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:39:06",
+  "lastUpdated": "2026-02-14 19:35:39",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -566,17 +570,36 @@
     "Organization is in zakat denylist (partners but doesn't collect directly)"
   ],
   "archetype": "LEVERAGE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Promising",
+    "archetype_code": "LEVERAGE",
+    "archetype_label": "Strategic Advocacy",
+    "evidence_stage": "Verified",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Moderate",
+      "donor_fit": "Moderate",
+      "risk": "Strong"
+    },
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "13-1837442",
     "charity_name": "Cancer Research Institute",
-    "amal_score": 66,
+    "amal_score": 70,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:36:57",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 27,
       "data_confidence": 1,
-      "impact": 39
+      "impact": 43
     },
     "score_details": {
       "alignment": {
@@ -663,12 +686,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 21.2 months (EXCESSIVE)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 4,
+            "evidence": "Working capital: 21.2 months (HIGH)",
+            "improvement_suggestion": "Document why reserves above your policy target are intentional (e.g., restrictions, volatility, planned commitments) and define deployment triggers.",
+            "improvement_value": 3,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 0,
+            "scored": 4,
             "status": "full"
           },
           {
@@ -711,90 +734,10 @@
         "cost_per_beneficiary": 2.958747111111111,
         "directness_level": "SYSTEMIC_CHANGE",
         "impact_design_categories": [],
-        "rationale": "$2.96/beneficiary; Delivery: systemic change; Impact 39/50",
+        "rationale": "$2.96/beneficiary; Delivery: systemic change; Impact 43/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 39
+        "score": 43
       },
-      "judge_issues": [
-        {
-          "field": "baseline_narrative",
-          "judge": "score",
-          "message": "The narrative rationale is empty. It should provide a summary of why the organization received a 66/100 GMG Score, highlighting the balance between financial transparency and the systemic nature of its research impact.",
-          "severity": "error"
-        },
-        {
-          "field": "propublica.expense_ratio",
-          "judge": "crawl_quality",
-          "message": "Expenses ($38,552,663) exceed revenue ($32,295,259) by 19%",
-          "severity": "warning"
-        },
-        {
-          "field": "charity_navigator.expense_ratio",
-          "judge": "crawl_quality",
-          "message": "Expenses ($32,820,896) exceed revenue ($23,964,638) by 37% - may be drawing down reserves",
-          "severity": "warning"
-        },
-        {
-          "field": "website.ein",
-          "judge": "crawl_quality",
-          "message": "Website EIN (13-1806284) doesn't match expected (13-1837442)",
-          "severity": "warning"
-        },
-        {
-          "field": "bbb.name_match",
-          "judge": "crawl_quality",
-          "message": "BBB name 'Walker Cancer Research Institute' may not match 'Cancer Research Institute' (similarity: 75%)",
-          "severity": "warning"
-        },
-        {
-          "field": "website.website_profile.ein",
-          "judge": "extract_quality",
-          "message": "EIN mismatch: expected 13-1837442, got 13-1806284",
-          "severity": "warning"
-        },
-        {
-          "field": "multi_source.ein_consistency",
-          "judge": "extract_quality",
-          "message": "Multiple different EINs found across sources: {'131806284', '131837442'}",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[1].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'charitywatch.org' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -802,7 +745,7 @@
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "Cancer Research Institute earns 66/100 due to strong impact and moderate alignment.",
+      "score_summary": "Cancer Research Institute shows exceptional impact and moderate alignment.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -814,7 +757,7 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "CRI provides funding for clinician-scientists to launch innovative phase I/II or phase II clinical studies.",
+          "claim": "The Cancer Research Institute is dedicated to harnessing the immune system to conquer cancer.",
           "id": "[1]",
           "source_name": "Annual Report",
           "source_url": "https://www.cancerresearch.org/wp-content/uploads/2025/08/Annual-Invention-Update-Form-1-2025.pdf"
@@ -826,618 +769,58 @@
           "source_url": "https://www.cancerresearch.org/wp-content/uploads/2025/06/2025-CRI-Insights-Impact.pdf"
         },
         {
-          "claim": "The organization supports programs including the Clinical and Laboratory Integration Program (CLIP).",
+          "claim": "The Clinical Innovator program funds clinician-scientists for phase I/II or phase II clinical studies.",
           "id": "[3]",
           "source_name": "Annual Report",
           "source_url": "https://www.cancerresearch.org/wp-content/uploads/2025/08/Annual-Invention-Update-Form-1-2025.pdf"
         },
         {
-          "claim": "CRI investments drive U.S. economic activity and benefit patients worldwide.",
+          "claim": "CRI investments drive U.S. economic activity and support new grants and fellowships worldwide.",
           "id": "[4]",
           "source_name": "Impact Report (2025)",
           "source_url": "https://www.cancerresearch.org/wp-content/uploads/2025/11/CRI_FY2425_Full_Final.pdf"
         },
         {
-          "claim": "CRI awards new research grants and fellowships to advance tumor immunology.",
+          "claim": "CRI awards new research grants and reaches patients through summits.",
           "id": "[5]",
           "source_name": "Annual Report (2023)",
           "source_url": "https://criwebsitestg.wpengine.com/wp-content/uploads/2023/12/CRI-2023-Annual-Report_Brochure_121823-rev-sp.pdf"
         },
         {
-          "claim": "The charity offers various ways to give for general charitable support.",
+          "claim": "The charity offers various donation options for general charitable giving.",
           "id": "[6]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.cancerresearch.org/ways-to-give"
         },
         {
-          "claim": "The organization holds a 100/100 score and maintains a fundraising efficiency of $0.11 per $1 raised.",
+          "claim": "The organization has a 100.0/100 score and 21.2 months of working capital.",
           "id": "[7]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/131837442"
         },
         {
-          "claim": "Total revenue was $32,295,259 with a program expense ratio of 84.0% and 21.2 months of working capital.",
+          "claim": "Total revenue was $32,295,259 with an 84.0% program expense ratio and $0.11 fundraising efficiency.",
           "id": "[8]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/131837442"
         }
       ],
-      "amal_score_rationale": "The organization earns a 66/100 GMG Score, reflecting a balance between its world-class financial transparency and the systemic, long-term nature of its research impact which may feel less direct to some donors.",
+      "amal_score_rationale": "The organization earns a 70/100 GMG score due to its exceptional financial health and systemic impact on global cancer research, though it has a moderate alignment score for specific donor groups.",
       "areas_for_improvement": [
-        "Limited direct alignment with specific Muslim donor preferences or community-focused giving models",
-        "High cost per beneficiary due to the systemic nature of long-term medical research"
+        "Alignment with specific donor demographics may be limited as the focus remains on broad global health outcomes rather than niche community needs.",
+        "The highly technical nature of systemic change research can result in longer timelines for measurable patient-level impact."
       ],
       "dimension_explanations": {
-        "alignment": "The organization addresses the global health urgency of cancer research, though it has a low donor fit for those seeking specific religious alignment [6]. As a Sadaqah-eligible charity, it offers a reputable track record for general charitable giving toward life-saving medical advancements [1][5].",
-        "impact": "CRI demonstrates high effectiveness by driving systemic change in oncology, contributing to significant increases in immunotherapy usage and FDA approvals [2][4]. While the cost per beneficiary is calculated at 2.958747111111111, the organization maintains high financial health with a fundraising efficiency of $0.11 per $1 raised and a program expense ratio of 84.0% [7][8]."
+        "alignment": "While the cause urgency is rated high due to the global burden of cancer, the alignment for specific Muslim donor fit is considered low as the organization does not have specialized religious giving pathways [6]. However, its long track record and high data confidence make it a reliable recipient for general sadaqah [7][8].",
+        "impact": "CRI demonstrates high impact by driving systemic change in oncology, contributing to an increase in immunotherapy usage and FDA approvals [2]. With a total revenue of $32,295,259, the institute funds critical Irvington Postdoctoral Fellowships and the William B. Coley Award to advance basic and tumor immunology [4][8]."
       },
-      "headline": "The Cancer Research Institute is a global leader in immunotherapy, dedicated to harnessing the immune system's power to conquer all forms of cancer.",
+      "headline": "The Cancer Research Institute pioneers life-saving immunotherapy research to transform cancer treatment through global scientific collaboration.",
       "strengths": [
-        "Exceptional financial health with a perfect 100.0/100 from Charity Navigator score",
-        "High program efficiency with 84.0% of expenses directed toward research and education",
-        "Strong working capital reserves of 21.2 months ensuring long-term stability"
+        "Maintains a perfect Charity Navigator score of 100.0/100, reflecting top-tier accountability and transparency [7].",
+        "High financial efficiency with a program expense ratio of 84.0% and a low fundraising cost of $0.11 per $1 raised [8].",
+        "Strong liquidity position with 21.2 months of working capital to sustain long-term research initiatives [7]."
       ],
-      "summary": "The Cancer Research Institute (CRI) provides critical funding for clinician-scientists to launch innovative phase I and II clinical studies focused on novel immunotherapies [1][3]. Through programs like the CRI Irvington Postdoctoral Fellowships and the Clinical and Laboratory Integration Program (CLIP), the organization supports the entire spectrum of discovery from basic research to clinical application [5][8]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "founded in 1953",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "founded in 1953 by Helen Frankenthaler and others",
-          "source_name": "CRI Website - About",
-          "source_type": "website",
-          "source_url": "https://www.cancerresearch.org/about-cri"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "clinician-scientists launching innovative phase I and II clinical studies",
-          "confidence": 0.95,
-          "id": "[2]",
-          "quote": "funding for clinician-scientists aiming to launch innovative phase I/II or phase II clinical studies",
-          "source_name": "Candid Profile",
-          "source_type": "website",
-          "source_url": "https://www.cancerresearch.org/about-cri"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $32,295,259",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total revenue: $32,295,259",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/131837442"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "17 FDA immunotherapy approvals in 2024",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "FDA Immunotherapy Approvals in 2024: 17",
-          "source_name": "Impact Report (2025)",
-          "source_type": "evaluation",
-          "source_url": "https://www.cancerresearch.org/wp-content/uploads/2025/06/2025-CRI-Insights-Impact.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "20-fold increase in immunotherapy usage since 2011",
-          "confidence": 0.9,
-          "id": "[5]",
-          "quote": "Increase in immunotherapy usage since 2011: 20",
-          "source_name": "Impact Report (2025)",
-          "source_type": "evaluation",
-          "source_url": "https://www.cancerresearch.org/wp-content/uploads/2025/06/2025-CRI-Insights-Impact.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "CRI Irvington Postdoctoral Fellowship",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "CRI Irvington Postdoctoral Fellowship",
-          "source_name": "CRI Website - Programs",
-          "source_type": "website",
-          "source_url": "https://www.cancerresearch.org/our-impact/research-programs"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Lloyd J. Old STARs Program",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "CRI Lloyd J. Old STARs Program",
-          "source_name": "CRI Website - Programs",
-          "source_type": "website",
-          "source_url": "https://www.cancerresearch.org/our-impact/research-programs"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "84.0% of expenses directed toward research and education",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Program Expense Ratio: 84.0%",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/131837442"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "21.2 months of working capital",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Working Capital: 21.2 months",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/131837442"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100/100 overall score from Charity Navigator",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Overall Score: 100/100",
-          "source_name": "Charity Navigator - Rating",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/131837442"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.11 to raise every $1",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Fundraising Efficiency: $0.11",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/131837442"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$22,755,861 in total grants",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Grants and other assistance to domestic individuals: $22,755,861",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/131837442"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "University of Pennsylvania and Yale University",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "UNIVERSITY OF PENNSYLVANIA: $1,793,000; YALE UNIVERSITY: $1,550,000",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/131837442"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of -5.3%",
-          "confidence": 0.95,
-          "id": "[14]",
-          "quote": "Revenue 2021: 35.9M, 2023: 32.2M",
-          "source_name": "Internal Financial Analysis",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/131837442"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "lower alignment score",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Alignment 27/50: LOW Muslim donor fit",
-          "source_name": "AMAL Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/131837442"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Platinum Seal of Transparency",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/131837442"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100% independent board",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Independent Board Members: 100%",
-          "source_name": "Charity Navigator - Accountability",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/131837442"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "BBB Wise Giving Alliance accreditation",
-          "confidence": 0.8,
-          "id": "[18]",
-          "quote": "Standards Met: 0/20",
-          "source_name": "BBB Wise Giving Alliance",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/cancer/walker-cancer-research-institute-in-tallahassee-fl-9999-1301"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Global Health",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Cause area: Global Health",
-          "source_name": "AMAL Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/131837442"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer median of 84.6%",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Peer Program Ratio Median: 84.6%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/131837442"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a 66/100 GMG Score, reflecting a balance between its world-class financial transparency and the systemic, long-term nature of its research impact which may feel less direct to some donors.",
-      "amal_scores": {
-        "amal_score": 66,
-        "confidence_scores": {
-          "alignment": 27,
-          "data_confidence": 1,
-          "impact": 39
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Excessive Capital Reserves",
-          "citation_ids": [
-            "[9]"
-          ],
-          "context": "The organization holds <cite id=\"9\">over 22 months of operating reserves</cite>, which Charity Navigator notes as significantly higher than the typical 1-3 month recommendation for optimal fund deployment."
-        },
-        {
-          "area": "Revenue Growth",
-          "citation_ids": [
-            "[14]"
-          ],
-          "context": "CRI has experienced a <cite id=\"14\">3-year revenue CAGR of -5.3%</cite>, suggesting a need to diversify or expand its donor base to sustain long-term growth."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[18]"
-        ],
-        "effectiveness_status": "FAIL",
-        "finances_status": "FAIL",
-        "governance_status": "FAIL",
-        "meets_all_standards": false,
-        "review_url": "https://give.org/charity-reviews/cancer/walker-cancer-research-institute-in-tallahassee-fl-9999-1301",
-        "standards_met": 0,
-        "standards_not_met": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          17,
-          18,
-          19,
-          20
-        ],
-        "summary": "Currently does not meet BBB Wise Giving Alliance Standards for Charity Accountability."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[9]",
-          "[14]",
-          "[18]"
-        ],
-        "mitigation_notes": "The organization's massive <cite id=\"9\">$138 million in total assets</cite> provides a significant buffer against short-term revenue declines.",
-        "risk_factors": [
-          "<cite id=\"14\">-5.3% 3-year revenue CAGR</cite>",
-          "<cite id=\"18\">0/20 BBB standards met</cite>"
-        ],
-        "summary": "The primary concerns involve <cite id=\"18\">non-compliance with BBB standards</cite> and a <cite id=\"14\">declining revenue trend</cite> over the last three years."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 2,
-          "form990": 5,
-          "rating": 10,
-          "website": 3
-        },
-        "high_confidence_count": 18,
-        "total_count": 20,
-        "unique_sources": 8
-      },
-      "confidence": {
-        "data_freshness": "Data current as of 2023-2025 reports",
-        "data_gaps": [
-          "BBB compliance details",
-          "Specific beneficiary counts"
-        ],
-        "level": "HIGH",
-        "notes": "Strong financial and impact data available.",
-        "score": 88,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Impact Report",
-          "Candid"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 88,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "BBB compliance issues",
-          "Declining revenue trend"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 20,
-        "unique_sources": 8,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[15]",
-            "[19]"
-          ],
-          "explanation": "Alignment is moderate as the cause is <cite id=\"19\">Global Health</cite>, which is a high-urgency area, but the charity lacks <cite id=\"15\">specific Muslim donor fit</cite> features.",
-          "improvement": "The organization could improve alignment by <cite id=\"15\">highlighting humanitarian dimensions</cite> of its work or creating dedicated programs for underserved populations."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[10]",
-            "[16]",
-            "[17]",
-            "[18]"
-          ],
-          "explanation": "CRI is highly credible, holding a <cite id=\"16\">Platinum Seal of Transparency from Candid</cite> and a <cite id=\"10\">100/100 rating from Charity Navigator</cite>. Their <cite id=\"17\">100% independent board</cite> ensures strong oversight.",
-          "improvement": "To further enhance credibility, the organization could seek <cite id=\"18\">BBB Wise Giving Alliance accreditation</cite>, as it currently meets 0 of 20 standards in their latest review."
-        },
-        "impact": {
-          "citation_ids": [
-            "[2]",
-            "[8]",
-            "[9]"
-          ],
-          "explanation": "Impact is high due to a <cite id=\"8\">84.0% program expense ratio</cite> (as reported in tax filings) and a delivery model focused on <cite id=\"2\">systemic change through clinical innovation</cite>.",
-          "improvement": "Impact efficiency could be improved by <cite id=\"9\">reducing excessive working capital</cite> to 1-21.2 months of working capital to accelerate research funding."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "GLOBAL_HEALTH",
-        "citation_ids": [
-          "[4]",
-          "[8]"
-        ],
-        "evidence_rigor": "Grade A - Clinical trial outcomes and FDA approvals",
-        "geographic_focus": [
-          "USA",
-          "Sweden",
-          "Worldwide"
-        ],
-        "giving_style": "Research Grantmaking",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "None"
-        ],
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.198,
-        "annual_revenue": 32295259,
-        "citation_ids": [
-          "[8]",
-          "[10]",
-          "[14]"
-        ],
-        "cn_financial_score": 100,
-        "cn_overall_score": 100,
-        "fundraising_ratio": 0.111,
-        "industry_program_ratio": 0.75,
-        "peer_count": 14,
-        "peer_program_ratio_median": 0.846,
-        "program_expense_ratio": 0.8398,
-        "reserves_months": 22.2,
-        "revenue_cagr_3yr": -5.3,
-        "transparency_score": 100,
-        "working_capital_months": 21.2,
-        "yearly_financials": [
-          {
-            "expenses": 38552663,
-            "net_assets": 67995854,
-            "revenue": 32295259,
-            "year": 2023
-          },
-          {
-            "expenses": 31314716,
-            "net_assets": 66704762,
-            "revenue": 33675150,
-            "year": 2022
-          },
-          {
-            "expenses": 37138977,
-            "net_assets": 74455635,
-            "revenue": 35987695,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[8]",
-          "[13]"
-        ],
-        "domestic_grants": 15776489,
-        "foreign_grants": 6979372,
-        "grant_count": 44,
-        "grant_strategy": "Funds clinician-scientists for phase I/II clinical studies",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "USA",
-          "International"
-        ],
-        "top_recipients": [
-          "University of Pennsylvania ($1.79M)",
-          "Yale University ($1.55M)"
-        ],
-        "total_grants": 22755861
-      },
-      "headline": "The Cancer Research Institute is a global leader in immunotherapy, dedicated to harnessing the immune system's power to conquer all forms of cancer.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize long-term systemic medical breakthroughs and value organizations with the highest possible third-party accountability ratings.",
-        "citation_ids": [
-          "[2]",
-          "[9]",
-          "[15]"
-        ],
-        "donor_motivations": [
-          "Want to fund the 'cutting edge' of cancer treatment",
-          "Value high-efficiency grantmaking to top-tier universities",
-          "Prefer established institutions with a 70-year track record",
-          "Seek to support global health through scientific innovation"
-        ],
-        "giving_considerations": [
-          "Donations support systemic research rather than direct patient aid",
-          "The organization has very high reserves, meaning gifts are not for immediate survival needs",
-          "Focus is on high-level clinical trials and postdoctoral fellowships"
-        ],
-        "not_ideal_for": "Donors seeking to fulfill Zakat obligations or those looking for immediate, local humanitarian relief like food or shelter."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[4]",
-          "[5]",
-          "[16]"
-        ],
-        "evidence_grade": "A",
-        "evidence_grade_explanation": "Impact is verified through <cite id=\"4\">FDA approvals</cite> and <cite id=\"5\">clinical usage metrics</cite> directly linked to funded research.",
-        "external_evaluations": [
-          "FDA Approval Tracking",
-          "Candid Platinum Outcomes"
-        ],
-        "outcome_tracking_years": 5,
-        "rct_available": true,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "CRI funds the full spectrum of immunotherapy research, from basic discovery to clinical trials, to accelerate the availability of new treatments.",
-        "why_evidence_matters": "In medical research, evidence of clinical transition (lab to patient) is the gold standard for impact."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[14]"
-        ],
-        "founded_year": 1953,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": -5.3,
-        "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "While reserves are high, the <cite id=\"14\">decline in annual revenue</cite> suggests a need for new funding to maintain grant levels.",
-        "strategic_priorities": [
-          "Expand immunotherapy awareness",
-          "Launch innovative phase I/II studies"
-        ],
-        "years_operating": 73
-      },
-      "organizational_capacity": {
-        "board_size": 34,
-        "ceo_compensation": 545000,
-        "ceo_compensation_pct_revenue": 1.68,
-        "ceo_name": "Jill O'Donnell-Tormey",
-        "citation_ids": [
-          "[8]",
-          "[17]"
-        ],
-        "employees_count": 45,
-        "geographic_reach": "Global (USA, Sweden, Worldwide)",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 12.5,
-        "programs_count": 5,
-        "staff_per_million_revenue": 1.4,
-        "volunteers_count": 100
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[8]",
-          "[10]",
-          "[20]"
-        ],
-        "differentiator": "CRI's <cite id=\"8\">84.0% program ratio</cite> is nearly identical to the <cite id=\"20\">peer median of 84.6%</cite>, but its <cite id=\"10\">perfect 100/100 CN score</cite> sets it apart.",
-        "peer_group": "Global Health & Research",
-        "similar_orgs": [
-          "Fight Colorectal Cancer",
-          "Against Malaria Foundation",
-          "Helen Keller International"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Smaller scale, policy focus",
-          "name": "Fight Colorectal Cancer"
-        },
-        {
-          "differentiator": "Direct intervention vs research",
-          "name": "Against Malaria Foundation"
-        },
-        {
-          "differentiator": "Broader medical service delivery",
-          "name": "Helen Keller International"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[10]"
-          ],
-          "detail": "CRI maintains a <cite id=\"10\">perfect 100/100 overall score from Charity Navigator</cite>, reflecting top-tier transparency and governance practices.",
-          "point": "Exceptional Financial Accountability"
-        },
-        {
-          "citation_ids": [
-            "[8]"
-          ],
-          "detail": "The organization dedicates <cite id=\"8\">84.0% of its total expenses</cite> directly to its research and educational programs, well above industry standards.",
-          "point": "High Program Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[4]"
-          ],
-          "detail": "CRI-funded research has been instrumental in the development of <cite id=\"4\">17 new FDA-approved treatments</cite> in the last year alone.",
-          "point": "Proven Clinical Impact"
-        }
-      ],
-      "strengths_deep_dive": [
-        "The Cancer Research Institute's strength lies in its specialized focus on immunotherapy, a field it has led for over seven decades. Its financial health is characterized by <cite id=\"9\">21.2 months of working capital</cite>, which provides a rare level of security for multi-year research grants. Furthermore, its fundraising is highly efficient, spending only <cite id=\"11\">$0.11 to raise every $1</cite> in charitable contributions. This efficiency ensures that the vast majority of donor funds reach the <cite id=\"12\">$22,755,861 in total grants</cite> distributed to leading institutions like the <cite id=\"13\">University of Pennsylvania and Yale University</cite>."
-      ],
-      "summary": "The Cancer Research Institute (CRI) is a pioneering global nonprofit founded in <cite id=\"1\">1953</cite> that focuses exclusively on harnessing the immune system to conquer all forms of cancer. The organization operates as a critical funding engine for <cite id=\"2\">clinician-scientists launching innovative phase I and II clinical studies</cite>, bridging the gap between laboratory discovery and patient care. In 2023, CRI reported <cite id=\"3\">total revenue of $32,295,259</cite>, maintaining a robust financial position that enables long-term research commitments. Their impact is evidenced by significant clinical milestones, including supporting research that contributed to <cite id=\"4\">17 FDA immunotherapy approvals in 2024</cite> and a <cite id=\"5\">20-fold increase in immunotherapy usage since 2011</cite>. By funding programs like the <cite id=\"6\">CRI Irvington Postdoctoral Fellowship</cite> and the <cite id=\"7\">Lloyd J. Old STARs Program</cite>, the institute ensures a steady pipeline of talent and innovation in the field of immuno-oncology. The organization is highly efficient, with <cite id=\"8\">84.0% of expenses directed toward research and education</cite>, and maintains <cite id=\"9\">21.2 months of working capital</cite> to ensure operational stability during economic fluctuations.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "The Cancer Research Institute (CRI) is a non-profit organization dedicated to harnessing the immune system's power to conquer all forms of cancer [1]. Through its Clinical Innovator program, the institute funds clinician-scientists launching innovative phase I/II clinical studies using novel immunotherapies [3][5]."
     }
   }
 }

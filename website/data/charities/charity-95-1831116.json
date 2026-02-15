@@ -2,7 +2,7 @@
   "id": "95-1831116",
   "ein": "95-1831116",
   "name": "Direct Relief",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Direct Relief is a humanitarian organization, active in all 50 states and more than 80 countries, with a mission to improve the health and lives of people affected by poverty or emergencies. Nongovernmental, nonsectarian, and not-for-profit, Direct Relief assists people and communities without regard to politics, religion, ethnic identities, or ability to pay. Direct Relief's assistance programs - which focus on emergency preparedness and disaster response and the prevention and treatment of disease - are tailored to the particular circumstances and needs of the world's most at-risk populations. Direct Relief honors the generosity of its donors by following a firm policy of full transparency in all its operations. This tradition of transparent, direct, and targeted assistance, provided in a manner that respects and involves the people served, has been a hallmark of the organization since its founding in 1948 by refugee war immigrant William Zimdin.",
   "programs": [
     "Emergency Response",
@@ -51,7 +51,11 @@
     "netAssets": 1137046411,
     "workingCapitalMonths": "6.60"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 16,
+    "independentBoardMembers": null,
+    "ceoCompensation": 567776
+  },
   "targeting": {
     "populationsServed": [
       "Victims",
@@ -87,7 +91,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:38:28",
+  "lastUpdated": "2026-02-14 19:36:27",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -1821,17 +1825,36 @@
     "Organization is in zakat denylist (partners but doesn't collect directly)"
   ],
   "archetype": "LEVERAGE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Promising",
+    "archetype_code": "LEVERAGE",
+    "archetype_label": "Strategic Advocacy",
+    "evidence_stage": "Verified",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Strong",
+      "donor_fit": "Moderate",
+      "risk": "Strong"
+    },
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "95-1831116",
     "charity_name": "Direct Relief",
-    "amal_score": 71,
+    "amal_score": 74,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:32:05",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 31,
       "data_confidence": 1,
-      "impact": 40
+      "impact": 43
     },
     "score_details": {
       "alignment": {
@@ -1918,12 +1941,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 6.6 months (COMFORTABLE)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 3,
+            "evidence": "Working capital: 6.6 months (RESILIENT)",
+            "improvement_suggestion": null,
+            "improvement_value": 0,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 4,
+            "scored": 7,
             "status": "full"
           },
           {
@@ -1966,42 +1989,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "Delivery: direct service; Impact 40/50",
+        "rationale": "Delivery: direct service; Impact 43/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 40
+        "score": 43
       },
-      "judge_issues": [
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[3].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'charitywatch.org' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -2009,7 +2000,7 @@
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "Direct Relief earns 71/100 due to strong impact and good alignment.",
+      "score_summary": "Direct Relief shows exceptional impact and good alignment.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -2021,590 +2012,40 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Direct Relief reported total revenue of $2,266,763,483 and focuses on non-communicable diseases and emergency response.",
+          "claim": "Direct Relief reported total revenue of $2,266,763,483 and a program expense ratio of 99.5%.",
           "id": "[1]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/951831116"
         },
         {
-          "claim": "The organization provides various methods for general charitable giving and sadaqah-eligible donations.",
+          "claim": "The organization accepts general donations and Sadaqah-eligible contributions for medical aid.",
           "id": "[2]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.directrelief.org/donate/"
         },
         {
-          "claim": "Direct Relief holds a 100.0/100 score, with a 99.5% program expense ratio, 6.6 months of working capital, and $0.00 fundraising efficiency.",
+          "claim": "Direct Relief holds a 100.0/100 rating with 6.6 months of working capital and a fundraising efficiency of $0.00 per $1 raised.",
           "id": "[3]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/951831116"
         }
       ],
-      "amal_score_rationale": "Direct Relief earns a strong overall rating due to its massive scale of operations and industry-leading financial efficiency, though its alignment score reflects a medium fit for specific donor niches.",
+      "amal_score_rationale": "Direct Relief earns a strong overall score due to its massive scale of impact and near-perfect financial efficiency, though its alignment score is moderated by its status as a general humanitarian provider.",
       "areas_for_improvement": [
-        "Limited specific alignment with niche donor preferences despite high general humanitarian urgency",
-        "High reliance on in-kind donations which requires complex logistics management"
+        "Limited specific alignment with niche donor requirements despite high general humanitarian urgency",
+        "High reliance on in-kind donations which requires complex logistical management"
       ],
       "dimension_explanations": {
-        "alignment": "Direct Relief addresses urgent humanitarian needs, particularly the rise of non-communicable diseases and disaster response [1]. While it offers various ways to contribute, including sadaqah-eligible general donations, the alignment score is medium as it serves a broad global mission rather than a specific religious or niche community focus [2][3].",
-        "impact": "The organization demonstrates high impact through its direct service model, managing $2,266,763,483 in total revenue to support emergency preparedness and fragile health systems [1]. Its financial health is robust, maintaining 6.6 months of working capital and a 99.5% program expense ratio, which indicates that resources are effectively directed toward medical aid rather than overhead [3]."
+        "alignment": "Direct Relief is categorized as Sadaqah-eligible, making it a suitable choice for general voluntary charity rather than Zakat [2]. While it addresses urgent humanitarian needs, its alignment score reflects a medium donor fit for those seeking specific religious or niche-focused philanthropic pathways [3].",
+        "impact": "The organization demonstrates high effectiveness by directing 99.5% of its $2,266,763,483 in total revenue toward its programs [1]. Its direct service model provides critical medical supplies for cancer, diabetes, and respiratory diseases, supported by a high data confidence level [1][3]."
       },
-      "headline": "Direct Relief provides critical medical aid and humanitarian relief to vulnerable populations worldwide, maintaining an exceptional commitment to financial efficiency.",
+      "headline": "Direct Relief is a top-rated humanitarian organization providing essential medical resources to strengthen fragile health systems and respond to global emergencies.",
       "strengths": [
-        "Exceptional program expense ratio of 99.5%, ensuring nearly all funds reach those in need",
+        "Exceptional program expense ratio of 99.5%, ensuring nearly all resources reach those in need",
         "Highly efficient fundraising operations with a cost of $0.00 per $1 raised",
-        "Strong liquidity with 6.6 months of working capital to sustain operations"
+        "Strong liquidity with 6.6 months of working capital available for operations"
       ],
-      "summary": "Direct Relief is a humanitarian organization focused on equipping health professionals with essential medical resources to combat non-communicable diseases and respond to emergencies [1]. The organization operates with a high degree of transparency, earning a perfect Charity Navigator score of 100.0/100 for its fiscal responsibility and accountability [3]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "1948",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "Formed: 1948",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/951831116"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$2,266,763,483 in total revenue",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: $2,266,763,483",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/951831116"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "99.5% program expense ratio",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Program Expense Ratio: 99.50%",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/951831116"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "highly efficient medical supply chain",
-          "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Direct Relief is a humanitarian aid organization, active in all 50 states and more than 80 countries, with a mission to improve the health and lives of people affected by poverty or emergencies.",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/951831116"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "perfect overall score of 100.0/100 from Charity Navigator",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Overall Score: 100/100",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/951831116"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "all 50 U.S. states and more than 80 countries",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "active in all 50 states and more than 80 countries",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/951831116"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "6.6 months of working capital",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Working Capital Ratio (years): 0.52",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/951831116"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.00 spent to raise every $1",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Fundraising Efficiency: $0.00",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/951831116"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Candid Seal: Platinum",
-          "source_name": "Candid",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/951831116"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "all 20 BBB Wise Giving Alliance Standards",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Meets All 20 Standards: Yes",
-          "source_name": "BBB Wise Giving Alliance",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/relief-development/direct-relief-in-santa-barbara-ca-9999-307"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100% independent board of 16 members",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Independent Board Members: 100%",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/951831116"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "medical supply chain and logistics",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Medical Supply Chain and Logistics",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/951831116"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$1.17 billion in total assets",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Total assets: $1,170,526,870",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/951831116"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "tracking 9 distinct outcome metrics",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Outcome Metrics Tracked: 9",
-          "source_name": "Candid",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/951831116"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "track and report specific beneficiary counts",
-          "confidence": 0.9,
-          "id": "[15]",
-          "quote": "Improvement: Track and report beneficiary counts to enable cost analysis",
-          "source_name": "AMAL Score Rationale",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/951831116"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "expand services to highly underserved regions",
-          "confidence": 0.9,
-          "id": "[16]",
-          "quote": "Improvement: Expand services to underserved populations",
-          "source_name": "AMAL Score Rationale",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/951831116"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "annual audited financial statements",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Audit Status: audited",
-          "source_name": "BBB Wise Giving Alliance",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/relief-development/direct-relief-in-santa-barbara-ca-9999-307"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "strong theory of change",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Theory of change: STRONG",
-          "source_name": "AMAL Score Rationale",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/951831116"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "high-urgency humanitarian aid",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Cause area: Humanitarian (13/13)",
-          "source_name": "AMAL Score Rationale",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/951831116"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "highlight the humanitarian dimensions of its work",
-          "confidence": 0.9,
-          "id": "[20]",
-          "quote": "Improvement: highlight humanitarian dimensions of your work",
-          "source_name": "AMAL Score Rationale",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/951831116"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "reliance on in-kind medical donations",
-          "confidence": 0.95,
-          "id": "[21]",
-          "quote": "High reliance on in-kind donations which requires complex logistics management",
-          "source_name": "Baseline Narrative",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/951831116"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer median of 89.7%",
-          "confidence": 1,
-          "id": "[22]",
-          "quote": "Peer Program Ratio Median: 89.7%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/951831116"
-        }
-      ],
-      "amal_score_rationale": "Direct Relief earns a strong overall rating due to its massive scale of operations and industry-leading financial efficiency, though its alignment score reflects a medium fit for specific donor niches.",
-      "amal_scores": {
-        "amal_score": 71,
-        "confidence_scores": {
-          "alignment": 31,
-          "data_confidence": 1,
-          "impact": 40
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Impact Reporting Granularity",
-          "citation_ids": [
-            "[15]"
-          ],
-          "context": "While overall efficiency is high, the charity could <cite id=\"15\">track and report specific beneficiary counts</cite> to enable more detailed cost-per-beneficiary analysis."
-        },
-        {
-          "area": "Geographic Underserved Focus",
-          "citation_ids": [
-            "[16]"
-          ],
-          "context": "As a large mainstream organization, there is an opportunity to <cite id=\"16\">expand services to highly underserved regions</cite> with limited existing nonprofit coverage."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[10]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "review_url": "https://give.org/charity-reviews/relief-development/direct-relief-in-santa-barbara-ca-9999-307",
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "Meets all 20 BBB Wise Giving Alliance Standards for Charity Accountability"
-      },
-      "case_against": {
-        "citation_ids": [
-          "[21]"
-        ],
-        "mitigation_notes": "The organization manages this through a sophisticated, world-class medical supply chain and logistics infrastructure.",
-        "risk_factors": [
-          "<cite id=\"21\">High volume of non-cash contributions</cite>"
-        ],
-        "summary": "The primary limitation is the organization's <cite id=\"21\">reliance on in-kind medical donations</cite>, which accounts for the bulk of its revenue and requires complex logistical management."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 7,
-          "form990": 3,
-          "rating": 12
-        },
-        "high_confidence_count": 22,
-        "total_count": 22,
-        "unique_sources": 3
-      },
-      "confidence": {
-        "data_freshness": "Data current as of 2023 tax year and late 2024 ratings",
-        "data_gaps": [
-          "Missing specific employee and volunteer counts"
-        ],
-        "level": "HIGH",
-        "notes": "Extremely high data availability for financial and accountability metrics.",
-        "score": 95,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "BBB Wise Giving Alliance"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 95,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Detailed beneficiary counts not in 990"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 22,
-        "unique_sources": 3,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[19]",
-            "[20]"
-          ],
-          "explanation": "Direct Relief is a strong fit for donors prioritizing <cite id=\"19\">high-urgency humanitarian aid</cite> and medical relief, though it does not offer specialized religious pathways.",
-          "improvement": "To better serve Muslim donors, the organization could <cite id=\"20\">highlight the humanitarian dimensions of its work</cite> in regions with high Muslim populations."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[10]",
-            "[11]",
-            "[17]"
-          ],
-          "explanation": "Donors can have absolute confidence in this organization due to its <cite id=\"10\">20/20 BBB standards compliance</cite>, <cite id=\"11\">independent board oversight</cite>, and <cite id=\"17\">annual audited financial statements</cite>.",
-          "improvement": ""
-        },
-        "impact": {
-          "citation_ids": [
-            "[3]",
-            "[15]",
-            "[18]"
-          ],
-          "explanation": "The charity demonstrates maximum efficiency with a <cite id=\"3\">99.5% program expense ratio</cite> and a <cite id=\"18\">strong theory of change</cite> focused on direct medical service delivery.",
-          "improvement": "Impact measurement would benefit from <cite id=\"15\">reporting specific beneficiary data</cite> to further validate the cost-effectiveness of its global supply chain."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[1]",
-          "[6]"
-        ],
-        "evidence_rigor": "Grade B - Strong outcome tracking and transparency",
-        "geographic_focus": [
-          "Global",
-          "United States",
-          "Haiti",
-          "Sierra Leone"
-        ],
-        "giving_style": "Direct medical supply and logistics",
-        "tax_deductible": true,
-        "zakat_asnaf_served": null,
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 2266763483,
-        "citation_ids": [
-          "[2]",
-          "[5]",
-          "[7]"
-        ],
-        "cn_financial_score": 100,
-        "cn_overall_score": 100,
-        "fundraising_ratio": 0,
-        "industry_program_ratio": 0.75,
-        "peer_count": 58,
-        "peer_program_ratio_median": 0.897,
-        "program_expense_ratio": 0.9951000000000001,
-        "reserves_months": 6.2,
-        "revenue_cagr_3yr": 8,
-        "transparency_score": 100,
-        "working_capital_months": 6.6,
-        "yearly_financials": [
-          {
-            "expenses": 2071171227,
-            "net_assets": 1137046411,
-            "revenue": 2266763483,
-            "year": 2023
-          },
-          {
-            "expenses": 2253265073,
-            "net_assets": 939580753,
-            "revenue": 2218136536,
-            "year": 2022
-          },
-          {
-            "expenses": 1922583429,
-            "net_assets": 974889272,
-            "revenue": 1942730187,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "domestic_grants": 30470212,
-        "foreign_grants": 20664498,
-        "grant_count": 200,
-        "grant_strategy": "Provides financial support to community health centers and partner foundations to enhance local healthcare delivery.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "United States",
-          "Global"
-        ],
-        "top_recipients": [
-          "Direct Relief Foundation ($4.0M)",
-          "Miami Beach Community Health Center ($1.5M)"
-        ],
-        "total_grants": 51134710
-      },
-      "headline": "Direct Relief provides critical medical aid and humanitarian relief to vulnerable populations worldwide, maintaining an exceptional commitment to financial efficiency.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize maximum financial efficiency and want their contributions to support large-scale medical relief and emergency response efforts globally.",
-        "citation_ids": [
-          "[3]",
-          "[9]",
-          "[10]"
-        ],
-        "donor_motivations": [
-          "Value an organization where 99.5% of expenses goes to programs",
-          "Want to support a highly transparent, Platinum-rated charity",
-          "Care about strengthening global health systems and emergency preparedness",
-          "Prefer established institutions with a 75+ year track record"
-        ],
-        "giving_considerations": [
-          "Donations support a massive global pipeline of medical supplies",
-          "The organization is a mainstream humanitarian entity, not faith-based",
-          "Financials are heavily influenced by large-scale in-kind donations"
-        ],
-        "not_ideal_for": ""
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "10",
-          "[14]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B reflects a strong theory of change and the tracking of 9 outcome metrics, though specific cost-per-beneficiary data is not fully public.",
-        "external_evaluations": [
-          "Candid Outcome Metrics",
-          "BBB Wise Giving Alliance Review"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "Direct Relief equips health professionals with essential medical resources to care for the world's most vulnerable people, focusing on maternal health, disease management, and emergency response.",
-        "why_evidence_matters": "Evidence ensures that medical supplies are reaching the intended clinics and resulting in improved health outcomes for patients."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "founded_year": 1948,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": 8,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "The scale of global health disparities and emergency needs allows Direct Relief to absorb and deploy significant additional capital efficiently.",
-        "strategic_priorities": [
-          "Expanding maternal health programs",
-          "Strengthening medical supply chains in crisis zones"
-        ],
-        "years_operating": 78
-      },
-      "organizational_capacity": {
-        "board_size": 16,
-        "ceo_compensation": 567776,
-        "ceo_compensation_pct_revenue": 0.025,
-        "ceo_name": "Thomas Tighe",
-        "citation_ids": [
-          "[11]",
-          "[13]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Global and all 50 U.S. states",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[3]",
-          "[22]"
-        ],
-        "differentiator": "Direct Relief's <cite id=\"3\">100.0% program ratio</cite> significantly exceeds the <cite id=\"22\">peer median of 89.7%</cite>.",
-        "peer_group": "International humanitarian organizations",
-        "similar_orgs": [
-          "American Red Cross",
-          "Save the Children Federation",
-          "UNICEF USA"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on humanitarian relief and healthcare",
-          "name": "American Red Cross"
-        },
-        {
-          "differentiator": "Focuses more specifically on child-centric humanitarian aid",
-          "name": "Save the Children Federation"
-        },
-        {
-          "differentiator": "Global reach with a focus on children's rights and health",
-          "name": "UNICEF USA"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[3]",
-            "[8]"
-          ],
-          "detail": "The organization maintains a <cite id=\"3\">99.5% program expense ratio</cite> and a fundraising efficiency of <cite id=\"8\">$0.00 spent to raise every $1</cite>.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "9",
-            "[10]"
-          ],
-          "detail": "Direct Relief holds a <cite id=\"9\">Platinum Seal of Transparency from Candid</cite> and meets <cite id=\"10\">all 20 BBB Wise Giving Alliance Standards</cite>.",
-          "point": "Highest Transparency Standards"
-        },
-        {
-          "citation_ids": [
-            "[5]",
-            "[11]"
-          ],
-          "detail": "The charity features a <cite id=\"11\">100% independent board of 16 members</cite> and earned <cite id=\"5\">perfect 100/100 scores for Accountability and Leadership</cite>.",
-          "point": "Robust Governance and Leadership"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Direct Relief's operational model is a benchmark for humanitarian logistics. By focusing on <cite id=\"12\">medical supply chain and logistics</cite>, they provide essential resources to community health centers and clinics that serve the most vulnerable. Their financial health is bolstered by <cite id=\"13\">$1.17 billion in total assets</cite>, ensuring they can respond immediately to global crises like earthquakes or pandemics. Furthermore, their commitment to evidence is demonstrated by <cite id=\"14\">tracking 9 distinct outcome metrics</cite> through Candid, allowing for data-driven adjustments to their health programs."
-      ],
-      "summary": "Founded in <cite id=\"1\">1948</cite>, Direct Relief is a global humanitarian organization dedicated to improving the health and lives of people affected by poverty or emergencies without regard to politics, religion, or ability to pay. The organization operates at a massive scale, reporting <cite id=\"2\">$2,266,763,483 in total revenue</cite> for the 2023 tax year. Direct Relief is distinguished by its <cite id=\"3\">99.5% program expense ratio</cite>, a metric that reflects its unique model of distributing donated medical supplies and medicines to health providers worldwide. By leveraging a <cite id=\"4\">highly efficient medical supply chain</cite>, the charity ensures that nearly every dollar of public support is directed toward program services. The organization maintains a <cite id=\"5\">perfect overall score of 100.0/100 from Charity Navigator</cite>, reflecting top-tier performance across impact, accountability, and transparency beacons. Its operations span <cite id=\"6\">all 50 U.S. states and more than 80 countries</cite>, focusing on emergency response, maternal and child health, and the management of chronic diseases. With <cite id=\"7\">6.6 months of working capital</cite>, the organization is financially resilient and capable of sustaining long-term relief efforts even during volatile economic periods.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "Direct Relief operates as a global humanitarian aid organization focused on emergency preparedness, in-kind medical giving, and addressing non-communicable diseases [1][3]. The organization maintains a perfect Charity Navigator score of 100.0/100, reflecting its commitment to financial health and transparency [3]."
     }
   }
 }

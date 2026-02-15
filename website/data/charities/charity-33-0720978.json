@@ -2,7 +2,7 @@
   "id": "33-0720978",
   "ein": "33-0720978",
   "name": "ZAYTUNA COLLEGE",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Zaytuna College aims to educate and prepare morally committed professional, intellectual, and spiritual leaders, who are grounded in the Islamic scholar...",
   "programs": [
     "BA in Liberal and Islamic Studies",
@@ -53,7 +53,11 @@
     "netAssets": 42577802,
     "workingCapitalMonths": "33.60"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 12,
+    "independentBoardMembers": null,
+    "ceoCompensation": 159925
+  },
   "targeting": {
     "populationsServed": [
       "Men"
@@ -81,7 +85,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:34:37",
+  "lastUpdated": "2026-02-14 19:35:51",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -202,17 +206,36 @@
     "Zaytuna College has a dedicated \"Zakat Fund\" which \"serves as the basis of our financial aid program and is utilized to cover the total cost of educating a zakat-eligible student.\" Their donation page also lists \"Zakat\" as a designation option. Furthermore, Zaytuna College states, \"Our current policy has been reviewed and approved by senior scholars, such as His Eminence, Shaykh Abdallah bin Bayyah, one of the foremost Muslim jurists of our time.\" (Source: https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFjZj9ls_cjqCGjOz6eZFuG61o14U90v849aIFKq70HibgYbOkoGffibqnMwxT3dACx93CKPa24x3a9jM9KOL-lyj1S_BLH_qG1d3w_b86pidZZRlpr8_6Xxu6IhR4d3IQD1T3U)"
   ],
   "archetype": "SOVEREIGNTY",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "SOVEREIGNTY",
+    "archetype_label": "Sovereignty Builder",
+    "evidence_stage": "Verified",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Limited",
+      "donor_fit": "Moderate",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "33-0720978",
     "charity_name": "ZAYTUNA COLLEGE",
-    "amal_score": 49,
+    "amal_score": 50,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:17:36",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 25,
       "data_confidence": 0.9,
-      "impact": 26
+      "impact": 27
     },
     "score_details": {
       "alignment": {
@@ -300,11 +323,11 @@
           },
           {
             "evidence": "Working capital: 33.6 months (EXCESSIVE)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
+            "improvement_suggestion": "Publish a capital deployment plan so very high reserves are intentionally used for mission delivery while preserving a prudent safety buffer.",
             "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 0,
+            "scored": 1,
             "status": "full"
           },
           {
@@ -347,36 +370,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 26/50",
+        "rationale": "Delivery: capacity building; Impact 27/50",
         "rubric_archetype": "EDUCATION",
-        "score": 26
+        "score": 27
       },
-      "judge_issues": [
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
@@ -392,7 +389,7 @@
         ],
         "total_deduction": -2
       },
-      "score_summary": "ZAYTUNA COLLEGE earns 49/100 due to moderate impact and moderate alignment, with zakat compliance (minor risk deductions applied).",
+      "score_summary": "ZAYTUNA COLLEGE shows moderate impact and moderate alignment, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -404,668 +401,52 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reported a total revenue of $18,359,667 and a program expense ratio of 56.0%.",
+          "claim": "The organization reported total revenue of $18,359,667, a program expense ratio of 56.0%, and working capital of 33.6 months.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/330720978"
         },
         {
-          "claim": "Financial records indicate a fundraising efficiency of $0.11 per $1 raised and working capital of 33.6 months.",
+          "claim": "Financial data confirms the fundraising efficiency of $0.11 per $1 raised and total revenue figures.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/330720978"
         },
         {
-          "claim": "Zaytuna College offers a Bachelor of Arts in Liberal Arts and Islamic Studies and a Master of Arts in Islamic Texts.",
+          "claim": "Zaytuna College is an accredited institution offering a Bachelor of Arts in Liberal Arts and Islamic Studies.",
           "id": "[3]",
-          "source_name": "College Catalog (2025-2026)",
+          "source_name": "College Catalog",
           "source_url": "https://zaytuna.edu/files/galleries/Zaytuna_College_Catalog_2025-2026.pdf"
         },
         {
-          "claim": "The institution maintains its status as an accredited liberal arts college.",
+          "claim": "The college provides a Master of Arts in Islamic Texts and maintains specific accreditation status.",
           "id": "[4]",
-          "source_name": "College Catalog (2024-2025)",
+          "source_name": "College Catalog",
           "source_url": "https://zaytuna.edu/files/galleries/Zaytuna_College_Catalog_2024-2025.pdf"
         },
         {
-          "claim": "The college's mission is to prepare morally committed professional, intellectual, and spiritual leaders.",
-          "id": "[6]",
-          "source_name": "College Catalog (2025-2026)",
-          "source_url": "https://zaytuna.edu/files/galleries/Zaytuna_College_Catalog_2025-2026.pdf"
-        },
-        {
-          "claim": "The curriculum is designed to ground students in the Islamic scholarly tradition and the Western cultural heritage.",
-          "id": "[7]",
-          "source_name": "College Catalog (2024-2025)",
-          "source_url": "https://zaytuna.edu/files/galleries/Zaytuna_College_Catalog_2024-2025.pdf"
-        },
-        {
-          "claim": "The college is a zakat-eligible organization and provides various methods for donor contributions.",
+          "claim": "The institution is zakat-eligible and accepts various forms of charitable giving.",
           "id": "[8]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://zaytuna.edu/ways-to-give"
         }
       ],
-      "amal_score_rationale": "The college earns a moderate overall score due to its strong financial reserves and unique educational niche, balanced against a program expense ratio that suggests significant overhead or administrative costs.",
+      "amal_score_rationale": "Zaytuna College earns a moderate overall score due to its exceptional financial health and unique educational niche, balanced by a program expense ratio that suggests significant overhead costs.",
       "areas_for_improvement": [
-        "program expense ratio of 56.0% is lower than industry benchmarks for direct service",
-        "Limited public data regarding specific long-term student career outcomes"
+        "program expense ratio of 56.0% is lower than the industry benchmark for highly efficient charities",
+        "Limited public data regarding specific long-term impact metrics for graduates"
       ],
       "dimension_explanations": {
-        "alignment": "Zaytuna College provides a medium fit for donors interested in global education and Islamic scholarship, offering a track record of academic rigor within the American higher education landscape [4][7]. Its status as a zakat-eligible institution aligns with the specific religious giving requirements of many Muslim donors [8].",
-        "impact": "The college focuses on capacity building by educating future leaders through its accredited undergraduate and graduate programs [3][6]. While it maintains a robust total revenue of $18,359,667 and significant working capital of 33.6 months, its program expense ratio is 56.0%, indicating that a substantial portion of funds is directed toward non-programmatic operations [1][2]."
+        "alignment": "The organization shows medium donor alignment as it addresses the urgent need for Islamic higher education in the West [3]. Its status as a zakat-eligible institution provides a specific fit for Muslim donors looking to support educational advancement [8].",
+        "impact": "The college demonstrates impact through capacity building by educating future communal leaders, supported by a total revenue of $18,359,667 [1][2]. While its program expense ratio is 56.0%, the institution maintains a robust financial position with 33.6 months of working capital to sustain its academic operations [1]."
       },
-      "headline": "Zaytuna College is the first accredited Muslim liberal arts college in the United States, dedicated to grounding students in both Islamic and Western scholarly traditions.",
+      "headline": "Zaytuna College serves as the first accredited Muslim liberal arts college in the United States, dedicated to grounding students in both Islamic and Western scholarly traditions.",
       "strengths": [
         "High financial stability with 33.6 months of working capital",
-        "Exceptional fundraising efficiency of $0.11 per $1 raised",
-        "Maintains formal accreditation for its unique liberal arts curriculum"
+        "Strong fundraising efficiency, spending only $0.11 to raise every $1",
+        "Maintains formal accreditation for its unique liberal arts and Islamic studies curriculum"
       ],
-      "summary": "Located in Berkeley, California, Zaytuna College offers specialized degree programs including a Bachelor of Arts in Liberal Arts and Islamic Studies and a Master of Arts in Islamic Texts [3][4]. The institution operates as a zakat-eligible entity, focusing on the development of morally committed intellectual and spiritual leaders [8]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "founded in 2009",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "Founded: 2009",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "accredited Muslim liberal arts college",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Zaytuna College is accredited by the WASC Senior College and University Commission",
-          "source_name": "College Catalog 2025-2026",
-          "source_type": "website",
-          "source_url": "https://zaytuna.edu/files/galleries/Zaytuna_College_Catalog_2025-2026.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Islamic and Western scholarly traditions",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "grounded in the Islamic scholarly tradition and in the Western classical liberal arts",
-          "source_name": "College Catalog 2024-2025",
-          "source_type": "website",
-          "source_url": "https://zaytuna.edu/files/galleries/Zaytuna_College_Catalog_2024-2025.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $18,359,667",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Total revenue: $18,359,667",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$15,266,326 in contributions",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Contributions and grants: $15,266,326",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "33.6 months of working capital",
-          "confidence": 0.95,
-          "id": "[6]",
-          "quote": "Working Capital Ratio (years): 2.80",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 56.0%",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Program service expenses: $9,201,531 / Total expenses: $15,209,142",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer program ratio median of 78.4%",
-          "confidence": 0.9,
-          "id": "[8]",
-          "quote": "Peer Program Ratio Median: 78.4%",
-          "source_name": "Internal Peer Benchmark Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "exceptional fundraising efficiency",
-          "confidence": 0.95,
-          "id": "[9]",
-          "quote": "Fundraising Efficiency: $0.12",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.11 to raise every $1",
-          "confidence": 0.95,
-          "id": "[10]",
-          "quote": "Fundraising Efficiency: $0.12",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "zakat-eligible",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Zaytuna College is a zakat-eligible institution",
-          "source_name": "Zaytuna College - Ways to Give",
-          "source_type": "website",
-          "source_url": "https://zaytuna.edu/ways-to-give"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fuqara (the poor) and masakin (the needy)",
-          "confidence": 0.9,
-          "id": "[12]",
-          "quote": "Zakat funds are used for eligible students (fuqara, masakin)",
-          "source_name": "Zaytuna College - Ways to Give",
-          "source_type": "website",
-          "source_url": "https://zaytuna.edu/ways-to-give"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "accredited by the WASC Senior College and University Commission",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Accredited by the WASC Senior College and University Commission (WSCUC)",
-          "source_name": "College Catalog 2025-2026",
-          "source_type": "website",
-          "source_url": "https://zaytuna.edu/files/galleries/Zaytuna_College_Catalog_2025-2026.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "net assets totaling $42,577,802",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Net assets or fund balances at end of year: $42,577,802",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 19.7%",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "3-Year Revenue CAGR: 19.7%",
-          "source_name": "Internal Financial Analysis",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "12-member board of directors",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Number of voting members of the governing body: 12",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Gold Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Candid Seal: Gold",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "industry standard of 75%",
-          "confidence": 0.9,
-          "id": "[18]",
-          "quote": "Industry Standard: 75%",
-          "source_name": "Internal Peer Benchmark Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "insufficient data for cost-per-beneficiary calculation",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Insufficient data for cost-per-beneficiary calculation",
-          "source_name": "AMAL Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "independent audits",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Were the organization's financial statements audited by an independent accountant? Yes",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "document a clearer theory of change",
-          "confidence": 0.9,
-          "id": "[21]",
-          "quote": "Improvement: Document a clear theory of change",
-          "source_name": "AMAL Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "capacity-building model",
-          "confidence": 1,
-          "id": "[22]",
-          "quote": "Delivery model: Capacity Building",
-          "source_name": "AMAL Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "track and report beneficiary counts",
-          "confidence": 0.9,
-          "id": "[23]",
-          "quote": "Improvement: Track and report beneficiary counts",
-          "source_name": "AMAL Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "high-urgency cause area",
-          "confidence": 0.9,
-          "id": "[24]",
-          "quote": "Cause area: Education Global (10/13)",
-          "source_name": "AMAL Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "adding a dedicated zakat page",
-          "confidence": 0.9,
-          "id": "[25]",
-          "quote": "Improvement: Add a dedicated zakat page",
-          "source_name": "AMAL Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Hamza Yusuf Hanson",
-          "confidence": 1,
-          "id": "[26]",
-          "quote": "CEO: Hamza Yusuf Hanson",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/330720978"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "independent board members",
-          "confidence": 1,
-          "id": "[27]",
-          "quote": "Independent Board Members: 66%",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/330720978"
-        }
-      ],
-      "amal_score_rationale": "The college earns a moderate overall score due to its strong financial reserves and unique educational niche, balanced against a program expense ratio that suggests significant overhead or administrative costs.",
-      "amal_scores": {
-        "amal_score": 49,
-        "confidence_scores": {
-          "alignment": 25,
-          "data_confidence": 0.9,
-          "impact": 26
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Program Expense Allocation",
-          "citation_ids": [
-            "[7]",
-            "[18]"
-          ],
-          "context": "The <cite id=\"7\">program expense ratio of 56.0%</cite> is below the <cite id=\"18\">industry standard of 75%</cite>, suggesting a high portion of funds is directed toward administrative or capital reserves."
-        },
-        {
-          "area": "Impact Measurement",
-          "citation_ids": [
-            "[19]"
-          ],
-          "context": "There is <cite id=\"19\">insufficient data for cost-per-beneficiary calculation</cite>, making it difficult for donors to assess the direct impact of their contributions."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[20]"
-        ],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": null,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "The college undergoes <cite id=\"20\">independent financial audits</cite> as part of its accreditation requirements."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[6]",
-          "[7]"
-        ],
-        "mitigation_notes": "The college's high net asset growth suggests it may be in a capital-intensive phase of campus development.",
-        "risk_factors": [
-          "<cite id=\"6\">Excessive working capital reserves</cite> of 33.6 months suggest funds are being held rather than deployed."
-        ],
-        "summary": "The primary concern is the <cite id=\"7\">56.0% program expense ratio</cite>, which indicates that nearly 40% of revenue is spent on non-programmatic costs."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 8,
-          "rating": 12,
-          "website": 7
-        },
-        "high_confidence_count": 24,
-        "total_count": 27,
-        "unique_sources": 8
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023 Form 990; catalogs from 2024-2025",
-        "data_gaps": [
-          "Missing specific student career outcome data",
-          "Missing detailed employee count"
-        ],
-        "level": "HIGH",
-        "notes": "Strong data availability for financial and accreditation metrics.",
-        "score": 90,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "College Catalogs",
-          "Charity Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 90,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing specific student career outcome data",
-          "No Charity Navigator star rating"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 27,
-        "unique_sources": 8,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[11]",
-            "[24]",
-            "[25]"
-          ],
-          "explanation": "The college offers <cite id=\"11\">verified zakat eligibility</cite> and serves a <cite id=\"24\">high-urgency cause area</cite> in global education.",
-          "improvement": "Alignment could be improved by <cite id=\"25\">adding a dedicated zakat page</cite> that highlights the humanitarian dimensions of its scholarship programs."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[13]",
-            "[16]",
-            "[17]",
-            "[20]",
-            "[21]"
-          ],
-          "explanation": "Zaytuna maintains high credibility through its <cite id=\"13\">WASC accreditation</cite> and <cite id=\"17\">Candid Gold Seal</cite>. Governance is supported by a <cite id=\"16\">12-member board</cite> and <cite id=\"20\">independent audits</cite>.",
-          "improvement": "To strengthen credibility, the college could <cite id=\"21\">document a clearer theory of change</cite> with explicit causal pathways for its educational outcomes."
-        },
-        "impact": {
-          "citation_ids": [
-            "[7]",
-            "[6]",
-            "[22]",
-            "[23]"
-          ],
-          "explanation": "Impact is driven by a <cite id=\"22\">capacity-building model</cite>, though the <cite id=\"7\">56.0% program ratio</cite> and <cite id=\"6\">excessive working capital</cite> limit the score.",
-          "improvement": "The college should <cite id=\"23\">track and report beneficiary counts</cite> to enable a more precise cost-per-student analysis."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "EDUCATION_GLOBAL",
-        "citation_ids": [
-          "[11]",
-          "[12]",
-          "[13]"
-        ],
-        "evidence_rigor": "Grade B - Accredited academic outcomes",
-        "geographic_focus": [
-          "United States"
-        ],
-        "giving_style": "Institutional investment",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara",
-          "masakin",
-          "gharimin",
-          "amil",
-          "fisabilillah"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.285,
-        "annual_revenue": 18359667,
-        "citation_ids": [
-          "[4]",
-          "[14]",
-          "[15]",
-          "[18]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0.11,
-        "industry_program_ratio": 0.75,
-        "peer_count": 12,
-        "peer_program_ratio_median": 0.784,
-        "program_expense_ratio": 0.5605,
-        "reserves_months": 33.6,
-        "revenue_cagr_3yr": 19.7,
-        "transparency_score": 85,
-        "working_capital_months": 33.6,
-        "yearly_financials": [
-          {
-            "expenses": 15209142,
-            "net_assets": 42577802,
-            "revenue": 18359667,
-            "year": 2023
-          },
-          {
-            "expenses": 13283311,
-            "net_assets": 39438037,
-            "revenue": 19391680,
-            "year": 2022
-          },
-          {
-            "expenses": 10153583,
-            "net_assets": 33496958,
-            "revenue": 12806217,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct educational service provider",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "USA"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "Zaytuna College is the first accredited Muslim liberal arts college in the United States, dedicated to grounding students in both Islamic and Western scholarly traditions.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value long-term Islamic institutional building and want to support the academic development of future American Muslim scholars.",
-        "citation_ids": [
-          "[2]",
-          "[3]",
-          "[7]",
-          "[11]"
-        ],
-        "donor_motivations": [
-          "Want to support the first accredited Muslim liberal arts college in the US",
-          "Value the synthesis of Islamic and Western intellectual traditions",
-          "Prefer supporting established institutions with high financial stability",
-          "Seek zakat-eligible higher education opportunities"
-        ],
-        "giving_considerations": [
-          "Gifts contribute to a large-scale institutional endowment and campus",
-          "Program efficiency is lower than emergency relief charities",
-          "Focus is on long-term leadership development rather than immediate humanitarian aid"
-        ],
-        "not_ideal_for": "Donors seeking immediate, high-efficiency humanitarian relief or those who prefer small, grassroots community projects."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[13]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "The college provides verified academic outcomes through its <cite id=\"13\">accreditation status</cite> and published catalogs.",
-        "external_evaluations": [
-          "WSCUC Accreditation Reviews"
-        ],
-        "outcome_tracking_years": 15,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Zaytuna creates impact by providing a rigorous dual-tradition education to students who then serve as leaders in various professional and spiritual fields.",
-        "why_evidence_matters": "Accreditation ensures that the educational services provided meet national standards of quality and rigor."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[15]"
-        ],
-        "founded_year": 2009,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": 19.7,
-        "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "While the college has significant assets, its <cite id=\"15\">19.7% growth rate</cite> suggests ongoing expansion needs.",
-        "strategic_priorities": [
-          "Academic program expansion",
-          "Campus development",
-          "Endowment growth"
-        ],
-        "years_operating": 17
-      },
-      "organizational_capacity": {
-        "board_size": 12,
-        "ceo_compensation": 159925,
-        "ceo_compensation_pct_revenue": 0.87,
-        "ceo_name": "Hamza Yusuf Hanson",
-        "citation_ids": [
-          "[16]",
-          "[26]",
-          "[27]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "United States",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 0.66,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[4]",
-          "[13]"
-        ],
-        "differentiator": "Distinguished by its <cite id=\"13\">formal WASC accreditation</cite> and larger <cite id=\"4\">$18.3M revenue scale</cite> compared to peers.",
-        "peer_group": "Higher Education & Religious Services",
-        "similar_orgs": [
-          "Darul Qasim",
-          "Bayan Islamic Graduate School",
-          "American Imam Academy"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Smaller scale, similar religious focus",
-          "name": "Darul Qasim"
-        },
-        {
-          "differentiator": "Focuses specifically on graduate-level chaplaincy and leadership",
-          "name": "Bayan Islamic Graduate School"
-        },
-        {
-          "differentiator": "Smaller organization with a narrower focus on imam training",
-          "name": "American Imam Academy"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[6]"
-          ],
-          "detail": "The college maintains <cite id=\"6\">33.6 months of working capital</cite>, providing a robust buffer against economic volatility.",
-          "point": "Exceptional Financial Stability"
-        },
-        {
-          "citation_ids": [
-            "[10]"
-          ],
-          "detail": "Zaytuna spends only <cite id=\"10\">$0.11 per $1 raised</cite>, significantly outperforming many non-profit peers in resource acquisition.",
-          "point": "Highly Efficient Fundraising"
-        },
-        {
-          "citation_ids": [
-            "[13]"
-          ],
-          "detail": "The college is <cite id=\"13\">accredited by the WASC Senior College and University Commission</cite>, validating its academic rigor.",
-          "point": "Formal Academic Accreditation"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Zaytuna College's primary strength lies in its institutional maturity and financial resilience. With <cite id=\"14\">net assets totaling $42,577,802</cite> and a <cite id=\"15\">3-year revenue CAGR of 19.7%</cite>, the college has successfully scaled its operations since its inception. This growth is supported by a <cite id=\"16\">12-member board of directors</cite> and a <cite id=\"17\">Gold Seal of Transparency from Candid</cite>, indicating strong internal governance and a commitment to public disclosure."
-      ],
-      "summary": "Zaytuna College, <cite id=\"1\">founded in 2009</cite> in Berkeley, California, represents a landmark in American Muslim education as the first <cite id=\"2\">accredited Muslim liberal arts college</cite> in the United States. The institution's mission is to prepare morally committed leaders through a curriculum that bridges <cite id=\"3\">Islamic and Western scholarly traditions</cite>. Financially, the college reported <cite id=\"4\">total revenue of $18,359,667</cite> in 2023, with a significant portion of its funding coming from <cite id=\"5\">$15,266,326 in contributions</cite>. While the college maintains <cite id=\"6\">high financial stability with 33.6 months of working capital</cite>, its <cite id=\"7\">program expense ratio of 56.0%</cite> is notably lower than the <cite id=\"8\">peer program ratio median of 78.4%</cite> for global education organizations. Despite this, the college demonstrates <cite id=\"9\">exceptional fundraising efficiency</cite>, spending only <cite id=\"10\">$0.11 to raise every $1</cite>. Zaytuna is <cite id=\"11\">zakat-eligible</cite>, allowing donors to support students across categories such as <cite id=\"12\">fuqara (the poor) and masakin (the needy)</cite> through its specialized scholarship funds.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "Located in Berkeley, California, Zaytuna College offers specialized degree programs including a Bachelor of Arts in Liberal Arts and Islamic Studies and a Master of Arts in Islamic Texts [3][4]. The institution operates as a zakat-eligible entity, focusing on preparing morally committed intellectual and spiritual leaders [8]."
     }
   }
 }

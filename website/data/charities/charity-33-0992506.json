@@ -2,7 +2,7 @@
   "id": "33-0992506",
   "ein": "33-0992506",
   "name": "Islamic Center of Irvine",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Mission statement - To establish a comprehensive center promoting Islamic values and reflecting excellence in serving the needs of the community",
   "programs": [
     "The Village In Irvine",
@@ -49,7 +49,11 @@
     "netAssets": 4758051,
     "workingCapitalMonths": "26.30"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 9,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Men",
@@ -67,7 +71,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-09 21:37:16",
+  "lastUpdated": "2026-02-14 19:35:51",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -180,17 +184,36 @@
   "evidenceQuality": null,
   "zakatClaimEvidence": null,
   "archetype": "SOVEREIGNTY",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "SOVEREIGNTY",
+    "archetype_label": "Sovereignty Builder",
+    "evidence_stage": "Established",
+    "signal_states": {
+      "evidence": "Limited",
+      "financial_health": "Moderate",
+      "donor_fit": "Limited",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "33-0992506",
     "charity_name": "Islamic Center of Irvine",
-    "amal_score": 37,
+    "amal_score": 41,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:27:54",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 17,
       "data_confidence": 0.7,
-      "impact": 22
+      "impact": 26
     },
     "score_details": {
       "alignment": {
@@ -277,12 +300,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 26.3 months (EXCESSIVE)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 4,
+            "evidence": "Working capital: 26.3 months (HIGH)",
+            "improvement_suggestion": "Document why reserves above your policy target are intentional (e.g., restrictions, volatility, planned commitments) and define deployment triggers.",
+            "improvement_value": 3,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 0,
+            "scored": 4,
             "status": "full"
           },
           {
@@ -325,30 +348,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 22/50",
+        "rationale": "Delivery: capacity building; Impact 26/50",
         "rubric_archetype": "COMMUNITY",
-        "score": 22
+        "score": 26
       },
-      "judge_issues": [
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
@@ -371,7 +374,7 @@
         ],
         "total_deduction": -2
       },
-      "score_summary": "Islamic Center of Irvine Inc earns 37/100 due to moderate impact and limited alignment (minor risk deductions applied).",
+      "score_summary": "Islamic Center of Irvine Inc shows moderate impact and limited alignment (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -383,13 +386,13 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization operates programs like The Village In Irvine and maintains high fundraising efficiency.",
+          "claim": "The organization operates programs including The Village In Irvine and ICOI Young Professionals.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/330992506"
         },
         {
-          "claim": "The charity reported total revenue of $2,209,994, a program expense ratio of 89.9%, and 26.3 months of working capital.",
+          "claim": "The charity reported total revenue of $2,209,994 and a program expense ratio of 89.9%.",
           "id": "[2]",
           "source_name": "Form 990 (2022)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/330992506"
@@ -401,389 +404,22 @@
           "source_url": "https://icoi.net/donate"
         }
       ],
-      "amal_score_rationale": "The organization maintains strong financial health and high program spending, though its overall score is moderated by its specific religious focus and limited third-party impact data.",
+      "amal_score_rationale": "The organization maintains a moderate overall score due to its exceptional financial efficiency and liquidity, balanced against a lack of third-party impact verification and a localized religious focus.",
       "areas_for_improvement": [
-        "Limited external data available regarding specific long-term impact metrics.",
-        "Alignment score suggests a need for broader donor engagement strategies."
+        "Limited external impact data regarding specific beneficiary outcomes",
+        "Lower alignment for donors seeking high-urgency humanitarian relief"
       ],
       "dimension_explanations": {
-        "alignment": "The center focuses on religious and cultural urgency within a specific community, which may result in a lower alignment score for general donors [1]. The organization accepts sadaqah and general charitable giving to support its mission [3].",
-        "impact": "The organization demonstrates a commitment to capacity building through its 89.9% program expense ratio and maintains a stable financial position with 26.3 months of working capital [2]. However, the lack of specific cost-per-beneficiary data results in a medium impact score [1]."
+        "alignment": "As a religious and cultural institution, the center offers a stable track record for local community support, though it may have lower fit for donors prioritizing global humanitarian urgency [1]. The organization accepts charitable contributions via sadaqah to support its ongoing operations [3].",
+        "impact": "The organization demonstrates high financial health with a program expense ratio of 89.9% and holds 26.3 months of working capital [2]. While its capacity-building efforts are evident through programs like ICOI Young Professionals, there is limited third-party data available to verify specific long-term effectiveness [1]."
       },
-      "headline": "The Islamic Center of Irvine Inc serves as a comprehensive community hub dedicated to promoting Islamic values and excellence in service.",
+      "headline": "The Islamic Center of Irvine Inc serves as a comprehensive community hub dedicated to promoting Islamic values and excellence through diverse social and professional programming.",
       "strengths": [
-        "High program expense ratio of 89.9%, indicating the vast majority of funds go directly to services [2].",
-        "Exceptional fundraising efficiency of $0.00 per $1 raised [1].",
-        "Strong liquidity with 26.3 months of working capital available [2]."
+        "High program expense ratio of 89.9% ensures the vast majority of funds reach community services",
+        "Strong liquidity with 26.3 months of working capital available",
+        "Exceptional fundraising efficiency with a cost of $0.00 per $1 raised"
       ],
-      "summary": "The Islamic Center of Irvine Inc is a religious non-profit organization that reported a total revenue of $2,209,994 [2]. The center operates various community-focused programs, including The Village In Irvine and ICOI Young Professionals, to meet the diverse needs of its constituents [1]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $2,209,994",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "Total Revenue: $2,209,994",
-          "source_name": "Charity Navigator - ICOI",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/330992506"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "three-year revenue growth rate of 10.6%",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Revenue 2020-2022 trend analysis",
-          "source_name": "Form 990 (2022)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/330992506"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "The Village In Irvine and ICOI Young Professionals",
-          "confidence": 0.95,
-          "id": "[3]",
-          "quote": "Programs: The Village In Irvine, ICOI Young Professionals",
-          "source_name": "Charity Navigator - Programs",
-          "source_type": "website",
-          "source_url": "https://www.charitynavigator.org/ein/330992506"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "89.9% of its total expenses toward program services",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Program Service Expenses / Total Expenses = 89.9%",
-          "source_name": "Form 990 (2022)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/330992506"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.00 per $1 raised",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Fundraising Efficiency: $0.00",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/330992506"
-        }
-      ],
-      "amal_score_rationale": "The organization maintains strong financial health and high program spending, though its overall score is moderated by its specific religious focus and limited third-party impact data.",
-      "amal_scores": {
-        "amal_score": 37,
-        "confidence_scores": {
-          "alignment": 17,
-          "data_confidence": 0.7,
-          "impact": 22
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Impact Measurement and Reporting",
-          "citation_ids": [
-            "[16]"
-          ],
-          "context": "The organization currently has <cite id=\"16\">no verified beneficiary data or external impact evaluations</cite> available for public review."
-        },
-        {
-          "area": "Excessive Capital Reserves",
-          "citation_ids": [
-            "[10]"
-          ],
-          "context": "While stable, the <cite id=\"10\">26.3 months of working capital</cite> is considered excessive compared to the standard 1-3 month benchmark for non-profits."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "not_specified",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "No BBB Wise Giving Alliance evaluation is currently available for this organization."
-      },
-      "case_against": {
-        "citation_ids": [
-          "10",
-          "16",
-          "18"
-        ],
-        "mitigation_notes": "The organization's high program ratio suggests that despite the lack of formal reporting, funds are being utilized for community services.",
-        "risk_factors": [
-          "<cite id=\"18\">Absence of a documented theory of change</cite>",
-          "<cite id=\"10\">Excessive accumulation of working capital</cite> rather than immediate program expansion"
-        ],
-        "summary": "The primary concerns involve <cite id=\"16\">limited impact transparency</cite> and a lack of external evaluation of its community programs."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 7,
-          "rating": 6,
-          "website": 2
-        },
-        "high_confidence_count": 13,
-        "total_count": 15,
-        "unique_sources": 3
-      },
-      "confidence": {
-        "data_freshness": "Data from 2022 Form 990",
-        "data_gaps": [
-          "No 2023 financials",
-          "No impact metrics"
-        ],
-        "level": "MODERATE",
-        "notes": "Financial data is solid, but impact data is missing.",
-        "score": 70,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 70,
-        "form_990_tax_year": 2022,
-        "known_gaps": [
-          "Missing beneficiary counts",
-          "No audited financials",
-          "No theory of change"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 3,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[20]",
-            "[21]"
-          ],
-          "explanation": "The organization is a strong fit for local community members but has a <cite id=\"20\">lower alignment score for general Muslim donors</cite> due to its focus on religious-cultural services rather than global humanitarian aid.",
-          "improvement": "Alignment could be improved by <cite id=\"21\">highlighting the humanitarian dimensions</cite> of its local community work."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[7]",
-            "[17]",
-            "[18]"
-          ],
-          "explanation": "Donors can trust the organization's financial transparency as it holds a <cite id=\"17\">Bronze Seal of Transparency from Candid</cite> and maintains a <cite id=\"7\">fully independent board of nine members</cite>.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"18\">document a clear theory of change</cite> and publish audited financial statements."
-        },
-        "impact": {
-          "citation_ids": [
-            "[4]",
-            "[16]",
-            "[19]"
-          ],
-          "explanation": "Operations are efficient with an <cite id=\"4\">89.9% program expense ratio</cite>, but the lack of <cite id=\"16\">beneficiary tracking</cite> makes it difficult to assess the cost-effectiveness of its services.",
-          "improvement": "The center should <cite id=\"19\">track and report beneficiary counts</cite> to enable a more detailed cost-per-beneficiary analysis."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "RELIGIOUS_CULTURAL",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "evidence_rigor": "Grade C - Basic financial transparency with no outcome tracking",
-        "geographic_focus": [
-          "Irvine, California",
-          "Orange County"
-        ],
-        "giving_style": "Community-centric",
-        "tax_deductible": true,
-        "zakat_asnaf_served": null,
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.167,
-        "annual_revenue": 2209994,
-        "citation_ids": [
-          "[2]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0,
-        "industry_program_ratio": 0.75,
-        "peer_count": 35,
-        "peer_program_ratio_median": 0.8,
-        "program_expense_ratio": 0.8987999999999999,
-        "reserves_months": 26.3,
-        "revenue_cagr_3yr": 10.6,
-        "transparency_score": 50,
-        "working_capital_months": 26.3,
-        "yearly_financials": [
-          {
-            "expenses": 2170356,
-            "net_assets": 4758051,
-            "revenue": 2209994,
-            "year": 2022
-          },
-          {
-            "expenses": 1675864,
-            "net_assets": 5121605,
-            "revenue": 2204329,
-            "year": 2021
-          },
-          {
-            "expenses": 3287113,
-            "net_assets": 4431773,
-            "revenue": 1805199,
-            "year": 2020
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "domestic_grants": 31500,
-        "foreign_grants": 0,
-        "grant_count": 2,
-        "grant_strategy": "Supports local Islamic educational and community institutions",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "California"
-        ],
-        "top_recipients": [
-          "AMERICAN INSLAMIC INST OF AV ($21,500)",
-          "INLAND VALLEY ISLAMIC SOCIETY ($10,000)"
-        ],
-        "total_grants": 31500
-      },
-      "headline": "The Islamic Center of Irvine Inc serves as a comprehensive community hub dedicated to promoting Islamic values and excellence in service.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize local community infrastructure and want to support a financially stable, efficient religious hub in Southern California.",
-        "citation_ids": [
-          "[4]",
-          "[10]"
-        ],
-        "donor_motivations": [
-          "Value high financial efficiency and low overhead",
-          "Want to support local youth and professional development programs",
-          "Prefer organizations with strong local roots and independent governance"
-        ],
-        "giving_considerations": [
-          "Donations are for general sadaqah and community support, not zakat",
-          "The organization has very high reserves, suggesting low immediate financial urgency",
-          "Impact is measured by community presence rather than rigorous data"
-        ],
-        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those requiring rigorous, third-party evidence of social impact outcomes."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[16]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects high financial transparency but a <cite id=\"16\">complete lack of external impact evaluations</cite> or beneficiary metrics.",
-        "external_evaluations": [],
-        "outcome_tracking_years": 0,
-        "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The organization creates impact by providing a physical and social space for religious practice and community networking, though the causal pathway is not formally documented.",
-        "why_evidence_matters": "Evidence ensures that community programs are effectively meeting the needs of the Irvine Muslim population."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "founded_year": null,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": 10.6,
-        "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "While the center has high reserves, its <cite id=\"2\">10.6% revenue growth</cite> indicates expanding community demand for its programs.",
-        "strategic_priorities": [
-          "Youth professional development",
-          "Ramadan community services"
-        ],
-        "years_operating": 2
-      },
-      "organizational_capacity": {
-        "board_size": 9,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": "Not Publicly Listed",
-        "citation_ids": [
-          "[1]",
-          "[7]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Irvine and Orange County, CA",
-        "has_conflict_policy": true,
-        "has_financial_audit": false,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[5]",
-          "[9]"
-        ],
-        "differentiator": "Distinguished by <cite id=\"5\">zero fundraising costs</cite> and a program ratio that exceeds the <cite id=\"9\">peer median of 80.0%</cite>.",
-        "peer_group": "Religious and Cultural Organizations",
-        "similar_orgs": [
-          "Islamic Society of Central Jersey",
-          "The Center for Islamic Teachings and Community Development",
-          "Sachse Muslim Society"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar size and religious focus",
-          "name": "Islamic Society of Central Jersey"
-        },
-        {
-          "differentiator": "Similar community service model",
-          "name": "The Center for Islamic Teachings and Community Development"
-        },
-        {
-          "differentiator": "Similar regional religious focus",
-          "name": "Sachse Muslim Society"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[4]",
-            "[9]"
-          ],
-          "detail": "The organization allocates <cite id=\"4\">89.9% of its budget directly to programs</cite>, exceeding the <cite id=\"9\">peer program ratio median of 80.0%</cite> for religious and cultural organizations.",
-          "point": "High Program Expense Ratio"
-        },
-        {
-          "citation_ids": [
-            "[5]"
-          ],
-          "detail": "ICOI spends <cite id=\"5\">$0.00 to raise every $1 of contribution revenue</cite>, maximizing the impact of every dollar donated.",
-          "point": "Exceptional Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[10]"
-          ],
-          "detail": "The center maintains <cite id=\"10\">26.3 months of working capital</cite>, providing significant financial stability and long-term operational security.",
-          "point": "Robust Liquidity and Reserves"
-        }
-      ],
-      "strengths_deep_dive": [
-        "The Islamic Center of Irvine's financial health is characterized by a lean administrative structure and high asset retention. With <cite id=\"8\">total assets of $4,874,051</cite> and relatively low <cite id=\"11\">liabilities of $116,000</cite>, the organization maintains a strong balance sheet. Its revenue stream is diversified, including <cite id=\"12\">$1,944,081 from contributions</cite> and <cite id=\"13\">$206,424 from program service revenue</cite>, such as educational fees or community events. This financial flexibility allows the center to sustain <cite id=\"14\">weekly and Ramadan programs</cite> while maintaining a <cite id=\"15\">100% independent board</cite> for objective governance."
-      ],
-      "summary": "The Islamic Center of Irvine Inc (ICOI) operates as a central community hub in Orange County, California, dedicated to providing religious, educational, and social services. The organization reported <cite id=\"1\">total revenue of $2,209,994</cite> in its most recent filing, reflecting a steady <cite id=\"2\">three-year revenue growth rate of 10.6%</cite>. ICOI maintains a strong focus on local community development through diverse initiatives such as <cite id=\"3\">The Village In Irvine and ICOI Young Professionals</cite>. Financially, the organization demonstrates high efficiency, directing <cite id=\"4\">89.9% of its total expenses toward program services</cite>. This commitment to direct service is further evidenced by a <cite id=\"5\">fundraising efficiency of $0.00 per $1 raised</cite>, indicating that the center relies on low-cost, community-driven support rather than expensive solicitation campaigns. Beyond its core religious functions, ICOI acts as a grantmaker, distributing <cite id=\"6\">$31,500 in domestic grants</cite> to support affiliated Islamic institutions. The center's governance is overseen by an <cite id=\"7\">independent board of nine members</cite>, ensuring oversight of its <cite id=\"8\">$4.8 million in total assets</cite>.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "The Islamic Center of Irvine Inc (ICOI) is a religious and community organization that reported a total revenue of $2,209,994 [2]. The center operates key initiatives such as 'The Village In Irvine' and 'ICOI Young Professionals' to meet the spiritual and social needs of its constituents [1]."
     }
   }
 }

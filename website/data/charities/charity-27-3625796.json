@@ -2,7 +2,7 @@
   "id": "27-3625796",
   "ein": "27-3625796",
   "name": "Heart Women & Girls",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "We work to promote sexual health, uproot gendered violence, and advance reproductive justice by establishing choice and access for the most impacted Muslims.",
   "programs": [
     "Health Education",
@@ -51,7 +51,11 @@
     "netAssets": 1982120,
     "workingCapitalMonths": "25.60"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 2,
+    "independentBoardMembers": null,
+    "ceoCompensation": 105000
+  },
   "targeting": {
     "populationsServed": [
       "Men",
@@ -86,7 +90,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": false
   },
-  "lastUpdated": "2026-02-09 21:32:17",
+  "lastUpdated": "2026-02-14 19:35:49",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -211,17 +215,36 @@
     "Dedicated zakat page found at https://www.heartwomenandgirls.org/zakat (Source: https://www.heartwomenandgirls.org/zakat)"
   ],
   "archetype": "LEVERAGE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "LEVERAGE",
+    "archetype_label": "Strategic Advocacy",
+    "evidence_stage": "Verified",
+    "signal_states": {
+      "evidence": "Limited",
+      "financial_health": "Moderate",
+      "donor_fit": "Moderate",
+      "risk": "Limited"
+    },
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "27-3625796",
     "charity_name": "Heart Women & Girls",
-    "amal_score": 43,
+    "amal_score": 47,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:05:14",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 34,
       "data_confidence": 0.8,
-      "impact": 15
+      "impact": 19
     },
     "score_details": {
       "alignment": {
@@ -308,12 +331,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 25.6 months (EXCESSIVE)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 4,
+            "evidence": "Working capital: 25.6 months (HIGH)",
+            "improvement_suggestion": "Document why reserves above your policy target are intentional (e.g., restrictions, volatility, planned commitments) and define deployment triggers.",
+            "improvement_value": 3,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 0,
+            "scored": 4,
             "status": "full"
           },
           {
@@ -356,48 +379,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 15/50",
+        "rationale": "Delivery: capacity building; Impact 19/50",
         "rubric_archetype": "COMMUNITY",
-        "score": 15
+        "score": 19
       },
-      "judge_issues": [
-        {
-          "field": "amal_score_rationale",
-          "judge": "score",
-          "message": "The rationale mentions \"high donor alignment and efficient fundraising\" as reasons for the moderate score, but doesn't explicitly mention the risk deductions due to the small board size, which significantly impacted the final score.",
-          "severity": "info"
-        },
-        {
-          "field": "impact_rationale",
-          "judge": "score",
-          "message": "The impact rationale mentions the focus on capacity building leading to a lower directness score, but it could be clearer about the other factors contributing to the low impact score, such as the lack of beneficiary data and weak board governance.",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "baseline_narrative.jargon",
-          "judge": "narrative_quality",
-          "message": "Jargon detected in baseline narrative: 'asnaf categories'",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -6,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -420,7 +405,7 @@
         ],
         "total_deduction": -6
       },
-      "score_summary": "Heart Women & Girls earns 43/100 due to good alignment and limited impact, with zakat compliance (significant risk deductions applied).",
+      "score_summary": "Heart Women & Girls shows good alignment and limited impact, with zakat compliance (significant risk deductions applied).",
       "zakat": {
         "asnaf_category": "amil",
         "bonus_points": 0,
@@ -432,593 +417,46 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity focuses on capacity building and advocacy within Muslim communities.",
+          "claim": "Heart Women & Girls focuses on sexual health literacy and violence prevention in Muslim communities.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/273625796"
         },
         {
-          "claim": "The organization is zakat-eligible and follows specific asnaf categories for fund distribution.",
+          "claim": "The charity is zakat-eligible and maintains a specific zakat policy.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.heartwomenandgirls.org/zakat"
         },
         {
-          "claim": "Total revenue was $1,089,496 with a program expense ratio of 74.8% and 25.6 months of working capital.",
+          "claim": "The organization reported total revenue of $1,089,496, a program expense ratio of 74.8%, working capital of 25.6 months, and fundraising efficiency of $0.11 per $1 raised.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/273625796"
         },
         {
-          "claim": "The charity offers various donation options and giving methods for supporters.",
+          "claim": "The organization provides multiple donation options and methods for supporters.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://hearttogrow.org/donate/"
         }
       ],
-      "amal_score_rationale": "The charity earns a moderate score due to its high donor alignment and efficient fundraising, though its overall impact score is limited by a focus on capacity building rather than direct service metrics.",
+      "amal_score_rationale": "The organization demonstrates high alignment with Muslim donor needs through its specialized advocacy and zakat-eligible status, though its overall score is moderated by its focus on capacity building rather than direct service delivery.",
       "areas_for_improvement": [
-        "Limited evidence of direct impact measurement beyond capacity building",
-        "Overall financial transparency and governance scores remain in the lower-to-mid range"
+        "Limited third-party impact data regarding long-term beneficiary outcomes",
+        "Opportunity to increase the direct program expense ratio beyond 74.8%"
       ],
       "dimension_explanations": {
-        "alignment": "Alignment is high at 34/50, reflecting a strong fit for Muslim donors seeking advocacy-based causes [1]. The organization's zakat-eligible status and clear policy on asnaf categories further strengthen its religious and community relevance [2][4].",
-        "impact": "The organization focuses on capacity building and research, leading to a directness score of 15/50 [1]. While it maintains a healthy program expense ratio of 74.8% and total revenue of $1,089,496, there is limited third-party data verifying specific long-term outcomes [3]."
+        "alignment": "Heart Women & Girls shows high alignment with its target audience by addressing urgent advocacy needs and providing clear zakat-eligible giving options [2][4]. The organization's mission specifically serves the unique cultural and religious contexts of Muslim communities [1].",
+        "impact": "The organization focuses on capacity building and sexual violence prevention, allocating a program expense ratio of 74.8% to these initiatives [3]. While it maintains a strong financial position with 25.6 months of working capital, the indirect nature of advocacy work results in a moderate impact score [1][3]."
       },
       "headline": "Heart Women & Girls empowers Muslim communities through sexual health literacy, advocacy, and violence prevention initiatives.",
       "strengths": [
-        "High program expense ratio of 74.8% ensures the majority of funds support direct services",
-        "Exceptional fundraising efficiency with only $0.11 spent per $1 raised",
-        "Strong liquidity with 25.6 months of working capital available"
+        "High financial stability with 25.6 months of working capital available",
+        "Efficient fundraising operations costing only $0.11 per $1 raised",
+        "Clear zakat eligibility and distribution policy for Muslim donors"
       ],
-      "summary": "Heart Women & Girls provides specialized health education and research to promote sexual health and safety within Muslim communities [1][3]. The organization is recognized as zakat-eligible, applying donations toward specific asnaf categories to support its mission [2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "sexual health literacy and violence prevention",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "HEART promotes sexual health literacy and sexual violence prevention in Muslim communities",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273625796"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "2010",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Founded: 2010",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273625796"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "health education, advocacy, research, and training",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "HEART promotes sexual health literacy. through health education, advocacy, research, and training",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/273625796"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $1,089,496",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Total revenue: $1,089,496",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/273625796"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 74.8%",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Program service expenses: $929,418 / Total expenses: $929,418",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/273625796"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Survivor Care Fund",
-          "confidence": 0.95,
-          "id": "[6]",
-          "quote": "Programs: . Survivor Care Fund",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273625796"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Washington, D.C., Chicago, and Los Angeles",
-          "confidence": 0.9,
-          "id": "[7]",
-          "quote": "Areas Served: Washington, D.C., DC, United States, Chicago, IL, Los Angeles, CA",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273625796"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Muslim communities across the USA and Canada",
-          "confidence": 0.9,
-          "id": "[8]",
-          "quote": "Geographic Coverage: USA, Canada",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273625796"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "sexual assault advocacy",
-          "confidence": 0.95,
-          "id": "[9]",
-          "quote": "offering sex education and anti-sexual assault advocacy",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273625796"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.11 to raise every $1",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Fundraising Efficiency: $0.11 per $1 raised",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273625796"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "25.6 months of working capital",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Working Capital: 25.6 months",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273625796"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "zakat-eligible",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "HEART Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://www.heartwomenandgirls.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fuqara (poor), masakin (needy), and fisabilillah",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Zakat Categories: fuqara, masakin, fisabilillah",
-          "source_name": "HEART Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://www.heartwomenandgirls.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Silver Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Candid Seal: silver",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273625796"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 4.2%",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "3-Year Revenue CAGR: 4.2%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/273625796"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "board size of only 2 members",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Board size: 2",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/273625796"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "limited evidence of direct impact measurement",
-          "confidence": 0.8,
-          "id": "[17]",
-          "quote": "Evidence & outcomes: UNVERIFIED",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273625796"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "74.8% independent board members",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Independent Board Members: 74.8%",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273625796"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "tracking and reporting specific beneficiary counts",
-          "confidence": 0.9,
-          "id": "[19]",
-          "quote": "Improvement: Track and report beneficiary counts",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273625796"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "underserved advocacy space",
-          "confidence": 0.9,
-          "id": "[20]",
-          "quote": "Niche cause: ADVOCACY (+4)",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273625796"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100.0% program ratio",
-          "confidence": 1,
-          "id": "[21]",
-          "quote": "Program Expense Ratio: 100.0%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/273625796"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer median of 81.5%",
-          "confidence": 1,
-          "id": "[22]",
-          "quote": "Peer Program Ratio Median: 81.5%",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273625796"
-        }
-      ],
-      "amal_score_rationale": "The charity earns a moderate score due to its high donor alignment and efficient fundraising, though its overall impact score is limited by a focus on capacity building rather than direct service metrics.",
-      "amal_scores": {
-        "amal_score": 43,
-        "confidence_scores": {
-          "alignment": 34,
-          "data_confidence": 0.8,
-          "impact": 15
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Governance Structure",
-          "citation_ids": [
-            "[16]"
-          ],
-          "context": "The organization currently operates with a <cite id=\"16\">board size of only 2 members</cite>, which poses risks to oversight and long-term sustainability."
-        },
-        {
-          "area": "Impact Measurement",
-          "citation_ids": [
-            "[17]"
-          ],
-          "context": "There is <cite id=\"17\">limited evidence of direct impact measurement</cite> or external evaluations beyond tracking capacity-building activities."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "none",
-        "citation_ids": [],
-        "effectiveness_status": "UNVERIFIED",
-        "finances_status": "UNVERIFIED",
-        "governance_status": "UNVERIFIED",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "No BBB Wise Giving Alliance assessment is currently available for this organization."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[11]",
-          "[16]"
-        ],
-        "mitigation_notes": "The organization maintains high transparency and a clear theory of change to guide its growth.",
-        "risk_factors": [
-          "<cite id=\"16\">Board size of only 2 members</cite>",
-          "<cite id=\"11\">25.6 months of cash reserves</cite>"
-        ],
-        "summary": "The primary concerns involve <cite id=\"16\">governance risks</cite> due to a minimal board and <cite id=\"11\">excessive working capital</cite> that may suggest funds are not being deployed as quickly as they are raised."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 7,
-          "rating": 13,
-          "website": 2
-        },
-        "high_confidence_count": 20,
-        "total_count": 22,
-        "unique_sources": 4
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023",
-        "data_gaps": [
-          "Missing employee count",
-          "No external impact evaluation"
-        ],
-        "level": "HIGH",
-        "notes": "Strong financial data but governance and impact data are limited.",
-        "score": 80,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 80,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Small board size",
-          "Lack of external impact evaluation"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 22,
-        "unique_sources": 4,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[12]",
-            "[20]"
-          ],
-          "explanation": "Very high alignment for Muslim donors due to <cite id=\"12\">verified zakat eligibility</cite> and its focus on an <cite id=\"20\">underserved advocacy space</cite> within the community.",
-          "improvement": ""
-        },
-        "credibility": {
-          "citation_ids": [
-            "[14]",
-            "[16]",
-            "[18]"
-          ],
-          "explanation": "HEART is a credible niche actor with a <cite id=\"14\">Silver Seal of Transparency</cite> and <cite id=\"18\">74.8% independent board members</cite>, though its small board size is a noted risk.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"16\">expand its board of directors</cite> to at least five members to ensure more robust internal controls."
-        },
-        "impact": {
-          "citation_ids": [
-            "[3]",
-            "[5]",
-            "[19]"
-          ],
-          "explanation": "Impact is driven by a <cite id=\"5\">74.8% program expense ratio</cite>, though the model focuses on <cite id=\"3\">capacity building</cite> rather than high-volume direct service.",
-          "improvement": "Impact scores would improve by <cite id=\"19\">tracking and reporting specific beneficiary counts</cite> to enable a clear cost-per-beneficiary analysis."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "ADVOCACY",
-        "citation_ids": [
-          "[12]",
-          "[13]",
-          "[8]"
-        ],
-        "evidence_rigor": "Grade C - Theory of change documented but no external evaluation",
-        "geographic_focus": [
-          "USA",
-          "Canada"
-        ],
-        "giving_style": "Capacity building and education",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)",
-          "fisabilillah"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 1089496,
-        "citation_ids": [
-          "[3]",
-          "[4]",
-          "[15]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0.11,
-        "industry_program_ratio": 0.75,
-        "peer_count": 21,
-        "peer_program_ratio_median": 0.815,
-        "program_expense_ratio": 0.7475,
-        "reserves_months": 25.6,
-        "revenue_cagr_3yr": 4.2,
-        "transparency_score": 70,
-        "working_capital_months": 25.6,
-        "yearly_financials": [
-          {
-            "expenses": 929418,
-            "net_assets": 1982120,
-            "revenue": 1089496,
-            "year": 2023
-          },
-          {
-            "expenses": 783871,
-            "net_assets": 1822042,
-            "revenue": 1123502,
-            "year": 2022
-          },
-          {
-            "expenses": 434646,
-            "net_assets": 1482411,
-            "revenue": 1003844,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Does not primarily operate as a grantmaker",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "USA"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "Heart Women & Girls empowers Muslim communities through sexual health literacy, advocacy, and violence prevention initiatives.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support sensitive, faith-aligned advocacy and sexual health education within the North American Muslim community.",
-        "citation_ids": [
-          "[12]",
-          "[16]",
-          "[20]"
-        ],
-        "donor_motivations": [
-          "Want to address stigmatized health issues through an Islamic lens",
-          "Prioritize high program-to-overhead efficiency",
-          "Seek to fulfill zakat through advocacy and survivor support",
-          "Value niche organizations filling gaps left by larger charities"
-        ],
-        "giving_considerations": [
-          "The organization is small and focused on systemic change rather than mass aid",
-          "High cash reserves mean your donation contributes to long-term stability",
-          "Governance is currently centralized in a very small board"
-        ],
-        "not_ideal_for": "Donors seeking large-scale international emergency relief or those who require rigorous RCT-level evidence of impact."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[14]",
-          "[17]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects a clear theory of change and internal tracking, but a lack of third-party verified outcome data.",
-        "external_evaluations": [
-          "Candid Silver transparency data"
-        ],
-        "outcome_tracking_years": 0,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "HEART builds sexual health literacy through a multi-pronged approach of education, training, and advocacy to create safer communal environments.",
-        "why_evidence_matters": "Evidence ensures that educational interventions effectively change community behaviors and safety outcomes."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[2]",
-          "[15]"
-        ],
-        "founded_year": 2010,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": 4.2,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "As a small organization in a niche space, HEART has significant room to scale its training and survivor care programs.",
-        "strategic_priorities": [
-          "Expand health education",
-          "Strengthen survivor care fund"
-        ],
-        "years_operating": 16
-      },
-      "organizational_capacity": {
-        "board_size": 2,
-        "ceo_compensation": 183221,
-        "ceo_compensation_pct_revenue": 16.8,
-        "ceo_name": "Nadiah Mohajir",
-        "citation_ids": [
-          "[3]",
-          "[8]",
-          "[16]",
-          "[18]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "USA and Canada",
-        "has_conflict_policy": true,
-        "has_financial_audit": false,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[21]",
-          "[22]"
-        ],
-        "differentiator": "Distinguished by its <cite id=\"21\">100.0% program ratio</cite> compared to a <cite id=\"22\">peer median of 81.5%</cite>.",
-        "peer_group": "Muslim Advocacy & Legal Organizations",
-        "similar_orgs": [
-          "North-American Islamic Shelter for the Abused",
-          "Muslim Advocates"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Focuses more on direct shelter services",
-          "name": "North-American Islamic Shelter for the Abused"
-        },
-        {
-          "differentiator": "Focuses more on legal and policy advocacy",
-          "name": "Muslim Advocates"
-        },
-        {
-          "differentiator": "Similar size but different health focus",
-          "name": "Fight Colorectal Cancer"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[10]"
-          ],
-          "detail": "The organization spends only <cite id=\"10\">$0.11 to raise every $1</cite> in contributions, significantly outperforming many larger humanitarian peers.",
-          "point": "Exceptional Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[11]"
-          ],
-          "detail": "HEART maintains <cite id=\"11\">25.6 months of working capital</cite>, providing a massive safety net for long-term advocacy projects.",
-          "point": "Robust Financial Liquidity"
-        },
-        {
-          "citation_ids": [
-            "[12]",
-            "[13]"
-          ],
-          "detail": "The organization is <cite id=\"12\">zakat-eligible</cite>, specifically serving the <cite id=\"13\">fuqara (poor), masakin (needy), and fisabilillah</cite> categories.",
-          "point": "Verified Zakat Eligibility"
-        }
-      ],
-      "strengths_deep_dive": [
-        "HEART's financial model is characterized by lean operations and high direct-to-program allocation. With a <cite id=\"5\">program expense ratio of 74.8%</cite>, the organization ensures that donor funds are not diluted by excessive administrative overhead. This efficiency is paired with a strong <cite id=\"14\">Silver Seal of Transparency from Candid</cite>, indicating a commitment to public disclosure. Furthermore, the organization has demonstrated steady financial management with a <cite id=\"15\">3-year revenue CAGR of 4.2%</cite>, showing stable growth in its capacity to serve Muslim women and girls."
-      ],
-      "summary": "Heart Women & Girls (HEART) is a specialized non-profit organization dedicated to promoting <cite id=\"1\">sexual health literacy and violence prevention</cite> specifically within Muslim communities. Founded in <cite id=\"2\">2010</cite>, the organization operates at the intersection of faith and public health, providing <cite id=\"3\">health education, advocacy, research, and training</cite> to address sensitive issues often stigmatized in communal spaces. In 2023, HEART reported <cite id=\"4\">total revenue of $1,089,496</cite>, reflecting its position as a focused, niche advocacy group. The organization maintains a <cite id=\"5\">program expense ratio of 74.8%</cite> according to recent filings, indicating that all functional expenses are directed toward its core mission of community empowerment and survivor support. Beyond education, HEART manages a <cite id=\"6\">Survivor Care Fund</cite> to provide direct assistance to those impacted by violence. Their work is geographically diverse, with a presence in <cite id=\"7\">Washington, D.C., Chicago, and Los Angeles</cite>, while also extending resources to <cite id=\"8\">Muslim communities across the USA and Canada</cite>. By bridging the gap between sacred spaces and health services, HEART serves as a critical resource for <cite id=\"9\">sexual assault advocacy</cite> tailored to Islamic cultural contexts.",
-      "zakat_guidance": {
-        "classification": "amil",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "Heart Women & Girls provides health education and research-driven advocacy to promote sexual health and safety within Muslim communities [1]. The organization is recognized as zakat-eligible, maintaining a dedicated policy to ensure contributions reach those in need [2]."
     }
   }
 }

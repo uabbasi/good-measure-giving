@@ -2,7 +2,7 @@
   "id": "83-3464851",
   "ein": "83-3464851",
   "name": "SAPA",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Sudanese American Physicians Association (SAPA) is a not-for-profit, scientific professional, non-partisan, and humanitarian membership-based organization established in January 2019",
   "programs": [
     "Healthcare and Emergency Services",
@@ -54,7 +54,11 @@
     "netAssets": 932787,
     "workingCapitalMonths": "4.30"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 12,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Men",
@@ -88,7 +92,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:34:07",
+  "lastUpdated": "2026-02-14 19:36:18",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -215,17 +219,36 @@
     "Dedicated zakat page found at https://sapa-usa.org/zakat (Source: https://sapa-usa.org/zakat)"
   ],
   "archetype": "SOVEREIGNTY",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "High Conviction",
+    "archetype_code": "SOVEREIGNTY",
+    "archetype_label": "Sovereignty Builder",
+    "evidence_stage": "Established",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Strong",
+      "donor_fit": "Strong",
+      "risk": "Strong"
+    },
+    "recommendation_cue": "Strong Match",
+    "recommendation_rationale": "Strong donor fit, low risk profile, and credible supporting evidence for outcomes.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "83-3464851",
     "charity_name": "SAPA",
-    "amal_score": 79,
+    "amal_score": 80,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:16:25",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 42,
       "data_confidence": 1,
-      "impact": 37
+      "impact": 38
     },
     "score_details": {
       "alignment": {
@@ -312,12 +335,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 4.3 months (HEALTHY)",
+            "evidence": "Working capital: 4.3 months (RESILIENT)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 5,
+            "scored": 6,
             "status": "full"
           },
           {
@@ -360,48 +383,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "DIRECT_PROVISION",
         "impact_design_categories": [],
-        "rationale": "Delivery: direct provision; Impact 37/50",
+        "rationale": "Delivery: direct provision; Impact 38/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 37
+        "score": 38
       },
-      "judge_issues": [
-        {
-          "field": "multi_source.revenue_divergence",
-          "judge": "crawl_quality",
-          "message": "Revenue diverges >50% across sources ($3,502,228 - $7,254,154)",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "baseline_narrative.jargon",
-          "judge": "narrative_quality",
-          "message": "Jargon detected in baseline narrative: 'asnaf categories'",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -409,7 +394,7 @@
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "Sudanese American Physicians Association earns 79/100 due to strong alignment and strong impact, with zakat compliance.",
+      "score_summary": "Sudanese American Physicians Association shows strong alignment and strong impact, with zakat compliance.",
       "zakat": {
         "asnaf_category": "ibn_sabil",
         "bonus_points": 0,
@@ -421,601 +406,45 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "SAPA holds a Charity Navigator score of 97.0/100, reflecting strong accountability and financial health.",
+          "claim": "SAPA holds a 97.0/100 rating, a program expense ratio of 81.2%, 4.3 months of working capital, and a fundraising efficiency of $0.11 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/833464851"
         },
         {
-          "claim": "The organization provides specific donation options for donors to contribute to their humanitarian efforts.",
+          "claim": "The organization provides specific donation options and giving methods for supporters.",
           "id": "[2]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://sapa-usa.org/zakat/"
         },
         {
-          "claim": "SAPA is Zakat-eligible and follows a policy that aligns with asnaf categories for fund distribution.",
+          "claim": "SAPA is zakat-eligible and maintains a zakat policy following asnaf categories.",
           "id": "[3]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://sapa-usa.org/zakat"
         },
         {
-          "claim": "In 2023, SAPA reported total revenue of $3,502,228 and a program expense ratio of 81.2%.",
+          "claim": "The organization reported total revenue of $3,502,228 and operates programs including Healthcare and Emergency Services and Hunger Relief.",
           "id": "[4]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/833464851"
         }
       ],
-      "amal_score_rationale": "SAPA earns a high overall score due to its exceptional financial health, direct impact on global health crises, and clear alignment with Islamic giving principles through its Zakat-eligible status.",
+      "amal_score_rationale": "SAPA earns a high overall score due to its exceptional financial transparency, strong alignment with urgent global health needs, and verified zakat eligibility.",
       "areas_for_improvement": [
-        "Limited working capital reserves of 4.3 months",
-        "Opportunity to expand third-party impact reporting for non-medical programs"
+        "Expanding cost-per-beneficiary data to further enhance impact transparency"
       ],
       "dimension_explanations": {
-        "alignment": "The organization shows strong alignment with donor priorities by addressing urgent global health needs and offering a dedicated Zakat giving platform [2]. Its Zakat policy is clearly defined to support specific eligible categories, making it a high-fit option for Muslim donors seeking to fulfill their religious obligations [3].",
-        "impact": "SAPA demonstrates high impact through the direct provision of healthcare, emergency services, and hunger relief programs, maintaining a Charity Navigator score of 97.0/100 [1]. With a total revenue of $3,502,228, the organization directs 81.2% of its expenses toward programs, ensuring that the majority of funds reach beneficiaries in Sudan and Chad [4]."
+        "alignment": "The organization shows high alignment with donor priorities through its zakat-eligible programs and focus on high-urgency global health crises [2][3]. It maintains excellent fundraising efficiency, spending only $0.11 per $1 raised [1].",
+        "impact": "SAPA demonstrates high direct impact through its healthcare and hunger relief programs, maintaining a program expense ratio of 81.2% [1][4]. The organization holds 4.3 months of working capital, ensuring operational stability for its emergency services [1]."
       },
-      "headline": "The Sudanese American Physicians Association (SAPA) strengthens healthcare systems and provides life-saving emergency relief to vulnerable populations in Sudan and neighboring regions.",
+      "headline": "The Sudanese American Physicians Association provides critical medical relief and health system strengthening for communities facing crisis in Sudan and neighboring regions.",
       "strengths": [
-        "High financial efficiency with a program expense ratio of 81.2%",
-        "Strong accountability and transparency ratings from Charity Navigator",
-        "Direct provision of healthcare and emergency services in high-urgency zones"
+        "High program expense ratio of 81.2% ensuring most funds reach the field",
+        "Designated zakat-eligible status for Muslim donors",
+        "Strong financial health with a Charity Navigator score of 97.0/100"
       ],
-      "summary": "SAPA is a professional and humanitarian organization dedicated to building resilient healthcare functions capable of responding to crises through medical services and hunger relief [1][4]. The organization is recognized as Zakat-eligible, maintaining a specific policy to distribute funds according to established asnaf categories [3]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "2019",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "Founded: 2019",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://sapa-usa.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "direct provision of medical services",
-          "confidence": 0.95,
-          "id": "[2]",
-          "quote": "Delivery model: Direct Provision",
-          "source_name": "Charity Navigator - Impact",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/833464851"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$3,502,228 in total revenue",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total Revenue: $3,502,228",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/833464851"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 263.1%",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "3-Year Revenue CAGR: 263.1%",
-          "source_name": "Financial Trends Data",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/833464851"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "81.2% program expense ratio",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Program Expense Ratio: 100.0%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/833464851"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "overall score of 97.0/100 from Charity Navigator",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Overall Score: 97/100",
-          "source_name": "Charity Navigator - Ratings",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/833464851"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Candid Platinum Seal of Transparency",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Candid Seal: platinum",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/833464851"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified zakat eligibility",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "SAPA Zakat Policy",
-          "source_type": "website",
-          "source_url": "https://sapa-usa.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "eight specific asnaf categories",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Zakat Categories: fuqara, masakin, amil, muallaf, riqab, gharimin, fisabilillah, ibn_sabil",
-          "source_name": "SAPA Zakat Categories",
-          "source_type": "website",
-          "source_url": "https://sapa-usa.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer program ratio median of 84.6%",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Peer Program Ratio Median: 84.6%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/833464851"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "perfect scores of 100 in Culture and Leadership",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Culture: 100, Leadership: 100",
-          "source_name": "Charity Navigator Beacons",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/833464851"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "medical missions and hunger relief programs",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Programs: Healthcare and Emergency Services, Hunger Relief Program",
-          "source_name": "SAPA Programs",
-          "source_type": "website",
-          "source_url": "https://sapa-usa.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "81.2% independent board members",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Independent Board Members: 81.2%",
-          "source_name": "Charity Navigator Governance",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/833464851"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.11 to raise every $1",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Fundraising Efficiency: $0.11 per $1 raised",
-          "source_name": "Financial Efficiency Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/833464851"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "4.3 months of working capital",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Working Capital: 4.3 months",
-          "source_name": "Charity Navigator Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/833464851"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "tracking and reporting specific beneficiary counts",
-          "confidence": 0.9,
-          "id": "[16]",
-          "quote": "Improvement: Track and report beneficiary counts",
-          "source_name": "Impact Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/833464851"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "expand services to additional underserved regions",
-          "confidence": 0.9,
-          "id": "[17]",
-          "quote": "Improvement: Expand services to underserved populations or regions",
-          "source_name": "Alignment Score Rationale",
-          "source_type": "website",
-          "source_url": "https://sapa-usa.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "2023 audited financial statements",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "SAPA-2023-Audited-Financials-signed_Final.pdf",
-          "source_name": "SAPA Audited Financials",
-          "source_type": "evaluation",
-          "source_url": "https://sapa-usa.org//wp-content/uploads/2024/12/SAPA-2023-Audited-Financials-signed_Final.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "13 distinct outcome metrics",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Outcome Metrics Tracked: 13",
-          "source_name": "Candid Outcome Tracking",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/833464851"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "global health",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Cause area: Global Health",
-          "source_name": "Alignment Rationale",
-          "source_type": "website",
-          "source_url": "https://sapa-usa.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "build core health system functions",
-          "confidence": 1,
-          "id": "[21]",
-          "quote": "SAPA works... to build the core functions of a health care system",
-          "source_name": "SAPA Mission",
-          "source_type": "website",
-          "source_url": "https://sapa-usa.org/"
-        }
-      ],
-      "amal_score_rationale": "SAPA earns a high overall score due to its exceptional financial health, direct impact on global health crises, and clear alignment with Islamic giving principles through its Zakat-eligible status.",
-      "amal_scores": {
-        "amal_score": 79,
-        "confidence_scores": {
-          "alignment": 42,
-          "data_confidence": 1,
-          "impact": 37
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Beneficiary Data Reporting",
-          "citation_ids": [
-            "[16]"
-          ],
-          "context": "While program spending is high, the charity could improve its impact score by <cite id=\"16\">tracking and reporting specific beneficiary counts</cite> to enable cost-per-beneficiary analysis."
-        },
-        {
-          "area": "Geographic Diversification",
-          "citation_ids": [
-            "[17]"
-          ],
-          "context": "There is an opportunity to <cite id=\"17\">expand services to additional underserved regions</cite> with limited nonprofit coverage beyond the current focus areas."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[18]"
-        ],
-        "effectiveness_status": "UNREVIEWED",
-        "finances_status": "UNREVIEWED",
-        "governance_status": "UNREVIEWED",
-        "meets_all_standards": null,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "The organization has not yet been reviewed by the BBB Wise Giving Alliance but maintains audited financials."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[1]",
-          "[16]"
-        ],
-        "mitigation_notes": "The organization is actively tracking 13 outcome metrics to improve data transparency.",
-        "risk_factors": [
-          "<cite id=\"16\">Missing beneficiary counts for specific programs</cite>",
-          "Relatively young organization <cite id=\"1\">founded in 2019</cite>"
-        ],
-        "summary": "The primary limitation is the lack of granular beneficiary data, which <cite id=\"16\">prevents a full cost-effectiveness analysis</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 1,
-          "form990": 3,
-          "rating": 10,
-          "website": 7
-        },
-        "high_confidence_count": 21,
-        "total_count": 21,
-        "unique_sources": 4
-      },
-      "confidence": {
-        "data_freshness": "Most data from 2023 tax year and 2024 ratings",
-        "data_gaps": [
-          "Missing specific beneficiary counts for 2023"
-        ],
-        "level": "HIGH",
-        "notes": "Strong financial and transparency data; impact data is developing.",
-        "score": 85,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Candid",
-          "Audited Financials"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 85,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing specific beneficiary counts",
-          "No BBB review"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 21,
-        "unique_sources": 4,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[8]",
-            "[17]",
-            "[20]"
-          ],
-          "explanation": "Alignment is strong due to <cite id=\"8\">verified zakat eligibility</cite> and a focus on <cite id=\"20\">global health</cite>, which is a high-urgency cause area for Muslim donors.",
-          "improvement": "Alignment could be further strengthened by <cite id=\"17\">expanding services to additional underserved populations</cite> in neighboring conflict zones."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[6]",
-            "[7]",
-            "[18]"
-          ],
-          "explanation": "SAPA is highly credible, holding a <cite id=\"7\">Platinum Seal of Transparency from Candid</cite> and a <cite id=\"6\">97/100 rating from Charity Navigator</cite>. Their <cite id=\"18\">2023 audited financial statements</cite> confirm rigorous fiscal management.",
-          "improvement": "To reach a perfect credibility profile, SAPA could publish more detailed third-party impact evaluations for its non-medical hunger relief programs."
-        },
-        "impact": {
-          "citation_ids": [
-            "[2]",
-            "[5]",
-            "[16]",
-            "[19]"
-          ],
-          "explanation": "Impact is driven by a <cite id=\"5\">81.2% program expense ratio</cite> and a <cite id=\"2\">direct provision delivery model</cite>. The organization tracks <cite id=\"19\">13 distinct outcome metrics</cite> through Candid.",
-          "improvement": "Impact measurement would benefit from <cite id=\"16\">reporting cost-per-beneficiary data</cite> to demonstrate the relative efficiency of their medical missions."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "GLOBAL_HEALTH",
-        "citation_ids": [
-          "[3]",
-          "[8]",
-          "[19]"
-        ],
-        "evidence_rigor": "Grade B - Strong outcome tracking with 13 metrics",
-        "geographic_focus": [
-          "Sudan",
-          "Chad",
-          "USA"
-        ],
-        "giving_style": "Direct medical service",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara",
-          "masakin",
-          "amil",
-          "muallaf",
-          "riqab",
-          "gharimin",
-          "fisabilillah",
-          "ibn_sabil"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 3502228,
-        "citation_ids": [
-          "[3]",
-          "[4]",
-          "[6]"
-        ],
-        "cn_financial_score": 90,
-        "cn_overall_score": 97,
-        "fundraising_ratio": 0.11,
-        "industry_program_ratio": 0.75,
-        "peer_count": 14,
-        "peer_program_ratio_median": 0.846,
-        "program_expense_ratio": 0.8120999999999999,
-        "reserves_months": 9.5,
-        "revenue_cagr_3yr": 263.1,
-        "transparency_score": 100,
-        "working_capital_months": 4.3,
-        "yearly_financials": [
-          {
-            "expenses": 2626869,
-            "net_assets": 932787,
-            "revenue": 3502228,
-            "year": 2023
-          },
-          {
-            "expenses": 539182,
-            "net_assets": 57492,
-            "revenue": 442259,
-            "year": 2022
-          },
-          {
-            "expenses": 235481,
-            "net_assets": 154415,
-            "revenue": 265583,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct implementation of services rather than grantmaking",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "Sudan",
-          "Chad"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "The Sudanese American Physicians Association (SAPA) strengthens healthcare systems and provides life-saving emergency relief to vulnerable populations in Sudan and neighboring regions.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support medical professional-led humanitarian relief in Sudan with maximum financial efficiency and zakat compliance.",
-        "citation_ids": [
-          "[4]",
-          "[5]",
-          "[7]",
-          "[8]"
-        ],
-        "donor_motivations": [
-          "Want to ensure 81.2% of their donation reaches program services",
-          "Prioritize healthcare infrastructure in conflict-affected Muslim-majority regions",
-          "Value organizations led by subject-matter experts (physicians)",
-          "Seek to fulfill zakat through a transparent, high-rated charity"
-        ],
-        "giving_considerations": [
-          "Donations support a rapidly growing organization with a 263.1% CAGR",
-          "Focus is primarily on the Sudanese crisis and neighboring refugee areas",
-          "High transparency (Platinum Seal) mitigates risks of operating in conflict zones"
-        ],
-        "not_ideal_for": "Donors seeking long-term academic research or those looking for domestic US-only community development."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[19]",
-          "[21]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "SAPA tracks <cite id=\"19\">13 outcome metrics</cite> and has a <cite id=\"21\">strong theory of change</cite>, though it lacks independent RCT evaluations.",
-        "external_evaluations": [
-          "Candid Outcome Metrics"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "SAPA works with local communities and health providers to <cite id=\"21\">build core health system functions</cite> capable of responding to crises.",
-        "why_evidence_matters": "Evidence ensures that medical interventions actually reduce mortality and improve system resilience."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[4]",
-          "[12]"
-        ],
-        "founded_year": 2019,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": 263.1,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "The ongoing healthcare crisis in Sudan creates a massive funding gap that SAPA is uniquely positioned to fill.",
-        "strategic_priorities": [
-          "Emergency medical care",
-          "Hunger relief",
-          "WASH infrastructure"
-        ],
-        "years_operating": 7
-      },
-      "organizational_capacity": {
-        "board_size": 12,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Disclosed",
-        "citation_ids": [
-          "[3]",
-          "[13]",
-          "[18]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Sudan, Chad, USA",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[5]",
-          "[10]"
-        ],
-        "differentiator": "SAPA's <cite id=\"5\">100.0% program ratio</cite> significantly outperforms the <cite id=\"10\">peer median of 84.6%</cite>.",
-        "peer_group": "Global Health Organizations",
-        "similar_orgs": [
-          "IMANA",
-          "Khalil Center",
-          "Helen Keller International"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar healthcare focus and size",
-          "name": "IMANA"
-        },
-        {
-          "differentiator": "Focuses on mental health within the same size tier",
-          "name": "Khalil Center"
-        },
-        {
-          "differentiator": "Much larger scale with broader global health focus",
-          "name": "Helen Keller International"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[5]",
-            "[10]"
-          ],
-          "detail": "The organization operates with a <cite id=\"5\">81.2% program expense ratio</cite>, significantly exceeding the <cite id=\"10\">peer program ratio median of 84.6%</cite>.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[6]",
-            "[11]"
-          ],
-          "detail": "SAPA maintains a <cite id=\"6\">97/100 overall rating from Charity Navigator</cite>, including <cite id=\"11\">perfect scores of 100 in Culture and Leadership</cite>.",
-          "point": "High Accountability Standards"
-        },
-        {
-          "citation_ids": [
-            "[4]",
-            "[12]"
-          ],
-          "detail": "The charity has achieved a <cite id=\"4\">3-year revenue CAGR of 263.1%</cite>, allowing for expanded <cite id=\"12\">medical missions and hunger relief programs</cite>.",
-          "point": "Rapidly Scaling Impact"
-        }
-      ],
-      "strengths_deep_dive": [
-        "SAPA's operational model is built on high-trust governance and professional expertise. The organization maintains <cite id=\"13\">81.2% independent board members</cite>, which ensures objective oversight of its <cite id=\"3\">$3.5 million budget</cite>. Furthermore, its fundraising efficiency is notable, spending only <cite id=\"14\">$0.11 to raise every $1</cite>, which is well below industry benchmarks for humanitarian relief. This efficiency is bolstered by a strong liquidity position, with <cite id=\"15\">4.3 months of working capital</cite> held in working capital, providing a buffer for emergency response in volatile regions."
-      ],
-      "summary": "The Sudanese American Physicians Association (SAPA) is a professional humanitarian organization that has rapidly scaled its operations to address the critical healthcare collapse in Sudan. Founded in <cite id=\"1\">2019</cite>, SAPA focuses on building resilient healthcare systems through <cite id=\"2\">direct provision of medical services</cite>, hunger relief, and water, sanitation, and hygiene (WASH) initiatives. The organization has demonstrated exceptional growth, reporting <cite id=\"3\">$3,502,228 in total revenue</cite> for the 2023 tax year, representing a <cite id=\"4\">3-year revenue CAGR of 263.1%</cite>. This financial expansion is matched by high operational efficiency, as the organization maintains a <cite id=\"5\">81.2% program expense ratio</cite> according to its latest filings, ensuring that donor contributions are directed toward life-saving interventions. SAPA's commitment to transparency is evidenced by its <cite id=\"6\">overall score of 97.0/100 from Charity Navigator</cite> and its status as a <cite id=\"7\">Candid Platinum Seal of Transparency</cite> holder. For Muslim donors, SAPA offers a highly aligned giving vehicle, with <cite id=\"8\">verified zakat eligibility</cite> and a policy that distributes funds across <cite id=\"9\">eight specific asnaf categories</cite>, including the poor (fuqara) and needy (masakin). By leveraging a network of Sudanese-American medical professionals, SAPA provides a unique bridge between international resources and local expertise in high-urgency zones like Sudan and Chad.",
-      "zakat_guidance": {
-        "classification": "ibn_sabil",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "The Sudanese American Physicians Association (SAPA) works with local health providers and institutions to build resilient healthcare systems capable of responding to emergencies [1]. Their comprehensive programming includes emergency services, hunger relief, and strategic healthcare interventions in Sudan and Chad [4]."
     }
   }
 }

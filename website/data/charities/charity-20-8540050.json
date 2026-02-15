@@ -2,7 +2,7 @@
   "id": "20-8540050",
   "ein": "20-8540050",
   "name": "Islamic Scholarship Fund (ISF)",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "The Islamic Scholarship Fund's (ISF) mission is to increase American Muslim representation in media and policy by providing access and funding through academic scholarships, internships, fellowships, film grants, and mentorship.",
   "programs": [
     "Scholarship Program",
@@ -52,7 +52,11 @@
     "netAssets": 2791792,
     "workingCapitalMonths": "30.20"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 2,
+    "independentBoardMembers": null,
+    "ceoCompensation": 120000
+  },
   "targeting": {
     "populationsServed": [
       "Adults",
@@ -81,7 +85,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:32:26",
+  "lastUpdated": "2026-02-14 19:35:45",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -207,17 +211,36 @@
     "Found 'tax deductible and zakat' on https://islamicscholarshipfund.org/isf-matching-fund/ (https://islamicscholarshipfund.org/isf-matching-fund/)"
   ],
   "archetype": "SOVEREIGNTY",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "SOVEREIGNTY",
+    "archetype_label": "Sovereignty Builder",
+    "evidence_stage": "Established",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Limited",
+      "donor_fit": "Moderate",
+      "risk": "Limited"
+    },
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "20-8540050",
     "charity_name": "Islamic Scholarship Fund (ISF)",
-    "amal_score": 52,
+    "amal_score": 53,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:10:40",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 33,
       "data_confidence": 1,
-      "impact": 24
+      "impact": 25
     },
     "score_details": {
       "alignment": {
@@ -304,12 +327,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 30.2 months (ENDOWMENT)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 3,
+            "evidence": "Working capital: 30.2 months (RESERVE_MODEL)",
+            "improvement_suggestion": "Distinguish restricted/endowment reserves from operating reserves and publish a clear reserve-use policy.",
+            "improvement_value": 2,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 4,
+            "scored": 5,
             "status": "full"
           },
           {
@@ -352,48 +375,10 @@
         "cost_per_beneficiary": 1586.0431893687708,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "$1586.04/beneficiary; Delivery: capacity building; Impact 24/50",
+        "rationale": "$1586.04/beneficiary; Delivery: capacity building; Impact 25/50",
         "rubric_archetype": "SYSTEMIC_CHANGE",
-        "score": 24
+        "score": 25
       },
-      "judge_issues": [
-        {
-          "field": "impact_rationale",
-          "judge": "score",
-          "message": "The impact rationale mentions a high cost per beneficiary of approximately $1,586, but the 'Cost Per Beneficiary' component in the score details shows a score of 4/7, indicating it's considered 'good for ADVOCACY'. This discrepancy should be clarified.",
-          "severity": "warning"
-        },
-        {
-          "field": "risks",
-          "judge": "score",
-          "message": "The risk summary mentions the key concern is the small board size (2 members), but the 'Governance' component in the score details shows a score of 0/10 and a status of 'missing'. The rationale should explicitly state that the governance score is zero due to the small board size.",
-          "severity": "warning"
-        },
-        {
-          "field": "bbb.name_match",
-          "judge": "crawl_quality",
-          "message": "BBB name 'Islamic Scholarship Fund' may not match 'Islamic Scholarship Fund (ISF)' (similarity: 75%)",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -5,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -409,7 +394,7 @@
         ],
         "total_deduction": -5
       },
-      "score_summary": "Islamic Scholarship Fund (ISF) earns 52/100 due to good alignment and moderate impact, with zakat compliance (minor risk deductions applied).",
+      "score_summary": "Islamic Scholarship Fund (ISF) shows good alignment and moderate impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -421,621 +406,58 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "ISF holds a Charity Navigator score of 91.66666666666667/100 and maintains specific financial efficiency metrics.",
+          "claim": "ISF holds a Charity Navigator score of 91.66666666666667/100.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/208540050"
         },
         {
-          "claim": "The organization reported total revenue of $1,014,133.",
+          "claim": "The organization reported total revenue of $1,014,133 and a program expense ratio of 65.0%.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/208540050"
         },
         {
-          "claim": "The mission of ISF is to support American Muslim storytelling and increase representation in public policy.",
+          "claim": "ISF's mission focuses on American Muslim storytelling and representation in public policy fields.",
           "id": "[3]",
           "source_name": "Donor Privacy Policy",
           "source_url": "https://islamicscholarshipfund.org/wp-content/uploads/2021/05/ISF-Donor-Privacy-Policy.pdf"
         },
         {
-          "claim": "ISF tracks beneficiary statistics including graduation rates and employment in fields of study.",
-          "id": "[4]",
-          "source_name": "Annual Report (2023)",
-          "source_url": "https://islamicscholarshipfund.org/wp-content/uploads/2024/03/2023-ISF_Annual-Report_VF.pdf"
-        },
-        {
-          "claim": "The organization awards film grants and places congressional interns to increase representation.",
+          "claim": "ISF programs include congressional internships and film grants to increase representation.",
           "id": "[5]",
           "source_name": "Annual Report (2022)",
           "source_url": "https://islamicscholarshipfund.org/wp-content/uploads/2024/01/2022-ISF-Annual-Report-Single-Page-V3-.pdf-compressed.pdf"
         },
         {
-          "claim": "ISF reports on the total funds awarded and the professional success of its alumni network.",
+          "claim": "The organization tracks graduation rates and alumni employment in their chosen fields.",
           "id": "[6]",
           "source_name": "Annual Report (2024)",
           "source_url": "https://islamicscholarshipfund.org/wp-content/uploads/2025/02/ISF_Annual-Report-2024-wp-flipbook.pdf"
         },
         {
-          "claim": "The organization is Zakat-eligible and provides various methods for charitable giving.",
+          "claim": "The Islamic Scholarship Fund is a ZAKAT-ELIGIBLE organization.",
           "id": "[7]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://islamicscholarshipfund.org/donate/"
         }
       ],
-      "amal_score_rationale": "ISF maintains a moderate overall standing with a GMG score of 52/100, reflecting a balance between strong financial health and the inherent challenges of measuring long-term advocacy impact.",
+      "amal_score_rationale": "ISF maintains a moderate overall score of 53/100, reflecting a balance between excellent financial health and a specialized advocacy-based impact model. While its financial transparency is high, the cost per beneficiary is relatively high due to the professional nature of its fellowships and grants.",
       "areas_for_improvement": [
         "program expense ratio of 65.0% indicates room to increase direct service spending relative to administrative costs",
-        "Impact measurement currently focuses on capacity building rather than direct service delivery"
+        "Impact directness is currently categorized as capacity building rather than direct service"
       ],
       "dimension_explanations": {
-        "alignment": "With an alignment score of 33/50, ISF offers a medium donor fit for those prioritizing advocacy and public policy representation [1]. The organization is Zakat-eligible and addresses the urgent need for Muslim voices in influential American sectors [3][7].",
-        "impact": "The organization focuses on capacity building by providing ISF Judicial Internships, Film Grants, and Public Interest Legal Fellowships [4][5]. While it maintains a high data confidence level, the impact score of 24/50 reflects a high cost per beneficiary of approximately $1,586 and the long-term nature of representation-based outcomes [1][6]."
+        "alignment": "The organization offers a medium donor fit for those seeking to support American Muslim advocacy and storytelling [3]. Its mission addresses the urgent need for representation in policy-making fields, supported by a track record of placing congressional interns and awarding film grants to elevate community voices [5][6].",
+        "impact": "ISF focuses on capacity building through specialized programs such as Judicial Internships, the Film Grant Program, and Public Interest Legal Fellowships [3][5]. While the cost per beneficiary is $1586.0431893687708, the organization maintains a 65.0% program expense ratio and demonstrates high data confidence in its reporting [1][2]."
       },
-      "headline": "The Islamic Scholarship Fund empowers American Muslims to increase representation in public policy, law, and media through targeted financial support and professional development.",
+      "headline": "The Islamic Scholarship Fund empowers American Muslims to shape public policy and narrative through strategic representation in law, media, and government.",
       "strengths": [
         "High financial accountability with a Charity Navigator score of 91.66666666666667/100",
-        "Strong liquidity position with 30.2 months of working capital",
+        "Strong liquidity with 30.2 months of working capital available",
         "Efficient fundraising operations costing only $0.17 per $1 raised"
       ],
-      "summary": "The Islamic Scholarship Fund (ISF) is a Zakat-eligible organization dedicated to supporting American Muslim storytelling and increasing representation in fields that shape public policy [3][7]. In the most recent fiscal period, the organization reported a total revenue of $1,014,133 to fund its various scholarship and fellowship initiatives [2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "increasing American Muslim representation",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "ISF's mission is to support American Muslim storytelling & increase representation in fields & occupations that make public policy",
-          "source_name": "Annual Report (2023)",
-          "source_type": "website",
-          "source_url": "https://islamicscholarshipfund.org/wp-content/uploads/2024/03/2023-ISF_Annual-Report_VF.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "2009",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Founded: 2009",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/208540050"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "scholarships, film grants, and congressional fellowships",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Programs: Scholarship Program, Film Grant, Congressional Policy Internship",
-          "source_name": "Annual Report (2024)",
-          "source_type": "website",
-          "source_url": "https://islamicscholarshipfund.org/wp-content/uploads/2025/02/ISF_Annual-Report-2024-wp-flipbook.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $1,014,133",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Total Revenue: $1,014,133",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/208540050"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100% graduation rate",
-          "confidence": 0.95,
-          "id": "[5]",
-          "quote": "Graduation Rate: 100",
-          "source_name": "Annual Report (2023)",
-          "source_type": "website",
-          "source_url": "https://islamicscholarshipfund.org/wp-content/uploads/2024/03/2023-ISF_Annual-Report_VF.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "88% of alumni working in their chosen fields",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Working in field of study: 88",
-          "source_name": "Annual Report (2023)",
-          "source_type": "website",
-          "source_url": "https://islamicscholarshipfund.org/wp-content/uploads/2024/03/2023-ISF_Annual-Report_VF.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 65.0%",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Program Expense Ratio: 65.0%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/208540050"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "overall score of 91.91.66666666666667/100 from Charity Navigator",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Overall Score: 91.66",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/208540050"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "30.2 months of working capital",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Working capital: 30.2 months",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/208540050"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.17 per $1 raised",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Fundraising Efficiency: $0.17 per $1 raised",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/208540050"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Candid Seal: platinum",
-          "source_name": "Candid/GuideStar",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/208540050"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "meets all 20 BBB Wise Giving Alliance Standards",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Meets All 20 Standards: Yes",
-          "source_name": "BBB Wise Giving Alliance",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/law-public-interest/islamic-scholarship-fund-in-berkeley-ca-1116-927135"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total assets of $2,825,181",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Total Assets: $2,825,181",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/208540050"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Congressional Policy Internships and Judicial Internships",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Congressional Policy Internship, Judicial Internship",
-          "source_name": "Annual Report (2024)",
-          "source_type": "website",
-          "source_url": "https://islamicscholarshipfund.org/wp-content/uploads/2025/02/ISF_Annual-Report-2024-wp-flipbook.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "board size of 2 members",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Board Size: 2",
-          "source_name": "Candid/GuideStar",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/208540050"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of -26.5%",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "3-Year Revenue CAGR: -26.5%",
-          "source_name": "Form 990 Data",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/208540050"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$1586.04 per beneficiary",
-          "confidence": 0.9,
-          "id": "[17]",
-          "quote": "Cost Per Beneficiary: $1586.04",
-          "source_name": "Internal Impact Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/208540050"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "document a clear theory of change",
-          "confidence": 0.9,
-          "id": "[18]",
-          "quote": "Improvement: Document a clear theory of change with causal pathway",
-          "source_name": "Impact Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/208540050"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "zakat-eligible",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Wallet Tag: ZAKAT-ELIGIBLE",
-          "source_name": "Charity Website - Donate",
-          "source_type": "website",
-          "source_url": "https://islamicscholarshipfund.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fi sabilillah asnaf",
-          "confidence": 0.9,
-          "id": "[20]",
-          "quote": "Asnaf: fi_sabilillah (+5)",
-          "source_name": "Alignment Rationale",
-          "source_type": "website",
-          "source_url": "https://islamicscholarshipfund.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "adding a dedicated zakat page",
-          "confidence": 0.9,
-          "id": "[21]",
-          "quote": "Improvement: Add a dedicated zakat page or program",
-          "source_name": "Alignment Improvement",
-          "source_type": "website",
-          "source_url": "https://islamicscholarshipfund.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer median of 81.5%",
-          "confidence": 1,
-          "id": "[22]",
-          "quote": "Peer Program Ratio Median: 81.5%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/208540050"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "tracks 13 outcome metrics",
-          "confidence": 1,
-          "id": "[23]",
-          "quote": "Outcome Metrics Tracked: 13",
-          "source_name": "Candid Outcome Tracking",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/208540050"
-        }
-      ],
-      "amal_score_rationale": "ISF maintains a moderate overall standing with a GMG score of 52/100, reflecting a balance between strong financial health and the inherent challenges of measuring long-term advocacy impact.",
-      "amal_scores": {
-        "amal_score": 52,
-        "confidence_scores": {
-          "alignment": 33,
-          "data_confidence": 1,
-          "impact": 24
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Board Governance Structure",
-          "citation_ids": [
-            "[15]"
-          ],
-          "context": "The current <cite id=\"15\">board size of 2 members</cite> is considered small for an organization of this scale, which may limit oversight diversity."
-        },
-        {
-          "area": "Revenue Growth Trends",
-          "citation_ids": [
-            "[16]"
-          ],
-          "context": "The organization has experienced a <cite id=\"16\">3-year revenue CAGR of -26.5%</cite>, indicating a need for renewed donor engagement strategies."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[12]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "review_url": "https://give.org/charity-reviews/law-public-interest/islamic-scholarship-fund-in-berkeley-ca-1116-927135",
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "Meets all 20 BBB Wise Giving Alliance Standards for Charity Accountability"
-      },
-      "case_against": {
-        "citation_ids": [
-          "[15]",
-          "[16]"
-        ],
-        "mitigation_notes": "The organization maintains high reserves (30+ months) which mitigates short-term financial risks while they address growth.",
-        "risk_factors": [
-          "<cite id=\"15\">Board size of only 2 members</cite> lacks sufficient independent oversight",
-          "<cite id=\"16\">-26.5% revenue CAGR</cite> suggests potential sustainability challenges if trends continue"
-        ],
-        "summary": "The primary concerns involve <cite id=\"15\">governance risks</cite> due to a small board and a <cite id=\"16\">significant decline in annual revenue</cite> over the last three years."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 4,
-          "rating": 11,
-          "website": 8
-        },
-        "high_confidence_count": 20,
-        "total_count": 23,
-        "unique_sources": 6
-      },
-      "confidence": {
-        "data_freshness": "Most data from 2023 and 2024 annual reports",
-        "data_gaps": [
-          "None significant"
-        ],
-        "level": "HIGH",
-        "notes": "Strong alignment between financial filings and impact reporting.",
-        "score": 90,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Annual Reports",
-          "BBB"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 90,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Small board size",
-          "Negative revenue growth"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 23,
-        "unique_sources": 6,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[19]",
-            "[20]",
-            "[21]"
-          ],
-          "explanation": "ISF is a strong fit for Muslim donors as it is <cite id=\"19\">zakat-eligible</cite> and serves the <cite id=\"20\">fi sabilillah asnaf</cite> through community empowerment.",
-          "improvement": "Alignment could be further enhanced by <cite id=\"21\">adding a dedicated zakat page</cite> to the website to clarify the humanitarian dimensions of its scholarship programs."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[11]",
-            "[12]",
-            "[15]"
-          ],
-          "explanation": "Donors can trust ISF due to its <cite id=\"11\">Platinum Candid status</cite> and its <cite id=\"12\">full accreditation by the BBB Wise Giving Alliance</cite>.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"15\">expand its board of directors</cite> beyond the current two members to enhance independent oversight."
-        },
-        "impact": {
-          "citation_ids": [
-            "[6]",
-            "[17]",
-            "[18]"
-          ],
-          "explanation": "ISF demonstrates impact through high alumni success, with <cite id=\"6\">88% of beneficiaries working in their fields</cite> at a cost of <cite id=\"17\">$1586.04 per beneficiary</cite>.",
-          "improvement": "The organization could improve its impact score by <cite id=\"18\">documenting a clear theory of change</cite> with a defined causal pathway for its advocacy work."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "ADVOCACY",
-        "citation_ids": [
-          "[19]",
-          "[20]"
-        ],
-        "evidence_rigor": "Grade C - Outcome tracking via alumni surveys",
-        "geographic_focus": [
-          "United States"
-        ],
-        "giving_style": "Capacity building / Empowerment",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fi sabilillah (in the way of Allah)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.11,
-        "annual_revenue": 1014133,
-        "citation_ids": [
-          "[2]",
-          "[16]"
-        ],
-        "cn_financial_score": 75,
-        "cn_overall_score": 91.66666666666667,
-        "fundraising_ratio": 0.029,
-        "industry_program_ratio": 0.75,
-        "peer_count": 21,
-        "peer_program_ratio_median": 0.815,
-        "program_expense_ratio": 0.6504000000000001,
-        "reserves_months": 30.2,
-        "revenue_cagr_3yr": -26.5,
-        "transparency_score": 100,
-        "working_capital_months": 30.2,
-        "yearly_financials": [
-          {
-            "expenses": 1108803,
-            "net_assets": 2791792,
-            "revenue": 1014133,
-            "year": 2023
-          },
-          {
-            "expenses": 1220332,
-            "net_assets": 2542829,
-            "revenue": 1032317,
-            "year": 2022
-          },
-          {
-            "expenses": 867965,
-            "net_assets": 3258601,
-            "revenue": 1879005,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[4]"
-        ],
-        "domestic_grants": 450000,
-        "foreign_grants": 0,
-        "grant_count": 60,
-        "grant_strategy": "Direct financial support to students and filmmakers through a competitive application process",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "USA"
-        ],
-        "top_recipients": [
-          "Individual Scholarship Recipients",
-          "Film Grant Awardees"
-        ],
-        "total_grants": 450000
-      },
-      "headline": "The Islamic Scholarship Fund empowers American Muslims to increase representation in public policy, law, and media through targeted financial support and professional development.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to invest in the long-term institutional power of the American Muslim community by supporting the next generation of policy makers and storytellers.",
-        "citation_ids": [
-          "[1]",
-          "[11]",
-          "[16]"
-        ],
-        "donor_motivations": [
-          "Want to fulfill zakat through community empowerment and education",
-          "Believe in the importance of Muslim representation in US media and law",
-          "Value high-transparency organizations with Platinum-level reporting",
-          "Prefer supporting established domestic advocacy over international relief"
-        ],
-        "giving_considerations": [
-          "The organization is currently in a revenue contraction phase",
-          "Impact is measured through long-term career outcomes rather than immediate relief",
-          "Small board size may be a concern for donors prioritizing traditional governance structures"
-        ],
-        "not_ideal_for": "Donors seeking immediate humanitarian aid (food/water) or those who prefer organizations with large, multi-national boards."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[23]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects that the organization <cite id=\"23\">tracks 13 outcome metrics</cite> and alumni success but lacks independent RCT-level evaluations.",
-        "external_evaluations": [
-          "Candid Outcome Metrics"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "ISF creates impact by providing financial resources and professional networks to Muslim students, enabling them to enter influential fields and shift national narratives.",
-        "why_evidence_matters": "Tracking alumni career placement ensures that scholarship funds are effectively translating into increased professional representation."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[2]",
-          "[16]"
-        ],
-        "founded_year": 2009,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": -26.5,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Despite high reserves, the recent decline in revenue suggests a significant need for new funding to maintain program scale.",
-        "strategic_priorities": [
-          "Expand film grants",
-          "Increase congressional fellowship placements"
-        ],
-        "years_operating": 17
-      },
-      "organizational_capacity": {
-        "board_size": 2,
-        "ceo_compensation": 130000,
-        "ceo_compensation_pct_revenue": 12.8,
-        "ceo_name": "Not Disclosed",
-        "citation_ids": [
-          "[2]",
-          "[15]"
-        ],
-        "employees_count": 8,
-        "geographic_reach": "United States",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 25,
-        "programs_count": 5,
-        "staff_per_million_revenue": 7.8,
-        "volunteers_count": 50
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[7]",
-          "[22]"
-        ],
-        "differentiator": "ISF's <cite id=\"7\">65.0% program expense ratio</cite> exceeds the <cite id=\"22\">peer median of 81.5%</cite> for advocacy organizations.",
-        "peer_group": "Advocacy and Education",
-        "similar_orgs": [
-          "Justice Defenders",
-          "Emgage Foundation",
-          "Heart Women & Girls"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Focuses on legal education for incarcerated individuals",
-          "name": "Justice Defenders"
-        },
-        {
-          "differentiator": "Focuses more on voter mobilization and civic engagement",
-          "name": "Emgage Foundation"
-        },
-        {
-          "differentiator": "Focuses on advocacy regarding gender-based violence",
-          "name": "Heart Women & Girls"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[8]"
-          ],
-          "detail": "ISF maintains a high <cite id=\"8\">overall score of 91.91.66666666666667/100 from Charity Navigator</cite>, reflecting strong governance and transparency.",
-          "point": "Exceptional Financial Accountability"
-        },
-        {
-          "citation_ids": [
-            "[9]"
-          ],
-          "detail": "The organization holds <cite id=\"9\">30.2 months of working capital</cite>, providing significant long-term stability and resilience against funding fluctuations.",
-          "point": "Robust Liquidity and Sustainability"
-        },
-        {
-          "citation_ids": [
-            "[10]"
-          ],
-          "detail": "Operations are lean, with fundraising costs limited to <cite id=\"10\">$0.17 per $1 raised</cite>, well below industry averages.",
-          "point": "Highly Efficient Fundraising"
-        }
-      ],
-      "strengths_deep_dive": [
-        "The Islamic Scholarship Fund's operational efficiency is anchored by its <cite id=\"11\">Platinum Seal of Transparency from Candid</cite>, the highest level of disclosure available. This transparency is matched by rigorous external validation, as the organization <cite id=\"12\">meets all 20 BBB Wise Giving Alliance Standards</cite> for Charity Accountability. Financially, the charity manages a substantial asset base, reporting <cite id=\"13\">total assets of $2,825,181</cite> against minimal liabilities. This fiscal health allows ISF to maintain a diverse portfolio of programs, including <cite id=\"14\">Congressional Policy Internships and Judicial Internships</cite>, which provide direct pathways for Muslim professionals into high-impact government roles."
-      ],
-      "summary": "The Islamic Scholarship Fund (ISF) is a specialized non-profit organization dedicated to <cite id=\"1\">increasing American Muslim representation</cite> in public policy, law, and media. Founded in <cite id=\"2\">2009</cite>, the organization addresses the underrepresentation of Muslim voices in influential American institutions through a multi-pronged approach involving <cite id=\"3\">scholarships, film grants, and congressional fellowships</cite>. In the 2023 fiscal year, ISF reported <cite id=\"4\">total revenue of $1,014,133</cite>, which it utilized to support a growing network of students and professionals. The organization maintains a <cite id=\"5\">100% graduation rate</cite> among its scholarship recipients, with <cite id=\"6\">88% of alumni working in their chosen fields</cite> of study. By focusing on capacity building within the American Muslim community, ISF seeks to foster a more inclusive narrative and ensure that Muslim perspectives are integrated into the national discourse on policy and law. The organization operates with a <cite id=\"7\">program expense ratio of 65.0%</cite>, demonstrating a strong commitment to direct mission-related spending.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "The Islamic Scholarship Fund (ISF) is a ZAKAT-ELIGIBLE non-profit dedicated to increasing American Muslim representation in fields that influence public policy and storytelling [7]. In the most recent fiscal year, the organization reported a total revenue of $1,014,133 to support its mission of fostering civic engagement and media presence [2]."
     }
   }
 }

@@ -17,7 +17,7 @@ test.describe('Charity detail page', () => {
     await expect(page.locator(DETAIL_LOADED).first()).toBeVisible({ timeout: 10000 });
   });
 
-  test('shows charity name and score', async ({ page }) => {
+  test('shows charity name and qualitative evaluation snapshot', async ({ page }) => {
     const title = await page.title();
     expect(title).toContain('Good Measure');
 

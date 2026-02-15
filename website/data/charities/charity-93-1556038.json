@@ -2,7 +2,7 @@
   "id": "93-1556038",
   "ein": "93-1556038",
   "name": "Afghan Refugee Relief",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Afghan Refugee Relief (ARR) is a proud, 501(c)(3) nonprofit organization focused on resettling refugees, asylum-seekers and humanitarian parolees in Southern California.",
   "programs": [
     "Financial Aid",
@@ -43,7 +43,11 @@
     "netAssets": null,
     "workingCapitalMonths": null
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 3,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": null,
   "trustSignals": null,
   "websiteEvidenceSignals": {
@@ -56,7 +60,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:33:17",
+  "lastUpdated": "2026-02-14 19:36:25",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -134,17 +138,36 @@
   "evidenceQuality": null,
   "zakatClaimEvidence": null,
   "archetype": "RESILIENCE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Limited Basis",
+    "archetype_code": "RESILIENCE",
+    "archetype_label": "Community Resilience",
+    "evidence_stage": "Early",
+    "signal_states": {
+      "evidence": "Moderate",
+      "financial_health": "Limited",
+      "donor_fit": "Limited",
+      "risk": "Limited"
+    },
+    "recommendation_cue": "Limited Match",
+    "recommendation_rationale": "Limited match due to weaker results and/or higher uncertainty; review methodology details before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "93-1556038",
     "charity_name": "Afghan Refugee Relief",
-    "amal_score": 51,
+    "amal_score": 49,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:08:11",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 22,
       "data_confidence": 0.3,
-      "impact": 34
+      "impact": 32
     },
     "score_details": {
       "alignment": {
@@ -231,12 +254,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 1.3 months (OPTIMAL)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 3,
+            "evidence": "Working capital: 1.3 months (LEAN)",
+            "improvement_suggestion": "Strengthen reserves toward a resilient policy range (commonly 3-12 months), based on revenue volatility and program obligations.",
+            "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 4,
+            "scored": 2,
             "status": "full"
           },
           {
@@ -279,36 +302,10 @@
         "cost_per_beneficiary": 5.34,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "$5.34/beneficiary; Delivery: direct service; Impact 34/50",
+        "rationale": "$5.34/beneficiary; Delivery: direct service; Impact 32/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 34
+        "score": 32
       },
-      "judge_issues": [
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        }
-      ],
       "risk_deduction": -5,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -324,7 +321,7 @@
         ],
         "total_deduction": -5
       },
-      "score_summary": "Afghan Refugee Relief earns 51/100 due to good impact and moderate alignment (minor risk deductions applied). Evidence score may reflect limited reporting capacity, not program weakness.",
+      "score_summary": "Afghan Refugee Relief shows good impact and moderate alignment (minor risk deductions applied). Evidence score may reflect limited reporting capacity, not program weakness.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -336,599 +333,51 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reported a program expense ratio of 28.9% and fundraising efficiency of $0.07 per $1 raised.",
+          "claim": "The organization's financial metadata and working capital metrics.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/931556038"
         },
         {
-          "claim": "Programs include Project Sabr, financial aid distribution, and the provision of laptops to refugees.",
+          "claim": "The charity distributes financial aid, grants, and laptops through programs like Project Sabr.",
           "id": "[2]",
           "source_name": "Document (PDF)",
           "source_url": "https://www.afghanrefugeerelief.org/s/ARR-2023-Report-Finalpdf.pdf"
         },
         {
-          "claim": "The organization accepts general donations and sadaqah to support its mission.",
+          "claim": "The organization accepts donations and general charitable giving (sadaqah).",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.afghanrefugeerelief.org/home"
         },
         {
-          "claim": "The charity utilizes passionate volunteers and partners with community organizations for resettlement efforts.",
+          "claim": "The organization provides opportunities for passionate volunteers to engage with their mission.",
           "id": "[4]",
           "source_name": "Charity Website - Volunteer",
           "source_url": "https://www.afghanrefugeerelief.org/volunteer-now"
         },
         {
-          "claim": "Total revenue for the period was $205,225 with working capital measured at 1.3 months.",
+          "claim": "Total revenue is $205,225 with a program expense ratio of 28.9% and fundraising efficiency of $0.07 per $1 raised.",
           "id": "[5]",
           "source_name": "Form 990 (2025)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/931556038"
         }
       ],
-      "amal_score_rationale": "The organization receives a moderate score reflecting its direct humanitarian impact and efficient fundraising, balanced against a lower program expense ratio and limited financial data transparency.",
+      "amal_score_rationale": "The organization receives a moderate overall score due to its direct humanitarian impact, though it is constrained by low financial transparency and a low program expense ratio.",
       "areas_for_improvement": [
-        "Low program expense ratio of 28.9% indicates a significant portion of funds may be held in reserve or allocated to non-programmatic costs",
-        "Limited working capital of 1.3 months suggests a need for stronger liquid reserves"
+        "Low program expense ratio of 28.9% suggests a high proportion of spending on non-programmatic costs",
+        "Limited financial cushion with only 1.3 months of working capital available"
       ],
       "dimension_explanations": {
-        "alignment": "The organization addresses a high-urgency humanitarian cause, though it currently shows low alignment for specific donor segments due to a lack of detailed track record and limited public financial disclosures [1][5]. Donations are categorized as sadaqah-eligible [3].",
-        "impact": "The charity demonstrates a direct service impact by distributing financial aid, grants, and laptops to beneficiaries [2]. While it maintains a low cost per beneficiary of 5.34, its overall impact score is tempered by a program expense ratio of 28.9% and low data confidence due to limited third-party verification [1][5]."
+        "alignment": "While the organization addresses an urgent humanitarian cause, the alignment for specific donor groups is considered low due to limited data confidence and a lack of specialized giving pathways [1][3]. The organization is verified as sadaqah-eligible for those looking to provide general voluntary charity [3].",
+        "impact": "The charity demonstrates direct impact through Program 1, Project Sabr, and financial aid distributions, including awarding grants and laptops to refugees [2]. However, the program expense ratio is 28.9%, and the organization maintains a limited 1.3 months of working capital, which may affect long-term sustainability [1][5]."
       },
-      "headline": "Afghan Refugee Relief provides essential resettlement support and financial assistance to Afghan families through community-driven partnerships.",
+      "headline": "Afghan Refugee Relief provides essential humanitarian support and resettlement assistance to Afghan families through community-driven partnerships.",
       "strengths": [
-        "High fundraising efficiency with only $0.07 spent to raise every dollar",
-        "Direct service model providing tangible assets like laptops and financial grants to refugees"
+        "High fundraising efficiency with only $0.07 spent to raise every $1",
+        "Direct service model providing tangible assets like laptops and financial aid to refugees"
       ],
-      "summary": "Afghan Refugee Relief collaborates with local nonprofits, resettlement agencies, and religious institutions to support the integration of Afghan refugees into their new communities [2][4]. The organization reported a total revenue of $205,225 and manages its operations with a fundraising efficiency of $0.07 per $1 raised [1][5]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "local nonprofits, resettlement agencies, and religious institutions",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "We partner closely with community organizations, local nonprofits, resettlement agencies, religious institutions",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/931556038"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$205,225 in total revenue",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total Revenue: $205,225",
-          "source_name": "Charity Navigator Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/931556038"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.07 to raise every dollar",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Fundraising Efficiency: $0.07",
-          "source_name": "Charity Navigator - Fundraising Efficiency",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/931556038"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "financial aid, women's empowerment, and tutoring",
-          "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Financial Aid, Project Sabr, Women Empowerment, Tutoring",
-          "source_name": "Afghan Refugee Relief - Programs",
-          "source_type": "website",
-          "source_url": "https://www.afghanrefugeerelief.org/home"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "750 laptops distributed",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Laptops distributed: 750",
-          "source_name": "ARR 2023 Report",
-          "source_type": "evaluation",
-          "source_url": "https://www.afghanrefugeerelief.org/s/ARR-2023-Report-Finalpdf.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "1,700 phones received",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Phones received: 1700",
-          "source_name": "ARR 2023 Report",
-          "source_type": "evaluation",
-          "source_url": "https://www.afghanrefugeerelief.org/s/ARR-2023-Report-Finalpdf.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "clear theory of change",
-          "confidence": 0.85,
-          "id": "[7]",
-          "quote": "Theory of Change Documented: Yes",
-          "source_name": "External Discovery - Theory of Change",
-          "source_type": "website",
-          "source_url": "https://www.afghanrefugeerelief.org/home"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 28.9%",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Program Expense Ratio: 28.9%",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/931556038"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer program ratio median of 89.7%",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Peer Program Ratio Median: 89.7%",
-          "source_name": "Peer Benchmarks - Humanitarian",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/931556038"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "furnishing 200 homes",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Homes furnished: 200",
-          "source_name": "ARR 2023 Report",
-          "source_type": "evaluation",
-          "source_url": "https://www.afghanrefugeerelief.org/s/ARR-2023-Report-Finalpdf.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cost per beneficiary of $5.34",
-          "confidence": 0.9,
-          "id": "[11]",
-          "quote": "$5.34/beneficiary",
-          "source_name": "Score Rationale - Impact",
-          "source_type": "website",
-          "source_url": "https://www.afghanrefugeerelief.org/home"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$260,000 in awarded grants",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Grants awarded: 260000",
-          "source_name": "ARR 2023 Report",
-          "source_type": "evaluation",
-          "source_url": "https://www.afghanrefugeerelief.org/s/ARR-2023-Report-Finalpdf.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$85,000 in financial aid",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Financial aid distributed: 85000",
-          "source_name": "ARR 2023 Report",
-          "source_type": "evaluation",
-          "source_url": "https://www.afghanrefugeerelief.org/s/ARR-2023-Report-Finalpdf.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Welcome Fund grant from Welcome.US",
-          "confidence": 0.95,
-          "id": "[14]",
-          "quote": "awarded a Welcome Fund grant by Welcome.US in 2023",
-          "source_name": "External Discovery - Awards",
-          "source_type": "website",
-          "source_url": "https://www.afghanrefugeerelief.org/home"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "industry standard of 75%",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Industry Standard: 75%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/931556038"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "1.3 months of working capital",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Working capital: 1.3 months",
-          "source_name": "Charity Navigator - Working Capital",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/931556038"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "basic verification tiers",
-          "confidence": 0.8,
-          "id": "[17]",
-          "quote": "Verification: BASIC (0.4)",
-          "source_name": "Data Confidence Details",
-          "source_type": "website",
-          "source_url": "https://www.afghanrefugeerelief.org/home"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "seek external evaluations",
-          "confidence": 0.9,
-          "id": "[18]",
-          "quote": "Seek external evaluation or track outcomes for 3+ years",
-          "source_name": "Impact Improvement Suggestions",
-          "source_type": "website",
-          "source_url": "https://www.afghanrefugeerelief.org/home"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "building working capital reserves",
-          "confidence": 0.9,
-          "id": "[19]",
-          "quote": "Build working capital reserves to 1-3 months",
-          "source_name": "Financial Health Improvement",
-          "source_type": "website",
-          "source_url": "https://www.afghanrefugeerelief.org/home"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "high-urgency humanitarian cause",
-          "confidence": 0.9,
-          "id": "[20]",
-          "quote": "Cause area: Humanitarian (13/13)",
-          "source_name": "Alignment Score Details",
-          "source_type": "website",
-          "source_url": "https://www.afghanrefugeerelief.org/home"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "dedicated sadaqah or zakat reporting",
-          "confidence": 0.85,
-          "id": "[21]",
-          "quote": "Add a dedicated zakat page or program",
-          "source_name": "Alignment Improvement Suggestions",
-          "source_type": "website",
-          "source_url": "https://www.afghanrefugeerelief.org/home"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "adding a dedicated giving page",
-          "confidence": 0.85,
-          "id": "[22]",
-          "quote": "Add a dedicated zakat page or program and highlight humanitarian dimensions",
-          "source_name": "Alignment Improvement Suggestions",
-          "source_type": "website",
-          "source_url": "https://www.afghanrefugeerelief.org/home"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "founded recently (approx. 3 years ago)",
-          "confidence": 0.9,
-          "id": "[23]",
-          "quote": "Founded 2023 (3 years)",
-          "source_name": "Track Record Details",
-          "source_type": "website",
-          "source_url": "https://www.afghanrefugeerelief.org/home"
-        }
-      ],
-      "amal_score_rationale": "The organization receives a moderate score reflecting its direct humanitarian impact and efficient fundraising, balanced against a lower program expense ratio and limited financial data transparency.",
-      "amal_scores": {
-        "amal_score": 51,
-        "confidence_scores": {
-          "alignment": 22,
-          "data_confidence": 0.3,
-          "impact": 34
-        },
-        "confidence_tier": "LOW",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Program Expense Allocation",
-          "citation_ids": [
-            "[8]",
-            "[15]"
-          ],
-          "context": "The current <cite id=\"8\">program expense ratio of 28.9%</cite> is significantly below the <cite id=\"15\">industry standard of 75%</cite>, suggesting a need to increase direct program spending."
-        },
-        {
-          "area": "Working Capital Reserves",
-          "citation_ids": [
-            "[16]"
-          ],
-          "context": "The organization maintains <cite id=\"16\">1.3 months of working capital</cite>, which is at the lower end of the optimal 1-3 month range for operational stability."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "none",
-        "citation_ids": [],
-        "effectiveness_status": "UNVERIFIED",
-        "finances_status": "UNVERIFIED",
-        "governance_status": "UNVERIFIED",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "This organization has not yet been evaluated against BBB Wise Giving Alliance standards."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[8]",
-          "[16]",
-          "[23]"
-        ],
-        "mitigation_notes": "The organization is in a growth phase, having been <cite id=\"23\">founded recently (approx. 3 years ago)</cite>, which may explain current financial ratios.",
-        "risk_factors": [
-          "<cite id=\"8\">Program expense ratio is significantly below peer medians</cite>",
-          "<cite id=\"16\">Limited working capital of 1.3 months</cite>"
-        ],
-        "summary": "The primary concern is the <cite id=\"8\">low program expense ratio of 28.9%</cite>, which indicates that less than a third of total spending is currently reaching direct programs."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 5,
-          "rating": 8,
-          "website": 10
-        },
-        "high_confidence_count": 20,
-        "total_count": 23,
-        "unique_sources": 5
-      },
-      "confidence": {
-        "data_freshness": "Data from 2023-2025",
-        "data_gaps": [
-          "Missing audited financials",
-          "Incomplete Form 990 breakdown",
-          "Limited board governance data"
-        ],
-        "level": "LOW",
-        "notes": "Low confidence due to basic verification and significant financial transparency gaps.",
-        "score": 30,
-        "sources_used": [
-          "Charity Navigator",
-          "Annual Report PDF",
-          "Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 30,
-        "form_990_tax_year": 2025,
-        "known_gaps": [
-          "Missing audited financials",
-          "Low program expense ratio",
-          "Limited board size"
-        ],
-        "ratings_last_updated": "2025-01",
-        "total_citations": 23,
-        "unique_sources": 5,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[20]",
-            "[21]",
-            "[22]"
-          ],
-          "explanation": "Alignment is moderate as the charity addresses a <cite id=\"20\">high-urgency humanitarian cause</cite>, though it lacks specific features for Muslim donors such as <cite id=\"21\">dedicated sadaqah or zakat reporting</cite>.",
-          "improvement": "The organization could improve alignment by <cite id=\"22\">adding a dedicated giving page</cite> that highlights the humanitarian dimensions of its work for Muslim donors."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[7]",
-            "[14]",
-            "[17]",
-            "[18]"
-          ],
-          "explanation": "Credibility is established through <cite id=\"14\">external grant awards from Welcome.US</cite> and a <cite id=\"7\">clear theory of change</cite>, though data confidence is currently limited due to <cite id=\"17\">basic verification tiers</cite>.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"18\">seek external evaluations</cite> and increase transparency regarding its financial audits."
-        },
-        "impact": {
-          "citation_ids": [
-            "[5]",
-            "[8]",
-            "[11]",
-            "[19]"
-          ],
-          "explanation": "The charity shows high impact through <cite id=\"11\">$5.34 cost per beneficiary</cite> and direct services like <cite id=\"5\">laptop distribution</cite>, but the <cite id=\"8\">28.9% program ratio</cite> lowers the overall impact score.",
-          "improvement": "Impact would be improved by <cite id=\"19\">building working capital reserves</cite> and increasing the proportion of total expenses dedicated to program services."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[2]",
-          "[4]"
-        ],
-        "evidence_rigor": "Grade C - Basic outcome tracking through annual reports",
-        "geographic_focus": [
-          "Mexico",
-          "United States"
-        ],
-        "giving_style": "Direct service and material aid",
-        "tax_deductible": true,
-        "zakat_asnaf_served": null,
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": null,
-        "annual_revenue": 205225,
-        "citation_ids": [
-          "[1]",
-          "[2]",
-          "[3]",
-          "[9]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0.07,
-        "industry_program_ratio": 0.75,
-        "peer_count": 58,
-        "peer_program_ratio_median": 0.897,
-        "program_expense_ratio": 0.2894,
-        "reserves_months": 1.3,
-        "revenue_cagr_3yr": null,
-        "yearly_financials": [
-          {
-            "expenses": null,
-            "net_assets": null,
-            "revenue": 205225,
-            "year": 2023
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]",
-          "[12]"
-        ],
-        "domestic_grants": 260000,
-        "foreign_grants": 0,
-        "grant_count": null,
-        "grant_strategy": "Direct financial grants to families for resettlement needs",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "United States"
-        ],
-        "top_recipients": [
-          "Afghan Newcomers"
-        ],
-        "total_grants": 260000
-      },
-      "headline": "Afghan Refugee Relief provides essential resettlement support and financial assistance to Afghan families through community-driven partnerships.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize high-efficiency fundraising and want to provide tangible, high-utility assets like laptops and home furnishings directly to refugees.",
-        "citation_ids": [
-          "[3]",
-          "[8]",
-          "[11]"
-        ],
-        "donor_motivations": [
-          "Want to support Afghan families in the resettlement process",
-          "Value direct service models with low cost-per-beneficiary",
-          "Prefer supporting smaller, community-driven organizations",
-          "Interested in funding material aid rather than just advocacy"
-        ],
-        "giving_considerations": [
-          "The charity is in an early growth stage with limited financial history",
-          "A large portion of current spending is not yet categorized as program expenses",
-          "Operations rely heavily on community partnerships and volunteers"
-        ],
-        "not_ideal_for": ""
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[2]",
-          "[7]",
-          "[14]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects consistent tracking of outputs (laptops, grants) but a lack of long-term longitudinal impact studies.",
-        "external_evaluations": [
-          "Welcome.US Grant Review"
-        ],
-        "outcome_tracking_years": 1,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "ARR creates impact by partnering with local institutions to identify and fill material and financial gaps for Afghan refugees during their first years of resettlement.",
-        "why_evidence_matters": "Evidence ensures that material aid like laptops actually leads to improved resettlement outcomes like employment or education."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[2]",
-          "[23]"
-        ],
-        "founded_year": null,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": null,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "As a small organization with <cite id=\"2\">$205,225 in revenue</cite>, ARR has significant capacity to scale its direct aid programs.",
-        "strategic_priorities": [
-          "Expand financial aid distribution",
-          "Increase working capital reserves"
-        ],
-        "years_operating": 3
-      },
-      "organizational_capacity": {
-        "board_size": 3,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": null,
-        "citation_ids": [
-          "[4]",
-          "[11]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Mexico and US-based resettlement support",
-        "has_conflict_policy": null,
-        "has_financial_audit": false,
-        "independent_board_pct": null,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[11]"
-        ],
-        "differentiator": "Distinguished by an <cite id=\"11\">extremely low cost per beneficiary</cite> compared to larger peers.",
-        "peer_group": "Humanitarian Refugee Services",
-        "similar_orgs": [
-          "Rohingya Muslim Relief",
-          "Humaniti",
-          "International Rescue Committee"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on specific refugee populations",
-          "name": "Rohingya Muslim Relief"
-        },
-        {
-          "differentiator": "Broader international humanitarian scope",
-          "name": "Humaniti"
-        },
-        {
-          "differentiator": "Much larger scale and global infrastructure",
-          "name": "International Rescue Committee"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[3]"
-          ],
-          "detail": "The organization demonstrates strong fiscal discipline in its development efforts, requiring only <cite id=\"3\">$0.07 in expenses for every $1 raised</cite>.",
-          "point": "Exceptional Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[5]",
-            "[10]"
-          ],
-          "detail": "ARR provides high-utility assets to refugees, including <cite id=\"5\">750 laptops</cite> and <cite id=\"10\">furnishing 200 homes</cite> to support resettlement.",
-          "point": "Direct Material Impact"
-        },
-        {
-          "citation_ids": [
-            "[11]"
-          ],
-          "detail": "The charity achieves a highly efficient <cite id=\"11\">cost per beneficiary of $5.34</cite>, maximizing the reach of its direct service delivery.",
-          "point": "Low Cost Per Beneficiary"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Afghan Refugee Relief excels in direct service delivery by focusing on the immediate material needs of Afghan newcomers. Their 2023 impact data highlights the distribution of <cite id=\"12\">$260,000 in awarded grants</cite> and <cite id=\"13\">$85,000 in financial aid</cite>. This directness is supported by a <cite id=\"7\">documented theory of change</cite> that emphasizes community partnerships. Furthermore, the organization was recognized for its effectiveness by receiving a <cite id=\"14\">Welcome Fund grant from Welcome.US</cite>, joining a select group of 39 organizations nationwide supporting Afghan newcomers."
-      ],
-      "summary": "Afghan Refugee Relief (ARR) operates as a community-driven intermediary that facilitates the resettlement and integration of Afghan families. The organization partners with <cite id=\"1\">local nonprofits, resettlement agencies, and religious institutions</cite> to provide direct support to newcomers. In the most recent reporting period, the charity generated <cite id=\"2\">$205,225 in total revenue</cite>, focusing its efforts on tangible asset distribution and financial assistance. ARR's operational model is characterized by high fundraising efficiency, spending only <cite id=\"3\">$0.07 to raise every dollar</cite>. Key program areas include <cite id=\"4\">financial aid, women's empowerment, and tutoring</cite>, alongside a dedicated donation center. Impact reports indicate significant material distribution, including <cite id=\"5\">750 laptops distributed</cite> and <cite id=\"6\">1,700 phones received</cite> for refugee families. While the organization maintains a <cite id=\"7\">clear theory of change</cite> and provides essential services, its financial profile shows a <cite id=\"8\">program expense ratio of 28.9%</cite>, which is notably lower than the <cite id=\"9\">peer program ratio median of 89.7%</cite> for humanitarian organizations.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "Afghan Refugee Relief collaborates with local nonprofits, resettlement agencies, and religious institutions to support the integration of Afghan refugees [2]. The organization operates with a total revenue of $205,225 and offers various avenues for community involvement through volunteering and sadaqah-eligible donations [3][4][5]."
     }
   }
 }

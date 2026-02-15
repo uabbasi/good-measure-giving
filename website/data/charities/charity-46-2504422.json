@@ -2,7 +2,7 @@
   "id": "46-2504422",
   "ein": "46-2504422",
   "name": "Muslim Aid America",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "PROVIDE HELP TO PEOPLE WHO ARE VICTIMS OF NATURAL DISASTERS OR CONFLICTS OR SUFFERING FROM POVERTY, HUNGER, DISEASE, ILLITERACY, DISCRIMINATION, HOMELES...",
   "programs": [
     "Emergency Relief",
@@ -52,7 +52,11 @@
     "netAssets": 4410848,
     "workingCapitalMonths": "2.10"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 9,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Victims",
@@ -82,7 +86,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-09 21:32:14",
+  "lastUpdated": "2026-02-14 19:36:00",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -261,17 +265,36 @@
   "evidenceQuality": null,
   "zakatClaimEvidence": null,
   "archetype": "DIRECT_SERVICE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Promising",
+    "archetype_code": "DIRECT_SERVICE",
+    "archetype_label": "Frontline Relief",
+    "evidence_stage": "Established",
+    "signal_states": {
+      "evidence": "Moderate",
+      "financial_health": "Moderate",
+      "donor_fit": "Moderate",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "46-2504422",
     "charity_name": "Muslim Aid America",
-    "amal_score": 68,
+    "amal_score": 65,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:04:57",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 33,
       "data_confidence": 0.95,
-      "impact": 36
+      "impact": 33
     },
     "score_details": {
       "alignment": {
@@ -358,12 +381,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 2.1 months (OPTIMAL)",
-            "improvement_suggestion": null,
-            "improvement_value": 0,
+            "evidence": "Working capital: 2.1 months (LEAN)",
+            "improvement_suggestion": "Strengthen reserves toward a resilient policy range (commonly 3-12 months), based on revenue volatility and program obligations.",
+            "improvement_value": 3,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 7,
+            "scored": 4,
             "status": "full"
           },
           {
@@ -406,66 +429,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "Delivery: direct service; Impact 36/50",
+        "rationale": "Delivery: direct service; Impact 33/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 36
+        "score": 33
       },
-      "judge_issues": [
-        {
-          "field": "website.ein",
-          "judge": "crawl_quality",
-          "message": "Website EIN (45-4411111) doesn't match expected (46-2504422)",
-          "severity": "warning"
-        },
-        {
-          "field": "website.website_profile.ein",
-          "judge": "extract_quality",
-          "message": "EIN mismatch: expected 46-2504422, got 45-4411111",
-          "severity": "warning"
-        },
-        {
-          "field": "multi_source.ein_consistency",
-          "judge": "extract_quality",
-          "message": "Multiple different EINs found across sources: {'462504422', '454411111'}",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[2].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'charitywatch.org' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[3].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'mausa.org' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -1,
       "risks": {
         "overall_risk_level": "LOW",
@@ -481,7 +448,7 @@
         ],
         "total_deduction": -1
       },
-      "score_summary": "Muslim Aid America earns 68/100 due to strong impact and good alignment (minor risk deductions applied).",
+      "score_summary": "Muslim Aid America shows good impact and good alignment (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -493,602 +460,40 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity provides help to victims of disasters, poverty, and hunger, and maintains specific financial efficiency metrics.",
+          "claim": "The charity focuses on victims of natural disasters, conflict, poverty, and hunger.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/462504422"
         },
         {
-          "claim": "The organization reported total revenue of $26,177,076 and a program expense ratio of 93.2%.",
+          "claim": "The organization reported total revenue of $26,177,076, a program expense ratio of 93.2%, and fundraising efficiency of $0.04 per $1 raised.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/462504422"
         },
         {
-          "claim": "The organization accepts sadaqah-eligible donations for various humanitarian programs.",
+          "claim": "The organization offers various donation options for sadaqah and general charitable giving.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.muslimaidusa.org/donate/"
         }
       ],
-      "amal_score_rationale": "The organization earns a solid score due to its exceptional financial efficiency and direct service model, though its overall rating is tempered by modest liquidity reserves.",
+      "amal_score_rationale": "The organization earns a 65/100 reflecting excellent financial efficiency and high donor alignment, though its overall score is moderated by its liquidity levels and the direct-service nature of its impact model.",
       "areas_for_improvement": [
-        "Relatively low working capital of 2.1 months, which may limit long-term financial flexibility.",
-        "Limited third-party impact data available to verify cost-per-beneficiary metrics."
+        "Relatively low working capital of 2.1 months may limit long-term financial flexibility.",
+        "Limited external impact data available for cost-per-beneficiary analysis."
       ],
       "dimension_explanations": {
-        "alignment": "Muslim Aid America offers a high donor fit for those seeking to support domestic and international poverty relief through sadaqah [3]. The organization addresses urgent causes including disaster response and hunger, maintaining a consistent track record of humanitarian aid [1].",
-        "impact": "The charity demonstrates a strong commitment to direct service, allocating 93.2% of its $26,177,076 revenue directly to programs like water and food security [2]. While it maintains high financial health and low fundraising costs of $0.04 per $1 raised, specific cost-per-beneficiary data is not currently available to further validate its impact score [1]."
+        "alignment": "Muslim Aid America shows high alignment for donors seeking to support urgent causes like domestic poverty and international disaster relief [1]. As a sadaqah-eligible entity, it provides a trusted pathway for general Islamic charitable giving, maintaining a consistent track record of humanitarian response [3].",
+        "impact": "The organization demonstrates a commitment to direct service, allocating 93.2% of its $26,177,076 revenue directly to programs such as water well construction and food security [1][2]. While its fundraising efficiency is high at $0.04 per $1 raised, its impact score of 33/50 reflects a balanced view of its direct-service model and current lack of specific cost-per-beneficiary data [2]."
       },
-      "headline": "Muslim Aid America provides essential humanitarian relief to victims of natural disasters, conflict, and poverty through high-efficiency programming.",
+      "headline": "Muslim Aid America provides essential humanitarian relief to victims of natural disasters, conflict, and systemic poverty through high-efficiency programming.",
       "strengths": [
-        "High program expense ratio of 93.2%, ensuring the vast majority of funds reach those in need.",
-        "Excellent fundraising efficiency with a cost of only $0.04 per $1 raised."
+        "High program expense ratio of 93.2% ensures the vast majority of funds reach those in need.",
+        "Exceptional fundraising efficiency with a cost of only $0.04 per $1 raised.",
+        "Strong focus on essential needs including water wells and food security programs."
       ],
-      "summary": "Muslim Aid America is a humanitarian organization dedicated to supporting individuals suffering from hunger, disease, and illiteracy across the globe [1]. In the most recent fiscal year, the organization reported a total revenue of $26,177,076 to fund its diverse relief efforts [2]. Donations to the organization are classified as sadaqah-eligible, supporting general charitable initiatives such as food security and water well construction [3]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "2012",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "Founded: 2012",
-          "source_name": "Charity Website - About",
-          "source_type": "website",
-          "source_url": "https://www.muslimaidusa.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$26,177,076 in total revenue",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: $26,177,076",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/462504422"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "emergency relief, food security, and WASH (Water, Sanitation, and Hygiene) programs",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Programs: Emergency Relief, Water, Sanitation and Hygiene (WASH), Food Security",
-          "source_name": "Charity Website - Programs",
-          "source_type": "website",
-          "source_url": "https://www.muslimaidusa.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Afghanistan, Gaza, and Somalia",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Geographic Coverage: Afghanistan, Bangladesh, Gaza, Jordan, Kenya, Lebanon, Pakistan, Somalia, Sudan, Syria",
-          "source_name": "Charity Website - Geography",
-          "source_type": "website",
-          "source_url": "https://www.muslimaidusa.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 93.2%",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Program Service Expenses: $25,317,896 / Total Expenses: $25,782,126",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/462504422"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.04 to raise every $1",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Fundraising Efficiency: $0.04 per $1 raised",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/462504422"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Sadaqah-eligible",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Sadaqah-eligible",
-          "source_name": "Charity Website - Donate",
-          "source_type": "website",
-          "source_url": "https://www.muslimaidusa.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer median of 82.6%",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Peer Program Ratio Median: 82.6%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/462504422"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 24.2%",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "3-Year Revenue CAGR: 24.2%",
-          "source_name": "Financial Trends",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/462504422"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "over $26 million in contributions",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Contributions: $26,390,812",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/462504422"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "officer compensation at $149,771",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Officer Compensation: $149,771",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/462504422"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Candid Seal: platinum",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/462504422"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$21,997,452 distributed in foreign grants",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Foreign Grants: $21,997,452",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/462504422"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$222,334 in domestic grants",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Domestic Grants: $222,334",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/462504422"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "lacks public beneficiary counts",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "No beneficiary data",
-          "source_name": "Impact Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/462504422"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "absent formal theory of change",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Theory of change: ABSENT",
-          "source_name": "Impact Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/462504422"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100% independent members",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Independent Board Members: 100%",
-          "source_name": "Charity Navigator - Governance",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/462504422"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "2.1 months of working capital",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Working Capital: 2.3 months",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/462504422"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "seek external evaluations",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Improvement: Seek external evaluation",
-          "source_name": "Impact Improvement",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/462504422"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "tracking and reporting specific beneficiary counts",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Improvement: Track and report beneficiary counts",
-          "source_name": "Impact Improvement",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/462504422"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "operating in Muslim-majority regions",
-          "confidence": 1,
-          "id": "[21]",
-          "quote": "Operates in Muslim-majority regions (+3)",
-          "source_name": "Alignment Data",
-          "source_type": "website",
-          "source_url": "https://www.muslimaidusa.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "humanitarian service",
-          "confidence": 1,
-          "id": "[22]",
-          "quote": "Strong humanitarian service (+4)",
-          "source_name": "Alignment Data",
-          "source_type": "website",
-          "source_url": "https://www.muslimaidusa.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "underserved regions with limited nonprofit coverage",
-          "confidence": 1,
-          "id": "[23]",
-          "quote": "Improvement: Expand services to underserved populations or regions with limited nonprofit coverage",
-          "source_name": "Alignment Improvement",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/462504422"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a solid score due to its exceptional financial efficiency and direct service model, though its overall rating is tempered by modest liquidity reserves.",
-      "amal_scores": {
-        "amal_score": 68,
-        "confidence_scores": {
-          "alignment": 33,
-          "data_confidence": 0.95,
-          "impact": 36
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Impact Measurement Transparency",
-          "citation_ids": [
-            "[15]"
-          ],
-          "context": "While program ratios are high, the charity currently <cite id=\"15\">lacks public beneficiary counts</cite>, making it difficult to calculate specific cost-per-beneficiary metrics."
-        },
-        {
-          "area": "Strategic Documentation",
-          "citation_ids": [
-            "[16]"
-          ],
-          "context": "The organization currently has an <cite id=\"16\">absent formal theory of change</cite>, which is necessary to map the long-term causal pathway of its interventions."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[17]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": null,
-        "standards_met": null,
-        "standards_not_met": [],
-        "summary": "The organization maintains strong governance with a 100% independent board and audited financial statements."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[15]",
-          "[16]"
-        ],
-        "mitigation_notes": "The organization is currently demonstrating a willingness to improve feedback practices and transparency through its Candid Platinum profile.",
-        "risk_factors": [
-          "<cite id=\"16\">No documented theory of change</cite>",
-          "<cite id=\"15\">Limited evidence of long-term outcome tracking</cite>"
-        ],
-        "summary": "The primary limitation is the <cite id=\"15\">lack of rigorous impact data</cite> and beneficiary metrics, which makes it difficult to compare its effectiveness against other humanitarian peers."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 7,
-          "rating": 10,
-          "website": 6
-        },
-        "high_confidence_count": 23,
-        "total_count": 23,
-        "unique_sources": 3
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023 Form 990",
-        "data_gaps": [
-          "Missing specific beneficiary counts",
-          "No formal theory of change"
-        ],
-        "level": "HIGH",
-        "notes": "Strong financial and governance data available; impact data is the primary gap.",
-        "score": 95,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Charity Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 95,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing specific beneficiary counts",
-          "No formal theory of change document"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 23,
-        "unique_sources": 3,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[21]",
-            "[22]",
-            "[23]"
-          ],
-          "explanation": "The organization shows high alignment for Muslim donors by <cite id=\"21\">operating in Muslim-majority regions</cite> such as Gaza and Syria and focusing on <cite id=\"22\">humanitarian service</cite> consistent with Islamic values.",
-          "improvement": "Expanding services to <cite id=\"23\">underserved regions with limited nonprofit coverage</cite> would further enhance its alignment score."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[12]",
-            "[17]",
-            "[18]",
-            "[19]"
-          ],
-          "explanation": "Donors can trust the organization's financial reporting due to its <cite id=\"12\">Candid Platinum Seal</cite> and a board with <cite id=\"17\">100% independent members</cite>. The charity also maintains <cite id=\"18\">2.1 months of working capital</cite>, which is considered an optimal level for operational stability.",
-          "improvement": "To further strengthen credibility, the organization should <cite id=\"19\">seek external evaluations</cite> of its programs to provide third-party verification of its outcomes."
-        },
-        "impact": {
-          "citation_ids": [
-            "[5]",
-            "[15]",
-            "[20]"
-          ],
-          "explanation": "The impact score is driven by a <cite id=\"5\">93.2% program ratio</cite> and a direct service delivery model. However, the score is tempered by <cite id=\"15\">missing beneficiary data</cite> which prevents a full cost-effectiveness analysis.",
-          "improvement": "The charity could improve this score by <cite id=\"20\">tracking and reporting specific beneficiary counts</cite> and documenting a clear theory of change."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[1]",
-          "[4]"
-        ],
-        "evidence_rigor": "Grade C - Outcomes measured but not externally evaluated",
-        "geographic_focus": [
-          "Afghanistan",
-          "Gaza",
-          "Somalia",
-          "Syria",
-          "Uganda"
-        ],
-        "giving_style": "Direct Service & Grantmaking",
-        "tax_deductible": true,
-        "zakat_asnaf_served": null,
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.014,
-        "annual_revenue": 26177076,
-        "citation_ids": [
-          "[2]",
-          "[9]",
-          "[18]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0.004,
-        "industry_program_ratio": 0.75,
-        "peer_count": 23,
-        "peer_program_ratio_median": 0.826,
-        "program_expense_ratio": 0.9317,
-        "reserves_months": 2.3,
-        "revenue_cagr_3yr": 24.2,
-        "transparency_score": 100,
-        "working_capital_months": 2.1,
-        "yearly_financials": [
-          {
-            "expenses": 25782126,
-            "net_assets": 4410848,
-            "revenue": 26177076,
-            "year": 2023
-          },
-          {
-            "expenses": 14783261,
-            "net_assets": 3990901,
-            "revenue": 15446157,
-            "year": 2022
-          },
-          {
-            "expenses": 14812428,
-            "net_assets": 3368696,
-            "revenue": 16966673,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[13]",
-          "[14]"
-        ],
-        "domestic_grants": 222334,
-        "foreign_grants": 21997452,
-        "grant_count": 7,
-        "grant_strategy": "Distributes the vast majority of funds to international implementing partners and relief programs.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Uganda",
-          "Middle East",
-          "Asia"
-        ],
-        "top_recipients": [
-          "Ikram Foundation ($52,000)",
-          "Texas Muslim Womens Foundation ($50,530)"
-        ],
-        "total_grants": 22219786
-      },
-      "headline": "Muslim Aid America provides essential humanitarian relief to victims of natural disasters, conflict, and poverty through high-efficiency programming.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize high financial efficiency and want their Sadaqah to support a broad range of international humanitarian crises through an established Muslim-led organization.",
-        "citation_ids": [
-          "[5]",
-          "[7]",
-          "[12]"
-        ],
-        "donor_motivations": [
-          "Value seeing nearly 100% of their donation go to direct programs",
-          "Want to support emergency relief in high-conflict zones like Gaza and Syria",
-          "Prefer organizations with high transparency ratings (Candid Platinum)",
-          "Looking for a reliable vehicle for Sadaqah Jariyah projects like water wells"
-        ],
-        "giving_considerations": [
-          "",
-          "The organization acts as both a direct service provider and a significant grantmaker",
-          "Detailed impact metrics (cost-per-person) are not yet publicly available"
-        ],
-        "not_ideal_for": "Donors specifically looking to fulfill their annual Zakat obligation or those who require independent RCT-level evidence of impact."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[15]",
-          "[16]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects that while the organization tracks outcomes and maintains high transparency, it lacks external evaluations or longitudinal impact studies.",
-        "external_evaluations": [],
-        "outcome_tracking_years": 1,
-        "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The organization operates on the logic that providing immediate relief (food, water, health) in crisis zones directly reduces mortality and suffering, though a formal causal pathway is not documented.",
-        "why_evidence_matters": "Evidence ensures that high program spending actually translates into meaningful life improvements for beneficiaries."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[9]"
-        ],
-        "founded_year": 2012,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": 24.2,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a 24.2% growth rate and operations in major conflict zones, the organization has significant capacity to absorb and deploy additional capital.",
-        "strategic_priorities": [
-          "Evidence-based sustainable projects",
-          "Expanding emergency response"
-        ],
-        "years_operating": 14
-      },
-      "organizational_capacity": {
-        "board_size": 9,
-        "ceo_compensation": 149771,
-        "ceo_compensation_pct_revenue": 0.57,
-        "ceo_name": "Azhar Azeez",
-        "citation_ids": [
-          "[2]",
-          "[11]",
-          "[17]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Global (Africa, Middle East, Asia)",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[5]",
-          "[8]"
-        ],
-        "differentiator": "Muslim Aid America's <cite id=\"5\">93.2% program ratio</cite> is significantly higher than the <cite id=\"8\">peer median of 82.6%</cite>.",
-        "peer_group": "Domestic Poverty & International Humanitarian Relief",
-        "similar_orgs": [
-          "Action Against Hunger USA",
-          "Baitulmaal, Inc.",
-          "UNRWA"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar humanitarian focus and size",
-          "name": "Action Against Hunger USA"
-        },
-        {
-          "differentiator": "Similar international relief scope",
-          "name": "Baitulmaal, Inc."
-        },
-        {
-          "differentiator": "Focus on similar geographic regions (Gaza/Middle East)",
-          "name": "UNRWA"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[5]",
-            "[8]"
-          ],
-          "detail": "The organization directs <cite id=\"5\">93.2% of its total expenses</cite> toward program services, significantly exceeding the <cite id=\"8\">peer median of 82.6%</cite> for domestic poverty and humanitarian organizations.",
-          "point": "Exceptional Program Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[6]"
-          ],
-          "detail": "Muslim Aid America maintains a lean fundraising model, requiring only <cite id=\"6\">$0.04 in expenses for every $1 raised</cite>.",
-          "point": "High Fundraising Productivity"
-        },
-        {
-          "citation_ids": [
-            "[9]"
-          ],
-          "detail": "The charity has demonstrated strong financial momentum with a <cite id=\"9\">3-year revenue CAGR of 24.2%</cite>, indicating increasing donor trust and capacity.",
-          "point": "Robust Revenue Growth"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Muslim Aid America's financial health is anchored by its ability to scale rapidly while maintaining low overhead. In 2023, the organization managed <cite id=\"10\">over $26 million in contributions</cite> while keeping <cite id=\"11\">officer compensation at $149,771</cite>, a relatively modest figure given the organization's revenue size. This fiscal discipline is further evidenced by its <cite id=\"12\">Platinum Seal of Transparency from Candid</cite>, the highest level of recognition for non-profit data sharing. Their grantmaking capacity is also substantial, with <cite id=\"13\">$21,997,452 distributed in foreign grants</cite> to support international relief efforts, alongside <cite id=\"14\">$222,334 in domestic grants</cite> to US-based partners like the Ikram Foundation."
-      ],
-      "summary": "Muslim Aid America, established in <cite id=\"1\">2012</cite>, is a humanitarian organization dedicated to providing essential relief to victims of natural disasters, conflict, and poverty. The organization operates with a significant scale, reporting <cite id=\"2\">$26,177,076 in total revenue</cite> for the 2023 tax year. Its mission focuses on alleviating suffering through <cite id=\"3\">emergency relief, food security, and WASH (Water, Sanitation, and Hygiene) programs</cite> across diverse regions including <cite id=\"4\">Afghanistan, Gaza, and Somalia</cite>. A defining characteristic of the charity is its high operational efficiency, maintaining a <cite id=\"5\">program expense ratio of 93.2%</cite>, which ensures that the vast majority of contributions are directed toward direct service delivery rather than administrative overhead. Furthermore, the organization demonstrates exceptional fundraising discipline, spending only <cite id=\"6\">$0.04 to raise every $1</cite> in charitable contributions. While the organization serves many Muslim-majority regions and aligns with Islamic humanitarian values, donations are currently classified as <cite id=\"7\">Sadaqah-eligible</cite> for general charitable support.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "Muslim Aid America is a humanitarian organization dedicated to assisting individuals suffering from hunger, disease, and illiteracy across the globe [1]. In the most recent fiscal year, the organization reported a total revenue of $26,177,076 to support its diverse relief initiatives [2]. Donors can contribute to these efforts through various sadaqah-eligible giving methods hosted on their platform [3]."
     }
   }
 }

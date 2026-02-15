@@ -2,7 +2,7 @@
   "id": "36-4166125",
   "ein": "36-4166125",
   "name": "IMANA",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "IMANA FOSTERS HEALTH PROMOTION, DISEASE PREVENTION, AND HEALTH MAINTENANCE IN COMMUNITIES AROUND THE WORLD THROUGH DIRECT PATIENT CARE, HEALTH PROGRAMS, AND ADVOCACY.",
   "programs": [
     "IMANA Medical Relief (IMR)",
@@ -55,7 +55,11 @@
     "netAssets": 7411092,
     "workingCapitalMonths": "33.00"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 12,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Needy",
@@ -83,7 +87,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-09 21:34:25",
+  "lastUpdated": "2026-02-14 19:35:54",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -334,17 +338,36 @@
     "IMANA explicitly lists \"Zakat\" as a donation option on its website. A dedicated page titled \"Zakat Al Fitr Online Donation \u2013 IMANA\" states, \"The Zakat you entrust us with will be used for the direct support of IMANA's Medical Relief missions around the globe.\". Furthermore, IMANA states, \"IMANA collects and distributes zakat to those who are most in need, in accordance with Islamic guidelines.\" and \"Donations made to IMANA Medical Relief are Zakat Eligible.\". (Source: https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEpH2I4gxJmhcgTj1QpYuTUur1VY2-opoACTcBpZcVN8VaxuTI9fliMtfA2qBSnuLV7Nkv1vmQ_txehzoYevoqalmURRj2bLC--tsNFuSmQONy_gCg=)"
   ],
   "archetype": "DIRECT_SERVICE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Promising",
+    "archetype_code": "DIRECT_SERVICE",
+    "archetype_label": "Frontline Relief",
+    "evidence_stage": "Established",
+    "signal_states": {
+      "evidence": "Moderate",
+      "financial_health": "Moderate",
+      "donor_fit": "Strong",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "36-4166125",
     "charity_name": "IMANA",
-    "amal_score": 79,
+    "amal_score": 80,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-02-04 20:47:38",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 44,
       "data_confidence": 1,
-      "impact": 36
+      "impact": 37
     },
     "score_details": {
       "alignment": {
@@ -431,12 +454,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 33.0 months (ENDOWMENT)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 3,
+            "evidence": "Working capital: 33.0 months (RESERVE_MODEL)",
+            "improvement_suggestion": "Distinguish restricted/endowment reserves from operating reserves and publish a clear reserve-use policy.",
+            "improvement_value": 2,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 4,
+            "scored": 5,
             "status": "full"
           },
           {
@@ -479,36 +502,10 @@
         "cost_per_beneficiary": 1.0633224,
         "directness_level": "DIRECT_PROVISION",
         "impact_design_categories": [],
-        "rationale": "$1.06/beneficiary; Delivery: direct provision; Impact 36/50",
+        "rationale": "$1.06/beneficiary; Delivery: direct provision; Impact 37/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 36
+        "score": 37
       },
-      "judge_issues": [
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -1,
       "risks": {
         "overall_risk_level": "LOW",
@@ -524,7 +521,7 @@
         ],
         "total_deduction": -1
       },
-      "score_summary": "Islamic Medical Association of North America earns 79/100 due to exceptional alignment and strong impact, with zakat compliance (minor risk deductions applied).",
+      "score_summary": "Islamic Medical Association of North America shows exceptional alignment and strong impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": "masakin",
         "bonus_points": 0,
@@ -536,555 +533,40 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "IMANA holds a 99.75/100 rating and focuses on health promotion and direct patient care.",
+          "claim": "IMANA holds a 99.75/100 rating and holds 33.0 months of working capital with a fundraising efficiency of $0.13 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/364166125"
         },
         {
-          "claim": "The organization reported total revenue of $2,874,345, a program expense ratio of 68.7%, and 33.0 months of working capital.",
+          "claim": "The organization reported total revenue of $2,874,345 and a program expense ratio of 68.7%.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/364166125"
         },
         {
-          "claim": "IMANA provides donation options that are zakat-eligible.",
+          "claim": "IMANA provides donation options that are Zakat-eligible.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://imana.org/donate/"
         }
       ],
-      "amal_score_rationale": "IMANA earns a strong overall standing due to its high accountability ratings and efficient fundraising, though its program expense ratio leaves some room for growth compared to its financial health scores.",
+      "amal_score_rationale": "IMANA earns a strong overall score due to its high financial accountability and direct impact model, though its program expense ratio leaves slight room for growth compared to its administrative efficiency.",
       "areas_for_improvement": [
-        "program expense ratio of 68.7% is lower than some top-tier peers",
-        "Expansion of direct impact reporting for specific regional programs"
+        "program expense ratio of 68.7% is lower than some top-tier peers in the medical relief sector",
+        "Expanding public reporting on long-term health outcomes for specific initiatives like ServeIndia"
       ],
       "dimension_explanations": {
-        "alignment": "The organization shows high alignment for Muslim donors as a zakat-eligible entity addressing urgent global health crises [3]. Its mission focuses on health maintenance and disease prevention in underserved communities, matching high-priority humanitarian needs [1].",
-        "impact": "IMANA demonstrates high effectiveness in direct service provision through programs like ServeRohingya and ServePakistan, maintaining a high data confidence level [1]. While the program expense ratio is 68.7%, the organization maintains a robust 33.0 months of working capital to ensure long-term stability [2]."
+        "alignment": "The organization offers high donor fit for the Muslim community by providing Zakat-eligible giving options and addressing urgent global health crises [1][3]. Its mission aligns with Islamic values of service and health maintenance, supported by a transparent financial track record [1][2].",
+        "impact": "IMANA demonstrates high impact through direct provision of medical services in programs such as ServeRohingya and ServePakistan, maintaining a cost-effective model with a program expense ratio of 68.7% [1][2]. The organization shows strong financial stability with 33.0 months of working capital, ensuring long-term program continuity [1]."
       },
-      "headline": "The Islamic Medical Association of North America (IMANA) provides critical healthcare relief and disease prevention to vulnerable global populations.",
+      "headline": "The Islamic Medical Association of North America (IMANA) provides critical global healthcare relief and medical services through a highly efficient financial model.",
       "strengths": [
-        "Exceptional Charity Navigator score of 99.75/100",
-        "High fundraising efficiency of $0.13 per $1 raised",
-        "Strong liquidity with 33.0 months of working capital"
+        "Exceptional financial health with a Charity Navigator score of 99.75/100",
+        "High fundraising efficiency, spending only $0.13 per $1 raised",
+        "Robust liquidity with 33.0 months of working capital"
       ],
-      "summary": "IMANA is a professional organization that fosters health promotion and maintenance through direct patient care and international health programs [1]. The organization reported a total revenue of $2,874,345 and is recognized as a zakat-eligible entity for donors seeking to fulfill their religious obligations [2][3]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "health promotion and disease prevention",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "IMANA fosters health promotion, disease prevention, and health maintenance",
-          "source_name": "Charity Navigator - IMANA",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/364166125"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $2,874,345",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: $2,874,345",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/364166125"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "direct patient care and mentorship",
-          "confidence": 0.9,
-          "id": "[3]",
-          "quote": "through direct patient care, health programs, and mentorship",
-          "source_name": "IMANA Website",
-          "source_type": "website",
-          "source_url": "https://imana.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "99.75/100 overall score from Charity Navigator",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Overall Score 99.75/100",
-          "source_name": "Charity Navigator - Ratings",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/364166125"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified as zakat-eligible",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "IMANA is a Zakat-eligible organization",
-          "source_name": "IMANA Website - Donate",
-          "source_type": "website",
-          "source_url": "https://imana.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "poor, needy, and those in debt",
-          "confidence": 0.9,
-          "id": "[6]",
-          "quote": "Zakat categories: fuqara, masakin, gharimin",
-          "source_name": "IMANA Zakat Policy",
-          "source_type": "website",
-          "source_url": "https://imana.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.13 per $1 raised",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Fundraising Efficiency: $0.13",
-          "source_name": "Charity Navigator - Financial",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/364166125"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "countries including Pakistan, Bangladesh, and Yemen",
-          "confidence": 0.95,
-          "id": "[8]",
-          "quote": "Geographic Coverage: Bangladesh, Pakistan, Yemen",
-          "source_name": "IMANA Programs",
-          "source_type": "website",
-          "source_url": "https://imana.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Candid Platinum Seal of Transparency",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Candid Seal: Platinum",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/364166125"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "33.0 months of working capital",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Working Capital Ratio (months): 31.0",
-          "source_name": "Charity Navigator - Financial",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/364166125"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 68.7%",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Program expense ratio: 68.7%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/364166125"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer program ratio median of 84.6%",
-          "confidence": 0.9,
-          "id": "[12]",
-          "quote": "Peer Program Ratio Median: 84.6%",
-          "source_name": "Internal Benchmark Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/364166125"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cost-per-beneficiary of approximately $1.06",
-          "confidence": 0.85,
-          "id": "[13]",
-          "quote": "$1.06/beneficiary",
-          "source_name": "Impact Analysis",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/364166125"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "independent board of 12 members",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Board Size: 12; Independent Board Members: 100%",
-          "source_name": "Charity Navigator - Governance",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/364166125"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of -21.3%",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "3-Year Revenue CAGR: -21.3%",
-          "source_name": "Financial Trends",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/364166125"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "4 outcome metrics via Candid",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Outcome Metrics Tracked: 4",
-          "source_name": "Candid Outcomes",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/364166125"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Absence of a documented theory of change",
-          "confidence": 0.9,
-          "id": "[17]",
-          "quote": "Theory of change: ABSENT",
-          "source_name": "Impact Assessment",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/364166125"
-        }
-      ],
-      "amal_score_rationale": "IMANA earns a strong overall standing due to its high accountability ratings and efficient fundraising, though its program expense ratio leaves some room for growth compared to its financial health scores.",
-      "amal_scores": {
-        "amal_score": 79,
-        "confidence_scores": {
-          "alignment": 44,
-          "data_confidence": 1,
-          "impact": 36
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Revenue Growth Volatility",
-          "citation_ids": [
-            "[15]"
-          ],
-          "context": "The organization has experienced a <cite id=\"15\">3-year revenue CAGR of -21.3%</cite>, suggesting a need for more diversified or stable long-term funding streams."
-        },
-        {
-          "area": "Impact Measurement Formalization",
-          "citation_ids": [
-            "[16]",
-            "[17]"
-          ],
-          "context": "While IMANA tracks <cite id=\"16\">4 outcome metrics via Candid</cite>, it currently lacks a <cite id=\"17\">documented theory of change</cite> to map long-term causal impact."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[14]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "The organization maintains high governance standards with audited financials and a fully independent board."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[15]",
-          "[17]"
-        ],
-        "mitigation_notes": "The organization's high liquidity of 31 months provides a buffer against revenue declines while they refine their impact reporting.",
-        "risk_factors": [
-          "<cite id=\"15\">3-year revenue CAGR of -21.3%</cite>",
-          "<cite id=\"17\">Absence of a documented theory of change</cite>"
-        ],
-        "summary": "The primary concerns involve <cite id=\"15\">declining revenue trends</cite> and a lack of <cite id=\"17\">formalized impact evaluation</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 4,
-          "rating": 10,
-          "website": 3
-        },
-        "high_confidence_count": 15,
-        "total_count": 17,
-        "unique_sources": 3
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023 Form 990",
-        "data_gaps": [
-          "Missing explicit Theory of Change document",
-          "Declining revenue trend"
-        ],
-        "level": "HIGH",
-        "notes": "Strong governance and financial data available; impact data is self-reported.",
-        "score": 85,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "IMANA Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 85,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "No documented theory of change",
-          "Negative revenue growth"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 17,
-        "unique_sources": 3,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[5]",
-            "[6]",
-            "[8]"
-          ],
-          "explanation": "The organization is a strong fit for Muslim donors, offering <cite id=\"5\">verified zakat eligibility</cite> and serving <cite id=\"6\">eight distinct zakat categories (asnaf)</cite>.",
-          "improvement": "Alignment is already high, but could be maximized by <cite id=\"8\">expanding services to more underserved regions</cite> with limited existing nonprofit coverage."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[4]",
-            "[9]",
-            "[14]",
-            "[17]"
-          ],
-          "explanation": "Donors can trust IMANA due to its <cite id=\"4\">99.99.75/100 from Charity Navigator rating</cite> and its status as a <cite id=\"9\">Candid Platinum participant</cite>. The organization also maintains <cite id=\"14\">100% board independence</cite>.",
-          "improvement": "To further strengthen credibility, the organization could <cite id=\"17\">document a formal theory of change</cite> and seek third-party academic evaluations of its medical interventions."
-        },
-        "impact": {
-          "citation_ids": [
-            "[11]",
-            "[13]",
-            "[16]"
-          ],
-          "explanation": "IMANA demonstrates high efficiency with a <cite id=\"11\">68.7% program expense ratio</cite> and a very low <cite id=\"13\">cost per beneficiary of $1.06</cite>.",
-          "improvement": "Impact scores could improve by <cite id=\"16\">tracking outcomes for more than 3 consecutive years</cite> and publishing detailed impact reports for its foreign grant recipients."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "GLOBAL_HEALTH",
-        "citation_ids": [
-          "[5]",
-          "[6]",
-          "[8]",
-          "[16]"
-        ],
-        "evidence_rigor": "Grade C - Internal outcome tracking with 4 metrics",
-        "geographic_focus": [
-          "Pakistan",
-          "Bangladesh",
-          "Yemen",
-          "India",
-          "Jordan"
-        ],
-        "giving_style": "Direct medical service",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara",
-          "masakin",
-          "amil",
-          "muallaf",
-          "riqab",
-          "gharimin",
-          "fisabilillah",
-          "ibn_sabil"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.013,
-        "annual_revenue": 2874345,
-        "citation_ids": [
-          "[2]",
-          "[15]"
-        ],
-        "cn_financial_score": 99,
-        "cn_overall_score": 99.75,
-        "fundraising_ratio": 0.13,
-        "industry_program_ratio": 0.75,
-        "peer_count": 14,
-        "peer_program_ratio_median": 0.846,
-        "program_expense_ratio": 0.6873999999999999,
-        "reserves_months": 31,
-        "revenue_cagr_3yr": -21.3,
-        "transparency_score": 100,
-        "working_capital_months": 33,
-        "yearly_financials": [
-          {
-            "expenses": 2693656,
-            "net_assets": 7411092,
-            "revenue": 2874345,
-            "year": 2023
-          },
-          {
-            "expenses": 2894473,
-            "net_assets": 6670236,
-            "revenue": 1786477,
-            "year": 2022
-          },
-          {
-            "expenses": 2972516,
-            "net_assets": 7778232,
-            "revenue": 4638395,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "domestic_grants": 725402,
-        "foreign_grants": 1268016,
-        "grant_count": 16,
-        "grant_strategy": "Distributes funds to specialized foundations and relief trusts for local implementation.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Bangladesh",
-          "Pakistan",
-          "India"
-        ],
-        "top_recipients": [
-          "B'Desh Foundation ($131,250)",
-          "United Muslim Relief ($119,497)"
-        ],
-        "total_grants": 1993418
-      },
-      "headline": "The Islamic Medical Association of North America (IMANA) provides critical healthcare relief and disease prevention to vulnerable global populations.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support professional medical interventions and emergency relief within a faith-based framework that prioritizes high financial accountability.",
-        "citation_ids": [
-          "[4]",
-          "[5]",
-          "[15]"
-        ],
-        "donor_motivations": [
-          "Want to fulfill zakat through healthcare-specific asnaf",
-          "Value organizations led by medical professionals",
-          "Prefer charities with high transparency ratings (Platinum/4-Star)",
-          "Interested in supporting medical infrastructure in Muslim-majority countries"
-        ],
-        "giving_considerations": [
-          "The organization is mid-sized, meaning large gifts have high visibility",
-          "Recent revenue trends show a contraction, making new donations vital for stability",
-          "Focus is on direct service rather than systemic advocacy"
-        ],
-        "not_ideal_for": "Donors seeking large-scale systemic policy change or those who require RCT-level evidence of long-term health outcomes."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[16]",
-          "[17]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C indicates that while the charity tracks <cite id=\"16\">4 specific outcome metrics</cite>, it lacks external evaluations or a published theory of change.",
-        "external_evaluations": [
-          "Candid Outcome Metrics"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "IMANA creates impact by deploying medical teams and funding local health clinics to provide direct care to refugees and underserved populations.",
-        "why_evidence_matters": "Evidence ensures that medical interventions are reaching the intended beneficiaries and resulting in improved health outcomes."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[15]"
-        ],
-        "founded_year": 1999,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": -21.3,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"15\">revenue decline of 21.3%</cite> over three years, the organization has significant capacity to absorb new funding to restore and expand its medical relief programs.",
-        "strategic_priorities": [
-          "Establish health clinics and hospitals",
-          "Provide medical teams for refugee care"
-        ],
-        "years_operating": 27
-      },
-      "organizational_capacity": {
-        "board_size": 12,
-        "ceo_compensation": 149262,
-        "ceo_compensation_pct_revenue": 5.19,
-        "ceo_name": "Not Listed",
-        "citation_ids": [
-          "[2]",
-          "[8]",
-          "[14]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "9+ countries including Mauritania, Guyana, and Uganda",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[11]",
-          "[12]"
-        ],
-        "differentiator": "IMANA distinguishes itself with a <cite id=\"11\">68.7% program ratio</cite>, which is significantly higher than the <cite id=\"12\">peer median of 84.6%</cite>.",
-        "peer_group": "Global Health & Medical Relief",
-        "similar_orgs": [
-          "SAPA",
-          "Khalil Center",
-          "Syrian American Medical Society Foundation"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar size and healthcare focus",
-          "name": "SAPA"
-        },
-        {
-          "differentiator": "Focus on mental health within healthcare",
-          "name": "Khalil Center"
-        },
-        {
-          "differentiator": "Larger scale with similar medical relief model",
-          "name": "Syrian American Medical Society Foundation"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[4]",
-            "[9]"
-          ],
-          "detail": "IMANA holds a <cite id=\"4\">99.75/100 overall score from Charity Navigator</cite> and a <cite id=\"9\">Candid Platinum Seal of Transparency</cite>, indicating top-tier reporting standards.",
-          "point": "Exceptional Accountability and Governance"
-        },
-        {
-          "citation_ids": [
-            "[7]"
-          ],
-          "detail": "The organization operates with a lean fundraising model, spending only <cite id=\"7\">$0.13 to raise every dollar</cite> of contribution revenue.",
-          "point": "High Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[10]"
-          ],
-          "detail": "IMANA maintains <cite id=\"10\">33.0 months of working capital</cite>, providing a significant safety net for sustained operations during economic volatility.",
-          "point": "Robust Financial Liquidity"
-        }
-      ],
-      "strengths_deep_dive": [
-        "IMANA's operational strength lies in its ability to mobilize professional medical expertise for humanitarian ends. The organization reported a <cite id=\"11\">program expense ratio of 68.7%</cite> in its most recent filings, significantly exceeding the <cite id=\"12\">peer program ratio median of 84.6%</cite> for global health charities. This efficiency is further evidenced by a <cite id=\"13\">cost-per-beneficiary of approximately $1.06</cite>, which is considered exceptional for direct medical provision. Furthermore, the organization is governed by an <cite id=\"14\">independent board of 12 members</cite>, ensuring that 100% of the board meets independent standards for oversight and conflict-of-interest management."
-      ],
-      "summary": "The Islamic Medical Association of North America (IMANA) is a professional and humanitarian organization that fosters <cite id=\"1\">health promotion and disease prevention</cite> through direct patient care and international medical relief. Operating with a <cite id=\"2\">total revenue of $2,874,345</cite>, the organization leverages a network of medical professionals to provide <cite id=\"3\">direct patient care and mentorship</cite> across several continents. IMANA maintains a <cite id=\"4\">99.75/100 overall score from Charity Navigator</cite>, reflecting a high standard of institutional accountability. The organization is <cite id=\"5\">verified as zakat-eligible</cite>, allowing Muslim donors to fulfill their religious obligations through healthcare initiatives that serve the <cite id=\"6\">poor, needy, and those in debt</cite>. While its financial scale is smaller than some global giants, IMANA demonstrates significant efficiency, reporting a <cite id=\"7\">fundraising efficiency of $0.13 per $1 raised</cite>. Its programs reach vulnerable populations in <cite id=\"8\">countries including Pakistan, Bangladesh, and Yemen</cite>, focusing on both emergency medical relief and long-term health infrastructure.",
-      "zakat_guidance": {
-        "classification": "masakin",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "IMANA is a professional organization dedicated to health promotion and disease prevention through direct patient care and international relief programs [1]. The organization reported a total revenue of $2,874,345 and maintains a Zakat-eligible status for donors seeking to fulfill their religious obligations [2][3]."
     }
   }
 }

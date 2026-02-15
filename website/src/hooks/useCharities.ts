@@ -10,8 +10,9 @@
 
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import type { CharityProfile } from '../../types';
+import type { CharityProfile, UISignalsV1 } from '../../types';
 import { normalizeCauseArea, type CauseCategory } from '../utils/categoryUtils';
+import { deriveUISignalsFromSummary, deriveUISignalsFromCharity } from '../utils/scoreUtils';
 
 // Summary charity from charities.json (lighter weight for listing)
 export interface CharitySummary {
@@ -57,6 +58,10 @@ export interface CharitySummary {
   scoreSummary?: string | null;
   /** Zakat asnaf categories served */
   asnafServed?: string[] | null;
+  /** Rubric archetype from score details */
+  rubricArchetype?: string | null;
+  /** Donor-facing qualitative signals */
+  ui_signals_v1?: UISignalsV1 | null;
 }
 
 interface CharitiesIndex {
@@ -138,6 +143,8 @@ function summaryToProfile(summary: CharitySummary): CharityProfile {
     scoreSummary: summary.scoreSummary || null,
     // Asnaf categories for browse page filtering
     asnafServed: summary.asnafServed || null,
+    rubricArchetype: summary.rubricArchetype || null,
+    ui_signals_v1: summary.ui_signals_v1 || deriveUISignalsFromSummary(summary),
   } as CharityProfile;
 }
 
@@ -184,7 +191,11 @@ export function useCharity(ein: string) {
       if (!response.ok) {
         throw new Error(`Charity not found: ${ein}`);
       }
-      return (await response.json()) as CharityProfile;
+      const charity = (await response.json()) as CharityProfile;
+      if (!charity.ui_signals_v1) {
+        charity.ui_signals_v1 = deriveUISignalsFromCharity(charity);
+      }
+      return charity;
     },
     enabled: !!ein,
   });

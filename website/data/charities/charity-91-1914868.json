@@ -2,7 +2,7 @@
   "id": "91-1914868",
   "ein": "91-1914868",
   "name": "Habitat for Humanity International",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Habitat for Humanity is a movement of people in your local area and around the world, working together to build more prosperous and vibrant communities by making sure everyone has a safe, affordable place to call home. Since our founding in 1976 as a Christian organization, together we have helped more than 62 million people globally build their futures on their own terms through access to decent housing. We\u2019ve done that by working alongside people of all walks of life to build, repair and finance their homes, by innovating new ways of building and financing, and by advocating for policies that make constructing and accessing housing easier for everyone. Together, we build homes, communities and hope. To learn more, visit habitat.org",
   "programs": [
     "Home construction",
@@ -57,7 +57,11 @@
     "netAssets": 430753045,
     "workingCapitalMonths": "15.60"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 23,
+    "independentBoardMembers": null,
+    "ceoCompensation": 523111
+  },
   "targeting": {
     "populationsServed": [
       "Adults",
@@ -86,7 +90,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-09 21:38:57",
+  "lastUpdated": "2026-02-14 19:36:25",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -6281,17 +6285,36 @@
     "Organization is in zakat denylist (partners but doesn't collect directly)"
   ],
   "archetype": "ASSET_CREATION",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Promising",
+    "archetype_code": "ASSET_CREATION",
+    "archetype_label": "Asset Creator",
+    "evidence_stage": "Verified",
+    "signal_states": {
+      "evidence": "Limited",
+      "financial_health": "Moderate",
+      "donor_fit": "Moderate",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "91-1914868",
     "charity_name": "Habitat for Humanity International",
-    "amal_score": 57,
+    "amal_score": 62,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:36:54",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 26,
       "data_confidence": 0.95,
-      "impact": 33
+      "impact": 38
     },
     "score_details": {
       "alignment": {
@@ -6379,11 +6402,11 @@
           },
           {
             "evidence": "Working capital: 15.6 months (HIGH)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 4,
+            "improvement_suggestion": "Document why reserves above your policy target are intentional (e.g., restrictions, volatility, planned commitments) and define deployment triggers.",
+            "improvement_value": 2,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 0,
+            "scored": 5,
             "status": "full"
           },
           {
@@ -6426,30 +6449,10 @@
         "cost_per_beneficiary": 95.591347,
         "directness_level": "DIRECT_PROVISION",
         "impact_design_categories": [],
-        "rationale": "$95.59/beneficiary; Delivery: direct provision; Impact 33/50",
+        "rationale": "$95.59/beneficiary; Delivery: direct provision; Impact 38/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 33
+        "score": 38
       },
-      "judge_issues": [
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change",
-          "judge": "discover_quality",
-          "message": "Theory of change URL found but description not extracted",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
@@ -6465,7 +6468,7 @@
         ],
         "total_deduction": -2
       },
-      "score_summary": "Habitat for Humanity International Inc earns 57/100 due to good impact and moderate alignment (minor risk deductions applied).",
+      "score_summary": "Habitat for Humanity International Inc shows strong impact and moderate alignment (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -6477,555 +6480,58 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Habitat for Humanity International Inc reported total revenue of $329,195,153 and manages program and house building transfers.",
+          "claim": "The organization manages program and house building transfers as part of its core mission.",
           "id": "[1]",
           "source_name": "Financial Statement (2023)",
           "source_url": "https://www.habitat.org/media/21371/view"
         },
         {
-          "claim": "The organization continues to facilitate microfinance loans and program transfers to support community recovery.",
+          "claim": "Audited financials detail the organization's revenue and microfinance loan programs.",
           "id": "[2]",
           "source_name": "Financial Statement (2024)",
           "source_url": "https://www.habitat.org/media/27061/download"
         },
         {
-          "claim": "The organization offers various giving methods for charitable donations, categorized as Sadaqah-eligible.",
+          "claim": "The organization offers various giving methods for charitable donations.",
           "id": "[6]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.habitat.org/donate"
         },
         {
-          "claim": "Donors and volunteers can engage through global village programs and direct donations to support housing projects.",
+          "claim": "Volunteer engagement and program donations support global building efforts.",
           "id": "[7]",
           "source_name": "Charity Website - Volunteer",
           "source_url": "https://www.habitat.org/volunteer/travel-and-build/global-village/about-your-program-donation"
         },
         {
-          "claim": "The organization maintains a program expense ratio of 77.5% and spends $0.21 per $1 raised in fundraising efficiency.",
+          "claim": "Total revenue for the period was $329,195,153.",
           "id": "[8]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/911914868"
         },
         {
-          "claim": "Habitat for Humanity International Inc holds a 98.5/100 rating and holds 15.6 months of working capital.",
+          "claim": "The charity maintains a 98.5/100 score, a 77.5% program expense ratio, 15.6 months of working capital, and a fundraising efficiency of $0.21 per $1 raised.",
           "id": "[9]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/911914868"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its exceptional financial health and transparency, balanced by a medium alignment for specific donor profiles and a direct-provision impact model.",
+      "amal_score_rationale": "The organization earns a GMG score of 62/100, reflecting a high level of data confidence and strong financial health, balanced by a medium alignment for specific donor groups. It is recognized as SADAQAH-ELIGIBLE for those seeking to support housing stability through voluntary charity.",
       "areas_for_improvement": [
-        "Enhancing cost-effectiveness per beneficiary to improve overall impact scores",
-        "Increasing alignment with specific donor demographics seeking high-urgency domestic poverty interventions"
+        "Enhancing program expense allocation to exceed the current 77.5% ratio",
+        "Improving alignment with specific donor demographics seeking high-urgency domestic poverty interventions"
       ],
       "dimension_explanations": {
-        "alignment": "Habitat for Humanity shows a medium donor fit with a score of 26/50, as its mission focuses on domestic poverty and disaster recovery [8]. The organization is classified as Sadaqah-eligible, offering various ways for donors to contribute to community rebuilding efforts [6][7].",
-        "impact": "The organization demonstrates a direct-provision impact model, focusing on the physical construction and transfer of housing to beneficiaries [1][2]. While it maintains a high program expense ratio of 77.5%, the cost per beneficiary is calculated at approximately 95.59, contributing to an impact score of 33/50 [9]."
+        "alignment": "Habitat for Humanity shows medium alignment for donors focused on domestic poverty and housing equity, particularly through its 'Advancing Black Homeownership' initiative [1][6]. While it has a long track record of service, the alignment score of 26/50 reflects a balanced fit for Muslim donors looking for sadaqah-eligible opportunities rather than zakat-specific pathways [6][7].",
+        "impact": "The organization demonstrates high impact through direct provision of housing services, maintaining a program expense ratio of 77.5% [1][9]. With a cost per beneficiary of approximately 95.59 and a high data confidence score of 0.95, the charity provides transparent evidence of its effectiveness in disaster response and homeownership programs like 'Home Equals' [2][8]."
       },
-      "headline": "Habitat for Humanity International Inc works to rebuild communities and provide stable housing solutions for families moving from ruin to recovery.",
+      "headline": "Habitat for Humanity International works to rebuild communities and expand equitable housing access through direct provision and advocacy.",
       "strengths": [
         "High financial accountability with a Charity Navigator score of 98.5/100",
-        "Strong liquidity with 15.6 months of working capital",
+        "Strong liquidity with 15.6 months of working capital available",
         "Efficient fundraising operations spending only $0.21 per $1 raised"
       ],
-      "summary": "Habitat for Humanity International Inc is a global housing organization that focuses on disaster response and long-term community development [1][9]. Through programs like Home Equals and Advancing Black Homeownership, the organization addresses systemic housing inequities and provides direct provision of shelter [2][8]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "its founding in 1976",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "founded in 1976 by Millard and Linda Fuller",
-          "source_name": "Habitat for Humanity - About",
-          "source_type": "website",
-          "source_url": "https://www.habitat.org/about"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$329,195,153 in total revenue",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: $329,195,153",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/911914868"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "over 70 countries",
-          "confidence": 0.95,
-          "id": "[3]",
-          "quote": "Habitat for Humanity operates in more than 70 countries",
-          "source_name": "Habitat for Humanity - Global Reach",
-          "source_type": "website",
-          "source_url": "https://www.habitat.org/about/where-we-work"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Cost of Home advocacy campaign",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Cost of Home is our five-year advocacy campaign",
-          "source_name": "Habitat for Humanity - Advocacy",
-          "source_type": "website",
-          "source_url": "https://www.habitat.org/advocacy"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.21 per $1 raised",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Fundraising Efficiency: $0.21",
-          "source_name": "Charity Navigator - Habitat",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/911914868"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$565,862,638 in total assets",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Total assets: $565,862,638",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/911914868"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "15.6 months of working capital",
-          "confidence": 0.95,
-          "id": "[7]",
-          "quote": "Working Capital Ratio (years): 1.24",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/911914868"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "overall score of 98.98.5/100 from Charity Navigator",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Overall Score: 98.50",
-          "source_name": "Charity Navigator - Rating",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/911914868"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "77.5% of its total expenses toward program services",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Program service expenses: $286,598,123 / Total expenses: $330,613,285",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/911914868"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "meets all 20 BBB Wise Giving Alliance Standards",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "This charity meets all 20 Standards for Charity Accountability",
-          "source_name": "BBB Wise Giving Alliance",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/human-services/habitat-for-humanity-international-in-americus-ga-9999-3178"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$305,651,094 in public contributions",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Contributions and grants: $305,651,094",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/911914868"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "independent board of 23 members",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Number of voting members of the governing body: 23",
-          "source_name": "Form 990 (2023) - Governance",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/911914868"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$121,259,158 in total grants",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Grants and other assistance paid: $121,259,158",
-          "source_name": "Form 990 (2023) - Grants",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/911914868"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "third-party impact evaluations or RCT-level evidence",
-          "confidence": 0.9,
-          "id": "[14]",
-          "quote": "Evidence & outcomes: UNVERIFIED",
-          "source_name": "AMAL Evaluation - Impact",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/911914868#impact"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of -0.1%",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Revenue 2021: $330M; 2023: $329M",
-          "source_name": "Financial Trends Analysis",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/911914868"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Sadaqah-eligible only",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Wallet Tag: SADAQAH-ELIGIBLE",
-          "source_name": "AMAL Alignment Assessment",
-          "source_type": "website",
-          "source_url": "https://www.habitat.org/donate"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its exceptional financial health and transparency, balanced by a medium alignment for specific donor profiles and a direct-provision impact model.",
-      "amal_scores": {
-        "amal_score": 57,
-        "confidence_scores": {
-          "alignment": 26,
-          "data_confidence": 0.95,
-          "impact": 33
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Evidence and Outcome Verification",
-          "citation_ids": [
-            "[14]"
-          ],
-          "detail": "While the organization tracks outputs like house transfers, it lacks <cite id=\"14\">third-party impact evaluations or RCT-level evidence</cite> to verify long-term socioeconomic outcomes."
-        },
-        {
-          "area": "Revenue Growth Stagnation",
-          "citation_ids": [
-            "[15]"
-          ],
-          "detail": "The organization has seen a <cite id=\"15\">3-year revenue CAGR of -0.1%</cite>, suggesting a plateau in funding growth despite increasing global housing needs."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[10]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "review_url": "https://give.org/charity-reviews/human-services/habitat-for-humanity-international-in-americus-ga-9999-3178",
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "Meets all 20 BBB Wise Giving Alliance Standards for Charity Accountability"
-      },
-      "case_against": {
-        "citation_ids": [
-          "[14]",
-          "[15]"
-        ],
-        "mitigation_notes": "The organization maintains a Gold Seal of Transparency from Candid and is active in global advocacy to address root causes.",
-        "risk_factors": [
-          "<cite id=\"15\">Negative 3-year revenue growth (-0.1%)</cite>",
-          "<cite id=\"14\">No external impact evaluations available</cite>"
-        ],
-        "summary": "The primary concern is the <cite id=\"14\">lack of verified long-term outcome data</cite> despite the organization's massive scale and 50-year history."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 1,
-          "form990": 7,
-          "rating": 4,
-          "website": 4
-        },
-        "high_confidence_count": 14,
-        "total_count": 16,
-        "unique_sources": 6
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023; ratings from late 2024",
-        "data_gaps": [
-          "Missing 2024 Form 990",
-          "No independent longitudinal impact studies"
-        ],
-        "level": "HIGH",
-        "notes": "Extremely high data availability for financial and governance metrics.",
-        "score": 95,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "BBB Wise Giving Alliance",
-          "Habitat Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 95,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "No third-party impact evaluation",
-          "Limited longitudinal outcome data"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 16,
-        "unique_sources": 6,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[3]",
-            "[16]"
-          ],
-          "explanation": "The charity is a strong fit for donors interested in <cite id=\"3\">humanitarian housing relief</cite> and domestic poverty, though it is <cite id=\"16\">Sadaqah-eligible only</cite>.",
-          "improvement": "Alignment could be improved by <cite id=\"16\">highlighting humanitarian dimensions</cite> of work in Muslim-majority regions like Africa and Indonesia."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[8]",
-            "[10]",
-            "[12]",
-            "[14]"
-          ],
-          "explanation": "Donors can trust this charity due to its <cite id=\"8\">98.98.5/100 from Charity Navigator rating</cite>, its <cite id=\"10\">20/20 BBB standards compliance</cite>, and its <cite id=\"12\">95% independent board</cite>.",
-          "improvement": "To strengthen credibility further, the charity could <cite id=\"14\">seek external evaluations</cite> to move beyond self-reported metrics."
-        },
-        "impact": {
-          "citation_ids": [
-            "[9]",
-            "[14]"
-          ],
-          "explanation": "Operations are efficient with an <cite id=\"9\">77.5% program expense ratio</cite> and a cost-per-beneficiary of <cite id=\"14\">$95.59</cite>, which is exceptional for the domestic poverty sector.",
-          "improvement": "Impact measurement would benefit from <cite id=\"14\">documenting a clear theory of change</cite> with causal pathways for long-term poverty alleviation."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "DOMESTIC_POVERTY",
-        "citation_ids": [
-          "[1]",
-          "[3]",
-          "[16]"
-        ],
-        "evidence_rigor": "Grade C - Self-reported outputs with limited external evaluation",
-        "geographic_focus": [
-          "United States",
-          "Africa",
-          "Mexico",
-          "South America"
-        ],
-        "giving_style": "Direct Provision & Advocacy",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "",
-          ""
-        ],
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.082,
-        "annual_revenue": 329195153,
-        "citation_ids": [
-          "[8]",
-          "[15]"
-        ],
-        "cn_financial_score": 97,
-        "cn_overall_score": 98.5,
-        "fundraising_ratio": 0.051,
-        "industry_program_ratio": 0.75,
-        "peer_count": 23,
-        "peer_program_ratio_median": 0.838,
-        "program_expense_ratio": 0.7746999999999999,
-        "reserves_months": 14.9,
-        "revenue_cagr_3yr": -0.1,
-        "transparency_score": 85,
-        "working_capital_months": 15.6,
-        "yearly_financials": [
-          {
-            "expenses": 330613285,
-            "net_assets": 430753045,
-            "revenue": 329195153,
-            "year": 2023
-          },
-          {
-            "expenses": 290446515,
-            "net_assets": 431175274,
-            "revenue": 439439083,
-            "year": 2022
-          },
-          {
-            "expenses": 282558082,
-            "net_assets": 292076748,
-            "revenue": 330089584,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[13]"
-        ],
-        "domestic_grants": 70097349,
-        "foreign_grants": 51161809,
-        "grant_count": 760,
-        "grant_strategy": "Distributes funds to local affiliates for direct construction and microfinance loans",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "United States",
-          "Africa",
-          "Latin America",
-          "Europe"
-        ],
-        "top_recipients": [
-          "Twin Cities HFH ($2.8M)",
-          "East Bay Silicon Valley HFH ($1.9M)"
-        ],
-        "total_grants": 121259158
-      },
-      "headline": "Habitat for Humanity International Inc works to rebuild communities and provide stable housing solutions for families moving from ruin to recovery.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value institutional stability and want to support large-scale, proven housing infrastructure projects through sadaqah.",
-        "citation_ids": [
-          "[1]",
-          "[8]",
-          "[16]"
-        ],
-        "donor_motivations": [
-          "Value established organizations with a 50-year track record",
-          "Want to support tangible housing solutions for the poor",
-          "Prefer charities with high financial transparency and 4-star ratings",
-          "Interested in both direct aid and systemic advocacy"
-        ],
-        "giving_considerations": [
-          "",
-          "The organization is a large institution where individual gifts are pooled",
-          "Focus is on housing rather than emergency food or medical aid"
-        ],
-        "not_ideal_for": ""
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[14]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects strong output tracking (houses built) but a lack of rigorous, independent longitudinal studies on beneficiary outcomes.",
-        "external_evaluations": [
-          "Candid Gold Seal profile"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "Habitat creates impact by providing affordable housing and advocacy, which leads to improved health, safety, and economic stability for families.",
-        "why_evidence_matters": "Evidence ensures that providing a home leads to the intended long-term socioeconomic mobility for the family."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[15]"
-        ],
-        "founded_year": 1976,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": -0.1,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Despite large revenues, the global housing deficit remains vast, and Habitat's negative growth suggests a need for new donor capital.",
-        "strategic_priorities": [
-          "Advancing Black Homeownership",
-          "Global advocacy for land rights",
-          "Disaster risk reduction"
-        ],
-        "years_operating": 50
-      },
-      "organizational_capacity": {
-        "board_size": 23,
-        "ceo_compensation": 523111,
-        "ceo_compensation_pct_revenue": 0.16,
-        "ceo_name": "Jonathan Reckford",
-        "citation_ids": [
-          "[8]",
-          "[12]"
-        ],
-        "employees_count": 800,
-        "geographic_reach": "70+ countries",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 0.95,
-        "payroll_to_revenue_pct": 12.5,
-        "programs_count": 5,
-        "staff_per_million_revenue": 2.4,
-        "volunteers_count": 1000000
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[7]",
-          "[13]"
-        ],
-        "differentiator": "Distinguished by its <cite id=\"7\">15.6 months of working capital</cite> and massive <cite id=\"13\">$121 million grantmaking capacity</cite>.",
-        "peer_group": "Domestic Poverty & Humanitarian Relief",
-        "similar_orgs": [
-          "Second Harvest Food Bank",
-          "ICNA Relief",
-          "Saylani Welfare Trust USA"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Focus on food security vs housing",
-          "name": "Second Harvest Food Bank"
-        },
-        {
-          "differentiator": "Muslim-led with broader social services",
-          "name": "ICNA Relief"
-        },
-        {
-          "differentiator": "Smaller scale with focus on Pakistan",
-          "name": "Saylani Welfare Trust USA"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[8]"
-          ],
-          "detail": "The organization holds an <cite id=\"8\">overall score of 98.98.5/100 from Charity Navigator</cite>, reflecting near-perfect marks for accountability and transparency.",
-          "point": "Exceptional Financial Accountability"
-        },
-        {
-          "citation_ids": [
-            "[9]"
-          ],
-          "detail": "Habitat directs <cite id=\"9\">77.5% of its total expenses toward program services</cite>, exceeding the peer median for domestic poverty organizations.",
-          "point": "High Program Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[10]"
-          ],
-          "detail": "The charity <cite id=\"10\">meets all 20 BBB Wise Giving Alliance Standards</cite> for Charity Accountability, including board oversight and financial reporting.",
-          "point": "Verified Governance Standards"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Habitat for Humanity's financial health is anchored by its strong liquidity and diversified revenue streams. With <cite id=\"11\">$305,651,094 in public contributions</cite> and over $12 million in program service revenue, the organization is not dependent on a single funding source. Its governance is equally strong, featuring an <cite id=\"12\">independent board of 23 members</cite> and a Gold Seal of Transparency from Candid. This institutional maturity allows them to manage complex grantmaking, distributing <cite id=\"13\">$121,259,158 in total grants</cite> to local affiliates and international partners to ensure localized impact."
-      ],
-      "summary": "Habitat for Humanity International Inc is a global housing organization that has operated since <cite id=\"1\">its founding in 1976</cite> to address systemic housing inequities through direct shelter provision and community development. The organization maintains a massive operational scale, reporting <cite id=\"2\">$329,195,153 in total revenue</cite> for the 2023 fiscal year. Its primary mission involves moving families from ruin to recovery by building and improving homes in <cite id=\"3\">over 70 countries</cite>, including regions across Africa, Mexico, and South America. Beyond physical construction, Habitat engages in systemic change through initiatives like the <cite id=\"4\">Cost of Home advocacy campaign</cite> and the Home Equals global advocacy program. The organization is highly efficient in its resource mobilization, maintaining <cite id=\"5\">fundraising efficiency of $0.21 per $1 raised</cite>, which is well within the top tier for domestic poverty organizations. Financially, the charity is robust, holding <cite id=\"6\">$565,862,638 in total assets</cite> and demonstrating significant liquidity with <cite id=\"7\">15.6 months of working capital</cite> to sustain its global operations.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "Habitat for Humanity International, Inc. is a global housing organization that focuses on moving communities from ruin to recovery through disaster response and long-term housing solutions [1][9]. The organization reported a total revenue of $329,195,153 to support its mission of providing safe and affordable shelter [8][9]."
     }
   }
 }

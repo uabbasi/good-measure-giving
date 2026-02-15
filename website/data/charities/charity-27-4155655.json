@@ -2,7 +2,7 @@
   "id": "27-4155655",
   "ein": "27-4155655",
   "name": "Muslim Hands USA",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "PROVIDE ASSISTANCE FOR DISASTER RELIEF AND TO NEEDY PEOPLE IN GENERAL FOR HUMAN DEVELOPMENT AND PUBLIC AWARENESS.",
   "programs": [
     "Gaza Emergency Appeal",
@@ -54,7 +54,11 @@
     "netAssets": 504273,
     "workingCapitalMonths": "15.20"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 4,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Communities",
@@ -76,7 +80,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:33:06",
+  "lastUpdated": "2026-02-14 19:35:51",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -236,17 +240,36 @@
     "Dedicated zakat page found at https://muslimhandsusa.org/zakat (Source: https://muslimhandsusa.org/zakat)"
   ],
   "archetype": "ASSET_CREATION",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "ASSET_CREATION",
+    "archetype_label": "Asset Creator",
+    "evidence_stage": "Verified",
+    "signal_states": {
+      "evidence": "Moderate",
+      "financial_health": "Limited",
+      "donor_fit": "Strong",
+      "risk": "Limited"
+    },
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "27-4155655",
     "charity_name": "Muslim Hands USA",
-    "amal_score": 65,
+    "amal_score": 69,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:06:04",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 41,
       "data_confidence": 0.7,
-      "impact": 29
+      "impact": 33
     },
     "score_details": {
       "alignment": {
@@ -333,12 +356,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 15.2 months (COMFORTABLE)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
-            "improvement_value": 4,
+            "evidence": "Working capital: 15.2 months (HIGH)",
+            "improvement_suggestion": "Document why reserves above your policy target are intentional (e.g., restrictions, volatility, planned commitments) and define deployment triggers.",
+            "improvement_value": 1,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 2,
+            "scored": 6,
             "status": "full"
           },
           {
@@ -381,48 +404,10 @@
         "cost_per_beneficiary": 46.79108333333333,
         "directness_level": "DIRECT_PROVISION",
         "impact_design_categories": [],
-        "rationale": "$46.79/beneficiary; Delivery: direct provision; Impact 29/50",
+        "rationale": "$46.79/beneficiary; Delivery: direct provision; Impact 33/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 29
+        "score": 33
       },
-      "judge_issues": [
-        {
-          "field": "amal_score_rationale",
-          "judge": "score",
-          "message": "The rationale states that the score reflects a balance between strong mission alignment and high working capital against lower financial efficiency metrics. However, the impact score is significantly lower than the alignment score (29 vs 41), and the risk deduction is -5 due to the low program expense ratio. The rationale should emphasize the impact score and the risk deduction more prominently to accurately reflect the score's composition.",
-          "severity": "info"
-        },
-        {
-          "field": "impact_rationale",
-          "judge": "score",
-          "message": "The impact rationale mentions the program expense ratio of 35.3% but does not adequately emphasize its negative impact on the overall impact score. The rationale should explicitly state that this low ratio significantly detracts from the organization's impact.",
-          "severity": "warning"
-        },
-        {
-          "field": "multi_source.revenue_divergence",
-          "judge": "crawl_quality",
-          "message": "Revenue diverges >50% across sources ($452,623 - $2,027,541)",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -5,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -438,7 +423,7 @@
         ],
         "total_deduction": -5
       },
-      "score_summary": "Muslim Hands Inc earns 65/100 due to strong alignment and good impact, with zakat compliance (minor risk deductions applied). Evidence score may reflect limited reporting capacity, not program weakness.",
+      "score_summary": "Muslim Hands Inc shows strong alignment and good impact, with zakat compliance (minor risk deductions applied). Evidence score may reflect limited reporting capacity, not program weakness.",
       "zakat": {
         "asnaf_category": "fuqara",
         "bonus_points": 0,
@@ -450,423 +435,52 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization has a Charity Navigator score of 71.0/100, a program expense ratio of 35.3%, 15.2 months of working capital, and a fundraising efficiency of $1.32 per $1 raised.",
+          "claim": "Muslim Hands Inc has a Charity Navigator score of 71.0/100, a program expense ratio of 35.3%, and fundraising efficiency of $1.32 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/274155655"
         },
         {
-          "claim": "The charity is Zakat-eligible and provides information on zakat policy and asnaf categories.",
+          "claim": "The organization is zakat-eligible and provides a policy for distributing funds across asnaf categories.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://muslimhandsusa.org/zakat"
         },
         {
-          "claim": "Total revenue for the period was $452,623, with a mission focused on disaster relief and human development.",
+          "claim": "The organization reported total revenue of $452,623 and holds 15.2 months of working capital.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/274155655"
         },
         {
-          "claim": "The organization provides detailed information on programs and the religious obligation of Zakat.",
+          "claim": "Muslim Hands provides detailed organizational data regarding its programs and the religious obligation of Zakat.",
           "id": "[4]",
           "source_name": "Zakat Guide",
           "source_url": "https://muslimhandsusa.org/_ui/uploads/5n6v9i/ZAKAT GUIDE.pdf"
         },
         {
-          "claim": "The organization offers various donation options and giving methods for supporters.",
+          "claim": "The charity offers multiple donation options and methods for supporting its humanitarian missions.",
           "id": "[5]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://muslimhandsusa.org/donate"
         }
       ],
-      "amal_score_rationale": "The organization earns a GMG score of 65/100, reflecting a balance between its strong mission alignment and high working capital against lower financial efficiency metrics.",
+      "amal_score_rationale": "The organization earns a moderate score of 69/100, reflecting a strong alignment with religious donor values and solid working capital, balanced against high fundraising overhead and a lower percentage of revenue spent directly on programs.",
       "areas_for_improvement": [
-        "Improve the program expense ratio, which currently stands at 35.3% [1]",
-        "Enhance fundraising efficiency to reduce the current cost of $1.32 per $1 raised [1]"
+        "Improve the program expense ratio, which currently stands at 35.3%",
+        "Reduce high fundraising costs, currently at $1.32 per $1 raised"
       ],
       "dimension_explanations": {
-        "alignment": "Muslim Hands Inc shows high alignment for Muslim donors due to its Zakat-eligible programs and focus on urgent humanitarian causes [2][5]. The organization provides specific resources like a Zakat Guide to ensure compliance with religious giving requirements [4].",
-        "impact": "The organization focuses on direct provision of aid, including the Gaza Emergency Appeal and Safe Water Fund, with a program expense ratio of 35.3% [1][4]. While it holds 15.2 months of working capital, its fundraising efficiency is recorded at $1.32 per $1 raised [1][3]."
+        "alignment": "Alignment is high due to the organization's strong fit for Muslim donors and the high urgency of its cause areas [2]. As a zakat-eligible entity, it provides clear guidance on religious giving and addresses critical humanitarian needs in line with Islamic values [4][5].",
+        "impact": "The organization achieved a total revenue of $452,623, though its program expense ratio is 35.3% [1][3]. While it provides direct provision of aid, the cost per beneficiary and high fundraising efficiency of $1.32 per $1 raised indicate opportunities for improved financial optimization [1]."
       },
-      "headline": "Muslim Hands Inc provides critical disaster relief and human development services to needy populations through a Zakat-eligible framework.",
+      "headline": "Muslim Hands Inc is a faith-based humanitarian organization dedicated to disaster relief and sustainable human development for needy populations worldwide.",
       "strengths": [
-        "Maintains a Zakat-eligible status with clear guidelines for donors [2]",
-        "Strong liquidity with 15.2 months of working capital available [1]",
-        "High donor alignment for those seeking religious and cultural cause urgency [1]"
+        "Maintains a robust liquidity position with 15.2 months of working capital",
+        "Offers specialized relief programs including the Gaza Emergency Appeal and Safe Water Fund",
+        "Clear zakat-eligibility and religious compliance for Muslim donors"
       ],
-      "summary": "Muslim Hands Inc is a non-profit organization dedicated to providing disaster relief and public awareness for human development [3]. The organization maintains a Zakat-eligible status, allowing donors to fulfill their religious obligations through various humanitarian programs [2][5]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "71/100 overall score from Charity Navigator",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "Overall Score 71/100; Accountability & Finance 71/100; Culture & Community 100/100",
-          "source_name": "Charity Navigator - Muslim Hands",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/274155655"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Zakat-eligible funds",
-          "confidence": 0.9,
-          "id": "[2]",
-          "quote": "Our Zakat Fund is used to support the most needy asnaf categories.",
-          "source_name": "Muslim Hands - Zakat",
-          "source_type": "website",
-          "source_url": "https://muslimhandsusa.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$452,623 in revenue in 2023",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total Revenue: $452,623; Total Grants: $416,038",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/274155655"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "comprehensive Zakat guide",
-          "confidence": 0.9,
-          "id": "[4]",
-          "quote": "Find out all you need to know about the obligation of Zakat",
-          "source_name": "Muslim Hands Zakat Guide",
-          "source_type": "website",
-          "source_url": "https://muslimhandsusa.org/_ui/uploads/5n6v9i/ZAKAT GUIDE.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 69.0%",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Revenue growth from $158k to $452k over three years.",
-          "source_name": "Internal Financial Analysis",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/274155655"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a GMG score of 65/100, reflecting a balance between its strong mission alignment and high working capital against lower financial efficiency metrics.",
-      "amal_scores": {
-        "amal_score": 65,
-        "confidence_scores": {
-          "alignment": 41,
-          "data_confidence": 0.7,
-          "impact": 29
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Program Expense Efficiency",
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The current <cite id=\"8\">program expense ratio of 35.3%</cite> is significantly below industry standards, suggesting high administrative or fundraising costs."
-        },
-        {
-          "area": "Fundraising Efficiency",
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "It currently costs <cite id=\"13\">$1.32 to raise every $1</cite>, which indicates a need to optimize donor acquisition strategies."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "not specified",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "BBB Wise Giving Alliance assessment not available for this entity."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "mitigation_notes": "The organization is in a high-growth phase with a <cite id=\"5\">69.0% revenue CAGR</cite>, which may temporarily inflate acquisition costs.",
-        "risk_factors": [
-          "<cite id=\"8\">program expense ratio of 35.3%</cite> is critically low",
-          "<cite id=\"13\">Fundraising efficiency of $1.32 per $1 raised</cite> exceeds the revenue generated"
-        ],
-        "summary": "The primary concern is the <cite id=\"8\">low program expense ratio</cite> and <cite id=\"13\">high fundraising costs</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 5,
-          "rating": 6,
-          "website": 4
-        },
-        "high_confidence_count": 13,
-        "total_count": 15,
-        "unique_sources": 5
-      },
-      "confidence": {
-        "data_freshness": "2023 Form 990 data used",
-        "data_gaps": [
-          "Detailed expense categorization",
-          "Third-party impact evaluation"
-        ],
-        "level": "MODERATE",
-        "notes": "Financial efficiency metrics are the primary area of data concern.",
-        "score": 70,
-        "sources_used": [
-          "Charity Navigator",
-          "Form 990",
-          "Charity Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 70,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing detailed expense breakdown for admin vs fundraising",
-          "No external impact evaluation"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 5,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[2]",
-            "[3]"
-          ],
-          "explanation": "High alignment is evidenced by <cite id=\"10\">explicit Zakat programs</cite> and a focus on <cite id=\"3\">underserved Muslim-majority regions</cite>.",
-          "improvement": ""
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]",
-            "[12]"
-          ],
-          "explanation": "The charity is a <cite id=\"12\">Candid Silver Seal holder</cite> with a <cite id=\"1\">perfect score in organizational culture</cite> and an <cite id=\"11\">entirely independent board</cite>.",
-          "improvement": "To strengthen credibility, the charity should aim to <cite id=\"1\">improve its accountability score</cite>, which currently stands at 71/100."
-        },
-        "impact": {
-          "citation_ids": [
-            "[1]",
-            "[15]"
-          ],
-          "explanation": "Impact is driven by <cite id=\"14\">direct provision of aid</cite> with a cost per beneficiary of <cite id=\"15\">$46.79</cite>, which is efficient for its sector.",
-          "improvement": "The charity should <cite id=\"1\">increase its program expense ratio</cite> from 35.3% to closer to the peer median of 81.7%."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "RELIGIOUS_CULTURAL",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "evidence_rigor": "Grade C - Emerging organization with developing theory of change",
-        "geographic_focus": [
-          "Palestine",
-          "Yemen",
-          "Pakistan",
-          "Mali"
-        ],
-        "giving_style": "Direct service and emergency relief",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": null,
-        "annual_revenue": 452623,
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "cn_financial_score": 42,
-        "cn_overall_score": 71,
-        "fundraising_ratio": null,
-        "industry_program_ratio": 0.75,
-        "peer_count": 35,
-        "peer_program_ratio_median": 0.817,
-        "program_expense_ratio": 0.35340000000000005,
-        "reserves_months": 26.3,
-        "revenue_cagr_3yr": 69,
-        "transparency_score": 70,
-        "working_capital_months": 15.2,
-        "yearly_financials": [
-          {
-            "expenses": 397691,
-            "net_assets": 504273,
-            "revenue": 452623,
-            "year": 2023
-          },
-          {
-            "expenses": 5185,
-            "net_assets": 450913,
-            "revenue": 297478,
-            "year": 2022
-          },
-          {
-            "expenses": 575,
-            "net_assets": 158620,
-            "revenue": 158446,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 416038,
-        "grant_count": 4,
-        "grant_strategy": "Distributes funds to foreign implementing partners for disaster relief.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Africa",
-          "Asia"
-        ],
-        "top_recipients": [
-          "4 Foreign Recipients ($416,038)"
-        ],
-        "total_grants": 416038
-      },
-      "headline": "Muslim Hands Inc provides critical disaster relief and human development services to needy populations through a Zakat-eligible framework.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize long-term institutional stability and wish to fulfill Zakat through a charity with deep roots in Muslim-majority crisis zones.",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "donor_motivations": [
-          "Want to fulfill Zakat obligations with clear asnaf targeting",
-          "Value organizations with a 30-year track record",
-          "Interested in supporting high-growth humanitarian startups in the US market"
-        ],
-        "giving_considerations": [
-          "High administrative and fundraising costs relative to program spend",
-          "Strong focus on direct provision rather than advocacy",
-          "Excellent financial reserves ensure the organization is not at risk of immediate closure"
-        ],
-        "not_ideal_for": "Donors who prioritize maximum immediate pass-through of funds to programs (high program-expense ratio) or those seeking RCT-level evidence."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[1]",
-          "[12]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects an emerging evidence base with <cite id=\"1\">unverified outcomes</cite> and a developing theory of change.",
-        "external_evaluations": [],
-        "outcome_tracking_years": 0,
-        "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The charity provides direct aid and disaster relief to improve human development and public awareness.",
-        "why_evidence_matters": "Evidence ensures that direct provision of aid effectively transitions beneficiaries toward long-term development."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "founded_year": 1993,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": 69,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"5\">69.0% growth rate</cite> and significant unmet needs in Gaza and Yemen, the charity can absorb additional capital.",
-        "strategic_priorities": [
-          "Gaza Emergency Appeal",
-          "Safe Water Fund expansion"
-        ],
-        "years_operating": 33
-      },
-      "organizational_capacity": {
-        "board_size": 4,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": "Not listed in provided data",
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Africa and Asia",
-        "has_conflict_policy": true,
-        "has_financial_audit": false,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "differentiator": "Distinguished by <cite id=\"7\">exceptionally high working capital (26 months)</cite> compared to peers.",
-        "peer_group": "Religious and Cultural Humanitarian Orgs",
-        "similar_orgs": [
-          "Rebuilding Alliance",
-          "Humaniti",
-          "Rohingya Muslim Relief"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar humanitarian focus and size",
-          "name": "Rebuilding Alliance"
-        },
-        {
-          "differentiator": "Similar focus on international relief",
-          "name": "Humaniti"
-        },
-        {
-          "differentiator": "Niche focus on specific refugee populations",
-          "name": "Rohingya Muslim Relief"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The organization maintains <cite id=\"7\">15.2 months of working capital</cite>, providing a significant buffer for long-term operational stability.",
-          "point": "Robust Financial Liquidity"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "With a history <cite id=\"1\">dating back to 1993</cite>, the charity has over three decades of experience in international relief.",
-          "point": "Deep Institutional Experience"
-        },
-        {
-          "citation_ids": [
-            "[2]",
-            "[4]"
-          ],
-          "detail": "The charity provides a <cite id=\"4\">comprehensive Zakat guide</cite> and maintains clear <cite id=\"10\">Zakat-eligible funds</cite> for specific asnaf categories.",
-          "point": "Strong Muslim Donor Alignment"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Muslim Hands Inc excels in providing a culturally resonant giving experience for Muslim donors. By offering <cite id=\"10\">specific funds for Zakat, Sadaqah Jariyah, and Orphan Sponsorship</cite>, they align their operational output with Islamic philanthropic pillars. Their <cite id=\"11\">100% independent board</cite> ensures a high level of governance oversight, contributing to a <cite id=\"1\">Culture score of 100/100</cite> from Charity Navigator. Furthermore, their <cite id=\"12\">Silver Seal of Transparency from Candid</cite> indicates a commitment to sharing organizational metrics and board information publicly."
-      ],
-      "summary": "Muslim Hands Inc is an established international humanitarian organization that has been <cite id=\"1\">operating since 1993</cite> to provide disaster relief and human development services. The organization focuses on serving needy populations in <cite id=\"2\">Africa and Asia</cite>, with specific programs targeting crisis zones such as <cite id=\"3\">Gaza, Yemen, and Pakistan</cite>. As a faith-based charity, it operates within a <cite id=\"4\">Zakat-eligible framework</cite>, offering donors structured ways to fulfill religious obligations through orphan sponsorship, safe water funds, and emergency appeals. Financially, the organization has demonstrated significant growth, reporting a <cite id=\"5\">3-year revenue CAGR of 69.0%</cite>, with total revenue reaching <cite id=\"6\">$452,623 in 2023</cite>. While the organization maintains <cite id=\"7\">strong liquidity with 15.2 months of working capital</cite> in reserve, it faces challenges regarding its <cite id=\"8\">program expense ratio of 35.3%</cite> as reported by third-party evaluators, which is notably lower than the <cite id=\"9\">peer median of 81.7%</cite> for religious and cultural organizations.",
-      "zakat_guidance": {
-        "classification": "fuqara",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "Muslim Hands Inc provides emergency assistance and long-term aid through initiatives like the Gaza Emergency Appeal and the Safe Water Fund [1][3]. The organization is officially recognized as zakat-eligible, allowing donors to fulfill their religious obligations through various asnaf categories [2][4]."
     }
   }
 }

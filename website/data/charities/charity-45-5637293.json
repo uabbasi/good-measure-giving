@@ -2,7 +2,7 @@
   "id": "45-5637293",
   "ein": "45-5637293",
   "name": "The Noor Project",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "The Noor Project aims to raise the marginalized families above the poverty line.",
   "programs": [
     "The Noor Grammar School",
@@ -51,7 +51,11 @@
     "netAssets": null,
     "workingCapitalMonths": "3.40"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 1,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Adults",
@@ -68,7 +72,7 @@
   },
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-09 21:34:06",
+  "lastUpdated": "2026-02-14 19:35:58",
   "sourceAttribution": {
     "candid_seal": {
       "source_name": "Candid",
@@ -156,17 +160,36 @@
   "evidenceQuality": null,
   "zakatClaimEvidence": null,
   "archetype": "RESILIENCE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Limited Basis",
+    "archetype_code": "RESILIENCE",
+    "archetype_label": "Community Resilience",
+    "evidence_stage": "Building",
+    "signal_states": {
+      "evidence": "Limited",
+      "financial_health": "Limited",
+      "donor_fit": "Moderate",
+      "risk": "Limited"
+    },
+    "recommendation_cue": "Limited Match",
+    "recommendation_rationale": "Limited match due to weaker results and/or higher uncertainty; review methodology details before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "45-5637293",
     "charity_name": "The Noor Project",
-    "amal_score": 38,
+    "amal_score": 37,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-02-04 20:45:58",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 35,
       "data_confidence": 0.65,
-      "impact": 10
+      "impact": 9
     },
     "score_details": {
       "alignment": {
@@ -253,12 +276,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 3.4 months (HEALTHY)",
+            "evidence": "Working capital: 3.4 months (RESILIENT)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 6,
+            "scored": 5,
             "status": "full"
           },
           {
@@ -301,48 +324,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 10/50",
+        "rationale": "Delivery: capacity building; Impact 9/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 10
+        "score": 9
       },
-      "judge_issues": [
-        {
-          "field": "impact_rationale",
-          "judge": "score",
-          "message": "The impact rationale does not adequately address the significant deductions due to the small board size and lack of a documented theory of change, which are key factors contributing to the low impact score.",
-          "severity": "warning"
-        },
-        {
-          "field": "source.website",
-          "judge": "data_completeness",
-          "message": "Critical source 'website' failed: No data found on any pages",
-          "severity": "warning"
-        },
-        {
-          "field": "financial.program_expense_ratio",
-          "judge": "data_completeness",
-          "message": "Missing program_expense_ratio - effectiveness score may be artificially low",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[0].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'thenoraproject.org' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -7,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -372,7 +357,7 @@
         ],
         "total_deduction": -7
       },
-      "score_summary": "For the Needy & Hungry Foundation Inc earns 38/100 due to strong alignment and limited impact (significant risk deductions applied).",
+      "score_summary": "For the Needy & Hungry Foundation Inc shows strong alignment and limited impact (significant risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -384,364 +369,33 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The Noor Project aims to raise marginalized families above the poverty line through various programs.",
+          "claim": "The organization operates The Noor Project, focusing on education, vocational training, and healthcare.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/455637293"
         },
         {
-          "claim": "The organization reported total revenue of $1,759,964 and holds 3.4 months of working capital.",
+          "claim": "The foundation reported total revenue of $1,759,964 and holds 3.4 months of working capital.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/455637293"
         }
       ],
-      "amal_score_rationale": "The organization receives a score of 38/100, reflecting a moderate level of data confidence and a humanitarian focus, tempered by limited evidence of direct impact cost-effectiveness.",
+      "amal_score_rationale": "The foundation receives a score of 37/100, reflecting a humanitarian mission with moderate financial transparency but significant gaps in impact reporting and independent verification.",
       "areas_for_improvement": [
-        "Limited transparency regarding third-party impact evaluations",
-        "Lack of publicly available efficiency metrics such as program expense ratios"
+        "Limited public data regarding specific cost-per-beneficiary metrics",
+        "Lack of third-party impact evaluations to verify long-term program outcomes"
       ],
       "dimension_explanations": {
-        "alignment": "The alignment score of 35/50 indicates a medium fit for donors interested in humanitarian causes and poverty alleviation [1]. As a Sadaqah-eligible organization, it serves urgent humanitarian needs through its pharmacy and educational programs [2].",
-        "impact": "The impact score of 10/50 reflects a focus on capacity building through vocational training and schooling, though specific data regarding cost per beneficiary is currently unavailable [1][2]. Financial health is characterized by a working capital reserve of 3.4 months [2]."
+        "alignment": "With an alignment score of 35/50, the charity addresses urgent humanitarian needs and offers a medium fit for donors seeking to support sadaqah-eligible projects [1]. The foundation's multi-sector approach to poverty aligns with general charitable goals, though its track record is primarily self-reported through tax filings [2].",
+        "impact": "The organization focuses on capacity building through infrastructure like the Noor Clinic & Pharmacy, yet its impact score of 9/50 is constrained by a lack of granular data on program effectiveness and beneficiary costs [1][2]. While it holds 3.4 months of working capital, the absence of detailed expense ratios limits the ability to assess financial efficiency [2]."
       },
-      "headline": "For the Needy & Hungry Foundation Inc operates The Noor Project to empower marginalized families through integrated education, vocational training, and healthcare services.",
+      "headline": "For the Needy & Hungry Foundation Inc operates The Noor Project to lift marginalized families out of poverty through integrated education and healthcare initiatives.",
       "strengths": [
-        "Maintains a diverse service model covering education, healthcare, and job skills",
-        "holds 3.4 months of working capital to support ongoing operations"
+        "holds 3.4 months of working capital to ensure short-term operational stability",
+        "Provides a holistic service model combining education, vocational training, and medical care"
       ],
-      "summary": "For the Needy & Hungry Foundation Inc is a non-profit organization dedicated to lifting families out of poverty through its flagship initiative, The Noor Project [1]. The organization reported a total revenue of $1,759,964 and manages diverse social welfare programs including the Noor Grammar School and a dedicated clinic and pharmacy [2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "The Noor Project",
-          "confidence": 0.8,
-          "id": "[1]",
-          "quote": "The Noor Project aims to raise the marginalized families above the poverty line",
-          "source_name": "Charity Navigator - Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/455637293"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$1,759,964 in total revenue",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: $1,759,964",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/455637293"
-        }
-      ],
-      "amal_score_rationale": "The organization receives a score of 38/100, reflecting a moderate level of data confidence and a humanitarian focus, tempered by limited evidence of direct impact cost-effectiveness.",
-      "amal_scores": {
-        "amal_score": 38,
-        "confidence_scores": {
-          "alignment": 35,
-          "data_confidence": 0.65,
-          "impact": 10
-        },
-        "confidence_tier": "MEDIUM",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Board Governance",
-          "citation_ids": [
-            "[2]"
-          ],
-          "context": "The organization currently reports a <cite id=\"2\">board size of only 1 member</cite>, which lacks the independent oversight typically expected of a mature non-profit."
-        },
-        {
-          "area": "Financial Transparency",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "There is <cite id=\"1\">insufficient data to calculate a program expense ratio</cite> or cost-per-beneficiary, making it difficult to assess operational efficiency."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "none",
-        "citation_ids": [
-          "[2]"
-        ],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "FAIL",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "This organization does not currently meet standard governance benchmarks due to its single-member board."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "mitigation_notes": "The organization is in a growth phase and has the opportunity to formalize its governance as it scales.",
-        "risk_factors": [
-          "<cite id=\"2\">Board size of 1 member</cite> lacks oversight",
-          "<cite id=\"1\">Unknown program expense ratio</cite>",
-          "<cite id=\"1\">No verified outcome tracking</cite>"
-        ],
-        "summary": "The primary concern is the <cite id=\"2\">lack of independent governance</cite> and missing financial efficiency data."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 7,
-          "rating": 8
-        },
-        "high_confidence_count": 15,
-        "total_count": 15,
-        "unique_sources": 2
-      },
-      "confidence": {
-        "data_freshness": "Financial data current through 2023 tax year",
-        "data_gaps": [
-          "Missing program expense breakdown",
-          "Missing board independence"
-        ],
-        "level": "MODERATE",
-        "notes": "Financial growth is well-documented, but governance and impact data are limited.",
-        "score": 65,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 65,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing program expense ratio",
-          "Missing independent board members",
-          "No audited financials"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 2,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[1]"
-          ],
-          "explanation": "The organization aligns with Muslim donor interests by serving <cite id=\"1\">underserved populations in Pakistan</cite> within the high-urgency humanitarian sector.",
-          "improvement": "Alignment could be improved by <cite id=\"1\">documenting a clear theory of change</cite> that maps how their various programs lead to long-term poverty alleviation."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]",
-            "[2]"
-          ],
-          "explanation": "Credibility is supported by a <cite id=\"1\">Silver Seal of Transparency from Candid</cite> and consistent <cite id=\"2\">Form 990 filings</cite>. However, the <cite id=\"2\">single-member board</cite> presents a high risk for organizational oversight.",
-          "improvement": "To strengthen credibility, the charity should <cite id=\"1\">expand its board to at least five independent members</cite> and publish audited financial statements."
-        },
-        "impact": {
-          "citation_ids": [
-            "[1]"
-          ],
-          "explanation": "The charity utilizes a <cite id=\"1\">capacity-building delivery model</cite>, but impact is difficult to quantify as <cite id=\"1\">evidence and outcomes remain unverified</cite>.",
-          "improvement": "Impact measurement would benefit from <cite id=\"1\">tracking and reporting beneficiary counts</cite> to enable a cost-per-beneficiary analysis."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "evidence_rigor": "Grade D - Unverified outcomes",
-        "geographic_focus": [
-          "Pakistan"
-        ],
-        "giving_style": "Integrated community services",
-        "tax_deductible": true,
-        "zakat_asnaf_served": null,
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": null,
-        "annual_revenue": 1759964,
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": null,
-        "industry_program_ratio": 0.75,
-        "peer_count": 58,
-        "peer_program_ratio_median": 0.897,
-        "program_expense_ratio": null,
-        "reserves_months": 3.4,
-        "revenue_cagr_3yr": 29.6,
-        "transparency_score": 70,
-        "working_capital_months": 3.4,
-        "yearly_financials": [
-          {
-            "expenses": 1530084,
-            "net_assets": null,
-            "revenue": 1759964,
-            "year": 2023
-          },
-          {
-            "expenses": 1264531,
-            "net_assets": null,
-            "revenue": 1367400,
-            "year": 2022
-          },
-          {
-            "expenses": 1043578,
-            "net_assets": null,
-            "revenue": 1048644,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct service delivery through its own projects",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "Pakistan"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "For the Needy & Hungry Foundation Inc operates The Noor Project to empower marginalized families through integrated education, vocational training, and healthcare services.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who wish to support holistic community development in Pakistan and are comfortable with a growing organization that is still formalizing its governance.",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "donor_motivations": [
-          "Want to support integrated education and health services",
-          "Focus on poverty alleviation in Pakistan",
-          "Value capacity-building over simple cash transfers",
-          "Willing to support smaller, high-growth organizations"
-        ],
-        "giving_considerations": [
-          "Governance is currently centralized with a single board member",
-          "Detailed financial efficiency ratios are not yet available",
-          "Impact is reported through program descriptions rather than rigorous data"
-        ],
-        "not_ideal_for": "Donors who require a high degree of independent board oversight or those seeking verified cost-effectiveness metrics like cost-per-life-saved."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "evidence_grade": "D",
-        "evidence_grade_explanation": "Grade D reflects that while programs are active, there is <cite id=\"1\">no external evaluation or multi-year outcome tracking</cite> available.",
-        "external_evaluations": [],
-        "outcome_tracking_years": 0,
-        "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The organization operates on the premise that providing <cite id=\"1\">simultaneous access to education, health, and vocational skills</cite> will break the cycle of poverty.",
-        "why_evidence_matters": "Evidence ensures that the integrated services are actually resulting in families moving above the poverty line as intended."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "founded_year": null,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": 29.6,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With <cite id=\"2\">revenue growth of 29.6%</cite>, the organization is rapidly scaling its operations in Pakistan.",
-        "strategic_priorities": [
-          "Expand vocational training",
-          "Enhance Noor Grammar School capacity"
-        ],
-        "years_operating": 12
-      },
-      "organizational_capacity": {
-        "board_size": 1,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": "Not explicitly listed in provided data",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Pakistan",
-        "has_conflict_policy": false,
-        "has_financial_audit": false,
-        "independent_board_pct": 0,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 3,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "differentiator": "Distinguished by an integrated <cite id=\"1\">education and healthcare model</cite> specifically for families in Pakistan.",
-        "peer_group": "Humanitarian organizations",
-        "similar_orgs": [
-          "Support Life Foundation",
-          "KinderUSA",
-          "Abdul Sattar Edhi International Foundation"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on economic empowerment and community services",
-          "name": "Support Life Foundation"
-        },
-        {
-          "differentiator": "Similar humanitarian focus and organizational size",
-          "name": "KinderUSA"
-        },
-        {
-          "differentiator": "Larger established presence in Pakistan community services",
-          "name": "Abdul Sattar Edhi International Foundation"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The charity provides a comprehensive suite of services including <cite id=\"1\">education, healthcare, and job skills training</cite> to address systemic poverty.",
-          "point": "Integrated Service Model"
-        },
-        {
-          "citation_ids": [
-            "[2]"
-          ],
-          "detail": "The organization has achieved a <cite id=\"2\">3-year revenue CAGR of 29.6%</cite>, indicating increasing donor support and expanding financial capacity.",
-          "point": "Strong Revenue Growth"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The foundation maintains <cite id=\"1\">3.4 months of working capital</cite>, providing a buffer for ongoing program operations.",
-          "point": "Healthy Working Capital"
-        }
-      ],
-      "strengths_deep_dive": [
-        "The Noor Project's strength lies in its multi-sectoral approach to community development. By operating the <cite id=\"1\">Noor Grammar School</cite> alongside vocational centers, the charity addresses both current adult unemployment and future generational poverty. Their financial trajectory is notable, with revenue rising from <cite id=\"2\">$1,048,644 in 2021 to $1,759,964 in 2023</cite>, representing a robust growth phase. Furthermore, the organization holds a <cite id=\"1\">Silver Seal of Transparency from Candid</cite>, reflecting a commitment to sharing basic organizational metrics with the public."
-      ],
-      "summary": "For the Needy & Hungry Foundation Inc operates as a humanitarian organization primarily focused on poverty alleviation in Pakistan through its flagship initiative, <cite id=\"1\">The Noor Project</cite>. The organization has demonstrated significant financial growth, reporting <cite id=\"2\">$1,759,964 in total revenue</cite> for the 2023 tax year. Its integrated service model addresses the multifaceted nature of poverty by providing <cite id=\"1\">education, vocational training, and healthcare services</cite> to marginalized families. Specifically, the foundation manages the <cite id=\"1\">Noor Grammar School</cite> to provide academic foundations for children and a <cite id=\"1\">clinic and pharmacy</cite> to ensure community health access. By combining immediate relief with <cite id=\"1\">capacity-building programs</cite>, the charity seeks to move families toward self-sufficiency. While the organization maintains <cite id=\"2\">$431,195 in total assets</cite>, it faces challenges regarding governance and financial transparency that impact its overall evaluation. The foundation's operations are currently <cite id=\"1\">centered in Pakistan</cite>, where it strives to raise families above the poverty line through a holistic support system.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "Based in the United States, the organization manages diverse programs including The Noor Grammar School and vocational training centers to provide long-term capacity building [1]. During the 2023 fiscal year, the foundation reported a total revenue of $1,759,964 to support its mission of sustainable poverty alleviation [2]."
     }
   }
 }

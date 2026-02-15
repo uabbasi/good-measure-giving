@@ -2,7 +2,7 @@
   "id": "81-3451645",
   "ein": "81-3451645",
   "name": "Poligon Education Fund",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Poligon provides constituents with a myriad of educational resources and content.",
   "programs": [
     "Congressional Advocacy Trainings",
@@ -52,7 +52,11 @@
     "netAssets": 109688,
     "workingCapitalMonths": "0.50"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 4,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Communities"
@@ -64,7 +68,7 @@
   },
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-09 21:35:39",
+  "lastUpdated": "2026-02-14 19:36:16",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -161,17 +165,36 @@
     "Dedicated zakat page found at https://poligonnational.org/donate (Source: https://poligonnational.org/donate)"
   ],
   "archetype": "LEVERAGE",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "LEVERAGE",
+    "archetype_label": "Strategic Advocacy",
+    "evidence_stage": "Early",
+    "signal_states": {
+      "evidence": "Limited",
+      "financial_health": "Limited",
+      "donor_fit": "Moderate",
+      "risk": "Moderate"
+    },
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "81-3451645",
     "charity_name": "Poligon Education Fund",
-    "amal_score": 53,
+    "amal_score": 52,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:24:38",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 30,
       "data_confidence": 0.3,
-      "impact": 25
+      "impact": 24
     },
     "score_details": {
       "alignment": {
@@ -258,12 +281,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 0.5 months (TIGHT)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
+            "evidence": "Working capital: 0.5 months (CRITICAL)",
+            "improvement_suggestion": "Increase operating reserves to reduce continuity risk; target at least ~3 months unless a different policy is explicitly justified.",
             "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 2,
+            "scored": 1,
             "status": "full"
           },
           {
@@ -306,36 +329,10 @@
         "cost_per_beneficiary": 9.36075,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "$9.36/beneficiary; Delivery: capacity building; Impact 25/50",
+        "rationale": "$9.36/beneficiary; Delivery: capacity building; Impact 24/50",
         "rubric_archetype": "EDUCATION",
-        "score": 25
+        "score": 24
       },
-      "judge_issues": [
-        {
-          "field": "propublica.expense_ratio",
-          "judge": "crawl_quality",
-          "message": "Expenses ($131,029) exceed revenue ($32,150) by 308% - may be drawing down reserves",
-          "severity": "warning"
-        },
-        {
-          "field": "bbb.name_match",
-          "judge": "crawl_quality",
-          "message": "BBB name 'Tree Research and Education Endowment Fund' may not match 'Poligon Education Fund' (similarity: 40%)",
-          "severity": "warning"
-        },
-        {
-          "field": "multi_source.revenue_divergence",
-          "judge": "crawl_quality",
-          "message": "Revenue diverges >50% across sources ($32,150 - $147,551)",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
@@ -351,7 +348,7 @@
         ],
         "total_deduction": -2
       },
-      "score_summary": "Poligon Education Fund earns 53/100 due to good alignment and moderate impact, with zakat compliance (minor risk deductions applied). Evidence score may reflect limited reporting capacity, not program weakness.",
+      "score_summary": "Poligon Education Fund shows good alignment and moderate impact, with zakat compliance (minor risk deductions applied). Evidence score may reflect limited reporting capacity, not program weakness.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -363,27 +360,33 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reported a fundraising efficiency of $0.44 per $1 raised and maintains a profile for its financial fields.",
+          "claim": "Poligon Education Fund reported total revenue of $32,150, working capital of 0.5 months, and fundraising efficiency of $0.44 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/813451645"
         },
         {
-          "claim": "Poligon Education Fund is Zakat-eligible and provides information on its zakat policy and asnaf categories.",
+          "claim": "The organization maintains a Zakat policy and identifies as Zakat-eligible.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://poligonnational.org/donate"
         },
         {
-          "claim": "The organization reported total revenue of $32,150 and has working capital of 0.5 months.",
+          "claim": "Financial records indicate the organization operates with limited working capital and specific revenue streams.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/813451645"
         },
         {
-          "claim": "Poligon provides constituents with educational resources and programs including Congressional Advocacy Trainings.",
+          "claim": "Poligon Education Fund provides educational resources and advocacy training as part of its core mission.",
           "id": "[4]",
           "source_name": "zakat eligible",
+          "source_url": "https://www.poligonnational.org/uploads/8/2/8/6/82865960/poligon_zakat_eligibility_.pdf"
+        },
+        {
+          "claim": "The organization focuses on capacity building and constituent education.",
+          "id": "[5]",
+          "source_name": ".",
           "source_url": "https://www.poligonnational.org/uploads/8/2/8/6/82865960/poligon_zakat_eligibility_.pdf"
         },
         {
@@ -393,515 +396,27 @@
           "source_url": "https://www.poligonnational.org/donate.html"
         },
         {
-          "claim": "The organization issues Action Alerts to engage volunteers and constituents in advocacy efforts.",
+          "claim": "Poligon issues Action Alerts to engage volunteers and constituents in legislative advocacy.",
           "id": "[7]",
           "source_name": "Charity Website - Volunteer",
           "source_url": "https://www.poligonnational.org/action-alerts-blogs/take-action-muslim-ban-20-goes-into-effect-tomorrow"
         }
       ],
-      "amal_score_rationale": "Poligon Education Fund receives a moderate score reflecting its specialized niche in civic education and high alignment with Muslim donor interests, though it is constrained by limited financial reserves and low data transparency.",
+      "amal_score_rationale": "The organization earns a moderate score of 52/100, reflecting a strong alignment with Muslim donor interests through its Zakat-eligible programs, though it is constrained by low financial reserves and limited impact data.",
       "areas_for_improvement": [
-        "Limited financial cushion with only 0.5 months of working capital",
-        "High fundraising costs relative to revenue generated",
-        "Low data confidence due to limited third-party verification"
+        "Limited financial cushion with only 0.5 months of working capital available [1][3].",
+        "Low data confidence due to limited third-party verification and public documentation [1]."
       ],
       "dimension_explanations": {
-        "alignment": "Poligon demonstrates high alignment with Muslim donor priorities through its Zakat-eligible status and focus on religious and cultural cause urgency [2][4]. The organization provides specific donation pathways for Zakat, ensuring funds are handled according to established policies [2][6].",
-        "impact": "The organization focuses on capacity building by training individuals for congressional advocacy, operating with a total revenue of $32,150 [3]. While it provides essential educational content, its financial health is characterized by a low working capital of 0.5 months and a fundraising efficiency of $0.44 per $1 raised [1][3]."
+        "alignment": "Poligon demonstrates high alignment with its target audience, scoring 30/50 due to its focus on religious and cultural cause urgency [1]. The organization is explicitly Zakat-eligible, adhering to specific asnaf categories to serve the community's spiritual and civic needs [2][4].",
+        "impact": "The organization's impact score of 24/50 reflects its focus on capacity building through educational content and advocacy training [4][5]. While it reported a total revenue of $32,150, its financial sustainability is challenged by a low working capital of 0.5 months and a fundraising efficiency of $0.44 per $1 raised [1][3]."
       },
-      "headline": "Poligon Education Fund empowers constituents through specialized congressional advocacy training and educational resources.",
+      "headline": "Poligon Education Fund empowers constituents through civic education and congressional advocacy training to strengthen community engagement.",
       "strengths": [
-        "Maintains Zakat-eligible status for donor contributions [2]",
-        "Provides direct capacity-building resources for legislative advocacy [4]",
-        "Offers timely action alerts to engage constituents in current policy issues [7]"
+        "Maintains Zakat-eligible status for donors seeking religious compliance in their giving [2][4].",
+        "Provides specialized training programs focused on congressional advocacy and civic engagement [1][7]."
       ],
-      "summary": "Poligon Education Fund is a non-profit organization dedicated to providing constituents with a myriad of educational resources and content to strengthen civic engagement [4]. The organization facilitates active participation in the legislative process through programs such as Congressional Advocacy Trainings and real-time Action Alerts [1][7]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "founded in 2017",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "Founded: 2017",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/813451645"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "congressional advocacy trainings and policy guides",
-          "confidence": 0.9,
-          "id": "[2]",
-          "quote": "Congressional Advocacy Trainings, Policy Guides",
-          "source_name": "Poligon Education Fund - Programs",
-          "source_type": "website",
-          "source_url": "https://www.poligonnational.org/uploads/8/2/8/6/82865960/poligon_zakat_eligibility_.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$32,150 in total revenue",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total Revenue: $32,150",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/813451645"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "action alerts and advocacy webinars",
-          "confidence": 0.9,
-          "id": "[4]",
-          "quote": "Action Alerts, Advocacy 101 Webinars",
-          "source_name": "Poligon Education Fund - Action Alerts",
-          "source_type": "website",
-          "source_url": "https://www.poligonnational.org/action-alerts-blogs/take-action-muslim-ban-20-goes-into-effect-tomorrow"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Program Service Expenses: 80.0%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/813451645"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified zakat-eligible status",
-          "confidence": 0.95,
-          "id": "[6]",
-          "quote": "Poligon is Zakat eligible",
-          "source_name": "Poligon Zakat Eligibility",
-          "source_type": "website",
-          "source_url": "https://www.poligonnational.org/uploads/8/2/8/6/82865960/poligon_zakat_eligibility_.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Hill Happenings newsletter",
-          "confidence": 0.9,
-          "id": "[7]",
-          "quote": "Hill Happenings Newsletter",
-          "source_name": "Poligon Education Fund - Newsletter",
-          "source_type": "website",
-          "source_url": "https://www.poligonnational.org/uploads/8/2/8/6/82865960/poligon_zakat_eligibility_.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "over 1,600 event participants",
-          "confidence": 0.85,
-          "id": "[8]",
-          "quote": "Event participants: 1600",
-          "source_name": "APF Mid Year Report",
-          "source_type": "evaluation",
-          "source_url": "https://static1.squarespace.com/static/5d3664e0f88abf00019016dc/t/5ef4fbcb5e1a355846fc6142/1593113560428/APF+Mid+Year+Report.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fisabilillah asnaf category",
-          "confidence": 0.9,
-          "id": "[9]",
-          "quote": "Zakat Categories: fisabilillah",
-          "source_name": "Poligon Zakat Eligibility",
-          "source_type": "website",
-          "source_url": "https://www.poligonnational.org/uploads/8/2/8/6/82865960/poligon_zakat_eligibility_.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cost of $9.36 per beneficiary",
-          "confidence": 0.8,
-          "id": "[10]",
-          "quote": "$9.36/beneficiary",
-          "source_name": "Internal Analysis",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/813451645"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of -57.8%",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "3-Year Revenue CAGR: -57.8%",
-          "source_name": "Financial Trends Data",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/813451645"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "0.5 months of working capital",
-          "confidence": 0.9,
-          "id": "[12]",
-          "quote": "Working capital: 0.5 months",
-          "source_name": "Financial Health Analysis",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/813451645"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fails BBB standards for effectiveness reporting",
-          "confidence": 0.95,
-          "id": "[13]",
-          "quote": "Standards Not Met: Effectiveness Policy, Effectiveness Report",
-          "source_name": "BBB Wise Giving Alliance",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/environment/tree-research-and-education-endowment-fund-in-naperville-il-9999-53679"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "low data confidence (0.30)",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Data Confidence: 0.3",
-          "source_name": "Internal Scorecard",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/813451645"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "niche religious-cultural space",
-          "confidence": 0.9,
-          "id": "[15]",
-          "quote": "Cause Area: RELIGIOUS_CULTURAL",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/813451645"
-        }
-      ],
-      "amal_score_rationale": "Poligon Education Fund receives a moderate score reflecting its specialized niche in civic education and high alignment with Muslim donor interests, though it is constrained by limited financial reserves and low data transparency.",
-      "amal_scores": {
-        "amal_score": 53,
-        "confidence_scores": {
-          "alignment": 30,
-          "data_confidence": 0.3,
-          "impact": 25
-        },
-        "confidence_tier": "LOW",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Financial Sustainability",
-          "citation_ids": [
-            "[11]"
-          ],
-          "detail": "The organization has a <cite id=\"11\">3-year revenue CAGR of -57.8%</cite>, indicating a significant contraction in funding that may impact long-term stability."
-        },
-        {
-          "area": "Working Capital Reserves",
-          "citation_ids": [
-            "[12]"
-          ],
-          "detail": "With only <cite id=\"12\">0.5 months of working capital</cite>, the charity has a very limited financial cushion for unexpected expenses."
-        },
-        {
-          "area": "Governance Transparency",
-          "citation_ids": [
-            "[13]"
-          ],
-          "detail": "The organization currently <cite id=\"13\">fails BBB standards for effectiveness reporting</cite> and program expense oversight."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[13]"
-        ],
-        "effectiveness_status": "FAIL",
-        "finances_status": "FAIL",
-        "governance_status": "PASS",
-        "meets_all_standards": false,
-        "review_url": "https://give.org/charity-reviews/environment/tree-research-and-education-endowment-fund-in-naperville-il-9999-53679",
-        "standards_met": 13,
-        "standards_not_met": [
-          "Effectiveness Policy",
-          "Effectiveness Report",
-          "Program Expenses"
-        ],
-        "summary": "Meets 13 of 20 standards; <cite id=\"13\">fails on effectiveness reporting and expense oversight</cite>."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[11]",
-          "[12]",
-          "[13]"
-        ],
-        "mitigation_notes": "The organization maintains a high program ratio despite shrinking revenue, suggesting a commitment to core mission delivery.",
-        "risk_factors": [
-          "<cite id=\"11\">Negative 57.8% revenue growth</cite> over three years",
-          "<cite id=\"12\">Insufficient financial reserves</cite> (0.5 months)",
-          "<cite id=\"13\">Failure to meet BBB standards</cite> for program expense transparency"
-        ],
-        "summary": "The primary concerns involve <cite id=\"11\">declining revenue trends</cite> and <cite id=\"13\">unmet accountability standards</cite> regarding effectiveness reporting."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 1,
-          "form990": 4,
-          "rating": 6,
-          "website": 4
-        },
-        "high_confidence_count": 13,
-        "total_count": 15,
-        "unique_sources": 7
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023",
-        "data_gaps": [
-          "Missing 2024 financials",
-          "Limited third-party impact evaluation"
-        ],
-        "level": "LOW",
-        "notes": "Low confidence due to significant revenue decline and unmet accountability standards.",
-        "score": 30,
-        "sources_used": [
-          "Form 990",
-          "BBB",
-          "Charity Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 30,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing detailed outcome metrics",
-          "Declining revenue trend"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 7,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[6]",
-            "[9]",
-            "[15]"
-          ],
-          "explanation": "Strong alignment for Muslim donors due to <cite id=\"6\">verified zakat eligibility</cite> and its focus on <cite id=\"9\">fisabilillah</cite> causes within a <cite id=\"15\">niche religious-cultural space</cite>.",
-          "improvement": ""
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]",
-            "[13]",
-            "[14]"
-          ],
-          "explanation": "Credibility is currently limited by <cite id=\"14\">low data confidence (0.30)</cite> and a lack of comprehensive third-party verification. While the organization is <cite id=\"1\">legally registered and files tax returns</cite>, it lacks a full rating from major agencies.",
-          "improvement": "To strengthen credibility, the charity should <cite id=\"13\">address the 7 unmet BBB standards</cite> and publish an annual impact report with verified outcomes."
-        },
-        "impact": {
-          "citation_ids": [
-            "[2]",
-            "[10]",
-            "[12]"
-          ],
-          "explanation": "Impact is driven by a <cite id=\"10\">low cost-per-beneficiary of $9.36</cite> and a delivery model focused on <cite id=\"2\">direct capacity building</cite>. However, the <cite id=\"12\">tight working capital</cite> limits its ability to scale.",
-          "improvement": "The organization should <cite id=\"12\">build working capital reserves to 1-3 months</cite> and document a clear theory of change with causal pathways."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "RELIGIOUS_CULTURAL",
-        "citation_ids": [
-          "[6]",
-          "[9]"
-        ],
-        "evidence_rigor": "Grade C - Emerging organization with basic outcome tracking",
-        "geographic_focus": [
-          "United States"
-        ],
-        "giving_style": "Capacity building",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fisabilillah"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.143,
-        "annual_revenue": 32150,
-        "citation_ids": [
-          "[3]",
-          "[5]",
-          "[11]",
-          "[12]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0.44,
-        "industry_program_ratio": 0.75,
-        "peer_count": 35,
-        "peer_program_ratio_median": 0.8,
-        "program_expense_ratio": 0.8,
-        "reserves_months": 0.5,
-        "revenue_cagr_3yr": -57.8,
-        "working_capital_months": 0.5,
-        "yearly_financials": [
-          {
-            "expenses": 131029,
-            "net_assets": 5638,
-            "revenue": 32150,
-            "year": 2023
-          },
-          {
-            "expenses": 113197,
-            "net_assets": 0,
-            "revenue": 30029,
-            "year": 2022
-          },
-          {
-            "expenses": 82244,
-            "net_assets": 0,
-            "revenue": 180399,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct service and education provider",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "United States"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "Poligon Education Fund empowers constituents through specialized congressional advocacy training and educational resources.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support grassroots Muslim civic empowerment and are comfortable funding a small, high-impact advocacy niche.",
-        "citation_ids": [
-          "[6]",
-          "[11]"
-        ],
-        "donor_motivations": [
-          "Want to fulfill zakat through systemic advocacy (fisabilillah)",
-          "Believe in the power of legislative training for minority communities",
-          "Value high program-to-expense ratios in small non-profits"
-        ],
-        "giving_considerations": [
-          "The organization is currently in a financial contraction phase",
-          "Limited staff and reserves mean high reliance on small-dollar donations",
-          "Impact is measured through participation rather than policy wins"
-        ],
-        "not_ideal_for": "Donors seeking large-scale humanitarian relief or those requiring rigorous third-party financial audits."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[8]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects <cite id=\"8\">basic tracking of event participants</cite> without long-term longitudinal studies on policy influence.",
-        "external_evaluations": [
-          "None"
-        ],
-        "outcome_tracking_years": 1,
-        "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "Poligon operates on the premise that educating constituents on legislative processes leads to increased civic engagement and more representative policy outcomes.",
-        "why_evidence_matters": "Evidence ensures that advocacy training actually translates into meaningful constituent action."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[11]"
-        ],
-        "founded_year": 2017,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": -57.8,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With <cite id=\"11\">revenue declining by 57.8%</cite>, the organization has a significant funding gap to maintain its current operations.",
-        "strategic_priorities": [
-          "Expand advocacy training",
-          "Stabilize revenue streams"
-        ],
-        "years_operating": 9
-      },
-      "organizational_capacity": {
-        "board_size": 4,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": "Not Listed",
-        "citation_ids": [
-          "[3]",
-          "[13]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "United States Congressional Districts",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[10]"
-        ],
-        "differentiator": "Poligon is distinguished by its <cite id=\"10\">exceptionally low cost per beneficiary</cite> compared to larger peers like CAIR.",
-        "peer_group": "Religious and Cultural Advocacy",
-        "similar_orgs": [
-          "Muslim Advocates",
-          "CAIR Foundation Inc",
-          "Heart Women & Girls"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Larger legal focus",
-          "name": "Muslim Advocates"
-        },
-        {
-          "differentiator": "Larger scale and gender focus",
-          "name": "Heart Women & Girls"
-        },
-        {
-          "differentiator": "Broad national chapter network",
-          "name": "CAIR Foundation Inc"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[6]",
-            "[9]"
-          ],
-          "detail": "Poligon maintains <cite id=\"6\">verified zakat-eligible status</cite> for contributions, specifically serving the <cite id=\"9\">fisabilillah asnaf category</cite>.",
-          "point": "Zakat-Eligible Advocacy"
-        },
-        {
-          "citation_ids": [
-            "[5]"
-          ],
-          "detail": "The organization directs <cite id=\"5\">80.0% of its total expenses</cite> toward its core educational and advocacy programs.",
-          "point": "High Program Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[2]"
-          ],
-          "detail": "Poligon provides <cite id=\"2\">specialized congressional advocacy training</cite> to help constituents navigate legislative hurdles.",
-          "point": "Direct Capacity Building"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Poligon's primary strength lies in its niche focus on legislative literacy. By offering <cite id=\"4\">Advocacy 101 webinars</cite> and <cite id=\"2\">detailed policy guides</cite>, it equips community members with the tools to engage directly with lawmakers. This model is highly cost-effective, with an estimated <cite id=\"10\">cost of $9.36 per beneficiary</cite>, which is exceptional for the religious and cultural sector. Furthermore, the organization has demonstrated agility by issuing <cite id=\"7\">timely action alerts</cite> that allow constituents to respond rapidly to shifting political landscapes."
-      ],
-      "summary": "Poligon Education Fund is a specialized advocacy organization <cite id=\"1\">founded in 2017</cite> to empower Muslim Americans and their allies through legislative engagement. The organization addresses a critical gap in civic participation by providing <cite id=\"2\">congressional advocacy trainings and policy guides</cite> designed to demystify the federal legislative process. Operating with a lean budget of <cite id=\"3\">$32,150 in total revenue</cite>, Poligon focuses on high-leverage activities such as <cite id=\"4\">action alerts and advocacy webinars</cite> to mobilize constituents on pressing policy issues. Poligon is particularly notable for its <cite id=\"6\">verified zakat-eligible status</cite>, specifically serving the category of fisabilillah (in the way of Allah) by advocating for justice and community rights in the public square. Through its <cite id=\"7\">Hill Happenings newsletter</cite> and direct training sessions, the fund has reached <cite id=\"8\">over 1,600 event participants</cite>, demonstrating a scalable model for civic education within the American Muslim community.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "Poligon Education Fund is a non-profit organization dedicated to providing educational resources and advocacy tools to help individuals navigate legislative processes [1][4]. The organization facilitates programs such as Congressional Advocacy Trainings and Action Alerts to mobilize community members on critical policy issues [1][7]."
     }
   }
 }

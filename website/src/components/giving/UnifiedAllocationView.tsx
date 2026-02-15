@@ -442,21 +442,18 @@ export function UnifiedAllocationView({
 
   const totalGiven = Array.from(bucketGiven.values()).reduce((s, v) => s + v, 0);
   const hasTarget = targetNum > 0;
-  const hasCategories = buckets.length > 0;
   const hasSavedCharities = bookmarkedCharities.length > 0;
   const hasLoggedDonation = donations.length > 0;
   const showOnboarding =
     !onboardingDismissed &&
-    (!hasTarget || !hasCategories || !hasSavedCharities || !hasLoggedDonation);
+    (!hasTarget || !hasSavedCharities || !hasLoggedDonation);
 
   const onboardingStep = !hasTarget
     ? 1
-    : !hasCategories
-    ? 2
     : !hasSavedCharities
-    ? 3
+    ? 2
     : !hasLoggedDonation
-    ? 4
+    ? 3
     : 0;
 
   // Zakat eligibility helper
@@ -504,6 +501,37 @@ export function UnifiedAllocationView({
     triggerSave(newBuckets);
   };
 
+  const autoCreateBucketsForCharity = (charity: { causeTags: string[] | null }) => {
+    const tags = charity.causeTags || [];
+    const causeTagIds = new Set(TAGS.cause.map(t => t.id));
+    const newBuckets = [...buckets];
+    let created = 0;
+
+    for (const tagId of tags) {
+      if (created >= 3) break;
+      if (!causeTagIds.has(tagId)) continue;
+      if (newBuckets.some(b => b.tagId === tagId)) continue;
+
+      const tagDef = TAGS.cause.find(t => t.id === tagId)!;
+      newBuckets.push({
+        id: crypto.randomUUID(),
+        tagId: tagDef.id,
+        label: tagDef.label,
+        percent: 0,
+        color: COLORS[newBuckets.length % COLORS.length],
+      });
+      created++;
+    }
+
+    if (created > 0) {
+      setBuckets(newBuckets);
+      triggerSave(newBuckets);
+    }
+
+    const firstMatch = newBuckets.find(b => tags.includes(b.tagId));
+    return firstMatch?.id || '';
+  };
+
   const remove = (id: string) => {
     const newBuckets = buckets.filter(b => b.id !== id);
     setBuckets(newBuckets);
@@ -540,18 +568,12 @@ export function UnifiedAllocationView({
     }
 
     if (onboardingStep === 2) {
-      setShowPicker(true);
-      setShowCharitySearch(false);
-      return;
-    }
-
-    if (onboardingStep === 3) {
       setShowCharitySearch(true);
       setShowPicker(false);
       return;
     }
 
-    if (onboardingStep === 4) {
+    if (onboardingStep === 3) {
       const first = bookmarkedCharities[0];
       onLogDonation(first?.ein, first?.name);
     }
@@ -720,10 +742,9 @@ export function UnifiedAllocationView({
                 Getting Started
               </p>
               <p className={`text-sm mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                Step {onboardingStep} of 4: {
+                Step {onboardingStep} of 3: {
                   onboardingStep === 1 ? 'Set your annual zakat target' :
-                  onboardingStep === 2 ? 'Create at least one category' :
-                  onboardingStep === 3 ? 'Add your first charity' :
+                  onboardingStep === 2 ? 'Add your first charity' :
                   'Log your first donation'
                 }
               </p>
@@ -741,8 +762,8 @@ export function UnifiedAllocationView({
           </div>
 
           <div className="mt-3 flex items-center gap-2">
-            {[1, 2, 3, 4].map(step => {
-              const complete = step === 1 ? hasTarget : step === 2 ? hasCategories : step === 3 ? hasSavedCharities : hasLoggedDonation;
+            {[1, 2, 3].map(step => {
+              const complete = step === 1 ? hasTarget : step === 2 ? hasSavedCharities : hasLoggedDonation;
               const active = step === onboardingStep;
               return (
                 <div
@@ -828,41 +849,27 @@ export function UnifiedAllocationView({
                       </span>
                     </div>
                     <div className="flex items-center gap-1">
-                      {buckets.length > 0 ? (
-                        <select
-                          onChange={async e => {
-                            const selectedBucketId = e.target.value;
-                            if (selectedBucketId && onAddCharity) {
-                              await onAddCharity(c.ein, c.name, selectedBucketId);
+                      <button
+                        onClick={async () => {
+                          if (onAddCharity) {
+                            const fullCharity = charities.find(ch => ch.ein === c.ein);
+                            const causeTags = fullCharity ? (fullCharity as any).causeTags || [] : [];
+                            const bucketId = autoCreateBucketsForCharity({ causeTags });
+                            await onAddCharity(c.ein, c.name, bucketId);
+                            if (bucketId) {
                               setAssignments(prev => {
                                 const next = new Map(prev);
-                                next.set(c.ein, selectedBucketId);
+                                next.set(c.ein, bucketId);
                                 return next;
                               });
-                              setCharitySearchQuery('');
                             }
-                          }}
-                          defaultValue=""
-                          className={`text-[11px] px-2.5 py-1.5 rounded-lg border font-medium cursor-pointer ${
-                            isDark ? 'bg-slate-700 border-slate-600 text-slate-300' : 'bg-white border-slate-300 text-slate-600'
-                          }`}
-                        >
-                          <option value="">Add to...</option>
-                          {buckets.map(b => <option key={b.id} value={b.id}>{b.label}</option>)}
-                        </select>
-                      ) : (
-                        <button
-                          onClick={() => {
-                            if (onAddCharity) {
-                              onAddCharity(c.ein, c.name, '');
-                              setCharitySearchQuery('');
-                            }
-                          }}
-                          className={`text-[11px] px-3 py-1.5 rounded-lg font-semibold shadow-sm ${isDark ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-emerald-500 text-white hover:bg-emerald-600'}`}
-                        >
-                          + Add
-                        </button>
-                      )}
+                            setCharitySearchQuery('');
+                          }
+                        }}
+                        className={`text-[11px] px-3 py-1.5 rounded-lg font-semibold shadow-sm ${isDark ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-emerald-500 text-white hover:bg-emerald-600'}`}
+                      >
+                        + Add
+                      </button>
                     </div>
                   </div>
                 ));
@@ -1265,7 +1272,7 @@ export function UnifiedAllocationView({
           </div>
           <p className={`text-sm font-medium mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>No categories yet</p>
           <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-            Click <span className="font-semibold text-emerald-600">+ Category</span> to start allocating your zakat
+            Add a charity via <span className="font-semibold text-emerald-600">+ Charity</span> to auto-create categories, or use <span className="font-semibold text-emerald-600">+ Category</span> to add manually
           </p>
         </div>
       )}

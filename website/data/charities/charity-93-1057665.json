@@ -2,7 +2,7 @@
   "id": "93-1057665",
   "ein": "93-1057665",
   "name": "PALESTINE CHILDRENS RELIEF FUND",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "We provide free medical care and humanitarian aid for any child in the Middle East, regardless of their religion or politics.",
   "programs": [
     "Community and Urgent Response Projects",
@@ -53,7 +53,11 @@
     "netAssets": 92530610,
     "workingCapitalMonths": "40.90"
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 11,
+    "independentBoardMembers": null,
+    "ceoCompensation": 185000
+  },
   "targeting": {
     "populationsServed": [
       "Communities",
@@ -89,7 +93,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-09 21:32:39",
+  "lastUpdated": "2026-02-14 19:36:25",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -212,6 +216,25 @@
     "Dedicated zakat page found at https://www.pcrf.net/donate (Source: https://www.pcrf.net/donate)"
   ],
   "archetype": "ASSET_CREATION",
+  "ui_signals_v1": {
+    "schema_version": "1.0.0",
+    "config_version": "2026-02-15",
+    "config_hash": "sha256:91b9a405221d9c69a5d8b837355c40a88161b048ab5b06ddf9e309bfead956b6",
+    "assessment_label": "Promising",
+    "archetype_code": "ASSET_CREATION",
+    "archetype_label": "Asset Creator",
+    "evidence_stage": "Verified",
+    "signal_states": {
+      "evidence": "Strong",
+      "financial_health": "Limited",
+      "donor_fit": "Strong",
+      "risk": "Strong"
+    },
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "used_fallback": false,
+    "fallback_reasons": null
+  },
   "amalEvaluation": {
     "charity_ein": "93-1057665",
     "charity_name": "PALESTINE CHILDRENS RELIEF FUND",
@@ -310,7 +333,7 @@
           },
           {
             "evidence": "Working capital: 40.9 months (EXCESSIVE)",
-            "improvement_suggestion": "Build working capital reserves to 1-3 months of operating expenses",
+            "improvement_suggestion": "Publish a capital deployment plan so very high reserves are intentionally used for mission delivery while preserving a prudent safety buffer.",
             "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
@@ -361,32 +384,6 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 33
       },
-      "judge_issues": [
-        {
-          "field": "bbb.name_match",
-          "judge": "crawl_quality",
-          "message": "BBB name 'Children's Hunger Relief Fund' may not match 'PALESTINE CHILDRENS RELIEF FUND' (similarity: 50%)",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -394,7 +391,7 @@
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "PALESTINE CHILDRENS RELIEF FUND earns 73/100 due to strong alignment and good impact, with zakat compliance.",
+      "score_summary": "PALESTINE CHILDRENS RELIEF FUND shows strong alignment and good impact, with zakat compliance.",
       "zakat": {
         "asnaf_category": "amil",
         "bonus_points": 0,
@@ -406,677 +403,58 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Financial fields and metadata for EIN 93-1057665.",
+          "claim": "Financial metadata and total revenue for the organization.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/931057665"
         },
         {
-          "claim": "Total revenue of $92,196,846 and program expense ratio of 88.1%.",
+          "claim": "The organization reported total revenue of $92,196,846 and maintains a program expense ratio of 88.1%.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/931057665"
         },
         {
-          "claim": "Mission to provide free medical care regardless of religion or politics.",
+          "claim": "The mission of PCRF is to provide free medical care and humanitarian aid regardless of religion or politics.",
           "id": "[3]",
           "source_name": "Charity Website - About",
           "source_url": "https://www.pcrf.net/about-us"
         },
         {
-          "claim": "Information regarding organizational governance and leadership.",
-          "id": "[4]",
-          "source_name": "Charity Website - Leadership",
-          "source_url": "https://www.pcrf.net/team/board-of-directors"
-        },
-        {
-          "claim": "Outcomes including flour distribution, clean water delivery, and medical missions.",
+          "claim": "PCRF programs include flour distribution, clean water delivery, and medical missions.",
           "id": "[5]",
           "source_name": "Annual Report (2024)",
           "source_url": "https://www.pcrf.net/cached_uploads/download/2026/01/18/annual-report-2024-1768740754.pdf"
         },
         {
-          "claim": "Metrics for medical mission treatments and surgical sponsorships.",
+          "claim": "The organization provides medical mission treatments, food vouchers, and surgical sponsorships.",
           "id": "[6]",
           "source_name": "Annual Report (2023)",
           "source_url": "https://www.pcrf.net/cached_uploads/download/2024/12/03/2023-annual-report-1733253189.pdf"
         },
         {
-          "claim": "Beneficiary statistics for disabled youth and one-time surgical sponsorships.",
-          "id": "[7]",
-          "source_name": "Annual Report (2022)",
-          "source_url": "https://www.pcrf.net/cached_uploads/download/2023/04/17/website-copy-1681764657.pdf"
-        },
-        {
-          "claim": "Donation options and giving methods for humanitarian aid.",
-          "id": "[8]",
-          "source_name": "Charity Website - Donate",
-          "source_url": "https://www.pcrf.net/donate"
-        },
-        {
-          "claim": "The organization is Zakat-eligible and follows Zakat policy for asnaf categories.",
+          "claim": "The organization is Zakat-eligible and provides information on zakat policy and asnaf categories.",
           "id": "[10]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.pcrf.net/donate"
         }
       ],
-      "amal_score_rationale": "PCRF demonstrates strong financial health and high donor alignment, particularly for those seeking Zakat-eligible humanitarian causes. While direct service costs are high, the organization maintains exceptional fundraising efficiency and a deep track record of impact.",
+      "amal_score_rationale": "PCRF earns a strong overall standing due to its high financial efficiency and critical humanitarian mission in a high-urgency region. Its Zakat-eligibility and direct service model make it a highly aligned choice for donors seeking impactful medical intervention.",
       "areas_for_improvement": [
-        "High cost per beneficiary due to the intensive nature of direct surgical and medical interventions.",
-        "Heavy reliance on volunteer medical missions which can be impacted by regional instability."
+        "High cost per beneficiary of approximately $7,095, reflecting the intensive nature of specialized medical interventions.",
+        "Heavy reliance on volunteer medical missions which can be impacted by regional stability."
       ],
       "dimension_explanations": {
-        "alignment": "PCRF shows high alignment for humanitarian-focused donors, specifically through its Zakat-eligible status and focus on urgent medical needs in the Middle East [8][10]. The organization has a long-standing history of providing care regardless of political or religious affiliation, strengthening its reputation for neutral humanitarian aid [3][4].",
-        "impact": "The organization maintains a high program expense ratio of 88.1%, directing $92,196,846 in total revenue toward critical services like medical missions and clean water delivery [1][2][5]. While the cost per beneficiary is approximately $7,095, this reflects the high-intensity nature of direct surgical sponsorships and infrastructure projects [6][7]."
+        "alignment": "The organization shows high alignment for donors due to its humanitarian urgency and long track record of service in the Middle East [3][6]. It is explicitly Zakat-eligible, providing a verified pathway for Islamic giving through its various humanitarian and medical funds [10].",
+        "impact": "PCRF demonstrates high financial health with a total revenue of $92,196,846 and a program expense ratio of 88.1% [1][2]. The organization provides direct services including medical missions, clean water delivery, and food distribution, though the specialized nature of surgical care results in a cost per beneficiary of $7,095 [5][6]."
       },
-      "headline": "The Palestine Children's Relief Fund provides life-saving medical care and humanitarian aid to children across the Middle East regardless of religion or politics.",
+      "headline": "The Palestine Children's Relief Fund provides life-saving medical care and humanitarian relief to children across the Middle East regardless of religion or politics.",
       "strengths": [
-        "High program expense ratio of 88.1% ensures the vast majority of funds reach beneficiaries.",
+        "High program expense ratio of 88.1%, ensuring the vast majority of funds reach beneficiaries.",
         "Exceptional fundraising efficiency with a cost of only $0.02 per $1 raised.",
-        "Robust financial stability with 40.9 months of working capital available."
+        "Strong liquidity position with 40.9 months of working capital available."
       ],
-      "summary": "Founded to address the medical needs of children in crisis, the Palestine Children's Relief Fund (PCRF) operates through medical missions, infrastructure enhancement, and urgent response projects [3][5]. The organization is recognized as Zakat-eligible, allowing Muslim donors to fulfill their religious obligations through its humanitarian programs [10]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "life-saving medical care and humanitarian aid",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "We provide free medical care and humanitarian aid for any child in the Middle East",
-          "source_name": "PCRF - About Us",
-          "source_type": "website",
-          "source_url": "https://www.pcrf.net/about-us"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "volunteer medical missions",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "PCRF provides medical care to children through medical missions",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/931057665"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "urgent humanitarian relief",
-          "confidence": 0.95,
-          "id": "[3]",
-          "quote": "Urgent Gaza Relief, Zakat Fund, Medical Missions",
-          "source_name": "PCRF - Programs",
-          "source_type": "website",
-          "source_url": "https://www.pcrf.net/about-us"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$92,196,846 in total revenue",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Total Revenue: $92,196,846",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/931057665"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 106.3%",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Revenue growth from $21M to $92M over three years",
-          "source_name": "Internal Financial Analysis",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/931057665"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 88.1%",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Program Expense Ratio: 100.0%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/931057665"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "23 specialized rotations in 2024",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Medical missions completed: 23",
-          "source_name": "Annual Report (2024)",
-          "source_type": "evaluation",
-          "source_url": "https://www.pcrf.net/cached_uploads/download/2026/01/18/annual-report-2024-1768740754.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "over 14.6 million liters of clean water",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Clean water delivered: 14657500",
-          "source_name": "Annual Report (2024)",
-          "source_type": "evaluation",
-          "source_url": "https://www.pcrf.net/cached_uploads/download/2026/01/18/annual-report-2024-1768740754.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "2,000 tons of flour",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Flour distributed: 2000.25",
-          "source_name": "Annual Report (2024)",
-          "source_type": "evaluation",
-          "source_url": "https://www.pcrf.net/cached_uploads/download/2026/01/18/annual-report-2024-1768740754.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "zakat-eligible organization",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "PCRF - Donate",
-          "source_type": "website",
-          "source_url": "https://www.pcrf.net/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "masakin (needy) and fuqara (poor)",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Zakat Categories: fuqara, masakin",
-          "source_name": "PCRF - Zakat Policy",
-          "source_type": "website",
-          "source_url": "https://www.pcrf.net/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.02 per $1 raised",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Fundraising Efficiency: $0.02 per $1 raised",
-          "source_name": "Charity Navigator - PCRF",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/931057665"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "1991",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Founded: 1991",
-          "source_name": "PCRF - About Us",
-          "source_type": "website",
-          "source_url": "https://www.pcrf.net/about-us"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "pediatric cancer departments",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Pediatric Cancer Departments, Medical Evacuations",
-          "source_name": "PCRF - Programs",
-          "source_type": "website",
-          "source_url": "https://www.pcrf.net/about-us"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Candid Seal: platinum",
-          "source_name": "Candid - PCRF Profile",
-          "source_type": "rating",
-          "source_url": "https://www.pcrf.net/about-us"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "1,074 medical mission treatments",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Medical Mission Treatments: 1074",
-          "source_name": "Annual Report (2023)",
-          "source_type": "evaluation",
-          "source_url": "https://www.pcrf.net/cached_uploads/download/2024/12/03/2023-annual-report-1733253189.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "1,262 one-time surgical sponsorships",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "One-Time Surgical Sponsorships: 1262",
-          "source_name": "Annual Report (2023)",
-          "source_type": "evaluation",
-          "source_url": "https://www.pcrf.net/cached_uploads/download/2024/12/03/2023-annual-report-1733253189.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "40.9 months of working capital",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Working capital: 40.9 months",
-          "source_name": "Financial Health Analysis",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/931057665"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$7,095.01 cost per beneficiary",
-          "confidence": 0.9,
-          "id": "[19]",
-          "quote": "Cost Per Beneficiary: $7095.01",
-          "source_name": "Impact Analysis",
-          "source_type": "evaluation",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/931057665"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "11 members with 88.1% independence",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Board Size: 11; Independent Board Members: 88.1%",
-          "source_name": "PCRF - Leadership",
-          "source_type": "website",
-          "source_url": "https://www.pcrf.net/team/board-of-directors"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "BBB Wise Giving Alliance accreditation",
-          "confidence": 0.8,
-          "id": "[21]",
-          "quote": "Standards Met: 0/20",
-          "source_name": "BBB Give.org Review",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/children-youth/childrens-hunger-relief-fund-in-santa-rosa-ca-9999-2559"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "training local doctors and building hospital infrastructure",
-          "confidence": 1,
-          "id": "[22]",
-          "quote": "To reduce the dependency on outside providers to treat children by training local doctors",
-          "source_name": "Candid - Charting Impact",
-          "source_type": "website",
-          "source_url": "https://www.pcrf.net/about-us"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "expanding services to underserved regions",
-          "confidence": 0.9,
-          "id": "[23]",
-          "quote": "Expand services to underserved populations or regions with limited nonprofit coverage",
-          "source_name": "Impact Improvement Suggestion",
-          "source_type": "website",
-          "source_url": "https://www.pcrf.net/about-us"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer median of 89.7%",
-          "confidence": 1,
-          "id": "[24]",
-          "quote": "Peer Program Ratio Median: 89.7%",
-          "source_name": "Peer Benchmark Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/931057665"
-        }
-      ],
-      "amal_score_rationale": "PCRF demonstrates strong financial health and high donor alignment, particularly for those seeking Zakat-eligible humanitarian causes. While direct service costs are high, the organization maintains exceptional fundraising efficiency and a deep track record of impact.",
-      "amal_scores": {
-        "amal_score": 73,
-        "confidence_scores": {
-          "alignment": 40,
-          "data_confidence": 0.95,
-          "impact": 33
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "High Cost per Beneficiary",
-          "citation_ids": [
-            "[19]"
-          ],
-          "context": "The intensive nature of surgical interventions results in a <cite id=\"19\">$7,095.01 cost per beneficiary</cite>, which is high for the humanitarian sector."
-        },
-        {
-          "area": "Excessive Capital Reserves",
-          "citation_ids": [
-            "[18]"
-          ],
-          "context": "With <cite id=\"18\">40.9 months of working capital</cite> in reserve, the charity holds capital that could potentially be deployed more rapidly for immediate relief."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[21]"
-        ],
-        "effectiveness_status": "FAIL",
-        "finances_status": "FAIL",
-        "governance_status": "FAIL",
-        "meets_all_standards": false,
-        "review_url": "https://give.org/charity-reviews/children-youth/childrens-hunger-relief-fund-in-santa-rosa-ca-9999-2559",
-        "standards_met": 0,
-        "standards_not_met": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          17,
-          18,
-          19,
-          20
-        ],
-        "summary": "Does not currently meet BBB Wise Giving Alliance Standards for Charity Accountability"
-      },
-      "case_against": {
-        "citation_ids": [
-          "[19]",
-          "[21]"
-        ],
-        "mitigation_notes": "The high cost is inherent to complex pediatric surgeries, and the organization maintains a strong theory of change to justify these investments.",
-        "risk_factors": [
-          "<cite id=\"19\">High cost-per-beneficiary ($7,095)</cite>",
-          "<cite id=\"21\">0/20 BBB standards met</cite>"
-        ],
-        "summary": "The primary concerns involve <cite id=\"19\">high per-unit costs</cite> for medical interventions and <cite id=\"21\">incomplete BBB accountability standards</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 6,
-          "form990": 5,
-          "rating": 6,
-          "website": 7
-        },
-        "high_confidence_count": 22,
-        "total_count": 24,
-        "unique_sources": 8
-      },
-      "confidence": {
-        "data_freshness": "Financials from 2023; Outcomes from 2024",
-        "data_gaps": [
-          "Missing 2024 Form 990",
-          "BBB review is incomplete"
-        ],
-        "level": "HIGH",
-        "notes": "Strong alignment between financial filings and impact reports.",
-        "score": 95,
-        "sources_used": [
-          "Form 990",
-          "Annual Reports",
-          "Charity Navigator",
-          "Candid"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 95,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Incomplete BBB review",
-          "High cost-per-beneficiary data"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 24,
-        "unique_sources": 8,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[10]",
-            "[11]",
-            "[23]"
-          ],
-          "explanation": "PCRF is a premier fit for Muslim donors, offering <cite id=\"10\">verified zakat eligibility</cite> and serving <cite id=\"11\">highly underserved populations</cite> in the Gaza Strip and West Bank.",
-          "improvement": "The charity could improve its alignment score by <cite id=\"23\">expanding services to underserved regions</cite> outside of its primary Levant focus."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[13]",
-            "[15]",
-            "[20]",
-            "[21]"
-          ],
-          "explanation": "Donors can trust PCRF due to its <cite id=\"13\">35-year history</cite>, <cite id=\"15\">Platinum Candid status</cite>, and a board of <cite id=\"20\">11 members with 88.1% independence</cite>.",
-          "improvement": "To further enhance credibility, the organization could seek <cite id=\"21\">BBB Wise Giving Alliance accreditation</cite>, as it currently meets 0 of 20 standards according to available reviews."
-        },
-        "impact": {
-          "citation_ids": [
-            "[2]",
-            "[6]",
-            "[19]",
-            "[22]"
-          ],
-          "explanation": "Impact is driven by <cite id=\"2\">direct service delivery</cite> and a <cite id=\"6\">100.0% program ratio</cite>, though the <cite id=\"19\">$7,095 cost per beneficiary</cite> limits the total number of individuals served per dollar.",
-          "improvement": "Impact efficiency could be improved by <cite id=\"22\">building more local hospital capacity</cite> to reduce the high costs associated with international medical missions."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[10]",
-          "[11]"
-        ],
-        "evidence_rigor": "Grade B - Verified outcomes and documented theory of change",
-        "geographic_focus": [
-          "Palestine",
-          "Gaza",
-          "West Bank",
-          "Jordan",
-          "Lebanon"
-        ],
-        "giving_style": "Direct medical service",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 92196846,
-        "citation_ids": [
-          "[2]",
-          "[4]",
-          "[5]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0.02,
-        "industry_program_ratio": 0.75,
-        "peer_count": 58,
-        "peer_program_ratio_median": 0.897,
-        "program_expense_ratio": 0.8809999999999999,
-        "reserves_months": 40.9,
-        "revenue_cagr_3yr": 106.3,
-        "transparency_score": 100,
-        "working_capital_months": 40.9,
-        "yearly_financials": [
-          {
-            "expenses": 27162011,
-            "net_assets": 92530610,
-            "revenue": 92196846,
-            "year": 2023
-          },
-          {
-            "expenses": 17538444,
-            "net_assets": 26790219,
-            "revenue": 10710532,
-            "year": 2022
-          },
-          {
-            "expenses": 13703677,
-            "net_assets": 35046248,
-            "revenue": 21671085,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct implementation through medical missions and staff",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "Levant"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "The Palestine Children's Relief Fund provides life-saving medical care and humanitarian aid to children across the Middle East regardless of religion or politics.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to provide high-impact, specialized medical interventions for children in Palestine and value a 88.1% program expense ratio.",
-        "citation_ids": [
-          "[6]",
-          "[10]",
-          "[19]"
-        ],
-        "donor_motivations": [
-          "Want to fulfill zakat through direct humanitarian aid",
-          "Prioritize pediatric healthcare and life-saving surgeries",
-          "Value long-standing organizations with deep local roots in Gaza",
-          "Prefer charities with minimal fundraising overhead"
-        ],
-        "giving_considerations": [
-          "Medical missions are subject to border closures and regional instability",
-          "High cost per patient means fewer total beneficiaries than basic aid charities",
-          "Large cash reserves suggest the organization is not in an immediate funding crisis"
-        ],
-        "not_ideal_for": "Donors seeking high-volume, low-cost interventions like mass deworming or those who prioritize BBB accreditation."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[8]",
-          "[16]",
-          "[22]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "Verified outcomes are reported annually, including <cite id=\"16\">specific treatment counts</cite> and <cite id=\"8\">commodity distribution metrics</cite>.",
-        "external_evaluations": [
-          "Candid Outcome Metrics"
-        ],
-        "outcome_tracking_years": 5,
-        "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "PCRF reduces dependency on outside providers by <cite id=\"22\">training local doctors and building hospital infrastructure</cite> while providing immediate surgical relief.",
-        "why_evidence_matters": "In conflict zones, verified delivery metrics ensure that aid actually reaches the intended pediatric beneficiaries."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[5]",
-          "[13]",
-          "[18]"
-        ],
-        "founded_year": 1991,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": 106.3,
-        "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "While revenue has grown <cite id=\"5\">106.3%</cite>, the charity holds <cite id=\"18\">substantial reserves</cite> that suggest high current liquidity.",
-        "strategic_priorities": [
-          "Gaza urgent relief",
-          "Expanding pediatric cancer care",
-          "Local medical training"
-        ],
-        "years_operating": 35
-      },
-      "organizational_capacity": {
-        "board_size": 11,
-        "ceo_compensation": 178650,
-        "ceo_compensation_pct_revenue": 0.19,
-        "ceo_name": "Vivian Khalaf (Chair)",
-        "citation_ids": [
-          "[2]",
-          "[4]",
-          "[20]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Palestine, Jordan, Lebanon",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": 500
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[6]",
-          "[24]"
-        ],
-        "differentiator": "PCRF stands out with a <cite id=\"6\">100.0% program ratio</cite> compared to a <cite id=\"24\">peer median of 89.7%</cite>.",
-        "peer_group": "International Humanitarian Healthcare",
-        "similar_orgs": [
-          "Syrian American Medical Society Foundation",
-          "Helen Keller International",
-          "MedGlobal"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Focuses on Syrian crisis and medical relief",
-          "name": "Syrian American Medical Society Foundation"
-        },
-        {
-          "differentiator": "Global focus on vision and nutrition",
-          "name": "Helen Keller International"
-        },
-        {
-          "differentiator": "Broader international disaster response focus",
-          "name": "MedGlobal"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[6]",
-            "[12]"
-          ],
-          "detail": "The charity operates with a <cite id=\"6\">88.1% program expense ratio</cite> and a fundraising efficiency of <cite id=\"12\">$0.02 per $1 raised</cite>.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[13]",
-            "[14]"
-          ],
-          "detail": "Operating since <cite id=\"13\">1991</cite>, PCRF has established deep infrastructure, including <cite id=\"14\">pediatric cancer departments</cite> and surgical sponsorship programs.",
-          "point": "Proven Operational Track Record"
-        },
-        {
-          "citation_ids": [
-            "[15]"
-          ],
-          "detail": "PCRF holds a <cite id=\"15\">Platinum Seal of Transparency from Candid</cite>, the highest level of disclosure available.",
-          "point": "High Transparency Standards"
-        }
-      ],
-      "strengths_deep_dive": [
-        "PCRF's operational strength lies in its ability to mobilize international medical expertise for local impact. In 2023 alone, the organization facilitated <cite id=\"16\">1,074 medical mission treatments</cite> and <cite id=\"17\">1,262 one-time surgical sponsorships</cite> for children who otherwise lacked access to specialized care. Their financial stability is underscored by <cite id=\"18\">40.9 months of working capital</cite>, providing a significant buffer to maintain operations during periods of extreme regional volatility."
-      ],
-      "summary": "founded in 1991, the Palestine Children's Relief Fund (PCRF) provides <cite id=\"1\">life-saving medical care and humanitarian aid</cite> to children across the Middle East. The organization operates through a sophisticated model of <cite id=\"2\">volunteer medical missions</cite>, pediatric infrastructure development, and <cite id=\"3\">urgent humanitarian relief</cite> in high-conflict zones. PCRF reported <cite id=\"4\">$92,196,846 in total revenue</cite> for the 2023 fiscal year, representing a <cite id=\"5\">3-year revenue CAGR of 106.3%</cite>. This rapid growth reflects the organization's critical role in responding to escalating crises in the Gaza Strip and West Bank. PCRF maintains a <cite id=\"6\">program expense ratio of 88.1%</cite> according to recent financial filings, ensuring that donor contributions are directed toward direct service delivery. Beyond medical missions, which completed <cite id=\"7\">23 specialized rotations in 2024</cite>, the charity has expanded into large-scale food and water security, distributing <cite id=\"8\">over 14.6 million liters of clean water</cite> and <cite id=\"9\">2,000 tons of flour</cite> to displaced families. As a <cite id=\"10\">zakat-eligible organization</cite>, PCRF provides a verified channel for Muslim donors to support the <cite id=\"11\">masakin (needy) and fuqara (poor)</cite> through specialized medical and relief funds.",
-      "zakat_guidance": {
-        "classification": "amil",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "Founded to address the medical needs of youth in the Levant, the Palestine Children's Relief Fund (PCRF) delivers direct surgical care, infrastructure enhancement, and urgent humanitarian response [3][5]. The organization is recognized as Zakat-eligible, allowing Muslim donors to fulfill their religious obligations through supported programs [10]."
     }
   }
 }
