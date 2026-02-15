@@ -308,7 +308,7 @@ class ImpactAssessment(BaseModel):
     Components are re-weighted per archetype (v5.0.0):
     - Cost Per Beneficiary: Cause-adjusted benchmarks with smooth interpolation
     - Directness: How directly funds reach people
-    - Financial Health: Reserves sweet spot (smooth interpolation)
+    - Financial Health: Reserve-policy-based liquidity health (smooth interpolation)
     - Program Ratio: Smooth interpolation over ratio
     - Evidence & Outcomes: Absorbed from Credibility
     - Theory of Change: Absorbed from Credibility

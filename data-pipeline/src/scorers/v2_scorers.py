@@ -384,13 +384,14 @@ DIRECTNESS_KEYWORDS = {
     ],
 }
 
-# Financial Health (7 pts) - smooth interpolation with peak at 2 months
+# Financial Health (7 pts) - reserve-policy-based smooth interpolation
+# Core curve rewards resilient liquidity (roughly 3-12 months),
+# then applies revenue-adjusted tails for very high reserves.
 FINANCIAL_HEALTH_KNOTS = [
     (0, 0),
-    (1, 3),
-    (2, 7),
-    (4, 5),
-    (8, 3),
+    (1, 2),
+    (3, 5),
+    (6, 7),
 ]
 # Revenue-adjusted high/excessive floors appended dynamically
 
@@ -891,7 +892,7 @@ class ImpactScorer:
     Components (base weights, re-weighted per archetype in v5.0.0):
     - Cost Per Beneficiary: Cause-adjusted benchmarks with smooth interpolation
     - Directness: How directly funds reach people
-    - Financial Health: Smooth interpolation with peak at 2 months
+    - Financial Health: Smooth reserve-policy interpolation (resilient 3-12 months)
     - Program Ratio: Smooth interpolation over 0.0-1.0
     - Evidence & Outcomes: Grade-based (absorbed from Credibility)
     - Theory of Change: Categorical (absorbed from Credibility)
@@ -957,7 +958,7 @@ class ImpactScorer:
             )
         )
 
-        # 3. Financial Health — smooth interpolation (always 7 pts across archetypes)
+        # 3. Financial Health — reserve-policy interpolation (always 7 pts across archetypes)
         fh_label, fh_pts = self._score_financial_health(metrics)
         fh_possible = rubric.weights["financial_health"]
         fh_pts = rubric.scale_score("financial_health", fh_pts)
@@ -967,6 +968,7 @@ class ImpactScorer:
             if wc is not None and wc >= 0.1
             else f"Working capital: unknown ({fh_label})"
         )
+        fh_improvement = self._financial_health_improvement_suggestion(metrics, fh_label)
         components.append(
             ScoreComponent(
                 name="Financial Health",
@@ -974,10 +976,10 @@ class ImpactScorer:
                 possible=fh_possible,
                 evidence=fh_evidence,
                 status=ComponentStatus.FULL if wc is not None and wc >= 0.1 else ComponentStatus.MISSING,
-                improvement_suggestion="Build working capital reserves to 1-3 months of operating expenses"
-                if fh_pts < fh_possible * 5 // 7
-                else None,
-                improvement_value=min(fh_possible - fh_pts, max(1, fh_possible * 4 // 7)) if fh_pts < fh_possible * 5 // 7 else 0,
+                improvement_suggestion=fh_improvement,
+                improvement_value=min(fh_possible - fh_pts, max(1, fh_possible * 4 // 7))
+                if fh_improvement
+                else 0,
             )
         )
 
@@ -1219,18 +1221,18 @@ class ImpactScorer:
     def _score_financial_health(self, metrics: CharityMetrics) -> tuple[str, int]:
         """Score financial health from working capital ratio (7 pts).
 
-        Uses smooth piecewise-linear interpolation with peak at 2 months.
-        Revenue-adjusted high/excessive floors.
-        Endowment/scholarship models get a neutral score — high reserves are
-        the business model, not a red flag.
+        Uses smooth piecewise-linear interpolation centered on resilient liquidity.
+        Default healthy range is approximately 3-12 months for most nonprofits,
+        with revenue-adjusted high/excessive floors for very large reserve positions.
+        Endowment/scholarship models get neutral treatment for high reserves.
         """
         ratio = metrics.working_capital_ratio
         if ratio is None or ratio < 0.1:
             return "UNKNOWN", 0
 
-        # Endowment models: high reserves are expected, score as HEALTHY (4/7)
-        if self._is_endowment_model(metrics) and ratio > 6:
-            return "ENDOWMENT", 4
+        # Endowment models: high reserves are expected, score as neutral/healthy.
+        if self._is_endowment_model(metrics) and ratio > 12:
+            return "RESERVE_MODEL", 5
 
         # Revenue-adjusted thresholds for tail knots
         revenue = metrics.total_revenue or 0
@@ -1238,35 +1240,74 @@ class ImpactScorer:
             high_floor = 18
             excessive_floor = 36
         elif revenue >= 5_000_000:
-            high_floor = 9
-            excessive_floor = 18
-        else:
             high_floor = 12
             excessive_floor = 24
+        else:
+            high_floor = 15
+            excessive_floor = 30
 
-        # Build full knot set with revenue-adjusted tail
+        # Build full knot set with revenue-adjusted tail.
         knots = list(FINANCIAL_HEALTH_KNOTS) + [
-            (high_floor, 1),
-            (excessive_floor, 0),
+            (high_floor, 6),
+            (excessive_floor, 3),
+            (int(excessive_floor * 1.5), 0),
         ]
 
         score = round(interpolate_score(ratio, knots))
 
         # Determine label for evidence string
         if ratio < 1:
-            label = "TIGHT"
+            label = "CRITICAL"
         elif ratio < 3:
-            label = "OPTIMAL"
-        elif ratio < 6:
-            label = "HEALTHY"
-        elif ratio < high_floor:
-            label = "COMFORTABLE"
+            label = "LEAN"
+        elif ratio <= 12:
+            label = "RESILIENT"
         elif ratio < excessive_floor:
             label = "HIGH"
         else:
             label = "EXCESSIVE"
 
         return label, score
+
+    def _financial_health_improvement_suggestion(self, metrics: CharityMetrics, label: str) -> Optional[str]:
+        """Context-aware financial health guidance.
+
+        Avoids a single hardcoded reserves target. Uses policy-based guidance
+        and distinguishes high reserves from low-liquidity risk.
+        """
+        ratio = metrics.working_capital_ratio
+        if ratio is None or ratio < 0.1:
+            return (
+                "Publish operating-reserve levels and adopt a board-approved reserve policy "
+                "(typically 3-12 months for most nonprofits)."
+            )
+
+        if label == "CRITICAL":
+            return (
+                "Increase operating reserves to reduce continuity risk; target at least ~3 months "
+                "unless a different policy is explicitly justified."
+            )
+        if label == "LEAN":
+            return (
+                "Strengthen reserves toward a resilient policy range (commonly 3-12 months), "
+                "based on revenue volatility and program obligations."
+            )
+        if label == "RESERVE_MODEL":
+            return (
+                "Distinguish restricted/endowment reserves from operating reserves and publish "
+                "a clear reserve-use policy."
+            )
+        if label == "HIGH":
+            return (
+                "Document why reserves above your policy target are intentional "
+                "(e.g., restrictions, volatility, planned commitments) and define deployment triggers."
+            )
+        if label == "EXCESSIVE":
+            return (
+                "Publish a capital deployment plan so very high reserves are intentionally used for mission delivery "
+                "while preserving a prudent safety buffer."
+            )
+        return None
 
     def _score_program_ratio(self, metrics: CharityMetrics) -> tuple[int, str]:
         """Score program expense ratio with smooth interpolation (6 pts)."""
@@ -2266,7 +2307,7 @@ class AmalScorerV2:
         if capacity_limited:
             caveat += ". Evidence score may reflect limited reporting capacity, not program weakness"
 
-        return f"{name} earns {total_score}/100 due to {top} and {second}{zakat_note}{caveat}."
+        return f"{name} shows {top} and {second}{zakat_note}{caveat}."
 
     @staticmethod
     def _describe_dimension(score: int, max_pts: int, label: str) -> str:

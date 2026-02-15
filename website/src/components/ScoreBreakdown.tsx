@@ -77,14 +77,14 @@ const getFinancialHealthContext = (component: ScoreComponentDetail): {
   current: string;
   replacementSuggestion: string;
 } => {
-  const benchmark = 'What good looks like: usually 1-3 months of operating reserves, plus strong program spending.';
+  const benchmark = 'What good looks like: reserve policy matched to mission risk. Typical range is 3-12 months for most nonprofits (often higher for volatile emergency response or designated endowment models).';
   const months = extractWorkingCapitalMonths(component.evidence || '');
 
   if (months === null) {
     return {
       benchmark,
       current: 'Current reserves are not reported.',
-      replacementSuggestion: 'Publish working-capital reserves and target at least a 1-3 month operating buffer.',
+      replacementSuggestion: 'Publish reserve levels and define a board-approved operating reserve policy (typically 3-12 months for most organizations).',
     };
   }
 
@@ -92,22 +92,36 @@ const getFinancialHealthContext = (component: ScoreComponentDetail): {
   if (months < 1) {
     return {
       benchmark,
-      current: `Current reserves: ${monthLabel} (below target).`,
-      replacementSuggestion: 'Increase reserves toward the 1-3 month target to reduce service disruption risk.',
+      current: `Current reserves: ${monthLabel} (critical liquidity risk).`,
+      replacementSuggestion: 'Urgently increase operating reserves to improve continuity; aim for at least 3 months unless a different policy is explicitly justified.',
     };
   }
-  if (months <= 3) {
+  if (months < 3) {
     return {
       benchmark,
-      current: `Current reserves: ${monthLabel} (within target range).`,
-      replacementSuggestion: 'Maintain reserves in the 1-3 month target range while preserving program delivery.',
+      current: `Current reserves: ${monthLabel} (lean buffer).`,
+      replacementSuggestion: 'Strengthen the liquidity buffer toward a resilient operating range (commonly 3-12 months), based on revenue volatility.',
+    };
+  }
+  if (months <= 12) {
+    return {
+      benchmark,
+      current: `Current reserves: ${monthLabel} (healthy range).`,
+      replacementSuggestion: 'Maintain current reserve discipline and document clear deployment triggers.',
+    };
+  }
+  if (months <= 24) {
+    return {
+      benchmark,
+      current: `Current reserves: ${monthLabel} (high but potentially reasonable).`,
+      replacementSuggestion: 'Ensure reserves are intentional: document what portion is designated, restricted, or planned for staged deployment.',
     };
   }
 
   return {
     benchmark,
-    current: `Current reserves: ${monthLabel} (above target range).`,
-    replacementSuggestion: 'Reserves are above the 1-3 month target; consider deploying more to programs or document a long-term reserve policy.',
+    current: `Current reserves: ${monthLabel} (very high).`,
+    replacementSuggestion: 'Clarify long-term reserve purpose and publish a capital deployment plan so excess liquidity does not sit idle.',
   };
 };
 
@@ -115,7 +129,14 @@ const normalizeImprovementSuggestion = (component: ScoreComponentDetail): string
   const suggestion = component.improvement_suggestion?.trim();
   if (!suggestion) return null;
 
-  if (isFinancialHealthComponent(component) && /build working capital reserves to 1-3 months/i.test(suggestion)) {
+  if (
+    isFinancialHealthComponent(component) &&
+    (
+      /build working capital reserves to 1-3 months/i.test(suggestion) ||
+      /build working capital reserves down to 1-3 months/i.test(suggestion) ||
+      /reduce(?:ing)? .*working capital.*1-3 months/i.test(suggestion)
+    )
+  ) {
     return getFinancialHealthContext(component).replacementSuggestion;
   }
 

@@ -56,6 +56,14 @@ def _component_pts(result, name: str) -> int:
     raise ValueError(f"Component '{name}' not found in {[c.name for c in result.components]}")
 
 
+def _component(result, name: str):
+    """Extract component object by name from an assessment."""
+    for c in result.components:
+        if c.name == name:
+            return c
+    raise ValueError(f"Component '{name}' not found in {[c.name for c in result.components]}")
+
+
 # ─── interpolate_score ──────────────────────────────────────────────────────
 
 
@@ -219,12 +227,32 @@ class TestImpactScorer:
         result = scorer.evaluate(m)
         assert _component_pts(result, "Cost Per Beneficiary") <= 15
 
-    def test_financial_health_sweet_spot(self):
-        """Reserves at 2 months → 7 pts (peak of smooth curve)."""
-        m = _base_metrics(working_capital_ratio=2.0)
+    def test_financial_health_resilient_range(self):
+        """Reserves around 6 months should receive top financial-health points."""
+        m = _base_metrics(working_capital_ratio=6.0)
         scorer = ImpactScorer()
         result = scorer.evaluate(m)
         assert _component_pts(result, "Financial Health") == 7
+
+    def test_financial_health_high_reserves_get_contextual_guidance(self):
+        """High reserves should not tell orgs to 'build to 1-3 months'."""
+        m = _base_metrics(working_capital_ratio=18.0, total_revenue=10_000_000)
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        comp = _component(result, "Financial Health")
+        assert comp.improvement_suggestion is not None
+        assert "1-3 months" not in comp.improvement_suggestion.lower()
+        assert "deployment" in comp.improvement_suggestion.lower() or "policy" in comp.improvement_suggestion.lower()
+
+    def test_financial_health_unknown_reserves_guidance(self):
+        """Missing reserves should trigger disclosure/policy guidance."""
+        m = _base_metrics(working_capital_ratio=None)
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        comp = _component(result, "Financial Health")
+        assert comp.improvement_suggestion is not None
+        assert "publish" in comp.improvement_suggestion.lower()
+        assert "policy" in comp.improvement_suggestion.lower()
 
     def test_has_evidence_and_toc_components(self):
         """Impact scorer now includes Evidence, TOC, and Governance components."""
