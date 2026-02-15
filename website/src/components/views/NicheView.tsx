@@ -277,14 +277,14 @@ export const NicheView: React.FC<NicheViewProps> = ({ charity, currentView, onVi
 
   // Card wrapper component
   const Card: React.FC<{ children: React.ReactNode; className?: string; id?: string }> = ({ children, className = '', id }) => (
-    <div id={id} className={`rounded-xl p-5 ${isDark ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-gray-200'} ${className}`}>
+    <div id={id} className={`rounded-xl p-4 sm:p-5 ${isDark ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-gray-200'} ${className}`}>
       {children}
     </div>
   );
 
   // Section header component
   const SectionHeader: React.FC<{ title: string; icon?: React.ElementType }> = ({ title, icon: Icon }) => (
-    <div className="flex items-center gap-3 mb-4">
+    <div className="flex items-center gap-3 mb-3 sm:mb-4">
       {Icon && <Icon className={`w-5 h-5 ${isDark ? 'text-slate-400' : 'text-gray-400'}`} aria-hidden="true" />}
       <h2 className={`text-lg font-bold [text-wrap:balance] ${isDark ? 'text-white' : 'text-gray-900'}`}>{title}</h2>
       <div className={`flex-1 h-px ${isDark ? 'bg-slate-700' : 'bg-gray-200'}`} />
@@ -314,13 +314,13 @@ export const NicheView: React.FC<NicheViewProps> = ({ charity, currentView, onVi
     <div className={`min-h-screen ${isDark ? 'bg-slate-950' : 'bg-gray-50'}`}>
       {/* Hero Section */}
       <div className={`${isDark ? 'bg-slate-900 border-b border-slate-800' : 'bg-white border-b border-gray-200'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           {/* Back Link */}
-          <Link to="/browse" className={`inline-flex items-center gap-2 mb-3 text-sm ${isDark ? 'text-slate-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}>
+          <Link to="/browse" className={`inline-flex items-center gap-2 mb-2 sm:mb-3 text-sm ${isDark ? 'text-slate-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}>
             <ArrowLeft className="w-4 h-4" aria-hidden="true" /> Back to Directory
           </Link>
 
-          <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+          <div className="flex flex-col lg:flex-row lg:items-center gap-3 sm:gap-4">
             {/* Qualitative snapshot */}
             <div className={`rounded-xl border px-3 py-2 ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-slate-200'}`}>
               <div className="flex flex-wrap items-center gap-2">
@@ -385,7 +385,7 @@ export const NicheView: React.FC<NicheViewProps> = ({ charity, currentView, onVi
           </div>
 
           {/* Top Tabs */}
-          <div className="flex gap-1 mt-4 overflow-x-auto pb-1">
+          <div className="flex gap-1 mt-3 sm:mt-4 overflow-x-auto pb-1">
             {TABS.map(tab => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -417,8 +417,8 @@ export const NicheView: React.FC<NicheViewProps> = ({ charity, currentView, onVi
       />
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="space-y-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
+        <div className="space-y-5 sm:space-y-6">
             {/* OVERVIEW TAB */}
             {activeTab === 'overview' && (
               <>
