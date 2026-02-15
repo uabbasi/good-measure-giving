@@ -184,6 +184,41 @@ def repair_citations(
     # Update all_citations if we added any
     narrative["all_citations"] = all_citations
 
+    # Backfill missing source_name/source_url deterministically from citation id or URL.
+    def _match_source_by_url(source_url: str):
+        if not source_url:
+            return None
+        normalized = source_url.rstrip("/")
+        for source in citation_sources:
+            candidate = (getattr(source, "source_url", None) or "").rstrip("/")
+            if not candidate:
+                continue
+            if normalized == candidate or normalized in candidate or candidate in normalized:
+                return source
+        return None
+
+    for citation in narrative.get("all_citations", []):
+        source_name_raw = citation.get("source_name")
+        source_name = str(source_name_raw).strip() if source_name_raw is not None else ""
+        if source_name:
+            continue
+
+        matched_source = None
+        cid = citation.get("id", "")
+        match = re.search(r"\[(\d+)\]", cid)
+        if match:
+            idx = int(match.group(1))
+            if 1 <= idx <= len(citation_sources):
+                matched_source = citation_sources[idx - 1]
+
+        if not matched_source:
+            matched_source = _match_source_by_url(str(citation.get("source_url") or "").strip())
+
+        if matched_source:
+            citation["source_name"] = matched_source.source_name
+            if not citation.get("source_url"):
+                citation["source_url"] = matched_source.source_url
+
     # Fix hallucinated sources by finding closest match
     registry_names = [s.source_name for s in citation_sources]
     registry_lower = [s.lower() for s in registry_names]
@@ -191,7 +226,15 @@ def repair_citations(
     unresolved_entry_refs: set[int] = set()
 
     for citation in narrative.get("all_citations", []):
-        source_name = citation.get("source_name", "").lower()
+        source_name = str(citation.get("source_name") or "").strip().lower()
+        if not source_name:
+            # Unrecoverable empty source; strip corresponding marker and drop entry.
+            unresolved_entry_refs.add(id(citation))
+            cid = citation.get("id", "")
+            match = re.search(r"\[(\d+)\]", cid)
+            if match:
+                unresolved_ids.add(match.group(1))
+            continue
         if source_name and not any(source_name in reg or reg in source_name for reg in registry_lower):
             # Find closest match by partial string matching
             best_match = None
