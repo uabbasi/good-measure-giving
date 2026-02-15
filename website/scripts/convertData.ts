@@ -540,10 +540,15 @@ function buildSummaryFromDetail(detail: any): any {
   }
 
   // Derive confidenceTier from dataConfidence (0-1 float) or legacy trust score
-  const dataConf = cs?.dataConfidence;
+  const confidenceBadge = (amal.score_details?.data_confidence?.badge as string | undefined)?.toUpperCase() || null;
+  const dataConf = cs?.dataConfidence ?? cs?.data_confidence ?? amal.score_details?.data_confidence?.overall ?? null;
   const trustScore = cs?.trust;
   let confidenceTier: string | null = null;
-  if (dataConf != null) {
+  if (confidenceBadge === 'HIGH') confidenceTier = 'HIGH';
+  else if (confidenceBadge === 'MEDIUM' || confidenceBadge === 'MODERATE') confidenceTier = 'MODERATE';
+  else if (confidenceBadge === 'LOW') confidenceTier = 'LOW';
+  else if (confidenceBadge === 'INSUFFICIENT' || confidenceBadge === 'INSUFFICIENT_DATA') confidenceTier = 'INSUFFICIENT_DATA';
+  else if (dataConf != null) {
     if (dataConf >= 0.7) confidenceTier = 'HIGH';
     else if (dataConf >= 0.4) confidenceTier = 'MODERATE';
     else confidenceTier = 'LOW';
@@ -586,6 +591,9 @@ function buildSummaryFromDetail(detail: any): any {
     evaluationTrack: detail.evaluationTrack || null,
     foundedYear: detail.foundedYear || null,
     scoreSummary: amal.score_details?.score_summary || null,
+    asnafServed: detail.asnafServed || null,
+    rubricArchetype: detail.rubricArchetype || null,
+    ui_signals_v1: detail.ui_signals_v1 || null,
   };
 }
 

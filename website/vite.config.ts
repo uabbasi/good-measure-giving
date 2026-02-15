@@ -43,10 +43,6 @@ export default defineConfig(({ mode }) => {
                 if (id.includes('lucide-react')) {
                   return 'icons';
                 }
-                // Google AI (lazy loaded when needed)
-                if (id.includes('@google/genai')) {
-                  return 'ai';
-                }
               }
               // Charity data - largest chunk, split it out
               if (id.includes('src/data/charities')) {
