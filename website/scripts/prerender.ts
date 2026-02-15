@@ -261,10 +261,24 @@ async function startPreviewServer(): Promise<ChildProcess> {
   return server;
 }
 
-async function prerenderPages() {
-  // Dynamic import for puppeteer (ESM)
-  const puppeteer = await import('puppeteer');
+function writePrerenderedFromBaseHtml(metas: PageMeta[]): number {
+  const baseHtmlPath = path.join(DIST_DIR, 'index.html');
+  const baseHtml = fs.readFileSync(baseHtmlPath, 'utf-8');
+  let written = 0;
 
+  for (const meta of metas) {
+    const html = injectMeta(baseHtml, meta);
+    const outDir = path.join(DIST_DIR, meta.route === '/' ? '' : meta.route);
+    fs.mkdirSync(outDir, { recursive: true });
+    const outFile = meta.route === '/' ? path.join(DIST_DIR, 'index.html') : path.join(outDir, 'index.html');
+    fs.writeFileSync(outFile, html, 'utf-8');
+    written++;
+  }
+
+  return written;
+}
+
+async function prerenderPages() {
   // Load charity data
   const charitiesIndex = JSON.parse(fs.readFileSync(CHARITIES_JSON, 'utf-8'));
   const charities: CharitySummary[] = charitiesIndex.charities || [];
@@ -294,12 +308,31 @@ async function prerenderPages() {
 
   console.log(`Prerender: ${metas.length} pages (${metas.length - charities.length} static + ${charities.length} charities)`);
 
+  if (process.env.CF_PAGES === '1') {
+    console.log('Cloudflare Pages detected; using fallback prerender (no headless browser).');
+    const written = writePrerenderedFromBaseHtml(metas);
+    console.log(`Prerender complete: ${written} pages written to dist/`);
+    return;
+  }
+
+  // Dynamic import for puppeteer (ESM)
+  const puppeteer = await import('puppeteer');
   // Start preview server
   console.log('Starting preview server...');
   const server = await startPreviewServer();
-
   try {
-    const browser = await puppeteer.default.launch({ headless: true });
+    let browser;
+    try {
+      browser = await puppeteer.default.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      });
+    } catch (launchError) {
+      console.warn('Headless browser unavailable; using fallback prerender:', launchError);
+      const written = writePrerenderedFromBaseHtml(metas);
+      console.log(`Prerender complete: ${written} pages written to dist/`);
+      return;
+    }
 
     // Process pages with concurrency limit
     let completed = 0;
