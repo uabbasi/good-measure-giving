@@ -3,4 +3,3 @@
  */
 
 export { TerminalView } from './TerminalView';
-export { NicheView } from './NicheView';

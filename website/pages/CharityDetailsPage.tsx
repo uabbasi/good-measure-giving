@@ -25,8 +25,7 @@ import { CharityProfile, AmalEvaluation, RatingColor } from '../types';
 import { ScoreVisualizer, ScoreVariant } from '../components/ScoreVisualizer';
 import { AssessmentCard, RatingIcon } from '../components/MetricCard';
 import { SourceAttribution } from '../src/components/SourceAttribution';
-import { ViewType } from '../src/components/CharityViewPicker';
-import { TerminalView, NicheView } from '../src/components/views';
+import { TerminalView } from '../src/components/views';
 import { isRichTier, isBaselineTier, isHiddenTier } from '../src/utils/tierUtils';
 import { useCommunityMember, CommunityGate, JoinCommunityPrompt } from '../src/auth';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
@@ -77,29 +76,6 @@ export const CharityDetailsPage: React.FC = () => {
   // UX State - simplified to single layout for hidden tier charities
   const [visualVariant, setVisualVariant] = useState<ScoreVariant>('arch');
 
-  // View state - persisted to localStorage (Terminal is default)
-  const [currentView, setCurrentView] = useState<ViewType>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('charityView') as ViewType;
-      // Restore persisted view (compare is transient, not persisted)
-      if (saved && ['terminal', 'niche'].includes(saved)) {
-        return saved;
-      }
-    }
-    return 'terminal'; // Default to terminal view
-  });
-
-  // (duplicate useEffect removed — title set above)
-
-  // Persist view preference
-  const handleViewChange = (view: ViewType) => {
-    setCurrentView(view);
-    // Persist view preference (compare is transient — don't save it)
-    if (typeof window !== 'undefined' && view !== 'compare') {
-      localStorage.setItem('charityView', view);
-    }
-  };
-
   // Loading state
   if (loading) {
     return (
@@ -129,15 +105,9 @@ export const CharityDetailsPage: React.FC = () => {
     );
   }
 
-  // T038/T044: Route to tier-specific detail components
-  // Both rich and baseline tiers get Terminal + Editorial views (Terminal is default)
+  // Rich and baseline tiers use the terminal view
   if (isRichTier(charity) || isBaselineTier(charity)) {
-    return (
-      <>
-        {currentView === 'terminal' && <TerminalView charity={charity} currentView={currentView} onViewChange={handleViewChange} />}
-        {currentView === 'niche' && <NicheView charity={charity} currentView={currentView} onViewChange={handleViewChange} />}
-      </>
-    );
+    return <TerminalView charity={charity} />;
   }
 
   // Hidden tier indicator (accessible via direct URL)

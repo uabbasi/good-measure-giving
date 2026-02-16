@@ -1,13 +1,13 @@
 /**
  * ActionsBar - Horizontal row of charity action buttons
- * Actions: Log Donation, Save, Donate
- * (Share and Report Issue are in the bottom metadata bar of each view)
+ * Actions: Log Donation, Save, Share, Donate
  */
 
 import React from 'react';
 import { Plus, ExternalLink, Shield, LogIn } from 'lucide-react';
 import { BookmarkButton } from './BookmarkButton';
 import { CompareButton } from './CompareButton';
+import { ShareButton } from './ShareButton';
 import { useAuth, SignInButton } from '../auth';
 import { useLandingTheme } from '../../contexts/LandingThemeContext';
 
@@ -98,6 +98,16 @@ export function ActionsBar({
                   </span>
                 </SignInButton>
               )}
+              <ShareButton
+                charityId={charityEin}
+                charityName={charityName}
+                isDark={isDark}
+                className={`inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg transition-colors ${
+                  isDark
+                    ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                    : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'
+                }`}
+              />
               {donateUrl && (
                 <a
                   href={donateUrl}
@@ -195,6 +205,14 @@ export function ActionsBar({
                 </SignInButton>
               )}
 
+              <span className={`${isDark ? 'text-slate-700' : 'text-slate-300'}`}>│</span>
+              <ShareButton
+                charityId={charityEin}
+                charityName={charityName}
+                isDark={isDark}
+                className="!text-xs !font-mono !uppercase !tracking-wide"
+              />
+
               {donateUrl && (
                 <>
                   <span className={`${isDark ? 'text-slate-700' : 'text-slate-300'}`}>│</span>
@@ -264,6 +282,16 @@ export function ActionsBar({
                 </span>
               </SignInButton>
             )}
+            <ShareButton
+              charityId={charityEin}
+              charityName={charityName}
+              isDark={isDark}
+              className={`inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg transition-colors ${
+                isDark
+                  ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                  : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'
+              }`}
+            />
           </div>
         </div>
       </div>
@@ -347,6 +375,11 @@ export function ActionsBar({
                 </span>
               </SignInButton>
             )}
+            <ShareButton
+              charityId={charityEin}
+              charityName={charityName}
+              isDark={isDark}
+            />
           </div>
         </div>
       </div>

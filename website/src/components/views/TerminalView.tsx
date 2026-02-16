@@ -34,9 +34,7 @@ import { BookmarkButton } from '../BookmarkButton';
 import { trackCharityView, trackOutboundClick, trackDonateClick } from '../../utils/analytics';
 import { useCharities } from '../../hooks/useCharities';
 import { useGivingHistory } from '../../hooks/useGivingHistory';
-import { ShareButton } from '../ShareButton';
 import { ReportIssueButton } from '../ReportIssueButton';
-import { InlineViewToggle } from '../CharityViewPicker';
 import { SourceLinkedText } from '../SourceLinkedText';
 import { ActionsBar } from '../ActionsBar';
 import { AddDonationModal } from '../giving/AddDonationModal';
@@ -49,8 +47,6 @@ import { OrganizationEngagement } from '../OrganizationEngagement';
 
 interface TerminalViewProps {
   charity: CharityProfile;
-  currentView?: import('../CharityViewPicker').ViewType;
-  onViewChange?: (view: import('../CharityViewPicker').ViewType) => void;
 }
 
 interface NarrativeCitation {
@@ -235,7 +231,7 @@ const DataRow: React.FC<{
   </div>
 );
 
-export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView, onViewChange }) => {
+export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
   const { isDark } = useLandingTheme();
   const { isSignedIn } = useAuth();
   const { charities: allCharities } = useCharities();
@@ -942,10 +938,8 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
           </div>
         </div>
 
-        {/* Mobile Share & Report */}
+        {/* Mobile Report Issue */}
         <div className={`flex items-center justify-center gap-4 pt-1 pb-3 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-          <ShareButton charityId={charity.id ?? charity.ein ?? ''} charityName={charity.name} />
-          <span className={isDark ? 'text-slate-700' : 'text-slate-300'}>·</span>
           <ReportIssueButton charityId={charity.id ?? charity.ein ?? ''} charityName={charity.name} />
         </div>
       </div>
@@ -2511,20 +2505,6 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
               <span>Last evaluated {new Date(amal.evaluation_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
             </>
           )}
-          {currentView && onViewChange && (
-            <>
-              <span>·</span>
-              <InlineViewToggle currentView={currentView} onViewChange={onViewChange} />
-            </>
-          )}
-          <span>·</span>
-          <ShareButton
-            charityId={charity.ein!}
-            charityName={charity.name}
-            isDark={isDark}
-            variant="text"
-            className={`font-medium ${isDark ? 'text-emerald-400/80 hover:text-emerald-400' : 'text-emerald-600/80 hover:text-emerald-600'}`}
-          />
           <span>·</span>
           <ReportIssueButton
             charityId={charity.ein!}
