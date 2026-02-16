@@ -388,15 +388,25 @@ function DimensionSubHeader({ label, charities, dimension, isDark, numCharities 
 }
 
 // Improvement cell for the Opportunities section
+// Map numeric improvement value to qualitative label
+function improvementLabel(value: number): string {
+  if (value >= 8) return 'High opportunity';
+  if (value >= 4) return 'Moderate opportunity';
+  return 'Some opportunity';
+}
+
 function ImprovementCell({ component, isMember, isDark }: { component: ScoreComponentDetail | null; isMember: boolean; isDark: boolean }) {
   if (!component || component.improvement_value <= 0) {
     return <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</span>;
   }
 
+  const label = improvementLabel(component.improvement_value);
+
   return (
     <div className="space-y-1">
-      <span className={`inline-flex items-center text-xs font-semibold px-1.5 py-0.5 rounded ${isDark ? 'bg-amber-900/40 text-amber-400' : 'bg-amber-100 text-amber-700'}`}>
-        +{component.improvement_value}
+      <span className={`inline-flex items-center gap-1 text-xs font-semibold px-1.5 py-0.5 rounded ${isDark ? 'bg-amber-900/40 text-amber-400' : 'bg-amber-100 text-amber-700'}`}>
+        <TrendingUp className="w-3 h-3" />
+        {label}
       </span>
       {isMember && component.improvement_suggestion && (
         <p className={`text-[11px] leading-relaxed ${isDark ? 'text-amber-400/70' : 'text-amber-600'}`}>
@@ -407,15 +417,16 @@ function ImprovementCell({ component, isMember, isDark }: { component: ScoreComp
   );
 }
 
-// Total recoverable badge
+// Total recoverable badge - qualitative growth potential
 function TotalRecoverableBadge({ total, isDark }: { total: number; isDark: boolean }) {
   if (total <= 0) {
     return <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</span>;
   }
+  const label = total >= 10 ? 'Significant room to grow' : total >= 5 ? 'Moderate room to grow' : 'Some room to grow';
   return (
     <span className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded ${isDark ? 'bg-amber-900/30 text-amber-400' : 'bg-amber-100 text-amber-700'}`}>
       <TrendingUp className="w-3 h-3" />
-      +{total} pts possible
+      {label}
     </span>
   );
 }
