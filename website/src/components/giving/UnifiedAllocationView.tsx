@@ -10,7 +10,7 @@
 
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, X, Check, GripVertical, ChevronDown, ArrowRight } from 'lucide-react';
+import { Plus, X, Check, GripVertical, ChevronDown, ArrowRight, Search } from 'lucide-react';
 import {
   DndContext,
   DragOverlay,
@@ -507,6 +507,7 @@ export function UnifiedAllocationView({
   const [charitySearchQuery, setCharitySearchQuery] = useState('');
   const [zakatLens, setZakatLens] = useState(false);
   const [collapsedBuckets, setCollapsedBuckets] = useState<Set<string>>(new Set());
+  const [bucketSearchQueries, setBucketSearchQueries] = useState<Map<string, string>>(new Map());
   const [onboardingDismissed, setOnboardingDismissed] = useState(false);
   const [target, setTarget] = useState(initialTarget?.toString() || '');
   const [saving, setSaving] = useState(false);
@@ -682,40 +683,40 @@ export function UnifiedAllocationView({
   }, [charities, zakatLens, isZakatEligible]);
 
   const add = (tag: { id: string; label: string }) => {
-    const newBuckets = [...buckets, { id: crypto.randomUUID(), tagId: tag.id, label: tag.label, percent: 0, color: COLORS[buckets.length % COLORS.length] }];
+    const newId = crypto.randomUUID();
+    const newBuckets = [...buckets, { id: newId, tagId: tag.id, label: tag.label, percent: 0, color: COLORS[buckets.length % COLORS.length] }];
     setBuckets(newBuckets);
     triggerSave(newBuckets);
+    // Expand the new category and show suggestions so user can populate it
+    setCollapsedBuckets(prev => { const next = new Set(prev); next.delete(newId); return next; });
+    setShowSuggestions(true);
   };
 
   const autoCreateBucketsForCharity = (charity: { causeTags: string[] | null }) => {
     const tags = charity.causeTags || [];
     const causeTagIds = new Set(TAGS.cause.map(t => t.id));
-    const newBuckets = [...buckets];
-    let created = 0;
 
-    for (const tagId of tags) {
-      if (created >= 3) break;
-      if (!causeTagIds.has(tagId)) continue;
-      if (newBuckets.some(b => b.tagId === tagId)) continue;
+    // Check if charity already matches an existing bucket
+    const existingMatch = buckets.find(b => tags.includes(b.tagId));
+    if (existingMatch) return existingMatch.id;
 
-      const tagDef = TAGS.cause.find(t => t.id === tagId)!;
-      newBuckets.push({
-        id: crypto.randomUUID(),
-        tagId: tagDef.id,
-        label: tagDef.label,
-        percent: 0,
-        color: COLORS[newBuckets.length % COLORS.length],
-      });
-      created++;
-    }
+    // Only create the primary (first) cause category bucket
+    const primaryTag = tags.find(t => causeTagIds.has(t));
+    if (!primaryTag) return '';
 
-    if (created > 0) {
-      setBuckets(newBuckets);
-      triggerSave(newBuckets);
-    }
+    const tagDef = TAGS.cause.find(t => t.id === primaryTag)!;
+    const newBucket = {
+      id: crypto.randomUUID(),
+      tagId: tagDef.id,
+      label: tagDef.label,
+      percent: 0,
+      color: COLORS[buckets.length % COLORS.length],
+    };
+    const newBuckets = [...buckets, newBucket];
+    setBuckets(newBuckets);
+    triggerSave(newBuckets);
 
-    const firstMatch = newBuckets.find(b => tags.includes(b.tagId));
-    return firstMatch?.id || '';
+    return newBucket.id;
   };
 
   const remove = (id: string) => {
@@ -1222,14 +1223,17 @@ export function UnifiedAllocationView({
               : chars;
             const displayCount = visibleChars.length;
             const bookmarkedEins = new Set(bookmarkedCharities.map(c => c.ein));
-            const suggestions = charities
+            const bucketQuery = (bucketSearchQueries.get(b.id) || '').toLowerCase();
+            const matchingCharities = charities
               .filter(c => {
                 const tags = (c as any).causeTags || [];
                 return tags.includes(b.tagId) && !bookmarkedEins.has(c.ein);
               })
-              .sort((a, c) => ((c as any).amalScore || 0) - ((a as any).amalScore || 0))
-              .slice(0, 3)
-              .map(c => ({ ein: c.ein, name: c.name, amalScore: (c as any).amalScore || null }));
+              .sort((a, c) => ((c as any).amalEvaluation?.amal_score || 0) - ((a as any).amalEvaluation?.amal_score || 0));
+            const suggestions = (bucketQuery
+              ? matchingCharities.filter(c => c.name.toLowerCase().includes(bucketQuery)).slice(0, 10)
+              : matchingCharities.slice(0, 3)
+            ).map(c => ({ ein: c.ein, name: c.name, amalScore: (c as any).amalEvaluation?.amal_score || null }));
             const bucketHasZakatCharities = zakatStats.bucketHasZakat.get(b.id) || false;
             const categoryDimmed = zakatLens && !bucketHasZakatCharities;
 
@@ -1343,11 +1347,28 @@ export function UnifiedAllocationView({
                       No charities in this category yet.
                     </div>
                   )}
-                  {showSuggestions && suggestions.length > 0 && (
+                  {showSuggestions && matchingCharities.length > 0 && (
                     <div className={`mt-2.5 pt-2 border-t ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
                       <div className={`text-[10px] font-semibold uppercase tracking-wide mb-1.5 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
                         Suggestions
                       </div>
+                      {matchingCharities.length > 3 && (
+                        <div className={`flex items-center gap-1.5 mb-2 px-2 py-1.5 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'}`}>
+                          <Search className={`w-3 h-3 shrink-0 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} />
+                          <input
+                            type="text"
+                            value={bucketSearchQueries.get(b.id) || ''}
+                            onChange={e => setBucketSearchQueries(prev => { const next = new Map(prev); next.set(b.id, e.target.value); return next; })}
+                            placeholder={`Search ${matchingCharities.length} charities...`}
+                            className={`w-full text-[11px] bg-transparent focus:outline-none ${isDark ? 'text-slate-300 placeholder:text-slate-600' : 'text-slate-700 placeholder:text-slate-400'}`}
+                          />
+                          {bucketQuery && (
+                            <button onClick={() => setBucketSearchQueries(prev => { const next = new Map(prev); next.delete(b.id); return next; })}>
+                              <X className={`w-3 h-3 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} />
+                            </button>
+                          )}
+                        </div>
+                      )}
                       <div className="space-y-1.5">
                         {suggestions.map(s => (
                           <div key={s.ein} className="flex items-center justify-between gap-2">
@@ -1371,6 +1392,9 @@ export function UnifiedAllocationView({
                             </button>
                           </div>
                         ))}
+                        {bucketQuery && suggestions.length === 0 && (
+                          <div className={`text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>No matches</div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -1469,16 +1493,19 @@ export function UnifiedAllocationView({
                 ? chars.filter(c => isZakatEligible(c.walletTag)).length
                 : chars.length;
 
-              // Get suggested charities for this category (matching tag, not bookmarked, limit 3)
+              // Get suggested charities for this category (matching tag, not bookmarked)
               const bookmarkedEins = new Set(bookmarkedCharities.map(c => c.ein));
-              const suggestions = charities
+              const bucketQuery = (bucketSearchQueries.get(b.id) || '').toLowerCase();
+              const matchingCharities = charities
                 .filter(c => {
                   const tags = (c as any).causeTags || [];
                   return tags.includes(b.tagId) && !bookmarkedEins.has(c.ein);
                 })
-                .sort((a, b) => ((b as any).amalScore || 0) - ((a as any).amalScore || 0))
-                .slice(0, 3)
-                .map(c => ({ ein: c.ein, name: c.name, amalScore: (c as any).amalScore || null }));
+                .sort((a, b) => ((b as any).amalEvaluation?.amal_score || 0) - ((a as any).amalEvaluation?.amal_score || 0));
+              const suggestions = (bucketQuery
+                ? matchingCharities.filter(c => c.name.toLowerCase().includes(bucketQuery)).slice(0, 10)
+                : matchingCharities.slice(0, 3)
+              ).map(c => ({ ein: c.ein, name: c.name, amalScore: (c as any).amalEvaluation?.amal_score || null }));
 
               // Check if bucket has any zakat-eligible charities
               const bucketHasZakatCharities = zakatStats.bucketHasZakat.get(b.id) || false;
@@ -1628,14 +1655,44 @@ export function UnifiedAllocationView({
                     );
                   })}
                   {/* Ghost suggestion rows - only when toggled on and not collapsed */}
-                  {!isCollapsed && showSuggestions && suggestions.map(s => (
-                    <GhostSuggestionRow
-                      key={s.ein}
-                      charity={s}
-                      isDark={isDark}
-                      onAdd={() => onAddSuggestion(s.ein, s.name, b.id)}
-                    />
-                  ))}
+                  {!isCollapsed && showSuggestions && matchingCharities.length > 0 && (
+                    <>
+                      {matchingCharities.length > 3 && (
+                        <tr className={`hidden sm:table-row border-b border-dashed ${isDark ? 'border-slate-700/50' : 'border-slate-200'}`}>
+                          <td className="px-3 py-1.5" colSpan={7}>
+                            <div className={`flex items-center gap-1.5 px-2 py-1 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'}`}>
+                              <Search className={`w-3 h-3 shrink-0 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} />
+                              <input
+                                type="text"
+                                value={bucketSearchQueries.get(b.id) || ''}
+                                onChange={e => setBucketSearchQueries(prev => { const next = new Map(prev); next.set(b.id, e.target.value); return next; })}
+                                placeholder={`Search ${matchingCharities.length} charities...`}
+                                className={`w-full text-[11px] bg-transparent focus:outline-none ${isDark ? 'text-slate-300 placeholder:text-slate-600' : 'text-slate-700 placeholder:text-slate-400'}`}
+                              />
+                              {bucketQuery && (
+                                <button onClick={() => setBucketSearchQueries(prev => { const next = new Map(prev); next.delete(b.id); return next; })}>
+                                  <X className={`w-3 h-3 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} />
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                      {suggestions.map(s => (
+                        <GhostSuggestionRow
+                          key={s.ein}
+                          charity={s}
+                          isDark={isDark}
+                          onAdd={() => onAddSuggestion(s.ein, s.name, b.id)}
+                        />
+                      ))}
+                      {bucketQuery && suggestions.length === 0 && (
+                        <tr className={`hidden sm:table-row border-b border-dashed ${isDark ? 'border-slate-700/50' : 'border-slate-200'}`}>
+                          <td className={`px-3 py-2 text-[11px] italic ${isDark ? 'text-slate-500' : 'text-slate-400'}`} colSpan={7}>No matches</td>
+                        </tr>
+                      )}
+                    </>
+                  )}
                 </DroppableCategory>
               );
             })}
