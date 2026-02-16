@@ -53,7 +53,7 @@ export const Footer: React.FC = () => {
         </div>
 
         <p className={`text-center font-medium text-[11px] mt-2 uppercase tracking-widest ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-          Rigorous charity research for Muslim donors.
+          Rigorous charity research for Muslim donors
         </p>
       </div>
 

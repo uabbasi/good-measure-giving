@@ -19,14 +19,14 @@ interface FeaturedCharityData extends CharityProfile {
 }
 
 export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
-  "name": "The Citizens Foundation USA",
-  "ein": "41-2046295",
-  "headline": "The Citizens Foundation USA empowers underprivileged children in Pakistan through high-quality education and sustainable school infrastructure.",
+  "name": "Obat Helpers",
+  "ein": "47-0946122",
+  "headline": "OBAT Helpers Inc. empowers marginalized communities through integrated education, healthcare, and poverty alleviation initiatives.",
   "amalEvaluation": {
-    "amal_score": 86,
+    "amal_score": 88,
     "confidence_scores": {
-      "impact": 48,
-      "alignment": 38,
+      "impact": 42,
+      "alignment": 46,
       "dataConfidence": 0
     },
     "trust": {
@@ -46,12 +46,12 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
         "cause_urgency_label": "EDUCATION_GLOBAL",
         "components": [
           {
-            "evidence": "Explicit zakat program (+4); Muslim-focused organization (+2); Asnaf: fuqara (+5); Operates in Muslim-majority regions (+3); Humanitarian service (+2)",
+            "evidence": "Explicit zakat program (+4); Muslim-focused organization (+2); Asnaf: fuqara (+5); Operates in Muslim-majority regions (+3); Strong humanitarian service (+4)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Muslim Donor Fit",
             "possible": 19,
-            "scored": 16,
+            "scored": 18,
             "status": "full"
           },
           {
@@ -64,16 +64,16 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "status": "full"
           },
           {
-            "evidence": "Serves underserved populations (+3)",
-            "improvement_suggestion": "Expand services to underserved populations or geographies with limited nonprofit coverage.",
-            "improvement_value": 3,
+            "evidence": "Niche cause: UNKNOWN (+4); Serves underserved populations (+3)",
+            "improvement_suggestion": null,
+            "improvement_value": 0,
             "name": "Underserved Space",
             "possible": 7,
-            "scored": 3,
-            "status": "partial"
+            "scored": 7,
+            "status": "full"
           },
           {
-            "evidence": "Founded 1995 (31 years — 6/6)",
+            "evidence": "Founded 2004 (22 years — 6/6)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Track Record",
@@ -82,18 +82,18 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "status": "full"
           },
           {
-            "evidence": "Revenue: $18.3M (3/5 funding gap)",
+            "evidence": "Revenue: $2.2M (5/5 funding gap)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Funding Gap",
             "possible": 5,
-            "scored": 3,
+            "scored": 5,
             "status": "full"
           }
         ],
         "muslim_donor_fit_level": "HIGH",
-        "rationale": "Alignment 38/50: HIGH Muslim donor fit, education global cause area",
-        "score": 38
+        "rationale": "Alignment 46/50: HIGH Muslim donor fit, education global cause area",
+        "score": 46
       },
       "data_confidence": {
         "badge": "HIGH",
@@ -108,12 +108,12 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
       "impact": {
         "components": [
           {
-            "evidence": "$55.37/beneficiary (exceptional for EDUCATION_GLOBAL)",
+            "evidence": "$100.01/beneficiary (general benchmark)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Cost Per Beneficiary",
-            "possible": 10,
-            "scored": 10,
+            "possible": 13,
+            "scored": 7,
             "status": "full"
           },
           {
@@ -126,21 +126,21 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "status": "full"
           },
           {
-            "evidence": "Working capital: 4.7 months (RESILIENT)",
+            "evidence": "Working capital: 5.7 months (RESILIENT)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 6,
+            "scored": 7,
             "status": "full"
           },
           {
-            "evidence": "Program expense ratio: 89%",
+            "evidence": "Program expense ratio: 82%",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Program Ratio",
             "possible": 5,
-            "scored": 5,
+            "scored": 4,
             "status": "full"
           },
           {
@@ -148,8 +148,8 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Evidence & Outcomes",
-            "possible": 6,
-            "scored": 6,
+            "possible": 5,
+            "scored": 5,
             "status": "full"
           },
           {
@@ -157,12 +157,12 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Theory of Change",
-            "possible": 7,
-            "scored": 7,
+            "possible": 5,
+            "scored": 5,
             "status": "full"
           },
           {
-            "evidence": "Board governance: STRONG (15 members)",
+            "evidence": "Board governance: STRONG (22 members)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
@@ -171,18 +171,24 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "status": "full"
           }
         ],
-        "cost_per_beneficiary": 55.370275,
+        "cost_per_beneficiary": 100.01115384615385,
         "directness_level": "DIRECT_PROVISION",
         "impact_design_categories": [],
-        "rationale": "$55.37/beneficiary; Delivery: direct provision; Impact 48/50",
-        "rubric_archetype": "EDUCATION",
-        "score": 48
+        "rationale": "$100.01/beneficiary; Delivery: direct provision; Impact 42/50",
+        "rubric_archetype": "DIRECT_SERVICE",
+        "score": 42
       },
       "judge_issues": [
         {
-          "field": "discovered.evaluations.confidence",
+          "field": "discovered.theory_of_change.confidence",
           "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
@@ -205,15 +211,15 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "The Citizens Foundation USA shows exceptional impact and strong alignment, with zakat compliance.",
+      "score_summary": "OBAT HELPERS INC shows exceptional alignment and strong impact, with zakat compliance.",
       "zakat": {
         "asnaf_category": "fuqara",
         "bonus_points": 0,
         "charity_claims_zakat": true,
-        "claim_evidence": "Dedicated zakat page found at https://www.tcfusa.org/zakat (Source: https://www.tcfusa.org/zakat)",
+        "claim_evidence": "Dedicated zakat page found at https://obathelpers.org/donate (Source: https://obathelpers.org/donate)",
         "notes": null
       }
     }
   },
-  "impactHighlight": "The Citizens Foundation USA empowers underprivileged children in Pakistan through high-quality education and sustainable school infrastructure."
+  "impactHighlight": "OBAT Helpers Inc. empowers marginalized communities through integrated education, healthcare, and poverty alleviation initiatives."
 };

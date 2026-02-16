@@ -39,11 +39,11 @@ import { SourceLinkedText } from '../SourceLinkedText';
 import { ActionsBar } from '../ActionsBar';
 import { AddDonationModal } from '../giving/AddDonationModal';
 import { getCauseCategoryTagClasses, getEvidenceStageClasses, getEvidenceStageLabel } from '../../utils/scoreConstants';
-import { deriveUISignalsFromCharity, getArchetypeDescription, stripCitations } from '../../utils/scoreUtils';
+import { deriveUISignalsFromCharity, getArchetypeDescription } from '../../utils/scoreUtils';
 import { ScoreBreakdown } from '../ScoreBreakdown';
 import { RecommendationCue } from '../RecommendationCue';
-import { SignalConstellation } from '../SignalConstellation';
 import { OrganizationEngagement } from '../OrganizationEngagement';
+import { resolveCitationUrls, resolveSourceUrl } from '../../utils/citationUrls';
 
 interface TerminalViewProps {
   charity: CharityProfile;
@@ -69,6 +69,12 @@ const formatWalletTag = (tag: string): string => {
   const cleanTag = tag?.replace(/[\[\]]/g, '') || '';
   if (cleanTag.includes('ZAKAT')) return 'Zakat';
   return 'Sadaqah';
+};
+
+// Extract source URL from zakat claim evidence string
+const extractZakatPolicyUrl = (evidence: string): string | undefined => {
+  const match = evidence.match(/\(Source:\s*(https?:\/\/[^\s)]+)\)/);
+  return match?.[1];
 };
 
 // Population tags (who they serve)
@@ -244,7 +250,11 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
   const hasRich = !!rich;
   const idealDonorProfile = rich?.ideal_donor_profile;
   // Check both rich and baseline narratives for citations
-  const citations = rich?.all_citations || baseline?.all_citations || [];
+  const rawCitations = (rich?.all_citations || baseline?.all_citations || []) as NarrativeCitation[];
+  const citations = useMemo(
+    () => resolveCitationUrls(rawCitations, charity),
+    [rawCitations, charity]
+  );
   const theoryOfChangeCitations = useMemo(
     () => getTheoryOfChangeCitations(citations as NarrativeCitation[]),
     [citations]
@@ -254,6 +264,16 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
   const revenue = financials?.totalRevenue || charity.rawData?.total_revenue;
   const beneficiariesCount = charity.beneficiariesServedAnnually;
   const beneficiarySourceUrl = (charity as any)?.sourceAttribution?.beneficiaries_served_annually?.source_url;
+  const beneficiarySourceName = (charity as any)?.sourceAttribution?.beneficiaries_served_annually?.source_name
+    || (charity as any)?.beneficiariesSource?.source_name
+    || 'Charity Website';
+  const resolvedBeneficiarySourceUrl = useMemo(
+    () => resolveSourceUrl(beneficiarySourceUrl, charity, {
+      source_name: beneficiarySourceName,
+      claim: 'Beneficiaries served annually (self-reported)',
+    }),
+    [beneficiarySourceUrl, beneficiarySourceName, charity]
+  );
   const beneficiariesVerified = charity.beneficiariesConfidence != null
     ? charity.beneficiariesConfidence === 'verified'
     : (typeof beneficiarySourceUrl === 'string' && beneficiarySourceUrl.startsWith('http'));
@@ -467,7 +487,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
           })()}
           {headline && (
             <p className={`mt-2 text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              {stripCitations(headline)}
+              <SourceLinkedText text={headline} citations={citations} isDark={isDark} subtle />
             </p>
           )}
 
@@ -548,13 +568,6 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 {isZakatEligible ? 'Zakat Eligible' : 'Sadaqah'}
               </span>
             </div>
-            <SignalConstellation signals={uiSignals.signal_states} isDark={isDark} compact showLabels={false} />
-            {/* Zakat claim evidence */}
-            {isZakatEligible && charity.zakatClaimEvidence && charity.zakatClaimEvidence.length > 0 && (
-              <p className={`text-xs leading-relaxed ${isDark ? 'text-emerald-400/70' : 'text-emerald-600/70'}`}>
-                {charity.zakatClaimEvidence[0]}
-              </p>
-            )}
           </div>
 
           {/* Quick Stats Grid */}
@@ -599,7 +612,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                   return (
                     <li key={i} className="flex items-start gap-2">
                       <span className={isDark ? 'text-emerald-400' : 'text-emerald-600'}>•</span>
-                      <span>{stripCitations(text)}</span>
+                      <span><SourceLinkedText text={text} citations={citations} isDark={isDark} subtle /></span>
                     </li>
                   );
                 })}
@@ -695,6 +708,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
         walletTag={amal?.wallet_tag}
         causeArea={rich?.donor_fit_matrix?.cause_area}
         showMobileQuickActions={false}
+        zakatPolicyUrl={charity.zakatClaimEvidence?.[0] ? extractZakatPolicyUrl(charity.zakatClaimEvidence[0]) : undefined}
       />
 
       {/* ═══════════════════════════════════════════════════════════════════════
@@ -715,7 +729,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                   About
                 </h2>
                 <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                  {stripCitations(rich?.summary || baseline?.summary || '')}
+                  <SourceLinkedText text={rich?.summary || baseline?.summary || ''} citations={citations} isDark={isDark} subtle />
                 </p>
               </div>
             );
@@ -966,7 +980,6 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
               </span>
             </div>
             <RecommendationCue cue={uiSignals.recommendation_cue} rationale={uiSignals.recommendation_rationale} isDark={isDark} />
-            <SignalConstellation signals={uiSignals.signal_states} isDark={isDark} showLabels />
           </div>
 
           {/* Divider between qualitative snapshot and focus areas */}
@@ -1057,9 +1070,9 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                   <span>No cited source yet; excluded from cost-per-beneficiary scoring</span>
                 </div>
               )}
-              {beneficiariesVerified && beneficiarySourceUrl && (
+              {beneficiariesVerified && resolvedBeneficiarySourceUrl && (
                 <a
-                  href={beneficiarySourceUrl}
+                  href={resolvedBeneficiarySourceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`mt-1.5 inline-flex items-center gap-1 text-xs underline underline-offset-2 ${
@@ -1926,110 +1939,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
         <aside className={`lg:col-span-3 pr-6 pl-4 py-4 border-t lg:border-t-0 lg:border-l ${
           isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'
         }`}>
-          {/* Zakat claim evidence (for zakat-eligible charities only) */}
-          {amal?.wallet_tag?.includes('ZAKAT') && charity.zakatClaimEvidence && charity.zakatClaimEvidence.length > 0 && (
-            <div className={`mb-6 p-3 rounded-lg border ${isDark ? 'bg-emerald-900/20 border-emerald-800/50' : 'bg-emerald-50/50 border-emerald-200'}`}>
-              <p className={`text-xs leading-relaxed ${isDark ? 'text-emerald-400/80' : 'text-emerald-700/80'}`}>
-                {charity.zakatClaimEvidence[0]}
-              </p>
-            </div>
-          )}
-
-          {/* BBB Wise Giving - Second for third-party verification */}
-          {isSignedIn && rich?.bbb_assessment && (
-            rich.bbb_assessment.meets_all_standards ||
-            (rich.bbb_assessment.standards_met && rich.bbb_assessment.standards_met > 0) ||
-            (rich.bbb_assessment.standards_not_met && rich.bbb_assessment.standards_not_met.length > 0) ||
-            rich.bbb_assessment.review_url
-          ) && (
-            <div className={`mb-6 p-4 rounded-lg border-l-4 ${
-              rich.bbb_assessment.meets_all_standards
-                ? isDark ? 'bg-emerald-900/20 border-emerald-500' : 'bg-emerald-50 border-emerald-500'
-                : isDark ? 'bg-slate-800/50 border-amber-500' : 'bg-amber-50/50 border-amber-500'
-            }`}>
-              <div className={`text-xs uppercase tracking-widest font-bold mb-3 flex items-center gap-2 ${
-                rich.bbb_assessment.meets_all_standards
-                  ? isDark ? 'text-emerald-400' : 'text-emerald-700'
-                  : isDark ? 'text-amber-400' : 'text-amber-700'
-              }`}>
-                <Shield className="w-3.5 h-3.5" />
-                BBB Wise Giving
-              </div>
-              <div className="flex items-center gap-2 mb-3">
-                {rich.bbb_assessment.meets_all_standards ? (
-                  <CheckCircle2 className={`w-5 h-5 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
-                ) : (
-                  <AlertTriangle className={`w-5 h-5 ${isDark ? 'text-amber-400' : 'text-amber-600'}`} />
-                )}
-                <span className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                  {rich.bbb_assessment.meets_all_standards ? 'Meets All Standards' : 'Standards Review'}
-                </span>
-                {rich.bbb_assessment.standards_met !== undefined && rich.bbb_assessment.standards_met > 0 && (
-                  <span className={`text-xs font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                    ({rich.bbb_assessment.standards_met}/20)
-                  </span>
-                )}
-              </div>
-              <div className="grid grid-cols-2 gap-1.5 mb-3">
-                {['governance', 'effectiveness', 'finances'].map((category) => {
-                  const statusKey = `${category}_status` as 'governance_status' | 'effectiveness_status' | 'finances_status';
-                  const status = rich.bbb_assessment![statusKey];
-                  const isPassing = status === 'pass' || status === 'Pass' || status === 'PASS';
-                  return status && status !== 'NEUTRAL' ? (
-                    <div key={category} className="flex items-center gap-1.5 text-xs">
-                      {isPassing ? (
-                        <CheckCircle2 className={`w-3 h-3 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
-                      ) : (
-                        <AlertCircle className={`w-3 h-3 ${isDark ? 'text-amber-400' : 'text-amber-600'}`} />
-                      )}
-                      <span className={`capitalize ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                        {category}
-                      </span>
-                    </div>
-                  ) : null;
-                })}
-                {rich.bbb_assessment.audit_type && (
-                  <div className="flex items-center gap-1.5 text-xs">
-                    <CheckCircle2 className={`w-3 h-3 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
-                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
-                      {rich.bbb_assessment.audit_type}
-                    </span>
-                  </div>
-                )}
-              </div>
-              {rich.bbb_assessment.standards_not_met && rich.bbb_assessment.standards_not_met.length > 0 && (
-                <div className={`pt-2 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
-                  <div className={`text-xs font-semibold mb-1 flex items-center gap-1 ${
-                    isDark ? 'text-amber-400' : 'text-amber-600'
-                  }`}>
-                    <AlertTriangle className="w-3 h-3" />
-                    Not Met
-                  </div>
-                  <ul className={`text-xs space-y-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                    {rich.bbb_assessment.standards_not_met.slice(0, 3).map((std, i) => (
-                      <li key={i}>• {std}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {rich.bbb_assessment.review_url && (
-                <a
-                  href={rich.bbb_assessment.review_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => trackOutboundClick(charity.id ?? charity.ein ?? '', charity.name, 'give.org')}
-                  className={`mt-2 inline-flex items-center gap-1 text-xs font-medium ${
-                    isDark ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'
-                  }`}
-                >
-                  View on give.org
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              )}
-            </div>
-          )}
-
-          {/* Emerging Organization Card - for NEW_ORG track */}
+          {/* 1. Reference metadata / Emerging Org card */}
           {charity.evaluationTrack === 'NEW_ORG' ? (
             <div className={`mb-6 p-4 rounded-lg border-2 ${
               isDark
@@ -2187,23 +2097,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             </div>
           )}
 
-
-          {/* Populations Served */}
-          {charity.populationsServed && charity.populationsServed.length > 0 && (
-            <div className="mb-6">
-              <div className={`text-xs uppercase tracking-widest font-semibold mb-2 ${
-                isDark ? 'text-slate-500' : 'text-slate-400'
-              }`}>
-                Populations
-              </div>
-              <div className={`text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                {charity.populationsServed.slice(0, 5).join(', ')}
-              </div>
-            </div>
-          )}
-
-
-          {/* Leadership & Governance (Rich only, authenticated) */}
+          {/* 2. Leadership & Governance (Rich only, authenticated) */}
           {isSignedIn && rich?.organizational_capacity && (
             <div className={`mb-6 p-4 rounded-lg border ${
               isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-200'
@@ -2281,7 +2175,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             </div>
           )}
 
-          {/* Baseline Governance - for charities without rich narratives */}
+          {/* 2b. Baseline Governance - for charities without rich narratives */}
           {!rich?.organizational_capacity && charity.baselineGovernance && (
             <div className="mb-6">
               <div className={`text-xs uppercase tracking-widest font-semibold mb-3 ${
@@ -2308,6 +2202,163 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                     <span className="font-mono">{formatCurrency(charity.baselineGovernance.ceoCompensation)}</span>
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* 3. Citation Stats / Sources (Rich only, authenticated) */}
+          {isSignedIn && rich?.citation_stats && (
+            <div className={`mb-6 p-4 rounded-lg border ${
+              isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-200'
+            }`}>
+              <div className={`text-xs uppercase tracking-widest font-semibold mb-3 ${
+                isDark ? 'text-slate-400' : 'text-slate-500'
+              }`}>
+                Sources
+              </div>
+              <div className={`space-y-1.5 text-xs ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                <div className="flex justify-between">
+                  <span>Total Citations</span>
+                  <span className="font-mono">{rich.citation_stats.total_count}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Unique Sources</span>
+                  <span className="font-mono">{rich.citation_stats.unique_sources}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Strong Sources</span>
+                  <span className={`font-mono ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
+                    {rich.citation_stats.high_confidence_count}
+                  </span>
+                </div>
+              </div>
+              {rich.citation_stats.by_source_type && (
+                <div className={`mt-2 pt-2 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
+                  <div className="flex flex-wrap gap-1">
+                    {Object.entries(rich.citation_stats.by_source_type).map(([type, count]) => (
+                      <span key={type} className={`px-1.5 py-0.5 rounded text-xs ${
+                        isDark ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-600'
+                      }`}>
+                        {type}: {count}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 4. BBB Wise Giving */}
+          {isSignedIn && rich?.bbb_assessment && (
+            rich.bbb_assessment.meets_all_standards ||
+            (rich.bbb_assessment.standards_met && rich.bbb_assessment.standards_met > 0) ||
+            (rich.bbb_assessment.standards_not_met && rich.bbb_assessment.standards_not_met.length > 0) ||
+            rich.bbb_assessment.review_url ||
+            rich.bbb_assessment.summary ||
+            rich.bbb_assessment.audit_type
+          ) && (
+            <div className={`mb-6 p-4 rounded-lg border-l-4 ${
+              rich.bbb_assessment.meets_all_standards
+                ? isDark ? 'bg-emerald-900/20 border-emerald-500' : 'bg-emerald-50 border-emerald-500'
+                : isDark ? 'bg-slate-800/50 border-amber-500' : 'bg-amber-50/50 border-amber-500'
+            }`}>
+              <div className={`text-xs uppercase tracking-widest font-bold mb-3 flex items-center gap-2 ${
+                rich.bbb_assessment.meets_all_standards
+                  ? isDark ? 'text-emerald-400' : 'text-emerald-700'
+                  : isDark ? 'text-amber-400' : 'text-amber-700'
+              }`}>
+                <Shield className="w-3.5 h-3.5" />
+                BBB Wise Giving
+              </div>
+              <div className="flex items-center gap-2 mb-3">
+                {rich.bbb_assessment.meets_all_standards ? (
+                  <CheckCircle2 className={`w-5 h-5 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
+                ) : (
+                  <AlertTriangle className={`w-5 h-5 ${isDark ? 'text-amber-400' : 'text-amber-600'}`} />
+                )}
+                <span className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  {rich.bbb_assessment.meets_all_standards ? 'Meets All Standards' : 'Standards Review'}
+                </span>
+                {rich.bbb_assessment.standards_met !== undefined && rich.bbb_assessment.standards_met > 0 && (
+                  <span className={`text-xs font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                    ({rich.bbb_assessment.standards_met}/20)
+                  </span>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-1.5 mb-3">
+                {['governance', 'effectiveness', 'finances'].map((category) => {
+                  const statusKey = `${category}_status` as 'governance_status' | 'effectiveness_status' | 'finances_status';
+                  const status = rich.bbb_assessment![statusKey];
+                  const isPassing = status === 'pass' || status === 'Pass' || status === 'PASS';
+                  return status && status !== 'NEUTRAL' ? (
+                    <div key={category} className="flex items-center gap-1.5 text-xs">
+                      {isPassing ? (
+                        <CheckCircle2 className={`w-3 h-3 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
+                      ) : (
+                        <AlertCircle className={`w-3 h-3 ${isDark ? 'text-amber-400' : 'text-amber-600'}`} />
+                      )}
+                      <span className={`capitalize ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                        {category}
+                      </span>
+                    </div>
+                  ) : null;
+                })}
+                {rich.bbb_assessment.audit_type && (
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <CheckCircle2 className={`w-3 h-3 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
+                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
+                      {rich.bbb_assessment.audit_type}
+                    </span>
+                  </div>
+                )}
+              </div>
+              {rich.bbb_assessment.summary && (
+                <p className={`text-xs mb-2 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  <SourceLinkedText text={rich.bbb_assessment.summary} citations={citations} isDark={isDark} subtle />
+                </p>
+              )}
+              {rich.bbb_assessment.standards_not_met && rich.bbb_assessment.standards_not_met.length > 0 && (
+                <div className={`pt-2 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
+                  <div className={`text-xs font-semibold mb-1 flex items-center gap-1 ${
+                    isDark ? 'text-amber-400' : 'text-amber-600'
+                  }`}>
+                    <AlertTriangle className="w-3 h-3" />
+                    Not Met
+                  </div>
+                  <ul className={`text-xs space-y-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    {rich.bbb_assessment.standards_not_met.slice(0, 3).map((std, i) => (
+                      <li key={i}>• {std}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {rich.bbb_assessment.review_url && (
+                <a
+                  href={rich.bbb_assessment.review_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackOutboundClick(charity.id ?? charity.ein ?? '', charity.name, 'give.org')}
+                  className={`mt-2 inline-flex items-center gap-1 text-xs font-medium ${
+                    isDark ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'
+                  }`}
+                >
+                  View on give.org
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              )}
+            </div>
+          )}
+
+          {/* Populations Served */}
+          {charity.populationsServed && charity.populationsServed.length > 0 && (
+            <div className="mb-6">
+              <div className={`text-xs uppercase tracking-widest font-semibold mb-2 ${
+                isDark ? 'text-slate-500' : 'text-slate-400'
+              }`}>
+                Populations
+              </div>
+              <div className={`text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                {charity.populationsServed.slice(0, 5).join(', ')}
               </div>
             </div>
           )}
@@ -2375,49 +2426,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             </div>
           )}
 
-          {/* Citation Stats (Rich only, authenticated) */}
-          {isSignedIn && rich?.citation_stats && (
-            <div className={`mb-6 p-4 rounded-lg border ${
-              isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-200'
-            }`}>
-              <div className={`text-xs uppercase tracking-widest font-semibold mb-3 ${
-                isDark ? 'text-slate-400' : 'text-slate-500'
-              }`}>
-                Sources
-              </div>
-              <div className={`space-y-1.5 text-xs ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                <div className="flex justify-between">
-                  <span>Total Citations</span>
-                  <span className="font-mono">{rich.citation_stats.total_count}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Unique Sources</span>
-                  <span className="font-mono">{rich.citation_stats.unique_sources}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Strong Sources</span>
-                  <span className={`font-mono ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
-                    {rich.citation_stats.high_confidence_count}
-                  </span>
-                </div>
-              </div>
-              {rich.citation_stats.by_source_type && (
-                <div className={`mt-2 pt-2 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
-                  <div className="flex flex-wrap gap-1">
-                    {Object.entries(rich.citation_stats.by_source_type).map(([type, count]) => (
-                      <span key={type} className={`px-1.5 py-0.5 rounded text-xs ${
-                        isDark ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-600'
-                      }`}>
-                        {type}: {count}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* External Links */}
+          {/* 5. External Links */}
           <div>
             <div className={`text-xs uppercase tracking-widest font-semibold mb-2 ${
               isDark ? 'text-slate-500' : 'text-slate-400'

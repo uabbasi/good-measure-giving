@@ -13,7 +13,7 @@
 import type { CharityTier } from '../../types';
 
 // View type for charity detail pages (distinct from CharityTier which is data classification)
-export type CharityViewType = 'report' | 'editorial' | 'terminal' | 'niche';
+export type CharityViewType = 'terminal';
 
 // Flow step names for journey tracking
 type FlowStep = 'landing' | 'browse' | 'search' | 'card_click' | 'charity_view' | 'donate' | 'sign_in';
