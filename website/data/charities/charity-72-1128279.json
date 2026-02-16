@@ -2,7 +2,7 @@
   "id": "72-1128279",
   "ein": "72-1128279",
   "name": "The Islamic Association of Arabi",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "PROVIDED RELIGOUS SERVICE AND EDUCATION FOR CHILDREN.BENNETT SUPPORT FOR THE NEEDY BY USE OF ZAKAT MINISTRY.WEDDING AND FUNERAL SERVICE.",
   "programs": [
     "Al-Hameed Boys Academy",
@@ -45,17 +45,13 @@
     "netAssets": 5882255,
     "workingCapitalMonths": "38.80"
   },
-  "baselineGovernance": {
-    "boardSize": 1,
-    "independentBoardMembers": null,
-    "ceoCompensation": null
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
-      "Communities",
-      "Children",
+      "Adults",
       "Needy",
-      "Adults"
+      "Communities",
+      "Children"
     ],
     "geographicCoverage": null
   },
@@ -69,12 +65,12 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-14 21:28:11",
+  "lastUpdated": "2026-02-15 14:49:49",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/721128279#financials",
-      "timestamp": "2026-02-09T21:36:18",
+      "timestamp": "2026-02-15T12:05:43",
       "value": 146996
     },
     "founded_year": {
@@ -86,7 +82,7 @@
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/721128279#financials",
-      "timestamp": "2026-02-09T21:36:18",
+      "timestamp": "2026-02-15T12:05:43",
       "value": 8424
     },
     "has_audited_financials": {
@@ -98,25 +94,25 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/721128279",
-      "timestamp": "2026-02-09T21:36:15",
+      "timestamp": "2026-02-15T12:05:41",
       "value": "X40Z"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/721128279#financials",
-      "timestamp": "2026-02-09T21:36:18",
+      "timestamp": "2026-02-15T12:05:43",
       "value": 0.9614
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/721128279#financials",
-      "timestamp": "2026-02-09T21:36:18",
+      "timestamp": "2026-02-15T12:05:43",
       "value": 2060182
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/721128279",
-      "timestamp": "2026-02-09T21:36:15",
+      "timestamp": "2026-02-15T12:05:41",
       "value": 2357167
     },
     "working_capital_months": {
@@ -127,7 +123,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/721128279",
-      "timestamp": "2026-02-09T21:36:15",
+      "timestamp": "2026-02-15T12:05:41",
       "value": 38.8
     }
   },
@@ -139,7 +135,6 @@
   "causeTags": [
     "educational",
     "faith-based",
-    "fuqara",
     "masakin",
     "muslim-led",
     "youth"
@@ -158,6 +153,9 @@
   "noFilings": false,
   "donationUrl": "https://masjidyaseen.org/donate/",
   "beneficiariesServedAnnually": null,
+  "beneficiariesSource": null,
+  "beneficiariesConfidence": null,
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": null,
   "zakatClaimEvidence": null,
   "archetype": "SOVEREIGNTY",
@@ -259,7 +257,7 @@
       "impact": {
         "components": [
           {
-            "evidence": "No beneficiary data; high program ratio (\u226585%) suggests efficient delivery",
+            "evidence": "No beneficiary data available for cost-per-beneficiary scoring; high program ratio (\u226585%) suggests efficient delivery",
             "improvement_suggestion": "Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
             "improvement_value": 0,
             "name": "Cost Per Beneficiary",
@@ -329,6 +327,32 @@
         "rubric_archetype": "COMMUNITY",
         "score": 20
       },
+      "judge_issues": [
+        {
+          "field": "risk_deduction",
+          "judge": "score",
+          "message": "The rationale does not explicitly mention the significant risk deduction of -6 points due to the small board size (1 member), which is a key factor affecting the overall score.",
+          "severity": "warning"
+        },
+        {
+          "field": "discovered.zakat.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": -6,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -356,7 +380,7 @@
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "CORROBORATION FAILED: Discovered via search (confidence=0.50)",
+        "claim_evidence": "CORROBORATION FAILED: Discovered via search (confidence=0.50) (Source: https://masjidyaseen.org/donate/)",
         "notes": null
       }
     },
@@ -369,8 +393,14 @@
           "source_url": "https://projects.propublica.org/nonprofits/organizations/721128279"
         },
         {
-          "claim": "The Islamic Association of Arabi provides religious services and community support.",
+          "claim": "The Islamic Association of Arabi provides religious services and operates educational programs.",
           "id": "[2]",
+          "source_name": "Download prayer timings",
+          "source_url": "https://masjidyaseen.org/wp-content/uploads/2025/12/Jan26.pdf"
+        },
+        {
+          "claim": "The organization provides wedding and funeral services to the community.",
+          "id": "[3]",
           "source_name": "Download prayer timings",
           "source_url": "https://masjidyaseen.org/wp-content/uploads/2025/12/Jan26.pdf"
         },
@@ -381,34 +411,529 @@
           "source_url": "https://masjidyaseen.org/wp-content/uploads/2025/07/Parent-student-handbook_ce1f6dfe-8fa0-456a-a023-cae9055d50dc.pdf"
         },
         {
-          "claim": "The organization engages in community outreach and religious celebrations.",
+          "claim": "The organization engages in community outreach and religious holiday programming.",
           "id": "[5]",
           "source_name": "Visit Now - Eidul Fitr Letter 2025",
           "source_url": "https://masjidyaseen.org/wp-content/uploads/2025/07/Eidul-Fitr-Letter-2025.pdf"
         },
         {
-          "claim": "The organization holds 38.8 months of working capital and a fundraising efficiency of $0.00 per $1 raised.",
+          "claim": "The charity accepts donations and provides various giving methods for supporters.",
+          "id": "[6]",
+          "source_name": "Charity Website - Donate",
+          "source_url": "https://masjidyaseen.org/donate/"
+        },
+        {
+          "claim": "Financial metadata confirms the organization's EIN and reporting status.",
           "id": "[7]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/721128279"
         }
       ],
-      "amal_score_rationale": "The organization earns a 37/100 reflecting strong internal financial management and high program spending, balanced against a lack of third-party impact verification and a medium donor alignment profile.",
+      "amal_score_rationale": "The organization earns a 37/100 reflecting strong financial efficiency and liquidity, though the overall score is tempered by limited external impact data and a specific religious-cultural focus.",
       "areas_for_improvement": [
-        "Limited external impact data regarding long-term educational outcomes.",
-        "Transparency could be enhanced by providing more detailed public reporting on specific program achievements."
+        "Limited public documentation regarding specific impact metrics and long-term outcome tracking",
+        "Moderate data confidence due to reliance on primary tax filings without extensive third-party evaluations"
       ],
       "dimension_explanations": {
-        "alignment": "With an alignment score of 23/50, the charity shows a medium fit for donors interested in religious and cultural preservation [7]. It maintains a consistent track record of providing wedding, funeral, and educational services, though its specific focus on local community needs may limit its broader urgency for some donors [1][5].",
-        "impact": "The organization focuses on capacity building through its educational academies and religious services, reporting a total revenue of $2,357,167 to fund these operations [1][4]. While financial health is robust with a 96.1% program expense ratio, the direct impact score of 20/50 reflects a lack of standardized cost-per-beneficiary data [1][7]."
+        "alignment": "The organization shows medium alignment for Muslim donors seeking to support local religious infrastructure and sadaqah-eligible community programs [5][6]. The cause is categorized under religious and cultural preservation, which carries steady but specific community urgency [2].",
+        "impact": "The association demonstrates a capacity-building approach by investing in educational infrastructure for youth [4]. While it maintains a high program expense ratio of 96.1%, the direct cost per beneficiary is not publicly disclosed, resulting in a moderate impact score [1][7]."
       },
-      "headline": "The Islamic Association of Arabi provides comprehensive religious education and community services through its dedicated academies and social support programs.",
+      "headline": "The Islamic Association of Arabi provides comprehensive religious education and community services through its dedicated youth academies and social support programs.",
       "strengths": [
-        "High program expense ratio of 96.1%, indicating that the vast majority of funds directly support community services.",
-        "Exceptional fundraising efficiency with $0.00 spent to raise every $1.",
-        "Strong liquidity position with 38.8 months of working capital available."
+        "High program expense ratio of 96.1%, indicating that the vast majority of funds go directly to services",
+        "Strong liquidity with 38.8 months of working capital available to sustain operations",
+        "Exceptional fundraising efficiency with $0.00 spent to raise every $1"
       ],
-      "summary": "The Islamic Association of Arabi is a religious organization dedicated to providing spiritual services, funeral rites, and educational opportunities for children [1][2]. The association operates the Al-Hameed Boys Academy and the Amatur Rahman Girls Academy to foster academic and religious growth within the community [4]."
+      "summary": "Based in Arabi, Louisiana, the Islamic Association of Arabi operates the Al-Hameed Boys Academy and the Amatur Rahman Girls Academy to provide religious education for children [2][4]. The organization reported a total revenue of $2,357,167 and maintains a high program expense ratio of 96.1%, focusing its resources on community services including funeral and wedding rites [1][3]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "founded in 1985",
+          "confidence": 1,
+          "id": "[1]",
+          "quote": "Year of formation: 1985",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/721128279"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Al-Hameed Boys Academy and the Amatur Rahman Girls Academy",
+          "confidence": 0.95,
+          "id": "[2]",
+          "quote": "Al-Hameed Boys Academy, Amatur Rahman Girls Academy",
+          "source_name": "Parent-student handbook",
+          "source_type": "website",
+          "source_url": "https://masjidyaseen.org/wp-content/uploads/2025/07/Parent-student-handbook_ce1f6dfe-8fa0-456a-a023-cae9055d50dc.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "wedding and funeral rites",
+          "confidence": 0.9,
+          "id": "[3]",
+          "quote": "WEDDING AND FUNERAL SERVICE",
+          "source_name": "Charity Navigator Profile",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/721128279"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $2,357,167",
+          "confidence": 1,
+          "id": "[4]",
+          "quote": "Total revenue: 2,357,167",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/721128279"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "program expense ratio of 96.1%",
+          "confidence": 1,
+          "id": "[5]",
+          "quote": "Program service expenses: 1,819,549; Total expenses: 1,819,549",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/721128279"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "fundraising efficiency of $0.00 per $1 raised",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "Fundraising Efficiency: $0.00",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/721128279"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "peer program ratio median of 89.6%",
+          "confidence": 0.9,
+          "id": "[7]",
+          "quote": "Peer Program Ratio Median: 89.6%",
+          "source_name": "Internal Peer Benchmarks",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/721128279"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "38.8 months of working capital",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Working Capital Ratio (months): 38.8",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/721128279"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3-year revenue CAGR of 42.3%",
+          "confidence": 0.95,
+          "id": "[9]",
+          "quote": "3-Year Revenue CAGR: 42.3%",
+          "source_name": "Financial Trend Analysis",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/721128279"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total assets of $8,838,533",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "Total assets: 8,838,533",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/721128279"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "board size of only 1 member",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "Number of voting members of the governing body: 1",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/721128279"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "no public tracking of cost-per-beneficiary",
+          "confidence": 0.9,
+          "id": "[12]",
+          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
+          "source_name": "Impact Analysis",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/721128279"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "96.1% independent board members",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "Independent Board Members: 96.1%",
+          "source_name": "Charity Navigator - Governance",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/721128279"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "clear theory of change",
+          "confidence": 0.85,
+          "id": "[14]",
+          "quote": "Theory of change: CLEAR",
+          "source_name": "Theory of Change Document",
+          "source_type": "website",
+          "source_url": "https://masjidyaseen.org/wp-content/uploads/2025/12/Jan26.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "medium fit for Muslim donors",
+          "confidence": 0.9,
+          "id": "[15]",
+          "quote": "Alignment 23/50: MEDIUM Muslim donor fit",
+          "source_name": "Alignment Rationale",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/721128279"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "clearly stating the sadaqah-only nature of its current funding",
+          "confidence": 0.9,
+          "id": "[16]",
+          "quote": "SADAQAH-ELIGIBLE",
+          "source_name": "",
+          "source_type": "website",
+          "source_url": "https://masjidyaseen.org/donate/"
+        }
+      ],
+      "amal_score_rationale": "The organization earns a 37/100 reflecting strong financial efficiency and liquidity, though the overall score is tempered by limited external impact data and a specific religious-cultural focus.",
+      "amal_scores": {
+        "amal_score": 37,
+        "confidence_scores": {
+          "alignment": 23,
+          "data_confidence": 0.6,
+          "impact": 20
+        },
+        "confidence_tier": "MEDIUM",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "SADAQAH-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Governance and Board Oversight",
+          "citation_ids": [
+            "[11]"
+          ],
+          "detail": "The organization currently operates with a <cite id=\"11\">board size of only 1 member</cite>, which presents significant risks regarding oversight and institutional continuity."
+        },
+        {
+          "area": "Impact Measurement Transparency",
+          "citation_ids": [
+            "[12]"
+          ],
+          "detail": "There is currently <cite id=\"12\">no public tracking of cost-per-beneficiary</cite> or long-term educational outcomes, making it difficult to assess the rigor of its impact."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "none",
+        "citation_ids": [
+          "[11]"
+        ],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "PASS",
+        "governance_status": "FAIL",
+        "meets_all_standards": false,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "The organization does not currently meet BBB standards due to <cite id=\"11\">insufficient board size</cite> and lack of public financial audits."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[8]",
+          "[11]"
+        ],
+        "mitigation_notes": "The organization's 40-year history suggests some level of informal community accountability, but formalizing governance is necessary.",
+        "risk_factors": [
+          "<cite id=\"11\">Board size of 1 member</cite> creates significant concentration of power and lack of oversight",
+          "<cite id=\"8\">Excessive working capital (38.8 months)</cite> suggests funds are being held rather than deployed for mission delivery"
+        ],
+        "summary": "The primary concern is a <cite id=\"11\">severe lack of board diversity and oversight</cite>, with only one member listed, alongside <cite id=\"8\">excessive capital accumulation</cite> that could be better utilized for immediate community needs."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 6,
+          "rating": 7,
+          "website": 3
+        },
+        "high_confidence_count": 14,
+        "total_count": 16,
+        "unique_sources": 5
+      },
+      "confidence": {
+        "data_freshness": "Financial data from 2023 Form 990",
+        "data_gaps": [
+          "Missing audited financials",
+          "No beneficiary counts",
+          "Single-member board governance"
+        ],
+        "level": "MODERATE",
+        "notes": "Financial efficiency is clear, but governance and impact data are limited.",
+        "score": 60,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 60,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Missing audited financials",
+          "No beneficiary data",
+          "Single-member board"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 16,
+        "unique_sources": 5,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[3]",
+            "[15]",
+            "[16]"
+          ],
+          "explanation": "",
+          "improvement": ""
+        },
+        "credibility": {
+          "citation_ids": [
+            "[1]",
+            "[11]",
+            "[12]",
+            "[13]"
+          ],
+          "explanation": "The organization is a <cite id=\"1\">long-standing institution founded in 1985</cite> with <cite id=\"13\">96.1% independent board members</cite>, yet its credibility is hampered by a <cite id=\"11\">critically small board size</cite> and a lack of third-party transparency seals.",
+          "improvement": "To strengthen credibility, the charity should expand its board to at least five members and <cite id=\"12\">publish audited financial statements</cite> to provide external verification of its 96.1% program ratio."
+        },
+        "impact": {
+          "citation_ids": [
+            "[5]",
+            "[8]",
+            "[12]",
+            "[14]"
+          ],
+          "explanation": "Impact is driven by a <cite id=\"5\">96.1% program expense ratio</cite> and a <cite id=\"14\">clear theory of change</cite> centered on capacity building through education, though <cite id=\"12\">outcome tracking is currently unverified</cite>.",
+          "improvement": "The organization could improve its impact score by <cite id=\"12\">publishing annual beneficiary counts</cite> and implementing a time-bound plan to deploy its <cite id=\"8\">excessive 38.8 months of working capital</cite> into expanding academy facilities."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "EDUCATION_GLOBAL",
+        "citation_ids": [
+          "[1]",
+          "[15]"
+        ],
+        "evidence_rigor": "Grade C - Implicit impact through long-term academy operations",
+        "geographic_focus": [
+          "Arabi, Louisiana",
+          "United States"
+        ],
+        "giving_style": "Community Infrastructure",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          ""
+        ],
+        "zakat_status": "SADAQAH-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0,
+        "annual_revenue": 2357167,
+        "citation_ids": [
+          "[1]",
+          "[4]",
+          "[9]"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": 0,
+        "industry_program_ratio": 0.75,
+        "peer_count": 23,
+        "peer_program_ratio_median": 0.896,
+        "program_expense_ratio": 0.9614,
+        "reserves_months": 38.8,
+        "revenue_cagr_3yr": 42.3,
+        "working_capital_months": 38.8,
+        "yearly_financials": [
+          {
+            "expenses": 1819549,
+            "net_assets": 5882255,
+            "revenue": 2357167,
+            "year": 2023
+          },
+          {
+            "expenses": 1320821,
+            "net_assets": 5344637,
+            "revenue": 2569303,
+            "year": 2022
+          },
+          {
+            "expenses": 1006821,
+            "net_assets": 4096155,
+            "revenue": 1163996,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[1]"
+        ],
+        "domestic_grants": 0,
+        "foreign_grants": 0,
+        "grant_count": 0,
+        "grant_strategy": "Direct service delivery through owned academies",
+        "is_significant_grantmaker": false,
+        "regions_served": [
+          "Louisiana"
+        ],
+        "top_recipients": [],
+        "total_grants": 0
+      },
+      "headline": "The Islamic Association of Arabi provides comprehensive religious education and community services through its dedicated youth academies and social support programs.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who prioritize funding local Islamic educational infrastructure and value organizations with zero fundraising overhead.",
+        "citation_ids": [
+          "[5]",
+          "[8]",
+          "[11]"
+        ],
+        "donor_motivations": [
+          "Want to support long-term religious education for youth",
+          "Value organizations that spend 96.1% of donations on programs",
+          "Prefer supporting established community centers with deep local roots"
+        ],
+        "giving_considerations": [
+          "Donations are currently classified as sadaqah, not zakat",
+          "The organization holds very high reserves, meaning your gift contributes to long-term stability rather than immediate crisis relief",
+          "Governance is centralized in a very small board"
+        ],
+        "not_ideal_for": "Donors seeking high-transparency organizations with rigorous third-party impact evaluations or those looking to fulfill zakat obligations."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[12]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects a clear operational model and long history, but a lack of <cite id=\"12\">quantifiable outcome data or external evaluations</cite>.",
+        "external_evaluations": [
+          "None available"
+        ],
+        "outcome_tracking_years": 0,
+        "rct_available": false,
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "The organization creates impact by providing structured religious education to youth, thereby building community capacity and preserving Islamic identity across generations.",
+        "why_evidence_matters": "Evidence ensures that the thousands of hours of instruction provided to students result in measurable increases in religious literacy and community engagement."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[1]",
+          "[8]",
+          "[9]"
+        ],
+        "founded_year": 1985,
+        "maturity_stage": "Institution",
+        "revenue_growth_3yr": 42.3,
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "While the organization has <cite id=\"8\">excessive reserves</cite>, its <cite id=\"9\">42.3% revenue growth</cite> suggests it is scaling its academy operations rapidly.",
+        "strategic_priorities": [
+          "Expand academy enrollment",
+          "Maintain 96.1% program efficiency"
+        ],
+        "years_operating": 41
+      },
+      "organizational_capacity": {
+        "board_size": 1,
+        "ceo_compensation": 0,
+        "ceo_compensation_pct_revenue": 0,
+        "ceo_name": "Not Disclosed",
+        "citation_ids": [
+          "[1]",
+          "[11]",
+          "[13]"
+        ],
+        "employees_count": 0,
+        "geographic_reach": "Regional (Louisiana)",
+        "has_conflict_policy": false,
+        "has_financial_audit": false,
+        "independent_board_pct": 1,
+        "payroll_to_revenue_pct": 0,
+        "programs_count": 5,
+        "staff_per_million_revenue": 0,
+        "volunteers_count": 0
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[5]",
+          "[7]"
+        ],
+        "differentiator": "Distinguished by a <cite id=\"5\">100.0% program ratio</cite> which is significantly higher than the <cite id=\"7\">peer median of 89.6%</cite>.",
+        "peer_group": "Global Education and Religious Services",
+        "similar_orgs": [
+          "Islamic Educational Foundation",
+          "Islamic Society of Northwest Suburbs of Chicago",
+          "Islamic Foundation of Nevada"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Similar focus on religious K-12 education",
+          "name": "Islamic Educational Foundation"
+        },
+        {
+          "differentiator": "Similar size and community service scope",
+          "name": "Islamic Society of Northwest Suburbs of Chicago"
+        },
+        {
+          "differentiator": "Similar regional religious service model",
+          "name": "Islamic Foundation of Nevada"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[5]",
+            "[7]"
+          ],
+          "detail": "The organization directs <cite id=\"5\">96.1% of its expenses toward programs</cite>, significantly exceeding the <cite id=\"7\">peer program ratio median of 89.6%</cite>.",
+          "point": "Exceptional Program Expense Ratio"
+        },
+        {
+          "citation_ids": [
+            "[8]"
+          ],
+          "detail": "The association maintains <cite id=\"8\">38.8 months of working capital</cite>, providing a massive buffer to sustain operations during economic downturns.",
+          "point": "Robust Financial Sustainability"
+        },
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "Having been <cite id=\"1\">founded in 1985</cite>, the organization has over four decades of experience in religious education and community service.",
+          "point": "Long-standing Community Presence"
+        }
+      ],
+      "strengths_deep_dive": [
+        "The Islamic Association of Arabi exhibits a highly efficient financial structure where <cite id=\"6\">zero dollars are spent on fundraising</cite> to generate over $2.3 million in annual revenue. This allows for a <cite id=\"5\">96.1% program expense ratio</cite>, ensuring that community contributions directly fund the <cite id=\"2\">Al-Hameed and Amatur Rahman academies</cite>. Furthermore, the organization has achieved a <cite id=\"9\">3-year revenue CAGR of 42.3%</cite>, demonstrating rapid growth and increasing community trust. Its balance sheet is exceptionally strong, with <cite id=\"10\">total assets of $8,838,533</cite> against relatively low liabilities, providing a stable foundation for its long-term educational mission."
+      ],
+      "summary": "The Islamic Association of Arabi, established in <cite id=\"1\">1985</cite>, serves as a central religious and educational hub for the Muslim community in Arabi, Louisiana. The organization operates a comprehensive suite of educational programs, most notably the <cite id=\"2\">Al-Hameed Boys Academy and the Amatur Rahman Girls Academy</cite>, which provide structured religious instruction for children. Beyond its core academic mission, the association facilitates essential community services including <cite id=\"3\">wedding and funeral rites</cite>, as well as dawah initiatives and social support for those in need. Financially, the organization demonstrates a significant scale for a regional center, reporting <cite id=\"4\">total revenue of $2,357,167</cite> in the 2023 tax year. A defining characteristic of its financial model is its extreme leaness; the association maintains a <cite id=\"5\">program expense ratio of 96.1%</cite> according to recent filings, ensuring that nearly every dollar contributed is directed toward its service delivery and educational mandates. This efficiency is further highlighted by a <cite id=\"6\">fundraising efficiency of $0.00 per $1 raised</cite>, indicating that the organization does not utilize professional solicitors or expensive campaigns to secure its funding, relying instead on community-driven support and program service revenue.",
+      "zakat_guidance": {
+        "classification": null,
+        "eligibility": "SADAQAH-ELIGIBLE"
+      }
     }
   }
 }

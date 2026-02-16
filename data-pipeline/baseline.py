@@ -406,6 +406,10 @@ def build_charity_metrics(
         metrics.primary_category = data.get("primary_category")
         metrics.cause_tags = data.get("cause_tags") or []
         metrics.program_focus_tags = data.get("program_focus_tags") or []
+        if isinstance(data.get("source_attribution"), dict):
+            metrics.source_attribution = data.get("source_attribution") or {}
+        if data.get("beneficiaries_served_annually") is not None:
+            metrics.beneficiaries_served_annually = data.get("beneficiaries_served_annually")
         if data.get("working_capital_months") is not None:
             metrics.working_capital_ratio = data.get("working_capital_months")
         if data.get("founded_year") and not metrics.founded_year:

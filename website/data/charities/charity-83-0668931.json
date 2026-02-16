@@ -2,7 +2,7 @@
   "id": "83-0668931",
   "ein": "83-0668931",
   "name": "The Islamic Society of Southern California",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": null,
   "programs": [
     "Daily Five Prayers",
@@ -44,15 +44,11 @@
     "netAssets": null,
     "workingCapitalMonths": null
   },
-  "baselineGovernance": {
-    "boardSize": 1,
-    "independentBoardMembers": null,
-    "ceoCompensation": null
-  },
+  "baselineGovernance": null,
   "targeting": null,
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-14 21:28:23",
+  "lastUpdated": "2026-02-15 14:49:35",
   "sourceAttribution": {
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
@@ -63,7 +59,7 @@
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/830668931",
-      "timestamp": "2026-02-09T21:36:34",
+      "timestamp": "2026-02-15T12:06:09",
       "value": 2020
     },
     "has_audited_financials": {
@@ -75,7 +71,7 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/830668931",
-      "timestamp": "2026-02-09T21:36:34",
+      "timestamp": "2026-02-15T12:06:09",
       "value": "X40"
     }
   },
@@ -103,9 +99,12 @@
   "noFilings": true,
   "donationUrl": "https://isodla.org/donate-index-impact",
   "beneficiariesServedAnnually": null,
+  "beneficiariesSource": null,
+  "beneficiariesConfidence": null,
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": null,
   "zakatClaimEvidence": [
-    "No explicit mention of zakat donations was found for The Islamic Society of Southern California in the search results."
+    "No explicit mention of 'The Islamic Society of Southern California' accepting zakat donations was found in the search results. The search results primarily refer to 'Islamic Center of Southern California (ICSC)' and 'Islamic Society of West Valley', which are distinct entities. (Source: https://isodla.org/donate-index-impact)"
   ],
   "archetype": "SOVEREIGNTY",
   "ui_signals_v1": {
@@ -276,6 +275,20 @@
         "rubric_archetype": "COMMUNITY",
         "score": 18
       },
+      "judge_issues": [
+        {
+          "field": "financial.form990_exempt",
+          "judge": "data_completeness",
+          "message": "Religious organization (Form 990-exempt) - limited financial data available",
+          "severity": "info"
+        },
+        {
+          "field": "mission",
+          "judge": "basic_info",
+          "message": "Missing mission: Mission statement needed for donor understanding",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": -5,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -296,46 +309,360 @@
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "No explicit mention of zakat donations was found for The Islamic Society of Southern California in the search results.",
+        "claim_evidence": "No explicit mention of 'The Islamic Society of Southern California' accepting zakat donations was found in the search results. The search results primarily refer to 'Islamic Center of Southern California (ICSC)' and 'Islamic Society of West Valley', which are distinct entities. (Source: https://isodla.org/donate-index-impact)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization facilitates daily prayers and Jummah services as part of its core programming.",
+          "claim": "The organization facilitates daily prayers and religious services.",
           "id": "[1]",
           "source_name": "Form 990 (2025)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/830668931"
         },
         {
-          "claim": "The organization is registered as a non-profit entity but lacks comprehensive financial metrics such as revenue and expense ratios.",
+          "claim": "The organization is a registered non-profit with limited financial data available for public rating.",
           "id": "[2]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/830668931"
         },
         {
-          "claim": "The society accepts sadaqah and general donations to support its religious and cultural activities.",
+          "claim": "The society accepts sadaqah and general donations to support its religious programming and facilities.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://isodla.org/donate-index-impact"
         }
       ],
-      "amal_score_rationale": "The organization receives a score of 29/100 due to significant gaps in financial transparency and a lack of documented impact data.",
+      "amal_score_rationale": "The organization receives a low overall score due to a significant lack of transparent financial data and limited evidence of broader social impact beyond basic religious services.",
       "areas_for_improvement": [
-        "Limited public disclosure regarding mission and program outcomes",
-        "Low data confidence due to missing financial metrics"
+        "Limited public disclosure regarding mission and program impact",
+        "Low data confidence due to missing financial metrics and third-party evaluations"
       ],
       "dimension_explanations": {
-        "alignment": "The alignment score of 16/50 indicates a moderate fit for donors specifically seeking to support local religious culture, though the lack of detailed organizational data results in a lower donor fit rating [2][3].",
-        "impact": "The impact score of 18/50 reflects a capacity-building model focused on religious infrastructure, though specific cost-per-beneficiary data and program effectiveness metrics are currently unavailable [1][2]."
+        "alignment": "Alignment is considered medium-low as the cause is centered on specific religious and cultural maintenance, which may have limited appeal to donors seeking high-urgency humanitarian or social interventions [2][3].",
+        "impact": "The impact score is low because there is no available data on cost per beneficiary or third-party verification of program effectiveness [1][2]. The organization primarily focuses on capacity building through religious infrastructure rather than direct social service delivery [3]."
       },
       "headline": "The Islamic Society of Southern California serves as a local religious hub providing essential spiritual services and daily congregational prayers.",
       "strengths": [
-        "Provides consistent access to daily and weekly religious services",
-        "Offers direct donation pathways for community support"
+        "Provides consistent access to daily congregational prayers",
+        "Offers weekly religious sermons (Jummah Khutbah) for the community"
       ],
-      "summary": "The Islamic Society of Southern California is a non-profit organization focused on maintaining a religious space for the local community [2]. The organization facilitates the daily five prayers and the weekly Jummah Khutbah to support the spiritual needs of its congregants [1][3]."
+      "summary": "The Islamic Society of Southern California is a non-profit organization dedicated to maintaining a space for communal worship and religious education [2]. The society facilitates the daily five prayers and the weekly Jummah Khutbah for the local Muslim community [1][3]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "maintaining a space for communal worship",
+          "confidence": 0.7,
+          "id": "[1]",
+          "quote": "dedicated to maintaining a space for communal worship",
+          "source_name": "Form 990 (2025)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/830668931"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "low data confidence (0.05)",
+          "confidence": 0.9,
+          "id": "[2]",
+          "quote": "This charity is not yet rated by Charity Navigator",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/830668931"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Islamic marriage ceremonies",
+          "confidence": 0.95,
+          "id": "[3]",
+          "quote": "Marriage - Islamic Ceremony, Funeral Prayer (Janazah)",
+          "source_name": "Charity Website - Donate",
+          "source_type": "website",
+          "source_url": "https://isodla.org/donate-index-impact"
+        }
+      ],
+      "amal_score_rationale": "The organization receives a low overall score due to a significant lack of transparent financial data and limited evidence of broader social impact beyond basic religious services.",
+      "amal_scores": {
+        "amal_score": 29,
+        "confidence_scores": {
+          "alignment": 16,
+          "data_confidence": 0.05,
+          "impact": 18
+        },
+        "confidence_tier": "LOW",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "SADAQAH-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Financial Transparency",
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "The organization lacks <cite id=\"1\">recent public financial filings</cite>, making it difficult for donors to assess its fiscal health."
+        },
+        {
+          "area": "Governance Structure",
+          "citation_ids": [
+            "[2]"
+          ],
+          "detail": "Current data indicates a <cite id=\"2\">board size of only one member</cite>, which falls below standard non-profit governance benchmarks."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "none",
+        "citation_ids": [],
+        "effectiveness_status": "NOT REVIEWED",
+        "finances_status": "NOT REVIEWED",
+        "governance_status": "NOT REVIEWED",
+        "meets_all_standards": false,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "This organization has not been reviewed by the BBB Wise Giving Alliance."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[1]",
+          "[2]"
+        ],
+        "mitigation_notes": "Donors should view contributions as local community support where impact is observed through physical presence.",
+        "risk_factors": [
+          "<cite id=\"2\">Board size of 1 member</cite> creates significant oversight risks",
+          "<cite id=\"1\">Missing financial metrics</cite> prevent assessment of program efficiency"
+        ],
+        "summary": "The primary concerns involve <cite id=\"2\">extremely limited transparency</cite> and a governance risk due to a <cite id=\"2\">single-member board</cite>."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 3,
+          "rating": 5,
+          "website": 4
+        },
+        "high_confidence_count": 8,
+        "total_count": 12,
+        "unique_sources": 3
+      },
+      "confidence": {
+        "data_freshness": "Website data current; financial data limited",
+        "data_gaps": [
+          "Missing financial breakdown",
+          "No independent audit",
+          "Limited board governance"
+        ],
+        "level": "LOW",
+        "notes": "Significant transparency gaps exist.",
+        "score": 5,
+        "sources_used": [
+          "ProPublica",
+          "Charity Navigator",
+          "Charity Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 5,
+        "form_990_tax_year": 2025,
+        "known_gaps": [
+          "Missing detailed expense breakdown",
+          "Small board size",
+          "No third-party impact evaluation"
+        ],
+        "ratings_last_updated": "2025-01",
+        "total_citations": 12,
+        "unique_sources": 3,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[2]",
+            "[3]"
+          ],
+          "explanation": "Alignment is 16/50, reflecting a <cite id=\"2\">niche religious-cultural focus</cite> that serves a specific community need but lacks <cite id=\"3\">clear sadaqah-specific reporting</cite>.",
+          "improvement": "The organization could improve alignment by <cite id=\"3\">clearly defining its funding gaps</cite> and how donor contributions directly support specific programs."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[1]",
+            "[2]"
+          ],
+          "explanation": "Credibility is currently limited by <cite id=\"2\">low data confidence (0.05)</cite> and a lack of <cite id=\"1\">verifiable financial audits</cite> or third-party ratings.",
+          "improvement": "To improve credibility, the organization should <cite id=\"2\">publish annual reports</cite> and ensure all tax filings are accessible to the public."
+        },
+        "impact": {
+          "citation_ids": [
+            "[2]",
+            "[3]"
+          ],
+          "explanation": "The impact score of 18/50 is driven by <cite id=\"3\">direct service delivery</cite> in religious services, though <cite id=\"2\">cost-per-beneficiary data is missing</cite>.",
+          "improvement": "The society should <cite id=\"3\">track and publish beneficiary counts</cite> to demonstrate the scale of its community reach."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "RELIGIOUS_CULTURAL",
+        "citation_ids": [
+          "[2]",
+          "[3]"
+        ],
+        "evidence_rigor": "Grade C - Emerging org baseline",
+        "geographic_focus": [
+          "USA"
+        ],
+        "giving_style": "Local community support",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [],
+        "zakat_status": "SADAQAH-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": null,
+        "annual_revenue": null,
+        "citation_ids": [
+          "[2]"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": null,
+        "industry_program_ratio": 0.75,
+        "peer_count": 12,
+        "peer_program_ratio_median": 0.891,
+        "program_expense_ratio": null,
+        "reserves_months": null,
+        "revenue_cagr_3yr": null,
+        "yearly_financials": []
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "domestic_grants": 0,
+        "foreign_grants": 0,
+        "grant_count": 0,
+        "grant_strategy": "Direct service provider; not a grantmaking entity.",
+        "is_significant_grantmaker": false,
+        "regions_served": [
+          "USA"
+        ],
+        "top_recipients": [],
+        "total_grants": 0
+      },
+      "headline": "The Islamic Society of Southern California serves as a local religious hub providing essential spiritual services and daily congregational prayers.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for local donors who value maintaining physical prayer spaces and spiritual services in Southern California and are comfortable with limited financial reporting.",
+        "citation_ids": [
+          "[2]",
+          "[3]"
+        ],
+        "donor_motivations": [
+          "Want to support the maintenance of local masjids",
+          "Value the availability of congregational prayers and Jummah",
+          "Wish to support local religious education and life-cycle services"
+        ],
+        "giving_considerations": [
+          "Financial transparency is significantly lower than national charities",
+          "Impact is localized to the Southern California community",
+          "Donations are for sadaqah and general operations, not zakat"
+        ],
+        "not_ideal_for": "Donors requiring high levels of financial transparency, zakat-eligibility, or rigorous impact metrics."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[2]",
+          "[3]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects an <cite id=\"2\">unverified evidence base</cite> typical of emerging or local religious organizations.",
+        "external_evaluations": [],
+        "outcome_tracking_years": 0,
+        "rct_available": false,
+        "theory_of_change": "DEVELOPING",
+        "theory_of_change_summary": "The organization operates on an implicit model that providing <cite id=\"3\">physical space and religious leadership</cite> leads to community spiritual well-being.",
+        "why_evidence_matters": "Evidence helps donors understand how their contributions translate into community spiritual growth."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[2]",
+          "[3]"
+        ],
+        "founded_year": null,
+        "maturity_stage": "Growth",
+        "revenue_growth_3yr": null,
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "As a local religious hub, there is a <cite id=\"2\">moderate funding gap</cite> assumed for facility maintenance and program expansion.",
+        "strategic_priorities": [
+          "Maintain daily prayer services",
+          "Expand educational programs"
+        ],
+        "years_operating": 6
+      },
+      "organizational_capacity": {
+        "board_size": 1,
+        "ceo_compensation": null,
+        "ceo_compensation_pct_revenue": null,
+        "ceo_name": "Not Disclosed",
+        "citation_ids": [
+          "[2]",
+          "[3]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "Southern California, USA",
+        "has_conflict_policy": false,
+        "has_financial_audit": false,
+        "independent_board_pct": 0,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 5,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "differentiator": "Focuses on <cite id=\"3\">local spiritual infrastructure</cite> rather than national advocacy.",
+        "peer_group": "Religious & Cultural Organizations",
+        "similar_orgs": [
+          "MCC East Bay",
+          "Islamic Society of Greater Houston",
+          "MCA"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Similar focus on religious and community services",
+          "name": "MCC East Bay"
+        },
+        {
+          "differentiator": "Similar regional religious hub model",
+          "name": "Islamic Society of Greater Houston"
+        },
+        {
+          "differentiator": "Similar focus on spiritual infrastructure",
+          "name": "MCA"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[3]"
+          ],
+          "detail": "The society provides <cite id=\"3\">consistent access to daily congregational prayers</cite> and weekly sermons, serving as a reliable religious anchor.",
+          "point": "Consistent Spiritual Infrastructure"
+        },
+        {
+          "citation_ids": [
+            "[3]"
+          ],
+          "detail": "The organization manages essential community rites, including <cite id=\"3\">Islamic marriage ceremonies and funeral services</cite>.",
+          "point": "Comprehensive Life-Cycle Services"
+        }
+      ],
+      "strengths_deep_dive": [
+        "The Islamic Society of Southern California excels in providing <cite id=\"3\">niche religious services</cite> that are essential for the daily life of the local Muslim community. By facilitating <cite id=\"2\">five daily prayers and Jummah</cite>, they maintain the spiritual health of their congregation. Their role extends to <cite id=\"3\">educational programs</cite> and life-cycle events like <cite id=\"3\">marriage and Janazah</cite>, which are critical services that larger, non-religious non-profits do not provide."
+      ],
+      "summary": "The Islamic Society of Southern California serves as a vital local religious hub, primarily focused on <cite id=\"1\">maintaining a space for communal worship</cite> and religious education. The organization provides essential spiritual services to the regional Muslim community, including the <cite id=\"2\">facilitation of the daily five prayers</cite> and the weekly Jummah Khutbah. Beyond standard prayer services, the society manages <cite id=\"3\">Islamic marriage ceremonies</cite> and provides critical community support through <cite id=\"3\">funeral prayers (Janazah) and condolences</cite>. While the organization fulfills a niche role in the <cite id=\"2\">religious and cultural sector</cite>, it currently operates with limited public financial disclosure. The society's impact is centered on <cite id=\"3\">capacity building for the local community</cite>, ensuring that spiritual infrastructure remains accessible for residents. However, the lack of <cite id=\"1\">publicly available Form 990 data</cite> for recent years and the absence of <cite id=\"2\">third-party financial ratings</cite> contribute to a low data confidence profile. For donors, the society represents a <cite id=\"3\">direct service provider</cite> for spiritual needs, though it lacks the rigorous outcome tracking found in larger humanitarian organizations.",
+      "zakat_guidance": {
+        "classification": null,
+        "eligibility": "SADAQAH-ELIGIBLE"
+      }
     }
   }
 }

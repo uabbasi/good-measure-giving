@@ -22,6 +22,34 @@ class CharityEntry:
     flags_text: str = ""  # Raw flags string (e.g., "HIDE:TRUE")
 
 
+def normalize_website_url(website: Optional[str]) -> Optional[str]:
+    """Normalize website URL for crawling.
+
+    - Trims whitespace
+    - Adds https:// when scheme is missing for domain-like inputs
+    - Leaves already absolute http(s) URLs unchanged
+    """
+    if not website:
+        return None
+
+    value = website.strip()
+    if not value:
+        return None
+
+    lowered = value.lower()
+    if lowered.startswith(("http://", "https://")):
+        return value
+
+    if value.startswith("//"):
+        return f"https:{value}"
+
+    # Treat domain-like strings as HTTPS URLs.
+    if "." in value and " " not in value:
+        return f"https://{value}"
+
+    return value
+
+
 def load_charity_entries(file_path: str) -> list[CharityEntry]:
     """Load full charity entries from pilot_charities.txt.
 
@@ -54,7 +82,7 @@ def load_charity_entries(file_path: str) -> list[CharityEntry]:
                 CharityEntry(
                     name=parts[0],
                     ein=normalized,
-                    website=parts[2] if len(parts) >= 3 and parts[2] else None,
+                    website=normalize_website_url(parts[2] if len(parts) >= 3 and parts[2] else None),
                     flags_text=" ".join(parts[3:]) if len(parts) > 3 else "",
                 )
             )
@@ -97,7 +125,7 @@ def load_charities_from_file(file_path: str, logger=None) -> list[dict]:
 
             name = parts[0]
             ein = parts[1]
-            website = parts[2] if len(parts) >= 3 and parts[2] else None
+            website = normalize_website_url(parts[2] if len(parts) >= 3 and parts[2] else None)
 
             if not ein or ein == "N/A" or ein.startswith("N/A"):
                 continue

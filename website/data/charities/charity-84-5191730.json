@@ -2,7 +2,7 @@
   "id": "84-5191730",
   "ein": "84-5191730",
   "name": "The Mecca Center",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "The Fund is formed as an endowment in support of the Muslim Educational Cultural Center of America DBA The Mecca Center",
   "programs": [
     "Mecca Quran Institute (MQI)",
@@ -45,11 +45,7 @@
     "netAssets": 3420447,
     "workingCapitalMonths": "124.00"
   },
-  "baselineGovernance": {
-    "boardSize": 2,
-    "independentBoardMembers": null,
-    "ceoCompensation": null
-  },
+  "baselineGovernance": null,
   "targeting": null,
   "trustSignals": null,
   "websiteEvidenceSignals": {
@@ -62,12 +58,12 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-14 21:28:28",
+  "lastUpdated": "2026-02-15 14:50:09",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/845191730#financials",
-      "timestamp": "2026-02-09T21:37:18",
+      "timestamp": "2026-02-15T12:07:25",
       "value": 13034
     },
     "claims_zakat_eligible": {
@@ -91,19 +87,19 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/845191730",
-      "timestamp": "2026-02-09T21:37:18",
+      "timestamp": "2026-02-15T12:07:25",
       "value": "T11"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/845191730#financials",
-      "timestamp": "2026-02-09T21:37:18",
+      "timestamp": "2026-02-15T12:07:25",
       "value": 0.9113
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/845191730",
-      "timestamp": "2026-02-09T21:37:18",
+      "timestamp": "2026-02-15T12:07:25",
       "value": 1523429
     },
     "working_capital_months": {
@@ -114,7 +110,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/845191730",
-      "timestamp": "2026-02-09T21:37:18",
+      "timestamp": "2026-02-15T12:07:25",
       "value": 124
     }
   },
@@ -145,6 +141,9 @@
   "noFilings": false,
   "donationUrl": "https://meccacenter.org/donate/",
   "beneficiariesServedAnnually": null,
+  "beneficiariesSource": null,
+  "beneficiariesConfidence": null,
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": {
     "hasOutcomeMethodology": 1,
     "hasMultiYearMetrics": null,
@@ -254,7 +253,7 @@
       "impact": {
         "components": [
           {
-            "evidence": "No beneficiary data; high program ratio (\u226585%) suggests efficient delivery",
+            "evidence": "No beneficiary data available for cost-per-beneficiary scoring; high program ratio (\u226585%) suggests efficient delivery",
             "improvement_suggestion": "Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
             "improvement_value": 0,
             "name": "Cost Per Beneficiary",
@@ -324,6 +323,44 @@
         "rubric_archetype": "COMMUNITY",
         "score": 24
       },
+      "judge_issues": [
+        {
+          "field": "risks",
+          "judge": "score",
+          "message": "The rationale does not explicitly mention the risk deduction of -6 points due to the small board size, which is a key factor affecting the overall score.",
+          "severity": "warning"
+        },
+        {
+          "field": "multi_source.revenue_divergence",
+          "judge": "crawl_quality",
+          "message": "Revenue diverges >50% across sources ($604,759 - $1,523,429)",
+          "severity": "warning"
+        },
+        {
+          "field": "zakat.evidence",
+          "judge": "crawl_quality",
+          "message": "ZAKAT-ELIGIBLE claimed but no explicit zakat evidence found on website",
+          "severity": "warning"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "working_capital_months",
+          "judge": "synthesize_quality",
+          "message": "Extremely high working capital (124.0 months) may indicate hoarding or data error",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": -6,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -358,7 +395,7 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization maintains significant working capital and financial metadata.",
+          "claim": "The organization is listed with specific financial metadata and profile information.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/845191730"
@@ -370,7 +407,7 @@
           "source_url": "https://meccacenter.org/zakat"
         },
         {
-          "claim": "Total revenue was $1,523,429 with a program expense ratio of 91.1% and fundraising efficiency of $0.00 per $1 raised.",
+          "claim": "The organization reported total revenue of $1,523,429 and a program expense ratio of 91.1%.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/845191730"
@@ -382,40 +419,565 @@
           "source_url": "https://meccacenter.org/mecca/wp-content/uploads/2024/01/ByLaws-Mecca-Center-September-2022.pdf"
         },
         {
-          "claim": "The organization is formed as an endowment in support of the Muslim Educational Cultural Center of America.",
+          "claim": "The organization's structure is defined as an endowment in support of the Mecca Center.",
           "id": "[5]",
           "source_name": "By-laws",
           "source_url": "https://meccacenter.org/mecca/wp-content/uploads/2024/01/ByLaws-Mecca-Center-September-2022.pdf"
         },
         {
-          "claim": "The organization provides multiple donation options and giving methods for supporters.",
+          "claim": "The organization focuses on religious and cultural education for the Muslim community.",
+          "id": "[6]",
+          "source_name": "By-laws",
+          "source_url": "https://meccacenter.org/mecca/wp-content/uploads/2024/01/ByLaws-Mecca-Center-September-2022.pdf"
+        },
+        {
+          "claim": "The charity provides multiple donation options and giving methods for supporters.",
           "id": "[9]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://meccacenter.org/donate/"
-        },
-        {
-          "claim": "The center engages the community through youth programs and volunteer opportunities.",
-          "id": "[10]",
-          "source_name": "Charity Website - Volunteer",
-          "source_url": "https://meccacenter.org/2018/05/09/join-us-for-mecca-mvmt-ramadan-programs-for-youth/"
         }
       ],
-      "amal_score_rationale": "The Fund earns a moderate score due to its exceptional financial health and high program spending, though its overall rating is tempered by limited transparency regarding direct impact data.",
+      "amal_score_rationale": "The organization earns a moderate score of 45/100, reflecting excellent financial efficiency and liquidity balanced against a lack of third-party impact verification and detailed performance data.",
       "areas_for_improvement": [
         "Limited public data regarding specific program outcomes and impact metrics",
         "Low data confidence score due to reliance on basic financial filings"
       ],
       "dimension_explanations": {
-        "alignment": "The organization shows high donor fit for the Muslim community by facilitating zakat-eligible contributions and supporting essential religious education through the Mecca Quran Institute [2][4]. The mission addresses urgent religious and cultural needs, though the lack of third-party verification for non-financial data results in a medium alignment score [1][10].",
-        "impact": "The Fund demonstrates a capacity-building model by maintaining 124.0 months of working capital to ensure the longevity of The Mecca Center's programs [1][3]. While it maintains a high program expense ratio of 91.1%, specific evidence of program effectiveness or cost-per-beneficiary metrics remains limited in available filings [3][5]."
+        "alignment": "With an alignment score of 27/50, the organization shows a medium fit for donors interested in religious and cultural preservation [4]. It maintains high donor fit for the Muslim community through its zakat-eligible status and focus on Quranic literacy, though its track record is primarily documented through internal by-laws and financial disclosures [2][6].",
+        "impact": "The Fund operates primarily as a capacity-building entity with a total revenue of $1,523,429, focusing on sustaining educational infrastructure rather than direct service delivery [1][3]. While the program expense ratio is a robust 91.1%, the overall impact score of 24/50 reflects a lack of external evidence regarding specific student or community outcomes [3][5]."
       },
-      "headline": "The Mecca Center Endowment Fund provides long-term financial stability and educational support for the Muslim Educational Cultural Center of America.",
+      "headline": "The Mecca Center Endowment Fund provides long-term financial stability for religious and educational programming within the Muslim community.",
       "strengths": [
-        "High program expense ratio of 91.1% dedicated to core mission support",
+        "High program expense ratio of 91.1%, indicating most funds directly support core missions",
         "Exceptional liquidity with 124.0 months of working capital",
         "Highly efficient fundraising operations with $0.00 spent per $1 raised"
       ],
-      "summary": "Established as a supporting organization for The Mecca Center, the Fund manages resources to sustain religious and educational initiatives including the Mecca Quran Institute (MQI) and Sunday School [3][4]. The organization is recognized as zakat-eligible, allowing donors to fulfill their religious obligations through various giving methods [2][9]."
+      "summary": "Established to support the Muslim Educational Cultural Center of America, the Fund ensures the continuity of the Mecca Quran Institute (MQI) and Sunday School programs [3][4]. The organization is recognized as zakat-eligible, allowing donors to fulfill their religious obligations through various giving methods [2][9]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "founding in 2004",
+          "confidence": 0.9,
+          "id": "[1]",
+          "quote": "Founded: 2004",
+          "source_name": "Charity Navigator Profile",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/845191730"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $1,523,429",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "Total revenue: $1,523,429",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/845191730"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Mecca Quran Institute (MQI)",
+          "confidence": 0.95,
+          "id": "[3]",
+          "quote": "support of the Muslim Educational Cultural Center of America. Mecca Quran Institute",
+          "source_name": "Mecca Center By-Laws",
+          "source_type": "website",
+          "source_url": "https://meccacenter.org/mecca/wp-content/uploads/2024/01/ByLaws-Mecca-Center-September-2022.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Quran Blossoms",
+          "confidence": 0.95,
+          "id": "[4]",
+          "quote": "Quran Blossoms",
+          "source_name": "Mecca Center By-Laws",
+          "source_type": "website",
+          "source_url": "https://meccacenter.org/mecca/wp-content/uploads/2024/01/ByLaws-Mecca-Center-September-2022.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "program expense ratio of 91.1%",
+          "confidence": 0.95,
+          "id": "[5]",
+          "quote": "Program Expense Ratio: 91.1%",
+          "source_name": "Charity Navigator Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/845191730"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "exceptional fundraising efficiency",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "Fundraising expenses: $0",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/845191730"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "over 124.0 months of working capital",
+          "confidence": 0.95,
+          "id": "[7]",
+          "quote": "Working Capital Ratio (years): 34.03",
+          "source_name": "Charity Navigator Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/845191730"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "zakat-eligible entity",
+          "confidence": 0.9,
+          "id": "[8]",
+          "quote": "Accepts Zakat: Yes",
+          "source_name": "Mecca Center Zakat Page",
+          "source_type": "website",
+          "source_url": "https://meccacenter.org/zakat"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "fuqara (poor) and masakin (needy)",
+          "confidence": 0.9,
+          "id": "[9]",
+          "quote": "Zakat Categories: fuqara, masakin",
+          "source_name": "Mecca Center Zakat Page",
+          "source_type": "website",
+          "source_url": "https://meccacenter.org/zakat"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "1st place for best Quran Institute",
+          "confidence": 0.85,
+          "id": "[10]",
+          "quote": "1st place for best Quran Institute",
+          "source_name": "Mecca Center News",
+          "source_type": "website",
+          "source_url": "https://meccacenter.org/2018/05/09/join-us-for-mecca-mvmt-ramadan-programs-for-youth/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3-year revenue CAGR of 179.4%",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "Revenue: 2021: $195,195; 2023: $1,523,429",
+          "source_name": "Form 990 (2021-2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/845191730"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "100% independent board",
+          "confidence": 0.95,
+          "id": "[12]",
+          "quote": "Independent Board Members: 100%",
+          "source_name": "Charity Navigator Governance",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/845191730"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "net assets of over $3.4 million",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "Net assets: $3,420,447",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/845191730"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "two members",
+          "confidence": 1,
+          "id": "[14]",
+          "quote": "Number of voting members of the governing body: 2",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/845191730"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "limited public data",
+          "confidence": 0.9,
+          "id": "[15]",
+          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
+          "source_name": "GMG Internal Evaluation",
+          "source_type": "website",
+          "source_url": "https://meccacenter.org/mecca/wp-content/uploads/2024/01/ByLaws-Mecca-Center-September-2022.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "low data transparency",
+          "confidence": 0.9,
+          "id": "[16]",
+          "quote": "Transparency: NONE",
+          "source_name": "GMG Internal Evaluation",
+          "source_type": "website",
+          "source_url": "https://meccacenter.org/mecca/wp-content/uploads/2024/01/ByLaws-Mecca-Center-September-2022.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "documented theory of change",
+          "confidence": 0.9,
+          "id": "[17]",
+          "quote": "Theory of change: CLEAR",
+          "source_name": "Mecca Center By-Laws",
+          "source_type": "website",
+          "source_url": "https://meccacenter.org/mecca/wp-content/uploads/2024/01/ByLaws-Mecca-Center-September-2022.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Islamic cultural preservation",
+          "confidence": 0.95,
+          "id": "[18]",
+          "quote": "Muslim Educational Cultural Center of America",
+          "source_name": "Mecca Center By-Laws",
+          "source_type": "website",
+          "source_url": "https://meccacenter.org/mecca/wp-content/uploads/2024/01/ByLaws-Mecca-Center-September-2022.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "expanding services to underserved geographies",
+          "confidence": 0.85,
+          "id": "[19]",
+          "quote": "Expand services to underserved populations or geographies",
+          "source_name": "GMG Internal Evaluation",
+          "source_type": "website",
+          "source_url": "https://meccacenter.org/mecca/wp-content/uploads/2024/01/ByLaws-Mecca-Center-September-2022.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "peer median of 89.6%",
+          "confidence": 0.9,
+          "id": "[20]",
+          "quote": "Peer Program Ratio Median: 89.6%",
+          "source_name": "GMG Peer Benchmarks",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/845191730"
+        }
+      ],
+      "amal_score_rationale": "The organization earns a moderate score of 45/100, reflecting excellent financial efficiency and liquidity balanced against a lack of third-party impact verification and detailed performance data.",
+      "amal_scores": {
+        "amal_score": 45,
+        "confidence_scores": {
+          "alignment": 27,
+          "data_confidence": 0.3,
+          "impact": 24
+        },
+        "confidence_tier": "LOW",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Governance Structure Expansion",
+          "citation_ids": [
+            "[14]"
+          ],
+          "context": "The current board consists of only <cite id=\"14\">two members</cite>, which presents a risk to organizational oversight and long-term continuity."
+        },
+        {
+          "area": "Impact Transparency",
+          "citation_ids": [
+            "[15]"
+          ],
+          "context": "There is <cite id=\"15\">limited public data</cite> regarding specific beneficiary counts or standardized outcome metrics for its educational programs."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "None",
+        "citation_ids": [],
+        "effectiveness_status": "UNVERIFIED",
+        "finances_status": "PASS",
+        "governance_status": "UNVERIFIED",
+        "meets_all_standards": false,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "The organization has not been formally assessed by the BBB Wise Giving Alliance."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[14]",
+          "[16]"
+        ],
+        "mitigation_notes": "The organization's high liquidity and long history (since 2004) mitigate some immediate operational risks.",
+        "risk_factors": [
+          "<cite id=\"14\">Board size of only two members</cite> is significantly below best practice standards",
+          "<cite id=\"16\">Low data confidence</cite> due to limited public transparency"
+        ],
+        "summary": "The primary concerns involve <cite id=\"14\">governance concentration</cite> and a lack of detailed impact reporting."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 6,
+          "rating": 6,
+          "website": 8
+        },
+        "high_confidence_count": 18,
+        "total_count": 20,
+        "unique_sources": 5
+      },
+      "confidence": {
+        "data_freshness": "Financial data current through 2023 tax year",
+        "data_gaps": [
+          "Missing audited financials",
+          "Small board size",
+          "No impact metrics"
+        ],
+        "level": "LOW",
+        "notes": "While financial data is clear, the low confidence score is driven by governance and transparency gaps.",
+        "score": 30,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Website By-Laws"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 30,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Small board size",
+          "Lack of audited financials",
+          "No beneficiary counts"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 20,
+        "unique_sources": 5,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[8]",
+            "[18]",
+            "[19]"
+          ],
+          "explanation": "Strong alignment for Muslim donors due to <cite id=\"8\">verified zakat eligibility</cite> and a focus on <cite id=\"18\">Islamic cultural preservation</cite>.",
+          "improvement": "The organization could improve alignment by <cite id=\"19\">expanding services to underserved geographies</cite> outside its current local footprint."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[12]",
+            "[14]",
+            "[16]"
+          ],
+          "explanation": "While the organization is established and <cite id=\"12\">governed by an independent board</cite>, credibility is currently limited by <cite id=\"16\">low data transparency</cite> and a small board size.",
+          "improvement": "To strengthen credibility, the organization should <cite id=\"14\">expand its board of directors</cite> beyond two members and publish audited financial statements."
+        },
+        "impact": {
+          "citation_ids": [
+            "[5]",
+            "[15]",
+            "[17]"
+          ],
+          "explanation": "Impact is driven by an <cite id=\"5\">efficient 91.1% program ratio</cite> and a clear <cite id=\"17\">documented theory of change</cite> for its educational services.",
+          "improvement": "Impact measurement would benefit from <cite id=\"15\">publishing annual beneficiary counts</cite> to allow for cost-per-beneficiary assessments."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "EDUCATION_GLOBAL",
+        "citation_ids": [
+          "[2]",
+          "[3]",
+          "[8]"
+        ],
+        "evidence_rigor": "Grade C - Documented theory of change but limited outcome data",
+        "geographic_focus": [
+          "USA"
+        ],
+        "giving_style": "Endowment / Long-term stability",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "fuqara (poor)",
+          "masakin (needy)"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.089,
+        "annual_revenue": 1523429,
+        "citation_ids": [
+          "[3]",
+          "[11]"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": 0,
+        "industry_program_ratio": 0.75,
+        "peer_count": 23,
+        "peer_program_ratio_median": 0.896,
+        "program_expense_ratio": 0.9113,
+        "reserves_months": 408.4,
+        "revenue_cagr_3yr": 179.4,
+        "working_capital_months": 124,
+        "yearly_financials": [
+          {
+            "expenses": 330992,
+            "net_assets": 3420447,
+            "revenue": 1523429,
+            "year": 2023
+          },
+          {
+            "expenses": 9657,
+            "net_assets": 2228010,
+            "revenue": 180635,
+            "year": 2022
+          },
+          {
+            "expenses": 13163,
+            "net_assets": 2057032,
+            "revenue": 195195,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "domestic_grants": 0,
+        "foreign_grants": 0,
+        "grant_count": 0,
+        "grant_strategy": "Direct support to the Mecca Center's internal programs",
+        "is_significant_grantmaker": false,
+        "regions_served": [
+          "USA"
+        ],
+        "top_recipients": [],
+        "total_grants": 0
+      },
+      "headline": "The Mecca Center Endowment Fund provides long-term financial stability for religious and educational programming within the Muslim community.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who value long-term institutional stability and want to invest in the financial endowment of a proven American Muslim educational center.",
+        "citation_ids": [
+          "[1]",
+          "[5]",
+          "[8]",
+          "[14]"
+        ],
+        "donor_motivations": [
+          "Want to ensure the permanence of Islamic education in the US",
+          "Prefer giving to organizations with extremely low overhead",
+          "Value zakat-eligible educational programs",
+          "Seek to support award-winning Quranic instruction"
+        ],
+        "giving_considerations": [
+          "Gifts contribute to a long-term endowment rather than immediate emergency relief",
+          "The organization has a very high reserve-to-expense ratio",
+          "Transparency is currently limited to basic financial filings"
+        ],
+        "not_ideal_for": "Donors seeking high-frequency impact reporting or those who prioritize organizations with large, diverse governing boards."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[10]",
+          "[17]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects a clear programmatic focus and external awards, but a lack of longitudinal outcome data.",
+        "external_evaluations": [
+          "MAS\u2013ICNA Convention Award"
+        ],
+        "outcome_tracking_years": 0,
+        "rct_available": false,
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "The fund provides financial security to the Mecca Center's schools, enabling consistent religious education which leads to community preservation.",
+        "why_evidence_matters": "Evidence ensures that educational programs are effectively transmitting knowledge and achieving community goals."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[1]",
+          "[11]"
+        ],
+        "founded_year": 2004,
+        "maturity_stage": "Established",
+        "revenue_growth_3yr": 179.4,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "As an endowment fund, the organization has significant capacity to absorb capital to ensure the Mecca Center's future.",
+        "strategic_priorities": [
+          "Endowment growth",
+          "Support for MQI and Sunday School"
+        ],
+        "years_operating": 22
+      },
+      "organizational_capacity": {
+        "board_size": 2,
+        "ceo_compensation": 0,
+        "ceo_compensation_pct_revenue": 0,
+        "ceo_name": "N/A",
+        "citation_ids": [
+          "[1]",
+          "[14]"
+        ],
+        "employees_count": 0,
+        "geographic_reach": "USA (Local focus)",
+        "has_conflict_policy": true,
+        "has_financial_audit": false,
+        "independent_board_pct": 1,
+        "payroll_to_revenue_pct": 0,
+        "programs_count": 5,
+        "staff_per_million_revenue": 0,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[5]",
+          "[20]"
+        ],
+        "differentiator": "Distinguished by a <cite id=\"5\">program expense ratio of 91.1%</cite>, which exceeds the <cite id=\"20\">peer median of 89.6%</cite>.",
+        "peer_group": "Global Education & Religious Services",
+        "similar_orgs": [
+          "Islamic Society of Central Jersey",
+          "Islamic Center of Irvine",
+          "The Center for Islamic Teachings and Community Development"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Similar religious and community focus",
+          "name": "Islamic Society of Central Jersey"
+        },
+        {
+          "differentiator": "Similar size and service model",
+          "name": "Islamic Center of Irvine"
+        },
+        {
+          "differentiator": "Focus on educational outreach",
+          "name": "The Center for Islamic Teachings and Community Development"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[5]"
+          ],
+          "detail": "The organization directs <cite id=\"5\">91.1% of its total expenses</cite> toward its core religious and educational programs.",
+          "point": "High Programmatic Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[7]"
+          ],
+          "detail": "The fund maintains <cite id=\"7\">124.0 months of operating reserves</cite>, providing a massive safety net for long-term institutional stability.",
+          "point": "Exceptional Financial Liquidity"
+        },
+        {
+          "citation_ids": [
+            "[6]"
+          ],
+          "detail": "The charity reports <cite id=\"6\">spending $0.00 per $1 raised</cite>, ensuring that donor contributions are not eroded by marketing or solicitation costs.",
+          "point": "Zero-Cost Fundraising"
+        }
+      ],
+      "strengths_deep_dive": [
+        "The Mecca Center Endowment Fund's financial health is characterized by rapid growth and extreme fiscal conservatism. Between 2021 and 2023, the organization achieved a <cite id=\"11\">3-year revenue CAGR of 179.4%</cite>, reflecting a significant surge in community support. This growth is managed with a <cite id=\"12\">100% independent board</cite>, ensuring that governance remains objective. The organization's ability to scale while maintaining <cite id=\"13\">net assets of over $3.4 million</cite> suggests a mature approach to endowment management that prioritizes the longevity of the Mecca Center's spiritual and cultural services."
+      ],
+      "summary": "The Mecca Center Endowment Fund serves as a critical financial pillar for the Muslim Educational Cultural Center of America, focusing on the long-term sustainability of religious and educational programming. Since its <cite id=\"1\">founding in 2004</cite>, the organization has evolved into a significant community institution, reporting <cite id=\"2\">total revenue of $1,523,429</cite> in the 2023 tax year. The fund's primary mandate is to provide financial stability for core initiatives such as the <cite id=\"3\">Mecca Quran Institute (MQI)</cite>, Sunday School, and the <cite id=\"4\">Quran Blossoms</cite> early childhood program. Financially, the organization demonstrates a lean operational model, maintaining a <cite id=\"5\">program expense ratio of 91.1%</cite>, which ensures that the vast majority of contributions directly support its educational mission. Furthermore, the fund exhibits <cite id=\"6\">exceptional fundraising efficiency</cite>, spending $0.00 to raise every $1 in donations. This fiscal discipline is complemented by a robust balance sheet, with the organization holding <cite id=\"7\">over 124.0 months of working capital</cite> in reserves. As a <cite id=\"8\">zakat-eligible entity</cite>, the fund provides a verified avenue for Muslim donors to fulfill their religious obligations, specifically targeting the <cite id=\"9\">fuqara (poor) and masakin (needy)</cite> categories. The organization's impact is underscored by external recognition, including earning <cite id=\"10\">1st place for best Quran Institute</cite> at the MAS\u2013ICNA Convention.",
+      "zakat_guidance": {
+        "classification": "muallaf",
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }

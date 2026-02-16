@@ -1416,6 +1416,21 @@ def synthesize_charity(
     # Extract additional fields from aggregator with attribution
     synthesized.detected_cause_area = metrics.detected_cause_area
     synthesized.claims_zakat_eligible = metrics.zakat_claim_detected  # Fixed: was claims_zakat_eligible
+
+    # Beneficiary counts can flow into scoring with confidence adjustment.
+    # Source citation is still tracked for trust weighting.
+    beneficiary_attr = (metrics.source_attribution or {}).get("beneficiaries_served_annually", {})
+    beneficiary_source_url = beneficiary_attr.get("source_url") if isinstance(beneficiary_attr, dict) else None
+    beneficiaries_has_citation = isinstance(beneficiary_source_url, str) and beneficiary_source_url.startswith(
+        ("http://", "https://")
+    )
+
+    if metrics.beneficiaries_served_annually and not beneficiaries_has_citation:
+        logging.getLogger(__name__).warning(
+            f"EIN {ein}: retaining uncited beneficiaries_served_annually={metrics.beneficiaries_served_annually} "
+            "for confidence-weighted CPB scoring"
+        )
+
     synthesized.beneficiaries_served_annually = metrics.beneficiaries_served_annually
 
     # Upgrade muslim_charity_fit if zakat was corroborated post-aggregation.
@@ -1510,6 +1525,15 @@ def synthesize_charity(
         source_attribution["candid_seal"] = create_attribution(
             "candid_seal", synthesized.candid_seal, "candid", ein, candid_scraped, candid_url=candid_url
         )
+    if synthesized.beneficiaries_served_annually is not None and beneficiaries_has_citation:
+        source_attribution["beneficiaries_served_annually"] = {
+            "source_name": beneficiary_attr.get("source_name", "Beneficiary Source"),
+            "source_url": beneficiary_source_url,
+            "value": synthesized.beneficiaries_served_annually,
+            "timestamp": beneficiary_attr.get("timestamp") or website_scraped or candid_scraped,
+            "source_path": beneficiary_attr.get("source_path"),
+            "method": beneficiary_attr.get("method", "selection"),
+        }
 
     # =========================================================================
     # New fields from spec (synthesize.md lines 106-119)
@@ -1735,6 +1759,9 @@ def synthesize_charity(
     metrics.primary_category = synthesized.primary_category
     metrics.cause_tags = synthesized.cause_tags or []
     metrics.program_focus_tags = synthesized.program_focus_tags or []
+
+    # Keep source provenance aligned between metrics_json and top-level charity_data.source_attribution.
+    metrics.source_attribution = {**(metrics.source_attribution or {}), **source_attribution}
 
     # Serialize enriched metrics as JSON blob
     synthesized.metrics_json = metrics.model_dump(mode="json")

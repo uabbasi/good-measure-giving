@@ -255,13 +255,19 @@ class ProPublicaCollector(BaseCollector):
         org_data = data["organization"]
         filings = data.get("filings_with_data", [])
 
-        # E-010: Validate that API-returned EIN matches requested EIN
+        # E-010: Validate that API-returned EIN matches requested EIN.
+        # ProPublica may omit leading zeros in some responses (e.g., 01-xxxxxxx -> 1xxxxxxx),
+        # so compare canonicalized numeric strings.
         api_ein = org_data.get("ein")
         if api_ein:
-            # Normalize both EINs for comparison (remove dashes)
-            requested_clean = ein.replace("-", "")
-            api_clean = str(api_ein).replace("-", "")
-            if requested_clean != api_clean:
+            # Normalize both EINs for comparison:
+            # - keep digits only
+            # - strip leading zeros
+            requested_clean = "".join(ch for ch in str(ein) if ch.isdigit())
+            api_clean = "".join(ch for ch in str(api_ein) if ch.isdigit())
+            requested_key = requested_clean.lstrip("0") or "0"
+            api_key = api_clean.lstrip("0") or "0"
+            if requested_key != api_key:
                 return ParseResult(
                     success=False,
                     parsed_data=None,

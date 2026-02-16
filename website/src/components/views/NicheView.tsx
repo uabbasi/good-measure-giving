@@ -221,8 +221,9 @@ export const NicheView: React.FC<NicheViewProps> = ({ charity, currentView, onVi
   const revenue = financials?.totalRevenue || charity.rawData?.total_revenue;
   const beneficiariesCount = charity.beneficiariesServedAnnually;
   const beneficiarySourceUrl = (charity as any)?.sourceAttribution?.beneficiaries_served_annually?.source_url;
-  const beneficiariesVerified = charity.beneficiariesConfidence === 'verified'
-    || (typeof beneficiarySourceUrl === 'string' && beneficiarySourceUrl.startsWith('http'));
+  const beneficiariesVerified = charity.beneficiariesConfidence != null
+    ? charity.beneficiariesConfidence === 'verified'
+    : (typeof beneficiarySourceUrl === 'string' && beneficiarySourceUrl.startsWith('http'));
   const citations = rich?.all_citations || baseline?.all_citations || [];
   const theoryOfChangeCitations = useMemo(
     () => getTheoryOfChangeCitations(citations as NarrativeCitation[]),

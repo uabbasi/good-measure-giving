@@ -2,7 +2,7 @@
   "id": "20-8085421",
   "ein": "20-8085421",
   "name": "MCC East Bay",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "Join us in making a difference by donating today and helping us continue our vital work in serving the community.",
   "programs": [
     "Zakat program",
@@ -49,16 +49,20 @@
     "netAssets": null,
     "workingCapitalMonths": null
   },
-  "baselineGovernance": {
-    "boardSize": 2,
-    "independentBoardMembers": null,
-    "ceoCompensation": null
-  },
+  "baselineGovernance": null,
   "targeting": null,
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-14 21:27:30",
+  "lastUpdated": "2026-02-15 16:04:55",
   "sourceAttribution": {
+    "beneficiaries_served_annually": {
+      "method": "direct",
+      "source_name": "Charity Website",
+      "source_path": "website_profile.ummah_gap_data.beneficiary_count",
+      "source_url": "https://mcceastbay.org",
+      "timestamp": "2026-01-31T01:16:02",
+      "value": 330
+    },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
       "source_url": "https://mcceastbay.org/zakat",
@@ -80,7 +84,7 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/208085421",
-      "timestamp": "2026-02-09T21:35:08",
+      "timestamp": "2026-02-15T16:04:07",
       "value": "X40"
     }
   },
@@ -115,6 +119,16 @@
   "noFilings": true,
   "donationUrl": "https://mcceastbay.org/donate",
   "beneficiariesServedAnnually": 330,
+  "beneficiariesSource": {
+    "method": "direct",
+    "source_name": "Charity Website",
+    "source_path": "website_profile.ummah_gap_data.beneficiary_count",
+    "source_url": "https://mcceastbay.org",
+    "timestamp": "2026-01-31T01:16:02",
+    "value": 330
+  },
+  "beneficiariesConfidence": "verified",
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": null,
   "zakatClaimEvidence": [
     "Dedicated zakat page found at https://mcceastbay.org/zakat (Source: https://mcceastbay.org/zakat)"
@@ -288,6 +302,26 @@
         "rubric_archetype": "COMMUNITY",
         "score": 15
       },
+      "judge_issues": [
+        {
+          "field": "financial.form990_exempt",
+          "judge": "data_completeness",
+          "message": "Religious organization (Form 990-exempt) - limited financial data available",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "baseline_narrative.jargon",
+          "judge": "narrative_quality",
+          "message": "Jargon detected in baseline narrative: 'asnaf categories'",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": -5,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -315,45 +349,402 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization provides social services and maintains profile metadata under EIN 20-8085421.",
+          "claim": "The Muslim Community Center \u2013 East Bay is a registered non-profit with profile metadata available but no current star rating.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/208085421"
         },
         {
-          "claim": "The charity is zakat-eligible and follows specific asnaf categories for fund distribution.",
+          "claim": "The organization is Zakat-eligible and maintains specific policies for distributing funds to valid asnaf categories.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://mcceastbay.org/zakat"
         },
         {
-          "claim": "Financial data and compensation information are reported via IRS filings.",
+          "claim": "Financial data and reporting for the organization are processed through standard IRS filings.",
           "id": "[3]",
           "source_name": "Form 990 (2025)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/208085421"
         },
         {
-          "claim": "The organization offers various giving methods and supports programs like the food pantry and car program.",
+          "claim": "The charity offers multiple giving methods to support programs such as the food pantry and car program.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://mcceastbay.org/donate"
         }
       ],
-      "amal_score_rationale": "The organization receives a GMG score of 40/100, reflecting a strong cultural and religious alignment for Muslim donors despite significant gaps in publicly verifiable financial data and impact reporting.",
+      "amal_score_rationale": "The organization receives a score of 40/100, reflecting a strong cultural and religious alignment for Muslim donors offset by a lack of transparent, third-party verified financial data and impact metrics.",
       "areas_for_improvement": [
         "Limited public availability of detailed impact metrics and third-party financial evaluations [1]",
-        "Low data confidence due to missing comprehensive financial reporting in standard databases [1][3]"
+        "Low data confidence due to missing granular financial reporting in standard databases [3]"
       ],
       "dimension_explanations": {
-        "alignment": "The alignment score of 30/50 highlights a high donor fit for those seeking zakat-eligible causes and religious community building, though the overall track record is balanced by limited data transparency [2][4].",
-        "impact": "The impact score of 15/50 reflects a model of direct provision through programs like the food pantry, yet effectiveness is difficult to quantify due to a lack of cost-per-beneficiary data and third-party verification [1][3]."
+        "alignment": "With an alignment score of 30/50, the charity shows high donor fit for those seeking Zakat-eligible causes and religious community building [2]. The organization addresses urgent religious and cultural needs, though its track record is primarily documented through internal reporting rather than external audits [4].",
+        "impact": "The organization's impact score of 15/50 reflects its role in direct provision through programs like the food pantry and Zakat distribution [2]. However, the overall effectiveness is difficult to quantify due to a lack of publicly available cost-per-beneficiary data and limited independent financial verification [1][3]."
       },
-      "headline": "The Muslim Community Center \u2013 East Bay serves as a vital hub for the emergence of an American Muslim identity through comprehensive social services and religious programming.",
+      "headline": "The Muslim Community Center \u2013 East Bay serves as a vital religious and social hub dedicated to fostering a distinct American Muslim identity through community service and direct aid.",
       "strengths": [
-        "Maintains a transparent zakat policy with clear asnaf categories for distribution [2]",
-        "Provides direct social services including a food pantry and vehicle donation program [1][4]"
+        "Maintains a transparent Zakat policy with clearly defined asnaf categories for distribution [2]",
+        "Offers diverse community programs including a food pantry and vehicle assistance [4]"
       ],
-      "summary": "Based in Pleasanton, California, the Muslim Community Center \u2013 East Bay (MCC East Bay) provides essential community support through a dedicated food pantry, car donation program, and financial assistance [1][4]. The organization is recognized as zakat-eligible, maintaining a specific policy to distribute funds to those in need within the local community [2]."
+      "summary": "Based in Pleasanton, California, the Muslim Community Center \u2013 East Bay (MCC East Bay) provides comprehensive religious services and social welfare programs to the local community [1]. The organization operates a variety of humanitarian initiatives, including a food pantry, a car donation program, and a dedicated Zakat fund to support those in need [2][4]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2025-01-09",
+          "claim": "founded in 2008",
+          "confidence": 0.9,
+          "id": "[1]",
+          "quote": "Founded: 2008",
+          "source_name": "Charity Navigator Profile",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/208085421"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "distinct American Muslim identity",
+          "confidence": 0.95,
+          "id": "[2]",
+          "quote": "primary goal is the emergence of an American Muslim identity",
+          "source_name": "MCC East Bay - About",
+          "source_type": "website",
+          "source_url": "https://mcceastbay.org/zakat"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "first special-needs friendly masjid on the West Coast",
+          "confidence": 0.95,
+          "id": "[5]",
+          "quote": "certified as the first special-needs friendly masjid on the West Coast by MUHSEN in 2017",
+          "source_name": "External Discovery - MUHSEN",
+          "source_type": "website",
+          "source_url": "https://mcceastbay.org/zakat"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "fuqara and masakin",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "Zakat Categories: fuqara, masakin",
+          "source_name": "MCC East Bay - Zakat Policy",
+          "source_type": "website",
+          "source_url": "https://mcceastbay.org/zakat"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "limited to 2 members",
+          "confidence": 0.85,
+          "id": "[21]",
+          "quote": "Board governance: baseline (2 members, emerging org)",
+          "source_name": "AMAL Score Details",
+          "source_type": "website",
+          "source_url": "https://mcceastbay.org/donate"
+        }
+      ],
+      "amal_score_rationale": "The organization receives a score of 40/100, reflecting a strong cultural and religious alignment for Muslim donors offset by a lack of transparent, third-party verified financial data and impact metrics.",
+      "amal_scores": {
+        "amal_score": 40,
+        "confidence_scores": {
+          "alignment": 30,
+          "data_confidence": 0.1,
+          "impact": 15
+        },
+        "confidence_tier": "LOW",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Financial Transparency",
+          "citation_ids": [
+            "[20]"
+          ],
+          "context": "There is <cite id=\"20\">insufficient data for cost-per-beneficiary calculation</cite> and a lack of public granular financial reporting."
+        },
+        {
+          "area": "Governance Structure",
+          "citation_ids": [
+            "[21]"
+          ],
+          "context": "The board is currently <cite id=\"21\">limited to 2 members</cite>, which falls below standard best practices for non-profit oversight."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "none",
+        "citation_ids": [],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "UNKNOWN",
+        "governance_status": "UNKNOWN",
+        "meets_all_standards": false,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "No BBB Wise Giving Alliance assessment is currently available for this organization."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[33]",
+          "[34]",
+          "[35]",
+          "[36]"
+        ],
+        "mitigation_notes": "The organization has a long track record (founded 2008) which suggests operational stability despite reporting gaps.",
+        "risk_factors": [
+          "<cite id=\"35\">Board too small: 2 members</cite>",
+          "<cite id=\"36\">Missing program expense ratio data</cite>"
+        ],
+        "summary": "The primary concerns involve <cite id=\"33\">limited financial transparency</cite> and a <cite id=\"34\">small board size</cite> that may impact long-term oversight."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "other": 5,
+          "rating": 5,
+          "website": 30
+        },
+        "high_confidence_count": 35,
+        "total_count": 40,
+        "unique_sources": 4
+      },
+      "confidence": {
+        "data_freshness": "Website data current as of 2025",
+        "data_gaps": [
+          "Missing Form 990",
+          "No audited financials"
+        ],
+        "level": "LOW",
+        "notes": "Evaluation is limited by significant financial transparency gaps.",
+        "score": 10,
+        "sources_used": [
+          "Website",
+          "Charity Navigator",
+          "External Discovery"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 10,
+        "form_990_tax_year": null,
+        "known_gaps": [
+          "Missing Form 990",
+          "No audited financials",
+          "Small board size"
+        ],
+        "ratings_last_updated": "2025-01",
+        "total_citations": 15,
+        "unique_sources": 4,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[30]",
+            "[31]",
+            "[32]"
+          ],
+          "explanation": "Alignment is strong (30/50) due to <cite id=\"30\">explicit Zakat eligibility</cite> and a focus on <cite id=\"31\">underserved populations</cite> within a religious-cultural context.",
+          "improvement": "Expanding services to <cite id=\"32\">geographies with limited nonprofit coverage</cite> could further increase the alignment score."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[5]",
+            "[25]",
+            "[26]"
+          ],
+          "explanation": "Credibility is established through long-term local operations and <cite id=\"24\">external certifications from MUHSEN</cite>, though it is hampered by <cite id=\"25\">low data confidence (0.10)</cite> due to limited public filings.",
+          "improvement": "To improve credibility, the organization should <cite id=\"26\">publish audited financial statements</cite> and expand its board to include more independent members."
+        },
+        "impact": {
+          "citation_ids": [
+            "[27]",
+            "[28]",
+            "[29]"
+          ],
+          "explanation": "The impact score of 15/50 is grounded in a <cite id=\"27\">direct provision delivery model</cite>, but lacks <cite id=\"28\">verified outcome tracking</cite> over a multi-year period.",
+          "improvement": "The center should <cite id=\"29\">publish consistent beneficiary counts</cite> to allow for cost-effectiveness assessments."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "RELIGIOUS-CULTURAL",
+        "citation_ids": [
+          "[2]",
+          "[11]"
+        ],
+        "evidence_rigor": "Grade C - Emerging evidence with documented theory of change",
+        "geographic_focus": [
+          "East Bay, California"
+        ],
+        "giving_style": "Direct community service",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "fuqara (poor)",
+          "masakin (needy)"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": null,
+        "annual_revenue": null,
+        "citation_ids": [
+          "[1]"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": null,
+        "industry_program_ratio": 0.75,
+        "peer_count": 34,
+        "peer_program_ratio_median": 0.898,
+        "program_expense_ratio": null,
+        "reserves_months": null,
+        "revenue_cagr_3yr": null,
+        "yearly_financials": []
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[2]"
+        ],
+        "domestic_grants": 0,
+        "foreign_grants": 0,
+        "grant_count": 0,
+        "grant_strategy": "Direct financial assistance to individuals via Zakat fund",
+        "is_significant_grantmaker": false,
+        "regions_served": [
+          "East Bay"
+        ],
+        "top_recipients": [],
+        "total_grants": 0
+      },
+      "headline": "The Muslim Community Center \u2013 East Bay serves as a vital religious and social hub dedicated to fostering a distinct American Muslim identity through community service and direct aid.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who prioritize supporting local American Muslim infrastructure and value direct-aid programs like food pantries and refugee support.",
+        "citation_ids": [
+          "[2]",
+          "[5]",
+          "[21]"
+        ],
+        "donor_motivations": [
+          "Want to fulfill Zakat through a local community hub",
+          "Value inclusive spaces for Muslims with special needs",
+          "Prefer direct service provision over advocacy",
+          "Support the development of a distinct American Muslim identity"
+        ],
+        "giving_considerations": [
+          "Financial reporting is less granular than national charities",
+          "Impact is concentrated in the East Bay area",
+          "Governance is currently managed by a very small board"
+        ],
+        "not_ideal_for": "Donors who require rigorous third-party audited financials or those seeking large-scale international humanitarian impact."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[38]",
+          "[39]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects <cite id=\"39\">unverified outcomes</cite> typical of an emerging or local organization, despite a clear strategic pathway.",
+        "external_evaluations": [
+          "MUHSEN Certification"
+        ],
+        "outcome_tracking_years": 0,
+        "rct_available": false,
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "The organization creates impact by providing a 'third space' that combines spiritual growth with social safety nets like <cite id=\"38\">Zakat distribution and refugee relief</cite>.",
+        "why_evidence_matters": "Evidence ensures that community programs are effectively lifting local families out of poverty."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[1]",
+          "[40]"
+        ],
+        "founded_year": 2008,
+        "maturity_stage": "Established",
+        "revenue_growth_3yr": null,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "As a local hub with <cite id=\"40\">moderate assumed funding gaps</cite>, additional capital would allow for expanded refugee and youth services.",
+        "strategic_priorities": [
+          "Expand refugee relief",
+          "Enhance youth programming",
+          "Maintain accessibility standards"
+        ],
+        "years_operating": 18
+      },
+      "organizational_capacity": {
+        "board_size": 2,
+        "ceo_compensation": null,
+        "ceo_compensation_pct_revenue": null,
+        "ceo_name": "Not Listed",
+        "citation_ids": [
+          "[21]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "Local (East Bay, CA)",
+        "has_conflict_policy": false,
+        "has_financial_audit": false,
+        "independent_board_pct": null,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 5,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[37]"
+        ],
+        "differentiator": "Distinguished by its <cite id=\"37\">pioneering special-needs accessibility</cite> and local direct-aid programs like the car donation fund.",
+        "peer_group": "Religious and Community Services",
+        "similar_orgs": [
+          "Islamic Society of Greater Houston",
+          "MCA",
+          "Muslim American Society of Greater LA"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Larger regional scale",
+          "name": "Islamic Society of Greater Houston"
+        },
+        {
+          "differentiator": "Similar focus on religious and community services",
+          "name": "MCA"
+        },
+        {
+          "differentiator": "Southern California focus",
+          "name": "Muslim American Society of Greater LA"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[10]",
+            "[11]"
+          ],
+          "detail": "The organization maintains a <cite id=\"10\">transparent Zakat policy</cite> with clearly defined asnaf categories, specifically serving the <cite id=\"11\">fuqara and masakin</cite>.",
+          "point": "Verified Zakat Compliance"
+        },
+        {
+          "citation_ids": [
+            "[5]",
+            "[6]",
+            "[12]"
+          ],
+          "detail": "MCC East Bay is a regional leader in inclusion, holding a <cite id=\"12\">Special-Needs Friendly Masjid Certification</cite> and a Gold-Certified status.",
+          "point": "Leadership in Accessibility"
+        },
+        {
+          "citation_ids": [
+            "[8]",
+            "[13]",
+            "[14]"
+          ],
+          "detail": "The charity utilizes a <cite id=\"13\">direct provision model</cite>, managing tangible assets like a <cite id=\"14\">vehicle assistance program</cite> for community members.",
+          "point": "Direct Service Delivery"
+        }
+      ],
+      "strengths_deep_dive": [
+        "MCC East Bay distinguishes itself through a deep commitment to community-centric humanitarianism. Their <cite id=\"15\">Zakat fund</cite> is not merely a collection point but a managed resource that addresses local poverty through <cite id=\"16\">direct aid to refugees and the underserved</cite>. The center's longevity, having <cite id=\"17\">operated for 18 years</cite>, provides a stable foundation for these services. Furthermore, their focus on 'American Muslim identity' is backed by <cite id=\"18\">documented theories of change</cite> that integrate religious practice with civic service, such as their <cite id=\"19\">Food Pantry and Refugee Relief</cite> programs."
+      ],
+      "summary": "Founded in <cite id=\"1\">2008</cite>, the Muslim Community Center \u2013 East Bay (MCC East Bay) serves as a comprehensive religious and social hub in Pleasanton, California. The organization is dedicated to the emergence of a <cite id=\"2\">distinct American Muslim identity</cite> through a combination of spiritual services and direct humanitarian aid. MCC East Bay operates several high-impact community initiatives, including a <cite id=\"3\">food pantry, refugee relief, and a youth program</cite>. A cornerstone of their social service model is the <cite id=\"4\">Zakat program</cite>, which provides a structured mechanism for local wealth redistribution. Beyond basic relief, the center has pioneered inclusive religious spaces, becoming the <cite id=\"5\">first special-needs friendly masjid on the West Coast</cite> to be certified by MUHSEN in 2017. This commitment to accessibility was further recognized in 2019 when the center achieved <cite id=\"6\">Gold-Certified Masjid status</cite>. While the organization maintains a strong local presence and diverse program offerings, its <cite id=\"7\">overall AMAL score of 40/100</cite> reflects significant gaps in public financial transparency and impact reporting. The center functions as a direct service provider, managing a <cite id=\"8\">car donation program</cite> and providing direct financial assistance to <cite id=\"9\">the poor (fuqara) and needy (masakin)</cite> within the East Bay community.",
+      "zakat_guidance": {
+        "classification": "amil",
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }

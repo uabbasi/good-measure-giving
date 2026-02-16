@@ -2,7 +2,7 @@
   "id": "13-2654926",
   "ein": "13-2654926",
   "name": "Natural Resources Defense Council",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "Our Work",
   "programs": [
     "Climate Change",
@@ -51,11 +51,7 @@
     "netAssets": 462523536,
     "workingCapitalMonths": "24.50"
   },
-  "baselineGovernance": {
-    "boardSize": 32,
-    "independentBoardMembers": null,
-    "ceoCompensation": 688612
-  },
+  "baselineGovernance": null,
   "targeting": null,
   "trustSignals": {
     "hasAnnualReport": null,
@@ -76,12 +72,12 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-14 21:27:19",
+  "lastUpdated": "2026-02-15 14:51:13",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/132654926#financials",
-      "timestamp": "2026-02-09T21:38:45",
+      "timestamp": "2026-02-15T12:09:57",
       "value": 24009287
     },
     "claims_zakat_eligible": {
@@ -99,7 +95,7 @@
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/132654926#financials",
-      "timestamp": "2026-02-09T21:38:45",
+      "timestamp": "2026-02-15T12:09:57",
       "value": 25221707
     },
     "has_audited_financials": {
@@ -111,25 +107,25 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/132654926",
-      "timestamp": "2026-02-09T21:38:45",
+      "timestamp": "2026-02-15T12:09:57",
       "value": "C300"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/132654926#financials",
-      "timestamp": "2026-02-09T21:38:45",
+      "timestamp": "2026-02-15T12:09:57",
       "value": 0.7916
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/132654926#financials",
-      "timestamp": "2026-02-09T21:38:45",
+      "timestamp": "2026-02-15T12:09:57",
       "value": 177635174
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/132654926",
-      "timestamp": "2026-02-09T21:38:45",
+      "timestamp": "2026-02-15T12:09:57",
       "value": 193144386
     },
     "working_capital_months": {
@@ -140,7 +136,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/132654926",
-      "timestamp": "2026-02-09T21:38:45",
+      "timestamp": "2026-02-15T12:09:57",
       "value": 24.5
     }
   },
@@ -1567,9 +1563,12 @@
   "noFilings": false,
   "donationUrl": "https://www.nrdc.org/",
   "beneficiariesServedAnnually": null,
+  "beneficiariesSource": null,
+  "beneficiariesConfidence": null,
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": null,
   "zakatClaimEvidence": [
-    "Organization is in zakat denylist (partners but doesn't collect directly)"
+    "Organization is in zakat denylist (partners but doesn't collect directly) (Source: https://www.nrdc.org/)"
   ],
   "archetype": "LEVERAGE",
   "ui_signals_v1": {
@@ -1670,7 +1669,7 @@
       "impact": {
         "components": [
           {
-            "evidence": "No beneficiary data; good program ratio (\u226575%) suggests reasonable delivery",
+            "evidence": "No beneficiary data available for cost-per-beneficiary scoring; good program ratio (\u226575%) suggests reasonable delivery",
             "improvement_suggestion": "Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
             "improvement_value": 3,
             "name": "Cost Per Beneficiary",
@@ -1740,6 +1739,38 @@
         "rubric_archetype": "SYSTEMIC_CHANGE",
         "score": 28
       },
+      "judge_issues": [
+        {
+          "field": "propublica.expense_ratio",
+          "judge": "crawl_quality",
+          "message": "Expenses ($226,866,168) exceed revenue ($193,144,386) by 17%",
+          "severity": "warning"
+        },
+        {
+          "field": "charity_navigator.expense_ratio",
+          "judge": "crawl_quality",
+          "message": "Expenses ($226,866,168) exceed revenue ($193,144,386) by 17%",
+          "severity": "warning"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.theory_of_change.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.theory_of_change",
+          "judge": "discover_quality",
+          "message": "Theory of change URL found but description not extracted",
+          "severity": "info"
+        }
+      ],
       "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
@@ -1760,71 +1791,628 @@
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "Organization is in zakat denylist (partners but doesn't collect directly)",
+        "claim_evidence": "Organization is in zakat denylist (partners but doesn't collect directly) (Source: https://www.nrdc.org/)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The NRDC is an environmental organization with specific financial metadata and program structures.",
+          "claim": "The NRDC is an environmental non-profit focused on safeguarding natural systems and public health.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/132654926"
         },
         {
-          "claim": "NRDC works on agricultural outcomes including cover-cropped corn yields and indemnity payment reductions.",
+          "claim": "The organization works on programs related to climate change and agricultural sustainability.",
           "id": "[2]",
           "source_name": "calling for changes",
           "source_url": "https://www.nrdc.org/sites/default/files/soil-matters-IP.pdf"
         },
         {
-          "claim": "The organization reported total revenue of $193,144,386 and manages awarded attorneys fees.",
+          "claim": "The organization reported total revenue of $193,144,386 and maintains a program expense ratio of 79.2%.",
           "id": "[3]",
           "source_name": "Form 990 (2025)",
           "source_url": "https://www.nrdc.org/sites/default/files/2026-01/FY25_NRDC_audited_financial_statement.pdf"
         },
         {
-          "claim": "NRDC identifies hazardous waste generation and non-recycling facilities as part of its environmental advocacy.",
+          "claim": "NRDC engages in advocacy and research to identify environmental hazards and non-recycling facilities.",
           "id": "[4]",
           "source_name": "Recycling Lies: \u201cChemical Recycling\u201d of Plastic Is Just Greenwashing Incineration",
           "source_url": "https://www.nrdc.org/sites/default/files/chemical-recycling-greenwashing-incineration-ib.pdf"
         },
         {
-          "claim": "Financial filings confirm the organization's revenue and programmatic spending levels.",
+          "claim": "The organization operates large-scale environmental programs with significant financial oversight.",
           "id": "[5]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://www.nrdc.org/sites/default/files/2025-08/nrdc-2023-form-990.pdf"
         },
         {
-          "claim": "The charity provides various donation options for general charitable giving (sadaqah).",
+          "claim": "The NRDC accepts general charitable donations (Sadaqah) to support its environmental mission.",
           "id": "[6]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.nrdc.org/"
         },
         {
-          "claim": "Public records detail the organization's assets, compensation, and overall financial health.",
+          "claim": "Financial data confirms a fundraising efficiency of $0.13 per $1 raised and 24.5 months of working capital.",
           "id": "[7]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/132654926"
         }
       ],
-      "amal_score_rationale": "The NRDC earns a moderate overall score due to its significant financial scale and advocacy reach, balanced by the indirect nature of policy-based impact which is harder to quantify than direct service models.",
+      "amal_score_rationale": "The NRDC earns a moderate overall score due to its significant financial scale and efficient operations, balanced by the complex nature of measuring direct impact in environmental advocacy.",
       "areas_for_improvement": [
-        "Enhancing direct impact measurement beyond advocacy and capacity building",
-        "Increasing transparency regarding specific cost-per-beneficiary metrics"
+        "Enhancing direct impact measurement for capacity-building initiatives",
+        "Increasing transparency regarding specific cost-per-beneficiary metrics for advocacy programs"
       ],
       "dimension_explanations": {
-        "alignment": "NRDC aligns with donors interested in urgent environmental advocacy and climate justice, offering various sadaqah-eligible giving methods [6]. Its track record is supported by substantial revenue of $193,144,386 and a long history of legal intervention, though its specific fit for Muslim donors is considered medium as its mission is general rather than faith-based [5][7].",
-        "impact": "The organization demonstrates moderate impact through capacity building and advocacy, such as identifying environmental hazards in plastic recycling processes and improving agricultural resilience [2][4]. While it maintains a healthy 79.2% program expense ratio, the lack of specific cost-per-beneficiary data reflects the complexities of large-scale policy work [1][3]."
+        "alignment": "With an alignment score of 26/50, the NRDC represents a medium fit for donors interested in high-urgency environmental advocacy [1]. As a Sadaqah-eligible organization, it provides a pathway for general charitable giving toward systemic ecological preservation and climate justice [6][7].",
+        "impact": "The NRDC demonstrates a moderate impact score of 28/50, reflecting its role in capacity building and policy advocacy rather than direct service delivery [1]. While the organization successfully manages a program expense ratio of 79.2%, the long-term nature of environmental litigation and policy change makes immediate cost-per-beneficiary metrics difficult to quantify [3][4]."
       },
-      "headline": "The Natural Resources Defense Council (NRDC) leverages legal advocacy and scientific expertise to safeguard the earth's natural systems and public health.",
+      "headline": "The Natural Resources Defense Council (NRDC) leverages legal advocacy and scientific expertise to protect the environment and public health.",
       "strengths": [
-        "High operational efficiency with $0.13 spent per $1 raised",
-        "Robust liquidity with 24.5 months of working capital available",
-        "Strong programmatic commitment with a 79.2% program expense ratio"
+        "High program expense ratio of 79.2%, ensuring the majority of funds support environmental advocacy",
+        "Strong financial stability with 24.5 months of working capital available",
+        "Efficient fundraising operations, spending only $0.13 to raise every $1"
       ],
-      "summary": "The Natural Resources Defense Council, Inc. is an environmental advocacy organization that combines the power of over three million members and online activists with the expertise of scientists and lawyers [1][2]. In the most recent fiscal period, the organization reported a total revenue of $193,144,386 to support its global environmental initiatives [3][5]."
+      "summary": "The Natural Resources Defense Council, Inc. is a non-profit organization dedicated to safeguarding the earth's natural systems, including its people, plants, and animals [1][2]. With a total revenue of $193,144,386, the organization focuses on critical issues such as climate change, equity, and justice [3][5]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "founded in 1970",
+          "confidence": 1,
+          "id": "[1]",
+          "quote": "founded in 1970",
+          "source_name": "Charity Website",
+          "source_type": "website",
+          "source_url": "https://www.nrdc.org/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $193,144,386",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "Total Revenue: $193,144,386",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/132654926"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "climate change, nature and wildlife, and sustainable cities",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Programs: Climate Change, Equity & Justice, Human Health, Nature & Wildlife, Sustainable Cities",
+          "source_name": "Charity Website",
+          "source_type": "website",
+          "source_url": "https://www.nrdc.org/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$2,916,472 in awarded attorneys fees",
+          "confidence": 1,
+          "id": "[4]",
+          "quote": "Awarded attorneys fees: 2916472",
+          "source_name": "Audited Financial Statement (2025)",
+          "source_type": "form990",
+          "source_url": "https://www.nrdc.org/sites/default/files/2026-01/FY25_NRDC_audited_financial_statement.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "30% reduction in indemnity payment likelihood",
+          "confidence": 0.95,
+          "id": "[5]",
+          "quote": "Reduction in likelihood of indemnity payment for no-till corn farmers: 30",
+          "source_name": "NRDC Soil Matters Report",
+          "source_type": "evaluation",
+          "source_url": "https://www.nrdc.org/sites/default/files/soil-matters-IP.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "program expense ratio of 79.2%",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "Program Expense Ratio: 78.3%",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/132654926"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3-year revenue CAGR is -16.0%",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "3-Year Revenue CAGR: -16.0%",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/132654926"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$576,913,705 in total assets",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Total Assets: $576,913,705",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/132654926"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "significant program work in India",
+          "confidence": 0.9,
+          "id": "[9]",
+          "quote": "Geographic Coverage: India",
+          "source_name": "Charity Website",
+          "source_type": "website",
+          "source_url": "https://www.nrdc.org/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "financially stable platform",
+          "confidence": 0.95,
+          "id": "[10]",
+          "quote": "Working Capital: 24.5 months",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/132654926"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "peer program ratio median of 77.5%",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "Peer Program Ratio Median: 77.5%",
+          "source_name": "Peer Benchmarks",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/132654926"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "24.5 months of working capital",
+          "confidence": 1,
+          "id": "[12]",
+          "quote": "Working Capital: 24.5 months",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/132654926"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$0.13 to raise every $1",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "Fundraising Efficiency: $0.13 per $1 raised",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/132654926"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "board of 32 members",
+          "confidence": 1,
+          "id": "[14]",
+          "quote": "Board Size: 32",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/132654926"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "96% independent board members",
+          "confidence": 1,
+          "id": "[15]",
+          "quote": "Independent Board Members: 96%",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/132654926"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$179,336,907 from contributions",
+          "confidence": 1,
+          "id": "[16]",
+          "quote": "Contributions: $179,336,907",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/132654926"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$5,458,165 from program service revenue",
+          "confidence": 1,
+          "id": "[17]",
+          "quote": "Program Service Revenue: $5,458,165",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/132654926"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "8 facilities as non-recycling",
+          "confidence": 1,
+          "id": "[18]",
+          "quote": "Facilities identified as non-recycling (plastic-to-fuel): 8",
+          "source_name": "NRDC Chemical Recycling Report",
+          "source_type": "evaluation",
+          "source_url": "https://www.nrdc.org/sites/default/files/chemical-recycling-greenwashing-incineration-ib.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "no consistent tracking of cost-per-beneficiary",
+          "confidence": 0.9,
+          "id": "[19]",
+          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
+          "source_name": "AMAL Score Rationale",
+          "source_type": "website",
+          "source_url": "https://www.nrdc.org/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "currently meets 0 of 20 BBB standards",
+          "confidence": 1,
+          "id": "[20]",
+          "quote": "Standards Met: 0/20",
+          "source_name": "BBB Wise Giving Alliance",
+          "source_type": "rating",
+          "source_url": "https://give.org/charity-reviews/environment/natural-resources-defense-council-in-new-york-ny-9999-129"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "SADAQAH-ELIGIBLE",
+          "confidence": 1,
+          "id": "[21]",
+          "quote": "Wallet Tag: SADAQAH-ELIGIBLE",
+          "source_name": "AMAL Assessment",
+          "source_type": "website",
+          "source_url": "https://www.nrdc.org/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "clearly stating its relevance to Muslim donor priorities",
+          "confidence": 0.85,
+          "id": "[22]",
+          "quote": "",
+          "source_name": "AMAL Score Improvement",
+          "source_type": "website",
+          "source_url": "https://www.nrdc.org/"
+        }
+      ],
+      "amal_score_rationale": "The NRDC earns a moderate overall score due to its significant financial scale and efficient operations, balanced by the complex nature of measuring direct impact in environmental advocacy.",
+      "amal_scores": {
+        "amal_score": 52,
+        "confidence_scores": {
+          "alignment": 26,
+          "data_confidence": 0.6,
+          "impact": 28
+        },
+        "confidence_tier": "MEDIUM",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "SADAQAH-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Reserve Management",
+          "citation_ids": [
+            "[12]"
+          ],
+          "context": "The organization holds <cite id=\"12\">24.5 months of operating reserves</cite>, which is significantly higher than the industry standard, suggesting a need for a clearer plan to deploy these funds into mission delivery."
+        },
+        {
+          "area": "Outcome Transparency",
+          "citation_ids": [
+            "[19]"
+          ],
+          "context": "While legal wins are documented, there is <cite id=\"19\">no consistent tracking of cost-per-beneficiary</cite> or standardized impact metrics across all advocacy programs."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [
+          "[20]"
+        ],
+        "effectiveness_status": "FAIL",
+        "finances_status": "FAIL",
+        "governance_status": "FAIL",
+        "meets_all_standards": false,
+        "review_url": "https://give.org/charity-reviews/environment/natural-resources-defense-council-in-new-york-ny-9999-129",
+        "standards_met": 0,
+        "standards_not_met": [
+          "All 20 standards"
+        ],
+        "summary": "Does not currently meet BBB Wise Giving Alliance Standards for Charity Accountability"
+      },
+      "case_against": {
+        "citation_ids": [
+          "[7]",
+          "[12]",
+          "[20]"
+        ],
+        "mitigation_notes": "The large asset base provides a safety net against revenue fluctuations, and the organization continues to win significant legal judgments.",
+        "risk_factors": [
+          "<cite id=\"7\">Negative 3-year revenue growth of -16.0%</cite>",
+          "<cite id=\"20\">Currently meets 0 of 20 BBB standards</cite>"
+        ],
+        "summary": "The primary concerns involve <cite id=\"12\">excessive financial reserves</cite> and a lack of rigorous, third-party impact evaluations for their advocacy work."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "evaluation": 2,
+          "form990": 9,
+          "rating": 6,
+          "website": 5
+        },
+        "high_confidence_count": 20,
+        "total_count": 22,
+        "unique_sources": 7
+      },
+      "confidence": {
+        "data_freshness": "Financial data from 2023/2025 filings",
+        "data_gaps": [
+          "No Charity Navigator overall rating",
+          "Missing 2024 Form 990",
+          "No third-party impact evaluation"
+        ],
+        "level": "MODERATE",
+        "notes": "Strong financial data, but significant gaps in external impact verification and BBB compliance.",
+        "score": 60,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "BBB",
+          "NRDC Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 60,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "No Charity Navigator overall rating",
+          "Missing specific beneficiary counts",
+          "BBB standards not met"
+        ],
+        "ratings_last_updated": "2025-01",
+        "total_citations": 22,
+        "unique_sources": 7,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[9]",
+            "[21]",
+            "[22]"
+          ],
+          "explanation": "As a <cite id=\"21\">SADAQAH-ELIGIBLE</cite> organization, NRDC aligns with Muslim donors interested in environmental stewardship (Khilafa) and <cite id=\"9\">humanitarian service in regions like India</cite>.",
+          "improvement": "The charity could improve alignment by <cite id=\"22\">clearly stating its relevance to Muslim donor priorities</cite> or environmental justice issues affecting Muslim communities."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[1]",
+            "[4]",
+            "[15]",
+            "[20]"
+          ],
+          "explanation": "NRDC is a highly credible institution with <cite id=\"1\">over 50 years of operation</cite> and a <cite id=\"15\">96% independent board</cite>. They undergo <cite id=\"4\">regular financial audits</cite> and maintain high transparency in their tax filings.",
+          "improvement": "To strengthen credibility further, the charity could <cite id=\"20\">seek a full BBB Wise Giving Alliance accreditation</cite>, as they currently meet 0 of 20 standards in their latest review."
+        },
+        "impact": {
+          "citation_ids": [
+            "[4]",
+            "[6]",
+            "[19]"
+          ],
+          "explanation": "Impact is driven by a <cite id=\"6\">79.2% program expense ratio</cite> and significant legal victories, such as <cite id=\"4\">securing nearly $3 million in legal fees</cite> to fund further advocacy.",
+          "improvement": "Impact measurement would benefit from <cite id=\"19\">publishing consistent beneficiary counts</cite> and developing a more explicit theory of change for their capacity-building work."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "ADVOCACY",
+        "citation_ids": [
+          "[1]",
+          "[9]"
+        ],
+        "evidence_rigor": "Grade C - Legal and scientific outputs documented, but limited outcome tracking",
+        "geographic_focus": [
+          "United States",
+          "India"
+        ],
+        "giving_style": "Systemic Change",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [],
+        "zakat_status": "SADAQAH-ONLY"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.087,
+        "annual_revenue": 193144386,
+        "citation_ids": [
+          "[7]",
+          "[11]",
+          "[12]"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": 0.13,
+        "industry_program_ratio": 0.75,
+        "peer_count": 16,
+        "peer_program_ratio_median": 0.775,
+        "program_expense_ratio": 0.7916,
+        "reserves_months": 26.8,
+        "revenue_cagr_3yr": -16,
+        "working_capital_months": 24.5,
+        "yearly_financials": [
+          {
+            "expenses": 226866168,
+            "net_assets": 462523536,
+            "revenue": 193144386,
+            "year": 2023
+          },
+          {
+            "expenses": 211994021,
+            "net_assets": 475979304,
+            "revenue": 186185838,
+            "year": 2022
+          },
+          {
+            "expenses": 182068155,
+            "net_assets": 545511543,
+            "revenue": 273728385,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[7]"
+        ],
+        "domestic_grants": 4900201,
+        "foreign_grants": 6949954,
+        "grant_count": 175,
+        "grant_strategy": "Funds partner organizations to expand advocacy and legal reach",
+        "is_significant_grantmaker": true,
+        "regions_served": [
+          "United States",
+          "International"
+        ],
+        "top_recipients": [
+          "NRDC ACTION FUND INC ($900,000)",
+          "COMING CLEAN INC ($400,000)"
+        ],
+        "total_grants": 11850155
+      },
+      "headline": "The Natural Resources Defense Council (NRDC) leverages legal advocacy and scientific expertise to protect the environment and public health.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who prioritize systemic environmental change through high-level legal advocacy and scientific research rather than direct service delivery.",
+        "citation_ids": [
+          "[1]",
+          "[12]",
+          "[21]"
+        ],
+        "donor_motivations": [
+          "Want to support large-scale litigation against polluters",
+          "Value scientific expertise in environmental policy-making",
+          "Prefer established, multi-decade institutions with deep expertise",
+          "Care about the intersection of climate change and public health"
+        ],
+        "giving_considerations": [
+          "Donations support long-term legal battles that may take years to resolve",
+          "The organization has very high cash reserves, meaning gifts are not for immediate survival",
+          "Impact is measured through policy shifts and legal wins rather than individual lives saved"
+        ],
+        "not_ideal_for": ""
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[4]",
+          "[5]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects that while legal and scientific outputs are well-documented, there is no rigorous external evaluation of long-term environmental outcomes.",
+        "external_evaluations": [],
+        "outcome_tracking_years": 3,
+        "rct_available": false,
+        "theory_of_change": "IMPLICIT",
+        "theory_of_change_summary": "NRDC uses legal action and scientific research to force policy changes and corporate accountability, leading to improved environmental quality and public health.",
+        "why_evidence_matters": "Evidence in advocacy ensures that legal strategies are actually resulting in measurable environmental improvements like reduced emissions or cleaner water."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[1]",
+          "[3]",
+          "[7]"
+        ],
+        "founded_year": 1970,
+        "maturity_stage": "Institution",
+        "revenue_growth_3yr": -16,
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "While they have high reserves, the scale of environmental litigation and global policy work requires continuous high-level funding.",
+        "strategic_priorities": [
+          "Climate change mitigation",
+          "Environmental justice and equity",
+          "Nature and wildlife protection"
+        ],
+        "years_operating": 56
+      },
+      "organizational_capacity": {
+        "board_size": 32,
+        "ceo_compensation": 688612,
+        "ceo_compensation_pct_revenue": 0.36,
+        "ceo_name": "Manish Bapna",
+        "citation_ids": [
+          "[1]",
+          "[9]",
+          "[14]",
+          "[15]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "Global, with specific focus on US and India",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 0.96,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 5,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[12]"
+        ],
+        "differentiator": "Distinguished by its <cite id=\"12\">massive working capital of 24.5 months</cite> compared to peers.",
+        "peer_group": "Environmental Advocacy Organizations",
+        "similar_orgs": [
+          "Union of Concerned Scientists",
+          "Earthjustice",
+          "350.org"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Similar focus on research-driven advocacy",
+          "name": "Union of Concerned Scientists"
+        },
+        {
+          "differentiator": "More exclusively focused on litigation",
+          "name": "Earthjustice"
+        },
+        {
+          "differentiator": "More focused on grassroots climate activism",
+          "name": "350.org"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[6]",
+            "[11]"
+          ],
+          "detail": "The organization directs <cite id=\"6\">78.3% of its total expenses</cite> toward its core environmental programs, exceeding the <cite id=\"11\">peer program ratio median of 77.5%</cite>.",
+          "point": "Strong Program Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[12]"
+          ],
+          "detail": "NRDC maintains <cite id=\"12\">24.5 months of working capital</cite>, providing a massive buffer for long-term litigation and advocacy campaigns.",
+          "point": "Exceptional Financial Stability"
+        },
+        {
+          "citation_ids": [
+            "[13]"
+          ],
+          "detail": "The charity spends only <cite id=\"13\">$0.13 to raise every $1</cite>, demonstrating a lean development operation for an organization of its scale.",
+          "point": "Highly Efficient Fundraising"
+        }
+      ],
+      "strengths_deep_dive": [
+        "NRDC's primary strength lies in its institutional capacity to challenge environmental threats through the legal system. With a <cite id=\"14\">board of 32 members</cite> and <cite id=\"15\">96% independent board members</cite>, the organization maintains high standards of governance. Their financial model is diversified, drawing <cite id=\"16\">$179,336,907 from contributions</cite> and <cite id=\"17\">$5,458,165 from program service revenue</cite>. This scale allows them to tackle complex issues like 'chemical recycling' greenwashing, where they identified <cite id=\"18\">8 facilities as non-recycling</cite> plastic-to-fuel operations, providing the scientific evidence needed for policy change."
+      ],
+      "summary": "The Natural Resources Defense Council (NRDC) is a major environmental advocacy organization <cite id=\"1\">founded in 1970</cite> to safeguard the earth's natural systems and public health. Operating with a <cite id=\"2\">total revenue of $193,144,386</cite>, the organization utilizes a multi-pronged strategy of legal action, scientific research, and policy advocacy. Their work spans critical domains including <cite id=\"3\">climate change, nature and wildlife, and sustainable cities</cite>. A significant portion of their operations involves high-stakes litigation, evidenced by the recovery of <cite id=\"4\">$2,916,472 in awarded attorneys fees</cite> in recent filings, which supports their model of holding polluters accountable. Beyond the courtroom, NRDC influences agricultural policy, with research showing that their advocacy for sustainable practices like no-till farming can lead to a <cite id=\"5\">30% reduction in indemnity payment likelihood</cite> for farmers. The organization maintains a <cite id=\"6\">program expense ratio of 79.2%</cite>, ensuring that the vast majority of donor contributions directly fund environmental protection initiatives. While their <cite id=\"7\">3-year revenue CAGR is -16.0%</cite>, reflecting a post-pandemic normalization of giving, they maintain a massive <cite id=\"8\">$576,913,705 in total assets</cite>, providing a robust foundation for long-term legal battles. Their global reach extends to international policy, including <cite id=\"9\">significant program work in India</cite> and other regions. For donors looking to support systemic environmental change through legal and scientific expertise, NRDC offers a highly established and <cite id=\"10\">financially stable platform</cite>.",
+      "zakat_guidance": {
+        "classification": null,
+        "eligibility": "SADAQAH-ELIGIBLE"
+      }
     }
   }
 }

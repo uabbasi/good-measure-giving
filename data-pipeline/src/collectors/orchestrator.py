@@ -18,6 +18,7 @@ from ..db import CharityRepository, RawDataRepository
 from ..db.dolt_client import execute_query
 from ..db.repository import Charity
 from ..parsers.charity_metrics_aggregator import CharityMetrics, CharityMetricsAggregator
+from ..utils.charity_loader import normalize_website_url
 from ..utils.logger import PipelineLogger
 from .bbb_collector import BBBCollector
 from .candid_beautifulsoup import CandidCollector
@@ -477,6 +478,8 @@ class DataCollectionOrchestrator:
         if len(ein_clean) != 9 or not ein_clean.isdigit():
             raise ValueError(f"Invalid EIN format: {ein}. Expected 9 digits (XX-XXXXXXX)")
 
+        website_url = normalize_website_url(website_url)
+
         self.logger.log_evaluation_start(0, ein)
 
         report = {
@@ -583,9 +586,10 @@ class DataCollectionOrchestrator:
                     charity.get("website") if isinstance(charity, dict) else getattr(charity, "website", None)
                 )
                 if charity_website:
-                    website_url = charity_website
+                    website_url = normalize_website_url(charity_website)
                     self.logger.debug(f"Using website URL from charities table: {website_url}")
 
+        website_url = normalize_website_url(website_url)
         if website_url and "website" not in self.skip_sources:
             if not self._is_data_fresh(ein, "website"):
                 report["sources_attempted"].append("website")
@@ -615,7 +619,7 @@ class DataCollectionOrchestrator:
 
         # Strict completeness requirement:
         # crawl is successful only when all required sources succeed.
-        required_sources = {"propublica", "charity_navigator", "candid", "form990_grants", "bbb"}
+        required_sources = {"propublica", "charity_navigator", "candid", "bbb"}
         required_sources -= self.skip_sources
         if "website" not in self.skip_sources and website_url:
             required_sources.add("website")
@@ -623,6 +627,10 @@ class DataCollectionOrchestrator:
         if "bbb" in required_sources and self._is_bbb_not_found(ein, report):
             required_sources.remove("bbb")
             report.setdefault("sources_optional_missing", []).append("bbb:not_found")
+        if "form990_grants" in report.get("sources_failed", {}):
+            report.setdefault("sources_optional_missing", []).append(
+                f"form990_grants:{report['sources_failed']['form990_grants']}"
+            )
 
         missing_sources = sorted(src for src in required_sources if src not in report["sources_succeeded"])
         if missing_sources:
@@ -654,6 +662,8 @@ class DataCollectionOrchestrator:
         else:
             ein_formatted = ein
 
+        website = normalize_website_url(website)
+
         # Check if charity exists
         existing = self.charity_repo.get(ein_formatted)
         if existing:
@@ -661,7 +671,11 @@ class DataCollectionOrchestrator:
             updates = []
             values = []
             # Update website if we have one and existing doesn't
-            if website and not existing.get("website"):
+            existing_website = existing.get("website")
+            existing_has_scheme = isinstance(existing_website, str) and existing_website.lower().startswith(
+                ("http://", "https://")
+            )
+            if website and (not existing_website or not existing_has_scheme):
                 updates.append("website = %s")
                 values.append(website)
                 self.logger.info(f"Updated charity website: {website}")

@@ -43,6 +43,12 @@ def _base_metrics(**overrides) -> CharityMetrics:
     defaults = dict(
         ein="12-3456789",
         name="Test Charity",
+        source_attribution={
+            "beneficiaries_served_annually": {
+                "source_url": "https://example.org/beneficiaries",
+                "source_name": "Test Source",
+            }
+        },
     )
     defaults.update(overrides)
     return CharityMetrics(**defaults)
@@ -226,6 +232,98 @@ class TestImpactScorer:
         scorer = ImpactScorer()
         result = scorer.evaluate(m)
         assert _component_pts(result, "Cost Per Beneficiary") <= 15
+
+    def test_cost_per_beneficiary_uncited_plausible_is_discounted(self):
+        """Uncited but plausible beneficiaries should contribute partial CPB points."""
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            program_expenses=1_000_000,
+            beneficiaries_served_annually=50_000,
+            detected_cause_area="HUMANITARIAN",
+            source_attribution={},
+        )
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        cpb_comp = _component(result, "Cost Per Beneficiary")
+        assert 1 <= cpb_comp.scored <= 3  # capped at ~3/13 for DIRECT_SERVICE
+        assert "uncorroborated beneficiary estimate" in cpb_comp.evidence
+
+    def test_cost_per_beneficiary_uncited_implausible_is_excluded(self):
+        """Uncited + implausible beneficiaries should not contribute CPB points."""
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            program_expenses=300_000,
+            beneficiaries_served_annually=1_000_000,  # $0.30/beneficiary
+            detected_cause_area="HUMANITARIAN",
+            source_attribution={},
+        )
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        cpb_comp = _component(result, "Cost Per Beneficiary")
+        assert cpb_comp.scored == 0
+        assert "implausible" in cpb_comp.evidence
+        assert "excluded" in cpb_comp.evidence
+
+    def test_cost_per_beneficiary_cited_implausible_is_excluded(self):
+        """Cited but implausible beneficiaries should be excluded pending review."""
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            program_expenses=300_000,
+            beneficiaries_served_annually=1_000_000,  # $0.30/beneficiary
+            detected_cause_area="HUMANITARIAN",
+            source_attribution={
+                "beneficiaries_served_annually": {
+                    "source_url": "https://example.org/impact",
+                    "source_name": "Charity Website",
+                }
+            },
+        )
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        cpb_comp = _component(result, "Cost Per Beneficiary")
+        assert cpb_comp.scored == 0
+        assert "pending review" in cpb_comp.evidence
+
+    def test_cost_per_beneficiary_cited_humanitarian_low_cpb_is_excluded(self):
+        """Humanitarian/medical categories use a stricter plausibility floor."""
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            program_expenses=5_100_000,
+            beneficiaries_served_annually=4_500_000,  # ~$1.13/beneficiary
+            primary_category="HUMANITARIAN",
+            detected_cause_area="HUMANITARIAN",
+            source_attribution={
+                "beneficiaries_served_annually": {
+                    "source_url": "https://example.org/impact",
+                    "source_name": "Charity Website",
+                }
+            },
+        )
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        cpb_comp = _component(result, "Cost Per Beneficiary")
+        assert cpb_comp.scored == 0
+        assert "pending review" in cpb_comp.evidence
+
+    def test_cost_per_beneficiary_cited_non_humanitarian_low_cpb_can_pass(self):
+        """Non-humanitarian categories keep the default plausibility floor."""
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            program_expenses=1_200_000,
+            beneficiaries_served_annually=1_000_000,  # $1.20/beneficiary
+            primary_category="ADVOCACY_CIVIC",
+            detected_cause_area="ADVOCACY_CIVIC",
+            source_attribution={
+                "beneficiaries_served_annually": {
+                    "source_url": "https://example.org/impact",
+                    "source_name": "Charity Website",
+                }
+            },
+        )
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        cpb_comp = _component(result, "Cost Per Beneficiary")
+        assert cpb_comp.scored > 0
 
     def test_financial_health_resilient_range(self):
         """Reserves around 6 months should receive top financial-health points."""

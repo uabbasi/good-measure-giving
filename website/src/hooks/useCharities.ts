@@ -52,6 +52,10 @@ export interface CharitySummary {
   evaluationTrack?: string | null;
   /** Year the organization was founded */
   foundedYear?: number | null;
+  /** Beneficiary count (self-reported) and provenance trust status */
+  beneficiariesServedAnnually?: number | null;
+  beneficiariesConfidence?: 'verified' | 'needs_review' | 'uncorroborated' | 'implausible' | null;
+  beneficiariesExcludedFromScoring?: boolean;
   /** Hide from default browse view (still searchable via direct URL) */
   hideFromCurated?: boolean;
   /** Plain-English score summary sentence */
@@ -137,6 +141,9 @@ function summaryToProfile(summary: CharitySummary): CharityProfile {
     // Evaluation track (for alternative scoring rubrics)
     evaluationTrack: summary.evaluationTrack || null,
     foundedYear: summary.foundedYear || null,
+    beneficiariesServedAnnually: summary.beneficiariesServedAnnually ?? null,
+    beneficiariesConfidence: summary.beneficiariesConfidence ?? null,
+    beneficiariesExcludedFromScoring: summary.beneficiariesExcludedFromScoring ?? false,
     // Hide from curated browse view (accessible via search/direct URL)
     hideFromCurated: summary.hideFromCurated,
     // Score summary sentence (deterministic, not LLM-generated)

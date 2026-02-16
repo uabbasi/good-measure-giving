@@ -2,7 +2,7 @@
   "id": "20-1799252",
   "ein": "20-1799252",
   "name": "MAS Boston Society",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "Tarbiya Department Tarbiya aims at rooting the faith, purifying the soul, expanding and refining knowledge/understanding, developing and refining all aspects of character, boosting commitment, building skills, and instilling the discipline necessary to conduct a successful, fulfilling, meaningful, and balanced life of learning, virtue, commitment, and service of Islam and humanity.",
   "programs": [
     "Tarbiya",
@@ -45,11 +45,7 @@
     "netAssets": 814400,
     "workingCapitalMonths": "3.20"
   },
-  "baselineGovernance": {
-    "boardSize": 7,
-    "independentBoardMembers": null,
-    "ceoCompensation": 82958
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Men"
@@ -77,12 +73,12 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-14 21:27:26",
+  "lastUpdated": "2026-02-15 14:49:19",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/201799252#financials",
-      "timestamp": "2026-02-09T21:36:09",
+      "timestamp": "2026-02-15T12:05:03",
       "value": 274987
     },
     "claims_zakat_eligible": {
@@ -94,13 +90,13 @@
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/201799252",
-      "timestamp": "2026-02-09T21:36:09",
+      "timestamp": "2026-02-15T12:05:03",
       "value": 2005
     },
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/201799252#financials",
-      "timestamp": "2026-02-09T21:36:09",
+      "timestamp": "2026-02-15T12:05:03",
       "value": 157506
     },
     "has_audited_financials": {
@@ -112,25 +108,25 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/201799252",
-      "timestamp": "2026-02-09T21:36:09",
+      "timestamp": "2026-02-15T12:05:03",
       "value": "X40"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/201799252#financials",
-      "timestamp": "2026-02-09T21:36:09",
+      "timestamp": "2026-02-15T12:05:03",
       "value": 0.8528
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/201799252#financials",
-      "timestamp": "2026-02-09T21:36:09",
+      "timestamp": "2026-02-15T12:05:03",
       "value": 2651426
     },
     "total_revenue": {
       "source_name": "Form 990 (2018)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/201799252",
-      "timestamp": "2026-02-09T21:36:09",
+      "timestamp": "2026-02-15T12:05:03",
       "value": 3286832
     },
     "working_capital_months": {
@@ -141,7 +137,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/201799252",
-      "timestamp": "2026-02-09T21:36:09",
+      "timestamp": "2026-02-15T12:05:03",
       "value": 3.2
     }
   },
@@ -189,6 +185,9 @@
   "noFilings": false,
   "donationUrl": "https://www.masboston.org/donate/",
   "beneficiariesServedAnnually": null,
+  "beneficiariesSource": null,
+  "beneficiariesConfidence": null,
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": null,
   "zakatClaimEvidence": [
     "Dedicated zakat page found at https://masboston.org/donate (Source: https://masboston.org/donate)"
@@ -292,7 +291,7 @@
       "impact": {
         "components": [
           {
-            "evidence": "No beneficiary data; high program ratio (\u226585%) suggests efficient delivery",
+            "evidence": "No beneficiary data available for cost-per-beneficiary scoring; high program ratio (\u226585%) suggests efficient delivery",
             "improvement_suggestion": "Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
             "improvement_value": 0,
             "name": "Cost Per Beneficiary",
@@ -362,6 +361,26 @@
         "rubric_archetype": "COMMUNITY",
         "score": 32
       },
+      "judge_issues": [
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": -1,
       "risks": {
         "overall_risk_level": "LOW",
@@ -389,46 +408,400 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization is Zakat-eligible and provides a policy for zakat distribution.",
+          "claim": "The organization is zakat-eligible and provides information on zakat policy.",
           "id": "[1]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://masboston.org/donate"
         },
         {
-          "claim": "MAS Boston is classified as a non-profit organization with specific program focuses.",
+          "claim": "The organization reported a program expense ratio of 85.3% and holds 3.2 months of working capital.",
           "id": "[2]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/201799252"
         },
         {
-          "claim": "Donors can contribute through various giving methods and donation options.",
+          "claim": "Donors have multiple giving methods and options to support the organization's mission.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.masboston.org/donate/"
         },
         {
-          "claim": "Financial data shows total revenue of $3,286,832, a program expense ratio of 85.3%, and fundraising efficiency of $0.05 per $1 raised.",
+          "claim": "Total revenue was $3,286,832, with fundraising efficiency at $0.05 per $1 raised, supporting programs like Tarbiya and Youth Development.",
           "id": "[4]",
           "source_name": "Form 990 (2018)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/201799252"
         }
       ],
-      "amal_score_rationale": "The organization earns a 64/100 reflecting strong financial efficiency and mission alignment, though its overall impact score is moderated by a focus on capacity building rather than direct service metrics.",
+      "amal_score_rationale": "The organization demonstrates strong financial efficiency and clear religious alignment, though its overall score is moderated by medium data confidence and limited liquidity reserves.",
       "areas_for_improvement": [
-        "Working capital sits at 3.2 months, which is below the ideal threshold for long-term financial sustainability.",
-        "Limited public documentation regarding specific cost-per-beneficiary metrics for impact assessment."
+        "Working capital reserves are relatively low at 3.2 months",
+        "Limited public documentation regarding specific long-term impact metrics and cost-per-beneficiary data"
       ],
       "dimension_explanations": {
-        "alignment": "The charity shows high alignment for Muslim donors as a Zakat-eligible entity that addresses religious and cultural needs through its Tarbiya and PACE programs [1][3]. The mission focuses on instilling discipline and service to Islam and humanity, creating a strong fit for those seeking community-centric religious growth [4].",
-        "impact": "MAS Boston demonstrates high financial efficiency with a program expense ratio of 85.3% and total revenue of $3,286,832 [4]. While it holds 3.2 months of working capital, its impact is primarily centered on capacity building and spiritual education, which are qualitative in nature [2]."
+        "alignment": "The charity shows high alignment for Muslim donors by maintaining a clear zakat-eligibility policy and focusing on religious and cultural preservation [1]. Its mission to root faith and refine character addresses urgent community needs for spiritual and social development [4].",
+        "impact": "MAS Boston directs 85.3% of its $3,286,832 total revenue toward its core programs, including youth development and civic engagement [2][4]. While the organization demonstrates high financial efficiency in its operations, the impact score reflects a focus on capacity building where direct long-term outcomes are less frequently quantified in public filings [2]."
       },
       "headline": "Muslim American Society - MAS Boston empowers the Muslim community through comprehensive spiritual development, youth leadership, and civic engagement.",
       "strengths": [
-        "High program expense ratio of 85.3%, ensuring the vast majority of funds directly support community services.",
-        "Exceptional fundraising efficiency with a cost of only $0.05 per $1 raised.",
-        "Strong focus on holistic spiritual and character development through the Tarbiya Department."
+        "High program expense ratio of 85.3%, ensuring the vast majority of funds directly support community services",
+        "Exceptional fundraising efficiency with a cost of only $0.05 per $1 raised",
+        "Strong focus on holistic spiritual development (Tarbiya) and youth leadership"
       ],
-      "summary": "MAS Boston is a non-profit organization dedicated to fostering a balanced life of virtue and service through its core Tarbiya, youth development, and public affairs programs [2][4]. The organization is recognized as Zakat-eligible, allowing donors to fulfill their religious obligations through various giving methods [1][3]."
+      "summary": "MAS Boston is a non-profit organization dedicated to personal and societal reform through its Tarbiya, youth development, and public affairs programs [2][4]. The organization is recognized as zakat-eligible, allowing donors to fulfill their religious obligations through various community-focused initiatives [1][3]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "zakat-eligible organization",
+          "confidence": 1,
+          "id": "[1]",
+          "quote": "MAS Boston is a Zakat-eligible organization.",
+          "source_name": "MAS Boston - Donate",
+          "source_type": "website",
+          "source_url": "https://masboston.org/donate"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$0.05 to raise every $1",
+          "confidence": 0.9,
+          "id": "[2]",
+          "quote": "Fundraising Efficiency: $0.05 per $1 raised",
+          "source_name": "Charity Navigator - MAS Boston",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/201799252"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "donation options",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Your donation helps us continue our mission.",
+          "source_name": "MAS Boston - Giving",
+          "source_type": "website",
+          "source_url": "https://www.masboston.org/donate/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "program expense ratio of 85.3%",
+          "confidence": 1,
+          "id": "[4]",
+          "quote": "Total Revenue: $3,286,832; Program service expenses: $2,651,358",
+          "source_name": "Form 990 (2018)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/201799252"
+        }
+      ],
+      "amal_score_rationale": "The organization demonstrates strong financial efficiency and clear religious alignment, though its overall score is moderated by medium data confidence and limited liquidity reserves.",
+      "amal_scores": {
+        "amal_score": 64,
+        "confidence_scores": {
+          "alignment": 33,
+          "data_confidence": 0.6,
+          "impact": 32
+        },
+        "confidence_tier": "MEDIUM",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Impact Transparency",
+          "citation_ids": [
+            "[2]"
+          ],
+          "context": "While financial efficiency is high, there is <cite id=\"2\">limited public documentation</cite> regarding specific outcome metrics or cost-per-beneficiary data."
+        },
+        {
+          "area": "Evidence Base",
+          "citation_ids": [
+            "[2]"
+          ],
+          "context": "The organization currently lacks <cite id=\"2\">external evaluations</cite> to verify the long-term effectiveness of its Tarbiya and youth programs."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "none",
+        "citation_ids": [],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "UNKNOWN",
+        "governance_status": "UNKNOWN",
+        "meets_all_standards": false,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "No BBB Wise Giving Alliance assessment is currently available for this organization."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[2]"
+        ],
+        "mitigation_notes": "The organization's high program ratio suggests that funds are being utilized for their intended purposes despite the lack of formal impact reports.",
+        "risk_factors": [
+          "<cite id=\"2\">No third-party impact evaluations available</cite>",
+          "<cite id=\"2\">Working capital is slightly below the 6-month ideal</cite>"
+        ],
+        "summary": "The primary concern is the <cite id=\"2\">absence of rigorous impact measurement</cite>, making it difficult to quantify the spiritual or social return on investment."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 7,
+          "rating": 5,
+          "website": 3
+        },
+        "high_confidence_count": 12,
+        "total_count": 15,
+        "unique_sources": 4
+      },
+      "confidence": {
+        "data_freshness": "Financials from 2018 tax year",
+        "data_gaps": [
+          "Financial data is from 2018",
+          "Lack of recent impact reports"
+        ],
+        "level": "MEDIUM",
+        "notes": "Strong historical data but needs updated filings for a higher confidence score.",
+        "score": 60,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 60,
+        "form_990_tax_year": 2018,
+        "known_gaps": [
+          "Missing recent Form 990s (post-2018)",
+          "No third-party impact evaluations"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 15,
+        "unique_sources": 4,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[1]"
+          ],
+          "explanation": "The organization has <cite id=\"1\">high Muslim donor fit</cite> due to its explicit zakat program and focus on <cite id=\"1\">Islamic identity and Tarbiya</cite>.",
+          "improvement": "Alignment is already strong; maintaining <cite id=\"1\">clear asnaf-based reporting</cite> will ensure continued donor confidence."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[2]",
+            "[4]"
+          ],
+          "explanation": "Donors can trust MAS Boston due to its <cite id=\"4\">transparent reporting of executive compensation</cite> ($91,461 for the top officer) and its long-standing presence in the Boston area. The organization maintains <cite id=\"4\">strong board governance</cite> with seven members overseeing its strategic direction.",
+          "improvement": "To strengthen credibility, the organization should <cite id=\"2\">seek a full rating from Charity Navigator</cite> by providing more comprehensive impact data."
+        },
+        "impact": {
+          "citation_ids": [
+            "[2]",
+            "[4]"
+          ],
+          "explanation": "Impact is driven by a <cite id=\"4\">high program expense ratio of 85.3%</cite> and a capacity-building model that empowers local youth. However, the <cite id=\"2\">evidence of outcomes remains unverified</cite> by third parties.",
+          "improvement": "The charity could improve its impact score by <cite id=\"2\">publishing annual beneficiary counts</cite> to allow for cost-effectiveness analysis."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "Religious & Cultural",
+        "citation_ids": [
+          "[1]",
+          "[4]"
+        ],
+        "evidence_rigor": "Grade C - Financial transparency without external impact verification",
+        "geographic_focus": [
+          "Boston, MA",
+          "USA"
+        ],
+        "giving_style": "Community Capacity Building",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "fuqara (poor)",
+          "masakin (needy)",
+          "fisabilillah"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.09,
+        "annual_revenue": 3286832,
+        "citation_ids": [
+          "[4]"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": 0.05,
+        "industry_program_ratio": 0.75,
+        "peer_count": 0,
+        "peer_program_ratio_median": null,
+        "program_expense_ratio": 0.8528,
+        "reserves_months": 3.4,
+        "revenue_cagr_3yr": 13.4,
+        "working_capital_months": 3.2,
+        "yearly_financials": [
+          {
+            "expenses": 3083919,
+            "net_assets": 814400,
+            "revenue": 3286832,
+            "year": 2018
+          },
+          {
+            "expenses": 2894256,
+            "net_assets": 1097047,
+            "revenue": 3060131,
+            "year": 2017
+          },
+          {
+            "expenses": 2686637,
+            "net_assets": 894667,
+            "revenue": 2554048,
+            "year": 2016
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[4]"
+        ],
+        "domestic_grants": 154532,
+        "foreign_grants": 0,
+        "grant_count": 2,
+        "grant_strategy": "Supports local mosques and national Islamic organizations to strengthen community infrastructure",
+        "is_significant_grantmaker": true,
+        "regions_served": [
+          "Boston, MA"
+        ],
+        "top_recipients": [
+          "Islamic Society of Boston ($125,000)",
+          "Islamic Circle of North America ($29,532)"
+        ],
+        "total_grants": 154532
+      },
+      "headline": "Muslim American Society - MAS Boston empowers the Muslim community through comprehensive spiritual development, youth leadership, and civic engagement.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who value regional community building and want to support Islamic spiritual development and youth leadership in the American context.",
+        "citation_ids": [
+          "[1]",
+          "[2]",
+          "[4]"
+        ],
+        "donor_motivations": [
+          "Want to fulfill zakat through a trusted local institution",
+          "Believe in the importance of Tarbiya (spiritual growth) for the next generation",
+          "Value high financial efficiency and low fundraising overhead"
+        ],
+        "giving_considerations": [
+          "Donations support a mix of direct programming and grants to other local mosques",
+          "Impact is measured more through community presence than quantitative data",
+          "The organization is a established regional leader with over 20 years of history"
+        ],
+        "not_ideal_for": "Donors who require rigorous, data-driven evidence of social impact or those looking for international humanitarian relief."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[2]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "The grade reflects high financial transparency but a <cite id=\"2\">lack of published outcome metrics</cite> or independent evaluations.",
+        "external_evaluations": [],
+        "outcome_tracking_years": 0,
+        "rct_available": false,
+        "theory_of_change": "DEVELOPING",
+        "theory_of_change_summary": "MAS Boston operates on the theory that by providing <cite id=\"2\">spiritual training (Tarbiya) and civic engagement opportunities</cite>, it can create a more resilient and active Muslim community.",
+        "why_evidence_matters": "Evidence ensures that spiritual and leadership programs are effectively achieving their goals of community reform."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[2]",
+          "[4]"
+        ],
+        "founded_year": 2005,
+        "maturity_stage": "Established",
+        "revenue_growth_3yr": 13.4,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "With a <cite id=\"4\">13.4% growth rate</cite> and expanding programs like PACE, the organization has a high capacity to absorb new funding for regional expansion.",
+        "strategic_priorities": [
+          "Expand Tarbiya department",
+          "Strengthen Public Affairs & Civic Engagement"
+        ],
+        "years_operating": 21
+      },
+      "organizational_capacity": {
+        "board_size": 7,
+        "ceo_compensation": 82958,
+        "ceo_compensation_pct_revenue": 2.52,
+        "ceo_name": "Yusufi Vali",
+        "citation_ids": [
+          "[2]",
+          "[4]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "Boston, MA and surrounding USA areas",
+        "has_conflict_policy": true,
+        "has_financial_audit": false,
+        "independent_board_pct": null,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 5,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[4]"
+        ],
+        "differentiator": "Distinguished by its <cite id=\"4\">significant grantmaking activity</cite> to other local Islamic institutions.",
+        "peer_group": "Regional Islamic Community Organizations",
+        "similar_orgs": [
+          "Islamic Circle of North America (ICNA)",
+          "Islamic Society of Boston"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Broader national reach vs MAS Boston's regional focus",
+          "name": "Islamic Circle of North America (ICNA)"
+        },
+        {
+          "differentiator": "Primary grant recipient of MAS Boston",
+          "name": "Islamic Society of Boston (ISB)"
+        },
+        {
+          "differentiator": "Parent organization with broader policy focus",
+          "name": "Muslim American Society (National)"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[4]"
+          ],
+          "detail": "The organization allocates <cite id=\"4\">86.0% of its total expenses</cite> directly to its programs, significantly exceeding common industry benchmarks for non-profit efficiency.",
+          "point": "High Programmatic Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[2]"
+          ],
+          "detail": "MAS Boston demonstrates remarkable fiscal discipline, spending only <cite id=\"2\">$0.05 to raise every $1</cite> in contributions.",
+          "point": "Exceptional Fundraising Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[4]"
+          ],
+          "detail": "The charity strengthens the local ecosystem by awarding <cite id=\"4\">$125,000 in grants to the Islamic Society of Boston</cite>.",
+          "point": "Strong Regional Grantmaking"
+        }
+      ],
+      "strengths_deep_dive": [
+        "MAS Boston's financial health is underscored by its ability to maintain <cite id=\"2\">3.2 months of working capital</cite>, providing a resilient buffer for its operations. This stability supports a wide array of initiatives, including the <cite id=\"2\">Arkanum and Youth Development programs</cite>, which are central to its mission of fostering leadership. The organization's revenue model is diversified, with <cite id=\"4\">$796,962 generated from program service revenue</cite>, reducing its total reliance on pure donations and suggesting a sustainable service-delivery model."
+      ],
+      "summary": "Muslim American Society (MAS) Boston serves as a cornerstone for the New England Muslim community, focusing on personal development and societal reform through its comprehensive Tarbiya department. The organization reported <cite id=\"4\">$3,286,832 in total revenue</cite> for the 2018 tax year, reflecting its significant scale as a regional institution. MAS Boston operates with high financial efficiency, maintaining a <cite id=\"4\">program expense ratio of 85.3%</cite>, which ensures that the vast majority of donor contributions are directed toward its core mission of spiritual and leadership development. Beyond internal programming, the organization acts as a community anchor, providing <cite id=\"4\">$154,532 in domestic grants</cite> to key local partners like the Islamic Society of Boston. Its programming is diverse, ranging from <cite id=\"2\">Public Affairs & Civic Engagement (PACE)</cite> to specialized youth development and convert support services. As a <cite id=\"1\">zakat-eligible organization</cite>, it provides a verified channel for Muslim donors to fulfill their religious obligations, specifically serving the <cite id=\"1\">fuqara and masakin</cite> categories. The organization has demonstrated consistent financial expansion, achieving a <cite id=\"4\">3-year revenue CAGR of 13.4%</cite>, indicating a healthy growth trajectory and increasing community trust.",
+      "zakat_guidance": {
+        "classification": "masakin",
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }

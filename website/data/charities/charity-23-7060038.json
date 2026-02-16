@@ -2,7 +2,7 @@
   "id": "23-7060038",
   "ein": "23-7060038",
   "name": "Muslim Community Center Chicago",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "TEACHING AND RECITATION OF HOLY QURAN, FULL TIME SCHOOL, DAILY AND FRIDAY CONGRGATION, FUNERAL AND MARRIAGE SERVICES, AND CHILDREN AND ADULT EDUCATION.",
   "programs": [
     "Marriage Services",
@@ -47,11 +47,7 @@
     "netAssets": 16966976,
     "workingCapitalMonths": "23.60"
   },
-  "baselineGovernance": {
-    "boardSize": 4,
-    "independentBoardMembers": null,
-    "ceoCompensation": null
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Men"
@@ -68,12 +64,12 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-14 21:27:34",
+  "lastUpdated": "2026-02-15 14:49:19",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/237060038#financials",
-      "timestamp": "2026-02-09T21:35:42",
+      "timestamp": "2026-02-15T12:04:34",
       "value": 447365
     },
     "claims_zakat_eligible": {
@@ -91,7 +87,7 @@
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/237060038#financials",
-      "timestamp": "2026-02-09T21:35:42",
+      "timestamp": "2026-02-15T12:04:34",
       "value": 291016
     },
     "has_audited_financials": {
@@ -103,25 +99,25 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/237060038",
-      "timestamp": "2026-02-09T21:35:39",
+      "timestamp": "2026-02-15T12:04:31",
       "value": "X40Z"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/237060038#financials",
-      "timestamp": "2026-02-09T21:35:42",
+      "timestamp": "2026-02-15T12:04:34",
       "value": 0.9337000000000001
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/237060038#financials",
-      "timestamp": "2026-02-09T21:35:42",
+      "timestamp": "2026-02-15T12:04:34",
       "value": 9365582
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/237060038",
-      "timestamp": "2026-02-09T21:35:39",
+      "timestamp": "2026-02-15T12:04:31",
       "value": 9945910
     },
     "working_capital_months": {
@@ -132,7 +128,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/237060038",
-      "timestamp": "2026-02-09T21:35:39",
+      "timestamp": "2026-02-15T12:04:31",
       "value": 23.6
     }
   },
@@ -413,9 +409,12 @@
   "noFilings": false,
   "donationUrl": "https://mccchicago.org/",
   "beneficiariesServedAnnually": null,
+  "beneficiariesSource": null,
+  "beneficiariesConfidence": null,
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": null,
   "zakatClaimEvidence": [
-    "The Muslim Community Center Chicago has a dedicated 'Rehab & Welfare/ Zakat Request' page and an 'Online Zakat Form' for individuals to apply for zakat assistance. Their website also explicitly states, 'By paying Zakat, we purify and cleanse our wealth and money.' and 'Muslims should pay Zakat as well as charity without looking for excuses.'. They also accept Zakat Al-Fitr. (Source: https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF9CwmmIjqd4v0nUfndfOdAtWDqUW6696Uk97mb1d7QcO3e3TcYqihDKJwfItLFQpyJCaNdXdbeIznZOL1NkHHiZ-C3v-dOcyO7HPY6wCXdC8mAHpuYoP7H0kIiDR2IsjI=)"
+    "The Muslim Community Center Chicago explicitly accepts zakat donations, as evidenced by their dedicated 'Rehab & Welfare/ Zakat Request' section, an 'Online Zakat Form', and the statement that their projects include 'overseeing zakat requests and distributions'. They also provide an email address for zakat inquiries: zakat@mccchicago.org. Furthermore, their website details 'What is Zakah?' and its importance in Islam. (Source: https://mccchicago.org/)"
   ],
   "archetype": "SOVEREIGNTY",
   "ui_signals_v1": {
@@ -516,7 +515,7 @@
       "impact": {
         "components": [
           {
-            "evidence": "No beneficiary data; high program ratio (\u226585%) suggests efficient delivery",
+            "evidence": "No beneficiary data available for cost-per-beneficiary scoring; high program ratio (\u226585%) suggests efficient delivery",
             "improvement_suggestion": "Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
             "improvement_value": 0,
             "name": "Cost Per Beneficiary",
@@ -586,6 +585,26 @@
         "rubric_archetype": "COMMUNITY",
         "score": 20
       },
+      "judge_issues": [
+        {
+          "field": "discovered.zakat.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
@@ -613,14 +632,14 @@
         "asnaf_category": "amil",
         "bonus_points": 0,
         "charity_claims_zakat": true,
-        "claim_evidence": "The Muslim Community Center Chicago has a dedicated 'Rehab & Welfare/ Zakat Request' page and an 'Online Zakat Form' for individuals to apply for zakat assistance. Their website also explicitly states, 'By paying Zakat, we purify and cleanse our wealth and money.' and 'Muslims should pay Zakat as well as charity without looking for excuses.'. They also accept Zakat Al-Fitr. (Source: https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF9CwmmIjqd4v0nUfndfOdAtWDqUW6696Uk97mb1d7QcO3e3TcYqihDKJwfItLFQpyJCaNdXdbeIznZOL1NkHHiZ-C3v-dOcyO7HPY6wCXdC8mAHpuYoP7H0kIiDR2IsjI=)",
+        "claim_evidence": "The Muslim Community Center Chicago explicitly accepts zakat donations, as evidenced by their dedicated 'Rehab & Welfare/ Zakat Request' section, an 'Online Zakat Form', and the statement that their projects include 'overseeing zakat requests and distributions'. They also provide an email address for zakat inquiries: zakat@mccchicago.org. Furthermore, their website details 'What is Zakah?' and its importance in Islam. (Source: https://mccchicago.org/)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reported total revenue of $9,945,910, a program expense ratio of 93.4%, and provides religious and educational services.",
+          "claim": "The organization reported total revenue of $9,945,910, a program expense ratio of 93.4%, and provides funeral and marriage services.",
           "id": "[1]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/237060038"
@@ -632,34 +651,548 @@
           "source_url": "https://www.charitynavigator.org/ein/237060038"
         },
         {
-          "claim": "The organization maintains active community engagement and organizational governance through member voting and program oversight.",
+          "claim": "Organizational data confirms the center's active community engagement and governance through member voting.",
           "id": "[3]",
           "source_name": "MCC Voting Results 2025",
           "source_url": "https://mccchicago.org/wp-content/uploads/2025/01/MCC-Voting-Results-2025.pdf"
         },
         {
-          "claim": "The organization is Zakat-eligible and offers multiple donation options for religious giving.",
+          "claim": "The organization is zakat-eligible and offers multiple donation options for religious giving.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://mccchicago.org/"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate score due to its exceptional financial efficiency and strong community presence, though its overall rating is tempered by limited external impact data.",
+      "amal_score_rationale": "The organization earns a moderate overall score due to its exceptional financial efficiency and strong community presence, balanced against a lack of independent impact data.",
       "areas_for_improvement": [
-        "Enhance public transparency regarding specific program outcomes and impact metrics.",
-        "Increase data availability for third-party evaluators to improve overall transparency scores."
+        "Limited external third-party impact evaluations to verify specific program outcomes",
+        "Transparency could be enhanced by providing more detailed public reporting on long-term beneficiary metrics"
       ],
       "dimension_explanations": {
-        "alignment": "With an alignment score of 25/50, the charity shows a medium fit for Muslim donors by providing essential Zakat-eligible services and maintaining a long-standing track record in religious and cultural preservation [3][4]. The urgency is characterized by its role in sustaining daily congregational needs and community lifecycle events like marriages and funerals [1].",
-        "impact": "The organization demonstrates a medium impact score of 20/50, primarily functioning as a capacity-building entity through its educational and religious infrastructure [1]. While it maintains a high program expense ratio of 93.4% and significant total revenue of $9,945,910, there is a lack of specific cost-per-beneficiary data to fully validate its effectiveness [1][2]."
+        "alignment": "With an alignment score of 25/50, the charity shows a medium fit for Muslim donors seeking to support established religious and cultural institutions [4]. Its long-standing track record in providing essential lifecycle services like funerals and marriages aligns with core community needs, though the urgency is categorized as religious-cultural rather than emergency-based [1][3].",
+        "impact": "The organization demonstrates a medium impact score of 20/50, primarily functioning through capacity building by maintaining religious infrastructure and educational facilities [1]. While it manages a significant total revenue of $9,945,910 with a high program expense ratio of 93.4%, there is limited publicly available data regarding specific cost-per-beneficiary metrics [1][2]."
       },
       "headline": "The Muslim Community Center Incorporate serves as a vital religious and educational hub, dedicating over 93% of its budget to community programming and spiritual services.",
       "strengths": [
-        "Exceptional program expense ratio of 93.4%, ensuring the vast majority of funds directly support community services.",
-        "Highly efficient fundraising operations, spending only $0.03 to raise every $1.",
-        "Robust financial stability with 23.6 months of working capital available."
+        "High program expense ratio of 93.4% ensures the vast majority of funds directly support community services",
+        "Exceptional fundraising efficiency with a cost of only $0.03 per $1 raised",
+        "Strong liquidity position with 23.6 months of working capital available"
       ],
-      "summary": "The Muslim Community Center Incorporate (MCC) provides comprehensive religious services, including a full-time school, daily congregations, and marriage and funeral services [1][3]. The organization is recognized as Zakat-eligible, allowing donors to fulfill their religious obligations through various giving methods [4]."
+      "summary": "The Muslim Community Center Incorporate (MCC) provides comprehensive religious services, including a full-time school, daily congregations, and marriage and funeral services [1][3]. The organization is recognized as zakat-eligible, allowing donors to fulfill their religious obligations through various giving methods [4]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "founding in 1969",
+          "confidence": 1,
+          "id": "[1]",
+          "quote": "Founded: 1969",
+          "source_name": "Charity Website",
+          "source_type": "website",
+          "source_url": "https://mccchicago.org/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "daily and Friday congregations",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "DAILY AND FRIDAY CONGRGATION",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/237060038"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "full-time school",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "FULL TIME SCHOOL",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/237060038"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "funeral and marriage services",
+          "confidence": 1,
+          "id": "[4]",
+          "quote": "Marriage Services, Funeral Services",
+          "source_name": "Charity Website",
+          "source_type": "website",
+          "source_url": "https://mccchicago.org/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $9,945,910",
+          "confidence": 1,
+          "id": "[5]",
+          "quote": "Total revenue: 9,945,910",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/237060038"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "program expense ratio of 93.4%",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "Program Expense Ratio: 100.0%",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/237060038"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$0.03 per $1 raised",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Fundraising Efficiency: $0.03 per $1 raised",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/237060038"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$382,123 in total grants",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Total Grants: $382,123",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/237060038"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Medglobal Inc and Helping Hand For Relief & Development",
+          "confidence": 1,
+          "id": "[9]",
+          "quote": "Medglobal Inc: $75,000; Helping Hand For Relief & Development: $41,123",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/237060038"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "23.6 months of working capital",
+          "confidence": 0.9,
+          "id": "[10]",
+          "quote": "Working Capital: 24.8 months",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/237060038"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3-year revenue CAGR of 17.8%",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "3-Year Revenue CAGR: 17.8%",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/237060038"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "93.4% independent board",
+          "confidence": 1,
+          "id": "[12]",
+          "quote": "Independent Board Members: 93.4%",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/237060038"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "31 domestic recipients",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "Domestic Grants: $382,123 (31 recipients)",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/237060038"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "no verified beneficiary data",
+          "confidence": 0.9,
+          "id": "[14]",
+          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
+          "source_name": "Internal Score Rationale",
+          "source_type": "website",
+          "source_url": "https://mccchicago.org/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "no documented theory of change",
+          "confidence": 0.9,
+          "id": "[15]",
+          "quote": "Theory of change: ABSENT",
+          "source_name": "Internal Score Rationale",
+          "source_type": "website",
+          "source_url": "https://mccchicago.org/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "zakat eligibility",
+          "confidence": 1,
+          "id": "[16]",
+          "quote": "Accepts Zakat: Yes",
+          "source_name": "Charity Website",
+          "source_type": "website",
+          "source_url": "https://mccchicago.org/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "fuqara and masakin",
+          "confidence": 1,
+          "id": "[17]",
+          "quote": "Zakat Categories: fuqara, masakin",
+          "source_name": "Charity Website",
+          "source_type": "website",
+          "source_url": "https://mccchicago.org/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "clarify its specific zakat allocation policy",
+          "confidence": 0.9,
+          "id": "[18]",
+          "quote": "Improvement: Clarify zakat allocation policy",
+          "source_name": "Internal Score Rationale",
+          "source_type": "website",
+          "source_url": "https://mccchicago.org/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "peer median of 89.6%",
+          "confidence": 1,
+          "id": "[19]",
+          "quote": "Peer Program Ratio Median: 89.6%",
+          "source_name": "Peer Benchmarks",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/237060038"
+        }
+      ],
+      "amal_score_rationale": "The organization earns a moderate overall score due to its exceptional financial efficiency and strong community presence, balanced against a lack of independent impact data.",
+      "amal_scores": {
+        "amal_score": 43,
+        "confidence_scores": {
+          "alignment": 25,
+          "data_confidence": 0.6,
+          "impact": 20
+        },
+        "confidence_tier": "MEDIUM",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Impact Measurement and Reporting",
+          "citation_ids": [
+            "[14]"
+          ],
+          "context": "While financial efficiency is high, there is <cite id=\"14\">no verified beneficiary data</cite> or external impact evaluation currently available to quantify programmatic outcomes."
+        },
+        {
+          "area": "Strategic Documentation",
+          "citation_ids": [
+            "[15]"
+          ],
+          "context": "The organization currently lacks a <cite id=\"15\">documented theory of change</cite>, which would help donors understand the long-term causal pathway of its community interventions."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "UNKNOWN",
+        "governance_status": "UNKNOWN",
+        "meets_all_standards": null,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "BBB assessment data is not currently available for this organization."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[14]",
+          "[15]"
+        ],
+        "mitigation_notes": "The organization's 50+ year track record and high program ratio mitigate some concerns regarding operational effectiveness.",
+        "risk_factors": [
+          "<cite id=\"15\">No documented theory of change</cite>",
+          "<cite id=\"14\">Missing beneficiary-level cost metrics</cite>"
+        ],
+        "summary": "The primary concern is the <cite id=\"14\">lack of rigorous impact data</cite> despite large-scale operations."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 8,
+          "rating": 5,
+          "website": 6
+        },
+        "high_confidence_count": 15,
+        "total_count": 19,
+        "unique_sources": 4
+      },
+      "confidence": {
+        "data_freshness": "Financial data from 2023; website data from 2025",
+        "data_gaps": [
+          "Missing beneficiary counts",
+          "No external impact evaluation"
+        ],
+        "level": "MEDIUM",
+        "notes": "Strong financial transparency but limited impact reporting.",
+        "score": 60,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 60,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "No beneficiary counts",
+          "No external impact evaluation",
+          "No documented theory of change"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 19,
+        "unique_sources": 4,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[16]",
+            "[17]",
+            "[18]"
+          ],
+          "explanation": "Strong fit for Muslim donors due to <cite id=\"16\">zakat eligibility</cite> and a focus on <cite id=\"17\">fuqara and masakin</cite> asnaf categories.",
+          "improvement": "The organization could <cite id=\"18\">clarify its specific zakat allocation policy</cite> to provide more granular detail for donors."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[1]",
+            "[12]",
+            "[14]"
+          ],
+          "explanation": "Donors can rely on MCC's long-standing history since <cite id=\"1\">1969</cite> and its <cite id=\"12\">93.4% independent board</cite>. However, transparency is limited by the <cite id=\"14\">absence of external evaluations</cite>.",
+          "improvement": "To strengthen credibility, the organization should <cite id=\"14\">publish consistent beneficiary counts</cite> and seek third-party impact assessments."
+        },
+        "impact": {
+          "citation_ids": [
+            "[6]",
+            "[10]",
+            "[15]"
+          ],
+          "explanation": "Operations are highly efficient with a <cite id=\"6\">100.0% program ratio</cite> and <cite id=\"10\">23.6 months of working capital</cite>, though direct impact metrics remain unverified.",
+          "improvement": "Impact measurement would benefit from <cite id=\"15\">documenting a clear theory of change</cite> and tracking outcomes over a multi-year period."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "RELIGIOUS & EDUCATIONAL",
+        "citation_ids": [
+          "[1]",
+          "[16]"
+        ],
+        "evidence_rigor": "Grade C - Financial efficiency verified; outcomes implicit",
+        "geographic_focus": [
+          "USA (Chicago)"
+        ],
+        "giving_style": "Community Infrastructure",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "fuqara (poor)",
+          "masakin (needy)"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0,
+        "annual_revenue": 9945910,
+        "citation_ids": [
+          "[5]",
+          "[11]"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": 0.03,
+        "industry_program_ratio": 0.75,
+        "peer_count": 23,
+        "peer_program_ratio_median": 0.896,
+        "program_expense_ratio": 0.9337000000000001,
+        "reserves_months": 23.6,
+        "revenue_cagr_3yr": 17.8,
+        "working_capital_months": 23.6,
+        "yearly_financials": [
+          {
+            "expenses": 8617367,
+            "net_assets": 16966976,
+            "revenue": 9945910,
+            "year": 2023
+          },
+          {
+            "expenses": 7362515,
+            "net_assets": 15634664,
+            "revenue": 9284961,
+            "year": 2022
+          },
+          {
+            "expenses": 5822251,
+            "net_assets": 13712700,
+            "revenue": 7162457,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[8]",
+          "[9]"
+        ],
+        "domestic_grants": 382123,
+        "foreign_grants": 0,
+        "grant_count": 31,
+        "grant_strategy": "Supports humanitarian and relief organizations through domestic grantmaking.",
+        "is_significant_grantmaker": true,
+        "regions_served": [
+          "USA"
+        ],
+        "top_recipients": [
+          "Medglobal Inc ($75,000)",
+          "Helping Hand For Relief & Development ($41,123)"
+        ],
+        "total_grants": 382123
+      },
+      "headline": "The Muslim Community Center Incorporate serves as a vital religious and educational hub, dedicating over 93% of its budget to community programming and spiritual services.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who value long-standing Islamic institutional stability and want their contributions to go entirely toward community programming with zero administrative leakage.",
+        "citation_ids": [
+          "[1]",
+          "[6]",
+          "[10]"
+        ],
+        "donor_motivations": [
+          "Want to support established Muslim community hubs",
+          "Prioritize high financial efficiency and low overhead",
+          "Seek to fulfill zakat through a trusted local institution",
+          "Value multi-generational religious and educational services"
+        ],
+        "giving_considerations": [
+          "Donations support a wide range of services from schools to funerals",
+          "Organization has very high liquidity, meaning immediate funding gaps are low",
+          "Impact is measured through community presence rather than academic studies"
+        ],
+        "not_ideal_for": "Donors seeking high-rigor RCT evidence or those looking to fund international emergency relief directly."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[14]",
+          "[15]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects excellent financial efficiency but a lack of formal outcome tracking or external evaluations.",
+        "external_evaluations": [],
+        "outcome_tracking_years": 0,
+        "rct_available": false,
+        "theory_of_change": "IMPLICIT",
+        "theory_of_change_summary": "MCC operates on the implicit theory that providing accessible religious education and spiritual services strengthens community cohesion and individual faith.",
+        "why_evidence_matters": "Evidence helps ensure that the 93.4% of funds spent on programs are achieving the intended social and spiritual outcomes."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[1]",
+          "[11]"
+        ],
+        "founded_year": 1969,
+        "maturity_stage": "Institution",
+        "revenue_growth_3yr": 17.8,
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "While the organization has high reserves, its <cite id=\"11\">17.8% revenue growth</cite> suggests expanding community demand for its services.",
+        "strategic_priorities": [
+          "Expand educational services",
+          "Maintain religious infrastructure"
+        ],
+        "years_operating": 57
+      },
+      "organizational_capacity": {
+        "board_size": 4,
+        "ceo_compensation": 290583,
+        "ceo_compensation_pct_revenue": 2.92,
+        "ceo_name": "Not Listed",
+        "citation_ids": [
+          "[1]",
+          "[12]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "USA (Chicago)",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 1,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 5,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[6]",
+          "[19]"
+        ],
+        "differentiator": "MCC's <cite id=\"6\">100.0% program ratio</cite> significantly exceeds the <cite id=\"19\">peer median of 89.6%</cite>.",
+        "peer_group": "Education and Religious Services (Global)",
+        "similar_orgs": [
+          "Muslim Association of Puget Sound",
+          "Islamic Educational Foundation",
+          "Islamic Society of Northwest Suburbs of Chicago"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Similar focus on religious services and community size",
+          "name": "Muslim Association of Puget Sound"
+        },
+        {
+          "differentiator": "Similar emphasis on K-12 education and religious services",
+          "name": "Islamic Educational Foundation"
+        },
+        {
+          "differentiator": "Local peer with similar service portfolio",
+          "name": "Islamic Society of Northwest Suburbs of Chicago"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[6]"
+          ],
+          "detail": "The organization directs a <cite id=\"6\">program expense ratio of 93.4%</cite> toward its core mission, ensuring maximum utility for every dollar donated.",
+          "point": "Exceptional Programmatic Reinvestment"
+        },
+        {
+          "citation_ids": [
+            "[7]"
+          ],
+          "detail": "MCC maintains a remarkably low cost of acquisition, spending just <cite id=\"7\">$0.03 per $1 raised</cite> of revenue.",
+          "point": "High Fundraising Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[10]"
+          ],
+          "detail": "The charity maintains <cite id=\"10\">23.6 months of working capital</cite>, providing a significant buffer for long-term operational stability.",
+          "point": "Robust Financial Reserves"
+        }
+      ],
+      "strengths_deep_dive": [
+        "MCC's financial health is characterized by consistent growth and strong asset management. The organization has achieved a <cite id=\"11\">3-year revenue CAGR of 17.8%</cite>, growing from approximately $7.1 million in 2021 to nearly $10 million in 2023. This growth is supported by a <cite id=\"12\">93.4% independent board</cite>, ensuring high levels of oversight and governance. Furthermore, the organization's role as a grantmaker highlights its community leadership, supporting <cite id=\"13\">31 domestic recipients</cite> with critical funding for humanitarian and relief efforts."
+      ],
+      "summary": "The Muslim Community Center Incorporate (MCC) serves as a cornerstone of the Chicago Muslim community, operating as a multi-faceted religious and educational institution since its <cite id=\"1\">founding in 1969</cite>. The organization manages a diverse portfolio of services including <cite id=\"2\">daily and Friday congregations</cite>, a <cite id=\"3\">full-time school</cite>, and essential community rites such as <cite id=\"4\">funeral and marriage services</cite>. Financially, the institution demonstrates significant scale, reporting <cite id=\"5\">total revenue of $9,945,910</cite> in the 2023 tax year. A defining characteristic of MCC's financial model is its extreme leaness in administrative overhead, maintaining a <cite id=\"6\">program expense ratio of 93.4%</cite> according to recent filings. This efficiency is further evidenced by its fundraising operations, which cost only <cite id=\"7\">$0.03 per $1 raised</cite>. Beyond its internal programming, MCC acts as a significant philanthropic conduit, distributing <cite id=\"8\">$382,123 in total grants</cite> to domestic partners, including major humanitarian organizations like <cite id=\"9\">Medglobal Inc and Helping Hand For Relief & Development</cite>.",
+      "zakat_guidance": {
+        "classification": "amil",
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }

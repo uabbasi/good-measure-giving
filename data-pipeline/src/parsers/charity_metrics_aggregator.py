@@ -1005,29 +1005,98 @@ class CharityMetricsAggregator:
         # ====================================================================
         # Aggregate Beneficiaries & Reach
         # ====================================================================
-        # Try multiple sources for beneficiaries data
+        # Try multiple sources for beneficiaries data and preserve citation metadata.
         beneficiaries = None
+        beneficiaries_source_meta: Dict[str, Any] | None = None
 
-        # 1. Direct field from Candid
-        if candid_profile and candid_profile.get("beneficiaries_served"):
-            beneficiaries = candid_profile.get("beneficiaries_served")
+        def _normalize_beneficiary_count(raw_value: Any) -> Optional[int]:
+            """Normalize raw beneficiary values to an integer headcount."""
+            if raw_value is None:
+                return None
+            if isinstance(raw_value, (int, float)):
+                value = float(raw_value)
+            elif isinstance(raw_value, str):
+                try:
+                    import re
 
-        # 2. Direct field from website
-        if not beneficiaries and website_profile:
-            beneficiaries = website_profile.get("beneficiaries_served")
+                    val_str = raw_value.lower()
+                    multiplier = 1
+                    if "million" in val_str:
+                        multiplier = 1_000_000
+                    elif "thousand" in val_str:
+                        multiplier = 1_000
+                    match = re.search(r"[\d,]+\.?\d*", val_str)
+                    if not match:
+                        return None
+                    value = float(match.group().replace(",", "")) * multiplier
+                except (ValueError, TypeError):
+                    return None
+            else:
+                return None
 
-        # 3. From ummah_gap_data (website extractor)
-        if not beneficiaries and website_profile:
+            # Ignore tiny values that are unlikely to be annual beneficiary counts.
+            if value < 100:
+                return None
+            return int(value)
+
+        def _is_citable_url(url: Any) -> bool:
+            return isinstance(url, str) and url.startswith(("http://", "https://"))
+
+        def _set_beneficiary_value(
+            raw_value: Any,
+            *,
+            source_name: str,
+            source_url: Any,
+            source_path: str,
+            method: str = "direct",
+        ) -> bool:
+            nonlocal beneficiaries, beneficiaries_source_meta
+            normalized = _normalize_beneficiary_count(raw_value)
+            if normalized is None:
+                return False
+            beneficiaries = normalized
+            beneficiaries_source_meta = {
+                "source_name": source_name,
+                "source_url": source_url if _is_citable_url(source_url) else None,
+                "source_path": source_path,
+                "method": method,
+                "value": normalized,
+            }
+            return True
+
+        # 1) Direct field from Candid (preferred if available)
+        if candid_profile:
+            _set_beneficiary_value(
+                candid_profile.get("beneficiaries_served"),
+                source_name="Candid",
+                source_url=candid_profile.get("candid_url"),
+                source_path="candid_profile.beneficiaries_served",
+            )
+
+        # 2) Direct field from website extraction
+        if beneficiaries is None and website_profile:
+            _set_beneficiary_value(
+                website_profile.get("beneficiaries_served"),
+                source_name="Charity Website",
+                source_url=website_profile.get("url"),
+                source_path="website_profile.beneficiaries_served",
+            )
+
+        # 3) ummah_gap_data fallback (website extractor)
+        if beneficiaries is None and website_profile:
             ummah_gap = website_profile.get("ummah_gap_data", {})
-            if ummah_gap.get("beneficiary_count"):
-                beneficiaries = ummah_gap.get("beneficiary_count")
+            _set_beneficiary_value(
+                ummah_gap.get("beneficiary_count"),
+                source_name="Charity Website",
+                source_url=website_profile.get("url"),
+                source_path="website_profile.ummah_gap_data.beneficiary_count",
+            )
 
-        # 4. Extract from impact_metrics.metrics (pattern matching)
-        if not beneficiaries and website_profile:
+        # 4) Extract from impact_metrics.metrics (pattern matching)
+        if beneficiaries is None and website_profile:
             impact = website_profile.get("impact_metrics", {})
             metrics_dict = impact.get("metrics", {})
 
-            # Look for beneficiary-like fields, prefer "annual" over cumulative
             annual_patterns = ["annually", "annual", "per_year", "yearly"]
             people_patterns = [
                 "people",
@@ -1048,60 +1117,38 @@ class CharityMetricsAggregator:
                 "orphan",
             ]
 
-            annual_value = None
-            any_value = None
+            annual_choice: tuple[int, str] | None = None
+            fallback_choice: tuple[int, str] | None = None
 
-            for key, value in metrics_dict.items():
+            for key, raw_value in metrics_dict.items():
                 key_lower = key.lower()
-                # Skip non-numeric or very small values
-                if not isinstance(value, (int, float)):
-                    # Try to parse string numbers like "85 million", "1,000,000 annually"
-                    if isinstance(value, str):
-                        try:
-                            import re
-
-                            val_str = value.lower()
-
-                            # Check for multiplier words first (before removing them)
-                            multiplier = 1
-                            if "million" in val_str:
-                                multiplier = 1_000_000
-                            elif "thousand" in val_str:
-                                multiplier = 1_000
-
-                            # Extract numeric part using regex (handles "1,000,000 annually")
-                            # Matches: 1000, 1,000, 1.5, 1,000.50
-                            match = re.search(r"[\d,]+\.?\d*", val_str)
-                            if not match:
-                                continue
-
-                            # Clean and convert the numeric part
-                            num_str = match.group().replace(",", "")
-                            value = float(num_str) * multiplier
-                        except (ValueError, TypeError):
-                            continue
-                    else:
-                        continue
-
-                if value < 100:  # Skip small numbers (not beneficiary counts)
+                if not any(p in key_lower for p in people_patterns):
                     continue
 
-                # Check if this looks like a beneficiary field
-                is_people_field = any(p in key_lower for p in people_patterns)
-                if not is_people_field:
+                normalized = _normalize_beneficiary_count(raw_value)
+                if normalized is None:
                     continue
 
-                # Prefer annual figures; take smallest match (closest to unique headcount)
                 is_annual = any(p in key_lower for p in annual_patterns)
-                if is_annual and (annual_value is None or value < annual_value):
-                    annual_value = value
-                elif not is_annual and (any_value is None or value < any_value):
-                    any_value = value
+                if is_annual and (annual_choice is None or normalized < annual_choice[0]):
+                    annual_choice = (normalized, key)
+                elif not is_annual and (fallback_choice is None or normalized < fallback_choice[0]):
+                    fallback_choice = (normalized, key)
 
-            # Use annual if found, otherwise largest value
-            beneficiaries = int(annual_value) if annual_value else (int(any_value) if any_value else None)
+            selected = annual_choice or fallback_choice
+            if selected:
+                value, field_key = selected
+                _set_beneficiary_value(
+                    value,
+                    source_name="Charity Website",
+                    source_url=website_profile.get("url"),
+                    source_path=f"website_profile.impact_metrics.metrics.{field_key}",
+                    method="pattern_match",
+                )
 
         metrics_data["beneficiaries_served_annually"] = beneficiaries
+        if beneficiaries_source_meta:
+            metrics_data["source_attribution"]["beneficiaries_served_annually"] = beneficiaries_source_meta
 
         metrics_data["populations_served"] = (
             candid_profile.get("populations_served", [])

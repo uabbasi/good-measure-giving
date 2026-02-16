@@ -2,7 +2,7 @@
   "id": "83-1171525",
   "ein": "83-1171525",
   "name": "Link Outside",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "Charitable educational and religious",
   "programs": [
     "Donation Software",
@@ -60,8 +60,16 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-14 21:28:24",
+  "lastUpdated": "2026-02-15 14:46:32",
   "sourceAttribution": {
+    "beneficiaries_served_annually": {
+      "method": "pattern_match",
+      "source_name": "Charity Website",
+      "source_path": "website_profile.impact_metrics.metrics.nonprofits_served",
+      "source_url": "https://donorbox.org/linkoutside",
+      "timestamp": "2026-01-25T22:53:24",
+      "value": 100000
+    },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
       "source_url": "https://donorbox.org/zakaat",
@@ -71,7 +79,7 @@
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/831171525",
-      "timestamp": "2026-02-09T21:31:10",
+      "timestamp": "2026-02-15T11:57:20",
       "value": 2019
     },
     "has_audited_financials": {
@@ -83,13 +91,13 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/831171525",
-      "timestamp": "2026-02-09T21:31:10",
+      "timestamp": "2026-02-15T11:57:20",
       "value": "I40"
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/831171525",
-      "timestamp": "2026-02-09T21:31:10",
+      "timestamp": "2026-02-15T11:57:20",
       "value": 129820
     },
     "working_capital_months": {
@@ -100,7 +108,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/831171525",
-      "timestamp": "2026-02-09T21:31:10",
+      "timestamp": "2026-02-15T11:57:20",
       "value": 12.1
     }
   },
@@ -128,6 +136,16 @@
   "noFilings": false,
   "donationUrl": "https://donorbox.org/",
   "beneficiariesServedAnnually": 100000,
+  "beneficiariesSource": {
+    "method": "pattern_match",
+    "source_name": "Charity Website",
+    "source_path": "website_profile.impact_metrics.metrics.nonprofits_served",
+    "source_url": "https://donorbox.org/linkoutside",
+    "timestamp": "2026-01-25T22:53:24",
+    "value": 100000
+  },
+  "beneficiariesConfidence": "verified",
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": {
     "hasOutcomeMethodology": 1,
     "hasMultiYearMetrics": null,
@@ -310,6 +328,32 @@
         "rubric_archetype": "SYSTEMIC_CHANGE",
         "score": 29
       },
+      "judge_issues": [
+        {
+          "field": "financial.program_expense_ratio",
+          "judge": "data_completeness",
+          "message": "Missing program_expense_ratio - effectiveness score may be artificially low",
+          "severity": "warning"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        },
+        {
+          "field": "baseline_narrative.jargon",
+          "judge": "narrative_quality",
+          "message": "Jargon detected in baseline narrative: 'asnaf categories'",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -329,46 +373,479 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Link Outside is categorized as a charitable educational and religious organization.",
+          "claim": "The charity reports total revenue of $129,820 and holds 12.1 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/831171525"
         },
         {
-          "claim": "The organization is zakat-eligible and follows specific asnaf categories for distribution.",
+          "claim": "The organization is Zakat-eligible and follows specific Zakat policies for asnaf categories.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://donorbox.org/zakaat"
         },
         {
-          "claim": "The charity reported total revenue of $129,820 and holds 12.1 months of working capital.",
+          "claim": "Financial data from the 2023 fiscal year confirms the total revenue of $129,820.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/831171525"
         },
         {
-          "claim": "The organization utilizes Donorbox and Donorbox Live\u2122 Kiosks to facilitate various donation methods.",
+          "claim": "The charity utilizes Donorbox and Donorbox Live\u2122 Kiosks for donation processing.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://donorbox.org/"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate score reflecting its specialized mission and strong liquidity, though its overall rating is tempered by low data confidence and limited external verification of program effectiveness.",
+      "amal_score_rationale": "The charity earns a moderate score of 53/100, reflecting a balance between its specialized mission and a need for more robust impact data and transparency.",
       "areas_for_improvement": [
-        "Limited third-party data availability regarding long-term program outcomes",
-        "Lower data confidence due to minimal public reporting on specific impact metrics"
+        "Limited public data regarding long-term program effectiveness and third-party impact verification",
+        "Low data confidence score suggests a need for increased transparency in reporting"
       ],
       "dimension_explanations": {
-        "alignment": "With an alignment score of 24/50, the charity shows a medium fit for Muslim donors by providing zakat-eligible giving opportunities [2]. The mission addresses the urgent cause of advocacy and religious support for marginalized populations [1][4].",
-        "impact": "The organization focuses on capacity building through its educational programs, operating with a total revenue of $129,820 [3]. While it holds 12.1 months of working capital, the impact score of 29/50 reflects a need for more robust evidence of long-term beneficiary outcomes [1][3]."
+        "alignment": "With an alignment score of 24/50, the charity shows a medium fit for Muslim donors due to its Zakat-eligible status and focus on advocacy-related causes [2]. The mission aligns with religious educational mandates, though the overall track record is still being established in the public domain [1][2].",
+        "impact": "The organization focuses on capacity building within the prison system, though its impact score of 29/50 reflects a moderate level of direct evidence regarding program effectiveness [1]. While financial health is stable with 12.1 months of working capital, the low data confidence score of 0.3 indicates that more comprehensive reporting is needed to fully validate its cost-per-beneficiary metrics [1][3]."
       },
-      "headline": "Link Outside provides educational and religious programming for incarcerated individuals, focusing on rehabilitation and spiritual growth.",
+      "headline": "Link Outside provides charitable educational and religious programming to incarcerated individuals with a focus on rehabilitation and spiritual growth.",
       "strengths": [
-        "Maintains a healthy liquidity position with 12.1 months of working capital",
-        "Offers diverse giving options including Donorbox Live\u2122 Kiosks for streamlined contributions",
-        "Maintains clear zakat eligibility and distribution policies"
+        "Maintains a healthy liquidity position with 12.1 months of working capital [1]",
+        "Verified Zakat-eligible status for Muslim donors [2]",
+        "Utilizes modern giving platforms including Donorbox Live\u2122 Kiosks for streamlined fundraising [4]"
       ],
-      "summary": "Link Outside is a charitable organization dedicated to educational and religious outreach within the prison system [1][3]. The organization is verified as zakat-eligible, allowing donors to fulfill their religious obligations through specific asnaf-compliant categories [2]."
+      "summary": "Link Outside is a non-profit organization dedicated to educational and religious outreach, reporting a total revenue of $129,820 [1][3]. The organization is Zakat-eligible, allowing donors to fulfill their religious obligations through specific asnaf categories [2]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $129,820",
+          "confidence": 1,
+          "id": "[1]",
+          "quote": "Total Revenue: $129,820",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/831171525"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "12.1 months of working capital",
+          "confidence": 0.95,
+          "id": "[2]",
+          "quote": "Working Capital Ratio (years): 1.01",
+          "source_name": "Charity Navigator - Profile",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/831171525"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "verified as Zakat-eligible",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Accepts Zakat: Yes",
+          "source_name": "Charity Website - Zakat",
+          "source_type": "website",
+          "source_url": "https://donorbox.org/zakaat"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Donorbox Live\u2122 Kiosks for streamlined giving",
+          "confidence": 0.9,
+          "id": "[4]",
+          "quote": "Donorbox Live\u2122 Kiosk",
+          "source_name": "Charity Website - Donate",
+          "source_type": "website",
+          "source_url": "https://donorbox.org/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "limited public data regarding long-term program effectiveness",
+          "confidence": 0.85,
+          "id": "[5]",
+          "quote": "Evidence & outcomes: UNVERIFIED",
+          "source_name": "GMG Score Details",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/831171525"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3-year revenue CAGR of 18.4%",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "3-Year Revenue CAGR: 18.4%",
+          "source_name": "Investment Memo Data",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/831171525"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total assets of $109,085",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Total Assets: $109,085",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/831171525"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "exceptional cost-per-beneficiary metric of $1.02",
+          "confidence": 0.9,
+          "id": "[8]",
+          "quote": "$1.02/beneficiary",
+          "source_name": "GMG Score Details",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/831171525"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "low data confidence score of 0.3",
+          "confidence": 1,
+          "id": "[9]",
+          "quote": "Data Confidence (LOW, 0.3)",
+          "source_name": "GMG Score Details",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/831171525"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "official IRS Form 990 filings",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "Tax Year: 2023",
+          "source_name": "ProPublica Nonprofits",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/831171525"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "underserved religious niche",
+          "confidence": 0.9,
+          "id": "[11]",
+          "quote": "Niche cause: RELIGIOUS_CULTURAL (+4)",
+          "source_name": "GMG Score Details",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/831171525"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "peer program ratio median of 89.1%",
+          "confidence": 1,
+          "id": "[12]",
+          "quote": "Peer Program Ratio Median: 89.1%",
+          "source_name": "Investment Memo Data",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/831171525"
+        }
+      ],
+      "amal_score_rationale": "The charity earns a moderate score of 53/100, reflecting a balance between its specialized mission and a need for more robust impact data and transparency.",
+      "amal_scores": {
+        "amal_score": 53,
+        "confidence_scores": {
+          "alignment": 24,
+          "data_confidence": 0.3,
+          "impact": 29
+        },
+        "confidence_tier": "LOW",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Transparency and Data Disclosure",
+          "citation_ids": [
+            "[9]"
+          ],
+          "context": "The organization currently has a <cite id=\"9\">low data confidence score of 0.3</cite>, indicating a need for more public reporting on program outcomes."
+        },
+        {
+          "area": "Impact Measurement",
+          "citation_ids": [
+            "[5]"
+          ],
+          "context": "There is currently <cite id=\"5\">no third-party impact verification</cite> or long-term outcome tracking available for its rehabilitative programs."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "none",
+        "citation_ids": [],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "UNKNOWN",
+        "governance_status": "UNKNOWN",
+        "meets_all_standards": false,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "BBB Wise Giving Alliance assessment is not currently available for this organization."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[9]",
+          "[5]"
+        ],
+        "mitigation_notes": "The organization is in a growth phase and maintains high liquidity to mitigate operational risks.",
+        "risk_factors": [
+          "<cite id=\"9\">Low data confidence (0.3)</cite>",
+          "<cite id=\"5\">Unverified long-term outcomes</cite>"
+        ],
+        "summary": "The primary concern is the <cite id=\"9\">lack of independent impact evaluations</cite> and limited financial transparency beyond basic tax filings."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 4,
+          "rating": 6,
+          "website": 2
+        },
+        "high_confidence_count": 10,
+        "total_count": 12,
+        "unique_sources": 4
+      },
+      "confidence": {
+        "data_freshness": "Financial data from 2023 tax year",
+        "data_gaps": [
+          "Missing program expense ratio",
+          "No third-party impact evaluation",
+          "Limited board governance data"
+        ],
+        "level": "LOW",
+        "notes": "The organization is in a growth phase with limited public transparency documentation.",
+        "score": 30,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Charity Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 30,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Missing program expense breakdown",
+          "No third-party impact evaluation"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 12,
+        "unique_sources": 4,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[3]",
+            "[11]"
+          ],
+          "explanation": "Strong alignment for Muslim donors due to <cite id=\"3\">verified Zakat status</cite> and its focus on an <cite id=\"11\">underserved religious niche</cite>.",
+          "improvement": "Alignment could be enhanced by <cite id=\"3\">clarifying specific Zakat allocation categories</cite> on their digital platforms."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[9]",
+            "[10]",
+            "[5]"
+          ],
+          "explanation": "Credibility is established through <cite id=\"10\">official IRS Form 990 filings</cite> and a clear mission, though it is constrained by <cite id=\"9\">limited public transparency data</cite>.",
+          "improvement": "To strengthen credibility, the organization should <cite id=\"5\">publish an annual impact report</cite> detailing specific rehabilitative outcomes."
+        },
+        "impact": {
+          "citation_ids": [
+            "[8]",
+            "[2]",
+            "[5]"
+          ],
+          "explanation": "The organization shows high efficiency with <cite id=\"8\">$1.02 spent per beneficiary</cite> and maintains <cite id=\"2\">12.1 months of working capital</cite>.",
+          "improvement": "Impact scores would improve by <cite id=\"5\">documenting a clear theory of change</cite> with explicit causal pathways for prisoner rehabilitation."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "RELIGIOUS_CULTURAL",
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "evidence_rigor": "Grade C - Emerging outcome tracking",
+        "geographic_focus": [
+          "USA"
+        ],
+        "giving_style": "Capacity building",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "asnaf (general)",
+          "fi sabilillah"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": null,
+        "annual_revenue": 129820,
+        "citation_ids": [
+          "[6]",
+          "[10]"
+        ],
+        "cn_financial_score": 0,
+        "fundraising_ratio": null,
+        "industry_program_ratio": 0.75,
+        "peer_count": 12,
+        "peer_program_ratio_median": 0.891,
+        "program_expense_ratio": null,
+        "reserves_months": 12.1,
+        "revenue_cagr_3yr": 18.4,
+        "working_capital_months": 12.1,
+        "yearly_financials": [
+          {
+            "expenses": 102250,
+            "net_assets": 0,
+            "revenue": 129820,
+            "year": 2023
+          },
+          {
+            "expenses": 91341,
+            "net_assets": 0,
+            "revenue": 107097,
+            "year": 2022
+          },
+          {
+            "expenses": 35746,
+            "net_assets": 0,
+            "revenue": 92553,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [],
+        "domestic_grants": 0,
+        "foreign_grants": 0,
+        "grant_count": 0,
+        "grant_strategy": "Direct service delivery and capacity building",
+        "is_significant_grantmaker": false,
+        "regions_served": [
+          "USA"
+        ],
+        "top_recipients": [],
+        "total_grants": 0
+      },
+      "headline": "Link Outside provides charitable educational and religious programming to incarcerated individuals with a focus on rehabilitation and spiritual growth.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who want to support the spiritual rehabilitation of incarcerated Muslims through a lean, Zakat-eligible organization.",
+        "citation_ids": [
+          "[1]",
+          "[3]",
+          "[5]"
+        ],
+        "donor_motivations": [
+          "Want to fulfill Zakat obligations for an underserved population",
+          "Believe in the power of religious education for prisoner rehabilitation",
+          "Value high financial liquidity and low cost-per-beneficiary metrics"
+        ],
+        "giving_considerations": [
+          "The organization is small-scale with revenue under $150,000",
+          "Limited data is available regarding long-term recidivism rates",
+          "Donations support capacity building rather than direct material aid"
+        ],
+        "not_ideal_for": "Donors requiring rigorous third-party academic impact studies or those seeking large-scale international humanitarian relief."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[5]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects an emerging organization with <cite id=\"5\">unverified outcome data</cite> but strong internal efficiency metrics.",
+        "external_evaluations": [],
+        "outcome_tracking_years": 0,
+        "rct_available": false,
+        "theory_of_change": "IMPLICIT",
+        "theory_of_change_summary": "Link Outside operates on the premise that religious education and spiritual connection reduce recidivism and aid in the successful reintegration of incarcerated individuals.",
+        "why_evidence_matters": "Evidence ensures that spiritual programming effectively translates into lower recidivism and positive behavioral change."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[6]",
+          "[1]"
+        ],
+        "founded_year": 2019,
+        "maturity_stage": "Growth",
+        "revenue_growth_3yr": 18.4,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "With <cite id=\"1\">revenue under $130,000</cite> and a massive target population in the US prison system, there is significant room for growth.",
+        "strategic_priorities": [
+          "Expand educational outreach",
+          "Enhance digital fundraising capacity"
+        ],
+        "years_operating": 7
+      },
+      "organizational_capacity": {
+        "board_size": 0,
+        "ceo_compensation": 0,
+        "ceo_compensation_pct_revenue": 0,
+        "ceo_name": "Not Disclosed",
+        "citation_ids": [
+          "[10]"
+        ],
+        "employees_count": 0,
+        "geographic_reach": "USA",
+        "has_conflict_policy": false,
+        "has_financial_audit": false,
+        "independent_board_pct": 0,
+        "payroll_to_revenue_pct": 0,
+        "programs_count": 5,
+        "staff_per_million_revenue": 0,
+        "volunteers_count": 0
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[8]",
+          "[12]"
+        ],
+        "differentiator": "Distinguished by its <cite id=\"8\">very low cost-per-beneficiary</cite> compared to the <cite id=\"12\">peer program ratio median of 89.1%</cite>.",
+        "peer_group": "Religious and Cultural Advocacy",
+        "similar_orgs": [
+          "Muslim Bar Association of New York",
+          "Rebuilding Alliance"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Legal focus vs spiritual focus",
+          "name": "Muslim Bar Association of New York"
+        },
+        {
+          "differentiator": "Professional advocacy vs direct prisoner outreach",
+          "name": "National Association of Muslim Lawyers"
+        },
+        {
+          "differentiator": "Larger international scale",
+          "name": "Rebuilding Alliance"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[2]"
+          ],
+          "detail": "The organization maintains <cite id=\"2\">12.1 months of working capital</cite>, ensuring it can sustain operations during funding fluctuations.",
+          "point": "Strong Financial Liquidity"
+        },
+        {
+          "citation_ids": [
+            "[3]"
+          ],
+          "detail": "Link Outside provides a <cite id=\"3\">clear pathway for Zakat donations</cite>, specifically serving the spiritual needs of marginalized Muslim populations.",
+          "point": "Verified Zakat Eligibility"
+        },
+        {
+          "citation_ids": [
+            "[6]"
+          ],
+          "detail": "The charity has achieved a <cite id=\"6\">3-year revenue CAGR of 18.4%</cite>, demonstrating a steady expansion of its donor base.",
+          "point": "Consistent Revenue Growth"
+        }
+      ],
+      "strengths_deep_dive": [
+        "Link Outside's primary strength lies in its financial resilience and niche focus. With <cite id=\"7\">total assets of $109,085</cite> against minimal liabilities, the organization maintains a lean but stable balance sheet. This financial health is paired with an <cite id=\"8\">exceptional cost-per-beneficiary metric of $1.02</cite>, which is highly competitive for organizations in the religious and cultural sector. By focusing on capacity building and spiritual education, the organization maximizes the reach of its <cite id=\"1\">$129,820 annual budget</cite>."
+      ],
+      "summary": "Link Outside is a specialized non-profit organization focused on providing educational and religious programming to incarcerated individuals across the United States. The organization operates with a mission centered on rehabilitation and spiritual growth, reporting a <cite id=\"1\">total revenue of $129,820</cite> in the 2023 tax year. Despite its relatively small financial scale, the charity maintains a <cite id=\"2\">healthy liquidity position with 12.1 months of working capital</cite>, providing significant operational stability for its outreach efforts. Link Outside is <cite id=\"3\">verified as Zakat-eligible</cite>, allowing Muslim donors to direct their obligatory giving toward the spiritual and educational support of the incarcerated community. The organization leverages modern fundraising technology, including <cite id=\"4\">Donorbox Live\u2122 Kiosks for streamlined giving</cite>, to support its niche mission within the religious and cultural sector. While the organization demonstrates a high level of financial health for its size, it currently operates with <cite id=\"5\">limited public data regarding long-term program effectiveness</cite>, which is common for emerging organizations in the advocacy and religious space. Its growth trajectory is notable, with a <cite id=\"6\">3-year revenue CAGR of 18.4%</cite>, indicating increasing donor support for its unique rehabilitative model.",
+      "zakat_guidance": {
+        "classification": null,
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }

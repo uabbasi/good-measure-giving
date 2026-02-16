@@ -258,8 +258,9 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, currentView
   const revenue = financials?.totalRevenue || charity.rawData?.total_revenue;
   const beneficiariesCount = charity.beneficiariesServedAnnually;
   const beneficiarySourceUrl = (charity as any)?.sourceAttribution?.beneficiaries_served_annually?.source_url;
-  const beneficiariesVerified = charity.beneficiariesConfidence === 'verified'
-    || (typeof beneficiarySourceUrl === 'string' && beneficiarySourceUrl.startsWith('http'));
+  const beneficiariesVerified = charity.beneficiariesConfidence != null
+    ? charity.beneficiariesConfidence === 'verified'
+    : (typeof beneficiarySourceUrl === 'string' && beneficiarySourceUrl.startsWith('http'));
   const beneficiariesExcludedFromScoring = charity.beneficiariesExcludedFromScoring
     ?? Boolean(beneficiariesCount && !beneficiariesVerified);
 

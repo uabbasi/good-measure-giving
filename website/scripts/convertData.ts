@@ -653,9 +653,26 @@ async function convertAllCharities() {
   console.log(`   ✅ Success: ${successCount}`);
   console.log(`   ❌ Errors: ${errorCount}`);
 
-  // Find the top-scoring charity for the landing page sample audit
+  // Find the top-scoring charity for the landing page sample audit.
+  // Guardrail: if CPB component is in play, require cited beneficiary source attribution.
+  const hasCitedBeneficiarySource = (charity: CharityProfile): boolean => {
+    const sourceUrl = (charity as any)?.sourceAttribution?.beneficiaries_served_annually?.source_url;
+    return typeof sourceUrl === 'string' && /^https?:\/\//.test(sourceUrl);
+  };
+
+  const usesBeneficiaryCpb = (charity: CharityProfile): boolean => {
+    const components = (charity as any)?.amalEvaluation?.score_details?.impact?.components;
+    if (!Array.isArray(components)) return false;
+    return components.some((c: any) =>
+      c?.name === 'Cost Per Beneficiary'
+      && typeof c?.evidence === 'string'
+      && /\$[\d,.]+\/beneficiary/i.test(c.evidence)
+    );
+  };
+
   const topCharity = convertedCharities
     .filter(c => c.amalEvaluation?.amal_score && c.amalEvaluation.amal_score >= 70)
+    .filter(c => !usesBeneficiaryCpb(c) || hasCitedBeneficiarySource(c))
     .sort((a, b) => (b.amalEvaluation?.amal_score || 0) - (a.amalEvaluation?.amal_score || 0))[0];
 
   const topCharityData = topCharity ? {

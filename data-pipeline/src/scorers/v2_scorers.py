@@ -300,6 +300,23 @@ GENERAL_CPB_KNOTS = [
     (float("inf"), 3),
 ]
 
+# Beneficiary trust calibration for CPB usage.
+# Verified: full credit.
+# Uncorroborated but plausible: discounted credit + capped upside.
+# Uncorroborated and implausible: excluded.
+BENEFICIARY_CONFIDENCE_WEIGHTS = {
+    "VERIFIED": 1.0,
+    "UNCORROBORATED_PLAUSIBLE": 0.40,
+    "UNCORROBORATED_IMPLAUSIBLE": 0.0,
+}
+UNCORROBORATED_CPB_RAW_CAP = 5
+MAX_PLAUSIBLE_BENEFICIARIES = 100_000_000
+MIN_PLAUSIBLE_DOLLARS_PER_BENEFICIARY = 1.0
+MIN_PLAUSIBLE_DOLLARS_PER_BENEFICIARY_BY_CATEGORY = {
+    "MEDICAL_HEALTH": 2.0,
+    "HUMANITARIAN": 2.0,
+}
+
 # Active conflict zones for 1.5x threshold adjustment
 CONFLICT_ZONES = {
     "syria",
@@ -1118,6 +1135,9 @@ class ImpactScorer:
 
         Uses smooth interpolation between knots instead of step functions.
         """
+        has_beneficiary_count = bool(metrics.beneficiaries_served_annually and metrics.beneficiaries_served_annually > 0)
+        beneficiary_confidence = self._beneficiary_confidence(metrics)
+        has_verified_beneficiary_source = beneficiary_confidence == "VERIFIED"
         cpb = self._calculate_cpb(metrics)
 
         # Method 1: GiveWell data (highest fidelity)
@@ -1138,12 +1158,20 @@ class ImpactScorer:
         if cpb is None or cpb <= 0:
             # Partial credit based on program ratio when CPB data is unavailable
             pr = metrics.program_expense_ratio
+            missing_reason = "No beneficiary data available for cost-per-beneficiary scoring"
+            if has_beneficiary_count and beneficiary_confidence in (
+                "UNCORROBORATED_IMPLAUSIBLE",
+                "CITED_IMPLAUSIBLE",
+            ):
+                missing_reason = "Beneficiary count appears implausible; CPB excluded"
+            elif has_beneficiary_count and not has_verified_beneficiary_source:
+                missing_reason = "Beneficiary count exists but CPB inputs are incomplete; using proxy"
             if pr is not None and pr >= 0.85:
-                return None, 9, "No beneficiary data; high program ratio (≥85%) suggests efficient delivery"
+                return None, 9, f"{missing_reason}; high program ratio (≥85%) suggests efficient delivery"
             elif pr is not None and pr >= 0.75:
-                return None, 6, "No beneficiary data; good program ratio (≥75%) suggests reasonable delivery"
+                return None, 6, f"{missing_reason}; good program ratio (≥75%) suggests reasonable delivery"
             elif pr is not None and pr >= 0.65:
-                return None, 3, "No beneficiary data; moderate program ratio (≥65%)"
+                return None, 3, f"{missing_reason}; moderate program ratio (≥65%)"
             return None, 0, "Insufficient data for cost-per-beneficiary calculation"
 
         # Method 2: Cause-adjusted benchmark with interpolation
@@ -1160,12 +1188,29 @@ class ImpactScorer:
             adjusted_cpb = cpb / multiplier if multiplier > 1.0 else cpb
             score = round(interpolate_score(adjusted_cpb, knots))
             label = self._cpb_label(score)
-            return cpb, score, f"${cpb:.2f}/beneficiary ({label} for {effective_cause})"
+            evidence = f"${cpb:.2f}/beneficiary ({label} for {effective_cause})"
+        else:
+            # Method 3: General benchmark with interpolation (max 15 pts)
+            adjusted_cpb = cpb / multiplier if multiplier > 1.0 else cpb
+            score = round(interpolate_score(adjusted_cpb, GENERAL_CPB_KNOTS))
+            evidence = f"${cpb:.2f}/beneficiary (general benchmark)"
 
-        # Method 3: General benchmark with interpolation (max 15 pts)
-        adjusted_cpb = cpb / multiplier if multiplier > 1.0 else cpb
-        score = round(interpolate_score(adjusted_cpb, GENERAL_CPB_KNOTS))
-        return cpb, score, f"${cpb:.2f}/beneficiary (general benchmark)"
+        if beneficiary_confidence == "VERIFIED":
+            return cpb, score, evidence
+        if beneficiary_confidence in ("UNCORROBORATED_IMPLAUSIBLE", "CITED_IMPLAUSIBLE"):
+            return None, 0, "Beneficiary count appears implausible; CPB excluded pending review"
+
+        # Uncorroborated but plausible: keep some signal, but strongly discount it.
+        weighted_score = round(score * BENEFICIARY_CONFIDENCE_WEIGHTS["UNCORROBORATED_PLAUSIBLE"])
+        weighted_score = min(weighted_score, UNCORROBORATED_CPB_RAW_CAP)
+        return (
+            cpb,
+            weighted_score,
+            (
+                f"{evidence}; uncorroborated beneficiary estimate "
+                f"(confidence-weighted to {weighted_score}/{score})"
+            ),
+        )
 
     def _calculate_cpb(self, metrics: CharityMetrics) -> Optional[float]:
         """Calculate cost per beneficiary."""
@@ -1174,6 +1219,62 @@ class ImpactScorer:
             if expenses and expenses > 0:
                 return expenses / metrics.beneficiaries_served_annually
         return None
+
+    def _has_cited_beneficiary_source(self, metrics: CharityMetrics) -> bool:
+        """Return whether beneficiary count has a canonical source URL."""
+        source_attr = metrics.source_attribution or {}
+        beneficiary_meta = source_attr.get("beneficiaries_served_annually")
+        if not isinstance(beneficiary_meta, dict):
+            return False
+        source_url = beneficiary_meta.get("source_url")
+        return isinstance(source_url, str) and source_url.startswith(("http://", "https://"))
+
+    def _is_beneficiary_count_plausible(self, metrics: CharityMetrics) -> bool:
+        """Heuristic plausibility check for beneficiary counts."""
+        beneficiaries = metrics.beneficiaries_served_annually
+        if not isinstance(beneficiaries, (int, float)) or beneficiaries <= 0:
+            return False
+        if beneficiaries > MAX_PLAUSIBLE_BENEFICIARIES:
+            return False
+
+        expenses = metrics.program_expenses or metrics.total_expenses
+        if isinstance(expenses, (int, float)) and expenses > 0:
+            dollars_per_beneficiary = expenses / beneficiaries
+            min_plausible = self._min_plausible_dollars_per_beneficiary(metrics)
+            if dollars_per_beneficiary < min_plausible:
+                return False
+        return True
+
+    def _min_plausible_dollars_per_beneficiary(self, metrics: CharityMetrics) -> float:
+        """Return category-adjusted minimum plausible dollars-per-beneficiary floor."""
+        primary_category = metrics.primary_category
+        if isinstance(primary_category, str):
+            normalized = primary_category.upper()
+            if normalized in MIN_PLAUSIBLE_DOLLARS_PER_BENEFICIARY_BY_CATEGORY:
+                return MIN_PLAUSIBLE_DOLLARS_PER_BENEFICIARY_BY_CATEGORY[normalized]
+
+        detected_cause = metrics.detected_cause_area
+        if isinstance(detected_cause, str):
+            normalized = detected_cause.upper()
+            if normalized in MIN_PLAUSIBLE_DOLLARS_PER_BENEFICIARY_BY_CATEGORY:
+                return MIN_PLAUSIBLE_DOLLARS_PER_BENEFICIARY_BY_CATEGORY[normalized]
+
+        return MIN_PLAUSIBLE_DOLLARS_PER_BENEFICIARY
+
+    def _beneficiary_confidence(self, metrics: CharityMetrics) -> str:
+        """Classify trust tier for beneficiary-derived CPB calculations."""
+        beneficiaries = metrics.beneficiaries_served_annually
+        if not isinstance(beneficiaries, (int, float)) or beneficiaries <= 0:
+            return "NONE"
+        has_cited_source = self._has_cited_beneficiary_source(metrics)
+        is_plausible = self._is_beneficiary_count_plausible(metrics)
+        if has_cited_source and is_plausible:
+            return "VERIFIED"
+        if has_cited_source and not is_plausible:
+            return "CITED_IMPLAUSIBLE"
+        if is_plausible:
+            return "UNCORROBORATED_PLAUSIBLE"
+        return "UNCORROBORATED_IMPLAUSIBLE"
 
     def _cpb_label(self, points: int) -> str:
         if points >= 18:

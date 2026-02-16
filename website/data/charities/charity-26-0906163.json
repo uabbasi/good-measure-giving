@@ -2,7 +2,7 @@
   "id": "26-0906163",
   "ein": "26-0906163",
   "name": "North-American Islamic Shelter for the Abused",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "NISA works to empower victims of domestic violence by providing information, support services, advocacy, counseling and shelter with the utmost confidentiality.",
   "programs": [
     "Help Line",
@@ -47,30 +47,26 @@
     "netAssets": 4324825,
     "workingCapitalMonths": "177.70"
   },
-  "baselineGovernance": {
-    "boardSize": 4,
-    "independentBoardMembers": null,
-    "ceoCompensation": null
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
-      "Victims",
+      "Women",
       "Men",
-      "Women"
+      "Victims"
     ],
     "geographicCoverage": [
-      "United States",
-      "Bay Area"
+      "Bay Area",
+      "United States"
     ]
   },
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-14 21:27:34",
+  "lastUpdated": "2026-02-15 14:48:51",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/260906163#financials",
-      "timestamp": "2026-02-09T21:35:03",
+      "timestamp": "2026-02-15T12:03:16",
       "value": 32457
     },
     "claims_zakat_eligible": {
@@ -88,7 +84,7 @@
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/260906163#financials",
-      "timestamp": "2026-02-09T21:35:03",
+      "timestamp": "2026-02-15T12:03:16",
       "value": 36207
     },
     "has_audited_financials": {
@@ -100,25 +96,25 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163",
-      "timestamp": "2026-02-09T21:35:01",
+      "timestamp": "2026-02-15T12:03:14",
       "value": "P43"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/260906163#financials",
-      "timestamp": "2026-02-09T21:35:03",
+      "timestamp": "2026-02-15T12:03:16",
       "value": 0.7929
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/260906163#financials",
-      "timestamp": "2026-02-09T21:35:03",
+      "timestamp": "2026-02-15T12:03:16",
       "value": 223365
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163",
-      "timestamp": "2026-02-09T21:35:01",
+      "timestamp": "2026-02-15T12:03:14",
       "value": 778560
     },
     "working_capital_months": {
@@ -129,7 +125,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163",
-      "timestamp": "2026-02-09T21:35:01",
+      "timestamp": "2026-02-15T12:03:14",
       "value": 177.7
     }
   },
@@ -162,9 +158,12 @@
   "noFilings": false,
   "donationUrl": "https://asknisa.org/donate/",
   "beneficiariesServedAnnually": null,
+  "beneficiariesSource": null,
+  "beneficiariesConfidence": null,
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": null,
   "zakatClaimEvidence": [
-    "Found 'accept zakat' on https://asknisa.org/ramadan-newsletter-spring-2021-update/ (https://asknisa.org/ramadan-newsletter-spring-2021-update/)"
+    "Found 'accept zakat' on https://asknisa.org/ramadan-newsletter-spring-2021-update/ (https://asknisa.org/ramadan-newsletter-spring-2021-update/) (Source: https://asknisa.org/donate/)"
   ],
   "archetype": "RESILIENCE",
   "ui_signals_v1": {
@@ -265,7 +264,7 @@
       "impact": {
         "components": [
           {
-            "evidence": "No beneficiary data; good program ratio (\u226575%) suggests reasonable delivery",
+            "evidence": "No beneficiary data available for cost-per-beneficiary scoring; good program ratio (\u226575%) suggests reasonable delivery",
             "improvement_suggestion": "Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
             "improvement_value": 3,
             "name": "Cost Per Beneficiary",
@@ -335,6 +334,26 @@
         "rubric_archetype": "COMMUNITY",
         "score": 26
       },
+      "judge_issues": [
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "working_capital_months",
+          "judge": "synthesize_quality",
+          "message": "Extremely high working capital (177.7 months) may indicate hoarding or data error",
+          "severity": "warning"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -347,47 +366,578 @@
         "asnaf_category": "amil",
         "bonus_points": 0,
         "charity_claims_zakat": true,
-        "claim_evidence": "Found 'accept zakat' on https://asknisa.org/ramadan-newsletter-spring-2021-update/ (https://asknisa.org/ramadan-newsletter-spring-2021-update/)",
+        "claim_evidence": "Found 'accept zakat' on https://asknisa.org/ramadan-newsletter-spring-2021-update/ (https://asknisa.org/ramadan-newsletter-spring-2021-update/) (Source: https://asknisa.org/donate/)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "NISA reported total revenue of $778,560, a program expense ratio of 79.3%, working capital of 177.7 months, and fundraising efficiency of $0.05 per $1 raised.",
+          "claim": "NISA reported total revenue of $778,560, a program expense ratio of 79.3%, fundraising efficiency of $0.05 per $1 raised, and 177.7 months of working capital.",
           "id": "[1]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163"
         },
         {
-          "claim": "NISA provides programs including a Help Line and the NISA Home for victims of domestic violence.",
+          "claim": "NISA's programs include a Help Line and the NISA Home for victims of domestic violence.",
           "id": "[2]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/260906163"
         },
         {
-          "claim": "The organization is ZAKAT-ELIGIBLE and accepts donations through various methods to support its mission.",
+          "claim": "The organization is zakat-eligible and provides specific options for donors to contribute zakat funds.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://asknisa.org/donate/"
         }
       ],
-      "amal_score_rationale": "NISA earns a moderate overall score due to its strong financial efficiency and specialized mission, though its total score is constrained by low data confidence and limited external impact verification.",
+      "amal_score_rationale": "NISA earns a moderate overall score by demonstrating strong financial efficiency and a high program expense ratio, though its total impact score is limited by a lack of external cost-effectiveness data.",
       "areas_for_improvement": [
-        "Limited third-party data availability resulting in a low data confidence score",
-        "Need for more transparent impact reporting to verify long-term outcomes for beneficiaries"
+        "Low data confidence due to limited third-party verification and public impact metrics",
+        "Small organizational scale with total revenue of $778,560"
       ],
       "dimension_explanations": {
-        "alignment": "The organization shows medium alignment for Muslim donors as it addresses the urgent cause of domestic poverty and is ZAKAT-ELIGIBLE [3]. However, the low data confidence score of 0.3 suggests that donors have limited access to verified independent reporting on organizational performance [2].",
-        "impact": "NISA operates as a direct service provider, utilizing a total revenue of $778,560 to maintain a program expense ratio of 79.3% [1]. While the organization maintains a massive 177.7 months of working capital, the lack of third-party impact evaluations results in a medium impact score [1][2]."
+        "alignment": "With an alignment score of 31/50, NISA offers a medium fit for donors interested in addressing domestic poverty through a culturally sensitive lens [2]. The organization facilitates religious giving by accepting zakat donations through its website [3].",
+        "impact": "The organization focuses on the direct provision of services, including shelter and counseling, with a program expense ratio of 79.3% [1]. While financial health is strong with 177.7 months of working capital, the impact score of 26/50 reflects a lack of publicly available data regarding specific cost-per-beneficiary outcomes [1][2]."
       },
-      "headline": "The North-American Islamic Shelter Forthe Abused (NISA) provides a critical safety net for victims of domestic violence through confidential shelter, counseling, and support services.",
+      "headline": "The North-American Islamic Shelter Forthe Abused (NISA) provides critical support services and shelter to empower victims of domestic violence within a confidential framework.",
       "strengths": [
-        "High program expense ratio of 79.3%, indicating the majority of funds directly support survivor services",
-        "Exceptional fundraising efficiency with only $0.05 spent to raise every $1",
+        "High program expense ratio of 79.3%, indicating the majority of funds directly support victim services",
+        "Exceptional fundraising efficiency, spending only $0.05 to raise every $1",
         "Extremely robust liquidity with 177.7 months of working capital available"
       ],
-      "summary": "NISA is a California-based nonprofit dedicated to empowering survivors of domestic abuse by providing essential resources including a dedicated helpline and the NISA Home shelter [1][2]. The organization is recognized as ZAKAT-ELIGIBLE, allowing Muslim donors to fulfill their religious obligations while supporting domestic poverty relief [3]."
+      "summary": "NISA operates a dedicated helpline and the NISA Home to offer advocacy, counseling, and emergency housing for those escaping domestic abuse [1][2]. The organization is recognized as zakat-eligible, allowing Muslim donors to fulfill their religious obligations while supporting domestic poverty relief [3]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "empowering victims of domestic violence",
+          "confidence": 1,
+          "id": "[1]",
+          "quote": "NISA works to empower victims of domestic violence",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "2002",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "Founded: 2002",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/260906163"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "confidential advocacy, counseling, and shelter",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "providing information, support services, advocacy, counseling and shelter with the utmost confidentiality",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Bay Area",
+          "confidence": 0.9,
+          "id": "[4]",
+          "quote": "Areas Served: Bay Area",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "dedicated helpline and the NISA Home",
+          "confidence": 1,
+          "id": "[5]",
+          "quote": "Programs: Help Line, NISA Home",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/260906163"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $778,560",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "Total Revenue: $778,560",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "public contributions totaling $776,684",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Contributions: $776,684",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "program expense ratio of 79.3%",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Program Expense Ratio: 79.3%",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "zakat-eligible",
+          "confidence": 1,
+          "id": "[9]",
+          "quote": "Zakat-eligible",
+          "source_name": "Charity Website - Donate",
+          "source_type": "website",
+          "source_url": "https://asknisa.org/donate/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$0.05 to raise every $1",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "Fundraising Efficiency: $0.05 per $1 raised",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/260906163"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "177.7 months of working capital",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "Working capital: 177.7 months",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/260906163"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total assets of $4,329,061",
+          "confidence": 1,
+          "id": "[12]",
+          "quote": "Total Assets: $4,329,061",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "liabilities of only $4,236",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "Total Liabilities: $4,236",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "24-year track record",
+          "confidence": 1,
+          "id": "[14]",
+          "quote": "Founded 2002",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/260906163"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "no public beneficiary data available",
+          "confidence": 1,
+          "id": "[15]",
+          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "low data confidence",
+          "confidence": 1,
+          "id": "[16]",
+          "quote": "Data Confidence (LOW, 0.3)",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "only 4 members",
+          "confidence": 1,
+          "id": "[17]",
+          "quote": "Board governance: MINIMAL (4 members)",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "tracking outcomes over at least 3 years",
+          "confidence": 1,
+          "id": "[18]",
+          "quote": "track outcomes over at least 3 years",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "domestic poverty and crisis relief",
+          "confidence": 1,
+          "id": "[19]",
+          "quote": "Cause area: Domestic Poverty",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "zakat allocation policy",
+          "confidence": 0.8,
+          "id": "[20]",
+          "quote": "Clarify zakat allocation policy",
+          "source_name": "Charity Website - Donate",
+          "source_type": "website",
+          "source_url": "https://asknisa.org/donate/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3-year revenue CAGR of -20.7%",
+          "confidence": 1,
+          "id": "[21]",
+          "quote": "3-Year Revenue CAGR: -20.7%",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163"
+        }
+      ],
+      "amal_score_rationale": "NISA earns a moderate overall score by demonstrating strong financial efficiency and a high program expense ratio, though its total impact score is limited by a lack of external cost-effectiveness data.",
+      "amal_scores": {
+        "amal_score": 57,
+        "confidence_scores": {
+          "alignment": 31,
+          "data_confidence": 0.3,
+          "impact": 26
+        },
+        "confidence_tier": "LOW",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Limited Impact Transparency",
+          "citation_ids": [
+            "[15]"
+          ],
+          "context": "There is currently <cite id=\"15\">no public beneficiary data available</cite> to assess the cost-effectiveness of services per individual served."
+        },
+        {
+          "area": "Excessive Capital Reserves",
+          "citation_ids": [
+            "[11]"
+          ],
+          "context": "The organization holds <cite id=\"11\">over 177.7 months of working capital</cite> in reserve, which may suggest a need for more aggressive deployment of funds into mission expansion."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "none",
+        "citation_ids": [],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "UNKNOWN",
+        "governance_status": "UNKNOWN",
+        "meets_all_standards": false,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "No BBB Wise Giving Alliance assessment is currently available for this organization."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[21]",
+          "[15]"
+        ],
+        "mitigation_notes": "The organization's massive reserves mitigate the risk of service interruption despite declining annual revenue.",
+        "risk_factors": [
+          "<cite id=\"21\">Declining revenue trend</cite>",
+          "<cite id=\"15\">Lack of third-party impact verification</cite>"
+        ],
+        "summary": "The primary concern is the <cite id=\"21\">3-year revenue CAGR of -20.7%</cite>, indicating a significant decline in funding scale."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 14,
+          "rating": 5,
+          "website": 2
+        },
+        "high_confidence_count": 20,
+        "total_count": 21,
+        "unique_sources": 3
+      },
+      "confidence": {
+        "data_freshness": "Financial data from 2023 Form 990",
+        "data_gaps": [
+          "Missing beneficiary counts",
+          "No external impact evaluation",
+          "Small board size"
+        ],
+        "level": "LOW",
+        "notes": "Financial metrics are solid, but impact transparency is very limited.",
+        "score": 30,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 30,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Missing beneficiary counts",
+          "No external impact evaluation",
+          "Small board size"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 21,
+        "unique_sources": 3,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[9]",
+            "[19]",
+            "[20]"
+          ],
+          "explanation": "Strong alignment for Muslim donors due to <cite id=\"9\">zakat eligibility</cite> and a focus on <cite id=\"19\">domestic poverty and crisis relief</cite>.",
+          "improvement": "Clarifying the <cite id=\"20\">zakat allocation policy</cite> and specific eligible use categories would further enhance donor trust."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[2]",
+            "[16]",
+            "[17]",
+            "[15]"
+          ],
+          "explanation": "Donors can verify NISA's long-standing presence since <cite id=\"2\">2002</cite>, though credibility is currently limited by <cite id=\"16\">low data confidence</cite> and a small board of <cite id=\"17\">only 4 members</cite>.",
+          "improvement": "To strengthen credibility, the charity should <cite id=\"15\">publish consistent beneficiary counts</cite> and expand its board governance to improve oversight."
+        },
+        "impact": {
+          "citation_ids": [
+            "[3]",
+            "[8]",
+            "[18]"
+          ],
+          "explanation": "Impact is driven by <cite id=\"3\">direct provision of shelter and counseling</cite>, supported by a <cite id=\"8\">79.3% program ratio</cite>.",
+          "improvement": "Impact measurement would benefit from <cite id=\"18\">tracking outcomes over at least 3 years</cite> or seeking an external evaluation of its shelter programs."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "DOMESTIC VIOLENCE",
+        "citation_ids": [
+          "[1]",
+          "[9]"
+        ],
+        "evidence_rigor": "Grade C - Emerging evidence with clear theory of change",
+        "geographic_focus": [
+          "Bay Area, United States"
+        ],
+        "giving_style": "Direct service",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "fuqara (poor)",
+          "masakin (needy)"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.185,
+        "annual_revenue": 778560,
+        "citation_ids": [
+          "[6]",
+          "[8]",
+          "[21]"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": 0.05,
+        "industry_program_ratio": 0.75,
+        "peer_count": 0,
+        "peer_program_ratio_median": null,
+        "program_expense_ratio": 0.7929,
+        "reserves_months": 177.7,
+        "revenue_cagr_3yr": -20.7,
+        "working_capital_months": 177.7,
+        "yearly_financials": [
+          {
+            "expenses": 292029,
+            "net_assets": 4324825,
+            "revenue": 778560,
+            "year": 2023
+          },
+          {
+            "expenses": 253527,
+            "net_assets": 3679118,
+            "revenue": 789265,
+            "year": 2022
+          },
+          {
+            "expenses": 268442,
+            "net_assets": 3122857,
+            "revenue": 1236960,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[1]"
+        ],
+        "domestic_grants": 0,
+        "foreign_grants": 0,
+        "grant_count": 0,
+        "grant_strategy": "Direct service provider, not a grantmaking entity",
+        "is_significant_grantmaker": false,
+        "regions_served": [
+          "United States"
+        ],
+        "top_recipients": [],
+        "total_grants": 0
+      },
+      "headline": "The North-American Islamic Shelter Forthe Abused (NISA) provides critical support services and shelter to empower victims of domestic violence within a confidential framework.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who prioritize supporting vulnerable women and children in the US through a culturally-sensitive, zakat-eligible Islamic institution.",
+        "citation_ids": [
+          "[1]",
+          "[9]",
+          "[21]"
+        ],
+        "donor_motivations": [
+          "Want to address domestic violence within the Muslim community",
+          "Prefer supporting established local organizations with deep roots",
+          "Value high financial stability and low debt in a charity",
+          "Seek to fulfill zakat through domestic social services"
+        ],
+        "giving_considerations": [
+          "The organization has very high reserves, meaning your gift contributes to long-term sustainability",
+          "Detailed impact metrics (e.g., lives changed) are not yet publicly detailed",
+          "Revenue has been declining, making new contributions important for reversing the trend"
+        ],
+        "not_ideal_for": "Donors seeking high-growth organizations or those who require rigorous, third-party verified impact data before giving."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[1]",
+          "[15]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects a clear theory of change and direct service delivery, but a lack of external evaluations or beneficiary tracking.",
+        "external_evaluations": [],
+        "outcome_tracking_years": 0,
+        "rct_available": false,
+        "theory_of_change": "PUBLISHED",
+        "theory_of_change_summary": "NISA provides immediate safety (shelter/helpline) and long-term empowerment (counseling/advocacy) to break the cycle of abuse.",
+        "why_evidence_matters": "Evidence ensures that shelter and counseling services are effectively transitioning victims to long-term safety."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[2]",
+          "[21]"
+        ],
+        "founded_year": 2002,
+        "maturity_stage": "Established",
+        "revenue_growth_3yr": -20.7,
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "While reserves are high, the declining revenue trend suggests a need for renewed donor engagement to sustain operations.",
+        "strategic_priorities": [
+          "Maintain NISA Home operations",
+          "Expand counseling services"
+        ],
+        "years_operating": 24
+      },
+      "organizational_capacity": {
+        "board_size": 4,
+        "ceo_compensation": 0,
+        "ceo_compensation_pct_revenue": 0,
+        "ceo_name": "Not Listed",
+        "citation_ids": [
+          "[1]",
+          "[17]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "Bay Area, California",
+        "has_conflict_policy": true,
+        "has_financial_audit": false,
+        "independent_board_pct": 1,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 5,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "differentiator": "Distinguished by its <cite id=\"3\">confidential, culturally-sensitive framework</cite> for the Muslim community.",
+        "peer_group": "Domestic Violence Shelters",
+        "similar_orgs": [
+          "ICNA Relief",
+          "Muslim Aid USA"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Broader national scope and diverse social services",
+          "name": "ICNA Relief"
+        },
+        {
+          "differentiator": "Focus on international humanitarian relief",
+          "name": "Muslim Aid USA"
+        },
+        {
+          "differentiator": "Larger scale international operations",
+          "name": "Helping Hand for Relief"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[8]"
+          ],
+          "detail": "NISA directs <cite id=\"8\">79.3% of its total expenses</cite> toward its core programs, exceeding common benchmarks for direct service delivery.",
+          "point": "High Programmatic Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[10]"
+          ],
+          "detail": "The organization spends only <cite id=\"10\">$0.05 to raise every $1</cite> in revenue, maximizing the impact of every dollar donated.",
+          "point": "Exceptional Fundraising Leanness"
+        },
+        {
+          "citation_ids": [
+            "[11]"
+          ],
+          "detail": "NISA maintains <cite id=\"11\">177.7 months of working capital</cite>, providing an extraordinary level of stability for its shelter operations.",
+          "point": "Robust Financial Liquidity"
+        }
+      ],
+      "strengths_deep_dive": [
+        "NISA's financial model is characterized by extreme fiscal conservatism and low overhead. With <cite id=\"12\">total assets of $4,329,061</cite> and minimal <cite id=\"13\">liabilities of only $4,236</cite>, the organization is exceptionally well-positioned to withstand economic fluctuations. This stability is bolstered by a <cite id=\"14\">24-year track record</cite> of service since its founding in 2002, establishing it as a mature institution within the Bay Area's social service landscape."
+      ],
+      "summary": "The North-American Islamic Shelter Forthe Abused (NISA) is a specialized non-profit organization dedicated to <cite id=\"1\">empowering victims of domestic violence</cite> through a comprehensive support framework. Founded in <cite id=\"2\">2002</cite>, the organization addresses a critical gap in social services by providing <cite id=\"3\">confidential advocacy, counseling, and shelter</cite> tailored to the needs of the Muslim community and beyond. Operating primarily in the <cite id=\"4\">Bay Area</cite>, NISA maintains a multi-faceted approach to crisis intervention, including a <cite id=\"5\">dedicated helpline and the NISA Home</cite>, which serves as a secure environment for those escaping abuse. Financially, the organization reported <cite id=\"6\">total revenue of $778,560</cite> in 2023, with a significant portion of its funding derived from <cite id=\"7\">public contributions totaling $776,684</cite>. Despite its modest scale, NISA demonstrates high operational efficiency, maintaining a <cite id=\"8\">program expense ratio of 79.3%</cite>, ensuring that the majority of donor funds directly support victim services. The organization is also <cite id=\"9\">zakat-eligible</cite>, providing a vital avenue for Muslim donors to fulfill religious obligations through domestic humanitarian relief.",
+      "zakat_guidance": {
+        "classification": "amil",
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }

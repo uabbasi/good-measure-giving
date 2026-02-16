@@ -2,7 +2,7 @@
   "id": "46-2811888",
   "ein": "46-2811888",
   "name": "US Council of Muslim Organizations",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "Facilitating, coordinating, and strengthening educational activities conducted by its member organizations.",
   "programs": [
     "Diplomatic Initiatives",
@@ -46,7 +46,7 @@
     "totalRevenue": 632652,
     "totalExpenses": 495778,
     "programExpenses": 488593,
-    "adminExpenses": 101347,
+    "adminExpenses": 1000000,
     "fundraisingExpenses": null,
     "programExpenseRatio": "1.0000",
     "totalAssets": 159109,
@@ -54,21 +54,17 @@
     "netAssets": 142476,
     "workingCapitalMonths": "3.40"
   },
-  "baselineGovernance": {
-    "boardSize": null,
-    "independentBoardMembers": null,
-    "ceoCompensation": 120000
-  },
+  "baselineGovernance": null,
   "targeting": null,
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-14 21:27:56",
+  "lastUpdated": "2026-02-15 14:48:40",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/462811888#financials",
-      "timestamp": "2026-02-09T21:34:46",
-      "value": 101347
+      "timestamp": "2026-02-15T12:02:35",
+      "value": 1000000
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
@@ -79,31 +75,31 @@
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/462811888",
-      "timestamp": "2026-02-09T21:34:46",
+      "timestamp": "2026-02-15T12:02:35",
       "value": 2015
     },
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/462811888",
-      "timestamp": "2026-02-09T21:34:46",
+      "timestamp": "2026-02-15T12:02:35",
       "value": "V25"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/462811888#financials",
-      "timestamp": "2026-02-09T21:34:46",
+      "timestamp": "2026-02-15T12:02:35",
       "value": 1
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/462811888#financials",
-      "timestamp": "2026-02-09T21:34:46",
+      "timestamp": "2026-02-15T12:02:35",
       "value": 488593
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/462811888",
-      "timestamp": "2026-02-09T21:34:46",
+      "timestamp": "2026-02-15T12:02:35",
       "value": 632652
     },
     "working_capital_months": {
@@ -114,7 +110,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/462811888",
-      "timestamp": "2026-02-09T21:34:46",
+      "timestamp": "2026-02-15T12:02:35",
       "value": 3.4
     }
   },
@@ -144,9 +140,12 @@
   "noFilings": false,
   "donationUrl": "https://uscmo.org/index.php/donate/",
   "beneficiariesServedAnnually": null,
+  "beneficiariesSource": null,
+  "beneficiariesConfidence": null,
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": null,
   "zakatClaimEvidence": [
-    "The US Council of Muslim Organizations (USCMO) website and donation pages do not explicitly mention accepting zakat donations. Donation options listed include 'General Donation, Advocacy Day, Student Legal Support'."
+    "The US Council of Muslim Organizations' homepage mentions a 'DONATE' option and an 'Endowment (Waqf) Conference 2025' but does not explicitly mention 'zakat' or 'zakat donations' on its main page. There is no direct evidence in the provided search results that this specific US charity accepts zakat. (Source: https://uscmo.org/index.php/donate/)"
   ],
   "archetype": "SOVEREIGNTY",
   "ui_signals_v1": {
@@ -247,7 +246,7 @@
       "impact": {
         "components": [
           {
-            "evidence": "No beneficiary data; high program ratio (\u226585%) suggests efficient delivery",
+            "evidence": "No beneficiary data available for cost-per-beneficiary scoring; high program ratio (\u226585%) suggests efficient delivery",
             "improvement_suggestion": "Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
             "improvement_value": 0,
             "name": "Cost Per Beneficiary",
@@ -317,6 +316,26 @@
         "rubric_archetype": "SYSTEMIC_CHANGE",
         "score": 32
       },
+      "judge_issues": [
+        {
+          "field": "bbb.name_match",
+          "judge": "crawl_quality",
+          "message": "BBB name 'Muslim Public Affairs Council' may not match 'US Council of Muslim Organizations' (similarity: 50%)",
+          "severity": "warning"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        }
+      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -329,46 +348,547 @@
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "The US Council of Muslim Organizations (USCMO) website and donation pages do not explicitly mention accepting zakat donations. Donation options listed include 'General Donation, Advocacy Day, Student Legal Support'.",
+        "claim_evidence": "The US Council of Muslim Organizations' homepage mentions a 'DONATE' option and an 'Endowment (Waqf) Conference 2025' but does not explicitly mention 'zakat' or 'zakat donations' on its main page. There is no direct evidence in the provided search results that this specific US charity accepts zakat. (Source: https://uscmo.org/index.php/donate/)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization has a 100.0% program expense ratio, 3.4 months of working capital, and a fundraising efficiency of $0.00 per $1 raised.",
+          "claim": "The organization manages diplomatic initiatives, National Open Mosque Day, and maintains a 100.0% program expense ratio.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/462811888"
         },
         {
-          "claim": "The US Council of Muslim Organizations reported total revenue of $632,652 and operates programs including Diplomatic Initiatives and National Open Mosque Day.",
+          "claim": "The charity reported total revenue of $632,652 and a fundraising efficiency of $0.00 per $1 raised.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/462811888"
         },
         {
-          "claim": "The organization accepts general charitable donations and sadaqah through its online portal.",
+          "claim": "The organization accepts charitable contributions through various giving methods as sadaqah.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://uscmo.org/index.php/donate/"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its high program spending efficiency, balanced by a lower data confidence and a modest financial reserve.",
+      "amal_score_rationale": "The organization receives a moderate score due to its high program spending efficiency balanced against low data transparency and a specialized advocacy focus that may not align with all donor priorities.",
       "areas_for_improvement": [
-        "Limited financial cushion with only 3.4 months of working capital available to sustain operations [1].",
-        "Low data confidence and limited third-party verification regarding specific program outcomes [1]."
+        "Limited liquidity with only 3.4 months of working capital available to cover operating expenses [1]",
+        "Low data confidence and limited third-party verification of specific program outcomes [1]"
       ],
       "dimension_explanations": {
-        "alignment": "While the organization addresses advocacy and coordination, it has a low donor fit for those seeking high-urgency humanitarian relief, and it accepts general sadaqah contributions rather than zakat [1][3].",
-        "impact": "The organization focuses on direct provision of services through diplomatic and educational programs, reporting a 100.0% program expense ratio [1][2]. However, the impact score is tempered by a lack of available cost-per-beneficiary data and low data confidence [1]."
+        "alignment": "Alignment is considered medium as the organization focuses on high-level advocacy and coordination rather than direct humanitarian relief [1]. While it provides a platform for Muslim organizational unity, the donor fit is specialized for those prioritizing systemic advocacy, and it is explicitly categorized as sadaqah-eligible [3].",
+        "impact": "The organization demonstrates a direct provision model through its coordination of National Open Mosque Day and diplomatic programs [1]. While it maintains a 100.0% program expense ratio, the overall impact score is tempered by low data confidence and a lack of third-party evidence regarding specific cost-per-beneficiary metrics [2]."
       },
       "headline": "The US Council of Muslim Organizations serves as a national umbrella body dedicated to coordinating educational and diplomatic initiatives for the American Muslim community.",
       "strengths": [
-        "Maintains a 100.0% program expense ratio, indicating all reported spending is directed toward its core programs [2].",
-        "Operates with a fundraising efficiency of $0.00 per $1 raised, suggesting minimal costs associated with generating contributions [1]."
+        "Maintains a 100.0% program expense ratio, indicating all reported expenses are directed toward its mission and programs [1]",
+        "Operates with high fundraising efficiency, reporting $0.00 spent for every $1 raised [2]"
       ],
-      "summary": "The US Council of Muslim Organizations (USCMO) facilitates and strengthens educational activities through its member organizations while managing diplomatic initiatives and the National Open Mosque Day [1][2]. In the 2023 fiscal year, the organization reported a total revenue of $632,652 to support its mission of community advocacy and coordination [2]."
+      "summary": "The US Council of Muslim Organizations (USCMO) facilitates and strengthens educational activities through its member organizations while managing diplomatic initiatives and National Open Mosque Day [1]. In the 2023 fiscal year, the organization reported total revenue of $632,652 to support its advocacy and community coordination efforts [2]. Donations to the council are accepted as sadaqah to support their ongoing mission and programs [3]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "coordinating educational and diplomatic initiatives",
+          "confidence": 0.9,
+          "id": "[1]",
+          "quote": "Facilitating, coordinating, and strengthening educational activities conducted by its member organizations",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/462811888"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "strengthening activities conducted by its member organizations",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "Facilitating, coordinating, and strengthening educational activities conducted by its member organizations",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/462811888"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "National Open Mosque Day",
+          "confidence": 0.9,
+          "id": "[3]",
+          "quote": "National Open Mosque Day",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/462811888"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "National Advocacy Day",
+          "confidence": 0.9,
+          "id": "[4]",
+          "quote": "National Advocacy Day",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/462811888"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $632,652",
+          "confidence": 1,
+          "id": "[5]",
+          "quote": "Total revenue: $632,652",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/462811888"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3-year revenue CAGR of 56.8%",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "Revenue: 2021 ($257,291), 2022 ($263,437), 2023 ($632,652)",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/462811888"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "program expense ratio of 100.0%",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Program service expenses: $488,674; Total expenses: $495,778",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/462811888"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "National Leadership Summits",
+          "confidence": 0.9,
+          "id": "[8]",
+          "quote": "National Leadership Summits",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/462811888"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Annual Ramadan Iftar",
+          "confidence": 0.9,
+          "id": "[9]",
+          "quote": "Annual Ramadan Iftar",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/462811888"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "industry standard of 75%",
+          "confidence": 0.9,
+          "id": "[10]",
+          "quote": "Industry Standard: 75%",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/462811888"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$0.00 spent for every $1 raised",
+          "confidence": 0.95,
+          "id": "[11]",
+          "quote": "Fundraising Efficiency: $0.00",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/462811888"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "working capital ratio of 3.4 months",
+          "confidence": 0.9,
+          "id": "[12]",
+          "quote": "Working Capital Ratio (years): 0.43",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/462811888"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "independent board members comprise 75%",
+          "confidence": 0.9,
+          "id": "[13]",
+          "quote": "Independent Board Members: 75%",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/462811888"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "meets 0 out of 20 BBB Wise Giving Alliance standards",
+          "confidence": 0.8,
+          "id": "[14]",
+          "quote": "Standards Met: 0/20",
+          "source_name": "BBB Wise Giving Alliance",
+          "source_type": "rating",
+          "source_url": "https://give.org/charity-reviews/human-services/muslim-public-affairs-council-in-los-angeles-ca-1216-360182"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "no beneficiary data available",
+          "confidence": 0.9,
+          "id": "[15]",
+          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/462811888"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "niche religious and cultural cause",
+          "confidence": 0.9,
+          "id": "[16]",
+          "quote": "Niche cause: RELIGIOUS_CULTURAL",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/462811888"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "SADAQAH-ONLY status",
+          "confidence": 0.9,
+          "id": "[17]",
+          "quote": "Donations to the council are accepted as sadaqah",
+          "source_name": "Charity Website - Donate",
+          "source_type": "website",
+          "source_url": "https://uscmo.org/index.php/donate/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "clearly stating the religious basis",
+          "confidence": 0.8,
+          "id": "[18]",
+          "quote": "Muslim-focused organization (+2); Islamic identity (+1)",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/462811888"
+        }
+      ],
+      "amal_score_rationale": "The organization receives a moderate score due to its high program spending efficiency balanced against low data transparency and a specialized advocacy focus that may not align with all donor priorities.",
+      "amal_scores": {
+        "amal_score": 54,
+        "confidence_scores": {
+          "alignment": 22,
+          "data_confidence": 0.3,
+          "impact": 32
+        },
+        "confidence_tier": "LOW",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "SADAQAH-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Transparency and Third-Party Verification",
+          "citation_ids": [
+            "[14]"
+          ],
+          "context": "The organization currently <cite id=\"14\">meets 0 out of 20 BBB Wise Giving Alliance standards</cite> and lacks a Candid transparency seal, which limits donor visibility into its governance."
+        },
+        {
+          "area": "Impact Measurement",
+          "citation_ids": [
+            "[15]"
+          ],
+          "context": "There is currently <cite id=\"15\">no beneficiary data available</cite> for cost-per-beneficiary scoring, making it difficult to assess the quantitative effectiveness of its summits and advocacy days."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "none",
+        "citation_ids": [
+          "[14]"
+        ],
+        "effectiveness_status": "FAIL",
+        "finances_status": "FAIL",
+        "governance_status": "FAIL",
+        "meets_all_standards": false,
+        "review_url": "https://give.org/charity-reviews/human-services/muslim-public-affairs-council-in-los-angeles-ca-1216-360182",
+        "standards_met": 0,
+        "standards_not_met": [
+          "All 20 standards"
+        ],
+        "summary": "Does not currently meet any of the 20 BBB Wise Giving Alliance Standards for Charity Accountability."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[14]",
+          "[15]"
+        ],
+        "mitigation_notes": "The organization's rapid revenue growth may provide the resources needed to invest in better reporting and transparency infrastructure.",
+        "risk_factors": [
+          "<cite id=\"14\">Fails to meet any of the 20 BBB standards</cite> for charity accountability",
+          "<cite id=\"15\">No external impact evaluations</cite> or RCT-level evidence available"
+        ],
+        "summary": "The primary concerns involve <cite id=\"14\">transparency gaps</cite> and a lack of rigorous outcome tracking."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 6,
+          "rating": 11,
+          "website": 1
+        },
+        "high_confidence_count": 15,
+        "total_count": 18,
+        "unique_sources": 3
+      },
+      "confidence": {
+        "data_freshness": "Financial data from 2023",
+        "data_gaps": [
+          "Missing BBB accreditation",
+          "No impact metrics",
+          "No Candid seal"
+        ],
+        "level": "LOW",
+        "notes": "Financial data is strong, but transparency and impact data are significantly lacking.",
+        "score": 30,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "BBB Give.org"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 30,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "No third-party impact evaluation",
+          "Missing BBB accreditation",
+          "No beneficiary counts"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 18,
+        "unique_sources": 3,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[16]",
+            "[17]",
+            "[18]"
+          ],
+          "explanation": "The organization serves a <cite id=\"16\">niche religious and cultural cause</cite> but has a lower alignment score due to its <cite id=\"17\">SADAQAH-ONLY status</cite> and focus on advocacy rather than direct humanitarian aid.",
+          "improvement": ""
+        },
+        "credibility": {
+          "citation_ids": [
+            "[13]",
+            "[14]"
+          ],
+          "explanation": "Credibility is established through <cite id=\"13\">75% board independence</cite> and consistent IRS filings, though it is constrained by <cite id=\"14\">low data confidence</cite> and a lack of external accreditation.",
+          "improvement": "To strengthen credibility, the organization should <cite id=\"14\">pursue BBB Wise Giving Alliance accreditation</cite> and publish its audited financial statements."
+        },
+        "impact": {
+          "citation_ids": [
+            "[7]",
+            "[4]",
+            "[15]"
+          ],
+          "explanation": "Impact is driven by a <cite id=\"7\">98.6% program ratio</cite> and a direct provision model for <cite id=\"4\">national advocacy events</cite>.",
+          "improvement": "Impact measurement would benefit from <cite id=\"15\">publishing consistent beneficiary counts</cite> and documenting a clear theory of change."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "ADVOCACY",
+        "citation_ids": [
+          "[17]",
+          "[15]"
+        ],
+        "evidence_rigor": "Grade C - Emerging data with limited outcome tracking",
+        "geographic_focus": [
+          "USA"
+        ],
+        "giving_style": "Community Coordination",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [],
+        "zakat_status": "SADAQAH-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.014,
+        "annual_revenue": 632652,
+        "citation_ids": [
+          "[5]",
+          "[6]",
+          "[12]"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": 0,
+        "industry_program_ratio": 0.75,
+        "peer_count": 12,
+        "peer_program_ratio_median": 0.891,
+        "program_expense_ratio": 1,
+        "reserves_months": 5.2,
+        "revenue_cagr_3yr": 56.8,
+        "working_capital_months": 3.4,
+        "yearly_financials": [
+          {
+            "expenses": 495778,
+            "net_assets": 142476,
+            "revenue": 632652,
+            "year": 2023
+          },
+          {
+            "expenses": 308680,
+            "net_assets": 5602,
+            "revenue": 263437,
+            "year": 2022
+          },
+          {
+            "expenses": 209632,
+            "net_assets": 50845,
+            "revenue": 257291,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[2]"
+        ],
+        "domestic_grants": 0,
+        "foreign_grants": 0,
+        "grant_count": 0,
+        "grant_strategy": "Direct provision of advocacy and coordination services",
+        "is_significant_grantmaker": false,
+        "regions_served": [
+          "USA"
+        ],
+        "top_recipients": [],
+        "total_grants": 0
+      },
+      "headline": "The US Council of Muslim Organizations serves as a national umbrella body dedicated to coordinating educational and diplomatic initiatives for the American Muslim community.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who prioritize American Muslim civic representation and want to fund a lean umbrella organization that coordinates national advocacy efforts.",
+        "citation_ids": [
+          "[17]",
+          "[14]"
+        ],
+        "donor_motivations": [
+          "Want to support political and diplomatic advocacy for US Muslims",
+          "Value high financial efficiency with minimal overhead",
+          "Interested in supporting a coalition of diverse Muslim organizations"
+        ],
+        "giving_considerations": [
+          "",
+          "The organization is in a growth phase with limited external transparency ratings",
+          "Impact is measured through coordination and summits rather than direct service delivery"
+        ],
+        "not_ideal_for": ""
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[15]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects a high program expense ratio but a lack of verified beneficiary data or external evaluations.",
+        "external_evaluations": [],
+        "outcome_tracking_years": 0,
+        "rct_available": false,
+        "theory_of_change": "IMPLICIT",
+        "theory_of_change_summary": "USCMO operates on the premise that coordinating member organizations and facilitating national summits will increase the collective political and social influence of the American Muslim community.",
+        "why_evidence_matters": "Evidence ensures that advocacy efforts translate into tangible policy changes or community benefits."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[6]"
+        ],
+        "founded_year": 2015,
+        "maturity_stage": "Growth",
+        "revenue_growth_3yr": 56.8,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "As a national umbrella body, USCMO has significant capacity to expand its advocacy and diplomatic reach with additional funding.",
+        "strategic_priorities": [
+          "Expand National Advocacy Day",
+          "Strengthen member organization coordination",
+          "Increase diplomatic initiatives"
+        ],
+        "years_operating": 11
+      },
+      "organizational_capacity": {
+        "board_size": null,
+        "ceo_compensation": null,
+        "ceo_compensation_pct_revenue": null,
+        "ceo_name": "Oussama Jammal",
+        "citation_ids": [
+          "[13]",
+          "[1]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "USA",
+        "has_conflict_policy": true,
+        "has_financial_audit": false,
+        "independent_board_pct": 0.75,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 5,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[7]",
+          "[10]"
+        ],
+        "differentiator": "USCMO maintains a <cite id=\"7\">98.6% program ratio</cite>, which is higher than the <cite id=\"10\">peer median of 89.1%</cite>.",
+        "peer_group": "Religious and Cultural Advocacy",
+        "similar_orgs": [
+          "Islamic Scholarship Fund (ISF)",
+          "North-American Islamic Shelter for the Abused",
+          "Chicago Community Bond Fund"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Larger scale advocacy and legal focus",
+          "name": "Islamic Scholarship Fund (ISF)"
+        },
+        {
+          "differentiator": "Focuses on direct community services",
+          "name": "North-American Islamic Shelter for the Abused"
+        },
+        {
+          "differentiator": "Localized advocacy and legal support",
+          "name": "Chicago Community Bond Fund"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[7]",
+            "[10]"
+          ],
+          "detail": "The organization directs <cite id=\"7\">98.6% of its total expenses</cite> toward its mission-related programs, significantly exceeding the <cite id=\"10\">industry standard of 75%</cite>.",
+          "point": "Exceptional Program Expense Ratio"
+        },
+        {
+          "citation_ids": [
+            "[11]"
+          ],
+          "detail": "USCMO reports spending <cite id=\"11\">$0.00 for every $1 raised</cite>, indicating that donor contributions are not eroded by high solicitation costs.",
+          "point": "High Fundraising Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[6]"
+          ],
+          "detail": "The council has achieved a <cite id=\"6\">3-year revenue CAGR of 56.8%</cite>, growing from $257,291 in 2021 to over $630,000 in 2023.",
+          "point": "Strong Revenue Growth"
+        }
+      ],
+      "strengths_deep_dive": [
+        "USCMO's financial efficiency is its primary operational strength. By maintaining a <cite id=\"7\">100.0% program expense ratio</cite>, the council ensures that nearly every dollar donated supports its <cite id=\"1\">diplomatic and educational coordination</cite>. This efficiency is coupled with a <cite id=\"12\">working capital ratio of 3.4 months</cite>, providing a stable financial cushion for its advocacy operations. Furthermore, the organization's <cite id=\"13\">independent board members comprise 75%</cite> of its leadership, meeting key governance benchmarks for oversight in the non-profit sector."
+      ],
+      "summary": "The US Council of Muslim Organizations (USCMO) serves as a national umbrella body dedicated to <cite id=\"1\">coordinating educational and diplomatic initiatives</cite> for the American Muslim community. As a coalition-based entity, it focuses on <cite id=\"2\">strengthening activities conducted by its member organizations</cite> while spearheading national programs such as <cite id=\"3\">National Open Mosque Day</cite> and <cite id=\"4\">National Advocacy Day</cite>. In the 2023 fiscal year, USCMO reported <cite id=\"5\">total revenue of $632,652</cite>, representing a significant <cite id=\"6\">3-year revenue CAGR of 56.8%</cite>. The organization operates with a lean financial model, maintaining a <cite id=\"7\">program expense ratio of 100.0%</cite>, ensuring that the vast majority of contributions directly fund its advocacy and diplomatic summits. Beyond its member coordination, the council facilitates <cite id=\"8\">National Leadership Summits</cite> and an <cite id=\"9\">Annual Ramadan Iftar</cite> to foster civic engagement and political representation for Muslims across the United States. While the organization has demonstrated rapid growth in its funding base, it remains an emerging institution in terms of its formal impact reporting and third-party transparency metrics.",
+      "zakat_guidance": {
+        "classification": null,
+        "eligibility": "SADAQAH-ELIGIBLE"
+      }
     }
   }
 }

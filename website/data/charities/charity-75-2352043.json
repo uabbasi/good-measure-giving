@@ -2,7 +2,7 @@
   "id": "75-2352043",
   "ein": "75-2352043",
   "name": "Islamic Services Foundation",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "\u201cAn Empowered Muslim Community\u201d.",
   "programs": [
     "ISF Schools",
@@ -38,7 +38,7 @@
     "totalRevenue": 14235728,
     "totalExpenses": 11453995,
     "programExpenses": 13220624,
-    "adminExpenses": 1164967,
+    "adminExpenses": 800000,
     "fundraisingExpenses": null,
     "programExpenseRatio": "0.9948",
     "totalAssets": 15915146,
@@ -72,13 +72,21 @@
     "reports_methodology": true,
     "reports_outcome_metrics": false
   },
-  "lastUpdated": "2026-02-14 21:28:11",
+  "lastUpdated": "2026-02-15 14:49:19",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/752352043#financials",
-      "timestamp": "2026-02-09T21:35:38",
-      "value": 1164967
+      "timestamp": "2026-02-15T12:04:21",
+      "value": 800000
+    },
+    "beneficiaries_served_annually": {
+      "method": "direct",
+      "source_name": "Charity Website",
+      "source_path": "website_profile.ummah_gap_data.beneficiary_count",
+      "source_url": "https://islamicservices.org",
+      "timestamp": "2026-01-25T20:25:52",
+      "value": 1000
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
@@ -101,19 +109,19 @@
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/752352043#financials",
-      "timestamp": "2026-02-09T21:35:38",
+      "timestamp": "2026-02-15T12:04:21",
       "value": 0.9948
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/752352043#financials",
-      "timestamp": "2026-02-09T21:35:38",
+      "timestamp": "2026-02-15T12:04:21",
       "value": 13220624
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/752352043",
-      "timestamp": "2026-02-09T21:35:38",
+      "timestamp": "2026-02-15T12:04:21",
       "value": 14235728
     },
     "working_capital_months": {
@@ -124,7 +132,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/752352043",
-      "timestamp": "2026-02-09T21:35:38",
+      "timestamp": "2026-02-15T12:04:21",
       "value": 14.5
     }
   },
@@ -135,7 +143,10 @@
   },
   "causeTags": [
     "faith-based",
+    "fisabilillah",
+    "fuqara",
     "grantmaking",
+    "masakin",
     "muslim-led",
     "usa"
   ],
@@ -153,6 +164,16 @@
   "noFilings": false,
   "donationUrl": "https://www.islamicservices.org/donate-now/",
   "beneficiariesServedAnnually": 1000,
+  "beneficiariesSource": {
+    "method": "direct",
+    "source_name": "Charity Website",
+    "source_path": "website_profile.ummah_gap_data.beneficiary_count",
+    "source_url": "https://islamicservices.org",
+    "timestamp": "2026-01-25T20:25:52",
+    "value": 1000
+  },
+  "beneficiariesConfidence": "verified",
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": {
     "hasOutcomeMethodology": 1,
     "hasMultiYearMetrics": null,
@@ -163,7 +184,7 @@
     "receivesFoundationGrants": null
   },
   "zakatClaimEvidence": [
-    "Found 'zakat and sadaqah' on https://www.islamicservices.org/why-halal-certification-matters-more-than-ever/ (https://www.islamicservices.org/why-halal-certification-matters-more-than-ever/)"
+    "Donation for Zakat (Source: https://www.islamicservices.org/donate-now/)"
   ],
   "archetype": "ASSET_CREATION",
   "ui_signals_v1": {
@@ -334,6 +355,38 @@
         "rubric_archetype": "COMMUNITY",
         "score": 31
       },
+      "judge_issues": [
+        {
+          "field": "discovered.zakat.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "warning"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
@@ -354,20 +407,20 @@
         "asnaf_category": "amil",
         "bonus_points": 0,
         "charity_claims_zakat": true,
-        "claim_evidence": "Found 'zakat and sadaqah' on https://www.islamicservices.org/why-halal-certification-matters-more-than-ever/ (https://www.islamicservices.org/why-halal-certification-matters-more-than-ever/)",
+        "claim_evidence": "Donation for Zakat (Source: https://www.islamicservices.org/donate-now/)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The Islamic Services Foundation was founded in 1989 and manages programs including ISF Schools and an endowment that provides full-ride scholarships.",
+          "claim": "The organization manages ISF Schools and an endowment providing full-ride scholarships and supporting graduating classes.",
           "id": "[1]",
           "source_name": "Endowment Brochure",
           "source_url": "https://www.islamicservices.org/wp-content/uploads/2025/09/ie-booklet-2025-v5.pdf"
         },
         {
-          "claim": "The organization provides multiple donation options and is zakat-eligible.",
+          "claim": "The organization is zakat-eligible and provides multiple donation options for supporters.",
           "id": "[2]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.islamicservices.org/donate-now/"
@@ -379,34 +432,533 @@
           "source_url": "https://www.islamicservices.org/volunteer-opportunities/"
         },
         {
-          "claim": "The organization's profile includes metadata regarding its domestic focus and program directness.",
+          "claim": "Islamic Services Foundation was founded in 1989 and maintains profile metadata as a non-profit entity.",
           "id": "[4]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/752352043"
         },
         {
-          "claim": "Financial records show total revenue of $14,235,728, a program expense ratio of 99.5%, 14.5 months of working capital, and a fundraising efficiency of $0.00 per $1 raised.",
+          "claim": "The foundation reported total revenue of $14,235,728, a 99.5% program expense ratio, 14.5 months of working capital, and $0.00 fundraising efficiency.",
           "id": "[5]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/752352043"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its exceptional financial efficiency and direct service provision, balanced against a high cost per beneficiary and limited data transparency.",
+      "amal_score_rationale": "The organization demonstrates exceptional financial efficiency and liquidity, though its overall score is moderated by a high cost per beneficiary and a moderate level of data confidence.",
       "areas_for_improvement": [
-        "High cost per beneficiary relative to domestic poverty benchmarks",
-        "Limited external data confidence and third-party verification"
+        "Limited third-party verification of long-term impact metrics",
+        "High cost per beneficiary for direct service provision"
       ],
       "dimension_explanations": {
-        "alignment": "The organization shows a moderate alignment score, reflecting its long-standing track record since 1989 and its focus on domestic community needs [1]. However, the specific donor fit is currently rated as low based on available alignment metrics [4].",
-        "impact": "ISF demonstrates high financial health with a 99.5% program expense ratio and 14.5 months of working capital [5]. While it provides direct services such as full-ride scholarships and school operations, the impact score is moderated by a high cost per beneficiary of approximately $13,220 [1][4]."
+        "alignment": "ISF shows a moderate alignment with a 21/50 score, reflecting its long-standing track record since 1989 and its focus on domestic poverty and education [1][4]. While it is zakat-eligible, the specific fit for some donors may be limited by the localized nature of its primary educational programs [2][5].",
+        "impact": "The foundation maintains a direct provision model through its schools and endowment, reporting a total revenue of $14,235,728 with a 99.5% program expense ratio [4][5]. While it successfully provides full-ride scholarships and supports graduating classes, the cost per beneficiary is relatively high at approximately $13,220 [1][5]."
       },
       "headline": "The Islamic Services Foundation is a dedicated non-profit organization providing comprehensive educational services and community support to the Muslim community since 1989.",
       "strengths": [
         "Exceptional program expense ratio of 99.5%",
         "Strong liquidity with 14.5 months of working capital",
-        "Highly efficient fundraising with $0.00 spent per $1 raised"
+        "High fundraising efficiency of $0.00 per $1 raised"
       ],
-      "summary": "founded in 1989, the Islamic Services Foundation (ISF) operates educational institutions and endowment programs to serve the Muslim community [1]. The organization is zakat-eligible and offers various engagement opportunities through donations and volunteer programs [2][3]."
+      "summary": "founded in 1989, the Islamic Services Foundation (ISF) operates educational programs including ISF Schools and an endowment fund to serve the Muslim community [1][4]. The organization is recognized as zakat-eligible and offers various engagement opportunities through donations and volunteer programs [2][3]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "Islamic Services Foundation (ISF)",
+          "confidence": 1,
+          "id": "[1]",
+          "quote": "The Islamic Services Foundation (ISF) is a non-profit organization, which has been dedicated to serving the Muslim community since its founding in 1989.",
+          "source_name": "Endowment Brochure",
+          "source_type": "website",
+          "source_url": "https://www.islamicservices.org/wp-content/uploads/2025/09/ie-booklet-2025-v5.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "ISF Schools, a Qur\u2019an Hifz Program, and student financial aid",
+          "confidence": 0.95,
+          "id": "[2]",
+          "quote": "Programs: ISF Schools, ISF Endowment, Qur\u2019an Hifz Program, Student Financial Aid",
+          "source_name": "Charity Website",
+          "source_type": "website",
+          "source_url": "https://www.islamicservices.org/donate-now/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $14,235,728",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Total Revenue: $14,235,728",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/752352043"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3-year revenue CAGR of 23.2%",
+          "confidence": 1,
+          "id": "[4]",
+          "quote": "Revenue: [9373276, 8779373, 14235728]",
+          "source_name": "Internal Financial Analysis",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/752352043"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "exceptional program expense ratio of 99.5%",
+          "confidence": 0.95,
+          "id": "[5]",
+          "quote": "Program Expense Ratio: 99.5%",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/752352043"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "fundraising efficiency of $0.00 per $1 raised",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "Fundraising Efficiency: $0.00",
+          "source_name": "Charity Navigator - Efficiency",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/752352043"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "providing 196,650 meals via cooperation with ANERA",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Meals provided via ANERA cooperation: 196650",
+          "source_name": "2023 Annual Report",
+          "source_type": "website",
+          "source_url": "https://www.islamicservices.org/wp-content/uploads/2025/09/isf-ar2023-v8-1-web.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "treated 1,074 children",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Medical missions children treated: 1074",
+          "source_name": "2023 Annual Report",
+          "source_type": "website",
+          "source_url": "https://www.islamicservices.org/wp-content/uploads/2025/09/isf-ar2023-v8-1-web.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "verified as zakat-eligible",
+          "confidence": 1,
+          "id": "[9]",
+          "quote": "Accepts Zakat: Yes",
+          "source_name": "Charity Website - Zakat",
+          "source_type": "website",
+          "source_url": "https://www.islamicservices.org/donate-now/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "fuqara, masakin, and fisabilillah",
+          "confidence": 0.9,
+          "id": "[10]",
+          "quote": "Zakat Categories: fuqara, masakin, fisabilillah",
+          "source_name": "Zakat Policy",
+          "source_type": "website",
+          "source_url": "https://www.islamicservices.org/donate-now/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "peer program ratio median of 89.6%",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "Peer Program Ratio Median: 89.6%",
+          "source_name": "Peer Benchmarks",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/752352043"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "14.5 months of working capital",
+          "confidence": 1,
+          "id": "[12]",
+          "quote": "Working Capital: 14.5 months",
+          "source_name": "Charity Navigator - Liquidity",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/752352043"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "37-year track record",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "Founded 1989",
+          "source_name": "Organizational History",
+          "source_type": "website",
+          "source_url": "https://www.islamicservices.org/wp-content/uploads/2025/09/ie-booklet-2025-v5.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$10,415,037 in program service revenue",
+          "confidence": 1,
+          "id": "[14]",
+          "quote": "Program Service Revenue: $10,415,037",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/752352043"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "graduating class of 72 students",
+          "confidence": 1,
+          "id": "[15]",
+          "quote": "Graduating Class size: 72",
+          "source_name": "Endowment Brochure",
+          "source_type": "website",
+          "source_url": "https://www.islamicservices.org/wp-content/uploads/2025/09/ie-booklet-2025-v5.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "8 full-ride scholarships",
+          "confidence": 1,
+          "id": "[16]",
+          "quote": "Full Ride Scholarships: 8",
+          "source_name": "Endowment Brochure",
+          "source_type": "website",
+          "source_url": "https://www.islamicservices.org/wp-content/uploads/2025/09/ie-booklet-2025-v5.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "only 15% independent board members",
+          "confidence": 1,
+          "id": "[17]",
+          "quote": "Independent Board Members: 15%",
+          "source_name": "Charity Navigator - Governance",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/752352043"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "cost of $13,220.62 per beneficiary",
+          "confidence": 0.9,
+          "id": "[18]",
+          "quote": "$13220.62/beneficiary",
+          "source_name": "Impact Analysis",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/752352043"
+        }
+      ],
+      "amal_score_rationale": "The organization demonstrates exceptional financial efficiency and liquidity, though its overall score is moderated by a high cost per beneficiary and a moderate level of data confidence.",
+      "amal_scores": {
+        "amal_score": 50,
+        "confidence_scores": {
+          "alignment": 21,
+          "data_confidence": 0.6,
+          "impact": 31
+        },
+        "confidence_tier": "MEDIUM",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Governance Transparency",
+          "citation_ids": [
+            "[17]"
+          ],
+          "context": "The organization currently has <cite id=\"17\">only 15% independent board members</cite>, which is below best practice standards for non-profit oversight."
+        },
+        {
+          "area": "High Cost per Beneficiary",
+          "citation_ids": [
+            "[18]"
+          ],
+          "context": "Direct service delivery in the US education sector results in a <cite id=\"18\">cost of $13,220.62 per beneficiary</cite>, which is high compared to international relief models."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [
+          "[5]"
+        ],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "PASS",
+        "governance_status": "UNKNOWN",
+        "meets_all_standards": false,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "Financial data is audited, but full BBB standards compliance is not verified."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[17]"
+        ],
+        "mitigation_notes": "The organization's long-standing history and significant net assets mitigate some immediate governance risks.",
+        "risk_factors": [
+          "<cite id=\"17\">Low board independence (15%)</cite>",
+          "High cost per beneficiary due to domestic focus"
+        ],
+        "summary": "The primary concerns involve <cite id=\"17\">weak board governance</cite> and a lack of third-party transparency seals."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 4,
+          "rating": 6,
+          "website": 8
+        },
+        "high_confidence_count": 16,
+        "total_count": 18,
+        "unique_sources": 5
+      },
+      "confidence": {
+        "data_freshness": "Financial data from 2023 Form 990",
+        "data_gaps": [
+          "Missing full Charity Navigator rating",
+          "Limited board transparency"
+        ],
+        "level": "MEDIUM",
+        "notes": "Strong financial data but governance transparency is a limiting factor.",
+        "score": 60,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Annual Reports"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 60,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Low board independence",
+          "No Charity Navigator star rating"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 18,
+        "unique_sources": 5,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[9]"
+          ],
+          "explanation": "Strong fit for donors prioritizing <cite id=\"9\">zakat-eligible domestic education</cite> and Islamic institutional development.",
+          "improvement": "Clarifying the specific zakat allocation policy and eligible use categories would better serve Muslim donors."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[3]",
+            "[17]"
+          ],
+          "explanation": "Donors can verify the organization's scale through <cite id=\"3\">$14.2M in reported revenue</cite> and a long history, though <cite id=\"17\">limited board independence</cite> affects the overall trust profile.",
+          "improvement": "To strengthen credibility, the foundation should increase the percentage of independent board members and publish a clear reserve-use policy."
+        },
+        "impact": {
+          "citation_ids": [
+            "[5]",
+            "[18]"
+          ],
+          "explanation": "Impact is driven by <cite id=\"5\">99.5% program expense</cite> and direct provision of education, though the <cite id=\"18\">high cost per student</cite> limits the total number of individuals served.",
+          "improvement": "Documenting a clear theory of change with an explicit causal pathway would help demonstrate long-term educational outcomes."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "EDUCATION",
+        "citation_ids": [
+          "9",
+          "10"
+        ],
+        "evidence_rigor": "Grade C - Verified internal outcomes and 990 data",
+        "geographic_focus": [
+          "USA"
+        ],
+        "giving_style": "Institutional Support",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "fuqara (poor)",
+          "masakin (needy)",
+          "fisabilillah"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0,
+        "annual_revenue": 14235728,
+        "citation_ids": [
+          "[3]",
+          "[4]",
+          "[5]"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": 0,
+        "industry_program_ratio": 0.75,
+        "peer_count": 23,
+        "peer_program_ratio_median": 0.896,
+        "program_expense_ratio": 0.9948,
+        "reserves_months": 13.9,
+        "revenue_cagr_3yr": 23.2,
+        "working_capital_months": 14.5,
+        "yearly_financials": [
+          {
+            "expenses": 11453995,
+            "net_assets": 13820119,
+            "revenue": 14235728,
+            "year": 2023
+          },
+          {
+            "expenses": 9132887,
+            "net_assets": 10766477,
+            "revenue": 8779373,
+            "year": 2022
+          },
+          {
+            "expenses": 8383231,
+            "net_assets": 11119991,
+            "revenue": 9373276,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [],
+        "domestic_grants": 0,
+        "foreign_grants": 0,
+        "grant_count": 0,
+        "grant_strategy": "Direct service provision rather than grantmaking",
+        "is_significant_grantmaker": false,
+        "regions_served": [
+          "USA"
+        ],
+        "top_recipients": [],
+        "total_grants": 0
+      },
+      "headline": "The Islamic Services Foundation is a dedicated non-profit organization providing comprehensive educational services and community support to the Muslim community since 1989.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who want to invest in the long-term sustainability of Islamic educational institutions in the United States through zakat-eligible giving.",
+        "citation_ids": [
+          "[5]",
+          "[9]",
+          "[17]"
+        ],
+        "donor_motivations": [
+          "Value domestic community building over international relief",
+          "Want to support high-quality Islamic K-12 education",
+          "Prefer organizations with extremely low fundraising overhead",
+          "Seek to fulfill zakat through established religious endowments"
+        ],
+        "giving_considerations": [
+          "Gifts support high-cost direct services in the US",
+          "The organization operates with a very lean administrative structure",
+          "Focus is on institutional stability rather than rapid geographic expansion"
+        ],
+        "not_ideal_for": "Donors seeking high-volume international humanitarian impact or those who prioritize organizations with high board independence scores."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[8]",
+          "[15]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects verified internal metrics like <cite id=\"15\">graduating class sizes</cite> and <cite id=\"8\">medical treatments</cite>, but lacks independent longitudinal studies.",
+        "external_evaluations": [
+          "Internal Annual Reports"
+        ],
+        "outcome_tracking_years": 3,
+        "rct_available": false,
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "ISF uses an endowment and school-based model to provide religious and academic education, aiming to produce community leaders.",
+        "why_evidence_matters": "Evidence ensures that the high cost of domestic education translates into measurable community leadership and religious literacy."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[1]",
+          "[4]"
+        ],
+        "founded_year": 1989,
+        "maturity_stage": "Institution",
+        "revenue_growth_3yr": 23.2,
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "With <cite id=\"14\">$10.4M in program revenue</cite>, the org is stable but needs more public support to expand scholarships.",
+        "strategic_priorities": [
+          "Expand ISF Endowment",
+          "Increase Student Financial Aid"
+        ],
+        "years_operating": 37
+      },
+      "organizational_capacity": {
+        "board_size": null,
+        "ceo_compensation": null,
+        "ceo_compensation_pct_revenue": null,
+        "ceo_name": "Not Disclosed",
+        "citation_ids": [
+          "[17]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "USA",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 0.15,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 5,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[5]",
+          "[12]"
+        ],
+        "differentiator": "Distinguished by a <cite id=\"5\">99.5% program expense ratio</cite> and <cite id=\"12\">14.5 months of working capital</cite>.",
+        "peer_group": "Domestic Islamic Education & Services",
+        "similar_orgs": [
+          "Muslim American Youth Foundation",
+          "Inner-City Muslim Action Network",
+          "Muslim Community Center Chicago"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Smaller scale, similar K-12 focus",
+          "name": "Muslim American Youth Foundation"
+        },
+        {
+          "differentiator": "More focus on social justice and health",
+          "name": "Inner-City Muslim Action Network"
+        },
+        {
+          "differentiator": "Broader community center model",
+          "name": "Muslim Community Center Chicago"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[5]",
+            "[11]"
+          ],
+          "detail": "The organization directs <cite id=\"5\">100.0% of its expenses toward programs</cite>, significantly exceeding the <cite id=\"11\">peer program ratio median of 89.6%</cite>.",
+          "point": "Exceptional Financial Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[12]"
+          ],
+          "detail": "ISF maintains <cite id=\"12\">14.5 months of working capital</cite>, providing a strong financial safety net for long-term institutional stability.",
+          "point": "Robust Liquidity and Reserves"
+        },
+        {
+          "citation_ids": [
+            "[1]",
+            "[13]"
+          ],
+          "detail": "Operating since <cite id=\"1\">1989</cite>, the foundation has a <cite id=\"13\">37-year track record</cite> of serving the domestic Muslim community.",
+          "point": "Proven Institutional Longevity"
+        }
+      ],
+      "strengths_deep_dive": [
+        "The Islamic Services Foundation distinguishes itself through a high-capacity endowment model and direct service provision. In 2023, the foundation generated <cite id=\"14\">$10,415,037 in program service revenue</cite>, indicating a sustainable model that does not rely solely on public contributions. Their educational impact is tangible, with recent outcomes including a <cite id=\"15\">graduating class of 72 students</cite> and the provision of <cite id=\"16\">8 full-ride scholarships</cite> to ensure accessibility for high-achieving students regardless of financial background."
+      ],
+      "summary": "founded in 1989, the <cite id=\"1\">Islamic Services Foundation (ISF)</cite> has spent over three decades establishing a robust educational and religious infrastructure for the Muslim community in the United States. The organization manages a diverse portfolio of services, including <cite id=\"2\">ISF Schools, a Qur\u2019an Hifz Program, and student financial aid</cite>, alongside maintaining dedicated prayer spaces. Financially, the foundation demonstrated significant growth in 2023, reporting <cite id=\"3\">total revenue of $14,235,728</cite>, which represents a <cite id=\"4\">3-year revenue CAGR of 23.2%</cite>. A defining characteristic of ISF is its extreme lean operational model, maintaining an <cite id=\"5\">exceptional program expense ratio of 99.5%</cite> and a <cite id=\"6\">fundraising efficiency of $0.00 per $1 raised</cite>. Beyond its core educational mission, ISF facilitates humanitarian outcomes through strategic partnerships, such as <cite id=\"7\">providing 196,650 meals via cooperation with ANERA</cite> and conducting medical missions that <cite id=\"8\">treated 1,074 children</cite> in a single year. The organization is <cite id=\"9\">verified as zakat-eligible</cite>, specifically serving the categories of <cite id=\"10\">fuqara, masakin, and fisabilillah</cite>.",
+      "zakat_guidance": {
+        "classification": "amil",
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }

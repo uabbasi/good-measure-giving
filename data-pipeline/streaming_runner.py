@@ -51,7 +51,7 @@ from src.db import (
 from src.db.dolt_client import dolt
 from src.llm.llm_client import LLMClient
 from src.scorers.v2_scorers import AmalScorerV2
-from src.utils.charity_loader import load_charities_from_file
+from src.utils.charity_loader import load_charities_from_file, normalize_website_url
 from src.utils.ein_utils import validate_and_format
 from src.utils.logger import PipelineLogger
 from src.utils.phase_cache_helper import (
@@ -104,6 +104,8 @@ export_charity = _export_module.export_charity
 WEBSITE_DATA_DIR = _export_module.WEBSITE_DATA_DIR
 load_pilot_charities = _export_module.load_pilot_charities
 build_charity_summary = _export_module.build_charity_summary
+load_ui_signals_config = _export_module._load_ui_signals_config
+compute_ui_signals_config_hash = _export_module._compute_config_hash
 
 # Thread-safe printing and progress tracking
 print_lock = Lock()
@@ -223,14 +225,19 @@ def sync_websites_to_db(charities: list[dict], logger: PipelineLogger) -> int:
 
     updated = 0
     for charity in charities:
-        website = charity.get("website")
+        website = normalize_website_url(charity.get("website"))
         ein = charity.get("ein")
         if website and ein:
             result = execute_query(
                 """
                 UPDATE charities
                 SET website = %s
-                WHERE ein = %s AND (website IS NULL OR website = '')
+                WHERE ein = %s
+                  AND (
+                    website IS NULL
+                    OR website = ''
+                    OR (website NOT LIKE 'http://%%' AND website NOT LIKE 'https://%%')
+                  )
                 """,
                 (website, ein),
             )
@@ -575,6 +582,8 @@ def process_charity_full(
     skip_export: bool = False,
     judge_threshold: int = 80,
     output_dir: Path | None = None,
+    ui_signals_config: dict | None = None,
+    config_hash: str = "",
     pilot_flags: dict | None = None,
     force_all: bool = False,
     force_phases: list[str] | None = None,
@@ -1097,6 +1106,8 @@ def process_charity_full(
                     data_repo,
                     eval_repo,
                     export_dir,
+                    ui_signals_config=ui_signals_config or {},
+                    config_hash=config_hash,
                     hide_from_curated=flags.hide_from_curated if flags else False,
                     pilot_name=flags.name if flags else None,
                 )
@@ -1245,6 +1256,10 @@ def main():
         print("No charities to process.")
         sys.exit(0)
 
+    # Normalize website URLs before any phase uses them.
+    for charity in charities:
+        charity["website"] = normalize_website_url(charity.get("website"))
+
     # Sync websites from charities file to database
     # This ensures discovery phase can find websites even when using --ein
     sync_websites_to_db(charities, logger)
@@ -1294,6 +1309,9 @@ def main():
     # Set progress total
     progress["total"] = len(charities)
 
+    ui_signals_config = load_ui_signals_config()
+    config_hash = compute_ui_signals_config_hash(ui_signals_config)
+
     # Load pilot flags for export phase
     pilot_flags = {}
     default_pilot_file = Path(__file__).parent / "pilot_charities.txt"
@@ -1320,6 +1338,7 @@ def main():
     print(f"  Checkpoints: {checkpoint_info}")
     export_info = "(disabled)" if args.skip_export else f"(threshold: {args.judge_threshold})"
     print(f"  Phases: Crawl → Extract → Discover → Synthesize → Baseline → Rich → Judge → Export {export_info}")
+    print(f"  UI config: v{ui_signals_config.get('config_version', 'unknown')} ({config_hash[:20]}...)")
     print("=" * 80)
 
     start_time = time.time()
@@ -1350,6 +1369,8 @@ def main():
                 args.skip_export,
                 args.judge_threshold,
                 WEBSITE_DATA_DIR,
+                ui_signals_config,
+                config_hash,
                 pilot_flags,
                 args.force_all,
                 args.force_phase,
@@ -1479,6 +1500,8 @@ def main():
                 data_repo,
                 eval_repo,
                 WEBSITE_DATA_DIR,
+                ui_signals_config=ui_signals_config,
+                config_hash=config_hash,
                 hide_from_curated=flags.hide_from_curated if flags else False,
                 pilot_name=flags.name if flags else None,
             )

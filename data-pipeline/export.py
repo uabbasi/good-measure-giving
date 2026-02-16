@@ -937,6 +937,76 @@ def _normalize_source_attribution_urls(source_attribution: Any, fallback_website
     return normalized
 
 
+def _has_cited_beneficiary_source(source_attribution: Any) -> bool:
+    """Return True when beneficiaries_served_annually has a canonical source URL."""
+    if not isinstance(source_attribution, dict):
+        return False
+    meta = source_attribution.get("beneficiaries_served_annually")
+    if not isinstance(meta, dict):
+        return False
+    source_url = meta.get("source_url")
+    return isinstance(source_url, str) and source_url.startswith(("http://", "https://"))
+
+
+_MIN_PLAUSIBLE_DOLLARS_PER_BENEFICIARY_BY_CATEGORY: dict[str, float] = {
+    "MEDICAL_HEALTH": 2.0,
+    "HUMANITARIAN": 2.0,
+}
+_DEFAULT_MIN_PLAUSIBLE_DOLLARS_PER_BENEFICIARY = 1.0
+
+
+def _min_plausible_dollars_per_beneficiary(charity_data: dict | None) -> float:
+    """Return category-adjusted minimum plausible dollars per beneficiary."""
+    if not isinstance(charity_data, dict):
+        return _DEFAULT_MIN_PLAUSIBLE_DOLLARS_PER_BENEFICIARY
+    primary_category = charity_data.get("primary_category")
+    if not isinstance(primary_category, str):
+        return _DEFAULT_MIN_PLAUSIBLE_DOLLARS_PER_BENEFICIARY
+    return _MIN_PLAUSIBLE_DOLLARS_PER_BENEFICIARY_BY_CATEGORY.get(
+        primary_category.upper(),
+        _DEFAULT_MIN_PLAUSIBLE_DOLLARS_PER_BENEFICIARY,
+    )
+
+
+def _is_beneficiary_count_plausible(beneficiaries: Any, charity_data: dict | None) -> bool:
+    """Heuristic plausibility gate for beneficiary counts without citations."""
+    if not isinstance(beneficiaries, (int, float)) or beneficiaries <= 0:
+        return False
+    if beneficiaries > 100_000_000:
+        return False
+
+    if isinstance(charity_data, dict):
+        expenses = charity_data.get("program_expenses") or charity_data.get("total_expenses")
+        if isinstance(expenses, (int, float)) and expenses > 0:
+            dollars_per_beneficiary = expenses / beneficiaries
+            min_plausible_dollars = _min_plausible_dollars_per_beneficiary(charity_data)
+            if dollars_per_beneficiary < min_plausible_dollars:
+                return False
+    return True
+
+
+def _derive_beneficiary_confidence(beneficiaries: Any, source_attribution: Any, charity_data: dict | None) -> str | None:
+    """Classify beneficiary trust state for frontend messaging.
+
+    States:
+      - verified: cited and plausibility checks pass
+      - needs_review: cited but plausibility checks fail
+      - uncorroborated: uncited but plausibility checks pass
+      - implausible: uncited and plausibility checks fail
+    """
+    if not isinstance(beneficiaries, (int, float)) or beneficiaries <= 0:
+        return None
+    has_citation = _has_cited_beneficiary_source(source_attribution)
+    is_plausible = _is_beneficiary_count_plausible(beneficiaries, charity_data)
+    if has_citation and is_plausible:
+        return "verified"
+    if has_citation and not is_plausible:
+        return "needs_review"
+    if is_plausible:
+        return "uncorroborated"
+    return "implausible"
+
+
 def _extract_pillar_scores(evaluation: dict | None) -> dict[str, int | float] | None:
     """Extract pillar scores from score_details for visualization.
 
@@ -1036,6 +1106,23 @@ def build_charity_summary(
         cn_profile.get("mission"),
     )
 
+    normalized_source_attribution = (
+        _normalize_source_attribution_urls(charity_data.get("source_attribution"), charity.get("website"))
+        if charity_data
+        else None
+    )
+    beneficiaries_served_annually = charity_data.get("beneficiaries_served_annually") if charity_data else None
+    beneficiaries_confidence = _derive_beneficiary_confidence(
+        beneficiaries_served_annually,
+        normalized_source_attribution,
+        charity_data,
+    )
+    beneficiaries_excluded_from_scoring = bool(
+        isinstance(beneficiaries_served_annually, (int, float))
+        and beneficiaries_served_annually > 0
+        and beneficiaries_confidence in {"needs_review", "implausible"}
+    )
+
     return {
         "id": charity["ein"],
         "ein": charity["ein"],
@@ -1050,6 +1137,9 @@ def build_charity_summary(
         "accountabilityScore": None,
         "programExpenseRatio": charity_data.get("program_expense_ratio") if charity_data else None,
         "totalRevenue": charity_data.get("total_revenue") if charity_data else None,
+        "beneficiariesServedAnnually": beneficiaries_served_annually,
+        "beneficiariesConfidence": beneficiaries_confidence,
+        "beneficiariesExcludedFromScoring": beneficiaries_excluded_from_scoring,
         "isMuslimCharity": charity_data.get("muslim_charity_fit") == "high" if charity_data else False,
         # E-003: Use None instead of datetime.now() - don't fake update timestamps
         "lastUpdated": evaluation.get("updated_at") if evaluation else None,
@@ -1147,6 +1237,23 @@ def build_charity_detail(
     geographic = []
     if candid_profile.get("areas_served"):
         geographic = candid_profile["areas_served"]
+
+    normalized_source_attribution = (
+        _normalize_source_attribution_urls(charity_data.get("source_attribution"), charity.get("website"))
+        if charity_data
+        else None
+    )
+    beneficiaries_served_annually = charity_data.get("beneficiaries_served_annually") if charity_data else None
+    beneficiaries_confidence = _derive_beneficiary_confidence(
+        beneficiaries_served_annually,
+        normalized_source_attribution,
+        charity_data,
+    )
+    beneficiaries_excluded_from_scoring = bool(
+        isinstance(beneficiaries_served_annually, (int, float))
+        and beneficiaries_served_annually > 0
+        and beneficiaries_confidence in {"needs_review", "implausible"}
+    )
 
     detail = {
         "id": charity["ein"],
@@ -1246,11 +1353,7 @@ def build_charity_detail(
         # E-003: Use None instead of datetime.now() - don't fake update timestamps
         "lastUpdated": evaluation.get("updated_at") if evaluation else None,
         # Source attribution - maps field name to {source_name, source_url, value, timestamp}
-        "sourceAttribution": (
-            _normalize_source_attribution_urls(charity_data.get("source_attribution"), charity.get("website"))
-            if charity_data
-            else None
-        ),
+        "sourceAttribution": normalized_source_attribution,
         # Category fields for donor discovery (MECE primary category + metadata)
         "primaryCategory": charity_data.get("primary_category") if charity_data else None,
         "categoryMetadata": {
@@ -1279,7 +1382,14 @@ def build_charity_detail(
         "donationUrl": _extract_donate_url(raw_sources),
         # P0: Working capital months (balance sheet derived)
         # P0: Beneficiaries served annually (self-reported)
-        "beneficiariesServedAnnually": charity_data.get("beneficiaries_served_annually") if charity_data else None,
+        "beneficiariesServedAnnually": beneficiaries_served_annually,
+        "beneficiariesSource": (
+            normalized_source_attribution.get("beneficiaries_served_annually")
+            if isinstance(normalized_source_attribution, dict)
+            else None
+        ),
+        "beneficiariesConfidence": beneficiaries_confidence,
+        "beneficiariesExcludedFromScoring": beneficiaries_excluded_from_scoring,
         # P1: Evidence quality signals for scoring transparency
         "evidenceQuality": _build_evidence_quality(charity_data),
         # P1: Zakat claim evidence (filtered)

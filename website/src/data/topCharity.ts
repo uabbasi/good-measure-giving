@@ -19,14 +19,14 @@ interface FeaturedCharityData extends CharityProfile {
 }
 
 export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
-  "name": "SIUT",
-  "ein": "76-0656947",
-  "headline": "SIUT North America Inc provides critical financial support for life-saving kidney transplants and dialysis treatments at the SIUT Charitable Trust in Karachi.",
+  "name": "The Citizens Foundation USA",
+  "ein": "41-2046295",
+  "headline": "The Citizens Foundation USA empowers underprivileged children in Pakistan through high-quality education and sustainable school infrastructure.",
   "amalEvaluation": {
-    "amal_score": 89,
+    "amal_score": 86,
     "confidence_scores": {
-      "impact": 45,
-      "alignment": 44,
+      "impact": 48,
+      "alignment": 38,
       "dataConfidence": 0
     },
     "trust": {
@@ -43,10 +43,10 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
     },
     "score_details": {
       "alignment": {
-        "cause_urgency_label": "HUMANITARIAN",
+        "cause_urgency_label": "EDUCATION_GLOBAL",
         "components": [
           {
-            "evidence": "Accepts zakat (+2); Muslim-focused organization (+2); Asnaf: fuqara (+5); Operates in Muslim-majority regions (+3); Strong humanitarian service (+4)",
+            "evidence": "Explicit zakat program (+4); Muslim-focused organization (+2); Asnaf: fuqara (+5); Operates in Muslim-majority regions (+3); Humanitarian service (+2)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Muslim Donor Fit",
@@ -55,25 +55,25 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "status": "full"
           },
           {
-            "evidence": "Cause area: Humanitarian (13/13)",
+            "evidence": "Cause area: Education Global (10/13)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Cause Urgency",
             "possible": 13,
-            "scored": 13,
+            "scored": 10,
             "status": "full"
           },
           {
-            "evidence": "Niche cause: UNKNOWN (+4)",
-            "improvement_suggestion": null,
-            "improvement_value": 0,
+            "evidence": "Serves underserved populations (+3)",
+            "improvement_suggestion": "Expand services to underserved populations or geographies with limited nonprofit coverage.",
+            "improvement_value": 3,
             "name": "Underserved Space",
             "possible": 7,
-            "scored": 4,
-            "status": "full"
+            "scored": 3,
+            "status": "partial"
           },
           {
-            "evidence": "Founded 2000 (26 years — 6/6)",
+            "evidence": "Founded 1995 (31 years — 6/6)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Track Record",
@@ -82,18 +82,18 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "status": "full"
           },
           {
-            "evidence": "Revenue: $5.9M (5/5 funding gap)",
+            "evidence": "Revenue: $18.3M (3/5 funding gap)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Funding Gap",
             "possible": 5,
-            "scored": 5,
+            "scored": 3,
             "status": "full"
           }
         ],
         "muslim_donor_fit_level": "HIGH",
-        "rationale": "Alignment 44/50: HIGH Muslim donor fit, humanitarian cause area",
-        "score": 44
+        "rationale": "Alignment 38/50: HIGH Muslim donor fit, education global cause area",
+        "score": 38
       },
       "data_confidence": {
         "badge": "HIGH",
@@ -108,25 +108,25 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
       "impact": {
         "components": [
           {
-            "evidence": "$1.14/beneficiary (general benchmark)",
+            "evidence": "$55.37/beneficiary (exceptional for EDUCATION_GLOBAL)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Cost Per Beneficiary",
-            "possible": 13,
+            "possible": 10,
             "scored": 10,
             "status": "full"
           },
           {
-            "evidence": "Delivery model: Direct Service",
+            "evidence": "Delivery model: Direct Provision",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Directness",
             "possible": 5,
-            "scored": 5,
+            "scored": 4,
             "status": "full"
           },
           {
-            "evidence": "Working capital: 4.0 months (RESILIENT)",
+            "evidence": "Working capital: 4.7 months (RESILIENT)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Financial Health",
@@ -135,7 +135,7 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "status": "full"
           },
           {
-            "evidence": "Program expense ratio: 84%",
+            "evidence": "Program expense ratio: 89%",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Program Ratio",
@@ -144,25 +144,25 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "status": "full"
           },
           {
-            "evidence": "Evidence & outcomes: TRACKED",
+            "evidence": "Evidence & outcomes: VERIFIED",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Evidence & Outcomes",
-            "possible": 5,
-            "scored": 4,
+            "possible": 6,
+            "scored": 6,
             "status": "full"
           },
           {
-            "evidence": "Theory of change: CLEAR",
+            "evidence": "Theory of change: STRONG",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Theory of Change",
-            "possible": 5,
-            "scored": 5,
+            "possible": 7,
+            "scored": 7,
             "status": "full"
           },
           {
-            "evidence": "Board governance: STRONG (7 members)",
+            "evidence": "Board governance: STRONG (15 members)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
@@ -171,30 +171,30 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "status": "full"
           }
         ],
-        "cost_per_beneficiary": 1.1426035555555556,
-        "directness_level": "DIRECT_SERVICE",
+        "cost_per_beneficiary": 55.370275,
+        "directness_level": "DIRECT_PROVISION",
         "impact_design_categories": [],
-        "rationale": "$1.14/beneficiary; Delivery: direct service; Impact 45/50",
-        "rubric_archetype": "DIRECT_SERVICE",
-        "score": 45
+        "rationale": "$55.37/beneficiary; Delivery: direct provision; Impact 48/50",
+        "rubric_archetype": "EDUCATION",
+        "score": 48
       },
       "judge_issues": [
         {
-          "field": "discovered.zakat.confidence",
+          "field": "discovered.evaluations.confidence",
           "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
           "field": "hallucination_denylist.populations_served",
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "warning"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
           "severity": "warning"
         }
       ],
@@ -205,15 +205,15 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "SIUT North America Inc shows exceptional impact and exceptional alignment, with zakat compliance.",
+      "score_summary": "The Citizens Foundation USA shows exceptional impact and strong alignment, with zakat compliance.",
       "zakat": {
         "asnaf_category": "fuqara",
         "bonus_points": 0,
         "charity_claims_zakat": true,
-        "claim_evidence": "SIUT North America, Inc. has a 'Select a campaign' option on Kindful that includes 'Zakat'. Additionally, Feeling Blessed states, 'Your Zakat and Sadaqah has the power to save lives. Donate to SIUTNA and help us provide free healthcare with dignity.' (Source: https://siutna.org/ways-to-donate/)",
+        "claim_evidence": "Dedicated zakat page found at https://www.tcfusa.org/zakat (Source: https://www.tcfusa.org/zakat)",
         "notes": null
       }
     }
   },
-  "impactHighlight": "SIUT North America Inc provides critical financial support for life-saving kidney transplants and dialysis treatments at the SIUT Charitable Trust in Karachi."
+  "impactHighlight": "The Citizens Foundation USA empowers underprivileged children in Pakistan through high-quality education and sustainable school infrastructure."
 };

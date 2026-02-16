@@ -143,9 +143,9 @@ const getHowTag = (causeTags: string[], programFocusTags: string[] | null | unde
 };
 
 const getCueDisplayLabel = (cue: string): string => {
-  if (cue === 'Strong Match') return 'High Confidence';
-  if (cue === 'Good Match') return 'Good Signals';
-  if (cue === 'Limited Match') return 'Limited Signals';
+  if (cue === 'Strong Match') return 'Maximum Alignment';
+  if (cue === 'Good Match') return 'Strong Alignment';
+  if (cue === 'Limited Match') return 'Needs Verification';
   return 'Mixed Signals';
 };
 
@@ -310,10 +310,18 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
 
   if (extendedCharity.impactTier === 'HIGH') {
     differentiatorTags.push({
-      label: 'High Impact',
+      label: 'Maximum Leverage',
       priority: 2,
       colorLight: 'bg-rose-100 text-rose-700',
       colorDark: 'bg-rose-900/50 text-rose-400'
+    });
+  }
+  if ((pillarScores?.alignment || 0) >= 42) {
+    differentiatorTags.push({
+      label: 'Maximum Alignment',
+      priority: 2,
+      colorLight: 'bg-emerald-100 text-emerald-700',
+      colorDark: 'bg-emerald-900/50 text-emerald-400'
     });
   }
 

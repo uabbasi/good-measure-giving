@@ -359,7 +359,7 @@ class SourceRequiredValidator:
         if ummah_gap.get("beneficiary_count"):
             return True
 
-        # impact_metrics.metrics
+        # impact_metrics.metrics (must include a numeric beneficiary-like value)
         impact = website_profile.get("impact_metrics", {})
         metrics_dict = impact.get("metrics", {})
         if metrics_dict:
@@ -381,9 +381,17 @@ class SourceRequiredValidator:
                 "refugee",
                 "orphan",
             ]
-            for key in metrics_dict:
-                if any(p in key.lower() for p in people_patterns):
+            for key, value in metrics_dict.items():
+                if not any(p in key.lower() for p in people_patterns):
+                    continue
+                if isinstance(value, (int, float)) and value > 0:
                     return True
+                if isinstance(value, str):
+                    # Look for at least one numeric token in string metrics.
+                    import re
+
+                    if re.search(r"\d", value):
+                        return True
 
         return False
 

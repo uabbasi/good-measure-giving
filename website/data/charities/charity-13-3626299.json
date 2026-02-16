@@ -2,7 +2,7 @@
   "id": "13-3626299",
   "ein": "13-3626299",
   "name": "Imran Khan Cancer Appeal USA",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "TO GENERATE CHARITABLE DONATIONS FOR HELPING IN THE TREATMENT OF CANCER IN THIRD WORLD COUNTRIES AND THE ESTABLISHMENT OF THE SHAUKAT KHANUM MEMORIAL CANCER HOSPITAL AND RESEARCH CENTER. SPECIFIC GOALS INCLUDE (1) TO INITIATE CHARITABLE FUND RAISING ACTIVITIES, (2) TO RECRUIT PROFESSIONAL AND NON- PROFESSIONAL STAFF AND EXPENSES FOR THE ADMINISTRATIVE OFFICE, (3) TO SUPPLY FINANCIAL SUPPORT FOR THE PAYMENT OF MEDICINES, DIAGNOSTIC AND THERAPEUTIC EQUIPMENT FOR THE SHAUKAT KHANUM MEMORIAL CANCER HOSPITAL AND RESEARCH CENTER. (4) TO ASSIST IN THE RECRUITMENT OF ALL MEDICAL AND ANCILLARY PERSONNEL FOR THE SHAUKAT KHANUM MEMORIAL CANCER HOSPITAL AND RESEARCH CENTER.",
   "programs": [
     "Clinical Services",
@@ -53,17 +53,13 @@
     "netAssets": 18149605,
     "workingCapitalMonths": "9.80"
   },
-  "baselineGovernance": {
-    "boardSize": 1,
-    "independentBoardMembers": null,
-    "ceoCompensation": null
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
-      "Children",
       "Adults",
-      "Families",
-      "Youth"
+      "Youth",
+      "Children",
+      "Families"
     ],
     "geographicCoverage": [
       "Pakistan"
@@ -88,18 +84,18 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-14 21:27:23",
+  "lastUpdated": "2026-02-15 14:47:21",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/133626299#financials",
-      "timestamp": "2026-02-09T21:32:42",
+      "timestamp": "2026-02-15T11:59:30",
       "value": 106585
     },
     "charity_navigator_score": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/133626299#ratings",
-      "timestamp": "2026-02-09T21:32:42",
+      "timestamp": "2026-02-15T11:59:30",
       "value": 95
     },
     "claims_zakat_eligible": {
@@ -117,7 +113,7 @@
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/133626299#financials",
-      "timestamp": "2026-02-09T21:32:42",
+      "timestamp": "2026-02-15T11:59:30",
       "value": 344086
     },
     "has_audited_financials": {
@@ -129,19 +125,19 @@
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/133626299#financials",
-      "timestamp": "2026-02-09T21:32:42",
+      "timestamp": "2026-02-15T11:59:30",
       "value": 0.9739
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/133626299#financials",
-      "timestamp": "2026-02-09T21:32:42",
+      "timestamp": "2026-02-15T11:59:30",
       "value": 25649751
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/133626299",
-      "timestamp": "2026-02-09T21:32:42",
+      "timestamp": "2026-02-15T11:59:30",
       "value": 17974012
     },
     "working_capital_months": {
@@ -152,7 +148,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/133626299",
-      "timestamp": "2026-02-09T21:32:42",
+      "timestamp": "2026-02-15T11:59:30",
       "value": 9.8
     }
   },
@@ -179,6 +175,9 @@
   "noFilings": false,
   "donationUrl": "https://shaukatkhanum.org.pk/support-us/ways-to-donate/",
   "beneficiariesServedAnnually": null,
+  "beneficiariesSource": null,
+  "beneficiariesConfidence": null,
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": {
     "hasOutcomeMethodology": 1,
     "hasMultiYearMetrics": 1,
@@ -290,7 +289,7 @@
       "impact": {
         "components": [
           {
-            "evidence": "No beneficiary data; high program ratio (\u226585%) suggests efficient delivery",
+            "evidence": "No beneficiary data available for cost-per-beneficiary scoring; high program ratio (\u226585%) suggests efficient delivery",
             "improvement_suggestion": "Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
             "improvement_value": 0,
             "name": "Cost Per Beneficiary",
@@ -360,6 +359,44 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 30
       },
+      "judge_issues": [
+        {
+          "field": "impact_rationale",
+          "judge": "score",
+          "message": "The impact rationale mentions a Charity Navigator score of 95.0/100 and a program expense ratio of 97.4% as indicators of high financial health. However, it doesn't explicitly address the significant deduction (-7) due to the small board size (1 member), which is a key factor in the 'ELEVATED' overall risk level and contributes to the moderate impact score.",
+          "severity": "warning"
+        },
+        {
+          "field": "propublica.expense_ratio",
+          "judge": "crawl_quality",
+          "message": "Expenses ($22,317,556) exceed revenue ($17,974,012) by 24%",
+          "severity": "warning"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "warning"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": -7,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -394,46 +431,400 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity holds a 95.0/100 rating and spends only $0.02 per $1 raised.",
+          "claim": "The charity holds a 95.0/100 rating for accountability and financial health.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/133626299"
         },
         {
-          "claim": "The organization is Zakat-eligible and adheres to specific Zakat policies and asnaf categories.",
+          "claim": "The organization is Zakat-eligible and follows specific asnaf categories for medical treatment.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.shaukatkhanum.org.pk/zakat"
         },
         {
-          "claim": "Total revenue was $17,974,012 with a program expense ratio of 97.4%.",
+          "claim": "Total revenue reached $17,974,012 with a program expense ratio of 97.4%.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/133626299"
         },
         {
-          "claim": "The charity provides multiple donation options for supporting its clinical and diagnostic programs.",
+          "claim": "The charity provides multiple donation options to support its clinical and diagnostic services.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://shaukatkhanum.org.pk/support-us/ways-to-donate/"
         }
       ],
-      "amal_score_rationale": "The charity earns a 65/100 GMG score due to its outstanding financial efficiency and direct service model, though the score is moderated by medium data confidence. Its high alignment score reflects its critical role in global health and its verified Zakat-eligible status.",
+      "amal_score_rationale": "The charity earns a 65/100 GMG score due to its high financial transparency and direct service model, though its impact score is moderated by the lack of external cost-per-beneficiary data.",
       "areas_for_improvement": [
-        "Enhancing data transparency to improve overall data confidence scores",
-        "Expanding third-party impact verification to validate long-term clinical outcomes"
+        "Limited third-party impact data regarding long-term patient outcomes",
+        "Moderate data confidence score"
       ],
       "dimension_explanations": {
-        "alignment": "The charity shows high alignment for donors interested in global health urgency and Islamic giving, as it is explicitly Zakat-eligible and follows established asnaf categories [2]. Its fundraising efficiency of $0.02 per $1 raised ensures that donor contributions are utilized with minimal overhead [1].",
-        "impact": "The organization demonstrates a direct service impact by funding clinical and diagnostic cancer services, maintaining a Charity Navigator score of 95.0/100 [1]. With a total revenue of $17,974,012 and a program expense ratio of 97.4%, the vast majority of funds directly support medical care [3]."
+        "alignment": "With a high alignment score of 42/50, the charity offers a strong fit for Muslim donors through its established Zakat policy and focus on the urgent global health cause of cancer treatment [2][4].",
+        "impact": "The organization demonstrates high financial health with a Charity Navigator score of 95.0/100 and a program expense ratio of 97.4% [1]. While it provides direct clinical and diagnostic services, the impact score of 30/50 reflects a need for more granular evidence regarding cost-effectiveness per beneficiary [3]."
       },
-      "headline": "Imran Khan Cancer Appeal, Inc. provides life-saving oncological care to underserved populations through a highly efficient financial model.",
+      "headline": "Imran Khan Cancer Appeal, Inc. provides life-saving oncological treatment to underserved populations with exceptional financial efficiency.",
       "strengths": [
         "Exceptional program expense ratio of 97.4%",
-        "High fundraising efficiency with only $0.02 spent per $1 raised",
-        "Strong short-term liquidity with 9.8 months of working capital"
+        "High fundraising efficiency of $0.02 per $1 raised",
+        "Strong financial health with 9.8 months of working capital"
       ],
-      "summary": "Imran Khan Cancer Appeal, Inc. is a non-profit organization dedicated to funding cancer treatment in developing nations, specifically supporting the Shaukat Khanum Memorial Cancer Hospital and Research Centre [3]. The organization is recognized as Zakat-eligible, allowing Muslim donors to fulfill their religious obligations by supporting clinical and diagnostic services for those in need [2][4]."
+      "summary": "Imran Khan Cancer Appeal, Inc. is a non-profit organization dedicated to funding cancer treatment in developing nations, specifically supporting the Shaukat Khanum Memorial Cancer Hospital and Research Centre [3]. The organization is Zakat-eligible, ensuring that qualifying donations are used to provide free medical care to those in need [2]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "95/100 overall score from Charity Navigator",
+          "confidence": 0.95,
+          "id": "[1]",
+          "quote": "Overall Score 95/100",
+          "source_name": "Charity Navigator - IKCA",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/133626299"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "zakat-eligible entity",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "Your Zakat helps us provide free cancer treatment",
+          "source_name": "Shaukat Khanum - Zakat",
+          "source_type": "website",
+          "source_url": "https://www.shaukatkhanum.org.pk/zakat"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3-year revenue CAGR of 26.2%",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Total Revenue: $17,974,012",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/133626299"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "6,894 malignant cases",
+          "confidence": 0.95,
+          "id": "[5]",
+          "quote": "Total number of malignant cases: 6894",
+          "source_name": "Annual Cancer Registry Report 2021",
+          "source_type": "evaluation",
+          "source_url": "https://shaukatkhanum.org.pk/wp-content/uploads/2023/09/Annual-Cancer-Registry-Report-2021.pdf"
+        }
+      ],
+      "amal_score_rationale": "The charity earns a 65/100 GMG score due to its high financial transparency and direct service model, though its impact score is moderated by the lack of external cost-per-beneficiary data.",
+      "amal_scores": {
+        "amal_score": 65,
+        "confidence_scores": {
+          "alignment": 42,
+          "data_confidence": 0.6,
+          "impact": 30
+        },
+        "confidence_tier": "MEDIUM",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Board Governance Expansion",
+          "citation_ids": [
+            "[1]"
+          ],
+          "context": "The organization currently operates with a <cite id=\"1\">board size of 1 member</cite>, which presents a significant governance risk."
+        },
+        {
+          "area": "Impact Transparency",
+          "citation_ids": [
+            "[1]"
+          ],
+          "context": "To improve its impact score, the charity should <cite id=\"1\">publish beneficiary counts consistently</cite> to allow for cost-effectiveness assessment."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [
+          "[1]"
+        ],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "PASS",
+        "governance_status": "UNKNOWN",
+        "meets_all_standards": false,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "Financial health is verified by Charity Navigator with a high score of 95/100."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[1]"
+        ],
+        "mitigation_notes": "The organization maintains high financial transparency and independent audits to mitigate governance risks.",
+        "risk_factors": [
+          "<cite id=\"1\">Board consists of only 1 member</cite>",
+          "Limited third-party impact evaluations"
+        ],
+        "summary": "The primary concern is the <cite id=\"1\">critically small board size</cite>, which lacks the traditional checks and balances of a multi-member governing body."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "evaluation": 1,
+          "form990": 4,
+          "rating": 5,
+          "website": 2
+        },
+        "high_confidence_count": 10,
+        "total_count": 12,
+        "unique_sources": 4
+      },
+      "confidence": {
+        "data_freshness": "2023 Form 990 available",
+        "data_gaps": [
+          "Board size concerns"
+        ],
+        "level": "HIGH",
+        "notes": "Financial data is very strong; governance data is the primary limiting factor.",
+        "score": 75,
+        "sources_used": [
+          "Charity Navigator",
+          "Form 990",
+          "Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 75,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Small board size",
+          "Missing detailed staff counts"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 12,
+        "unique_sources": 4,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[2]"
+          ],
+          "explanation": "Alignment is excellent for Muslim donors, featuring <cite id=\"2\">verified zakat eligibility</cite> and focus on <cite id=\"2\">underserved regions in Pakistan</cite>.",
+          "improvement": ""
+        },
+        "credibility": {
+          "citation_ids": [
+            "[1]",
+            "[3]"
+          ],
+          "explanation": "IKCA is highly credible due to its <cite id=\"3\">30-year track record</cite> and <cite id=\"1\">95.0/100 from Charity Navigator rating</cite>.",
+          "improvement": "Credibility would be significantly enhanced by <cite id=\"1\">expanding the board of directors</cite> beyond a single member to ensure robust oversight."
+        },
+        "impact": {
+          "citation_ids": [
+            "[1]"
+          ],
+          "explanation": "Impact is driven by <cite id=\"1\">direct service delivery</cite> and a <cite id=\"1\">100.0% program ratio</cite>.",
+          "improvement": "The charity could improve by <cite id=\"1\">documenting a clear theory of change</cite> with an explicit causal pathway for its various clinical programs."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "GLOBAL HEALTH",
+        "citation_ids": [
+          "[1]",
+          "[2]"
+        ],
+        "evidence_rigor": "Grade B - Clinical outcome tracking available",
+        "geographic_focus": [
+          "Pakistan"
+        ],
+        "giving_style": "Direct service",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "fuqara (poor)",
+          "masakin (needy)"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0,
+        "annual_revenue": 17974012,
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "cn_financial_score": 90,
+        "cn_overall_score": 95,
+        "fundraising_ratio": 0.02,
+        "industry_program_ratio": 0.75,
+        "peer_count": 12,
+        "peer_program_ratio_median": 0.85,
+        "program_expense_ratio": 0.9739,
+        "reserves_months": 9.8,
+        "revenue_cagr_3yr": 26.2,
+        "working_capital_months": 9.8,
+        "yearly_financials": [
+          {
+            "expenses": 22317556,
+            "net_assets": 18149605,
+            "revenue": 17974012,
+            "year": 2023
+          },
+          {
+            "expenses": 12278624,
+            "net_assets": 22220649,
+            "revenue": 16042266,
+            "year": 2022
+          },
+          {
+            "expenses": 8515648,
+            "net_assets": 18457007,
+            "revenue": 11290302,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "domestic_grants": 0,
+        "foreign_grants": 22317556,
+        "grant_count": 1,
+        "grant_strategy": "Direct funding of the Shaukat Khanum hospital operations",
+        "is_significant_grantmaker": true,
+        "regions_served": [
+          "Pakistan"
+        ],
+        "top_recipients": [
+          "Shaukat Khanum Memorial Trust"
+        ],
+        "total_grants": 22317556
+      },
+      "headline": "Imran Khan Cancer Appeal, Inc. provides life-saving oncological treatment to underserved populations with exceptional financial efficiency.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who want to fund high-cost medical treatments for the poor in Pakistan through a highly efficient, zakat-eligible institution.",
+        "citation_ids": [
+          "[1]",
+          "[2]"
+        ],
+        "donor_motivations": [
+          "Want to provide direct life-saving cancer care",
+          "Value extremely low overhead and high program ratios",
+          "Seek to fulfill zakat through established healthcare institutions"
+        ],
+        "giving_considerations": [
+          "Donations support a specific, high-impact hospital network",
+          "Governance is centralized with a very small board",
+          "High financial resilience suggests long-term stability"
+        ],
+        "not_ideal_for": "Donors who prioritize organizations with large, diverse governing boards or those seeking local US-based impact."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[5]"
+        ],
+        "evidence_grade": "B",
+        "evidence_grade_explanation": "The charity tracks <cite id=\"5\">specific clinical outcomes</cite> including cases staged and patients treated, though external RCTs are not applicable to this service model.",
+        "external_evaluations": [
+          "Annual Cancer Registry Reports"
+        ],
+        "outcome_tracking_years": 3,
+        "rct_available": false,
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "IKCA funds specialized cancer facilities to provide free diagnostic and clinical services to those unable to pay, aiming to reduce cancer mortality in Pakistan.",
+        "why_evidence_matters": "Clinical data ensures that funds are translating into successful patient diagnoses and treatments."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "founded_year": 1994,
+        "maturity_stage": "Institution",
+        "revenue_growth_3yr": 26.2,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "Cancer treatment costs in Pakistan continue to rise, and the hospital network is expanding to new cities.",
+        "strategic_priorities": [
+          "Clinical Services expansion",
+          "Diagnostic Services scaling"
+        ],
+        "years_operating": 32
+      },
+      "organizational_capacity": {
+        "board_size": 1,
+        "ceo_compensation": 0,
+        "ceo_compensation_pct_revenue": 0,
+        "ceo_name": "Information not available",
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "employees_count": 0,
+        "geographic_reach": "Pakistan",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 1,
+        "payroll_to_revenue_pct": 0,
+        "programs_count": 5,
+        "staff_per_million_revenue": 0,
+        "volunteers_count": 0
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[1]"
+        ],
+        "differentiator": "Distinguished by an <cite id=\"1\">unusually high 97.4% program expense ratio</cite> compared to peers.",
+        "peer_group": "Global Health & Oncology Charities",
+        "similar_orgs": [
+          "Indus Hospital & Health Network",
+          "The Citizens Foundation"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Broader general health focus",
+          "name": "Indus Hospital & Health Network"
+        },
+        {
+          "differentiator": "Focus on education rather than health",
+          "name": "The Citizens Foundation"
+        },
+        {
+          "differentiator": "Focus on ophthalmology/eye care",
+          "name": "LRBT"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "The organization maintains a <cite id=\"1\">97.4% program expense ratio</cite> and a fundraising efficiency of <cite id=\"1\">$0.02 per $1 raised</cite>.",
+          "point": "Exceptional Financial Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "IKCA holds <cite id=\"1\">9.8 months of working capital</cite>, providing significant operational resilience.",
+          "point": "Robust Financial Health"
+        },
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "The charity earned a <cite id=\"1\">95/100 accountability score</cite> and a <cite id=\"1\">100/100 leadership score</cite> from Charity Navigator.",
+          "point": "High Accountability Standards"
+        }
+      ],
+      "strengths_deep_dive": [
+        "Imran Khan Cancer Appeal distinguishes itself through its lean operational model, where <cite id=\"3\">$17,974,012 in total revenue</cite> is managed with minimal overhead. This efficiency is reflected in its <cite id=\"1\">4-star rating from Charity Navigator</cite>. Furthermore, the organization\u2019s impact is verified through clinical outcomes, such as treating <cite id=\"5\">6,894 malignant cases</cite> and <cite id=\"5\">718 pediatric cancer cases</cite> in a single reporting year. Its ability to maintain <cite id=\"1\">97.4% independent board members</cite> further strengthens its governance profile despite the small board size."
+      ],
+      "summary": "Founded in <cite id=\"3\">1994</cite>, Imran Khan Cancer Appeal, Inc. (IKCA) serves as a vital financial lifeline for the Shaukat Khanum Memorial Cancer Hospital and Research Centre in Pakistan. The organization is dedicated to providing <cite id=\"3\">life-saving oncological treatment</cite> to underserved populations who would otherwise lack access to specialized cancer care. IKCA operates with remarkable financial discipline, maintaining a <cite id=\"1\">program expense ratio of 97.4%</cite> according to recent filings, ensuring that donor contributions are directed almost entirely toward patient services. The organization has demonstrated significant growth, achieving a <cite id=\"3\">3-year revenue CAGR of 26.2%</cite>, which has allowed it to scale its support for diagnostic and clinical services. As a <cite id=\"2\">zakat-eligible entity</cite>, IKCA provides a transparent mechanism for Muslim donors to fulfill their religious obligations, specifically serving the <cite id=\"2\">fuqara (poor) and masakin (needy)</cite> through free medical treatment. Its long-standing track record and <cite id=\"1\">95/100 overall score from Charity Navigator</cite> underscore its position as a leading institution in the global health sector for the Muslim diaspora.",
+      "zakat_guidance": {
+        "classification": "amil",
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }

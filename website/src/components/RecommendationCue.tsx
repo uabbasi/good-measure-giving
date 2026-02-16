@@ -10,10 +10,10 @@ interface RecommendationCueProps {
 }
 
 const DISPLAY_LABELS: Record<UISignalsV1['recommendation_cue'], string> = {
-  'Strong Match': 'High Confidence',
-  'Good Match': 'Good Signals',
+  'Strong Match': 'Maximum Alignment',
+  'Good Match': 'Strong Alignment',
   'Mixed Signals': 'Mixed Signals',
-  'Limited Match': 'Limited Signals',
+  'Limited Match': 'Needs Verification',
 };
 
 export const RecommendationCue: React.FC<RecommendationCueProps> = ({
