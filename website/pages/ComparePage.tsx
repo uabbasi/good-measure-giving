@@ -431,16 +431,26 @@ function CollapsibleSection({ title, isDark, defaultOpen = false, children }: {
 
   return (
     <div>
+      {/* Mobile: collapsible header */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full px-4 py-2 flex items-center justify-between ${isDark ? 'bg-slate-800/50 hover:bg-slate-800' : 'bg-slate-50 hover:bg-slate-100'}`}
+        className={`w-full px-4 py-2 flex sm:hidden items-center justify-between ${isDark ? 'bg-slate-800/50 hover:bg-slate-800' : 'bg-slate-50 hover:bg-slate-100'}`}
       >
         <h3 className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
           {title}
         </h3>
         {isOpen ? <ChevronUp className="w-4 h-4" aria-hidden="true" /> : <ChevronDown className="w-4 h-4" aria-hidden="true" />}
       </button>
-      {isOpen && children}
+      {/* Desktop: always-visible section header */}
+      <div className={`hidden sm:block px-4 py-2 ${isDark ? 'bg-slate-800/50' : 'bg-slate-50'}`}>
+        <h3 className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+          {title}
+        </h3>
+      </div>
+      {/* Mobile: conditional, Desktop: always shown */}
+      <div className={isOpen ? 'block sm:block' : 'hidden sm:block'}>
+        {children}
+      </div>
     </div>
   );
 }
@@ -624,7 +634,7 @@ export function ComparePage() {
             </div>
 
             {/* Detailed Assessment Section */}
-            <CollapsibleSection title="Detailed Assessment" isDark={isDark} defaultOpen={false}>
+            <CollapsibleSection title="Detailed Assessment" isDark={isDark} defaultOpen>
               <div className="px-4">
                 <CompareRow
                   label="GMG Score"
