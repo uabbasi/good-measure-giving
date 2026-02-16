@@ -17,6 +17,7 @@ import { getEvidenceStageLabel } from '../src/utils/scoreConstants';
 import type { CharityProfile, ScoreComponentDetail, ImpactDetails, AlignmentDetails } from '../types';
 import { RecommendationCue } from '../src/components/RecommendationCue';
 import { SignalConstellation } from '../src/components/SignalConstellation';
+import { HarveyBall, ratioToHarveyLevel, levelToLabel } from '../src/components/ScoreBreakdown';
 
 // Category labels for human-readable display
 const CATEGORY_LABELS: Record<string, string> = {
@@ -140,50 +141,40 @@ function SectionHeader({ title, isDark }: { title: string; isDark: boolean }) {
   );
 }
 
-// Score badge component
-function ScoreBadge({ score, isDark, size = 'md' }: { score: number | null | undefined; isDark: boolean; size?: 'sm' | 'md' }) {
+// Score badge component - Harvey ball + label for overall score (0-100)
+function ScoreBadge({ score, isDark }: { score: number | null | undefined; isDark: boolean; size?: 'sm' | 'md' }) {
   if (score === null || score === undefined) {
     return <span className={isDark ? 'text-slate-500' : 'text-slate-400'}>—</span>;
   }
 
-  const color = score >= 80 ? 'emerald' : score >= 70 ? 'amber' : 'slate';
-  const colorClasses = {
-    emerald: isDark ? 'bg-emerald-900/30 text-emerald-400' : 'bg-emerald-100 text-emerald-700',
-    amber: isDark ? 'bg-amber-900/30 text-amber-400' : 'bg-amber-100 text-amber-700',
-    slate: isDark ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-600',
-  };
-
-  const sizeClasses = size === 'sm' ? 'px-1.5 py-0.5 text-xs' : 'px-2 py-1 text-base';
+  const level = ratioToHarveyLevel(score / 100);
+  const label = levelToLabel(level);
 
   return (
-    <span className={`inline-flex items-center rounded font-bold ${colorClasses[color]} ${sizeClasses}`}>
-      {score}
-    </span>
+    <div className="flex items-center gap-2">
+      <HarveyBall level={level} isDark={isDark} size="md" />
+      <div>
+        <span className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>{score}</span>
+        <span className={`text-[10px] ml-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>{label}</span>
+      </div>
+    </div>
   );
 }
 
-// Dimension score with inline progress bar (for 0-50 scale)
+// Dimension score with Harvey ball (for 0-50 scale)
 function DimensionScore({ score, max, isDark }: { score: number | null | undefined; max: number; isDark: boolean }) {
   if (score === null || score === undefined) {
     return <span className={isDark ? 'text-slate-500' : 'text-slate-400'}>—</span>;
   }
 
-  const pct = Math.min(100, (score / max) * 100);
-  const color = pct >= 80 ? 'emerald' : pct >= 60 ? 'amber' : 'slate';
-  const barColor = {
-    emerald: 'bg-emerald-500',
-    amber: 'bg-amber-500',
-    slate: isDark ? 'bg-slate-500' : 'bg-slate-400',
-  }[color];
+  const ratio = max > 0 ? score / max : 0;
+  const level = ratioToHarveyLevel(ratio);
+  const label = levelToLabel(level);
 
   return (
     <div className="flex items-center gap-2">
-      <span className={`text-sm font-mono tabular-nums font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
-        {score}/{max}
-      </span>
-      <div className={`flex-1 h-1.5 rounded-full max-w-[60px] ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`}>
-        <div className={`h-full rounded-full ${barColor}`} style={{ width: `${pct}%` }} />
-      </div>
+      <HarveyBall level={level} isDark={isDark} size="sm" />
+      <span className={`text-xs font-medium ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>{label}</span>
     </div>
   );
 }
@@ -328,26 +319,6 @@ function findImprovableComponent(charity: CharityProfile, componentName: string)
   return null;
 }
 
-// Status dot for component scores
-function StatusDot({ status, noData }: { status?: ScoreComponentDetail['status']; noData?: boolean }) {
-  const color = noData ? 'bg-slate-500' :
-    status === 'full' ? 'bg-emerald-500' :
-    status === 'partial' ? 'bg-amber-500' :
-    'bg-rose-400';
-  return <span className={`inline-block w-2 h-2 rounded-full flex-shrink-0 ${color}`} />;
-}
-
-// Mini progress bar for component scores
-function MiniProgressBar({ scored, possible, isDark }: { scored: number; possible: number; isDark: boolean }) {
-  const pct = possible > 0 ? Math.min(100, (scored / possible) * 100) : 0;
-  const color = pct >= 80 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : (isDark ? 'bg-slate-500' : 'bg-slate-400');
-  return (
-    <div className={`h-1 rounded-full max-w-[50px] ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`}>
-      <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
-    </div>
-  );
-}
-
 // Single component cell in the Score Analysis grid
 function ComponentCell({ component, isMember, isDark }: { component: ScoreComponentDetail | null; isMember: boolean; isDark: boolean }) {
   if (!component) {
@@ -357,21 +328,22 @@ function ComponentCell({ component, isMember, isDark }: { component: ScoreCompon
   const noData = component.scored === 0 && !!component.evidence &&
     /not (yet )?available|unknown|insufficient data/i.test(component.evidence);
 
+  const ratio = component.possible > 0 ? component.scored / component.possible : 0;
+  const level = noData ? 0 as const : ratioToHarveyLevel(ratio);
+  const label = noData ? 'No Data' : levelToLabel(level);
+
   return (
     <div className="space-y-1">
       <div className="flex items-center gap-1.5">
-        <StatusDot status={component.status} noData={noData} />
-        {noData ? (
-          <span className={`text-[10px] font-medium px-1 py-0.5 rounded ${isDark ? 'bg-slate-700 text-slate-400' : 'bg-slate-100 text-slate-400'}`}>
-            No Data
-          </span>
-        ) : (
-          <span className={`text-xs font-mono tabular-nums ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-            {component.scored}/{component.possible}
-          </span>
-        )}
+        <HarveyBall level={level} isDark={isDark} size="sm" tone={noData ? 'neutral' : undefined} />
+        <span className={`text-[11px] font-medium ${
+          noData
+            ? (isDark ? 'text-slate-500' : 'text-slate-400')
+            : (isDark ? 'text-slate-300' : 'text-slate-600')
+        }`}>
+          {label}
+        </span>
       </div>
-      {!noData && <MiniProgressBar scored={component.scored} possible={component.possible} isDark={isDark} />}
       {isMember && component.evidence && !noData && (
         <p className={`text-[11px] leading-relaxed ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
           {stripCitations(formatEvidenceForDonors(component.evidence))}
@@ -381,7 +353,7 @@ function ComponentCell({ component, isMember, isDark }: { component: ScoreCompon
   );
 }
 
-// Dimension sub-header row showing dimension name + per-charity totals
+// Dimension sub-header row showing dimension name + per-charity harvey balls
 function DimensionSubHeader({ label, charities, dimension, isDark, numCharities }: {
   label: string;
   charities: CharityProfile[];
@@ -399,13 +371,15 @@ function DimensionSubHeader({ label, charities, dimension, isDark, numCharities 
       </div>
       {charities.map(c => {
         const details = getDimensionDetails(c, dimension);
-        const max = dimension === 'impact' ? 50 : 50;
+        const max = 50;
         if (!details) return (
           <div key={c.ein} className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</div>
         );
+        const level = ratioToHarveyLevel(details.score / max);
         return (
-          <div key={c.ein} className={`text-xs font-mono font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-            {details.score}/{max}
+          <div key={c.ein} className="flex items-center gap-1.5">
+            <HarveyBall level={level} isDark={isDark} size="sm" />
+            <span className={`text-xs font-medium ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>{levelToLabel(level)}</span>
           </div>
         );
       })}

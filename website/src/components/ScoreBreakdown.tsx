@@ -45,8 +45,8 @@ interface ScoreBreakdownProps {
   areasForImprovement?: Array<string | { area: string; context: string; citation_ids: string[] }>;
 }
 
-type HarveyLevel = 0 | 1 | 2 | 3 | 4;
-type HarveyTone = 'good' | 'mixed' | 'caution' | 'neutral';
+export type HarveyLevel = 0 | 1 | 2 | 3 | 4;
+export type HarveyTone = 'good' | 'mixed' | 'caution' | 'neutral';
 
 const HARVEY_DEGREES: Record<HarveyLevel, number> = {
   0: 0,
@@ -150,7 +150,7 @@ const normalizeImprovementSuggestion = (component: ScoreComponentDetail): string
   return suggestion;
 };
 
-const ratioToHarveyLevel = (ratio: number): HarveyLevel => {
+export const ratioToHarveyLevel = (ratio: number): HarveyLevel => {
   if (ratio >= 0.8) return 4;
   if (ratio >= 0.6) return 3;
   if (ratio >= 0.4) return 2;
@@ -158,14 +158,14 @@ const ratioToHarveyLevel = (ratio: number): HarveyLevel => {
   return 0;
 };
 
-const levelToTone = (level: HarveyLevel): HarveyTone => {
+export const levelToTone = (level: HarveyLevel): HarveyTone => {
   if (level >= 3) return 'good';
   if (level === 2) return 'mixed';
   if (level <= 1) return 'caution';
   return 'neutral';
 };
 
-const levelToLabel = (level: HarveyLevel): string => {
+export const levelToLabel = (level: HarveyLevel): string => {
   if (level === 4) return 'Strong';
   if (level === 3) return 'Good';
   if (level === 2) return 'Mixed';
@@ -199,7 +199,7 @@ const getHarveyPalette = (tone: HarveyTone, isDark: boolean): {
     : { fill: '#64748b', empty: '#e2e8f0', border: 'border-slate-300', text: 'text-slate-700' };
 };
 
-const HarveyBall: React.FC<{
+export const HarveyBall: React.FC<{
   level: HarveyLevel;
   tone?: HarveyTone;
   isDark: boolean;
