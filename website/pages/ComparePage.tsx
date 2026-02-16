@@ -153,10 +153,7 @@ function ScoreBadge({ score, isDark }: { score: number | null | undefined; isDar
   return (
     <div className="flex items-center gap-2">
       <HarveyBall level={level} isDark={isDark} size="md" />
-      <div>
-        <span className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>{score}</span>
-        <span className={`text-[10px] ml-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>{label}</span>
-      </div>
+      <span className={`text-xs font-medium ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>{label}</span>
     </div>
   );
 }
