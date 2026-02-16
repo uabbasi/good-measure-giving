@@ -627,6 +627,10 @@ class DataCollectionOrchestrator:
         if "bbb" in required_sources and self._is_bbb_not_found(ein, report):
             required_sources.remove("bbb")
             report.setdefault("sources_optional_missing", []).append("bbb:not_found")
+        if "website" in required_sources and self._is_website_infra_failure(ein, report):
+            website_error = (report.get("sources_failed", {}) or {}).get("website")
+            required_sources.remove("website")
+            report.setdefault("sources_optional_missing", []).append(f"website:infra:{website_error}")
         if "form990_grants" in report.get("sources_failed", {}):
             report.setdefault("sources_optional_missing", []).append(
                 f"form990_grants:{report['sources_failed']['form990_grants']}"
@@ -951,6 +955,10 @@ class DataCollectionOrchestrator:
         if "bbb" in required_sources and self._is_bbb_not_found(ein, report):
             required_sources.remove("bbb")
             report.setdefault("sources_optional_missing", []).append("bbb:not_found")
+        if "website" in required_sources and self._is_website_infra_failure(ein, report):
+            website_error = (report.get("sources_failed", {}) or {}).get("website")
+            required_sources.remove("website")
+            report.setdefault("sources_optional_missing", []).append(f"website:infra:{website_error}")
 
         missing_sources = sorted(src for src in required_sources if src not in report["sources_succeeded"])
         if missing_sources:
@@ -1169,6 +1177,28 @@ class DataCollectionOrchestrator:
         for candidate in candidates:
             lower = candidate.lower()
             if "not found" in lower and "bbb" in lower:
+                return True
+        return False
+
+    def _is_website_infra_failure(self, ein: str, report: Dict[str, Any]) -> bool:
+        """Return True when website failed due to anti-bot/infra issues."""
+        error = (report.get("sources_failed", {}) or {}).get("website")
+        candidates: list[str] = []
+        if isinstance(error, str):
+            candidates.append(error)
+
+        # Backoff/permanent-failure skip paths may hide the original website error text.
+        row = self.raw_data_repo.get_by_source(ein, "website")
+        if isinstance(row, dict):
+            for field in ("last_failure_reason", "error_message"):
+                value = row.get(field)
+                if isinstance(value, str):
+                    candidates.append(value)
+
+        infra_markers = ("captcha_blocked", "no data found on any pages", "challenge page", "http 429")
+        for candidate in candidates:
+            lower = candidate.lower()
+            if any(marker in lower for marker in infra_markers):
                 return True
         return False
 
