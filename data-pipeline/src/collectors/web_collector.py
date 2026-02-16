@@ -447,6 +447,26 @@ class WebsiteCollector(BaseCollector):
         """Enforce rate limiting (global, thread-safe)."""
         global_rate_limiter.wait("website", self.rate_limit_delay)
 
+    def _is_bot_challenge_html(self, html: str) -> bool:
+        """Detect anti-bot challenge pages that are sometimes returned with HTTP 200."""
+        if not html:
+            return False
+
+        body = html[:20000].lower()
+        strong_markers = [
+            "/cdn-cgi/challenge-platform/",
+            "__cf$cv$params",
+            "cf-chl-",
+        ]
+        if any(marker in body for marker in strong_markers):
+            return True
+
+        # Fallback marker combination seen on Cloudflare interstitial pages.
+        if "just a moment" in body and "cloudflare" in body:
+            return True
+
+        return False
+
     def _fetch_url(
         self, url: str, force: bool = False, _recursion_depth: int = 0
     ) -> Tuple[bool, Optional[str], Optional[str], Optional[str]]:
@@ -479,9 +499,13 @@ class WebsiteCollector(BaseCollector):
                 # Use cached version
                 cached = self.cache.get_cached_html(url)
                 if cached:
-                    if self.logger:
-                        self.logger.debug(f"Cache hit ({reason}): {url}")
-                    return True, cached["html"], cached["final_url"], None
+                    if self._is_bot_challenge_html(cached.get("html", "")):
+                        if self.logger:
+                            self.logger.debug(f"Ignoring cached challenge page for {url}; refetching")
+                    else:
+                        if self.logger:
+                            self.logger.debug(f"Cache hit ({reason}): {url}")
+                        return True, cached["html"], cached["final_url"], None
 
         # Get stored HTTP headers for conditional request
         cached_headers = self.cache.get_http_headers(url)
@@ -506,6 +530,8 @@ class WebsiteCollector(BaseCollector):
                 response = curl_requests.get(url, timeout=self.timeout, impersonate=profile)
 
                 if response.status_code == 200:
+                    if self._is_bot_challenge_html(response.text):
+                        return False, None, None, "CAPTCHA_BLOCKED: challenge page (HTTP 200)"
                     # Get response headers
                     last_modified = response.headers.get("Last-Modified")
                     etag = response.headers.get("ETag")
@@ -533,6 +559,8 @@ class WebsiteCollector(BaseCollector):
             response = requests.get(url, headers=request_headers, timeout=self.timeout, allow_redirects=True)
 
             if response.status_code == 200:
+                if self._is_bot_challenge_html(response.text):
+                    return False, None, None, "CAPTCHA_BLOCKED: challenge page (HTTP 200)"
                 # Get response headers for caching
                 last_modified = response.headers.get("Last-Modified")
                 etag = response.headers.get("ETag")
@@ -583,6 +611,10 @@ class WebsiteCollector(BaseCollector):
                             self.logger.debug(f"{profile} got status code: {response.status_code}")
 
                         if response.status_code == 200:
+                            if self._is_bot_challenge_html(response.text):
+                                if self.logger:
+                                    self.logger.debug(f"{profile} returned challenge HTML for {url}")
+                                continue
                             if self.logger:
                                 self.logger.debug(
                                     f"curl_cffi bypass successful with {profile} - will use for all {domain} requests"
@@ -966,7 +998,11 @@ class WebsiteCollector(BaseCollector):
                 # Check cache first (sync operation but fast)
                 cached = self.cache.get_cached_html(url)
                 if cached:
-                    return url, True, cached["html"], cached["final_url"], None
+                    if self._is_bot_challenge_html(cached.get("html", "")):
+                        if self.logger:
+                            self.logger.debug(f"Ignoring cached challenge page for {url}; refetching")
+                    else:
+                        return url, True, cached["html"], cached["final_url"], None
 
                 response = await client.get(
                     url,
@@ -975,6 +1011,8 @@ class WebsiteCollector(BaseCollector):
                 )
 
                 if response.status_code == 200:
+                    if self._is_bot_challenge_html(response.text):
+                        return url, False, None, None, "CAPTCHA_BLOCKED: challenge page (HTTP 200)"
                     html = response.text
                     final_url = str(response.url)
                     # Cache the result (sync but fast)
@@ -985,6 +1023,9 @@ class WebsiteCollector(BaseCollector):
                     error_msg = f"HTTP {response.status_code}"
                     is_captcha = False
                     if response.status_code in (202, 403, 429, 503):
+                        # Treat these statuses as potential anti-bot blocks and try curl_cffi fallback.
+                        is_captcha = True
+                        error_msg = f"CAPTCHA_BLOCKED: HTTP {response.status_code}"
                         # Check for known captcha indicators
                         captcha_headers = ["sg-captcha", "cf-ray", "x-captcha"]
                         for header in captcha_headers:
@@ -1075,6 +1116,8 @@ class WebsiteCollector(BaseCollector):
             response = curl_requests.get(url, timeout=self.timeout, impersonate=profile)
 
             if response.status_code == 200:
+                if self._is_bot_challenge_html(response.text):
+                    return url, False, None, None, "CAPTCHA_BLOCKED: challenge page (HTTP 200)"
                 html = response.text
                 final_url = response.url
                 # Cache the result
