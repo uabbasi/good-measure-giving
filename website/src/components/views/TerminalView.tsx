@@ -42,6 +42,8 @@ import { getCauseCategoryTagClasses, getEvidenceStageClasses, getEvidenceStageLa
 import { deriveUISignalsFromCharity, getArchetypeDescription } from '../../utils/scoreUtils';
 import { ScoreBreakdown } from '../ScoreBreakdown';
 import { RecommendationCue } from '../RecommendationCue';
+import { InfoTip } from '../InfoTip';
+import { GLOSSARY } from '../../data/glossary';
 import { OrganizationEngagement } from '../OrganizationEngagement';
 import { resolveCitationUrls, resolveSourceUrl } from '../../utils/citationUrls';
 
@@ -738,6 +740,45 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
           return null;
         })()}
 
+        {/* === Mobile: Balanced View (before Best For) === */}
+        {isSignedIn && rich?.case_against && (
+          <div className={`rounded-lg border-2 p-4 ${
+            isDark ? 'bg-violet-900/10 border-violet-600/50' : 'bg-violet-50 border-violet-300'
+          }`}>
+            <div className={`text-xs uppercase tracking-widest font-semibold mb-2 flex items-center gap-2 ${
+              isDark ? 'text-violet-400' : 'text-violet-700'
+            }`}>
+              <Scale className="w-3.5 h-3.5" />
+              Balanced View
+              <InfoTip text={GLOSSARY['Balanced View']} isDark={isDark} />
+            </div>
+            <p className={`text-sm mb-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+              <SourceLinkedText text={rich.case_against.summary} citations={citations} isDark={isDark} />
+            </p>
+            {rich.case_against.risk_factors?.length > 0 && (
+              <div className="space-y-1.5">
+                <div className={`text-xs font-semibold flex items-center gap-1 ${isDark ? 'text-violet-400' : 'text-violet-600'}`}>
+                  <AlertTriangle className="w-3 h-3" />
+                  Risk Factors
+                </div>
+                <ul className={`text-xs space-y-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  {rich.case_against.risk_factors.map((risk, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="text-violet-500 mt-0.5">•</span>
+                      <SourceLinkedText text={risk} citations={citations} isDark={isDark} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {rich.case_against.mitigation_notes && (
+              <div className={`mt-2 pt-2 border-t text-xs ${isDark ? 'border-slate-700 text-slate-500' : 'border-slate-200 text-slate-500'}`}>
+                <span className="font-semibold">Mitigation:</span> {rich.case_against.mitigation_notes}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* === Mobile Section 2: Best For === */}
         {(() => {
           const donorProfile = isSignedIn ? idealDonorProfile : null;
@@ -1381,6 +1422,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 isDark ? 'text-slate-500' : 'text-slate-400'
               }`}>
                 Long-Term Outlook
+                <InfoTip text={GLOSSARY['Long-Term Outlook']} isDark={isDark} />
               </div>
 
               <DataRow label="Founded" value={rich.long_term_outlook.founded_year} isDark={isDark} />
@@ -1413,6 +1455,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 isDark ? 'text-slate-500' : 'text-slate-400'
               }`}>
                 Donor Fit
+                <InfoTip text={GLOSSARY['Donor Fit']} isDark={isDark} />
               </div>
 
               <DataRow label="Cause Area" value={rich.donor_fit_matrix.cause_area
@@ -1445,6 +1488,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 isDark ? 'text-slate-400' : 'text-slate-500'
               }`}>
                 Impact Evidence
+                <InfoTip text={GLOSSARY['Impact Evidence']} isDark={isDark} />
               </div>
 
               {/* NEW_ORG context note */}
@@ -1491,7 +1535,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 </div>
                 {rich.impact_evidence.theory_of_change && (
                   <div className="flex justify-between">
-                    <span>Theory of Change</span>
+                    <span className="flex items-center gap-1">Theory of Change <InfoTip text={GLOSSARY['Theory of Change']} isDark={isDark} /></span>
                     <span className="font-mono">{rich.impact_evidence.theory_of_change.toUpperCase()}</span>
                   </div>
                 )}
@@ -1607,6 +1651,45 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                   </span>
                 </SignInButton>
               )}
+            </div>
+          )}
+
+          {/* === Evidence Quality Checklist === */}
+          {charity.evidenceQuality && (
+            <div className={`mt-4 pt-4 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
+              <div className={`text-xs uppercase tracking-widest font-semibold mb-3 flex items-center gap-2 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                <Shield className="w-3.5 h-3.5" />
+                Evidence Quality
+                <InfoTip text={GLOSSARY['Evidence Quality']} isDark={isDark} />
+              </div>
+              <div className="space-y-2">
+                {[
+                  { key: 'hasOutcomeMethodology', label: 'Outcome methodology documented' },
+                  { key: 'hasMultiYearMetrics', label: 'Multi-year metrics tracked' },
+                  { key: 'thirdPartyEvaluated', label: 'Third-party evaluated' },
+                  { key: 'receivesFoundationGrants', label: 'Receives foundation grants' },
+                ].map(({ key, label }) => {
+                  const val = (charity.evidenceQuality as Record<string, unknown>)?.[key];
+                  if (val === null || val === undefined) return null;
+                  return (
+                    <div key={key} className="flex items-center gap-2 text-xs">
+                      {val ? (
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                      ) : (
+                        <AlertCircle className={`w-3.5 h-3.5 flex-shrink-0 ${isDark ? 'text-slate-600' : 'text-slate-400'}`} />
+                      )}
+                      <span className={val ? (isDark ? 'text-slate-300' : 'text-slate-700') : (isDark ? 'text-slate-500' : 'text-slate-400')}>
+                        {label}
+                      </span>
+                    </div>
+                  );
+                })}
+                {charity.evidenceQuality.evaluationSources && charity.evidenceQuality.evaluationSources.length > 0 && (
+                  <div className={`mt-2 pt-2 border-t text-xs ${isDark ? 'border-slate-700 text-slate-500' : 'border-slate-200 text-slate-400'}`}>
+                    Sources: {charity.evidenceQuality.evaluationSources.join(', ')}
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -1726,6 +1809,45 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             return null;
           })()}
 
+          {/* === Balanced View (before Best For) === */}
+          {isSignedIn && rich?.case_against && (
+            <div className={`rounded-lg border-2 p-5 mb-6 ${
+              isDark ? 'bg-violet-900/10 border-violet-600/50' : 'bg-violet-50 border-violet-300'
+            }`}>
+              <div className={`text-xs uppercase tracking-widest font-semibold mb-3 flex items-center gap-2 ${
+                isDark ? 'text-violet-400' : 'text-violet-700'
+              }`}>
+                <Scale className="w-4 h-4" />
+                Balanced View
+                <InfoTip text={GLOSSARY['Balanced View']} isDark={isDark} />
+              </div>
+              <p className={`text-sm mb-3 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                <SourceLinkedText text={rich.case_against.summary} citations={citations} isDark={isDark} />
+              </p>
+              {rich.case_against.risk_factors?.length > 0 && (
+                <div className="space-y-2">
+                  <div className={`text-xs font-semibold flex items-center gap-1 ${isDark ? 'text-violet-400' : 'text-violet-600'}`}>
+                    <AlertTriangle className="w-3 h-3" />
+                    Risk Factors
+                  </div>
+                  <ul className={`text-xs space-y-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    {rich.case_against.risk_factors.map((risk, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <span className="text-violet-500 mt-0.5">•</span>
+                        <SourceLinkedText text={risk} citations={citations} isDark={isDark} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {rich.case_against.mitigation_notes && (
+                <div className={`mt-3 pt-2 border-t text-xs ${isDark ? 'border-slate-700 text-slate-500' : 'border-slate-200 text-slate-500'}`}>
+                  <span className="font-semibold">Mitigation:</span> {rich.case_against.mitigation_notes}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* === Section 2: Best For (moved above Score Analysis) === */}
           {(() => {
             const donorProfile = isSignedIn ? idealDonorProfile : null;
@@ -1824,50 +1946,13 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             </div>
           )}
 
-          {/* === Evidence Quality Checklist === */}
-          {charity.evidenceQuality && (
-            <div className={`rounded-lg border p-5 mb-6 ${isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-200'}`}>
-              <div className={`text-xs uppercase tracking-widest font-semibold mb-3 flex items-center gap-2 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                <Shield className="w-4 h-4" />
-                Evidence Quality
-              </div>
-              <div className="space-y-2">
-                {[
-                  { key: 'hasOutcomeMethodology', label: 'Outcome methodology documented' },
-                  { key: 'hasMultiYearMetrics', label: 'Multi-year metrics tracked' },
-                  { key: 'thirdPartyEvaluated', label: 'Third-party evaluated' },
-                  { key: 'receivesFoundationGrants', label: 'Receives foundation grants' },
-                ].map(({ key, label }) => {
-                  const val = (charity.evidenceQuality as Record<string, unknown>)?.[key];
-                  if (val === null || val === undefined) return null;
-                  return (
-                    <div key={key} className="flex items-center gap-2 text-sm">
-                      {val ? (
-                        <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                      ) : (
-                        <AlertCircle className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-slate-600' : 'text-slate-400'}`} />
-                      )}
-                      <span className={val ? (isDark ? 'text-slate-300' : 'text-slate-700') : (isDark ? 'text-slate-500' : 'text-slate-400')}>
-                        {label}
-                      </span>
-                    </div>
-                  );
-                })}
-                {charity.evidenceQuality.evaluationSources && charity.evidenceQuality.evaluationSources.length > 0 && (
-                  <div className={`mt-2 pt-2 border-t text-xs ${isDark ? 'border-slate-700 text-slate-500' : 'border-slate-200 text-slate-400'}`}>
-                    Sources: {charity.evidenceQuality.evaluationSources.join(', ')}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
           {/* === Theory of Change (baseline fallback) === */}
           {!rich?.impact_evidence && charity.theoryOfChange && (
             <div className={`rounded-lg border p-5 mb-6 ${isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-200'}`}>
               <div className={`text-xs uppercase tracking-widest font-semibold mb-3 flex items-center gap-2 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                 <Target className="w-4 h-4" />
                 Theory of Change
+                <InfoTip text={GLOSSARY['Theory of Change']} isDark={isDark} />
               </div>
               <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                 <SourceLinkedText text={charity.theoryOfChange} citations={citations} isDark={isDark} />
@@ -1896,43 +1981,6 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             </div>
           )}
 
-          {/* === Section 6: Balanced View === */}
-          {isSignedIn && rich?.case_against && (
-            <div className={`rounded-lg border-2 p-5 mb-6 ${
-              isDark ? 'bg-violet-900/10 border-violet-600/50' : 'bg-violet-50 border-violet-300'
-            }`}>
-              <div className={`text-xs uppercase tracking-widest font-semibold mb-3 flex items-center gap-2 ${
-                isDark ? 'text-violet-400' : 'text-violet-700'
-              }`}>
-                <Scale className="w-4 h-4" />
-                Balanced View
-              </div>
-              <p className={`text-sm mb-3 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                <SourceLinkedText text={rich.case_against.summary} citations={citations} isDark={isDark} />
-              </p>
-              {rich.case_against.risk_factors?.length > 0 && (
-                <div className="space-y-2">
-                  <div className={`text-xs font-semibold flex items-center gap-1 ${isDark ? 'text-violet-400' : 'text-violet-600'}`}>
-                    <AlertTriangle className="w-3 h-3" />
-                    Risk Factors
-                  </div>
-                  <ul className={`text-xs space-y-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                    {rich.case_against.risk_factors.map((risk, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <span className="text-violet-500 mt-0.5">•</span>
-                        <SourceLinkedText text={risk} citations={citations} isDark={isDark} />
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {rich.case_against.mitigation_notes && (
-                <div className={`mt-3 pt-2 border-t text-xs ${isDark ? 'border-slate-700 text-slate-500' : 'border-slate-200 text-slate-500'}`}>
-                  <span className="font-semibold">Mitigation:</span> {rich.case_against.mitigation_notes}
-                </div>
-              )}
-            </div>
-          )}
         </main>
 
         {/* Right Panel */}
@@ -2269,6 +2317,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
               }`}>
                 <Shield className="w-3.5 h-3.5" />
                 BBB Wise Giving
+                <InfoTip text={GLOSSARY['BBB Wise Giving']} isDark={isDark} />
               </div>
               <div className="flex items-center gap-2 mb-3">
                 {rich.bbb_assessment.meets_all_standards ? (
@@ -2373,6 +2422,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
               }`}>
                 <Landmark className="w-3 h-3" />
                 Grantmaking
+                <InfoTip text={GLOSSARY['Grantmaking']} isDark={isDark} />
               </div>
               {rich.grantmaking_profile.total_grants && (
                 <div className={`mb-3 pb-2 border-b ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>

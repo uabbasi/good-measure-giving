@@ -5,6 +5,8 @@
 
 import React from 'react';
 import { CheckCircle2, TrendingUp, AlertTriangle } from 'lucide-react';
+import { InfoTip } from './InfoTip';
+import { GLOSSARY } from '../data/glossary';
 import {
   ScoreDetails,
   ConfidenceScores,
@@ -308,6 +310,7 @@ const DimensionSection: React.FC<{
             <span className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
               {config.label}
             </span>
+            {GLOSSARY[config.label] && <InfoTip text={GLOSSARY[config.label]} isDark={isDark} />}
             {rubricArchetype && (
               <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${
                 isDark ? 'bg-indigo-900/40 text-indigo-300' : 'bg-indigo-50 text-indigo-700'
@@ -481,7 +484,7 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {areasForImprovement!.map((area, i) => {
               const isRichFormat = typeof area === 'object';
-              const text = isRichFormat ? `${area.area}: ${area.context}` : (area as string);
+              const text = isRichFormat ? `${area.area}: ${area.context || area.detail}` : (area as string);
               return (
                 <div key={i} className={`px-3 py-2 rounded-lg flex items-start gap-2 ${
                   isDark ? 'bg-amber-900/15' : 'bg-amber-50'
@@ -508,10 +511,12 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({
           <AlertTriangle className="w-3 h-3" />
           <HarveyBall level={riskSignal.level} tone={riskSignal.tone} isDark={isDark} size="sm" label={riskSignal.label} />
           <span>{riskSignal.label}</span>
+          <InfoTip text={GLOSSARY['Risk Flags']} isDark={isDark} />
         </span>
         {dataConfidence && (
-          <span>
+          <span className="inline-flex items-center gap-1.5">
             Data Confidence: <strong className={isDark ? 'text-slate-200' : 'text-slate-700'}>{dataConfidence.badge}</strong>
+            <InfoTip text={GLOSSARY['Data Confidence']} isDark={isDark} />
           </span>
         )}
       </div>
