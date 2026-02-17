@@ -12,6 +12,7 @@ These rules catch issues with aggregated/synthesized data before scoring phases.
 
 import logging
 from typing import Any
+from urllib.parse import urlparse
 
 from .base_judge import BaseJudge, JudgeType
 from .schemas.verdict import JudgeVerdict, Severity, ValidationIssue
@@ -80,6 +81,9 @@ class SynthesizeQualityJudge(BaseJudge):
 
         # S-J-002: Source attribution completeness
         issues.extend(self._check_source_attribution(ein, charity_data))
+
+        # S-J-002b: Website citation depth checks (informational only)
+        issues.extend(self._check_website_citation_depth(ein, charity_data))
 
         # S-J-003: Derived field consistency
         issues.extend(self._check_derived_field_consistency(ein, charity_data))
@@ -198,6 +202,71 @@ class SynthesizeQualityJudge(BaseJudge):
                     )
 
         return issues
+
+    def _check_website_citation_depth(self, ein: str, charity_data: dict) -> list[ValidationIssue]:
+        """S-J-002b: Flag homepage-only website citations and uncited website claims.
+
+        This is intentionally non-blocking (INFO/WARNING) so claims can still flow,
+        but we surface weak provenance for review.
+        """
+        issues = []
+        source_attribution = charity_data.get("source_attribution", {}) or {}
+
+        for field_name, attribution in source_attribution.items():
+            if not isinstance(attribution, dict):
+                continue
+            source_name = str(attribution.get("source_name") or "").lower()
+            if "website" not in source_name:
+                continue
+
+            source_url = attribution.get("source_url")
+            if isinstance(source_url, str) and self._is_homepage_url(source_url):
+                issues.append(
+                    ValidationIssue(
+                        severity=Severity.WARNING,
+                        field=f"source_attribution.{field_name}.source_url",
+                        message=f"Website citation for '{field_name}' uses homepage URL; deep link preferred",
+                        details={
+                            "field": field_name,
+                            "source_url": source_url,
+                            "rule": "S-J-002b",
+                        },
+                    )
+                )
+
+        beneficiaries = charity_data.get("beneficiaries_served_annually")
+        beneficiary_attr = source_attribution.get("beneficiaries_served_annually")
+        if beneficiaries is not None:
+            source_url = beneficiary_attr.get("source_url") if isinstance(beneficiary_attr, dict) else None
+            if not (isinstance(source_url, str) and source_url.startswith(("http://", "https://"))):
+                issues.append(
+                    ValidationIssue(
+                        severity=Severity.INFO,
+                        field="beneficiaries_served_annually",
+                        message="Beneficiaries claim is uncited or has no verifiable URL",
+                        details={
+                            "beneficiaries_served_annually": beneficiaries,
+                            "rule": "S-J-002b",
+                        },
+                    )
+                )
+
+        return issues
+
+    @staticmethod
+    def _is_homepage_url(url: str) -> bool:
+        """Return True when URL is just the domain root with no path/query/fragment."""
+        try:
+            parsed = urlparse(url)
+        except Exception:
+            return False
+        return (
+            parsed.scheme in ("http", "https")
+            and bool(parsed.netloc)
+            and (parsed.path in ("", "/"))
+            and not parsed.query
+            and not parsed.fragment
+        )
 
     def _check_derived_field_consistency(
         self, ein: str, charity_data: dict

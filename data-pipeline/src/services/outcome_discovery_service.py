@@ -45,7 +45,7 @@ class OutcomeDiscovery:
         }
 
 
-OUTCOME_DISCOVERY_PROMPT = """You are discovering reported outcomes and impact metrics for a charity.
+OUTCOME_DISCOVERY_PROMPT = """You are discovering reported outcomes and impact metrics for a US-based charity.
 
 Impact metrics include:
 - Beneficiary numbers (people served, families helped)
@@ -53,6 +53,12 @@ Impact metrics include:
 - Educational outcomes (students educated, schools built)
 - Financial metrics (grants distributed, microloans issued)
 - Geographic reach (countries served, communities reached)
+
+IMPORTANT REQUIREMENTS:
+1. Only consider outcomes from the SPECIFIC US organization being evaluated
+2. International affiliates or parent organizations are DIFFERENT entities
+3. If metrics are about an international branch (e.g., UK, Australia, Switzerland),
+   this does NOT apply to the US organization
 
 Based on your search results, answer these questions about {charity_name}:
 
@@ -114,10 +120,10 @@ class OutcomeDiscoveryService:
             OutcomeDiscovery with metrics and evidence
         """
         # Build the search query
-        query = f'What are "{charity_name}"\'s reported outcomes, impact metrics, and beneficiary numbers for the past 3 years? Include specific numbers like people served, meals distributed, students educated, etc.'
+        query = f'What are the US nonprofit "{charity_name}"\'s reported outcomes, impact metrics, and beneficiary numbers for the past 3 years? Include specific numbers like people served, meals distributed, students educated, etc.'
         if website_url:
             domain = urlparse(website_url).netloc
-            query = f'What are "{charity_name}"\'s ({domain}) reported outcomes, impact metrics, and beneficiary numbers for the past 3 years? Include specific numbers like people served, meals distributed, students educated, etc.'
+            query = f'What are the US nonprofit "{charity_name}"\'s ({domain}) reported outcomes, impact metrics, and beneficiary numbers for the past 3 years? Include specific numbers like people served, meals distributed, students educated, etc.'
 
         logger.info(f"Discovering outcomes for: {charity_name}")
 

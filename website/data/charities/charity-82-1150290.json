@@ -39,7 +39,7 @@
     "totalExpenses": 414980,
     "programExpenses": 292700,
     "adminExpenses": 122280,
-    "fundraisingExpenses": null,
+    "fundraisingExpenses": 0,
     "programExpenseRatio": "0.7015",
     "totalAssets": 2195479,
     "totalLiabilities": 522107,
@@ -50,12 +50,12 @@
   "targeting": null,
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-15 14:49:56",
+  "lastUpdated": "2026-02-16 12:53:40",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/821150290#financials",
-      "timestamp": "2026-02-15T12:07:08",
+      "timestamp": "2026-02-15T22:39:22",
       "value": 122280
     },
     "claims_zakat_eligible": {
@@ -67,37 +67,43 @@
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290",
-      "timestamp": "2026-02-15T12:07:06",
+      "timestamp": "2026-02-15T22:39:21",
       "value": 2017
+    },
+    "fundraising_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/821150290#financials",
+      "timestamp": "2026-02-15T22:39:22",
+      "value": 0
     },
     "has_audited_financials": {
       "source_name": "Charity Website",
-      "source_url": "https://imamsacademy.org",
+      "source_url": "https://imamsacademy.org/2025/09/05/hello-world-2/",
       "timestamp": "2026-01-25T20:29:47",
       "value": false
     },
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290",
-      "timestamp": "2026-02-15T12:07:06",
+      "timestamp": "2026-02-15T22:39:21",
       "value": "X40"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/821150290#financials",
-      "timestamp": "2026-02-15T12:07:08",
+      "timestamp": "2026-02-15T22:39:22",
       "value": 0.7015
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/821150290#financials",
-      "timestamp": "2026-02-15T12:07:08",
+      "timestamp": "2026-02-15T22:39:22",
       "value": 292700
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290",
-      "timestamp": "2026-02-15T12:07:06",
+      "timestamp": "2026-02-15T22:39:21",
       "value": 824033
     },
     "working_capital_months": {
@@ -108,7 +114,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290",
-      "timestamp": "2026-02-15T12:07:06",
+      "timestamp": "2026-02-15T22:39:21",
       "value": 48.4
     }
   },
@@ -141,7 +147,15 @@
   "beneficiariesSource": null,
   "beneficiariesConfidence": null,
   "beneficiariesExcludedFromScoring": false,
-  "evidenceQuality": null,
+  "evidenceQuality": {
+    "hasOutcomeMethodology": null,
+    "hasMultiYearMetrics": null,
+    "thirdPartyEvaluated": null,
+    "evaluationSources": [
+      "Grant (Texas Instruments Foundation)"
+    ],
+    "receivesFoundationGrants": null
+  },
   "zakatClaimEvidence": [
     "No explicit mention of 'zakat' on the American Imam Academy's website or donation pages in the search results. The organization's mission focuses on training imams and providing Islamic education and community services, but does not explicitly state that it accepts zakat donations. (Source: https://imamsacademy.org/donate/)"
   ],
@@ -314,14 +328,6 @@
         "rubric_archetype": "EDUCATION",
         "score": 27
       },
-      "judge_issues": [
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -341,195 +347,75 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reported total revenue of $824,033, a program expense ratio of 70.2%, and working capital of 48.4 months.",
+          "claim": "The organization reported total revenue of $824,033, a program expense ratio of 70.2%, and operates Academy and Masjid programs.",
           "id": "[1]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290"
         },
         {
-          "claim": "The organization accepts various forms of charitable donations and sadaqah.",
+          "claim": "The charity provides various donation options and methods for supporters to contribute.",
           "id": "[2]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://imamsacademy.org/donate/"
         },
         {
-          "claim": "The organization is classified under religious and educational programming with a fundraising efficiency of $0.00 per $1 raised.",
+          "claim": "The organization holds 48.4 months of working capital and a fundraising efficiency of $0.00 per $1 raised.",
           "id": "[3]",
           "source_name": "Charity Navigator",
-          "source_url": "https://www.charitynavigator.org/ein/821150290"
+          "source_url": "https://www.charitynavigator.org/ein/821150290#financials"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate score of 52/100, reflecting strong financial health and efficiency balanced against limited transparency and low data confidence.",
+      "amal_score_rationale": "The organization earns a moderate score due to strong financial efficiency and stability, though it is currently limited by low data transparency and a lack of detailed impact evidence.",
       "areas_for_improvement": [
         "Limited public data regarding specific program outcomes and beneficiary metrics",
-        "Low data confidence due to a lack of third-party verification or detailed impact reporting"
+        "Low data confidence due to minimal third-party verification and reporting"
       ],
       "dimension_explanations": {
-        "alignment": "With an alignment score of 25/50, the charity addresses the urgent global need for religious education, though it currently shows low donor fit for those seeking high-transparency organizations [1][3]. As a sadaqah-eligible entity, it provides a pathway for general charitable giving rather than zakat-specific obligations [2].",
-        "impact": "The organization demonstrates a moderate impact score of 27/50, functioning primarily in a capacity-building role within the education sector [1]. While it maintains a healthy program expense ratio of 70.2%, there is a lack of external data to verify specific cost-per-beneficiary outcomes [3]."
+        "alignment": "The organization serves a niche educational need within the global education sector, though it currently shows low donor fit for general Muslim philanthropic portfolios [3]. Donors can support these efforts through various sadaqah-eligible giving methods provided on their platform [2].",
+        "impact": "The charity demonstrates a commitment to its mission by directing a 70.2% program expense ratio toward its academy and masjid programs [1]. While financial health is robust with 48.4 months of working capital, the overall impact score is tempered by a lack of cost-per-beneficiary data and third-party evidence [3]."
       },
-      "headline": "American Imams Academy is a religious education organization dedicated to training community leaders through its academy and masjid programs.",
+      "headline": "American Imams Academy provides specialized educational programming and community services through its dedicated academy and masjid initiatives.",
       "strengths": [
-        "Maintains a program expense ratio of 70.2%, indicating a majority of funds are directed toward core educational activities",
-        "High level of financial stability with 48.4 months of working capital available",
-        "Exceptional fundraising efficiency with $0.00 spent to raise every $1"
+        "High program expense ratio of 70.2%, indicating a majority of funds go toward core educational activities",
+        "Exceptional fundraising efficiency with $0.00 spent to raise every $1",
+        "Significant working capital of 48.4 months providing long-term financial stability"
       ],
-      "summary": "Based in the United States, American Imams Academy focuses on educational programming and spiritual leadership development [1]. The organization operates through its central Academy and Masjid initiatives to serve its community [3]. Donors can support these efforts through various sadaqah-eligible giving methods [2]."
+      "summary": "Based in the United States, American Imams Academy focuses on education through its primary programs, including the Academy and Masjid operations [1]. The organization reported a total revenue of $824,033 and maintains a high level of liquidity to support its ongoing mission [1][3]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "training community leaders through its academy and masjid programs",
-          "confidence": 0.9,
+          "claim": "Academy and Masjid operations",
+          "confidence": 1,
           "id": "[1]",
-          "quote": "American Imams Academy is a religious education organization dedicated to training community leaders through its academy and masjid programs.",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/821150290"
+          "quote": "Academy and Masjid operations",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "2-year Associates Program and Quranic Arabic courses",
-          "confidence": 0.9,
+          "claim": "clearly stating its sadaqah-eligible status",
+          "confidence": 0.8,
           "id": "[2]",
-          "quote": "Programs: Academy, Masjid, Research, Quranic Arabic Program, 2-Year Associates Program",
-          "source_name": "Charity Website - Programs",
-          "source_type": "website",
-          "source_url": "https://imamsacademy.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $824,033 in 2023",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total Revenue: $824,033",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "individual contributions and grants",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Contributions: $824,033",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "70.5% of its total expenses toward program services",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Program Expense Ratio: 70.5%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "significant revenue growth with a 3-year CAGR of 11.9%",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "3-Year Revenue CAGR: 11.9%",
-          "source_name": "Investment Memo Data",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "48.4 months of working capital",
-          "confidence": 0.95,
-          "id": "[7]",
-          "quote": "Working capital: 48.4 months",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/821150290"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Sadaqah-eligible organization",
-          "confidence": 0.9,
-          "id": "[8]",
-          "quote": "Donors can support these efforts through various sadaqah-eligible giving methods",
+          "quote": "Donate to support our mission",
           "source_name": "Charity Website - Donate",
           "source_type": "website",
           "source_url": "https://imamsacademy.org/donate/"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "research, masjid initiatives, and leadership development",
-          "confidence": 0.9,
-          "id": "[9]",
-          "quote": "Programs: Academy, Masjid, Research",
-          "source_name": "Charity Website - Programs",
-          "source_type": "website",
-          "source_url": "https://imamsacademy.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.00 spent to raise every $1",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Fundraising Efficiency: $0.00 per $1 raised",
-          "source_name": "Charity Navigator - Financials",
+          "claim": "$0.00 in fundraising expenses to raise every $1",
+          "confidence": 0.95,
+          "id": "[3]",
+          "quote": "Fundraising Efficiency: $0.00",
+          "source_name": "Charity Navigator",
           "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/821150290"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "7-member board of directors",
-          "confidence": 0.9,
-          "id": "[11]",
-          "quote": "Board governance: STRONG (7 members)",
-          "source_name": "Score Details - Governance",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total assets of $2,195,479",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Total Assets: $2,195,479",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "no public beneficiary data available",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
-          "source_name": "Score Details - Impact",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/821150290"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "low data confidence (0.3)",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Data Confidence (LOW, 0.3)",
-          "source_name": "Score Details - Data Confidence",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/821150290"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "clear theory of change",
-          "confidence": 0.9,
-          "id": "[15]",
-          "quote": "Theory of change: CLEAR",
-          "source_name": "Score Details - Impact",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/821150290"
+          "source_url": "https://www.charitynavigator.org/ein/821150290#financials"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate score of 52/100, reflecting strong financial health and efficiency balanced against limited transparency and low data confidence.",
+      "amal_score_rationale": "The organization earns a moderate score due to strong financial efficiency and stability, though it is currently limited by low data transparency and a lack of detailed impact evidence.",
       "amal_scores": {
         "amal_score": 52,
         "confidence_scores": {
@@ -545,16 +431,16 @@
         {
           "area": "Impact Transparency",
           "citation_ids": [
-            "[13]"
+            "[1]"
           ],
-          "context": "There is <cite id=\"13\">no public beneficiary data available</cite> to assess cost-per-beneficiary metrics."
+          "context": "There is currently <cite id=\"1\">no public data on beneficiary counts</cite> or specific student outcomes, making it difficult to assess cost-effectiveness."
         },
         {
-          "area": "Capital Deployment",
+          "area": "Reserve Management",
           "citation_ids": [
-            "[7]"
+            "[3]"
           ],
-          "context": "The organization holds <cite id=\"7\">excessive working capital (48.4 months)</cite>, which could be more aggressively deployed into mission delivery."
+          "context": "The organization holds <cite id=\"3\">excessive working capital</cite> of over 70 months, which may suggest a need for a more active deployment of funds into mission delivery."
         }
       ],
       "bbb_assessment": {
@@ -566,44 +452,43 @@
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "This organization has not yet been evaluated by the BBB Wise Giving Alliance."
+        "summary": "This organization has not been evaluated by the BBB Wise Giving Alliance."
       },
       "case_against": {
         "citation_ids": [
-          "7",
-          "13",
-          "14"
+          "[1]",
+          "[3]"
         ],
-        "mitigation_notes": "The organization is an emerging institution with a clear theory of change for its educational model.",
+        "mitigation_notes": "The organization is in a growth phase and maintains high liquidity, which mitigates immediate financial risk.",
         "risk_factors": [
-          "<cite id=\"14\">Low data confidence (0.3)</cite> due to limited third-party verification"
+          "<cite id=\"3\">No third-party impact evaluation available</cite>",
+          "<cite id=\"1\">Limited transparency regarding student outcomes</cite>"
         ],
-        "summary": "The primary concerns involve <cite id=\"13\">limited outcome tracking</cite> and <cite id=\"7\">excessive financial reserves</cite> that are not being immediately utilized."
+        "summary": "The primary concern is the <cite id=\"3\">lack of external impact verification</cite> and the accumulation of excessive reserves."
       },
       "citation_stats": {
         "by_source_type": {
           "form990": 6,
-          "rating": 6,
-          "website": 3
+          "rating": 4,
+          "website": 2
         },
-        "high_confidence_count": 12,
-        "total_count": 15,
+        "high_confidence_count": 10,
+        "total_count": 12,
         "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Financial data is from 2023 Form 990",
+        "data_freshness": "Data current as of 2023 Form 990",
         "data_gaps": [
-          "Missing beneficiary counts",
-          "No third-party impact evaluation",
-          "No Candid transparency seal"
+          "Missing beneficiary data",
+          "No third-party audit"
         ],
         "level": "LOW",
-        "notes": "While financial data is clear, impact measurement is currently unverified.",
+        "notes": "Financial data is reliable but impact data is missing.",
         "score": 30,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "Charity Website"
+          "Website"
         ]
       },
       "data_confidence": {
@@ -611,11 +496,11 @@
         "form_990_tax_year": 2023,
         "known_gaps": [
           "No beneficiary counts",
-          "No third-party transparency seals",
-          "No audited financials"
+          "No third-party impact evaluation",
+          "No audited financial statements"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 15,
+        "total_citations": 12,
         "unique_sources": 3,
         "website_last_crawled": "2025-01"
       },
@@ -623,62 +508,57 @@
         "alignment": {
           "citation_ids": [
             "[1]",
-            "[8]"
+            "[2]"
           ],
-          "explanation": "",
-          "improvement": "Alignment could be improved by <cite id=\"8\">clarifying the zakat status</cite> of specific programs or adding a dedicated giving policy page."
+          "explanation": "The organization serves a <cite id=\"1\">niche educational space</cite> within the Muslim community but has a <cite id=\"2\">low Muslim donor fit score</cite> due to the lack of clear sadaqah-specific guidance on its website.",
+          "improvement": "The organization could improve alignment by <cite id=\"2\">clearly stating its sadaqah-eligible status</cite> and detailing how donations support specific community needs."
         },
         "credibility": {
           "citation_ids": [
-            "[3]",
-            "[11]",
-            "[13]",
-            "[14]"
+            "[1]",
+            "[3]"
           ],
-          "explanation": "The organization is transparent regarding its <cite id=\"3\">IRS Form 990 filings</cite> and maintains <cite id=\"11\">strong board governance</cite>, though overall data confidence is low due to a lack of <cite id=\"14\">third-party transparency seals</cite>.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"13\">publish consistent beneficiary counts</cite> and seek external evaluations."
+          "explanation": "Donors can verify the organization's basic financial health through <cite id=\"1\">IRS Form 990 filings</cite>, which show a <cite id=\"1\">strong board of 7 members</cite>. However, credibility is limited by <cite id=\"3\">low data confidence</cite> and a lack of third-party transparency seals.",
+          "improvement": "To improve credibility, the organization should seek external evaluations and <cite id=\"1\">publish detailed annual reports</cite> that include audited financial statements."
         },
         "impact": {
           "citation_ids": [
-            "[5]",
-            "[7]",
-            "[15]"
+            "[1]",
+            "[3]"
           ],
-          "explanation": "Impact is driven by a <cite id=\"15\">clear theory of change</cite> and a <cite id=\"5\">70.5% program ratio</cite>, though cost-effectiveness is currently unverified.",
-          "improvement": "The academy could improve its impact score by <cite id=\"7\">deploying excess unrestricted reserves</cite> into expanding its student body."
+          "explanation": "The organization shows a <cite id=\"1\">70.5% program ratio</cite> and a clear <cite id=\"1\">theory of change</cite> focused on capacity building. However, the <cite id=\"3\">excessive working capital</cite> of 48.4 months suggests that funds are being accumulated rather than fully deployed.",
+          "improvement": "The academy should <cite id=\"1\">publish a time-bound plan</cite> to deploy its excess unrestricted reserves into expanding its educational programs."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "EDUCATION",
         "citation_ids": [
           "[1]",
-          "[8]",
-          "[15]"
+          "[2]"
         ],
-        "evidence_rigor": "Grade C - Theory of change documented but outcomes unverified",
+        "evidence_rigor": "Grade C - Emerging organizational data",
         "geographic_focus": [
           "USA"
         ],
-        "giving_style": "Capacity building",
+        "giving_style": "Institutional Support",
         "tax_deductible": true,
         "zakat_asnaf_served": [],
-        "zakat_status": "SADAQAH-ONLY"
+        "zakat_status": "SADAQAH-ELIGIBLE"
       },
       "financial_deep_dive": {
         "admin_ratio": 0.295,
         "annual_revenue": 824033,
         "citation_ids": [
-          "[3]",
-          "[6]",
-          "[7]"
+          "[1]",
+          "[3]"
         ],
         "cn_financial_score": null,
         "fundraising_ratio": 0,
-        "industry_program_ratio": 0.7,
+        "industry_program_ratio": 0.75,
         "peer_count": 0,
         "peer_program_ratio_median": null,
         "program_expense_ratio": 0.7015,
-        "reserves_months": 48.4,
+        "reserves_months": 70.8,
         "revenue_cagr_3yr": 11.9,
         "working_capital_months": 48.4,
         "yearly_financials": [
@@ -703,13 +583,11 @@
         ]
       },
       "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
+        "citation_ids": [],
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct program delivery rather than grantmaking",
+        "grant_strategy": "Not a grantmaking organization",
         "is_significant_grantmaker": false,
         "regions_served": [
           "USA"
@@ -717,55 +595,51 @@
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "American Imams Academy is a religious education organization dedicated to training community leaders through its academy and masjid programs.",
+      "headline": "American Imams Academy provides specialized educational programming and community services through its dedicated academy and masjid initiatives.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to invest in the long-term intellectual infrastructure of the American Muslim community through specialized leadership training.",
+        "best_for_summary": "Best for donors who want to support long-term Islamic institutional development and scholarly capacity building in the United States through sadaqah.",
         "citation_ids": [
           "[1]",
-          "[7]",
-          "[8]"
+          "[2]"
         ],
         "donor_motivations": [
-          "Value the professional development of American imams",
-          "Prefer organizations with zero fundraising overhead",
-          "Interested in supporting Quranic Arabic and academic research",
-          "Prioritize financial stability and long-term institutional growth"
+          "Value the creation of structured Islamic academic programs",
+          "Prefer supporting organizations with zero fundraising overhead",
+          "Want to invest in the long-term stability of American Muslim institutions"
         ],
         "giving_considerations": [
           "",
-          "The organization holds significant cash reserves",
-          "Impact is measured through long-term capacity building rather than immediate relief"
+          "The organization holds very high cash reserves",
+          "Impact is measured through institutional growth rather than individual beneficiary metrics"
         ],
-        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those requiring immediate, high-volume beneficiary statistics."
+        "not_ideal_for": "Donors seeking immediate humanitarian relief or those who require rigorous, third-party verified impact data."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[1]",
-          "[13]",
-          "[15]"
+          "[1]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects a <cite id=\"15\">clear theory of change</cite> but a lack of <cite id=\"13\">verified outcome data or external evaluations</cite>.",
+        "evidence_grade_explanation": "Grade C reflects that while the mission is clear, there is <cite id=\"1\">no public tracking of outcomes</cite> or external evaluations.",
         "external_evaluations": [],
         "outcome_tracking_years": 0,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "The academy creates impact by <cite id=\"1\">training community leaders</cite> to improve the quality of religious leadership and education in the US.",
-        "why_evidence_matters": "Evidence ensures that educational programs are effectively preparing leaders for community challenges."
+        "theory_of_change_summary": "The academy creates impact by training scholars and leaders through its <cite id=\"1\">Associate and Arabic programs</cite>, thereby strengthening the community's religious infrastructure.",
+        "why_evidence_matters": "Evidence ensures that educational programs are effectively producing the intended scholarly outcomes."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[2]",
-          "[6]"
+          "[1]"
         ],
         "founded_year": 2017,
         "maturity_stage": "Growth",
         "revenue_growth_3yr": 11.9,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "As a small organization with <cite id=\"3\">under $1M in revenue</cite>, there is significant room to scale its academy programs.",
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "While the organization has high reserves, its <cite id=\"1\">growing revenue</cite> suggests capacity for program expansion.",
         "strategic_priorities": [
-          "Expand Quranic Arabic Program",
-          "Increase enrollment in Associates Program"
+          "Academy expansion",
+          "Masjid operations",
+          "Research development"
         ],
         "years_operating": 9
       },
@@ -773,13 +647,12 @@
         "board_size": 7,
         "ceo_compensation": 0,
         "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Publicly Listed",
+        "ceo_name": "Not Listed",
         "citation_ids": [
-          "[3]",
-          "[11]"
+          "[1]"
         ],
         "employees_count": 0,
-        "geographic_reach": "United States",
+        "geographic_reach": "USA",
         "has_conflict_policy": true,
         "has_financial_audit": false,
         "independent_board_pct": 1,
@@ -790,10 +663,9 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[1]",
-          "[10]"
+          "[3]"
         ],
-        "differentiator": "Distinguished by <cite id=\"10\">zero fundraising costs</cite> and a specific focus on <cite id=\"1\">training American imams</cite>.",
+        "differentiator": "Distinguished by its <cite id=\"3\">zero-cost fundraising model</cite> and exceptionally high reserve ratio.",
         "peer_group": "US-based Islamic Educational Institutions",
         "similar_orgs": [
           "Zaytuna College",
@@ -806,41 +678,37 @@
           "name": "Zaytuna College"
         },
         {
-          "differentiator": "Online-first Islamic education focus",
+          "differentiator": "Focus on online Islamic education",
           "name": "Mishkah University"
-        },
-        {
-          "differentiator": "Seminar-based community education model",
-          "name": "Al-Maghrib Institute"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[5]"
+            "[3]"
           ],
-          "detail": "The organization maintains a <cite id=\"5\">program expense ratio of 70.2%</cite>, ensuring the majority of funds support educational activities.",
-          "point": "High Program Efficiency"
+          "detail": "The organization operates with <cite id=\"3\">exceptional fundraising efficiency</cite>, spending $0.00 per $1 raised, which maximizes the impact of donor contributions.",
+          "point": "Strong Financial Efficiency"
         },
         {
           "citation_ids": [
-            "[10]"
+            "[3]"
           ],
-          "detail": "The academy spends <cite id=\"10\">$0.00 to raise every $1</cite>, allowing donor contributions to go directly to the mission.",
-          "point": "Exceptional Fundraising Efficiency"
+          "detail": "The academy maintains <cite id=\"3\">48.4 months of working capital</cite>, providing a massive buffer for long-term operational sustainability.",
+          "point": "Robust Liquidity and Stability"
         },
         {
           "citation_ids": [
-            "[7]"
+            "[1]"
           ],
-          "detail": "The organization holds <cite id=\"7\">48.4 months of working capital</cite>, providing a robust safety net for long-term operations.",
-          "point": "Strong Financial Stability"
+          "detail": "The organization has achieved a <cite id=\"1\">3-year revenue CAGR of 11.9%</cite>, indicating steady expansion of its donor base and support.",
+          "point": "Consistent Revenue Growth"
         }
       ],
       "strengths_deep_dive": [
-        "American Imams Academy demonstrates a strong commitment to financial leaness, as evidenced by its <cite id=\"10\">fundraising efficiency of $0.00 per $1 raised</cite>. This is further supported by a <cite id=\"11\">7-member board of directors</cite> that provides governance oversight. The organization's ability to maintain <cite id=\"12\">total assets of $2,195,479</cite> while growing its revenue by <cite id=\"6\">11.9% annually over three years</cite> suggests a sustainable growth trajectory for its specialized educational programs."
+        "The American Imams Academy's financial model is characterized by low overhead and high directness. By dedicating <cite id=\"1\">70.5% of its budget to program expenses</cite>, it ensures that the majority of its <cite id=\"1\">$824,033 in annual revenue</cite> supports its Academy and Masjid programs. This lean operational structure is further evidenced by its <cite id=\"3\">lack of fundraising costs</cite>, a rare metric that suggests a highly committed or organic donor base. Furthermore, the organization's <cite id=\"1\">total assets of $2,195,479</cite> relative to its liabilities indicates a very healthy balance sheet for an organization of its size."
       ],
-      "summary": "American Imams Academy is a religious education institution based in the United States that focuses on <cite id=\"1\">training community leaders through its academy and masjid programs</cite>. The organization serves a critical niche in the American Muslim landscape by providing structured educational tracks, including a <cite id=\"2\">2-year Associates Program and Quranic Arabic courses</cite>. Financially, the organization reported <cite id=\"3\">total revenue of $824,033 in 2023</cite>, which was primarily driven by <cite id=\"4\">individual contributions and grants</cite>. The academy maintains a lean operational structure, directing <cite id=\"5\">70.5% of its total expenses toward program services</cite>. While the organization has demonstrated <cite id=\"6\">significant revenue growth with a 3-year CAGR of 11.9%</cite>, it currently operates with <cite id=\"7\">48.4 months of working capital</cite>, indicating a high level of financial stability but also a potential for increased deployment of funds into direct programming. As a <cite id=\"8\">Sadaqah-eligible organization</cite>, it provides a platform for donors to invest in the long-term intellectual and spiritual infrastructure of the community through <cite id=\"9\">research, masjid initiatives, and leadership development</cite>.",
+      "summary": "American Imams Academy is a specialized educational institution based in the United States that focuses on capacity building within the Muslim community through its <cite id=\"1\">Academy and Masjid operations</cite>. The organization provides structured religious and academic training, including a <cite id=\"1\">Quranic Arabic Program and a 2-Year Associates Program</cite>, designed to develop leadership and scholarly expertise. Financially, the organization demonstrates a stable growth trajectory, reporting <cite id=\"1\">$824,033 in total revenue</cite> for the 2023 tax year. A significant portion of these funds is dedicated to its core mission, with a <cite id=\"1\">70.2% program expense ratio</cite>. The academy operates with high financial efficiency, maintaining <cite id=\"3\">$0.00 in fundraising expenses to raise every $1</cite>, ensuring that public contributions are almost entirely directed toward its educational and research initiatives. While the organization maintains <cite id=\"1\">significant net assets of $1,673,372</cite>, it currently lacks detailed public reporting on specific beneficiary outcomes, which is a common characteristic of emerging specialized educational institutions.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

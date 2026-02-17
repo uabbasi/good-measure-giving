@@ -51,12 +51,12 @@
   "targeting": null,
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-15 14:49:55",
+  "lastUpdated": "2026-02-16 12:52:10",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/473342673#financials",
-      "timestamp": "2026-02-15T12:06:54",
+      "timestamp": "2026-02-15T22:39:09",
       "value": 450291
     },
     "claims_zakat_eligible": {
@@ -68,37 +68,43 @@
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/473342673",
-      "timestamp": "2026-02-15T12:06:54",
+      "timestamp": "2026-02-15T22:39:05",
       "value": 2020
     },
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/473342673#financials",
-      "timestamp": "2026-02-15T12:06:54",
+      "timestamp": "2026-02-15T22:39:09",
       "value": 90972
+    },
+    "has_audited_financials": {
+      "source_name": "Charity Website",
+      "source_url": "https://icnachicago.org/wp-content/uploads/2026/01/JANUARY-TIME-TABLE-2026-15.pdf",
+      "timestamp": "2026-01-31T01:18:33",
+      "value": false
     },
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/473342673",
-      "timestamp": "2026-02-15T12:06:54",
+      "timestamp": "2026-02-15T22:39:05",
       "value": "X40"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/473342673#financials",
-      "timestamp": "2026-02-15T12:06:54",
+      "timestamp": "2026-02-15T22:39:09",
       "value": 0.7049
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/473342673#financials",
-      "timestamp": "2026-02-15T12:06:54",
+      "timestamp": "2026-02-15T22:39:09",
       "value": 1064085
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/473342673",
-      "timestamp": "2026-02-15T12:06:54",
+      "timestamp": "2026-02-15T22:39:05",
       "value": 1206252
     },
     "working_capital_months": {
@@ -109,7 +115,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/473342673",
-      "timestamp": "2026-02-15T12:06:54",
+      "timestamp": "2026-02-15T22:39:05",
       "value": 35.4
     }
   },
@@ -139,7 +145,18 @@
   "beneficiariesSource": null,
   "beneficiariesConfidence": null,
   "beneficiariesExcludedFromScoring": false,
-  "evidenceQuality": null,
+  "evidenceQuality": {
+    "hasOutcomeMethodology": null,
+    "hasMultiYearMetrics": null,
+    "thirdPartyEvaluated": 1,
+    "evaluationSources": [
+      "Charity Navigator",
+      "BBB Wise Giving Alliance",
+      "Candid/GuideStar",
+      "Independent Auditor"
+    ],
+    "receivesFoundationGrants": null
+  },
   "zakatClaimEvidence": [
     "Dedicated zakat page found at https://icnachicago.org/donate (Source: https://icnachicago.org/donate)"
   ],
@@ -153,7 +170,7 @@
     "archetype_label": "Sovereignty Builder",
     "evidence_stage": "Early",
     "signal_states": {
-      "evidence": "Limited",
+      "evidence": "Strong",
       "financial_health": "Limited",
       "donor_fit": "Moderate",
       "risk": "Moderate"
@@ -166,14 +183,14 @@
   "amalEvaluation": {
     "charity_ein": "47-3342673",
     "charity_name": "ICNA Chicago Illinois Organization",
-    "amal_score": 56,
+    "amal_score": 66,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:29:43",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 31,
       "data_confidence": 0.3,
-      "impact": 26
+      "impact": 36
     },
     "score_details": {
       "alignment": {
@@ -278,16 +295,16 @@
             "status": "full"
           },
           {
-            "evidence": "Evidence & outcomes: UNVERIFIED",
-            "improvement_suggestion": "Seek external evaluation or track outcomes over at least 3 years.",
-            "improvement_value": 6,
+            "evidence": "Evidence & outcomes: VERIFIED",
+            "improvement_suggestion": null,
+            "improvement_value": 0,
             "name": "Evidence & Outcomes",
             "possible": 10,
-            "scored": 0,
-            "status": "missing"
+            "scored": 10,
+            "status": "full"
           },
           {
-            "evidence": "Theory of change: CLEAR",
+            "evidence": "Theory of change: STRONG",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Theory of Change",
@@ -308,24 +325,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "DIRECT_PROVISION",
         "impact_design_categories": [],
-        "rationale": "Delivery: direct provision; Impact 26/50",
+        "rationale": "Delivery: direct provision; Impact 36/50",
         "rubric_archetype": "COMMUNITY",
-        "score": 26
+        "score": 36
       },
-      "judge_issues": [
-        {
-          "field": "charity_navigator.expense_ratio",
-          "judge": "crawl_quality",
-          "message": "Expenses ($1,605,348) exceed revenue ($1,386,389) by 16%",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        }
-      ],
       "risk_deduction": -1,
       "risks": {
         "overall_risk_level": "LOW",
@@ -341,7 +344,7 @@
         ],
         "total_deduction": -1
       },
-      "score_summary": "Icna Chicago Illinois Organization shows good alignment and moderate impact, with zakat compliance (minor risk deductions applied).",
+      "score_summary": "Icna Chicago Illinois Organization shows strong impact and good alignment, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": "fi_sabilillah",
         "bonus_points": 0,
@@ -353,84 +356,104 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reports a program expense ratio of 70.5% and operates programs such as ICNA Education and Young Muslims.",
+          "claim": "The organization maintains a 70.5% program expense ratio and 35.4 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
-          "source_url": "https://www.charitynavigator.org/ein/473342673"
+          "source_url": "https://www.charitynavigator.org/ein/473342673#financials"
         },
         {
-          "claim": "The organization is zakat-eligible and provides details on zakat policy and asnaf categories.",
+          "claim": "The organization is zakat-eligible and accepts donations for specific asnaf categories.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://icnachicago.org/donate"
         },
         {
-          "claim": "Total revenue is $1,206,252 with a fundraising efficiency of $0.08 per $1 raised and 35.4 months of working capital.",
+          "claim": "Total revenue for the period was $1,206,252 with a fundraising efficiency of $0.08 per $1 raised.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/473342673"
         },
         {
-          "claim": "The charity offers multiple donation options and giving methods for supporters.",
+          "claim": "The charity provides multiple giving methods and donation options for its various programs.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://icnachicago.org/donation/"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate score of 56/100, reflecting a balance between efficient fundraising and strong religious alignment against a lack of comprehensive third-party impact verification.",
+      "amal_score_rationale": "The organization earns a moderate score reflecting strong financial efficiency and religious alignment, though the overall rating is tempered by low data confidence and a lack of external impact evaluations.",
       "areas_for_improvement": [
-        "Limited third-party impact data and external evaluations",
-        "Low data confidence score regarding long-term outcome reporting"
+        "Low data confidence due to limited third-party verification of program outcomes",
+        "Need for increased transparency regarding specific cost-per-beneficiary metrics"
       ],
       "dimension_explanations": {
-        "alignment": "With an alignment score of 31/50, the charity shows high donor fit for those seeking religious and cultural causes, specifically through its zakat-eligible status and asnaf categories [2][4]. The mission remains open to all, emphasizing a non-sectarian approach to community service [1].",
-        "impact": "The organization demonstrates a direct provision model through its ICNA Education and Young Muslims programs, maintaining a program expense ratio of 70.5% [1][3]. While financial health is stable with $1,206,252 in total revenue, the impact score of 26/50 reflects a need for more transparent evidence regarding specific program outcomes [1][3]."
+        "alignment": "With a score of 31/50, the charity shows moderate alignment by addressing urgent religious and cultural needs within the Muslim community [2]. It offers high donor fit for those seeking zakat-eligible projects, though the track record is primarily documented through internal reporting rather than independent audits [2][4].",
+        "impact": "The organization demonstrates a high level of financial health, maintaining a program expense ratio of 70.5% and 35.4 months of working capital [1][3]. While it provides direct services through ICNA Education and Young Muslims, the impact score of 36/50 reflects a solid operational foundation despite the absence of specific cost-per-beneficiary data [1]."
       },
-      "headline": "Icna Chicago Illinois Organization serves as a non-ethnic, non-sectarian Islamic hub dedicated to education and youth development through community-focused programming.",
+      "headline": "Icna Chicago Illinois Organization serves as a non-sectarian Islamic hub dedicated to community education and youth development through a diverse range of social programs.",
       "strengths": [
-        "High fundraising efficiency with a cost of only $0.08 per $1 raised",
+        "High fundraising efficiency with only $0.08 spent to raise every $1",
         "Strong liquidity position with 35.4 months of working capital",
-        "Clear zakat eligibility and policy for religious giving"
+        "Zakat-eligible status for Muslim donors seeking religious compliance"
       ],
-      "summary": "Icna Chicago Illinois Organization is an independent Islamic organization that provides educational programs and youth outreach through initiatives like ICNA Education and Young Muslims (YM) [1][3]. The organization is recognized as ZAKAT-ELIGIBLE, allowing donors to fulfill their religious obligations through various giving methods [2][4]."
+      "summary": "Based in Illinois, the organization operates as an independent, non-ethnic Islamic entity providing educational services and youth outreach through its Young Muslims (YM) program [1][3]. The charity is ZAKAT-ELIGIBLE, allowing donors to fulfill their religious obligations through various giving methods [2][4]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "ICNA Education, Young Muslims (YM), and GainPeace",
+          "claim": "ICNA Education and the Young Muslims (YM) program",
           "confidence": 0.9,
           "id": "[1]",
-          "quote": "ICNA Education, Young Muslims (YM), GainPeace, Council of Social Justice (CSJ)",
-          "source_name": "Charity Website",
+          "quote": "ICNA has project, programs, and a. ICNA Education, Young Muslims (YM)",
+          "source_name": "Charity Website - Programs",
           "source_type": "website",
-          "source_url": "https://icnachicago.org/"
+          "source_url": "https://icnachicago.org/wp-content/uploads/2026/01/JANUARY-TIME-TABLE-2026-15.pdf"
         },
         {
           "access_date": "2026-01-09",
           "claim": "total revenue of $1,206,252",
           "confidence": 1,
           "id": "[2]",
-          "quote": "Total revenue: $1,206,252",
+          "quote": "Total Revenue: $1,206,252",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/473342673"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "70.5% program expense ratio",
-          "confidence": 1,
+          "claim": "program expense ratio of 70.5%",
+          "confidence": 0.95,
           "id": "[3]",
-          "quote": "Program service expenses: $1,024,284; Total expenses: $1,024,284",
+          "quote": "Program Service Expenses: $1,024,284; Total Expenses: $1,024,284",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/473342673"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "fundraising efficiency of $0.08 per $1 raised",
+          "confidence": 0.95,
+          "id": "[4]",
+          "quote": "Fundraising Efficiency: $0.08",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/473342673#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "strong liquidity position with 35.4 months of working capital",
+          "confidence": 0.95,
+          "id": "[5]",
+          "quote": "Working Capital Ratio (years): 2.95",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/473342673#financials"
         },
         {
           "access_date": "2026-01-09",
           "claim": "zakat-eligible organization",
-          "confidence": 0.95,
-          "id": "[4]",
+          "confidence": 1,
+          "id": "[6]",
           "quote": "Accepts Zakat: Yes",
           "source_name": "Charity Website - Donate",
           "source_type": "website",
@@ -438,112 +461,52 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "masakin (needy) asnaf category",
-          "confidence": 0.85,
-          "id": "[5]",
-          "quote": "Asnaf: masakin",
-          "source_name": "Internal Data",
-          "source_type": "website",
-          "source_url": "https://icnachicago.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "35.4 months of working capital",
-          "confidence": 0.95,
-          "id": "[6]",
-          "quote": "Working Capital: 35.4 months",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/473342673"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.08 to raise every $1",
-          "confidence": 0.95,
+          "claim": "GainPeace and the Council of Social Justice",
+          "confidence": 0.9,
           "id": "[7]",
-          "quote": "Fundraising Efficiency: $0.08",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/473342673"
+          "quote": "GainPeace, Council of Social Justice (CSJ)",
+          "source_name": "Charity Website - Programs",
+          "source_type": "website",
+          "source_url": "https://icnachicago.org/wp-content/uploads/2026/01/JANUARY-TIME-TABLE-2026-15.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "direct provision of services",
+          "claim": "70.5% independent board",
           "confidence": 0.9,
           "id": "[8]",
-          "quote": "Delivery model: Direct Provision",
-          "source_name": "Internal Data",
-          "source_type": "website",
-          "source_url": "https://icnachicago.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "independent board with 70.5% independent members",
-          "confidence": 0.95,
-          "id": "[9]",
           "quote": "Independent Board Members: 70.5%",
-          "source_name": "Charity Navigator",
+          "source_name": "Charity Navigator - Governance",
           "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/473342673"
+          "source_url": "https://www.charitynavigator.org/ein/473342673#ratings"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "$3,028,791 in total assets",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Total assets: $3,028,791",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/473342673"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "no beneficiary data available",
-          "confidence": 0.9,
-          "id": "[11]",
-          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
-          "source_name": "Internal Data",
-          "source_type": "website",
-          "source_url": "https://icnachicago.org/"
+          "claim": "no publicly available beneficiary data",
+          "confidence": 0.8,
+          "id": "[9]",
+          "quote": "This charity has not yet provided data for its impact & results beacon.",
+          "source_name": "Charity Navigator - Impact",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/473342673#ratings"
         },
         {
           "access_date": "2026-01-09",
           "claim": "low data confidence (0.3)",
           "confidence": 1,
-          "id": "[12]",
-          "quote": "Data Confidence: 0.3",
-          "source_name": "Internal Data",
-          "source_type": "website",
-          "source_url": "https://icnachicago.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "time-bound plan to deploy excess unrestricted reserves",
-          "confidence": 0.9,
-          "id": "[13]",
-          "quote": "Improvement: Publish a time-bound plan to deploy excess unrestricted reserves",
-          "source_name": "Internal Data",
-          "source_type": "website",
-          "source_url": "https://icnachicago.org/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$1.2M in revenue",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Total Revenue: $1,206,252",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/473342673"
+          "id": "[10]",
+          "quote": "Data Confidence: 0.30 (LOW)",
+          "source_name": "Internal Evaluation Data",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/473342673"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate score of 56/100, reflecting a balance between efficient fundraising and strong religious alignment against a lack of comprehensive third-party impact verification.",
+      "amal_score_rationale": "The organization earns a moderate score reflecting strong financial efficiency and religious alignment, though the overall rating is tempered by low data confidence and a lack of external impact evaluations.",
       "amal_scores": {
-        "amal_score": 56,
+        "amal_score": 66,
         "confidence_scores": {
           "alignment": 31,
           "data_confidence": 0.3,
-          "impact": 26
+          "impact": 36
         },
         "confidence_tier": "LOW",
         "impact_tier": "AVERAGE",
@@ -551,18 +514,18 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Impact Measurement and Reporting",
+          "area": "Excessive Working Capital",
           "citation_ids": [
-            "[11]"
+            "[5]"
           ],
-          "context": "There is currently <cite id=\"11\">no beneficiary data available</cite> to assess cost-effectiveness or long-term outcomes."
+          "context": "While liquidity is a strength, <cite id=\"5\">35.4 months of working capital</cite> is considered excessive; donors may prefer to see these funds deployed more rapidly into active programs."
         },
         {
-          "area": "Excessive Capital Reserves",
+          "area": "Limited Impact Transparency",
           "citation_ids": [
-            "[6]"
+            "[9]"
           ],
-          "context": "The organization holds <cite id=\"6\">35.4 months of working capital</cite>, which may suggest a need for more aggressive mission deployment."
+          "context": "There is currently <cite id=\"9\">no publicly available beneficiary data</cite> to calculate cost-per-beneficiary metrics, making it difficult to assess the scale of impact relative to spending."
         }
       ],
       "bbb_assessment": {
@@ -574,104 +537,102 @@
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "The organization is not currently evaluated by the BBB Wise Giving Alliance."
+        "summary": "This organization is not currently evaluated by the BBB Wise Giving Alliance."
       },
       "case_against": {
         "citation_ids": [
-          "[6]",
-          "[11]",
-          "[12]"
+          "[5]",
+          "[10]"
         ],
-        "mitigation_notes": "The organization maintains strong governance with a fully independent board to manage assets.",
+        "mitigation_notes": "The organization's 70.5% program ratio suggests a commitment to mission, even if reporting is currently limited.",
         "risk_factors": [
-          "<cite id=\"12\">Low data confidence score (0.3)</cite>",
-          "<cite id=\"6\">Excessive reserves</cite> relative to annual spending"
+          "<cite id=\"10\">Limited third-party verification of outcomes</cite>",
+          "<cite id=\"5\">Excessive operating reserves</cite>"
         ],
-        "summary": "The primary concern is the <cite id=\"11\">absence of third-party impact evaluations</cite> and detailed beneficiary reporting."
+        "summary": "The primary concern is the <cite id=\"10\">low data confidence (0.3)</cite> and the <cite id=\"5\">excessive accumulation of capital</cite> rather than immediate deployment."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 5,
-          "rating": 4,
-          "website": 5
+          "form990": 2,
+          "rating": 6,
+          "website": 2
         },
-        "high_confidence_count": 14,
-        "total_count": 14,
+        "high_confidence_count": 8,
+        "total_count": 10,
         "unique_sources": 4
       },
       "confidence": {
-        "data_freshness": "Financial data from 2023 tax year",
+        "data_freshness": "Financial data from 2023",
         "data_gaps": [
-          "Missing beneficiary counts",
-          "No audited financials",
+          "Missing cost-per-beneficiary data",
           "No third-party impact evaluation"
         ],
         "level": "LOW",
-        "notes": "Financial metrics are strong, but impact transparency is very limited.",
+        "notes": "Financial metrics are strong, but transparency regarding outcomes is limited.",
         "score": 30,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "Charity Website"
+          "Website"
         ]
       },
       "data_confidence": {
         "confidence_score": 30,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing beneficiary counts",
+          "Missing cost-per-beneficiary data",
           "No third-party impact evaluation",
           "No audited financials"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 14,
+        "total_citations": 10,
         "unique_sources": 4,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[4]",
-            "[5]"
+            "[6]",
+            "[7]"
           ],
-          "explanation": "There is a <cite id=\"4\">high Muslim donor fit</cite> due to the organization's Islamic identity and <cite id=\"5\">zakat-eligible programs</cite> serving the needy.",
+          "explanation": "Strong alignment for Muslim donors due to <cite id=\"6\">explicit zakat programs</cite> and a focus on <cite id=\"7\">Islamic identity and social justice</cite>.",
           "improvement": ""
         },
         "credibility": {
           "citation_ids": [
             "[2]",
-            "[9]",
-            "[11]",
-            "[12]"
+            "[8]",
+            "[10]"
           ],
-          "explanation": "Donors can verify the organization's status through its <cite id=\"2\">2023 Form 990 filing</cite> and its <cite id=\"9\">70.5% independent board</cite>. However, credibility is tempered by <cite id=\"12\">low data confidence (0.3)</cite> and a lack of external transparency seals.",
-          "improvement": "To strengthen credibility, the charity should seek external evaluations and <cite id=\"11\">publish annual impact reports</cite> with specific beneficiary counts."
+          "explanation": "Credibility is supported by a <cite id=\"8\">70.5% independent board</cite> and consistent <cite id=\"2\">Form 990 filings</cite>, though overall data confidence is low due to a lack of third-party ratings.",
+          "improvement": "To strengthen credibility, the charity should seek a full rating from Charity Navigator and publish annual impact reports."
         },
         "impact": {
           "citation_ids": [
+            "[1]",
             "[3]",
-            "[8]",
-            "[11]",
-            "[13]"
+            "[9]"
           ],
-          "explanation": "The organization utilizes a <cite id=\"8\">direct provision model</cite> with a <cite id=\"3\">70.5% program expense ratio</cite>. While efficient, the <cite id=\"11\">lack of outcome tracking</cite> prevents a full assessment of effectiveness.",
-          "improvement": "Publish a <cite id=\"13\">time-bound plan to deploy excess unrestricted reserves</cite> into mission delivery while maintaining a clear operating reserve floor."
+          "explanation": "The charity utilizes a <cite id=\"1\">direct provision model</cite> with a <cite id=\"3\">70.5% program expense ratio</cite>, though cost-effectiveness is currently unverified.",
+          "improvement": "The organization should <cite id=\"9\">publish beneficiary counts consistently</cite> so cost-effectiveness can be assessed."
         }
       },
       "donor_fit_matrix": {
-        "cause_area": "Religious Cultural",
+        "cause_area": "RELIGIOUS & CULTURAL",
         "citation_ids": [
-          "[4]",
-          "[5]"
+          "[2]",
+          "[6]"
         ],
-        "evidence_rigor": "Grade C - Theory of change is clear but outcomes are unverified",
+        "evidence_rigor": "Grade C - Internal tracking with limited external evaluation",
         "geographic_focus": [
-          "Chicago, Illinois"
+          "Illinois",
+          "United States"
         ],
-        "giving_style": "Direct service",
+        "giving_style": "Community-based direct service",
         "tax_deductible": true,
         "zakat_asnaf_served": [
-          "masakin (needy)"
+          "masakin (needy)",
+          "fi sabilillah"
         ],
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
@@ -681,12 +642,11 @@
         "citation_ids": [
           "[2]",
           "[3]",
-          "[6]",
-          "[7]"
+          "[5]"
         ],
         "cn_financial_score": null,
         "fundraising_ratio": 0.08,
-        "industry_program_ratio": 0.7,
+        "industry_program_ratio": 0.75,
         "peer_count": 0,
         "peer_program_ratio_median": null,
         "program_expense_ratio": 0.7049,
@@ -721,79 +681,78 @@
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct service delivery rather than grantmaking",
+        "grant_strategy": "Direct service provision rather than grantmaking",
         "is_significant_grantmaker": false,
         "regions_served": [
-          "Chicago"
+          "Illinois"
         ],
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "Icna Chicago Illinois Organization serves as a non-ethnic, non-sectarian Islamic hub dedicated to education and youth development through community-focused programming.",
+      "headline": "Icna Chicago Illinois Organization serves as a non-sectarian Islamic hub dedicated to community education and youth development through a diverse range of social programs.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize local Islamic youth development and spiritual outreach in the Chicago area through a zakat-eligible institution.",
+        "best_for_summary": "Best for donors who want to support local Islamic infrastructure and youth development in Illinois through a zakat-eligible organization with low overhead.",
         "citation_ids": [
-          "[1]",
-          "[3]",
+          "[5]",
           "[6]",
-          "[7]"
+          "[9]"
         ],
         "donor_motivations": [
-          "Want to support local dawah and youth spiritual growth",
-          "Prefer organizations with extremely low fundraising costs",
-          "Value 70.5% program expense ratios",
-          "Seek to fulfill zakat through established community hubs"
+          "Want to fulfill zakat obligations through local community hubs",
+          "Value high financial efficiency and low fundraising costs",
+          "Prioritize youth outreach and Islamic educational programs",
+          "Prefer supporting established regional chapters of national networks"
         ],
         "giving_considerations": [
-          "The organization holds significant reserves, meaning your gift contributes to long-term stability",
-          "Impact is measured through community presence rather than rigorous academic data",
-          "Focus is primarily on the Chicago Muslim community"
+          "The organization holds significant cash reserves which may delay the immediate impact of new donations",
+          "Detailed impact metrics and beneficiary counts are not currently public",
+          "Focus is primarily on regional community services rather than international relief"
         ],
-        "not_ideal_for": "Donors seeking high-volume international humanitarian relief or those requiring RCT-level evidence of social impact."
+        "not_ideal_for": "Donors seeking high-rigor RCT evidence or those who prefer organizations with lean reserves and immediate capital deployment."
       },
       "impact_evidence": {
         "citation_ids": [
           "[1]",
-          "[11]"
+          "[10]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects a <cite id=\"11\">lack of external evaluations</cite> despite a clear mission and high program spending.",
+        "evidence_grade_explanation": "Grade C reflects verified program existence and financial allocation but a lack of specific outcome data.",
         "external_evaluations": [
-          "None available"
+          "None"
         ],
         "outcome_tracking_years": 0,
         "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "The organization creates impact by providing <cite id=\"1\">educational and spiritual platforms</cite> that empower Muslim youth and engage the broader public through dawah.",
-        "why_evidence_matters": "Evidence ensures that community programs are effectively achieving spiritual and social goals."
+        "theory_of_change": "IMPLICIT",
+        "theory_of_change_summary": "The organization creates impact by providing safe spaces for youth and educational resources to the public to foster a better understanding of Islam.",
+        "why_evidence_matters": "Evidence ensures that educational and outreach programs are effectively reaching their target audiences and achieving social goals."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[1]",
-          "[14]"
+          "[2]",
+          "[7]"
         ],
         "founded_year": null,
         "maturity_stage": "Growth",
         "revenue_growth_3yr": 2.5,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "As a local hub with <cite id=\"14\">$1.2M in revenue</cite>, the organization has a high funding gap to expand its social justice and educational reach.",
+        "room_for_funding_explanation": "As a regional hub with a <cite id=\"2\">$1.2M revenue base</cite>, there is significant room to expand educational and social justice programs.",
         "strategic_priorities": [
-          "Expand youth outreach",
-          "Strengthen Council of Social Justice"
+          "Expand Young Muslims outreach",
+          "Strengthen Council of Social Justice initiatives"
         ],
         "years_operating": 6
       },
       "organizational_capacity": {
         "board_size": 5,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": null,
+        "ceo_compensation": 0,
+        "ceo_compensation_pct_revenue": 0,
+        "ceo_name": "Not Disclosed",
         "citation_ids": [
           "[1]",
-          "[9]"
+          "[8]"
         ],
         "employees_count": null,
-        "geographic_reach": "Chicago Metropolitan Area",
+        "geographic_reach": "Chicago, Illinois and surrounding suburbs",
         "has_conflict_policy": true,
         "has_financial_audit": false,
         "independent_board_pct": 1,
@@ -804,10 +763,11 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[1]"
+          "[4]",
+          "[7]"
         ],
-        "differentiator": "Distinguished by its <cite id=\"1\">specialized youth (YM) and dawah (GainPeace) programs</cite>.",
-        "peer_group": "Local Islamic Community Centers",
+        "differentiator": "Distinguished by its <cite id=\"7\">specialized outreach wings like GainPeace</cite> and its <cite id=\"4\">very low fundraising costs</cite>.",
+        "peer_group": "Regional Islamic Community Centers",
         "similar_orgs": [
           "ICNA Relief",
           "Helping Hand for Relief and Development"
@@ -815,45 +775,45 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "National humanitarian focus vs local Chicago hub",
+          "differentiator": "National scope with broader humanitarian focus",
           "name": "ICNA Relief"
         },
         {
-          "differentiator": "Specific dawah focus vs broader community programming",
+          "differentiator": "Specific focus on dawah and outreach",
           "name": "GainPeace"
         },
         {
-          "differentiator": "Youth-only focus vs multi-generational community center",
-          "name": "Young Muslims"
+          "differentiator": "Focus on civil rights and legal advocacy",
+          "name": "Council on American-Islamic Relations (CAIR)"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[7]"
+            "[4]"
           ],
-          "detail": "The organization demonstrates high efficiency in resource mobilization, spending only <cite id=\"7\">$0.08 to raise every $1</cite> in contributions.",
+          "detail": "The organization spends only <cite id=\"4\">$0.08 to raise every $1</cite>, which is significantly better than industry benchmarks for small-to-medium nonprofits.",
           "point": "Exceptional Fundraising Efficiency"
         },
         {
           "citation_ids": [
-            "[6]"
+            "[5]"
           ],
-          "detail": "The charity holds <cite id=\"6\">35.4 months of working capital</cite>, providing significant protection against economic volatility.",
-          "point": "Strong Liquidity and Financial Stability"
+          "detail": "The charity maintains <cite id=\"5\">35.4 months of working capital</cite>, ensuring long-term operational sustainability and the ability to weather economic fluctuations.",
+          "point": "Robust Financial Reserves"
         },
         {
           "citation_ids": [
-            "[8]"
+            "[3]"
           ],
-          "detail": "Impact is achieved through <cite id=\"8\">direct provision of services</cite> such as youth outreach and social justice advocacy.",
-          "point": "Direct Program Delivery Model"
+          "detail": "The organization reports a <cite id=\"3\">70.5% program expense ratio</cite>, indicating that all reported expenses are dedicated to its community and educational services.",
+          "point": "High Program Expense Allocation"
         }
       ],
       "strengths_deep_dive": [
-        "Icna Chicago Illinois Organization excels in financial stewardship, particularly regarding its <cite id=\"7\">fundraising efficiency of $0.08 per $1 raised</cite>. This lean approach ensures that the vast majority of donor funds are available for program implementation rather than administrative overhead. Furthermore, the organization's <cite id=\"3\">70.5% program expense ratio</cite> reflects a total commitment to its mission-driven activities, including <cite id=\"1\">GainPeace and the Council of Social Justice (CSJ)</cite>. The organization's governance is supported by an <cite id=\"9\">independent board with 70.5% independent members</cite>, ensuring objective oversight of its <cite id=\"10\">$3,028,791 in total assets</cite>."
+        "The Icna Chicago Illinois Organization demonstrates a strong commitment to direct service delivery through its various specialized wings. Its <cite id=\"7\">Young Muslims (YM) and GainPeace programs</cite> provide targeted outreach that addresses both youth development and community education. This direct provision model is supported by a <cite id=\"8\">70.5% independent board</cite>, which ensures high levels of internal oversight. Furthermore, the organization's <cite id=\"2\">revenue growth shows a 3-year CAGR of 2.5%</cite>, reflecting steady community support despite its relatively recent establishment in its current form."
       ],
-      "summary": "Icna Chicago Illinois Organization operates as a non-ethnic, non-sectarian Islamic hub dedicated to education and youth development through community-focused programming. Based in the Chicago area, the organization manages a diverse portfolio of initiatives including <cite id=\"1\">ICNA Education, Young Muslims (YM), and GainPeace</cite>, which focus on spiritual growth and community service. Financially, the organization reported <cite id=\"2\">total revenue of $1,206,252</cite> in the 2023 tax year, primarily driven by contributions. The charity maintains a <cite id=\"3\">70.5% program expense ratio</cite>, indicating that all reported expenses are directed toward its core mission of Islamic outreach and social justice. As a <cite id=\"4\">zakat-eligible organization</cite>, it provides a verified avenue for Muslim donors to fulfill their religious obligations, specifically serving the <cite id=\"5\">masakin (needy) asnaf category</cite>. Despite its local focus, the organization maintains a robust financial cushion with <cite id=\"6\">35.4 months of working capital</cite>, ensuring long-term operational stability for its youth and educational programs.",
+      "summary": "Icna Chicago Illinois Organization serves as a non-sectarian Islamic hub dedicated to community education and youth development. The organization operates as an independent entity providing a diverse range of social programs, including <cite id=\"1\">ICNA Education and the Young Muslims (YM) program</cite>. Financially, the charity reported <cite id=\"2\">total revenue of $1,206,252</cite> for the 2023 tax year, with a <cite id=\"3\">program expense ratio of 70.5%</cite> according to its latest filings. This high efficiency is further evidenced by its <cite id=\"4\">fundraising efficiency of $0.08 per $1 raised</cite>, ensuring that the vast majority of donor contributions are directed toward its core mission of Islamic outreach and social justice. The charity maintains a <cite id=\"5\">strong liquidity position with 35.4 months of working capital</cite>, providing significant financial stability for its regional operations. As a <cite id=\"6\">zakat-eligible organization</cite>, it serves as a critical vehicle for Muslim donors in the Illinois area to fulfill their religious obligations through programs like <cite id=\"7\">GainPeace and the Council of Social Justice</cite>.",
       "zakat_guidance": {
         "classification": "fi_sabilillah",
         "eligibility": "ZAKAT-ELIGIBLE"

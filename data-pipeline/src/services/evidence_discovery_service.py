@@ -46,13 +46,19 @@ class EvidenceDiscovery:
         }
 
 
-EVIDENCE_DISCOVERY_PROMPT = """You are discovering whether a charity has been evaluated by third-party organizations.
+EVIDENCE_DISCOVERY_PROMPT = """You are discovering whether a US-based charity has been evaluated by third-party organizations.
 
 Third-party evaluators include:
 - Research organizations: J-PAL, IDinsight, Innovations for Poverty Action (IPA)
 - Charity evaluators: GiveWell, Charity Navigator, BBB Wise Giving Alliance, Candid/GuideStar
 - Independent auditors: Deloitte, PwC, KPMG, EY, or other auditing firms
 - Academic institutions conducting impact studies
+
+IMPORTANT REQUIREMENTS:
+1. Only consider evaluations of the SPECIFIC US organization being evaluated
+2. International affiliates or parent organizations are DIFFERENT entities
+3. If evidence is about an international branch (e.g., UK, Australia, Switzerland),
+   this does NOT apply to the US organization
 
 Based on your search results, answer these questions about {charity_name}:
 
@@ -114,10 +120,10 @@ class EvidenceDiscoveryService:
             EvidenceDiscovery with evaluator details
         """
         # Build the search query
-        query = f'Has "{charity_name}" been evaluated by external organizations like J-PAL, GiveWell, IDinsight, Charity Navigator, BBB Wise Giving Alliance, or independent auditors? Include any published evaluations or assessments.'
+        query = f'Has the US nonprofit "{charity_name}" been evaluated by external organizations like J-PAL, GiveWell, IDinsight, Charity Navigator, BBB Wise Giving Alliance, or independent auditors? Include any published evaluations or assessments.'
         if website_url:
             domain = urlparse(website_url).netloc
-            query = f'Has "{charity_name}" ({domain}) been evaluated by external organizations like J-PAL, GiveWell, IDinsight, Charity Navigator, BBB Wise Giving Alliance, or independent auditors? Include any published evaluations or assessments.'
+            query = f'Has the US nonprofit "{charity_name}" ({domain}) been evaluated by external organizations like J-PAL, GiveWell, IDinsight, Charity Navigator, BBB Wise Giving Alliance, or independent auditors? Include any published evaluations or assessments.'
 
         logger.info(f"Discovering evaluations for: {charity_name}")
 

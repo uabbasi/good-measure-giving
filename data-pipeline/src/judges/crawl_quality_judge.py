@@ -30,6 +30,9 @@ MAX_PLAUSIBLE_REVENUE = 100_000_000_000  # $100B (largest US nonprofits ~$50B)
 REVENUE_DIVERGENCE_WARNING = 0.5  # >50% divergence = WARNING
 REVENUE_DIVERGENCE_ERROR = 0.8  # >80% divergence = ERROR (likely wrong org)
 
+# Core sources required for crawl completeness checks.
+REQUIRED_CRAWL_SOURCES = {"propublica", "charity_navigator", "candid", "form990_grants"}
+
 # Expense/revenue ratio thresholds (nonprofits drawing down reserves)
 # Deficits up to 15% are common due to grant timing, multi-year spending, end-of-year outlays
 EXPENSE_RATIO_WARNING = 1.15  # >115% = WARNING (significant deficit year)
@@ -65,8 +68,11 @@ class CrawlQualityJudge(BaseJudge):
         ein = output.get("ein", "unknown")
 
         # Get source data from context
-        source_data = context.get("source_data", {})
+        source_data = self._normalize_source_data(context.get("source_data", {}))
         # raw_scraped_data available in context if needed for additional checks
+
+        # J-000: Required source completeness
+        issues.extend(self._check_required_sources(ein, source_data))
 
         # J-001: ProPublica EIN mismatch
         issues.extend(self._check_propublica_ein(ein, source_data))
@@ -103,6 +109,37 @@ class CrawlQualityJudge(BaseJudge):
             passed=not has_errors,
             issues=issues,
         )
+
+    def _normalize_source_data(self, source_data: Any) -> dict[str, dict[str, Any]]:
+        """Coerce source payloads to dictionaries to avoid fail-open judge crashes."""
+        if not isinstance(source_data, dict):
+            return {}
+
+        normalized: dict[str, dict[str, Any]] = {}
+        for source, payload in source_data.items():
+            normalized[source] = payload if isinstance(payload, dict) else {}
+        return normalized
+
+    def _check_required_sources(self, ein: str, source_data: dict[str, dict[str, Any]]) -> list[ValidationIssue]:
+        """J-000: Ensure core crawl sources are present in successful source data."""
+        present = set(source_data.keys())
+        missing = sorted(src for src in REQUIRED_CRAWL_SOURCES if src not in present)
+        if not missing:
+            return []
+
+        return [
+            ValidationIssue(
+                severity=Severity.ERROR,
+                field="crawl.required_sources",
+                message=f"Missing required crawl sources: {', '.join(missing)}",
+                details={
+                    "ein": ein,
+                    "missing_sources": missing,
+                    "present_sources": sorted(present),
+                    "rule": "J-000",
+                },
+            )
+        ]
 
     def _check_propublica_ein(self, expected_ein: str, source_data: dict) -> list[ValidationIssue]:
         """J-001: Verify ProPublica returned data for the correct EIN."""

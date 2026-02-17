@@ -374,6 +374,45 @@ class BBBCollector(BaseCollector):
                 error=f"Request failed: {str(e)}",
             )
 
+    # FIX #23: Content-substance markers that indicate real BBB report data.
+    # Shell HTML (page template without AJAX content) won't have these.
+    BBB_SUBSTANCE_MARKERS = [
+        "evaluation-status",       # Overall status div
+        "standard-item",           # Individual standard items
+        "meets-standards",         # Standards CSS class
+        "does-not-meet",           # Standards CSS class
+        "Accredited Charity",      # Accredited badge text
+        "Standards for Charity",   # Section heading
+    ]
+
+    def _check_content_substance(self, html: str, ein: str) -> bool:
+        """
+        FIX #23: Check if BBB HTML contains real report content vs shell template.
+
+        Returns True if the content has substance, False if it's a shell.
+        """
+        matches = sum(1 for marker in self.BBB_SUBSTANCE_MARKERS if marker in html)
+
+        if matches == 0:
+            if self.logger:
+                self.logger.warning(
+                    f"[BBB SHELL HTML] Content for {ein} has no substance markers "
+                    f"(0/{len(self.BBB_SUBSTANCE_MARKERS)} matched). "
+                    f"This is likely a page shell without AJAX-loaded report data. "
+                    f"Extracted data will be empty/incomplete."
+                )
+            return False
+
+        if matches <= 1:
+            if self.logger:
+                self.logger.warning(
+                    f"[BBB LOW SUBSTANCE] Content for {ein} has minimal substance "
+                    f"({matches}/{len(self.BBB_SUBSTANCE_MARKERS)} markers matched). "
+                    f"BBB report data may be incomplete."
+                )
+
+        return True
+
     def parse(self, raw_data: str, ein: str, **kwargs) -> ParseResult:
         """
         Parse BBB review page HTML into profile schema.
@@ -399,6 +438,9 @@ class BBBCollector(BaseCollector):
                     review_url = metadata.get("review_url")
                 except (json.JSONDecodeError, ValueError):
                     pass
+
+            # FIX #23: Check content substance before parsing
+            self._check_content_substance(html, ein)
 
             soup = BeautifulSoup(html, "html.parser")
 

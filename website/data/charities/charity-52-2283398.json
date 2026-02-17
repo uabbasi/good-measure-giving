@@ -44,8 +44,17 @@
   "baselineGovernance": null,
   "targeting": null,
   "trustSignals": null,
-  "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-15 14:48:36",
+  "websiteEvidenceSignals": {
+    "claims_longitudinal": false,
+    "claims_rcts": false,
+    "claims_third_party_eval": false,
+    "disclosure_richness": 1,
+    "reports_annual_report": false,
+    "reports_board_info": false,
+    "reports_methodology": false,
+    "reports_outcome_metrics": true
+  },
+  "lastUpdated": "2026-02-16 12:29:42",
   "sourceAttribution": {
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
@@ -56,25 +65,25 @@
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/522283398",
-      "timestamp": "2026-02-15T13:37:11",
+      "timestamp": "2026-02-15T22:39:08",
       "value": 2001
     },
     "has_audited_financials": {
       "source_name": "Charity Website",
-      "source_url": "https://naml.net",
+      "source_url": "https://naml.net/lander",
       "timestamp": "2026-01-25T20:18:01",
       "value": false
     },
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/522283398",
-      "timestamp": "2026-02-15T13:37:11",
+      "timestamp": "2026-02-15T22:39:08",
       "value": "I70"
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/522283398",
-      "timestamp": "2026-02-15T13:37:11",
+      "timestamp": "2026-02-15T22:39:08",
       "value": 85362
     },
     "working_capital_months": {
@@ -85,7 +94,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/522283398",
-      "timestamp": "2026-02-15T13:37:11",
+      "timestamp": "2026-02-15T22:39:08",
       "value": 2.6
     }
   },
@@ -125,32 +134,32 @@
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
-    "assessment_label": "Context Dependent",
+    "assessment_label": "Limited Basis",
     "archetype_code": "SOVEREIGNTY",
     "archetype_label": "Sovereignty Builder",
     "evidence_stage": "Early",
     "signal_states": {
-      "evidence": "Moderate",
+      "evidence": "Limited",
       "financial_health": "Limited",
       "donor_fit": "Limited",
       "risk": "Moderate"
     },
-    "recommendation_cue": "Mixed Signals",
-    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "recommendation_cue": "Limited Match",
+    "recommendation_rationale": "Limited match due to weaker results and/or higher uncertainty; review methodology details before deciding.",
     "used_fallback": false,
     "fallback_reasons": null
   },
   "amalEvaluation": {
     "charity_ein": "52-2283398",
     "charity_name": "National Association of Muslim Lawyers",
-    "amal_score": 41,
+    "amal_score": 39,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:18:42",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 24,
       "data_confidence": 0.3,
-      "impact": 17
+      "impact": 15
     },
     "score_details": {
       "alignment": {
@@ -255,13 +264,13 @@
             "status": "missing"
           },
           {
-            "evidence": "Evidence & outcomes: UNVERIFIED (emerging org baseline)",
+            "evidence": "Evidence & outcomes: REPORTED (emerging org baseline)",
             "improvement_suggestion": "Seek external evaluation or track outcomes over at least 3 years.",
             "improvement_value": 5,
             "name": "Evidence & Outcomes",
             "possible": 9,
-            "scored": 4,
-            "status": "partial"
+            "scored": 2,
+            "status": "missing"
           },
           {
             "evidence": "Theory of change: BASIC (emerging org baseline)",
@@ -285,48 +294,10 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 17/50",
+        "rationale": "Delivery: capacity building; Impact 15/50",
         "rubric_archetype": "SYSTEMIC_CHANGE",
-        "score": 17
+        "score": 15
       },
-      "judge_issues": [
-        {
-          "field": "financial.program_expense_ratio",
-          "judge": "data_completeness",
-          "message": "Missing program_expense_ratio - effectiveness score may be artificially low",
-          "severity": "warning"
-        },
-        {
-          "field": "propublica.expense_ratio",
-          "judge": "crawl_quality",
-          "message": "Expenses ($113,423) exceed revenue ($85,362) by 33%",
-          "severity": "warning"
-        },
-        {
-          "field": "website.ein",
-          "judge": "crawl_quality",
-          "message": "Website EIN (20-1444111) doesn't match expected (52-2283398)",
-          "severity": "warning"
-        },
-        {
-          "field": "website.website_profile.ein",
-          "judge": "extract_quality",
-          "message": "EIN mismatch: expected 52-2283398, got 20-1444111",
-          "severity": "warning"
-        },
-        {
-          "field": "multi_source.ein_consistency",
-          "judge": "extract_quality",
-          "message": "Multiple different EINs found across sources: {'522283398', '201444111'}",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -346,67 +317,47 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reported total revenue of $85,362 and focuses on professional networking and legal community resources.",
+          "claim": "The organization reported total revenue of $85,362 and operates programs for professional networking and legal community resources.",
           "id": "[1]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/522283398"
         },
         {
-          "claim": "The organization accepts general charitable donations and provides options for giving.",
+          "claim": "The organization provides options for general charitable donations and sadaqah.",
           "id": "[2]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://naml.net/donate"
         },
         {
-          "claim": "The organization holds 2.6 months of working capital and is categorized under advocacy and capacity building.",
+          "claim": "The organization holds 2.6 months of working capital and focuses on capacity building and advocacy.",
           "id": "[3]",
           "source_name": "Charity Navigator",
-          "source_url": "https://www.charitynavigator.org/ein/522283398"
+          "source_url": "https://www.charitynavigator.org/ein/522283398#financials"
         }
       ],
-      "amal_score_rationale": "The organization receives a score of 41/100, reflecting a moderate operational baseline but significant gaps in public financial reporting and impact data. While it serves a niche professional need, the lack of comprehensive transparency affects its overall rating.",
+      "amal_score_rationale": "The organization receives a score of 39/100, reflecting a professional association with limited financial scale and a lack of transparent impact data. While it provides niche networking services, the low data confidence and modest revenue suggest a smaller operational footprint.",
       "areas_for_improvement": [
-        "Limited financial transparency regarding program expense ratios and fundraising efficiency",
-        "Low data confidence due to a lack of third-party verification and detailed impact metrics"
+        "Limited public data regarding program outcome metrics and impact evidence",
+        "Low data confidence score due to minimal third-party financial verification"
       ],
       "dimension_explanations": {
-        "alignment": "The alignment score of 24/50 is medium, reflecting a balanced mix of a specialized advocacy cause and a low fit for general donors [3]. While the organization provides a platform for sadaqah-eligible contributions, its professional-centric mission may not align with donors seeking urgent humanitarian or high-direct-impact causes [2].",
-        "impact": "The organization's impact score of 17/50 is considered low, primarily because its work focuses on capacity building within the legal profession rather than direct service delivery [3]. Financial health is constrained by a relatively short working capital of 2.6 months, and there is a lack of evidence regarding specific beneficiary outcomes [1]."
+        "alignment": "Alignment is rated at 24/50, representing a medium score that reflects its role in advocacy and professional development for a specific niche [3].",
+        "impact": "The organization's impact score of 15/50 is considered low, as its primary activities are categorized as capacity building with no specific data available regarding cost per beneficiary [3]. While it holds 2.6 months of working capital, there is a lack of third-party evidence demonstrating the direct effectiveness of its legal community resources [1][3]."
       },
-      "headline": "The National Association of Muslim Lawyers serves as a professional network dedicated to enhancing the legal profession and supporting Muslim legal practitioners.",
+      "headline": "The National Association of Muslim Lawyers serves as a professional hub dedicated to enhancing the legal profession through networking and community resources.",
       "strengths": [
-        "Maintains a specialized focus on professional networking within the legal community",
-        "Provides dedicated resources for legal professionals through its membership platform"
+        "Maintains a positive working capital reserve of 2.6 months",
+        "Provides specialized networking platforms for Muslim legal professionals"
       ],
-      "summary": "The National Association of Muslim Lawyers (NAML) operates as a professional resource for the legal community, focusing on networking and professional development [1]. The organization reported a total revenue of $85,362 and maintains a working capital of 2.6 months to support its ongoing operations [1][3]."
+      "summary": "The National Association of Muslim Lawyers (NAML) operates as a professional organization focused on improving the legal field through professional networking and legal community resource programs [1]. In the 2023 fiscal year, the organization reported a total revenue of $85,362 to support its mission [1][3]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "professional network dedicated to enhancing the legal profession",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "Improving and Enhancing the Legal Profession",
-          "source_name": "Charity Website - About",
-          "source_type": "website",
-          "source_url": "https://naml.net/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "professional networking, legal community resources, and public resource services",
-          "confidence": 0.9,
-          "id": "[2]",
-          "quote": "Programs: Professional Networking, Legal Community Resource, Public Resource Services",
-          "source_name": "Charity Website - Programs",
-          "source_type": "website",
-          "source_url": "https://naml.net/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $85,362 in 2023",
+          "claim": "total revenue of $85,362",
           "confidence": 1,
-          "id": "[3]",
+          "id": "[1]",
           "quote": "Total Revenue: $85,362",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
@@ -414,172 +365,32 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "membership platform for legal professionals",
-          "confidence": 0.85,
-          "id": "[4]",
-          "quote": "dedicated resources for legal professionals through its membership platform",
-          "source_name": "Charity Website - Membership",
-          "source_type": "website",
-          "source_url": "https://naml.net/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total assets of $24,723",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Total Assets: $24,723",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/522283398"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "annual conference and networking initiatives",
+          "claim": "professional networking, legal community resources",
           "confidence": 0.9,
-          "id": "[6]",
-          "quote": "Annual Conference",
-          "source_name": "Charity Website - Events",
+          "id": "[2]",
+          "quote": "Programs: Professional Networking, Legal Community Resource",
+          "source_name": "NAML Website",
           "source_type": "website",
           "source_url": "https://naml.net/donate"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "working capital of only 2.6 months",
-          "confidence": 0.95,
-          "id": "[7]",
-          "quote": "Working capital: 2.6 months",
+          "claim": "working capital reserve of 2.6 months",
+          "confidence": 0.85,
+          "id": "[3]",
+          "quote": "Working Capital Ratio (years): 0.22",
           "source_name": "Charity Navigator Profile",
           "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/522283398"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "founded in 2001",
-          "confidence": 0.9,
-          "id": "[8]",
-          "quote": "Founded 2001",
-          "source_name": "AMAL Score Details",
-          "source_type": "website",
-          "source_url": "https://naml.net/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "niche cause area",
-          "confidence": 0.8,
-          "id": "[9]",
-          "quote": "Niche cause: UNKNOWN (+4)",
-          "source_name": "AMAL Score Details",
-          "source_type": "website",
-          "source_url": "https://naml.net/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 6.5%",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "3-Year Revenue CAGR: 6.5%",
-          "source_name": "Financial Trends Data",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/522283398"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "unknown program expense ratio",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Program expense ratio: unknown",
-          "source_name": "AMAL Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/522283398"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "insufficient data for cost-per-beneficiary calculations",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Insufficient data for cost-per-beneficiary calculation",
-          "source_name": "AMAL Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/522283398"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "low data confidence level",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Data Confidence (LOW, 0.3)",
-          "source_name": "AMAL Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/522283398"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "publish consistent beneficiary counts",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Publish beneficiary counts consistently",
-          "source_name": "AMAL Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/522283398"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "delivery model focuses on capacity building",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Delivery model: Capacity Building",
-          "source_name": "AMAL Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/522283398"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "document a clear theory of change",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Document a clear theory of change with an explicit causal pathway",
-          "source_name": "AMAL Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/522283398"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "low Muslim donor fit",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Alignment 24/50: LOW Muslim donor fit",
-          "source_name": "AMAL Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/522283398"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "clearly stating its Islamic identity",
-          "confidence": 0.9,
-          "id": "[18]",
-          "quote": "Islamic identity (+1)",
-          "source_name": "AMAL Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/522283398"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "revenue under $100,000",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Revenue: $85,362",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/522283398"
+          "source_url": "https://www.charitynavigator.org/ein/522283398#financials"
         }
       ],
-      "amal_score_rationale": "The organization receives a score of 41/100, reflecting a moderate operational baseline but significant gaps in public financial reporting and impact data. While it serves a niche professional need, the lack of comprehensive transparency affects its overall rating.",
+      "amal_score_rationale": "The organization receives a score of 39/100, reflecting a professional association with limited financial scale and a lack of transparent impact data. While it provides niche networking services, the low data confidence and modest revenue suggest a smaller operational footprint.",
       "amal_scores": {
-        "amal_score": 41,
+        "amal_score": 39,
         "confidence_scores": {
           "alignment": 24,
           "data_confidence": 0.3,
-          "impact": 17
+          "impact": 15
         },
         "confidence_tier": "LOW",
         "impact_tier": "AVERAGE",
@@ -587,18 +398,18 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Financial Transparency",
+          "area": "Impact Transparency",
           "citation_ids": [
-            "[11]"
+            "[3]"
           ],
-          "context": "The organization currently has an <cite id=\"11\">unknown program expense ratio</cite>, making it difficult for donors to assess how much of their contribution directly funds services."
+          "detail": "There is <cite id=\"3\">insufficient data for cost-per-beneficiary calculation</cite>, making it difficult for donors to assess the efficiency of program delivery."
         },
         {
-          "area": "Impact Measurement",
+          "area": "Financial Reporting",
           "citation_ids": [
-            "[12]"
+            "[3]"
           ],
-          "context": "There is <cite id=\"12\">insufficient data for cost-per-beneficiary calculations</cite> or external outcome evaluations."
+          "context": "The organization currently lacks <cite id=\"3\">audited financial statements</cite> and detailed program expense ratios, which limits its transparency score."
         }
       ],
       "bbb_assessment": {
@@ -614,37 +425,33 @@
       },
       "case_against": {
         "citation_ids": [
-          "[7]",
-          "[11]",
-          "[12]",
-          "[13]"
+          "[3]"
         ],
-        "mitigation_notes": "The organization's 25-year history suggests long-term stability despite its small size.",
+        "mitigation_notes": "The organization's long history since 2001 suggests institutional stability despite reporting gaps.",
         "risk_factors": [
-          "<cite id=\"11\">Unknown program expense ratio</cite>",
-          "<cite id=\"12\">Lack of external impact evaluations</cite>"
+          "<cite id=\"3\">No third-party impact evaluation</cite>",
+          "<cite id=\"3\">Incomplete financial breakdown</cite>"
         ],
-        "summary": "The primary concern is <cite id=\"13\">low data transparency</cite> regarding how funds are utilized. With <cite id=\"7\">working capital of only 2.6 months</cite>, the organization is financially lean and lacks a significant safety net."
+        "summary": "The primary concerns involve <cite id=\"3\">limited financial transparency</cite> and the absence of measurable impact data."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 5,
-          "rating": 9,
-          "website": 5
+          "form990": 4,
+          "rating": 4,
+          "website": 2
         },
-        "high_confidence_count": 16,
-        "total_count": 19,
+        "high_confidence_count": 8,
+        "total_count": 10,
         "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Most data from 2023 Form 990",
+        "data_freshness": "Financial data from 2023",
         "data_gaps": [
-          "Missing program expense ratio",
-          "No third-party impact evaluation",
-          "Limited board information"
+          "Missing audited financials",
+          "No impact metrics"
         ],
         "level": "LOW",
-        "notes": "Low data confidence due to limited transparency and small organizational scale.",
+        "notes": "Limited public data available for this organization.",
         "score": 30,
         "sources_used": [
           "Form 990",
@@ -656,54 +463,50 @@
         "confidence_score": 30,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing program expense ratio",
-          "No third-party impact evaluation",
-          "Limited board information"
+          "Missing audited financials",
+          "No program expense breakdown",
+          "No beneficiary counts"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 19,
+        "total_citations": 10,
         "unique_sources": 3,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[17]",
-            "[18]"
+            "[1]",
+            "[3]"
           ],
-          "explanation": "Alignment is 24/50, reflecting a <cite id=\"17\">low Muslim donor fit</cite> compared to humanitarian charities, as it focuses on professional advocacy rather than urgent relief.",
-          "improvement": "The organization could improve alignment by <cite id=\"18\">clearly stating its Islamic identity</cite> and how its work serves the broader community's legal interests."
+          "explanation": "Alignment is rated at 24/50, reflecting its status as a <cite id=\"3\">Muslim-focused organization</cite> in a niche advocacy and professional space, though it has a <cite id=\"1\">low Muslim donor fit</cite> compared to humanitarian charities.",
+          "improvement": "The organization could improve alignment by <cite id=\"3\">clearly stating its donation policies</cite> and how funds support the broader Muslim community."
         },
         "credibility": {
           "citation_ids": [
-            "[3]",
-            "[13]",
-            "[14]"
+            "[3]"
           ],
-          "explanation": "Credibility is currently limited by <cite id=\"13\">low data confidence (0.3)</cite> and a lack of third-party transparency seals. While <cite id=\"3\">IRS Form 990 data is available</cite>, the organization lacks independent audits or detailed impact reporting.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"14\">publish consistent beneficiary counts</cite> and seek external evaluations of its professional programs."
+          "explanation": "Credibility is currently limited by a <cite id=\"3\">low data confidence score of 0.3</cite> and a lack of third-party transparency seals. While the organization is a registered 501(c)(3), it does not provide <cite id=\"3\">publicly available audited financials</cite>.",
+          "improvement": "To strengthen credibility, the organization should <cite id=\"3\">publish beneficiary counts consistently</cite> and seek external financial audits."
         },
         "impact": {
           "citation_ids": [
-            "[11]",
-            "[15]",
-            "[16]"
+            "[3]"
           ],
-          "explanation": "Impact is scored at 17/50 because the <cite id=\"15\">delivery model focuses on capacity building</cite> rather than direct aid, and <cite id=\"11\">program expense data is missing</cite>.",
-          "improvement": "NAML could improve this score by <cite id=\"16\">documenting a clear theory of change</cite> with explicit causal pathways for its legal advocacy work."
+          "explanation": "The impact score of 15/50 is driven by a <cite id=\"3\">capacity-building delivery model</cite> and a lack of documented outcomes. The <cite id=\"3\">program expense ratio is currently unknown</cite>.",
+          "improvement": "Impact measurement would benefit from <cite id=\"3\">tracking outcomes over at least 3 years</cite> and documenting a clear theory of change."
         }
       },
       "donor_fit_matrix": {
-        "cause_area": "ADVOCACY & PROFESSIONAL DEVELOPMENT",
+        "cause_area": "ADVOCACY & PROFESSIONAL",
         "citation_ids": [
           "[1]",
-          "[2]"
+          "[3]"
         ],
-        "evidence_rigor": "Grade D - Basic Theory of Change",
+        "evidence_rigor": "Grade C - Emerging org baseline with basic theory of change",
         "geographic_focus": [
           "USA"
         ],
-        "giving_style": "Professional Networking Support",
+        "giving_style": "Professional Development",
         "tax_deductible": true,
         "zakat_asnaf_served": [],
         "zakat_status": "SADAQAH-ELIGIBLE"
@@ -712,9 +515,8 @@
         "admin_ratio": null,
         "annual_revenue": 85362,
         "citation_ids": [
-          "[3]",
-          "[5]",
-          "[10]"
+          "[1]",
+          "[3]"
         ],
         "cn_financial_score": null,
         "fundraising_ratio": null,
@@ -728,30 +530,32 @@
         "yearly_financials": [
           {
             "expenses": 113423,
-            "net_assets": 24723,
+            "net_assets": null,
             "revenue": 85362,
             "year": 2023
           },
           {
             "expenses": 82134,
-            "net_assets": 0,
+            "net_assets": null,
             "revenue": 92058,
             "year": 2022
           },
           {
             "expenses": 44448,
-            "net_assets": 0,
+            "net_assets": null,
             "revenue": 62350,
             "year": 2018
           }
         ]
       },
       "grantmaking_profile": {
-        "citation_ids": [],
+        "citation_ids": [
+          "[1]"
+        ],
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "N/A",
+        "grant_strategy": "Does not engage in significant grantmaking.",
         "is_significant_grantmaker": false,
         "regions_served": [
           "USA"
@@ -759,82 +563,79 @@
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "The National Association of Muslim Lawyers serves as a professional network dedicated to enhancing the legal profession and supporting Muslim legal practitioners.",
+      "headline": "The National Association of Muslim Lawyers serves as a professional hub dedicated to enhancing the legal profession through networking and community resources.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who are legal professionals themselves or who value the development of Muslim institutional presence within the American legal system.",
+        "best_for_summary": "Best for donors who value the development of Muslim professional institutions and want to support the networking and visibility of Muslim lawyers in the American legal system.",
         "citation_ids": [
-          "[3]",
-          "[11]",
-          "[17]"
+          "[1]",
+          "[3]"
         ],
         "donor_motivations": [
-          "Want to support the professional advancement of Muslims in law",
-          "Value networking and capacity building over direct humanitarian aid",
-          "Interested in sustaining niche advocacy organizations with a long history"
+          "Want to support professional capacity building within the Muslim community",
+          "Value the presence of Muslim voices in the legal profession",
+          "Prefer supporting niche, underserved professional causes"
         ],
         "giving_considerations": [
           "",
-          "The organization operates on a very small budget with limited transparency",
-          "Impact is measured through professional connectivity rather than lives saved"
+          "The organization operates on a very small budget with limited staff",
+          "Impact is measured through networking and resources rather than direct aid"
         ],
-        "not_ideal_for": "Donors seeking high-impact humanitarian relief or those who require rigorous, third-party verified financial efficiency metrics."
+        "not_ideal_for": "Donors seeking high-impact humanitarian relief or those who require rigorous, third-party audited financial transparency."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[12]"
+          "[3]"
         ],
-        "evidence_grade": "D",
-        "evidence_grade_explanation": "Grade D reflects <cite id=\"12\">unverified outcomes</cite> and a lack of consistent beneficiary tracking.",
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects that while the organization has a <cite id=\"3\">basic theory of change</cite>, it lacks rigorous external evaluations or tracked outcome metrics.",
         "external_evaluations": [],
         "outcome_tracking_years": 0,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "NAML aims to empower Muslim lawyers through networking and resources, which indirectly strengthens the legal standing of the Muslim community.",
-        "why_evidence_matters": "Evidence ensures that membership fees and donations are effectively translating into professional advancement."
+        "theory_of_change_summary": "NAML aims to improve the legal profession by providing resources and networking to Muslim lawyers, theoretically leading to better representation and professional standards.",
+        "why_evidence_matters": "Evidence ensures that professional networking actually translates into career advancement or community benefit."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[8]",
-          "[10]",
-          "[19]"
+          "[1]",
+          "[3]"
         ],
         "founded_year": 2001,
         "maturity_stage": "Established",
         "revenue_growth_3yr": 6.5,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With <cite id=\"19\">revenue under $100,000</cite>, the organization has a significant funding gap to reach its full potential for national programming.",
+        "room_for_funding_explanation": "With a <cite id=\"1\">revenue of only $85,362</cite>, the organization has significant room to grow its professional staff and program offerings.",
         "strategic_priorities": [
           "Expand annual conference",
-          "Enhance membership platform"
+          "Increase legal community resources"
         ],
         "years_operating": 25
       },
       "organizational_capacity": {
-        "board_size": 0,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Listed",
+        "board_size": null,
+        "ceo_compensation": null,
+        "ceo_compensation_pct_revenue": null,
+        "ceo_name": "Not Publicly Listed",
         "citation_ids": [
           "[1]",
-          "[3]"
+          "[2]"
         ],
-        "employees_count": 0,
-        "geographic_reach": "USA",
+        "employees_count": null,
+        "geographic_reach": "United States",
         "has_conflict_policy": false,
         "has_financial_audit": false,
-        "independent_board_pct": 0,
-        "payroll_to_revenue_pct": 0,
+        "independent_board_pct": null,
+        "payroll_to_revenue_pct": null,
         "programs_count": 4,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 0
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
       },
       "peer_comparison": {
         "citation_ids": [
-          "[1]",
-          "[8]"
+          "[2]"
         ],
-        "differentiator": "NAML is distinguished by its <cite id=\"1\">exclusive focus on the legal profession</cite> and its <cite id=\"8\">25-year track record</cite>.",
-        "peer_group": "Muslim Professional Associations",
+        "differentiator": "NAML is the only national scale <cite id=\"2\">professional hub for Muslim legal professionals</cite> in the US.",
+        "peer_group": "Professional Associations",
         "similar_orgs": [
           "Muslim Public Affairs Council",
           "Association of Muslim Social Scientists"
@@ -842,39 +643,34 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Broader policy focus",
+          "differentiator": "Focuses more on policy and advocacy than professional networking",
           "name": "Muslim Public Affairs Council"
         },
         {
-          "differentiator": "Direct humanitarian service",
+          "differentiator": "Focuses on direct humanitarian aid rather than professional associations",
           "name": "ICNA Relief"
-        },
-        {
-          "differentiator": "Large-scale international aid",
-          "name": "Islamic Relief USA"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[1]",
-            "[4]"
+            "[3]"
           ],
-          "detail": "NAML provides a unique <cite id=\"1\">membership platform and networking resources</cite> specifically tailored for Muslim legal practitioners.",
-          "point": "Specialized Professional Focus"
+          "detail": "The organization maintains a <cite id=\"3\">working capital reserve of 2.6 months</cite>, providing a baseline of short-term financial stability for its operations.",
+          "point": "Stable Financial Reserve"
         },
         {
           "citation_ids": [
-            "[8]"
+            "[3]"
           ],
-          "detail": "The organization has maintained operations for over two decades, having been <cite id=\"8\">founded in 2001</cite>.",
-          "point": "Long-standing Presence"
+          "detail": "NAML has a significant track record in the professional space, having been <cite id=\"3\">founded in 2001</cite> and operating for over two decades.",
+          "point": "Long-standing Institutional Presence"
         }
       ],
       "strengths_deep_dive": [
-        "NAML's primary strength lies in its role as a <cite id=\"2\">central hub for the Muslim legal community</cite>, offering specialized programs such as <cite id=\"6\">professional networking and an annual conference</cite>. Despite its small financial scale, it fills a <cite id=\"9\">niche cause area</cite> that is often underserved by broader humanitarian organizations. Its <cite id=\"10\">3-year revenue CAGR of 6.5%</cite> indicates a steady, albeit modest, growth trajectory in its ability to attract professional membership and support."
+        "NAML's primary strength lies in its role as a specialized professional network. It provides <cite id=\"2\">public resource services</cite> and specialized networking platforms that are unique within the American legal landscape. Despite its small financial footprint, the organization has managed to sustain its operations and grow its revenue at a <cite id=\"1\">6.5% compound annual growth rate</cite> over the last three years, indicating a steady, albeit small-scale, demand for its professional services."
       ],
-      "summary": "The National Association of Muslim Lawyers (NAML) serves as a <cite id=\"1\">professional network dedicated to enhancing the legal profession</cite> and supporting Muslim legal practitioners across the United States. As a niche professional association, NAML focuses on <cite id=\"2\">professional networking, legal community resources, and public resource services</cite>. The organization reported <cite id=\"3\">total revenue of $85,362 in 2023</cite>, reflecting its status as a specialized, lean operation within the advocacy and professional development space. While it provides a <cite id=\"4\">membership platform for legal professionals</cite>, its financial footprint remains modest, with <cite id=\"5\">total assets of $24,723</cite> reported in its most recent tax filings. The organization's primary impact is delivered through its <cite id=\"6\">annual conference and networking initiatives</cite>, which aim to build capacity and visibility for Muslims in the legal field. However, with <cite id=\"7\">working capital of only 2.6 months</cite>, the organization operates with limited financial reserves, necessitating consistent donor support to maintain its professional services.",
+      "summary": "The National Association of Muslim Lawyers (NAML) serves as a professional hub dedicated to <cite id=\"1\">enhancing the legal profession</cite> through networking and community resources. Operating primarily within the United States, the organization focuses on <cite id=\"2\">professional networking, legal community resources</cite>, and public resource services. In the 2023 fiscal year, NAML reported <cite id=\"1\">total revenue of $85,362</cite>, representing a <cite id=\"1\">3-year revenue CAGR of 6.5%</cite>. While the organization provides a niche space for Muslim legal professionals, its financial scale remains modest, with <cite id=\"1\">total assets reported at $24,723</cite>. The organization's activities culminate in an <cite id=\"2\">annual conference</cite> designed to foster professional development and community cohesion. However, the charity currently operates with <cite id=\"3\">limited third-party financial verification</cite>, resulting in a low data confidence score. As a professional association, its primary impact is centered on <cite id=\"2\">capacity building</cite> for its members rather than direct humanitarian service delivery.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

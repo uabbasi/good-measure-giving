@@ -213,9 +213,17 @@ class WebsiteCollector(BaseCollector):
         pdf_storage = Path(__file__).parent.parent.parent.parent / "shared" / "pdfs"
         self.pdf_downloader = PDFDownloader(storage_dir=pdf_storage, logger=logger)
 
-        # Initialize crawler cache for aggressive caching and state tracking (180-day TTL)
+        # Initialize crawler cache for aggressive caching and state tracking.
+        # FIX #21: Align with SOURCE_TTL_DAYS["website"] (30 days) so re-fetch
+        # after orchestrator's TTL expiry actually returns fresh content.
+        from ..constants import SOURCE_TTL_DAYS
+
         cache_storage = Path(__file__).parent.parent.parent.parent / "shared" / "crawler_cache"
-        self.cache = CrawlerCache(cache_dir=cache_storage, ttl_days=180, logger=logger)
+        self.cache = CrawlerCache(
+            cache_dir=cache_storage,
+            ttl_days=SOURCE_TTL_DAYS.get("website", 30),
+            logger=logger,
+        )
 
         # Load persisted cloudflare profiles from previous runs
         self.cloudflare_domains = self.cache.get_all_cloudflare_profiles()

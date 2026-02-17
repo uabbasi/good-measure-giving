@@ -14,6 +14,7 @@ from typing import Optional
 from ..db.repository import AgentDiscoveryRepository, CharityRepository, RawDataRepository
 from ..llm.schemas.rich_v2 import Citation, CitationStats, SourceType
 from ..schemas.discovery import SECTION_ZAKAT
+from ..utils.deep_link_resolver import upgrade_source_url
 
 logger = logging.getLogger(__name__)
 
@@ -209,9 +210,33 @@ class CitationService:
 
         # Load from agent discoveries (excluding news - too unreliable for Muslim charities)
         self._add_agent_discoveries(ein, registry, include_news=False)
+        self._canonicalize_registry_urls(registry)
 
         logger.info(f"Built citation registry for {ein}: {len(registry.sources)} sources")
         return registry
+
+    @staticmethod
+    def _canonicalize_registry_urls(registry: CitationRegistry) -> None:
+        """Upgrade homepage-like source URLs to deeper links when same-domain evidence exists."""
+        context = [
+            {
+                "source_name": source.source_name,
+                "source_url": source.source_url,
+                "claim": source.claim_topic,
+            }
+            for source in registry.sources
+            if source.source_url
+        ]
+
+        for source in registry.sources:
+            if not source.source_url:
+                continue
+            source.source_url = upgrade_source_url(
+                source.source_url,
+                source_name=source.source_name,
+                claim=source.claim_topic,
+                context=context,
+            )
 
     def _add_raw_data_sources(
         self, ein: str, ein_clean: str, registry: CitationRegistry, charity_name: str = ""

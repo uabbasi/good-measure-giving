@@ -310,7 +310,7 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
 
   if (extendedCharity.impactTier === 'HIGH') {
     differentiatorTags.push({
-      label: 'Maximum Leverage',
+      label: 'Highest Impact',
       priority: 2,
       colorLight: 'bg-rose-100 text-rose-700',
       colorDark: 'bg-rose-900/50 text-rose-400'
@@ -345,7 +345,7 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
   }
   if (allCauseTags.includes('systemic-change')) {
     differentiatorTags.push({
-      label: 'Systemic',
+      label: 'Tackles Root Causes',
       priority: 5,
       colorLight: 'bg-blue-100 text-blue-700',
       colorDark: 'bg-blue-900/50 text-blue-400'
@@ -363,7 +363,7 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
   // Grantmaker: organizations that fund other charities
   if (allCauseTags.includes('grantmaking')) {
     differentiatorTags.push({
-      label: 'Grantmaker',
+      label: 'Funds Other Orgs',
       priority: 7,
       colorLight: 'bg-yellow-100 text-yellow-700',
       colorDark: 'bg-yellow-900/50 text-yellow-400'

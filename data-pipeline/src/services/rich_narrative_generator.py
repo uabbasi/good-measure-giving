@@ -33,6 +33,7 @@ from ..schemas.discovery import (
     SECTION_THEORY_OF_CHANGE,
     SECTION_ZAKAT,
 )
+from ..utils.deep_link_resolver import upgrade_source_url
 from ..validators.consistency_validator import ConsistencyValidator
 from .benchmark_service import (
     compute_cause_benchmarks,
@@ -171,6 +172,13 @@ class RichNarrativeGenerator:
         # 7. Inject immutable fields from baseline
         baseline_narrative = baseline.get("baseline_narrative", {})
         rich_content = self._inject_immutable_fields(rich_content, baseline_narrative, baseline)
+        charity_data = self.charity_data_repo.get(ein) or {}
+        source_attribution = charity_data.get("source_attribution", {})
+        rich_content = self._canonicalize_citation_urls(
+            rich_content,
+            citation_registry.sources,
+            extra_context=[source_attribution, investment_memo_data],
+        )
 
         # 7a. Validate external evaluations against actual data sources
         rich_content = self._validate_external_evaluations(ein, rich_content, investment_memo_data)
@@ -179,8 +187,6 @@ class RichNarrativeGenerator:
         validation_result = self.validator.validate(rich_content, baseline_narrative)
 
         # 8a. Validate CN score citations against actual collected data
-        charity_data = self.charity_data_repo.get(ein)
-        source_attribution = charity_data.get("source_attribution", {}) if charity_data else {}
         cn_is_rated = None
         if isinstance(investment_memo_data, dict):
             cn_ratings = investment_memo_data.get("cn_ratings", {})
@@ -229,6 +235,43 @@ class RichNarrativeGenerator:
             f"{len(rich_content.get('all_citations', []))} citations, "
             f"valid={validation_result.is_valid}"
         )
+
+        return rich_content
+
+    @staticmethod
+    def _canonicalize_citation_urls(
+        rich_content: dict, citation_sources: list[Any], extra_context: list[Any] | None = None
+    ) -> dict:
+        """Upgrade homepage-like citation URLs to deeper links using registry context."""
+        citations = rich_content.get("all_citations")
+        if not isinstance(citations, list):
+            return rich_content
+
+        context = [
+            {
+                "source_name": source.source_name,
+                "source_url": source.source_url,
+                "claim": getattr(source, "claim_topic", ""),
+            }
+            for source in citation_sources
+            if getattr(source, "source_url", None)
+        ]
+        resolver_context: dict[str, Any] = {"registry_sources": context}
+        if extra_context:
+            resolver_context["extra_context"] = extra_context
+
+        for citation in citations:
+            if not isinstance(citation, dict):
+                continue
+            source_url = citation.get("source_url")
+            if not source_url:
+                continue
+            citation["source_url"] = upgrade_source_url(
+                source_url,
+                source_name=str(citation.get("source_name") or ""),
+                claim=str(citation.get("claim") or citation.get("quote") or ""),
+                context=resolver_context,
+            )
 
         return rich_content
 

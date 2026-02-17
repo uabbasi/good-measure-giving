@@ -29,7 +29,7 @@ SOURCE_TTL_DAYS = {
     "propublica": 365,       # 990s filed annually
     "charity_navigator": 90, # Scores update quarterly
     "candid": 90,            # Profile updates quarterly
-    "form990_grants": 365,   # Extracted from 990 XML (immutable once filed)
+    "form990_grants": 0,     # TEMP: Force re-fetch for multi-year grant support (#22)
     "website": 30,           # Content changes frequently
     "bbb": 90,               # Updates quarterly
 }
@@ -40,8 +40,12 @@ RETRY_BACKOFF_HOURS = {
     1: 1,   # First failure: wait 1 hour
     2: 4,   # Second failure: wait 4 hours
     3: 24,  # Third failure: wait 24 hours
-    # After 3 failures: permanent failure (skip until row deleted)
+    # After 3 failures: permanent failure (skip until failure TTL expires)
 }
+
+# FIX #10: Permanent failure TTL (days) - after this many days, reset retry_count and allow re-fetch
+# This prevents a transient outage from permanently blocking a charity/source pair.
+FAILURE_TTL_DAYS = 30
 
 # Validation Thresholds
 MIN_DATA_COMPLETENESS_THRESHOLD = 0.5  # Minimum 50% data completeness required

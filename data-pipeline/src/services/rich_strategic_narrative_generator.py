@@ -14,7 +14,7 @@ import json
 import logging
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Optional
+from typing import Any, Optional
 
 from ..db.repository import (
     CharityDataRepository,
@@ -24,6 +24,7 @@ from ..db.repository import (
 from ..llm.llm_client import LLMClient, LLMTask
 from ..parsers.charity_metrics_aggregator import CharityMetrics, CharityMetricsAggregator
 from ..scorers.strategic_evidence import StrategicEvidence
+from ..utils.deep_link_resolver import upgrade_source_url
 from .citation_service import CitationService
 
 logger = logging.getLogger(__name__)
@@ -119,6 +120,12 @@ class RichStrategicNarrativeGenerator:
 
         # 7. Inject immutable fields from baseline strategic narrative
         rich_content = self._inject_immutable_fields(rich_content, strategic_narrative, baseline)
+        source_attribution = charity_data.get("source_attribution", {})
+        rich_content = self._canonicalize_citation_urls(
+            rich_content,
+            citation_registry.sources,
+            extra_context=[source_attribution, charity_data],
+        )
 
         # 8. Validate citation structure
         self._validate_citations(rich_content, num_sources)
@@ -138,6 +145,46 @@ class RichStrategicNarrativeGenerator:
 
         citation_count = len(rich_content.get("all_citations", []))
         logger.info(f"Generated rich strategic narrative for {ein}: {citation_count} citations")
+
+        return rich_content
+
+    @staticmethod
+    def _canonicalize_citation_urls(
+        rich_content: dict, citation_sources: list, extra_context: list[Any] | None = None
+    ) -> dict:
+        """Upgrade homepage-like citation URLs to deeper links using registry context."""
+        citations = rich_content.get("all_citations")
+        if not isinstance(citations, list):
+            return rich_content
+
+        context = []
+        for source in citation_sources:
+            source_url = getattr(source, "source_url", None)
+            if not source_url:
+                continue
+            context.append(
+                {
+                    "source_name": getattr(source, "source_name", ""),
+                    "source_url": source_url,
+                    "claim": getattr(source, "claim_topic", ""),
+                }
+            )
+        resolver_context: dict[str, Any] = {"registry_sources": context}
+        if extra_context:
+            resolver_context["extra_context"] = extra_context
+
+        for citation in citations:
+            if not isinstance(citation, dict):
+                continue
+            source_url = citation.get("source_url")
+            if not source_url:
+                continue
+            citation["source_url"] = upgrade_source_url(
+                source_url,
+                source_name=str(citation.get("source_name") or ""),
+                claim=str(citation.get("claim") or citation.get("quote") or ""),
+                context=resolver_context,
+            )
 
         return rich_content
 

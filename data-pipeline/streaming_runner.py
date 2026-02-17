@@ -183,11 +183,11 @@ def run_inline_quality_check(
         return not has_errors, issues
 
     except Exception as e:
-        # Judge itself failed - log but don't block pipeline
-        return True, [
+        # Judge execution failures are hard failures for strict data guarantees.
+        return False, [
             {
                 "judge": f"{phase}_quality",
-                "severity": "warning",
+                "severity": "error",
                 "field": "judge_execution",
                 "message": f"Quality judge failed: {str(e)[:100]}",
             }
@@ -475,6 +475,16 @@ def run_discovery_phase(
         result["skip_reason"] = "Discovery disabled"
         return result
 
+    # If input website is missing, fall back to the crawled website_profile URL.
+    if not website:
+        website_row = raw_repo.get_by_source(ein, "website")
+        parsed = website_row.get("parsed_json") if website_row else None
+        if isinstance(parsed, dict):
+            website_profile = parsed.get("website_profile", parsed)
+            candidate = website_profile.get("url") if isinstance(website_profile, dict) else None
+            if isinstance(candidate, str) and candidate.startswith(("http://", "https://")):
+                website = candidate
+
     if not website:
         logger.warning(f"No website for {ein}, skipping discovery")
         result["skipped"] = True
@@ -503,7 +513,11 @@ def run_discovery_phase(
 
     total_cost = 0.0
     queries_succeeded = 0
-    discovery_errors = []  # Track JSON parsing failures
+    # FIX #7: Differentiate required vs optional discovery services.
+    # Required services failing → hard fail. Optional → warn and continue.
+    required_sections = {SECTION_ZAKAT, SECTION_EVALUATIONS, SECTION_THEORY_OF_CHANGE}
+    required_errors = []
+    optional_errors = []
 
     # Run discovery services in parallel
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
@@ -517,30 +531,45 @@ def run_discovery_phase(
 
         for future in concurrent.futures.as_completed(futures):
             service_name = futures[future]
+            is_required = service_name in required_sections
             try:
                 svc_result = future.result()
                 if svc_result:
                     # Check for JSON parsing errors (hard failures)
                     error = getattr(svc_result, "error", None)
                     if error:
-                        discovery_errors.append(f"{service_name}: {error}")
-                        logger.error(f"Discovery {service_name} JSON parse failed for {ein}: {error}")
+                        error_msg = f"{service_name}: {error}"
+                        if is_required:
+                            required_errors.append(error_msg)
+                            logger.error(f"Discovery {service_name} (required) JSON parse failed for {ein}: {error}")
+                        else:
+                            optional_errors.append(error_msg)
+                            logger.warning(f"Discovery {service_name} (optional) JSON parse failed for {ein}: {error}")
                     else:
                         discovered_profile[service_name] = svc_result.to_dict()
                         queries_succeeded += 1
                     total_cost += getattr(svc_result, "cost_usd", 0.0)
             except Exception as e:
-                logger.error(f"Discovery {service_name} failed for {ein}: {e}")
-                discovery_errors.append(f"{service_name}: {e}")
+                error_msg = f"{service_name}: {e}"
+                if is_required:
+                    required_errors.append(error_msg)
+                    logger.error(f"Discovery {service_name} (required) failed for {ein}: {e}")
+                else:
+                    optional_errors.append(error_msg)
+                    logger.warning(f"Discovery {service_name} (optional) failed for {ein}: {e}")
 
-    # Fail if any discovery service had JSON parsing errors
-    if discovery_errors:
+    # Hard fail only on required service errors
+    if required_errors:
         result["success"] = False
-        result["error"] = f"Discovery JSON parse failures: {'; '.join(discovery_errors)}"
+        result["error"] = f"Required discovery failures: {'; '.join(required_errors)}"
         result["cost_usd"] = total_cost
         result["queries_run"] = 5
         result["queries_succeeded"] = queries_succeeded
         return result
+
+    # Log optional failures but continue
+    if optional_errors:
+        logger.warning(f"Optional discovery failures for {ein} (continuing): {'; '.join(optional_errors)}")
 
     # Store in raw_scraped_data with source="discovered"
     if queries_succeeded > 0:
@@ -669,7 +698,7 @@ def process_charity_full(
 
             # Inline quality check for crawl
             raw_data_for_check = raw_repo.get_for_charity(ein)
-            source_data = {rd["source"]: rd.get("parsed_json", {}) for rd in raw_data_for_check if rd.get("success")}
+            source_data = {rd["source"]: (rd.get("parsed_json") or {}) for rd in raw_data_for_check if rd.get("success")}
             crawl_passed, crawl_issues = run_inline_quality_check(
                 "crawl", ein, {"ein": ein}, {"source_data": source_data}
             )
@@ -871,7 +900,7 @@ def process_charity_full(
                 synth_data = data_repo.get(ein) or {}
                 raw_data_for_check = raw_repo.get_for_charity(ein)
                 source_data = {
-                    rd["source"]: rd.get("parsed_json", {}) for rd in raw_data_for_check if rd.get("success")
+                    rd["source"]: (rd.get("parsed_json") or {}) for rd in raw_data_for_check if rd.get("success")
                 }
                 synth_passed, synth_issues = run_inline_quality_check(
                     "synthesize", ein, {"ein": ein, "charity_data": synth_data}, {"source_data": source_data}

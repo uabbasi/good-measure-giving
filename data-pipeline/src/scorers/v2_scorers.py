@@ -2337,7 +2337,7 @@ class AmalScorerV2:
         total_score = max(0, min(100, total_score))
 
         # Data confidence signal (outside score)
-        data_confidence = self._compute_data_confidence(credibility)
+        data_confidence = self._compute_data_confidence(credibility, impact, alignment)
 
         wallet_tag = "ZAKAT-ELIGIBLE" if zakat_bonus.charity_claims_zakat else "SADAQAH-ELIGIBLE"
 
@@ -2364,10 +2364,17 @@ class AmalScorerV2:
             score_summary=score_summary,
         )
 
-    def _compute_data_confidence(self, credibility: CredibilityAssessment) -> DataConfidence:
+    def _compute_data_confidence(
+        self,
+        credibility: CredibilityAssessment,
+        impact: ImpactAssessment,
+        alignment: AlignmentAssessment,
+    ) -> DataConfidence:
         """Compute data confidence from credibility data-availability signals.
 
         Formula: confidence = ver*0.50 + trans*0.35 + dq*0.15
+        Then apply a component completeness penalty: missing components reduce
+        confidence proportionally, partial components count as half-missing.
         Returns DataConfidence with overall float + component breakdown.
         """
         ver_value = VERIFICATION_CONFIDENCE.get(credibility.verification_tier, 0.0)
@@ -2381,6 +2388,16 @@ class AmalScorerV2:
             + trans_value * DC_TRANSPARENCY_WEIGHT
             + dq_value * DC_DATA_QUALITY_WEIGHT
         )
+
+        # Component completeness penalty: missing/partial components reduce confidence
+        all_components = list(impact.components) + list(alignment.components)
+        total_components = len(all_components)
+        if total_components > 0:
+            missing_count = sum(1 for c in all_components if c.status == ComponentStatus.MISSING)
+            partial_count = sum(1 for c in all_components if c.status == ComponentStatus.PARTIAL)
+            completeness = 1.0 - (missing_count + 0.5 * partial_count) / total_components
+            overall = overall * completeness
+
         overall = round(overall, 2)
 
         # Determine badge level

@@ -44,6 +44,7 @@ from src.llm.llm_client import LLMClient
 from src.parsers.charity_metrics_aggregator import CharityMetrics, CharityMetricsAggregator
 from src.scorers.v2_scorers import RUBRIC_VERSION, AmalScorerV2
 from src.services.citation_service import CitationService
+from src.utils.deep_link_resolver import upgrade_source_url
 from src.utils.phase_cache_helper import check_phase_cache, update_phase_cache
 
 
@@ -305,6 +306,29 @@ def repair_citations(
                 continue
             filtered_citations.append(citation)
         narrative["all_citations"] = filtered_citations
+
+    # Upgrade homepage-like URLs to deeper evidence links when registry has better options.
+    source_context = [
+        {
+            "source_name": source.source_name,
+            "source_url": source.source_url,
+            "claim": getattr(source, "claim_topic", ""),
+        }
+        for source in citation_sources
+        if getattr(source, "source_url", None)
+    ]
+    for citation in narrative.get("all_citations", []):
+        if not isinstance(citation, dict):
+            continue
+        source_url = citation.get("source_url")
+        if not source_url:
+            continue
+        citation["source_url"] = upgrade_source_url(
+            source_url,
+            source_name=str(citation.get("source_name") or ""),
+            claim=str(citation.get("claim") or ""),
+            context=source_context,
+        )
 
     return narrative
 

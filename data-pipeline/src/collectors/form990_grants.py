@@ -89,15 +89,18 @@ class Form990GrantsCollector(BaseCollector):
         # Use same domain as propublica collector since both hit ProPublica servers
         global_rate_limiter.wait("propublica", self.rate_limit_delay)
 
-    def _get_latest_object_id(self, ein: str) -> Optional[Tuple[str, Optional[int]]]:
+    def _get_filing_object_ids(self, ein: str, max_filings: int = 3) -> List[Tuple[str, Optional[int]]]:
         """
-        Get the object_id for the latest 990 XML filing.
+        Get object_ids for up to `max_filings` most recent 990 XML filings.
+
+        FIX #22: Support multi-year grant processing by returning multiple filings.
 
         Args:
             ein: EIN without dashes
+            max_filings: Maximum number of filings to return (default 3)
 
         Returns:
-            Tuple of (object_id, tax_year) or None if not found.
+            List of (object_id, tax_year) tuples, most recent first.
             tax_year may be None - extracted from XML during parse() instead.
         """
         url = f"{self.PROPUBLICA_ORG_URL}/{ein}"
@@ -107,7 +110,7 @@ class Form990GrantsCollector(BaseCollector):
         try:
             response = requests.get(url, headers=self.headers, timeout=self.timeout)
             if response.status_code == 404:
-                return None
+                return []
             response.raise_for_status()
 
             # Parse HTML to find XML download links
@@ -119,25 +122,23 @@ class Form990GrantsCollector(BaseCollector):
             if not xml_links:
                 if self.logger:
                     self.logger.debug(f"No XML filings found for EIN {ein}")
-                return None
+                return []
 
-            # Get the first (most recent) filing
-            first_link = xml_links[0]
-            href = first_link.get("href", "")
-            match = re.search(r"object_id=(\d+)", href)
+            results = []
+            for link in xml_links[:max_filings]:
+                href = link.get("href", "")
+                match = re.search(r"object_id=(\d+)", href)
+                if match:
+                    object_id = match.group(1)
+                    # Tax year will be extracted from XML content during parse()
+                    results.append((object_id, None))
 
-            if match:
-                object_id = match.group(1)
-                # Tax year will be extracted from XML content during parse()
-                # object_id format is not reliable for year extraction
-                return object_id, None
-
-            return None
+            return results
 
         except requests.RequestException as e:
             if self.logger:
                 self.logger.error(f"Error fetching ProPublica page: {e}")
-            return None
+            return []
 
     def _get_cache_path(self, object_id: str) -> Path:
         """Get cache file path for an object_id."""
@@ -443,17 +444,16 @@ class Form990GrantsCollector(BaseCollector):
 
     def fetch(self, ein: str, **kwargs) -> FetchResult:
         """
-        Fetch Form 990 XML from ProPublica.
+        Fetch Form 990 XML(s) from ProPublica.
 
-        This is a two-step process:
-        1. Get latest object_id from org page
-        2. Download the XML file
+        FIX #22: Downloads up to 3 most recent filings for multi-year trend analysis.
 
         Args:
             ein: EIN in format XX-XXXXXXX or XXXXXXXXX
 
         Returns:
-            FetchResult with raw XML and object_id in metadata header
+            FetchResult with raw XML(s) and metadata header.
+            Multi-filing format uses FORM990_MULTI header and FORM990_SEPARATOR delimiters.
         """
         # Normalize EIN
         ein_clean = ein.replace("-", "")
@@ -468,9 +468,9 @@ class Form990GrantsCollector(BaseCollector):
         if self.logger:
             self.logger.info(f"Fetching 990 grants for EIN {ein}")
 
-        # Step 1: Get latest object_id
-        result = self._get_latest_object_id(ein_clean)
-        if not result:
+        # Step 1: Get filing object_ids (up to 3)
+        filings = self._get_filing_object_ids(ein_clean, max_filings=3)
+        if not filings:
             return FetchResult(
                 success=False,
                 raw_data=None,
@@ -478,24 +478,44 @@ class Form990GrantsCollector(BaseCollector):
                 error=f"No XML filings found for EIN {ein}",
             )
 
-        object_id, tax_year = result
         if self.logger:
-            self.logger.debug(f"Found object_id: {object_id}, tax_year: {tax_year}")
+            self.logger.debug(f"Found {len(filings)} filing(s) for EIN {ein}")
 
-        # Step 2: Download XML
-        xml_content = self._download_990_xml(object_id)
-        if not xml_content:
+        # Step 2: Download XMLs
+        import json
+
+        downloaded = []
+        for object_id, tax_year in filings:
+            xml_content = self._download_990_xml(object_id)
+            if xml_content:
+                downloaded.append({"object_id": object_id, "tax_year": tax_year, "xml": xml_content})
+            else:
+                if self.logger:
+                    self.logger.warning(f"Failed to download XML for object_id {object_id}, skipping")
+
+        if not downloaded:
             return FetchResult(
                 success=False,
                 raw_data=None,
                 content_type="xml",
-                error=f"Failed to download XML for object_id {object_id}",
+                error=f"Failed to download any XML filings for EIN {ein}",
             )
 
-        # Include metadata in XML comment header
-        import json
-        metadata = {"object_id": object_id, "tax_year": tax_year}
-        raw_with_metadata = f"<!-- FORM990_METADATA: {json.dumps(metadata)} -->\n{xml_content}"
+        # Pack into multi-filing format
+        if len(downloaded) == 1:
+            # Single filing: use legacy format for backward compatibility
+            d = downloaded[0]
+            metadata = {"object_id": d["object_id"], "tax_year": d["tax_year"]}
+            raw_with_metadata = f"<!-- FORM990_METADATA: {json.dumps(metadata)} -->\n{d['xml']}"
+        else:
+            # Multi-filing format
+            metadata_list = [{"object_id": d["object_id"], "tax_year": d["tax_year"]} for d in downloaded]
+            xml_parts = [d["xml"] for d in downloaded]
+            separator = "\n<!-- FORM990_SEPARATOR -->\n"
+            raw_with_metadata = (
+                f"<!-- FORM990_MULTI: {json.dumps(metadata_list)} -->\n"
+                + separator.join(xml_parts)
+            )
 
         return FetchResult(
             success=True,
@@ -504,9 +524,73 @@ class Form990GrantsCollector(BaseCollector):
             error=None,
         )
 
+    def _extract_tax_year(self, root: ET.Element) -> Optional[int]:
+        """Extract tax year from XML root element."""
+        tax_yr_elem = root.find(".//irs:TaxYr", self.IRS_NS)
+        if tax_yr_elem is not None and tax_yr_elem.text:
+            try:
+                return int(tax_yr_elem.text)
+            except ValueError:
+                pass
+        # Fallback: try TaxPeriodEndDt (format: YYYY-MM-DD)
+        tax_period_elem = root.find(".//irs:TaxPeriodEndDt", self.IRS_NS)
+        if tax_period_elem is not None and tax_period_elem.text:
+            try:
+                return int(tax_period_elem.text[:4])
+            except (ValueError, IndexError):
+                pass
+        return None
+
+    def _parse_single_filing(
+        self, xml_content: str, object_id: Optional[str], tax_year: Optional[int]
+    ) -> Optional[Dict[str, Any]]:
+        """
+        Parse a single 990 XML filing into grants + financials.
+
+        Returns dict with keys: tax_year, object_id, domestic_grants, foreign_grants,
+        financials, org_name. Returns None on parse error.
+        """
+        try:
+            root = ET.fromstring(xml_content)
+        except ET.ParseError as e:
+            if self.logger:
+                self.logger.warning(f"XML parse error for object_id {object_id}: {e}")
+            return None
+
+        # Extract tax year from XML (more reliable than metadata)
+        if tax_year is None:
+            tax_year = self._extract_tax_year(root)
+
+        domestic_grants = self._parse_domestic_grants(root)
+        foreign_grants = self._parse_foreign_grants(root)
+        financials = self._extract_summary_financials(root)
+
+        # Tag each grant with tax_year
+        for g in domestic_grants:
+            g["tax_year"] = tax_year
+        for g in foreign_grants:
+            g["tax_year"] = tax_year
+
+        org_name = None
+        name_elem = root.find(".//irs:Filer//irs:BusinessNameLine1Txt", self.IRS_NS)
+        if name_elem is not None:
+            org_name = name_elem.text
+
+        return {
+            "tax_year": tax_year,
+            "object_id": object_id,
+            "domestic_grants": domestic_grants,
+            "foreign_grants": foreign_grants,
+            "financials": financials,
+            "org_name": org_name,
+        }
+
     def parse(self, raw_data: str, ein: str, **kwargs) -> ParseResult:
         """
-        Parse Form 990 XML into grants profile.
+        Parse Form 990 XML(s) into grants profile.
+
+        FIX #22: Supports both single-filing (legacy) and multi-filing formats.
+        Multi-year grants are merged with tax_year tags on each grant.
 
         Args:
             raw_data: Raw XML from fetch() with metadata header
@@ -520,63 +604,77 @@ class Form990GrantsCollector(BaseCollector):
         ein_clean = ein.replace("-", "")
         ein_formatted = f"{ein_clean[:2]}-{ein_clean[2:]}"
 
-        # Extract metadata from header
-        object_id = None
-        tax_year = None
-        xml_content = raw_data
+        filings_data: List[Dict[str, Any]] = []
 
-        if raw_data.startswith("<!-- FORM990_METADATA:"):
+        if raw_data.startswith("<!-- FORM990_MULTI:"):
+            # Multi-filing format
+            try:
+                first_line_end = raw_data.index("-->\n") + 4
+                metadata_line = raw_data[:first_line_end]
+                xml_block = raw_data[first_line_end:]
+                metadata_json = metadata_line.replace("<!-- FORM990_MULTI: ", "").replace(" -->", "").strip()
+                metadata_list = json.loads(metadata_json)
+                xml_parts = xml_block.split("\n<!-- FORM990_SEPARATOR -->\n")
+
+                for i, xml_content in enumerate(xml_parts):
+                    meta = metadata_list[i] if i < len(metadata_list) else {}
+                    result = self._parse_single_filing(
+                        xml_content, meta.get("object_id"), meta.get("tax_year")
+                    )
+                    if result:
+                        filings_data.append(result)
+            except (json.JSONDecodeError, ValueError) as e:
+                if self.logger:
+                    self.logger.warning(f"Failed to parse multi-filing metadata: {e}")
+        elif raw_data.startswith("<!-- FORM990_METADATA:"):
+            # Legacy single-filing format
             try:
                 first_line_end = raw_data.index("-->\n") + 4
                 metadata_line = raw_data[:first_line_end]
                 xml_content = raw_data[first_line_end:]
                 metadata_json = metadata_line.replace("<!-- FORM990_METADATA: ", "").replace(" -->", "").strip()
                 metadata = json.loads(metadata_json)
-                object_id = metadata.get("object_id")
-                tax_year = metadata.get("tax_year")
+                result = self._parse_single_filing(
+                    xml_content, metadata.get("object_id"), metadata.get("tax_year")
+                )
+                if result:
+                    filings_data.append(result)
             except (json.JSONDecodeError, ValueError):
                 pass
+        else:
+            # Raw XML without metadata header
+            result = self._parse_single_filing(raw_data, None, None)
+            if result:
+                filings_data.append(result)
 
-        try:
-            root = ET.fromstring(xml_content)
-        except ET.ParseError as e:
+        if not filings_data:
             return ParseResult(
                 success=False,
                 parsed_data=None,
-                error=f"XML parse error: {e}",
+                error="No filings could be parsed",
             )
 
-        # Extract tax year from XML (more reliable than object_id)
-        if tax_year is None:
-            tax_yr_elem = root.find(".//irs:TaxYr", self.IRS_NS)
-            if tax_yr_elem is not None and tax_yr_elem.text:
-                try:
-                    tax_year = int(tax_yr_elem.text)
-                except ValueError:
-                    pass
-            # Fallback: try TaxPeriodEndDt (format: YYYY-MM-DD)
-            if tax_year is None:
-                tax_period_elem = root.find(".//irs:TaxPeriodEndDt", self.IRS_NS)
-                if tax_period_elem is not None and tax_period_elem.text:
-                    try:
-                        tax_year = int(tax_period_elem.text[:4])
-                    except (ValueError, IndexError):
-                        pass
+        # Merge grants across all filings (most recent first)
+        all_domestic: List[Dict[str, Any]] = []
+        all_foreign: List[Dict[str, Any]] = []
+        filing_years: List[int] = []
 
-        # Extract grants
-        domestic_grants = self._parse_domestic_grants(root)
-        foreign_grants = self._parse_foreign_grants(root)
-        financials = self._extract_summary_financials(root)
+        # Use most recent filing for financials and metadata
+        latest = filings_data[0]
+        tax_year = latest["tax_year"]
+        object_id = latest["object_id"]
+        org_name = latest["org_name"]
+        financials = latest["financials"]
+
+        for fd in filings_data:
+            all_domestic.extend(fd["domestic_grants"])
+            all_foreign.extend(fd["foreign_grants"])
+            if fd["tax_year"] is not None:
+                filing_years.append(fd["tax_year"])
 
         # Calculate totals
-        total_domestic = sum(g["amount"] for g in domestic_grants if g["amount"])
-        total_foreign = sum(g["amount"] for g in foreign_grants if g["amount"])
-
-        # Get org name from XML
-        org_name = None
-        name_elem = root.find(".//irs:Filer//irs:BusinessNameLine1Txt", self.IRS_NS)
-        if name_elem is not None:
-            org_name = name_elem.text
+        total_domestic = sum(g["amount"] for g in all_domestic if g["amount"])
+        total_foreign = sum(g["amount"] for g in all_foreign if g["amount"])
 
         # Build profile
         profile_data = {
@@ -584,13 +682,14 @@ class Form990GrantsCollector(BaseCollector):
             "ein": ein_formatted,
             "tax_year": tax_year,
             "object_id": object_id,
-            "domestic_grants": domestic_grants,
-            "foreign_grants": foreign_grants,
+            "filing_years": sorted(set(filing_years), reverse=True),
+            "domestic_grants": all_domestic,
+            "foreign_grants": all_foreign,
             "total_domestic_grants": total_domestic,
             "total_foreign_grants": total_foreign,
             "total_grants": total_domestic + total_foreign,
-            "domestic_grant_count": len(domestic_grants),
-            "foreign_grant_count": len(foreign_grants),
+            "domestic_grant_count": len(all_domestic),
+            "foreign_grant_count": len(all_foreign),
             "total_revenue": financials.get("total_revenue"),
             "total_expenses": financials.get("total_expenses"),
             "program_expenses": financials.get("program_expenses"),
@@ -608,10 +707,12 @@ class Form990GrantsCollector(BaseCollector):
                 error=f"Validation failed: {e}",
             )
 
+        years_str = ", ".join(str(y) for y in filing_years) if filing_years else "unknown"
         if self.logger:
             self.logger.info(
-                f"Extracted {len(domestic_grants)} domestic + {len(foreign_grants)} foreign grants "
-                f"(${total_domestic + total_foreign:,.0f} total)"
+                f"Extracted {len(all_domestic)} domestic + {len(all_foreign)} foreign grants "
+                f"across {len(filings_data)} filing(s) (years: {years_str}, "
+                f"${total_domestic + total_foreign:,.0f} total)"
             )
 
         return ParseResult(

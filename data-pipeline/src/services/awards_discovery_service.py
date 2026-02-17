@@ -45,7 +45,13 @@ class AwardsDiscovery:
         }
 
 
-AWARDS_DISCOVERY_PROMPT = """You are discovering awards and recognition received by a charity.
+AWARDS_DISCOVERY_PROMPT = """You are discovering awards and recognition received by a US-based charity.
+
+IMPORTANT REQUIREMENTS:
+1. Only consider awards given to the SPECIFIC US organization being evaluated
+2. International affiliates or parent organizations are DIFFERENT entities
+3. If recognition is about an international branch (e.g., UK, Australia, Switzerland),
+   this does NOT apply to the US organization
 
 Look for:
 - Charity ratings: Platinum/Gold Seal from Candid/GuideStar, 4-star from Charity Navigator
@@ -114,10 +120,10 @@ class AwardsDiscoveryService:
             AwardsDiscovery with award details
         """
         # Build the search query
-        query = f'Has "{charity_name}" received any awards, recognition, or certifications from philanthropic organizations, foundations, or charity evaluators? Include year and issuing organization.'
+        query = f'Has the US nonprofit "{charity_name}" received any awards, recognition, or certifications from philanthropic organizations, foundations, or charity evaluators? Include year and issuing organization.'
         if website_url:
             domain = urlparse(website_url).netloc
-            query = f'Has "{charity_name}" ({domain}) received any awards, recognition, or certifications from philanthropic organizations, foundations, or charity evaluators? Include year and issuing organization.'
+            query = f'Has the US nonprofit "{charity_name}" ({domain}) received any awards, recognition, or certifications from philanthropic organizations, foundations, or charity evaluators? Include year and issuing organization.'
 
         logger.info(f"Discovering awards for: {charity_name}")
 

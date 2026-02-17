@@ -34,7 +34,7 @@
     "totalExpenses": 122766,
     "programExpenses": 141343,
     "adminExpenses": null,
-    "fundraisingExpenses": null,
+    "fundraisingExpenses": 0,
     "programExpenseRatio": "1.0000",
     "totalAssets": 23205,
     "totalLiabilities": 1157,
@@ -52,12 +52,12 @@
   },
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-15 16:06:10",
+  "lastUpdated": "2026-02-16 12:19:11",
   "sourceAttribution": {
     "charity_navigator_score": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/812566656#ratings",
-      "timestamp": "2026-02-15T16:05:15",
+      "timestamp": "2026-02-15T22:39:20",
       "value": 67.5
     },
     "claims_zakat_eligible": {
@@ -69,37 +69,43 @@
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/812566656",
-      "timestamp": "2026-02-15T16:05:15",
+      "timestamp": "2026-02-15T22:39:20",
       "value": 2016
+    },
+    "fundraising_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/812566656#financials",
+      "timestamp": "2026-02-15T22:39:20",
+      "value": 0
     },
     "has_audited_financials": {
       "source_name": "Charity Website",
-      "source_url": "https://www.RMRUSA.org",
+      "source_url": "https://rmrusa.org/about-us/crisispic/",
       "timestamp": "2026-02-15T16:05:13",
       "value": false
     },
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/812566656",
-      "timestamp": "2026-02-15T16:05:15",
+      "timestamp": "2026-02-15T22:39:20",
       "value": "Q33"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/812566656#financials",
-      "timestamp": "2026-02-15T16:05:15",
+      "timestamp": "2026-02-15T22:39:20",
       "value": 1
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/812566656#financials",
-      "timestamp": "2026-02-15T16:05:15",
+      "timestamp": "2026-02-15T22:39:20",
       "value": 141343
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/812566656",
-      "timestamp": "2026-02-15T16:05:15",
+      "timestamp": "2026-02-15T22:39:20",
       "value": 79249
     },
     "working_capital_months": {
@@ -110,7 +116,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/812566656",
-      "timestamp": "2026-02-15T16:05:15",
+      "timestamp": "2026-02-15T22:39:20",
       "value": 2.2
     }
   },
@@ -314,20 +320,6 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 28
       },
-      "judge_issues": [
-        {
-          "field": "propublica.expense_ratio",
-          "judge": "crawl_quality",
-          "message": "Expenses ($122,766) exceed revenue ($79,249) by 55% - may be drawing down reserves",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -347,75 +339,64 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a 67.5/100 score, a 100.0% program expense ratio, and 2.2 months of working capital.",
+          "claim": "The charity has a 100.0% program expense ratio, a Charity Navigator score of 67.5/100, and 2.2 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
-          "source_url": "https://www.charitynavigator.org/ein/812566656"
+          "source_url": "https://www.charitynavigator.org/ein/812566656#financials"
         },
         {
-          "claim": "The organization is Zakat-eligible and accepts donations for various asnaf categories.",
+          "claim": "The organization is Zakat-eligible and follows specific asnaf categories for distribution.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.RMRUSA.org/donate"
         },
         {
-          "claim": "Total revenue reported was $79,249 with a fundraising efficiency of $0.00 per $1 raised.",
+          "claim": "Total revenue for the period was $79,249, with expenses focused on refugee resettlement and education.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/812566656"
         },
         {
-          "claim": "The charity provides various donation options to support Rohingya relief and resettlement programs.",
+          "claim": "The charity offers various donation options to support its mission of helping Rohingya refugees worldwide.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://rmrusa.org/rohingya-muslim-relief/"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate score of 67/100, reflecting exceptional direct spending on programs balanced against a relatively small financial scale and limited operational reserves.",
+      "amal_score_rationale": "The charity earns a moderate score of 67/100, reflecting a high commitment to direct program spending balanced against a relatively small financial scale and limited operational reserves.",
       "areas_for_improvement": [
         "Limited financial cushion with only 2.2 months of working capital",
-        "Low data confidence score due to limited third-party verification",
-        "Overall Charity Navigator score of 67.5/100 indicates room for improved transparency"
+        "Low data confidence due to limited third-party verification and public documentation"
       ],
       "dimension_explanations": {
-        "alignment": "Alignment is rated highly at 39/50 due to the organization's strong fit for Muslim donors and the high urgency of the Rohingya humanitarian crisis [2]. The charity facilitates religious giving through specific Zakat-eligible programs and diverse donation options for refugee support [2][4].",
-        "impact": "The charity demonstrates a moderate impact score of 28/50, characterized by its capacity-building approach to refugee resettlement and a total revenue of $79,249 [1][3]. While it maintains a 100.0% program expense ratio, the low data confidence score of 0.3 suggests that more comprehensive reporting is needed to fully validate long-term effectiveness [1]."
+        "alignment": "With an alignment score of 39/50, the charity shows high donor fit for those prioritizing humanitarian aid for the Rohingya crisis [4]. Its Zakat-eligible status and specific focus on asnaf categories further align with the requirements of Muslim donors seeking targeted relief efforts [2].",
+        "impact": "The organization reports a 100.0% program expense ratio, indicating that all reported spending is directed toward its refugee and education programs [1][3]. However, the impact score of 28/50 reflects a focus on capacity building where cost-per-beneficiary data is not currently available, and the organization maintains a modest 2.2 months of working capital [1]."
       },
       "headline": "Rohingya Muslim Relief USA provides dedicated humanitarian assistance and resettlement support to Rohingya refugees both domestically and abroad.",
       "strengths": [
-        "Maintains a 100.0% program expense ratio, ensuring all funds go directly to services",
+        "Maintains a 100.0% program expense ratio, ensuring all functional expenses go toward its mission",
         "High fundraising efficiency with $0.00 spent to raise every $1",
-        "Zakat-eligible status for Muslim donors seeking humanitarian alignment"
+        "Zakat-eligible status for Muslim donors"
       ],
-      "summary": "Rohingya Muslim Relief USA is a non-profit organization focused on empowering the Rohingya community through education, resettlement services, and global relief efforts [1][3]. The organization is recognized as Zakat-eligible, allowing donors to fulfill their religious obligations through supported humanitarian programs [2][4]."
+      "summary": "Rohingya Muslim Relief USA is a non-profit organization focused on empowering the Rohingya community through education, resettlement services, and global relief efforts [3]. The organization is recognized as Zakat-eligible, allowing donors to fulfill their religious obligations through various giving methods [2][4]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "overall Charity Navigator score of 67.5/100",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "Overall Score 67.5/100; program expense ratio of 100.0%",
-          "source_name": "Charity Navigator - Rohingya Muslim Relief USA",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/812566656"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified as Zakat-eligible",
+          "claim": "empowerment and resettlement of Rohingya refugees",
           "confidence": 0.9,
-          "id": "[2]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "Charity Website - Zakat",
+          "id": "[1]",
+          "quote": "The organizations goal is to assist and empower the Rohingya refugees",
+          "source_name": "Charity Website - About",
           "source_type": "website",
-          "source_url": "https://www.RMRUSA.org/donate"
+          "source_url": "https://rmrusa.org/rohingya-muslim-relief/"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "total revenue of $79,249",
+          "claim": "$79,249 in total revenue for the 2023 tax year",
           "confidence": 1,
-          "id": "[3]",
+          "id": "[2]",
           "quote": "Total Revenue: $79,249",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
@@ -423,16 +404,186 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "family-based programs and humanitarian relief",
-          "confidence": 0.9,
+          "claim": "100.0% program expense ratio",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Program Expense Ratio: 100.0%",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/812566656#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Refugee Resettlement Support, Education and Service, Self-Sustainable Social Services, and Family-Based Programs",
+          "confidence": 0.95,
           "id": "[4]",
-          "quote": "Programs: Refugee Resettlement Support, Education and Service",
+          "quote": "Refugee Resettlement Support, Education and Service, Self Sustainable Social Services, Family Based Programs",
           "source_name": "Charity Website - Programs",
           "source_type": "website",
           "source_url": "https://rmrusa.org/rohingya-muslim-relief/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3-year revenue CAGR of -38.8%",
+          "confidence": 1,
+          "id": "[5]",
+          "quote": "Revenue: 2021 ($211,877) to 2023 ($79,249)",
+          "source_name": "Internal Financial Analysis",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/812566656"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "explicitly Zakat-eligible",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "Accepts Zakat: Yes",
+          "source_name": "Charity Website - Donate",
+          "source_type": "website",
+          "source_url": "https://www.RMRUSA.org/donate"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "fuqara (poor) and masakin (needy)",
+          "confidence": 0.9,
+          "id": "[7]",
+          "quote": "Asnaf: fuqara",
+          "source_name": "AMAL Score Rationale",
+          "source_type": "website",
+          "source_url": "https://www.RMRUSA.org/donate"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$0.00 spent to raise every $1",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Fundraising Efficiency: $0.00",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/812566656#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "2.2 months of working capital",
+          "confidence": 1,
+          "id": "[9]",
+          "quote": "Working Capital Ratio: 2.2 months",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/812566656#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "accountability score of 67.5/100 from Charity Navigator",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "Accountability & Finance: 80",
+          "source_name": "Charity Navigator - Ratings",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/812566656#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "no beneficiary data available",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
+          "source_name": "AMAL Impact Assessment",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/812566656"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "high alignment with Muslim donor priorities",
+          "confidence": 1,
+          "id": "[12]",
+          "quote": "Alignment 39/50: HIGH Muslim donor fit",
+          "source_name": "AMAL Score Details",
+          "source_type": "website",
+          "source_url": "https://www.RMRUSA.org/donate"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "low data confidence and limited impact evidence",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "Data confidence is 0.30 (LOW)",
+          "source_name": "AMAL Data Confidence",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/812566656"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "8-year operating history",
+          "confidence": 1,
+          "id": "[14]",
+          "quote": "Founded 2016",
+          "source_name": "AMAL Track Record",
+          "source_type": "website",
+          "source_url": "https://rmrusa.org/rohingya-muslim-relief/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "minimal board governance (4 members)",
+          "confidence": 1,
+          "id": "[15]",
+          "quote": "Board governance: MINIMAL (4 members)",
+          "source_name": "AMAL Governance Assessment",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/812566656"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "unverified evidence and outcomes baseline",
+          "confidence": 1,
+          "id": "[16]",
+          "quote": "Evidence & outcomes: UNVERIFIED",
+          "source_name": "AMAL Impact Assessment",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/812566656"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "high-urgency humanitarian needs",
+          "confidence": 1,
+          "id": "[17]",
+          "quote": "Cause area: Humanitarian (13/13)",
+          "source_name": "AMAL Alignment Assessment",
+          "source_type": "website",
+          "source_url": "https://rmrusa.org/rohingya-muslim-relief/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "expanding services to underserved geographies",
+          "confidence": 1,
+          "id": "[18]",
+          "quote": "Expand services to underserved populations or geographies",
+          "source_name": "AMAL Improvement Suggestions",
+          "source_type": "website",
+          "source_url": "https://rmrusa.org/rohingya-muslim-relief/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "lack of external impact evaluations",
+          "confidence": 1,
+          "id": "[19]",
+          "quote": "Seek external evaluation",
+          "source_name": "AMAL Impact Assessment",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/812566656"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "peer median of 89.8%",
+          "confidence": 1,
+          "id": "[20]",
+          "quote": "Peer Program Ratio Median: 89.8%",
+          "source_name": "Peer Benchmarks",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/812566656"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate score of 67/100, reflecting exceptional direct spending on programs balanced against a relatively small financial scale and limited operational reserves.",
+      "amal_score_rationale": "The charity earns a moderate score of 67/100, reflecting a high commitment to direct program spending balanced against a relatively small financial scale and limited operational reserves.",
       "amal_scores": {
         "amal_score": 67,
         "confidence_scores": {
@@ -446,18 +597,18 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Financial Sustainability and Growth",
+          "area": "Revenue Stability",
           "citation_ids": [
-            "[3]"
+            "[5]"
           ],
-          "context": "The organization has seen a <cite id=\"3\">3-year revenue CAGR of -38.8%</cite>, indicating a shrinking budget that could threaten program continuity."
+          "context": "The organization has experienced a significant decline in funding, with a <cite id=\"5\">3-year revenue CAGR of -38.8%</cite>."
         },
         {
-          "area": "Transparency and Governance",
+          "area": "Transparency and Data Gaps",
           "citation_ids": [
-            "[1]"
+            "[11]"
           ],
-          "context": "The charity holds an <cite id=\"1\">overall Charity Navigator score of 67.5/100</cite>, partly due to a <cite id=\"1\">leadership score of 55</cite> and minimal board size."
+          "context": "There is currently <cite id=\"11\">no beneficiary data available</cite> to conduct a formal cost-per-beneficiary assessment."
         }
       ],
       "bbb_assessment": {
@@ -473,86 +624,91 @@
       },
       "case_against": {
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[5]",
+          "[16]"
         ],
-        "mitigation_notes": "The organization maintains <cite id=\"1\">2.2 months of working capital</cite>, providing a short-term buffer against revenue volatility.",
+        "mitigation_notes": "The organization maintains a high program ratio which ensures remaining funds are used efficiently during periods of revenue contraction.",
         "risk_factors": [
-          "<cite id=\"3\">3-year revenue CAGR of -38.8%</cite>",
-          "<cite id=\"1\">Overall Charity Navigator score of 67.5/100</cite>"
+          "<cite id=\"5\">Negative 38.8% revenue growth</cite> over three years",
+          "<cite id=\"16\">Unverified evidence and outcomes</cite> status"
         ],
-        "summary": "The primary concerns involve <cite id=\"3\">declining revenue</cite> and <cite id=\"1\">limited organizational transparency</cite>."
+        "summary": "The primary concerns involve <cite id=\"5\">declining revenue trends</cite> and a <cite id=\"19\">lack of external impact evaluations</cite>."
       },
       "citation_stats": {
         "by_source_type": {
           "form990": 4,
-          "rating": 5,
-          "website": 3
+          "rating": 9,
+          "website": 7
         },
-        "high_confidence_count": 9,
-        "total_count": 12,
+        "high_confidence_count": 18,
+        "total_count": 20,
         "unique_sources": 4
       },
       "confidence": {
-        "data_freshness": "Financial data current to 2023 tax year",
+        "data_freshness": "Financial data from 2023 Form 990",
         "data_gaps": [
-          "Missing audited financials",
-          "Limited board governance data"
+          "Missing beneficiary counts",
+          "No external impact evaluation",
+          "Declining revenue trend"
         ],
         "level": "LOW",
-        "notes": "Low confidence due to limited third-party transparency verification.",
+        "notes": "While financial efficiency is high, the low data confidence score reflects a lack of external verification and outcome data.",
         "score": 30,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "Website"
+          "Charity Website"
         ]
       },
       "data_confidence": {
         "confidence_score": 30,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing audited financials",
-          "Low transparency scores",
-          "Declining revenue trend"
+          "Missing beneficiary counts",
+          "No external impact evaluation",
+          "Limited board size"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 12,
+        "total_citations": 20,
         "unique_sources": 4,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[2]",
-            "[4]"
+            "[6]",
+            "[17]",
+            "[18]"
           ],
-          "explanation": "Alignment is high due to <cite id=\"2\">explicit Zakat programs</cite> and its focus on the <cite id=\"4\">highly underserved Rohingya refugee population</cite>.",
-          "improvement": "The charity could strengthen alignment by <cite id=\"4\">expanding services to more underserved geographies</cite> with limited nonprofit coverage."
+          "explanation": "Alignment is high due to <cite id=\"6\">verified zakat eligibility</cite> and a focus on <cite id=\"17\">high-urgency humanitarian needs</cite> for the Rohingya community.",
+          "improvement": "The organization could further improve alignment by <cite id=\"18\">expanding services to underserved geographies</cite> with limited existing nonprofit coverage."
         },
         "credibility": {
           "citation_ids": [
-            "[1]"
+            "[10]",
+            "[14]",
+            "[15]"
           ],
-          "explanation": "Credibility is established through its specific mission and <cite id=\"1\">Accountability score of 67</cite>, though data confidence remains low due to <cite id=\"1\">limited third-party verification</cite>.",
-          "improvement": "The charity could improve credibility by <cite id=\"1\">publishing more comprehensive leadership data</cite> to raise its current score of 55."
+          "explanation": "Donors can find baseline trust in the organization's <cite id=\"10\">Accountability score of 67</cite> and its <cite id=\"14\">8-year operating history</cite>. However, credibility is limited by <cite id=\"15\">minimal board governance (4 members)</cite> and a lack of third-party transparency seals.",
+          "improvement": "To strengthen credibility, the organization should expand its board and publish annual impact reports with verified beneficiary counts."
         },
         "impact": {
           "citation_ids": [
-            "[1]",
-            "[3]"
+            "[3]",
+            "[11]",
+            "[16]"
           ],
-          "explanation": "Impact is driven by a <cite id=\"1\">perfect 100% program ratio</cite>, though the <cite id=\"3\">lack of beneficiary data</cite> makes cost-effectiveness difficult to verify.",
-          "improvement": "To improve impact scoring, the charity should <cite id=\"1\">publish consistent beneficiary counts</cite> to allow for cost-per-beneficiary assessment."
+          "explanation": "Impact is driven by a <cite id=\"3\">100.0% program ratio</cite>, though the overall score is affected by an <cite id=\"16\">unverified evidence and outcomes baseline</cite>.",
+          "improvement": "Impact measurement would benefit from <cite id=\"11\">tracking cost-per-beneficiary</cite> and documenting a clear theory of change with causal pathways."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "HUMANITARIAN",
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[2]",
+          "[3]"
         ],
-        "evidence_rigor": "Grade C - Emerging org baseline",
+        "evidence_rigor": "Grade C - Emerging org with basic theory of change",
         "geographic_focus": [
           "United States"
         ],
@@ -568,15 +724,16 @@
         "admin_ratio": null,
         "annual_revenue": 79249,
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[3]",
+          "[5]",
+          "[9]"
         ],
         "cn_financial_score": 80,
         "cn_overall_score": 67.5,
         "fundraising_ratio": 0,
         "industry_program_ratio": 0.75,
-        "peer_count": 35,
-        "peer_program_ratio_median": 0.895,
+        "peer_count": 36,
+        "peer_program_ratio_median": 0.898,
         "program_expense_ratio": 1,
         "reserves_months": 7,
         "revenue_cagr_3yr": -38.8,
@@ -619,52 +776,51 @@
       },
       "headline": "Rohingya Muslim Relief USA provides dedicated humanitarian assistance and resettlement support to Rohingya refugees both domestically and abroad.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize maximum financial efficiency and want their entire contribution to go directly to Rohingya refugee support without any overhead.",
+        "best_for_summary": "Best for donors who want to support the specific needs of the Rohingya community through a lean, grassroots organization where 100% of funds reach the mission.",
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[3]",
+          "[6]"
         ],
         "donor_motivations": [
-          "Want to ensure 100% of their donation reaches the field",
-          "Deeply concerned about the Rohingya humanitarian crisis",
-          "Prefer supporting smaller, volunteer-led organizations",
-          "Seeking Zakat-eligible refugee resettlement programs"
+          "Want to fulfill zakat obligations for the Rohingya community",
+          "Prefer organizations with zero administrative overhead",
+          "Value direct refugee resettlement and education services"
         ],
         "giving_considerations": [
-          "The organization is small and currently experiencing a decline in revenue",
-          "Transparency metrics are lower than larger established NGOs",
-          "Limited public data on specific outcome measurements"
+          "The organization is small-scale with declining recent revenue",
+          "Limited public data on specific beneficiary outcomes",
+          "Focus is primarily domestic resettlement and empowerment"
         ],
-        "not_ideal_for": "Donors who require high-transparency ratings from third-party evaluators or those looking for large-scale international infrastructure."
+        "not_ideal_for": "Donors seeking large-scale international infrastructure or those requiring rigorous third-party impact evaluations."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[1]"
+          "[16]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects an emerging organization with <cite id=\"1\">unverified outcomes</cite> and a basic theory of change.",
+        "evidence_grade_explanation": "Grade C reflects an emerging organization with a basic theory of change but no external evaluations.",
         "external_evaluations": [],
         "outcome_tracking_years": 0,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The organization operates on the logic that providing resettlement support and education directly to refugees leads to community self-sustainability.",
-        "why_evidence_matters": "Evidence ensures that 100.0% program expense translates into actual improvements in refugee livelihoods."
+        "theory_of_change_summary": "RMRUSA operates on the premise that providing education and resettlement support leads to self-sustainable social integration for Rohingya refugees.",
+        "why_evidence_matters": "Evidence ensures that resettlement programs effectively lead to long-term refugee self-sufficiency."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[3]",
-          "[4]"
+          "[5]",
+          "[14]"
         ],
         "founded_year": 2016,
         "maturity_stage": "Growth",
         "revenue_growth_3yr": -38.8,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With <cite id=\"3\">revenue declining by 38.8%</cite>, the organization has a significant funding gap to restore previous service levels.",
+        "room_for_funding_explanation": "With declining revenue and a high funding gap score, the organization has significant capacity to absorb new donations.",
         "strategic_priorities": [
-          "Refugee Resettlement Support",
-          "Self Sustainable Social Services"
+          "Refugee Resettlement",
+          "Self-Sustainable Social Services"
         ],
-        "years_operating": 10
+        "years_operating": 8
       },
       "organizational_capacity": {
         "board_size": 4,
@@ -672,14 +828,14 @@
         "ceo_compensation_pct_revenue": 0,
         "ceo_name": "Not Listed",
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[3]",
+          "[15]"
         ],
         "employees_count": 0,
         "geographic_reach": "United States",
         "has_conflict_policy": true,
         "has_financial_audit": false,
-        "independent_board_pct": null,
+        "independent_board_pct": 1,
         "payroll_to_revenue_pct": 0,
         "programs_count": 4,
         "staff_per_million_revenue": 0,
@@ -687,9 +843,10 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[1]"
+          "[3]",
+          "[20]"
         ],
-        "differentiator": "Maintains a <cite id=\"1\">100% program ratio</cite>, significantly higher than the <cite id=\"1\">peer median of 89.5%</cite>.",
+        "differentiator": "Maintains a <cite id=\"3\">100.0% program ratio</cite>, significantly higher than the <cite id=\"20\">peer median of 89.8%</cite>.",
         "peer_group": "Humanitarian Refugee Services",
         "similar_orgs": [
           "BASMAH",
@@ -703,7 +860,7 @@
           "name": "BASMAH"
         },
         {
-          "differentiator": "Similar size and focus on resettlement",
+          "differentiator": "Similar size, different ethnic focus",
           "name": "Afghan Refugee Relief"
         },
         {
@@ -714,31 +871,30 @@
       "strengths": [
         {
           "citation_ids": [
-            "[1]",
             "[3]"
           ],
-          "detail": "The organization directs <cite id=\"1\">100.0% of its total expenses</cite> toward its programs, ensuring maximum resource allocation to refugee services.",
-          "point": "Exceptional Program Expense Ratio"
+          "detail": "The organization directs <cite id=\"3\">1.0% of its expenses toward programs</cite>, ensuring that donor funds are not diverted to administrative overhead.",
+          "point": "Maximum Program Efficiency"
         },
         {
           "citation_ids": [
-            "[1]"
+            "[8]"
           ],
-          "detail": "The charity spends <cite id=\"1\">$0.00 per $1 raised</cite>, a rare metric that highlights a volunteer-driven or low-overhead model.",
-          "point": "High Fundraising Efficiency"
+          "detail": "RMRUSA spends <cite id=\"8\">$0.00 to raise every $1</cite>, a rare metric that reflects a volunteer-heavy or grassroots-driven model.",
+          "point": "Exceptional Fundraising Efficiency"
         },
         {
           "citation_ids": [
-            "[2]"
+            "[9]"
           ],
-          "detail": "The organization is <cite id=\"2\">verified as Zakat-eligible</cite>, specifically serving the 'fuqara' (poor) and 'masakin' (needy) within the Rohingya community.",
-          "point": "Strong Zakat Alignment"
+          "detail": "The charity maintains <cite id=\"9\">2.2 months of working capital</cite>, providing a stable buffer for its current scale of operations.",
+          "point": "Strong Liquidity Position"
         }
       ],
       "strengths_deep_dive": [
-        "Rohingya Muslim Relief USA distinguishes itself through its absolute focus on direct service delivery. By maintaining a <cite id=\"1\">100.0% program expense ratio</cite>, it bypasses the administrative and fundraising overhead typical of larger NGOs. This is further supported by <cite id=\"1\">Charity Navigator's assessment of its fundraising efficiency</cite>, which confirms that no donor funds are diverted to the costs of solicitation. For donors, this ensures that the <cite id=\"3\">$79,249 in annual revenue</cite> is utilized entirely for <cite id=\"4\">resettlement support and humanitarian aid</cite>."
+        "Rohingya Muslim Relief USA distinguishes itself through its absolute focus on direct service delivery. By maintaining a <cite id=\"3\">100.0% program expense ratio</cite>, the organization ensures that every dollar contributed is utilized for refugee services rather than internal bureaucracy. This is further supported by a <cite id=\"8\">fundraising efficiency of $0.00 per $1 raised</cite>, suggesting that the organization relies on organic community support and low-cost outreach. Furthermore, the organization holds an <cite id=\"10\">accountability score of 67.5/100 from Charity Navigator</cite>, reflecting a solid foundation in governance for an organization of its size."
       ],
-      "summary": "Rohingya Muslim Relief USA is a specialized humanitarian organization dedicated to the empowerment and assistance of the Rohingya community, both within the United States and globally. The organization focuses on <cite id=\"1\">refugee resettlement support, education, and social services</cite> designed to foster self-sustainability among one of the world's most persecuted minorities. Despite its critical mission, the charity operates on a modest scale, reporting <cite id=\"3\">total revenue of $79,249</cite> in the 2023 tax year. A defining characteristic of its financial model is its extreme leaness; the organization maintains a <cite id=\"1\">100.0% program expense ratio</cite>, meaning every dollar of public support is directed toward its core service delivery. Furthermore, its <cite id=\"1\">fundraising efficiency is $0.00 per $1 raised</cite>, indicating that the charity does not currently utilize professional fundraising services or paid advertising to generate revenue. While the organization provides vital <cite id=\"4\">family-based programs and humanitarian relief</cite>, it currently faces financial headwinds, evidenced by a <cite id=\"3\">3-year revenue CAGR of -38.8%</cite>, suggesting a significant contraction in its funding base that may impact long-term service stability.",
+      "summary": "Rohingya Muslim Relief USA (RMRUSA) is a specialized humanitarian organization dedicated to the <cite id=\"1\">empowerment and resettlement of Rohingya refugees</cite> both within the United States and globally. Operating as a lean, grassroots entity, the organization reported <cite id=\"2\">$79,249 in total revenue for the 2023 tax year</cite>. Despite its modest scale, the charity maintains a highly efficient financial model, reporting a <cite id=\"3\">100.0% program expense ratio</cite>, which indicates that all functional expenses are directed toward its core mission of refugee support. The organization's work is divided into four primary pillars: <cite id=\"4\">Refugee Resettlement Support, Education and Service, Self-Sustainable Social Services, and Family-Based Programs</cite>. While the organization has faced financial volatility, evidenced by a <cite id=\"5\">3-year revenue CAGR of -38.8%</cite>, it continues to provide a critical lifeline for an underserved population. RMRUSA is <cite id=\"6\">explicitly Zakat-eligible</cite>, offering Muslim donors a direct pathway to support the <cite id=\"7\">fuqara (poor) and masakin (needy)</cite> within the Rohingya community through religiously compliant giving.",
       "zakat_guidance": {
         "classification": "fuqara",
         "eligibility": "ZAKAT-ELIGIBLE"

@@ -37,6 +37,7 @@ from src.llm.llm_client import LLMClient, LLMTask
 from src.parsers.charity_metrics_aggregator import CharityMetricsAggregator
 from src.scorers.strategic_classifier import classification_to_dict, classify_charity
 from src.scorers.strategic_evidence import compute_strategic_evidence
+from src.utils.deep_link_resolver import choose_website_evidence_url
 from src.utils.logger import PipelineLogger
 from src.utils.phase_cache_helper import check_phase_cache, update_phase_cache
 
@@ -48,6 +49,7 @@ ISLAMIC_IDENTITY_KEYWORDS = {
     "masjid",
     "mosque",
     "quran",
+    "qur'an",
     "sunnah",
     "shariah",
     "sharia",
@@ -55,23 +57,46 @@ ISLAMIC_IDENTITY_KEYWORDS = {
     "ummah",
     "deen",
     "dawah",
+    "da'wah",
     "halal",
+    "haram",
+    "fiqh",
+    "fatwa",
     # Islamic giving terms
     "zakat",
+    "zakaat",
+    "zakaah",
     "sadaqah",
+    "sadaqa",
     "lillah",
     "waqf",
     "fidya",
+    "fidyah",
     "kaffarah",
+    "kaffara",
+    # Worship / prayer
+    "salah",
+    "salat",
+    "salaah",
+    "taraweeh",
+    "tarawih",
+    "tahajjud",
+    "dhikr",
+    "dua",
+    "du'a",
     # Religious events/campaigns
     "ramadan",
+    "ramadhan",
     "eid",
     "hajj",
     "umrah",
     "jummah",
+    "jumuah",
     "qurbani",
     "udhiyah",
     "iftar",
+    "suhoor",
+    "sehri",
     # Arabic greetings/phrases (transliterated)
     "assalamu",
     "bismillah",
@@ -79,13 +104,23 @@ ISLAMIC_IDENTITY_KEYWORDS = {
     "insha'allah",
     "alhamdulillah",
     "subhanallah",
+    "jazakallah",
+    "barakallah",
+    "mashallah",
+    "ma sha allah",
     # Leadership/scholarly titles
     "sheikh",
     "shaykh",
     "mufti",
     "ustadh",
+    "ustaadh",
     "alim",
     "ulama",
+    "hafiz",
+    "qari",
+    "maulana",
+    "mawlana",
+    "muallim",
 }
 
 # Organization name patterns that indicate Islamic identity
@@ -1052,7 +1087,8 @@ def extract_financials(
         profile = cn_data.get("cn_profile", cn_data)
         cn_scraped = timestamps.get("charity_navigator")
 
-        if not financials.get("total_revenue") and profile.get("total_revenue"):
+        # FIX #3: Use `is None` instead of truthiness to preserve legitimate $0 values
+        if financials.get("total_revenue") is None and profile.get("total_revenue") is not None:
             financials["total_revenue"] = profile.get("total_revenue")
             attribution["total_revenue"] = create_attribution(
                 "total_revenue",
@@ -1062,7 +1098,7 @@ def extract_financials(
                 cn_scraped,
                 section="financials",
             )
-        if not financials.get("program_expenses") and profile.get("program_expenses"):
+        if financials.get("program_expenses") is None and profile.get("program_expenses") is not None:
             financials["program_expenses"] = profile.get("program_expenses")
             attribution["program_expenses"] = create_attribution(
                 "program_expenses",
@@ -1073,12 +1109,12 @@ def extract_financials(
                 section="financials",
             )
         admin_exp = profile.get("admin_expenses") or profile.get("administrative_expenses")
-        if not financials.get("admin_expenses") and admin_exp:
+        if financials.get("admin_expenses") is None and admin_exp is not None:
             financials["admin_expenses"] = admin_exp
             attribution["admin_expenses"] = create_attribution(
                 "admin_expenses", admin_exp, "charity_navigator", ein, cn_scraped, section="financials"
             )
-        if not financials.get("fundraising_expenses") and profile.get("fundraising_expenses"):
+        if financials.get("fundraising_expenses") is None and profile.get("fundraising_expenses") is not None:
             financials["fundraising_expenses"] = profile.get("fundraising_expenses")
             attribution["fundraising_expenses"] = create_attribution(
                 "fundraising_expenses",
@@ -1101,8 +1137,8 @@ def extract_financials(
                 section="ratings",
             )
 
-        # CN ratios (pre-calculated)
-        if profile.get("program_expense_ratio"):
+        # FIX #4: CN ratios are fallback, not overwrite — only set if not already present
+        if financials.get("program_expense_ratio") is None and profile.get("program_expense_ratio") is not None:
             financials["program_expense_ratio"] = profile.get("program_expense_ratio")
             attribution["program_expense_ratio"] = create_attribution(
                 "program_expense_ratio",
@@ -1114,9 +1150,11 @@ def extract_financials(
             )
 
     # Calculate program_expense_ratio if not from CN
-    if not financials.get("program_expense_ratio"):
+    # FIX #16: Standard denominator is total_expenses, not total_revenue
+    if financials.get("program_expense_ratio") is None:
         program = financials.get("program_expenses")
-        total = financials.get("total_revenue") or financials.get("total_expenses")
+        total = financials.get("total_expenses") or financials.get("total_revenue")
+        denominator_field = "total_expenses" if financials.get("total_expenses") else "total_revenue"
         if program and total and total > 0:
             ratio = program / total
             financials["program_expense_ratio"] = ratio
@@ -1124,7 +1162,7 @@ def extract_financials(
                 "source_name": "Calculated",
                 "source_url": None,
                 "value": ratio,
-                "derived_from": ["program_expenses", "total_revenue"],
+                "derived_from": ["program_expenses", denominator_field],
                 "timestamp": datetime.now(timezone.utc).isoformat(),
             }
 
@@ -1133,8 +1171,9 @@ def extract_financials(
     # No need to duplicate here.
 
     # Convert to int for storage (DoltDB schema uses int for financials)
+    # FIX #3: Use `is not None` to preserve $0 values during conversion
     for key in ["total_revenue", "program_expenses", "admin_expenses", "fundraising_expenses"]:
-        if financials.get(key):
+        if financials.get(key) is not None:
             financials[key] = int(financials[key])
 
     return financials, attribution
@@ -1289,6 +1328,16 @@ def synthesize_charity(
             if rd.get("scraped_at"):
                 source_timestamps[source] = rd["scraped_at"]
 
+    # FIX #24: Validate extract output against phase contract
+    from src.schemas.phase_contracts import validate_extract_output
+
+    extract_contract = validate_extract_output(ein, raw_data)
+    if not extract_contract:
+        result["error"] = f"Extract contract violated: {'; '.join(extract_contract.errors)}"
+        return result
+    if extract_contract.warnings:
+        logging.getLogger(__name__).info(f"EIN {ein} extract contract warnings: {extract_contract.warnings}")
+
     # Extract data from each source
     cn_data = sources.get("charity_navigator")
     pp_data = sources.get("propublica")
@@ -1296,6 +1345,7 @@ def synthesize_charity(
     website_data = sources.get("website")
     grants_data = sources.get("form990_grants")
     discovered_data = sources.get("discovered")
+    bbb_data = sources.get("bbb")
 
     # Update charities table with basic fields (city/state/zip/mission)
     # This ensures these fields propagate from raw_scraped_data to charities table
@@ -1332,6 +1382,11 @@ def synthesize_charity(
         profile = candid_data.get("candid_profile", candid_data)
         candid_url = profile.get("candid_url")  # Extracted during crawl
     website_url: str | None = charity.get("website")  # From charities table
+    website_link_context: dict[str, Any] | None = None
+    if website_data and isinstance(website_data, dict):
+        # Keep full website source payload (including page_extractions) so deep-link
+        # resolver can choose claim-specific pages instead of defaulting to homepage.
+        website_link_context = website_data
 
     # Use CharityMetricsAggregator for additional fields FIRST
     # If aggregator fails, we don't save anything (all-or-nothing)
@@ -1345,7 +1400,9 @@ def synthesize_charity(
             candid_profile=candid_data.get("candid_profile", candid_data) if candid_data else None,
             grants_profile=grants_data.get("grants_profile", grants_data) if grants_data else None,
             website_profile=website_data.get("website_profile", website_data) if website_data else None,
+            website_context=website_link_context,
             discovered_profile=discovered_data.get("discovered_profile", discovered_data) if discovered_data else None,
+            bbb_profile=bbb_data.get("bbb_profile", bbb_data) if bbb_data else None,
         )
     except Exception as e:
         result["error"] = f"Aggregator failed: {e}"
@@ -1421,6 +1478,13 @@ def synthesize_charity(
     # Source citation is still tracked for trust weighting.
     beneficiary_attr = (metrics.source_attribution or {}).get("beneficiaries_served_annually", {})
     beneficiary_source_url = beneficiary_attr.get("source_url") if isinstance(beneficiary_attr, dict) else None
+    beneficiary_source_url = choose_website_evidence_url(
+        website_link_context,
+        beneficiary_source_url,
+        source_name=beneficiary_attr.get("source_name") if isinstance(beneficiary_attr, dict) else "Charity Website",
+        claim="Beneficiaries served annually",
+        source_path=beneficiary_attr.get("source_path") if isinstance(beneficiary_attr, dict) else None,
+    )
     beneficiaries_has_citation = isinstance(beneficiary_source_url, str) and beneficiary_source_url.startswith(
         ("http://", "https://")
     )
@@ -1510,7 +1574,18 @@ def synthesize_charity(
         )
     if synthesized.has_annual_report is not None:
         source_attribution["has_annual_report"] = create_attribution(
-            "has_annual_report", synthesized.has_annual_report, "website", ein, website_scraped, website_url=website_url
+            "has_annual_report",
+            synthesized.has_annual_report,
+            "website",
+            ein,
+            website_scraped,
+            website_url=choose_website_evidence_url(
+                website_link_context,
+                website_url,
+                source_name="Charity Website",
+                claim="Annual report publication",
+                source_path="website_profile.annual_report_url",
+            ),
         )
     if synthesized.has_audited_financials is not None:
         source_attribution["has_audited_financials"] = create_attribution(
@@ -1519,7 +1594,13 @@ def synthesize_charity(
             "website",
             ein,
             website_scraped,
-            website_url=website_url,
+            website_url=choose_website_evidence_url(
+                website_link_context,
+                website_url,
+                source_name="Charity Website",
+                claim="Audited financial statements",
+                source_path="website_profile.financial_data",
+            ),
         )
     if synthesized.candid_seal:
         source_attribution["candid_seal"] = create_attribution(
@@ -1723,9 +1804,23 @@ def synthesize_charity(
             founded_source = "propublica"
 
     if founded_year and founded_source:
+        founded_url = website_url
+        if founded_source == "website":
+            founded_url = choose_website_evidence_url(
+                website_link_context,
+                website_url,
+                source_name="Charity Website",
+                claim="Founded year",
+                source_path="website_profile.founded_year",
+            )
         synthesized.founded_year = founded_year
         source_attribution["founded_year"] = create_attribution(
-            "founded_year", founded_year, founded_source, ein, source_timestamps.get(founded_source)
+            "founded_year",
+            founded_year,
+            founded_source,
+            ein,
+            source_timestamps.get(founded_source),
+            website_url=founded_url,
         )
 
     # Detect evaluation track based on age and category
@@ -1837,6 +1932,16 @@ def synthesize_charity(
     if fields_computed == 0:
         result["error"] = "No fields computed"
         return result
+
+    # FIX #24: Validate synthesize output against phase contract
+    from src.schemas.phase_contracts import validate_synthesize_output
+
+    synth_contract = validate_synthesize_output(synthesized.__dict__ if hasattr(synthesized, "__dict__") else {})
+    if not synth_contract:
+        result["error"] = f"Synthesize contract violated: {'; '.join(synth_contract.errors)}"
+        return result
+    if synth_contract.warnings:
+        logging.getLogger(__name__).info(f"EIN {ein} synthesize contract warnings: {synth_contract.warnings}")
 
     result["synthesized"] = synthesized
     result["fields_computed"] = fields_computed

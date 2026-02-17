@@ -157,11 +157,11 @@ def run_quality_gate(phase: str, ein: str) -> tuple[bool, list[dict]]:
         return not has_errors, issues
 
     except Exception as e:
-        # Judge itself failed — don't block, but warn
-        return True, [
+        # Judge execution failures are hard failures for strict data guarantees.
+        return False, [
             {
                 "judge": f"{phase}_quality",
-                "severity": "warning",
+                "severity": "error",
                 "field": "judge_execution",
                 "message": f"Quality judge failed: {str(e)[:100]}",
             }

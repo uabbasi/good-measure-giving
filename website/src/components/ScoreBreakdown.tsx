@@ -170,9 +170,9 @@ export const levelToTone = (level: HarveyLevel): HarveyTone => {
 export const levelToLabel = (level: HarveyLevel): string => {
   if (level === 4) return 'Strong';
   if (level === 3) return 'Good';
-  if (level === 2) return 'Mixed';
-  if (level === 1) return 'Limited';
-  return 'Minimal';
+  if (level === 2) return 'Moderate';
+  if (level === 1) return 'Weak';
+  return 'Insufficient';
 };
 
 const getHarveyPalette = (tone: HarveyTone, isDark: boolean): {
@@ -211,13 +211,13 @@ export const HarveyBall: React.FC<{
   const resolvedTone = tone || levelToTone(level);
   const palette = getHarveyPalette(resolvedTone, isDark);
   const deg = HARVEY_DEGREES[level];
-  const sizeClass = size === 'sm' ? 'w-3.5 h-3.5' : size === 'lg' ? 'w-7 h-7' : 'w-5 h-5';
+  const sizeClass = size === 'sm' ? 'w-6 h-6' : size === 'lg' ? 'w-9 h-9' : 'w-7 h-7';
 
   return (
     <span
       aria-label={label || levelToLabel(level)}
       title={label || levelToLabel(level)}
-      className={`inline-block rounded-full border ${sizeClass} ${palette.border}`}
+      className={`block shrink-0 translate-y-px rounded-full border ${sizeClass} ${palette.border}`}
       style={{ background: `conic-gradient(${palette.fill} ${deg}deg, ${palette.empty} ${deg}deg)` }}
     />
   );
@@ -240,18 +240,18 @@ const ComponentRow: React.FC<{
 
   return (
     <div className="py-3">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         <HarveyBall level={level} tone={tone} isDark={isDark} size="sm" />
         <span className={`flex-1 text-sm ${noData ? (isDark ? 'text-slate-500' : 'text-slate-400') : (isDark ? 'text-slate-200' : 'text-slate-700')}`}>
           {formatComponentName(component.name)}
         </span>
-        <span className={`text-[11px] font-semibold ${palette.text}`}>
+        <span className={`text-xs font-semibold ${palette.text}`}>
           {noData ? 'No Data' : levelToLabel(level)}
         </span>
       </div>
 
       {financialHealthContext && (
-        <div className={`mt-1 ml-6 text-[11px] leading-relaxed ${
+        <div className={`mt-1 ml-10 text-[11px] leading-relaxed ${
           isDark ? 'text-slate-400' : 'text-slate-600'
         }`}>
           <p><strong>{financialHealthContext.benchmark}</strong></p>
@@ -260,7 +260,7 @@ const ComponentRow: React.FC<{
       )}
 
       {component.evidence && !noData && (
-        <p className={`mt-1 ml-6 text-xs leading-relaxed ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
+        <p className={`mt-1 ml-10 text-xs leading-relaxed ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
           {(() => {
             const formatted = formatEvidenceForDonors(component.evidence);
             return isSignedIn ? (
@@ -273,7 +273,7 @@ const ComponentRow: React.FC<{
       )}
 
       {improvementSuggestion && (
-        <p className={`mt-1 ml-6 text-xs leading-relaxed ${isDark ? 'text-amber-300/80' : 'text-amber-700'}`}>
+        <p className={`mt-1 ml-10 text-xs leading-relaxed ${isDark ? 'text-amber-300/80' : 'text-amber-700'}`}>
           {improvementSuggestion}
         </p>
       )}
@@ -377,9 +377,9 @@ const DimensionSection: React.FC<{
 };
 
 const getRiskSignal = (riskDeduction: number): { label: string; level: HarveyLevel; tone: HarveyTone } => {
-  if (riskDeduction <= -4) return { label: 'High Risk Flags', level: 1, tone: 'caution' };
-  if (riskDeduction <= -1) return { label: 'Moderate Risk Flags', level: 2, tone: 'mixed' };
-  return { label: 'Low Risk Flags', level: 4, tone: 'good' };
+  if (riskDeduction <= -4) return { label: 'High Organizational Risk', level: 1, tone: 'caution' };
+  if (riskDeduction <= -1) return { label: 'Moderate Organizational Risk', level: 2, tone: 'mixed' };
+  return { label: 'Low Organizational Risk', level: 4, tone: 'good' };
 };
 
 export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({
@@ -405,7 +405,7 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({
       <div className={`text-xs uppercase tracking-widest font-semibold mb-3 ${
         isDark ? 'text-slate-500' : 'text-slate-500'
       }`}>
-        Methodology Signals
+        How We Evaluate
       </div>
 
       {amalScoreRationale && (
@@ -479,7 +479,7 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({
             isDark ? 'text-amber-400/80' : 'text-amber-700'
           }`}>
             <TrendingUp className="w-3 h-3" />
-            Room to Grow
+            Where They Can Improve
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {areasForImprovement!.map((area, i) => {
@@ -511,12 +511,12 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({
           <AlertTriangle className="w-3 h-3" />
           <HarveyBall level={riskSignal.level} tone={riskSignal.tone} isDark={isDark} size="sm" label={riskSignal.label} />
           <span>{riskSignal.label}</span>
-          <InfoTip text={GLOSSARY['Risk Flags']} isDark={isDark} />
+          <InfoTip text={GLOSSARY['Organizational Risk']} isDark={isDark} />
         </span>
         {dataConfidence && (
           <span className="inline-flex items-center gap-1.5">
-            Data Confidence: <strong className={isDark ? 'text-slate-200' : 'text-slate-700'}>{dataConfidence.badge}</strong>
-            <InfoTip text={GLOSSARY['Data Confidence']} isDark={isDark} />
+            How Much We Know: <strong className={isDark ? 'text-slate-200' : 'text-slate-700'}>{dataConfidence.badge}</strong>
+            <InfoTip text={GLOSSARY['How Much We Know']} isDark={isDark} />
           </span>
         )}
       </div>

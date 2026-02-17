@@ -19,8 +19,15 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from ..schemas.discovery import SECTION_THEORY_OF_CHANGE, SECTION_ZAKAT
+from ..schemas.discovery import (
+    SECTION_AWARDS,
+    SECTION_EVALUATIONS,
+    SECTION_OUTCOMES,
+    SECTION_THEORY_OF_CHANGE,
+    SECTION_ZAKAT,
+)
 from ..services.zakat_eligibility_service import determine_zakat_eligibility
+from ..utils.deep_link_resolver import choose_website_evidence_url
 from ..validators.source_required_validator import SourceRequiredValidator
 
 logger = logging.getLogger(__name__)
@@ -123,6 +130,11 @@ class CharityMetrics(BaseModel):
     admin_expenses: Optional[float] = Field(None, description="Administrative expenses")
     fundraising_expenses: Optional[float] = Field(None, description="Fundraising expenses")
 
+    # Revenue breakdown (FIX #13: from ProPublica)
+    total_contributions: Optional[float] = Field(None, description="Total contributions/gifts/grants (IRS 990)")
+    program_service_revenue: Optional[float] = Field(None, description="Program service revenue (IRS 990)")
+    investment_income: Optional[float] = Field(None, description="Investment income (IRS 990)")
+
     # Ratios (calculated or from CN)
     program_expense_ratio: Optional[float] = Field(None, ge=0, le=1, description="Program expenses / Total expenses")
     admin_expense_ratio: Optional[float] = Field(None, ge=0, le=1, description="Admin expenses / Total expenses")
@@ -147,6 +159,15 @@ class CharityMetrics(BaseModel):
     cn_beacons: List[str] = Field(default_factory=list, description="List of CN Beacons achieved")
 
     # ========================================================================
+    # BBB Wise Giving Alliance (FIX #5)
+    # ========================================================================
+    bbb_accredited: Optional[bool] = Field(None, description="Whether BBB WGA rates charity as meeting all 20 standards")
+    bbb_standards_met_count: Optional[int] = Field(None, ge=0, le=20, description="Number of BBB standards met (out of 20)")
+    bbb_governance_pass: Optional[bool] = Field(None, description="BBB governance standards (1-5) pass")
+    bbb_effectiveness_pass: Optional[bool] = Field(None, description="BBB effectiveness standards (6-9) pass")
+    bbb_finances_pass: Optional[bool] = Field(None, description="BBB financial standards (10-15) pass")
+
+    # ========================================================================
     # Transparency & Governance (from Candid + CN + IRS 990)
     # ========================================================================
     candid_seal: Optional[str] = Field(None, description="Candid transparency seal (Bronze/Silver/Gold/Platinum)")
@@ -163,6 +184,9 @@ class CharityMetrics(BaseModel):
     form_990_exempt: Optional[bool] = Field(None, description="Exempt from Form 990 (churches/religious orgs)")
     form_990_exempt_reason: Optional[str] = Field(None, description="Reason for exemption")
     no_filings: Optional[bool] = Field(None, description="No Form 990 filings found in ProPublica")
+    financial_data_tax_year: Optional[int] = Field(
+        None, description="Tax year of the primary financial data (from ProPublica/IRS 990)"
+    )
 
     annual_report_published: Optional[bool] = Field(None, description="Whether organization publishes annual reports")
     receives_foundation_grants: Optional[bool] = Field(
@@ -832,8 +856,10 @@ class CharityMetricsAggregator:
         candid_profile: Optional[Dict[str, Any]] = None,
         grants_profile: Optional[Dict[str, Any]] = None,
         website_profile: Optional[Dict[str, Any]] = None,
+        website_context: Optional[Dict[str, Any]] = None,
         givewell_profile: Optional[Dict[str, Any]] = None,
         discovered_profile: Optional[Dict[str, Any]] = None,
+        bbb_profile: Optional[Dict[str, Any]] = None,
         source_attribution: Optional[Dict[str, Dict[str, Any]]] = None,
         source_timestamps: Optional[Dict[str, Any]] = None,
     ) -> CharityMetrics:
@@ -848,6 +874,7 @@ class CharityMetricsAggregator:
             candid_profile: Candid profile data
             grants_profile: Form 990 grants data (Schedule I domestic + Schedule F foreign)
             website_profile: Charity website data
+            website_context: Full website source payload (e.g., includes page_extractions)
             discovered_profile: Discovered data from web search (zakat verification, etc.)
 
         Returns:
@@ -896,6 +923,18 @@ class CharityMetricsAggregator:
             metrics_data["data_sources_available"].append("website")
         if givewell_profile:
             metrics_data["data_sources_available"].append("givewell")
+        if bbb_profile:
+            metrics_data["data_sources_available"].append("bbb")
+
+        # ====================================================================
+        # Source Attribution Helper
+        # ====================================================================
+        attr = metrics_data["source_attribution"]
+
+        def _track(field: str, source: str, value: Any, method: str = "selection"):
+            """Record which source provided a field value."""
+            if value is not None:
+                attr[field] = {"source_name": source, "value": value, "method": method}
 
         # ====================================================================
         # Aggregate Core Identification
@@ -927,6 +966,8 @@ class CharityMetricsAggregator:
             if cn_profile
             else None
         )
+        if metrics_data["mission"]:
+            _track("mission", "candid" if candid_profile and candid_profile.get("mission") else "website" if website_profile and website_profile.get("mission") else "charity_navigator", metrics_data["mission"])
 
         metrics_data["tagline"] = _first_non_none(
             candid_profile.get("tagline") if candid_profile else None,
@@ -1054,10 +1095,21 @@ class CharityMetricsAggregator:
             normalized = _normalize_beneficiary_count(raw_value)
             if normalized is None:
                 return False
+
+            resolved_source_url = source_url if _is_citable_url(source_url) else None
+            if resolved_source_url and source_name.lower().startswith("charity website"):
+                resolved_source_url = choose_website_evidence_url(
+                    website_context or website_profile,
+                    resolved_source_url,
+                    source_name=source_name,
+                    claim="Beneficiaries served annually",
+                    source_path=source_path,
+                )
+
             beneficiaries = normalized
             beneficiaries_source_meta = {
                 "source_name": source_name,
-                "source_url": source_url if _is_citable_url(source_url) else None,
+                "source_url": resolved_source_url,
                 "source_path": source_path,
                 "method": method,
                 "value": normalized,
@@ -1148,15 +1200,25 @@ class CharityMetricsAggregator:
 
         metrics_data["beneficiaries_served_annually"] = beneficiaries
         if beneficiaries_source_meta:
+            # FIX #20: Website-only beneficiary claims → annotate as unverified
+            src_name = (beneficiaries_source_meta.get("source_name") or "").lower()
+            if "website" in src_name and not (candid_profile and candid_profile.get("beneficiaries_served")):
+                beneficiaries_source_meta["verification_status"] = "unverified"
+                beneficiaries_source_meta["verification_note"] = (
+                    "Website-only beneficiary count; not corroborated by Candid or other sources"
+                )
             metrics_data["source_attribution"]["beneficiaries_served_annually"] = beneficiaries_source_meta
 
+        # FIX #6: Website extractor stores "populations_served", not "beneficiaries"
         metrics_data["populations_served"] = (
             candid_profile.get("populations_served", [])
-            if candid_profile
-            else website_profile.get("beneficiaries", [])
+            if candid_profile and candid_profile.get("populations_served")
+            else website_profile.get("populations_served", [])
             if website_profile
             else []
         )
+        if metrics_data["populations_served"]:
+            _track("populations_served", "candid" if candid_profile and candid_profile.get("populations_served") else "website", metrics_data["populations_served"])
 
         metrics_data["geographic_coverage"] = (
             candid_profile.get("geographic_coverage", [])
@@ -1165,6 +1227,8 @@ class CharityMetricsAggregator:
             if website_profile
             else []
         )
+        if metrics_data["geographic_coverage"]:
+            _track("geographic_coverage", "candid" if candid_profile else "website", metrics_data["geographic_coverage"])
 
         # Populate Candid-specific fields (for ZakatAssessor raw access)
         if candid_profile:
@@ -1217,6 +1281,8 @@ class CharityMetricsAggregator:
             grants_made.extend(grants_profile.get("domestic_grants", []))
             grants_made.extend(grants_profile.get("foreign_grants", []))
         metrics_data["grants_made"] = grants_made
+        if grants_made:
+            _track("grants_made", "form990_grants", len(grants_made), "aggregation")
 
         # grants_received is not available from Form 990 (would need to look at other orgs' 990s)
         metrics_data["grants_received"] = []
@@ -1230,11 +1296,18 @@ class CharityMetricsAggregator:
             metrics_data["program_expenses"] = propublica_990.get("program_expenses")
             metrics_data["admin_expenses"] = propublica_990.get("admin_expenses")
             metrics_data["fundraising_expenses"] = propublica_990.get("fundraising_expenses")
+            # FIX #13: Extract revenue breakdown fields from ProPublica
+            metrics_data["total_contributions"] = propublica_990.get("total_contributions")
+            metrics_data["program_service_revenue"] = propublica_990.get("program_service_revenue")
+            metrics_data["investment_income"] = propublica_990.get("investment_income")
             metrics_data["total_assets"] = propublica_990.get("total_assets")
             metrics_data["total_liabilities"] = propublica_990.get("total_liabilities")
             metrics_data["net_assets"] = propublica_990.get("net_assets")
             metrics_data["employees_count"] = propublica_990.get("employees_count")
             metrics_data["volunteers_count"] = propublica_990.get("volunteers_count")
+            # Track source for balance sheet fields
+            for f in ("total_assets", "total_liabilities", "net_assets"):
+                _track(f, "propublica", metrics_data.get(f))
             # Form 990 filing status
             is_form_990_exempt = propublica_990.get("form_990_exempt", False)
             metrics_data["form_990_exempt"] = is_form_990_exempt
@@ -1245,32 +1318,56 @@ class CharityMetricsAggregator:
             else:
                 metrics_data["form_990_exempt_reason"] = ""
             metrics_data["no_filings"] = propublica_990.get("no_filings", False)
+            # FIX #17: Track the tax year of the financial data
+            tax_year = propublica_990.get("tax_year")
+            if tax_year is not None:
+                try:
+                    metrics_data["financial_data_tax_year"] = int(tax_year)
+                except (ValueError, TypeError):
+                    pass
 
         # Fallback to CN for financials if ProPublica is missing (or as secondary source)
+        # FIX #3: Use `is None` instead of truthiness to preserve legitimate $0 values
         if cn_profile:
-            if not metrics_data.get("total_revenue"):
+            if metrics_data.get("total_revenue") is None:
                 metrics_data["total_revenue"] = cn_profile.get("total_revenue")
-            if not metrics_data.get("total_expenses"):
+            if metrics_data.get("total_expenses") is None:
                 metrics_data["total_expenses"] = cn_profile.get("total_expenses")
-            if not metrics_data.get("program_expenses"):
+            if metrics_data.get("program_expenses") is None:
                 metrics_data["program_expenses"] = cn_profile.get("program_expenses")
-            if not metrics_data.get("admin_expenses"):
-                metrics_data["admin_expenses"] = cn_profile.get("admin_expenses") or cn_profile.get(
-                    "administrative_expenses"
+            if metrics_data.get("admin_expenses") is None:
+                metrics_data["admin_expenses"] = _first_non_none(
+                    cn_profile.get("admin_expenses"),
+                    cn_profile.get("administrative_expenses"),
                 )
-            if not metrics_data.get("fundraising_expenses"):
+            if metrics_data.get("fundraising_expenses") is None:
                 metrics_data["fundraising_expenses"] = cn_profile.get("fundraising_expenses")
-            if not metrics_data.get("total_assets"):
+            if metrics_data.get("total_assets") is None:
                 metrics_data["total_assets"] = cn_profile.get("total_assets")
-            if not metrics_data.get("net_assets"):
+                _track("total_assets", "charity_navigator", metrics_data.get("total_assets"))
+            if metrics_data.get("net_assets") is None:
                 metrics_data["net_assets"] = cn_profile.get("net_assets")
+                _track("net_assets", "charity_navigator", metrics_data.get("net_assets"))
 
-        # Ratios from CN if not calculable from raw data
+        # FIX #17: Fallback tax year from CN fiscal_year if ProPublica didn't provide one
+        if cn_profile and metrics_data.get("financial_data_tax_year") is None:
+            cn_fy = cn_profile.get("fiscal_year")
+            if cn_fy is not None:
+                try:
+                    metrics_data["financial_data_tax_year"] = int(cn_fy)
+                except (ValueError, TypeError):
+                    pass
+
+        # FIX #4: CN ratios are fallback, not overwrite — only set if not already present
         if cn_profile:
-            metrics_data["program_expense_ratio"] = cn_profile.get("program_expense_ratio")
-            metrics_data["admin_expense_ratio"] = cn_profile.get("admin_expense_ratio")
-            metrics_data["fundraising_expense_ratio"] = cn_profile.get("fundraising_expense_ratio")
-            metrics_data["working_capital_ratio"] = cn_profile.get("working_capital_ratio")
+            if metrics_data.get("program_expense_ratio") is None and cn_profile.get("program_expense_ratio") is not None:
+                metrics_data["program_expense_ratio"] = cn_profile.get("program_expense_ratio")
+            if metrics_data.get("admin_expense_ratio") is None and cn_profile.get("admin_expense_ratio") is not None:
+                metrics_data["admin_expense_ratio"] = cn_profile.get("admin_expense_ratio")
+            if metrics_data.get("fundraising_expense_ratio") is None and cn_profile.get("fundraising_expense_ratio") is not None:
+                metrics_data["fundraising_expense_ratio"] = cn_profile.get("fundraising_expense_ratio")
+            if metrics_data.get("working_capital_ratio") is None and cn_profile.get("working_capital_ratio") is not None:
+                metrics_data["working_capital_ratio"] = cn_profile.get("working_capital_ratio")
 
         # Fallback to PDF-extracted data for expense ratios (from 990 PDFs on charity website)
         # This is the bullet-proof fallback when CN data is missing
@@ -1311,6 +1408,17 @@ class CharityMetricsAggregator:
             metrics_data["cn_beacons"] = cn_profile.get("beacons", [])
 
         # ====================================================================
+        # FIX #5: Aggregate BBB Wise Giving Alliance Data
+        # ====================================================================
+        if bbb_profile:
+            metrics_data["bbb_accredited"] = bbb_profile.get("meets_standards")
+            metrics_data["bbb_standards_met_count"] = bbb_profile.get("standards_met_count")
+            metrics_data["bbb_governance_pass"] = bbb_profile.get("governance_pass")
+            metrics_data["bbb_effectiveness_pass"] = bbb_profile.get("effectiveness_pass")
+            metrics_data["bbb_finances_pass"] = bbb_profile.get("finances_pass")
+            _track("bbb_accredited", "bbb", metrics_data.get("bbb_accredited"))
+
+        # ====================================================================
         # Aggregate Transparency & Governance
         # ====================================================================
         metrics_data["candid_seal"] = candid_profile.get("candid_seal") if candid_profile else None
@@ -1331,21 +1439,30 @@ class CharityMetricsAggregator:
         ]
         valid_boards = [b for b in board_candidates if b and b > 0]
         metrics_data["board_size"] = max(valid_boards) if valid_boards else None
+        if valid_boards:
+            max_board = max(valid_boards)
+            board_src = "candid" if candid_profile and candid_profile.get("board_size") == max_board else "propublica" if propublica_990 and propublica_990.get("board_size") == max_board else "website"
+            _track("board_size", board_src, max_board, "max_across_sources")
 
         metrics_data["independent_board_members"] = (
             candid_profile.get("independent_board_members") if candid_profile else None
         )
+        _track("independent_board_members", "candid", metrics_data.get("independent_board_members"))
 
         metrics_data["ceo_name"] = _first_non_none(
             candid_profile.get("ceo_name") if candid_profile else None,
             cn_profile.get("ceo_name") if cn_profile else None,
         )
 
+        # FIX #19: ProPublica stores compensation_current_officers, not ceo_compensation
         metrics_data["ceo_compensation"] = _first_non_none(
-            propublica_990.get("ceo_compensation") if propublica_990 else None,
+            propublica_990.get("compensation_current_officers") if propublica_990 else None,
             candid_profile.get("ceo_compensation") if candid_profile else None,
             cn_profile.get("ceo_compensation") if cn_profile else None,
         )
+        if metrics_data.get("ceo_compensation") is not None:
+            comp_src = "propublica" if propublica_990 and propublica_990.get("compensation_current_officers") is not None else "candid" if candid_profile and candid_profile.get("ceo_compensation") is not None else "charity_navigator"
+            _track("ceo_compensation", comp_src, metrics_data["ceo_compensation"])
 
         # Additional transparency & governance fields
         metrics_data["irs_990_available"] = True if propublica_990 else None
@@ -1354,6 +1471,9 @@ class CharityMetricsAggregator:
             candid_profile.get("has_annual_report") if candid_profile else None,
             website_profile.get("has_annual_report") if website_profile else None,
         )
+        if metrics_data.get("annual_report_published") is not None:
+            ar_src = "candid" if candid_profile and candid_profile.get("has_annual_report") is not None else "website"
+            _track("annual_report_published", ar_src, metrics_data["annual_report_published"])
 
         metrics_data["receives_foundation_grants"] = _first_non_none(
             candid_profile.get("receives_foundation_grants") if candid_profile else None,
@@ -1364,6 +1484,9 @@ class CharityMetricsAggregator:
             candid_profile.get("reports_outcomes") if candid_profile else None,
             website_profile.get("reports_outcomes") if website_profile else None,
         )
+        if metrics_data.get("reports_outcomes") is not None:
+            ro_src = "candid" if candid_profile and candid_profile.get("reports_outcomes") is not None else "website"
+            _track("reports_outcomes", ro_src, metrics_data["reports_outcomes"])
 
         metrics_data["publishes_impact_stories"] = _first_non_none(
             candid_profile.get("publishes_impact_stories") if candid_profile else None,
@@ -1393,11 +1516,65 @@ class CharityMetricsAggregator:
             if discovered_toc_verified
             else None
         )
+        if metrics_data.get("theory_of_change"):
+            toc_src = "website" if website_profile and website_profile.get("theory_of_change") else "discovered"
+            _track("theory_of_change", toc_src, True)
 
         # Website outcomes summary (from impact pages)
         metrics_data["website_outcomes_summary"] = (
             website_profile.get("outcomes_summary", {}) if website_profile else {}
         )
+
+        # ====================================================================
+        # FIX #1: Wire discovery evaluations/outcomes/awards into scoring
+        # ====================================================================
+        if discovered_profile:
+            # Evaluations: merge discovered evaluators into evaluation_sources
+            discovered_evals = discovered_profile.get(SECTION_EVALUATIONS, {})
+            if discovered_evals and discovered_evals.get("third_party_evaluated"):
+                evaluators = discovered_evals.get("evaluators", [])
+                existing_sources = metrics_data.get("evaluation_sources", [])
+                for evaluator in evaluators:
+                    eval_name = evaluator.get("name", "") if isinstance(evaluator, dict) else str(evaluator)
+                    if eval_name and eval_name not in existing_sources:
+                        existing_sources.append(eval_name)
+                metrics_data["evaluation_sources"] = existing_sources
+                if existing_sources:
+                    metrics_data["third_party_evaluated"] = True
+
+            # Outcomes: merge discovered metrics into outcomes list
+            discovered_outcomes = discovered_profile.get(SECTION_OUTCOMES, {})
+            if discovered_outcomes and discovered_outcomes.get("has_reported_outcomes"):
+                outcome_metrics = discovered_outcomes.get("metrics", [])
+                existing_outcomes = metrics_data.get("outcomes", [])
+                for om in outcome_metrics:
+                    if isinstance(om, dict):
+                        desc = om.get("metric", "")
+                        value = om.get("value", "")
+                        if desc:
+                            outcome_str = f"{desc}: {value}" if value else desc
+                            if outcome_str not in existing_outcomes:
+                                existing_outcomes.append(outcome_str)
+                metrics_data["outcomes"] = existing_outcomes
+                # Mark reports_outcomes if discovered outcomes found
+                if not metrics_data.get("reports_outcomes"):
+                    metrics_data["reports_outcomes"] = True
+
+            # Awards: store in evaluation_sources and mark has_awards
+            discovered_awards = discovered_profile.get(SECTION_AWARDS, {})
+            if discovered_awards and discovered_awards.get("has_awards"):
+                awards_list = discovered_awards.get("awards", [])
+                existing_sources = metrics_data.get("evaluation_sources", [])
+                for award in awards_list:
+                    if isinstance(award, dict):
+                        award_name = award.get("name", "")
+                        issuer = award.get("issuer", "")
+                        label = f"{award_name} ({issuer})" if issuer else award_name
+                    else:
+                        label = str(award)
+                    if label and label not in existing_sources:
+                        existing_sources.append(label)
+                metrics_data["evaluation_sources"] = existing_sources
 
         metrics_data["tracks_progress_over_time"] = _first_non_none(
             candid_profile.get("tracks_progress") if candid_profile else None,
@@ -1555,6 +1732,9 @@ class CharityMetricsAggregator:
             if cn_profile and cn_profile.get("irs_ruling_year")
             else None
         )
+        if metrics_data.get("founded_year"):
+            fy_src = "website" if website_profile and website_profile.get("founded_year") else "candid" if candid_profile and candid_profile.get("irs_ruling_year") else "propublica" if propublica_990 and propublica_990.get("irs_ruling_year") else "charity_navigator"
+            _track("founded_year", fy_src, metrics_data["founded_year"])
 
         metrics_data["donation_methods"] = website_profile.get("donation_methods", []) if website_profile else []
 
@@ -1717,6 +1897,9 @@ class CharityMetricsAggregator:
             has_audit = True
 
         metrics_data["has_financial_audit"] = has_audit
+        if has_audit:
+            audit_src = "charity_navigator" if cn_profile and cn_profile.get("has_financial_audit") else "charity_navigator" if (metrics_data.get("cn_accountability_score") or 0) >= 85 else "candid" if metrics_data.get("candid_seal") in ["Platinum", "Gold"] else "propublica"
+            _track("has_financial_audit", audit_src, True, "inferred")
 
         # Backfill employees/volunteers from PDF data if missing from IRS 990
         if not metrics_data.get("employees_count") and metrics_data.get("pdf_extracted_data"):
@@ -1846,11 +2029,17 @@ class CharityMetricsAggregator:
             "reason": audit_result.reason,
         }
         if not audit_result.passed and metrics_data.get("has_financial_audit"):
+            # FIX #9: Keep value but mark as unverified instead of nulling.
+            # Downstream scorers should check verification_status in source_attribution.
             logger.warning(
                 f"Financial audit for {ein} ({charity_name}) failed corroboration. "
-                f"Setting has_financial_audit=None. Reason: {audit_result.reason}"
+                f"Marking as unverified. Reason: {audit_result.reason}"
             )
-            metrics_data["has_financial_audit"] = None
+            attr["has_financial_audit"] = {
+                **(attr.get("has_financial_audit") or {}),
+                "verification_status": "unverified",
+                "verification_note": f"Single-source claim; {audit_result.reason}",
+            }
 
         # 3. Corroborate third_party_evaluated
         third_party_result = CrossSourceCorroborator.corroborate_third_party_evaluation(

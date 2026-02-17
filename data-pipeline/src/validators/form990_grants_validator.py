@@ -21,6 +21,7 @@ class Grant(BaseModel):
     purpose: Optional[str] = None
     region: Optional[str] = None  # For foreign grants
     is_foreign: bool = False
+    tax_year: Optional[int] = Field(None, ge=2010, le=2030)  # FIX #22: filing year
 
 
 class Form990GrantsProfile(BaseModel):
@@ -41,6 +42,7 @@ class Form990GrantsProfile(BaseModel):
     # Filing metadata
     tax_year: Optional[int] = Field(None, ge=2010, le=2030)
     object_id: Optional[str] = None  # ProPublica object_id for reference
+    filing_years: List[int] = Field(default_factory=list)  # FIX #22: all years included
 
     # Grants data
     domestic_grants: List[Dict[str, Any]] = Field(default_factory=list)

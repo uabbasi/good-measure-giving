@@ -1052,6 +1052,18 @@ class CandidCollector(BaseCollector):
                 allow_redirects=True,
             )
 
+            # FIX #12: Detect URL deprecation via redirects.
+            # If GuideStar URLs start redirecting to a different host (e.g., app.candid.org),
+            # the server-rendered HTML we depend on will be replaced by a JS SPA.
+            final_url = response.url
+            if final_url and "guidestar.org" not in final_url:
+                if self.logger:
+                    self.logger.warning(
+                        f"[CANDID URL DEPRECATION] GuideStar URL redirected to {final_url} "
+                        f"for EIN {ein}. The www.guidestar.org endpoint may be deprecated. "
+                        f"If this persists, migration to Playwright/API-based extraction is needed."
+                    )
+
             if response.status_code == 404:
                 return FetchResult(
                     success=False,
@@ -1069,6 +1081,16 @@ class CandidCollector(BaseCollector):
                 )
 
             html_content = response.text
+
+            # FIX #12: Detect if response is a JS SPA shell instead of server-rendered HTML.
+            # Candid's new SPA pages have minimal HTML with JS bundles — no server-rendered data.
+            if ("__NEXT_DATA__" in html_content or "app.candid.org" in html_content) and "guidestar" not in html_content.lower():
+                if self.logger:
+                    self.logger.warning(
+                        f"[CANDID URL DEPRECATION] Response for {ein} appears to be a JS SPA "
+                        f"(Candid app) rather than server-rendered GuideStar HTML. "
+                        f"Data extraction will be incomplete."
+                    )
 
             # Basic validation - check for either guidestar or candid
             if "guidestar" not in html_content.lower() and "candid" not in html_content.lower():

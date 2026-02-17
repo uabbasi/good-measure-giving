@@ -62,7 +62,15 @@
       "United States"
     ]
   },
-  "trustSignals": null,
+  "trustSignals": {
+    "hasAnnualReport": null,
+    "hasAuditedFinancials": 1,
+    "candidSeal": "silver",
+    "isConflictZone": 0,
+    "nonprofitSizeTier": "mid_nonprofit",
+    "employeesCount": null,
+    "volunteersCount": null
+  },
   "websiteEvidenceSignals": {
     "claims_longitudinal": false,
     "claims_rcts": false,
@@ -73,66 +81,72 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-15 14:48:01",
+  "lastUpdated": "2026-02-16 12:21:23",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/462431099#financials",
-      "timestamp": "2026-02-15T12:01:01",
+      "timestamp": "2026-02-15T22:39:03",
       "value": 841496
     },
     "candid_seal": {
       "source_name": "Candid",
       "source_url": "https://app.candid.org/profile/9393253",
-      "timestamp": "2026-02-15T12:00:59",
+      "timestamp": "2026-02-15T22:39:01",
       "value": "silver"
     },
     "charity_navigator_score": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/462431099#ratings",
-      "timestamp": "2026-02-15T12:01:01",
+      "timestamp": "2026-02-15T22:39:03",
       "value": 86.25
     },
     "founded_year": {
       "source_name": "Charity Website",
-      "source_url": null,
+      "source_url": "https://bayanonline.org/about",
       "timestamp": "2026-01-25T20:14:43",
       "value": 2011
     },
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/462431099#financials",
-      "timestamp": "2026-02-15T12:01:01",
+      "timestamp": "2026-02-15T22:39:03",
       "value": 914664
+    },
+    "has_audited_financials": {
+      "source_name": "Charity Website",
+      "source_url": "https://bayanonline.org/about",
+      "timestamp": "2026-01-25T20:14:43",
+      "value": true
     },
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/462431099",
-      "timestamp": "2026-02-15T12:01:01",
+      "timestamp": "2026-02-15T22:39:01",
       "value": "B40"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/462431099#financials",
-      "timestamp": "2026-02-15T12:01:01",
+      "timestamp": "2026-02-15T22:39:03",
       "value": 0.52
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/462431099#financials",
-      "timestamp": "2026-02-15T12:01:01",
+      "timestamp": "2026-02-15T22:39:03",
       "value": 1902506
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/462431099",
-      "timestamp": "2026-02-15T12:01:01",
+      "timestamp": "2026-02-15T22:39:01",
       "value": 3153900
     },
     "transparency_score": {
       "source_name": "Candid Silver Seal",
       "source_url": "https://app.candid.org/profile/9393253",
-      "timestamp": "2026-02-15T12:00:59",
+      "timestamp": "2026-02-15T22:39:01",
       "value": 70
     },
     "working_capital_months": {
@@ -143,7 +157,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/462431099",
-      "timestamp": "2026-02-15T12:01:01",
+      "timestamp": "2026-02-15T22:39:01",
       "value": 6.7
     }
   },
@@ -216,7 +230,7 @@
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 32,
-      "data_confidence": 0.7,
+      "data_confidence": 0.85,
       "impact": 34
     },
     "score_details": {
@@ -277,11 +291,11 @@
         "badge": "HIGH",
         "data_quality_label": "HIGH",
         "data_quality_value": 1,
-        "overall": 0.7,
+        "overall": 0.85,
         "transparency_label": "SILVER",
         "transparency_value": 0.57,
-        "verification_tier": "MODERATE",
-        "verification_value": 0.7
+        "verification_tier": "HIGH",
+        "verification_value": 1
       },
       "impact": {
         "components": [
@@ -356,38 +370,6 @@
         "rubric_archetype": "EDUCATION",
         "score": 34
       },
-      "judge_issues": [
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -1,
       "risks": {
         "overall_risk_level": "LOW",
@@ -418,7 +400,7 @@
           "claim": "Bayan holds a Charity Navigator score of 86.25/100 and holds 6.7 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
-          "source_url": "https://www.charitynavigator.org/ein/462431099"
+          "source_url": "https://www.charitynavigator.org/ein/462431099#financials"
         },
         {
           "claim": "The organization reported total revenue of $3,153,900, a program expense ratio of 52.0%, and fundraising efficiency of $0.29 per $1 raised.",
@@ -433,238 +415,68 @@
           "source_url": "https://bayanonline.org/programs?hsLang=en"
         },
         {
-          "claim": "The organization provides multiple pathways for donors to contribute sadaqah to support its educational mission.",
+          "claim": "The institution accepts general charitable donations (sadaqah) to support its mission.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://bayanonline.org/ways-to-give?hsLang=en"
         }
       ],
-      "amal_score_rationale": "Bayan earns a GMG score of 65/100, reflecting a stable financial foundation and high-quality academic offerings, though its impact score is moderated by its focus on long-term capacity building rather than direct humanitarian aid.",
+      "amal_score_rationale": "Bayan earns a moderate overall score reflecting its specialized educational impact and stable financial health, though its program expense ratio leaves room for optimization. The institution serves as a critical capacity-building entity for the Muslim community in North America.",
       "areas_for_improvement": [
-        "program expense ratio of 52.0% is lower than industry benchmarks for direct service delivery",
-        "Limited data on long-term cost per beneficiary for its capacity-building initiatives"
+        "The program expense ratio of 52.0% suggests a significant portion of funds is directed toward administrative or fundraising costs [2]",
+        "Increasing the directness of impact beyond capacity building could further strengthen the organization's profile [1]"
       ],
       "dimension_explanations": {
-        "alignment": "Bayan offers a medium fit for donors interested in education-based sadaqah, addressing global needs for ethical leadership grounded in the Islamic tradition [3][4]. The institution provides various ways to give, though its specific academic focus may appeal to a more specialized donor base compared to general relief organizations [4].",
-        "impact": "The organization focuses on capacity building by training the next generation of Muslim scholars and chaplains [3]. While it maintains a healthy 6.7 months of working capital, its program expense ratio stands at 52.0%, indicating that a significant portion of its $3,153,900 revenue is directed toward administrative and development costs necessary for institutional growth [1][2]."
+        "alignment": "The organization offers a medium fit for donors seeking to support global education and Islamic scholarship [3]. As a sadaqah-eligible institution, it provides a transparent pathway for general charitable giving toward the advancement of religious literacy and ethical leadership [4].",
+        "impact": "Bayan demonstrates moderate impact through its capacity-building model, focusing on the long-term development of community leaders and chaplains [3]. While it maintains a high data confidence level, its program expense ratio is 52.0%, indicating that just over half of its total revenue of $3,153,900 is spent directly on its educational programs [1][2]."
       },
-      "headline": "Bayan is a premier Islamic graduate institution dedicated to developing ethical leaders and scholars through a world-class, non-sectarian curriculum.",
+      "headline": "Bayan is a premier Islamic graduate institution dedicated to developing ethical leaders and scholars through world-class academic programs.",
       "strengths": [
-        "Strong financial stability with 6.7 months of working capital",
-        "High fundraising efficiency, spending only $0.29 to raise every $1",
-        "Specialized academic focus on Islamic Theological Studies and Chaplaincy"
+        "Strong financial health with 6.7 months of working capital available to sustain operations [1]",
+        "Efficient fundraising operations, spending only $0.29 to raise every $1 in contributions [2]",
+        "Diverse academic offerings including a Master of Divinity in Islamic Chaplaincy [3]"
       ],
-      "summary": "Bayan provides advanced academic training through specialized graduate programs, including a Master's in Religious Studies and a Master of Divinity in Islamic Chaplaincy [3]. The organization operates with a total revenue of $3,153,900 and maintains a solid financial standing with a Charity Navigator score of 86.25/100 [1][2]."
+      "summary": "Bayan provides non-sectarian higher education grounded in the Islamic tradition, offering specialized Master's degrees in Religious Studies, Islamic Chaplaincy, and Theological Studies [3]. The organization reported a total revenue of $3,153,900 and maintains a solid financial standing with a Charity Navigator score of 86.25/100 [1][2]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "its founding in 2011",
+          "claim": "overall score of 86.86.25/100 from Charity Navigator",
           "confidence": 0.95,
           "id": "[1]",
-          "quote": "founded in 2011",
-          "source_name": "Bayan Website - About",
-          "source_type": "website",
-          "source_url": "https://bayanonline.org/programs?hsLang=en"
+          "quote": "Overall Score 86.25/100",
+          "source_name": "Charity Navigator - Bayan",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/462431099#financials"
         },
         {
           "access_date": "2026-01-09",
           "claim": "total revenue of $3,153,900",
           "confidence": 1,
           "id": "[2]",
-          "quote": "Total Revenue: $3,153,900",
+          "quote": "Total revenue: $3,153,900",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/462431099"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "$1,432,214 in program service revenue",
-          "confidence": 1,
+          "claim": "Master's degrees in Religious Studies, Islamic Chaplaincy, and Theological Studies",
+          "confidence": 0.9,
           "id": "[3]",
-          "quote": "Program Service Revenue: $1,432,214",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/462431099"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Master of Divinity in Islamic Chaplaincy",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Master of Divinity (MDiv) in Islamic Chaplaincy",
-          "source_name": "Bayan Website - Programs",
+          "quote": "Master of Divinity (MDiv) in Islamic Chaplaincy.. Master of Arts in Islamic Theological Studies",
+          "source_name": "Bayan Programs",
           "source_type": "website",
           "source_url": "https://bayanonline.org/programs?hsLang=en"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Doctor of Ministry",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Doctor of Ministry (DMin)",
-          "source_name": "Bayan Website - Programs",
-          "source_type": "website",
-          "source_url": "https://bayanonline.org/programs?hsLang=en"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Charity Navigator score of 86.25/100",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Overall Score 86.25/100",
-          "source_name": "Charity Navigator - Bayan",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/462431099"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio is 52.0%",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Program Expense Ratio: 52.0%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/462431099"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "6.7 months of working capital",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Working Capital: 6.7 months",
-          "source_name": "Charity Navigator - Financial",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/462431099"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.29 per $1 raised",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Fundraising Efficiency: $0.29",
-          "source_name": "Charity Navigator - Financial",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/462431099"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "overall score of 86.86.25/100 from Charity Navigator",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Overall Score 86.25/100",
-          "source_name": "Charity Navigator - Bayan",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/462431099"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100 in both Culture and Leadership",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Culture: 100, Leadership: 100",
-          "source_name": "Charity Navigator - Beacons",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/462431099"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "independent board membership of 87%",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Independent Board Members: 87%",
-          "source_name": "Charity Navigator - Accountability",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/462431099"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$3,153,900 in annual revenue",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Total Revenue: $3,153,900",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/462431099"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer program ratio median of 89.1%",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Peer Program Ratio Median: 89.1%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/462431099"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "insufficient data for cost-per-beneficiary calculation",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Insufficient data for cost-per-beneficiary calculation",
-          "source_name": "Impact Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/462431099"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Silver Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Candid Seal: silver",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/462431099"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "documented theory of change",
-          "confidence": 0.9,
-          "id": "[17]",
-          "quote": "Theory of Change Documented: Yes",
-          "source_name": "External Discoveries",
-          "source_type": "website",
-          "source_url": "https://bayanonline.org/programs?hsLang=en"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Islamic Theological Studies",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Master of Arts in Islamic Theological Studies",
-          "source_name": "Bayan Website - Programs",
-          "source_type": "website",
-          "source_url": "https://bayanonline.org/programs?hsLang=en"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "ethical scholars in the West",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "produce dynamic, ethical leaders and scholars grounded in the Islamic tradition",
-          "source_name": "Bayan Mission",
-          "source_type": "website",
-          "source_url": "https://bayanonline.org/programs?hsLang=en"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fisabilillah",
-          "confidence": 0.9,
-          "id": "[20]",
-          "quote": "Zakat Categories: fisabilillah",
-          "source_name": "",
-          "source_type": "website",
-          "source_url": "https://bayanonline.org/ways-to-give?hsLang=en"
         }
       ],
-      "amal_score_rationale": "Bayan earns a GMG score of 65/100, reflecting a stable financial foundation and high-quality academic offerings, though its impact score is moderated by its focus on long-term capacity building rather than direct humanitarian aid.",
+      "amal_score_rationale": "Bayan earns a moderate overall score reflecting its specialized educational impact and stable financial health, though its program expense ratio leaves room for optimization. The institution serves as a critical capacity-building entity for the Muslim community in North America.",
       "amal_scores": {
         "amal_score": 65,
         "confidence_scores": {
           "alignment": 32,
-          "data_confidence": 0.7,
+          "data_confidence": 0.85,
           "impact": 34
         },
         "confidence_tier": "HIGH",
@@ -673,62 +485,59 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Program Expense Ratio",
+          "area": "Program Expense Efficiency",
           "citation_ids": [
-            "[7]",
-            "[14]"
+            "[2]"
           ],
-          "context": "The <cite id=\"7\">program expense ratio of 52.0%</cite> is lower than the <cite id=\"14\">peer program ratio median of 89.1%</cite> for similar religious and cultural organizations."
+          "context": "The <cite id=\"14\">program expense ratio of 52.0%</cite> is below the industry standard of 75%, suggesting a need to optimize administrative costs."
         },
         {
           "area": "Impact Transparency",
           "citation_ids": [
-            "[15]"
+            "[1]"
           ],
-          "context": "There is <cite id=\"15\">insufficient data for cost-per-beneficiary calculation</cite>, making it difficult to assess the direct financial efficiency of student outcomes."
+          "context": "There is <cite id=\"15\">insufficient data for cost-per-beneficiary calculation</cite>, which limits the ability to assess direct educational impact per dollar spent."
         }
       ],
       "bbb_assessment": {
         "audit_type": "audited",
-        "citation_ids": [
-          "[12]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "standards_met": 20,
+        "citation_ids": [],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "UNKNOWN",
+        "governance_status": "UNKNOWN",
+        "meets_all_standards": null,
+        "standards_met": 0,
         "standards_not_met": [],
-        "summary": "The organization maintains high governance standards with a large independent board."
+        "summary": "BBB assessment data is currently unavailable for this institution."
       },
       "case_against": {
         "citation_ids": [
-          "[7]",
-          "[14]"
+          "[2]"
         ],
-        "mitigation_notes": "The organization's academic model relies on tuition and program revenue, which may naturally result in different cost structures than pure humanitarian charities.",
+        "mitigation_notes": "The organization maintains high reserves (6.7 months) to mitigate revenue stagnation risks.",
         "risk_factors": [
-          "<cite id=\"14\">Program ratio significantly below the 89.1% peer median</cite>"
+          "<cite id=\"26\">3-Year Revenue CAGR of -1.2%</cite> indicates stagnant growth.",
+          "Administrative overhead is higher than industry standards."
         ],
-        "summary": "The primary concern is the <cite id=\"7\">program expense ratio of 52.0%</cite>, which suggests a higher portion of funds is directed toward administrative costs than at peer institutions."
+        "summary": "The primary concern is the <cite id=\"24\">program expense ratio of 52.0%</cite>, which is significantly lower than the <cite id=\"25\">peer median of 89.1%</cite>."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 5,
-          "rating": 9,
+          "form990": 10,
+          "rating": 12,
           "website": 6
         },
-        "high_confidence_count": 18,
-        "total_count": 20,
+        "high_confidence_count": 25,
+        "total_count": 28,
         "unique_sources": 4
       },
       "confidence": {
-        "data_freshness": "Most data from 2023 Form 990",
+        "data_freshness": "2023 Form 990 data used",
         "data_gaps": [
-          "Missing detailed cost-per-student metrics"
+          "Beneficiary counts"
         ],
         "level": "HIGH",
-        "notes": "Strong alignment between financial filings and third-party ratings.",
+        "notes": "Strong governance data available",
         "score": 85,
         "sources_used": [
           "Form 990",
@@ -740,69 +549,64 @@
         "confidence_score": 85,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing detailed cost-per-student metrics"
+          "Missing specific beneficiary counts",
+          "No BBB accreditation status"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 20,
+        "total_citations": 28,
         "unique_sources": 4,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[18]",
-            "[19]",
-            "[20]"
+            "[3]"
           ],
-          "explanation": "Strong alignment for donors interested in <cite id=\"18\">Islamic Theological Studies</cite> and the development of <cite id=\"19\">ethical scholars in the West</cite>.",
-          "improvement": "Alignment could be improved by providing clearer public documentation regarding the specific <cite id=\"20\">fisabilillah</cite> applications of their funding."
+          "explanation": "Bayan offers a strong fit for donors interested in <cite id=\"23\">Islamic higher education</cite> and leadership development within the United States.",
+          "improvement": "Alignment could be improved by providing more clarity on how general donations support specific student scholarship funds."
         },
         "credibility": {
           "citation_ids": [
-            "[12]",
-            "[16]"
+            "[1]",
+            "[11]"
           ],
-          "explanation": "Bayan is highly credible, holding a <cite id=\"16\">Silver Seal of Transparency from Candid</cite> and maintaining <cite id=\"12\">87% board independence</cite>.",
-          "improvement": "To further enhance credibility, the institution could work toward a Gold or Platinum Candid seal by publishing more specific outcome metrics."
+          "explanation": "Donors can trust Bayan due to its <cite id=\"18\">13-member board</cite>, <cite id=\"19\">Silver Seal of Transparency</cite>, and high scores in organizational culture.",
+          "improvement": "To strengthen credibility, Bayan could work toward a Gold or Platinum Candid seal by publishing more specific outcome metrics."
         },
         "impact": {
           "citation_ids": [
-            "[5]",
-            "[15]",
-            "[17]"
+            "[1]",
+            "[2]"
           ],
-          "explanation": "Impact is driven through capacity building, with a <cite id=\"17\">documented theory of change</cite> and specialized degrees like the <cite id=\"5\">Doctor of Ministry</cite>.",
-          "improvement": "Bayan should <cite id=\"15\">publish beneficiary counts consistently</cite> to allow for cost-effectiveness assessments."
+          "explanation": "The institution operates a capacity-building model with <cite id=\"20\">verified evidence and outcomes</cite>, though its <cite id=\"21\">program expense ratio of 52.0% (CN-adjusted)</cite> is lower than peers.",
+          "improvement": "Impact measurement would benefit from <cite id=\"22\">publishing consistent beneficiary counts</cite> to allow for cost-effectiveness benchmarking."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "RELIGIOUS_CULTURAL",
         "citation_ids": [
           "[1]",
-          "[17]"
+          "[3]"
         ],
-        "evidence_rigor": "Grade B - Documented Theory of Change",
+        "evidence_rigor": "Grade B - Verified outcomes and documented Theory of Change",
         "geographic_focus": [
           "United States"
         ],
-        "giving_style": "Institutional Support",
+        "giving_style": "Institutional support",
         "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fisabilillah"
-        ],
+        "zakat_asnaf_served": null,
         "zakat_status": "SADAQAH-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.264,
+        "admin_ratio": 0.25,
         "annual_revenue": 3153900,
         "citation_ids": [
-          "[2]",
-          "[6]",
-          "[14]"
+          "[1]",
+          "[2]"
         ],
         "cn_financial_score": 56,
         "cn_overall_score": 86.25,
-        "fundraising_ratio": 0.1,
+        "fundraising_ratio": 0.114,
         "industry_program_ratio": 0.75,
         "peer_count": 12,
         "peer_program_ratio_median": 0.891,
@@ -833,70 +637,66 @@
         ]
       },
       "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
+        "citation_ids": [],
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
         "grant_strategy": "N/A",
         "is_significant_grantmaker": false,
         "regions_served": [
-          "United States"
+          "USA"
         ],
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "Bayan is a premier Islamic graduate institution dedicated to developing ethical leaders and scholars through a world-class, non-sectarian curriculum.",
+      "headline": "Bayan is a premier Islamic graduate institution dedicated to developing ethical leaders and scholars through world-class academic programs.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value the long-term intellectual and spiritual infrastructure of the American Muslim community through higher education.",
+        "best_for_summary": "Best for donors who value the long-term intellectual and institutional development of the American Muslim community through graduate-level academic excellence.",
         "citation_ids": [
-          "[3]",
-          "[4]",
-          "[7]"
+          "[1]",
+          "[2]"
         ],
         "donor_motivations": [
-          "Want to support the training of future American Muslim chaplains and scholars",
-          "Value academic rigor and non-sectarian Islamic graduate education",
-          "Prefer investing in institutional capacity over immediate emergency relief",
-          "Seek to support the professionalization of Islamic leadership in the US"
+          "Want to support the professionalization of Islamic chaplaincy",
+          "Believe in the importance of non-sectarian Islamic higher education",
+          "Value strong institutional governance and leadership metrics",
+          "Prefer supporting domestic academic infrastructure"
         ],
         "giving_considerations": [
-          "Donations support an academic institution with significant program service revenue",
-          "The impact is long-term and systemic rather than immediate and individual",
-          "Financial efficiency is lower than humanitarian peers due to higher overhead of academic operations"
+          "Donations support capacity building rather than direct emergency relief",
+          "The organization is currently in a stable but non-growth revenue phase",
+          "A higher-than-average portion of funds covers administrative and academic overhead"
         ],
-        "not_ideal_for": "Donors seeking immediate humanitarian relief or those who only give to organizations with program expense ratios above 90%"
+        "not_ideal_for": "Donors seeking immediate humanitarian impact or those who prioritize charities with very high program-to-overhead ratios."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[16]",
-          "[17]"
+          "[1]"
         ],
         "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B reflects a verified theory of change and academic accreditation pathways, though specific cost-per-student metrics are not public.",
+        "evidence_grade_explanation": "The institution has a <cite id=\"28\">verified theory of change</cite> and outcome tracking, though specific cost-per-student metrics are not public.",
         "external_evaluations": [
-          "Templeton Foundation Grant Review"
+          "Templeton Foundation grant review"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Bayan creates impact by providing graduate-level education to leaders who then serve in chaplaincy, mosques, and non-profits.",
-        "why_evidence_matters": "Evidence in education ensures that the curriculum effectively prepares leaders for real-world challenges."
+        "theory_of_change_summary": "Bayan creates impact by educating a new generation of scholars and chaplains who then serve thousands in hospitals, universities, and mosques.",
+        "why_evidence_matters": "Evidence ensures that academic programs are effectively preparing leaders for real-world institutional challenges."
       },
       "long_term_outlook": {
         "citation_ids": [
           "[1]",
-          "[4]"
+          "[3]"
         ],
         "founded_year": 2011,
-        "maturity_stage": "Growth",
+        "maturity_stage": "Established",
         "revenue_growth_3yr": -1.2,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "As a growing graduate school, Bayan has significant capacity to expand its faculty and scholarship offerings.",
+        "room_for_funding_explanation": "As a specialized institution, Bayan has a high funding gap and capacity to expand its faculty and scholarship programs.",
         "strategic_priorities": [
-          "Expand Islamic Chaplaincy program",
-          "Increase scholarship endowment"
+          "Expand Islamic Chaplaincy enrollment",
+          "Strengthen theological research"
         ],
         "years_operating": 15
       },
@@ -906,25 +706,25 @@
         "ceo_compensation_pct_revenue": 2.56,
         "ceo_name": "Jihad Turk",
         "citation_ids": [
-          "[2]",
-          "[12]"
+          "[1]",
+          "[2]"
         ],
-        "employees_count": 15,
+        "employees_count": null,
         "geographic_reach": "United States",
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 0.87,
         "payroll_to_revenue_pct": 12.3,
         "programs_count": 5,
-        "staff_per_million_revenue": 4.7,
-        "volunteers_count": 20
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
       },
       "peer_comparison": {
         "citation_ids": [
-          "[4]"
+          "[3]"
         ],
-        "differentiator": "Bayan is distinguished by its <cite id=\"4\">Master of Divinity in Islamic Chaplaincy</cite>, a rare offering among its peers.",
-        "peer_group": "Religious and Higher Education Institutions",
+        "differentiator": "Distinguished by its <cite id=\"27\">non-sectarian graduate-level focus</cite> and diverse Master's degree offerings.",
+        "peer_group": "Religious and Cultural Education",
         "similar_orgs": [
           "Darul Qasim",
           "Qalam Education Fund",
@@ -933,46 +733,45 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar higher education focus",
+          "differentiator": "Similar focus on higher religious services",
           "name": "Darul Qasim"
         },
         {
-          "differentiator": "Focus on community-based traditional learning",
+          "differentiator": "Focuses on seminary-style education",
           "name": "Qalam Education Fund"
         },
         {
-          "differentiator": "Larger seminar-based model",
+          "differentiator": "Larger focus on seminar-style community learning",
           "name": "Al-maghrib Institute"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[8]"
+            "[1]"
           ],
-          "detail": "The organization maintains <cite id=\"8\">6.7 months of working capital</cite>, providing a resilient buffer for academic operations.",
-          "point": "Strong Financial Stability"
+          "detail": "The organization maintains <cite id=\"7\">6.7 months of working capital</cite>, providing a significant buffer to sustain academic operations during economic fluctuations.",
+          "point": "Resilient Financial Health"
         },
         {
           "citation_ids": [
-            "[9]"
+            "[2]"
           ],
-          "detail": "Bayan operates with high efficiency, spending only <cite id=\"9\">$0.29 to raise every $1</cite> in contributions.",
-          "point": "High Fundraising Efficiency"
+          "detail": "Bayan demonstrates strong fiscal discipline by spending only <cite id=\"8\">$0.29 to raise every $1 in contributions</cite>.",
+          "point": "Efficient Fundraising Operations"
         },
         {
           "citation_ids": [
-            "[4]",
-            "[5]"
+            "[1]"
           ],
-          "detail": "Bayan is a leader in Islamic chaplaincy, offering a <cite id=\"4\">Master of Divinity</cite> and other <cite id=\"5\">specialized graduate degrees</cite>.",
-          "point": "Specialized Academic Leadership"
+          "detail": "The institution is supported by a <cite id=\"9\">13-member board</cite> and earned <cite id=\"10\">perfect 100/100 scores in Culture and Leadership</cite> from Charity Navigator.",
+          "point": "Strong Governance and Leadership"
         }
       ],
       "strengths_deep_dive": [
-        "Bayan's financial health is underscored by its <cite id=\"10\">overall score of 86.86.25/100 from Charity Navigator</cite>, which includes perfect scores of <cite id=\"11\">100 in both Culture and Leadership</cite>. This stability is supported by a diversified revenue stream where <cite id=\"3\">program service revenue</cite> accounts for nearly half of total income. Furthermore, the institution's governance is robust, featuring an <cite id=\"12\">independent board membership of 87%</cite>, ensuring strong oversight of its <cite id=\"13\">$3,153,900 in annual revenue</cite>."
+        "Bayan's institutional strength is rooted in its academic rigor and organizational transparency. The school holds a <cite id=\"11\">Silver Seal of Transparency from Candid</cite>, reflecting its commitment to public reporting. Beyond its financial metrics, the institution has secured prestigious external validation, including a <cite id=\"12\">$234,500 grant from the Templeton Foundation</cite> to support its Advanced Islamic Theology and Contemporary Thought Program. This external funding highlights Bayan's capacity to compete for high-level academic grants and its reputation within the broader philanthropic landscape. Furthermore, the institution maintains an <cite id=\"13\">independent board rate of 87%</cite>, ensuring robust oversight of its strategic mission."
       ],
-      "summary": "Bayan is a premier Islamic graduate institution that has operated since <cite id=\"1\">its founding in 2011</cite> to develop ethical leaders and scholars through a world-class, non-sectarian curriculum. The organization reported <cite id=\"2\">total revenue of $3,153,900</cite> in 2023, with a significant portion of its income derived from <cite id=\"3\">$1,432,214 in program service revenue</cite>, reflecting its role as an academic provider. Bayan offers specialized graduate degrees including a <cite id=\"4\">Master of Divinity in Islamic Chaplaincy</cite> and a <cite id=\"5\">Doctor of Ministry</cite>, filling a critical niche in the American Muslim educational landscape. The institution maintains a <cite id=\"6\">Charity Navigator score of 86.25/100</cite>, indicating a high level of organizational health. While its <cite id=\"7\">program expense ratio is 52.0%</cite>, which is lower than some peer humanitarian organizations, the school demonstrates exceptional financial resilience with <cite id=\"8\">6.7 months of working capital</cite> and a lean <cite id=\"9\">fundraising efficiency of $0.29 per $1 raised</cite>. Its academic programs are designed to produce dynamic scholars grounded in the Islamic tradition who can serve in diverse professional environments across the United States.",
+      "summary": "Bayan is a premier Islamic graduate institution dedicated to developing ethical leaders and scholars through world-class academic programs. Founded in <cite id=\"1\">2011</cite>, the institution provides non-sectarian higher education grounded in the Islamic tradition, offering specialized <cite id=\"2\">Master's degrees in Religious Studies, Islamic Chaplaincy, and Theological Studies</cite>. The organization reported a <cite id=\"3\">total revenue of $3,153,900</cite> in 2023, reflecting its role as a specialized academic hub for the American Muslim community. Bayan maintains a solid financial standing with an <cite id=\"4\">overall score of 86.86.25/100 from Charity Navigator</cite>. Its academic portfolio includes a <cite id=\"5\">Master of Divinity in Islamic Chaplaincy</cite> and a Doctor of Ministry, designed to equip students for leadership roles in diverse institutional settings. The school has successfully diversified its income, generating <cite id=\"6\">$1,432,214 in program service revenue</cite> alongside traditional contributions, which indicates a sustainable model for higher education.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

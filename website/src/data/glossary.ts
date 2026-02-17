@@ -7,10 +7,10 @@ export const GLOSSARY: Record<string, string> = {
     'How effectively the charity creates measurable, positive change relative to the resources it uses.',
   'Alignment':
     'How well the charity fits the priorities and values of Muslim donors, including zakat eligibility and cause relevance.',
-  'Data Confidence':
+  'How Much We Know':
     'How much verified, cross-referenced data we have about this charity — higher means more trustworthy scores.',
-  'Risk Flags':
-    'Deductions for governance or financial red flags like low program spending, tiny boards, or weak reserves.',
+  'Organizational Risk':
+    'Deductions for red flags like low program spending, weak financial reserves, or governance concerns.',
   'Balanced View':
     'An honest look at potential concerns and risks, alongside what the charity does well.',
   'Long-Term Outlook':

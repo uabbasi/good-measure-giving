@@ -73,8 +73,13 @@ export const mapImprovementToDimension = (
 /** Map pipeline component names to donor-friendly labels */
 export function formatComponentName(name: string): string {
   const nameMap: Record<string, string> = {
-    'Underserved Space': 'Funding Gap Opportunity',
-    'Funding Gap': 'Funding Gap',
+    'Underserved Space': 'Room for More Donors',
+    'Funding Gap': 'Room for More Donors',
+    'Funding Gap Opportunity': 'Room for More Donors',
+    'Directness': 'Service Delivery',
+    'Program Ratio': 'Program Spending',
+    'Cause Urgency': 'Problem Severity',
+    'Governance': 'Board & Oversight',
   };
   return nameMap[name] || name;
 }

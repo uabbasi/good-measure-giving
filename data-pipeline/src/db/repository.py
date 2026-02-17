@@ -315,6 +315,14 @@ class RawDataRepository:
 
         return new_count
 
+    def reset_retry_count(self, ein: str, source: str) -> None:
+        """Reset retry count for a source, allowing re-fetch after failure TTL expiry."""
+        execute_query(
+            "UPDATE raw_scraped_data SET retry_count = 0, success = FALSE, error_message = 'reset: failure TTL expired' WHERE charity_ein = %s AND source = %s",
+            (ein, source),
+            fetch="none",
+        )
+
     def store_raw(
         self,
         charity_ein: str,

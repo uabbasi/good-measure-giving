@@ -212,6 +212,79 @@ class CharityNavigatorCollector(BaseCollector):
                 error=f"Request failed: {str(e)}",
             )
 
+    # FIX #11: Expected structural markers for CN format-change detection.
+    # If these markers disappear, CN likely changed their page format.
+    CN_FORMAT_MARKERS = {
+        "nextjs_push": {
+            "pattern": r"self\.__next_f\.push",
+            "description": "Next.js data embedding",
+            "severity": "critical",  # Primary financial data source
+        },
+        "json_ld": {
+            "pattern": r'type="application/ld\+json"',
+            "description": "JSON-LD structured data",
+            "severity": "high",  # Name, rating, URL
+        },
+        "beacon_scores": {
+            "pattern": r"accountability_finance|impact_measurement|culture_community|leadership_adaptability",
+            "description": "Beacon score slugs",
+            "severity": "high",  # Rating system
+        },
+        "financial_slugs": {
+            "pattern": r"calc_fund_eff_ratio|calc_wkg_cap_ratio|avg_program_expense_ratio",
+            "description": "Financial ratio slugs",
+            "severity": "high",  # Key financial metrics
+        },
+        "revenue_field": {
+            "pattern": r'"totalRevenue"',
+            "description": "Revenue data field",
+            "severity": "medium",
+        },
+    }
+
+    def _check_format_integrity(self, html: str, ein: str) -> None:
+        """
+        FIX #11: Check for expected structural markers in CN HTML.
+
+        Emits warnings when expected patterns are missing, indicating
+        CN may have changed their page format.
+        """
+        if not self.logger:
+            return
+
+        missing_critical = []
+        missing_high = []
+        missing_medium = []
+
+        for marker_name, marker_info in self.CN_FORMAT_MARKERS.items():
+            if not re.search(marker_info["pattern"], html):
+                entry = f"{marker_info['description']} ({marker_name})"
+                if marker_info["severity"] == "critical":
+                    missing_critical.append(entry)
+                elif marker_info["severity"] == "high":
+                    missing_high.append(entry)
+                else:
+                    missing_medium.append(entry)
+
+        if missing_critical:
+            self.logger.error(
+                f"[CN FORMAT CHANGE] CRITICAL markers missing for {ein}: "
+                f"{', '.join(missing_critical)}. "
+                f"Charity Navigator may have changed their page structure. "
+                f"Financial data extraction is likely broken."
+            )
+        if missing_high:
+            self.logger.warning(
+                f"[CN FORMAT CHANGE] High-severity markers missing for {ein}: "
+                f"{', '.join(missing_high)}. "
+                f"Some CN data extraction may be affected."
+            )
+        if missing_medium:
+            self.logger.debug(
+                f"[CN FORMAT CHANGE] Minor markers missing for {ein}: "
+                f"{', '.join(missing_medium)}"
+            )
+
     def parse(self, raw_data: str, ein: str, **kwargs) -> ParseResult:
         """
         Parse Charity Navigator HTML into profile schema.
@@ -224,6 +297,9 @@ class CharityNavigatorCollector(BaseCollector):
             ParseResult with {"cn_profile": {...}}
         """
         try:
+            # FIX #11: Check format integrity before parsing
+            self._check_format_integrity(raw_data, ein)
+
             soup = BeautifulSoup(raw_data, "html.parser")
 
             # Extract all data

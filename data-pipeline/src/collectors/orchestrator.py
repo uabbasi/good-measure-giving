@@ -11,6 +11,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 from ..constants import (
     CRAWL_INITIAL_BACKOFF_SECONDS,
     CRAWL_MAX_RETRIES,
+    FAILURE_TTL_DAYS,
     RETRY_BACKOFF_HOURS,
     SOURCE_TTL_DAYS,
 )
@@ -289,8 +290,25 @@ class DataCollectionOrchestrator:
 
         retry_count = row.get("retry_count", 0)
 
-        # Permanent failure after max retries
+        # FIX #10: Permanent failure with TTL — after FAILURE_TTL_DAYS, reset and allow retry
         if retry_count >= CRAWL_MAX_RETRIES:
+            scraped_at = row.get("scraped_at")
+            if scraped_at:
+                try:
+                    if isinstance(scraped_at, str):
+                        scraped_dt = datetime.fromisoformat(scraped_at.replace("Z", "+00:00"))
+                    else:
+                        scraped_dt = scraped_at
+                    failure_age = datetime.now(scraped_dt.tzinfo) - scraped_dt
+                    if failure_age >= timedelta(days=FAILURE_TTL_DAYS):
+                        # Failure is stale — reset retry_count so source can be re-fetched
+                        self.raw_data_repo.reset_retry_count(ein, source)
+                        self.logger.info(
+                            f"Reset permanent failure for {source} (age: {failure_age.days}d, TTL: {FAILURE_TTL_DAYS}d)"
+                        )
+                        return False, ""
+                except (ValueError, TypeError):
+                    pass
             return True, f"permanent failure (retry_count={retry_count})"
 
         # Check backoff window
@@ -423,28 +441,81 @@ class DataCollectionOrchestrator:
             self.logger.warning(f"Failed to parse cached Candid data: {e}")
             return None
 
-    def _store_raw_content_only(self, ein: str, source: str, raw_content: str, content_type: str):
+    def _has_content_substance(self, raw_content: str | None, source: str) -> bool:
+        """
+        FIX #2: Check if raw content has meaningful substance (not empty/shell HTML).
+
+        A collector can return HTTP 200 with an empty page or boilerplate shell.
+        This check catches that before we mark the source as succeeded.
+
+        Args:
+            raw_content: Raw fetched content
+            source: Source name (for source-specific thresholds)
+
+        Returns:
+            True if content has substance, False if empty/shell
+        """
+        if not raw_content:
+            return False
+
+        content = raw_content.strip()
+        if not content:
+            return False
+
+        # Minimum content length thresholds by type
+        # JSON API responses are compact; HTML pages have markup overhead
+        min_lengths = {
+            "propublica": 50,       # JSON API — even a "not found" is ~50 chars
+            "charity_navigator": 500,  # HTML page — real profiles are 10K+
+            "candid": 500,          # HTML page
+            "website": 500,         # HTML page
+            "bbb": 200,             # HTML/JSON
+            "form990_grants": 50,   # JSON/XML
+        }
+        min_len = min_lengths.get(source, 100)
+        if len(content) < min_len:
+            return False
+
+        return True
+
+    def _store_raw_content_only(self, ein: str, source: str, raw_content: str, content_type: str) -> bool:
         """
         Store raw HTML/JSON/XML without parsing (for fetch-only mode).
+
+        FIX #2: Checks content substance before storing.
+        FIX #14: Returns success/failure so caller can confirm write.
 
         Args:
             ein: Charity EIN
             source: Source name
             raw_content: Raw content from fetch
             content_type: Type of content (json, html, xml)
+
+        Returns:
+            True if content was stored successfully, False otherwise
         """
         if not ein:
-            return
+            return False
 
-        # Store in DoltDB with parsed_json=NULL
-        self.raw_data_repo.upsert(
-            charity_ein=ein,
-            source=source,
-            raw_content=raw_content,
-            parsed_json=None,  # Will be populated by extract.py
-            success=True,  # Fetch succeeded
-            error_message=None,
-        )
+        # FIX #2: Reject empty/shell content
+        if not self._has_content_substance(raw_content, source):
+            self.logger.warning(f"Empty/shell content from {source} for {ein} — not marking as succeeded")
+            return False
+
+        # FIX #14: Wrap DB write in try/except to confirm success
+        try:
+            self.raw_data_repo.upsert(
+                charity_ein=ein,
+                source=source,
+                raw_content=raw_content,
+                parsed_json=None,  # Will be populated by extract.py
+                success=True,  # Fetch succeeded
+                error_message=None,
+            )
+            return True
+        except Exception as e:
+            self.logger.error(f"Failed to store raw content for {source}/{ein}: {e}")
+            return False
 
     def fetch_charity_data(
         self,
@@ -539,11 +610,15 @@ class DataCollectionOrchestrator:
                     fetch_result = fetch_func()
 
                     if fetch_result.success:
-                        # Store raw_content only (no parsing)
-                        self._store_raw_content_only(ein, source_name, fetch_result.raw_data, fetch_result.content_type)
-                        report["sources_succeeded"].append(source_name)
-                        report["timestamps"][source_name] = datetime.now().isoformat()
-                        self.logger.log_data_source_fetch(0, ein, source_name, success=True)
+                        # FIX #2 + #14: Store raw_content only if it has substance and DB write succeeds
+                        stored = self._store_raw_content_only(ein, source_name, fetch_result.raw_data, fetch_result.content_type)
+                        if stored:
+                            report["sources_succeeded"].append(source_name)
+                            report["timestamps"][source_name] = datetime.now().isoformat()
+                            self.logger.log_data_source_fetch(0, ein, source_name, success=True)
+                        else:
+                            report["sources_failed"][source_name] = "empty or failed to store content"
+                            self.logger.log_data_source_fetch(0, ein, source_name, success=False, error="empty/shell content or DB write failed")
                         break
 
                     # Failed - check if retryable
@@ -596,12 +671,16 @@ class DataCollectionOrchestrator:
                 try:
                     success, data, error = self.website.collect_multi_page(website_url, ein)
                     if success:
-                        # Store both raw_content and parsed_json for website (combined mode)
-                        self._store_raw_data(ein, "website", data)
-                        report["raw_data"]["website"] = data  # Include in report for cost tracking
-                        report["sources_succeeded"].append("website")
-                        report["timestamps"]["website"] = datetime.now().isoformat()
-                        self.logger.log_data_source_fetch(0, ein, "website", success=True)
+                        # FIX #14: Only mark as succeeded if DB write confirms
+                        stored = self._store_raw_data(ein, "website", data)
+                        if stored:
+                            report["raw_data"]["website"] = data
+                            report["sources_succeeded"].append("website")
+                            report["timestamps"]["website"] = datetime.now().isoformat()
+                            self.logger.log_data_source_fetch(0, ein, "website", success=True)
+                        else:
+                            report["sources_failed"]["website"] = "empty data or DB write failed"
+                            self.logger.log_data_source_fetch(0, ein, "website", success=False, error="empty data or DB write failed")
                     else:
                         report["sources_failed"]["website"] = error
                         self.logger.log_data_source_fetch(0, ein, "website", success=False, error=error)
@@ -619,7 +698,7 @@ class DataCollectionOrchestrator:
 
         # Strict completeness requirement:
         # crawl is successful only when all required sources succeed.
-        required_sources = {"propublica", "charity_navigator", "candid", "bbb"}
+        required_sources = {"propublica", "charity_navigator", "candid", "form990_grants", "bbb"}
         required_sources -= self.skip_sources
         if "website" not in self.skip_sources and website_url:
             required_sources.add("website")
@@ -631,11 +710,6 @@ class DataCollectionOrchestrator:
             website_error = (report.get("sources_failed", {}) or {}).get("website")
             required_sources.remove("website")
             report.setdefault("sources_optional_missing", []).append(f"website:infra:{website_error}")
-        if "form990_grants" in report.get("sources_failed", {}):
-            report.setdefault("sources_optional_missing", []).append(
-                f"form990_grants:{report['sources_failed']['form990_grants']}"
-            )
-
         missing_sources = sorted(src for src in required_sources if src not in report["sources_succeeded"])
         if missing_sources:
             details = {src: report.get("sources_failed", {}).get(src, "missing/unsuccessful") for src in missing_sources}
@@ -851,12 +925,16 @@ class DataCollectionOrchestrator:
                     success, data, error = collector_func()
 
                     if success:
-                        # Success - store data and break out of retry loop
-                        report["sources_succeeded"].append(source_name)
-                        report["raw_data"][source_name] = data
-                        report["timestamps"][source_name] = datetime.now().isoformat()
-                        self._store_raw_data(ein, source_name, data)
-                        self.logger.log_data_source_fetch(0, ein, source_name, success=True)
+                        # FIX #14: Only mark as succeeded if DB write confirms
+                        stored = self._store_raw_data(ein, source_name, data)
+                        if stored:
+                            report["sources_succeeded"].append(source_name)
+                            report["raw_data"][source_name] = data
+                            report["timestamps"][source_name] = datetime.now().isoformat()
+                            self.logger.log_data_source_fetch(0, ein, source_name, success=True)
+                        else:
+                            report["sources_failed"][source_name] = "empty data or DB write failed"
+                            self.logger.log_data_source_fetch(0, ein, source_name, success=False, error="empty data or DB write failed")
                         break
 
                     # Failed - check if we should retry within this run
@@ -1041,17 +1119,22 @@ class DataCollectionOrchestrator:
 
         return False
 
-    def _store_raw_data(self, ein: str, source: str, data: Dict[str, Any]):
+    def _store_raw_data(self, ein: str, source: str, data: Dict[str, Any]) -> bool:
         """
         Store raw scraped data in DoltDB.
+
+        FIX #14: Returns success/failure so caller can confirm write.
 
         Args:
             ein: Charity EIN
             source: Source name
             data: Data from collector
+
+        Returns:
+            True if data was stored successfully, False otherwise
         """
         if not ein:
-            return  # Can't store without EIN
+            return False
 
         # Extract components based on source
         raw_content = data.get("raw_content")
@@ -1079,15 +1162,20 @@ class DataCollectionOrchestrator:
         # Check if data is meaningful
         is_meaningful = self._is_meaningful_data(parsed_json)
 
-        # Store in DoltDB via repository
-        self.raw_data_repo.upsert(
-            charity_ein=ein,
-            source=source,
-            parsed_json=parsed_json,
-            success=is_meaningful,
-            error_message=None if is_meaningful else "Empty or failed data",
-            raw_content=raw_content,
-        )
+        # FIX #14: Wrap DB write in try/except to confirm success
+        try:
+            self.raw_data_repo.upsert(
+                charity_ein=ein,
+                source=source,
+                parsed_json=parsed_json,
+                success=is_meaningful,
+                error_message=None if is_meaningful else "Empty or failed data",
+                raw_content=raw_content,
+            )
+            return is_meaningful
+        except Exception as e:
+            self.logger.error(f"Failed to store raw data for {source}/{ein}: {e}")
+            return False
 
     def _store_failed_crawl(self, ein: str, source: str, error: str):
         """
@@ -1220,6 +1308,7 @@ class DataCollectionOrchestrator:
         grants_profile = raw_data.get("form990_grants", {}).get("grants_profile")
         website_profile = raw_data.get("website", {}).get("website_profile")
         discovered_profile = raw_data.get("discovered", {}).get("discovered_profile")
+        bbb_profile = raw_data.get("bbb", {}).get("bbb_profile")
 
         # NOTE: Full data reconciliation (conflict resolution, priority-based selection)
         # is handled by the separate synthesize.py phase which stores
@@ -1235,6 +1324,7 @@ class DataCollectionOrchestrator:
             grants_profile=grants_profile,
             website_profile=website_profile,
             discovered_profile=discovered_profile,
+            bbb_profile=bbb_profile,
         )
 
         return metrics

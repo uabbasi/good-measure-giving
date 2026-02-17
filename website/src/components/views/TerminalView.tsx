@@ -193,7 +193,7 @@ function getDifferentiatorTags(charity: CharityProfile, isDark: boolean): Array<
   const alignmentScore = charity.amalEvaluation?.confidence_scores?.alignment || 0;
 
   if (extended.impactTier === 'HIGH') {
-    tags.push({ label: 'Maximum Leverage', priority: 2, colorClass: isDark ? 'bg-rose-900/50 text-rose-400' : 'bg-rose-100 text-rose-700' });
+    tags.push({ label: 'Highest Impact', priority: 2, colorClass: isDark ? 'bg-rose-900/50 text-rose-400' : 'bg-rose-100 text-rose-700' });
   }
   if (alignmentScore >= 42) {
     tags.push({ label: 'Maximum Alignment', priority: 2, colorClass: isDark ? 'bg-emerald-900/50 text-emerald-400' : 'bg-emerald-100 text-emerald-700' });
@@ -203,13 +203,13 @@ function getDifferentiatorTags(charity: CharityProfile, isDark: boolean): Array<
   }
   // Neglected cause already shown as separate badge in detail view, skip to avoid duplicate
   if (allCauseTags.includes('systemic-change')) {
-    tags.push({ label: 'Systemic', priority: 5, colorClass: isDark ? 'bg-blue-900/50 text-blue-400' : 'bg-blue-100 text-blue-700' });
+    tags.push({ label: 'Tackles Root Causes', priority: 5, colorClass: isDark ? 'bg-blue-900/50 text-blue-400' : 'bg-blue-100 text-blue-700' });
   }
   if (allCauseTags.includes('scalable-model')) {
     tags.push({ label: 'Scalable', priority: 6, colorClass: isDark ? 'bg-teal-900/50 text-teal-400' : 'bg-teal-100 text-teal-700' });
   }
   if (allCauseTags.includes('grantmaking')) {
-    tags.push({ label: 'Grantmaker', priority: 7, colorClass: isDark ? 'bg-yellow-900/50 text-yellow-400' : 'bg-yellow-100 text-yellow-700' });
+    tags.push({ label: 'Funds Other Orgs', priority: 7, colorClass: isDark ? 'bg-yellow-900/50 text-yellow-400' : 'bg-yellow-100 text-yellow-700' });
   }
   const yearsOperating = extended.foundedYear ? (new Date().getFullYear() - extended.foundedYear) : null;
   if (yearsOperating && yearsOperating >= 25) {
@@ -1113,11 +1113,11 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             )}
 
             {/* Candid Seal - show when no expense data but we have seal info */}
-            {!hasExpenseData && charity.awards?.candidSeal && (
+            {!hasExpenseData && charity.awards?.candidSeal && charity.awards.candidUrl && (
               <div className={`flex items-center justify-between py-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                 <span className="text-sm">Candid Transparency</span>
                 <a
-                  href={charity.awards.candidUrl || `https://www.guidestar.org/search?q=${charity.ein}`}
+                  href={charity.awards.candidUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`font-semibold hover:underline ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}

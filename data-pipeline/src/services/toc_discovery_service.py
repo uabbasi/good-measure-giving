@@ -47,7 +47,13 @@ class TheoryOfChangeDiscovery:
         }
 
 
-TOC_DISCOVERY_PROMPT = """You are discovering whether a charity has a published theory of change or similar strategic framework.
+TOC_DISCOVERY_PROMPT = """You are discovering whether a US-based charity has a published theory of change or similar strategic framework.
+
+IMPORTANT REQUIREMENTS:
+1. Only consider documents from the SPECIFIC US organization being evaluated
+2. International affiliates or parent organizations are DIFFERENT entities
+3. If evidence is about an international branch (e.g., UK, Australia, Switzerland),
+   this does NOT apply to the US organization
 
 Look for:
 - Theory of Change (ToC) - explicit document explaining how activities lead to impact
@@ -116,10 +122,10 @@ class TheoryOfChangeDiscoveryService:
             TheoryOfChangeDiscovery with framework details
         """
         # Build the search query
-        query = f'Does "{charity_name}" have a published theory of change, logic model, impact framework, or documented approach to measuring change? Look for strategic documents explaining how their programs create impact.'
+        query = f'Does the US nonprofit "{charity_name}" have a published theory of change, logic model, impact framework, or documented approach to measuring change? Look for strategic documents explaining how their programs create impact.'
         if website_url:
             domain = urlparse(website_url).netloc
-            query = f'Does "{charity_name}" ({domain}) have a published theory of change, logic model, impact framework, or documented approach to measuring change? Look for strategic documents explaining how their programs create impact.'
+            query = f'Does the US nonprofit "{charity_name}" ({domain}) have a published theory of change, logic model, impact framework, or documented approach to measuring change? Look for strategic documents explaining how their programs create impact.'
 
         logger.info(f"Discovering theory of change for: {charity_name}")
 

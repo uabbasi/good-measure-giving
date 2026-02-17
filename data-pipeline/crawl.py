@@ -78,6 +78,15 @@ def fetch_charity_data(charity, index, total, orchestrator, logger, verbose=Fals
             ein=charity_ein, website_url=charity_website, charity_name=charity_name
         )
 
+        # FIX #24: Validate crawl output against phase contract
+        from src.schemas.phase_contracts import validate_crawl_output
+
+        contract = validate_crawl_output(report)
+        if contract.warnings and verbose:
+            with print_lock:
+                for w in contract.warnings:
+                    print(f"  [contract] {w}")
+
         if success:
             sources_succeeded = report.get("sources_succeeded", [])
             sources_failed = report.get("sources_failed", {})
