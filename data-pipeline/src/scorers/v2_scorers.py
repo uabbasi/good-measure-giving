@@ -2401,7 +2401,7 @@ class AmalScorerV2:
         overall = round(overall, 2)
 
         # Determine badge level
-        if overall >= 0.7:
+        if overall >= 0.75:
             badge = "HIGH"
         elif overall >= 0.4:
             badge = "MEDIUM"
