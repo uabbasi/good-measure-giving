@@ -1023,111 +1023,45 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             <RecommendationCue cue={uiSignals.recommendation_cue} rationale={uiSignals.recommendation_rationale} isDark={isDark} />
           </div>
 
-          {/* Divider between qualitative snapshot and focus areas */}
+          {/* Divider between qualitative snapshot and evidence quality */}
           <div className={`mb-5 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`} />
 
-          {/* Tag Categories - Bullet-separated layout */}
-          {(() => {
-            const tagCategories = categorizeTags(charity.causeTags);
-            const ZAKAT_TERMS = new Set(['fuqara', 'masakin', 'muallaf', 'fisabilillah', 'ibn-al-sabil', 'amil']);
-            const nonZakatPopulations = tagCategories.populations.filter(p => !ZAKAT_TERMS.has(p.toLowerCase()));
-            const zakatAsnaf = rich?.donor_fit_matrix?.zakat_asnaf_served || [];
-
-            // Row 1: Who (Zakat + Population)
-            const whoTags = [...zakatAsnaf, ...nonZakatPopulations.map(t => formatTag(t))];
-            // Row 2: What (Services + Approach)
-            const whatTags = [
-              ...tagCategories.interventions.map(t => formatTag(t)),
-              ...tagCategories.changeTypes.map(t => formatTag(t))
-            ];
-            // Row 3: Where (Geography only)
-            const whereTags = tagCategories.geography.map(t => formatTag(t));
-            // Row 4: Programs (limit to 4)
-            const programTags = (charity.programs || []).slice(0, 4);
-            const programOverflow = (charity.programs || []).length > 4 ? (charity.programs || []).length - 4 : 0;
-
-            const hasAnyTags = whoTags.length > 0 || whatTags.length > 0 || whereTags.length > 0 || programTags.length > 0;
-            if (!hasAnyTags) return null;
-
-            return (
-              <div className={`mb-6 p-3 rounded-lg ${isDark ? 'bg-slate-800/50' : 'bg-slate-50'}`}>
-                <div className={`text-xs uppercase tracking-widest font-semibold mb-2 ${
-                  isDark ? 'text-slate-500' : 'text-slate-400'
-                }`}>
-                  Focus Areas
-                </div>
-                <div className="space-y-1.5 text-xs">
-                  {whoTags.length > 0 && (
-                    <div className="flex">
-                      <span className={`font-medium w-12 flex-shrink-0 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Who:</span>
-                      <span className={isDark ? 'text-emerald-400' : 'text-emerald-700'}>
-                        {whoTags.join(' • ')}
-                      </span>
-                    </div>
-                  )}
-                  {whatTags.length > 0 && (
-                    <div className="flex">
-                      <span className={`font-medium w-12 flex-shrink-0 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>What:</span>
-                      <span className={isDark ? 'text-amber-400' : 'text-amber-700'}>
-                        {whatTags.join(' • ')}
-                      </span>
-                    </div>
-                  )}
-                  {whereTags.length > 0 && (
-                    <div className="flex">
-                      <span className={`font-medium w-12 flex-shrink-0 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Where:</span>
-                      <span className={isDark ? 'text-blue-400' : 'text-blue-700'}>
-                        {whereTags.join(' • ')}
-                      </span>
-                    </div>
-                  )}
-                  {programTags.length > 0 && (
-                    <div className="flex">
-                      <span className={`font-medium w-12 flex-shrink-0 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>How:</span>
-                      <span className={isDark ? 'text-cyan-400' : 'text-cyan-700'}>
-                        {programTags.map(t => formatProgramTag(t)).join(' • ')}
-                        {programOverflow > 0 && ` +${programOverflow}`}
-                      </span>
-                    </div>
-                  )}
-                </div>
+          {/* === Evidence Quality Checklist === */}
+          {charity.evidenceQuality && (
+            <div className="mb-6">
+              <div className={`text-xs uppercase tracking-widest font-semibold mb-3 flex items-center gap-2 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                <Shield className="w-3.5 h-3.5" />
+                Evidence Quality
+                <InfoTip text={GLOSSARY['Evidence Quality']} isDark={isDark} />
               </div>
-            );
-          })()}
-
-          {/* Beneficiaries Served (self-reported) */}
-          {beneficiariesCount != null && beneficiariesCount > 0 && (
-            <div className={`mb-6 p-3 rounded-lg ${isDark ? 'bg-slate-800/50' : 'bg-slate-50'}`}>
-              <div className={`text-2xl font-mono font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                {beneficiariesCount.toLocaleString()}
+              <div className="space-y-2">
+                {[
+                  { key: 'hasOutcomeMethodology', label: 'Outcome methodology documented' },
+                  { key: 'hasMultiYearMetrics', label: 'Multi-year metrics tracked' },
+                  { key: 'thirdPartyEvaluated', label: 'Third-party evaluated' },
+                  { key: 'receivesFoundationGrants', label: 'Receives foundation grants' },
+                ].map(({ key, label }) => {
+                  const val = (charity.evidenceQuality as Record<string, unknown>)?.[key];
+                  if (val === null || val === undefined) return null;
+                  return (
+                    <div key={key} className="flex items-center gap-2 text-xs">
+                      {val ? (
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                      ) : (
+                        <AlertCircle className={`w-3.5 h-3.5 flex-shrink-0 ${isDark ? 'text-slate-600' : 'text-slate-400'}`} />
+                      )}
+                      <span className={val ? (isDark ? 'text-slate-300' : 'text-slate-700') : (isDark ? 'text-slate-500' : 'text-slate-400')}>
+                        {label}
+                      </span>
+                    </div>
+                  );
+                })}
+                {charity.evidenceQuality.evaluationSources && charity.evidenceQuality.evaluationSources.length > 0 && (
+                  <div className={`mt-2 pt-2 border-t text-xs ${isDark ? 'border-slate-700 text-slate-500' : 'border-slate-200 text-slate-400'}`}>
+                    Sources: {charity.evidenceQuality.evaluationSources.join(', ')}
+                  </div>
+                )}
               </div>
-              <div className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-                Beneficiaries Served Annually
-                <span className={`ml-1 italic ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>(self-reported)</span>
-              </div>
-              {!beneficiariesVerified && (
-                <div className={`mt-1.5 flex items-center gap-1 text-xs ${isDark ? 'text-amber-400' : 'text-amber-700'}`}>
-                  <AlertTriangle className="w-3 h-3" />
-                  <span>No cited source yet; excluded from cost-per-beneficiary scoring</span>
-                </div>
-              )}
-              {beneficiariesVerified && resolvedBeneficiarySourceUrl && (
-                <a
-                  href={resolvedBeneficiarySourceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`mt-1.5 inline-flex items-center gap-1 text-xs underline underline-offset-2 ${
-                    isDark ? 'text-slate-400 hover:text-slate-200' : 'text-slate-500 hover:text-slate-700'
-                  }`}
-                >
-                  View beneficiary source
-                </a>
-              )}
-              {beneficiariesExcludedFromScoring && !beneficiariesVerified && (
-                <div className={`mt-1 text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-                  Ranking favors verified cost signals when available.
-                </div>
-              )}
             </div>
           )}
 
@@ -1479,219 +1413,6 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             </div>
           )}
 
-          {/* Impact Evidence (Rich only, authenticated) */}
-          {isSignedIn && rich?.impact_evidence && (
-            <div className={`mb-6 p-4 rounded-lg border ${
-              isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-200'
-            }`}>
-              <div className={`text-xs uppercase tracking-widest font-semibold mb-3 ${
-                isDark ? 'text-slate-400' : 'text-slate-500'
-              }`}>
-                Impact Evidence
-                <InfoTip text={GLOSSARY['Impact Evidence']} isDark={isDark} />
-              </div>
-
-              {/* NEW_ORG context note */}
-              {charity.evaluationTrack === 'NEW_ORG' && (
-                <div className={`mb-3 p-2 rounded text-xs ${
-                  isDark ? 'bg-sky-900/30 text-sky-300 border border-sky-800/50' : 'bg-sky-50 text-sky-700 border border-sky-200'
-                }`}>
-                  <strong>Emerging org evaluation:</strong> As a newer organization{charity.foundedYear ? ` (est. ${charity.foundedYear})` : ''},
-                  evidence is assessed on theory of change and early indicators rather than years of outcome data.
-                </div>
-              )}
-
-              {/* Evidence Grade */}
-              <div className="flex items-start gap-2 mb-3">
-                <span className={`px-2 py-1 rounded font-mono font-bold text-sm flex-shrink-0 ${
-                  rich.impact_evidence.evidence_grade === 'A' || rich.impact_evidence.evidence_grade === 'B'
-                    ? isDark ? 'bg-emerald-900/50 text-emerald-400' : 'bg-emerald-100 text-emerald-700'
-                    : rich.impact_evidence.evidence_grade === 'C' || rich.impact_evidence.evidence_grade === 'D'
-                    ? isDark ? 'bg-amber-900/50 text-amber-400' : 'bg-amber-100 text-amber-700'
-                    : isDark ? 'bg-red-900/50 text-red-400' : 'bg-red-100 text-red-700'
-                }`}>
-                  {rich.impact_evidence.evidence_grade}
-                </span>
-                <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  <SourceLinkedText
-                    text={rich.impact_evidence.evidence_grade_explanation || ''}
-                    citations={citations}
-                    isDark={isDark}
-                  />
-                </span>
-              </div>
-
-              {/* Key indicators */}
-              <div className={`space-y-1.5 text-xs ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                <div className="flex justify-between">
-                  <span>RCT Available</span>
-                  <span className={`font-mono ${
-                    rich.impact_evidence.rct_available
-                      ? isDark ? 'text-emerald-400' : 'text-emerald-600'
-                      : isDark ? 'text-slate-500' : 'text-slate-400'
-                  }`}>
-                    {rich.impact_evidence.rct_available ? 'YES' : 'NO'}
-                  </span>
-                </div>
-                {rich.impact_evidence.theory_of_change && (
-                  <div className="flex justify-between">
-                    <span className="flex items-center gap-1">Theory of Change <InfoTip text={GLOSSARY['Theory of Change']} isDark={isDark} /></span>
-                    <span className="font-mono">{rich.impact_evidence.theory_of_change.toUpperCase()}</span>
-                  </div>
-                )}
-              </div>
-
-              {rich.impact_evidence.theory_of_change_summary && (
-                <div className={`mt-3 pt-3 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
-                  <div className={`text-xs font-semibold mb-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                    Theory of Change Summary
-                  </div>
-                  <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                    <SourceLinkedText
-                      text={rich.impact_evidence.theory_of_change_summary}
-                      citations={citations}
-                      isDark={isDark}
-                    />
-                  </p>
-                  {theoryOfChangeCitations.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {theoryOfChangeCitations.map((c, i) => (
-                        <a
-                          key={`${c.id || 'toc'}-${i}`}
-                          href={c.source_url || undefined}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] border ${
-                            isDark
-                              ? 'border-emerald-800/60 text-emerald-400 hover:bg-emerald-900/20'
-                              : 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
-                          }`}
-                          title={c.source_name || 'Source'}
-                        >
-                          {(c.source_name || `Source ${i + 1}`).replace(/^Charity Website\s*-\s*/i, '')}
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* External Evaluations */}
-              {rich.impact_evidence.external_evaluations && rich.impact_evidence.external_evaluations.length > 0 && (
-                <div className={`mt-2 pt-2 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
-                  <div className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>External Evaluations</div>
-                  <div className={`text-xs mt-1 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                    {rich.impact_evidence.external_evaluations.slice(0, 2).join(', ')}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Similar Organizations (Rich only, links gated behind auth) */}
-          {(rich?.similar_organizations || rich?.peer_comparison) && (
-            <div className={`mb-6 p-4 rounded-lg border ${
-              isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-200'
-            }`}>
-              <div className={`text-xs uppercase tracking-widest font-semibold mb-3 ${
-                isDark ? 'text-slate-400' : 'text-slate-500'
-              }`}>
-                Similar Orgs
-              </div>
-
-              {/* Peer Group */}
-              {rich?.peer_comparison && (
-                <div className={`mb-3 pb-2 border-b ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
-                  <div className={`text-xs font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                    {rich.peer_comparison.peer_group}
-                  </div>
-                </div>
-              )}
-
-              {/* Similar Orgs List */}
-              {rich?.similar_organizations && rich.similar_organizations.length > 0 && (
-                <div className="space-y-1.5">
-                  {rich.similar_organizations.slice(0, isSignedIn ? 4 : 3).map((org, i) => {
-                    const orgName = typeof org === 'string' ? org : org.name;
-                    const linkedId = findCharityId(orgName);
-                    return (
-                      <div key={i} className="text-xs">
-                        {isSignedIn && linkedId ? (
-                          <Link
-                            to={`/charity/${linkedId}`}
-                            className={`flex items-center gap-1 ${
-                              isDark ? 'text-emerald-400 hover:text-emerald-300' : 'text-emerald-600 hover:text-emerald-700'
-                            }`}
-                          >
-                            {orgName}
-                            <ExternalLink className="w-2.5 h-2.5" />
-                          </Link>
-                        ) : (
-                          <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>{orgName}</span>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* Sign-in prompt for unauthenticated users */}
-              {!isSignedIn && (
-                <SignInButton
-                  variant="custom"
-                  className={`mt-3 pt-2 border-t text-xs flex items-center gap-1.5 w-full text-left cursor-pointer hover:opacity-80 transition-opacity ${
-                    isDark ? 'border-slate-700 text-emerald-400' : 'border-slate-200 text-emerald-600'
-                  }`}
-                >
-                  <Lock className="w-3 h-3 flex-shrink-0" />
-                  <span>
-                    <span className="underline font-medium">Sign in</span>
-                    {' '}to compare
-                  </span>
-                </SignInButton>
-              )}
-            </div>
-          )}
-
-          {/* === Evidence Quality Checklist === */}
-          {charity.evidenceQuality && (
-            <div className={`mt-4 pt-4 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
-              <div className={`text-xs uppercase tracking-widest font-semibold mb-3 flex items-center gap-2 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                <Shield className="w-3.5 h-3.5" />
-                Evidence Quality
-                <InfoTip text={GLOSSARY['Evidence Quality']} isDark={isDark} />
-              </div>
-              <div className="space-y-2">
-                {[
-                  { key: 'hasOutcomeMethodology', label: 'Outcome methodology documented' },
-                  { key: 'hasMultiYearMetrics', label: 'Multi-year metrics tracked' },
-                  { key: 'thirdPartyEvaluated', label: 'Third-party evaluated' },
-                  { key: 'receivesFoundationGrants', label: 'Receives foundation grants' },
-                ].map(({ key, label }) => {
-                  const val = (charity.evidenceQuality as Record<string, unknown>)?.[key];
-                  if (val === null || val === undefined) return null;
-                  return (
-                    <div key={key} className="flex items-center gap-2 text-xs">
-                      {val ? (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
-                      ) : (
-                        <AlertCircle className={`w-3.5 h-3.5 flex-shrink-0 ${isDark ? 'text-slate-600' : 'text-slate-400'}`} />
-                      )}
-                      <span className={val ? (isDark ? 'text-slate-300' : 'text-slate-700') : (isDark ? 'text-slate-500' : 'text-slate-400')}>
-                        {label}
-                      </span>
-                    </div>
-                  );
-                })}
-                {charity.evidenceQuality.evaluationSources && charity.evidenceQuality.evaluationSources.length > 0 && (
-                  <div className={`mt-2 pt-2 border-t text-xs ${isDark ? 'border-slate-700 text-slate-500' : 'border-slate-200 text-slate-400'}`}>
-                    Sources: {charity.evidenceQuality.evaluationSources.join(', ')}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
 
         </aside>
 
@@ -2145,6 +1866,107 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             </div>
           )}
 
+          {/* Focus Areas */}
+          {(() => {
+            const tagCategories = categorizeTags(charity.causeTags);
+            const ZAKAT_TERMS = new Set(['fuqara', 'masakin', 'muallaf', 'fisabilillah', 'ibn-al-sabil', 'amil']);
+            const nonZakatPopulations = tagCategories.populations.filter(p => !ZAKAT_TERMS.has(p.toLowerCase()));
+            const zakatAsnaf = rich?.donor_fit_matrix?.zakat_asnaf_served || [];
+
+            const whoTags = [...zakatAsnaf, ...nonZakatPopulations.map(t => formatTag(t))];
+            const whatTags = [
+              ...tagCategories.interventions.map(t => formatTag(t)),
+              ...tagCategories.changeTypes.map(t => formatTag(t))
+            ];
+            const whereTags = tagCategories.geography.map(t => formatTag(t));
+            const programTags = (charity.programs || []).slice(0, 4);
+            const programOverflow = (charity.programs || []).length > 4 ? (charity.programs || []).length - 4 : 0;
+
+            const hasAnyTags = whoTags.length > 0 || whatTags.length > 0 || whereTags.length > 0 || programTags.length > 0;
+            if (!hasAnyTags) return null;
+
+            return (
+              <div className={`mb-6 p-3 rounded-lg ${isDark ? 'bg-slate-800/50' : 'bg-slate-50'}`}>
+                <div className={`text-xs uppercase tracking-widest font-semibold mb-2 ${
+                  isDark ? 'text-slate-500' : 'text-slate-400'
+                }`}>
+                  Focus Areas
+                </div>
+                <div className="space-y-1.5 text-xs">
+                  {whoTags.length > 0 && (
+                    <div className="flex">
+                      <span className={`font-medium w-12 flex-shrink-0 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Who:</span>
+                      <span className={isDark ? 'text-emerald-400' : 'text-emerald-700'}>
+                        {whoTags.join(' • ')}
+                      </span>
+                    </div>
+                  )}
+                  {whatTags.length > 0 && (
+                    <div className="flex">
+                      <span className={`font-medium w-12 flex-shrink-0 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>What:</span>
+                      <span className={isDark ? 'text-amber-400' : 'text-amber-700'}>
+                        {whatTags.join(' • ')}
+                      </span>
+                    </div>
+                  )}
+                  {whereTags.length > 0 && (
+                    <div className="flex">
+                      <span className={`font-medium w-12 flex-shrink-0 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Where:</span>
+                      <span className={isDark ? 'text-blue-400' : 'text-blue-700'}>
+                        {whereTags.join(' • ')}
+                      </span>
+                    </div>
+                  )}
+                  {programTags.length > 0 && (
+                    <div className="flex">
+                      <span className={`font-medium w-12 flex-shrink-0 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>How:</span>
+                      <span className={isDark ? 'text-cyan-400' : 'text-cyan-700'}>
+                        {programTags.map(t => formatProgramTag(t)).join(' • ')}
+                        {programOverflow > 0 && ` +${programOverflow}`}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Beneficiaries Served (self-reported) */}
+          {beneficiariesCount != null && beneficiariesCount > 0 && (
+            <div className={`mb-6 p-3 rounded-lg ${isDark ? 'bg-slate-800/50' : 'bg-slate-50'}`}>
+              <div className={`text-2xl font-mono font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                {beneficiariesCount.toLocaleString()}
+              </div>
+              <div className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                Beneficiaries Served Annually
+                <span className={`ml-1 italic ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>(self-reported)</span>
+              </div>
+              {!beneficiariesVerified && (
+                <div className={`mt-1.5 flex items-center gap-1 text-xs ${isDark ? 'text-amber-400' : 'text-amber-700'}`}>
+                  <AlertTriangle className="w-3 h-3" />
+                  <span>No cited source yet; excluded from cost-per-beneficiary scoring</span>
+                </div>
+              )}
+              {beneficiariesVerified && resolvedBeneficiarySourceUrl && (
+                <a
+                  href={resolvedBeneficiarySourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`mt-1.5 inline-flex items-center gap-1 text-xs underline underline-offset-2 ${
+                    isDark ? 'text-slate-400 hover:text-slate-200' : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  View beneficiary source
+                </a>
+              )}
+              {beneficiariesExcludedFromScoring && !beneficiariesVerified && (
+                <div className={`mt-1 text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
+                  Ranking favors verified cost signals when available.
+                </div>
+              )}
+            </div>
+          )}
+
           {/* 2. Leadership & Governance (Rich only, authenticated) */}
           {isSignedIn && rich?.organizational_capacity && (
             <div className={`mb-6 p-4 rounded-lg border ${
@@ -2254,49 +2076,117 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             </div>
           )}
 
-          {/* 3. Citation Stats / Sources (Rich only, authenticated) */}
-          {isSignedIn && rich?.citation_stats && (
+          {/* Impact Evidence (Rich only, authenticated) */}
+          {isSignedIn && rich?.impact_evidence && (
             <div className={`mb-6 p-4 rounded-lg border ${
               isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-200'
             }`}>
               <div className={`text-xs uppercase tracking-widest font-semibold mb-3 ${
                 isDark ? 'text-slate-400' : 'text-slate-500'
               }`}>
-                Sources
+                Impact Evidence
+                <InfoTip text={GLOSSARY['Impact Evidence']} isDark={isDark} />
               </div>
+
+              {/* NEW_ORG context note */}
+              {charity.evaluationTrack === 'NEW_ORG' && (
+                <div className={`mb-3 p-2 rounded text-xs ${
+                  isDark ? 'bg-sky-900/30 text-sky-300 border border-sky-800/50' : 'bg-sky-50 text-sky-700 border border-sky-200'
+                }`}>
+                  <strong>Emerging org evaluation:</strong> As a newer organization{charity.foundedYear ? ` (est. ${charity.foundedYear})` : ''},
+                  evidence is assessed on theory of change and early indicators rather than years of outcome data.
+                </div>
+              )}
+
+              {/* Evidence Grade */}
+              <div className="flex items-start gap-2 mb-3">
+                <span className={`px-2 py-1 rounded font-mono font-bold text-sm flex-shrink-0 ${
+                  rich.impact_evidence.evidence_grade === 'A' || rich.impact_evidence.evidence_grade === 'B'
+                    ? isDark ? 'bg-emerald-900/50 text-emerald-400' : 'bg-emerald-100 text-emerald-700'
+                    : rich.impact_evidence.evidence_grade === 'C' || rich.impact_evidence.evidence_grade === 'D'
+                    ? isDark ? 'bg-amber-900/50 text-amber-400' : 'bg-amber-100 text-amber-700'
+                    : isDark ? 'bg-red-900/50 text-red-400' : 'bg-red-100 text-red-700'
+                }`}>
+                  {rich.impact_evidence.evidence_grade}
+                </span>
+                <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  <SourceLinkedText
+                    text={rich.impact_evidence.evidence_grade_explanation || ''}
+                    citations={citations}
+                    isDark={isDark}
+                  />
+                </span>
+              </div>
+
+              {/* Key indicators */}
               <div className={`space-y-1.5 text-xs ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                 <div className="flex justify-between">
-                  <span>Total Citations</span>
-                  <span className="font-mono">{rich.citation_stats.total_count}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Unique Sources</span>
-                  <span className="font-mono">{rich.citation_stats.unique_sources}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Strong Sources</span>
-                  <span className={`font-mono ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
-                    {rich.citation_stats.high_confidence_count}
+                  <span>RCT Available</span>
+                  <span className={`font-mono ${
+                    rich.impact_evidence.rct_available
+                      ? isDark ? 'text-emerald-400' : 'text-emerald-600'
+                      : isDark ? 'text-slate-500' : 'text-slate-400'
+                  }`}>
+                    {rich.impact_evidence.rct_available ? 'YES' : 'NO'}
                   </span>
                 </div>
+                {rich.impact_evidence.theory_of_change && (
+                  <div className="flex justify-between">
+                    <span className="flex items-center gap-1">Theory of Change <InfoTip text={GLOSSARY['Theory of Change']} isDark={isDark} /></span>
+                    <span className="font-mono">{rich.impact_evidence.theory_of_change.toUpperCase()}</span>
+                  </div>
+                )}
               </div>
-              {rich.citation_stats.by_source_type && (
+
+              {rich.impact_evidence.theory_of_change_summary && (
+                <div className={`mt-3 pt-3 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
+                  <div className={`text-xs font-semibold mb-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                    Theory of Change Summary
+                  </div>
+                  <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                    <SourceLinkedText
+                      text={rich.impact_evidence.theory_of_change_summary}
+                      citations={citations}
+                      isDark={isDark}
+                    />
+                  </p>
+                  {theoryOfChangeCitations.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {theoryOfChangeCitations.map((c, i) => (
+                        <a
+                          key={`${c.id || 'toc'}-${i}`}
+                          href={c.source_url || undefined}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] border ${
+                            isDark
+                              ? 'border-emerald-800/60 text-emerald-400 hover:bg-emerald-900/20'
+                              : 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
+                          }`}
+                          title={c.source_name || 'Source'}
+                        >
+                          {(c.source_name || `Source ${i + 1}`).replace(/^Charity Website\s*-\s*/i, '')}
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* External Evaluations */}
+              {rich.impact_evidence.external_evaluations && rich.impact_evidence.external_evaluations.length > 0 && (
                 <div className={`mt-2 pt-2 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
-                  <div className="flex flex-wrap gap-1">
-                    {Object.entries(rich.citation_stats.by_source_type).map(([type, count]) => (
-                      <span key={type} className={`px-1.5 py-0.5 rounded text-xs ${
-                        isDark ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-600'
-                      }`}>
-                        {type}: {count}
-                      </span>
-                    ))}
+                  <div className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>External Evaluations</div>
+                  <div className={`text-xs mt-1 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                    {rich.impact_evidence.external_evaluations.slice(0, 2).join(', ')}
                   </div>
                 </div>
               )}
             </div>
           )}
 
-          {/* 4. BBB Wise Giving */}
+          {/* BBB Wise Giving */}
           {isSignedIn && rich?.bbb_assessment && (
             rich.bbb_assessment.meets_all_standards ||
             (rich.bbb_assessment.standards_met && rich.bbb_assessment.standards_met > 0) ||
@@ -2476,7 +2366,112 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             </div>
           )}
 
-          {/* 5. External Links */}
+          {/* Similar Organizations (Rich only, links gated behind auth) */}
+          {(rich?.similar_organizations || rich?.peer_comparison) && (
+            <div className="mb-6">
+              <div className={`text-xs uppercase tracking-widest font-semibold mb-3 ${
+                isDark ? 'text-slate-400' : 'text-slate-500'
+              }`}>
+                Similar Orgs
+              </div>
+
+              {/* Peer Group */}
+              {rich?.peer_comparison && (
+                <div className={`mb-3 pb-2 border-b ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
+                  <div className={`text-xs font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {rich.peer_comparison.peer_group}
+                  </div>
+                </div>
+              )}
+
+              {/* Similar Orgs List */}
+              {rich?.similar_organizations && rich.similar_organizations.length > 0 && (
+                <div className="space-y-1.5">
+                  {rich.similar_organizations.slice(0, isSignedIn ? 4 : 3).map((org, i) => {
+                    const orgName = typeof org === 'string' ? org : org.name;
+                    const linkedId = findCharityId(orgName);
+                    return (
+                      <div key={i} className="text-xs">
+                        {isSignedIn && linkedId ? (
+                          <Link
+                            to={`/charity/${linkedId}`}
+                            className={`flex items-center gap-1 ${
+                              isDark ? 'text-emerald-400 hover:text-emerald-300' : 'text-emerald-600 hover:text-emerald-700'
+                            }`}
+                          >
+                            {orgName}
+                            <ExternalLink className="w-2.5 h-2.5" />
+                          </Link>
+                        ) : (
+                          <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>{orgName}</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Sign-in prompt for unauthenticated users */}
+              {!isSignedIn && (
+                <SignInButton
+                  variant="custom"
+                  className={`mt-3 pt-2 border-t text-xs flex items-center gap-1.5 w-full text-left cursor-pointer hover:opacity-80 transition-opacity ${
+                    isDark ? 'border-slate-700 text-emerald-400' : 'border-slate-200 text-emerald-600'
+                  }`}
+                >
+                  <Lock className="w-3 h-3 flex-shrink-0" />
+                  <span>
+                    <span className="underline font-medium">Sign in</span>
+                    {' '}to compare
+                  </span>
+                </SignInButton>
+              )}
+            </div>
+          )}
+
+          {/* Citation Stats / Sources (Rich only, authenticated) */}
+          {isSignedIn && rich?.citation_stats && (
+            <div className={`mb-6 p-4 rounded-lg border ${
+              isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-200'
+            }`}>
+              <div className={`text-xs uppercase tracking-widest font-semibold mb-3 ${
+                isDark ? 'text-slate-400' : 'text-slate-500'
+              }`}>
+                Sources
+              </div>
+              <div className={`space-y-1.5 text-xs ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                <div className="flex justify-between">
+                  <span>Total Citations</span>
+                  <span className="font-mono">{rich.citation_stats.total_count}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Unique Sources</span>
+                  <span className="font-mono">{rich.citation_stats.unique_sources}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Strong Sources</span>
+                  <span className={`font-mono ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
+                    {rich.citation_stats.high_confidence_count}
+                  </span>
+                </div>
+              </div>
+              {rich.citation_stats.by_source_type && (
+                <div className={`mt-2 pt-2 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
+                  <div className="flex flex-wrap gap-1">
+                    {Object.entries(rich.citation_stats.by_source_type).map(([type, count]) => (
+                      <span key={type} className={`px-1.5 py-0.5 rounded text-xs ${
+                        isDark ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-600'
+                      }`}>
+                        {type}: {count}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* External Links */}
           <div>
             <div className={`text-xs uppercase tracking-widest font-semibold mb-2 ${
               isDark ? 'text-slate-500' : 'text-slate-400'
