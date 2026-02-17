@@ -71,18 +71,6 @@ Notes:
 - `VITE_*` values are embedded client side at build time
 - Never put private secrets in `VITE_*` variables
 
-Dev-only fake login (for UI testing):
-
-```bash
-# in website/.env
-VITE_FAKE_AUTH=true
-VITE_FAKE_AUTH_UID=dev-fake-user
-VITE_FAKE_AUTH_EMAIL=dev@example.com
-VITE_FAKE_AUTH_NAME=Dev User
-```
-
-- Works in `npm run dev` (including `npm run dev:ios:sim`) to show a signed-in user without real Firebase auth
-- Intended for UI/gating checks; Firestore-backed writes still require real Firebase config
 
 ## Deployment
 

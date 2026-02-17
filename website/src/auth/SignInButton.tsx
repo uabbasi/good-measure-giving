@@ -4,7 +4,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { GoogleAuthProvider, OAuthProvider, signInWithPopup, signInWithRedirect, signOut } from 'firebase/auth';
+import { GoogleAuthProvider, OAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import { auth, isConfigured } from './firebase';
 import { useAuth } from './useAuth';
 import { trackSignIn } from '../utils/analytics';
@@ -60,8 +60,6 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
     return () => document.removeEventListener('keydown', handleTab);
   }, [showMenu]);
 
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
   const signInWith = async (provider: 'google' | 'apple') => {
     if (!auth || !isConfigured) return;
     trackSignIn(provider);
@@ -69,11 +67,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
       ? new GoogleAuthProvider()
       : new OAuthProvider('apple.com');
     try {
-      if (isMobile) {
-        await signInWithRedirect(auth, authProvider);
-      } else {
-        await signInWithPopup(auth, authProvider);
-      }
+      await signInWithPopup(auth, authProvider);
     } catch (err: unknown) {
       if (err instanceof Error && (err as { code?: string }).code !== 'auth/popup-closed-by-user') {
         console.error('Sign-in error:', err);

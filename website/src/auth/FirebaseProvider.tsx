@@ -3,7 +3,7 @@
  */
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { getRedirectResult, onAuthStateChanged, User } from 'firebase/auth';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { Firestore } from 'firebase/firestore';
 import { auth, db, isConfigured } from './firebase';
 import { trackSignInSuccess } from '../utils/analytics';
@@ -40,22 +40,6 @@ export const FirebaseProvider: React.FC<Props> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fakeAuthEnabled = import.meta.env.DEV && import.meta.env.VITE_FAKE_AUTH === 'true';
-    if (fakeAuthEnabled) {
-      const fakeUser = {
-        uid: import.meta.env.VITE_FAKE_AUTH_UID || 'dev-fake-user',
-        email: import.meta.env.VITE_FAKE_AUTH_EMAIL || 'dev@example.com',
-        displayName: import.meta.env.VITE_FAKE_AUTH_NAME || 'Dev User',
-      } as User;
-
-      setUser(fakeUser);
-      setIsLoading(false);
-      if (import.meta.env.DEV) {
-        console.warn('Using fake auth user from VITE_FAKE_AUTH=true');
-      }
-      return;
-    }
-
     if (!auth) {
       if (import.meta.env.DEV) {
         console.warn('Firebase not configured - auth disabled');
@@ -63,11 +47,6 @@ export const FirebaseProvider: React.FC<Props> = ({ children }) => {
       setIsLoading(false);
       return;
     }
-
-    // Handle redirect result from mobile sign-in
-    getRedirectResult(auth).catch((err) => {
-      console.error('Redirect sign-in error:', err);
-    });
 
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       const previousUser = user;
