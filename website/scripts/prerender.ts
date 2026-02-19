@@ -362,11 +362,14 @@ async function prerenderPages() {
     console.log('Starting preview server...');
     server = await startPreviewServer();
 
+    // At this point browser is guaranteed non-null (launch failure returns above)
+    const activeBrowser = browser!;
+
     // Process pages with concurrency limit
     let completed = 0;
     const queue = [...metas];
 
-    async function processPage(page: Awaited<ReturnType<typeof browser.newPage>>, meta: PageMeta) {
+    async function processPage(page: Awaited<ReturnType<typeof activeBrowser.newPage>>, meta: PageMeta) {
       const url = `http://localhost:${PREVIEW_PORT}${meta.route}`;
       try {
         await page.goto(url, { waitUntil: 'networkidle0', timeout: 15000 });
@@ -392,11 +395,11 @@ async function prerenderPages() {
 
     // Create worker pages
     const pages = await Promise.all(
-      Array.from({ length: CONCURRENCY }, () => browser.newPage())
+      Array.from({ length: CONCURRENCY }, () => activeBrowser.newPage())
     );
 
     // Process queue
-    async function worker(page: Awaited<ReturnType<typeof browser.newPage>>) {
+    async function worker(page: Awaited<ReturnType<typeof activeBrowser.newPage>>) {
       while (queue.length > 0) {
         const meta = queue.shift()!;
         await processPage(page, meta);

@@ -12,7 +12,7 @@ export type WalletTagType = 'zakat' | 'sadaqah' | 'insufficient';
 /**
  * Determine the wallet tag type from a raw tag string
  */
-export const getWalletType = (tag: string | undefined): WalletTagType => {
+export const getWalletType = (tag: string | null | undefined): WalletTagType => {
   if (!tag) return 'sadaqah';
 
   if (tag.includes('ZAKAT')) {

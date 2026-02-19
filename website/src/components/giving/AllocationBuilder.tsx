@@ -601,7 +601,7 @@ export function AllocationBuilder({
                       width: `${Math.min(percent, 100)}%`,
                       backgroundColor: bucket.color,
                     }}
-                    title={`${bucket.name}: ${formatCurrency(bucket.amount)}`}
+                    title={`${bucket.label}: ${formatCurrency(bucket.amount)}`}
                   />
                 );
               })}

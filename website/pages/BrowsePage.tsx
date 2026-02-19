@@ -7,7 +7,7 @@ import { THEMES } from '../src/themes';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { Search, X, LayoutGrid, ChevronDown, ChevronUp, SlidersHorizontal, Heart, BookOpen, Zap, Compass, ArrowRight } from 'lucide-react';
 import { useCharities } from '../src/hooks/useCharities';
-import { trackSearch } from '../src/utils/analytics';
+import { trackSearch, trackFilterApply, trackViewToggle } from '../src/utils/analytics';
 import { useAuth } from '../src/auth/useAuth';
 import { SignInButton } from '../src/auth/SignInButton';
 import { useSearchParams } from 'react-router-dom';
@@ -572,6 +572,8 @@ export const BrowsePage: React.FC = () => {
 
   // Toggle a preset filter (add/remove from set)
   const togglePreset = (presetId: string) => {
+    const wasActive = activePresets.has(presetId);
+    const preset = PRESET_FILTERS.find(p => p.id === presetId);
     setActivePresets(prev => {
       const next = new Set(prev);
       if (next.has(presetId)) {
@@ -582,6 +584,9 @@ export const BrowsePage: React.FC = () => {
       return next;
     });
     setSearchQuery('');
+    if (preset) {
+      trackFilterApply(presetId, preset.group, presetCounts.get(presetId) || 0);
+    }
   };
 
   // Clear filters
@@ -593,6 +598,7 @@ export const BrowsePage: React.FC = () => {
 
   // Handle guided path selection
   const selectGuidedPath = (path: GuidedPath) => {
+    trackViewToggle('', browseStyle, path.targetMode);
     if (path.presets && path.presets.length > 0) {
       setActivePresets(new Set(path.presets));
     } else {
@@ -612,6 +618,7 @@ export const BrowsePage: React.FC = () => {
 
   // Switch to power mode (full filters)
   const switchToPowerMode = () => {
+    trackViewToggle('', browseStyle, 'power');
     setBrowseStyle('power');
     if (!selectedPathId) setSortBy('score');
     localStorage.setItem(BROWSE_STYLE_KEY, 'power');
@@ -619,6 +626,7 @@ export const BrowsePage: React.FC = () => {
 
   // Return to guided view
   const returnToGuided = () => {
+    trackViewToggle('', browseStyle, 'guided');
     setBrowseStyle('guided');
     setActivePresets(new Set());
     setSelectedIntentId(null);
@@ -695,7 +703,7 @@ export const BrowsePage: React.FC = () => {
         <div className="mb-2 sm:mb-4 flex flex-wrap items-center gap-3">
           <div className={`inline-flex p-1 rounded-xl ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`}>
             <button
-              onClick={() => { setViewMode('browse'); setSearchQuery(''); }}
+              onClick={() => { trackViewToggle('', viewMode, 'browse'); setViewMode('browse'); setSearchQuery(''); }}
               className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg text-sm font-medium transition-all ${
                 viewMode === 'browse'
                   ? isDark
@@ -710,7 +718,7 @@ export const BrowsePage: React.FC = () => {
               Browse
             </button>
             <button
-              onClick={() => { setViewMode('search'); setActivePresets(new Set()); }}
+              onClick={() => { trackViewToggle('', viewMode, 'search'); setViewMode('search'); setActivePresets(new Set()); }}
               className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg text-sm font-medium transition-all ${
                 viewMode === 'search'
                   ? isDark

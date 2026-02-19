@@ -7,6 +7,7 @@ import React from 'react';
 import { Plus, Check } from 'lucide-react';
 import { useLandingTheme } from '../../contexts/LandingThemeContext';
 import { useCompareState } from '../contexts/UserFeaturesContext';
+import { trackCompareToggle } from '../utils/analytics';
 
 interface CompareButtonProps {
   charityEin: string;
@@ -45,6 +46,7 @@ export function CompareButton({
     e.stopPropagation();
     if (disabled) return;
     toggleCompare(charityEin);
+    trackCompareToggle(charityEin, charityName || '', inCompare ? 'remove' : 'add');
   };
 
   const label = inCompare

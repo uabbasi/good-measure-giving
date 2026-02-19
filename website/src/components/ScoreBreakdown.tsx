@@ -484,7 +484,7 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {areasForImprovement!.map((area, i) => {
               const isRichFormat = typeof area === 'object';
-              const text = isRichFormat ? `${area.area}: ${area.context || area.detail}` : (area as string);
+              const text = isRichFormat ? `${area.area}: ${area.context}` : (area as string);
               return (
                 <div key={i} className={`px-3 py-2 rounded-lg flex items-start gap-2 ${
                   isDark ? 'bg-amber-900/15' : 'bg-amber-50'

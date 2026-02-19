@@ -1099,7 +1099,7 @@ export function UnifiedAllocationView({
               {(() => {
                 const bookmarkedEins = new Set(bookmarkedCharities.map(c => c.ein));
                 const results = charities
-                  .filter(c => !bookmarkedEins.has(c.ein) && c.name.toLowerCase().includes(charitySearchQuery.toLowerCase()))
+                  .filter(c => c.ein && !bookmarkedEins.has(c.ein) && c.name.toLowerCase().includes(charitySearchQuery.toLowerCase()))
                   .slice(0, 10);
 
                 if (results.length === 0) {
@@ -1132,11 +1132,11 @@ export function UnifiedAllocationView({
                             const fullCharity = charities.find(ch => ch.ein === c.ein);
                             const causeTags = fullCharity ? (fullCharity as any).causeTags || [] : [];
                             const bucketId = autoCreateBucketsForCharity({ causeTags });
-                            await onAddCharity(c.ein, c.name, bucketId);
+                            await onAddCharity(c.ein!, c.name, bucketId);
                             if (bucketId) {
                               setAssignments(prev => {
                                 const next = new Map(prev);
-                                next.set(c.ein, bucketId);
+                                next.set(c.ein!, bucketId);
                                 return next;
                               });
                             }
@@ -1227,13 +1227,13 @@ export function UnifiedAllocationView({
             const matchingCharities = charities
               .filter(c => {
                 const tags = (c as any).causeTags || [];
-                return tags.includes(b.tagId) && !bookmarkedEins.has(c.ein);
+                return c.ein && tags.includes(b.tagId) && !bookmarkedEins.has(c.ein);
               })
               .sort((a, c) => ((c as any).amalEvaluation?.amal_score || 0) - ((a as any).amalEvaluation?.amal_score || 0));
             const suggestions = (bucketQuery
               ? matchingCharities.filter(c => c.name.toLowerCase().includes(bucketQuery)).slice(0, 10)
               : matchingCharities.slice(0, 3)
-            ).map(c => ({ ein: c.ein, name: c.name, amalScore: (c as any).amalEvaluation?.amal_score || null }));
+            ).map(c => ({ ein: c.ein!, name: c.name, amalScore: (c as any).amalEvaluation?.amal_score as number | null || null }));
             const bucketHasZakatCharities = zakatStats.bucketHasZakat.get(b.id) || false;
             const categoryDimmed = zakatLens && !bucketHasZakatCharities;
 
@@ -1499,13 +1499,13 @@ export function UnifiedAllocationView({
               const matchingCharities = charities
                 .filter(c => {
                   const tags = (c as any).causeTags || [];
-                  return tags.includes(b.tagId) && !bookmarkedEins.has(c.ein);
+                  return c.ein && tags.includes(b.tagId) && !bookmarkedEins.has(c.ein);
                 })
                 .sort((a, b) => ((b as any).amalEvaluation?.amal_score || 0) - ((a as any).amalEvaluation?.amal_score || 0));
               const suggestions = (bucketQuery
                 ? matchingCharities.filter(c => c.name.toLowerCase().includes(bucketQuery)).slice(0, 10)
                 : matchingCharities.slice(0, 3)
-              ).map(c => ({ ein: c.ein, name: c.name, amalScore: (c as any).amalEvaluation?.amal_score || null }));
+              ).map(c => ({ ein: c.ein!, name: c.name, amalScore: (c as any).amalEvaluation?.amal_score as number | null || null }));
 
               // Check if bucket has any zakat-eligible charities
               const bucketHasZakatCharities = zakatStats.bucketHasZakat.get(b.id) || false;

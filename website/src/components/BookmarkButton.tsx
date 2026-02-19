@@ -8,6 +8,7 @@ import React, { useState } from 'react';
 import { useBookmarkState } from '../contexts/UserFeaturesContext';
 import { useAuth } from '../auth';
 import { useLandingTheme } from '../../contexts/LandingThemeContext';
+import { trackBookmark } from '../utils/analytics';
 
 interface BookmarkButtonProps {
   charityEin: string;
@@ -71,6 +72,7 @@ export function BookmarkButton({
     setIsAnimating(true);
     try {
       await toggleBookmark(charityEin);
+      trackBookmark(charityEin, charityName || '', bookmarked ? 'remove' : 'add');
     } catch (err) {
       console.error('Failed to toggle bookmark:', err);
     }

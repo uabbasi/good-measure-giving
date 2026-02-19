@@ -258,9 +258,9 @@ export interface IdealDonorProfile {
 
 // Citation for rich narratives
 export interface RichCitation {
-  id: string;                         // "[1]", "[2]", etc.
-  claim: string;                      // The specific claim cited
-  source_name: string;                // "Form 990 (2023)", "Charity Navigator"
+  id?: string;                        // "[1]", "[2]", etc.
+  claim?: string;                     // The specific claim cited
+  source_name?: string;               // "Form 990 (2023)", "Charity Navigator"
   source_url?: string | null;
   source_type?: string;               // form990, rating, website, etc.
   confidence?: number;                // 0-1

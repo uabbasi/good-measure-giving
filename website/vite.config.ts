@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => {
         chunkSizeWarningLimit: 600, // Raise slightly since charity data is large
         rollupOptions: {
           output: {
-            manualChunks: (id) => {
+            manualChunks: (id): string | undefined => {
               // Node modules chunking
               if (id.includes('node_modules')) {
                 // React core
@@ -48,6 +48,7 @@ export default defineConfig(({ mode }) => {
               if (id.includes('src/data/charities')) {
                 return 'charity-data';
               }
+              return undefined;
             },
           },
         },

@@ -4,7 +4,7 @@
  * Dense information display with monospace data.
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { getCharityAddress } from '../../utils/formatters';
 import {
@@ -31,8 +31,10 @@ import { useLandingTheme } from '../../../contexts/LandingThemeContext';
 import { useAuth } from '../../auth/useAuth';
 import { SignInButton } from '../../auth/SignInButton';
 import { BookmarkButton } from '../BookmarkButton';
-import { trackCharityView, trackOutboundClick, trackDonateClick } from '../../utils/analytics';
+import { trackCharityView, trackOutboundClick, trackDonateClick, trackTabClick, trackSimilarOrgClick, trackExternalLinkClick, trackSectionView, trackSectionTime } from '../../utils/analytics';
 import { useCharities } from '../../hooks/useCharities';
+import { useScrollTracking } from '../../hooks/useScrollTracking';
+import { useSectionTracking } from '../../hooks/useSectionTracking';
 import { useGivingHistory } from '../../hooks/useGivingHistory';
 import { ReportIssueButton } from '../ReportIssueButton';
 import { SourceLinkedText } from '../SourceLinkedText';
@@ -311,6 +313,11 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
     trackCharityView(charity.id ?? charity.ein ?? '', charity.name, 'terminal');
   }, [charity.id, charity.name]);
 
+  // Track scroll depth and section visibility
+  const charityIdForTracking = charity.id ?? charity.ein ?? '';
+  useScrollTracking(charityIdForTracking);
+  const sectionTrackingRef = useSectionTracking(charityIdForTracking);
+
   const handleDonateClick = () => {
     trackDonateClick(charity.id ?? charity.ein ?? '', charity.name, charity.donationUrl || charity.website || '');
   };
@@ -334,7 +341,12 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
   const toggleSection = (id: string) => {
     setOpenSections(prev => {
       const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+        trackTabClick(charity.id ?? charity.ein ?? '', id);
+      }
       return next;
     });
   };
@@ -687,6 +699,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 href={charity.website}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackExternalLinkClick(charity.id ?? charity.ein ?? '', 'website', charity.website!)}
                 className={`hidden sm:inline-flex items-center gap-1 text-sm ${
                   isDark ? 'text-slate-400 hover:text-slate-300' : 'text-slate-500 hover:text-slate-600'
                 }`}
@@ -963,6 +976,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 href={charity.website}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackExternalLinkClick(charity.id ?? charity.ein ?? '', 'website', charity.website!)}
                 className={`flex items-center gap-2 text-sm py-1.5 ${
                   isDark ? 'text-emerald-400 hover:text-emerald-300' : 'text-emerald-600 hover:text-emerald-700'
                 }`}
@@ -974,6 +988,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
               href={`https://www.charitynavigator.org/ein/${(charity.ein ?? charity.id ?? '').replace(/-/g, '')}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackExternalLinkClick(charity.id ?? charity.ein ?? '', 'source', `https://www.charitynavigator.org/ein/${(charity.ein ?? charity.id ?? '').replace(/-/g, '')}`)}
               className={`flex items-center gap-2 text-sm py-1.5 ${
                 isDark ? 'text-slate-400 hover:text-slate-300' : 'text-slate-500 hover:text-slate-600'
               }`}
@@ -984,6 +999,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
               href={`https://projects.propublica.org/nonprofits/organizations/${(charity.ein ?? charity.id ?? '').replace(/-/g, '')}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackExternalLinkClick(charity.id ?? charity.ein ?? '', 'source', `https://projects.propublica.org/nonprofits/organizations/${(charity.ein ?? charity.id ?? '').replace(/-/g, '')}`)}
               className={`flex items-center gap-2 text-sm py-1.5 ${
                 isDark ? 'text-slate-400 hover:text-slate-300' : 'text-slate-500 hover:text-slate-600'
               }`}
@@ -1417,13 +1433,13 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
         </aside>
 
         {/* Center Content */}
-        <main className={`lg:col-span-6 px-6 pt-0 pb-6 ${isDark ? 'bg-slate-950' : 'bg-slate-100'}`}>
+        <main ref={sectionTrackingRef as React.RefObject<HTMLElement>} className={`lg:col-span-6 px-6 pt-0 pb-6 ${isDark ? 'bg-slate-950' : 'bg-slate-100'}`}>
           {/* === Section 1: Narrative / About === */}
           {(() => {
             // GMG: signed in with rich/baseline content
             if (isSignedIn && (rich?.summary || baseline?.summary)) {
               return (
-                <div className={`border-l-4 p-5 rounded-r-lg mb-6 ${
+                <div data-section="about" className={`border-l-4 p-5 rounded-r-lg mb-6 ${
                   isDark ? 'bg-slate-900 border-slate-600' : 'bg-white border-slate-300'
                 }`}>
                   <div className={`text-xs uppercase tracking-widest font-semibold mb-3 ${
@@ -1452,7 +1468,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             // GMG: not signed in, has rich (show baseline + sign-in prompt)
             if (!isSignedIn && hasRich) {
               return (
-                <div className={`border-l-4 p-4 rounded-r-lg mb-6 ${
+                <div data-section="about" className={`border-l-4 p-4 rounded-r-lg mb-6 ${
                   isDark ? 'bg-slate-800/50 border-slate-600' : 'bg-slate-50 border-slate-300'
                 }`}>
                   <div className={`text-xs uppercase tracking-widest font-semibold mb-2 ${
@@ -1497,7 +1513,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             // GMG: not signed in, baseline only
             if (!isSignedIn && baseline) {
               return (
-                <div className={`border-l-4 p-4 rounded-r-lg mb-6 ${
+                <div data-section="about" className={`border-l-4 p-4 rounded-r-lg mb-6 ${
                   isDark ? 'bg-slate-900 border-slate-600' : 'bg-white border-slate-300'
                 }`}>
                   <div className={`text-xs uppercase tracking-widest font-semibold mb-2 ${
@@ -1532,7 +1548,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
 
           {/* === Balanced View (before Best For) === */}
           {isSignedIn && rich?.case_against && (
-            <div className={`rounded-lg border-2 p-5 mb-6 ${
+            <div data-section="balanced_view" className={`rounded-lg border-2 p-5 mb-6 ${
               isDark ? 'bg-violet-900/10 border-violet-600/50' : 'bg-violet-50 border-violet-300'
             }`}>
               <div className={`text-xs uppercase tracking-widest font-semibold mb-3 flex items-center gap-2 ${
@@ -1576,7 +1592,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             if (!donorProfile) return null;
 
             return (
-              <div className={`border-l-4 p-4 rounded-r-lg mb-6 ${
+              <div data-section="best_for" className={`border-l-4 p-4 rounded-r-lg mb-6 ${
                 isDark ? 'bg-emerald-900/20 border-emerald-500' : 'bg-emerald-50 border-emerald-600'
               }`}>
                 <div className={`text-xs uppercase tracking-widest font-semibold mb-2 ${
@@ -1642,7 +1658,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
 
           {/* === Section 3: Methodology Details (always open) === */}
           {amal?.score_details && (
-            <div className={`mb-6 rounded-lg border ${isDark ? 'border-slate-700 bg-slate-900/40' : 'border-slate-200 bg-white'}`}>
+            <div data-section="methodology" className={`mb-6 rounded-lg border ${isDark ? 'border-slate-700 bg-slate-900/40' : 'border-slate-200 bg-white'}`}>
               <div className={`px-4 py-3 text-sm font-semibold ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
                 Methodology details
               </div>
@@ -2395,6 +2411,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                         {isSignedIn && linkedId ? (
                           <Link
                             to={`/charity/${linkedId}`}
+                            onClick={() => trackSimilarOrgClick(charity.id ?? charity.ein ?? '', linkedId!, orgName, i)}
                             className={`flex items-center gap-1 ${
                               isDark ? 'text-emerald-400 hover:text-emerald-300' : 'text-emerald-600 hover:text-emerald-700'
                             }`}
@@ -2484,6 +2501,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                   href={charity.website}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackExternalLinkClick(charity.id ?? charity.ein ?? '', 'website', charity.website!)}
                   className={`flex items-center gap-2 text-sm ${
                     isDark ? 'text-emerald-400 hover:text-emerald-300' : 'text-emerald-600 hover:text-emerald-700'
                   }`}
@@ -2495,6 +2513,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 href={`https://www.charitynavigator.org/ein/${(charity.ein ?? charity.id ?? '').replace(/-/g, '')}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackExternalLinkClick(charity.id ?? charity.ein ?? '', 'source', `https://www.charitynavigator.org/ein/${(charity.ein ?? charity.id ?? '').replace(/-/g, '')}`)}
                 className={`flex items-center justify-between text-sm ${
                   isDark ? 'text-slate-400 hover:text-slate-300' : 'text-slate-500 hover:text-slate-600'
                 }`}
@@ -2513,6 +2532,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 href={`https://projects.propublica.org/nonprofits/organizations/${(charity.ein ?? charity.id ?? '').replace(/-/g, '')}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackExternalLinkClick(charity.id ?? charity.ein ?? '', 'source', `https://projects.propublica.org/nonprofits/organizations/${(charity.ein ?? charity.id ?? '').replace(/-/g, '')}`)}
                 className={`flex items-center gap-2 text-sm ${
                   isDark ? 'text-slate-400 hover:text-slate-300' : 'text-slate-500 hover:text-slate-600'
                 }`}

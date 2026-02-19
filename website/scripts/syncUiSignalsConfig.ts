@@ -4,8 +4,10 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 type YamlScalar = string | number | boolean | null;
-type YamlValue = YamlScalar | YamlObject | YamlValue[];
-type YamlObject = Record<string, YamlValue>;
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+interface YamlObject { [key: string]: YamlScalar | YamlObject | YamlArray }
+interface YamlArray extends Array<YamlScalar | YamlObject | YamlArray> {}
+type YamlValue = YamlScalar | YamlObject | YamlArray;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

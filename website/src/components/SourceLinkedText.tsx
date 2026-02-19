@@ -11,9 +11,9 @@ import React from 'react';
 import { cleanNarrativeText } from '../utils/cleanNarrativeText';
 
 interface Citation {
-  id: string;           // "[1]", "[2]", etc.
+  id?: string;           // "[1]", "[2]", etc.
   source_url?: string | null;
-  source_name: string;
+  source_name?: string;
   claim?: string;
 }
 
@@ -71,12 +71,13 @@ function buildCitationMap(citations: Citation[]): Map<string, { url: string; nam
   const map = new Map();
   for (const c of citations) {
     // Only add if URL exists and is not blocked
-    if (c.source_url && !isBlockedUrl(c.source_url)) {
+    if (c.id && c.source_url && !isBlockedUrl(c.source_url)) {
+      const name = c.source_name || 'Source';
       // Store with normalized ID (just the number)
       const numericId = c.id.replace(/[\[\]]/g, '');
-      map.set(numericId, { url: c.source_url, name: c.source_name });
+      map.set(numericId, { url: c.source_url, name });
       // Also store with brackets for legacy format
-      map.set(c.id, { url: c.source_url, name: c.source_name });
+      map.set(c.id, { url: c.source_url, name });
     }
   }
   return map;

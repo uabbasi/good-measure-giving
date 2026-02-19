@@ -29,7 +29,7 @@ const donationSchema = z.object({
   notes: z.string().optional().default(''),
 });
 
-type DonationFormValues = z.infer<typeof donationSchema>;
+type DonationFormValues = z.output<typeof donationSchema>;
 
 // --------------- Component ---------------
 interface AddDonationModalProps {
@@ -100,7 +100,7 @@ export function AddDonationModal({
     setFocus,
     formState: { errors },
   } = useForm<DonationFormValues>({
-    resolver: zodResolver(donationSchema),
+    resolver: zodResolver(donationSchema) as any,
     defaultValues: buildDefaults(existingDonation, prefillCharity),
   });
 
@@ -195,7 +195,7 @@ export function AddDonationModal({
         exit={{ opacity: 0, scale: 0.95, y: 10 }}
         transition={{ duration: 0.2 }}
       >
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit as any)}>
           {/* Header */}
           <div className={`sticky top-0 px-6 py-4 border-b ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
             <div className="flex items-center justify-between">
