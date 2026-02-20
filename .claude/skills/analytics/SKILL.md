@@ -1,11 +1,11 @@
 ---
 name: analytics
-description: GA4 analytics reporting and funnel analysis. Pull realtime data, analyze user journeys, and track key metrics (logins, engagement). Use when checking site performance or understanding user behavior.
+description: Unified analytics (GA4 + Firestore). Pull traffic data, user activity, feature adoption, and giving metrics. Use when checking site performance, user behavior, or feature usage.
 ---
 
-# GA4 Analytics for Good Measure Giving
+# Analytics for Good Measure Giving
 
-Analyze user behavior, track conversions, and understand engagement patterns using Google Analytics 4 data.
+Analyze user behavior, track conversions, and understand engagement patterns using GA4 traffic data and Firestore user data.
 
 ---
 
@@ -16,6 +16,8 @@ Analyze user behavior, track conversions, and understand engagement patterns usi
 - Reviewing search behavior and popular charities
 - Tracking login/signup conversions
 - Understanding time on site and engagement metrics
+- Checking user signups, feature adoption, or giving activity
+- Investigating Firestore user data or reported issues
 
 ---
 
@@ -235,3 +237,83 @@ This shows what paths lead to donations.
 
 **Engagement check:**
 > "How's our time on site trending?"
+
+**Full report (Firestore + GA4):**
+> "Run /analytics"
+
+---
+
+## Firestore Data Source
+
+### Script
+
+`scripts/firestore_analytics.py` — queries Firestore via REST API using `gcloud auth print-access-token`. No additional dependencies (stdlib only). Outputs structured JSON to stdout, logs to stderr.
+
+```bash
+uv run python scripts/firestore_analytics.py 2>/tmp/firestore_analytics.err
+```
+
+### Firestore Schema
+
+**`users` (top-level collection)**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `createdAt` | timestamp | Account creation date |
+| `updatedAt` | timestamp | Last profile update |
+| `targetZakatAmount` | number/null | Annual zakat target |
+| `zakatAnniversary` | string/null | Zakat calculation anniversary date |
+| `givingBuckets` | array | Custom giving categories (id, name, tags, percentage, color) |
+| `charityBucketAssignments` | array | Charities assigned to buckets (charityEin, bucketId) |
+| `geographicPreferences` | array | Preferred regions for giving |
+| `fiqhPreferences` | map | Islamic jurisprudence preferences |
+| `givingPriorities` | map | Cause area priorities |
+
+**`users/{uid}/bookmarks` (subcollection)**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `charityEin` | string | Bookmarked charity EIN |
+| `notes` | string/null | User notes |
+| `createdAt` | timestamp | When bookmarked |
+
+**`users/{uid}/giving_history` (subcollection)**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `charityEin` | string | Charity EIN |
+| `charityName` | string | Charity display name |
+| `amount` | number | Donation amount |
+| `date` | string | Donation date (YYYY-MM-DD) |
+| `category` | string | zakat, sadaqah, or other |
+| `zakatYear` | number | Applicable zakat year |
+| `taxDeductible` | boolean | Tax deductible flag |
+| `receiptReceived` | boolean | Receipt received flag |
+| `matchEligible` | boolean | Employer match eligible |
+| `matchStatus` | string/null | Match status |
+| `matchAmount` | number/null | Match amount |
+| `paymentSource` | string/null | Payment method |
+| `notes` | string/null | User notes |
+| `createdAt` | timestamp | When recorded |
+
+**`users/{uid}/charity_targets` (subcollection)** — planned giving targets (currently empty)
+
+**`reported_issues` (top-level collection)** — user-reported data issues (currently empty)
+
+### Feature Adoption Metrics
+
+The script calculates adoption as: `(users with feature) / (total users) * 100%`
+
+Features tracked:
+- **Bookmarks**: user has any docs in `bookmarks` subcollection
+- **Giving History**: user has any docs in `giving_history` subcollection
+- **Zakat Target**: `targetZakatAmount` is non-null and non-zero
+- **Giving Buckets**: `givingBuckets` array is non-empty
+- **Bucket Assignments**: `charityBucketAssignments` array is non-empty
+- **Geographic Preferences**: `geographicPreferences` array is non-empty
+- **Fiqh Preferences**: `fiqhPreferences` map has any truthy values
+- **Zakat Anniversary**: `zakatAnniversary` is non-null
+
+### MCP Tool Limitations
+
+The Firebase MCP tools (`firestore_query_collection`, `firestore_get_documents`) cannot query subcollections. The Python script uses the Firestore REST API with `allDescendants: true` collection group queries to access `bookmarks`, `giving_history`, and `charity_targets` data across all users in a single API call per collection type.
