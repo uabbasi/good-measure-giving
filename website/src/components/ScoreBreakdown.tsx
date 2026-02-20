@@ -479,7 +479,7 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({
             isDark ? 'text-amber-400/80' : 'text-amber-700'
           }`}>
             <TrendingUp className="w-3 h-3" />
-            Where They Can Improve
+            Room to Grow
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {areasForImprovement!.map((area, i) => {

@@ -47,6 +47,7 @@ import { RecommendationCue } from '../RecommendationCue';
 import { InfoTip } from '../InfoTip';
 import { GLOSSARY } from '../../data/glossary';
 import { OrganizationEngagement } from '../OrganizationEngagement';
+import { ContentPreview } from '../ContentPreview';
 import { resolveCitationUrls, resolveSourceUrl } from '../../utils/citationUrls';
 
 interface TerminalViewProps {
@@ -753,8 +754,23 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
           return null;
         })()}
 
-        {/* === Mobile: Balanced View (before Best For) === */}
-        {isSignedIn && rich?.case_against && (
+        {/* === Mobile: Top-of-page nudge for anonymous users === */}
+        {!isSignedIn && hasRich && (
+          <div className={`px-3.5 py-2.5 rounded-2xl flex items-center gap-2.5 text-sm ${
+            isDark ? 'bg-emerald-900/20 border border-emerald-800/40 text-slate-300' : 'bg-emerald-50 border border-emerald-200 text-slate-700'
+          }`}>
+            <Lock className={`w-3.5 h-3.5 flex-shrink-0 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
+            <span>
+              Full analysis available.{' '}
+              <SignInButton variant="custom" className={`inline font-semibold underline cursor-pointer ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
+                Sign in to unlock
+              </SignInButton>
+            </span>
+          </div>
+        )}
+
+        {/* === Mobile: Things to Know (before Best For) === */}
+        {rich?.case_against && (isSignedIn ? (
           <div className={`rounded-lg border-2 p-4 ${
             isDark ? 'bg-violet-900/10 border-violet-600/50' : 'bg-violet-50 border-violet-300'
           }`}>
@@ -762,8 +778,8 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
               isDark ? 'text-violet-400' : 'text-violet-700'
             }`}>
               <Scale className="w-3.5 h-3.5" />
-              Balanced View
-              <InfoTip text={GLOSSARY['Balanced View']} isDark={isDark} />
+              Things to Know
+              <InfoTip text={GLOSSARY['Things to Know']} isDark={isDark} />
             </div>
             <p className={`text-sm mb-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
               <SourceLinkedText text={rich.case_against.summary} citations={citations} isDark={isDark} />
@@ -771,8 +787,8 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             {rich.case_against.risk_factors?.length > 0 && (
               <div className="space-y-1.5">
                 <div className={`text-xs font-semibold flex items-center gap-1 ${isDark ? 'text-violet-400' : 'text-violet-600'}`}>
-                  <AlertTriangle className="w-3 h-3" />
-                  Risk Factors
+                  <Scale className="w-3 h-3" />
+                  Considerations
                 </div>
                 <ul className={`text-xs space-y-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                   {rich.case_against.risk_factors.map((risk, i) => (
@@ -790,12 +806,15 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
               </div>
             )}
           </div>
-        )}
+        ) : (
+          <ContentPreview title="Things to Know" description="important context and considerations" />
+        ))}
 
         {/* === Mobile Section 2: Best For === */}
         {(() => {
-          const donorProfile = isSignedIn ? idealDonorProfile : null;
-          if (!donorProfile) return null;
+          if (!idealDonorProfile) return null;
+          if (!isSignedIn) return <ContentPreview title="Best For" description="which donors this charity fits best" />;
+          const donorProfile = idealDonorProfile;
           return (
             <div className={`border-l-4 p-3.5 rounded-r-lg ${
               isDark ? 'bg-emerald-900/20 border-emerald-500' : 'bg-emerald-50 border-emerald-600'
@@ -850,8 +869,8 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 <div className={`mt-2 pt-2 border-t text-xs flex items-start gap-1 ${
                   isDark ? 'border-slate-700 text-amber-400' : 'border-slate-200 text-amber-600'
                 }`}>
-                  <AlertCircle className="w-3 h-3 shrink-0 mt-0.5" />
-                  <span><strong>Not ideal for:</strong> {donorProfile.not_ideal_for}</span>
+                  <Scale className="w-3 h-3 shrink-0 mt-0.5" />
+                  <span><strong>May not fit donors who:</strong> {donorProfile.not_ideal_for}</span>
                 </div>
               )}
             </div>
@@ -1237,7 +1256,12 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             )}
 
             {/* Financial Deep Dive - 3-Year History (Rich only, authenticated) */}
-            {isSignedIn && rich?.financial_deep_dive?.yearly_financials && rich.financial_deep_dive.yearly_financials.length > 0 && (
+            {rich?.financial_deep_dive?.yearly_financials && rich.financial_deep_dive.yearly_financials.length > 0 && !isSignedIn && (
+              <div className={`mt-3 pt-3 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
+                <ContentPreview title="3-Year Financials" description="three years of financial data" />
+              </div>
+            )}
+            {rich?.financial_deep_dive?.yearly_financials && rich.financial_deep_dive.yearly_financials.length > 0 && isSignedIn && (
               <div className={`mt-3 pt-3 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
                 <div className={`text-xs font-semibold mb-2 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                   3-Year History
@@ -1366,7 +1390,12 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
           )}
 
           {/* Long-Term Outlook (Rich only, authenticated) */}
-          {isSignedIn && rich?.long_term_outlook && (
+          {rich?.long_term_outlook && !isSignedIn && (
+            <div className="mb-6">
+              <ContentPreview title="Long-Term Outlook" description="sustainability and future direction" />
+            </div>
+          )}
+          {rich?.long_term_outlook && isSignedIn && (
             <div className="mb-6">
               <div className={`text-xs uppercase tracking-widest font-semibold mb-3 ${
                 isDark ? 'text-slate-500' : 'text-slate-400'
@@ -1399,7 +1428,12 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
           )}
 
           {/* Donor Fit Matrix (Rich only, authenticated) */}
-          {isSignedIn && rich?.donor_fit_matrix && (
+          {rich?.donor_fit_matrix && !isSignedIn && (
+            <div className="mb-6">
+              <ContentPreview title="Donor Fit" description="donor fit and giving style analysis" />
+            </div>
+          )}
+          {rich?.donor_fit_matrix && isSignedIn && (
             <div className="mb-6">
               <div className={`text-xs uppercase tracking-widest font-semibold mb-3 ${
                 isDark ? 'text-slate-500' : 'text-slate-400'
@@ -1434,6 +1468,20 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
 
         {/* Center Content */}
         <main ref={sectionTrackingRef as React.RefObject<HTMLElement>} className={`lg:col-span-6 px-6 pt-0 pb-6 ${isDark ? 'bg-slate-950' : 'bg-slate-100'}`}>
+          {/* === Top-of-page nudge for anonymous users === */}
+          {!isSignedIn && hasRich && (
+            <div className={`mb-4 px-4 py-3 rounded-lg flex items-center gap-3 text-sm ${
+              isDark ? 'bg-emerald-900/20 border border-emerald-800/40 text-slate-300' : 'bg-emerald-50 border border-emerald-200 text-slate-700'
+            }`}>
+              <Lock className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
+              <span>
+                This evaluation has a full analysis with leadership details, impact evidence, and donor fit data.{' '}
+                <SignInButton variant="custom" className={`inline font-semibold underline cursor-pointer ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
+                  Sign in to unlock
+                </SignInButton>
+              </span>
+            </div>
+          )}
           {/* === Section 1: Narrative / About === */}
           {(() => {
             // GMG: signed in with rich/baseline content
@@ -1546,8 +1594,8 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             return null;
           })()}
 
-          {/* === Balanced View (before Best For) === */}
-          {isSignedIn && rich?.case_against && (
+          {/* === Things to Know (before Best For) === */}
+          {rich?.case_against && (isSignedIn ? (
             <div data-section="balanced_view" className={`rounded-lg border-2 p-5 mb-6 ${
               isDark ? 'bg-violet-900/10 border-violet-600/50' : 'bg-violet-50 border-violet-300'
             }`}>
@@ -1555,8 +1603,8 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 isDark ? 'text-violet-400' : 'text-violet-700'
               }`}>
                 <Scale className="w-4 h-4" />
-                Balanced View
-                <InfoTip text={GLOSSARY['Balanced View']} isDark={isDark} />
+                Things to Know
+                <InfoTip text={GLOSSARY['Things to Know']} isDark={isDark} />
               </div>
               <p className={`text-sm mb-3 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                 <SourceLinkedText text={rich.case_against.summary} citations={citations} isDark={isDark} />
@@ -1564,8 +1612,8 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
               {rich.case_against.risk_factors?.length > 0 && (
                 <div className="space-y-2">
                   <div className={`text-xs font-semibold flex items-center gap-1 ${isDark ? 'text-violet-400' : 'text-violet-600'}`}>
-                    <AlertTriangle className="w-3 h-3" />
-                    Risk Factors
+                    <Scale className="w-3 h-3" />
+                    Considerations
                   </div>
                   <ul className={`text-xs space-y-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                     {rich.case_against.risk_factors.map((risk, i) => (
@@ -1583,13 +1631,17 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 </div>
               )}
             </div>
-          )}
+          ) : (
+            <div className="mb-6">
+              <ContentPreview title="Things to Know" description="important context and considerations" />
+            </div>
+          ))}
 
           {/* === Section 2: Best For (moved above Score Analysis) === */}
           {(() => {
-            const donorProfile = isSignedIn ? idealDonorProfile : null;
-
-            if (!donorProfile) return null;
+            if (!idealDonorProfile) return null;
+            if (!isSignedIn) return <div className="mb-6"><ContentPreview title="Best For" description="which donors this charity fits best" /></div>;
+            const donorProfile = idealDonorProfile;
 
             return (
               <div data-section="best_for" className={`border-l-4 p-4 rounded-r-lg mb-6 ${
@@ -1648,8 +1700,8 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                   <div className={`mt-3 pt-2 border-t text-xs flex items-start gap-1 ${
                     isDark ? 'border-slate-700 text-amber-400' : 'border-slate-200 text-amber-600'
                   }`}>
-                    <AlertCircle className="w-3 h-3 shrink-0 mt-0.5" />
-                    <span><strong>Not ideal for:</strong> {donorProfile.not_ideal_for}</span>
+                    <Scale className="w-3 h-3 shrink-0 mt-0.5" />
+                    <span><strong>May not fit donors who:</strong> {donorProfile.not_ideal_for}</span>
                   </div>
                 )}
               </div>
@@ -1984,7 +2036,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
           )}
 
           {/* 2. Leadership & Governance (Rich only, authenticated) */}
-          {isSignedIn && rich?.organizational_capacity && (
+          {rich?.organizational_capacity && (isSignedIn ? (
             <div className={`mb-6 p-4 rounded-lg border ${
               isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-200'
             }`}>
@@ -2059,7 +2111,11 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 </div>
               </div>
             </div>
-          )}
+          ) : (
+            <div className="mb-6">
+              <ContentPreview title="Leadership" description="leadership and governance details" />
+            </div>
+          ))}
 
           {/* 2b. Baseline Governance - for charities without rich narratives */}
           {!rich?.organizational_capacity && charity.baselineGovernance && (
@@ -2093,7 +2149,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
           )}
 
           {/* Impact Evidence (Rich only, authenticated) */}
-          {isSignedIn && rich?.impact_evidence && (
+          {rich?.impact_evidence && (isSignedIn ? (
             <div className={`mb-6 p-4 rounded-lg border ${
               isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-200'
             }`}>
@@ -2200,10 +2256,19 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 </div>
               )}
             </div>
-          )}
+          ) : (
+            <div className="mb-6">
+              <ContentPreview title="Impact Evidence" description="evidence quality and evaluation details" />
+            </div>
+          ))}
 
           {/* BBB Wise Giving */}
-          {isSignedIn && rich?.bbb_assessment && (
+          {rich?.bbb_assessment && !isSignedIn && (
+            <div className="mb-6">
+              <ContentPreview title="BBB Assessment" description="BBB Wise Giving standards review" />
+            </div>
+          )}
+          {rich?.bbb_assessment && isSignedIn && (
             rich.bbb_assessment.meets_all_standards ||
             (rich.bbb_assessment.standards_met && rich.bbb_assessment.standards_met > 0) ||
             (rich.bbb_assessment.standards_not_met && rich.bbb_assessment.standards_not_met.length > 0) ||
@@ -2319,7 +2384,12 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
           )}
 
           {/* Grantmaking Profile (Rich only, authenticated) */}
-          {isSignedIn && rich?.grantmaking_profile && rich.grantmaking_profile.is_significant_grantmaker && (
+          {rich?.grantmaking_profile && rich.grantmaking_profile.is_significant_grantmaker && !isSignedIn && (
+            <div className="mb-6">
+              <ContentPreview title="Grantmaking" description="grantmaking profile and distribution data" />
+            </div>
+          )}
+          {rich?.grantmaking_profile && rich.grantmaking_profile.is_significant_grantmaker && isSignedIn && (
             <div className={`mb-6 p-4 rounded-lg border ${
               isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-200'
             }`}>
@@ -2447,7 +2517,12 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
           )}
 
           {/* Citation Stats / Sources (Rich only, authenticated) */}
-          {isSignedIn && rich?.citation_stats && (
+          {rich?.citation_stats && !isSignedIn && (
+            <div className="mb-6">
+              <ContentPreview title="Sources" description="citation statistics and source details" />
+            </div>
+          )}
+          {rich?.citation_stats && isSignedIn && (
             <div className={`mb-6 p-4 rounded-lg border ${
               isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-200'
             }`}>

@@ -94,9 +94,9 @@ export const LandingPage: React.FC = () => {
           {/* Headline */}
 
           <h1 className={`text-4xl md:text-5xl lg:text-7xl font-bold font-merriweather tracking-tight mb-5 md:mb-6 leading-[1.05] md:leading-[1.1] [text-wrap:balance] transition-colors duration-300 ${theme.textMain}`}>
-            From Guesswork to{' '}
+            Independent Research on the{' '}
             <br className="hidden md:block" />
-            <span className={`${theme.textAccent}`}>Good Measure</span>
+            <span className={`${theme.textAccent}`}>Charities You Trust</span>
           </h1>
 
 
@@ -107,7 +107,7 @@ export const LandingPage: React.FC = () => {
 
             <p className={`text-xl leading-relaxed mb-4 antialiased transition-colors duration-300 ${theme.textSub}`}>
 
-              Give with clarity. Give with confidence.
+              See what{'\u2019'}s behind the names you already know — financials, impact evidence, and how your dollar travels.
 
             </p>
 
@@ -203,13 +203,13 @@ export const LandingPage: React.FC = () => {
 
               <h2 className={`text-3xl lg:text-4xl font-bold font-merriweather mb-4 [text-wrap:balance] ${theme.id.includes('dark') || theme.id === 'warm-atmosphere' ? 'text-white' : 'text-slate-900'}`}>
 
-                Don{'\u2019'}t guess. See the evidence.
+                What you{'\u2019'}ve never been able to see
 
               </h2>
 
               <p className={`text-lg leading-relaxed mb-6 md:mb-8 ${theme.id.includes('dark') || theme.id === 'warm-atmosphere' ? 'text-slate-300' : 'text-slate-600'}`}>
 
-                Most charities show you sad photos. We show you which ones have proof their programs work{'\u2014'}and how far your donation actually goes.
+                Charities share stories. We dig into the data behind them — program outcomes, financial health, and where your dollar actually ends up.
 
               </p>
 
@@ -342,10 +342,10 @@ export const LandingPage: React.FC = () => {
             <span className={`text-sm font-medium ${theme.id.includes('dark') || theme.id === 'warm-atmosphere' ? 'text-emerald-400' : 'text-emerald-700'}`}>Community Access</span>
           </div>
           <h2 className={`text-3xl lg:text-4xl font-bold font-merriweather mb-4 [text-wrap:balance] ${theme.id.includes('dark') || theme.id === 'warm-atmosphere' ? 'text-white' : 'text-slate-900'}`}>
-            Build your giving plan
+            Go deeper on the charities you care about
           </h2>
           <p className={`text-lg leading-relaxed mb-8 max-w-xl mx-auto ${theme.id.includes('dark') || theme.id === 'warm-atmosphere' ? 'text-slate-300' : 'text-slate-600'}`}>
-            Save charities, compare evaluations, and get personalized research with community membership.
+            Sign in to unlock full evaluations — leadership details, financial history, impact evidence, and donor fit analysis. Free, always.
           </p>
           <SignInButton
             variant="button"

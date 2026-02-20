@@ -1255,10 +1255,10 @@ export const BrowsePage: React.FC = () => {
               : 'bg-white border-slate-200'
           }`}>
             <h3 className={`text-lg font-bold font-merriweather mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              Get more from your research
+              See the full evaluation
             </h3>
             <p className={`text-sm mb-4 max-w-lg mx-auto ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-              Join the community to save charities, compare them side-by-side, and build a personalized giving plan — completely free.
+              Sign in to unlock leadership details, financial deep dives, impact evidence, and donor fit analysis for every charity — free, no strings.
             </p>
             <SignInButton variant="button" className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-colors ${
               isDark

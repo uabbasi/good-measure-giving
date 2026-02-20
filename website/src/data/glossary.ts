@@ -11,8 +11,8 @@ export const GLOSSARY: Record<string, string> = {
     'How much verified, cross-referenced data we have about this charity — higher means more trustworthy scores.',
   'Organizational Risk':
     'Deductions for red flags like low program spending, weak financial reserves, or governance concerns.',
-  'Balanced View':
-    'An honest look at potential concerns and risks, alongside what the charity does well.',
+  'Things to Know':
+    'Important context for donors — limitations, trade-offs, and what to keep in mind alongside this charity\'s strengths.',
   'Long-Term Outlook':
     'Assessment of the charity\'s sustainability, strategic direction, and ability to maintain impact over time.',
   'Donor Fit':

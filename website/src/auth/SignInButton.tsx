@@ -153,10 +153,10 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
             />
           </div>
           <h2 id="signin-modal-title" className="text-2xl font-bold text-slate-900 mb-2">
-            Join the Community
+            See the Full Picture
           </h2>
           <p className="text-slate-500 max-w-xs mx-auto">
-            Free access to independent charity research, donor insights, and giving guides.
+            Unlock detailed evaluations — impact evidence, financial analysis, leadership data, and donor fit for every charity. Free, always.
           </p>
         </div>
 
@@ -251,7 +251,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
           onClick={() => setShowMenu(!showMenu)}
           className={className}
         >
-          Join the Community
+          See Full Evaluations — Free
         </button>
         {showMenu && <SignInModal />}
       </div>
@@ -264,7 +264,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
         onClick={() => setShowMenu(!showMenu)}
         className={`px-6 py-3 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-500 transition-colors ${className}`}
       >
-        Join the Community
+        See Full Evaluations — Free
       </button>
       {showMenu && <SignInModal />}
     </div>

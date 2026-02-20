@@ -21,15 +21,15 @@ interface JoinCommunityCTAProps {
 }
 
 const benefits = [
-  'See which charities have proof their programs work',
-  'Compare cost-effectiveness across similar organizations',
-  'Know if a charity qualifies for your Zakat',
+  'Impact evidence grades and theory of change analysis',
+  'Leadership profiles, governance, and financial deep dives',
+  'Donor fit analysis — see if a charity matches your giving style',
 ];
 
 export const JoinCommunityCTA: React.FC<JoinCommunityCTAProps> = ({
   variant = 'dark',
-  heading = 'Give with Confidence',
-  description = 'Join thousands of Muslim donors who want more than a star rating. See the evidence behind every charity.',
+  heading = 'See What Most Donors Never See',
+  description = 'Every charity tells a story. We show you the data behind it — sign in for the full evaluation, free forever.',
   className = '',
 }) => {
   const isMember = useCommunityMember();

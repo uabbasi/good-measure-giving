@@ -45,9 +45,9 @@ export const JoinCommunityPrompt: React.FC<{ className?: string }> = ({
   const { isDark } = useLandingTheme();
 
   const benefits = [
-    'Full charity analysis with detailed breakdowns',
-    'Evidence quality ratings and source citations',
-    'Priority access to new evaluations',
+    'Impact evidence grades and theory of change analysis',
+    'Leadership profiles, governance, and financial deep dives',
+    'Donor fit analysis — see if a charity matches your giving style',
   ];
 
   return (
@@ -55,12 +55,12 @@ export const JoinCommunityPrompt: React.FC<{ className?: string }> = ({
       <div className="p-8">
         {/* Headline */}
         <h3 className={`text-2xl lg:text-3xl font-merriweather font-bold mb-3 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-          Unlock Full Analysis
+          See What Most Donors Never See
         </h3>
 
         {/* Subtext */}
         <p className={`text-base mb-6 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-          Get the complete picture on every charity—detailed breakdowns, evidence grades, and source citations.
+          Every charity tells a story. We show you the data behind it — sign in for the full evaluation, free forever.
         </p>
 
         {/* Benefits list with checkmarks */}
