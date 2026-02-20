@@ -40,6 +40,7 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 # =============================================================================
 
 # Google Gemini models
+MODEL_GEMINI_31_PRO = "gemini-3.1-pro-preview"
 MODEL_GEMINI_3_PRO = "gemini-3-pro-preview"
 MODEL_GEMINI_3_FLASH = "gemini-3-flash-preview"
 MODEL_GEMINI_25_PRO = "gemini-2.5-pro"
@@ -63,6 +64,18 @@ MODEL_GPT4O_MINI = "gpt-4o-mini"
 
 MODEL_REGISTRY: Dict[str, Dict[str, Any]] = {
     # Google Gemini
+    MODEL_GEMINI_31_PRO: {
+        "litellm_name": "gemini/gemini-3.1-pro-preview",
+        "provider": "google",
+        "cost_per_1m_input": 2.00,  # ≤200k tokens
+        "cost_per_1m_input_large": 4.00,  # >200k tokens
+        "cost_per_1m_input_cached": 0.20,  # ≤200k cached
+        "cost_per_1m_input_cached_large": 0.40,  # >200k cached
+        "cost_per_1m_output": 12.00,  # ≤200k tokens
+        "cost_per_1m_output_large": 18.00,  # >200k tokens
+        "context_window": 1_000_000,
+        "supports_json_mode": True,
+    },
     MODEL_GEMINI_3_PRO: {
         "litellm_name": "gemini/gemini-3-pro-preview",
         "provider": "google",
@@ -224,7 +237,7 @@ TASK_MODELS: Dict[LLMTask, Tuple[str, List[str]]] = {
         [MODEL_GEMINI_3_PRO],
     ),
     # Premium tier for top 5-10 charities - still use Flash (proven quality)
-    LLMTask.PREMIUM_NARRATIVE: (MODEL_GEMINI_3_FLASH, [MODEL_GEMINI_3_PRO]),
+    LLMTask.PREMIUM_NARRATIVE: (MODEL_GEMINI_3_FLASH, [MODEL_GEMINI_31_PRO, MODEL_GEMINI_3_PRO]),
     LLMTask.PREMIUM_PDF_EXTRACTION: (MODEL_GEMINI_3_FLASH, [MODEL_GEMINI_3_PRO]),
     # Evaluation scoring - LLM-as-judge
     LLMTask.EVALUATION_SCORING: (
@@ -258,7 +271,7 @@ class ModelTier(Enum):
 
 
 TIER_MODELS: Dict[ModelTier, List[str]] = {
-    ModelTier.BEST: [MODEL_GEMINI_3_FLASH, MODEL_GEMINI_3_PRO],
+    ModelTier.BEST: [MODEL_GEMINI_31_PRO, MODEL_GEMINI_3_PRO, MODEL_GEMINI_3_FLASH],
     ModelTier.BACKUP: [MODEL_GEMINI_3_FLASH, MODEL_GPT4O_MINI],
     ModelTier.CHEAPEST: [MODEL_GEMINI_3_FLASH, MODEL_GPT4O_MINI],
 }
