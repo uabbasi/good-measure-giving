@@ -1,11 +1,15 @@
 ---
 name: analytics
-description: Unified analytics (GA4 + Firestore). Pull traffic data, user activity, feature adoption, and giving metrics. Use when checking site performance, user behavior, or feature usage.
+description: Unified analytics (Cloudflare + Firestore + GA4). Pull traffic data, user activity, feature adoption, and giving metrics. Use when checking site performance, user behavior, or feature usage.
 ---
 
 # Analytics for Good Measure Giving
 
-Analyze user behavior, track conversions, and understand engagement patterns using GA4 traffic data and Firestore user data.
+Analyze user behavior, track conversions, and understand engagement patterns using three data sources:
+
+1. **Cloudflare** — primary traffic source (zone-level HTTP metrics + RUM beacon for real browser visits)
+2. **Firestore** — user signups, feature adoption, giving activity
+3. **GA4** — event-level engagement tracking (blocked by ~80%+ of visitors)
 
 ---
 
@@ -18,14 +22,59 @@ Analyze user behavior, track conversions, and understand engagement patterns usi
 - Understanding time on site and engagement metrics
 - Checking user signups, feature adoption, or giving activity
 - Investigating Firestore user data or reported issues
+- Comparing traffic across data sources
+
+---
+
+## Data Sources
+
+### Cloudflare (Primary Traffic Metrics)
+
+**Script:** `scripts/cloudflare_analytics.py`
+
+```bash
+source ~/.secrets/api_keys.sh && uv run python scripts/cloudflare_analytics.py 2>/tmp/cf_analytics.err
+```
+
+Outputs JSON with:
+- **daily[]** — merged zone + RUM daily metrics
+- **totals.zone** — HTTP-level totals (includes bots/crawlers)
+- **totals.rum** — Real browser visits (beacon-based, most accurate)
+- **top_paths.rum[]** — Top pages by visit count
+- **top_countries.rum[]** — Geographic breakdown
+- **browsers[]** — Browser/device split
+
+**Key metric relationships:**
+- `zone.unique_ips` = all unique IPs (bots + humans) — inflated
+- `rum.visits` = real human browser visits — **most accurate traffic count**
+- `ga4.sessions` = human visits without ad blockers — undercounts by ~80%
+
+**Environment variables (from `~/.secrets/api_keys.sh`):**
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ZONE_ID` (goodmeasuregiving.org)
+- `CLOUDFLARE_ACCOUNT_ID`
+
+### Firestore
+
+**Script:** `scripts/firestore_analytics.py`
+
+```bash
+uv run python scripts/firestore_analytics.py 2>/tmp/firestore_analytics.err
+```
+
+See Firestore schema section below.
+
+### GA4
+
+**GA4 Property ID:** Set via `GA4_PROPERTY_ID` environment variable or `.env` file.
+
+**Important:** GA4 undercounts traffic significantly (~80%+ of visitors have ad blockers). Use GA4 for **event-level behavior insights** (which charities get clicked, search terms, funnel events), NOT for traffic volume. Use Cloudflare RUM for traffic counts.
 
 ---
 
 ## Project Context
 
-**GA4 Property ID:** Set via `GA4_PROPERTY_ID` environment variable or configure in `.env`
-
-**Custom Events Tracked:**
+**Custom Events Tracked (GA4):**
 
 | Event | Parameters | Purpose |
 |-------|------------|---------|
@@ -50,10 +99,35 @@ Analyze user behavior, track conversions, and understand engagement patterns usi
 **Key Goals:**
 1. **Primary:** Login conversions (sign_in_start events)
 2. **Secondary:** Time on site / engagement
+3. **Tertiary:** Feature adoption after signup
 
 ---
 
-## Analytics Queries
+## Cross-Source Analysis Patterns
+
+### Traffic Sanity Check
+Compare these three numbers to understand measurement coverage:
+1. CF zone unique IPs (inflated — includes bots)
+2. CF RUM visits (real human traffic)
+3. GA4 sessions (humans without ad blockers)
+
+### Conversion Funnel (full stack)
+1. Cloudflare RUM visits → total real visitors
+2. GA4 sessions → visitors without ad blockers
+3. GA4 sign_in_start → login intent
+4. GA4 sign_in_success → login completion
+5. Firestore user count → registered users
+6. Firestore feature adoption → active users
+
+### Content Performance Cross-Reference
+- CF RUM top_paths → most visited pages
+- GA4 charity_card_click → most engaged charities
+- Firestore bookmarks → most saved charities
+- Overlap analysis: are visited ≈ engaged ≈ saved?
+
+---
+
+## Analytics Queries (GA4)
 
 ### Realtime Overview
 
@@ -116,8 +190,6 @@ Use mcp__analytics-mcp__run_report with:
 
 ## Funnel Analysis Pattern
 
-GA4 doesn't have a direct funnel API, but you can simulate it by running sequential queries:
-
 ### Browse → Card Click → Charity View → Donate Funnel
 
 **Step 1: Count users who visited /browse**
@@ -158,18 +230,20 @@ Calculate drop-off rates between each step.
 
 Run these queries and summarize:
 
-1. **Traffic:** Total sessions, active users (vs previous period)
-2. **Engagement:** Avg session duration, bounce rate
-3. **Top Pages:** Most viewed pages
-4. **Top Charities:** Most clicked charity cards
-5. **Conversions:** sign_in_start count
+1. **Traffic (Cloudflare):** RUM visits, pageloads, zone requests, unique IPs
+2. **Engagement (GA4):** Avg session duration, engaged sessions (note: GA4 undercounts)
+3. **Top Pages (Cloudflare RUM):** Most visited paths
+4. **Top Charities (GA4):** Most clicked charity cards
+5. **Conversions (GA4):** sign_in_start count
+6. **Users (Firestore):** Total registered users, recent signups
 
 ### Weekly Deep Dive
 
-1. **Search Analysis:** What are users searching for? Are there charities we don't have?
-2. **Funnel Metrics:** Browse → Card Click → View → Donate conversion rates
-3. **Device Split:** Mobile vs Desktop engagement differences
-4. **Geographic:** Where are users coming from?
+1. **Traffic Trends (Cloudflare):** Week-over-week RUM visits, geographic shifts
+2. **Search Analysis (GA4):** What are users searching for? Gaps in charity coverage?
+3. **Funnel Metrics:** CF RUM visits → GA4 sessions → card clicks → views → donates → signups
+4. **Device Split (Cloudflare):** Browser breakdown, mobile vs desktop
+5. **Feature Adoption (Firestore):** Which features are growing/stagnant?
 
 ---
 
@@ -186,10 +260,12 @@ Run these queries and summarize:
 
 ### Red Flags to Watch
 
+- CF RUM visits high but GA4 near-zero → GA4 is broken (check `initializeAnalytics` call)
+- CF zone unique_ips >> CF RUM visits → normal (bots), but ratio > 10:1 warrants investigation
 - High bounce rate on /browse → cards may not be compelling
 - Low charity_view after card_click → page load issues?
 - Zero search events → search feature not discoverable
-- sign_in_start with no sign_in_success → auth issues (note: sign_in_success not yet implemented)
+- sign_in_start with no sign_in_success → auth issues
 
 ---
 
@@ -211,16 +287,6 @@ This shows what paths lead to donations.
 
 ---
 
-## Future Improvements
-
-| Event | Purpose | Priority |
-|-------|---------|----------|
-| `filter_used` | Which browse filters are popular | Medium |
-| `view_type_switch` | Terminal vs Editorial preference | Low |
-| `scroll_depth` | Content engagement depth | Low |
-
----
-
 ## Quick Commands
 
 **Realtime snapshot:**
@@ -238,7 +304,7 @@ This shows what paths lead to donations.
 **Engagement check:**
 > "How's our time on site trending?"
 
-**Full report (Firestore + GA4):**
+**Full report (all sources):**
 > "Run /analytics"
 
 ---

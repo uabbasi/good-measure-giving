@@ -12,7 +12,7 @@ const __dirname = path.dirname(__filename);
 
 const DIST_DIR = path.join(__dirname, '../dist');
 const CHARITIES_JSON = path.join(__dirname, '../data/charities/charities.json');
-const SITE_URL = 'https://goodmeasuregiving.com';
+const SITE_URL = 'https://goodmeasuregiving.org';
 
 interface CharitySummary {
   ein: string;

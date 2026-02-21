@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename);
 const DIST_DIR = path.join(__dirname, '../dist');
 const DATA_DIR = path.join(__dirname, '../data/charities');
 const CHARITIES_JSON = path.join(DATA_DIR, 'charities.json');
-const SITE_URL = 'https://goodmeasuregiving.com';
+const SITE_URL = 'https://goodmeasuregiving.org';
 const PREVIEW_PORT = 4174;
 const CONCURRENCY = 4;
 
