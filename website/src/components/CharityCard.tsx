@@ -415,6 +415,11 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
           </div>
 
           <div className="mt-1 flex flex-wrap items-center gap-1">
+            {topDifferentiators.map(tag => (
+              <span key={tag.label} className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${isDark ? tag.colorDark : tag.colorLight}`}>
+                {tag.label}
+              </span>
+            ))}
             <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-semibold border ${givingTypeClasses}`}>
               <givingTypeTag.icon className="w-2.5 h-2.5" aria-hidden="true" />
               {getShortLabel(givingTypeTag.label)}
@@ -471,6 +476,15 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
         <div className={`flex-1 flex flex-col ${compact ? 'p-4' : 'p-6'}`}>
           {/* Header: donor-useful primary tags */}
           <div className="flex flex-wrap items-center gap-2 mb-3">
+            {topDifferentiators.map(tag => (
+              <TooltipBadge
+                key={tag.label}
+                label={tag.label}
+                tooltip={tag.tooltip}
+                colorClass={isDark ? tag.colorDark : tag.colorLight}
+                isDark={isDark}
+              />
+            ))}
             <span className={`inline-flex items-center gap-1 px-2 py-1 text-[10px] font-semibold border rounded ${givingTypeClasses}`}>
               <givingTypeTag.icon className="w-3 h-3" aria-hidden="true" />
               {getShortLabel(givingTypeTag.label)}

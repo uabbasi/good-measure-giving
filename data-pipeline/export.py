@@ -613,18 +613,38 @@ def run_export_quality_check(summary: dict[str, Any]) -> tuple[bool, list[dict]]
         ]
 
 
-def _determine_tier(evaluation: dict | None) -> str:
-    """Determine charity tier based on narrative availability.
+def _has_financial_data(charity_data: dict | None) -> bool:
+    """Check if charity has any financial data available."""
+    if not charity_data:
+        return False
+    return any(
+        charity_data.get(f) is not None
+        for f in [
+            "total_revenue",
+            "total_expenses",
+            "program_expenses",
+            "program_expense_ratio",
+        ]
+    )
+
+
+def _determine_tier(evaluation: dict | None, charity_data: dict | None = None) -> str:
+    """Determine charity tier based on narrative availability and financial data.
 
     E-002: Extracted to avoid duplicate logic in summary/detail builders.
 
     Returns:
         'rich' if rich_narrative exists
         'baseline' if only baseline_narrative exists
-        'hidden' if no narrative yet
+        'hidden' if no narrative yet, or no financials and not NEW_ORG
     """
     if not evaluation:
         return "hidden"
+    # No financials + not NEW_ORG → hidden
+    if not _has_financial_data(charity_data):
+        eval_track = charity_data.get("evaluation_track") if charity_data else None
+        if eval_track != "NEW_ORG":
+            return "hidden"
     if evaluation.get("rich_narrative"):
         return "rich"
     if evaluation.get("baseline_narrative"):
@@ -1063,7 +1083,7 @@ def build_charity_summary(
     """Build summary record for charities.json."""
 
     # E-002: Use shared tier determination logic
-    tier = _determine_tier(evaluation)
+    tier = _determine_tier(evaluation, charity_data)
 
     # Extract causeArea from rich_narrative (if available)
     cause_area = None
@@ -1190,7 +1210,7 @@ def build_charity_detail(
 
     # E-002: Use shared tier determination logic
     # Note: detail view treats "hidden" as "baseline" (always has some content)
-    tier = _determine_tier(evaluation)
+    tier = _determine_tier(evaluation, charity_data)
     if tier == "hidden":
         tier = "baseline"
 

@@ -879,6 +879,16 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
 
         {/* === Mobile Section 3: Methodology Details (always open) === */}
         {amal?.score_details && (
+          charity.evaluationTrack === 'NEW_ORG' ? (
+            <div className={`rounded-2xl overflow-hidden ${
+              isDark ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-slate-200'
+            }`}>
+              <div className={`px-3.5 py-3.5 text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                Emerging organizations are evaluated on vision and early indicators.
+                Detailed scoring will be available as the organization builds its track record.
+              </div>
+            </div>
+          ) : (
           <div className={`rounded-2xl overflow-hidden ${
             isDark ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-slate-200'
           }`}>
@@ -904,6 +914,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
               />
             </div>
           </div>
+          )
         )}
 
         {/* Financials - Collapsible (shared across all lenses) */}
@@ -1710,6 +1721,14 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
 
           {/* === Section 3: Methodology Details (always open) === */}
           {amal?.score_details && (
+            charity.evaluationTrack === 'NEW_ORG' ? (
+              <div data-section="methodology" className={`mb-6 rounded-lg border p-4 ${isDark ? 'border-slate-700 bg-slate-900/40' : 'border-slate-200 bg-white'}`}>
+                <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                  Emerging organizations are evaluated on vision and early indicators.
+                  Detailed scoring will be available as the organization builds its track record.
+                </p>
+              </div>
+            ) : (
             <div data-section="methodology" className={`mb-6 rounded-lg border ${isDark ? 'border-slate-700 bg-slate-900/40' : 'border-slate-200 bg-white'}`}>
               <div className={`px-4 py-3 text-sm font-semibold ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
                 Methodology details
@@ -1733,6 +1752,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 />
               </div>
             </div>
+            )
           )}
 
           {/* === Theory of Change (baseline fallback) === */}
