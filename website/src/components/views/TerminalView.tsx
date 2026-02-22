@@ -807,13 +807,13 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             )}
           </div>
         ) : (
-          <ContentPreview title="Things to Know" description="important context and considerations" />
+          <ContentPreview title="Things to Know" description="important context and considerations" teaser={rich?.case_against?.summary || "Our analysis covers risk factors, governance concerns, and important context every donor should consider before giving."} />
         ))}
 
         {/* === Mobile Section 2: Best For === */}
         {(() => {
           if (!idealDonorProfile) return null;
-          if (!isSignedIn) return <ContentPreview title="Best For" description="which donors this charity fits best" />;
+          if (!isSignedIn) return <ContentPreview title="Best For" description="which donors this charity fits best" teaser={idealDonorProfile?.best_for_summary || "Discover which donor profiles and giving styles align best with this charity's strengths."} />;
           const donorProfile = idealDonorProfile;
           return (
             <div className={`border-l-4 p-3.5 rounded-r-lg ${
@@ -1403,7 +1403,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
           {/* Long-Term Outlook (Rich only, authenticated) */}
           {rich?.long_term_outlook && !isSignedIn && (
             <div className="mb-6">
-              <ContentPreview title="Long-Term Outlook" description="sustainability and future direction" />
+              <ContentPreview title="Long-Term Outlook" description="sustainability and future direction" teaser="Analysis of organizational maturity, strategic priorities, room for additional funding, and long-term sustainability trajectory." />
             </div>
           )}
           {rich?.long_term_outlook && isSignedIn && (
@@ -1644,14 +1644,14 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             </div>
           ) : (
             <div className="mb-6">
-              <ContentPreview title="Things to Know" description="important context and considerations" />
+              <ContentPreview title="Things to Know" description="important context and considerations" teaser={rich?.case_against?.summary || "Our analysis covers risk factors, governance concerns, and important context every donor should consider before giving."} />
             </div>
           ))}
 
           {/* === Section 2: Best For (moved above Score Analysis) === */}
           {(() => {
             if (!idealDonorProfile) return null;
-            if (!isSignedIn) return <div className="mb-6"><ContentPreview title="Best For" description="which donors this charity fits best" /></div>;
+            if (!isSignedIn) return <div className="mb-6"><ContentPreview title="Best For" description="which donors this charity fits best" teaser={idealDonorProfile?.best_for_summary || "Discover which donor profiles and giving styles align best with this charity's strengths."} /></div>;
             const donorProfile = idealDonorProfile;
 
             return (

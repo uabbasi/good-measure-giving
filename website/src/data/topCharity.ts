@@ -1,4 +1,3 @@
-// @ts-nocheck — Auto-generated from pipeline; schema drift is fixed at generation time
 /**
  * Top-scoring charity for landing page sample audit
  * Auto-generated at build time - always shows the current highest-rated charity
@@ -179,32 +178,6 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 42
       },
-      "judge_issues": [
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",

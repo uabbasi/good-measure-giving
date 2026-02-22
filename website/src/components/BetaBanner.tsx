@@ -5,12 +5,21 @@
  */
 
 import React, { useState } from 'react';
+import { X } from 'lucide-react';
 import { useLandingTheme } from '../../contexts/LandingThemeContext';
 import { FeedbackButton } from './FeedbackButton';
+
+const DISMISS_KEY = 'beta-banner-dismissed';
 
 export const BetaBanner: React.FC = () => {
   const { isDark } = useLandingTheme();
   const [showFeedback, setShowFeedback] = useState(false);
+  const [dismissed, setDismissed] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem(DISMISS_KEY) === '1';
+  });
+
+  if (dismissed) return null;
 
   const handleFeedbackClick = () => {
     if (typeof window !== 'undefined' && window.gtag) {
@@ -19,9 +28,17 @@ export const BetaBanner: React.FC = () => {
     setShowFeedback(true);
   };
 
+  const handleDismiss = () => {
+    localStorage.setItem(DISMISS_KEY, '1');
+    setDismissed(true);
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'beta_banner_dismiss');
+    }
+  };
+
   return (
     <>
-      <div className={`text-center px-4 py-2 text-sm ${
+      <div className={`relative text-center px-8 py-2 text-sm ${
         isDark
           ? 'bg-amber-900/30 border-b border-amber-800/40 text-amber-200'
           : 'bg-amber-50 border-b border-amber-200 text-amber-800'
@@ -37,6 +54,15 @@ export const BetaBanner: React.FC = () => {
           }`}
         >
           Share Feedback
+        </button>
+        <button
+          onClick={handleDismiss}
+          aria-label="Dismiss banner"
+          className={`absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors ${
+            isDark ? 'text-amber-400 hover:text-amber-200 hover:bg-amber-800/40' : 'text-amber-600 hover:text-amber-900 hover:bg-amber-200/60'
+          }`}
+        >
+          <X className="w-4 h-4" />
         </button>
       </div>
 

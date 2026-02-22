@@ -59,6 +59,9 @@ export const FirebaseProvider: React.FC<Props> = ({ children }) => {
         const createdAt = new Date(firebaseUser.metadata.creationTime || 0).getTime();
         const isNewUser = Date.now() - createdAt < 60_000;
         trackSignInSuccess(provider, isNewUser ? 'signup' : 'login');
+        if (isNewUser) {
+          window.dispatchEvent(new CustomEvent('gmg:welcome'));
+        }
       }
     });
 

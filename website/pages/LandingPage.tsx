@@ -11,7 +11,7 @@
  * No charity listings on this page (those are on BrowsePage)
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Scale, ArrowRight, CheckCircle, Search, Heart } from 'lucide-react';
 import { SignInButton } from '../src/auth/SignInButton';
@@ -19,6 +19,8 @@ import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { THEMES } from '../src/themes';
 import { trackHeroCTA } from '../src/utils/analytics';
 import { TOP_CHARITY_FOR_LANDING } from '../src/data/topCharity';
+import { useCharities } from '../src/hooks/useCharities';
+import { isPubliclyVisible } from '../src/utils/tierUtils';
 
 // Featured charity data - dynamically selected at build time
 const featuredCharity = TOP_CHARITY_FOR_LANDING;
@@ -32,6 +34,8 @@ const DARK_THEME_INDEX = 2;
 export const LandingPage: React.FC = () => {
   const { isDark } = useLandingTheme();
   const theme = THEMES[isDark ? DARK_THEME_INDEX : LIGHT_THEME_INDEX];
+  const { charities } = useCharities();
+  const charityCount = useMemo(() => charities.filter(isPubliclyVisible).length, [charities]);
   const scoreDetails = featuredCharity?.amalEvaluation?.score_details;
   const confidenceBadge = scoreDetails?.data_confidence?.badge ?? '—';
   const riskLevel = scoreDetails?.risks?.overall_risk_level ?? 'UNKNOWN';
@@ -163,7 +167,7 @@ export const LandingPage: React.FC = () => {
 
               <CheckCircle className={`w-4 h-4 ${theme.pillIcon}`} aria-hidden="true" />
 
-              <span><strong className={theme.statsStrong}>Multi-Source</strong> Verification</span>
+              <span>{charityCount > 0 ? <><strong className={theme.statsStrong}>{charityCount}</strong> Charities Evaluated</> : <><strong className={theme.statsStrong}>Multi-Source</strong> Verification</>}</span>
 
             </div>
 

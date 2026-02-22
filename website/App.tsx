@@ -7,7 +7,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { LandingThemeProvider, useLandingTheme } from './contexts/LandingThemeContext';
 import { UserFeaturesProvider } from './src/contexts/UserFeaturesContext';
 import { Navbar } from './components/Navbar';
-import { BetaBanner } from './src/components/BetaBanner';
+// BetaBanner moved inline to Navbar as a subtle pill
 import { Footer } from './components/Footer';
 const LandingPage = lazy(() => import('./pages/LandingPage').then(m => ({ default: m.LandingPage })));
 const BrowsePage = lazy(() => import('./pages/BrowsePage').then(m => ({ default: m.BrowsePage })));
@@ -21,6 +21,7 @@ const PromptDetailPage = lazy(() => import('./pages/PromptDetailPage').then(m =>
 const ComparePage = lazy(() => import('./pages/ComparePage').then(m => ({ default: m.ComparePage })));
 const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ default: m.ProfilePage })));
 import { CompareBar } from './src/components/CompareBar';
+import { WelcomeToast } from './src/components/WelcomeToast';
 import { ScrollToTop } from './components/ScrollToTop';
 import { trackPageView } from './src/utils/analytics';
 
@@ -57,7 +58,6 @@ const AppContent: React.FC = () => {
         Skip to main content
       </a>
       <Navbar />
-      <BetaBanner />
       <main id="main" className="flex-grow">
         <Suspense fallback={null}>
           <Routes>
@@ -80,6 +80,7 @@ const AppContent: React.FC = () => {
       </main>
       <Footer />
       <CompareBar />
+      <WelcomeToast />
     </div>
   );
 };

@@ -11,9 +11,10 @@ import { useLandingTheme } from '../../contexts/LandingThemeContext';
 interface ContentPreviewProps {
   title: string;
   description: string;
+  teaser?: string;
 }
 
-export const ContentPreview: React.FC<ContentPreviewProps> = ({ title, description }) => {
+export const ContentPreview: React.FC<ContentPreviewProps> = ({ title, description, teaser }) => {
   const { isDark } = useLandingTheme();
 
   return (
@@ -25,13 +26,25 @@ export const ContentPreview: React.FC<ContentPreviewProps> = ({ title, descripti
       }`}>
         {title}
       </div>
-      <div className="space-y-2 mb-3">
-        <div className={`h-2.5 rounded-full w-full ${isDark ? 'bg-slate-700/60' : 'bg-slate-200'}`} />
-        <div className={`h-2.5 rounded-full w-4/5 ${isDark ? 'bg-slate-700/60' : 'bg-slate-200'}`} />
-        <div className={`h-2.5 rounded-full w-3/5 ${isDark ? 'bg-slate-700/60' : 'bg-slate-200'}`} />
-      </div>
+      {teaser ? (
+        <div className="relative mb-3 overflow-hidden" style={{ maxHeight: '3.5rem' }}>
+          <p className={`text-sm blur-[6px] select-none ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+            {teaser}
+          </p>
+          <div className={`absolute inset-0 bg-gradient-to-b ${
+            isDark ? 'from-transparent to-slate-800/80' : 'from-transparent to-slate-50/80'
+          }`} />
+        </div>
+      ) : (
+        <div className="space-y-2 mb-3">
+          <div className={`h-2.5 rounded-full w-full ${isDark ? 'bg-slate-700/60' : 'bg-slate-200'}`} />
+          <div className={`h-2.5 rounded-full w-4/5 ${isDark ? 'bg-slate-700/60' : 'bg-slate-200'}`} />
+          <div className={`h-2.5 rounded-full w-3/5 ${isDark ? 'bg-slate-700/60' : 'bg-slate-200'}`} />
+        </div>
+      )}
       <SignInButton
         variant="custom"
+        context={description}
         className={`text-sm flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity ${
           isDark ? 'text-emerald-400' : 'text-emerald-600'
         }`}

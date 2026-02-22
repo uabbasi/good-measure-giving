@@ -14,13 +14,15 @@ interface SignInButtonProps {
   className?: string;
   children?: React.ReactNode;
   isDark?: boolean;
+  context?: string;
 }
 
 export const SignInButton: React.FC<SignInButtonProps> = ({
   variant = 'default',
   className = '',
   children,
-  isDark = false
+  isDark = false,
+  context
 }) => {
   const { isSignedIn, firstName } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
@@ -153,7 +155,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
             />
           </div>
           <h2 id="signin-modal-title" className="text-2xl font-bold text-slate-900 mb-2">
-            See the Full Picture
+            {context ? `Sign in to see ${context}` : 'See the Full Picture'}
           </h2>
           <p className="text-slate-500 max-w-xs mx-auto">
             Unlock detailed evaluations — impact evidence, financial analysis, leadership data, and donor fit for every charity. Free, always.

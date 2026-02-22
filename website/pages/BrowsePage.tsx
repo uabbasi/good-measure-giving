@@ -699,72 +699,53 @@ export const BrowsePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Tab Toggle: Browse vs Search + Lens Toggle */}
-        <div className="mb-2 sm:mb-4 flex flex-wrap items-center gap-3">
-          <div className={`inline-flex p-1 rounded-xl ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`}>
+        {/* Search Input - always visible */}
+        <div className="relative mb-2 sm:mb-4">
+          <Search className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} aria-hidden="true" />
+          <input
+            type="text"
+            aria-label="Search charities"
+            placeholder={`Search ${evaluatedCharities.length} charities by name, mission, or EIN...`}
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              if (e.target.value.trim()) {
+                setViewMode('search');
+              }
+            }}
+            className={`w-full pl-12 pr-12 py-3 sm:py-4 rounded-2xl border-2 transition-all ${
+              isDark
+                ? 'bg-slate-900 border-slate-800 text-white placeholder-slate-500 focus:border-emerald-500 focus:bg-slate-800'
+                : 'bg-white border-slate-100 text-slate-900 placeholder-slate-400 focus:border-emerald-500 shadow-sm'
+            } focus:outline-none focus:ring-4 focus:ring-emerald-500/10`}
+          />
+          {searchQuery && (
+            <button
+              onClick={() => { setSearchQuery(''); setViewMode('browse'); }}
+              className={`absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
+                isDark
+                  ? 'bg-slate-700 hover:bg-slate-600 text-slate-300'
+                  : 'bg-slate-200 hover:bg-slate-300 text-slate-600'
+              }`}
+              aria-label="Clear search"
+            >
+              <X className="w-4 h-4" aria-hidden="true" />
+            </button>
+          )}
+        </div>
+
+        {/* Tab Toggle: Browse vs Search */}
+        {viewMode === 'search' && (
+          <div className="mb-2 sm:mb-4">
             <button
               onClick={() => { trackViewToggle('', viewMode, 'browse'); setViewMode('browse'); setSearchQuery(''); }}
-              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg text-sm font-medium transition-all ${
-                viewMode === 'browse'
-                  ? isDark
-                    ? 'bg-slate-700 text-white shadow-sm'
-                    : 'bg-white text-slate-900 shadow-sm'
-                  : isDark
-                    ? 'text-slate-400 hover:text-white'
-                    : 'text-slate-500 hover:text-slate-900'
+              className={`inline-flex items-center gap-1.5 text-sm font-medium transition-colors ${
+                isDark ? 'text-slate-400 hover:text-emerald-400' : 'text-slate-500 hover:text-emerald-600'
               }`}
             >
               <LayoutGrid className="w-4 h-4" aria-hidden="true" />
-              Browse
+              Back to Browse
             </button>
-            <button
-              onClick={() => { trackViewToggle('', viewMode, 'search'); setViewMode('search'); setActivePresets(new Set()); }}
-              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg text-sm font-medium transition-all ${
-                viewMode === 'search'
-                  ? isDark
-                    ? 'bg-slate-700 text-white shadow-sm'
-                    : 'bg-white text-slate-900 shadow-sm'
-                  : isDark
-                    ? 'text-slate-400 hover:text-white'
-                    : 'text-slate-500 hover:text-slate-900'
-              }`}
-            >
-              <Search className="w-4 h-4" aria-hidden="true" />
-              Search
-            </button>
-          </div>
-        </div>
-
-        {/* Search Input (only shown in search mode) */}
-        {viewMode === 'search' && (
-          <div className="relative mb-6">
-            <Search className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} aria-hidden="true" />
-            <input
-              type="text"
-              autoFocus
-              aria-label="Search charities"
-              placeholder={`Search ${evaluatedCharities.length} charities by name, mission, or EIN...`}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full pl-12 pr-12 py-4 rounded-2xl border-2 transition-all ${
-                isDark
-                  ? 'bg-slate-900 border-slate-800 text-white placeholder-slate-500 focus:border-emerald-500 focus:bg-slate-800'
-                  : 'bg-white border-slate-100 text-slate-900 placeholder-slate-400 focus:border-emerald-500 shadow-sm'
-              } focus:outline-none focus:ring-4 focus:ring-emerald-500/10`}
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className={`absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
-                  isDark
-                    ? 'bg-slate-700 hover:bg-slate-600 text-slate-300'
-                    : 'bg-slate-200 hover:bg-slate-300 text-slate-600'
-                }`}
-                aria-label="Clear search"
-              >
-                <X className="w-4 h-4" aria-hidden="true" />
-              </button>
-            )}
           </div>
         )}
 

@@ -4,6 +4,9 @@ import { ThemedLogo } from './logos';
 import { Menu, X } from 'lucide-react';
 import { SignInButton, useAuth } from '../src/auth';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
+import { FeedbackButton } from '../src/components/FeedbackButton';
+
+const BETA_DISMISS_KEY = 'beta-banner-dismissed';
 
 export interface NavbarProps {
   forceTheme?: 'light' | 'dark';
@@ -11,6 +14,11 @@ export interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ forceTheme: propForceTheme }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [betaDismissed, setBetaDismissed] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem(BETA_DISMISS_KEY) === '1';
+  });
   const location = useLocation();
   const { isDark: landingIsDark } = useLandingTheme();
   const { isSignedIn } = useAuth();
@@ -50,6 +58,23 @@ export const Navbar: React.FC<NavbarProps> = ({ forceTheme: propForceTheme }) =>
               <Link to="/" className="flex-shrink-0 flex items-center hover:opacity-80 transition-opacity">
                 <ThemedLogo size="md" variant={isDark ? 'dark' : 'light'} />
               </Link>
+              {!betaDismissed && (
+                <button
+                  onClick={() => {
+                    setShowFeedback(true);
+                    if (typeof window !== 'undefined' && window.gtag) {
+                      window.gtag('event', 'beta_pill_click');
+                    }
+                  }}
+                  className={`ml-2.5 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider transition-colors ${
+                    isDark
+                      ? 'bg-amber-500/15 text-amber-400 hover:bg-amber-500/25'
+                      : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
+                  }`}
+                >
+                  Beta
+                </button>
+              )}
             </div>
 
             {/* Desktop Menu */}
@@ -134,6 +159,13 @@ export const Navbar: React.FC<NavbarProps> = ({ forceTheme: propForceTheme }) =>
         </div>
       )}
     </nav>
+      {showFeedback && (
+        <FeedbackButton
+          defaultOpen
+          initialFeedbackType="general_feedback"
+          onClose={() => setShowFeedback(false)}
+        />
+      )}
     </>
   );
 };
