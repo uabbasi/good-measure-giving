@@ -53,8 +53,10 @@ export function initializeAnalytics(): void {
   document.head.appendChild(script);
 
   window.dataLayer = window.dataLayer || [];
-  window.gtag = (...args: unknown[]) => {
-    window.dataLayer!.push(args);
+  // Must use `arguments` object (not rest params) — gtag.js expects Arguments in the dataLayer queue
+  window.gtag = function () {
+    // eslint-disable-next-line prefer-rest-params
+    window.dataLayer!.push(arguments);
   };
 
   window.gtag('js', new Date());
