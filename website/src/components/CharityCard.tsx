@@ -373,7 +373,7 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
   // Established: 25+ years of operation (track record)
   if (yearsOperating && yearsOperating >= 25) {
     differentiatorTags.push({
-      label: 'Established',
+      label: '25+ Years',
       priority: 8,
       colorLight: 'bg-stone-200 text-stone-700',
       colorDark: 'bg-stone-800/50 text-stone-400'

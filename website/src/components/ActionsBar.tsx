@@ -69,6 +69,7 @@ export function ActionsBar({
                 <>
                   {onLogDonation && (
                     <button
+                      data-tour="action-log-donation"
                       onClick={onLogDonation}
                       className={`flex-1 inline-flex items-center justify-center gap-2 px-3 py-2.5 min-h-[44px] rounded-lg text-sm font-semibold transition-colors ${
                         isDark
@@ -80,14 +81,15 @@ export function ActionsBar({
                       Log Donation
                     </button>
                   )}
-                  <BookmarkButton
-                    charityEin={charityEin}
-                    charityName={charityName}
-                    showLabel
-                    fullWidth
-                    size="md"
-                    className="flex-1"
-                  />
+                  <span data-tour="action-save" className="flex-1">
+                    <BookmarkButton
+                      charityEin={charityEin}
+                      charityName={charityName}
+                      showLabel
+                      fullWidth
+                      size="md"
+                    />
+                  </span>
                 </>
               ) : (
                 <SignInButton variant="custom" isDark={isDark}>
@@ -113,6 +115,7 @@ export function ActionsBar({
               />
               {donateUrl && (
                 <a
+                  data-tour="action-donate"
                   href={donateUrl}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -132,7 +135,7 @@ export function ActionsBar({
         </div>
         )}
 
-        <div className={`${showMobileQuickActions ? 'hidden sm:block' : ''} px-6`}>
+        <div className={`${showMobileQuickActions ? 'hidden sm:block' : ''} px-6`} data-tour="actions-bar">
           <div className="flex items-center justify-between py-2">
             {/* Cause Area + Wallet Tag (left side) */}
             <div className="flex items-center gap-2">
@@ -146,7 +149,7 @@ export function ActionsBar({
               )}
               {walletTag && (
                 <>
-                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-mono font-semibold uppercase tracking-wide ${
+                  <span data-tour="wallet-tag" className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-mono font-semibold uppercase tracking-wide ${
                     walletTag.includes('ZAKAT')
                       ? isDark ? 'bg-emerald-900/50 text-emerald-400 border border-emerald-700/50' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                       : isDark ? 'bg-slate-800 text-slate-400 border border-slate-700' : 'bg-slate-100 text-slate-500 border border-slate-200'
@@ -178,7 +181,7 @@ export function ActionsBar({
               {isSignedIn ? (
                 <>
                   {onLogDonation && (
-                    <button onClick={onLogDonation} className={terminalBtn}>
+                    <button data-tour="action-log-donation" onClick={onLogDonation} className={terminalBtn}>
                       <Plus className="w-3 h-3" aria-hidden="true" />
                       <span className={isDark ? 'text-emerald-500' : 'text-emerald-600'}>Log Donation</span>
                     </button>
@@ -191,13 +194,15 @@ export function ActionsBar({
                     className="!text-xs !font-mono !uppercase !tracking-wide"
                   />
                   <span className={`${isDark ? 'text-slate-700' : 'text-slate-300'}`}>│</span>
-                  <BookmarkButton
-                    charityEin={charityEin}
-                    charityName={charityName}
-                    showLabel
-                    size="sm"
-                    className="!text-xs !font-mono !uppercase !tracking-wide"
-                  />
+                  <span data-tour="action-save">
+                    <BookmarkButton
+                      charityEin={charityEin}
+                      charityName={charityName}
+                      showLabel
+                      size="sm"
+                      className="!text-xs !font-mono !uppercase !tracking-wide"
+                    />
+                  </span>
                 </>
               ) : (
                 <SignInButton
@@ -225,6 +230,7 @@ export function ActionsBar({
                 <>
                   <span className={`${isDark ? 'text-slate-700' : 'text-slate-300'}`}>│</span>
                   <a
+                    data-tour="action-donate"
                     href={donateUrl}
                     target="_blank"
                     rel="noopener noreferrer"

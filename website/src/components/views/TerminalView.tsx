@@ -4,7 +4,7 @@
  * Dense information display with monospace data.
  */
 
-import React, { useMemo, useState, useRef } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getCharityAddress } from '../../utils/formatters';
 import {
@@ -49,6 +49,8 @@ import { GLOSSARY } from '../../data/glossary';
 import { OrganizationEngagement } from '../OrganizationEngagement';
 import { ContentPreview } from '../ContentPreview';
 import { resolveCitationUrls, resolveSourceUrl } from '../../utils/citationUrls';
+import { useTour } from '../../tours/useTour';
+import { detailsTourSteps } from '../../tours/detailsTour';
 
 interface TerminalViewProps {
   charity: CharityProfile;
@@ -245,9 +247,17 @@ const DataRow: React.FC<{
 export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
   const { isDark } = useLandingTheme();
   const { isSignedIn } = useAuth();
+  const detailsTour = useTour('details-tip', detailsTourSteps);
   const { charities: allCharities } = useCharities();
   const { addDonation, getPaymentSources } = useGivingHistory();
   const [showDonationModal, setShowDonationModal] = useState(false);
+
+  // Start details tour for signed-in users who haven't seen it
+  useEffect(() => {
+    if (!detailsTour.shouldShow) return;
+    const timer = setTimeout(() => detailsTour.startTour(), 800);
+    return () => clearTimeout(timer);
+  }, [detailsTour.shouldShow]);
 
   const amal = charity.amalEvaluation;
   const baseline = amal?.baseline_narrative;
@@ -573,8 +583,10 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
               <span className={`px-2 py-1 rounded text-xs font-semibold border ${getEvidenceStageClasses(uiSignals.evidence_stage, isDark)}`}>
                 {getEvidenceStageLabel(uiSignals.evidence_stage)}
               </span>
-              <RecommendationCue cue={uiSignals.recommendation_cue} rationale={null} isDark={isDark} compact />
-              <span className={`inline-flex items-center gap-1.5 text-sm ${
+              <span data-tour="recommendation-cue">
+                <RecommendationCue cue={uiSignals.recommendation_cue} rationale={null} isDark={isDark} compact />
+              </span>
+              <span data-tour="wallet-tag" className={`inline-flex items-center gap-1.5 text-sm ${
                 isZakatEligible
                   ? isDark ? 'text-emerald-400' : 'text-emerald-600'
                   : isDark ? 'text-slate-400' : 'text-slate-500'
@@ -889,7 +901,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
               </div>
             </div>
           ) : (
-          <div className={`rounded-2xl overflow-hidden ${
+          <div data-tour="score-breakdown" className={`rounded-2xl overflow-hidden ${
             isDark ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-slate-200'
           }`}>
             <div className={`px-3.5 pt-3.5 text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -1066,7 +1078,9 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 {getEvidenceStageLabel(uiSignals.evidence_stage)}
               </span>
             </div>
-            <RecommendationCue cue={uiSignals.recommendation_cue} rationale={uiSignals.recommendation_rationale} isDark={isDark} />
+            <div data-tour="recommendation-cue">
+              <RecommendationCue cue={uiSignals.recommendation_cue} rationale={uiSignals.recommendation_rationale} isDark={isDark} />
+            </div>
           </div>
 
           {/* Divider between qualitative snapshot and evidence quality */}
@@ -1729,7 +1743,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 </p>
               </div>
             ) : (
-            <div data-section="methodology" className={`mb-6 rounded-lg border ${isDark ? 'border-slate-700 bg-slate-900/40' : 'border-slate-200 bg-white'}`}>
+            <div data-section="methodology" data-tour="score-breakdown" className={`mb-6 rounded-lg border ${isDark ? 'border-slate-700 bg-slate-900/40' : 'border-slate-200 bg-white'}`}>
               <div className={`px-4 py-3 text-sm font-semibold ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
                 Methodology details
               </div>

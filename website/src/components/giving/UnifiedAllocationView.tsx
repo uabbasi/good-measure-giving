@@ -927,7 +927,7 @@ export function UnifiedAllocationView({
             <div className={`flex items-center gap-1.5 px-2 py-1 rounded-md ${isDark ? 'bg-emerald-500/10' : 'bg-emerald-50'}`}>
               <span className={`text-[10px] font-bold tracking-wide ${isDark ? 'text-emerald-500' : 'text-emerald-600'}`}>ZAKAT</span>
             </div>
-            <div className={`flex items-center border ${isDark ? 'bg-slate-800/80 border-slate-700' : 'bg-white border-slate-200'} rounded-lg px-3 py-1.5 shadow-sm`}>
+            <div data-tour="giving-target" className={`flex items-center border ${isDark ? 'bg-slate-800/80 border-slate-700' : 'bg-white border-slate-200'} rounded-lg px-3 py-1.5 shadow-sm`}>
               <span className={`text-sm font-medium ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>$</span>
               <input
                 ref={targetInputRef}
@@ -988,6 +988,7 @@ export function UnifiedAllocationView({
             </button>
           )}
           <button
+            data-tour="giving-add-charity"
             onClick={() => { setShowCharitySearch(!showCharitySearch); setCharitySearchQuery(''); }}
             className={`text-[11px] font-medium px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1 ${
               showCharitySearch
@@ -998,6 +999,7 @@ export function UnifiedAllocationView({
             <Plus className="w-3.5 h-3.5" />Charity
           </button>
           <button
+            data-tour="giving-add-category"
             onClick={() => setShowPicker(!showPicker)}
             className={`text-[11px] font-medium px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1 ${
               showPicker

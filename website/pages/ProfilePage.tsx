@@ -3,7 +3,7 @@
  * Tabs: Overview | History
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { useBookmarkState, useProfileState } from '../src/contexts/UserFeaturesContext';
 import { useAuth } from '../src/auth';
@@ -18,6 +18,8 @@ import {
   UnifiedAllocationView,
 } from '../src/components/giving';
 import type { GivingHistoryEntry, CharitySummary } from '../types';
+import { useTour } from '../src/tours/useTour';
+import { givingPlanTourSteps } from '../src/tours/givingPlanTour';
 
 type TabId = 'overview' | 'history';
 
@@ -104,6 +106,16 @@ export function ProfilePage() {
     overallProgress,
     bucketProgress,
   } = useGivingDashboard(charitySummaries);
+
+  // Giving plan tour
+  const givingTour = useTour('giving-plan-tip', givingPlanTourSteps);
+
+  // Start giving plan tour for signed-in users who haven't seen it
+  useEffect(() => {
+    if (!givingTour.shouldShow || profileLoading || charitiesLoading) return;
+    const timer = setTimeout(() => givingTour.startTour(), 800);
+    return () => clearTimeout(timer);
+  }, [givingTour.shouldShow, profileLoading, charitiesLoading]);
 
   // UI state
   const [activeTab, setActiveTab] = useState<TabId>('overview');
@@ -207,6 +219,7 @@ export function ProfilePage() {
               </p>
             </div>
             <button
+              data-tour="giving-log-donation"
               onClick={() => {
                 setEditingDonation(null);
                 setShowDonationModal(true);
@@ -231,14 +244,16 @@ export function ProfilePage() {
             onClick={() => setActiveTab('overview')}
             isDark={isDark}
           />
-          <TabButton
-            id="history"
-            label="History"
-            icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>}
-            isActive={activeTab === 'history'}
-            onClick={() => setActiveTab('history')}
-            isDark={isDark}
-          />
+          <span data-tour="giving-history-tab">
+            <TabButton
+              id="history"
+              label="History"
+              icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>}
+              isActive={activeTab === 'history'}
+              onClick={() => setActiveTab('history')}
+              isDark={isDark}
+            />
+          </span>
         </div>
 
         {/* Tab Content */}

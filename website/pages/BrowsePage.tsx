@@ -13,6 +13,8 @@ import { SignInButton } from '../src/auth/SignInButton';
 import { useSearchParams } from 'react-router-dom';
 import { deriveUISignalsFromCharity, getEvidenceStageRank } from '../src/utils/scoreUtils';
 import { FeedbackButton } from '../src/components/FeedbackButton';
+import { useTour } from '../src/tours/useTour';
+import { browseTourSteps } from '../src/tours/browseTour';
 
 // Theme indices: soft-noor (light) = 4, warm-atmosphere (dark) = 2
 const LIGHT_THEME_INDEX = 4;
@@ -223,6 +225,7 @@ export const BrowsePage: React.FC = () => {
   const { isDark } = useLandingTheme();
   const theme = THEMES[isDark ? DARK_THEME_INDEX : LIGHT_THEME_INDEX];
   const { isSignedIn } = useAuth();
+  const browseTour = useTour('browse-tip', browseTourSteps);
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Load charities from exported JSON
@@ -266,6 +269,13 @@ export const BrowsePage: React.FC = () => {
     document.title = 'Browse Charities | Good Measure Giving';
     return () => { document.title = 'Good Measure Giving | Muslim Charity Evaluator'; };
   }, []);
+
+  // Start browse tour for signed-in users who haven't seen it
+  useEffect(() => {
+    if (!browseTour.shouldShow || loading) return;
+    const timer = setTimeout(() => browseTour.startTour(), 800);
+    return () => clearTimeout(timer);
+  }, [browseTour.shouldShow, loading]);
 
   // Sync filter state to URL params
   useEffect(() => {
@@ -700,7 +710,7 @@ export const BrowsePage: React.FC = () => {
         </div>
 
         {/* Search Input - always visible */}
-        <div className="relative mb-2 sm:mb-4">
+        <div className="relative mb-2 sm:mb-4" data-tour="browse-search">
           <Search className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} aria-hidden="true" />
           <input
             type="text"
@@ -799,7 +809,7 @@ export const BrowsePage: React.FC = () => {
 
         {/* Guided Entry - shown in browse mode when browseStyle is 'guided' */}
         {viewMode === 'browse' && browseStyle === 'guided' && (
-          <div className="mb-6">
+          <div className="mb-6" data-tour="browse-guided">
             <h2 className={`text-lg sm:text-xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-slate-800'}`}>
               What brings you here?
             </h2>
@@ -1176,6 +1186,7 @@ export const BrowsePage: React.FC = () => {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.25, delay: Math.min(index * 0.03, 0.6) }}
+                  {...(index === 0 ? { 'data-tour': 'browse-first-card' } : {})}
                 >
                   <CharityCard charity={charity} compact position={index} />
                 </m.div>
