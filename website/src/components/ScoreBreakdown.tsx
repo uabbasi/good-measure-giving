@@ -16,7 +16,7 @@ import {
   ScoreComponentDetail,
 } from '../../types';
 import { SourceLinkedText } from './SourceLinkedText';
-import { stripCitations, formatComponentName, formatEvidenceForDonors } from '../utils/scoreUtils';
+import { stripCitations, formatComponentName, formatEvidenceForDonors, getArchetypeLabel } from '../utils/scoreUtils';
 
 interface DimensionConfig {
   key: 'impact' | 'alignment';
@@ -281,8 +281,6 @@ const ComponentRow: React.FC<{
   );
 };
 
-const formatArchetype = (archetype: string): string =>
-  archetype.split('_').map(w => w.charAt(0) + w.slice(1).toLowerCase()).join(' ');
 
 const DimensionSection: React.FC<{
   config: DimensionConfig;
@@ -315,7 +313,7 @@ const DimensionSection: React.FC<{
               <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${
                 isDark ? 'bg-indigo-900/40 text-indigo-300' : 'bg-indigo-50 text-indigo-700'
               }`}>
-                {formatArchetype(rubricArchetype)}
+                {getArchetypeLabel(rubricArchetype)}
               </span>
             )}
           </span>

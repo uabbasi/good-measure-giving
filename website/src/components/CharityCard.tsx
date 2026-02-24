@@ -7,19 +7,9 @@ import { getWalletType } from '../utils/walletUtils';
 import { getEvidenceStageClasses, getEvidenceStageLabel, getGivingTagClasses, getHowTagClasses } from '../utils/scoreConstants';
 import { deriveUISignalsFromCharity } from '../utils/scoreUtils';
 import { trackCharityCardClick } from '../utils/analytics';
+import { formatShortRevenue, formatCauseArea } from '../utils/formatters';
 import { BookmarkButton } from './BookmarkButton';
 import { CompareButton } from './CompareButton';
-
-/**
- * Format revenue for compact display: $18M, $1.2M, $450K
- */
-const formatRevenue = (revenue: number | null | undefined): string | null => {
-  if (!revenue || revenue <= 0) return null;
-  if (revenue >= 1_000_000_000) return `$${(revenue / 1_000_000_000).toFixed(1)}B`;
-  if (revenue >= 1_000_000) return `$${(revenue / 1_000_000).toFixed(1)}M`;
-  if (revenue >= 1_000) return `$${Math.round(revenue / 1_000)}K`;
-  return `$${revenue}`;
-};
 
 /**
  * Format primaryCategory for display.
@@ -45,7 +35,7 @@ const formatPrimaryCategory = (category: string | null | undefined): string | nu
     'ADVOCACY_CIVIC': 'Civic',
     'MEDIA_JOURNALISM': 'Media',
   };
-  return mapping[category] || category.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+  return mapping[category] || formatCauseArea(category);
 };
 
 /**
@@ -238,7 +228,7 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
     foundedYear?: number | null;
   };
   const headline = extendedCharity.headline || amal?.baseline_narrative?.headline;
-  const revenue = formatRevenue(extendedCharity.totalRevenue || charity.financials?.totalRevenue || charity.rawData?.total_revenue);
+  const revenue = formatShortRevenue(extendedCharity.totalRevenue || charity.financials?.totalRevenue || charity.rawData?.total_revenue);
   const programRatio = charity.financials?.programExpenseRatio || charity.rawData?.program_expense_ratio;
   const programPct = programRatio ? Math.round(programRatio * (programRatio > 1 ? 1 : 100)) : null;
 

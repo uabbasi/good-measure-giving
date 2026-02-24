@@ -111,3 +111,10 @@ export function formatRelativeDate(dateString: string | null | undefined): strin
   if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
   return `${Math.floor(diffDays / 365)} years ago`;
 }
+
+/**
+ * Format cause area enum for display: "CIVIL_RIGHTS_AND_LEGAL" → "Civil Rights & Legal"
+ */
+export function formatCauseArea(raw: string): string {
+  return raw.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase()).replace(/\bAnd\b/g, '&');
+}

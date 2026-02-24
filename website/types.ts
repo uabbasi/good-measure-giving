@@ -264,6 +264,8 @@ export interface RichCitation {
   source_url?: string | null;
   source_type?: string;               // form990, rating, website, etc.
   confidence?: number;                // 0-1
+  access_date?: string;               // ISO date of access
+  quote?: string;                     // Direct quote from source
 }
 
 // Rich narrative structure with citations (premium content)
@@ -311,8 +313,8 @@ export interface RichNarrative {
     total_citations?: number;
     unique_sources?: number;
     known_gaps?: string[];
-    ratings_last_updated?: string;
-    website_last_crawled?: string;
+    ratings_last_updated?: string | null;
+    website_last_crawled?: string | null;
   };
   confidence?: {
     level?: string;
@@ -336,50 +338,53 @@ export interface RichNarrative {
   };
   // Long-Term Outlook
   long_term_outlook?: {
-    founded_year?: number;
-    years_operating?: number;
-    maturity_stage?: string;
-    revenue_growth_3yr?: number;
-    room_for_funding?: string;
-    room_for_funding_explanation?: string;
+    founded_year?: number | null;
+    years_operating?: number | null;
+    maturity_stage?: string | null;
+    revenue_growth_3yr?: number | null;
+    room_for_funding?: string | null;
+    room_for_funding_explanation?: string | null;
     strategic_priorities?: string[];
     citation_ids?: string[];
   };
   // Financial Deep Dive
   financial_deep_dive?: {
-    annual_revenue?: number;
+    annual_revenue?: number | null;
     yearly_financials?: Array<{
       year: number;
-      revenue?: number;
-      expenses?: number;
-      net_assets?: number;
+      revenue?: number | null;
+      expenses?: number | null;
+      net_assets?: number | null;
     }>;
-    revenue_cagr_3yr?: number;
-    reserves_months?: number;
-    program_expense_ratio?: number;
-    admin_ratio?: number;
-    fundraising_ratio?: number;
-    cn_financial_score?: number;
-    industry_program_ratio?: number;
-    peer_program_ratio_median?: number;
-    peer_count?: number;
+    revenue_cagr_3yr?: number | null;
+    reserves_months?: number | null;
+    program_expense_ratio?: number | null;
+    admin_ratio?: number | null;
+    fundraising_ratio?: number | null;
+    cn_financial_score?: number | null;
+    cn_overall_score?: number | null;
+    transparency_score?: number | null;
+    working_capital_months?: number | null;
+    industry_program_ratio?: number | null;
+    peer_program_ratio_median?: number | null;
+    peer_count?: number | null;
     citation_ids?: string[];
   };
   // Organizational Capacity / Leadership
   organizational_capacity?: {
-    ceo_name?: string;
-    ceo_compensation?: number;
-    ceo_compensation_pct_revenue?: number;
-    board_size?: number;
-    independent_board_pct?: number;
-    employees_count?: number;
-    volunteers_count?: number;
-    programs_count?: number;
-    geographic_reach?: string;
-    has_conflict_policy?: boolean;
-    has_financial_audit?: boolean;
-    staff_per_million_revenue?: number;
-    payroll_to_revenue_pct?: number;
+    ceo_name?: string | null;
+    ceo_compensation?: number | null;
+    ceo_compensation_pct_revenue?: number | null;
+    board_size?: number | null;
+    independent_board_pct?: number | null;
+    employees_count?: number | null;
+    volunteers_count?: number | null;
+    programs_count?: number | null;
+    geographic_reach?: string | null;
+    has_conflict_policy?: boolean | null;
+    has_financial_audit?: boolean | null;
+    staff_per_million_revenue?: number | null;
+    payroll_to_revenue_pct?: number | null;
     citation_ids?: string[];
   };
   // Donor Fit Matrix
@@ -402,26 +407,26 @@ export interface RichNarrative {
   // Grantmaking Profile (for charities that make grants)
   grantmaking_profile?: {
     is_significant_grantmaker?: boolean;
-    total_grants?: number;
-    domestic_grants?: number;
-    foreign_grants?: number;
-    grant_count?: number;
+    total_grants?: number | null;
+    domestic_grants?: number | null;
+    foreign_grants?: number | null;
+    grant_count?: number | null;
     top_recipients?: string[];
     regions_served?: string[];
-    grant_strategy?: string;
+    grant_strategy?: string | null;
     citation_ids?: string[];
   };
   // BBB Wise Giving Alliance Assessment
   bbb_assessment?: {
     meets_all_standards?: boolean;
-    standards_met?: number;
-    standards_not_met?: string[];
-    governance_status?: string;
-    effectiveness_status?: string;
-    finances_status?: string;
-    audit_type?: string;
-    summary?: string;
-    review_url?: string;
+    standards_met?: number | null;
+    standards_not_met?: (string | number)[];
+    governance_status?: string | null;
+    effectiveness_status?: string | null;
+    finances_status?: string | null;
+    audit_type?: string | null;
+    summary?: string | null;
+    review_url?: string | null;
     citation_ids?: string[];
   };
   // Extended analysis paragraphs
@@ -445,6 +450,10 @@ export interface RichNarrative {
     impact_tier?: string;
     confidence_tier?: string;
     confidence_scores?: {
+      impact?: number;
+      alignment?: number;
+      dataConfidence?: number;
+      data_confidence?: number;
       trust?: number;
       evidence?: number;
       effectiveness?: number;
@@ -460,6 +469,7 @@ export interface ConfidenceScores {
   impact?: number;        // out of 50
   alignment?: number;     // out of 50
   dataConfidence?: number; // 0.0-1.0 (outside score)
+  data_confidence?: number; // 0.0-1.0 (pipeline snake_case format)
   // Legacy fields (backward compat with old cached data)
   credibility?: number;   // old 3-dimension format
   trust?: number;
@@ -643,7 +653,7 @@ export interface RiskFactor {
   description: string;
   severity: string;
   data_source?: string;
-  mitigation?: string;
+  mitigation?: string | null;
 }
 
 export interface RiskDetails {
@@ -658,14 +668,18 @@ export interface ZakatDetails {
   charity_claims_zakat: boolean;
   claim_evidence: string | null;
   asnaf_category: string | null;
+  notes?: string | null;
 }
 
 export interface DataConfidenceDetails {
   overall: number;       // 0.0-1.0
   badge: string;         // HIGH, MEDIUM, LOW
   verification_tier?: string;
+  verification_value?: number;
   transparency_label?: string;
+  transparency_value?: number;
   data_quality_label?: string;
+  data_quality_value?: number;
 }
 
 export interface ScoreDetails {
@@ -697,6 +711,7 @@ export interface AmalEvaluation {
   score_details?: ScoreDetails;  // Full scorer output with all rationales
   evaluation_date: string;
   // Extended Amal evaluation fields
+  rubric_version?: string;
   methodology_version?: string;
   tier_1_strategic_fit?: AmalTier1StrategicFit;
   tier_2_execution?: AmalTier2Execution;
@@ -831,10 +846,14 @@ export interface CharityAwards {
 // T065 - US4: Source Attribution
 export interface SourceAttributionField {
   source?: string; // Single source for selected fields
+  source_name?: string; // Source name (pipeline format)
   sources?: string[]; // Multiple sources for merged fields
-  source_url?: string; // URL for the source
-  value?: string | number | null; // The attributed value
-  method: 'selection' | 'priority' | 'merged';
+  source_url?: string | null; // URL for the source
+  value?: string | number | boolean | null; // The attributed value
+  method?: 'selection' | 'priority' | 'merged' | 'direct' | 'pattern_match';
+  timestamp?: string; // ISO timestamp of data collection
+  derived_from?: string[]; // Fields used to derive this value
+  source_path?: string; // Path to source document
 }
 
 export interface SourceAttributionData {
@@ -1058,7 +1077,7 @@ export interface CharityProfile {
   impactHighlight?: string | null;
   // Extended fields for card display
   impactTier?: string | null; // Impact tier rating
-  categoryMetadata?: { neglectedness?: string | null } | null;
+  categoryMetadata?: { neglectedness?: string | null; importance?: string | null } | null;
   headline?: string | null; // Short headline from narrative
   totalRevenue?: number | null; // Annual revenue
   // New pipeline fields surfaced for donor value

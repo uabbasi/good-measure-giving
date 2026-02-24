@@ -6,7 +6,7 @@
 
 import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getCharityAddress } from '../../utils/formatters';
+import { getCharityAddress, formatCauseArea, formatShortRevenue } from '../../utils/formatters';
 import {
   ArrowLeft,
   ExternalLink,
@@ -66,8 +66,9 @@ interface NarrativeCitation {
 // Format currency helper
 const formatCurrency = (value: number | null | undefined): string => {
   if (!value) return 'N/A';
-  if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
-  if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
+  if (value >= 1_000_000_000) return `$${(value / 1_000_000_000).toFixed(1)}B`;
+  if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
+  if (value >= 1_000) return `$${Math.round(value / 1_000)}K`;
   return `$${value}`;
 };
 
@@ -227,7 +228,7 @@ function getDifferentiatorTags(charity: CharityProfile, isDark: boolean): Array<
 // Data row component
 const DataRow: React.FC<{
   label: string;
-  value: string | number | undefined;
+  value: string | number | null | undefined;
   isDark: boolean;
   highlight?: boolean;
   mono?: boolean;
@@ -1468,10 +1469,8 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
               </div>
 
               <DataRow label="Cause Area" value={rich.donor_fit_matrix.cause_area
-                ?.replace(/_/g, ' ')
-                .toLowerCase()
-                .replace(/\b\w/g, (c: string) => c.toUpperCase())
-                .replace(/\bAnd\b/g, '&')
+                ? formatCauseArea(rich.donor_fit_matrix.cause_area)
+                : undefined
               } isDark={isDark} mono={false} />
               <DataRow label="Giving Style" value={rich.donor_fit_matrix.giving_style} isDark={isDark} mono={false} />
               <DataRow label="Evidence Rigor" value={rich.donor_fit_matrix.evidence_rigor?.split(' - ')[0]} isDark={isDark} />
@@ -2105,7 +2104,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                     <span className="font-mono">{rich.organizational_capacity.board_size}</span>
                   </div>
                 )}
-                {rich.organizational_capacity.independent_board_pct !== undefined && (
+                {rich.organizational_capacity.independent_board_pct != null && (
                   <div className="flex justify-between">
                     <span>Independent</span>
                     <span className="font-mono">{(rich.organizational_capacity.independent_board_pct * 100).toFixed(0)}%</span>
@@ -2117,7 +2116,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                     <span className="font-mono">{rich.organizational_capacity.employees_count}</span>
                   </div>
                 )}
-                {rich.organizational_capacity.volunteers_count !== undefined && rich.organizational_capacity.volunteers_count > 0 && (
+                {rich.organizational_capacity.volunteers_count != null && rich.organizational_capacity.volunteers_count > 0 && (
                   <div className="flex justify-between">
                     <span>Volunteers</span>
                     <span className="font-mono">{rich.organizational_capacity.volunteers_count}</span>
@@ -2333,7 +2332,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 <span className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   {rich.bbb_assessment.meets_all_standards ? 'Meets All Standards' : 'Standards Review'}
                 </span>
-                {rich.bbb_assessment.standards_met !== undefined && rich.bbb_assessment.standards_met > 0 && (
+                {rich.bbb_assessment.standards_met != null && rich.bbb_assessment.standards_met > 0 && (
                   <span className={`text-xs font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                     ({rich.bbb_assessment.standards_met}/20)
                   </span>

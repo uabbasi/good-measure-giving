@@ -10,6 +10,7 @@ import { CompareButton } from './CompareButton';
 import { ShareButton } from './ShareButton';
 import { useAuth, SignInButton } from '../auth';
 import { useLandingTheme } from '../../contexts/LandingThemeContext';
+import { formatCauseArea } from '../utils/formatters';
 
 interface ActionsBarProps {
   charityEin: string;
@@ -29,10 +30,6 @@ interface ActionsBarProps {
   showMobileQuickActions?: boolean;
   /** URL to the charity's zakat policy page (makes "stated policy" a link) */
   zakatPolicyUrl?: string | null;
-}
-
-function formatCauseArea(raw: string): string {
-  return raw.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase()).replace(/\bAnd\b/g, '&');
 }
 
 export function ActionsBar({

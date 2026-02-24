@@ -335,7 +335,6 @@ CONFLICT_ZONES = {
 # Directness (7 pts, rescaled from 6)
 DIRECTNESS_POINTS = {
     "DIRECT_SERVICE": 7,
-    "DIRECT_PROVISION": 6,
     "CAPACITY_BUILDING": 5,
     "INSTITUTIONAL": 4,
     "SYSTEMIC_CHANGE": 2,
@@ -354,8 +353,6 @@ DIRECTNESS_KEYWORDS = {
         "meals served",
         "feeding program",
         "medical care",
-    ],
-    "DIRECT_PROVISION": [
         "humanitarian aid",
         "primary healthcare",
         "housing",
@@ -1300,7 +1297,6 @@ class ImpactScorer:
         # Check from most direct to least
         for level in [
             "DIRECT_SERVICE",
-            "DIRECT_PROVISION",
             "CAPACITY_BUILDING",
             "INSTITUTIONAL",
             "SYSTEMIC_CHANGE",

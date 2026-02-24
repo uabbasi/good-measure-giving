@@ -70,15 +70,10 @@ export const mapImprovementToDimension = (
 /**
  * Generate fallback improvement suggestion when the narrative lacks one for a dimension.
  */
-/** Map pipeline component names to donor-friendly labels */
+/** Format pipeline component name for display */
 export function formatComponentName(name: string): string {
   const nameMap: Record<string, string> = {
-    'Underserved Space': 'Room for More Donors',
-    'Funding Gap': 'Room for More Donors',
-    'Funding Gap Opportunity': 'Room for More Donors',
-    'Directness': 'Service Delivery',
     'Program Ratio': 'Program Spending',
-    'Cause Urgency': 'Problem Severity',
     'Governance': 'Board & Oversight',
   };
   return nameMap[name] || name;
@@ -166,8 +161,7 @@ export function formatEvidenceForDonors(evidence: string): string {
   if (deliveryMatch) {
     const model = deliveryMatch[1].trim();
     const map: Record<string, string> = {
-      'Direct Provision': 'Delivers services directly to beneficiaries',
-      'Direct Service': 'Provides direct services to those in need',
+      'Direct Service': 'Delivers services directly to beneficiaries',
       'Capacity Building': 'Builds local capacity for sustained impact',
       'Indirect': 'Works through partner organizations',
       'Systemic Change': 'Pursues systemic change for broad impact',

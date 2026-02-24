@@ -7,8 +7,9 @@
  */
 import type { CharityProfile, AmalDimensionScore, ScoreDetails } from '../../types';
 
-// Extended type for landing page with pillar scores as objects
-interface FeaturedCharityData extends CharityProfile {
+// Partial CharityProfile for landing page - only includes fields needed for display
+type FeaturedCharityData = Partial<CharityProfile> & {
+  name: string;
   amalEvaluation?: CharityProfile['amalEvaluation'] & {
     trust?: AmalDimensionScore;
     evidence?: AmalDimensionScore;
@@ -16,13 +17,17 @@ interface FeaturedCharityData extends CharityProfile {
     fit?: AmalDimensionScore;
     score_details?: ScoreDetails;
   };
-}
+};
 
 export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
   "name": "Obat Helpers",
   "ein": "47-0946122",
   "headline": "OBAT Helpers Inc. empowers marginalized communities through integrated education, healthcare, and poverty alleviation initiatives.",
   "amalEvaluation": {
+    "charity_ein": "47-0946122",
+    "charity_name": "Obat Helpers",
+    "wallet_tag": "ZAKAT-ELIGIBLE",
+    "evaluation_date": "2026-02-22",
     "amal_score": 88,
     "confidence_scores": {
       "impact": 42,
