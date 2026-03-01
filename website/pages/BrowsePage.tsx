@@ -263,6 +263,7 @@ export const BrowsePage: React.FC = () => {
   const [selectedPathId, setSelectedPathId] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'score' | 'relevance' | 'name' | 'revenue' | 'program' | 'evidence'>('score');
   const [showSuggestCharity, setShowSuggestCharity] = useState(false);
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
 
   // Set page title
   useEffect(() => {
@@ -649,6 +650,12 @@ export const BrowsePage: React.FC = () => {
 
   const hasActiveFilters = searchQuery || activePresets.size > 0 || selectedIntentId;
 
+  // Count active filters in secondary groups (for mobile collapse toggle)
+  const activeSecondaryCount = Array.from(activePresets).filter(id => {
+    const preset = PRESET_FILTERS.find(p => p.id === id);
+    return preset && ['focus', 'who', 'where', 'quality'].includes(preset.group);
+  }).length;
+
   if (loading) {
     return (
       <div className={`min-h-screen py-12 ${theme.bgPage}`}>
@@ -807,9 +814,34 @@ export const BrowsePage: React.FC = () => {
           </div>
         )}
 
-        {/* Guided Entry - shown in browse mode when browseStyle is 'guided' */}
+        {/* Mobile: Compact guided path chips — keeps results above the fold */}
         {viewMode === 'browse' && browseStyle === 'guided' && (
-          <div className="mb-6" data-tour="browse-guided">
+          <div className="sm:hidden mb-3" data-tour="browse-guided">
+            <div className="flex overflow-x-auto scrollbar-hide gap-2 -mx-3 px-3 pb-1">
+              {GUIDED_PATHS.map((path) => {
+                const IconComponent = { heart: Heart, book: BookOpen, zap: Zap, compass: Compass }[path.icon];
+                return (
+                  <button
+                    key={path.id}
+                    onClick={() => selectGuidedPath(path)}
+                    className={`flex-shrink-0 inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border transition-all ${
+                      isDark
+                        ? 'bg-slate-800 border-slate-700 text-slate-300 active:bg-slate-750'
+                        : 'bg-white border-slate-200 text-slate-700 active:bg-slate-50'
+                    }`}
+                  >
+                    <IconComponent className="w-4 h-4 text-emerald-500" aria-hidden="true" />
+                    {path.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Guided Entry - desktop only (full card grid) */}
+        {viewMode === 'browse' && browseStyle === 'guided' && (
+          <div className="hidden sm:block mb-6" data-tour="browse-guided">
             <h2 className={`text-lg sm:text-xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-slate-800'}`}>
               What brings you here?
             </h2>
@@ -1076,8 +1108,29 @@ export const BrowsePage: React.FC = () => {
           </div>
           )}
 
-          {/* Secondary Filters: Focus, Who, Where, Quality - always shown in power mode */}
-          <div className={`rounded-lg sm:rounded-xl p-3 sm:p-4 ${isDark ? 'bg-slate-900/80' : 'bg-slate-50 border border-slate-100'}`}>
+          {/* Mobile: More Filters toggle */}
+          <button
+            onClick={() => setFiltersExpanded(prev => !prev)}
+            className={`sm:hidden w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium mb-2 transition-colors ${
+              isDark
+                ? 'bg-slate-800 text-slate-300 border border-slate-700'
+                : 'bg-white text-slate-700 border border-slate-200'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <SlidersHorizontal className="w-4 h-4" aria-hidden="true" />
+              More Filters
+              {activeSecondaryCount > 0 && (
+                <span className={`px-1.5 py-0.5 rounded-full text-xs font-bold ${
+                  isDark ? 'bg-emerald-900/60 text-emerald-300' : 'bg-emerald-100 text-emerald-700'
+                }`}>{activeSecondaryCount}</span>
+              )}
+            </span>
+            {filtersExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
+
+          {/* Secondary Filters: Focus, Who, Where, Quality */}
+          <div className={`${filtersExpanded ? 'block' : 'hidden'} sm:block rounded-lg sm:rounded-xl p-3 sm:p-4 ${isDark ? 'bg-slate-900/80' : 'bg-slate-50 border border-slate-100'}`}>
             <div className="space-y-3">
               {(['focus', 'who', 'where', 'quality'] as const).map((groupKey, groupIndex) => (
                 <div key={groupKey}>

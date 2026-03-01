@@ -154,6 +154,7 @@ function summaryToProfile(summary: CharitySummary): CharityProfile {
     asnafServed: summary.asnafServed || null,
     rubricArchetype: summary.rubricArchetype || null,
     slug: summary.slug || null,
+    headline: summary.headline || null,
     ui_signals_v1: summary.ui_signals_v1 || deriveUISignalsFromSummary(summary),
   } as CharityProfile;
 }

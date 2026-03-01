@@ -246,7 +246,9 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
           charity.tier || 'baseline',
           position ?? 0
         )}
-        className={`group sm:hidden flex items-center gap-3 p-3 rounded-lg border transition-colors active:scale-[0.99] ${
+        className={`group sm:hidden flex items-center gap-3 p-3 rounded-lg border border-l-4 transition-colors active:scale-[0.99] ${
+          walletType === 'zakat' ? 'border-l-emerald-500' : isDark ? 'border-l-slate-600' : 'border-l-slate-300'
+        } ${
           isDark
             ? 'border-slate-700 bg-slate-800 active:bg-slate-750'
             : 'border-slate-200 bg-white active:bg-slate-50'
@@ -271,6 +273,13 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
             </p>
           )}
 
+          {/* Headline snippet */}
+          {extendedCharity.headline && (
+            <p className={`text-xs line-clamp-1 mt-0.5 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
+              {extendedCharity.headline}
+            </p>
+          )}
+
           {/* Badges: max 2 on mobile — giving type + top differentiator */}
           <div className="mt-1.5 flex flex-wrap items-center gap-1">
             <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-semibold border ${givingTypeClasses}`}>
@@ -286,23 +295,12 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
 
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-1 flex-shrink-0">
-          <CompareButton
-            charityEin={charity.ein || charity.id || ''}
-            charityName={charity.name}
-            size="sm"
-            showLabel={false}
-          />
-          <BookmarkButton
-            charityEin={charity.ein || charity.id || ''}
-            charityName={charity.name}
-            size="sm"
-          />
-        </div>
-
-        {/* Chevron */}
-        <ArrowRight className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-slate-600' : 'text-slate-300'}`} aria-hidden="true" />
+        {/* Tap affordance */}
+        <span className={`text-xs font-semibold flex-shrink-0 whitespace-nowrap ${
+          isDark ? 'text-emerald-400' : 'text-emerald-600'
+        }`}>
+          View →
+        </span>
       </Link>
 
       {/* Desktop: Vertical Card Layout */}
