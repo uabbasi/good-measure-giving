@@ -77,7 +77,29 @@ Get the GA4 Property ID from the `GA4_PROPERTY_ID` environment variable or `.env
 - metrics: `["eventCount"]`
 - dimension_filter for eventName = "sign_in_success"
 
-## Step 4: Unified Report
+## Step 4: PMF Engagement Tiers
+
+Run the PMF analysis script to segment users into engagement tiers:
+
+```bash
+uv run python scripts/pmf_analysis.py 2>/tmp/pmf_analysis.err
+```
+
+Capture the stdout text output. If the script fails, show the stderr from `/tmp/pmf_analysis.err` and continue.
+
+This script queries both Firestore (user profiles, subcollections) and GA4 (acquisition funnel, retention, DAU trends). It classifies users into:
+- **Tier 1 (Champions):** Has donations, zakat target, giving buckets, or charity targets
+- **Tier 2 (Interested):** Has 2+ bookmarks or geographic/fiqh preferences set
+- **Tier 3 (Passive):** Signed up but minimal engagement
+
+Key outputs:
+- Tier distribution and PMF proxy score (% of 30+ day users in Tier 1)
+- Tier 1 "Nicole" profile (feature adoption patterns)
+- Tier 2 → Tier 1 gap analysis (the activation gap)
+- GA4 acquisition funnel with conversion rates
+- DAU/WAU/MAU stickiness ratio
+
+## Step 5: Unified Report
 
 Combine all three data sources into a single report with these sections:
 
@@ -144,8 +166,16 @@ Show drop-off rates between each step.
 - Count of reported issues by type
 - If zero, note that the feature exists but hasn't been used yet
 
-### Section 9: Insights & Recommendations
-Synthesize actionable insights from all three data sources:
+### Section 9: PMF Engagement Tiers (Firestore + GA4)
+
+Include the full PMF analysis output from Step 4. Present it as-is (it's already formatted), but wrap it in the report context. Highlight:
+- The PMF proxy score and what it means
+- The activation gap (what Tier 1 has that Tier 2 doesn't) — this identifies the features that convert interested users into champions
+- The GA4 acquisition funnel conversion rates
+- Stickiness ratio
+
+### Section 10: Insights & Recommendations
+Synthesize actionable insights from all data sources:
 - What's the real traffic level? (Cloudflare RUM)
 - How much traffic does GA4 miss? (ad blocker rate)
 - Which features need better onboarding? (low adoption rates)
@@ -153,6 +183,8 @@ Synthesize actionable insights from all three data sources:
 - What's the conversion rate from visitor to registered user to active user?
 - Any gaps between search terms and available charities?
 - Geographic/device insights for targeting
+- What's the PMF proxy score and trend? What would move it?
+- What's the activation gap between Tier 2 and Tier 1? What product changes could close it?
 
 ## Output Format
 

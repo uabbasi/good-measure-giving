@@ -10,6 +10,7 @@ Analyze user behavior, track conversions, and understand engagement patterns usi
 1. **Cloudflare** — primary traffic source (zone-level HTTP metrics + RUM beacon for real browser visits)
 2. **Firestore** — user signups, feature adoption, giving activity
 3. **GA4** — event-level engagement tracking (blocked by ~80%+ of visitors)
+4. **PMF Analysis** — engagement tier segmentation (Superhuman PMF framework)
 
 ---
 
@@ -63,6 +64,26 @@ uv run python scripts/firestore_analytics.py 2>/tmp/firestore_analytics.err
 ```
 
 See Firestore schema section below.
+
+### PMF Analysis
+
+**Script:** `scripts/pmf_analysis.py`
+
+```bash
+uv run python scripts/pmf_analysis.py 2>/tmp/pmf_analysis.err
+```
+
+Outputs formatted text (not JSON) with:
+- **Tier distribution** — Champions (Tier 1), Interested (Tier 2), Passive (Tier 3)
+- **PMF proxy score** — % of 30+ day users in Tier 1
+- **Tier 1 "Nicole" profile** — feature adoption patterns of best users
+- **Gap analysis** — what separates each tier (the activation gap)
+- **GA4 acquisition funnel** — visitor → sign-in → registered conversion rates
+- **DAU/WAU/MAU stickiness** — daily engagement trends
+
+Uses both Firestore (gcloud auth) and GA4 (service account at `~/.secrets/Roshni-3eada2766db6.json`).
+
+Pass `--detail` for per-user breakdown.
 
 ### GA4
 

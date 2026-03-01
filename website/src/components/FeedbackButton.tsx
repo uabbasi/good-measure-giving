@@ -277,7 +277,7 @@ export const FeedbackButton: React.FC<FeedbackButtonProps> = ({ inline = false, 
       ) : (
         <button
           onClick={() => setIsOpen(true)}
-          className={`fixed bottom-6 left-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg transition-all hover:scale-105 ${
+          className={`fixed bottom-20 left-6 md:bottom-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg transition-all hover:scale-105 ${
             isDark
               ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
               : 'bg-emerald-600 hover:bg-emerald-700 text-white'

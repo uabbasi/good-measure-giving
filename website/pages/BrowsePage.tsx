@@ -688,8 +688,8 @@ export const BrowsePage: React.FC = () => {
       <div className="relative max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
 
         {/* Header Section - hidden on mobile for density, shown on desktop */}
-        <div className="hidden sm:flex mb-2 sm:mb-4 flex-wrap items-center justify-between gap-2">
-          <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold font-merriweather transition-colors [text-wrap:balance] ${theme.textMain}`}>
+        <div className="flex flex-col sm:flex-row mb-2 sm:mb-4 flex-wrap items-start sm:items-center justify-between gap-1 sm:gap-2">
+          <h1 className={`text-lg sm:text-xl sm:text-2xl md:text-3xl font-bold font-merriweather transition-colors [text-wrap:balance] ${theme.textMain}`}>
             Explore Muslim Charities
           </h1>
           <div className={`flex items-center gap-2 text-sm font-medium ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>

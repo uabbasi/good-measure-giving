@@ -31,6 +31,9 @@ export function useTour(tourKey: NuxKey, steps: DriveStep[]) {
   const startTour = useCallback(() => {
     if (!nux.shouldShow) return;
 
+    // Skip tours on mobile — they're designed for desktop multi-column layouts
+    if (window.innerWidth < 768) return;
+
     // Resolve each step to a visible element, skip steps with no visible target
     const available = steps
       .map((s) => {

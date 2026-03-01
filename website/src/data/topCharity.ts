@@ -7,9 +7,8 @@
  */
 import type { CharityProfile, AmalDimensionScore, ScoreDetails } from '../../types';
 
-// Partial CharityProfile for landing page - only includes fields needed for display
-type FeaturedCharityData = Partial<CharityProfile> & {
-  name: string;
+// Extended type for landing page with pillar scores as objects
+interface FeaturedCharityData extends CharityProfile {
   amalEvaluation?: CharityProfile['amalEvaluation'] & {
     trust?: AmalDimensionScore;
     evidence?: AmalDimensionScore;
@@ -17,20 +16,16 @@ type FeaturedCharityData = Partial<CharityProfile> & {
     fit?: AmalDimensionScore;
     score_details?: ScoreDetails;
   };
-};
+}
 
 export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
   "name": "Obat Helpers",
   "ein": "47-0946122",
   "headline": "OBAT Helpers Inc. empowers marginalized communities through integrated education, healthcare, and poverty alleviation initiatives.",
   "amalEvaluation": {
-    "charity_ein": "47-0946122",
-    "charity_name": "Obat Helpers",
-    "wallet_tag": "ZAKAT-ELIGIBLE",
-    "evaluation_date": "2026-02-22",
-    "amal_score": 88,
+    "amal_score": 89,
     "confidence_scores": {
-      "impact": 42,
+      "impact": 43,
       "alignment": 46,
       "dataConfidence": 0
     },
@@ -122,12 +117,12 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "status": "full"
           },
           {
-            "evidence": "Delivery model: Direct Provision",
+            "evidence": "Delivery model: Direct Service",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Directness",
             "possible": 5,
-            "scored": 4,
+            "scored": 5,
             "status": "full"
           },
           {
@@ -177,11 +172,11 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
           }
         ],
         "cost_per_beneficiary": 100.01115384615385,
-        "directness_level": "DIRECT_PROVISION",
+        "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "$100.01/beneficiary; Delivery: direct provision; Impact 42/50",
+        "rationale": "$100.01/beneficiary; Delivery: direct service; Impact 43/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 42
+        "score": 43
       },
       "risk_deduction": 0,
       "risks": {
@@ -190,7 +185,7 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "OBAT HELPERS INC shows exceptional alignment and strong impact, with zakat compliance.",
+      "score_summary": "OBAT HELPERS INC shows exceptional alignment and exceptional impact, with zakat compliance.",
       "zakat": {
         "asnaf_category": "fuqara",
         "bonus_points": 0,

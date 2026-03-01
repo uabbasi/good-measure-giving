@@ -39,7 +39,7 @@ export const WelcomeToast: React.FC = () => {
 
   return (
     <div
-      className="fixed bottom-6 right-6 z-[200] max-w-sm animate-slide-in-right"
+      className="fixed bottom-20 right-6 md:bottom-6 z-[200] max-w-sm animate-slide-in-right"
       role="status"
       aria-live="polite"
     >
