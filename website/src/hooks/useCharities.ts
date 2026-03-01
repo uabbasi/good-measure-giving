@@ -64,6 +64,8 @@ export interface CharitySummary {
   asnafServed?: string[] | null;
   /** Rubric archetype from score details */
   rubricArchetype?: string | null;
+  /** 3-word descriptive slug for card display */
+  slug?: string | null;
   /** Donor-facing qualitative signals */
   ui_signals_v1?: UISignalsV1 | null;
 }
@@ -151,6 +153,7 @@ function summaryToProfile(summary: CharitySummary): CharityProfile {
     // Asnaf categories for browse page filtering
     asnafServed: summary.asnafServed || null,
     rubricArchetype: summary.rubricArchetype || null,
+    slug: summary.slug || null,
     ui_signals_v1: summary.ui_signals_v1 || deriveUISignalsFromSummary(summary),
   } as CharityProfile;
 }

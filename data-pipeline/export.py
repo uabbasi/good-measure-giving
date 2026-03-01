@@ -1150,6 +1150,7 @@ def build_charity_summary(
         "tier": tier,
         "mission": best_mission,
         "headline": headline,  # Fallback description from baseline/rich narrative
+        "slug": charity_data.get("slug") if charity_data else None,
         "category": charity.get("category"),
         "website": charity.get("website"),
         "overallScore": charity_data.get("charity_navigator_score") if charity_data else None,
@@ -1295,6 +1296,7 @@ def build_charity_detail(
         }
         if any([charity.get("city"), charity.get("state"), charity.get("zip")])
         else None,
+        "slug": charity_data.get("slug") if charity_data else None,
         "isMuslimCharity": charity_data.get("muslim_charity_fit") == "high" if charity_data else False,
         "zakatEligible": None,
         "status": evaluation.get("state") if evaluation else None,

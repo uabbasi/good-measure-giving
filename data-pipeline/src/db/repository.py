@@ -547,6 +547,8 @@ class CharityDataRepository:
         "candid_max_years_tracked",
         "no_filings",
         "zakat_claim_evidence",
+        # Card display slug (3-word LLM-generated descriptor)
+        "slug",
     }
 
     # Columns managed by the DB itself — skip these on upsert so defaults apply.

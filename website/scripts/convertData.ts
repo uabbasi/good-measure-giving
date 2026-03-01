@@ -450,6 +450,7 @@ function convertCharity(sourceCharity: SourceCharity, index: number): CharityPro
     impactTier: (sourceCharity as any).evaluation?.impactTier || null,
     categoryMetadata: (sourceCharity as any).categoryMetadata || null,
     headline: (sourceCharity as any).headline || null,
+    slug: (sourceCharity as any).slug || null,
     totalRevenue: sourceCharity.financials?.totalRevenue || null,
     // Emerging org detection
     foundedYear: (sourceCharity as any).foundedYear || null,
@@ -566,6 +567,7 @@ function buildSummaryFromDetail(detail: any): any {
     tier: detail.tier || 'baseline',
     mission: detail.mission || null,
     headline,
+    slug: detail.slug || null,
     category: detail.category || null,
     website: detail.website || null,
     overallScore: detail.scores?.overall || null,

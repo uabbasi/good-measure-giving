@@ -113,6 +113,17 @@ export function formatRelativeDate(dateString: string | null | undefined): strin
 }
 
 /**
+ * Format a count for compact display: 1200000 → "1.2M", 45000 → "45K"
+ */
+export function formatShortCount(n: number | null | undefined): string | null {
+  if (!n || n <= 0) return null;
+  if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(1)}B`;
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${Math.round(n / 1_000)}K`;
+  return `${n}`;
+}
+
+/**
  * Format cause area enum for display: "CIVIL_RIGHTS_AND_LEGAL" → "Civil Rights & Legal"
  */
 export function formatCauseArea(raw: string): string {

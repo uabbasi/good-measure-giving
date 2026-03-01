@@ -40,12 +40,82 @@ from src.db import (
     RawDataRepository,
 )
 from src.db.dolt_client import dolt
-from src.llm.llm_client import LLMClient
+from src.db.client import execute_query
+from src.llm.llm_client import LLMClient, LLMTask
 from src.parsers.charity_metrics_aggregator import CharityMetrics, CharityMetricsAggregator
 from src.scorers.v2_scorers import RUBRIC_VERSION, AmalScorerV2
 from src.services.citation_service import CitationService
 from src.utils.deep_link_resolver import upgrade_source_url
 from src.utils.phase_cache_helper import check_phase_cache, update_phase_cache
+
+
+SLUG_PROMPT = """\
+Generate a 3-word descriptive slug for a charity card.
+
+Rules:
+- Exactly 3 words, all lowercase
+- Describe what the charity DOES or WHO it serves
+- No generic words like "helping", "supporting", "providing", "promoting"
+- Geographic specificity when relevant (country/region name > "global")
+- Population specificity when relevant ("orphan education" > "youth programs")
+- Do NOT describe quality or ratings (no "excellent", "top-rated", etc.)
+
+Examples:
+  CAIR → "muslim civil rights"
+  Islamic Relief USA → "global humanitarian aid"
+  Penny Appeal USA → "orphan family welfare"
+  ICNA Relief → "domestic refugee resettlement"
+  Baitulmaal → "yemen water access"
+
+Charity name: {name}
+Mission: {mission}
+Cause tags: {cause_tags}
+Program focus: {program_focus}
+Programs: {programs}
+Geographic coverage: {geo}
+
+Respond with ONLY the 3-word slug, nothing else."""
+
+
+def generate_slug(
+    metrics: CharityMetrics,
+    charity_data: dict | None,
+    llm_client: LLMClient,
+) -> tuple[str | None, float]:
+    """Generate a 3-word slug for a charity card display.
+
+    Uses the cheapest LLM (LLM_JUDGE task) for this simple text generation.
+
+    Returns:
+        (slug, cost_usd) — slug string on success, None on failure
+    """
+    cause_tags = ", ".join(charity_data.get("cause_tags") or []) if charity_data else ""
+    program_focus = ", ".join(charity_data.get("program_focus_tags") or []) if charity_data else ""
+    geo = ", ".join(metrics.geographic_coverage) if metrics.geographic_coverage else ""
+    programs = ", ".join(metrics.programs[:3]) if metrics.programs else ""
+
+    prompt = SLUG_PROMPT.format(
+        name=metrics.name,
+        mission=(metrics.mission or "")[:500],
+        cause_tags=cause_tags or "(none)",
+        program_focus=program_focus or "(none)",
+        programs=programs or "(none)",
+        geo=geo or "(none)",
+    )
+
+    try:
+        response = llm_client.generate(prompt, max_tokens=20)
+        slug = response.text.strip().lower().strip('"').strip("'")
+        words = slug.split()
+        if len(words) > 3:
+            slug = " ".join(words[:3])
+        elif len(words) < 2:
+            print(f"  WARN slug for {metrics.name}: got {len(words)} words: '{slug}'", file=sys.stderr)
+            return None, response.cost_usd
+        return slug, response.cost_usd
+    except Exception as e:
+        print(f"  WARN slug for {metrics.name}: {e}", file=sys.stderr)
+        return None, 0.0
 
 
 def _get_git_sha() -> str | None:
@@ -1132,6 +1202,21 @@ def evaluate_charity(
         result["error"] = narrative_error
         result["cost_usd"] = total_cost
         return result
+
+    # =========================================================================
+    # 2b. Generate 3-word slug for card display (cheap LLM call)
+    # =========================================================================
+    existing_slug = charity_data.get("slug") if charity_data else None
+    if not existing_slug:
+        slug_client = LLMClient(task=LLMTask.LLM_JUDGE)
+        slug, slug_cost = generate_slug(metrics, charity_data, slug_client)
+        total_cost += slug_cost
+        if slug:
+            execute_query(
+                "UPDATE charity_data SET slug = %s WHERE charity_ein = %s",
+                (slug, ein),
+                fetch="none",
+            )
 
     result["cost_usd"] = total_cost
 

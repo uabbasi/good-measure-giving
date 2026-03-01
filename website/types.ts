@@ -1079,6 +1079,7 @@ export interface CharityProfile {
   impactTier?: string | null; // Impact tier rating
   categoryMetadata?: { neglectedness?: string | null; importance?: string | null } | null;
   headline?: string | null; // Short headline from narrative
+  slug?: string | null; // 3-word descriptive slug for card display
   totalRevenue?: number | null; // Annual revenue
   // New pipeline fields surfaced for donor value
   beneficiariesServedAnnually?: number | null; // Self-reported

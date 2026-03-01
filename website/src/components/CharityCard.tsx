@@ -1,142 +1,19 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Lock, Info, Heart, Users, BookOpen, Zap, Compass, ShieldCheck, Landmark } from 'lucide-react';
+import { ArrowRight, Lock, Info, Heart, ShieldCheck } from 'lucide-react';
 import { CharityProfile } from '../../types';
 import { useLandingTheme } from '../../contexts/LandingThemeContext';
 import { getWalletType } from '../utils/walletUtils';
-import { getEvidenceStageClasses, getEvidenceStageLabel, getGivingTagClasses, getHowTagClasses } from '../utils/scoreConstants';
+import { getEvidenceStageClasses, getEvidenceStageLabel, getGivingTagClasses } from '../utils/scoreConstants';
 import { deriveUISignalsFromCharity } from '../utils/scoreUtils';
 import { trackCharityCardClick } from '../utils/analytics';
-import { formatShortRevenue, formatCauseArea } from '../utils/formatters';
+import { formatShortRevenue } from '../utils/formatters';
 import { BookmarkButton } from './BookmarkButton';
 import { CompareButton } from './CompareButton';
-
-/**
- * Format primaryCategory for display.
- * e.g., "HUMANITARIAN" -> "Humanitarian", "CIVIL_RIGHTS_LEGAL" -> "Civil Rights"
- */
-const formatPrimaryCategory = (category: string | null | undefined): string | null => {
-  if (!category) return null;
-  const mapping: Record<string, string> = {
-    'HUMANITARIAN': 'Humanitarian',
-    'RELIGIOUS_CONGREGATION': 'Religious',
-    'CIVIL_RIGHTS_LEGAL': 'Civil Rights',
-    'MEDICAL_HEALTH': 'Health',
-    'EDUCATION_K12_RELIGIOUS': 'Education',
-    'EDUCATION_HIGHER_RELIGIOUS': 'Education',
-    'ENVIRONMENT_CLIMATE': 'Environment',
-    'BASIC_NEEDS': 'Basic Needs',
-    'PHILANTHROPY_GRANTMAKING': 'Grantmaking',
-    'SOCIAL_SERVICES': 'Social Services',
-    'EDUCATION_INTERNATIONAL': 'Education',
-    'RELIGIOUS_OUTREACH': 'Religious',
-    'RESEARCH_POLICY': 'Research',
-    'WOMENS_SERVICES': "Women's Services",
-    'ADVOCACY_CIVIC': 'Civic',
-    'MEDIA_JOURNALISM': 'Media',
-  };
-  return mapping[category] || formatCauseArea(category);
-};
-
-/**
- * Format cause tag for display.
- * Country names and service tags formatted for compact display.
- */
-const formatCauseTag = (tag: string): string => {
-  const mapping: Record<string, string> = {
-    // Countries
-    'usa': 'USA',
-    'palestine': 'Palestine',
-    'syria': 'Syria',
-    'yemen': 'Yemen',
-    'afghanistan': 'Afghanistan',
-    'pakistan': 'Pakistan',
-    'bangladesh': 'Bangladesh',
-    'india': 'India',
-    'kashmir': 'Kashmir',
-    'somalia': 'Somalia',
-    'sudan': 'Sudan',
-    'kenya': 'Kenya',
-    'ethiopia': 'Ethiopia',
-    'nigeria': 'Nigeria',
-    'south-africa': 'S. Africa',
-    'lebanon': 'Lebanon',
-    'jordan': 'Jordan',
-    'iraq': 'Iraq',
-    'egypt': 'Egypt',
-    'turkey': 'Turkey',
-    'indonesia': 'Indonesia',
-    'malaysia': 'Malaysia',
-    'myanmar': 'Myanmar',
-    'uyghur': 'Uyghur',
-    'haiti': 'Haiti',
-    // Services & populations
-    'emergency-response': 'Emergency',
-    'water-sanitation': 'Water',
-    'medical': 'Medical',
-    'food': 'Food',
-    'advocacy': 'Advocacy',
-    'grantmaking': 'Grants',
-    'research': 'Research',
-    'refugees': 'Refugees',
-    'orphans': 'Orphans',
-    'women': 'Women',
-    'youth': 'Youth',
-    'prisoners': 'Prisoners',
-    'homeless': 'Homeless',
-    'widows': 'Widows',
-    'converts': 'Converts',
-    'psychosocial': 'Mental Health',
-    'legal-aid': 'Legal Aid',
-    'microfinance': 'Microfinance',
-  };
-  return mapping[tag] || tag.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-};
 
 type PrimaryTag = {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
-};
-
-const getWhoTag = (causeTags: string[], asnafServed: string[] | null | undefined): PrimaryTag | null => {
-  if (causeTags.includes('refugees')) return { label: 'Refugees', icon: Users };
-  if (causeTags.includes('orphans')) return { label: 'Orphans', icon: Users };
-  if (causeTags.includes('women')) return { label: 'Women & Girls', icon: Users };
-  if (causeTags.includes('youth')) return { label: 'Youth', icon: Users };
-  if (causeTags.includes('converts') || (asnafServed || []).includes('Muallaf')) return { label: 'Converts', icon: Users };
-  if (causeTags.includes('prisoners')) return { label: 'Prisoners', icon: Users };
-  if (causeTags.includes('widows')) return { label: 'Widows', icon: Users };
-  if ((asnafServed || []).some(a => ['Fuqara', 'Masakin'].includes(a))) return { label: 'Low-Income', icon: Users };
-  return null;
-};
-
-const getHowTag = (causeTags: string[], programFocusTags: string[] | null | undefined, archetypeLabel: string): PrimaryTag => {
-  const focus = programFocusTags || [];
-  if (causeTags.includes('emergency-response')) return { label: 'Emergency Relief', icon: Zap };
-  if (causeTags.includes('advocacy') || causeTags.includes('legal-aid') || causeTags.includes('systemic-change')) {
-    return { label: 'Advocacy & Policy', icon: Compass };
-  }
-  if (causeTags.includes('grantmaking') || archetypeLabel === 'Grantmaker') return { label: 'Grantmaking', icon: Landmark };
-  if (
-    causeTags.includes('educational') ||
-    focus.includes('education-k12') ||
-    focus.includes('education-higher') ||
-    archetypeLabel.includes('Education')
-  ) {
-    return { label: 'Education', icon: BookOpen };
-  }
-  if (focus.includes('research-policy') || causeTags.includes('research')) return { label: 'Research & Policy', icon: Compass };
-  if (causeTags.includes('medical') || causeTags.includes('food') || causeTags.includes('water-sanitation')) {
-    return { label: 'Direct Services', icon: Heart };
-  }
-  return { label: 'Community Programs', icon: Users };
-};
-
-const getCueDisplayLabel = (cue: string): string => {
-  if (cue === 'Strong Match') return 'Maximum Alignment';
-  if (cue === 'Good Match') return 'Strong Alignment';
-  if (cue === 'Limited Match') return 'Needs Verification';
-  return 'Mixed Signals';
 };
 
 const getShortLabel = (label: string): string => {
@@ -152,6 +29,11 @@ const getShortLabel = (label: string): string => {
   return mapping[label] || label;
 };
 
+/**
+ * Title-case a slug: "muslim civil rights" → "Muslim Civil Rights"
+ */
+const titleCaseSlug = (slug: string): string =>
+  slug.replace(/\b\w/g, c => c.toUpperCase());
 
 interface CharityCardProps {
   charity: CharityProfile;
@@ -209,13 +91,9 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
   const evidenceStageLabel = getEvidenceStageLabel(evidenceStage);
 
   const walletType = getWalletType(amal?.wallet_tag);
-  // Systematic families:
-  // - Giving tags: green family (emerald/teal)
-  // - How tags: purple family (with rose for emergency)
-  // - Evidence tags: lower-ink border style for readability
   const givingTypeClasses = getGivingTagClasses(walletType === 'zakat' ? 'zakat' : 'sadaqah', isDark);
 
-  // Get extended charity data (headline, revenue, primaryCategory, causeTags, impact indicators)
+  // Get extended charity data
   const extendedCharity = charity as CharityProfile & {
     primaryCategory?: string | null;
     causeTags?: string[] | null;
@@ -227,54 +105,37 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
     evaluationTrack?: string | null;
     foundedYear?: number | null;
   };
-  const headline = extendedCharity.headline || amal?.baseline_narrative?.headline;
+  const slug = charity.slug;
   const revenue = formatShortRevenue(extendedCharity.totalRevenue || charity.financials?.totalRevenue || charity.rawData?.total_revenue);
-  const programRatio = charity.financials?.programExpenseRatio || charity.rawData?.program_expense_ratio;
-  const programPct = programRatio ? Math.round(programRatio * (programRatio > 1 ? 1 : 100)) : null;
 
-  // Filter out low-value tags for browse cards
-  const excludeTags = new Set([
-    'faith-based', 'muslim-led', 'usa', 'international', 'direct-service',
-    'clothing', 'disabled', 'capacity-building', 'educational', 'low-income',
-    'long-term-development', 'vocational', 'shelter', 'elderly'
-  ]);
-  const causeTags = (extendedCharity.causeTags || [])
-    .filter(tag => !excludeTags.has(tag))
-    .slice(0, 2);  // Show max 2 tags
   const allCauseTags = extendedCharity.causeTags || [];
-  const howTag = getHowTag(allCauseTags, extendedCharity.programFocusTags, archetypeLabel);
   const givingTypeTag: PrimaryTag = walletType === 'zakat'
     ? { label: 'Zakat Eligible', icon: Lock }
     : { label: 'Sadaqah', icon: Heart };
 
-  // Differentiator tags: prioritized list of impact/approach indicators (max 2)
-  // Each tag has a unique color scheme and optional tooltip for special tracks
+  // Differentiator tags: prioritized list of impact/approach indicators
   type DifferentiatorTag = {
     label: string;
     priority: number;
-    colorLight: string;  // bg + text for light mode
-    colorDark: string;   // bg + text for dark mode
-    tooltip?: string;    // Explanatory tooltip for special evaluation tracks
+    colorLight: string;
+    colorDark: string;
+    tooltip?: string;
   };
   const differentiatorTags: DifferentiatorTag[] = [];
-  
 
-  // Get pillar scores for evidence-based tags
   const pillarScores = (charity as CharityProfile & {
     amalEvaluation?: { confidence_scores?: { impact?: number; alignment?: number; dataConfidence?: number } }
   }).amalEvaluation?.confidence_scores;
 
-  // Calculate years operating
   const currentYear = new Date().getFullYear();
   const yearsOperating = extendedCharity.foundedYear
     ? currentYear - extendedCharity.foundedYear
     : null;
 
-  // Evaluation track badges (NEW_ORG, RESEARCH_POLICY)
   if (extendedCharity.evaluationTrack === 'NEW_ORG') {
     differentiatorTags.push({
       label: 'Emerging',
-      priority: 0,  // Highest priority
+      priority: 0,
       colorLight: 'bg-amber-100 text-amber-700',
       colorDark: 'bg-amber-900/50 text-amber-400'
     });
@@ -288,7 +149,6 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
     });
   }
 
-  // Verified Data: high data confidence (verification + transparency + data quality)
   if (pillarScores?.dataConfidence && pillarScores.dataConfidence >= 0.7) {
     differentiatorTags.push({
       label: 'Verified Data',
@@ -315,7 +175,6 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
     });
   }
 
-  // Emergency Response: urgent relief work
   if (allCauseTags.includes('emergency-response')) {
     differentiatorTags.push({
       label: 'Emergency',
@@ -350,7 +209,6 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
     });
   }
 
-  // Grantmaker: organizations that fund other charities
   if (allCauseTags.includes('grantmaking')) {
     differentiatorTags.push({
       label: 'Funds Other Orgs',
@@ -360,7 +218,6 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
     });
   }
 
-  // Established: 25+ years of operation (track record)
   if (yearsOperating && yearsOperating >= 25) {
     differentiatorTags.push({
       label: '25+ Years',
@@ -370,10 +227,13 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
     });
   }
 
-  // Sort by priority and take top 2
+  // Sort by priority and take top 1 differentiator
   const topDifferentiators = differentiatorTags
     .sort((a, b) => a.priority - b.priority)
-    .slice(0, 2);
+    .slice(0, 1);
+
+  // Show evidence stage badge only for Verified or Established (desktop only)
+  const showEvidenceBadge = evidenceStage === 'Verified' || evidenceStage === 'Established';
 
   return (
     <>
@@ -404,31 +264,26 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
             )}
           </div>
 
-          <div className="mt-1 flex flex-wrap items-center gap-1">
+          {/* Slug subtitle */}
+          {slug && (
+            <p className={`text-sm font-medium mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              {titleCaseSlug(slug)}
+            </p>
+          )}
+
+          {/* Badges: max 2 on mobile — giving type + top differentiator */}
+          <div className="mt-1.5 flex flex-wrap items-center gap-1">
+            <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-semibold border ${givingTypeClasses}`}>
+              <givingTypeTag.icon className="w-3 h-3" aria-hidden="true" />
+              {getShortLabel(givingTypeTag.label)}
+            </span>
             {topDifferentiators.map(tag => (
-              <span key={tag.label} className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${isDark ? tag.colorDark : tag.colorLight}`}>
+              <span key={tag.label} className={`px-1.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider ${isDark ? tag.colorDark : tag.colorLight}`}>
                 {tag.label}
               </span>
             ))}
-            <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-semibold border ${givingTypeClasses}`}>
-              <givingTypeTag.icon className="w-2.5 h-2.5" aria-hidden="true" />
-              {getShortLabel(givingTypeTag.label)}
-            </span>
-            <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-semibold border ${getHowTagClasses(howTag.label, isDark)}`}>
-              <howTag.icon className="w-2.5 h-2.5" aria-hidden="true" />
-              {getShortLabel(howTag.label)}
-            </span>
-            <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-semibold border ${getEvidenceStageClasses(evidenceStage, isDark)}`}>
-              <ShieldCheck className="w-2.5 h-2.5" aria-hidden="true" />
-              {evidenceStageLabel}
-            </span>
           </div>
 
-          {headline && (
-            <p className={`text-xs line-clamp-2 mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-              {headline}
-            </p>
-          )}
         </div>
 
         {/* Actions */}
@@ -464,33 +319,8 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
         }`}
       >
         <div className={`flex-1 flex flex-col ${compact ? 'p-4' : 'p-6'}`}>
-          {/* Header: donor-useful primary tags */}
-          <div className="flex flex-wrap items-center gap-2 mb-3">
-            {topDifferentiators.map(tag => (
-              <TooltipBadge
-                key={tag.label}
-                label={tag.label}
-                tooltip={tag.tooltip}
-                colorClass={isDark ? tag.colorDark : tag.colorLight}
-                isDark={isDark}
-              />
-            ))}
-            <span className={`inline-flex items-center gap-1 px-2 py-1 text-[10px] font-semibold border rounded ${givingTypeClasses}`}>
-              <givingTypeTag.icon className="w-3 h-3" aria-hidden="true" />
-              {getShortLabel(givingTypeTag.label)}
-            </span>
-            <span className={`inline-flex items-center gap-1 px-2 py-1 text-[10px] font-semibold border rounded ${getHowTagClasses(howTag.label, isDark)}`}>
-              <howTag.icon className="w-3 h-3" aria-hidden="true" />
-              {getShortLabel(howTag.label)}
-            </span>
-            <span className={`inline-flex items-center gap-1 px-2 py-1 text-[10px] font-semibold border rounded ${getEvidenceStageClasses(evidenceStage, isDark)}`}>
-              <ShieldCheck className="w-3 h-3" aria-hidden="true" />
-              {evidenceStageLabel}
-            </span>
-          </div>
-
           {/* Name + bookmark */}
-          <div className="flex justify-between items-start mb-2">
+          <div className="flex justify-between items-start mb-1">
             <h3 className={`font-bold font-merriweather leading-tight transition-colors flex-1 pr-4 ${
               compact ? 'text-base' : featured ? 'text-xl' : 'text-lg'
             } ${isDark ? 'text-white group-hover:text-emerald-400' : 'text-slate-900 group-hover:text-emerald-700'}`}>
@@ -505,14 +335,36 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
             </div>
           </div>
 
-          {/* Headline - narrative-first */}
-          {headline && (
-            <p className={`text-sm leading-relaxed line-clamp-3 mt-auto ${
-              isDark ? 'text-slate-400' : 'text-slate-600'
-            }`}>
-              {headline}
+          {/* Slug subtitle */}
+          {slug && (
+            <p className={`text-sm font-medium mb-3 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              {titleCaseSlug(slug)}
             </p>
           )}
+
+          {/* Badges: max 3 on desktop — giving type + top differentiator + evidence (Verified/Established only) */}
+          <div className="flex flex-wrap items-center gap-2 mb-3">
+            <span className={`inline-flex items-center gap-1 px-2 py-1 text-[10px] font-semibold border rounded ${givingTypeClasses}`}>
+              <givingTypeTag.icon className="w-3 h-3" aria-hidden="true" />
+              {getShortLabel(givingTypeTag.label)}
+            </span>
+            {topDifferentiators.map(tag => (
+              <TooltipBadge
+                key={tag.label}
+                label={tag.label}
+                tooltip={tag.tooltip}
+                colorClass={isDark ? tag.colorDark : tag.colorLight}
+                isDark={isDark}
+              />
+            ))}
+            {showEvidenceBadge && (
+              <span className={`inline-flex items-center gap-1 px-2 py-1 text-[10px] font-semibold border rounded ${getEvidenceStageClasses(evidenceStage, isDark)}`}>
+                <ShieldCheck className="w-3 h-3" aria-hidden="true" />
+                {evidenceStageLabel}
+              </span>
+            )}
+          </div>
+
         </div>
 
         <div className={`${compact ? 'px-4 py-3' : 'px-6 py-4'} border-t flex justify-between items-center ${
