@@ -35,6 +35,91 @@ logger = logging.getLogger(__name__)
 # Module-level validator instance (reused across calls)
 _source_validator = SourceRequiredValidator()
 
+# Shared donation platforms where multiple charities coexist on the same domain.
+# URLs on these domains require path-level ownership validation to prevent
+# cross-charity zakat attribution (e.g., donorbox.org/zakaat != donorbox.org/linkoutside).
+SHARED_DONATION_PLATFORMS = {
+    "donorbox.org",
+    "gofundme.com",
+    "givebutter.com",
+    "nonprofitsoapbox.com",
+    "mightycause.com",
+    "classy.org",
+    "fundly.com",
+    "givegab.com",
+    "bonfire.com",
+    "fundraise.com",
+}
+
+
+def _normalize_host(url: str) -> str:
+    """Extract normalized hostname from URL (strips www. prefix)."""
+    from urllib.parse import urlparse
+
+    try:
+        parsed = urlparse(url if "://" in url else f"https://{url}")
+        host = parsed.netloc.lower().split(":")[0]
+        return host.removeprefix("www.")
+    except Exception:
+        return ""
+
+
+def _is_url_owned_by_charity(discovered_url: str, charity_website: str) -> bool:
+    """Check if a discovered URL plausibly belongs to the charity being evaluated.
+
+    For shared donation platforms (Donorbox, GoFundMe, etc.), verifies that the
+    URL path corresponds to the charity's own campaign, not another org's page.
+
+    For non-shared domains, checks that the domain matches the charity's website.
+
+    Returns True if ownership can't be disproven (benefit of the doubt).
+    """
+    if not discovered_url or not charity_website:
+        return True  # Can't validate without both URLs
+
+    from urllib.parse import urlparse
+
+    disc_host = _normalize_host(discovered_url)
+    charity_host = _normalize_host(charity_website)
+
+    # Check if the discovered URL is on a shared platform
+    if disc_host not in SHARED_DONATION_PLATFORMS:
+        # Not a shared platform - if domains match, it's fine
+        # If domains differ, could be a legitimate cross-reference (e.g., search result)
+        # so we don't block it here - other corroboration logic handles that
+        return True
+
+    # Shared platform: the charity's own website must also be on this platform
+    # for us to trust a zakat URL found there
+    if charity_host != disc_host:
+        # Charity's website is on a different domain than the shared platform
+        # This means the discovered URL is from ANOTHER org's campaign page
+        logger.warning(
+            f"Shared platform mismatch: discovered {discovered_url} "
+            f"is on {disc_host}, but charity website is {charity_website}"
+        )
+        return False
+
+    # Both on the same shared platform - check if paths are related
+    disc_path = urlparse(discovered_url).path.strip("/").lower()
+    charity_path = urlparse(charity_website).path.strip("/").lower()
+
+    if not charity_path:
+        # Charity URL is just the platform homepage - can't validate
+        return False
+
+    # The discovered path should contain or match the charity's campaign slug
+    # e.g., charity=donorbox.org/linkoutside, discovered=donorbox.org/linkoutside/zakat
+    if disc_path.startswith(charity_path):
+        return True
+
+    # Different paths on the same shared platform = different org's page
+    logger.warning(
+        f"Shared platform path mismatch: discovered path /{disc_path} "
+        f"doesn't match charity path /{charity_path} on {disc_host}"
+    )
+    return False
+
 
 def _first_non_none(*values):
     """Return the first non-None value, or None if all are None.
@@ -476,6 +561,7 @@ class CrossSourceCorroborator:
         name: str,
         discovered_profile: Optional[Dict[str, Any]],
         website_profile: Optional[Dict[str, Any]],
+        charity_website: Optional[str] = None,
     ) -> CorroborationResult:
         """
         Corroborate zakat claim detection.
@@ -488,6 +574,7 @@ class CrossSourceCorroborator:
             name: Charity name
             discovered_profile: Discovered data from web search
             website_profile: Website extracted data
+            charity_website: The charity's primary website URL (for shared platform validation)
 
         Returns:
             CorroborationResult with corroboration details
@@ -505,7 +592,18 @@ class CrossSourceCorroborator:
         discovered_confidence = discovered_zakat.get("zakat_verification_confidence", 0.0)
         discovered_evidence = (discovered_zakat.get("accepts_zakat_evidence") or "").strip()
 
-        if discovered_accepts and discovered_confidence >= 0.5:
+        # Shared platform guard: if the discovered zakat URL is from a shared donation
+        # platform (Donorbox, GoFundMe, etc.) and doesn't match the charity's own
+        # campaign page, reject ALL discovery-based evidence since it originates from
+        # a different organization's page on the same platform.
+        discovery_url_owned = _is_url_owned_by_charity(discovered_url, charity_website)
+        if not discovery_url_owned and discovered_url:
+            logger.warning(
+                f"Rejecting all discovery-based zakat evidence for {ein} ({name}): "
+                f"{discovered_url} does not belong to charity (website: {charity_website})"
+            )
+
+        if discovered_accepts and discovered_confidence >= 0.5 and discovery_url_owned:
             sources.append("discovered_profile")
             reasons.append(f"Discovered via search (confidence={discovered_confidence:.2f})")
 
@@ -513,8 +611,9 @@ class CrossSourceCorroborator:
         # Some sites mention zakat on giving pages that are missed by website extraction.
         # If discovery returns clear first-party positive phrasing, count this as an
         # explicit evidence signal (still gated by minimum discovery confidence).
+        # Also gated by URL ownership - evidence from another org's page is not valid.
         has_discovered_explicit_zakat_evidence = False
-        if discovered_accepts and discovered_confidence >= 0.5 and discovered_evidence:
+        if discovered_accepts and discovered_confidence >= 0.5 and discovered_evidence and discovery_url_owned:
             evidence_lower = discovered_evidence.lower()
             positive_patterns = [
                 "zakat eligible",
@@ -542,7 +641,8 @@ class CrossSourceCorroborator:
                 reasons.append("Discovered evidence includes explicit zakat-acceptance language")
 
         # Source 2: Check if URL explicitly contains 'zakat'
-        if discovered_url and "zakat" in discovered_url.lower():
+        # Also gated by URL ownership check above
+        if discovered_url and "zakat" in discovered_url.lower() and discovery_url_owned:
             sources.append("url_pattern")
             reasons.append(f"URL contains 'zakat': {discovered_url}")
 
@@ -584,9 +684,15 @@ class CrossSourceCorroborator:
         # This is a deterministic check that fetches /zakat or /donate pages and looks
         # for zakat keywords - independent from the LLM search grounding result
         if discovered_zakat.get("direct_page_verified"):
-            sources.append("zakat_page_direct")
-            url = discovered_zakat.get("accepts_zakat_url", "")
-            reasons.append(f"Zakat page verified directly at {url}")
+            direct_url = discovered_zakat.get("accepts_zakat_url", "")
+            if _is_url_owned_by_charity(direct_url, charity_website):
+                sources.append("zakat_page_direct")
+                reasons.append(f"Zakat page verified directly at {direct_url}")
+            else:
+                logger.warning(
+                    f"Rejecting direct zakat verification for {ein} ({name}): {direct_url} "
+                    f"does not belong to charity (website: {charity_website})"
+                )
 
         # Corroboration logic:
         # - Direct page verification is sufficient (charity's own website is source of truth)
@@ -1975,6 +2081,7 @@ class CharityMetricsAggregator:
             name=charity_name,
             discovered_profile=discovered_profile,
             website_profile=website_profile,
+            charity_website=metrics_data.get("website_url"),
         )
         corroboration_status["zakat_claim_detected"] = {
             "passed": zakat_result.passed,
