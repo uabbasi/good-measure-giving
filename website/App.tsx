@@ -21,6 +21,7 @@ const PromptDetailPage = lazy(() => import('./pages/PromptDetailPage').then(m =>
 const ComparePage = lazy(() => import('./pages/ComparePage').then(m => ({ default: m.ComparePage })));
 const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ default: m.ProfilePage })));
 import { CompareBar } from './src/components/CompareBar';
+import { MobileBottomNav } from './src/components/MobileBottomNav';
 import { WelcomeToast } from './src/components/WelcomeToast';
 import { ScrollToTop } from './components/ScrollToTop';
 import { trackPageView } from './src/utils/analytics';
@@ -49,7 +50,7 @@ const AppContent: React.FC = () => {
   }, [location.pathname]);
 
   return (
-    <div className={`min-h-screen flex flex-col font-sans transition-colors duration-300 ${isDark ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
+    <div className={`${isLandingPage ? 'h-[100dvh] lg:h-auto lg:min-h-screen overflow-hidden lg:overflow-visible' : 'min-h-screen'} flex flex-col font-sans transition-colors duration-300 ${isDark ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
       {/* Skip to main content link for keyboard users */}
       <a
         href="#main"
@@ -58,7 +59,7 @@ const AppContent: React.FC = () => {
         Skip to main content
       </a>
       <Navbar />
-      <main id="main" className="flex-grow">
+      <main id="main" className={`flex-grow ${isLandingPage ? 'min-h-0 overflow-hidden lg:min-h-0 lg:overflow-visible' : ''}`}>
         <Suspense fallback={null}>
           <Routes>
             <Route path="/" element={<LandingPage />} />
@@ -78,8 +79,9 @@ const AppContent: React.FC = () => {
           </Routes>
         </Suspense>
       </main>
-      <Footer />
+      {isLandingPage ? <div className="hidden lg:block"><Footer /></div> : <Footer />}
       <CompareBar />
+      {!isLandingPage && <MobileBottomNav />}
       <WelcomeToast />
     </div>
   );
