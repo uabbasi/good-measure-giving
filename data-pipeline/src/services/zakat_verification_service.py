@@ -56,6 +56,7 @@ ZAKAT_PAGE_KEYWORDS = [
     "accepts zakat",
     "zakat donation",
     "zakat fund",
+    "zakat@",  # Dedicated zakat email address (e.g., zakat@citcd.org)
 ]
 
 

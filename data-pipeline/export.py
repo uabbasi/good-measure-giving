@@ -797,12 +797,43 @@ def _rewrite_evidence_source(evidence: str, canonical_url: str | None) -> str:
     return cleaned
 
 
+def _is_negative_zakat_evidence(text: str) -> bool:
+    """Detect negative/absence evidence that should not be surfaced as zakat claim evidence."""
+    lower = text.lower()
+    negative_phrases = [
+        "no explicit mention",
+        "does not explicitly mention",
+        "do not explicitly mention",
+        "does not mention",
+        "no mention of zakat",
+        "no direct evidence",
+        "not explicitly mention",
+        "no indication of zakat",
+        "haven't set up any donation",
+        "there is no mention of zakat",
+    ]
+    return any(phrase in lower for phrase in negative_phrases)
+
+
 def _extract_zakat_claim_evidence(
     charity_data: dict | None, evaluation: dict | None = None, fallback_website: str | None = None
 ) -> list[str] | None:
-    """Extract zakat claim evidence with canonical URLs and no grounding redirects."""
+    """Extract zakat claim evidence with canonical URLs and no grounding redirects.
+
+    Only surfaces evidence for ZAKAT-ELIGIBLE charities. Negative evidence
+    (e.g., "no explicit mention of zakat") is always filtered out.
+    """
     if not charity_data:
         return None
+
+    # Only show zakat evidence for charities actually tagged ZAKAT-ELIGIBLE.
+    # Showing "we didn't find zakat" for SADAQAH-ELIGIBLE charities is misleading.
+    wallet_tag = None
+    if isinstance(evaluation, dict):
+        wallet_tag = evaluation.get("wallet_tag")
+    if wallet_tag != "ZAKAT-ELIGIBLE":
+        return None
+
     evidence = charity_data.get("zakat_claim_evidence")
     if not evidence:
         return None
@@ -817,6 +848,8 @@ def _extract_zakat_claim_evidence(
         if not isinstance(item, str):
             continue
         if item.startswith("CORROBORATION FAILED:"):
+            continue
+        if _is_negative_zakat_evidence(item):
             continue
         rewritten = _rewrite_evidence_source(item, canonical_url)
         if rewritten:
