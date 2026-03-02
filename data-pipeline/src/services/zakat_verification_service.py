@@ -32,6 +32,8 @@ logger = logging.getLogger(__name__)
 ZAKAT_URL_PATTERNS = [
     "/zakat",
     "/zakat/",
+    "/zakat-fund",
+    "/zakat-fund/",
     "/donate/zakat",
     "/giving/zakat",
     "/zakaat",

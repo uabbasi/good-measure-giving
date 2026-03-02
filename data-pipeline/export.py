@@ -753,52 +753,34 @@ def _normalize_public_url(url: Any) -> str | None:
 
 
 def _select_canonical_zakat_url(
-    charity_data: dict | None, evaluation: dict | None, fallback_website: str | None
+    charity_data: dict | None, _evaluation: dict | None, fallback_website: str | None
 ) -> str | None:
     """Choose the best canonical URL for zakat evidence/source display.
 
     Priority:
-    1) Baseline narrative citations explicitly tied to zakat/donate claims
+    1) Discovery-phase zakat_policy_url (from direct HTTP check or Gemini search)
     2) Source attribution for claims_zakat_eligible
     3) Charity website fallback
+
+    NOTE: Baseline narrative citations are NOT used here because the narrative
+    LLM can hallucinate source URLs (e.g., attaching an unrelated PDF URL to
+    a zakat-related claim). Discovery-phase URLs are verified by the pipeline.
     """
-    # 1) Baseline narrative citations
-    if isinstance(evaluation, dict):
-        baseline = evaluation.get("baseline_narrative")
-        citations = baseline.get("all_citations") if isinstance(baseline, dict) else None
-        if isinstance(citations, list):
-            zakat_candidate = None
-            donate_candidate = None
-            generic_candidate = None
-            for citation in citations:
-                if not isinstance(citation, dict):
-                    continue
-                url = _normalize_public_url(citation.get("source_url"))
-                if not url:
-                    continue
-                claim = str(citation.get("claim") or "").lower()
-                source_name = str(citation.get("source_name") or "").lower()
-                if "zakat" in claim or "zakat" in source_name:
-                    zakat_candidate = url
-                    break
-                if ("/donate" in url.lower() or " donate" in source_name) and not donate_candidate:
-                    donate_candidate = url
-                if not generic_candidate:
-                    generic_candidate = url
-            if zakat_candidate:
-                return zakat_candidate
-            if donate_candidate:
-                return donate_candidate
-            if generic_candidate:
-                return generic_candidate
+    # 1) Discovery-phase zakat_policy_url (verified by zakat_verification_service)
+    if isinstance(charity_data, dict):
+        zakat_meta = charity_data.get("zakat_metadata")
+        if isinstance(zakat_meta, dict):
+            url = _normalize_public_url(zakat_meta.get("zakat_policy_url"))
+            if url:
+                return url
 
     # 2) Source attribution for claims_zakat_eligible
     if isinstance(charity_data, dict):
         source_attribution = charity_data.get("source_attribution")
         if isinstance(source_attribution, dict):
-            zakat_meta = source_attribution.get("claims_zakat_eligible")
-            if isinstance(zakat_meta, dict):
-                url = _normalize_public_url(zakat_meta.get("source_url"))
+            zakat_attr = source_attribution.get("claims_zakat_eligible")
+            if isinstance(zakat_attr, dict):
+                url = _normalize_public_url(zakat_attr.get("source_url"))
                 if url:
                     return url
 

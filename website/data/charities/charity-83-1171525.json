@@ -71,6 +71,12 @@
       "timestamp": "2026-01-25T22:53:24",
       "value": 100000
     },
+    "claims_zakat_eligible": {
+      "source_name": "Charity Website",
+      "source_url": "https://donorbox.org/zakaat",
+      "timestamp": "2026-01-25T22:53:24",
+      "value": true
+    },
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/831171525",
@@ -151,7 +157,9 @@
     ],
     "receivesFoundationGrants": null
   },
-  "zakatClaimEvidence": [],
+  "zakatClaimEvidence": [
+    "Dedicated zakat page found at https://donorbox.org/zakaat (Source: https://donorbox.org/zakaat)"
+  ],
   "archetype": "LEVERAGE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
@@ -176,7 +184,7 @@
     "charity_ein": "83-1171525",
     "charity_name": "Link Outside",
     "amal_score": 53,
-    "wallet_tag": "SADAQAH-ELIGIBLE",
+    "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:31:45",
     "rubric_version": "5.0.0",
     "confidence_scores": {
@@ -189,7 +197,7 @@
         "cause_urgency_label": "ADVOCACY",
         "components": [
           {
-            "evidence": "Muslim-focused organization (+2)",
+            "evidence": "Explicit zakat program (+4); Muslim-focused organization (+2)",
             "improvement_suggestion": "Clarify zakat allocation policy and eligible use categories for donors.",
             "improvement_value": 8,
             "name": "Muslim Donor Fit",
@@ -328,13 +336,13 @@
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "Link Outside shows good impact and moderate alignment. Evidence score may reflect limited reporting capacity, not program weakness.",
+      "score_summary": "Link Outside shows good impact and moderate alignment, with zakat compliance. Evidence score may reflect limited reporting capacity, not program weakness.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
-        "charity_claims_zakat": false,
-        "claim_evidence": null,
-        "notes": "Zakat claim removed: evidence was from Al-Barr Foundation (donorbox.org/zakaat), not this charity"
+        "charity_claims_zakat": true,
+        "claim_evidence": "Dedicated zakat page found at https://donorbox.org/zakaat (Source: https://donorbox.org/zakaat)",
+        "notes": null
       }
     },
     "baseline_narrative": {
@@ -346,25 +354,37 @@
           "source_url": "https://www.charitynavigator.org/ein/831171525#financials"
         },
         {
+          "claim": "The organization is zakat-eligible and follows specific zakat policies for asnaf categories.",
+          "id": "[2]",
+          "source_name": "Charity Website - Zakat",
+          "source_url": "https://donorbox.org/zakaat"
+        },
+        {
           "claim": "The organization reported total revenue of $129,820 and holds 12.1 months of working capital.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/831171525"
+        },
+        {
+          "claim": "The charity provides various donation options including zakat-eligible giving methods.",
+          "id": "[4]",
+          "source_name": "Charity Website - Donate",
+          "source_url": "https://donorbox.org/zakaat"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate score due to its specialized mission and solid liquidity, though it is constrained by low data confidence and limited evidence of direct impact. Note: not zakat-eligible.",
+      "amal_score_rationale": "The organization earns a moderate score due to its specialized mission and solid liquidity, though it is constrained by low data confidence and limited evidence of direct impact.",
       "areas_for_improvement": [
         "Limited public data regarding long-term impact metrics and third-party program evaluations.",
         "Low data confidence score suggests a need for increased transparency in financial reporting."
       ],
       "dimension_explanations": {
-        "alignment": "Link Outside shows a medium level of alignment with donor interests by addressing the urgent cause of advocacy for incarcerated populations. Its mission serves specific religious and educational needs within the community [1].",
+        "alignment": "Link Outside shows a medium level of alignment with donor interests by offering zakat-eligible giving options and addressing the urgent cause of advocacy for incarcerated populations [2][4]. Its mission serves specific religious and educational needs within the community [1].",
         "impact": "The organization focuses on capacity building through its educational programs, operating with a total revenue of $129,820 [3]. While it holds 12.1 months of working capital, the overall impact score is moderated by low data confidence and a lack of extensive third-party verification [1]."
       },
-      "headline": "Link Outside provides Islamic education, mentorship, and reentry support for incarcerated Muslims, maintaining a strong liquidity position to support its mission.",
+      "headline": "Link Outside provides educational and religious programming for incarcerated individuals, maintaining a strong liquidity position to support its mission.",
       "strengths": [
         "Maintains a healthy working capital of 12.1 months, indicating strong short-term financial sustainability.",
-        "Focused mission serving incarcerated Muslims with Islamic education, mentorship, and reentry support."
+        "Verified as zakat-eligible, allowing for the collection of obligatory alms for specific asnaf categories."
       ],
       "summary": "Link Outside is a charitable organization dedicated to educational and religious programming [1]. The organization reported a total revenue of $129,820 and maintains a working capital of 12.1 months to ensure operational stability [3]."
     }

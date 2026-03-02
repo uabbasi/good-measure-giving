@@ -101,6 +101,9 @@ class WebsiteExtractor:
         "geographic_coverage",
         "founded_year",
         "populations_served",
+        "accepts_zakat",
+        "zakat_evidence",
+        "zakat_url",
     }
 
     # Fields that are safe to trust from Flash alone (URLs, names, simple facts)
@@ -126,9 +129,6 @@ class WebsiteExtractor:
         "volunteer_opportunities",
         "volunteer_page_url",
         "social_media",
-        "accepts_zakat",
-        "zakat_evidence",
-        "zakat_url",
         "llm_extracted_pdfs",
         "pdf_outcomes",
         "outcomes_data",
