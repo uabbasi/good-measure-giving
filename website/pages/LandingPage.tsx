@@ -9,6 +9,7 @@ import React, { useMemo, useRef, useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom';
 import { Scale, ArrowRight, CheckCircle, Search, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
 import { SignInButton } from '../src/auth/SignInButton';
+import { useAuth } from '../src/auth/useAuth';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { THEMES } from '../src/themes';
 import { trackHeroCTA } from '../src/utils/analytics';
@@ -49,6 +50,7 @@ export const LandingPage: React.FC = () => {
   const walletLabel = zakatClaimed === true ? 'Zakat Claimed' : zakatClaimed === false ? 'Sadaqah Route' : 'Wallet Unclear';
   const scoreSummary = scoreDetails?.score_summary;
   const isMobile = useIsMobile();
+  const { isSignedIn } = useAuth();
 
   const dk = theme.id.includes('dark') || theme.id === 'warm-atmosphere';
 
@@ -275,6 +277,22 @@ export const LandingPage: React.FC = () => {
             <div className="relative w-full max-w-lg mx-auto px-5">
               <div className="absolute -inset-6 bg-gradient-to-r from-emerald-500/25 via-blue-500/15 to-purple-500/25 blur-3xl rounded-3xl opacity-60" />
               {evaluationCard(true)}
+              {!isSignedIn && (
+                <div className={`relative mt-4 flex flex-col items-center gap-2 text-center`}>
+                  <p className={`text-sm font-medium ${dk ? 'text-slate-300' : 'text-slate-700'}`}>
+                    See the full story behind every charity
+                  </p>
+                  <SignInButton
+                    variant="button"
+                    className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-md ${
+                      dk
+                        ? 'bg-emerald-500 text-white hover:bg-emerald-400 shadow-emerald-500/20'
+                        : 'bg-emerald-600 text-white hover:bg-emerald-500 shadow-emerald-500/20'
+                    }`}
+                  />
+                  <span className={`text-[11px] ${dk ? 'text-slate-500' : 'text-slate-400'}`}>Free, always</span>
+                </div>
+              )}
             </div>
             <button onClick={() => scrollToPanel(1)} className={`absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full z-10 ${dk ? 'text-white/25 hover:text-white/60' : 'text-slate-300 hover:text-slate-500'}`} aria-label="Previous">
               <ChevronLeft className="w-5 h-5" />

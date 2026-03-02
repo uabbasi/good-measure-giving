@@ -9,6 +9,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Search, Heart, MoreHorizontal, X, BookOpen, HelpCircle, Info } from 'lucide-react';
 import { useLandingTheme } from '../../contexts/LandingThemeContext';
 import { useAuth } from '../auth/useAuth';
+import { SignInButton } from '../auth/SignInButton';
 import { useCompareState } from '../contexts/UserFeaturesContext';
 
 export function MobileBottomNav() {
@@ -101,13 +102,20 @@ export function MobileBottomNav() {
           </Link>
 
           {/* Giving Plan / Sign In */}
-          <Link
-            to="/profile"
-            className={`flex flex-col items-center justify-center gap-0.5 ${isActive('/profile') ? activeColor : inactiveColor}`}
-          >
-            <Heart className="w-5 h-5" />
-            <span className="text-[10px] font-medium">{isSignedIn ? 'Giving Plan' : 'Sign In'}</span>
-          </Link>
+          {isSignedIn ? (
+            <Link
+              to="/profile"
+              className={`flex flex-col items-center justify-center gap-0.5 ${isActive('/profile') ? activeColor : inactiveColor}`}
+            >
+              <Heart className="w-5 h-5" />
+              <span className="text-[10px] font-medium">Giving Plan</span>
+            </Link>
+          ) : (
+            <SignInButton variant="custom" className={`flex flex-col items-center justify-center gap-0.5 w-full h-full ${inactiveColor}`}>
+              <Heart className="w-5 h-5" />
+              <span className="text-[10px] font-medium">Sign In</span>
+            </SignInButton>
+          )}
 
           {/* More */}
           <button

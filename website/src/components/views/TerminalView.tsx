@@ -767,18 +767,30 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
           return null;
         })()}
 
-        {/* === Mobile: Top-of-page nudge for anonymous users === */}
-        {!isSignedIn && hasRich && (
-          <div className={`px-3.5 py-2.5 rounded-2xl flex items-center gap-2.5 text-sm ${
-            isDark ? 'bg-emerald-900/20 border border-emerald-800/40 text-slate-300' : 'bg-emerald-50 border border-emerald-200 text-slate-700'
+        {/* === Mobile: Sign-in banner for anonymous users === */}
+        {!isSignedIn && (
+          <div className={`rounded-2xl p-4 border-2 ${
+            isDark
+              ? 'bg-gradient-to-br from-emerald-900/30 to-slate-900 border-emerald-700/50'
+              : 'bg-gradient-to-br from-emerald-50 to-white border-emerald-300'
           }`}>
-            <Lock className={`w-3.5 h-3.5 flex-shrink-0 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
-            <span>
-              Full analysis available.{' '}
-              <SignInButton variant="custom" className={`inline font-semibold underline cursor-pointer ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
-                Sign in to unlock
-              </SignInButton>
-            </span>
+            <div className="flex items-center gap-2 mb-2">
+              <Lock className={`w-4 h-4 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
+              <h3 className={`text-sm font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                Sign in to unlock the full evaluation
+              </h3>
+            </div>
+            <p className={`text-xs mb-3 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+              Leadership profiles, 3-year financials, impact evidence, donor fit analysis
+            </p>
+            <SignInButton
+              variant="button"
+              className={`w-full flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-bold transition-colors ${
+                isDark
+                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                  : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+              }`}
+            />
           </div>
         )}
 
@@ -1492,18 +1504,30 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
 
         {/* Center Content */}
         <main ref={sectionTrackingRef as React.RefObject<HTMLElement>} className={`lg:col-span-6 px-6 pt-0 pb-6 ${isDark ? 'bg-slate-950' : 'bg-slate-100'}`}>
-          {/* === Top-of-page nudge for anonymous users === */}
-          {!isSignedIn && hasRich && (
-            <div className={`mb-4 px-4 py-3 rounded-lg flex items-center gap-3 text-sm ${
-              isDark ? 'bg-emerald-900/20 border border-emerald-800/40 text-slate-300' : 'bg-emerald-50 border border-emerald-200 text-slate-700'
+          {/* === Sign-in banner for anonymous users === */}
+          {!isSignedIn && (
+            <div className={`mb-4 rounded-xl p-5 border-2 ${
+              isDark
+                ? 'bg-gradient-to-br from-emerald-900/30 to-slate-900 border-emerald-700/50'
+                : 'bg-gradient-to-br from-emerald-50 to-white border-emerald-300'
             }`}>
-              <Lock className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
-              <span>
-                This evaluation has a full analysis with leadership details, impact evidence, and donor fit data.{' '}
-                <SignInButton variant="custom" className={`inline font-semibold underline cursor-pointer ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
-                  Sign in to unlock
-                </SignInButton>
-              </span>
+              <div className="flex items-center gap-2 mb-2">
+                <Lock className={`w-4 h-4 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
+                <h3 className={`text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  Sign in to unlock the full evaluation
+                </h3>
+              </div>
+              <p className={`text-sm mb-3 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                Leadership profiles, 3-year financials, impact evidence, donor fit analysis
+              </p>
+              <SignInButton
+                variant="button"
+                className={`inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-bold transition-colors ${
+                  isDark
+                    ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                    : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                }`}
+              />
             </div>
           )}
           {/* === Section 1: Narrative / About === */}

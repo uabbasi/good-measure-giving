@@ -1234,15 +1234,53 @@ export const BrowsePage: React.FC = () => {
           {sortedCharities.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4">
               {sortedCharities.map((charity, index) => (
-                <m.div
-                  key={charity.id}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.25, delay: Math.min(index * 0.03, 0.6) }}
-                  {...(index === 0 ? { 'data-tour': 'browse-first-card' } : {})}
-                >
-                  <CharityCard charity={charity} compact position={index} />
-                </m.div>
+                <React.Fragment key={charity.id}>
+                  <m.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25, delay: Math.min(index * 0.03, 0.6) }}
+                    {...(index === 0 ? { 'data-tour': 'browse-first-card' } : {})}
+                  >
+                    <CharityCard charity={charity} compact position={index} />
+                  </m.div>
+                  {/* Sign-in CTA card injected after 4th charity */}
+                  {index === 3 && !isSignedIn && (
+                    <m.div
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.25, delay: 0.15 }}
+                    >
+                      <div className={`h-full rounded-xl border-2 p-5 flex flex-col justify-center gap-3 ${
+                        isDark
+                          ? 'bg-gradient-to-br from-emerald-900/30 to-slate-900 border-emerald-700/50'
+                          : 'bg-gradient-to-br from-emerald-50 to-white border-emerald-300'
+                      }`}>
+                        <h3 className={`text-base font-bold font-merriweather ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                          Unlock the full evaluation
+                        </h3>
+                        <ul className={`text-xs space-y-1.5 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                          <li className="flex items-start gap-2">
+                            <span className="text-emerald-500 mt-0.5">&#10003;</span>
+                            Impact evidence &amp; program outcomes
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-emerald-500 mt-0.5">&#10003;</span>
+                            3-year financial deep dives
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-emerald-500 mt-0.5">&#10003;</span>
+                            Donor fit &amp; giving style analysis
+                          </li>
+                        </ul>
+                        <SignInButton variant="button" className={`w-full flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-bold transition-colors ${
+                          isDark
+                            ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                            : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                        }`} />
+                      </div>
+                    </m.div>
+                  )}
+                </React.Fragment>
               ))}
             </div>
           ) : (
