@@ -431,13 +431,13 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 </>
               ) : (
                 <SignInButton variant="custom" isDark={isDark}>
-                  <span className={`w-full inline-flex items-center justify-center gap-1.5 h-10 px-2.5 rounded-lg text-[13px] font-medium border cursor-pointer ${
+                  <span className={`w-full inline-flex items-center justify-center gap-1.5 h-10 px-2.5 rounded-lg text-[13px] font-bold cursor-pointer transition-colors ${
                     isDark
-                      ? 'bg-slate-900/70 text-emerald-300 border-slate-700'
-                      : 'bg-white text-emerald-700 border-slate-200'
+                      ? 'bg-emerald-700/80 text-white border border-emerald-600 hover:bg-emerald-600'
+                      : 'bg-emerald-600 text-white hover:bg-emerald-700'
                   }`}>
                     <LogIn className="w-3.5 h-3.5" />
-                    Sign in to save
+                    Sign in — Free
                   </span>
                 </SignInButton>
               )}
@@ -651,7 +651,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
           {/* Scroll Incentive */}
           <div className={`mt-5 text-center ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
             <ChevronDown className="w-5 h-5 mx-auto motion-safe:animate-bounce" aria-hidden="true" />
-            <span className="text-xs">See full evaluation</span>
+            <span className="text-xs">{isSignedIn ? 'See full evaluation' : 'Scroll for details'}</span>
           </div>
         </div>
       </div>
@@ -744,6 +744,35 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
           MOBILE CONTENT FLOW - Below hero, proper information architecture
           ═══════════════════════════════════════════════════════════════════════ */}
       <div className="lg:hidden px-4 pb-6 space-y-3">
+        {/* === Mobile: Sign-in banner for anonymous users (above About for visibility) === */}
+        {!isSignedIn && (
+          <div className={`rounded-2xl p-5 border-2 ${
+            isDark
+              ? 'bg-gradient-to-br from-emerald-900/40 to-slate-900 border-emerald-600/60'
+              : 'bg-gradient-to-br from-emerald-50 to-white border-emerald-400'
+          }`}>
+            <div className="flex items-center gap-2.5 mb-2">
+              <div className={`p-1.5 rounded-lg ${isDark ? 'bg-emerald-800/50' : 'bg-emerald-100'}`}>
+                <Lock className={`w-4 h-4 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
+              </div>
+              <h3 className={`text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                See the full evaluation
+              </h3>
+            </div>
+            <p className={`text-sm mb-4 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+              Leadership, 3-year financials, impact evidence, and donor fit — free, always.
+            </p>
+            <SignInButton
+              variant="button"
+              className={`w-full flex items-center justify-center px-4 py-3 rounded-full text-base font-bold transition-colors shadow-lg ${
+                isDark
+                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-900/50'
+                  : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-200'
+              }`}
+            />
+          </div>
+        )}
+
         {/* === Mobile Section 1: Narrative / About === */}
         {(() => {
           // GMG about
@@ -766,33 +795,6 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
 
           return null;
         })()}
-
-        {/* === Mobile: Sign-in banner for anonymous users === */}
-        {!isSignedIn && (
-          <div className={`rounded-2xl p-4 border-2 ${
-            isDark
-              ? 'bg-gradient-to-br from-emerald-900/30 to-slate-900 border-emerald-700/50'
-              : 'bg-gradient-to-br from-emerald-50 to-white border-emerald-300'
-          }`}>
-            <div className="flex items-center gap-2 mb-2">
-              <Lock className={`w-4 h-4 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
-              <h3 className={`text-sm font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                Sign in to unlock the full evaluation
-              </h3>
-            </div>
-            <p className={`text-xs mb-3 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-              Leadership profiles, 3-year financials, impact evidence, donor fit analysis
-            </p>
-            <SignInButton
-              variant="button"
-              className={`w-full flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-bold transition-colors ${
-                isDark
-                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
-                  : 'bg-emerald-600 hover:bg-emerald-700 text-white'
-              }`}
-            />
-          </div>
-        )}
 
         {/* === Mobile: Things to Know (before Best For) === */}
         {rich?.case_against && (isSignedIn ? (
