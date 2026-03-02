@@ -68,6 +68,10 @@ ZAKAT_DENYLIST = {
     "94-1730465",  # Earthjustice
     "13-3377893",  # Rainforest Alliance
     "04-2535767",  # Union of Concerned Scientists
+    # === Misattributed Zakat Evidence ===
+    "83-1171525",  # Link Outside (Donorbox platform) - donorbox.org/zakaat is a platform page, not the charity
+    "81-2169685",  # ICNAB (Bosniaks) - evidence confused with ICNA (Islamic Circle of North America)
+    "47-1666091",  # IRUSA Waqf - waqf endowment fund, evidence from parent org irusa.org not the subsidiary
 }
 
 
