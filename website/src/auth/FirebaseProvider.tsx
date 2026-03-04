@@ -3,7 +3,7 @@
  */
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { onAuthStateChanged, User } from 'firebase/auth';
+import { onAuthStateChanged, getRedirectResult, User } from 'firebase/auth';
 import { Firestore } from 'firebase/firestore';
 import { auth, db, isConfigured } from './firebase';
 import { trackSignInSuccess } from '../utils/analytics';
@@ -47,6 +47,11 @@ export const FirebaseProvider: React.FC<Props> = ({ children }) => {
       setIsLoading(false);
       return;
     }
+
+    // Handle pending redirect sign-in (mobile flow)
+    getRedirectResult(auth).catch((err) => {
+      console.error('Redirect sign-in error:', err);
+    });
 
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       const previousUser = user;

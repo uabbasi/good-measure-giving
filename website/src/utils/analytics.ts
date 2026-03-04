@@ -278,7 +278,7 @@ export function trackSearch(query: string, resultCount: number): void {
 /**
  * Track sign-in attempts (OAuth provider clicks)
  */
-export function trackSignIn(provider: 'google' | 'apple'): void {
+export function trackSignIn(provider: 'google' | 'apple' | 'email'): void {
   const flow = addFlowStep('sign_in');
 
   safeGtag('event', 'sign_in_start', {

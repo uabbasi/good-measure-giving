@@ -321,9 +321,13 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
     return null;
   };
 
+  const trackedEinRef = React.useRef<string | null>(null);
   React.useEffect(() => {
-    trackCharityView(charity.id ?? charity.ein ?? '', charity.name, 'terminal');
-  }, [charity.id, charity.name]);
+    const ein = charity.id ?? charity.ein ?? '';
+    if (!ein || ein === trackedEinRef.current) return;
+    trackedEinRef.current = ein;
+    trackCharityView(ein, charity.name, 'terminal');
+  }, [charity.id, charity.ein, charity.name]);
 
   // Track scroll depth and section visibility
   const charityIdForTracking = charity.id ?? charity.ein ?? '';
