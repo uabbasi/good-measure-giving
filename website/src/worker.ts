@@ -37,7 +37,7 @@ export default {
       });
     }
 
-    // Serve static assets; fall back to /index.html for SPA routing
+    // Serve static assets; fall back to / for SPA routing
     try {
       const response = await env.ASSETS.fetch(request);
       if (response.ok || response.status === 304) {
@@ -47,11 +47,8 @@ export default {
       // Assets throws for non-existent paths when not_found_handling is "none"
     }
 
-    // SPA fallback: serve /index.html for any unmatched route
-    const indexRequest = new Request(new URL('/index.html', url), {
-      method: 'GET',
-      headers: request.headers,
-    });
-    return env.ASSETS.fetch(indexRequest);
+    // SPA fallback: fetch / which serves index.html
+    // (don't fetch /index.html directly — assets redirects it to / causing a loop)
+    return env.ASSETS.fetch(new Request(new URL('/', url), { headers: request.headers }));
   },
 };
