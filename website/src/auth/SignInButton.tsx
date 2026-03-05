@@ -133,7 +133,10 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
       if (isMobileBrowser()) {
         await signInWithRedirect(auth, provider);
       } else {
-        await signInWithPopup(auth, provider);
+        const result = await signInWithPopup(auth, provider);
+        if (result.user && !result.user.displayName) {
+          window.dispatchEvent(new CustomEvent('gmg:needs-name'));
+        }
       }
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code ?? 'unknown';

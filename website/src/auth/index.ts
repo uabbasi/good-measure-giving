@@ -8,4 +8,5 @@ export { FirebaseProvider } from './FirebaseProvider';
 export { useFirebaseAuth, useFirebaseData } from './FirebaseProvider';
 export { useAuth, useCommunityMember } from './useAuth';
 export { SignInButton } from './SignInButton';
+export { NamePromptModal } from './NamePromptModal';
 export { CommunityGate, JoinCommunityPrompt } from './CommunityGate';

@@ -49,7 +49,11 @@ export const FirebaseProvider: React.FC<Props> = ({ children }) => {
     }
 
     // Handle pending redirect sign-in (mobile flow)
-    getRedirectResult(auth).catch((err) => {
+    getRedirectResult(auth).then((result) => {
+      if (result?.user && !result.user.displayName) {
+        window.dispatchEvent(new CustomEvent('gmg:needs-name'));
+      }
+    }).catch((err) => {
       console.error('Redirect sign-in error:', err);
       const code = (err as { code?: string })?.code ?? 'redirect_error';
       trackSignInError('google', code); // provider unknown at this point
@@ -72,7 +76,18 @@ export const FirebaseProvider: React.FC<Props> = ({ children }) => {
       }
     });
 
-    return () => unsubscribe();
+    // Re-snapshot user object after profile updates (e.g. name added)
+    const handleNameUpdated = () => {
+      if (auth?.currentUser) {
+        setUser({ ...auth.currentUser } as User);
+      }
+    };
+    window.addEventListener('gmg:name-updated', handleNameUpdated);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener('gmg:name-updated', handleNameUpdated);
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const dataValue: FirebaseDataContextType = {
