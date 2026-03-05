@@ -37,15 +37,16 @@ export default {
       });
     }
 
-    // Try serving the static asset
-    const response = await env.ASSETS.fetch(request);
-
-    // If asset not found, serve index.html for SPA routing
-    if (response.status === 404) {
-      const indexRequest = new Request(new URL('/', url).toString(), request);
-      return env.ASSETS.fetch(indexRequest);
+    // Try serving the static asset; fall back to index.html for SPA routing
+    try {
+      const response = await env.ASSETS.fetch(request);
+      if (response.status >= 400) {
+        return env.ASSETS.fetch(new URL('/', url).toString());
+      }
+      return response;
+    } catch {
+      // Assets handler may throw for non-existent paths
+      return env.ASSETS.fetch(new URL('/', url).toString());
     }
-
-    return response;
   },
 };
