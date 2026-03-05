@@ -800,6 +800,159 @@ class TestZakatHoardingRisk:
         assert deduction == 0  # Endowment exempt
 
 
+# ─── Contradiction Signal → Positive Scoring ─────────────────────────────────
+
+
+class TestContradictionSignalPositiveScoring:
+    """Contradiction signals should cap relevant positive scoring components
+    instead of being tacked on as risk deductions (avoids contradictory labels)."""
+
+    def test_governance_capped_by_high_ceo_comp(self):
+        """HIGH ceo_comp_excessive → governance capped at WEAK (0 pts)."""
+        m = _base_metrics(
+            board_size=7,  # Would normally be STRONG (2 pts)
+            contradiction_signals=[
+                {"check_name": "ceo_comp_excessive", "severity": "HIGH", "detail": "CEO takes 6.5% of revenue"}
+            ],
+        )
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        gov = _component(result, "Governance")
+        assert gov.scored == 0
+        assert "oversight concern" in gov.evidence
+
+    def test_governance_capped_by_medium_ceo_comp(self):
+        """MEDIUM ceo_comp_excessive → governance capped at MINIMAL (≤1 pt base → scaled)."""
+        m = _base_metrics(
+            board_size=7,  # Would normally be STRONG (2 pts)
+            contradiction_signals=[
+                {"check_name": "ceo_comp_excessive", "severity": "MEDIUM", "detail": "CEO takes 4% of revenue"}
+            ],
+        )
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        gov = _component(result, "Governance")
+        # MINIMAL = 1 pt base → scaled by archetype (DIRECT_SERVICE governance weight = 2)
+        # scale_score("governance", 1) → 1 * 2/2 = 1
+        assert gov.scored <= 5  # Capped at MINIMAL, scaled
+
+    def test_governance_not_capped_without_signal(self):
+        """No ceo_comp_excessive signal → normal governance scoring."""
+        m = _base_metrics(board_size=7)
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        gov = _component(result, "Governance")
+        assert gov.scored > 0
+        assert "oversight concern" not in gov.evidence
+
+    def test_financial_health_capped_by_high_mismatch(self):
+        """HIGH revenue_expense_mismatch → financial health capped at CRITICAL (≤1 pt)."""
+        m = _base_metrics(
+            working_capital_ratio=6.0,  # Would normally be RESILIENT (7 pts)
+            contradiction_signals=[
+                {"check_name": "revenue_expense_mismatch", "severity": "HIGH", "detail": "expenses are 3x revenue"}
+            ],
+        )
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        fh = _component(result, "Financial Health")
+        assert fh.scored <= 1
+        assert "unsustainable" in fh.evidence
+
+    def test_financial_health_capped_by_medium_mismatch(self):
+        """MEDIUM revenue_expense_mismatch → financial health capped at LEAN (≤3 pts)."""
+        m = _base_metrics(
+            working_capital_ratio=6.0,  # Would normally be RESILIENT (7 pts)
+            contradiction_signals=[
+                {"check_name": "revenue_expense_mismatch", "severity": "MEDIUM", "detail": "expenses are 1.8x revenue"}
+            ],
+        )
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        fh = _component(result, "Financial Health")
+        assert fh.scored <= 3
+
+    def test_cpb_zeroed_by_implausible_signal(self):
+        """implausible_cpb signal → CPB scored as 0."""
+        m = _base_metrics(
+            program_expenses=1_000_000,
+            beneficiaries_served_annually=50_000,
+            detected_cause_area="HUMANITARIAN",
+            contradiction_signals=[
+                {"check_name": "implausible_cpb", "severity": "HIGH", "detail": "CPB < $1"}
+            ],
+        )
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        cpb = _component(result, "Cost Per Beneficiary")
+        assert cpb.scored == 0
+        assert "inflated" in cpb.evidence
+
+    def test_ceo_comp_not_double_counted_in_risk(self):
+        """ceo_comp_excessive should NOT appear as risk deduction (now in governance)."""
+        m = _base_metrics(
+            board_size=7,
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            contradiction_signals=[
+                {"check_name": "ceo_comp_excessive", "severity": "HIGH", "detail": "CEO takes 6.5% of revenue"}
+            ],
+        )
+        scorer = RiskScorer()
+        _case_against, deduction = scorer.evaluate(m)
+        assert deduction == 0  # No risk deduction for CEO comp
+
+    def test_revenue_expense_mismatch_not_double_counted(self):
+        """revenue_expense_mismatch should NOT appear as risk deduction."""
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=6.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            contradiction_signals=[
+                {"check_name": "revenue_expense_mismatch", "severity": "HIGH", "detail": "expenses 3x revenue"}
+            ],
+        )
+        scorer = RiskScorer()
+        _case_against, deduction = scorer.evaluate(m)
+        assert deduction == 0
+
+    def test_implausible_cpb_not_double_counted(self):
+        """implausible_cpb should NOT appear as risk deduction."""
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            contradiction_signals=[
+                {"check_name": "implausible_cpb", "severity": "HIGH", "detail": "CPB < $1"}
+            ],
+        )
+        scorer = RiskScorer()
+        _case_against, deduction = scorer.evaluate(m)
+        assert deduction == 0
+
+    def test_high_fundraising_still_deducted(self):
+        """high_fundraising_ratio should still be a risk deduction (no positive-scoring counterpart)."""
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            contradiction_signals=[
+                {"check_name": "high_fundraising_ratio", "severity": "HIGH", "detail": "35% fundraising"}
+            ],
+        )
+        scorer = RiskScorer()
+        _case_against, deduction = scorer.evaluate(m)
+        assert deduction == -2
+
+
 # ─── DataConfidence ─────────────────────────────────────────────────────────
 
 

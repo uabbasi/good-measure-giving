@@ -68,7 +68,7 @@ from src.utils.scoring_audit import (
 #   2.0.0 — 4-dimension revised (reweighted, new components)
 #   3.0.0 — 3-dimension (Credibility/33 + Impact/33 + Alignment/34)
 #   4.0.0 — 2-dimension (Impact/50 + Alignment/50 + DataConfidence signal)
-RUBRIC_VERSION = "5.0.0"
+RUBRIC_VERSION = "5.2.0"
 
 # =============================================================================
 # Constants - 2-Dimension GMG Score
@@ -463,7 +463,18 @@ RISK_DEDUCTIONS = {
     "gik_inflation": -5,
     "high_domestic_burn": -5,
     "zakat_hoarding": -3,
+    # Reconciliation contradiction signals
+    # NOTE: ceo_comp_excessive, implausible_cpb, and revenue_expense_mismatch
+    # are now captured in positive scoring (governance, CPB, financial health).
+    # They are NOT listed here to avoid double-counting.
+    "high_fundraising_ratio": -2,
+    "excessive_reserves_non_zakat": -2,
+    "geographic_mismatch": -1,
 }
+
+# Contradiction signals now captured in positive scoring components.
+# _calculate_deduction skips these to avoid double-counting.
+SIGNALS_IN_POSITIVE_SCORING = {"ceo_comp_excessive", "implausible_cpb", "revenue_expense_mismatch"}
 
 # Legacy constants for backward compatibility
 EVIDENCE_GRADE_POINTS = {
@@ -984,11 +995,14 @@ class ImpactScorer:
         fh_possible = rubric.weights["financial_health"]
         fh_pts = rubric.scale_score("financial_health", fh_pts)
         wc = metrics.working_capital_ratio
-        fh_evidence = (
-            f"Working capital: {wc:.1f} months ({fh_label})"
-            if wc is not None and wc >= 0.1
-            else f"Working capital: unknown ({fh_label})"
-        )
+        mismatch_signal = self._find_contradiction_signal(metrics, "revenue_expense_mismatch")
+        if mismatch_signal and wc is not None and wc >= 0.1:
+            detail = mismatch_signal.get("detail", "")
+            fh_evidence = f"Working capital: {wc:.1f} months, but {detail} — unsustainable"
+        elif wc is not None and wc >= 0.1:
+            fh_evidence = f"Working capital: {wc:.1f} months ({fh_label})"
+        else:
+            fh_evidence = f"Working capital: unknown ({fh_label})"
         fh_improvement = self._financial_health_improvement_suggestion(metrics, fh_label)
         components.append(
             ScoreComponent(
@@ -1080,7 +1094,11 @@ class ImpactScorer:
         gov_possible = rubric.weights["governance"]
         gov_pts = rubric.scale_score("governance", raw_gov_pts)
         gov_evidence = f"Board governance: {gov_level} ({metrics.board_size or 'unknown'} members)"
-        if tier == "EMERGING" and raw_gov_pts > 0 and gov_level == "WEAK":
+        ceo_signal = self._find_contradiction_signal(metrics, "ceo_comp_excessive")
+        if ceo_signal:
+            detail = ceo_signal.get("detail", "")
+            gov_evidence = f"Board: {metrics.board_size or 'unknown'} members, but {detail} — oversight concern"
+        elif tier == "EMERGING" and raw_gov_pts > 0 and gov_level == "WEAK":
             gov_evidence = f"Board governance: baseline ({metrics.board_size or 'unknown'} members, emerging org)"
         components.append(
             ScoreComponent(
@@ -1118,23 +1136,55 @@ class ImpactScorer:
         return pts
 
     def _score_governance(self, metrics: CharityMetrics, tier: str) -> tuple[str, int]:
-        """Score governance (2 pts). Standard: 5+ members."""
+        """Score governance (2 pts). Standard: 5+ members.
+
+        CEO comp contradiction signal caps governance score:
+        - HIGH severity → WEAK (0 pts)
+        - MEDIUM severity → MINIMAL (1 pt)
+        """
         board = metrics.board_size
         if board is not None and board >= 7:
-            return "STRONG", GOVERNANCE_POINTS["STRONG"]
+            level, pts = "STRONG", GOVERNANCE_POINTS["STRONG"]
         elif board is not None and board >= 5:
-            return "ADEQUATE", GOVERNANCE_POINTS["ADEQUATE"]
+            level, pts = "ADEQUATE", GOVERNANCE_POINTS["ADEQUATE"]
         elif board is not None and board >= 3:
-            return "MINIMAL", GOVERNANCE_POINTS["MINIMAL"]
-        if tier == "EMERGING":
-            return "WEAK", 1
-        return "WEAK", GOVERNANCE_POINTS["WEAK"]
+            level, pts = "MINIMAL", GOVERNANCE_POINTS["MINIMAL"]
+        elif tier == "EMERGING":
+            level, pts = "WEAK", 1
+        else:
+            level, pts = "WEAK", GOVERNANCE_POINTS["WEAK"]
+
+        # CEO comp signal caps governance regardless of board size
+        ceo_signal = self._find_contradiction_signal(metrics, "ceo_comp_excessive")
+        if ceo_signal:
+            severity = ceo_signal.get("severity", "MEDIUM").upper()
+            if severity == "HIGH":
+                return "WEAK", GOVERNANCE_POINTS["WEAK"]  # 0 pts
+            elif severity == "MEDIUM":
+                return min(level, "MINIMAL", key=lambda l: GOVERNANCE_POINTS.get(l, 0)), min(pts, GOVERNANCE_POINTS["MINIMAL"])  # cap at 1 pt
+
+        return level, pts
+
+    @staticmethod
+    def _find_contradiction_signal(metrics: CharityMetrics, check_name: str) -> Optional[dict]:
+        """Find a contradiction signal by check_name, or None."""
+        for signal in metrics.contradiction_signals or []:
+            if signal.get("check_name") == check_name:
+                return signal
+        return None
 
     def _score_cost_per_beneficiary(self, metrics: CharityMetrics, cause_area: str) -> tuple[Optional[float], int, str]:
         """Score cost per beneficiary against cause-adjusted benchmarks (20 pts max).
 
         Uses smooth interpolation between knots instead of step functions.
         """
+        # Implausible CPB signal from reconciliation overrides all CPB scoring
+        implausible_signal = self._find_contradiction_signal(metrics, "implausible_cpb")
+        if implausible_signal:
+            cpb = self._calculate_cpb(metrics)
+            detail = implausible_signal.get("detail", "CPB appears implausible")
+            return cpb, 0, f"{detail} — beneficiary count likely inflated"
+
         has_beneficiary_count = bool(metrics.beneficiaries_served_annually and metrics.beneficiaries_served_annually > 0)
         beneficiary_confidence = self._beneficiary_confidence(metrics)
         has_verified_beneficiary_source = beneficiary_confidence == "VERIFIED"
@@ -1373,6 +1423,15 @@ class ImpactScorer:
         else:
             label = "EXCESSIVE"
 
+        # Revenue-expense mismatch caps financial health score
+        mismatch_signal = self._find_contradiction_signal(metrics, "revenue_expense_mismatch")
+        if mismatch_signal:
+            severity = mismatch_signal.get("severity", "MEDIUM").upper()
+            if severity == "HIGH":
+                return "CRITICAL", min(score, 1)
+            elif severity == "MEDIUM":
+                return "LEAN", min(score, 3)
+
         return label, score
 
     def _financial_health_improvement_suggestion(self, metrics: CharityMetrics, label: str) -> Optional[str]:
@@ -1415,13 +1474,18 @@ class ImpactScorer:
         return None
 
     def _score_program_ratio(self, metrics: CharityMetrics) -> tuple[int, str]:
-        """Score program expense ratio with smooth interpolation (6 pts)."""
-        ratio = metrics.program_expense_ratio
+        """Score program expense ratio with smooth interpolation (6 pts).
+
+        Uses cash-adjusted ratio when GIK is significant, falling back to
+        the standard program_expense_ratio.
+        """
+        ratio = metrics.cash_adjusted_program_ratio or metrics.program_expense_ratio
         if ratio is None or ratio < 0.01:
             return 0, "Program expense ratio: unknown"
 
         score = round(interpolate_score(ratio, PROGRAM_RATIO_KNOTS))
-        return score, f"Program expense ratio: {ratio:.0%}"
+        label = "Cash-adjusted program ratio" if metrics.cash_adjusted_program_ratio else "Program expense ratio"
+        return score, f"{label}: {ratio:.0%}"
 
     def _operates_in_conflict_zone(self, metrics: CharityMetrics) -> bool:
         """Check if charity operates in conflict zones."""
@@ -2012,6 +2076,7 @@ class RiskScorer:
         risks.extend(self._check_gik_risk(metrics))
         risks.extend(self._check_domestic_burn(metrics))
         risks.extend(self._check_zakat_hoarding(metrics))
+        risks.extend(self._check_contradiction_signals(metrics))
 
         total_deduction = self._calculate_deduction(risks, metrics, tier)
         overall_risk_level = self._determine_risk_level(total_deduction)
@@ -2192,6 +2257,38 @@ class RiskScorer:
             )
         return risks
 
+    def _check_contradiction_signals(self, metrics: CharityMetrics) -> list[RiskFactor]:
+        """Convert stored reconciliation signals into RiskFactors.
+
+        Skips gik_inflated_ratio to avoid double-counting with _check_gik_risk().
+        """
+        risks: list[RiskFactor] = []
+        # Skip checks already handled by dedicated RiskScorer methods
+        _SKIP = {"gik_inflated_ratio"}
+        _SEVERITY_MAP = {"high": RiskSeverity.HIGH, "medium": RiskSeverity.MEDIUM, "low": RiskSeverity.LOW}
+        _CATEGORY_MAP = {
+            "financial": RiskCategory.FINANCIAL,
+            "operational": RiskCategory.OPERATIONAL,
+            "governance": RiskCategory.OPERATIONAL,
+            "impact": RiskCategory.IMPACT,
+        }
+
+        for signal in metrics.contradiction_signals or []:
+            check_name = signal.get("check_name", "")
+            if check_name in _SKIP:
+                continue
+            severity_str = signal.get("severity", "medium")
+            category_str = signal.get("category", "financial")
+            risks.append(
+                RiskFactor(
+                    category=_CATEGORY_MAP.get(category_str, RiskCategory.FINANCIAL),
+                    description=signal.get("headline", check_name),
+                    severity=_SEVERITY_MAP.get(severity_str, RiskSeverity.MEDIUM),
+                    data_source="Reconciliation",
+                )
+            )
+        return risks
+
     def _is_endowment_model(self, metrics: CharityMetrics) -> bool:
         """Detect endowment/waqf/scholarship fund models where high reserves are expected."""
         text = " ".join(
@@ -2265,6 +2362,22 @@ class RiskScorer:
                 total += RISK_DEDUCTIONS["zakat_hoarding"]  # -3
             elif months >= 24:
                 total += -2  # MEDIUM severity
+
+        # Contradiction signals from reconciliation phase
+        # Skip signals already handled in positive scoring or other blocks
+        _applied_checks: set[str] = set()
+        for signal in metrics.contradiction_signals or []:
+            check_name = signal.get("check_name", "")
+            if check_name == "gik_inflated_ratio":
+                continue  # Already counted in GIK inflation block above
+            if check_name in SIGNALS_IN_POSITIVE_SCORING:
+                continue  # Now captured in positive scoring components
+            if check_name in _applied_checks:
+                continue  # Deduplicate
+            deduction = RISK_DEDUCTIONS.get(check_name, 0)
+            if deduction:
+                total += deduction
+                _applied_checks.add(check_name)
 
         return max(-20, total)
 
@@ -2464,7 +2577,7 @@ class AmalScorerV2:
         total_score = max(0, min(100, total_score))
 
         # Data confidence signal (outside score)
-        data_confidence = self._compute_data_confidence(credibility, impact, alignment)
+        data_confidence = self._compute_data_confidence(credibility)
 
         wallet_tag = "ZAKAT-ELIGIBLE" if zakat_bonus.charity_claims_zakat else "SADAQAH-ELIGIBLE"
 
@@ -2494,14 +2607,10 @@ class AmalScorerV2:
     def _compute_data_confidence(
         self,
         credibility: CredibilityAssessment,
-        impact: ImpactAssessment,
-        alignment: AlignmentAssessment,
     ) -> DataConfidence:
         """Compute data confidence from credibility data-availability signals.
 
         Formula: confidence = ver*0.50 + trans*0.35 + dq*0.15
-        Then apply a component completeness penalty: missing components reduce
-        confidence proportionally, partial components count as half-missing.
         Returns DataConfidence with overall float + component breakdown.
         """
         ver_value = VERIFICATION_CONFIDENCE.get(credibility.verification_tier, 0.0)
@@ -2510,22 +2619,12 @@ class AmalScorerV2:
         dq_label = self._extract_data_quality_label(credibility)
         dq_value = DATA_QUALITY_CONFIDENCE.get(dq_label, 0.0)
 
-        overall = (
+        overall = round(
             ver_value * DC_VERIFICATION_WEIGHT
             + trans_value * DC_TRANSPARENCY_WEIGHT
-            + dq_value * DC_DATA_QUALITY_WEIGHT
+            + dq_value * DC_DATA_QUALITY_WEIGHT,
+            2,
         )
-
-        # Component completeness penalty: missing/partial components reduce confidence
-        all_components = list(impact.components) + list(alignment.components)
-        total_components = len(all_components)
-        if total_components > 0:
-            missing_count = sum(1 for c in all_components if c.status == ComponentStatus.MISSING)
-            partial_count = sum(1 for c in all_components if c.status == ComponentStatus.PARTIAL)
-            completeness = 1.0 - (missing_count + 0.5 * partial_count) / total_components
-            overall = overall * completeness
-
-        overall = round(overall, 2)
 
         # Determine badge level
         if overall >= 0.75:

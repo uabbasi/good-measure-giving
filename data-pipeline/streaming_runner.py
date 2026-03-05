@@ -915,6 +915,41 @@ def process_charity_full(
                         print(f"[{index}/{total}] ✗ {name[:40]} - Synthesize quality check failed")
                     return result
 
+        # ========== PHASE 3.5: RECONCILE (adversarial contradiction checks) ==========
+        # Non-blocking: failure here does not stop baseline.
+        try:
+            from src.parsers.charity_metrics_aggregator import CharityMetrics as _CM
+            from src.reconciliation.reconciler import reconcile as _reconcile
+
+            recon_data = data_repo.get(ein) or {}
+            recon_metrics_json = recon_data.get("metrics_json")
+            if isinstance(recon_metrics_json, dict):
+                recon_metrics = _CM(**recon_metrics_json)
+                recon_result = _reconcile(recon_metrics)
+
+                # Write patched metrics + signals back
+                patched_json = recon_metrics.model_dump()
+                patched_json["contradiction_signals"] = [s.model_dump() for s in recon_result.signals]
+                patched_json["reconciliation_completeness_gaps"] = recon_result.completeness_gaps
+
+                data_repo.upsert({
+                    "charity_ein": ein,
+                    "metrics_json": patched_json,
+                })
+
+                signal_count = len(recon_result.signals)
+                patch_count = len(recon_result.patched_fields)
+                if signal_count or patch_count:
+                    with print_lock:
+                        print(
+                            f"[{index}/{total}] ⚡ {name[:40]} - "
+                            f"Reconcile: {signal_count} signals, {patch_count} patched"
+                        )
+        except Exception as e:
+            # Non-blocking — log and continue to baseline
+            with print_lock:
+                print(f"[{index}/{total}] ⚠ {name[:40]} - Reconcile failed: {e}")
+
         # ========== PHASE 4: BASELINE ==========
         run_baseline, baseline_reason = should_run_phase(
             ein, "baseline", cache_repo, force_all, force_phases, phases_ran

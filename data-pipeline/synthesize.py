@@ -1862,7 +1862,15 @@ def synthesize_charity(
     synthesized.metrics_json = metrics.model_dump(mode="json")
 
     # Persist individual scorer-critical columns (for DoltDB queryability)
+    # Overwrite early financial columns with aggregator's fiscal-year-aware values
+    synthesized.total_revenue = int(metrics.total_revenue) if metrics.total_revenue else None
     synthesized.total_expenses = int(metrics.total_expenses) if metrics.total_expenses else None
+    synthesized.program_expenses = int(metrics.program_expenses) if metrics.program_expenses else None
+    synthesized.admin_expenses = int(metrics.admin_expenses) if metrics.admin_expenses else None
+    synthesized.fundraising_expenses = int(metrics.fundraising_expenses) if metrics.fundraising_expenses else None
+    synthesized.total_assets = int(metrics.total_assets) if metrics.total_assets else None
+    synthesized.total_liabilities = int(metrics.total_liabilities) if metrics.total_liabilities else None
+    synthesized.net_assets = int(metrics.net_assets) if metrics.net_assets else None
     synthesized.cn_overall_score = metrics.cn_overall_score
     synthesized.cn_financial_score = metrics.cn_financial_score
     synthesized.cn_accountability_score = metrics.cn_accountability_score

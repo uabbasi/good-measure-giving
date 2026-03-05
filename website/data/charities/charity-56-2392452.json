@@ -43,19 +43,21 @@
     "bbbReviewUrl": "https://give.org/charity-reviews/human-services/rebuilding-alliance-in-burlingame-ca-1116-876758"
   },
   "financials": {
-    "totalRevenue": 825817,
-    "totalExpenses": 902818,
+    "totalRevenue": 4309990,
+    "totalExpenses": 3667469,
     "programExpenses": 3421900,
     "adminExpenses": 166875,
     "fundraisingExpenses": 78694,
     "programExpenseRatio": "0.9031",
+    "fiscalYear": 2024,
+    "dataSource": "charity_navigator",
     "totalAssets": 74521,
     "totalLiabilities": 276759,
     "netAssets": -202238,
     "workingCapitalMonths": "-2.70",
     "noncashRatio": 0.8407407452256371,
-    "cashAdjustedProgramRatio": 13.080769230769231,
-    "domesticBurnRate": 0
+    "cashAdjustedProgramRatio": 0.9174050197583657,
+    "domesticBurnRate": 0.4165562135630867
   },
   "baselineGovernance": {
     "boardSize": 7,
@@ -84,7 +86,15 @@
       "Palestine"
     ]
   },
-  "trustSignals": null,
+  "trustSignals": {
+    "hasAnnualReport": null,
+    "hasAuditedFinancials": 1,
+    "candidSeal": "platinum",
+    "isConflictZone": 1,
+    "nonprofitSizeTier": "mid_nonprofit",
+    "employeesCount": null,
+    "volunteersCount": null
+  },
   "websiteEvidenceSignals": {
     "claims_longitudinal": false,
     "claims_rcts": false,
@@ -95,7 +105,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": false
   },
-  "lastUpdated": "2026-03-04 19:20:09",
+  "lastUpdated": "2026-03-04 21:36:22",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -139,7 +149,7 @@
       "source_name": "Charity Website",
       "source_url": "https://rebuildingalliance.org/s/2020-RebuildingAlliance_990_filed_on_May_1_2022.pdf",
       "timestamp": "2026-02-04T20:28:44",
-      "value": false
+      "value": true
     },
     "ntee_code": {
       "source_name": "ProPublica Form 990",
@@ -273,15 +283,15 @@
     "receivesFoundationGrants": null
   },
   "zakatClaimEvidence": null,
-  "archetype": "SOVEREIGNTY",
+  "archetype": "ASSET_CREATION",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Context Dependent",
-    "archetype_code": "SOVEREIGNTY",
-    "archetype_label": "Sovereignty Builder",
-    "evidence_stage": "Established",
+    "archetype_code": "ASSET_CREATION",
+    "archetype_label": "Asset Creator",
+    "evidence_stage": "Verified",
     "signal_states": {
       "evidence": "Strong",
       "financial_health": "Limited",
@@ -295,27 +305,41 @@
   },
   "keyConcerns": [
     {
+      "type": "data_quality",
+      "severity": "medium",
+      "headline": "Organization has negative net assets",
+      "detail": "Financial data may be inconsistent across sources or reporting periods.",
+      "data_points": {}
+    },
+    {
       "type": "gik_inflation",
       "severity": "high",
       "headline": "84% of reported revenue is noncash (gifts-in-kind)",
       "detail": "Noncash contributions inflate reported program ratios. Cash-adjusted metrics better reflect actual spending.",
       "data_points": {
         "noncash_ratio": 0.841,
-        "cash_adjusted_program_ratio": 13.081
+        "cash_adjusted_program_ratio": 0.917
       }
+    },
+    {
+      "type": "risk_deduction",
+      "severity": "low",
+      "headline": "No documented theory of change",
+      "detail": "Source: Website",
+      "data_points": {}
     }
   ],
   "amalEvaluation": {
     "charity_ein": "56-2392452",
     "charity_name": "Rebuilding Alliance",
-    "amal_score": 54,
+    "amal_score": 51,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-02-04 20:29:08",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 29,
-      "data_confidence": 0.67,
-      "impact": 30
+      "data_confidence": 0.75,
+      "impact": 28
     },
     "score_details": {
       "alignment": {
@@ -358,7 +382,7 @@
             "status": "full"
           },
           {
-            "evidence": "Revenue: $825,817 (5/5 funding gap)",
+            "evidence": "Revenue: $4.3M (5/5 funding gap)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Funding Gap",
@@ -372,14 +396,14 @@
         "score": 29
       },
       "data_confidence": {
-        "badge": "MEDIUM",
+        "badge": "HIGH",
         "data_quality_label": "MODERATE",
         "data_quality_value": 0.67,
-        "overall": 0.67,
+        "overall": 0.75,
         "transparency_label": "PLATINUM",
         "transparency_value": 1,
-        "verification_tier": "MODERATE",
-        "verification_value": 0.7
+        "verification_tier": "HIGH",
+        "verification_value": 1
       },
       "impact": {
         "components": [
@@ -429,13 +453,13 @@
             "status": "full"
           },
           {
-            "evidence": "Theory of change: BASIC (emerging org baseline)",
+            "evidence": "Theory of change: ABSENT",
             "improvement_suggestion": "Document a clear theory of change with an explicit causal pathway.",
             "improvement_value": 3,
             "name": "Theory of Change",
             "possible": 5,
-            "scored": 2,
-            "status": "partial"
+            "scored": 0,
+            "status": "missing"
           },
           {
             "evidence": "Board governance: STRONG (7 members)",
@@ -450,15 +474,22 @@
         "cost_per_beneficiary": 6843.8,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "$6843.80/beneficiary; Delivery: direct service; Impact 30/50",
+        "rationale": "$6843.80/beneficiary; Delivery: direct service; Impact 28/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 30
+        "score": 28
       },
-      "risk_deduction": -5,
+      "risk_deduction": -6,
       "risks": {
         "overall_risk_level": "MODERATE",
         "risk_summary": "Key concern: GIK inflation: 84% of revenue is noncash contributions",
         "risks": [
+          {
+            "category": "impact",
+            "data_source": "Website",
+            "description": "No documented theory of change",
+            "mitigation": null,
+            "severity": "low"
+          },
           {
             "category": "financial",
             "data_source": "Form 990 XML",
@@ -467,9 +498,9 @@
             "severity": "high"
           }
         ],
-        "total_deduction": -5
+        "total_deduction": -6
       },
-      "score_summary": "Rebuilding Alliance shows good impact and good alignment (minor risk deductions applied).",
+      "score_summary": "Rebuilding Alliance shows good alignment and good impact (significant risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -481,58 +512,58 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization focuses on protecting Palestinian families and homes through various advocacy and support programs.",
+          "claim": "The organization is dedicated to advocacy and safeguarding Palestinian communities.",
           "id": "[1]",
           "source_name": "Form 990 (2021)",
           "source_url": "https://www.rebuildingalliance.org/s/2021_Tax_Return_Documents__THE_REBUILDING_ALLIANC_-_Client_Copy_.pdf"
         },
         {
-          "claim": "The charity reported a total revenue of $825,817 and high program expenses for food and hot meals.",
+          "claim": "Total revenue reached $4,309,990 with a program expense ratio of 90.3%.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://www.rebuildingalliance.org/s/2023-Tax-Return-Documents-THE-REBUILDING-ALLIANC-FINAL-FEDERAL-wo-password-s7y4.pdf"
         },
         {
-          "claim": "The organization provides direct services including food parcels and medical aid programs.",
+          "claim": "The charity operates medical aid and food parcel programs.",
           "id": "[3]",
           "source_name": "Form 990 (2022)",
           "source_url": "https://www.rebuildingalliance.org/s/___2022_Tax_Return_Documents__THE_REBUILDING_ALLIANCE_-_Client_Copy_.pdf"
         },
         {
-          "claim": "The organization accepts general donations and sadaqah to support its humanitarian mission.",
+          "claim": "The organization accepts general donations and sadaqah for its programs.",
           "id": "[6]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.rebuildingalliance.org/donate-now"
         },
         {
-          "claim": "The organization is listed with specific program initiatives like the U.S. Movement to Safeguard Palestinian Communities.",
+          "claim": "The organization maintains a working capital of -2.7 months.",
           "id": "[7]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/562392452#financials"
         },
         {
-          "claim": "Financial data confirms a program expense ratio of 90.3% and working capital of -2.7 months.",
+          "claim": "Fundraising efficiency is recorded at $0.02 per $1 raised.",
           "id": "[8]",
-          "source_name": "Form 990 (2023)",
+          "source_name": "Form 990 (2023) ProPublica",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/562392452"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its high direct service commitment and efficient fundraising, balanced against significant liquidity concerns and a medium data confidence level.",
+      "amal_score_rationale": "The organization earns a moderate score due to its high program spending and urgent mission, balanced against significant liquidity challenges and a need for more robust impact data.",
       "areas_for_improvement": [
-        "Negative working capital of -2.7 months indicates potential short-term liquidity challenges",
-        "Limited third-party evaluative data regarding long-term impact metrics"
+        "Address negative working capital of -2.7 months to improve short-term financial stability",
+        "Enhance data transparency to improve overall impact measurement scores"
       ],
       "dimension_explanations": {
-        "alignment": "With an alignment score of 29/50, the organization offers a high donor fit for those prioritizing Palestinian advocacy and urgent humanitarian relief [6][7]. As a sadaqah-eligible entity, it provides a transparent pathway for general charitable giving toward high-urgency causes [6].",
-        "impact": "The charity demonstrates a direct service model with an impact score of 30/50, focusing on tangible aid such as food parcels and medical supplies [2][3]. While the program expense ratio is a robust 90.3%, the organization faces financial stability risks with working capital at -2.7 months [1][8]."
+        "alignment": "The organization shows high alignment for donors interested in Palestinian advocacy and humanitarian relief, categorized as a high-urgency cause [1][6].",
+        "impact": "Rebuilding Alliance demonstrates a direct service model, reporting total revenue of $4,309,990 with a strong 90.3% program expense ratio [2][8]. While it provides critical aid such as hot meals and medical supplies, its impact score of 28/50 reflects a high cost per beneficiary and a current working capital deficit of -2.7 months [2][7]."
       },
-      "headline": "Rebuilding Alliance is dedicated to advancing equal rights for Palestinians through education, advocacy, and direct humanitarian support to safeguard communities.",
+      "headline": "Rebuilding Alliance is a dedicated advocacy and relief organization working to secure equal rights and provide essential humanitarian aid to Palestinian families.",
       "strengths": [
         "High program expense ratio of 90.3%, ensuring the vast majority of funds reach direct services",
-        "Strong fundraising efficiency with a cost of only $0.10 per $1 raised",
-        "Direct impact through essential services including hot meals, medical aid, and educational support"
+        "Exceptional fundraising efficiency with only $0.02 spent to raise every $1",
+        "Direct involvement in high-urgency advocacy and emergency food distribution"
       ],
-      "summary": "The organization focuses on protecting Palestinian families and their homes through programs like 'Boost Kindergarten' and the 'U.S. Movement to Safeguard Palestinian Communities' [1][7]. In the most recent fiscal period, the charity reported a total revenue of $825,817 while maintaining a high program expense ratio of 90.3% [2][8]."
+      "summary": "Rebuilding Alliance focuses on safeguarding Palestinian communities through a combination of legal advocacy, education, and direct humanitarian relief [1][6]. The organization manages diverse programs including the 'Brighten the Future of Gaza's Children' initiative and efforts to keep Al Aqaba Village standing against demolition orders [2][3]."
     }
   }
 }

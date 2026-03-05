@@ -290,6 +290,12 @@ class CharityMetrics(BaseModel):
     financial_data_tax_year: Optional[int] = Field(
         None, description="Tax year of the primary financial data (from ProPublica/IRS 990)"
     )
+    financial_data_source: Optional[str] = Field(
+        None, description="Source of income statement financials: 'propublica', 'charity_navigator', or 'mixed'"
+    )
+    financial_quality_flags: Optional[list[str]] = Field(
+        None, description="Detected data quality issues (e.g., 'program_exceeds_total', 'expense_sum_mismatch')"
+    )
 
     annual_report_published: Optional[bool] = Field(None, description="Whether organization publishes annual reports")
     receives_foundation_grants: Optional[bool] = Field(
@@ -447,6 +453,18 @@ class CharityMetrics(BaseModel):
         default_factory=dict,
         description="Tracks which high-stakes fields passed/failed cross-source corroboration. "
         "Format: {field_name: {passed: bool, sources: [...], reason: str}}",
+    )
+
+    # ========================================================================
+    # Reconciliation (adversarial contradiction signals)
+    # ========================================================================
+    contradiction_signals: List[Dict[str, Any]] = Field(
+        default_factory=list,
+        description="Contradiction signals from the reconciliation phase (deterministic cross-reference checks)",
+    )
+    reconciliation_completeness_gaps: List[str] = Field(
+        default_factory=list,
+        description="Metrics that could not be re-derived despite partial source data being available",
     )
 
     # ========================================================================
@@ -1413,36 +1431,39 @@ class CharityMetricsAggregator:
 
         # ====================================================================
         # Aggregate Financial Metrics (ProPublica preferred, then CN)
+        # Fiscal-year-aware: income statement fields must come from ONE
+        # source when PP and CN report different fiscal years.
         # ====================================================================
+        _INCOME_STMT_FIELDS = [
+            "total_revenue", "total_expenses", "program_expenses",
+            "admin_expenses", "fundraising_expenses",
+        ]
+        _BALANCE_SHEET_FIELDS = ["total_assets", "total_liabilities", "net_assets"]
+
         if propublica_990:
-            metrics_data["total_revenue"] = propublica_990.get("total_revenue")
-            metrics_data["total_expenses"] = propublica_990.get("total_expenses")
-            metrics_data["program_expenses"] = propublica_990.get("program_expenses")
-            metrics_data["admin_expenses"] = propublica_990.get("admin_expenses")
-            metrics_data["fundraising_expenses"] = propublica_990.get("fundraising_expenses")
-            # FIX #13: Extract revenue breakdown fields from ProPublica
+            # Always pull PP income statement fields first (may be None)
+            for f in _INCOME_STMT_FIELDS:
+                metrics_data[f] = propublica_990.get(f)
+            # Revenue breakdown fields (PP only)
             metrics_data["total_contributions"] = propublica_990.get("total_contributions")
             metrics_data["program_service_revenue"] = propublica_990.get("program_service_revenue")
             metrics_data["investment_income"] = propublica_990.get("investment_income")
-            metrics_data["total_assets"] = propublica_990.get("total_assets")
-            metrics_data["total_liabilities"] = propublica_990.get("total_liabilities")
-            metrics_data["net_assets"] = propublica_990.get("net_assets")
+            # Balance sheet (point-in-time, always safe to pull)
+            for f in _BALANCE_SHEET_FIELDS:
+                metrics_data[f] = propublica_990.get(f)
+                _track(f, "propublica", metrics_data.get(f))
+            # Staffing
             metrics_data["employees_count"] = propublica_990.get("employees_count")
             metrics_data["volunteers_count"] = propublica_990.get("volunteers_count")
-            # Track source for balance sheet fields
-            for f in ("total_assets", "total_liabilities", "net_assets"):
-                _track(f, "propublica", metrics_data.get(f))
             # Form 990 filing status
             is_form_990_exempt = propublica_990.get("form_990_exempt", False)
             metrics_data["form_990_exempt"] = is_form_990_exempt
-            # If not exempt, explicitly clear the reason (empty string to overwrite old values)
-            # If exempt, use the reason from propublica
             if is_form_990_exempt:
                 metrics_data["form_990_exempt_reason"] = propublica_990.get("form_990_exempt_reason")
             else:
                 metrics_data["form_990_exempt_reason"] = ""
             metrics_data["no_filings"] = propublica_990.get("no_filings", False)
-            # FIX #17: Track the tax year of the financial data
+            # Track the tax year of the financial data
             tax_year = propublica_990.get("tax_year")
             if tax_year is not None:
                 try:
@@ -1450,37 +1471,116 @@ class CharityMetricsAggregator:
                 except (ValueError, TypeError):
                     pass
 
-        # Fallback to CN for financials if ProPublica is missing (or as secondary source)
-        # FIX #3: Use `is None` instead of truthiness to preserve legitimate $0 values
+        # --- Fiscal-year-aware CN gap-fill for income statement ---
         if cn_profile:
-            if metrics_data.get("total_revenue") is None:
-                metrics_data["total_revenue"] = cn_profile.get("total_revenue")
-            if metrics_data.get("total_expenses") is None:
-                metrics_data["total_expenses"] = cn_profile.get("total_expenses")
-            if metrics_data.get("program_expenses") is None:
-                metrics_data["program_expenses"] = cn_profile.get("program_expenses")
-            if metrics_data.get("admin_expenses") is None:
-                metrics_data["admin_expenses"] = _first_non_none(
-                    cn_profile.get("admin_expenses"),
-                    cn_profile.get("administrative_expenses"),
-                )
-            if metrics_data.get("fundraising_expenses") is None:
-                metrics_data["fundraising_expenses"] = cn_profile.get("fundraising_expenses")
-            if metrics_data.get("total_assets") is None:
-                metrics_data["total_assets"] = cn_profile.get("total_assets")
-                _track("total_assets", "charity_navigator", metrics_data.get("total_assets"))
-            if metrics_data.get("net_assets") is None:
-                metrics_data["net_assets"] = cn_profile.get("net_assets")
-                _track("net_assets", "charity_navigator", metrics_data.get("net_assets"))
-
-        # FIX #17: Fallback tax year from CN fiscal_year if ProPublica didn't provide one
-        if cn_profile and metrics_data.get("financial_data_tax_year") is None:
+            # Determine fiscal years
+            pp_tax_year = metrics_data.get("financial_data_tax_year")
             cn_fy = cn_profile.get("fiscal_year")
-            if cn_fy is not None:
-                try:
-                    metrics_data["financial_data_tax_year"] = int(cn_fy)
-                except (ValueError, TypeError):
-                    pass
+            try:
+                cn_fiscal_year = int(cn_fy) if cn_fy is not None else None
+            except (ValueError, TypeError):
+                cn_fiscal_year = None
+
+            years_match = (
+                pp_tax_year is not None
+                and cn_fiscal_year is not None
+                and pp_tax_year == cn_fiscal_year
+            )
+            years_differ = (
+                pp_tax_year is not None
+                and cn_fiscal_year is not None
+                and pp_tax_year != cn_fiscal_year
+            )
+
+            # Count how many income statement fields PP provided (non-None)
+            pp_income_count = sum(
+                1 for f in _INCOME_STMT_FIELDS if metrics_data.get(f) is not None
+            )
+            # Count how many CN provides
+            cn_income_count = sum(
+                1 for f in _INCOME_STMT_FIELDS
+                if cn_profile.get(f) is not None
+                or (f == "admin_expenses" and (
+                    cn_profile.get("admin_expenses") is not None
+                    or cn_profile.get("administrative_expenses") is not None
+                ))
+            )
+
+            if years_differ:
+                if pp_income_count < 3 and cn_income_count >= 3:
+                    # PP has too few fields — use CN for ALL income statement
+                    for f in _INCOME_STMT_FIELDS:
+                        if f == "admin_expenses":
+                            metrics_data[f] = _first_non_none(
+                                cn_profile.get("admin_expenses"),
+                                cn_profile.get("administrative_expenses"),
+                            )
+                        else:
+                            metrics_data[f] = cn_profile.get(f)
+                    metrics_data["financial_data_source"] = "charity_navigator"
+                    metrics_data["financial_data_tax_year"] = cn_fiscal_year
+                    logger.info(
+                        f"Using CN income statement for {ein}: PP year={pp_tax_year} "
+                        f"(only {pp_income_count} fields), CN year={cn_fiscal_year} "
+                        f"({cn_income_count} fields)"
+                    )
+                else:
+                    # PP has enough fields OR CN doesn't — keep PP, no gap-fill
+                    metrics_data["financial_data_source"] = "propublica"
+                    if cn_income_count >= 3:
+                        logger.info(
+                            f"Keeping PP income statement for {ein}: PP year={pp_tax_year} "
+                            f"({pp_income_count} fields), CN year={cn_fiscal_year} skipped"
+                        )
+            elif years_match or pp_tax_year is None:
+                # Same year or PP didn't provide year — safe to gap-fill
+                gap_filled = False
+                for f in _INCOME_STMT_FIELDS:
+                    if metrics_data.get(f) is None:
+                        if f == "admin_expenses":
+                            val = _first_non_none(
+                                cn_profile.get("admin_expenses"),
+                                cn_profile.get("administrative_expenses"),
+                            )
+                        else:
+                            val = cn_profile.get(f)
+                        if val is not None:
+                            metrics_data[f] = val
+                            gap_filled = True
+                if gap_filled:
+                    metrics_data["financial_data_source"] = "mixed"
+                elif propublica_990:
+                    metrics_data["financial_data_source"] = "propublica"
+            elif not propublica_990:
+                # No PP data at all — use CN entirely
+                for f in _INCOME_STMT_FIELDS:
+                    if f == "admin_expenses":
+                        metrics_data[f] = _first_non_none(
+                            cn_profile.get("admin_expenses"),
+                            cn_profile.get("administrative_expenses"),
+                        )
+                    else:
+                        metrics_data[f] = cn_profile.get(f)
+                metrics_data["financial_data_source"] = "charity_navigator"
+
+            # Balance sheet: always safe to gap-fill (point-in-time snapshots)
+            for f in _BALANCE_SHEET_FIELDS:
+                if metrics_data.get(f) is None:
+                    val = cn_profile.get(f)
+                    if val is not None:
+                        metrics_data[f] = val
+                        _track(f, "charity_navigator", val)
+
+            # Fallback tax year from CN if PP didn't provide one
+            if metrics_data.get("financial_data_tax_year") is None and cn_fiscal_year is not None:
+                metrics_data["financial_data_tax_year"] = cn_fiscal_year
+
+        # Set financial_data_source if not set yet
+        if not metrics_data.get("financial_data_source"):
+            if propublica_990 and not cn_profile:
+                metrics_data["financial_data_source"] = "propublica"
+            elif cn_profile and not propublica_990:
+                metrics_data["financial_data_source"] = "charity_navigator"
 
         # FIX #4: CN ratios are fallback, not overwrite — only set if not already present
         if cn_profile:
@@ -2119,6 +2219,32 @@ class CharityMetricsAggregator:
                 logger.warning(f"Rejecting expense ratios for {ein}: expenses/revenue ratio {expense_ratio:.1f}x > 3.0")
                 for ratio_field in ["program_expense_ratio", "admin_expense_ratio", "fundraising_expense_ratio"]:
                     metrics_data[ratio_field] = None
+
+        # ====================================================================
+        # Financial Data Quality Flags
+        # ====================================================================
+        quality_flags: list[str] = []
+        _total_rev = metrics_data.get("total_revenue") or 0
+        _total_exp = metrics_data.get("total_expenses") or 0
+        _prog_exp = metrics_data.get("program_expenses") or 0
+        _admin_exp = metrics_data.get("admin_expenses") or 0
+        _fund_exp = metrics_data.get("fundraising_expenses") or 0
+        _net_assets = metrics_data.get("net_assets")
+
+        if _prog_exp > 0 and _total_exp > 0 and _prog_exp > _total_exp:
+            quality_flags.append("program_exceeds_total")
+        if _admin_exp > 0 and _total_exp > 0 and _admin_exp > _total_exp:
+            quality_flags.append("admin_exceeds_total")
+        if _total_exp > 0 and (_prog_exp + _admin_exp + _fund_exp) > 0:
+            component_sum = _prog_exp + _admin_exp + _fund_exp
+            if abs(component_sum - _total_exp) / _total_exp > 0.10:
+                quality_flags.append("expense_sum_mismatch")
+        if _total_rev > 0 and _total_exp > 3 * _total_rev:
+            quality_flags.append("expenses_exceed_3x_revenue")
+        if isinstance(_net_assets, (int, float)) and _net_assets < 0:
+            quality_flags.append("negative_net_assets")
+
+        metrics_data["financial_quality_flags"] = quality_flags if quality_flags else None
 
         # ====================================================================
         # Cross-Source Corroboration (High-Stakes Fields)

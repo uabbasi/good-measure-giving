@@ -12,14 +12,14 @@ export enum RatingColor {
 export type CharityTier = 'rich' | 'baseline' | 'hidden';
 
 // Key concern types for data-driven red flags
-export type KeyConcernType = 'gik_inflation' | 'domestic_burn' | 'zakat_hoarding';
+export type KeyConcernType = 'gik_inflation' | 'domestic_burn' | 'zakat_hoarding' | 'risk_deduction' | 'data_quality';
 export type KeyConcernSeverity = 'high' | 'medium';
 
 export interface KeyConcern {
   type: KeyConcernType;
   severity: KeyConcernSeverity;
   headline: string;
-  detail: string;
+  detail: string | null;
   data_points: Record<string, number>;
 }
 
@@ -764,6 +764,7 @@ export interface CharityFinancials {
   fundraisingExpenses?: number | null;
   programExpenseRatio?: number | null;
   fiscalYear?: number | null;
+  dataSource?: string | null;
   // Balance sheet data
   totalAssets?: number | null;
   totalLiabilities?: number | null;

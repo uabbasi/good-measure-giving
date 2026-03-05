@@ -753,55 +753,145 @@ def _get_metric(charity_data: dict, key: str) -> Any:
 
 
 def _build_key_concerns(score_details: dict[str, Any], charity_data: dict | None) -> list[dict[str, Any]]:
-    """Build structured key concern flags from scorer risk factors and charity data."""
+    """Build structured key concern flags from scorer risk factors and charity data.
+
+    Three sources:
+    1. Data quality flags — detected during financial aggregation (fiscal year
+       mismatches, impossible ratios, etc.).
+    2. Metrics-derived concerns (GIK, domestic burn, zakat hoarding) — built from
+       computed fields in metrics_json with rich data_points.
+    3. Scorer risk factors — all risk deductions from score_details.risks are
+       surfaced so every penalty is visible to donors.
+    """
     concerns: list[dict[str, Any]] = []
-    if not charity_data:
-        return concerns
 
-    # GIK inflation
-    noncash_ratio = _get_metric(charity_data, "noncash_ratio")
-    if isinstance(noncash_ratio, (int, float)) and noncash_ratio >= 0.25:
-        severity = "high" if noncash_ratio >= 0.50 else "medium"
-        cash_adj = _get_metric(charity_data, "cash_adjusted_program_ratio")
-        headline = f"{noncash_ratio:.0%} of reported revenue is noncash (gifts-in-kind)"
-        data_points: dict[str, Any] = {"noncash_ratio": round(noncash_ratio, 3)}
-        if isinstance(cash_adj, (int, float)):
-            data_points["cash_adjusted_program_ratio"] = round(cash_adj, 3)
-        concerns.append({
-            "type": "gik_inflation",
-            "severity": severity,
-            "headline": headline,
-            "detail": "Noncash contributions inflate reported program ratios. Cash-adjusted metrics better reflect actual spending.",
-            "data_points": data_points,
-        })
+    # --- Data quality flags (from aggregator) ---
+    _FLAG_LABELS: dict[str, str] = {
+        "program_exceeds_total": "Program expenses exceed total expenses",
+        "admin_exceeds_total": "Admin expenses exceed total expenses",
+        "expense_sum_mismatch": "Expense components don't sum to total (>10% difference)",
+        "expenses_exceed_3x_revenue": "Total expenses exceed 3x total revenue",
+        "negative_net_assets": "Organization has negative net assets",
+    }
+    if charity_data:
+        quality_flags = _get_metric(charity_data, "financial_quality_flags")
+        if isinstance(quality_flags, list):
+            for flag in quality_flags:
+                label = _FLAG_LABELS.get(flag, flag)
+                concerns.append({
+                    "type": "data_quality",
+                    "severity": "medium",
+                    "headline": label,
+                    "detail": "Financial data may be inconsistent across sources or reporting periods.",
+                    "data_points": {},
+                })
 
-    # Domestic burn
-    burn_rate = _get_metric(charity_data, "domestic_burn_rate")
-    if isinstance(burn_rate, (int, float)) and burn_rate >= 0.50:
-        severity = "high" if burn_rate >= 0.70 else "medium"
-        concerns.append({
-            "type": "domestic_burn",
-            "severity": severity,
-            "headline": f"{burn_rate:.0%} of expenses stay in the US despite international operations",
-            "detail": "Organization claims foreign operations but most spending remains domestic.",
-            "data_points": {"domestic_burn_rate": round(burn_rate, 3)},
-        })
-
-    # Zakat hoarding
-    claims_zakat = _get_metric(charity_data, "zakat_claim_detected") or _get_metric(charity_data, "claims_zakat")
-    if claims_zakat:
-        wc = _get_metric(charity_data, "working_capital_ratio") or _get_metric(charity_data, "working_capital_months") or 0
-        rm = _get_metric(charity_data, "reserves_months") or 0
-        months = max(wc, rm)
-        if months >= 24:
-            severity = "high" if months >= 36 else "medium"
+    # --- Metrics-derived concerns (with data_points) ---
+    if charity_data:
+        # GIK inflation
+        noncash_ratio = _get_metric(charity_data, "noncash_ratio")
+        if isinstance(noncash_ratio, (int, float)) and noncash_ratio >= 0.25:
+            severity = "high" if noncash_ratio >= 0.50 else "medium"
+            cash_adj = _get_metric(charity_data, "cash_adjusted_program_ratio")
+            headline = f"{noncash_ratio:.0%} of reported revenue is noncash (gifts-in-kind)"
+            data_points: dict[str, Any] = {"noncash_ratio": round(noncash_ratio, 3)}
+            if isinstance(cash_adj, (int, float)):
+                data_points["cash_adjusted_program_ratio"] = round(cash_adj, 3)
             concerns.append({
-                "type": "zakat_hoarding",
+                "type": "gik_inflation",
                 "severity": severity,
-                "headline": f"Zakat-collecting organization holds {months:.0f} months of reserves",
-                "detail": "Zakat must be distributed promptly per Islamic jurisprudence. Large reserves raise concerns about timely distribution.",
-                "data_points": {"reserves_months": round(months, 1)},
+                "headline": headline,
+                "detail": "Noncash contributions inflate reported program ratios. Cash-adjusted metrics better reflect actual spending.",
+                "data_points": data_points,
             })
+
+        # Domestic burn
+        burn_rate = _get_metric(charity_data, "domestic_burn_rate")
+        if isinstance(burn_rate, (int, float)) and burn_rate >= 0.50:
+            severity = "high" if burn_rate >= 0.70 else "medium"
+            concerns.append({
+                "type": "domestic_burn",
+                "severity": severity,
+                "headline": f"{burn_rate:.0%} of expenses stay in the US despite international operations",
+                "detail": "Organization claims foreign operations but most spending remains domestic.",
+                "data_points": {"domestic_burn_rate": round(burn_rate, 3)},
+            })
+
+        # Zakat hoarding
+        claims_zakat = _get_metric(charity_data, "zakat_claim_detected") or _get_metric(charity_data, "claims_zakat")
+        if claims_zakat:
+            wc = _get_metric(charity_data, "working_capital_ratio") or _get_metric(charity_data, "working_capital_months") or 0
+            rm = _get_metric(charity_data, "reserves_months") or 0
+            months = max(wc, rm)
+            if months >= 24:
+                severity = "high" if months >= 36 else "medium"
+                concerns.append({
+                    "type": "zakat_hoarding",
+                    "severity": severity,
+                    "headline": f"Zakat-collecting organization holds {months:.0f} months of reserves",
+                    "detail": "Zakat must be distributed promptly per Islamic jurisprudence. Large reserves raise concerns about timely distribution.",
+                    "data_points": {"reserves_months": round(months, 1)},
+                })
+
+    # --- Contradiction signals (from reconciliation phase) ---
+    # Surface adversarial cross-reference findings. Dedup against metrics-derived concerns.
+    _existing_types = {c["type"] for c in concerns}
+    if charity_data:
+        contradiction_signals = _get_metric(charity_data, "contradiction_signals")
+        if isinstance(contradiction_signals, list):
+            for signal in contradiction_signals:
+                check_name = signal.get("check_name", "")
+                # Map check_name to concern type for dedup
+                _CHECK_TO_TYPE = {
+                    "gik_inflated_ratio": "gik_inflation",
+                    "excessive_reserves_non_zakat": "zakat_hoarding",
+                }
+                concern_type = _CHECK_TO_TYPE.get(check_name, check_name)
+                if concern_type in _existing_types:
+                    continue
+                concerns.append({
+                    "type": concern_type,
+                    "severity": signal.get("severity", "medium"),
+                    "headline": signal.get("headline", check_name),
+                    "detail": signal.get("detail"),
+                    "data_points": signal.get("data_points", {}),
+                })
+                _existing_types.add(concern_type)
+
+    # --- Scorer risk factors (from score_details.risks) ---
+    # Surface every risk deduction the scorer applied so donors see why points
+    # were deducted. Skip duplicates already covered by metrics-derived concerns.
+    metrics_types = {c["type"] for c in concerns}
+    _SCORER_DESC_TO_TYPE = {
+        "GIK inflation": "gik_inflation",
+        "High domestic burn": "domestic_burn",
+        "Zakat-collecting organization": "zakat_hoarding",
+    }
+    risks_block = score_details.get("risks", {}) if score_details else {}
+    for risk in risks_block.get("risks", []):
+        desc = risk.get("description", "")
+        # Check if this risk is already covered by a metrics-derived concern
+        skip = False
+        for prefix, concern_type in _SCORER_DESC_TO_TYPE.items():
+            if desc.startswith(prefix) and concern_type in metrics_types:
+                skip = True
+                break
+        if skip:
+            continue
+        # Skip risks sourced from Reconciliation — already shown via contradiction signals
+        if risk.get("data_source") == "Reconciliation":
+            continue
+        # Skip if headline already exists in concerns (dedup by headline text)
+        existing_headlines = {c.get("headline") for c in concerns}
+        if desc in existing_headlines:
+            continue
+        concerns.append({
+            "type": "risk_deduction",
+            "severity": risk.get("severity", "medium"),
+            "headline": desc,
+            "detail": f"Source: {risk.get('data_source', 'Form 990')}" if risk.get("data_source") else None,
+            "data_points": {},
+        })
 
     return concerns
 
@@ -1402,6 +1492,8 @@ def build_charity_detail(
             "adminExpenses": charity_data.get("admin_expenses") if charity_data else None,
             "fundraisingExpenses": charity_data.get("fundraising_expenses") if charity_data else None,
             "programExpenseRatio": charity_data.get("program_expense_ratio") if charity_data else None,
+            "fiscalYear": _get_metric(charity_data, "financial_data_tax_year") if charity_data else None,
+            "dataSource": _get_metric(charity_data, "financial_data_source") if charity_data else None,
             # Balance sheet data (previously missing - audit fix)
             "totalAssets": charity_data.get("total_assets") if charity_data else None,
             "totalLiabilities": charity_data.get("total_liabilities") if charity_data else None,

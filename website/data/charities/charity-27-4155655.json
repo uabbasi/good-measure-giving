@@ -44,12 +44,14 @@
     "bbbReviewUrl": null
   },
   "financials": {
-    "totalRevenue": 452623,
-    "totalExpenses": 397691,
+    "totalRevenue": 2027541,
+    "totalExpenses": 1284551,
     "programExpenses": 561493,
     "adminExpenses": 123897,
     "fundraisingExpenses": 599161,
     "programExpenseRatio": "0.3534",
+    "fiscalYear": 2024,
+    "dataSource": "charity_navigator",
     "totalAssets": 587449,
     "totalLiabilities": 83176,
     "netAssets": 504273,
@@ -73,7 +75,15 @@
       "Africa"
     ]
   },
-  "trustSignals": null,
+  "trustSignals": {
+    "hasAnnualReport": null,
+    "hasAuditedFinancials": 1,
+    "candidSeal": "silver",
+    "isConflictZone": 1,
+    "nonprofitSizeTier": "mid_nonprofit",
+    "employeesCount": null,
+    "volunteersCount": null
+  },
   "websiteEvidenceSignals": {
     "claims_longitudinal": true,
     "claims_rcts": false,
@@ -84,7 +94,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-04 19:19:08",
+  "lastUpdated": "2026-03-04 21:35:26",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -134,7 +144,7 @@
       "source_name": "Charity Website",
       "source_url": "https://muslimhandsusa.org/_ui/uploads/5n6v9i/ZAKAT",
       "timestamp": "2026-01-25T20:05:12",
-      "value": false
+      "value": true
     },
     "ntee_code": {
       "source_name": "ProPublica Form 990",
@@ -256,17 +266,32 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "risk_deduction",
+      "severity": "high",
+      "headline": "Program expense ratio critically low: 35%",
+      "detail": "Source: Form 990",
+      "data_points": {}
+    },
+    {
+      "type": "risk_deduction",
+      "severity": "low",
+      "headline": "No outcome measurement or metrics tracking",
+      "detail": "Source: Website/Candid",
+      "data_points": {}
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "27-4155655",
     "charity_name": "Muslim Hands USA",
-    "amal_score": 77,
+    "amal_score": 76,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:06:04",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 46,
-      "data_confidence": 0.61,
+      "data_confidence": 0.74,
       "impact": 36
     },
     "score_details": {
@@ -310,7 +335,7 @@
             "status": "full"
           },
           {
-            "evidence": "Revenue: $452,623 (5/5 funding gap)",
+            "evidence": "Revenue: $2.0M (5/5 funding gap)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Funding Gap",
@@ -327,11 +352,11 @@
         "badge": "MEDIUM",
         "data_quality_label": "HIGH",
         "data_quality_value": 1,
-        "overall": 0.61,
+        "overall": 0.74,
         "transparency_label": "SILVER",
         "transparency_value": 0.57,
-        "verification_tier": "MODERATE",
-        "verification_value": 0.7
+        "verification_tier": "HIGH",
+        "verification_value": 1
       },
       "impact": {
         "components": [
@@ -406,7 +431,7 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 36
       },
-      "risk_deduction": -5,
+      "risk_deduction": -6,
       "risks": {
         "overall_risk_level": "MODERATE",
         "risk_summary": "Key concern: Program expense ratio critically low: 35%",
@@ -417,11 +442,18 @@
             "description": "Program expense ratio critically low: 35%",
             "mitigation": null,
             "severity": "high"
+          },
+          {
+            "category": "impact",
+            "data_source": "Website/Candid",
+            "description": "No outcome measurement or metrics tracking",
+            "mitigation": null,
+            "severity": "low"
           }
         ],
-        "total_deduction": -5
+        "total_deduction": -6
       },
-      "score_summary": "Muslim Hands Inc shows exceptional alignment and strong impact, with zakat compliance (minor risk deductions applied).",
+      "score_summary": "Muslim Hands Inc shows exceptional alignment and strong impact, with zakat compliance (significant risk deductions applied).",
       "zakat": {
         "asnaf_category": "fuqara",
         "bonus_points": 0,
@@ -433,52 +465,52 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization has a Charity Navigator score of 71.0/100, a program expense ratio of 35.3%, and 15.2 months of working capital.",
+          "claim": "The charity has a Charity Navigator score of 71.0/100, a program expense ratio of 35.3%, working capital of 15.2 months, and fundraising efficiency of $0.30 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/274155655#financials"
         },
         {
-          "claim": "Muslim Hands Inc is Zakat-eligible and provides a policy for distributing funds to asnaf categories.",
+          "claim": "The organization is Zakat-eligible and provides guidance on Zakat policy and asnaf categories.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://muslimhandsusa.org/zakat"
         },
         {
-          "claim": "The organization reported total revenue of $452,623 and operates programs including the Gaza Emergency Appeal and Safe Water Fund.",
+          "claim": "The organization reported total revenue of $2,027,541 and focuses on disaster relief and human development.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/274155655"
         },
         {
-          "claim": "The organization provides comprehensive guides on the obligation of Zakat and its organizational programs.",
+          "claim": "The organization operates programs such as the Gaza Emergency Appeal and Safe Water Fund.",
           "id": "[4]",
           "source_name": "Zakat Guide",
           "source_url": "https://muslimhandsusa.org/_ui/uploads/5n6v9i/ZAKAT GUIDE.pdf"
         },
         {
-          "claim": "The charity offers various donation options for humanitarian relief and public awareness programs.",
+          "claim": "The charity provides various donation options and giving methods for humanitarian aid.",
           "id": "[5]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://muslimhandsusa.org/donate"
         }
       ],
-      "amal_score_rationale": "The organization earns a GMG score of 77/100, reflecting a solid alignment with humanitarian causes and high donor fit, though financial efficiency metrics regarding program spending present opportunities for growth.",
+      "amal_score_rationale": "The organization earns a GMG score of 76/100, reflecting a high alignment with donor values and a solid financial cushion, though its program spending ratio suggests room for operational optimization.",
       "areas_for_improvement": [
-        "Improve the program expense ratio, which currently stands at 35.3%",
-        "Enhance fundraising efficiency to reduce the current cost of $1.32 per $1 raised"
+        "Improve the program expense ratio to ensure more funds reach direct services",
+        "Enhance fundraising efficiency to reduce the cost of acquiring donations"
       ],
       "dimension_explanations": {
-        "alignment": "Muslim Hands Inc shows high alignment with donor expectations through its Zakat-eligible programs and focus on urgent humanitarian causes like the Gaza Emergency Appeal [2][5]. The organization provides specific resources to help donors fulfill their religious obligations accurately [2][4].",
-        "impact": "The organization demonstrates a direct service model with a cost per beneficiary of approximately 46.79, though its program expense ratio is 35.3% [1][3]. It maintains high financial stability with 15.2 months of working capital available to sustain its relief operations [1]."
+        "alignment": "Muslim Hands Inc shows high alignment with donor needs by offering Zakat-eligible programs that adhere to specific asnaf categories [2]. The organization focuses on high-urgency humanitarian sectors, including emergency appeals and clean water access, which strongly resonates with the charitable priorities of the Muslim community [4][5].",
+        "impact": "The organization achieved a total revenue of $2,027,541 and maintains a significant 15.2 months of working capital, indicating strong financial sustainability [1][3]. However, its program expense ratio is 35.3%, and it spends $0.30 to raise every $1, suggesting that a portion of its impact is currently limited by administrative and fundraising costs [1]."
       },
-      "headline": "Muslim Hands Inc provides critical disaster relief and sustainable human development for vulnerable populations worldwide.",
+      "headline": "Muslim Hands Inc provides critical disaster relief and sustainable human development for needy populations worldwide.",
       "strengths": [
         "Maintains a strong liquidity position with 15.2 months of working capital",
-        "Offers specialized humanitarian programs including emergency relief and clean water initiatives",
-        "Verified Zakat-eligible status with clear guidance for Muslim donors"
+        "Designated as a Zakat-eligible organization for Muslim donors",
+        "High alignment with humanitarian cause urgency"
       ],
-      "summary": "Muslim Hands Inc is a humanitarian organization dedicated to providing disaster relief and assistance to needy populations through programs like the Gaza Emergency Appeal and the Safe Water Fund [1][3]. The organization reported a total revenue of $452,623 and maintains a Zakat-eligible status to support various asnaf categories [2][3]."
+      "summary": "Muslim Hands Inc is a humanitarian organization dedicated to providing disaster relief and public awareness for human development [3]. The organization manages specialized initiatives including the Gaza Emergency Appeal and the Safe Water Fund to address urgent global crises [4]."
     }
   }
 }

@@ -45,6 +45,7 @@ interface ScoreBreakdownProps {
   scoreSummary?: string | null;
   strengths?: Array<string | { point: string; detail: string; citation_ids: string[] }>;
   areasForImprovement?: Array<string | { area: string; context: string; citation_ids: string[] }>;
+  theoryOfChangeSummary?: string | null;
 }
 
 export type HarveyLevel = 0 | 1 | 2 | 3 | 4;
@@ -228,7 +229,8 @@ const ComponentRow: React.FC<{
   citations: RichCitation[];
   isSignedIn: boolean;
   isDark: boolean;
-}> = ({ component, citations, isSignedIn, isDark }) => {
+  theoryOfChangeSummary?: string | null;
+}> = ({ component, citations, isSignedIn, isDark, theoryOfChangeSummary }) => {
   const noData = isDataUnavailable(component);
   const isFinancialHealth = isFinancialHealthComponent(component);
   const financialHealthContext = isFinancialHealth ? getFinancialHealthContext(component) : null;
@@ -272,6 +274,16 @@ const ComponentRow: React.FC<{
         </p>
       )}
 
+      {theoryOfChangeSummary && (
+        <p className={`mt-1.5 ml-10 text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+          {isSignedIn ? (
+            <SourceLinkedText text={theoryOfChangeSummary} citations={citations} isDark={isDark} />
+          ) : (
+            stripCitations(theoryOfChangeSummary)
+          )}
+        </p>
+      )}
+
       {improvementSuggestion && (
         <p className={`mt-1 ml-10 text-xs leading-relaxed ${isDark ? 'text-amber-300/80' : 'text-amber-700'}`}>
           {improvementSuggestion}
@@ -289,7 +301,8 @@ const DimensionSection: React.FC<{
   citations: RichCitation[];
   isSignedIn: boolean;
   isDark: boolean;
-}> = ({ config, details, explanation, citations, isSignedIn, isDark }) => {
+  theoryOfChangeSummary?: string | null;
+}> = ({ config, details, explanation, citations, isSignedIn, isDark, theoryOfChangeSummary }) => {
   const ratio = config.max > 0 ? details.score / config.max : 0;
   const level = ratioToHarveyLevel(ratio);
   const tone = levelToTone(level);
@@ -345,6 +358,9 @@ const DimensionSection: React.FC<{
               citations={citations}
               isSignedIn={isSignedIn}
               isDark={isDark}
+              theoryOfChangeSummary={
+                /theory.of.change/i.test(comp.name) ? theoryOfChangeSummary : undefined
+              }
             />
           ))}
         </div>
@@ -390,6 +406,7 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({
   scoreSummary,
   strengths,
   areasForImprovement,
+  theoryOfChangeSummary,
 }) => {
   const dataConfidence = scoreDetails.data_confidence;
   const riskSignal = getRiskSignal(scoreDetails.risk_deduction || 0);
@@ -466,6 +483,7 @@ export const ScoreBreakdown: React.FC<ScoreBreakdownProps> = ({
               citations={citations}
               isSignedIn={isSignedIn}
               isDark={isDark}
+              theoryOfChangeSummary={dim.key === 'impact' ? theoryOfChangeSummary : undefined}
             />
           );
         })}

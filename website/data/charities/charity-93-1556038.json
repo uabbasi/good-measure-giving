@@ -39,6 +39,8 @@
     "adminExpenses": 117560,
     "fundraisingExpenses": 13550,
     "programExpenseRatio": "0.2894",
+    "fiscalYear": 2024,
+    "dataSource": "mixed",
     "totalAssets": null,
     "totalLiabilities": null,
     "netAssets": null,
@@ -64,7 +66,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-04 19:19:07",
+  "lastUpdated": "2026-03-04 21:35:25",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -191,7 +193,15 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "risk_deduction",
+      "severity": "high",
+      "headline": "Program expense ratio critically low: 29%",
+      "detail": "Source: Form 990",
+      "data_points": {}
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "93-1556038",
     "charity_name": "Afghan Refugee Relief",
@@ -368,45 +378,51 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reported a program expense ratio of 28.9%.",
+          "claim": "The organization reported a program expense ratio of 28.9% and working capital of 1.3 months.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/931556038#financials"
         },
         {
-          "claim": "Afghan Refugee Relief partners with community organizations and distributes laptops and financial aid through programs like Project Sabr.",
+          "claim": "Afghan Refugee Relief manages programs including Project Sabr and distributes laptops and financial grants.",
           "id": "[2]",
           "source_name": "Document (PDF)",
           "source_url": "https://www.afghanrefugeerelief.org/s/ARR-2023-Report-Finalpdf.pdf"
         },
         {
-          "claim": "The organization offers various donation options for general charitable giving (sadaqah).",
+          "claim": "The organization offers various donation options for general charitable giving (Sadaqah).",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.afghanrefugeerelief.org/home"
         },
         {
-          "claim": "The charity reported total revenue of $205,225 and a fundraising efficiency of $0.07 per $1 raised.",
+          "claim": "The organization engages passionate volunteers to support its mission.",
+          "id": "[4]",
+          "source_name": "Charity Website - Volunteer",
+          "source_url": "https://www.afghanrefugeerelief.org/volunteer-now"
+        },
+        {
+          "claim": "Total revenue for the period was $205,225 with a fundraising efficiency of $0.07 per $1 raised.",
           "id": "[5]",
           "source_name": "Form 990 (2025)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/931556038"
         }
       ],
-      "amal_score_rationale": "The organization receives a moderate score reflecting its direct humanitarian impact and efficient fundraising, balanced against a low program expense ratio and limited data transparency.",
+      "amal_score_rationale": "The organization receives a moderate overall score due to its direct humanitarian impact, though it is constrained by low data confidence and a low program expense ratio.",
       "areas_for_improvement": [
-        "Low program expense ratio of 28.9%, indicating a significant portion of funds may be held in reserve or used for administrative costs",
+        "Low program expense ratio of 28.9%, suggesting a high portion of spending on non-programmatic costs",
         "Limited financial cushion with only 1.3 months of working capital available"
       ],
       "dimension_explanations": {
-        "alignment": "The alignment score is moderate, reflecting the high urgency of the humanitarian cause for Afghan refugees [2]. However, donor fit is considered low for those seeking specific religious giving pathways, as the organization is designated as sadaqah-eligible only [3].",
-        "impact": "The organization achieves a medium impact score by providing direct services such as Project Sabr and financial aid, though its program expense ratio is currently 28.9% [1][2]. While it successfully distributes grants and technology to those in need, the overall data confidence remains low due to limited third-party verification of long-term outcomes [5]."
+        "alignment": "While the organization addresses a high-urgency humanitarian cause, the alignment score is medium due to a low donor fit for those specifically seeking Zakat-certified opportunities, as the organization is designated as Sadaqah-eligible [3][4].",
+        "impact": "The organization demonstrates a direct service impact by distributing laptops and awarding grants to refugees [2]. However, the program expense ratio is 28.9%, and the overall impact score is tempered by a low data confidence level of 0.23 [1][5]."
       },
-      "headline": "Afghan Refugee Relief provides essential humanitarian support and resettlement assistance to Afghan families through community-driven partnerships and direct aid programs.",
+      "headline": "Afghan Refugee Relief provides essential humanitarian support to displaced populations through community partnerships and direct aid programs.",
       "strengths": [
-        "High fundraising efficiency with only $0.07 spent to raise every dollar",
-        "Direct service model providing tangible goods like laptops and financial grants to refugees"
+        "High fundraising efficiency with a cost of only $0.07 per $1 raised",
+        "Direct service model providing tangible assets like laptops and grants to refugees"
       ],
-      "summary": "Based in the United States, Afghan Refugee Relief collaborates with local nonprofits, resettlement agencies, and religious institutions to support the Afghan community [2]. The organization reported a total revenue of $205,225 and operates with a fundraising efficiency of $0.07 per $1 raised [1][5]."
+      "summary": "Afghan Refugee Relief is a nonprofit organization dedicated to assisting refugees by partnering with community organizations, resettlement agencies, and religious institutions [2]. The organization reported a total revenue of $205,225 and operates programs such as Project Sabr and direct financial aid to support vulnerable families [1][5]."
     }
   }
 }

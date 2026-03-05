@@ -919,6 +919,47 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
           <ContentPreview title="Things to Know" description="important context and considerations" teaser={rich?.case_against?.summary || "Our analysis covers risk factors, governance concerns, and important context every donor should consider before giving."} />
         ))}
 
+        {/* === Mobile: Baseline Assessment Summary (when no rich narrative) === */}
+        {!rich?.case_against && (charity.scoreSummary || amal?.score_details?.score_summary || uiSignals?.signal_states) && (
+          <div className={`rounded-lg border-2 p-4 ${
+            isDark ? 'bg-slate-800/40 border-slate-600/50' : 'bg-slate-50 border-slate-300'
+          }`}>
+            <div className={`text-xs uppercase tracking-widest font-semibold mb-2 flex items-center gap-2 ${
+              isDark ? 'text-slate-400' : 'text-slate-600'
+            }`}>
+              <Scale className="w-3.5 h-3.5" />
+              Things to Know
+            </div>
+            {(charity.scoreSummary || amal?.score_details?.score_summary) && (
+              <p className={`text-sm mb-3 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                {charity.scoreSummary || amal?.score_details?.score_summary}
+              </p>
+            )}
+            {uiSignals?.signal_states && (
+              <div className="flex flex-wrap gap-1.5 mb-2">
+                {(Object.entries(uiSignals.signal_states) as [string, string][]).map(([key, state]) => {
+                  const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                  const pillClasses = state === 'Strong'
+                    ? (isDark ? 'bg-emerald-900/40 text-emerald-400 border-emerald-700' : 'bg-emerald-50 text-emerald-700 border-emerald-300')
+                    : state === 'Moderate'
+                    ? (isDark ? 'bg-amber-900/30 text-amber-400 border-amber-700' : 'bg-amber-50 text-amber-700 border-amber-300')
+                    : (isDark ? 'bg-slate-700/50 text-slate-400 border-slate-600' : 'bg-slate-100 text-slate-500 border-slate-300');
+                  return (
+                    <span key={key} className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${pillClasses}`}>
+                      {label}: {state}
+                    </span>
+                  );
+                })}
+              </div>
+            )}
+            {uiSignals?.recommendation_rationale && (
+              <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                {uiSignals.recommendation_rationale}
+              </p>
+            )}
+          </div>
+        )}
+
         {/* === Mobile Section 2: Best For === */}
         {(() => {
           if (!idealDonorProfile) return null;
@@ -1020,6 +1061,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                   (isSignedIn ? rich?.areas_for_improvement : baseline?.areas_for_improvement) as
                     Array<string | { area: string; context: string; citation_ids: string[] }> | undefined
                 }
+                theoryOfChangeSummary={rich?.impact_evidence?.theory_of_change_summary || charity.theoryOfChange}
               />
             </div>
           </div>
@@ -1789,6 +1831,47 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             </div>
           ))}
 
+          {/* === Desktop: Baseline Things to Know (when no rich narrative) === */}
+          {!rich?.case_against && (charity.scoreSummary || amal?.score_details?.score_summary || uiSignals?.signal_states) && (
+            <div className={`rounded-lg border-2 p-5 mb-6 ${
+              isDark ? 'bg-slate-800/40 border-slate-600/50' : 'bg-slate-50 border-slate-300'
+            }`}>
+              <div className={`text-xs uppercase tracking-widest font-semibold mb-3 flex items-center gap-2 ${
+                isDark ? 'text-slate-400' : 'text-slate-600'
+              }`}>
+                <Scale className="w-4 h-4" />
+                Things to Know
+              </div>
+              {(charity.scoreSummary || amal?.score_details?.score_summary) && (
+                <p className={`text-sm mb-3 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                  {charity.scoreSummary || amal?.score_details?.score_summary}
+                </p>
+              )}
+              {uiSignals?.signal_states && (
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {(Object.entries(uiSignals.signal_states) as [string, string][]).map(([key, state]) => {
+                    const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                    const pillClasses = state === 'Strong'
+                      ? (isDark ? 'bg-emerald-900/40 text-emerald-400 border-emerald-700' : 'bg-emerald-50 text-emerald-700 border-emerald-300')
+                      : state === 'Moderate'
+                      ? (isDark ? 'bg-amber-900/30 text-amber-400 border-amber-700' : 'bg-amber-50 text-amber-700 border-amber-300')
+                      : (isDark ? 'bg-slate-700/50 text-slate-400 border-slate-600' : 'bg-slate-100 text-slate-500 border-slate-300');
+                    return (
+                      <span key={key} className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border ${pillClasses}`}>
+                        {label}: {state}
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
+              {uiSignals?.recommendation_rationale && (
+                <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                  {uiSignals.recommendation_rationale}
+                </p>
+              )}
+            </div>
+          )}
+
           {/* === Section 2: Best For (moved above Score Analysis) === */}
           {(() => {
             if (!idealDonorProfile) return null;
@@ -1890,6 +1973,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                     (isSignedIn ? rich?.areas_for_improvement : baseline?.areas_for_improvement) as
                       Array<string | { area: string; context: string; citation_ids: string[] }> | undefined
                   }
+                  theoryOfChangeSummary={rich?.impact_evidence?.theory_of_change_summary || charity.theoryOfChange}
                 />
               </div>
             </div>

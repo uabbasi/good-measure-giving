@@ -35,12 +35,14 @@
   },
   "awards": null,
   "financials": {
-    "totalRevenue": 233066,
-    "totalExpenses": 474737,
+    "totalRevenue": 13567039,
+    "totalExpenses": 12707276,
     "programExpenses": 12164835,
     "adminExpenses": 542441,
-    "fundraisingExpenses": 0,
+    "fundraisingExpenses": null,
     "programExpenseRatio": "0.9573",
+    "fiscalYear": 2024,
+    "dataSource": "charity_navigator",
     "totalAssets": 306342,
     "totalLiabilities": 548013,
     "netAssets": -241671,
@@ -60,7 +62,15 @@
     ],
     "geographicCoverage": null
   },
-  "trustSignals": null,
+  "trustSignals": {
+    "hasAnnualReport": null,
+    "hasAuditedFinancials": 1,
+    "candidSeal": null,
+    "isConflictZone": 0,
+    "nonprofitSizeTier": "large_nonprofit",
+    "employeesCount": null,
+    "volunteersCount": null
+  },
   "websiteEvidenceSignals": {
     "claims_longitudinal": false,
     "claims_rcts": false,
@@ -71,7 +81,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-04 19:19:18",
+  "lastUpdated": "2026-03-04 21:35:36",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -109,7 +119,7 @@
       "source_name": "Charity Website",
       "source_url": "https://humanitifoundation.org/reports/",
       "timestamp": "2026-01-25T20:15:43",
-      "value": false
+      "value": true
     },
     "ntee_code": {
       "source_name": "ProPublica Form 990",
@@ -207,7 +217,7 @@
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
-    "assessment_label": "Context Dependent",
+    "assessment_label": "Limited Basis",
     "archetype_code": "DIRECT_SERVICE",
     "archetype_label": "Frontline Relief",
     "evidence_stage": "Early",
@@ -215,25 +225,40 @@
       "evidence": "Limited",
       "financial_health": "Limited",
       "donor_fit": "Moderate",
-      "risk": "Moderate"
+      "risk": "Limited"
     },
-    "recommendation_cue": "Mixed Signals",
-    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "recommendation_cue": "Limited Match",
+    "recommendation_rationale": "Limited match due to weaker results and/or higher uncertainty; review methodology details before deciding.",
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "medium",
+      "headline": "Organization has negative net assets",
+      "detail": "Financial data may be inconsistent across sources or reporting periods.",
+      "data_points": {}
+    },
+    {
+      "type": "risk_deduction",
+      "severity": "high",
+      "headline": "Board too small: 2 members",
+      "detail": "Source: Candid profile",
+      "data_points": {}
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "92-3079413",
     "charity_name": "Humaniti",
-    "amal_score": 46,
+    "amal_score": 39,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:16:24",
     "rubric_version": "5.0.0",
     "confidence_scores": {
-      "alignment": 29,
-      "data_confidence": 0.2,
-      "impact": 22
+      "alignment": 27,
+      "data_confidence": 0.38,
+      "impact": 17
     },
     "score_details": {
       "alignment": {
@@ -276,28 +301,28 @@
             "status": "partial"
           },
           {
-            "evidence": "Revenue: $233,066 (5/5 funding gap)",
+            "evidence": "Revenue: $13.6M (3/5 funding gap)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Funding Gap",
             "possible": 5,
-            "scored": 5,
+            "scored": 3,
             "status": "full"
           }
         ],
         "muslim_donor_fit_level": "HIGH",
-        "rationale": "Alignment 29/50: HIGH Muslim donor fit, religious cultural cause area",
-        "score": 29
+        "rationale": "Alignment 27/50: HIGH Muslim donor fit, religious cultural cause area",
+        "score": 27
       },
       "data_confidence": {
         "badge": "LOW",
         "data_quality_label": "MODERATE",
         "data_quality_value": 0.67,
-        "overall": 0.2,
+        "overall": 0.38,
         "transparency_label": "NONE",
         "transparency_value": 0,
-        "verification_tier": "BASIC",
-        "verification_value": 0.4
+        "verification_tier": "HIGH",
+        "verification_value": 1
       },
       "impact": {
         "components": [
@@ -338,7 +363,7 @@
             "status": "full"
           },
           {
-            "evidence": "Evidence & outcomes: REPORTED (emerging org baseline)",
+            "evidence": "Evidence & outcomes: REPORTED",
             "improvement_suggestion": "Seek external evaluation or track outcomes over at least 3 years.",
             "improvement_value": 3,
             "name": "Evidence & Outcomes",
@@ -356,21 +381,21 @@
             "status": "partial"
           },
           {
-            "evidence": "Board governance: baseline (2 members, emerging org)",
+            "evidence": "Board governance: WEAK (2 members)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
             "possible": 10,
-            "scored": 5,
-            "status": "partial"
+            "scored": 0,
+            "status": "missing"
           }
         ],
         "cost_per_beneficiary": 4054.945,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "$4054.95/beneficiary; Delivery: direct service; Impact 22/50",
+        "rationale": "$4054.95/beneficiary; Delivery: direct service; Impact 17/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 22
+        "score": 17
       },
       "risk_deduction": -5,
       "risks": {
@@ -387,7 +412,7 @@
         ],
         "total_deduction": -5
       },
-      "score_summary": "Humaniti Foundation shows good alignment and moderate impact, with zakat compliance (minor risk deductions applied). Evidence score may reflect limited reporting capacity, not program weakness.",
+      "score_summary": "Humaniti Foundation shows moderate alignment and limited impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": "amil",
         "bonus_points": 0,
@@ -399,46 +424,47 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity provides various donation options and giving methods for its supporters.",
+          "claim": "The organization manages key programs such as HEAL and Clean Water to provide essential services.",
           "id": "[1]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://humanitifoundation.org/donate/"
         },
         {
-          "claim": "The organization is Zakat-eligible and maintains a specific Zakat policy for asnaf categories.",
+          "claim": "The foundation is Zakat-eligible and maintains a policy to ensure distributions align with asnaf categories.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://humanitifoundation.org/zakat"
         },
         {
-          "claim": "The foundation reported total revenue of $233,066 and operates programs including HEAL and Clean Water.",
+          "claim": "The organization reported total revenue of $13,567,039, a program expense ratio of 95.7%, and working capital of -6.1 months.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/923079413"
         },
         {
-          "claim": "Financial metrics include a 95.7% program expense ratio, $0.00 fundraising efficiency, and --6.1 months of working capital.",
+          "claim": "Financial data indicates a fundraising efficiency of $0.00 per $1 raised.",
           "id": "[4]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/923079413#financials"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its high program spending and Zakat alignment, though its total score is tempered by negative working capital and low data transparency.",
+      "amal_score_rationale": "The foundation earns a 39/100 score, reflecting a balance between high direct program spending and significant financial sustainability risks, such as negative working capital. While it offers high alignment for religious donors, the overall impact score is tempered by a high cost per beneficiary and low data confidence.",
       "areas_for_improvement": [
-        "Negative working capital of -6.1 months suggests potential short-term liquidity challenges",
-        "Limited third-party data availability resulting in low data confidence scores"
+        "Address significant liquidity concerns reflected by --6.1 months of working capital",
+        "Improve data transparency to increase overall confidence scores",
+        "Reduce the high cost per beneficiary to enhance impact efficiency"
       ],
       "dimension_explanations": {
-        "alignment": "Alignment is moderate as the organization demonstrates high donor fit for those seeking religious-cultural causes through its Zakat-eligible status and defined asnaf categories [2]. While it serves urgent needs, the overall track record is constrained by low data confidence and limited public documentation [3][4].",
-        "impact": "The foundation reported a total revenue of $233,066 and maintains a high program expense ratio of 95.7%, focusing on direct services like HEAL and Clean Water [3]. However, the impact score is limited by a high cost per beneficiary and a working capital position of -6.1 months, which may affect long-term sustainability [4]."
+        "alignment": "Alignment is rated at 27/50, highlighting a high donor fit for those seeking Zakat-eligible opportunities [2]. The organization focuses on urgent religious and cultural causes, though the track record is viewed with moderate confidence due to limited third-party verification [4].",
+        "impact": "The organization reports a total revenue of $13,567,039 and directs 95.7% of its expenses toward programs [3][4]. However, the impact score of 17/50 is limited by a high cost per beneficiary of $4054.945 and a critical lack of liquidity, evidenced by --6.1 months of working capital [3]."
       },
-      "headline": "Humaniti Foundation is a U.S.-based non-profit dedicated to providing clean water and healthcare services to vulnerable communities through Zakat-eligible programs.",
+      "headline": "Humaniti Foundation is a California-based non-profit dedicated to global humanitarian relief through specialized medical and clean water initiatives.",
       "strengths": [
-        "High program expense ratio of 95.7%, indicating a strong focus on direct service delivery",
-        "Exceptional fundraising efficiency of $0.00 per $1 raised",
-        "Clear Zakat policy and eligibility for Muslim donors"
+        "High program expense ratio of 95.7% ensures the vast majority of funds reach charitable activities",
+        "Exceptional fundraising efficiency with a cost of $0.00 per $1 raised",
+        "Clear Zakat eligibility and policy for Muslim donors"
       ],
-      "summary": "The Humaniti Foundation is a 501(c)(3) organization established to raise funds and distribute aid for charitable purposes, specifically focusing on its HEAL and Clean Water initiatives [3][4]. The organization is recognized as Zakat-eligible, allowing donors to fulfill their religious obligations through various giving methods [1][2]."
+      "summary": "The Humaniti Foundation operates as a United States non-profit organization with the primary purpose of raising and distributing funds for charitable causes worldwide [3]. The organization manages key programs such as HEAL and Clean Water to provide essential services to vulnerable populations [1]. Notably, the foundation is Zakat-eligible, maintaining a specific policy to ensure distributions align with traditional asnaf categories [2]."
     }
   }
 }

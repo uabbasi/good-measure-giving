@@ -38,12 +38,14 @@
   },
   "awards": null,
   "financials": {
-    "totalRevenue": 1912900,
-    "totalExpenses": 466041,
-    "programExpenses": 0,
+    "totalRevenue": 2405280,
+    "totalExpenses": 147133,
+    "programExpenses": 124179919,
     "adminExpenses": null,
     "fundraisingExpenses": 147133,
     "programExpenseRatio": "0.0000",
+    "fiscalYear": 2024,
+    "dataSource": "charity_navigator",
     "totalAssets": 15291521,
     "totalLiabilities": 32742,
     "netAssets": 15258779,
@@ -66,9 +68,17 @@
       "International"
     ]
   },
-  "trustSignals": null,
+  "trustSignals": {
+    "hasAnnualReport": null,
+    "hasAuditedFinancials": 1,
+    "candidSeal": null,
+    "isConflictZone": 1,
+    "nonprofitSizeTier": "mid_nonprofit",
+    "employeesCount": null,
+    "volunteersCount": null
+  },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-03-04 19:20:01",
+  "lastUpdated": "2026-03-04 21:36:15",
   "sourceAttribution": {
     "beneficiaries_served_annually": {
       "method": "pattern_match",
@@ -100,7 +110,7 @@
       "source_name": "Charity Website",
       "source_url": "http://irusawaqf.org",
       "timestamp": "2026-03-01T22:02:34",
-      "value": false
+      "value": true
     },
     "ntee_code": {
       "source_name": "ProPublica Form 990",
@@ -178,8 +188,8 @@
     "timestamp": "2026-03-01T22:02:34",
     "value": 14300000
   },
-  "beneficiariesConfidence": "needs_review",
-  "beneficiariesExcludedFromScoring": true,
+  "beneficiariesConfidence": "verified",
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": {
     "hasOutcomeMethodology": null,
     "hasMultiYearMetrics": null,
@@ -197,22 +207,44 @@
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
-    "assessment_label": "Context Dependent",
+    "assessment_label": "Promising",
     "archetype_code": "ASSET_CREATION",
     "archetype_label": "Asset Creator",
-    "evidence_stage": "Early",
+    "evidence_stage": "Established",
     "signal_states": {
       "evidence": "Strong",
       "financial_health": "Strong",
       "donor_fit": "Moderate",
       "risk": "Moderate"
     },
-    "recommendation_cue": "Mixed Signals",
-    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "medium",
+      "headline": "Program expenses exceed total expenses",
+      "detail": "Financial data may be inconsistent across sources or reporting periods.",
+      "data_points": {}
+    },
+    {
+      "type": "data_quality",
+      "severity": "medium",
+      "headline": "Expense components don't sum to total (>10% difference)",
+      "detail": "Financial data may be inconsistent across sources or reporting periods.",
+      "data_points": {}
+    },
+    {
+      "type": "risk_deduction",
+      "severity": "low",
+      "headline": "No outcome measurement or metrics tracking",
+      "detail": "Source: Website/Candid",
+      "data_points": {}
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "47-1666091",
     "charity_name": "IRUSA Waqf",
@@ -222,7 +254,7 @@
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 30,
-      "data_confidence": 0.28,
+      "data_confidence": 0.55,
       "impact": 42
     },
     "score_details": {
@@ -266,7 +298,7 @@
             "status": "full"
           },
           {
-            "evidence": "Revenue: $1.9M (5/5 funding gap)",
+            "evidence": "Revenue: $2.4M (5/5 funding gap)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Funding Gap",
@@ -280,14 +312,14 @@
         "score": 30
       },
       "data_confidence": {
-        "badge": "LOW",
+        "badge": "MEDIUM",
         "data_quality_label": "MODERATE",
         "data_quality_value": 0.67,
-        "overall": 0.28,
+        "overall": 0.55,
         "transparency_label": "NONE",
         "transparency_value": 0,
-        "verification_tier": "BASIC",
-        "verification_value": 0.4
+        "verification_tier": "HIGH",
+        "verification_value": 1
       },
       "impact": {
         "components": [
@@ -389,46 +421,46 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Irusa Waqf maintains a program expense ratio of 80.1% and focuses on long-term sustainability.",
+          "claim": "The charity reports a program expense ratio of 80.1%, total revenue of $2,405,280, and 392.9 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/471666091#financials"
         },
         {
-          "claim": "The organization reported total revenue of $1,912,900 and holds 392.9 months of working capital.",
+          "claim": "The organization's mission is to establish a pool of capital to ensure the long-term sustainability of IRUSA and its objectives.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/471666091"
         },
         {
-          "claim": "Donations to the Waqf serve as a form of ongoing sadaqah to support Islamic Relief USA's objectives.",
+          "claim": "The Waqf program allows donors to contribute to a permanent endowment that supports ongoing charitable work.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://secure.irusa.org/donate/islamic-relief-waqf"
         },
         {
-          "claim": "The organization provides various giving methods to support its religious and cultural humanitarian missions.",
+          "claim": "Donors can support various humanitarian efforts through the organization's primary donation portal.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://irusa.org/donate"
         }
       ],
-      "amal_score_rationale": "The charity earns a 71/100 due to its robust financial health and efficient resource management, though its overall score is tempered by low data confidence and moderate alignment scores.",
+      "amal_score_rationale": "The charity earns a solid overall standing due to its exceptional financial efficiency and massive capital reserves, though its specialized endowment structure results in a more moderate alignment score for general donors.",
       "areas_for_improvement": [
-        "Limited public data availability resulting in a low data confidence score.",
-        "Need for increased transparency regarding specific long-term impact metrics of the endowment model."
+        "Limited public data regarding specific third-party impact verification",
+        "Narrower donor alignment due to the specialized nature of endowment giving"
       ],
       "dimension_explanations": {
-        "alignment": "Irusa Waqf shows a high donor fit for those seeking religious and cultural cause urgency through sustainable endowment models [3]. While it maintains a solid track record, the alignment score of 30/50 reflects a balanced view of its specialized niche within the broader charitable landscape [1][4].",
-        "impact": "The organization demonstrates high effectiveness through a direct service model with a cost per beneficiary of approximately 8.68, supported by a total revenue of $1,912,900 [1][2]. Its financial health is underscored by a program expense ratio of 80.1% and significant working capital reserves [2]."
+        "alignment": "The charity offers a high fit for donors interested in sustainable, long-term Islamic endowment models (Sadaqah Jariyah), though its specific religious and cultural focus may result in a more specialized appeal [3][4].",
+        "impact": "The organization demonstrates high financial health, directing 80.1% of its $2,405,280 in total revenue toward its programs [1][2]. With a cost per beneficiary of approximately 8.68 and a robust 392.9 months of working capital, the charity is positioned for significant long-term direct service impact [1]."
       },
-      "headline": "Irusa Waqf serves as a strategic endowment fund designed to ensure the long-term financial sustainability and operational continuity of Islamic Relief USA's humanitarian missions.",
+      "headline": "Irusa Waqf serves as a strategic endowment to ensure the long-term sustainability and operational continuity of Islamic Relief USA's humanitarian objectives.",
       "strengths": [
-        "High program expense ratio of 80.1%, indicating a strong commitment to funding direct services.",
-        "Exceptional financial stability with 392.9 months of working capital available.",
-        "Highly efficient fundraising operations, spending only $0.08 to raise every $1."
+        "Exceptional long-term financial stability with 392.9 months of working capital",
+        "High fundraising efficiency with a cost of only $0.06 per $1 raised",
+        "Strong programmatic focus with an 80.1% program expense ratio"
       ],
-      "summary": "Irusa Waqf operates as a dedicated pool of capital, primarily through the WAQF IRUSA Endowment, to provide a permanent source of funding for charitable objectives [1][2]. The organization facilitates sadaqah-eligible contributions to support ongoing humanitarian programs and long-term development initiatives [3][4]."
+      "summary": "Irusa Waqf is a specialized endowment fund established to create a permanent pool of capital that supports the ongoing mission of Islamic Relief USA [1][2]. The organization manages the WAQF IRUSA Endowment and specific distribution programs to provide lasting financial stability for charitable activities [2][3]."
     }
   }
 }

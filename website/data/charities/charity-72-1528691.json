@@ -41,6 +41,8 @@
     "adminExpenses": 1143657,
     "fundraisingExpenses": 12935,
     "programExpenseRatio": "0.2209",
+    "fiscalYear": 2024,
+    "dataSource": "charity_navigator",
     "totalAssets": null,
     "totalLiabilities": null,
     "netAssets": null,
@@ -63,7 +65,7 @@
   },
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-03-04 19:20:03",
+  "lastUpdated": "2026-03-04 21:36:18",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -178,18 +180,40 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "risk_deduction",
+      "severity": "high",
+      "headline": "Program expense ratio critically low: 22%",
+      "detail": "Source: Form 990",
+      "data_points": {}
+    },
+    {
+      "type": "risk_deduction",
+      "severity": "low",
+      "headline": "No outcome measurement or metrics tracking",
+      "detail": "Source: Website/Candid",
+      "data_points": {}
+    },
+    {
+      "type": "risk_deduction",
+      "severity": "low",
+      "headline": "No documented theory of change",
+      "detail": "Source: Website",
+      "data_points": {}
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "72-1528691",
     "charity_name": "Ta'leef Collective",
-    "amal_score": 51,
+    "amal_score": 47,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:29:30",
     "rubric_version": "5.0.0",
     "confidence_scores": {
       "alignment": 30,
-      "data_confidence": 0.08,
-      "impact": 26
+      "data_confidence": 0.21,
+      "impact": 24
     },
     "score_details": {
       "alignment": {
@@ -232,7 +256,7 @@
             "status": "full"
           },
           {
-            "evidence": "Revenue: $0 (5/5 funding gap)",
+            "evidence": "Revenue: $1.4M (5/5 funding gap)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Funding Gap",
@@ -249,11 +273,11 @@
         "badge": "LOW",
         "data_quality_label": "MODERATE",
         "data_quality_value": 0.67,
-        "overall": 0.08,
+        "overall": 0.21,
         "transparency_label": "NONE",
         "transparency_value": 0,
-        "verification_tier": "NONE",
-        "verification_value": 0
+        "verification_tier": "BASIC",
+        "verification_value": 0.4
       },
       "impact": {
         "components": [
@@ -303,13 +327,13 @@
             "status": "full"
           },
           {
-            "evidence": "Theory of change: BASIC (emerging org baseline)",
+            "evidence": "Theory of change: ABSENT",
             "improvement_suggestion": "Document a clear theory of change with an explicit causal pathway.",
             "improvement_value": 4,
             "name": "Theory of Change",
             "possible": 7,
-            "scored": 2,
-            "status": "partial"
+            "scored": 0,
+            "status": "missing"
           },
           {
             "evidence": "Board governance: STRONG (10 members)",
@@ -324,11 +348,11 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 26/50",
+        "rationale": "Delivery: capacity building; Impact 24/50",
         "rubric_archetype": "COMMUNITY",
-        "score": 26
+        "score": 24
       },
-      "risk_deduction": -5,
+      "risk_deduction": -7,
       "risks": {
         "overall_risk_level": "MODERATE",
         "risk_summary": "Key concern: Program expense ratio critically low: 22%",
@@ -339,11 +363,25 @@
             "description": "Program expense ratio critically low: 22%",
             "mitigation": null,
             "severity": "high"
+          },
+          {
+            "category": "impact",
+            "data_source": "Website/Candid",
+            "description": "No outcome measurement or metrics tracking",
+            "mitigation": null,
+            "severity": "low"
+          },
+          {
+            "category": "impact",
+            "data_source": "Website",
+            "description": "No documented theory of change",
+            "mitigation": null,
+            "severity": "low"
           }
         ],
-        "total_deduction": -5
+        "total_deduction": -7
       },
-      "score_summary": "Taleef Collective shows good alignment and moderate impact, with zakat compliance (minor risk deductions applied).",
+      "score_summary": "Taleef Collective shows good alignment and moderate impact, with zakat compliance (significant risk deductions applied).",
       "zakat": {
         "asnaf_category": "amil",
         "bonus_points": 0,
@@ -355,45 +393,47 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity is zakat-eligible and follows specific asnaf categories for distribution.",
+          "claim": "The charity is zakat-eligible and maintains a specific zakat policy regarding asnaf categories.",
           "id": "[1]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://taleefcollective.org/donate/zakat"
         },
         {
-          "claim": "The organization's program expense ratio is 22.1%.",
+          "claim": "Ta'leef Collective is classified under religious and community-based metadata.",
           "id": "[2]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/721528691#financials"
         },
         {
-          "claim": "Financial data and expense breakdowns are reported in the 2023 tax filings.",
+          "claim": "The organization reported total revenue of $1,397,233 and a program expense ratio of 22.1%.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/721528691"
         },
         {
-          "claim": "The charity operates programs including 1000 Hearts of Ta\u2019leef and a General Fund.",
+          "claim": "The organization offers multiple giving methods and manages funds such as the 1000 Hearts of Ta\u2019leef.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.taleefcollective.org/donate"
         }
       ],
-      "amal_score_rationale": "The organization receives a moderate score due to its niche community focus and zakat eligibility, balanced against a low program expense ratio and limited data confidence.",
+      "amal_score_rationale": "The overall score reflects a balance between excellent fundraising efficiency and a relatively low program expense ratio, alongside limited third-party data verification.",
       "areas_for_improvement": [
-        "Low program expense ratio of 22.1% suggests high administrative or fundraising overhead",
-        "Limited public data availability regarding long-term impact metrics"
+        "Low program expense ratio of 22.1% indicates a high proportion of spending on non-programmatic costs",
+        "Limited public data availability resulting in low data confidence scores",
+        "Need for greater transparency regarding direct impact metrics and cost per beneficiary"
       ],
       "dimension_explanations": {
-        "alignment": "With a score of 30/50, the charity shows medium donor fit by addressing religious and cultural urgency through its unique 'companionship' model [4]. Its zakat-eligible status provides a critical avenue for Muslim donors to fulfill religious obligations [1].",
-        "impact": "The organization's impact score of 26/50 reflects its focus on capacity building within the Muslim community, though its program expense ratio is currently 22.1% [2][3]. Data confidence remains low at 0.08, indicating a need for more transparent reporting on direct beneficiary outcomes [3]."
+        "alignment": "Ta'leef Collective shows medium alignment for Muslim donors as a zakat-eligible entity that adheres to specific asnaf categories for distribution [1]. While it addresses important religious and cultural needs, the overall alignment score is tempered by the need for more robust evidence of long-term track records in its specific program areas [1][4].",
+        "impact": "The organization reported a total revenue of $1,397,233, yet its program expense ratio stands at 22.1%, suggesting that a significant portion of funds is directed toward administrative or foundational costs rather than direct service delivery [3]. While the directness of its work is categorized as capacity building, the lack of specific cost-per-beneficiary data limits the ability to fully assess programmatic effectiveness [2]."
       },
-      "headline": "Ta'leef Collective provides a dedicated space and community for individuals seeking a healthy understanding and realization of Islam.",
+      "headline": "Ta'leef Collective provides a dedicated space and community-driven programming to support a healthy understanding and realization of Islam.",
       "strengths": [
-        "Maintains a clear zakat distribution policy for eligible donors",
-        "Offers specialized programming for community building and spiritual education"
+        "High fundraising efficiency with a cost of only $0.01 per $1 raised",
+        "Verified zakat-eligible status with clear policy guidelines",
+        "Strong focus on community capacity building and spiritual companionship"
       ],
-      "summary": "Ta'leef Collective focuses on providing the necessary content and companionship for those embracing Islam through programs like the 1000 Hearts of Ta\u2019leef and their General Fund [2][4]. The organization is recognized as zakat-eligible, maintaining a specific policy to distribute funds according to established asnaf categories [1]."
+      "summary": "Based in Fremont, California, Ta'leef Collective focuses on providing the content and companionship necessary for individuals to embrace the Islamic faith [2][3]. The organization manages several key initiatives, including the 1000 Hearts of Ta\u2019leef and a General Fund to support its mission-driven activities [3][4]."
     }
   }
 }
