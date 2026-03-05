@@ -50,7 +50,10 @@
     "totalAssets": 4028321133,
     "totalLiabilities": 1008326202,
     "netAssets": 3019994931,
-    "workingCapitalMonths": "12.20"
+    "workingCapitalMonths": "12.20",
+    "noncashRatio": 0.015297392525386326,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": 0.9809634226862042
   },
   "baselineGovernance": {
     "boardSize": 12,
@@ -90,7 +93,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-28 17:46:49",
+  "lastUpdated": "2026-03-04 19:20:11",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -668,7 +671,7 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Promising",
     "archetype_code": "DIRECT_SERVICE",
     "archetype_label": "Frontline Relief",
@@ -677,17 +680,28 @@
       "evidence": "Strong",
       "financial_health": "Strong",
       "donor_fit": "Moderate",
-      "risk": "Strong"
+      "risk": "Moderate"
     },
     "recommendation_cue": "Good Match",
     "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "domestic_burn",
+      "severity": "high",
+      "headline": "98% of expenses stay in the US despite international operations",
+      "detail": "Organization claims foreign operations but most spending remains domestic.",
+      "data_points": {
+        "domestic_burn_rate": 0.981
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "53-0196605",
     "charity_name": "American Red CrossHQ",
-    "amal_score": 68,
+    "amal_score": 63,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:36:38",
     "rubric_version": "5.0.0",
@@ -833,14 +847,22 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 37
       },
-      "risk_deduction": 0,
+      "risk_deduction": -5,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "Key concern: High domestic burn: 98% of expenses stay in the US despite international operations",
+        "risks": [
+          {
+            "category": "financial",
+            "data_source": "Form 990 Schedule F",
+            "description": "High domestic burn: 98% of expenses stay in the US despite international operations",
+            "mitigation": null,
+            "severity": "high"
+          }
+        ],
+        "total_deduction": -5
       },
-      "score_summary": "American Red CrossHQ shows strong impact and good alignment.",
+      "score_summary": "American Red CrossHQ shows strong impact and good alignment (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -852,13 +874,13 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization holds a 100.100.0/100 from Charity Navigator score and holds 12.2 months of working capital.",
+          "claim": "The organization holds a 100.0/100 score and holds 12.2 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/530196605#financials"
         },
         {
-          "claim": "Financial data confirms a 90.8% program expense ratio and fundraising efficiency of $0.06 per $1 raised.",
+          "claim": "Total revenue reached $3,217,077,611 with a program expense ratio of 90.8%.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/530196605"
@@ -876,25 +898,19 @@
           "source_url": "https://www.redcross.org/about-us/who-we-are/celebrity.html"
         },
         {
-          "claim": "The organization responds to domestic disasters and humanitarian needs.",
-          "id": "[5]",
-          "source_name": "Charity Website - About",
-          "source_url": "https://www.redcross.org/about-us/news-and-events/news/2026/red-cross-urges-safe-home-heating-as-winter-fire-risk-rises.html"
-        },
-        {
-          "claim": "Key programs include Training Services and health education.",
+          "claim": "Core programs include Lifesaving Blood, Training Services, and Supporting America\u2019s Military Families.",
           "id": "[6]",
           "source_name": "Charity Website - Programs",
           "source_url": "https://www.redcross.org/about-us/our-work/training-education.html"
         },
         {
-          "claim": "Total revenue reached $3,217,077,611 with significant biomedical and disaster service expenses.",
+          "claim": "The organization manages significant revenue from biomedical products and services.",
           "id": "[7]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://www.redcross.org/content/dam/redcross/about-us/publications/2024-publications/FY24-Red-Cross-990-for-RCO.pdf"
         },
         {
-          "claim": "The organization provides domestic and foreign assistance grants.",
+          "claim": "The charity provides both domestic and foreign assistance grants.",
           "id": "[8]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://www.redcross.org/content/dam/redcross/about-us/publications/2023-publications/ARC-Form-990-PIC.pdf"
@@ -906,28 +922,29 @@
           "source_url": "https://www.redcross.org/donate/donation.html/"
         },
         {
-          "claim": "The Red Cross engages a vast network of volunteers to deliver its services.",
+          "claim": "The organization relies on a massive network of volunteers for service delivery.",
           "id": "[13]",
           "source_name": "Charity Website - Volunteer",
           "source_url": "https://volunteerconnection.redcross.org/"
         }
       ],
-      "amal_score_rationale": "The organization earns a 68/100 GMG score due to its impeccable financial transparency and massive operational scale, balanced by a moderate alignment score for specific donor segments.",
+      "amal_score_rationale": "The organization earns a 63/100 score due to its perfect financial transparency and massive operational scale, balanced by a moderate alignment score for specific donor segments.",
       "areas_for_improvement": [
-        "High cost per beneficiary relative to smaller, more localized humanitarian interventions",
-        "Moderate alignment for donors seeking niche or high-growth charitable opportunities"
+        "High cost per beneficiary relative to smaller localized humanitarian efforts",
+        "Moderate alignment for donors seeking niche or high-growth emerging causes"
       ],
       "dimension_explanations": {
-        "alignment": "As a sadaqah-eligible humanitarian organization, the Red Cross offers a medium donor fit for those prioritizing urgent, large-scale relief and support for military families [12][13]. Its long-standing track record and high data confidence of 0.88 make it a reliable choice for general charitable giving, though it lacks specialized focus for those seeking specific religious-aligned pathways [3][5].",
-        "impact": "The organization demonstrates high impact through direct service delivery, maintaining a 90.8% program expense ratio and 12.2 months of working capital to ensure stability during disasters [1][2]. While the cost per beneficiary is calculated at approximately $699.82, the organization's ability to manage $3,217,077,611 in total revenue reflects a high-capacity infrastructure for emergency response [7][8]."
+        "alignment": "The Red Cross addresses high-urgency humanitarian needs, making it a suitable option for sadaqah-eligible giving [12]. While it has a medium donor fit for those seeking specialized Muslim-led initiatives, its long track record of supporting military families and disaster victims provides a reliable pathway for general charitable contributions [4][13].",
+        "impact": "The organization demonstrates high impact through direct service delivery, including its Lifesaving Blood and Training Services programs [6][7]. With a program expense ratio of 90.8%, the vast majority of its $3,217,077,611 revenue is utilized for humanitarian initiatives [1][2]. While the cost per beneficiary is calculated at approximately $699.82, the organization maintains high data confidence and 12.2 months of working capital to ensure long-term stability [1][8]."
       },
       "headline": "The American Red Cross provides critical humanitarian relief and lifesaving blood services through a massive network of volunteers and donors.",
       "strengths": [
-        "Exceptional financial accountability with a perfect Charity Navigator score of 100.0/100",
-        "High program efficiency with 90.8% of expenses directed toward humanitarian services",
-        "Strong fundraising efficiency, spending only $0.06 to raise every $1"
+        "Exceptional financial accountability with a Charity Navigator score of 100.0/100",
+        "High program efficiency with 90.8% of expenses directed toward services",
+        "Strong fundraising efficiency, spending only $0.06 per $1 raised",
+        "Robust liquidity with 12.2 months of working capital"
       ],
-      "summary": "The American Red Cross prevents and alleviates human suffering in the face of emergencies by mobilizing the power of volunteers and the generosity of donors [3][4]. Operating with a mission to support military families and provide disaster relief, the organization manages significant national programs including lifesaving blood services and health training [6][7]."
+      "summary": "The American Red Cross prevents and alleviates human suffering in the face of emergencies by mobilizing the power of volunteers and the generosity of donors [3][4]. Operating with a mission to provide domestic disaster relief and support for military families, the organization reported a total revenue of $3,217,077,611 [2][7]."
     }
   }
 }

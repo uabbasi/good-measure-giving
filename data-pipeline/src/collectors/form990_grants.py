@@ -440,6 +440,20 @@ class Form990GrantsCollector(BaseCollector):
                     except ValueError:
                         pass
 
+        # Noncash contributions (GIK detection)
+        noncash_paths = [
+            ".//irs:CYNoncashContributionsAmt",
+            ".//irs:NoncashContributionsAmt",
+        ]
+        for path in noncash_paths:
+            elem = root.find(path, ns)
+            if elem is not None and elem.text:
+                try:
+                    financials["noncash_contributions"] = float(elem.text)
+                    break
+                except ValueError:
+                    pass
+
         return financials
 
     def fetch(self, ein: str, **kwargs) -> FetchResult:
@@ -693,6 +707,7 @@ class Form990GrantsCollector(BaseCollector):
             "total_revenue": financials.get("total_revenue"),
             "total_expenses": financials.get("total_expenses"),
             "program_expenses": financials.get("program_expenses"),
+            "noncash_contributions": financials.get("noncash_contributions"),
         }
 
         # Validate

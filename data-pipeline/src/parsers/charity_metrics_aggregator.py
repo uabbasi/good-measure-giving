@@ -220,6 +220,13 @@ class CharityMetrics(BaseModel):
     program_service_revenue: Optional[float] = Field(None, description="Program service revenue (IRS 990)")
     investment_income: Optional[float] = Field(None, description="Investment income (IRS 990)")
 
+    # GIK (Gifts-in-Kind) detection
+    noncash_contributions: Optional[float] = Field(None, description="Noncash contributions from Form 990 XML")
+    noncash_ratio: Optional[float] = Field(None, ge=0, le=1, description="Noncash / total contributions")
+    cash_adjusted_program_ratio: Optional[float] = Field(
+        None, ge=0, description="Program ratio excluding noncash (when GIK > 10%)"
+    )
+
     # Ratios (calculated or from CN)
     program_expense_ratio: Optional[float] = Field(None, ge=0, le=1, description="Program expenses / Total expenses")
     admin_expense_ratio: Optional[float] = Field(None, ge=0, le=1, description="Admin expenses / Total expenses")
@@ -227,6 +234,17 @@ class CharityMetrics(BaseModel):
         None, ge=0, le=1, description="Fundraising expenses / Total expenses"
     )
     working_capital_ratio: Optional[float] = Field(None, description="Working capital ratio (months of expenses)")
+
+    # Domestic burn rate (Fix 2: international orgs spending domestically)
+    domestic_burn_rate: Optional[float] = Field(
+        None, ge=0, le=1, description="Fraction of expenses staying in US (1 - foreign_grants/total_expenses)"
+    )
+
+    # Zakat reserve hoarding (Fix 3)
+    claims_zakat: Optional[bool] = Field(None, description="Whether charity claims zakat eligibility")
+    reserves_months: Optional[float] = Field(
+        None, description="Net assets / monthly expenses — broader than working_capital_ratio"
+    )
 
     # Assets & Liabilities
     total_assets: Optional[float] = Field(None, description="Total assets")
@@ -1503,6 +1521,41 @@ class CharityMetricsAggregator:
                         break  # Use first available
 
         # ====================================================================
+        # GIK / Noncash contributions (Fix 1)
+        # ====================================================================
+        noncash = grants_profile.get("noncash_contributions") if grants_profile else None
+        if noncash is not None and noncash > 0:
+            metrics_data["noncash_contributions"] = noncash
+            total_contribs = metrics_data.get("total_contributions")
+            if total_contribs and total_contribs > 0:
+                noncash_ratio = noncash / total_contribs
+                metrics_data["noncash_ratio"] = min(noncash_ratio, 1.0)
+                # Cash-adjusted program ratio: only compute when GIK > 10%
+                if noncash_ratio > 0.10:
+                    prog_exp = metrics_data.get("program_expenses")
+                    total_exp = metrics_data.get("total_expenses")
+                    if prog_exp is not None and total_exp is not None and total_exp > noncash:
+                        adjusted = (prog_exp - noncash) / (total_exp - noncash)
+                        metrics_data["cash_adjusted_program_ratio"] = max(0.0, adjusted)
+
+        # ====================================================================
+        # Domestic burn rate (Fix 2)
+        # ====================================================================
+        total_foreign = grants_profile.get("total_foreign_grants") if grants_profile else None
+        total_exp = metrics_data.get("total_expenses")
+        if total_foreign is not None and total_foreign > 0 and total_exp and total_exp > 0:
+            metrics_data["domestic_burn_rate"] = max(0.0, min(1.0, 1.0 - (total_foreign / total_exp)))
+
+        # ====================================================================
+        # Reserves months (Fix 3) — net_assets / monthly expenses
+        # ====================================================================
+        net_assets = metrics_data.get("net_assets")
+        if net_assets is not None and total_exp and total_exp > 0:
+            monthly_expenses = total_exp / 12.0
+            if monthly_expenses > 0:
+                metrics_data["reserves_months"] = net_assets / monthly_expenses
+
+        # ====================================================================
         # Aggregate CN Scores
         # ====================================================================
         if cn_profile:
@@ -2175,6 +2228,11 @@ class CharityMetricsAggregator:
                 ]
 
         metrics_data["corroboration_status"] = corroboration_status
+
+        # ====================================================================
+        # Zakat claim flag for scorer (Fix 3: zakat hoarding)
+        # ====================================================================
+        metrics_data["claims_zakat"] = bool(metrics_data.get("zakat_claim_detected"))
 
         # ====================================================================
         # Source-Required Field Validation (Anti-Hallucination)

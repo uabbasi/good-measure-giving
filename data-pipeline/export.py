@@ -737,6 +737,75 @@ def _build_evidence_quality(charity_data: dict | None) -> dict | None:
     return None
 
 
+def _get_metric(charity_data: dict, key: str) -> Any:
+    """Get a field from charity_data, falling back to metrics_json blob.
+
+    New computed fields (noncash_ratio, domestic_burn_rate, reserves_months, etc.)
+    live inside the metrics_json column, not as top-level DB columns.
+    """
+    val = charity_data.get(key)
+    if val is not None:
+        return val
+    metrics = charity_data.get("metrics_json")
+    if isinstance(metrics, dict):
+        return metrics.get(key)
+    return None
+
+
+def _build_key_concerns(score_details: dict[str, Any], charity_data: dict | None) -> list[dict[str, Any]]:
+    """Build structured key concern flags from scorer risk factors and charity data."""
+    concerns: list[dict[str, Any]] = []
+    if not charity_data:
+        return concerns
+
+    # GIK inflation
+    noncash_ratio = _get_metric(charity_data, "noncash_ratio")
+    if isinstance(noncash_ratio, (int, float)) and noncash_ratio >= 0.25:
+        severity = "high" if noncash_ratio >= 0.50 else "medium"
+        cash_adj = _get_metric(charity_data, "cash_adjusted_program_ratio")
+        headline = f"{noncash_ratio:.0%} of reported revenue is noncash (gifts-in-kind)"
+        data_points: dict[str, Any] = {"noncash_ratio": round(noncash_ratio, 3)}
+        if isinstance(cash_adj, (int, float)):
+            data_points["cash_adjusted_program_ratio"] = round(cash_adj, 3)
+        concerns.append({
+            "type": "gik_inflation",
+            "severity": severity,
+            "headline": headline,
+            "detail": "Noncash contributions inflate reported program ratios. Cash-adjusted metrics better reflect actual spending.",
+            "data_points": data_points,
+        })
+
+    # Domestic burn
+    burn_rate = _get_metric(charity_data, "domestic_burn_rate")
+    if isinstance(burn_rate, (int, float)) and burn_rate >= 0.50:
+        severity = "high" if burn_rate >= 0.70 else "medium"
+        concerns.append({
+            "type": "domestic_burn",
+            "severity": severity,
+            "headline": f"{burn_rate:.0%} of expenses stay in the US despite international operations",
+            "detail": "Organization claims foreign operations but most spending remains domestic.",
+            "data_points": {"domestic_burn_rate": round(burn_rate, 3)},
+        })
+
+    # Zakat hoarding
+    claims_zakat = _get_metric(charity_data, "zakat_claim_detected") or _get_metric(charity_data, "claims_zakat")
+    if claims_zakat:
+        wc = _get_metric(charity_data, "working_capital_ratio") or _get_metric(charity_data, "working_capital_months") or 0
+        rm = _get_metric(charity_data, "reserves_months") or 0
+        months = max(wc, rm)
+        if months >= 24:
+            severity = "high" if months >= 36 else "medium"
+            concerns.append({
+                "type": "zakat_hoarding",
+                "severity": severity,
+                "headline": f"Zakat-collecting organization holds {months:.0f} months of reserves",
+                "detail": "Zakat must be distributed promptly per Islamic jurisprudence. Large reserves raise concerns about timely distribution.",
+                "data_points": {"reserves_months": round(months, 1)},
+            })
+
+    return concerns
+
+
 def _normalize_public_url(url: Any) -> str | None:
     """Return a safe public URL, excluding grounding redirect links."""
     if not isinstance(url, str):
@@ -1339,6 +1408,11 @@ def build_charity_detail(
             "netAssets": charity_data.get("net_assets") if charity_data else None,
             # Working capital months (balance sheet derived, previously only in rich narrative)
             "workingCapitalMonths": charity_data.get("working_capital_months") if charity_data else None,
+            # GIK / noncash metrics (Fix 1)
+            "noncashRatio": _get_metric(charity_data, "noncash_ratio") if charity_data else None,
+            "cashAdjustedProgramRatio": _get_metric(charity_data, "cash_adjusted_program_ratio") if charity_data else None,
+            # Domestic burn rate (Fix 2)
+            "domesticBurnRate": _get_metric(charity_data, "domestic_burn_rate") if charity_data else None,
         },
         # Baseline governance data - only for charities WITHOUT rich narratives
         # Rich charities get governance from rich.organizational_capacity (with citations)
@@ -1438,6 +1512,10 @@ def build_charity_detail(
         # P2: Strategic archetype (e.g., RESILIENCE, LEVERAGE)
         "archetype": _extract_archetype(charity_data),
         "ui_signals_v1": ui_signals_v1,
+        # Key concerns (data-driven red flags from scorer)
+        "keyConcerns": _build_key_concerns(
+            _extract_score_details(evaluation), charity_data
+        ) or None,
     }
 
     canonical_zakat_url = _select_canonical_zakat_url(

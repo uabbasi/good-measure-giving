@@ -44,7 +44,10 @@
     "totalAssets": 461455,
     "totalLiabilities": 528,
     "netAssets": 460927,
-    "workingCapitalMonths": "28.50"
+    "workingCapitalMonths": "28.50",
+    "noncashRatio": null,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": null
   },
   "baselineGovernance": {
     "boardSize": 3,
@@ -68,7 +71,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-28 17:45:50",
+  "lastUpdated": "2026-03-04 19:19:14",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -187,7 +190,7 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Context Dependent",
     "archetype_code": "RESILIENCE",
     "archetype_label": "Community Resilience",
@@ -203,10 +206,21 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "zakat_hoarding",
+      "severity": "medium",
+      "headline": "Zakat-collecting organization holds 28 months of reserves",
+      "detail": "Zakat must be distributed promptly per Islamic jurisprudence. Large reserves raise concerns about timely distribution.",
+      "data_points": {
+        "reserves_months": 28.5
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "88-2980325",
     "charity_name": "Friends of KDSP",
-    "amal_score": 54,
+    "amal_score": 52,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:19:19",
     "rubric_version": "5.0.0",
@@ -352,14 +366,22 @@
         "rubric_archetype": "EDUCATION",
         "score": 25
       },
-      "risk_deduction": 0,
+      "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "risk_summary": "1 risk(s) identified.",
+        "risks": [
+          {
+            "category": "financial",
+            "data_source": "Form 990 / Balance Sheet",
+            "description": "Zakat-collecting organization holds 28 months of reserves \u2014 zakat should be distributed promptly",
+            "mitigation": null,
+            "severity": "medium"
+          }
+        ],
+        "total_deduction": -2
       },
-      "score_summary": "Friends of Kdsp shows good alignment and moderate impact, with zakat compliance. Evidence score may reflect limited reporting capacity, not program weakness.",
+      "score_summary": "Friends of Kdsp shows good alignment and moderate impact, with zakat compliance (minor risk deductions applied). Evidence score may reflect limited reporting capacity, not program weakness.",
       "zakat": {
         "asnaf_category": "amil",
         "bonus_points": 0,
@@ -377,7 +399,7 @@
           "source_url": "https://projects.propublica.org/nonprofits/organizations/882980325"
         },
         {
-          "claim": "The charity's fundraising efficiency is $0.29 per $1 raised.",
+          "claim": "The charity demonstrates a fundraising efficiency of $0.29 per $1 raised.",
           "id": "[2]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/882980325#financials"
@@ -389,26 +411,26 @@
           "source_url": "https://www.friendsofkdsp.org/wp-content/uploads/2024/08/FOKDSP_DonorReport2024_Final_0823.pdf"
         },
         {
-          "claim": "The organization provides options for Zakat-eligible donations.",
+          "claim": "The organization accepts various donation methods and is Zakat-eligible.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://friendsofkdsp.org/donate/"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate score reflecting a solid financial foundation and clear programmatic focus, though impact transparency and fundraising costs present areas for growth.",
+      "amal_score_rationale": "The organization earns a moderate overall score due to its strong financial liquidity and specialized mission, though its impact score is tempered by a moderate cost per beneficiary and limited external data verification.",
       "areas_for_improvement": [
-        "The program expense ratio of 60.4% suggests opportunities to further optimize resource allocation toward direct services [1].",
-        "Fundraising efficiency stands at $0.29 per $1 raised, indicating potential for higher cost-effectiveness in donor acquisition [2]."
+        "program expense ratio of 60.4% suggests potential to further optimize resource allocation toward direct services [1]",
+        "Limited third-party data availability results in a low data confidence rating for external impact verification [2]"
       ],
       "dimension_explanations": {
-        "alignment": "With a medium donor fit and a focus on global education and healthcare, the charity aligns with urgent social needs in Pakistan and provides Zakat-eligible pathways for Muslim donors [3][4].",
-        "impact": "The organization focuses on capacity building with a cost per beneficiary of approximately $123.88, though the overall impact score of 25/50 reflects a need for more comprehensive third-party verification of long-term outcomes [1][3]."
+        "alignment": "Friends of Kdsp aligns with global education and healthcare needs, specifically serving an underserved population in Pakistan [3]. The organization is Zakat-eligible, offering a medium fit for donors seeking to fulfill religious giving obligations toward disability support and social inclusion [4].",
+        "impact": "The charity focuses on capacity building through therapy sessions and mainstream school integration, operating with a program expense ratio of 60.4% [1][3]. While it maintains a healthy financial cushion of 28.5 months of working capital, the impact score reflects a moderate cost per beneficiary and a need for more comprehensive third-party data [1][2]."
       },
-      "headline": "Friends of Kdsp empowers the Down syndrome community in Pakistan through specialized healthcare, early intervention, and educational support.",
+      "headline": "Friends of Kdsp empowers the Down syndrome community in Pakistan through specialized healthcare, early intervention, and educational integration.",
       "strengths": [
-        "Maintains a robust working capital of 28.5 months, ensuring long-term operational stability [1].",
-        "Offers Zakat-eligible giving options to support specialized therapy and inclusive education [4].",
-        "Demonstrates programmatic impact through weekly therapy sessions and mainstream school integration efforts [3]."
+        "Maintains a robust working capital of 28.5 months, ensuring long-term operational stability [1]",
+        "Demonstrates high fundraising efficiency with a cost of only $0.29 per $1 raised [2]",
+        "Provides transparent donation pathways, including options for Zakat-eligible contributions [4]"
       ],
       "summary": "Friends of Kdsp is a non-profit organization dedicated to supporting individuals with Down syndrome in Pakistan by providing essential services such as Sehat Healthcare and Early Childhood Intervention [3]. In the 2023 fiscal year, the organization reported a total revenue of $655,185 to fund its mission-driven programs [1][2]."
     }

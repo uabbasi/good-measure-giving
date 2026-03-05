@@ -46,7 +46,10 @@
     "totalAssets": 9389287,
     "totalLiabilities": 4056563,
     "netAssets": 5332724,
-    "workingCapitalMonths": "25.10"
+    "workingCapitalMonths": "25.10",
+    "noncashRatio": null,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": null
   },
   "baselineGovernance": {
     "boardSize": 2,
@@ -73,7 +76,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-28 17:46:33",
+  "lastUpdated": "2026-03-04 19:19:56",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -185,7 +188,7 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Context Dependent",
     "archetype_code": "DIRECT_SERVICE",
     "archetype_label": "Frontline Relief",
@@ -201,10 +204,21 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "zakat_hoarding",
+      "severity": "medium",
+      "headline": "Zakat-collecting organization holds 25 months of reserves",
+      "detail": "Zakat must be distributed promptly per Islamic jurisprudence. Large reserves raise concerns about timely distribution.",
+      "data_points": {
+        "reserves_months": 25.1
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "20-0310701",
     "charity_name": "Al-Furqaan Foundation",
-    "amal_score": 51,
+    "amal_score": 49,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:28:32",
     "rubric_version": "5.0.0",
@@ -350,7 +364,7 @@
         "rubric_archetype": "COMMUNITY",
         "score": 26
       },
-      "risk_deduction": -6,
+      "risk_deduction": -8,
       "risks": {
         "overall_risk_level": "ELEVATED",
         "risk_summary": "Key concern: Board too small: 2 members",
@@ -368,9 +382,16 @@
             "description": "No documented theory of change",
             "mitigation": null,
             "severity": "low"
+          },
+          {
+            "category": "financial",
+            "data_source": "Form 990 / Balance Sheet",
+            "description": "Zakat-collecting organization holds 25 months of reserves \u2014 zakat should be distributed promptly",
+            "mitigation": null,
+            "severity": "medium"
           }
         ],
-        "total_deduction": -6
+        "total_deduction": -8
       },
       "score_summary": "AL-FURQAAN FOUNDATION shows good alignment and moderate impact, with zakat compliance (significant risk deductions applied).",
       "zakat": {
@@ -384,52 +405,52 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reported a program expense ratio of 89.3% and total revenue of $3,249,437.",
+          "claim": "The organization maintains a program expense ratio of 89.3% and significant working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/200310701#financials"
         },
         {
-          "claim": "Financial data indicates the foundation holds 25.1 months of working capital and a fundraising efficiency of $0.01 per $1 raised.",
+          "claim": "Total revenue for the organization was $3,249,437.",
           "id": "[2]",
           "source_name": "Form 990 (2020)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/200310701"
         },
         {
-          "claim": "Audited financials detail the value of book distributions and organizational assets.",
+          "claim": "The foundation manages significant assets related to book distribution and educational materials.",
           "id": "[3]",
           "source_name": "Financial Statement (2019)",
           "source_url": "https://furqaan.org/wp-content/uploads/2025/02/Audited-Financials-12-31-19.pdf"
         },
         {
-          "claim": "The foundation operates the Furqaan Project, Furqaan Dawah Center, and The Clear Islam to educate the public on Islam.",
+          "claim": "Programs include the Furqaan Project and Furqaan Dawah Center, offering various online products and educational outreach.",
           "id": "[4]",
           "source_name": "Click here",
           "source_url": "https://furqaan.org/wp-content/uploads/2025/02/990-A.pdf"
         },
         {
-          "claim": "The organization is Zakat-eligible and offers various giving methods for donors.",
+          "claim": "The organization is Zakat-eligible and provides various donation options for supporters.",
           "id": "[5]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://furqaan.org/donate/"
         }
       ],
-      "amal_score_rationale": "The foundation earns a moderate score of 51/100, reflecting excellent financial efficiency and liquidity balanced against a need for more robust external impact data.",
+      "amal_score_rationale": "The foundation earns a moderate overall score due to its strong financial efficiency and high program spending, balanced against a lack of external impact evaluations.",
       "areas_for_improvement": [
-        "Limited third-party impact verification data available for public review",
-        "Medium data confidence levels regarding long-term outcome metrics"
+        "Limited third-party impact verification data available",
+        "Medium data confidence score suggests a need for more transparent reporting"
       ],
       "dimension_explanations": {
-        "alignment": "With a score of 31/50, the foundation shows medium donor fit for those prioritizing religious education and cultural representation [4]. Its Zakat-eligible status aligns well with traditional Islamic giving requirements, though the cause is categorized under religious and cultural urgency rather than immediate humanitarian relief [5].",
-        "impact": "The organization demonstrates strong financial health with a total revenue of $3,249,437 and a high program expense ratio of 89.3% [1][2]. While its capacity-building efforts through book distribution are significant, the impact score of 26/50 reflects a lack of specific cost-per-beneficiary data in current reporting [3]."
+        "alignment": "The organization shows medium alignment for Muslim donors as a Zakat-eligible entity focused on religious education and cultural advocacy [5]. Its long-standing mission to provide the 'truth about Islam' addresses a specific religious and cultural urgency within the United States [4].",
+        "impact": "The foundation demonstrates high financial health with a program expense ratio of 89.3% and 25.1 months of working capital [1][2]. While its capacity-building efforts through book distribution and online products are extensive, the direct evidence of long-term behavioral outcomes remains limited [3][4]."
       },
-      "headline": "Al-Furqaan Foundation is a Zakat-eligible organization dedicated to educating the American public about the core principles of Islam through large-scale distribution of religious literature.",
+      "headline": "Al-Furqaan Foundation is a religious non-profit dedicated to educating the American public on the core principles of Islam through large-scale distribution of Quranic materials and educational outreach.",
       "strengths": [
-        "High program expense ratio of 89.3% ensuring most funds reach core missions",
-        "Exceptional fundraising efficiency at $0.01 per $1 raised",
+        "High program expense ratio of 89.3%, indicating most funds go directly to services",
+        "Exceptional fundraising efficiency of $0.01 per $1 raised",
         "Strong liquidity with 25.1 months of working capital"
       ],
-      "summary": "Based in the United States, Al-Furqaan Foundation operates key programs such as the Furqaan Project, Furqaan Dawah Center, and The Clear Islam to counter negative media narratives [4]. The organization is verified as Zakat-eligible, providing donors with a religiously compliant way to support dawah and educational outreach [5]."
+      "summary": "Based in Illinois, Al-Furqaan Foundation operates several key initiatives including the Furqaan Project and Furqaan Dawah Center to counter negative media narratives about Islam [1][4]. The organization is recognized as Zakat-eligible and reported a total revenue of $3,249,437 in its most recent filings [2][5]."
     }
   }
 }

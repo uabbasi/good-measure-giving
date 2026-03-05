@@ -55,7 +55,10 @@
     "totalAssets": 626129732,
     "totalLiabilities": 62229963,
     "netAssets": 563899769,
-    "workingCapitalMonths": "1.40"
+    "workingCapitalMonths": "1.40",
+    "noncashRatio": 0.973608569517785,
+    "cashAdjustedProgramRatio": 1.2358326318114656,
+    "domesticBurnRate": null
   },
   "baselineGovernance": {
     "boardSize": 17,
@@ -87,7 +90,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-28 17:46:50",
+  "lastUpdated": "2026-03-04 19:20:13",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -2325,7 +2328,7 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Promising",
     "archetype_code": "DIRECT_SERVICE",
     "archetype_label": "Frontline Relief",
@@ -2334,17 +2337,29 @@
       "evidence": "Strong",
       "financial_health": "Moderate",
       "donor_fit": "Moderate",
-      "risk": "Strong"
+      "risk": "Moderate"
     },
     "recommendation_cue": "Good Match",
     "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "gik_inflation",
+      "severity": "high",
+      "headline": "97% of reported revenue is noncash (gifts-in-kind)",
+      "detail": "Noncash contributions inflate reported program ratios. Cash-adjusted metrics better reflect actual spending.",
+      "data_points": {
+        "noncash_ratio": 0.974,
+        "cash_adjusted_program_ratio": 1.236
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "36-3673599",
     "charity_name": "Feeding America",
-    "amal_score": 60,
+    "amal_score": 55,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:34:57",
     "rubric_version": "5.0.0",
@@ -2490,14 +2505,22 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 36
       },
-      "risk_deduction": 0,
+      "risk_deduction": -5,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "Key concern: GIK inflation: 97% of revenue is noncash contributions",
+        "risks": [
+          {
+            "category": "financial",
+            "data_source": "Form 990 XML",
+            "description": "GIK inflation: 97% of revenue is noncash contributions",
+            "mitigation": null,
+            "severity": "high"
+          }
+        ],
+        "total_deduction": -5
       },
-      "score_summary": "Feeding AmericaHQ shows strong impact and moderate alignment.",
+      "score_summary": "Feeding AmericaHQ shows strong impact and moderate alignment (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -2509,52 +2532,58 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity holds a 96.33/100 score and maintains a 98.3% program expense ratio.",
+          "claim": "The charity holds a Charity Navigator score of 96.33333333333333/100 and maintains high financial accountability.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/363673599#financials"
         },
         {
-          "claim": "Total revenue for the period was $4,916,912,461.",
+          "claim": "The organization reported a total revenue of $4,916,912,461 and a program expense ratio of 98.3%.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/363673599"
         },
         {
-          "claim": "The organization provides significant grants and similar amounts to partner food banks.",
+          "claim": "Feeding America manages significant grants and similar amounts paid to support its food access mission.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://www.feedingamerica.org/sites/default/files/2025-05/2023-Feeding%20America-990%20%26%20990-T-Public%20Disclosure%20Copy.pdf"
         },
         {
-          "claim": "The organization manages extensive noncash contributions including food and grocery products.",
+          "claim": "The organization processes substantial noncash contributions in the form of food and grocery products.",
           "id": "[6]",
           "source_name": "Form 990 (2020)",
           "source_url": "https://www.feedingamerica.org/sites/default/files/2022-03/Feeding%20America%20Form%202020%20fiscal%20year%202021%20-%20Public%20Disclosure.PDF"
         },
         {
-          "claim": "The organization accepts general charitable donations and sadaqah-eligible giving.",
+          "claim": "The charity provides extensive grants and assistance to domestic organizations to combat hunger.",
+          "id": "[7]",
+          "source_name": "Form 990 (2019)",
+          "source_url": "https://www.feedingamerica.org/sites/default/files/2021-03/Feeding%20America%20FY%202020%20Form%20990.PDF"
+        },
+        {
+          "claim": "The organization is eligible for general charitable giving and sadaqah.",
           "id": "[8]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://feedingamerica.org/sites/default/files/2021-03/Feeding%20America%20FY%202020%20Form%20990.PDF"
         }
       ],
-      "amal_score_rationale": "The organization earns a 60/100 GMG score due to its massive operational scale and high financial efficiency, though its overall score is moderated by its specific advocacy focus and medium donor alignment.",
+      "amal_score_rationale": "The organization earns a moderate overall score of 55/100, reflecting a balance between its massive operational scale and high financial efficiency against moderate alignment for specific donor niches.",
       "areas_for_improvement": [
-        "Limited working capital of 1.4 months, which may impact short-term financial flexibility",
-        "High cost per beneficiary relative to smaller, localized direct-service providers"
+        "Relatively low working capital of 1.4 months, which may limit long-term financial flexibility.",
+        "High cost per beneficiary relative to direct service peers, reflecting the complexity of large-scale advocacy and distribution."
       ],
       "dimension_explanations": {
-        "alignment": "Feeding AmericaHQ offers a medium fit for Muslim donors seeking sadaqah-eligible opportunities to address domestic hunger [8]. The organization's focus on advocacy and systemic change aligns with urgent social needs, though it operates as a general secular entity rather than a faith-based one [1][3].",
-        "impact": "The organization demonstrates high impact through direct service and massive food rescue operations, maintaining a 98.3% program expense ratio [1][2]. While the cost per beneficiary is calculated at 21764.87788695652, this reflects the complex logistics of a national network and large-scale domestic grants [3][6]."
+        "alignment": "Feeding AmericaHQ offers a medium fit for Muslim donors seeking sadaqah-eligible opportunities in the advocacy and food security space [8]. The organization's focus on systemic change and policy advocacy aligns with urgent social needs, though its broad mission provides a more generalized donor experience [1][7].",
+        "impact": "The organization demonstrates high impact through direct service and food rescue, maintaining a 98.3% program expense ratio [1][2]. While the cost per beneficiary is calculated at 21764.87788695652, this reflects a broad mission that includes large-scale domestic grants and non-cash food contributions [3][6]."
       },
-      "headline": "Feeding AmericaHQ leads a nationwide network dedicated to advancing food equity and ensuring nutritious access for all through large-scale food rescue and distribution.",
+      "headline": "Feeding AmericaHQ is a leading hunger-relief organization dedicated to ensuring equitable food access through a massive network of partner food banks and advocacy initiatives.",
       "strengths": [
-        "Exceptional program expense ratio of 98.3%, ensuring the vast majority of funds support direct services",
-        "Highly efficient fundraising operations, spending only $0.01 to raise every $1",
-        "Strong financial accountability with a Charity Navigator score of 96.33333333333333/100"
+        "Exceptional program expense ratio of 98.3%, ensuring the vast majority of funds reach those in need.",
+        "Highly efficient fundraising operations, spending only $0.01 to raise every $1.",
+        "Strong financial accountability with a Charity Navigator score of 96.33333333333333/100."
       ],
-      "summary": "Feeding AmericaHQ operates as a central pillar in the United States' hunger-relief infrastructure, focusing on food access and food rescue programs in partnership with policymakers and local food banks [1][3]. The organization reported a total revenue of $4,916,912,461, reflecting its massive scale in managing both cash and non-cash food contributions to combat food insecurity [2][6]."
+      "summary": "Feeding AmericaHQ operates as a critical hunger-relief network, focusing on food access and food rescue programs to support food-insecure populations across the United States [1][3]. The organization reported a total revenue of $4,916,912,461, demonstrating a significant scale of operations in its mission to advance systemic change [2][3]."
     }
   }
 }

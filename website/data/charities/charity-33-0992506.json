@@ -48,7 +48,10 @@
     "totalAssets": 4874051,
     "totalLiabilities": 116000,
     "netAssets": 4758051,
-    "workingCapitalMonths": "26.30"
+    "workingCapitalMonths": "26.30",
+    "noncashRatio": null,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": null
   },
   "baselineGovernance": {
     "boardSize": 9,
@@ -72,7 +75,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-28 17:46:35",
+  "lastUpdated": "2026-03-04 19:19:58",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -221,8 +224,8 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
-    "assessment_label": "Promising",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
+    "assessment_label": "Context Dependent",
     "archetype_code": "SOVEREIGNTY",
     "archetype_label": "Sovereignty Builder",
     "evidence_stage": "Established",
@@ -232,15 +235,26 @@
       "donor_fit": "Moderate",
       "risk": "Moderate"
     },
-    "recommendation_cue": "Good Match",
-    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "zakat_hoarding",
+      "severity": "medium",
+      "headline": "Zakat-collecting organization holds 26 months of reserves",
+      "detail": "Zakat must be distributed promptly per Islamic jurisprudence. Large reserves raise concerns about timely distribution.",
+      "data_points": {
+        "reserves_months": 26.3
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "33-0992506",
     "charity_name": "Islamic Center of Irvine",
-    "amal_score": 55,
+    "amal_score": 53,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:27:54",
     "rubric_version": "5.0.0",
@@ -386,10 +400,10 @@
         "rubric_archetype": "COMMUNITY",
         "score": 36
       },
-      "risk_deduction": -2,
+      "risk_deduction": -4,
       "risks": {
         "overall_risk_level": "MODERATE",
-        "risk_summary": "2 risk(s) identified.",
+        "risk_summary": "3 risk(s) identified.",
         "risks": [
           {
             "category": "impact",
@@ -404,9 +418,16 @@
             "description": "No documented theory of change",
             "mitigation": null,
             "severity": "low"
+          },
+          {
+            "category": "financial",
+            "data_source": "Form 990 / Balance Sheet",
+            "description": "Zakat-collecting organization holds 26 months of reserves \u2014 zakat should be distributed promptly",
+            "mitigation": null,
+            "severity": "medium"
           }
         ],
-        "total_deduction": -2
+        "total_deduction": -4
       },
       "score_summary": "Islamic Center of Irvine Inc shows strong impact and moderate alignment, with zakat compliance (minor risk deductions applied).",
       "zakat": {
@@ -420,40 +441,40 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization holds 26.3 months of working capital and focuses on community service needs.",
+          "claim": "The organization holds 26.3 months of working capital and operates programs like The Village In Irvine.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/330992506#financials"
         },
         {
-          "claim": "Total revenue for the period was $2,209,994 with a program expense ratio of 89.9%.",
+          "claim": "Total revenue was $2,209,994 with a program expense ratio of 89.9%.",
           "id": "[2]",
           "source_name": "Form 990 (2022)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/330992506"
         },
         {
-          "claim": "The organization provides various donation methods and is zakat-eligible.",
+          "claim": "The organization provides donation options and is recognized as Zakat-eligible.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://icoi.net/donate"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its exceptional financial efficiency and zakat eligibility, balanced against a medium data confidence level and a religious-specific cause urgency.",
+      "amal_score_rationale": "The organization earns a moderate overall score due to its exceptional financial efficiency and Zakat-eligible status, balanced by a lack of third-party ratings and medium data confidence.",
       "areas_for_improvement": [
-        "Enhance transparency regarding specific outcome metrics for the ICOI Young Professionals program",
-        "Increase third-party data verification to improve overall data confidence scores"
+        "Limited external data availability for third-party impact verification",
+        "Opportunity to increase transparency regarding specific program outcomes and beneficiary metrics"
       ],
       "dimension_explanations": {
-        "alignment": "ICOI offers a medium fit for donors seeking to support religious and cultural causes, specifically within the Muslim community through zakat-eligible giving options [3]. While the cause urgency is categorized as religious/cultural, the organization maintains a consistent track record of serving the Irvine area's spiritual and social needs [1][2].",
-        "impact": "The center demonstrates high capacity-building impact by allocating 89.9% of its $2,209,994 revenue directly to programs like The Village In Irvine and ICOI Young Professionals [1][2]. Its financial health is further evidenced by a significant 26.3 months of working capital, providing long-term stability for its community operations [1]."
+        "alignment": "As a Zakat-eligible institution, the center offers a medium fit for Muslim donors seeking to fulfill religious obligations through established community programs [3]. The cause reflects a religious and cultural urgency centered on maintaining Islamic values in a local context [1].",
+        "impact": "The organization demonstrates high capacity-building potential by allocating 89.9% of its $2,209,994 revenue directly to programs [1][2]. With 26.3 months of working capital available, the center maintains a strong financial cushion to ensure the continuity of its community services [1]."
       },
-      "headline": "The Islamic Center of Irvine Inc serves as a comprehensive community hub dedicated to promoting Islamic values through robust social and professional programming.",
+      "headline": "The Islamic Center of Irvine Inc serves as a comprehensive community hub dedicated to promoting Islamic values through excellence in service and diverse programming.",
       "strengths": [
-        "High program expense ratio of 89.9% ensures the vast majority of funds reach community services",
-        "Exceptional fundraising efficiency with a cost of $0.00 per $1 raised",
-        "Strong liquidity position with 26.3 months of working capital available"
+        "High program expense ratio of 89.9%, indicating a strong commitment to direct service delivery",
+        "Exceptional fundraising efficiency with $0.00 spent per $1 raised",
+        "Robust financial stability with 26.3 months of working capital"
       ],
-      "summary": "The Islamic Center of Irvine Inc (ICOI) operates with a mission to serve the community's needs through excellence and the establishment of a comprehensive Islamic center [1]. In the 2022 fiscal year, the organization reported a total revenue of $2,209,994 to support its diverse religious and cultural initiatives [2]."
+      "summary": "The Islamic Center of Irvine Inc (ICOI) is a religious non-profit organization that reported a total revenue of $2,209,994 [2]. The organization operates community-focused programs including 'The Village In Irvine' and 'ICOI Young Professionals' to meet the spiritual and social needs of its constituents [1]."
     }
   }
 }

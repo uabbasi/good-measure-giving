@@ -53,7 +53,10 @@
     "totalAssets": 14151875,
     "totalLiabilities": -938,
     "netAssets": 14152813,
-    "workingCapitalMonths": "65.00"
+    "workingCapitalMonths": "65.00",
+    "noncashRatio": null,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": null
   },
   "baselineGovernance": {
     "boardSize": 2,
@@ -89,7 +92,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-28 17:46:21",
+  "lastUpdated": "2026-03-04 19:19:45",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -240,7 +243,7 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Context Dependent",
     "archetype_code": "DIRECT_SERVICE",
     "archetype_label": "Frontline Relief",
@@ -256,10 +259,21 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "zakat_hoarding",
+      "severity": "high",
+      "headline": "Zakat-collecting organization holds 65 months of reserves",
+      "detail": "Zakat must be distributed promptly per Islamic jurisprudence. Large reserves raise concerns about timely distribution.",
+      "data_points": {
+        "reserves_months": 65.0
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "77-0442850",
     "charity_name": "Rahima Foundation",
-    "amal_score": 54,
+    "amal_score": 51,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:25:44",
     "rubric_version": "5.0.0",
@@ -405,7 +419,7 @@
         "rubric_archetype": "COMMUNITY",
         "score": 29
       },
-      "risk_deduction": -6,
+      "risk_deduction": -9,
       "risks": {
         "overall_risk_level": "ELEVATED",
         "risk_summary": "Key concern: Board too small: 2 members",
@@ -423,9 +437,16 @@
             "description": "No outcome measurement or metrics tracking",
             "mitigation": null,
             "severity": "low"
+          },
+          {
+            "category": "financial",
+            "data_source": "Form 990 / Balance Sheet",
+            "description": "Zakat-collecting organization holds 65 months of reserves \u2014 zakat must be distributed promptly",
+            "mitigation": null,
+            "severity": "high"
           }
         ],
-        "total_deduction": -6
+        "total_deduction": -9
       },
       "score_summary": "RAHIMA INTERNATIONAL FOUNDATION shows good alignment and good impact, with zakat compliance (significant risk deductions applied).",
       "zakat": {
@@ -445,40 +466,40 @@
           "source_url": "https://www.charitynavigator.org/ein/770442850#financials"
         },
         {
-          "claim": "The organization reported total revenue of $4,006,022 and a fundraising efficiency of $0.00 per $1 raised.",
+          "claim": "Total revenue for the period was $4,006,022 with a fundraising efficiency of $0.00 per $1 raised.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/770442850"
         },
         {
-          "claim": "The foundation is zakat-eligible and accepts donations for feeding the hungry and financial assistance.",
+          "claim": "The organization offers Zakat-eligible donation options and various giving methods for donors.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.rahima.org/donate"
         },
         {
-          "claim": "The organization provides volunteer opportunities and community engagement programs.",
+          "claim": "The foundation provides opportunities for community engagement through its volunteer programs.",
           "id": "[4]",
           "source_name": "Charity Website - Volunteer",
           "source_url": "https://www.rahima.org/general-volunteer-rahima"
         }
       ],
-      "amal_score_rationale": "The foundation earns a moderate overall score due to its exceptional financial efficiency and high Charity Navigator rating, balanced against a high cost per beneficiary and moderate impact data confidence.",
+      "amal_score_rationale": "The foundation earns a moderate overall score due to its exceptional financial efficiency and Zakat eligibility, balanced against a higher cost per beneficiary in its direct service model.",
       "areas_for_improvement": [
-        "High cost per beneficiary relative to domestic poverty benchmarks",
-        "Limited third-party impact verification data"
+        "High cost per beneficiary relative to impact score",
+        "Limited third-party impact data verification"
       ],
       "dimension_explanations": {
-        "alignment": "With an alignment score of 31/50, the foundation shows high donor fit for those seeking zakat-eligible domestic poverty relief [3]. It offers various engagement pathways, including meat collection programs and volunteer opportunities for community members [4].",
-        "impact": "The organization demonstrates strong financial health with a Charity Navigator score of 96.0/100 and a 95.3% program expense ratio [1]. While it provides direct services like soup kitchens and meat collection, the impact score of 29/50 reflects a relatively high cost per beneficiary of approximately $14,222 [1][2]."
+        "alignment": "With a high donor fit for those seeking Zakat-eligible domestic poverty relief, the foundation aligns well with urgent community needs [3]. It maintains a solid track record of community engagement through structured volunteer opportunities [4].",
+        "impact": "The organization demonstrates strong financial health with a Charity Navigator score of 96.0/100 and a total revenue of $4,006,022 [1][2]. While the program expense ratio is a robust 95.3%, the impact score of 29/50 reflects a high cost per beneficiary of 14222.072 for its direct services [1]."
       },
       "headline": "Rahima International Foundation provides critical humanitarian relief through high-efficiency food distribution and educational support programs.",
       "strengths": [
-        "Exceptional program expense ratio of 95.3%",
-        "Highly efficient fundraising with $0.00 spent per $1 raised",
+        "High program expense ratio of 95.3%",
+        "Exceptional fundraising efficiency of $0.00 per $1 raised",
         "Strong liquidity with 65.0 months of working capital"
       ],
-      "summary": "Based in California, Rahima International Foundation is a zakat-eligible organization dedicated to feeding the hungry and assisting the financially insecure [3]. The foundation reported a total revenue of $4,006,022 and maintains a high level of financial transparency and accountability [1][2]."
+      "summary": "Based in California, Rahima International Foundation focuses on alleviating hunger and financial insecurity through direct service programs including soup kitchens and meat collection [1][2]. The organization is recognized as Zakat-eligible, allowing Muslim donors to fulfill their religious obligations through various giving methods [3]."
     }
   }
 }

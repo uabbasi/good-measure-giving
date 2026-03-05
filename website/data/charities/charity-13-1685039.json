@@ -53,7 +53,10 @@
     "totalAssets": 623000777,
     "totalLiabilities": 231921136,
     "netAssets": 391079641,
-    "workingCapitalMonths": "5.00"
+    "workingCapitalMonths": "5.00",
+    "noncashRatio": 0.06200215514255996,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": 0.7820710045438277
   },
   "baselineGovernance": {
     "boardSize": 26,
@@ -94,7 +97,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-28 17:46:47",
+  "lastUpdated": "2026-03-04 19:20:10",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -5819,8 +5822,8 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
-    "assessment_label": "High Conviction",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
+    "assessment_label": "Promising",
     "archetype_code": "SOVEREIGNTY",
     "archetype_label": "Sovereignty Builder",
     "evidence_stage": "Verified",
@@ -5828,17 +5831,28 @@
       "evidence": "Strong",
       "financial_health": "Strong",
       "donor_fit": "Strong",
-      "risk": "Strong"
+      "risk": "Moderate"
     },
-    "recommendation_cue": "Strong Match",
-    "recommendation_rationale": "Strong donor fit, low risk profile, and credible supporting evidence for outcomes.",
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "domestic_burn",
+      "severity": "high",
+      "headline": "78% of expenses stay in the US despite international operations",
+      "detail": "Organization claims foreign operations but most spending remains domestic.",
+      "data_points": {
+        "domestic_burn_rate": 0.782
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "13-1685039",
     "charity_name": "CARE USA",
-    "amal_score": 85,
+    "amal_score": 80,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:40:25",
     "rubric_version": "5.0.0",
@@ -5984,14 +5998,22 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 48
       },
-      "risk_deduction": 0,
+      "risk_deduction": -5,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "Key concern: High domestic burn: 78% of expenses stay in the US despite international operations",
+        "risks": [
+          {
+            "category": "financial",
+            "data_source": "Form 990 Schedule F",
+            "description": "High domestic burn: 78% of expenses stay in the US despite international operations",
+            "mitigation": null,
+            "severity": "high"
+          }
+        ],
+        "total_deduction": -5
       },
-      "score_summary": "CAREHQ shows exceptional impact and strong alignment.",
+      "score_summary": "CAREHQ shows exceptional impact and strong alignment (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -6003,46 +6025,46 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "CAREHQ reported a total revenue of $909,098,267 and a program expense ratio of 91.1%.",
+          "claim": "CAREHQ reported total revenue of $909,098,267 and a program expense ratio of 91.1%.",
           "id": "[1]",
           "source_name": "Form 990 (2024)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/131685039"
         },
         {
-          "claim": "The organization works with local partners and global institutions to reach beneficiaries through health, education, and skills programs.",
+          "claim": "The organization works with local partners and global institutions to reach beneficiaries through health and education programs.",
           "id": "[2]",
           "source_name": "Annual Report (2024)",
           "source_url": "https://www.care.org/wp-content/uploads/2025/05/CARE-FY2024-Annual-Report.pdf"
         },
         {
-          "claim": "The organization accepts general charitable donations (sadaqah) to fund its global operations.",
+          "claim": "Donations can be made through various giving methods to support global humanitarian efforts.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.care.org/give-now"
         },
         {
-          "claim": "CAREHQ maintains a Charity Navigator score of 96.25/100, with a fundraising efficiency of $0.06 per $1 raised and 5.0 months of working capital.",
+          "claim": "CAREHQ holds a 96.25/100 score, holds 5.0 months of working capital, and spends $0.06 per $1 raised.",
           "id": "[4]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/131685039#financials"
         }
       ],
-      "amal_score_rationale": "CAREHQ earns a high overall rating due to its massive operational scale and superior financial efficiency, maintaining a Charity Navigator score of 96.25/100. Its focus on humanitarian urgency and capacity building aligns well with donors seeking high-impact sadaqah opportunities.",
+      "amal_score_rationale": "CAREHQ earns a high overall score due to its massive operational scale, excellent financial efficiency, and a proven track record in humanitarian urgency.",
       "areas_for_improvement": [
-        "Increasing transparency regarding specific cost-per-beneficiary metrics across different regional sectors",
-        "Expanding direct donor reporting for specific capacity-building initiatives"
+        "Expanding direct donor reporting for specific regional capacity-building projects.",
+        "Increasing transparency regarding long-term cost-per-beneficiary metrics across diverse program types."
       ],
       "dimension_explanations": {
-        "alignment": "CAREHQ is highly aligned with humanitarian causes, specifically addressing urgent needs in health and education for women and girls [2]. As a SADAQAH-ELIGIBLE organization, it offers a high-fit opportunity for donors looking to support established global relief efforts [3].",
-        "impact": "The organization demonstrates high impact through a capacity-building model that reaches millions of people, supported by a 91.1% program expense ratio [1][2]. With a Charity Navigator score of 96.25/100, the charity shows strong evidence of operational effectiveness and financial accountability [4]."
+        "alignment": "CAREHQ shows high alignment for donors interested in humanitarian causes, particularly those seeking sadaqah-eligible opportunities to support women and girls [3]. The organization's long-standing history and global infrastructure make it a reliable choice for urgent international aid [2].",
+        "impact": "The organization demonstrates high impact through a 91.1% program expense ratio and a focus on capacity building, reaching millions through education, health, and skills programs [1][2]. Its financial health is robust, evidenced by a 96.25/100 rating from Charity Navigator and a low fundraising cost of $0.06 per $1 raised [4]."
       },
-      "headline": "CAREHQ is a global humanitarian leader dedicated to poverty alleviation through large-scale programs in education, health, and female empowerment.",
+      "headline": "CAREHQ is a high-impact humanitarian organization dedicated to poverty alleviation through global partnerships and a specialized focus on women and girls.",
       "strengths": [
-        "Exceptional program expense ratio of 91.1%, ensuring the vast majority of funds reach those in need",
-        "High fundraising efficiency with a cost of only $0.06 per $1 raised",
-        "Strong financial health with 5.0 months of working capital available"
+        "Exceptional program expense ratio of 91.1%, ensuring the vast majority of funds reach those in need.",
+        "High fundraising efficiency with a cost of only $0.06 per $1 raised.",
+        "Strong independent verification with a Charity Navigator score of 96.25/100."
       ],
-      "summary": "CAREHQ operates as a major international non-profit, collaborating with local partners and global institutions to deliver life-saving aid and sustainable development [2]. In the 2024 fiscal year, the organization reported a total revenue of $909,098,267 to support its diverse mission across the globe [1][4]."
+      "summary": "CAREHQ operates globally by collaborating with local partners, governments, and the private sector to deliver large-scale humanitarian aid [2]. The organization reported a total revenue of $909,098,267 and maintains a strong financial standing with 5.0 months of working capital [1][4]."
     }
   }
 }

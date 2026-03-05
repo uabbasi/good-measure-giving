@@ -58,7 +58,10 @@
     "totalAssets": 138008864,
     "totalLiabilities": 70013010,
     "netAssets": 67995854,
-    "workingCapitalMonths": "21.20"
+    "workingCapitalMonths": "21.20",
+    "noncashRatio": 0.009403996110020765,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": 0.8189652424269629
   },
   "baselineGovernance": {
     "boardSize": 34,
@@ -93,7 +96,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-28 17:46:56",
+  "lastUpdated": "2026-03-04 19:20:18",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -634,7 +637,7 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Promising",
     "archetype_code": "LEVERAGE",
     "archetype_label": "Strategic Advocacy",
@@ -643,17 +646,28 @@
       "evidence": "Strong",
       "financial_health": "Moderate",
       "donor_fit": "Moderate",
-      "risk": "Strong"
+      "risk": "Moderate"
     },
     "recommendation_cue": "Good Match",
     "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "domestic_burn",
+      "severity": "high",
+      "headline": "82% of expenses stay in the US despite international operations",
+      "detail": "Organization claims foreign operations but most spending remains domestic.",
+      "data_points": {
+        "domestic_burn_rate": 0.819
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "13-1837442",
     "charity_name": "Cancer Research Institute",
-    "amal_score": 71,
+    "amal_score": 66,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:36:57",
     "rubric_version": "5.0.0",
@@ -799,14 +813,22 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 40
       },
-      "risk_deduction": 0,
+      "risk_deduction": -5,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "Key concern: High domestic burn: 82% of expenses stay in the US despite international operations",
+        "risks": [
+          {
+            "category": "financial",
+            "data_source": "Form 990 Schedule F",
+            "description": "High domestic burn: 82% of expenses stay in the US despite international operations",
+            "mitigation": null,
+            "severity": "high"
+          }
+        ],
+        "total_deduction": -5
       },
-      "score_summary": "Cancer Research Institute shows strong impact and good alignment.",
+      "score_summary": "Cancer Research Institute shows strong impact and good alignment (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -818,64 +840,71 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "CRI provides funding for clinician-scientists and postdoctoral fellowships to launch innovative clinical studies.",
+          "claim": "CRI provides funding for clinician-scientists to launch innovative phase I/II clinical studies.",
           "id": "[1]",
           "source_name": "Annual Report",
           "source_url": "https://www.cancerresearch.org/wp-content/uploads/2025/08/Annual-Invention-Update-Form-1-2025.pdf"
         },
         {
-          "claim": "CRI research has contributed to a significant increase in immunotherapy usage and FDA approvals.",
+          "claim": "CRI research has contributed to an increase in immunotherapy usage and FDA approvals.",
           "id": "[2]",
           "source_name": "Impact Report (2025)",
           "source_url": "https://www.cancerresearch.org/wp-content/uploads/2025/06/2025-CRI-Insights-Impact.pdf"
         },
         {
-          "claim": "The organization manages programs including the Irvington Postdoctoral Fellowships and the Clinical and Laboratory Integration Program.",
+          "claim": "The organization manages programs including the CRI Irvington Postdoctoral Fellowships and the William B. Coley Award.",
           "id": "[3]",
           "source_name": "Annual Report",
           "source_url": "https://www.cancerresearch.org/wp-content/uploads/2025/08/Annual-Invention-Update-Form-1-2025.pdf"
         },
         {
-          "claim": "CRI investments drive U.S. economic activity and benefit patients worldwide through new grants and fellowships.",
+          "claim": "CRI investments drive U.S. economic activity and benefit patients worldwide.",
           "id": "[4]",
           "source_name": "Impact Report (2025)",
           "source_url": "https://www.cancerresearch.org/wp-content/uploads/2025/11/CRI_FY2425_Full_Final.pdf"
         },
         {
-          "claim": "Donations can be made through various giving methods to support cancer immunotherapy research.",
+          "claim": "CRI continues to award new research grants and expand its patient summit reach.",
+          "id": "[5]",
+          "source_name": "Annual Report (2023)",
+          "source_url": "https://criwebsitestg.wpengine.com/wp-content/uploads/2023/12/CRI-2023-Annual-Report_Brochure_121823-rev-sp.pdf"
+        },
+        {
+          "claim": "The charity offers various ways to give for general charitable support.",
           "id": "[6]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.cancerresearch.org/ways-to-give"
         },
         {
-          "claim": "The charity has a 100.0/100 score, a program expense ratio of 84.0%, and 21.2 months of working capital.",
+          "claim": "The organization has a 100/100 score, 84.0% program expense ratio, and $0.11 fundraising efficiency.",
           "id": "[7]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/131837442#financials"
         },
         {
-          "claim": "The organization reported total revenue of $32,295,259 and a fundraising efficiency of $0.11 per $1 raised.",
+          "claim": "The organization reported total revenue of $32,295,259 and holds 21.2 months of working capital.",
           "id": "[8]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/131837442"
         }
       ],
-      "amal_score_rationale": "The organization earns a strong overall score due to its perfect financial transparency and high program efficiency, though its alignment score is moderated by a lower specific fit for Muslim donor priorities.",
+      "amal_score_rationale": "The organization earns a solid overall standing due to its perfect financial transparency and high program efficiency, though its alignment score is moderated by a lack of specific focus on Muslim donor communities.",
       "areas_for_improvement": [
-        "The organization currently has a low donor fit for those specifically seeking traditional Muslim-aligned charitable frameworks.",
-        "Reliance on high-cost systemic change initiatives means direct cost-per-beneficiary metrics may appear higher than service-based charities."
+        "Limited direct alignment with specific Muslim donor preferences or religious giving frameworks",
+        "High cost per beneficiary due to the systemic nature of clinical research funding"
       ],
       "dimension_explanations": {
-        "alignment": "While the cause urgency is high due to the global cancer burden, the alignment for specific Muslim donor needs is considered low as it is a secular research institution [4]. Contributions are classified as Sadaqah-eligible, supporting general medical advancement rather than specific religious distribution frameworks [6].",
-        "impact": "CRI demonstrates high impact through systemic change, funding Clinical Innovators to launch phase I/II studies that drive global immunotherapy approvals [2][4]. The organization maintains a robust program expense ratio of 84.0% and holds 21.2 months of working capital, ensuring long-term stability for multi-year research grants [7][8]."
+        "alignment": "The organization addresses a high-urgency global health cause with a long-standing track record of research excellence [5]. However, donor alignment is rated as low because the charity does not offer specific pathways for religious giving, though it remains a highly reputable option for general sadaqah contributions [6].",
+        "impact": "CRI demonstrates significant systemic impact by funding clinical innovators and postdoctoral fellows whose research drives FDA approvals and increases global immunotherapy usage [2][4]. While the cost per beneficiary is calculated at approximately 2.96, the organization maintains an 84.0% program expense ratio, ensuring the vast majority of its $32,295,259 revenue directly supports scientific advancement [7][8]."
       },
-      "headline": "The Cancer Research Institute is a top-rated nonprofit dedicated to advancing immunotherapy to transform cancer treatment and save lives globally.",
+      "headline": "The Cancer Research Institute accelerates the development of life-saving immunotherapies through strategic funding for clinician-scientists and postdoctoral researchers.",
       "strengths": [
-        "Maintains a perfect 100.0/100 rating from Charity Navigator for financial health and transparency.",
-        "Highly efficient fundraising operations, spending only $0.11 to raise every $1.",
-        "Strong program focus with 84.0% of total expenses directed toward research and clinical initiatives."
+        "Exceptional financial health with a Charity Navigator score of 100.0/100",
+        "High program efficiency with an 84.0% program expense ratio",
+        "Strong liquidity with 21.2 months of working capital available",
+        "Highly efficient fundraising operations costing only $0.11 per $1 raised"
       ],
-      "summary": "The Cancer Research Institute (CRI) focuses on funding innovative clinical studies and postdoctoral fellowships to pioneer novel immunotherapies [1][3]. With a perfect Charity Navigator score of 100.0/100, the organization demonstrates exceptional financial health and accountability in its mission to conquer cancer [7]."
+      "summary": "The Cancer Research Institute (CRI) is a global leader in tumor immunology, focusing on the development of novel phase I/II clinical studies to advance cancer treatment [1][3]. In the most recent fiscal year, the organization reported a total revenue of $32,295,259 to support its mission of transforming cancer care through immunotherapy [8]."
     }
   }
 }

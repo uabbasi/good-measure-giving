@@ -46,7 +46,10 @@
     "totalAssets": 4329061,
     "totalLiabilities": 4236,
     "netAssets": 4324825,
-    "workingCapitalMonths": "177.70"
+    "workingCapitalMonths": "177.70",
+    "noncashRatio": null,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": null
   },
   "baselineGovernance": {
     "boardSize": 4,
@@ -66,7 +69,7 @@
   },
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-28 17:46:18",
+  "lastUpdated": "2026-03-04 19:19:41",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -183,7 +186,7 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Context Dependent",
     "archetype_code": "RESILIENCE",
     "archetype_label": "Community Resilience",
@@ -199,10 +202,21 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "zakat_hoarding",
+      "severity": "high",
+      "headline": "Zakat-collecting organization holds 178 months of reserves",
+      "detail": "Zakat must be distributed promptly per Islamic jurisprudence. Large reserves raise concerns about timely distribution.",
+      "data_points": {
+        "reserves_months": 177.7
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "26-0906163",
     "charity_name": "North-American Islamic Shelter for the Abused",
-    "amal_score": 64,
+    "amal_score": 61,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:24:30",
     "rubric_version": "5.0.0",
@@ -348,14 +362,22 @@
         "rubric_archetype": "COMMUNITY",
         "score": 33
       },
-      "risk_deduction": 0,
+      "risk_deduction": -3,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "Key concern: Zakat-collecting organization holds 178 months of reserves \u2014 zakat must be distributed promptly",
+        "risks": [
+          {
+            "category": "financial",
+            "data_source": "Form 990 / Balance Sheet",
+            "description": "Zakat-collecting organization holds 178 months of reserves \u2014 zakat must be distributed promptly",
+            "mitigation": null,
+            "severity": "high"
+          }
+        ],
+        "total_deduction": -3
       },
-      "score_summary": "North-American Islamic Shelter Forthe Abused shows good impact and good alignment, with zakat compliance.",
+      "score_summary": "North-American Islamic Shelter Forthe Abused shows good impact and good alignment, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": "amil",
         "bonus_points": 0,
@@ -379,28 +401,28 @@
           "source_url": "https://www.charitynavigator.org/ein/260906163#financials"
         },
         {
-          "claim": "NISA accepts zakat donations to support its programs for the abused.",
+          "claim": "NISA provides donation options and is identified as a zakat-eligible organization.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://asknisa.org/donate/"
         }
       ],
-      "amal_score_rationale": "NISA earns a GMG score of 64/100, reflecting strong financial efficiency and a critical mission, though its overall rating is tempered by low data confidence and limited third-party reporting.",
+      "amal_score_rationale": "NISA earns a moderate overall score due to its strong financial health and direct service model, though its total score is constrained by low data confidence and limited external verification.",
       "areas_for_improvement": [
-        "Limited external data availability resulting in a low data confidence score",
-        "Need for more transparent third-party impact verification to validate program effectiveness"
+        "Limited third-party data availability resulting in a low data confidence score",
+        "Need for more transparent reporting on specific program outcomes and long-term impact metrics"
       ],
       "dimension_explanations": {
-        "alignment": "The organization addresses the urgent cause of domestic poverty and safety, offering a medium fit for Muslim donors through its zakat-eligible status [3]. However, the low data confidence score of 0.25 suggests that donors have limited access to verified performance metrics [2].",
-        "impact": "NISA demonstrates a direct service model through its shelter and helpline programs, achieving a 79.3% program expense ratio [1]. While the organization maintains a massive 177.7 months of working capital, the lack of third-party impact evaluations contributes to a medium impact score [2]."
+        "alignment": "The organization shows medium alignment for Muslim donors by addressing the urgent cause of domestic poverty and providing a zakat-eligible giving option [3]. However, the overall alignment score reflects a need for more comprehensive data to fully validate its track record [2].",
+        "impact": "NISA demonstrates a direct service impact by providing immediate shelter and support to domestic violence victims [1]. While the organization maintains a healthy program expense ratio of 79.3%, the lack of third-party impact evaluations results in a moderate impact score [2]."
       },
-      "headline": "The North-American Islamic Shelter Forthe Abused (NISA) provides a vital sanctuary and empowerment services for victims of domestic violence within the community.",
+      "headline": "The North-American Islamic Shelter Forthe Abused (NISA) provides a vital safety net for victims of domestic violence through confidential shelter, counseling, and advocacy services.",
       "strengths": [
-        "High program expense ratio of 79.3%, ensuring the majority of funds directly support victim services",
-        "Exceptional fundraising efficiency with a cost of only $0.05 per $1 raised",
-        "Robust liquidity with 177.7 months of working capital available"
+        "High program expense ratio of 79.3%, ensuring the majority of funds directly support survivor services",
+        "Exceptional fundraising efficiency, spending only $0.05 to raise every $1",
+        "Robust financial stability with 177.7 months of working capital available"
       ],
-      "summary": "NISA operates a dedicated helpline and the NISA Home to offer confidential shelter, counseling, and advocacy for those escaping domestic abuse [1][2]. The organization is recognized as zakat-eligible, allowing donors to fulfill their religious obligations while supporting social services [3]."
+      "summary": "NISA operates a dedicated helpline and the NISA Home to empower survivors of domestic abuse while maintaining strict confidentiality [1][2]. The organization is recognized as zakat-eligible, allowing donors to fulfill their religious obligations through support for vulnerable community members [3]."
     }
   }
 }

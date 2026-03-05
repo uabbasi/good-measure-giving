@@ -52,7 +52,10 @@
     "totalAssets": 93521529,
     "totalLiabilities": 990919,
     "netAssets": 92530610,
-    "workingCapitalMonths": "40.90"
+    "workingCapitalMonths": "40.90",
+    "noncashRatio": null,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": null
   },
   "baselineGovernance": {
     "boardSize": 11,
@@ -94,7 +97,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-28 17:45:41",
+  "lastUpdated": "2026-03-04 19:19:06",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -238,7 +241,7 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Promising",
     "archetype_code": "ASSET_CREATION",
     "archetype_label": "Asset Creator",
@@ -247,17 +250,28 @@
       "evidence": "Strong",
       "financial_health": "Limited",
       "donor_fit": "Strong",
-      "risk": "Strong"
+      "risk": "Moderate"
     },
     "recommendation_cue": "Good Match",
     "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "zakat_hoarding",
+      "severity": "high",
+      "headline": "Zakat-collecting organization holds 41 months of reserves",
+      "detail": "Zakat must be distributed promptly per Islamic jurisprudence. Large reserves raise concerns about timely distribution.",
+      "data_points": {
+        "reserves_months": 40.9
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "93-1057665",
     "charity_name": "PALESTINE CHILDRENS RELIEF FUND",
-    "amal_score": 73,
+    "amal_score": 70,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:14:02",
     "rubric_version": "5.0.0",
@@ -403,14 +417,22 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 33
       },
-      "risk_deduction": 0,
+      "risk_deduction": -3,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "Key concern: Zakat-collecting organization holds 41 months of reserves \u2014 zakat must be distributed promptly",
+        "risks": [
+          {
+            "category": "financial",
+            "data_source": "Form 990 / Balance Sheet",
+            "description": "Zakat-collecting organization holds 41 months of reserves \u2014 zakat must be distributed promptly",
+            "mitigation": null,
+            "severity": "high"
+          }
+        ],
+        "total_deduction": -3
       },
-      "score_summary": "PALESTINE CHILDRENS RELIEF FUND shows strong alignment and good impact, with zakat compliance.",
+      "score_summary": "PALESTINE CHILDRENS RELIEF FUND shows strong alignment and good impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": "amil",
         "bonus_points": 0,
@@ -422,64 +444,65 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reported a total revenue of $92,196,846 and maintains a program expense ratio of 88.1%.",
+          "claim": "The organization reported a total revenue of $92,196,846 and a program expense ratio of 88.1%.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/931057665#financials"
         },
         {
-          "claim": "Financial data confirms a fundraising efficiency of $0.02 per $1 raised and 40.9 months of working capital.",
+          "claim": "Financial data confirms total revenue of $92,196,846 and efficient resource allocation.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/931057665"
         },
         {
-          "claim": "PCRF provides free medical care and humanitarian aid for any child in the Middle East, regardless of their religion or politics.",
+          "claim": "PCRF provides free medical care and humanitarian aid regardless of religion or politics.",
           "id": "[3]",
           "source_name": "Charity Website - About",
           "source_url": "https://www.pcrf.net/about-us"
         },
         {
-          "claim": "The organization is governed by a board of directors overseeing its humanitarian mission.",
-          "id": "[4]",
-          "source_name": "Charity Website - Leadership",
-          "source_url": "https://www.pcrf.net/team/board-of-directors"
-        },
-        {
-          "claim": "The charity distributed flour, delivered clean water, and completed medical missions.",
+          "claim": "The organization delivers clean water, distributes flour, and completes medical missions.",
           "id": "[5]",
           "source_name": "Annual Report (2024)",
           "source_url": "https://www.pcrf.net/cached_uploads/download/2026/01/18/annual-report-2024-1768740754.pdf"
         },
         {
-          "claim": "Program outcomes include medical mission treatments, food vouchers, and one-time surgical sponsorships.",
+          "claim": "Programs include medical mission treatments, food vouchers, and surgical sponsorships.",
           "id": "[6]",
           "source_name": "Annual Report (2023)",
           "source_url": "https://www.pcrf.net/cached_uploads/download/2024/12/03/2023-annual-report-1733253189.pdf"
         },
         {
-          "claim": "The Palestine Children's Relief Fund is Zakat-eligible.",
+          "claim": "The charity provides one-time surgical sponsorships and disabled youth sponsorship.",
+          "id": "[7]",
+          "source_name": "Annual Report (2022)",
+          "source_url": "https://www.pcrf.net/cached_uploads/download/2023/04/17/website-copy-1681764657.pdf"
+        },
+        {
+          "claim": "The organization is Zakat-eligible and accepts zakat donations.",
           "id": "[10]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.pcrf.net/donate"
         }
       ],
-      "amal_score_rationale": "The organization earns a strong score due to its high program spending and exceptional fundraising efficiency. Its direct service model and high alignment with urgent global health needs make it a top choice for humanitarian donors.",
+      "amal_score_rationale": "PCRF maintains a strong GMG score of 70/100, driven by high financial efficiency and a clear humanitarian impact in a high-urgency region. The organization demonstrates high data confidence and strong alignment with donor needs through its Zakat-eligible programs.",
       "areas_for_improvement": [
-        "High cost per beneficiary relative to large-scale preventative health interventions",
-        "Heavy reliance on volunteer medical missions which can be impacted by regional stability"
+        "High cost per beneficiary relative to basic aid organizations due to the specialized nature of surgical and medical interventions",
+        "Operating in high-risk regions requires constant monitoring of infrastructure sustainability"
       ],
       "dimension_explanations": {
-        "alignment": "The organization is highly aligned with donors seeking to address urgent global health crises and is officially Zakat-eligible [10]. Its long-standing track record in the region and focus on children regardless of political affiliation provides a high degree of donor fit for those prioritizing neutral humanitarian aid [3][4].",
-        "impact": "PCRF demonstrates direct impact through medical mission treatments, surgical sponsorships, and the distribution of food and clean water [5][6]. With a program expense ratio of 88.1% and 40.9 months of working capital, the charity is financially robust and well-positioned to sustain its humanitarian operations [1][2]."
+        "alignment": "The organization shows high alignment with donor priorities, particularly for those seeking to address global health crises in the Middle East [3]. PCRF is Zakat-eligible, providing a verified pathway for Muslim donors to fulfill their religious obligations through humanitarian aid [10]. Its long track record of delivering clean water and medical missions reinforces its standing as a high-fit organization for urgent cause areas [5][7].",
+        "impact": "PCRF demonstrates direct service impact by facilitating medical mission treatments, distributing food vouchers, and sponsoring one-time surgeries [6][7]. While the cost per beneficiary is calculated at 7095.00512295082, this reflects the high-intensity nature of specialized pediatric medical care and infrastructure enhancement [5][6]. The organization maintains a program expense ratio of 88.1%, indicating that the vast majority of its $92,196,846 revenue is directed toward these critical services [1][2]."
       },
-      "headline": "The Palestine Children's Relief Fund provides life-saving medical care and essential humanitarian aid to children across the Middle East regardless of religion or politics.",
+      "headline": "The Palestine Children's Relief Fund provides life-saving medical care and humanitarian aid to children across the Middle East regardless of religion or politics.",
       "strengths": [
-        "High financial efficiency with a fundraising efficiency of $0.02 per $1 raised",
+        "High program expense ratio of 88.1% ensuring most funds reach beneficiaries",
+        "Exceptional fundraising efficiency at $0.02 per $1 raised",
         "Strong liquidity with 40.9 months of working capital",
-        "Zakat-eligible status for Muslim donors seeking impactful giving options"
+        "Zakat-eligible status for Muslim donors"
       ],
-      "summary": "Founded to address the medical needs of children in the Middle East, the Palestine Children's Relief Fund (PCRF) operates through medical missions, infrastructure enhancement, and urgent response projects [3][5]. The organization reported a total revenue of $92,196,846 and maintains a high program expense ratio of 88.1% [1][2]."
+      "summary": "Founded to address the medical needs of children in the Middle East, the Palestine Children's Relief Fund (PCRF) operates through medical missions, infrastructure projects, and urgent response initiatives [3][5]. In the most recent fiscal year, the organization reported a total revenue of $92,196,846 to support its mission of providing free healthcare and community-centered development [1][2]."
     }
   }
 }

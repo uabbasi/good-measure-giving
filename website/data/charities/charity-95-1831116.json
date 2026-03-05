@@ -50,7 +50,10 @@
     "totalAssets": 1170526870,
     "totalLiabilities": 33480459,
     "netAssets": 1137046411,
-    "workingCapitalMonths": "6.60"
+    "workingCapitalMonths": "6.60",
+    "noncashRatio": 1,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": 0.9900227959279196
   },
   "baselineGovernance": {
     "boardSize": 16,
@@ -92,7 +95,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-28 17:46:47",
+  "lastUpdated": "2026-03-04 19:20:08",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -2030,8 +2033,8 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
-    "assessment_label": "Promising",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
+    "assessment_label": "Context Dependent",
     "archetype_code": "DIRECT_SERVICE",
     "archetype_label": "Frontline Relief",
     "evidence_stage": "Verified",
@@ -2039,17 +2042,37 @@
       "evidence": "Strong",
       "financial_health": "Strong",
       "donor_fit": "Moderate",
-      "risk": "Strong"
+      "risk": "Limited"
     },
-    "recommendation_cue": "Good Match",
-    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "gik_inflation",
+      "severity": "high",
+      "headline": "100% of reported revenue is noncash (gifts-in-kind)",
+      "detail": "Noncash contributions inflate reported program ratios. Cash-adjusted metrics better reflect actual spending.",
+      "data_points": {
+        "noncash_ratio": 1
+      }
+    },
+    {
+      "type": "domestic_burn",
+      "severity": "high",
+      "headline": "99% of expenses stay in the US despite international operations",
+      "detail": "Organization claims foreign operations but most spending remains domestic.",
+      "data_points": {
+        "domestic_burn_rate": 0.99
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "95-1831116",
     "charity_name": "Direct Relief",
-    "amal_score": 74,
+    "amal_score": 64,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:32:05",
     "rubric_version": "5.0.0",
@@ -2195,14 +2218,29 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 43
       },
-      "risk_deduction": 0,
+      "risk_deduction": -10,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "overall_risk_level": "ELEVATED",
+        "risk_summary": "Key concern: GIK inflation: 100% of revenue is noncash contributions",
+        "risks": [
+          {
+            "category": "financial",
+            "data_source": "Form 990 XML",
+            "description": "GIK inflation: 100% of revenue is noncash contributions",
+            "mitigation": null,
+            "severity": "high"
+          },
+          {
+            "category": "financial",
+            "data_source": "Form 990 Schedule F",
+            "description": "High domestic burn: 99% of expenses stay in the US despite international operations",
+            "mitigation": null,
+            "severity": "high"
+          }
+        ],
+        "total_deduction": -10
       },
-      "score_summary": "Direct Relief shows exceptional impact and good alignment.",
+      "score_summary": "Direct Relief shows exceptional impact and good alignment (significant risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -2214,40 +2252,39 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Direct Relief reported total revenue of $2,266,763,483 and focuses on non-communicable diseases.",
+          "claim": "Direct Relief reported total revenue of $2,266,763,483 and a program expense ratio of 99.5%.",
           "id": "[1]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/951831116"
         },
         {
-          "claim": "The organization offers various methods for charitable giving and sadaqah-eligible donations.",
+          "claim": "The organization offers multiple donation methods for general charitable giving or sadaqah.",
           "id": "[2]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.directrelief.org/donate/"
         },
         {
-          "claim": "Direct Relief maintains a 100.0/100 score, a 99.5% program expense ratio, 6.6 months of working capital, and $0.00 fundraising efficiency.",
+          "claim": "Direct Relief holds a 100.0/100 rating with a fundraising efficiency of $0.00 per $1 raised and 6.6 months of working capital.",
           "id": "[3]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/951831116#financials"
         }
       ],
-      "amal_score_rationale": "Direct Relief earns a high overall standing due to its perfect financial health ratings and its direct-service model that maximizes the impact of every dollar donated.",
+      "amal_score_rationale": "Direct Relief demonstrates elite financial efficiency and transparency, though its alignment score reflects a general humanitarian focus rather than specialized services for Muslim donor communities.",
       "areas_for_improvement": [
-        "Heavy reliance on in-kind donations which can fluctuate based on corporate supply chains",
-        "Increasing global demand for non-communicable disease treatments requires constant expansion of health system partnerships"
+        "Strengthening specific alignment with Muslim donor preferences beyond general humanitarian aid"
       ],
       "dimension_explanations": {
-        "alignment": "Direct Relief shows medium alignment for specific donor groups, offering a transparent track record for humanitarian aid and sadaqah-eligible contributions [2]. The cause urgency is high, as it addresses both immediate disaster response and chronic public health concerns [3].",
-        "impact": "The organization demonstrates high impact through a direct-service model, managing a total revenue of $2,266,763,483 to deliver medical aid [1]. Its financial health is robust, maintaining 6.6 months of working capital to ensure stability during global crises [3]."
+        "alignment": "Direct Relief offers a medium fit for donors seeking sadaqah-eligible opportunities, providing various ways to give including credit card, PayPal, and stock donations [2]. While the cause urgency is high due to its humanitarian nature, the organization maintains a broad secular focus rather than a specific religious mission [3].",
+        "impact": "The organization achieves high impact through a direct service model, maintaining a 99.5% program expense ratio and 6.6 months of working capital to ensure operational stability [1][3]. Its perfect financial health rating reflects a massive scale of aid distribution, totaling over $2.2 billion in annual revenue [1]."
       },
-      "headline": "Direct Relief provides essential medical resources to vulnerable populations worldwide, maintaining an exceptional commitment to financial efficiency and emergency response.",
+      "headline": "Direct Relief provides essential medical resources and emergency response to strengthen global health systems and combat non-communicable diseases.",
       "strengths": [
-        "Exceptional program expense ratio of 99.5%, ensuring nearly all resources reach those in need",
-        "Perfect Charity Navigator score of 100.0/100 for accountability and finance",
-        "Highly efficient fundraising operations with a cost of $0.00 per $1 raised"
+        "Exceptional program expense ratio of 99.5%",
+        "Perfect Charity Navigator score of 100.0/100",
+        "Highly efficient fundraising with $0.00 spent per $1 raised"
       ],
-      "summary": "Direct Relief is a humanitarian aid organization dedicated to improving the health and lives of people affected by poverty or emergencies, specifically addressing non-communicable diseases like cancer and diabetes [1]. The organization operates through large-scale programs including emergency preparedness, in-kind medical giving, and the strengthening of fragile health systems [3]. Donors can support these global health initiatives through various sadaqah-eligible giving methods [2]."
+      "summary": "Direct Relief is a humanitarian organization dedicated to improving the health and lives of people affected by poverty or emergencies, reporting a total revenue of $2,266,763,483 [1]. The organization focuses on emergency preparedness, in-kind medical giving, and supporting fragile health systems to address public health concerns like cancer and diabetes [3]."
     }
   }
 }

@@ -44,7 +44,10 @@
     "totalAssets": 2501272,
     "totalLiabilities": null,
     "netAssets": 2501272,
-    "workingCapitalMonths": "99.70"
+    "workingCapitalMonths": "99.70",
+    "noncashRatio": null,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": null
   },
   "baselineGovernance": {
     "boardSize": 4,
@@ -70,7 +73,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-28 17:45:52",
+  "lastUpdated": "2026-03-04 19:19:16",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -205,7 +208,7 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Context Dependent",
     "archetype_code": "ASSET_CREATION",
     "archetype_label": "Asset Creator",
@@ -221,10 +224,21 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "zakat_hoarding",
+      "severity": "high",
+      "headline": "Zakat-collecting organization holds 100 months of reserves",
+      "detail": "Zakat must be distributed promptly per Islamic jurisprudence. Large reserves raise concerns about timely distribution.",
+      "data_points": {
+        "reserves_months": 99.7
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "56-2639095",
     "charity_name": "The Hassan Foundation",
-    "amal_score": 66,
+    "amal_score": 63,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:11:45",
     "rubric_version": "5.0.0",
@@ -370,14 +384,22 @@
         "rubric_archetype": "MULTIPLIER",
         "score": 32
       },
-      "risk_deduction": 0,
+      "risk_deduction": -3,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "Key concern: Zakat-collecting organization holds 100 months of reserves \u2014 zakat must be distributed promptly",
+        "risks": [
+          {
+            "category": "financial",
+            "data_source": "Form 990 / Balance Sheet",
+            "description": "Zakat-collecting organization holds 100 months of reserves \u2014 zakat must be distributed promptly",
+            "mitigation": null,
+            "severity": "high"
+          }
+        ],
+        "total_deduction": -3
       },
-      "score_summary": "The Hassan Foundation shows good alignment and good impact, with zakat compliance.",
+      "score_summary": "The Hassan Foundation shows good alignment and good impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": "fuqara",
         "bonus_points": 0,
@@ -389,40 +411,40 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization offers various donation options and is aligned with religious giving priorities.",
+          "claim": "The charity is Zakat-eligible and provides various methods for donors to contribute to its mission.",
           "id": "[1]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://hassanfoundationusa.org/donate/"
         },
         {
-          "claim": "The foundation reported total revenue of $586,737, a program expense ratio of 88.2%, and holds 99.7 months of working capital.",
+          "claim": "The organization reported total revenue of $586,737, a program expense ratio of 88.2%, and fundraising efficiency of $0.00 per $1 raised.",
           "id": "[2]",
           "source_name": "Form 990 (2022)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/562639095"
         },
         {
-          "claim": "The foundation focuses on clean water and education programs in Pakistan and demonstrates a fundraising efficiency of $0.00 per $1 raised.",
+          "claim": "The foundation holds 99.7 months of working capital and focuses its programs on safe water and education in Pakistan.",
           "id": "[3]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/562639095#financials"
         }
       ],
-      "amal_score_rationale": "The Hassan Foundation earns a 66/100 score due to its strong financial efficiency and high program spending, though its overall rating is tempered by low data confidence and moderate impact scores.",
+      "amal_score_rationale": "The foundation earns a moderate overall score due to its high financial efficiency and strong alignment with religious giving, though its impact score is tempered by low data confidence.",
       "areas_for_improvement": [
-        "Low data confidence score suggests a need for more transparent third-party reporting",
-        "Limited evidence of long-term impact metrics beyond direct service delivery"
+        "Limited third-party data availability resulting in low data confidence scores",
+        "Need for more detailed public reporting on specific cost-per-beneficiary outcomes"
       ],
       "dimension_explanations": {
-        "alignment": "With a high donor fit and a focus on religious and cultural cause urgency, the organization is Zakat-eligible and offers various giving methods for Muslim donors [1][3]. This alignment is reflected in its high score of 34/50 for donor resonance [1].",
-        "impact": "The foundation focuses on direct service delivery, such as safe water projects, with a cost per beneficiary of approximately 1445.385 [2][3]. While financial health is robust with 99.7 months of working capital, the impact score of 32/50 reflects a need for more comprehensive evidence of program effectiveness [2]."
+        "alignment": "With a high donor fit and a focus on urgent religious and cultural causes, the foundation is well-aligned for Muslim donors seeking Zakat-eligible projects [1]. The alignment score of 34/50 highlights its established track record in providing essential services like safe water and education [3].",
+        "impact": "The organization demonstrates a direct service model with a program expense ratio of 88.2% and total revenue of $586,737 [2][3]. While it holds 99.7 months of working capital, the impact score of 32/50 reflects a balance between these strong financial metrics and a low data confidence level of 0.26 [2]."
       },
-      "headline": "The Hassan Foundation provides life-saving clean water and educational support to impoverished communities in Pakistan.",
+      "headline": "The Hassan Foundation provides life-saving clean water and educational support to impoverished communities across Pakistan.",
       "strengths": [
-        "High program expense ratio of 88.2% ensures the vast majority of funds reach beneficiaries",
-        "Exceptional fundraising efficiency of $0.00 per $1 raised",
-        "Strong liquidity with 99.7 months of working capital"
+        "High program expense ratio of 88.2%, ensuring the vast majority of funds reach those in need",
+        "Exceptional fundraising efficiency with a cost of $0.00 per $1 raised",
+        "Strong liquidity position with 99.7 months of working capital"
       ],
-      "summary": "The Hassan Foundation is a non-profit organization dedicated to improving health and human development through clean potable water projects and education support in Pakistan [2][3]. The organization reported a total revenue of $586,737 and maintains a high program expense ratio of 88.2% [2]."
+      "summary": "The Hassan Foundation is a non-profit organization dedicated to improving health and human development in Pakistan through clean potable water projects and education support [2][3]. The organization is Zakat-eligible and accepts donations through various digital platforms to fund its direct service programs [1]."
     }
   }
 }

@@ -50,7 +50,10 @@
     "totalAssets": 2020072,
     "totalLiabilities": 37952,
     "netAssets": 1982120,
-    "workingCapitalMonths": "25.60"
+    "workingCapitalMonths": "25.60",
+    "noncashRatio": null,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": null
   },
   "baselineGovernance": {
     "boardSize": 2,
@@ -91,7 +94,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": false
   },
-  "lastUpdated": "2026-02-28 17:45:31",
+  "lastUpdated": "2026-03-04 19:18:55",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -232,7 +235,7 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Context Dependent",
     "archetype_code": "LEVERAGE",
     "archetype_label": "Strategic Advocacy",
@@ -248,10 +251,21 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "zakat_hoarding",
+      "severity": "medium",
+      "headline": "Zakat-collecting organization holds 26 months of reserves",
+      "detail": "Zakat must be distributed promptly per Islamic jurisprudence. Large reserves raise concerns about timely distribution.",
+      "data_points": {
+        "reserves_months": 25.6
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "27-3625796",
     "charity_name": "Heart Women & Girls",
-    "amal_score": 54,
+    "amal_score": 52,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:05:14",
     "rubric_version": "5.0.0",
@@ -397,7 +411,7 @@
         "rubric_archetype": "COMMUNITY",
         "score": 29
       },
-      "risk_deduction": -6,
+      "risk_deduction": -8,
       "risks": {
         "overall_risk_level": "ELEVATED",
         "risk_summary": "Key concern: Board too small: 2 members",
@@ -415,9 +429,16 @@
             "description": "No outcome measurement or metrics tracking",
             "mitigation": null,
             "severity": "low"
+          },
+          {
+            "category": "financial",
+            "data_source": "Form 990 / Balance Sheet",
+            "description": "Zakat-collecting organization holds 26 months of reserves \u2014 zakat should be distributed promptly",
+            "mitigation": null,
+            "severity": "medium"
           }
         ],
-        "total_deduction": -6
+        "total_deduction": -8
       },
       "score_summary": "Heart Women & Girls shows good alignment and good impact, with zakat compliance (significant risk deductions applied).",
       "zakat": {
@@ -431,13 +452,13 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "HEART promotes sexual health literacy and violence prevention through health education and advocacy.",
+          "claim": "HEART focuses on sexual health literacy and advocacy within Muslim communities.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/273625796#financials"
         },
         {
-          "claim": "The charity is zakat-eligible and maintains a specific zakat policy for asnaf categories.",
+          "claim": "The organization is zakat-eligible and follows specific asnaf categories for distribution.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.heartwomenandgirls.org/zakat"
@@ -449,28 +470,28 @@
           "source_url": "https://projects.propublica.org/nonprofits/organizations/273625796"
         },
         {
-          "claim": "The organization provides various donation options and giving methods for supporters.",
+          "claim": "HEART offers various donation options and giving methods for supporters.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://hearttogrow.org/donate/"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its strong financial health and efficient fundraising, balanced by a need for more direct evidence of long-term impact.",
+      "amal_score_rationale": "HEART demonstrates solid financial health and efficient fundraising, though its overall score is moderated by the indirect nature of capacity-building impact and medium data confidence.",
       "areas_for_improvement": [
-        "Limited third-party impact data or external evaluations of program outcomes",
-        "Moderate data confidence score suggests a need for increased transparency in reporting"
+        "Limited third-party impact evaluations to verify long-term behavioral outcomes",
+        "Reliance on capacity-building models which can be harder to measure than direct service delivery"
       ],
       "dimension_explanations": {
-        "alignment": "With a high donor fit for the Muslim community and a focus on urgent domestic issues, the organization aligns well with specific cultural and religious needs [2]. It maintains a clear zakat policy to ensure religious compliance for contributors [4].",
-        "impact": "The organization demonstrates solid financial management with a total revenue of $1,089,496 and a program expense ratio of 74.8% [3]. While it focuses on capacity building and education, the impact score of 29/50 reflects a moderate level of directness in its intervention model [1]."
+        "alignment": "HEART shows high donor fit for those seeking culturally specific advocacy, and its zakat-eligible status allows donors to fulfill religious obligations through its programs [2][4]. The cause is identified as having domestic urgency within the communities it serves [1].",
+        "impact": "The organization allocates 74.8% of its $1,089,496 total revenue toward its core programs in health education and research [3]. While it maintains a robust 25.6 months of working capital, the impact score reflects a focus on capacity building rather than direct service delivery [1]."
       },
-      "headline": "HEART Women & Girls empowers Muslim communities through sexual health literacy, advocacy, and violence prevention programs.",
+      "headline": "HEART promotes sexual health literacy and violence prevention within Muslim communities through education, advocacy, and research.",
       "strengths": [
-        "High program expense ratio of 74.8%, indicating a strong focus on direct service delivery",
-        "Exceptional fundraising efficiency with only $0.11 spent to raise every $1",
-        "Robust financial stability with 25.6 months of working capital available"
+        "High program expense ratio of 74.8% ensures the majority of funds directly support community services",
+        "Exceptional fundraising efficiency with a cost of only $0.11 per $1 raised",
+        "Strong financial stability with 25.6 months of working capital available"
       ],
-      "summary": "HEART Women & Girls provides health education and research-driven advocacy to promote sexual health and safety within Muslim communities [1]. The organization is recognized as zakat-eligible, applying donations toward eligible categories in accordance with its established policy [2]."
+      "summary": "HEART (Heart Women & Girls) provides specialized health education and training designed to empower Muslim women and girls [1]. The organization operates as a zakat-eligible entity, ensuring that contributions are utilized in accordance with Islamic principles to support vulnerable community members [2]."
     }
   }
 }

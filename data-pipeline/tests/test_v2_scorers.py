@@ -507,11 +507,11 @@ class TestAlignmentScorer:
         assert 0 <= result.score <= 50
 
 
-# ─── RiskScorer (-10 max) ────────────────────────────────────────────────────
+# ─── RiskScorer (-20 max) ────────────────────────────────────────────────────
 
 
 class TestRiskScorer:
-    """Risk deductions capped at -10."""
+    """Risk deductions capped at -20."""
 
     def test_no_risks(self):
         """Clean charity → 0 deductions."""
@@ -540,16 +540,19 @@ class TestRiskScorer:
         _case_against, deduction = scorer.evaluate(m)
         assert deduction <= -5
 
-    def test_cap_at_minus_10(self):
-        """Multiple risks → capped at -10."""
+    def test_cap_at_minus_20(self):
+        """Multiple risks → capped at -20."""
         m = _base_metrics(
             program_expense_ratio=0.30,  # -5
             board_size=1,  # -5
             working_capital_ratio=0.5,  # -2
+            noncash_ratio=0.60,  # -5 GIK
+            domestic_burn_rate=0.80,  # -5 domestic burn
         )
         scorer = RiskScorer()
         _case_against, deduction = scorer.evaluate(m)
-        assert deduction >= -10  # Can't go below -10
+        # Total raw: -22, capped at -20
+        assert deduction == -20
 
     def test_emerging_org_no_toc_risk(self):
         """Emerging org (<$1M) → no deduction for missing TOC/outcomes."""
@@ -578,6 +581,223 @@ class TestRiskScorer:
         scorer = RiskScorer()
         _case_against, deduction = scorer.evaluate(m)
         assert deduction == -3  # -2 outcomes + -1 TOC
+
+
+# ─── GIK Inflation Risk ────────────────────────────────────────────────────
+
+
+class TestGIKRisk:
+    """GIK (gifts-in-kind) inflation detection."""
+
+    def test_no_gik_no_deduction(self):
+        """No noncash data → no GIK deduction."""
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+        )
+        scorer = RiskScorer()
+        _case_against, deduction = scorer.evaluate(m)
+        assert deduction == 0
+
+    def test_high_gik_deduction(self):
+        """>=50% noncash → -5 GIK deduction."""
+        m = _base_metrics(
+            noncash_ratio=0.94,
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+        )
+        scorer = RiskScorer()
+        _case_against, deduction = scorer.evaluate(m)
+        assert deduction <= -5
+
+    def test_medium_gik_deduction(self):
+        """>=25% but <50% noncash → -2 GIK deduction."""
+        m = _base_metrics(
+            noncash_ratio=0.30,
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+        )
+        scorer = RiskScorer()
+        _case_against, deduction = scorer.evaluate(m)
+        assert deduction == -2
+
+    def test_gik_plus_low_program_ratio_stacks(self):
+        """GIK inflation + cash-adjusted program ratio <50% stack."""
+        m = _base_metrics(
+            noncash_ratio=0.94,
+            cash_adjusted_program_ratio=0.42,  # Below 50% after adjustment
+            program_expense_ratio=0.98,  # Inflated
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+        )
+        scorer = RiskScorer()
+        _case_against, deduction = scorer.evaluate(m)
+        assert deduction <= -10  # -5 GIK + -5 program_ratio = -10
+
+    def test_gik_risk_factor_description(self):
+        """GIK risk factor has descriptive message."""
+        m = _base_metrics(noncash_ratio=0.60)
+        scorer = RiskScorer()
+        case_against, _ = scorer.evaluate(m)
+        gik_risks = [r for r in case_against.risks if "GIK" in r.description]
+        assert len(gik_risks) == 1
+        assert "60%" in gik_risks[0].description
+
+
+# ─── Domestic Burn Rate Risk ──────────────────────────────────────────────
+
+
+class TestDomesticBurnRisk:
+    """Domestic burn rate detection for international orgs."""
+
+    def test_no_foreign_grants_no_deduction(self):
+        """Domestic-only org → no burn rate deduction."""
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+        )
+        scorer = RiskScorer()
+        _case_against, deduction = scorer.evaluate(m)
+        assert deduction == 0
+
+    def test_high_domestic_burn(self):
+        """>=70% domestic burn → -5 deduction."""
+        m = _base_metrics(
+            domestic_burn_rate=0.80,
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+        )
+        scorer = RiskScorer()
+        _case_against, deduction = scorer.evaluate(m)
+        assert deduction <= -5
+
+    def test_medium_domestic_burn(self):
+        """>=50% but <70% → -2 deduction."""
+        m = _base_metrics(
+            domestic_burn_rate=0.55,
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+        )
+        scorer = RiskScorer()
+        _case_against, deduction = scorer.evaluate(m)
+        assert deduction == -2
+
+    def test_low_domestic_burn_no_deduction(self):
+        """<50% domestic burn → no deduction."""
+        m = _base_metrics(
+            domestic_burn_rate=0.40,
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+        )
+        scorer = RiskScorer()
+        _case_against, deduction = scorer.evaluate(m)
+        assert deduction == 0
+
+
+# ─── Zakat Hoarding Risk ─────────────────────────────────────────────────
+
+
+class TestZakatHoardingRisk:
+    """Zakat reserve hoarding detection."""
+
+    def test_non_zakat_org_no_deduction(self):
+        """Non-zakat org with high reserves → no hoarding deduction."""
+        m = _base_metrics(
+            claims_zakat=False,
+            working_capital_ratio=36.0,
+            reserves_months=40.0,
+            program_expense_ratio=0.85,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+        )
+        scorer = RiskScorer()
+        _case_against, deduction = scorer.evaluate(m)
+        assert deduction == 0
+
+    def test_zakat_org_high_reserves(self):
+        """Zakat org with >=36 months reserves → -3 deduction."""
+        m = _base_metrics(
+            claims_zakat=True,
+            working_capital_ratio=18.0,
+            reserves_months=40.0,  # Net assets based - catches orgs parking in non-liquid
+            program_expense_ratio=0.85,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+        )
+        scorer = RiskScorer()
+        _case_against, deduction = scorer.evaluate(m)
+        assert deduction == -3
+
+    def test_zakat_org_medium_reserves(self):
+        """Zakat org with 24-36 months reserves → -2 deduction."""
+        m = _base_metrics(
+            claims_zakat=True,
+            working_capital_ratio=18.0,
+            reserves_months=28.0,
+            program_expense_ratio=0.85,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+        )
+        scorer = RiskScorer()
+        _case_against, deduction = scorer.evaluate(m)
+        assert deduction == -2
+
+    def test_zakat_org_low_reserves_no_deduction(self):
+        """Zakat org with <24 months reserves → no deduction."""
+        m = _base_metrics(
+            claims_zakat=True,
+            working_capital_ratio=12.0,
+            reserves_months=18.0,
+            program_expense_ratio=0.85,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+        )
+        scorer = RiskScorer()
+        _case_against, deduction = scorer.evaluate(m)
+        assert deduction == 0
+
+    def test_endowment_exempt(self):
+        """Endowment/waqf model exempt from hoarding check."""
+        m = _base_metrics(
+            name="Islamic Endowment Fund",
+            claims_zakat=True,
+            working_capital_ratio=48.0,
+            reserves_months=60.0,
+            program_expense_ratio=0.85,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+        )
+        scorer = RiskScorer()
+        _case_against, deduction = scorer.evaluate(m)
+        assert deduction == 0  # Endowment exempt
 
 
 # ─── DataConfidence ─────────────────────────────────────────────────────────

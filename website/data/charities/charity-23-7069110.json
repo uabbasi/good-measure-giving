@@ -52,7 +52,10 @@
     "totalAssets": 77160401,
     "totalLiabilities": 21384161,
     "netAssets": 55776240,
-    "workingCapitalMonths": "8.00"
+    "workingCapitalMonths": "8.00",
+    "noncashRatio": 0.020726232735424708,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": 0.7691627055385792
   },
   "baselineGovernance": {
     "boardSize": 22,
@@ -93,7 +96,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-28 17:46:53",
+  "lastUpdated": "2026-03-04 19:20:15",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -1698,8 +1701,8 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
-    "assessment_label": "High Conviction",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
+    "assessment_label": "Promising",
     "archetype_code": "LEVERAGE",
     "archetype_label": "Strategic Advocacy",
     "evidence_stage": "Verified",
@@ -1707,17 +1710,28 @@
       "evidence": "Strong",
       "financial_health": "Moderate",
       "donor_fit": "Moderate",
-      "risk": "Strong"
+      "risk": "Moderate"
     },
-    "recommendation_cue": "Strong Match",
-    "recommendation_rationale": "Strong donor fit, low risk profile, and credible supporting evidence for outcomes.",
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "domestic_burn",
+      "severity": "high",
+      "headline": "77% of expenses stay in the US despite international operations",
+      "detail": "Organization claims foreign operations but most spending remains domestic.",
+      "data_points": {
+        "domestic_burn_rate": 0.769
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "23-7069110",
     "charity_name": "Oxfam America",
-    "amal_score": 83,
+    "amal_score": 78,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:36:25",
     "rubric_version": "5.0.0",
@@ -1863,14 +1877,22 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 47
       },
-      "risk_deduction": 0,
+      "risk_deduction": -5,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "Key concern: High domestic burn: 77% of expenses stay in the US despite international operations",
+        "risks": [
+          {
+            "category": "financial",
+            "data_source": "Form 990 Schedule F",
+            "description": "High domestic burn: 77% of expenses stay in the US despite international operations",
+            "mitigation": null,
+            "severity": "high"
+          }
+        ],
+        "total_deduction": -5
       },
-      "score_summary": "Oxfam AmericaHQ shows exceptional impact and strong alignment.",
+      "score_summary": "Oxfam AmericaHQ shows exceptional impact and strong alignment (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -1882,58 +1904,64 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Oxfam America holds a Charity Navigator score of 99.33333333333333/100 and maintains a program expense ratio of 72.3%.",
+          "claim": "Oxfam America holds a Charity Navigator score of 99.33333333333333/100 and a fundraising efficiency of $0.19 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/237069110#financials"
         },
         {
-          "claim": "The organization focuses on international relief and economic justice, reporting total revenue of $83,115,051.",
+          "claim": "The organization works with local partners to empower poor people in the development of their communities.",
           "id": "[2]",
           "source_name": "Download our most recent financial audit",
           "source_url": "https://webassets.oxfamamerica.org/media/documents/OA_Consolidated_Financial_Statements_2024.pdf"
         },
         {
-          "claim": "Oxfam's programs have successfully resulted in new laws being passed with civil society input.",
+          "claim": "Project evaluations in Ghana show impact through new laws passed with CSO input.",
           "id": "[3]",
           "source_name": "Download NORAD Ghana Final Project Evaluation Report",
           "source_url": "https://s3.amazonaws.com/oxfam-us/www/static/media/files/NORAD_Ghana_Final_Project_Evaluation_Report.pdf"
         },
         {
-          "claim": "The organization's advocacy work led to the adoption of legislative amendments in Tanzania.",
+          "claim": "In Mozambique, Oxfam tracked unique viewers of the Civilinfo platform and media capacity ratings.",
+          "id": "[4]",
+          "source_name": "Download NORAD Mozambique Final Project Evaluation Report",
+          "source_url": "https://s3.amazonaws.com/oxfam-us/www/static/media/files/NORAD_Mozambique_Final_Project_Evaluation_Report.pdf"
+        },
+        {
+          "claim": "Tanzania project evaluations recorded the adoption of legislative amendments.",
           "id": "[5]",
           "source_name": "Download NORAD Tanzania Final Project Evaluation Report",
           "source_url": "https://s3.amazonaws.com/oxfam-us/www/static/media/files/NORAD_Tanzania_Final_Project_Evaluation_Report.pdf"
         },
         {
-          "claim": "Oxfam America provides various donation options for general charitable giving and sadaqah.",
+          "claim": "The charity provides various donation options for international relief and economic justice.",
           "id": "[6]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.oxfamamerica.org/"
         },
         {
-          "claim": "Financial records confirm a fundraising efficiency of $0.19 per $1 raised and 8.0 months of working capital.",
+          "claim": "Oxfam America reported total revenue of $83,115,051 and a program expense ratio of 72.3%.",
           "id": "[7]",
           "source_name": "Form 990 (2024)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/237069110"
         }
       ],
-      "amal_score_rationale": "Oxfam America earns a strong overall rating due to its exceptional financial transparency and high impact score, reflecting its efficiency in delivering direct services and systemic change.",
+      "amal_score_rationale": "Oxfam America earns a GMG score of 78/100 due to its exceptional financial health and high impact score of 47/50, reflecting efficient direct service delivery. The organization is recognized as SADAQAH-ELIGIBLE for donors seeking to support humanitarian causes.",
       "areas_for_improvement": [
-        "Donor alignment for specific faith-based segments is moderate",
-        "High operational complexity across multiple international jurisdictions"
+        "Strengthening alignment with specific donor demographics to improve medium-tier donor fit scores",
+        "Expanding direct service metrics across all regional project evaluations"
       ],
       "dimension_explanations": {
-        "alignment": "Oxfam America aligns with humanitarian urgency by addressing systemic poverty and economic justice [2]. While it offers general sadaqah-eligible giving opportunities, its alignment for specific donor niches is considered medium due to its broad, secular advocacy focus [6].",
-        "impact": "The organization demonstrates high impact through direct service and legislative success, such as influencing new laws in Ghana and legislative amendments in Tanzania [3][5]. With a program expense ratio of 72.3% and a cost per beneficiary of approximately 79.01, the charity maintains high financial health and evidence-based outcomes [1][2]."
+        "alignment": "Oxfam America shows medium alignment for specific donor groups, though it maintains a strong track record in urgent humanitarian sectors [1]. The organization is a suitable choice for general charitable giving and sadaqah, offering various ways to contribute to global poverty alleviation [6]. Its fundraising efficiency is noted at $0.19 per $1 raised, indicating a professional approach to resource mobilization [1].",
+        "impact": "The organization demonstrates high impact through direct service delivery, maintaining a cost per beneficiary of approximately 79.01068775790921 [1]. Evaluation reports from Ghana, Mozambique, and Tanzania highlight successful outcomes such as legislative amendments and increased media capacity for civil society organizations [3][4][5]. Financially, the charity operates with a total revenue of $83,115,051 and a high program expense ratio of 72.3% [7]."
       },
-      "headline": "Oxfam America empowers marginalized communities through systemic economic justice and rapid international relief efforts.",
+      "headline": "Oxfam America empowers local communities through economic justice and lifesaving international relief efforts.",
       "strengths": [
         "High financial accountability with a Charity Navigator score of 99.33333333333333/100",
-        "Strong program efficiency with 72.3% of expenses directed toward core programs",
-        "Proven track record in legislative advocacy and civil society capacity building"
+        "Strong program efficiency with a 72.3% program expense ratio",
+        "Robust liquidity maintaining 8.0 months of working capital"
       ],
-      "summary": "Oxfam America is a global organization that partners with local entities to provide lifesaving support and long-term development solutions for people living in poverty [1][2]. The organization focuses on economic justice and international relief, ensuring that local communities play a central role in their own development [2][6]."
+      "summary": "Oxfam America works with local organizations to provide funds and empower impoverished people to lead development within their own communities [2]. The organization focuses on international relief, economic justice, and providing lifesaving support during humanitarian crises [1][6]."
     }
   }
 }

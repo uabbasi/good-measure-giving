@@ -49,7 +49,10 @@
     "totalAssets": 160068290,
     "totalLiabilities": 29991606,
     "netAssets": 130076684,
-    "workingCapitalMonths": "10.20"
+    "workingCapitalMonths": "10.20",
+    "noncashRatio": 0.09585145243300768,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": 0.8811619728942197
   },
   "baselineGovernance": {
     "boardSize": 16,
@@ -94,7 +97,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-28 17:46:56",
+  "lastUpdated": "2026-03-04 19:20:18",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -885,8 +888,8 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
-    "assessment_label": "High Conviction",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
+    "assessment_label": "Promising",
     "archetype_code": "RESILIENCE",
     "archetype_label": "Community Resilience",
     "evidence_stage": "Verified",
@@ -894,17 +897,28 @@
       "evidence": "Strong",
       "financial_health": "Strong",
       "donor_fit": "Moderate",
-      "risk": "Strong"
+      "risk": "Moderate"
     },
-    "recommendation_cue": "Strong Match",
-    "recommendation_rationale": "Strong donor fit, low risk profile, and credible supporting evidence for outcomes.",
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "domestic_burn",
+      "severity": "high",
+      "headline": "88% of expenses stay in the US despite international operations",
+      "detail": "Organization claims foreign operations but most spending remains domestic.",
+      "data_points": {
+        "domestic_burn_rate": 0.881
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "13-3327220",
     "charity_name": "Action Against Hunger USA",
-    "amal_score": 83,
+    "amal_score": 78,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:38:07",
     "rubric_version": "5.0.0",
@@ -1050,14 +1064,22 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 49
       },
-      "risk_deduction": 0,
+      "risk_deduction": -5,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "Key concern: High domestic burn: 88% of expenses stay in the US despite international operations",
+        "risks": [
+          {
+            "category": "financial",
+            "data_source": "Form 990 Schedule F",
+            "description": "High domestic burn: 88% of expenses stay in the US despite international operations",
+            "mitigation": null,
+            "severity": "high"
+          }
+        ],
+        "total_deduction": -5
       },
-      "score_summary": "Action Against Hunger USA shows exceptional impact and good alignment.",
+      "score_summary": "Action Against Hunger USA shows exceptional impact and good alignment (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -1069,19 +1091,19 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reported a total revenue of $201,188,874 and focuses on treating undernutrition.",
+          "claim": "The organization reported total revenue of $201,188,874 and maintains strong financial health.",
           "id": "[1]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/133327220"
         },
         {
-          "claim": "The organization manages health and nutrition programs and reports on donated food expenses.",
+          "claim": "The charity focuses on health and nutrition programs to eliminate undernutrition.",
           "id": "[2]",
           "source_name": "Form 990 (2024)",
           "source_url": "https://www.actionagainsthunger.org/app/uploads/2025/11/24-AAHUSA-990-PD.pdf"
         },
         {
-          "claim": "The organization monitors Global Acute Malnutrition rates in high-need areas like Somalia.",
+          "claim": "The organization monitors metrics such as the Global Acute Malnutrition Rate in regions like Somalia.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://www.actionagainsthunger.org/app/uploads/2025/06/AAH-Amended-PD-990.pdf"
@@ -1099,34 +1121,34 @@
           "source_url": "https://www.actionagainsthunger.org/app/uploads/2023/10/Action-Against-Hunger-USA-2022-Form-990.pdf"
         },
         {
-          "claim": "The organization accepts general donations and sadaqah to support its mission.",
+          "claim": "The charity offers various donation options for general charitable giving and sadaqah.",
           "id": "[7]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.actionagainsthunger.org/take-action/donate/"
         },
         {
-          "claim": "The organization holds a 95.0/100 score with 10.2 months of working capital and $0.04 fundraising efficiency.",
+          "claim": "The charity has a 95.0/100 score, 10.2 months of working capital, and a fundraising efficiency of $0.04 per $1 raised.",
           "id": "[9]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/133327220#financials"
         }
       ],
-      "amal_score_rationale": "With a GMG score of 83/100, the organization demonstrates high financial accountability and direct impact, though its alignment score reflects a general humanitarian focus rather than specialized religious donor pathways.",
+      "amal_score_rationale": "The organization earns a strong GMG score of 78/100 due to its high Charity Navigator score of 95.0/100 and its direct service model that maintains low overhead costs.",
       "areas_for_improvement": [
-        "Increasing the depth of alignment with specific faith-based donor requirements",
-        "Expanding public reporting on long-term cost-per-beneficiary metrics across all regions"
+        "Enhancing long-term donor alignment scores to match their high operational impact",
+        "Expanding public disclosure of specific cost-per-outcome metrics across all program regions"
       ],
       "dimension_explanations": {
-        "alignment": "The alignment score of 34/50 reflects a high donor fit for those seeking to address urgent humanitarian crises, such as severe food insecurity in regions like Somalia [3][4]. While the organization is a primary destination for sadaqah and general charitable giving, it maintains a broad secular mandate rather than specific religious governance [7].",
-        "impact": "The organization achieves a high impact score of 49/50 by maintaining a direct service model that treats acute malnutrition and improves food security [2][9]. Its financial health is robust, characterized by a total revenue of $201,188,874 and a program expense ratio of 89.7%, indicating that the vast majority of resources are dedicated to field operations [1][6]."
+        "alignment": "Action Against Hunger USA shows high alignment for donors seeking to address urgent humanitarian causes, particularly in food-insecure regions like Somalia [3][4].",
+        "impact": "The organization demonstrates high impact through a direct service model that addresses humanitarian urgencies like global acute malnutrition [3][9]. With a total revenue of $201,188,874 and a program expense ratio of 89.7%, the charity maintains a low cost per beneficiary while ensuring 10.2 months of working capital for operational stability [1][6]."
       },
-      "headline": "Action Against Hunger USA is a high-impact humanitarian organization dedicated to eliminating life-threatening hunger through evidence-based nutrition and health interventions.",
+      "headline": "Action Against Hunger USA is a high-impact humanitarian organization dedicated to eliminating life-threatening undernutrition through direct medical and nutritional interventions.",
       "strengths": [
-        "High program expense ratio of 89.7% ensuring funds reach those in need",
-        "Exceptional fundraising efficiency with only $0.04 spent to raise every $1",
+        "Exceptional program expense ratio of 89.7%, ensuring the vast majority of funds reach those in need",
+        "High fundraising efficiency with a cost of only $0.04 per $1 raised",
         "Strong financial health with 10.2 months of working capital available"
       ],
-      "summary": "Action Against Hunger USA operates as a global humanitarian leader focused on the prevention, detection, and treatment of undernutrition [1]. The organization manages a diverse portfolio of programs including water, sanitation, and hygiene (WASH) alongside food security and livelihood initiatives to address the root causes of hunger [2][6]."
+      "summary": "Action Against Hunger USA operates as a global humanitarian leader focused on the prevention, detection, and treatment of undernutrition, particularly during crises [1][2]. The organization manages a diverse portfolio of programs including nutrition, health, water, sanitation, and food security to save and protect lives in vulnerable communities [2][9]."
     }
   }
 }

@@ -46,7 +46,10 @@
     "totalAssets": 3028791,
     "totalLiabilities": 10930,
     "netAssets": 3017861,
-    "workingCapitalMonths": "35.40"
+    "workingCapitalMonths": "35.40",
+    "noncashRatio": null,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": null
   },
   "baselineGovernance": {
     "boardSize": 5,
@@ -56,7 +59,7 @@
   "targeting": null,
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-28 17:46:40",
+  "lastUpdated": "2026-03-04 19:20:04",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -169,7 +172,7 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Context Dependent",
     "archetype_code": "SOVEREIGNTY",
     "archetype_label": "Sovereignty Builder",
@@ -185,10 +188,21 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "zakat_hoarding",
+      "severity": "medium",
+      "headline": "Zakat-collecting organization holds 35 months of reserves",
+      "detail": "Zakat must be distributed promptly per Islamic jurisprudence. Large reserves raise concerns about timely distribution.",
+      "data_points": {
+        "reserves_months": 35.4
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "47-3342673",
     "charity_name": "ICNA Chicago Illinois Organization",
-    "amal_score": 67,
+    "amal_score": 65,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:29:43",
     "rubric_version": "5.0.0",
@@ -334,10 +348,10 @@
         "rubric_archetype": "COMMUNITY",
         "score": 37
       },
-      "risk_deduction": -1,
+      "risk_deduction": -3,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "1 risk(s) identified.",
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "2 risk(s) identified.",
         "risks": [
           {
             "category": "impact",
@@ -345,9 +359,16 @@
             "description": "No outcome measurement or metrics tracking",
             "mitigation": null,
             "severity": "low"
+          },
+          {
+            "category": "financial",
+            "data_source": "Form 990 / Balance Sheet",
+            "description": "Zakat-collecting organization holds 35 months of reserves \u2014 zakat should be distributed promptly",
+            "mitigation": null,
+            "severity": "medium"
           }
         ],
-        "total_deduction": -1
+        "total_deduction": -3
       },
       "score_summary": "Icna Chicago Illinois Organization shows strong impact and good alignment, with zakat compliance (minor risk deductions applied).",
       "zakat": {
@@ -361,46 +382,46 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reported a program expense ratio of 70.5%, working capital of 35.4 months, and fundraising efficiency of $0.08 per $1 raised.",
+          "claim": "The organization reported a program expense ratio of 70.5%, total revenue of $1,206,252, and holds 35.4 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/473342673#financials"
         },
         {
-          "claim": "The organization is Zakat-eligible and provides information on zakat policy and asnaf categories.",
+          "claim": "The organization is Zakat-eligible and provides specific policies for asnaf categories.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://icnachicago.org/donate"
         },
         {
-          "claim": "Total revenue for the period was $1,206,252, supporting programs such as ICNA Education and Young Muslims.",
+          "claim": "ICNA Chicago operates as a non-ethnic, non-sectarian organization featuring programs such as ICNA Education and Young Muslims (YM).",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/473342673"
         },
         {
-          "claim": "The organization offers multiple donation options and giving methods for supporters.",
+          "claim": "Donors can contribute through various giving methods including Zakat and general donations.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://icnachicago.org/donation/"
         }
       ],
-      "amal_score_rationale": "The organization maintains a solid financial foundation with excellent fundraising efficiency, though its overall score is tempered by low data confidence and moderate program spending ratios.",
+      "amal_score_rationale": "The organization earns a 65/100 score, reflecting a solid financial foundation and direct service impact, though it is tempered by low data confidence and a moderate program expense ratio.",
       "areas_for_improvement": [
         "Low data confidence due to limited third-party verification",
-        "program expense ratio of 70.5% leaves room for increased direct service allocation"
+        "Program expense ratio could be optimized to direct more funds toward core services"
       ],
       "dimension_explanations": {
-        "alignment": "There is a high donor fit for the Muslim community as the organization is Zakat-eligible and addresses urgent religious and cultural needs [2]. Its long-standing programs like Young Muslims (YM) reflect a commitment to community development, though the low data confidence score suggests a need for more transparent reporting [3][4].",
-        "impact": "The organization demonstrates a high level of financial stability with 35.4 months of working capital and a total revenue of $1,206,252 [1][3]. While it provides direct services through ICNA Education, the program expense ratio is 70.5%, and the lack of cost-per-beneficiary data results in a moderate impact score [1]."
+        "alignment": "With a score of 31/50, the organization shows high donor fit for the Muslim community by offering Zakat-eligible donation pathways and addressing urgent religious and cultural needs [2][4]. This alignment is supported by its mission to remain an open, non-sectarian organization serving all members of the community [3].",
+        "impact": "The organization demonstrates a direct service model through ICNA Education and Young Muslims (YM) programs, maintaining a program expense ratio of 70.5% [1][3]. While financial health is stable with $1,206,252 in total revenue, the overall impact score of 37/50 is limited by low data confidence and the absence of third-party cost-per-beneficiary metrics [1]."
       },
-      "headline": "Icna Chicago Illinois Organization serves the community through non-sectarian educational programs and youth development initiatives.",
+      "headline": "Icna Chicago Illinois Organization serves the community through non-sectarian Islamic educational programs and youth development initiatives.",
       "strengths": [
-        "High fundraising efficiency with only $0.08 spent to raise every $1",
+        "High fundraising efficiency with only $0.08 spent per $1 raised",
         "Strong liquidity position with 35.4 months of working capital",
-        "Direct service impact through established educational and youth programs"
+        "Zakat-eligible status for religious giving compliance"
       ],
-      "summary": "The Icna Chicago Illinois Organization is an independent Islamic organization that operates diverse projects including ICNA Education and the Young Muslims (YM) program [1][3]. The organization is Zakat-eligible, allowing donors to fulfill their religious obligations through various giving methods [2][4]."
+      "summary": "The Icna Chicago Illinois Organization is an independent, non-ethnic Islamic organization dedicated to providing educational projects and youth programs like Young Muslims (YM) [1][3]. The organization is Zakat-eligible, allowing donors to fulfill their religious obligations through various community-focused asnaf categories [2][4]."
     }
   }
 }

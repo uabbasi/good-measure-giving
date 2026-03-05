@@ -47,7 +47,10 @@
     "totalAssets": 16726193,
     "totalLiabilities": 264148,
     "netAssets": 16462045,
-    "workingCapitalMonths": "101.20"
+    "workingCapitalMonths": "101.20",
+    "noncashRatio": null,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": null
   },
   "baselineGovernance": {
     "boardSize": 3,
@@ -81,7 +84,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-28 17:46:37",
+  "lastUpdated": "2026-03-04 19:20:01",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -212,8 +215,8 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
-    "assessment_label": "Context Dependent",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
+    "assessment_label": "Promising",
     "archetype_code": "SOVEREIGNTY",
     "archetype_label": "Sovereignty Builder",
     "evidence_stage": "Established",
@@ -221,13 +224,24 @@
       "evidence": "Strong",
       "financial_health": "Limited",
       "donor_fit": "Moderate",
-      "risk": "Limited"
+      "risk": "Moderate"
     },
-    "recommendation_cue": "Mixed Signals",
-    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "zakat_hoarding",
+      "severity": "high",
+      "headline": "Zakat-collecting organization holds 101 months of reserves",
+      "detail": "Zakat must be distributed promptly per Islamic jurisprudence. Large reserves raise concerns about timely distribution.",
+      "data_points": {
+        "reserves_months": 101.2
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "22-2086228",
     "charity_name": "Islamic Society of Central Jersey",
@@ -379,7 +393,7 @@
       },
       "risk_deduction": -6,
       "risks": {
-        "overall_risk_level": "ELEVATED",
+        "overall_risk_level": "MODERATE",
         "risk_summary": "Key concern: Program expense ratio critically low: 32%",
         "risks": [
           {
@@ -411,13 +425,13 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reports a program expense ratio of 32.2% and working capital of 101.2 months.",
+          "claim": "The organization reports a program expense ratio of 32.2% and total revenue of $2,240,124.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/222086228#financials"
         },
         {
-          "claim": "Total revenue is reported at $2,240,124 with a fundraising efficiency of $0.00 per $1 raised.",
+          "claim": "Financial data indicates a fundraising efficiency of $0.00 per $1 raised and working capital of 101.2 months.",
           "id": "[2]",
           "source_name": "Form 990 (2017)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/222086228"
@@ -429,58 +443,52 @@
           "source_url": "https://www.iscj.org/about/expansion"
         },
         {
-          "claim": "The organization provides an overview of its history and mission to serve the regional community.",
+          "claim": "The organization has a long-standing history of serving the Central Jersey community.",
           "id": "[4]",
           "source_name": "Charity Website - About",
           "source_url": "https://www.iscj.org/about/history"
         },
         {
-          "claim": "The organization offers religious educational programs such as the Friday Halaqa.",
+          "claim": "The organization provides educational services and religious programming such as Friday Halaqas.",
           "id": "[5]",
           "source_name": "Charity Website - Programs",
           "source_url": "https://www.iscj.org/services/friday-halaqa"
         },
         {
-          "claim": "ISCJ provides cultural and religious services including wedding services.",
-          "id": "[6]",
-          "source_name": "Charity Website - Programs",
-          "source_url": "https://www.iscj.org/services/wedding"
-        },
-        {
-          "claim": "The charity manages Zakat-ul-Mal collection and distribution and is Zakat-eligible.",
+          "claim": "ISCJ manages Zakat-ul-Mal collection and distribution and operates a food pantry.",
           "id": "[7]",
           "source_name": "Charity Website - Programs",
           "source_url": "https://www.iscj.org/services/zakat"
         },
         {
-          "claim": "The organization has successfully elected a female Chairperson to its leadership.",
-          "id": "[10]",
+          "claim": "The organization tracks and promotes women in leadership roles within its governance structure.",
+          "id": "[8]",
           "source_name": "History of Women at ISCJ",
           "source_url": "https://cdn.prod.website-files.com/64889ef88538c1f3d48b7c4b/64c7f74915c60628378ec486_HistoryOfWomenAtISCJ.pdf"
         },
         {
-          "claim": "Women have served in key governance roles including Trustee and Overseer.",
-          "id": "[12]",
-          "source_name": "History of Women at ISCJ",
-          "source_url": "https://cdn.prod.website-files.com/64889ef88538c1f3d48b7c4b/64c7f74915c60628378ec486_HistoryOfWomenAtISCJ.pdf"
+          "claim": "The organization offers various giving methods for donors to support its religious and social missions.",
+          "id": "[13]",
+          "source_name": "Charity Website - Donate",
+          "source_url": "https://www.iscj.org/donate"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its extraordinary financial liquidity and efficient fundraising, balanced against a lower program expense ratio and moderate data confidence.",
+      "amal_score_rationale": "The organization earns a moderate score of 59/100, reflecting exceptional financial liquidity and fundraising efficiency balanced against a lower program expense ratio and moderate data confidence.",
       "areas_for_improvement": [
-        "The program expense ratio of 32.2% suggests a significant portion of funds is directed toward administrative or capital needs rather than direct program delivery.",
-        "Transparency could be enhanced through more frequent third-party impact evaluations."
+        "program expense ratio of 32.2% suggests a significant portion of funds is allocated toward administrative or capital costs",
+        "Transparency could be enhanced through more recent publicly available financial audits"
       ],
       "dimension_explanations": {
-        "alignment": "ISCJ shows a medium donor fit by providing essential religious services, including Friday Halakas and wedding services, which address urgent cultural needs [5][6]. The organization has a documented track record of inclusive governance, including the election of female chairpersons and trustees [10][12].",
-        "impact": "The organization focuses on capacity building and community support through programs like Zakat distribution and food assistance [7]. While it maintains a massive reserve of 101.2 months of working capital, its program expense ratio is 32.2%, indicating that direct service spending is secondary to other organizational costs [1][2]."
+        "alignment": "Alignment is rated at 32/50, representing a medium donor fit for those prioritizing established religious institutions with a long track record [4]. The organization is verified as Zakat-eligible and provides essential services like Zakat distribution and food assistance, though the urgency is categorized under religious and cultural maintenance [7][13].",
+        "impact": "The organization demonstrates a moderate impact score of 33/50, focusing on capacity building through its religious and social infrastructure [3][8]. While it maintains a total revenue of $2,240,124 and significant working capital of 101.2 months, the program expense ratio is 32.2%, indicating that a smaller portion of annual revenue is directly spent on program services compared to administrative needs [1][2]."
       },
       "headline": "The Islamic Society of Central Jersey serves as a vital hub for religious, social, and cultural services for the regional Muslim community.",
       "strengths": [
-        "Maintains an exceptional working capital reserve of 101.2 months, ensuring long-term operational stability.",
-        "Highly efficient fundraising operations with a cost of $0.00 per $1 raised.",
-        "Strong history of female leadership and inclusion within organizational governance."
+        "Maintains an exceptional working capital reserve of 101.2 months, ensuring long-term operational stability",
+        "Highly efficient fundraising operations with a cost of $0.00 per $1 raised",
+        "Strong history of female leadership and inclusion in organizational governance"
       ],
-      "summary": "The Islamic Society of Central Jersey (ISCJ) is a non-profit organization dedicated to providing comprehensive social and religious services to the Muslim community [3][4]. Its core initiatives include the collection and distribution of Zakat-ul-Mal and the operation of a food pantry to support those in need [7]."
+      "summary": "The Islamic Society of Central Jersey (ISCJ) is a non-profit organization dedicated to providing comprehensive social and religious services, including the collection and distribution of Zakat-ul-Mal [3][7]. The organization operates essential community programs such as a food pantry and educational initiatives to support the local population [5][7]."
     }
   }
 }

@@ -11,6 +11,18 @@ export enum RatingColor {
 // - hidden: Not publicly listed, accessible only via direct URL
 export type CharityTier = 'rich' | 'baseline' | 'hidden';
 
+// Key concern types for data-driven red flags
+export type KeyConcernType = 'gik_inflation' | 'domestic_burn' | 'zakat_hoarding';
+export type KeyConcernSeverity = 'high' | 'medium';
+
+export interface KeyConcern {
+  type: KeyConcernType;
+  severity: KeyConcernSeverity;
+  headline: string;
+  detail: string;
+  data_points: Record<string, number>;
+}
+
 export interface DimensionEvaluation {
   rating: RatingColor | string;  // Can be enum or string literal
   rationale: string;
@@ -758,6 +770,11 @@ export interface CharityFinancials {
   netAssets?: number | null;
   // Working capital months (balance sheet derived)
   workingCapitalMonths?: number | null;
+  // GIK / noncash metrics
+  noncashRatio?: number | null;
+  cashAdjustedProgramRatio?: number | null;
+  // Domestic burn rate (international orgs)
+  domesticBurnRate?: number | null;
 }
 
 // Website evidence signals (transparency indicators from charity website)
@@ -1109,6 +1126,8 @@ export interface CharityProfile {
     populationsServed?: string[] | null;
     geographicCoverage?: string[] | null;
   } | null;
+  // Key concerns (data-driven financial red flags)
+  keyConcerns?: KeyConcern[] | null;
   // Donor-facing qualitative signals (v1 contract)
   ui_signals_v1?: UISignalsV1 | null;
 }

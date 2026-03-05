@@ -57,7 +57,10 @@
     "totalAssets": 241144801,
     "totalLiabilities": 26493473,
     "netAssets": 214651328,
-    "workingCapitalMonths": "25.40"
+    "workingCapitalMonths": "25.40",
+    "noncashRatio": 0.008457921297588778,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": 0.9517332404056674
   },
   "baselineGovernance": {
     "boardSize": 24,
@@ -101,7 +104,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-28 17:46:55",
+  "lastUpdated": "2026-03-04 19:20:16",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -289,7 +292,7 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Context Dependent",
     "archetype_code": "LEVERAGE",
     "archetype_label": "Strategic Advocacy",
@@ -298,17 +301,28 @@
       "evidence": "Strong",
       "financial_health": "Moderate",
       "donor_fit": "Moderate",
-      "risk": "Strong"
+      "risk": "Moderate"
     },
     "recommendation_cue": "Mixed Signals",
     "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "domestic_burn",
+      "severity": "high",
+      "headline": "95% of expenses stay in the US despite international operations",
+      "detail": "Organization claims foreign operations but most spending remains domestic.",
+      "data_points": {
+        "domestic_burn_rate": 0.952
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "13-2875808",
     "charity_name": "Human Rights Watch, Inc.",
-    "amal_score": 53,
+    "amal_score": 48,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:37:12",
     "rubric_version": "5.0.0",
@@ -454,14 +468,22 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 28
       },
-      "risk_deduction": 0,
+      "risk_deduction": -5,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "Key concern: High domestic burn: 95% of expenses stay in the US despite international operations",
+        "risks": [
+          {
+            "category": "financial",
+            "data_source": "Form 990 Schedule F",
+            "description": "High domestic burn: 95% of expenses stay in the US despite international operations",
+            "mitigation": null,
+            "severity": "high"
+          }
+        ],
+        "total_deduction": -5
       },
-      "score_summary": "Human Rights Watch, Inc. shows good impact and moderate alignment.",
+      "score_summary": "Human Rights Watch, Inc. shows good impact and moderate alignment (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -473,52 +495,51 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Human Rights Watch works to build just economies based on respect for human rights and defends fundamental freedoms.",
+          "claim": "The organization works to build just economies based on respect for human rights and dignity.",
           "id": "[1]",
           "source_name": "Charity Website - About",
           "source_url": "https://www.hrw.org/about/about-us"
         },
         {
-          "claim": "The organization operates programs including Environment and Human Rights, Refugees and Migrants Rights, and Economic Justice and Rights.",
+          "claim": "Programs include Environment and Human Rights, Refugees and Migrants Rights, and Economic Justice and Rights.",
           "id": "[2]",
           "source_name": "Click here for sample gift language",
           "source_url": "https://www.hrw.org/sites/default/files/media_2022/01/Bequest-Information-Sheet.pdf"
         },
         {
-          "claim": "The organization offers various giving methods for general charitable contributions (sadaqah).",
+          "claim": "The organization accepts various forms of charitable giving, categorized here as Sadaqah-eligible.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.hrw.org/QCD"
         },
         {
-          "claim": "The charity has a score of 91.5/100, a fundraising efficiency of $0.23 per $1 raised, and 25.4 months of working capital.",
+          "claim": "The charity has a score of 91.5/100 and a program expense ratio of 69.5%.",
           "id": "[4]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/132875808#financials"
         },
         {
-          "claim": "Total revenue is $94,185,941 and the program expense ratio is 69.5%.",
+          "claim": "Total revenue was $94,185,941, with working capital of 25.4 months and fundraising efficiency of $0.23 per $1 raised.",
           "id": "[5]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/132875808"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its high financial transparency and systemic influence, balanced by an advocacy-heavy model that may not align with donors seeking direct service delivery.",
+      "amal_score_rationale": "The organization earns a moderate overall score due to its high transparency and financial stability, balanced against a systemic change model that is harder to measure than direct service delivery.",
       "areas_for_improvement": [
-        "program expense ratio of 69.5% is lower than some peer advocacy organizations",
-        "Systemic change focus makes direct cost-per-beneficiary metrics difficult to quantify"
+        "program expense ratio of 69.5% is lower than some peer advocacy organizations [4].",
+        "Fundraising efficiency of $0.23 per $1 raised suggests higher-than-average costs for securing donations [5]."
       ],
       "dimension_explanations": {
-        "alignment": "This charity is considered a medium fit for Muslim donors as a sadaqah-eligible organization focused on urgent advocacy and human rights [3]. Its track record in defending marginalized populations aligns with general charitable values, though its methods are primarily focused on policy and legal frameworks [1].",
-        "impact": "The organization focuses on systemic change through high-level advocacy and reporting rather than direct aid, resulting in a moderate impact score [2]. While it maintains a healthy financial position with $94,185,941 in total revenue and 25.4 months of working capital, the program expense ratio is 69.5% [4][5]."
+        "alignment": "As a Sadaqah-eligible organization, it offers a medium fit for donors interested in broad advocacy and justice-oriented causes [3]. The focus on refugees and economic justice aligns with urgent global needs, though its methods are primarily focused on policy and systemic influence rather than direct humanitarian aid [1][2].",
+        "impact": "The organization focuses on systemic change through advocacy and reporting, reporting a total revenue of $94,185,941 to support its global missions [5]. While it maintains a program expense ratio of 69.5%, the long-term nature of human rights work makes direct cost-per-beneficiary metrics difficult to quantify [4]."
       },
-      "headline": "Human Rights Watch, Inc. works to build just economies and protect fundamental freedoms through rigorous investigation and strategic advocacy.",
+      "headline": "Human Rights Watch, Inc. works to build just economies and protect vulnerable populations through systemic advocacy and human rights monitoring.",
       "strengths": [
-        "Strong financial stability with 25.4 months of working capital",
-        "High level of transparency and accountability with a 91.91.5/100 from Charity Navigator score",
-        "Efficient fundraising operations spending only $0.23 per $1 raised"
+        "Maintains a high Charity Navigator score of 91.5/100, indicating strong accountability and transparency [4].",
+        "Exceptional financial stability with 25.4 months of working capital available to sustain operations [5]."
       ],
-      "summary": "Human Rights Watch, Inc. is a global organization dedicated to defending human rights and building just economies based on dignity and respect [1]. The organization operates specialized programs focused on Economic Justice and Rights, the environment, and the rights of refugees and migrants [2]."
+      "summary": "Human Rights Watch, Inc. is an international organization dedicated to defending human rights and building just economies based on respect for dignity and justice [1]. The organization operates specialized programs focused on Economic Justice and Rights (EJR), Environment and Human Rights, and the protection of Refugees and Migrants [2]."
     }
   }
 }

@@ -44,7 +44,10 @@
     "totalAssets": 4134653,
     "totalLiabilities": 714206,
     "netAssets": 3420447,
-    "workingCapitalMonths": "124.00"
+    "workingCapitalMonths": "124.00",
+    "noncashRatio": null,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": null
   },
   "baselineGovernance": {
     "boardSize": 2,
@@ -63,7 +66,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-28 17:46:44",
+  "lastUpdated": "2026-03-04 19:20:07",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -178,7 +181,7 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Limited Basis",
     "archetype_code": "ASSET_CREATION",
     "archetype_label": "Asset Creator",
@@ -194,6 +197,17 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "zakat_hoarding",
+      "severity": "high",
+      "headline": "Zakat-collecting organization holds 124 months of reserves",
+      "detail": "Zakat must be distributed promptly per Islamic jurisprudence. Large reserves raise concerns about timely distribution.",
+      "data_points": {
+        "reserves_months": 124.0
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "84-5191730",
     "charity_name": "The Mecca Center",
@@ -345,7 +359,7 @@
       },
       "risk_deduction": -6,
       "risks": {
-        "overall_risk_level": "ELEVATED",
+        "overall_risk_level": "MODERATE",
         "risk_summary": "Key concern: Board too small: 2 members",
         "risks": [
           {
@@ -377,13 +391,13 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization maintains a 91.1% program expense ratio and 124.0 months of working capital.",
+          "claim": "The fund maintains a 91.1% program expense ratio and 124.0 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/845191730#financials"
         },
         {
-          "claim": "The charity is Zakat-eligible and follows specific zakat policies and asnaf categories.",
+          "claim": "The charity is zakat-eligible and follows specific asnaf categories for distribution.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://meccacenter.org/zakat"
@@ -401,34 +415,40 @@
           "source_url": "https://meccacenter.org/mecca/wp-content/uploads/2024/01/ByLaws-Mecca-Center-September-2022.pdf"
         },
         {
-          "claim": "Programs supported include the Mecca Quran Institute (MQI) and Sunday School.",
+          "claim": "The fund supports programs including the Mecca Quran Institute (MQI) and Sunday School.",
           "id": "[6]",
           "source_name": "By-laws",
           "source_url": "https://meccacenter.org/mecca/wp-content/uploads/2024/01/ByLaws-Mecca-Center-September-2022.pdf"
         },
         {
-          "claim": "The organization's structure focuses on capacity building and long-term endowment support.",
-          "id": "[8]",
-          "source_name": "By-laws",
-          "source_url": "https://meccacenter.org/mecca/wp-content/uploads/2024/01/ByLaws-Mecca-Center-September-2022.pdf"
+          "claim": "The organization provides multiple giving methods for donors to support its religious mission.",
+          "id": "[9]",
+          "source_name": "Charity Website - Donate",
+          "source_url": "https://meccacenter.org/donate/"
+        },
+        {
+          "claim": "The center engages the community through youth programs and volunteer opportunities.",
+          "id": "[10]",
+          "source_name": "Charity Website - Volunteer",
+          "source_url": "https://meccacenter.org/2018/05/09/join-us-for-mecca-mvmt-ramadan-programs-for-youth/"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score of 55/100, reflecting excellent financial efficiency and liquidity balanced against low data transparency and limited evidence of direct impact.",
+      "amal_score_rationale": "The organization earns a moderate overall score of 55/100, reflecting excellent financial efficiency and liquidity balanced against limited transparency regarding specific impact data.",
       "areas_for_improvement": [
-        "Low data confidence due to limited third-party verification and public reporting",
-        "Need for more transparent impact metrics regarding specific program outcomes"
+        "Limited public data regarding specific program outcomes and impact metrics",
+        "Low data confidence score due to reliance on baseline financial filings"
       ],
       "dimension_explanations": {
-        "alignment": "With an alignment score of 27/50, the organization shows a moderate fit for donors interested in religious and cultural preservation [4]. The Fund is Zakat-eligible, supporting specific asnaf categories through its parent organization's policies [2], though the overall score is tempered by limited public data on specific community outcomes [3].",
-        "impact": "The Fund demonstrates high capacity-building potential by maintaining 124.0 months of working capital and a 91.1% program expense ratio [1][3]. While these financial metrics indicate strong organizational health, the impact score of 34/50 reflects a focus on long-term sustainability rather than immediate, measurable service delivery [4][8]."
+        "alignment": "The organization shows strong alignment for Muslim donors as a zakat-eligible entity supporting religious and cultural preservation [2][9]. The focus on Quranic studies and youth education addresses urgent community needs, though the overall alignment score is moderated by limited public engagement data [10].",
+        "impact": "The fund demonstrates high financial health with a 91.1% program expense ratio and 124.0 months of working capital [1][3]. While it focuses on capacity building for the Mecca Center's educational programs, there is limited third-party verification of specific beneficiary outcomes [1]."
       },
       "headline": "The Mecca Center Endowment Fund provides long-term financial stability for Islamic education and cultural programming in the community.",
       "strengths": [
-        "High program expense ratio of 91.1% ensures the vast majority of funds support mission-related activities",
-        "Exceptional liquidity with 124.0 months of working capital available",
-        "High fundraising efficiency with $0.00 spent per $1 raised"
+        "High program expense ratio of 91.1%, indicating most funds directly support its mission",
+        "Exceptional liquidity with 124.0 months of working capital",
+        "Highly efficient fundraising operations with $0.00 spent per $1 raised"
       ],
-      "summary": "The Mecca Center Endowment Fund is established to provide permanent financial support for the Muslim Educational Cultural Center of America (The Mecca Center) [1][4]. The Fund sustains critical community initiatives including the Mecca Quran Institute (MQI) and the Sunday School program [4][6]."
+      "summary": "The Mecca Center Endowment Fund is established to provide permanent financial support for the Muslim Educational Cultural Center of America (The Mecca Center) [1][4]. The fund sustains critical religious and educational initiatives, including the Mecca Quran Institute (MQI) and the center's Sunday School programs [4][6]."
     }
   }
 }

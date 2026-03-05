@@ -35,7 +35,10 @@
     "totalAssets": 5604790,
     "totalLiabilities": 175285,
     "netAssets": 5429505,
-    "workingCapitalMonths": "24.20"
+    "workingCapitalMonths": "24.20",
+    "noncashRatio": null,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": null
   },
   "baselineGovernance": {
     "boardSize": null,
@@ -53,7 +56,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-28 17:46:08",
+  "lastUpdated": "2026-03-04 19:19:32",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -64,7 +67,7 @@
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
       "source_url": "https://www.almaghrib.org",
-      "timestamp": "2026-02-16T18:29:15.431433+00:00",
+      "timestamp": "2026-03-04T07:10:17.903039+00:00",
       "value": true
     },
     "founded_year": {
@@ -82,7 +85,7 @@
     "has_audited_financials": {
       "source_name": "Charity Website",
       "source_url": "https://www.almaghrib.org",
-      "timestamp": "2026-02-16T18:29:15.431453+00:00",
+      "timestamp": "2026-03-04T07:10:17.903073+00:00",
       "value": true
     },
     "ntee_code": {
@@ -167,7 +170,7 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Limited Basis",
     "archetype_code": "RESILIENCE",
     "archetype_label": "Community Resilience",
@@ -183,10 +186,21 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "zakat_hoarding",
+      "severity": "medium",
+      "headline": "Zakat-collecting organization holds 24 months of reserves",
+      "detail": "Zakat must be distributed promptly per Islamic jurisprudence. Large reserves raise concerns about timely distribution.",
+      "data_points": {
+        "reserves_months": 24.2
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "27-0091991",
     "charity_name": "Al-maghrib Institute",
-    "amal_score": 41,
+    "amal_score": 39,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-02-04 20:46:11",
     "rubric_version": "5.0.0",
@@ -332,10 +346,10 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 19
       },
-      "risk_deduction": -2,
+      "risk_deduction": -4,
       "risks": {
         "overall_risk_level": "MODERATE",
-        "risk_summary": "2 risk(s) identified.",
+        "risk_summary": "3 risk(s) identified.",
         "risks": [
           {
             "category": "impact",
@@ -350,9 +364,16 @@
             "description": "No documented theory of change",
             "mitigation": null,
             "severity": "low"
+          },
+          {
+            "category": "financial",
+            "data_source": "Form 990 / Balance Sheet",
+            "description": "Zakat-collecting organization holds 24 months of reserves \u2014 zakat should be distributed promptly",
+            "mitigation": null,
+            "severity": "medium"
           }
         ],
-        "total_deduction": -2
+        "total_deduction": -4
       },
       "score_summary": "ALMAGHRIB INSTITUTE INC shows moderate alignment and limited impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
@@ -366,34 +387,34 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "AlMaghrib Institute Inc reported a program expense ratio of 95.5% and holds 24.2 months of working capital.",
+          "claim": "The organization reported a program expense ratio of 95.5%, working capital of 24.2 months, and is zakat-eligible.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/270091991#financials"
         },
         {
-          "claim": "The organization recorded total revenue of $2,959,388 and a fundraising efficiency of $0.01 per $1 raised.",
+          "claim": "AlMaghrib Institute Inc reported total revenue of $2,959,388 and a fundraising efficiency of $0.01 per $1 raised.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/270091991"
         }
       ],
-      "amal_score_rationale": "The organization earns a GMG score of 41/100, reflecting very strong internal financial efficiency balanced against a lack of third-party impact verification and low data confidence.",
+      "amal_score_rationale": "The organization earns a GMG score of 39/100, reflecting a balance between strong internal financial efficiency and a lack of comprehensive external data or third-party impact verification. While its financial metrics are robust, the low data confidence score suggests a need for greater transparency.",
       "areas_for_improvement": [
-        "Limited external data regarding specific program outcomes",
-        "Low donor alignment for general Muslim philanthropic profiles"
+        "Limited external data availability resulting in low data confidence scores",
+        "Need for more robust third-party verification of program impact and effectiveness"
       ],
       "dimension_explanations": {
-        "alignment": "With an alignment score of 24/50, the charity addresses religious and cultural needs but shows low donor fit for those seeking high-urgency humanitarian causes [1]. Its track record is established within the educational space, though data confidence remains low at 0.34 [1].",
-        "impact": "The organization demonstrates high financial health by directing 95.5% of its expenses toward programs [1]. However, its impact score of 19/50 reflects its role in capacity building where direct cost-per-beneficiary metrics are not publicly available [1][2]."
+        "alignment": "With an alignment score of 24/50, the institute serves a specific religious and cultural niche, though it currently shows low donor fit for the broader Muslim donor market [1]. The organization is verified as zakat-eligible, which aligns with specific religious giving requirements [1].",
+        "impact": "The organization focuses on capacity building through education, though its impact score of 19/50 reflects a lack of specific evidence regarding cost-per-beneficiary or third-party effectiveness metrics [1][2]. While financial health is strong with 24.2 months of working capital, the overall data confidence remains low at 0.34 [1]."
       },
-      "headline": "AlMaghrib Institute Inc is a religious educational organization dedicated to empowering individuals through immersive Islamic learning experiences.",
+      "headline": "AlMaghrib Institute Inc is a religious educational organization dedicated to empowering individuals through high-quality Islamic learning experiences.",
       "strengths": [
-        "High program expense ratio of 95.5%",
-        "Exceptional fundraising efficiency of $0.01 per $1 raised",
-        "Strong liquidity with 24.2 months of working capital"
+        "Exceptional program expense ratio of 95.5% dedicated to mission-related activities",
+        "Highly efficient fundraising operations with a cost of only $0.01 per $1 raised",
+        "Strong liquidity position with 24.2 months of working capital available"
       ],
-      "summary": "Operating with a mission to provide high-quality Islamic education, AlMaghrib Institute Inc reported a total revenue of $2,959,388 [1][2]. The organization is recognized as zakat-eligible and focuses on capacity building within the religious and cultural sector [1]."
+      "summary": "Operating with a mission to provide transformative Islamic education, AlMaghrib Institute Inc reported a total revenue of $2,959,388 [1][2]. The organization maintains a high program expense ratio of 95.5%, indicating that the vast majority of its resources are directed toward its educational initiatives [1]."
     }
   }
 }

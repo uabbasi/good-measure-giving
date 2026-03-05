@@ -4,7 +4,7 @@ V2 Scorers - GMG Score 2-Dimension Framework (100 points)
 2 scored dimensions + risk deductions + data confidence signal:
 1. ImpactScorer - How much good per dollar, and can they prove it? (50 pts)
 2. AlignmentScorer - Right fit for Muslim donors? (50 pts)
-3. RiskScorer - What could go wrong? (-10 pts max)
+3. RiskScorer - What could go wrong? (-20 pts max)
 4. DataConfidence - How much data do we have? (0.0-1.0, outside score)
 
 Zakat eligibility determines wallet tag only, NOT score.
@@ -451,7 +451,7 @@ TRACK_RECORD_KNOTS = [
     (50, 6),
 ]
 
-# Risk deductions (max -10) per spec
+# Risk deductions (max -20) per spec
 RISK_DEDUCTIONS = {
     "program_ratio_under_50": -5,
     "board_under_3": -5,
@@ -460,6 +460,9 @@ RISK_DEDUCTIONS = {
     "no_outcome_measurement": -2,
     "no_toc": -1,
     "cn_advisory_flag": -3,
+    "gik_inflation": -5,
+    "high_domestic_burn": -5,
+    "zakat_hoarding": -3,
 }
 
 # Legacy constants for backward compatibility
@@ -1973,24 +1976,27 @@ class ZakatScorer:
 
 
 # =============================================================================
-# RiskScorer (-10 pts max deduction)
+# RiskScorer (-20 pts max deduction)
 # =============================================================================
 
 
 class RiskScorer:
-    """Evaluates risks for deduction (-10 points max).
+    """Evaluates risks for deduction (-20 points max).
 
     Size-adjusted: Emerging orgs (<$1M) get no deduction for missing
     TOC or outcomes (already penalized in Credibility). Established
     orgs (>$10M) get full deductions — no excuses at that scale.
 
-    Risk deductions (capped at -10 total):
+    Risk deductions (capped at -20 total):
     - program_ratio_under_50: -5 (ProPublica 990)
     - board_under_3: -5 (ProPublica 990)
     - working_capital_under_1mo: -2 (ProPublica 990)
     - no_outcome_measurement: -2 Established, -1 Growing, 0 Emerging
     - no_toc: -1 Growing/Established, 0 Emerging
     - cn_advisory_flag: -3 (Charity Navigator)
+    - gik_inflation: -5 (Form 990 XML noncash)
+    - high_domestic_burn: -5 (Schedule F)
+    - zakat_hoarding: -3 (Balance Sheet)
 
     Conflict zone operations never penalized.
     """
@@ -2003,6 +2009,9 @@ class RiskScorer:
         risks.extend(self._check_operational_risks(metrics))
         risks.extend(self._check_impact_risks(metrics, tier))
         risks.extend(self._check_governance_risks(metrics))
+        risks.extend(self._check_gik_risk(metrics))
+        risks.extend(self._check_domestic_burn(metrics))
+        risks.extend(self._check_zakat_hoarding(metrics))
 
         total_deduction = self._calculate_deduction(risks, metrics, tier)
         overall_risk_level = self._determine_risk_level(total_deduction)
@@ -2098,6 +2107,103 @@ class RiskScorer:
 
         return risks
 
+    def _check_gik_risk(self, metrics: CharityMetrics) -> list[RiskFactor]:
+        """Check for GIK (gifts-in-kind) inflation risk."""
+        risks = []
+        ratio = metrics.noncash_ratio
+        if ratio is not None:
+            if ratio >= 0.50:
+                risks.append(
+                    RiskFactor(
+                        category=RiskCategory.FINANCIAL,
+                        description=f"GIK inflation: {ratio:.0%} of revenue is noncash contributions",
+                        severity=RiskSeverity.HIGH,
+                        data_source="Form 990 XML",
+                    )
+                )
+            elif ratio >= 0.25:
+                risks.append(
+                    RiskFactor(
+                        category=RiskCategory.FINANCIAL,
+                        description=f"GIK inflation: {ratio:.0%} of revenue is noncash contributions",
+                        severity=RiskSeverity.MEDIUM,
+                        data_source="Form 990 XML",
+                    )
+                )
+        return risks
+
+    def _check_domestic_burn(self, metrics: CharityMetrics) -> list[RiskFactor]:
+        """Check for high domestic burn rate in international orgs."""
+        risks = []
+        rate = metrics.domestic_burn_rate
+        if rate is None:
+            return risks  # Domestic-only org or no data
+        if rate >= 0.70:
+            risks.append(
+                RiskFactor(
+                    category=RiskCategory.FINANCIAL,
+                    description=f"High domestic burn: {rate:.0%} of expenses stay in the US despite international operations",
+                    severity=RiskSeverity.HIGH,
+                    data_source="Form 990 Schedule F",
+                )
+            )
+        elif rate >= 0.50:
+            risks.append(
+                RiskFactor(
+                    category=RiskCategory.FINANCIAL,
+                    description=f"High domestic burn: {rate:.0%} of expenses stay in the US despite international operations",
+                    severity=RiskSeverity.MEDIUM,
+                    data_source="Form 990 Schedule F",
+                )
+            )
+        return risks
+
+    def _check_zakat_hoarding(self, metrics: CharityMetrics) -> list[RiskFactor]:
+        """Check for excessive reserves in zakat-collecting organizations."""
+        risks = []
+        if not metrics.claims_zakat:
+            return risks
+        # Endowment/waqf carve-out
+        if self._is_endowment_model(metrics):
+            return risks
+        # Use the higher of working_capital_ratio and reserves_months
+        wc = metrics.working_capital_ratio
+        rm = metrics.reserves_months
+        months = max(wc or 0, rm or 0)
+        if months <= 0:
+            return risks
+        if months >= 36:
+            risks.append(
+                RiskFactor(
+                    category=RiskCategory.FINANCIAL,
+                    description=f"Zakat-collecting organization holds {months:.0f} months of reserves — zakat must be distributed promptly",
+                    severity=RiskSeverity.HIGH,
+                    data_source="Form 990 / Balance Sheet",
+                )
+            )
+        elif months >= 24:
+            risks.append(
+                RiskFactor(
+                    category=RiskCategory.FINANCIAL,
+                    description=f"Zakat-collecting organization holds {months:.0f} months of reserves — zakat should be distributed promptly",
+                    severity=RiskSeverity.MEDIUM,
+                    data_source="Form 990 / Balance Sheet",
+                )
+            )
+        return risks
+
+    def _is_endowment_model(self, metrics: CharityMetrics) -> bool:
+        """Detect endowment/waqf/scholarship fund models where high reserves are expected."""
+        text = " ".join(
+            [
+                metrics.name,
+                metrics.mission or "",
+                " ".join(metrics.programs),
+            ]
+        ).lower()
+        endowment_signals = ["scholarship", "endowment", "waqf", "grant-making", "grantmaking"]
+        return any(s in text for s in endowment_signals)
+
     def _calculate_deduction(self, risks: list[RiskFactor], metrics: CharityMetrics, tier: str = "GROWING") -> int:  # noqa: ARG002
         """Calculate total risk deduction, tier-adjusted.
 
@@ -2107,7 +2213,8 @@ class RiskScorer:
         """
         total = 0
 
-        ratio = metrics.program_expense_ratio
+        # Program ratio check — use cash-adjusted ratio when GIK is significant
+        ratio = metrics.cash_adjusted_program_ratio or metrics.program_expense_ratio
         if ratio is not None and ratio >= 0.01 and ratio < 0.50:
             total += RISK_DEDUCTIONS["program_ratio_under_50"]
 
@@ -2135,14 +2242,38 @@ class RiskScorer:
         if any("advisory" in b or "concern" in b for b in cn_beacons):
             total += RISK_DEDUCTIONS["cn_advisory_flag"]
 
-        return max(-10, total)
+        # GIK inflation
+        noncash_ratio = metrics.noncash_ratio
+        if noncash_ratio is not None:
+            if noncash_ratio >= 0.50:
+                total += RISK_DEDUCTIONS["gik_inflation"]  # -5
+            elif noncash_ratio >= 0.25:
+                total += -2  # MEDIUM severity
+
+        # Domestic burn rate (international orgs only)
+        burn = metrics.domestic_burn_rate
+        if burn is not None:
+            if burn >= 0.70:
+                total += RISK_DEDUCTIONS["high_domestic_burn"]  # -5
+            elif burn >= 0.50:
+                total += -2  # MEDIUM severity
+
+        # Zakat reserve hoarding
+        if metrics.claims_zakat and not self._is_endowment_model(metrics):
+            months = max(metrics.working_capital_ratio or 0, metrics.reserves_months or 0)
+            if months >= 36:
+                total += RISK_DEDUCTIONS["zakat_hoarding"]  # -3
+            elif months >= 24:
+                total += -2  # MEDIUM severity
+
+        return max(-20, total)
 
     def _determine_risk_level(self, deduction: int) -> str:
-        if deduction <= -8:
+        if deduction <= -12:
             return "HIGH"
-        elif deduction <= -5:
+        elif deduction <= -8:
             return "ELEVATED"
-        elif deduction <= -2:
+        elif deduction <= -3:
             return "MODERATE"
         return "LOW"
 
@@ -2284,7 +2415,7 @@ class AmalScorerV2:
     Produces AmalScoresV2 with:
     - Impact (50 pts): How much good per dollar, and can they prove it?
     - Alignment (50 pts): Right fit for Muslim donors?
-    - Risk (-10 pts max): What could go wrong?
+    - Risk (-20 pts max): What could go wrong?
     - Data Confidence (0.0-1.0): How much data do we have? (outside score)
 
     Zakat eligibility determines wallet tag ONLY.
@@ -2460,7 +2591,9 @@ class AmalScorerV2:
 
         zakat_note = ", with zakat compliance" if wallet_tag == "ZAKAT-ELIGIBLE" else ""
         caveat = ""
-        if risk_deduction < -5:
+        if risk_deduction < -10:
+            caveat = " (major risk deductions applied)"
+        elif risk_deduction < -5:
             caveat = " (significant risk deductions applied)"
         elif risk_deduction < 0:
             caveat = " (minor risk deductions applied)"

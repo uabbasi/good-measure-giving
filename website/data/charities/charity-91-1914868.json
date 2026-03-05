@@ -56,7 +56,10 @@
     "totalAssets": 565862638,
     "totalLiabilities": 135109593,
     "netAssets": 430753045,
-    "workingCapitalMonths": "15.60"
+    "workingCapitalMonths": "15.60",
+    "noncashRatio": 0.18659462740218427,
+    "cashAdjustedProgramRatio": 0.8397573849881289,
+    "domesticBurnRate": 0.8452518052927002
   },
   "baselineGovernance": {
     "boardSize": 23,
@@ -91,7 +94,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-02-28 17:46:51",
+  "lastUpdated": "2026-03-04 19:20:15",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -7065,7 +7068,7 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Promising",
     "archetype_code": "ASSET_CREATION",
     "archetype_label": "Asset Creator",
@@ -7081,10 +7084,21 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "domestic_burn",
+      "severity": "high",
+      "headline": "85% of expenses stay in the US despite international operations",
+      "detail": "Organization claims foreign operations but most spending remains domestic.",
+      "data_points": {
+        "domestic_burn_rate": 0.845
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "91-1914868",
     "charity_name": "Habitat for Humanity International",
-    "amal_score": 73,
+    "amal_score": 68,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:36:54",
     "rubric_version": "5.0.0",
@@ -7230,10 +7244,10 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 39
       },
-      "risk_deduction": -2,
+      "risk_deduction": -7,
       "risks": {
         "overall_risk_level": "MODERATE",
-        "risk_summary": "1 risk(s) identified.",
+        "risk_summary": "Key concern: High domestic burn: 85% of expenses stay in the US despite international operations",
         "risks": [
           {
             "category": "impact",
@@ -7241,11 +7255,18 @@
             "description": "No outcome measurement or metrics tracking",
             "mitigation": null,
             "severity": "medium"
+          },
+          {
+            "category": "financial",
+            "data_source": "Form 990 Schedule F",
+            "description": "High domestic burn: 85% of expenses stay in the US despite international operations",
+            "mitigation": null,
+            "severity": "high"
           }
         ],
-        "total_deduction": -2
+        "total_deduction": -7
       },
-      "score_summary": "Habitat for Humanity International Inc shows strong impact and strong alignment (minor risk deductions applied).",
+      "score_summary": "Habitat for Humanity International Inc shows strong impact and strong alignment (significant risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -7257,52 +7278,64 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization manages significant program transfers and microfinance loans to support housing.",
+          "claim": "The organization manages program transfers and loans to microfinance institutions as part of its core mission.",
           "id": "[1]",
           "source_name": "Financial Statement (2023)",
           "source_url": "https://www.habitat.org/media/21371/view"
         },
         {
-          "claim": "The charity provides multiple giving methods for general charitable donations.",
+          "claim": "Audited financials confirm the scale of housing programs and international transfers.",
+          "id": "[2]",
+          "source_name": "Financial Statement (2024)",
+          "source_url": "https://www.habitat.org/media/27061/download"
+        },
+        {
+          "claim": "The charity utilizes donated products and advertising to support its community rebuilding efforts.",
+          "id": "[3]",
+          "source_name": "Financial Statement (2022)",
+          "source_url": "https://www.habitat.org/media/12866/view"
+        },
+        {
+          "claim": "Donors can contribute to the organization's mission through various giving methods, including general charitable donations (sadaqah).",
           "id": "[6]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.habitat.org/donate"
         },
         {
-          "claim": "The organization offers global engagement opportunities for volunteers to support its mission.",
+          "claim": "The organization provides engagement opportunities through its Global Village volunteer program.",
           "id": "[7]",
           "source_name": "Charity Website - Volunteer",
           "source_url": "https://www.habitat.org/volunteer/travel-and-build/global-village/about-your-program-donation"
         },
         {
-          "claim": "The organization reported a Total Revenue of $329,195,153.",
+          "claim": "The organization reported total revenue of $329,195,153 and a program expense ratio of 77.5%.",
           "id": "[8]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/911914868"
         },
         {
-          "claim": "The charity earned a 98.5/100 score, with a 77.5% program expense Ratio, 15.6 months of working capital, and a Fundraising Efficiency of $0.21 per $1 raised.",
+          "claim": "The charity holds a 98.5/100 score with 15.6 months of working capital and a fundraising efficiency of $0.21 per $1 raised.",
           "id": "[9]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/911914868#financials"
         }
       ],
-      "amal_score_rationale": "With a GMG Score of 73/100, the organization demonstrates strong financial health and a proven track record in addressing extreme poverty through direct housing services.",
+      "amal_score_rationale": "The organization earns a GMG score of 68/100, reflecting a high level of data confidence and exceptional financial health, though impact scores are moderated by the high cost-per-beneficiary inherent in construction services.",
       "areas_for_improvement": [
-        "Increasing the program expense ratio to allocate more than 77.5% toward direct services",
-        "Enhancing transparency regarding specific cost-per-beneficiary metrics across diverse global programs"
+        "Enhancing program expense allocation to exceed the current 77.5% ratio",
+        "Increasing direct service impact metrics to improve overall cost-per-beneficiary efficiency"
       ],
       "dimension_explanations": {
-        "alignment": "Scoring 36/50 in alignment, the charity addresses the urgent cause of extreme poverty through sustainable housing [9]. While it is SADAQAH-ELIGIBLE, it offers various ways for donors to engage with its mission of community recovery [6][7].",
-        "impact": "The organization maintains a high impact score of 39/50, driven by its direct service model and a program expense ratio of 77.5% [1][9]. Its financial stability is underscored by 15.6 months of working capital, ensuring long-term program continuity [9]."
+        "alignment": "Habitat for Humanity addresses extreme poverty through housing, a cause of high urgency, and offers various ways for supporters to contribute via sadaqah or volunteerism [6][7]. The organization's long-standing track record in disaster response and homeownership advocacy aligns well with donors seeking established, direct-service interventions [1][3].",
+        "impact": "The organization maintains a program expense ratio of 77.5%, directing the majority of its $329,195,153 revenue toward direct services like microfinance loans and house building transfers [1][8]. While the cost per beneficiary is calculated at approximately 95.59, the high data confidence of 0.79 ensures that financial claims are well-verified through audited statements [2][9]."
       },
-      "headline": "Habitat for Humanity International Inc works to rebuild communities and provide stable housing solutions for families moving from ruin to recovery.",
+      "headline": "Habitat for Humanity International Inc works to rebuild communities by moving families from ruin to recovery through sustainable housing solutions.",
       "strengths": [
         "High financial accountability with a Charity Navigator score of 98.5/100",
         "Strong liquidity with 15.6 months of working capital available",
-        "Efficient fundraising operations costing only $0.21 per $1 raised"
+        "Efficient fundraising operations, spending only $0.21 to raise every $1"
       ],
-      "summary": "Habitat for Humanity International Inc is a global housing organization that reported a Total Revenue of $329,195,153 in its most recent fiscal year [8]. The organization focuses on disaster response and long-term housing stability through programs like Advancing Black Homeownership and Home Equals [9]."
+      "summary": "Habitat for Humanity International Inc is a global housing organization that reported a total revenue of $329,195,153 to support its mission of community revitalization [8][9]. The organization operates specialized programs including Disaster Response, Advancing Black Homeownership, and the Home Equals initiative to address housing inequity and recovery needs [1][2]."
     }
   }
 }

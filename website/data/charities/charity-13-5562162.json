@@ -53,7 +53,10 @@
     "totalAssets": 165507180,
     "totalLiabilities": 19728348,
     "netAssets": 145778832,
-    "workingCapitalMonths": "18.60"
+    "workingCapitalMonths": "18.60",
+    "noncashRatio": 0.0014082001353527024,
+    "cashAdjustedProgramRatio": null,
+    "domesticBurnRate": 0.7517765557313358
   },
   "baselineGovernance": {
     "boardSize": 31,
@@ -100,7 +103,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-02-28 17:47:05",
+  "lastUpdated": "2026-03-04 19:20:26",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -2988,7 +2991,7 @@
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
-    "config_hash": "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f",
+    "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Promising",
     "archetype_code": "RESILIENCE",
     "archetype_label": "Community Resilience",
@@ -2997,17 +3000,28 @@
       "evidence": "Strong",
       "financial_health": "Moderate",
       "donor_fit": "Strong",
-      "risk": "Strong"
+      "risk": "Moderate"
     },
     "recommendation_cue": "Good Match",
     "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
     "used_fallback": false,
     "fallback_reasons": null
   },
+  "keyConcerns": [
+    {
+      "type": "domestic_burn",
+      "severity": "high",
+      "headline": "75% of expenses stay in the US despite international operations",
+      "detail": "Organization claims foreign operations but most spending remains domestic.",
+      "data_points": {
+        "domestic_burn_rate": 0.752
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "13-5562162",
     "charity_name": "Helen Keller International",
-    "amal_score": 70,
+    "amal_score": 65,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:08:22",
     "rubric_version": "5.0.0",
@@ -3153,14 +3167,22 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 33
       },
-      "risk_deduction": 0,
+      "risk_deduction": -5,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "Key concern: High domestic burn: 75% of expenses stay in the US despite international operations",
+        "risks": [
+          {
+            "category": "financial",
+            "data_source": "Form 990 Schedule F",
+            "description": "High domestic burn: 75% of expenses stay in the US despite international operations",
+            "mitigation": null,
+            "severity": "high"
+          }
+        ],
+        "total_deduction": -5
       },
-      "score_summary": "Helen Keller International shows strong alignment and good impact.",
+      "score_summary": "Helen Keller International shows strong alignment and good impact (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -3172,46 +3194,52 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization holds a 99.5/100 rating and focuses on protecting vision and enhancing nutrition.",
+          "claim": "Helen Keller International holds a 99.5/100 score for financial health and accountability.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/135562162#financials"
         },
         {
-          "claim": "Total revenue reached $145,494,796 with a program expense ratio of 82.8%.",
+          "claim": "The organization reported total revenue of $145,494,796.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/135562162"
         },
         {
-          "claim": "The organization distributes donated medicines and operates systemic health care programs.",
+          "claim": "The charity maintains a program expense ratio of 82.8%.",
+          "id": "[6]",
+          "source_name": "Form 990 (2024)",
+          "source_url": "https://helenkellerintl.org/wp-content/uploads/2025/02/HKI-Financial-Statements-FY24.pdf"
+        },
+        {
+          "claim": "The organization manages significant distributions of donated medicines to combat neglected tropical diseases.",
           "id": "[7]",
           "source_name": "Form 990 (2023)",
           "source_url": "http://helenkellerintl.org/wp-content/uploads/2024/08/FY23_HKI-Financial-Statements-FINAL.pdf"
         },
         {
-          "claim": "The organization accepts general charitable donations and sadaqah for its global health initiatives.",
+          "claim": "The organization is a suitable recipient for general charitable giving and sadaqah.",
           "id": "[8]",
           "source_name": "Charity Website - Donate",
           "source_url": "http://helenkellerintl.org/wp-content/uploads/2024/08/FY23_HKI-Financial-Statements-FINAL.pdf"
         }
       ],
-      "amal_score_rationale": "With a Charity Navigator score of 99.5/100 and a high data confidence level, the organization demonstrates elite financial health and transparency for sadaqah-eligible giving.",
+      "amal_score_rationale": "The organization earns a strong overall rating due to its elite financial health metrics and high data confidence, though its impact score reflects the complex, high-cost nature of systemic health reform.",
       "areas_for_improvement": [
-        "High cost per beneficiary for specific systemic interventions compared to high-volume emergency aid",
-        "Complexity of scaling systemic change programs across diverse international regulatory environments"
+        "High cost per beneficiary for specific systemic change interventions",
+        "Reliance on large-scale in-kind medicine donations which can fluctuate annually"
       ],
       "dimension_explanations": {
-        "alignment": "Helen Keller International shows high alignment for donors interested in global health and nutrition, maintaining a strong track record of accountability and transparency [1][8]. The organization is a suitable choice for those seeking to provide sadaqah toward urgent global health causes [8].",
-        "impact": "The organization achieves systemic change by integrating vision and nutrition services into existing health systems, though the cost per beneficiary is $2063.76 due to the long-term nature of these interventions [1][7]. Its financial health is evidenced by a total revenue of $145,494,796 and a strong program expense ratio of 82.8% [2]."
+        "alignment": "With an alignment score of 37/50, the charity represents a high donor fit for those interested in global health and sadaqah-eligible giving [8]. Its long track record of saving sight and improving nutrition aligns with urgent global health priorities and provides a reliable pathway for charitable contributions [1][6].",
+        "impact": "The organization demonstrates a moderate impact score of 33/50, focusing on systemic change rather than simple short-term fixes [1]. While the cost per beneficiary is calculated at 2063.759788048278, the charity successfully manages a total revenue of $145,494,796 to distribute life-saving medicines and nutritional supplements [2][7]."
       },
-      "headline": "Helen Keller International honors its founder's legacy by combating the causes and consequences of blindness and malnutrition through evidence-based global health interventions.",
+      "headline": "Helen Keller International combats preventable blindness and malnutrition through evidence-based health interventions across the globe.",
       "strengths": [
         "Exceptional financial efficiency with a fundraising cost of only $0.03 per $1 raised",
-        "High program expense ratio of 82.8% ensuring the majority of funds reach beneficiaries",
+        "High transparency and accountability reflected in a 99.99.5/100 from Charity Navigator score",
         "Robust liquidity with 18.6 months of working capital available"
       ],
-      "summary": "founded in 1915, Helen Keller International works across the globe to protect vision and enhance nutrition for vulnerable populations [1]. The organization operates large-scale programs including the US Vision Program and international health initiatives focused on saving sight and improving long-term health outcomes [2][7]."
+      "summary": "Founded to carry on the legacy of its namesake, Helen Keller International focuses on protecting vision and enhancing nutrition for vulnerable populations [1]. The organization operates large-scale programs including the US Vision Program and global health initiatives that integrate vitamin A supplementation and treatments for neglected tropical diseases [2][7]."
     }
   }
 }
