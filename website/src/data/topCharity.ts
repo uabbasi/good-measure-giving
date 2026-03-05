@@ -21,7 +21,7 @@ interface FeaturedCharityData extends CharityProfile {
 export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
   "name": "Obat Helpers",
   "ein": "47-0946122",
-  "headline": "OBAT Helpers Inc. empowers marginalized communities through integrated education, healthcare, and poverty alleviation initiatives.",
+  "headline": "OBAT Helpers Inc. provides critical empowerment and healthcare initiatives to lift displaced communities out of poverty.",
   "amalEvaluation": {
     "amal_score": 89,
     "confidence_scores": {
@@ -195,5 +195,5 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
       }
     }
   },
-  "impactHighlight": "OBAT Helpers Inc. empowers marginalized communities through integrated education, healthcare, and poverty alleviation initiatives."
+  "impactHighlight": "OBAT Helpers Inc. provides critical empowerment and healthcare initiatives to lift displaced communities out of poverty."
 };

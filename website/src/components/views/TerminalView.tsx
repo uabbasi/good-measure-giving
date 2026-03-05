@@ -374,6 +374,64 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
   const uiSignals = charity.ui_signals_v1 || deriveUISignalsFromCharity(charity);
   const amalScore = amal?.amal_score || 0;
   const donateUrl = charity.donationUrl ?? charity.website ?? undefined;
+  const keyConcerns = charity.keyConcerns ?? [];
+
+  // Key Concerns render helper
+  const renderKeyConcerns = (concerns: typeof keyConcerns) => {
+    if (!concerns.length) return null;
+    return (
+      <div className="space-y-2">
+        {concerns.map((concern, i) => {
+          const isHigh = concern.severity === 'high';
+          const borderColor = isHigh
+            ? (isDark ? 'border-red-500/60' : 'border-red-400')
+            : (isDark ? 'border-amber-500/50' : 'border-amber-400');
+          const bgColor = isHigh
+            ? (isDark ? 'bg-red-950/30' : 'bg-red-50')
+            : (isDark ? 'bg-amber-950/20' : 'bg-amber-50');
+          const iconColor = isHigh
+            ? (isDark ? 'text-red-400' : 'text-red-600')
+            : (isDark ? 'text-amber-400' : 'text-amber-600');
+          const headlineColor = isHigh
+            ? (isDark ? 'text-red-300' : 'text-red-800')
+            : (isDark ? 'text-amber-300' : 'text-amber-800');
+
+          return (
+            <div key={i} className={`rounded-lg border-2 ${borderColor} ${bgColor} p-3`}>
+              <div className={`flex items-start gap-2`}>
+                <AlertTriangle className={`w-4 h-4 mt-0.5 flex-shrink-0 ${iconColor}`} />
+                <div className="flex-1 min-w-0">
+                  <div className={`text-sm font-semibold ${headlineColor}`}>
+                    {concern.headline}
+                  </div>
+                  <div className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    {concern.detail}
+                  </div>
+                  {/* Data points */}
+                  {concern.data_points && Object.keys(concern.data_points).length > 0 && (
+                    <div className={`flex flex-wrap gap-3 mt-2 text-xs font-mono ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
+                      {concern.type === 'gik_inflation' && concern.data_points.noncash_ratio != null && (
+                        <span>Noncash: {(concern.data_points.noncash_ratio * 100).toFixed(0)}%</span>
+                      )}
+                      {concern.type === 'gik_inflation' && concern.data_points.cash_adjusted_program_ratio != null && (
+                        <span>Cash-adj program ratio: {(concern.data_points.cash_adjusted_program_ratio * 100).toFixed(0)}%</span>
+                      )}
+                      {concern.type === 'domestic_burn' && concern.data_points.domestic_burn_rate != null && (
+                        <span>Domestic spend: {(concern.data_points.domestic_burn_rate * 100).toFixed(0)}%</span>
+                      )}
+                      {concern.type === 'zakat_hoarding' && concern.data_points.reserves_months != null && (
+                        <span>Reserves: {concern.data_points.reserves_months.toFixed(0)} months</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-slate-950' : 'bg-slate-100'}`}>
@@ -607,7 +665,14 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             {programRatio > 0 && (
               <div className="flex items-center gap-2">
                 <CheckCircle2 className={`w-4 h-4 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
-                <span>{programRatio.toFixed(0)}% to programs{rawProgramRatio > 100 ? ' (incl. in-kind)' : ''}</span>
+                <span>
+                  {programRatio.toFixed(0)}% to programs{rawProgramRatio > 100 ? ' (incl. in-kind)' : ''}
+                  {financials?.cashAdjustedProgramRatio != null && (
+                    <span className={`ml-1 text-xs ${isDark ? 'text-amber-400' : 'text-amber-600'}`}>
+                      ({(financials.cashAdjustedProgramRatio * 100).toFixed(0)}% cash-adj)
+                    </span>
+                  )}
+                </span>
               </div>
             )}
             {revenue && (
@@ -799,6 +864,19 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
 
           return null;
         })()}
+
+        {/* === Mobile: Key Concerns (data-driven red flags) === */}
+        {keyConcerns.length > 0 && (
+          <div className="mb-4">
+            <div className={`text-xs uppercase tracking-widest font-semibold mb-2 flex items-center gap-2 ${
+              isDark ? 'text-red-400' : 'text-red-700'
+            }`}>
+              <AlertTriangle className="w-3.5 h-3.5" />
+              Key Concerns
+            </div>
+            {renderKeyConcerns(keyConcerns)}
+          </div>
+        )}
 
         {/* === Mobile: Things to Know (before Best For) === */}
         {rich?.case_against && (isSignedIn ? (
@@ -999,7 +1077,14 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                         <span className="w-2 h-2 rounded-full bg-emerald-500" />
                         Programs
                       </span>
-                      <span className="font-mono">{programRatio.toFixed(0)}%</span>
+                      <span className="font-mono">
+                        {programRatio.toFixed(0)}%
+                        {financials?.cashAdjustedProgramRatio != null && (
+                          <span className={`ml-1 text-xs ${isDark ? 'text-amber-400' : 'text-amber-600'}`}>
+                            ({(financials.cashAdjustedProgramRatio * 100).toFixed(0)}% cash-adj)
+                          </span>
+                        )}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="flex items-center gap-2">
@@ -1647,6 +1732,19 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
 
             return null;
           })()}
+
+          {/* === Key Concerns (data-driven red flags) === */}
+          {keyConcerns.length > 0 && (
+            <div className="mb-6">
+              <div className={`text-xs uppercase tracking-widest font-semibold mb-3 flex items-center gap-2 ${
+                isDark ? 'text-red-400' : 'text-red-700'
+              }`}>
+                <AlertTriangle className="w-4 h-4" />
+                Key Concerns
+              </div>
+              {renderKeyConcerns(keyConcerns)}
+            </div>
+          )}
 
           {/* === Things to Know (before Best For) === */}
           {rich?.case_against && (isSignedIn ? (

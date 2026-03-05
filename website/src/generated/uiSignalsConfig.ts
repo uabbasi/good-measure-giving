@@ -51,9 +51,9 @@ export const uiSignalsConfig = {
     "risk": {
       "governance_strong_min": 0.6,
       "governance_moderate_min": 0.4,
-      "deduction_moderate_min": -3,
+      "deduction_moderate_min": -5,
       "deduction_moderate_max": -1,
-      "deduction_limited_max": -4
+      "deduction_limited_max": -8
     }
   },
   "recommendation_cue": {
@@ -82,4 +82,4 @@ export const uiSignalsConfig = {
   }
 } as const;
 export const UI_SIGNALS_CONFIG_VERSION = "2026-02-15";
-export const UI_SIGNALS_CONFIG_HASH = "sha256:72039be2a4983ac8d58fe0e5660161ad2d33b63cd85ef041c372f5156192690f";
+export const UI_SIGNALS_CONFIG_HASH = "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd";

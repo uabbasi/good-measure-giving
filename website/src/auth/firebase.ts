@@ -8,7 +8,19 @@ import { getFirestore } from 'firebase/firestore';
 
 const config = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  authDomain: (() => {
+    const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
+    const requestedAuthDomain = import.meta.env.VITE_FIREBASE_AUTH_DOMAIN;
+    const defaultAuthDomain = projectId ? `${projectId}.firebaseapp.com` : undefined;
+    const useCustomAuthDomainProxy = import.meta.env.VITE_FIREBASE_USE_CUSTOM_AUTH_DOMAIN === 'true';
+
+    // Custom auth domains require /__/auth/* proxying in the active deploy target.
+    // Fall back to Firebase-hosted auth unless explicitly opted in.
+    if (!requestedAuthDomain) return defaultAuthDomain;
+    if (requestedAuthDomain.endsWith('.firebaseapp.com')) return requestedAuthDomain;
+    if (useCustomAuthDomainProxy) return requestedAuthDomain;
+    return defaultAuthDomain ?? requestedAuthDomain;
+  })(),
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
