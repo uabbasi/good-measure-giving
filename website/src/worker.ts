@@ -1,7 +1,12 @@
 /**
  * Worker entry point:
  * 1. Proxies /__/auth/* to Firebase (same-origin auth for Safari)
- * 2. All other requests handled by Cloudflare's asset serving + SPA fallback
+ * 2. Serves static assets from dist/
+ * 3. Falls back to /index.html for SPA client-side routing
+ *
+ * wrangler not_found_handling must be "none" so the assets layer doesn't
+ * intercept /__/auth/* navigation requests before the Worker runs.
+ * We handle SPA fallback here by fetching /index.html explicitly.
  */
 
 interface Env {
@@ -32,7 +37,21 @@ export default {
       });
     }
 
-    // Everything else: static assets + SPA fallback (handled by wrangler config)
-    return env.ASSETS.fetch(request);
+    // Serve static assets; fall back to /index.html for SPA routing
+    try {
+      const response = await env.ASSETS.fetch(request);
+      if (response.ok || response.status === 304) {
+        return response;
+      }
+    } catch {
+      // Assets throws for non-existent paths when not_found_handling is "none"
+    }
+
+    // SPA fallback: serve /index.html for any unmatched route
+    const indexRequest = new Request(new URL('/index.html', url), {
+      method: 'GET',
+      headers: request.headers,
+    });
+    return env.ASSETS.fetch(indexRequest);
   },
 };
