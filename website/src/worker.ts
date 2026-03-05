@@ -1,12 +1,7 @@
 /**
  * Worker entry point:
  * 1. Proxies /__/auth/* to Firebase (same-origin auth for Safari)
- * 2. Serves static assets from dist/
- * 3. Falls back to index.html for SPA client-side routing
- *
- * We handle SPA fallback here instead of wrangler's not_found_handling
- * because that setting intercepts navigation requests before the Worker
- * runs, which prevents the auth proxy from working.
+ * 2. All other requests handled by Cloudflare's asset serving + SPA fallback
  */
 
 interface Env {
@@ -37,16 +32,7 @@ export default {
       });
     }
 
-    // Try serving the static asset; fall back to index.html for SPA routing
-    try {
-      const response = await env.ASSETS.fetch(request);
-      if (response.status >= 400) {
-        return env.ASSETS.fetch(new URL('/', url).toString());
-      }
-      return response;
-    } catch {
-      // Assets handler may throw for non-existent paths
-      return env.ASSETS.fetch(new URL('/', url).toString());
-    }
+    // Everything else: static assets + SPA fallback (handled by wrangler config)
+    return env.ASSETS.fetch(request);
   },
 };
