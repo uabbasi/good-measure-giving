@@ -16,7 +16,7 @@ import {
 } from 'firebase/auth';
 import { auth, isConfigured } from './firebase';
 import { useAuth } from './useAuth';
-import { trackSignIn } from '../utils/analytics';
+import { trackSignIn, trackSignInError } from '../utils/analytics';
 
 interface SignInButtonProps {
   variant?: 'default' | 'compact' | 'button' | 'custom';
@@ -113,9 +113,10 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
         await signInWithPopup(auth, provider);
       }
     } catch (err: unknown) {
-      const code = (err as { code?: string })?.code;
+      const code = (err as { code?: string })?.code ?? 'unknown';
       if (code === 'auth/popup-closed-by-user') return;
       console.error('Sign-in error:', err);
+      trackSignInError('google', code);
       setSignInError('Something went wrong. Please try again or use a different method.');
     }
   };
@@ -135,9 +136,10 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
         await signInWithPopup(auth, provider);
       }
     } catch (err: unknown) {
-      const code = (err as { code?: string })?.code;
+      const code = (err as { code?: string })?.code ?? 'unknown';
       if (code === 'auth/popup-closed-by-user') return;
       console.error('Apple sign-in error:', err);
+      trackSignInError('apple', code);
       setSignInError(
         code === 'auth/operation-not-allowed'
           ? 'Apple sign-in is not available. Please use Google or email.'
@@ -163,8 +165,9 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
         await signInWithEmailAndPassword(auth, email, password);
       }
     } catch (err: unknown) {
-      const code = (err as { code?: string })?.code;
+      const code = (err as { code?: string })?.code ?? 'unknown';
       console.error('Email sign-in error:', err);
+      trackSignInError('email', code);
       if (code === 'auth/user-not-found' || code === 'auth/invalid-credential') {
         setSignInError('No account found. Create one instead?');
         setIsNewAccount(true);

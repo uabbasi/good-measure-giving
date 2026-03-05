@@ -6,7 +6,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, getRedirectResult, User } from 'firebase/auth';
 import { Firestore } from 'firebase/firestore';
 import { auth, db, isConfigured } from './firebase';
-import { trackSignInSuccess } from '../utils/analytics';
+import { trackSignInSuccess, trackSignInError } from '../utils/analytics';
 
 interface FirebaseAuthContextType {
   user: User | null;
@@ -51,6 +51,8 @@ export const FirebaseProvider: React.FC<Props> = ({ children }) => {
     // Handle pending redirect sign-in (mobile flow)
     getRedirectResult(auth).catch((err) => {
       console.error('Redirect sign-in error:', err);
+      const code = (err as { code?: string })?.code ?? 'redirect_error';
+      trackSignInError('google', code); // provider unknown at this point
     });
 
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {

@@ -290,6 +290,21 @@ export function trackSignIn(provider: 'google' | 'apple' | 'email'): void {
 }
 
 /**
+ * Track sign-in errors (fired from catch blocks in auth flows)
+ */
+export function trackSignInError(provider: 'google' | 'apple' | 'email', errorCode: string): void {
+  const flow = getFlowData();
+
+  safeGtag('event', 'sign_in_error', {
+    method: provider,
+    error_code: errorCode,
+    flow_id: flow.flowId,
+    flow_path: flow.flowPath,
+    flow_step: flow.flowStep,
+  });
+}
+
+/**
  * Track successful sign-ins (fired from auth state change)
  * @param provider - OAuth provider (google, apple, etc.)
  * @param authType - 'signup' for new users, 'login' for returning users
