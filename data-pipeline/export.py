@@ -1693,7 +1693,16 @@ def export_charity(
         ui_signals_v1=ui_signals_v1,
     )
 
-    # Build detail
+    # Run export quality gate before writing files.
+    # Prevents invalid artifacts from being persisted to disk.
+    quality_passed, quality_issues = run_export_quality_check(summary)
+    if not quality_passed:
+        result["summary"] = summary
+        result["quality_issues"] = quality_issues
+        result["error"] = "Export quality check failed"
+        return result
+
+    # Build detail only after summary passes quality checks.
     detail = build_charity_detail(
         charity,
         charity_data,
@@ -1712,6 +1721,7 @@ def export_charity(
         json.dump(detail, f, indent=2, default=str)
 
     result["summary"] = summary
+    result["quality_issues"] = quality_issues
     result["detail_file"] = str(charity_file)
     result["tier"] = summary["tier"]
     result["success"] = True

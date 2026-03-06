@@ -148,7 +148,8 @@ class EvidenceDiscoveryService:
             return discovery
 
         except Exception as e:
-            logger.error(f"Evidence discovery failed for {charity_name}: {e}")
+            error_msg = f"Evidence discovery failed for {charity_name}: {e}"
+            logger.error(error_msg)
             return EvidenceDiscovery(
                 third_party_evaluated=False,
                 evaluators=[],
@@ -156,6 +157,7 @@ class EvidenceDiscoveryService:
                 confidence=0.0,
                 source_count=0,
                 cost_usd=0.0,
+                error=error_msg,
             )
 
     def _parse_response(

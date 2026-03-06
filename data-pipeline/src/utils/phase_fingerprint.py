@@ -69,6 +69,9 @@ PHASE_CODE_FILES: dict[str, list[str]] = {
         # Dependencies that affect output
         "src/services/zakat_eligibility_service.py",
         "src/llm/category_classifier.py",
+        "src/scorers/strategic_classifier.py",
+        "src/scorers/strategic_evidence.py",
+        "src/utils/deep_link_resolver.py",
         "src/validators/source_required_validator.py",
     ],
     "baseline": [

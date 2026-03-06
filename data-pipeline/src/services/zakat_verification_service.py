@@ -72,6 +72,7 @@ class ZakatVerification:
     source_count: int
     cost_usd: float
     direct_page_verified: bool = False  # True if verified via direct HTTP check (not LLM)
+    error: Optional[str] = None  # Set when service execution/parsing fails
 
     def to_dict(self) -> ZakatDict:
         """Convert to dictionary for storage."""
@@ -226,6 +227,7 @@ class ZakatVerificationService:
 
         llm_cost = 0.0
         verification = None
+        llm_error: Optional[str] = None
 
         try:
             # Stage 1: Perform search-grounded query
@@ -249,7 +251,8 @@ class ZakatVerificationService:
             )
 
         except Exception as e:
-            logger.error(f"Zakat verification (LLM) failed for {charity_name}: {e}")
+            llm_error = f"Zakat verification (LLM) failed for {charity_name}: {e}"
+            logger.error(llm_error)
 
         # Stage 2: Direct URL check
         # Run always when we have a website URL:
@@ -273,6 +276,7 @@ class ZakatVerificationService:
                     source_count=1,
                     cost_usd=llm_cost,
                     direct_page_verified=True,  # Verified via direct HTTP check
+                    error=None,
                 )
 
         # Return LLM result if we have one
@@ -289,6 +293,7 @@ class ZakatVerificationService:
             source_count=0,
             cost_usd=0.0,
             direct_page_verified=False,
+            error=llm_error or "Zakat verification failed",
         )
 
     def _parse_response(
@@ -322,7 +327,8 @@ class ZakatVerificationService:
         try:
             data = json.loads(text)
         except json.JSONDecodeError as e:
-            logger.warning(f"Failed to parse zakat response JSON: {e}")
+            error_msg = f"Failed to parse zakat response JSON for {charity_name}: {e}"
+            logger.warning(error_msg)
             logger.debug(f"Raw response: {result.text[:500]}")
             # D-005: Safer heuristic - require explicit "accepts_zakat": true pattern
             # to avoid misinterpreting negations like "does not accept zakat is true"
@@ -337,6 +343,7 @@ class ZakatVerificationService:
                 confidence=0.3,
                 source_count=result.source_count,
                 cost_usd=result.cost_usd,
+                error=error_msg,
             )
 
         # Extract fields

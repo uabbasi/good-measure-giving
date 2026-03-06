@@ -20,11 +20,13 @@ import json
 import os
 import subprocess
 import sys
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 from threading import Lock
+from typing import Any
 
 from dotenv import load_dotenv
 
@@ -135,6 +137,162 @@ PHASE_QUALITY_JUDGES = {
     "rich": RichQualityJudge,
     "export": ExportQualityJudge,
 }
+
+_worker_resources_lock = Lock()
+_worker_resources: dict[int, dict[str, Any]] = {}
+
+
+def _build_extract_collectors(logger: PipelineLogger) -> dict[str, Any]:
+    """Build collector instances used by extract phase parsing."""
+    collectors: dict[str, Any] = {}
+    for source, cls in COLLECTORS.items():
+        if source == "website":
+            collectors[source] = cls(logger=logger, use_llm=False)
+        else:
+            collectors[source] = cls(logger=logger)
+    return collectors
+
+
+def _create_worker_resources(logger: PipelineLogger, llm_model: str) -> dict[str, Any]:
+    """Create per-worker resources to avoid cross-thread shared mutable state."""
+    return {
+        "orchestrator": DataCollectionOrchestrator(
+            logger=logger,
+            max_pdf_downloads=5,
+        ),
+        "collectors": _build_extract_collectors(logger),
+        "charity_repo": CharityRepository(),
+        "raw_repo": RawDataRepository(),
+        "data_repo": CharityDataRepository(),
+        "eval_repo": EvaluationRepository(),
+        "cache_repo": PhaseCacheRepository(),
+        "llm_client": LLMClient(model=llm_model, logger=logger),
+        "scorer": AmalScorerV2(),
+    }
+
+
+def _get_worker_resources(logger: PipelineLogger, llm_model: str) -> dict[str, Any]:
+    """Get or lazily create worker-local resources for the current thread."""
+    worker_id = threading.get_ident()
+    with _worker_resources_lock:
+        resources = _worker_resources.get(worker_id)
+        if resources is not None:
+            return resources
+
+    resources = _create_worker_resources(logger, llm_model)
+    with _worker_resources_lock:
+        _worker_resources[worker_id] = resources
+    return resources
+
+
+def _cleanup_worker_resources() -> None:
+    """Cleanup worker-local resources after all threaded work completes."""
+    with _worker_resources_lock:
+        resources_list = list(_worker_resources.values())
+        _worker_resources.clear()
+
+    for resources in resources_list:
+        orchestrator = resources.get("orchestrator")
+        if orchestrator is not None:
+            try:
+                orchestrator.close()
+            except Exception:
+                pass
+
+        collectors = resources.get("collectors", {})
+        website_collector = collectors.get("website") if isinstance(collectors, dict) else None
+        if website_collector is not None and hasattr(website_collector, "_cleanup_playwright"):
+            try:
+                website_collector._cleanup_playwright()
+            except Exception:
+                pass
+
+
+def _phase_artifacts_exist(
+    ein: str,
+    phase: str,
+    raw_repo: RawDataRepository,
+    data_repo: CharityDataRepository,
+    eval_repo: EvaluationRepository,
+) -> tuple[bool, str]:
+    """Verify cached phase outputs still exist before allowing a cache skip."""
+    if phase == "crawl":
+        rows = raw_repo.get_for_charity(ein) or []
+        has_successful_raw = any(row.get("success") for row in rows)
+        if not has_successful_raw:
+            return False, "no successful raw_scraped_data rows"
+        return True, ""
+
+    if phase == "extract":
+        rows = raw_repo.get_for_charity(ein) or []
+        has_parsed = any(row.get("success") and row.get("parsed_json") for row in rows)
+        if not has_parsed:
+            return False, "no parsed_json rows in raw_scraped_data"
+        return True, ""
+
+    if phase == "discover":
+        discovered = raw_repo.get_by_source(ein, "discovered")
+        parsed = discovered.get("parsed_json") if discovered else None
+        profile = parsed.get("discovered_profile") if isinstance(parsed, dict) else None
+        has_profile = isinstance(profile, dict) and bool(profile)
+        if not discovered or not discovered.get("success") or not has_profile:
+            return False, "missing discovered_profile artifact"
+        return True, ""
+
+    if phase == "synthesize":
+        synth_data = data_repo.get(ein)
+        if not synth_data:
+            return False, "missing charity_data row"
+        return True, ""
+
+    if phase == "baseline":
+        evaluation = eval_repo.get(ein)
+        if not evaluation:
+            return False, "missing evaluations row"
+        if evaluation.get("amal_score") is None:
+            return False, "evaluations row missing amal_score"
+        return True, ""
+
+    if phase == "rich":
+        evaluation = eval_repo.get(ein)
+        rich_narrative = evaluation.get("rich_narrative") if evaluation else None
+        if not rich_narrative:
+            return False, "missing rich_narrative"
+        return True, ""
+
+    if phase == "judge":
+        evaluation = eval_repo.get(ein)
+        if not evaluation:
+            return False, "missing evaluations row"
+        if evaluation.get("judge_score") is None:
+            return False, "evaluations row missing judge_score"
+        return True, ""
+
+    return True, ""
+
+
+def should_run_phase_with_artifact_validation(
+    ein: str,
+    phase: str,
+    cache_repo: PhaseCacheRepository,
+    raw_repo: RawDataRepository,
+    data_repo: CharityDataRepository,
+    eval_repo: EvaluationRepository,
+    force_all: bool = False,
+    force_phases: list[str] | None = None,
+    upstream_ran: set[str] | None = None,
+) -> tuple[bool, str]:
+    """Run cache check plus artifact existence validation for robust skip decisions."""
+    should_run, reason = should_run_phase(ein, phase, cache_repo, force_all, force_phases, upstream_ran)
+    if should_run:
+        return True, reason
+
+    artifacts_ok, artifact_reason = _phase_artifacts_exist(ein, phase, raw_repo, data_repo, eval_repo)
+    if artifacts_ok:
+        return False, reason
+
+    cache_repo.delete(ein, phase)
+    return True, f"Cached artifact missing: {artifact_reason}"
 
 
 def run_inline_quality_check(
@@ -597,15 +755,7 @@ def process_charity_full(
     charity: dict,
     index: int,
     total: int,
-    orchestrator: DataCollectionOrchestrator,
-    collectors: dict,
-    charity_repo: CharityRepository,
-    raw_repo: RawDataRepository,
-    data_repo: CharityDataRepository,
-    eval_repo: EvaluationRepository,
-    cache_repo: PhaseCacheRepository,
-    llm_client: LLMClient,
-    scorer: AmalScorerV2,
+    llm_model: str,
     logger: PipelineLogger,
     verbose: bool = False,
     skip_export: bool = False,
@@ -656,8 +806,29 @@ def process_charity_full(
     phases_ran: set[str] = set()
 
     try:
+        worker_resources = _get_worker_resources(logger, llm_model)
+        orchestrator: DataCollectionOrchestrator = worker_resources["orchestrator"]
+        collectors: dict[str, Any] = worker_resources["collectors"]
+        charity_repo: CharityRepository = worker_resources["charity_repo"]
+        raw_repo: RawDataRepository = worker_resources["raw_repo"]
+        data_repo: CharityDataRepository = worker_resources["data_repo"]
+        eval_repo: EvaluationRepository = worker_resources["eval_repo"]
+        cache_repo: PhaseCacheRepository = worker_resources["cache_repo"]
+        llm_client: LLMClient = worker_resources["llm_client"]
+        scorer: AmalScorerV2 = worker_resources["scorer"]
+
         # ========== PHASE 1: CRAWL ==========
-        run_crawl, crawl_reason = should_run_phase(ein, "crawl", cache_repo, force_all, force_phases, phases_ran)
+        run_crawl, crawl_reason = should_run_phase_with_artifact_validation(
+            ein,
+            "crawl",
+            cache_repo,
+            raw_repo,
+            data_repo,
+            eval_repo,
+            force_all,
+            force_phases,
+            phases_ran,
+        )
 
         if not run_crawl:
             # Cache hit - skip crawl
@@ -713,7 +884,17 @@ def process_charity_full(
                 return result
 
         # ========== PHASE 2a: EXTRACT ==========
-        run_extract, extract_reason = should_run_phase(ein, "extract", cache_repo, force_all, force_phases, phases_ran)
+        run_extract, extract_reason = should_run_phase_with_artifact_validation(
+            ein,
+            "extract",
+            cache_repo,
+            raw_repo,
+            data_repo,
+            eval_repo,
+            force_all,
+            force_phases,
+            phases_ran,
+        )
 
         if not run_extract:
             result["phases"]["extract"] = {
@@ -769,8 +950,16 @@ def process_charity_full(
                 return result
 
         # ========== PHASE 2b: DISCOVER ==========
-        run_discover, discover_reason = should_run_phase(
-            ein, "discover", cache_repo, force_all, force_phases, phases_ran
+        run_discover, discover_reason = should_run_phase_with_artifact_validation(
+            ein,
+            "discover",
+            cache_repo,
+            raw_repo,
+            data_repo,
+            eval_repo,
+            force_all,
+            force_phases,
+            phases_ran,
         )
 
         if not run_discover:
@@ -810,7 +999,7 @@ def process_charity_full(
                         "cost": discover_cost,
                     }
                     with print_lock:
-                        print(f"[{index}/{total}] ✗ {name[:40]} - Discover failed: JSON parse error")
+                        print(f"[{index}/{total}] ✗ {name[:40]} - Discover failed: {discover_error[:60]}")
                     return result
 
                 if not discover_result.get("success"):
@@ -837,8 +1026,8 @@ def process_charity_full(
                 update_phase_cache(ein, "discover", cache_repo, discover_cost)
 
                 # Inline quality check for discover
-                charity_data = data_repo.get(ein) or {}
-                # Build source_data from raw_repo for discovered profile
+                # Do not pass stale synthesized charity_data from prior runs here.
+                # Discover validation should rely only on discover artifacts at this stage.
                 discover_raw = raw_repo.get_for_charity(ein)
                 discover_source_data = {
                     rd["source"]: rd.get("parsed_json", {})
@@ -846,7 +1035,7 @@ def process_charity_full(
                     if rd.get("success") and rd.get("parsed_json")
                 }
                 discover_passed, discover_issues = run_inline_quality_check(
-                    "discover", ein, {"ein": ein, "charity_data": charity_data}, {"source_data": discover_source_data}
+                    "discover", ein, {"ein": ein}, {"source_data": discover_source_data}
                 )
                 if discover_issues:
                     result["phases"]["discover"]["quality_issues"] = discover_issues
@@ -859,7 +1048,17 @@ def process_charity_full(
                     return result
 
         # ========== PHASE 3: SYNTHESIZE ==========
-        run_synth, synth_reason = should_run_phase(ein, "synthesize", cache_repo, force_all, force_phases, phases_ran)
+        run_synth, synth_reason = should_run_phase_with_artifact_validation(
+            ein,
+            "synthesize",
+            cache_repo,
+            raw_repo,
+            data_repo,
+            eval_repo,
+            force_all,
+            force_phases,
+            phases_ran,
+        )
 
         if not run_synth:
             result["phases"]["synthesize"] = {
@@ -951,8 +1150,16 @@ def process_charity_full(
                 print(f"[{index}/{total}] ⚠ {name[:40]} - Reconcile failed: {e}")
 
         # ========== PHASE 4: BASELINE ==========
-        run_baseline, baseline_reason = should_run_phase(
-            ein, "baseline", cache_repo, force_all, force_phases, phases_ran
+        run_baseline, baseline_reason = should_run_phase_with_artifact_validation(
+            ein,
+            "baseline",
+            cache_repo,
+            raw_repo,
+            data_repo,
+            eval_repo,
+            force_all,
+            force_phases,
+            phases_ran,
         )
 
         if not run_baseline:
@@ -1021,7 +1228,17 @@ def process_charity_full(
                 }
 
         # ========== PHASE 5: RICH NARRATIVE ==========
-        run_rich, rich_reason = should_run_phase(ein, "rich", cache_repo, force_all, force_phases, phases_ran)
+        run_rich, rich_reason = should_run_phase_with_artifact_validation(
+            ein,
+            "rich",
+            cache_repo,
+            raw_repo,
+            data_repo,
+            eval_repo,
+            force_all,
+            force_phases,
+            phases_ran,
+        )
 
         if not run_rich:
             result["phases"]["rich"] = {
@@ -1085,7 +1302,17 @@ def process_charity_full(
                     return result
 
         # ========== PHASE 6: JUDGE ==========
-        run_judge, judge_reason = should_run_phase(ein, "judge", cache_repo, force_all, force_phases, phases_ran)
+        run_judge, judge_reason = should_run_phase_with_artifact_validation(
+            ein,
+            "judge",
+            cache_repo,
+            raw_repo,
+            data_repo,
+            eval_repo,
+            force_all,
+            force_phases,
+            phases_ran,
+        )
 
         if not run_judge:
             existing_eval = eval_repo.get(ein)
@@ -1181,26 +1408,18 @@ def process_charity_full(
                         "tier": export_result.get("tier"),
                         "time": round(time.time() - phase_start, 1),
                     }
+                    quality_issues = export_result.get("quality_issues", [])
+                    if quality_issues:
+                        result["phases"]["export"]["quality_issues"] = quality_issues
                     result["exported"] = True
-
-                    # Inline quality check for export
-                    export_summary = export_result.get("summary", {})
-                    export_passed, export_issues = run_inline_quality_check("export", ein, export_summary, {})
-                    if export_issues:
-                        result["phases"]["export"]["quality_issues"] = export_issues
-                    if not export_passed:
-                        result["phases"]["export"]["success"] = False
-                        result["phases"]["export"]["error"] = "Quality check failed"
-                        result["success"] = False
-                        result["error"] = "Export quality check failed"
-                        result["exported"] = False
-                        with print_lock:
-                            print(f"[{index}/{total}] ✗ {name[:40]} - Export quality check failed")
                 else:
                     result["phases"]["export"] = {
                         "success": False,
                         "error": export_result.get("error", "Unknown"),
                     }
+                    quality_issues = export_result.get("quality_issues", [])
+                    if quality_issues:
+                        result["phases"]["export"]["quality_issues"] = quality_issues
                     result["success"] = False
 
         # Calculate total cost
@@ -1338,26 +1557,15 @@ def main():
                 print(f"  Cleaned {charity['ein']}: {tables_str}")
         print()
 
-    # Initialize shared resources
-    orchestrator = DataCollectionOrchestrator(
-        logger=logger,
-        max_pdf_downloads=5,
-    )
-
-    collectors = {}
-    for source, cls in COLLECTORS.items():
-        if source == "website":
-            collectors[source] = cls(logger=logger, use_llm=False)
-        else:
-            collectors[source] = cls(logger=logger)
-
+    # Initialize resources used on main thread.
+    # Worker threads initialize their own per-thread resources lazily.
+    cache_repo = PhaseCacheRepository()
     charity_repo = CharityRepository()
     raw_repo = RawDataRepository()
     data_repo = CharityDataRepository()
     eval_repo = EvaluationRepository()
-    cache_repo = PhaseCacheRepository()
     llm_client = LLMClient(model=args.model, logger=logger)
-    scorer = AmalScorerV2()
+    llm_model = llm_client.model_name
 
     # Handle --cache-status: show cache status and exit
     if args.cache_status:
@@ -1411,73 +1619,66 @@ def main():
     since_last_checkpoint = 0  # Charities completed since last checkpoint
 
     # Process using ThreadPoolExecutor
-    with ThreadPoolExecutor(max_workers=args.workers) as executor:
-        futures = {}
-        for i, charity in enumerate(charities, 1):
-            future = executor.submit(
-                process_charity_full,
-                charity,
-                i,
-                len(charities),
-                orchestrator,
-                collectors,
-                charity_repo,
-                raw_repo,
-                data_repo,
-                eval_repo,
-                cache_repo,
-                llm_client,
-                scorer,
-                logger,
-                args.verbose,
-                args.skip_export,
-                args.judge_threshold,
-                WEBSITE_DATA_DIR,
-                ui_signals_config,
-                config_hash,
-                pilot_flags,
-                args.force_all,
-                args.force_phase,
-            )
-            futures[future] = charity
-
-        for future in as_completed(futures):
-            try:
-                result = future.result()
-                results.append(result)
-            except Exception as e:
-                charity = futures[future]
-                logger.error(f"Worker exception for {charity['ein']}", exception=e)
-                results.append(
-                    {
-                        "ein": charity["ein"],
-                        "name": charity["name"],
-                        "success": False,
-                        "error": str(e),
-                    }
+    try:
+        with ThreadPoolExecutor(max_workers=args.workers) as executor:
+            futures = {}
+            for i, charity in enumerate(charities, 1):
+                future = executor.submit(
+                    process_charity_full,
+                    charity,
+                    i,
+                    len(charities),
+                    llm_model,
+                    logger,
+                    args.verbose,
+                    args.skip_export,
+                    args.judge_threshold,
+                    WEBSITE_DATA_DIR,
+                    ui_signals_config,
+                    config_hash,
+                    pilot_flags,
+                    args.force_all,
+                    args.force_phase,
                 )
+                futures[future] = charity
 
-            # Checkpoint commit: snapshot progress every N charities
-            since_last_checkpoint += 1
-            if args.checkpoint > 0 and since_last_checkpoint >= args.checkpoint:
-                completed = sum(1 for r in results if r.get("success"))
-                failed = len(results) - completed
-                commit_hash = dolt.commit(
-                    f"Checkpoint {checkpoint_count + 1}: "
-                    f"{completed} ok, {failed} failed, "
-                    f"{len(charities) - len(results)} remaining"
-                )
-                if commit_hash:
-                    checkpoint_count += 1
-                    since_last_checkpoint = 0
-                    with print_lock:
-                        print(
-                            f"  ⊟ Checkpoint {checkpoint_count} committed "
-                            f"({len(results)}/{len(charities)} processed) [{commit_hash[:8]}]"
-                        )
+            for future in as_completed(futures):
+                try:
+                    result = future.result()
+                    results.append(result)
+                except Exception as e:
+                    charity = futures[future]
+                    logger.error(f"Worker exception for {charity['ein']}", exception=e)
+                    results.append(
+                        {
+                            "ein": charity["ein"],
+                            "name": charity["name"],
+                            "success": False,
+                            "error": str(e),
+                        }
+                    )
 
-    # Cleanup
-    orchestrator.close()
+                # Checkpoint commit: snapshot progress every N charities
+                since_last_checkpoint += 1
+                if args.checkpoint > 0 and since_last_checkpoint >= args.checkpoint:
+                    completed = sum(1 for r in results if r.get("success"))
+                    failed = len(results) - completed
+                    commit_hash = dolt.commit(
+                        f"Checkpoint {checkpoint_count + 1}: "
+                        f"{completed} ok, {failed} failed, "
+                        f"{len(charities) - len(results)} remaining"
+                    )
+                    if commit_hash:
+                        checkpoint_count += 1
+                        since_last_checkpoint = 0
+                        with print_lock:
+                            print(
+                                f"  ⊟ Checkpoint {checkpoint_count} committed "
+                                f"({len(results)}/{len(charities)} processed) [{commit_hash[:8]}]"
+                            )
+    finally:
+        # Cleanup worker-local resources
+        _cleanup_worker_resources()
 
     elapsed = time.time() - start_time
 
@@ -1574,11 +1775,6 @@ def main():
                 continue
 
             export_summary = export_result.get("summary", {})
-            export_passed, _ = run_inline_quality_check("export", ein, export_summary, {})
-            if not export_passed:
-                rebuild_failures.append((ein, "Export quality check failed"))
-                continue
-
             summaries.append(export_summary)
         comprehensive_export_count = len(summaries)
         comprehensive_export_eligible = len(set(exportable_eins))
