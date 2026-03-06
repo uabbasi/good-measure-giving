@@ -116,6 +116,7 @@ export const CharityDetailsPage: React.FC = () => {
   // Determine if we have Amal data
   const hasAmalData = !!charity.amalEvaluation;
   const amal = charity.amalEvaluation;
+  const donateUrl = charity.donationUrl || charity.website || null;
 
   // Helper functions
   const toggleVariant = () => {
@@ -216,20 +217,26 @@ export const CharityDetailsPage: React.FC = () => {
   };
 
   const formatCurrency = (val?: number) => {
-    if (!val) return 'N/A';
+    if (val == null) return 'N/A';
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
+  };
+
+  const toNumber = (value: unknown): number | undefined => {
+    if (value == null || value === '') return undefined;
+    const parsed = typeof value === 'number' ? value : Number(value);
+    return Number.isFinite(parsed) ? parsed : undefined;
   };
 
   // Get financials from either nested object or flat rawData
   const getFinancials = () => {
     const f = charity.financials || charity.rawData.financials;
     return {
-      totalRevenue: f?.totalRevenue || charity.rawData.total_revenue,
-      programExpenses: f?.programExpenses,
-      adminExpenses: f?.adminExpenses || charity.rawData.admin_expenses,
-      fundraisingExpenses: f?.fundraisingExpenses || charity.rawData.fundraising_expenses,
-      programExpenseRatio: f?.programExpenseRatio || charity.rawData.program_expense_ratio,
-      fiscalYear: f?.fiscalYear || charity.rawData.fiscal_year
+      totalRevenue: toNumber(f?.totalRevenue ?? charity.rawData.total_revenue),
+      programExpenses: toNumber(f?.programExpenses),
+      adminExpenses: toNumber(f?.adminExpenses ?? charity.rawData.admin_expenses),
+      fundraisingExpenses: toNumber(f?.fundraisingExpenses ?? charity.rawData.fundraising_expenses),
+      programExpenseRatio: toNumber(f?.programExpenseRatio ?? charity.rawData.program_expense_ratio),
+      fiscalYear: toNumber(f?.fiscalYear ?? charity.rawData.fiscal_year)
     };
   };
 
@@ -383,7 +390,7 @@ export const CharityDetailsPage: React.FC = () => {
           <AssessmentCard
             title="Cost Effectiveness"
             evaluation={charity.impactAssessment.dimension_ratings.cost_effectiveness}
-            rawMetric={financials.programExpenseRatio ? `${financials.programExpenseRatio > 1 ? financials.programExpenseRatio.toFixed(0) : (financials.programExpenseRatio * 100).toFixed(0)}%` : undefined}
+            rawMetric={financials.programExpenseRatio != null ? `${financials.programExpenseRatio > 1 ? financials.programExpenseRatio.toFixed(0) : (financials.programExpenseRatio * 100).toFixed(0)}%` : undefined}
           />
           <AssessmentCard
             title="Long-Term Benefit"
@@ -452,7 +459,7 @@ export const CharityDetailsPage: React.FC = () => {
               </div>
               <div className="text-right">
                 <div className={`text-lg font-bold tabular-nums ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                  {financials.totalRevenue ? `$${(financials.totalRevenue / 1_000_000).toFixed(1)}M` : <span className="text-slate-400 text-sm font-normal">N/A</span>}
+                  {financials.totalRevenue != null ? `$${(financials.totalRevenue / 1_000_000).toFixed(1)}M` : <span className="text-slate-400 text-sm font-normal">N/A</span>}
                 </div>
               </div>
             </div>
@@ -464,7 +471,7 @@ export const CharityDetailsPage: React.FC = () => {
               </div>
               <div className="text-right">
                 <div className={`text-lg font-bold tabular-nums ${isDark ? 'text-emerald-400' : 'text-emerald-700'}`}>
-                  {financials.programExpenseRatio ? `${financials.programExpenseRatio > 1 ? financials.programExpenseRatio.toFixed(0) : (financials.programExpenseRatio * 100).toFixed(0)}%` : <span className="text-slate-400 text-sm font-normal">N/A</span>}
+                  {financials.programExpenseRatio != null ? `${financials.programExpenseRatio > 1 ? financials.programExpenseRatio.toFixed(0) : (financials.programExpenseRatio * 100).toFixed(0)}%` : <span className="text-slate-400 text-sm font-normal">N/A</span>}
                 </div>
               </div>
             </div>
@@ -644,11 +651,24 @@ export const CharityDetailsPage: React.FC = () => {
                   <ExternalLink className="w-4 h-4" aria-hidden="true" />
                 </a>
               )}
-              <button
-                className="px-6 py-3 min-h-[44px] bg-emerald-700 text-white rounded-lg text-sm font-bold hover:bg-emerald-800 transition-colors shadow-md shadow-emerald-100 flex items-center justify-center"
-              >
-                Donate Now
-              </button>
+              {donateUrl ? (
+                <a
+                  href={donateUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-6 py-3 min-h-[44px] bg-emerald-700 text-white rounded-lg text-sm font-bold hover:bg-emerald-800 transition-colors shadow-md shadow-emerald-100 flex items-center justify-center"
+                >
+                  Donate Now
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  className="px-6 py-3 min-h-[44px] bg-slate-400 text-white rounded-lg text-sm font-bold opacity-70 cursor-not-allowed flex items-center justify-center"
+                >
+                  Donate Unavailable
+                </button>
+              )}
             </div>
           </div>
         </div>

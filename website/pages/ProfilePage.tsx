@@ -171,8 +171,21 @@ export function ProfilePage() {
     URL.revokeObjectURL(url);
   };
 
+  // Auth still loading
+  if (!isLoaded) {
+    return (
+      <div className={`min-h-screen ${isDark ? 'bg-slate-950' : 'bg-slate-50'}`}>
+        <div className="max-w-4xl mx-auto px-4 py-16 text-center">
+          <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+            Loading your profile...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   // Not signed in
-  if (isLoaded && !isSignedIn) {
+  if (!isSignedIn) {
     return (
       <div className={`min-h-screen ${isDark ? 'bg-slate-950' : 'bg-slate-50'}`}>
         <div className="max-w-4xl mx-auto px-4 py-16 text-center">

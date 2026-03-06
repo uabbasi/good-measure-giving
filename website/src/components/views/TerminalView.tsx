@@ -65,7 +65,7 @@ interface NarrativeCitation {
 
 // Format currency helper
 const formatCurrency = (value: number | null | undefined): string => {
-  if (!value) return 'N/A';
+  if (value == null) return 'N/A';
   if (value >= 1_000_000_000) return `$${(value / 1_000_000_000).toFixed(1)}B`;
   if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
   if (value >= 1_000) return `$${Math.round(value / 1_000)}K`;
@@ -265,8 +265,12 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
   const rich = amal?.rich_narrative;
   const hasRich = !!rich;
   const idealDonorProfile = rich?.ideal_donor_profile;
-  // Check both rich and baseline narratives for citations
-  const rawCitations = (rich?.all_citations || baseline?.all_citations || []) as NarrativeCitation[];
+  // Signed-out users should only resolve citations for baseline content
+  const rawCitations = (
+    isSignedIn
+      ? (rich?.all_citations || baseline?.all_citations || [])
+      : (baseline?.all_citations || [])
+  ) as NarrativeCitation[];
   const citations = useMemo(
     () => resolveCitationUrls(rawCitations, charity),
     [rawCitations, charity]
@@ -367,9 +371,18 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
     });
   };
 
-  // Get strengths for "Why give here" section
-  const strengths = rich?.strengths || baseline?.strengths || [];
-  const headline = rich?.headline || baseline?.headline || '';
+  // Signed-out users see baseline narrative only
+  const strengths = (
+    isSignedIn
+      ? (rich?.strengths || baseline?.strengths)
+      : baseline?.strengths
+  ) || [];
+  const headline = isSignedIn
+    ? (rich?.headline || baseline?.headline || '')
+    : (baseline?.headline || '');
+  const aboutSummary = isSignedIn
+    ? (rich?.summary || baseline?.summary || '')
+    : (baseline?.summary || '');
   const isZakatEligible = amal?.wallet_tag?.includes('ZAKAT');
   const uiSignals = charity.ui_signals_v1 || deriveUISignalsFromCharity(charity);
   const amalScore = amal?.amal_score || 0;
@@ -845,7 +858,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
         {/* === Mobile Section 1: Narrative / About === */}
         {(() => {
           // GMG about
-          if (rich?.summary || baseline?.summary) {
+          if (aboutSummary) {
             return (
               <div className={`p-3.5 rounded-2xl ${
                 isDark ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-slate-200'
@@ -856,7 +869,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                   About
                 </h2>
                 <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                  <SourceLinkedText text={rich?.summary || baseline?.summary || ''} citations={citations} isDark={isDark} subtle />
+                  <SourceLinkedText text={aboutSummary} citations={citations} isDark={isDark} subtle />
                 </p>
               </div>
             );

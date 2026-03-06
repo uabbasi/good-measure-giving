@@ -2,7 +2,7 @@
  * Firebase Authentication Provider
  */
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { onAuthStateChanged, getRedirectResult, User } from 'firebase/auth';
 import { Firestore } from 'firebase/firestore';
 import { auth, db, isConfigured } from './firebase';
@@ -38,6 +38,7 @@ interface Props {
 export const FirebaseProvider: React.FC<Props> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const previousUidRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!auth) {
@@ -60,12 +61,12 @@ export const FirebaseProvider: React.FC<Props> = ({ children }) => {
     });
 
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      const previousUser = user;
+      const previousUid = previousUidRef.current;
       setUser(firebaseUser);
       setIsLoading(false);
 
       // Track sign-in
-      if (firebaseUser && !previousUser) {
+      if (firebaseUser && !previousUid) {
         const provider = firebaseUser.providerData[0]?.providerId || 'unknown';
         const createdAt = new Date(firebaseUser.metadata.creationTime || 0).getTime();
         const isNewUser = Date.now() - createdAt < 60_000;
@@ -74,6 +75,8 @@ export const FirebaseProvider: React.FC<Props> = ({ children }) => {
           window.dispatchEvent(new CustomEvent('gmg:welcome'));
         }
       }
+
+      previousUidRef.current = firebaseUser?.uid || null;
     });
 
     // Re-snapshot user object after profile updates (e.g. name added)

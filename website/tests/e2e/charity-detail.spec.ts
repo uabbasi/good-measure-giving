@@ -2,9 +2,8 @@ import { test, expect } from '@playwright/test';
 
 const CHARITY_CARD = 'a[href^="/charity/"]:visible';
 
-// Rich/baseline tier charities render TerminalView directly (no page-level h1 on desktop).
-// The evaluation lens tablist is a reliable signal that the detail page loaded.
-const DETAIL_LOADED = '[role="tablist"]';
+// Detail page renders TerminalView; actions bar is a stable load signal on desktop.
+const DETAIL_LOADED = '[data-tour="actions-bar"]';
 
 test.describe('Charity detail page', () => {
   test.beforeEach(async ({ page }) => {
@@ -14,6 +13,7 @@ test.describe('Charity detail page', () => {
     const firstCard = page.locator(CHARITY_CARD).first();
     await expect(firstCard).toBeVisible({ timeout: 10000 });
     await firstCard.click();
+    await expect(page).toHaveURL(/\/charity\//);
     await expect(page.locator(DETAIL_LOADED).first()).toBeVisible({ timeout: 10000 });
   });
 
@@ -26,21 +26,17 @@ test.describe('Charity detail page', () => {
     expect(bodyText!.length).toBeGreaterThan(100);
   });
 
-  test('view switcher buttons are present', async ({ page }) => {
-    // Re-verify the tablist is loaded (guards against re-render between beforeEach and test body)
-    await expect(page.locator('[role="tablist"]').first()).toBeVisible({ timeout: 5000 });
-    // The detail page has "View selection" tablist with Terminal | Grades
-    const viewTab = page.getByRole('tab', { name: /Terminal/i });
-    await expect(viewTab).toBeVisible({ timeout: 5000 });
+  test('shows key detail sections', async ({ page }) => {
+    await expect(page.locator('[data-tour="actions-bar"]').first()).toBeVisible({ timeout: 5000 });
+    // Methodology block should appear for scored organizations.
+    await expect(page.getByText(/How We Evaluate|Methodology details/i).first()).toBeVisible({ timeout: 5000 });
   });
 
-  test('grades view hides grades below B', async ({ page }) => {
-    const gradesTab = page.locator('[role="tab"]').filter({ hasText: /grades/i });
-    if (await gradesTab.first().isVisible()) {
-      await gradesTab.first().click();
-      await page.waitForTimeout(1000);
-      await expect(page.locator('body')).toBeVisible();
-    }
+  test('shows gated or unlocked rich sections appropriately', async ({ page }) => {
+    const bodyText = (await page.locator('body').textContent()) || '';
+    const hasGate = /sign in to unlock|sign in to see/i.test(bodyText);
+    const hasUnlockedSection = /Leadership|Impact Evidence|Donor Fit|Long-Term Outlook/i.test(bodyText);
+    expect(hasGate || hasUnlockedSection).toBe(true);
   });
 
   test('back to directory button works', async ({ page }) => {
