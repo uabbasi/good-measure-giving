@@ -462,6 +462,9 @@ class DataCollectionOrchestrator:
         if not content:
             return False
 
+        if source == "form990_grants" and content == Form990GrantsCollector.NO_XML_SENTINEL:
+            return True
+
         # Minimum content length thresholds by type
         # JSON API responses are compact; HTML pages have markup overhead
         min_lengths = {

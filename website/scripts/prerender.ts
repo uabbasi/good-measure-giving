@@ -34,6 +34,7 @@ interface CharityDetail {
   mission?: string;
   website?: string;
   location?: { address?: string; city?: string; state?: string; zip?: string };
+  evaluationTrack?: string;
   amalEvaluation?: {
     amal_score?: number;
     wallet_tag?: string;
@@ -72,7 +73,7 @@ function buildStaticMeta(): PageMeta[] {
       route: '/',
       title: 'Good Measure Giving | Muslim Charity Evaluator',
       description:
-        'Evidence-based evaluations of Muslim charities. Compare zakat eligibility, impact scores, and financial transparency across 160+ organizations.',
+        'Evidence-based evaluations of Muslim charities. Compare whether charities publicly say they accept zakat, along with impact scores and financial transparency across 160+ organizations.',
       canonical: `${SITE_URL}/`,
       ogType: 'website',
     },
@@ -80,7 +81,7 @@ function buildStaticMeta(): PageMeta[] {
       route: '/browse',
       title: 'Browse Charities | Good Measure Giving',
       description:
-        'Explore evaluated Muslim charities. Filter by zakat eligibility, impact score, cause area, and financial transparency.',
+        'Explore evaluated Muslim charities. Filter by whether they publicly say they accept zakat, impact score, cause area, and financial transparency.',
       canonical: `${SITE_URL}/browse`,
       ogType: 'website',
     },
@@ -116,13 +117,14 @@ function buildCharityMeta(detail: CharityDetail): PageMeta {
   const name = detail.name;
   const score = amal?.amal_score;
   const walletTag = amal?.wallet_tag?.replace(/-/g, ' ').toLowerCase() || '';
+  const isNewOrg = detail.evaluationTrack === 'NEW_ORG';
   const headline =
     amal?.rich_narrative?.headline ||
     amal?.baseline_narrative?.headline ||
     detail.mission ||
     '';
 
-  const scorePart = score != null ? `${score}/100` : 'Evaluated';
+  const scorePart = isNewOrg ? 'Too early to rate numerically' : score != null ? `${score}/100` : 'Evaluated';
   const walletPart = walletTag ? ` ${walletTag[0].toUpperCase() + walletTag.slice(1)}.` : '';
   const headlinePart = headline ? ` ${headline}` : '';
   const raw = `${name}: ${scorePart}.${walletPart}${headlinePart}`;

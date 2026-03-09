@@ -593,7 +593,7 @@ export function ComparePage() {
                     {charity.name}
                   </Link>
                   <div className="flex items-center gap-2 mt-1.5">
-                    <BookmarkButton charityEin={charity.ein!} charityName={charity.name} size="sm" />
+                    <BookmarkButton charityEin={charity.ein!} charityName={charity.name} causeTags={charity.causeTags || undefined} size="sm" />
                     <a
                       href={charity.website || '#'}
                       target="_blank"

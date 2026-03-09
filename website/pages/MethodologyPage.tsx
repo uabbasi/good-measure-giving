@@ -25,7 +25,7 @@ import { CauseAreaMatrix } from '../components/CauseAreaMatrix';
 // Get top performing charities for the showcase
 const getTopCharities = (charities: any[]) => {
   return charities
-    .filter(c => c.amalEvaluation?.amal_score && c.amalEvaluation.amal_score >= 70)
+    .filter(c => c.amalEvaluation?.amal_score != null && c.amalEvaluation.amal_score >= 70)
     .sort((a, b) => (b.amalEvaluation?.amal_score || 0) - (a.amalEvaluation?.amal_score || 0))
     .slice(0, 12);
 };
@@ -54,7 +54,7 @@ export const MethodologyPage: React.FC = () => {
     const buckets = { exceptional: 0, good: 0, developing: 0, emerging: 0 };
     charities.forEach(c => {
       const score = c.amalEvaluation?.amal_score;
-      if (!score) return;
+      if (score == null) return;
       if (score >= 75) buckets.exceptional++;
       else if (score >= 60) buckets.good++;
       else if (score >= 30) buckets.developing++;
@@ -66,11 +66,11 @@ export const MethodologyPage: React.FC = () => {
   // Prepare data for insights visualization (needs pillar scores)
   const insightsData = useMemo(() => {
     return summaries
-      .filter(s => s.pillarScores && s.amalScore)
+      .filter(s => s.pillarScores && s.amalScore != null)
       .map(s => ({
         id: s.id,
         name: s.name,
-        amalScore: s.amalScore!,
+        amalScore: s.amalScore as number,
         walletTag: s.walletTag || '',
         pillarScores: s.pillarScores!,
         category: s.primaryCategory || 'OTHER',
@@ -126,7 +126,7 @@ export const MethodologyPage: React.FC = () => {
             <p className={`text-lg leading-relaxed mt-6 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
               Each dimension is worth 50 points, with up to 10 points deducted for red flags.
               A separate Data Confidence signal shows how robust our data is.
-              Then we help you route your donation to the right {'\u201C'}wallet{'\u201D'} {'\u2014'} Zakat or Sadaqah.
+              Then we help you route your donation based on whether the charity publicly says it accepts Zakat or is better treated as Sadaqah.
             </p>
           </div>
 
@@ -477,7 +477,7 @@ export const MethodologyPage: React.FC = () => {
         <section className="mb-20">
           <h2 className={`text-2xl font-bold font-merriweather mb-4 [text-wrap:balance] ${isDark ? 'text-white' : 'text-slate-900'}`}>See It In Action</h2>
           <p className={`mb-6 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-            We{'\u2019'}ve evaluated {summaries.filter(s => s.amalScore).length} charities using this framework.
+            We{'\u2019'}ve evaluated {summaries.filter(s => s.amalScore != null).length} charities using this framework.
             Here{'\u2019'}s what the data reveals.
           </p>
 
@@ -563,25 +563,25 @@ export const MethodologyPage: React.FC = () => {
 
         {/* Wallet Routing */}
         <section className="mb-20">
-          <h2 className={`text-2xl font-bold font-merriweather mb-4 [text-wrap:balance] ${isDark ? 'text-white' : 'text-slate-900'}`}>Zakat Classification</h2>
+          <h2 className={`text-2xl font-bold font-merriweather mb-4 [text-wrap:balance] ${isDark ? 'text-white' : 'text-slate-900'}`}>Zakat Routing</h2>
           <p className={`mb-8 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-            Beyond the score, we help you decide if a charity accepts Zakat. This is a binary classification
-            based on what the charity claims on its website, not a quality judgment {'\u2014'} a Sadaqah-only charity can still have an excellent score.
+            Beyond the score, we show whether a charity publicly says it accepts Zakat on its website. This is a binary routing cue
+            based on the charity&apos;s own public claim, not a GMG judgment about fiqh compliance or donor permissibility {'\u2014'} a Sadaqah-only charity can still have an excellent score.
           </p>
 
           <div className="grid md:grid-cols-2 gap-6">
             <div className={`rounded-xl border-2 p-6 ${isDark ? 'bg-slate-900 border-emerald-800' : 'bg-white border-emerald-200'}`}>
               <div className="flex items-center gap-3 mb-4">
                 <Lock className={`w-5 h-5 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} aria-hidden="true" />
-                <h3 className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>Zakat Eligible</h3>
+                <h3 className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>Accepts Zakat</h3>
               </div>
               <p className={`text-sm mb-4 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                The charity explicitly claims to accept Zakat donations on their website.
-                They typically serve Zakat-eligible beneficiaries (poor, needy, refugees, debt relief)
-                and may have fund segregation policies.
+                The charity explicitly says on its website that it accepts Zakat donations.
+                This does not mean Good Measure Giving has independently verified fund segregation,
+                fiqh compliance, or whether your donation definitely counts as valid Zakat.
               </p>
               <div className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-                <strong>How we detect:</strong> We scan the charity{'\u2019'}s website for explicit Zakat acceptance claims
+                <strong>How we detect:</strong> We scan the charity{'\u2019'}s website for an explicit public statement that it accepts Zakat
               </div>
             </div>
 
@@ -593,7 +593,7 @@ export const MethodologyPage: React.FC = () => {
               <p className={`text-sm mb-4 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                 The charity does not explicitly claim to accept Zakat on their website.
                 These charities are suitable for general Sadaqah donations but may or may not
-                serve Zakat-eligible beneficiaries.
+                serve Zakat-relevant beneficiary groups.
               </p>
               <div className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
                 <strong>Note:</strong> Some charities may accept Zakat but not advertise it
@@ -605,7 +605,7 @@ export const MethodologyPage: React.FC = () => {
           <div className={`rounded-xl border p-6 mt-6 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
             <h3 className={`font-bold mb-4 ${isDark ? 'text-white' : 'text-slate-900'}`}>The Eight Zakat Categories (Asnaf)</h3>
             <p className={`text-sm mb-4 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              When a charity claims zakat eligibility, we note which Quranic categories (9:60) their work serves:
+              When a charity publicly says it accepts Zakat, we note which Quranic categories (9:60) its work serves:
             </p>
             <div className="grid md:grid-cols-2 gap-x-6 gap-y-2">
               <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}><strong>1. Al-Fuqara</strong> {'\u2014'} The poor (below nisab)</p>

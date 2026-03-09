@@ -63,10 +63,10 @@ test.describe('Browse page completeness', () => {
     }
   });
 
-  test('preset filter — Zakat Eligible wallet filter', async ({ page }) => {
+  test('preset filter — Accepts Zakat wallet filter', async ({ page }) => {
     await enterPowerMode(page);
 
-    const btn = page.getByRole('button', { name: /Zakat Eligible/i });
+    const btn = page.getByRole('button', { name: /Accepts Zakat/i });
     if (await btn.isVisible({ timeout: 3000 }).catch(() => false)) {
       await btn.click();
       await page.waitForTimeout(600);

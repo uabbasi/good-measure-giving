@@ -32,7 +32,7 @@ test.describe('Lens switching', () => {
   test('switching to Zakat lens updates display', async ({ page }) => {
     await enterPowerMode(page);
 
-    // Use role=tab to avoid matching the "Zakat Eligible" filter chip
+    // Use role=tab to avoid matching the "Accepts Zakat" filter chip
     const zakatTab = page.getByRole('tab', { name: 'Zakat' });
     if (await zakatTab.isVisible()) {
       await zakatTab.click();

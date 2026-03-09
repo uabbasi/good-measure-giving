@@ -12,9 +12,9 @@ export const detailsTourSteps: DriveStep[] = [
   {
     element: '[data-tour="wallet-tag"]',
     popover: {
-      title: 'Zakat Eligibility',
+      title: 'Zakat Routing',
       description:
-        'Tells you whether this charity qualifies for your zakat or sadaqah funds, based on beneficiary categories and fund segregation policies.',
+        'Tells you whether this charity publicly says it accepts zakat on its website, or should be treated as a sadaqah route. It is not a GMG ruling on fiqh compliance.',
     },
   },
   {

@@ -57,7 +57,7 @@ interface UnifiedAllocationViewProps {
   onSetCharityTarget?: (ein: string, amount: number) => Promise<void>;
 }
 
-const TAGS = {
+export const TAGS = {
   geography: [
     { id: 'palestine', label: 'Palestine' },
     { id: 'pakistan', label: 'Pakistan' },
@@ -116,7 +116,7 @@ const TAGS = {
   ],
 };
 
-const ALL_TAGS = [...TAGS.geography, ...TAGS.cause, ...TAGS.population];
+export const ALL_TAGS = [...TAGS.geography, ...TAGS.cause, ...TAGS.population];
 const COLORS = ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444', '#ec4899', '#06b6d4', '#84cc16'];
 const PERCENT_DECIMALS = 2;
 const PERCENT_EPSILON = 0.01;
@@ -229,7 +229,7 @@ function DraggableCharityRow({
         </span>
       </td>
       <td className={`${cell} text-right`}>
-        <div className={`inline-flex items-center ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+        <div className={`inline-flex items-center px-2 py-0.5 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'} hover:border-emerald-400 dark:hover:border-emerald-500/40 focus-within:border-emerald-500 transition-colors`}>
           <span className="text-[11px] mr-0.5">$</span>
           <input
             type="text"
@@ -239,7 +239,7 @@ function DraggableCharityRow({
             onBlur={handleTargetBlur}
             onKeyDown={handleTargetKeyDown}
             className={`w-16 text-right ${inputStyle} text-[13px] tabular-nums`}
-            placeholder="—"
+            placeholder="0"
           />
         </div>
       </td>
@@ -364,7 +364,7 @@ function MobileCharityAllocationRow({
             ? `Given ${fmt(given)} • ${formatPercent(shareOfCategory)}% of category`
             : `Given ${fmt(given)}`}
         </span>
-        <div className={`inline-flex items-center px-2 py-1 rounded-md border ${isDark ? 'border-slate-700 bg-slate-900/60' : 'border-slate-200 bg-white'}`}>
+        <div className={`inline-flex items-center px-2 py-1 rounded-md border ${isDark ? 'border-slate-700 bg-slate-900/60' : 'border-slate-200 bg-white'} hover:border-emerald-400 dark:hover:border-emerald-500/40 focus-within:border-emerald-500 transition-colors`}>
           <span className={`text-[11px] mr-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>$</span>
           <input
             type="text"
@@ -1023,10 +1023,15 @@ export function UnifiedAllocationView({
               <p className={`text-sm mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                 Step {onboardingStep} of 3: {
                   onboardingStep === 1 ? 'Set your annual zakat target' :
-                  onboardingStep === 2 ? 'Add your first charity' :
+                  onboardingStep === 2 ? 'Save charities to build your plan' :
                   'Log your first donation'
                 }
               </p>
+              {onboardingStep === 2 && (
+                <p className={`text-xs mt-1 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
+                  Browse charities and tap the heart to add them here
+                </p>
+              )}
             </div>
             <button
               onClick={() => setOnboardingDismissed(true)}
@@ -1064,6 +1069,19 @@ export function UnifiedAllocationView({
               Continue
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
+            {onboardingStep === 2 && (
+              <Link
+                to="/browse"
+                className={`ml-2 inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors ${
+                  isDark
+                    ? 'text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10'
+                    : 'text-emerald-600 border-emerald-200 hover:bg-emerald-50'
+                }`}
+              >
+                Browse Charities
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            )}
           </div>
         </div>
       )}
@@ -1267,7 +1285,7 @@ export function UnifiedAllocationView({
                 <div className="mt-2 grid grid-cols-2 gap-2">
                   <div>
                     <label className={`block text-[10px] font-semibold uppercase tracking-wide mb-1 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>%</label>
-                    <div className={`inline-flex w-full items-center justify-end px-2 py-1 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'}`}>
+                    <div className={`inline-flex w-full items-center justify-end px-2 py-1 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'} hover:border-emerald-400 dark:hover:border-emerald-500/40 focus-within:border-emerald-500/50 transition-colors`}>
                       <input
                         type="text"
                         inputMode="decimal"
@@ -1284,7 +1302,7 @@ export function UnifiedAllocationView({
                   <div>
                     <label className={`block text-[10px] font-semibold uppercase tracking-wide mb-1 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Target</label>
                     <div className="flex flex-col items-end gap-0.5">
-                      <div className={`inline-flex w-full items-center justify-end px-2 py-1 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'}`}>
+                      <div className={`inline-flex w-full items-center justify-end px-2 py-1 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'} hover:border-emerald-400 dark:hover:border-emerald-500/40 focus-within:border-emerald-500/50 transition-colors`}>
                         <span className={`text-[11px] mr-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>$</span>
                         <input
                           type="text"
@@ -1347,6 +1365,14 @@ export function UnifiedAllocationView({
                   ) : (
                     <div className={`mt-1.5 text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
                       No charities in this category yet.
+                      {matchingCharities.length > 0 && !showSuggestions && (
+                        <button
+                          onClick={() => setShowSuggestions(true)}
+                          className={`ml-1 font-medium ${isDark ? 'text-emerald-400 hover:text-emerald-300' : 'text-emerald-600 hover:text-emerald-700'}`}
+                        >
+                          Show suggestions
+                        </button>
+                      )}
                     </div>
                   )}
                   {showSuggestions && matchingCharities.length > 0 && (
@@ -1571,7 +1597,7 @@ export function UnifiedAllocationView({
                       </div>
                     </td>
                     <td className={`${cell} text-right`}>
-                      <div className={`inline-flex items-center px-2 py-0.5 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'}`}>
+                      <div className={`inline-flex items-center px-2 py-0.5 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'} hover:border-emerald-400 dark:hover:border-emerald-500/40 focus-within:border-emerald-500/50 transition-colors`}>
                         <input
                           type="text"
                           inputMode="decimal"
@@ -1587,7 +1613,7 @@ export function UnifiedAllocationView({
                     </td>
                     <td className={`${cell} text-right`}>
                       <div className="flex flex-col items-end gap-0.5">
-                        <div className={`inline-flex items-center px-2 py-0.5 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'}`}>
+                        <div className={`inline-flex items-center px-2 py-0.5 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'} hover:border-emerald-400 dark:hover:border-emerald-500/40 focus-within:border-emerald-500/50 transition-colors`}>
                           <span className={`text-[11px] mr-0.5 font-medium ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>$</span>
                           <input
                             type="text"
@@ -1909,7 +1935,31 @@ export function UnifiedAllocationView({
       )}
 
       {/* Empty states */}
-      {targetNum > 0 && buckets.length === 0 && (
+      {targetNum > 0 && buckets.length === 0 && bookmarkedCharities.length === 0 && (
+        <div className={`px-6 py-12 text-center border-t ${border} ${isDark ? 'bg-slate-800/20' : 'bg-slate-50/50'}`}>
+          <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${isDark ? 'bg-emerald-500/10' : 'bg-emerald-50'}`}>
+            <svg className={`w-6 h-6 ${isDark ? 'text-emerald-400' : 'text-emerald-500'}`} viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+          </div>
+          <p className={`text-sm font-medium mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>No charities saved yet</p>
+          <p className={`text-xs mb-3 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+            Browse and save charities to start building your giving plan.
+          </p>
+          <Link
+            to="/browse"
+            className={`inline-flex items-center gap-1 text-sm font-semibold px-4 py-2 rounded-lg transition-colors ${
+              isDark
+                ? 'bg-emerald-600 text-white hover:bg-emerald-500'
+                : 'bg-emerald-600 text-white hover:bg-emerald-700'
+            }`}
+          >
+            Browse Charities
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      )}
+      {targetNum > 0 && buckets.length === 0 && bookmarkedCharities.length > 0 && (
         <div className={`px-6 py-12 text-center border-t ${border} ${isDark ? 'bg-slate-800/20' : 'bg-slate-50/50'}`}>
           <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${isDark ? 'bg-emerald-500/10' : 'bg-emerald-50'}`}>
             <Plus className={`w-6 h-6 ${isDark ? 'text-emerald-400' : 'text-emerald-500'}`} />

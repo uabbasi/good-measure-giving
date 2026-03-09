@@ -15,6 +15,7 @@ import { THEMES } from '../src/themes';
 import { trackHeroCTA } from '../src/utils/analytics';
 import { TOP_CHARITY_FOR_LANDING } from '../src/data/topCharity';
 import { useCharities } from '../src/hooks/useCharities';
+import { cleanNarrativeText } from '../src/utils/cleanNarrativeText';
 import { isPubliclyVisible } from '../src/utils/tierUtils';
 
 const featuredCharity = TOP_CHARITY_FOR_LANDING;
@@ -47,7 +48,7 @@ export const LandingPage: React.FC = () => {
   const confidenceBadge = scoreDetails?.data_confidence?.badge ?? '\u2014';
   const riskLevel = scoreDetails?.risks?.overall_risk_level ?? 'UNKNOWN';
   const zakatClaimed = scoreDetails?.zakat?.charity_claims_zakat;
-  const walletLabel = zakatClaimed === true ? 'Zakat Claimed' : zakatClaimed === false ? 'Sadaqah Route' : 'Wallet Unclear';
+  const walletLabel = zakatClaimed === true ? 'Accepts Zakat' : zakatClaimed === false ? 'Sadaqah Route' : 'Wallet Unclear';
   const scoreSummary = scoreDetails?.score_summary;
   const isMobile = useIsMobile();
   const { isSignedIn } = useAuth();
@@ -149,7 +150,7 @@ export const LandingPage: React.FC = () => {
       {[
         { title: 'Evidence of Impact', desc: 'Do their programs actually change lives? We check.' },
         { title: 'Cost-Effectiveness', desc: 'How far does each dollar go compared to peers?' },
-        { title: 'Zakat & Sadaqah', desc: 'Is this charity Zakat-eligible? No guessing needed.' },
+        { title: 'Zakat & Sadaqah', desc: 'Does this charity publicly say it accepts Zakat? We show the source.' },
       ].map(({ title, desc }) => (
         <li key={title} className="flex items-start gap-3">
           <CheckCircle className={`w-5 h-5 flex-shrink-0 mt-0.5 ${dk ? 'text-emerald-400' : 'text-emerald-600'}`} aria-hidden="true" />
@@ -170,7 +171,7 @@ export const LandingPage: React.FC = () => {
           <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider">Featured Evaluation</span>
         </div>
         <div className={`${compact ? 'text-lg' : 'text-2xl'} font-bold ${dk ? 'text-white' : 'text-slate-900'}`}>{featuredCharity?.name || 'Loading...'}</div>
-        <div className={`text-${compact ? 'xs' : 'sm'} line-clamp-2 mt-0.5 ${dk ? 'text-slate-400' : 'text-slate-500'}`}>{featuredCharity?.headline || ''}</div>
+        <div className={`text-${compact ? 'xs' : 'sm'} line-clamp-2 mt-0.5 ${dk ? 'text-slate-400' : 'text-slate-500'}`}>{featuredCharity?.headline ? cleanNarrativeText(featuredCharity.headline) : ''}</div>
       </div>
 
       <div className={`grid grid-cols-3 gap-2 mb-${compact ? '4' : '8'}`}>
@@ -182,7 +183,7 @@ export const LandingPage: React.FC = () => {
       {scoreSummary && (
         <div className={`p-${compact ? '3' : '5'} rounded-xl mb-${compact ? '4' : '6'} ${dk ? 'bg-slate-900/80 border border-slate-700/50' : 'bg-slate-50 border border-slate-200'}`}>
           <div className={`text-${compact ? '[10px]' : 'xs'} font-bold uppercase tracking-wider mb-1.5 ${dk ? 'text-slate-400' : 'text-slate-500'}`}>Evaluation Summary</div>
-          <p className={`text-${compact ? 'xs' : 'sm'} leading-relaxed line-clamp-3 ${dk ? 'text-slate-300' : 'text-slate-700'}`}>{scoreSummary}</p>
+          <p className={`text-${compact ? 'xs' : 'sm'} leading-relaxed line-clamp-3 ${dk ? 'text-slate-300' : 'text-slate-700'}`}>{cleanNarrativeText(scoreSummary)}</p>
         </div>
       )}
 

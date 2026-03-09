@@ -507,11 +507,11 @@ class TestAlignmentScorer:
         assert 0 <= result.score <= 50
 
 
-# ─── RiskScorer (-20 max) ────────────────────────────────────────────────────
+# ─── RiskScorer (-10 max) ────────────────────────────────────────────────────
 
 
 class TestRiskScorer:
-    """Risk deductions capped at -20."""
+    """Risk deductions capped at -10."""
 
     def test_no_risks(self):
         """Clean charity → 0 deductions."""
@@ -540,8 +540,8 @@ class TestRiskScorer:
         _case_against, deduction = scorer.evaluate(m)
         assert deduction <= -5
 
-    def test_cap_at_minus_20(self):
-        """Multiple risks → capped at -20."""
+    def test_cap_at_minus_10(self):
+        """Multiple risks → capped at -10."""
         m = _base_metrics(
             program_expense_ratio=0.30,  # -5
             board_size=1,  # -5
@@ -551,8 +551,8 @@ class TestRiskScorer:
         )
         scorer = RiskScorer()
         _case_against, deduction = scorer.evaluate(m)
-        # Total raw: -22, capped at -20
-        assert deduction == -20
+        # Total raw: -22, capped at -10
+        assert deduction == -10
 
     def test_emerging_org_no_toc_risk(self):
         """Emerging org (<$1M) → no deduction for missing TOC/outcomes."""

@@ -206,7 +206,7 @@ class SynthesizeQualityJudge(BaseJudge):
     def _check_website_citation_depth(self, ein: str, charity_data: dict) -> list[ValidationIssue]:
         """S-J-002b: Flag homepage-only website citations and uncited website claims.
 
-        This is intentionally non-blocking (INFO/WARNING) so claims can still flow,
+        This is intentionally non-blocking (INFO only) so claims can still flow,
         but we surface weak provenance for review.
         """
         issues = []
@@ -219,11 +219,15 @@ class SynthesizeQualityJudge(BaseJudge):
             if "website" not in source_name:
                 continue
 
+            field_value = charity_data.get(field_name)
+            if field_value in (None, False, 0, "", [], {}):
+                continue
+
             source_url = attribution.get("source_url")
             if isinstance(source_url, str) and self._is_homepage_url(source_url):
                 issues.append(
                     ValidationIssue(
-                        severity=Severity.WARNING,
+                        severity=Severity.INFO,
                         field=f"source_attribution.{field_name}.source_url",
                         message=f"Website citation for '{field_name}' uses homepage URL; deep link preferred",
                         details={
@@ -402,17 +406,30 @@ class SynthesizeQualityJudge(BaseJudge):
 
         issues = []
         corroboration = charity_data.get("corroboration_status", {})
+        warning_level_fields = {
+            "accepts_zakat",
+            "cost_per_beneficiary",
+            "evidence_quality",
+            "external_evaluations",
+            "impact_multiplier",
+            "scholarly_endorsements",
+            "third_party_evaluated",
+        }
 
         for field_name in HALLUCINATION_PRONE_FIELDS:
             value = charity_data.get(field_name)
             if value is None:
+                continue
+            if value is False:
+                continue
+            if isinstance(value, (str, list, dict)) and not value:
                 continue
 
             field_corroboration = corroboration.get(field_name, {})
             if not field_corroboration.get("passed", False):
                 self.add_issue(
                     issues,
-                    Severity.WARNING,
+                    Severity.WARNING if field_name in warning_level_fields else Severity.INFO,
                     f"hallucination_denylist.{field_name}",
                     f"Hallucination-prone field '{field_name}' lacks cross-source corroboration",
                     details={

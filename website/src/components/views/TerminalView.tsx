@@ -72,10 +72,10 @@ const formatCurrency = (value: number | null | undefined): string => {
   return `$${value}`;
 };
 
-// Format wallet tag - binary system (ZAKAT-ELIGIBLE or SADAQAH-ELIGIBLE)
+// Format wallet tag for donor-facing display
 const formatWalletTag = (tag: string): string => {
   const cleanTag = tag?.replace(/[\[\]]/g, '') || '';
-  if (cleanTag.includes('ZAKAT')) return 'Zakat';
+  if (cleanTag.includes('ZAKAT')) return 'Accepts Zakat';
   return 'Sadaqah';
 };
 
@@ -385,7 +385,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
     : (baseline?.summary || '');
   const isZakatEligible = amal?.wallet_tag?.includes('ZAKAT');
   const uiSignals = charity.ui_signals_v1 || deriveUISignalsFromCharity(charity);
-  const amalScore = amal?.amal_score || 0;
+  const amalScore = amal?.amal_score ?? null;
   const donateUrl = charity.donationUrl ?? charity.website ?? undefined;
   const keyConcerns = charity.keyConcerns ?? [];
 
@@ -492,6 +492,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                   <BookmarkButton
                     charityEin={charity.ein || charity.id || ''}
                     charityName={charity.name}
+                    causeTags={charity.causeTags || undefined}
                     showLabel
                     fullWidth
                     size="sm"
@@ -557,7 +558,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 </span>
               )}
               <span className={`ml-1 ${isDark ? 'text-amber-400/50' : 'text-amber-500/70'}`}>
-                — Scored with emerging-org rubric
+                — Too early to rate numerically
               </span>
             </div>
           )}
@@ -668,7 +669,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                   : isDark ? 'text-slate-400' : 'text-slate-500'
               }`}>
                 <Shield className="w-3.5 h-3.5" />
-                {isZakatEligible ? 'Zakat Eligible' : 'Sadaqah'}
+                {isZakatEligible ? 'Accepts Zakat' : 'Sadaqah'}
               </span>
             </div>
           </div>
@@ -820,6 +821,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
         causeArea={rich?.donor_fit_matrix?.cause_area}
         showMobileQuickActions={false}
         zakatPolicyUrl={charity.zakatClaimEvidence?.[0] ? extractZakatPolicyUrl(charity.zakatClaimEvidence[0]) : undefined}
+        causeTags={charity.causeTags || undefined}
       />
 
       {/* ═══════════════════════════════════════════════════════════════════════
@@ -1047,8 +1049,8 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
               isDark ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-slate-200'
             }`}>
               <div className={`px-3.5 py-3.5 text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                Emerging organizations are evaluated on vision and early indicators.
-                Detailed scoring will be available as the organization builds its track record.
+                This organization is too early to rate numerically.
+                We show qualitative context and early indicators while it builds a longer public track record.
               </div>
             </div>
           ) : (
@@ -1062,7 +1064,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
               <ScoreBreakdown
                 scoreDetails={amal.score_details}
                 confidenceScores={scores}
-                amalScore={amalScore}
+                amalScore={amalScore ?? 0}
                 citations={citations}
                 isSignedIn={isSignedIn}
                 isDark={isDark}
@@ -1961,8 +1963,8 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
             charity.evaluationTrack === 'NEW_ORG' ? (
               <div data-section="methodology" className={`mb-6 rounded-lg border p-4 ${isDark ? 'border-slate-700 bg-slate-900/40' : 'border-slate-200 bg-white'}`}>
                 <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                  Emerging organizations are evaluated on vision and early indicators.
-                  Detailed scoring will be available as the organization builds its track record.
+                  This organization is too early to rate numerically.
+                  We show qualitative context and early indicators while it builds a longer public track record.
                 </p>
               </div>
             ) : (
@@ -1974,7 +1976,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 <ScoreBreakdown
                   scoreDetails={amal.score_details}
                   confidenceScores={scores}
-                  amalScore={amalScore}
+                  amalScore={amalScore ?? 0}
                   citations={citations}
                   isSignedIn={isSignedIn}
                   isDark={isDark}

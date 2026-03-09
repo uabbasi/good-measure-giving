@@ -10,7 +10,8 @@ import { uiSignalsConfig, UI_SIGNALS_CONFIG_HASH, UI_SIGNALS_CONFIG_VERSION } fr
 /**
  * Numeric score → human-readable rating label
  */
-export const getScoreRating = (score: number): string => {
+export const getScoreRating = (score: number | null | undefined): string => {
+  if (score == null) return 'Not Yet Rated';
   if (score >= 75) return 'Exceptional';
   if (score >= 60) return 'Good';
   if (score >= 45) return 'Average';
@@ -381,10 +382,12 @@ const deriveEvidenceStage = (
 };
 
 const deriveCue = (
-  score: number,
+  score: number | null | undefined,
   confidence: 'HIGH' | 'MEDIUM' | 'LOW',
-  riskSignal: UISignalState
+  riskSignal: UISignalState,
+  evaluationTrack?: string | null
 ): UISignalsV1['recommendation_cue'] => {
+  if (evaluationTrack === 'NEW_ORG' || score == null) return 'Mixed Signals';
   const riskLevel = riskSignal === 'Strong' ? 'LOW' : riskSignal === 'Moderate' ? 'MODERATE' : 'HIGH';
   if (score < uiSignalsConfig.recommendation_cue.limited_match.score_max_exclusive || (confidence === 'LOW' && riskLevel === 'HIGH')) return 'Limited Match';
   if (score >= uiSignalsConfig.recommendation_cue.strong_match.score_min && confidence === 'HIGH' && riskLevel === 'LOW') return 'Strong Match';
@@ -426,21 +429,24 @@ export const deriveUISignalsFromSummary = (charity: SummaryLike): UISignalsV1 =>
     thirdPartyEvaluated,
     signals.evidence
   );
-  const score = charity.amalScore ?? charity.amalEvaluation?.amal_score ?? 0;
-  const cue = deriveCue(score, confidence, signals.risk);
+  const score = charity.amalScore ?? charity.amalEvaluation?.amal_score ?? null;
+  const cue = deriveCue(score, confidence, signals.risk, charity.evaluationTrack);
   const archetypeCode = charity.archetype || charity.rubricArchetype || null;
+  const isNewOrg = charity.evaluationTrack === 'NEW_ORG' || score == null;
 
   return {
     schema_version: uiSignalsConfig.schema_version,
     config_version: UI_SIGNALS_CONFIG_VERSION,
     config_hash: UI_SIGNALS_CONFIG_HASH,
-    assessment_label: deriveAssessmentLabel(cue, stage),
+    assessment_label: isNewOrg ? 'Limited Basis' : deriveAssessmentLabel(cue, stage),
     archetype_code: archetypeCode,
     archetype_label: getArchetypeLabel(archetypeCode),
     evidence_stage: stage,
     signal_states: signals,
     recommendation_cue: cue,
-    recommendation_rationale: buildCueRationale(cue),
+    recommendation_rationale: isNewOrg
+      ? 'Early-stage organization. We show qualitative context while it builds a longer public track record.'
+      : buildCueRationale(cue),
     used_fallback: true,
     fallback_reasons: ['missing_ui_signals_v1'],
   };
@@ -455,7 +461,7 @@ export const deriveUISignalsFromCharity = (charity: CharityProfile): UISignalsV1
     foundedYear: charity.foundedYear,
     evaluationTrack: charity.evaluationTrack,
     amalEvaluation: charity.amalEvaluation,
-    amalScore: charity.amalEvaluation?.amal_score ?? 0,
+    amalScore: charity.amalEvaluation?.amal_score ?? null,
     evidenceQuality: charity.evidenceQuality,
   });
 };

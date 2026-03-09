@@ -219,7 +219,13 @@ class NarrativeQualityJudge(BaseJudge):
 
         full_text = " ".join(text_parts).lower()
 
-        for term in ALL_JARGON:
+        jargon_terms = list(COMMON_JARGON)
+        if lens_name in {"strategic", "rich_strategic"}:
+            jargon_terms.extend(STRATEGIC_JARGON)
+        if lens_name == "zakat":
+            jargon_terms.extend(ZAKAT_JARGON)
+
+        for term in jargon_terms:
             if re.search(r'\b' + re.escape(term.lower()) + r'\b', full_text):
                 self.add_issue(
                     issues,

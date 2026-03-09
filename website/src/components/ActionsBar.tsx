@@ -22,14 +22,16 @@ interface ActionsBarProps {
   donateUrl?: string;
   /** Optional callback when donate is clicked */
   onDonateClick?: () => void;
-  /** Wallet tag: 'ZAKAT-ELIGIBLE' or 'SADAQAH-ELIGIBLE' */
+  /** Wallet tag: internal routing enum such as 'ZAKAT-ELIGIBLE' */
   walletTag?: string | null;
   /** Cause area (e.g. 'RELIGIOUS_CULTURAL') */
   causeArea?: string | null;
   /** Render mobile quick actions (sm:hidden row). Disable when mobile actions are rendered elsewhere. */
   showMobileQuickActions?: boolean;
-  /** URL to the charity's zakat policy page (makes "stated policy" a link) */
+  /** URL to the charity's zakat source page on its website */
   zakatPolicyUrl?: string | null;
+  /** Cause tags for auto-categorization on bookmark */
+  causeTags?: string[];
 }
 
 export function ActionsBar({
@@ -43,6 +45,7 @@ export function ActionsBar({
   causeArea,
   showMobileQuickActions = true,
   zakatPolicyUrl,
+  causeTags,
 }: ActionsBarProps) {
   const { isDark } = useLandingTheme();
   const { isSignedIn } = useAuth();
@@ -82,6 +85,7 @@ export function ActionsBar({
                     <BookmarkButton
                       charityEin={charityEin}
                       charityName={charityName}
+                      causeTags={causeTags}
                       showLabel
                       fullWidth
                       size="md"
@@ -152,7 +156,7 @@ export function ActionsBar({
                       : isDark ? 'bg-slate-800 text-slate-400 border border-slate-700' : 'bg-slate-100 text-slate-500 border border-slate-200'
                   }`}>
                     <Shield className="w-3 h-3" />
-                    {walletTag.includes('ZAKAT') ? 'Zakat Eligible' : 'Sadaqah'}
+                    {walletTag.includes('ZAKAT') ? 'Accepts Zakat' : 'Sadaqah'}
                   </span>
                   {walletTag.includes('ZAKAT') && (
                     zakatPolicyUrl ? (
@@ -162,11 +166,11 @@ export function ActionsBar({
                         rel="noopener noreferrer"
                         className={`text-xs border-b border-dotted transition-colors ${isDark ? 'text-slate-600 border-slate-600 hover:text-emerald-400 hover:border-emerald-400' : 'text-slate-400 border-slate-400 hover:text-emerald-600 hover:border-emerald-600'}`}
                       >
-                        stated policy
+                        source page
                       </a>
                     ) : (
                       <span className={`text-xs ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>
-                        stated policy
+                        source page
                       </span>
                     )
                   )}
@@ -195,6 +199,7 @@ export function ActionsBar({
                     <BookmarkButton
                       charityEin={charityEin}
                       charityName={charityName}
+                      causeTags={causeTags}
                       showLabel
                       size="sm"
                       className="!text-xs !font-mono !uppercase !tracking-wide"
@@ -275,6 +280,7 @@ export function ActionsBar({
                 <BookmarkButton
                   charityEin={charityEin}
                   charityName={charityName}
+                  causeTags={causeTags}
                   showLabel
                   fullWidth
                   size="md"
@@ -328,15 +334,15 @@ export function ActionsBar({
                     : isDark ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-500'
                 }`}>
                   <Shield className="w-3 h-3" />
-                  {walletTag.includes('ZAKAT') ? 'Zakat Eligible' : 'Sadaqah'}
+                  {walletTag.includes('ZAKAT') ? 'Accepts Zakat' : 'Sadaqah'}
                 </span>
                 {walletTag.includes('ZAKAT') && (
                   <span className="relative group/tooltip">
                     <span className={`text-xs cursor-help border-b border-dotted ${isDark ? 'text-slate-600 border-slate-600' : 'text-slate-400 border-slate-400'}`}>
-                      stated policy
+                      source page
                     </span>
                     <span className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-slate-900 text-white text-xs rounded-lg shadow-lg w-56 text-center opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none">
-                      Per organization's published zakat policy
+                      Based on the organization&apos;s own website language
                       <span className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-slate-900"></span>
                     </span>
                   </span>
@@ -369,6 +375,7 @@ export function ActionsBar({
                 <BookmarkButton
                   charityEin={charityEin}
                   charityName={charityName}
+                  causeTags={causeTags}
                   showLabel
                   size="sm"
                 />

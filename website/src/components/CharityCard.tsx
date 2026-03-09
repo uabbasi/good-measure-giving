@@ -8,6 +8,7 @@ import { getEvidenceStageClasses, getEvidenceStageLabel, getGivingTagClasses } f
 import { deriveUISignalsFromCharity } from '../utils/scoreUtils';
 import { trackCharityCardClick } from '../utils/analytics';
 import { formatShortRevenue } from '../utils/formatters';
+import { cleanNarrativeText } from '../utils/cleanNarrativeText';
 import { BookmarkButton } from './BookmarkButton';
 import { CompareButton } from './CompareButton';
 
@@ -18,7 +19,7 @@ type PrimaryTag = {
 
 const getShortLabel = (label: string): string => {
   const mapping: Record<string, string> = {
-    'Zakat Eligible': 'Zakat',
+    'Accepts Zakat': 'Zakat',
     'Women & Girls': 'Women',
     'Emergency Relief': 'Relief',
     'Advocacy & Policy': 'Policy',
@@ -110,7 +111,7 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
 
   const allCauseTags = extendedCharity.causeTags || [];
   const givingTypeTag: PrimaryTag = walletType === 'zakat'
-    ? { label: 'Zakat Eligible', icon: Lock }
+    ? { label: 'Accepts Zakat', icon: Lock }
     : { label: 'Sadaqah', icon: Heart };
 
   // Differentiator tags: prioritized list of impact/approach indicators
@@ -276,7 +277,7 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
           {/* Headline snippet */}
           {extendedCharity.headline && (
             <p className={`text-xs line-clamp-1 mt-0.5 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-              {extendedCharity.headline}
+              {cleanNarrativeText(extendedCharity.headline)}
             </p>
           )}
 
@@ -328,6 +329,7 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
               <BookmarkButton
                 charityEin={charity.ein || charity.id || ''}
                 charityName={charity.name}
+                causeTags={allCauseTags.length > 0 ? allCauseTags : undefined}
                 size="md"
               />
             </div>

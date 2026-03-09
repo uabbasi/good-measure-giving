@@ -77,7 +77,7 @@ export const CategoryBubbleChart: React.FC<CategoryBubbleChartProps> = ({
   };
 
   const getWalletLabel = (tag?: string) => {
-    if (tag?.includes('ZAKAT')) return 'Zakat Eligible';
+    if (tag?.includes('ZAKAT')) return 'Accepts Zakat';
     return 'Sadaqah';
   };
 
@@ -191,7 +191,7 @@ export const CategoryBubbleChart: React.FC<CategoryBubbleChartProps> = ({
       <div className={`flex flex-wrap justify-center gap-6 mt-6 pt-6 border-t ${isDark ? 'border-slate-700' : 'border-slate-100'}`}>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-          <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Zakat Eligible</span>
+          <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Accepts Zakat</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-slate-400"></div>

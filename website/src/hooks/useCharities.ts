@@ -25,7 +25,7 @@ export interface CharitySummary {
   headline?: string | null;
   category: string | null;
   website: string;
-  amalScore: number;
+  amalScore: number | null;
   walletTag: string;
   confidenceTier: string;
   impactTier: string;
@@ -275,7 +275,7 @@ export function useCharitySearch(
     // Minimum score filter
     if (filters?.minScore) {
       results = results.filter(c =>
-        (c.amalEvaluation?.amal_score || 0) >= filters.minScore!
+        c.amalEvaluation?.amal_score != null && c.amalEvaluation.amal_score >= filters.minScore!
       );
     }
 

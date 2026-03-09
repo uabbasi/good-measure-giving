@@ -77,8 +77,8 @@ const PRESET_FILTERS: PresetFilter[] = [
   // ⭐ Quality Filters
   { id: 'strong-match', label: 'Maximum Alignment', recommendationCues: ['Strong Match'], group: 'quality',
     description: 'Profiles with strong mission match, lower observed risk, and higher evidence confidence.' },
-  { id: 'zakat', label: 'Zakat Eligible', zakatEligible: true, group: 'quality',
-    description: 'Verified to serve zakat-eligible beneficiaries (fuqara, masakin, refugees) with proper fund segregation.' },
+  { id: 'zakat', label: 'Accepts Zakat', zakatEligible: true, group: 'quality',
+    description: 'Organizations whose websites publicly say they accept zakat. This is not a GMG ruling on fiqh compliance.' },
   { id: 'cost-effective', label: '85%+ to Programs', minEfficiency: 0.85, group: 'quality',
     description: 'Charities spending 85%+ of funds on programs. More of your donation reaches beneficiaries directly.' },
   { id: 'established', label: 'Established (25+ yrs)', established: true, group: 'quality',
@@ -141,7 +141,7 @@ const GUIDED_PATHS: GuidedPath[] = [
   {
     id: 'zakat',
     label: 'Pay My Zakat',
-    description: 'Verified zakat-eligible charities',
+    description: 'Charities whose websites publicly say they accept zakat',
     icon: 'heart',
     presets: ['zakat'],
     targetMode: 'simple',
@@ -210,7 +210,7 @@ const BROWSE_STYLE_KEY = 'gmg-browse-style';
 
 // Get AMAL score for a charity
 const getScore = (charity: CharityProfile): number => {
-  return charity.amalEvaluation?.amal_score || 0;
+  return charity.amalEvaluation?.amal_score ?? -1;
 };
 
 const getRecommendationRank = (cue: string | null | undefined): number => {
@@ -310,10 +310,14 @@ export const BrowsePage: React.FC = () => {
     [publicCharities]
   );
 
+  const includeCuratedHidden = browseStyle === 'power' || selectedPathId === 'browse';
+
   // Count of default browseable set (excludes hidden/curated-hidden)
   const defaultViewCount = useMemo(() =>
-    evaluatedCharities.filter(c => !c.hideFromCurated).length,
-    [evaluatedCharities]
+    includeCuratedHidden
+      ? evaluatedCharities.length
+      : evaluatedCharities.filter(c => !c.hideFromCurated).length,
+    [evaluatedCharities, includeCuratedHidden]
   );
 
   // Current year for established calculation
@@ -403,8 +407,10 @@ export const BrowsePage: React.FC = () => {
     // Start with baseline set
     let results = extendedCharities.filter(c => getScore(c) >= minScore);
 
-    // Always hide charities marked hideFromCurated - only searchable, never browsable
-    results = results.filter(c => !c.hideFromCurated);
+    // Guided/default browse keeps a curated set. Power mode and Browse All expose the full evaluated set.
+    if (!includeCuratedHidden) {
+      results = results.filter(c => !c.hideFromCurated);
+    }
 
     // Apply each preset's filters (AND logic - charity must match ALL active presets)
     for (const preset of presets) {
@@ -412,7 +418,7 @@ export const BrowsePage: React.FC = () => {
     }
 
     return results;
-  }, [evaluatedCharities, searchQuery, activePresets, currentYear]);
+  }, [evaluatedCharities, searchQuery, activePresets, currentYear, includeCuratedHidden]);
 
   const getRelevanceScore = (charity: CharityProfile): number => {
     const uiSignals = charity.ui_signals_v1 || deriveUISignalsFromCharity(charity);
@@ -542,10 +548,9 @@ export const BrowsePage: React.FC = () => {
       return charities.filter(c => matchesPreset(c, preset));
     };
 
-    // Base set: all browseable charities
-    const baseCharities = extendedCharities.filter(c =>
-      !c.hideFromCurated
-    );
+    const baseCharities = includeCuratedHidden
+      ? extendedCharities
+      : extendedCharities.filter(c => !c.hideFromCurated);
 
     // Get all active preset objects
     const activePresetObjects = Array.from(activePresets)
@@ -568,7 +573,7 @@ export const BrowsePage: React.FC = () => {
       counts.set(preset.id, results.length);
     }
     return counts;
-  }, [evaluatedCharities, activePresets, currentYear]);
+  }, [evaluatedCharities, activePresets, currentYear, includeCuratedHidden]);
 
   // Group presets for UI
   const groupedPresets = useMemo(() => {

@@ -96,7 +96,7 @@ class CrawlQualityJudge(BaseJudge):
         issues.extend(self._check_revenue_divergence(ein, source_data))
 
         # J-010: Zakat claim verification
-        issues.extend(self._check_zakat_claim(ein, output, source_data))
+        issues.extend(self._check_zakat_claim(ein, output, source_data, context.get("charity_data", {})))
 
         # J-011: Uncorroborated website evidence claims
         issues.extend(self._check_uncorroborated_evidence_claims(ein, source_data))
@@ -419,6 +419,10 @@ class CrawlQualityJudge(BaseJudge):
         if not bbb_name:
             return []
 
+        bbb_ein = str(bbb.get("ein") or "").replace("-", "")
+        if bbb_ein and bbb_ein == ein.replace("-", ""):
+            return []
+
         # Calculate name similarity
         similarity = self._calculate_name_similarity(expected_name, bbb_name)
 
@@ -562,10 +566,11 @@ class CrawlQualityJudge(BaseJudge):
                         )
                     )
                 else:
-                    # Different years, large divergence = WARNING (could be legitimate year-over-year change)
+                    # Different years, large divergence is informational. Adjacent fiscal years
+                    # can legitimately vary a lot for grant-dependent or reserve-drawing orgs.
                     issues.append(
                         ValidationIssue(
-                            severity=Severity.WARNING,
+                            severity=Severity.INFO,
                             field="multi_source.revenue_divergence",
                             message=f"Revenue diverges >{REVENUE_DIVERGENCE_ERROR:.0%} across sources (${min_rev:,.0f} - ${max_rev:,.0f}) - different fiscal years ({year_spread} year spread)",
                             details=details,
@@ -584,9 +589,10 @@ class CrawlQualityJudge(BaseJudge):
 
         return issues
 
-    def _check_zakat_claim(self, ein: str, output: dict, source_data: dict) -> list[ValidationIssue]:
-        """J-010: Verify zakat eligibility claims have evidence."""
+    def _check_zakat_claim(self, ein: str, output: dict, source_data: dict, charity_data: dict | None = None) -> list[ValidationIssue]:
+        """J-010: Verify accepts-zakat tagging has some underlying evidence."""
         issues = []
+        charity_data = charity_data or {}
 
         evaluation = output.get("evaluation", {})
         wallet_tag = evaluation.get("wallet_tag") or ""
@@ -622,11 +628,16 @@ class CrawlQualityJudge(BaseJudge):
                         zakat_evidence = True
                         break
 
-        # Also check zakat_metadata from synthesize phase (persisted evidence)
+        # Check discovered-profile zakat evidence before relying on website extraction only.
         if not zakat_evidence:
-            raw = output.get("_raw", {})
-            zakat_eval = raw.get("zakatEvaluation") or {}
-            zakat_meta = zakat_eval.get("metadata") or {}
+            discovered = source_data.get("discovered", {}).get("discovered_profile", {})
+            zakat = discovered.get("zakat", {}) if isinstance(discovered, dict) else {}
+            if zakat.get("accepts_zakat_evidence") or zakat.get("accepts_zakat_url") or zakat.get("direct_page_verified"):
+                zakat_evidence = True
+
+        # Also check persisted zakat metadata from synthesize phase.
+        if not zakat_evidence:
+            zakat_meta = charity_data.get("zakat_metadata") or {}
             if zakat_meta.get("asnaf_categories_served") or zakat_meta.get("zakat_policy_url"):
                 zakat_evidence = True
             if zakat_meta.get("direct_page_verified"):
@@ -637,7 +648,7 @@ class CrawlQualityJudge(BaseJudge):
                 ValidationIssue(
                     severity=Severity.WARNING,
                     field="zakat.evidence",
-                    message="ZAKAT-ELIGIBLE claimed but no explicit zakat evidence found on website",
+                    message="Accepts-zakat tagging lacks explicit zakat evidence in website or discovery data",
                     details={
                         "wallet_tag": wallet_tag,
                         "accepts_zakat": website.get("accepts_zakat") if website else None,

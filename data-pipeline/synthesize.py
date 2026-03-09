@@ -38,6 +38,7 @@ from src.parsers.charity_metrics_aggregator import CharityMetricsAggregator
 from src.scorers.strategic_classifier import classification_to_dict, classify_charity
 from src.scorers.strategic_evidence import compute_strategic_evidence
 from src.utils.deep_link_resolver import choose_website_evidence_url
+from src.utils.evaluation_tracks import is_new_org
 from src.utils.logger import PipelineLogger
 from src.utils.phase_cache_helper import check_phase_cache, update_phase_cache
 
@@ -889,10 +890,8 @@ def detect_evaluation_track(
     Returns:
         The evaluation track string
     """
-    current_year = datetime.now(timezone.utc).year
-
-    # Track 1: New Organization (< 3 years old)
-    if founded_year and (current_year - founded_year) < 3:
+    # Track 1: New Organization (<= 5 years old)
+    if is_new_org(founded_year):
         return "NEW_ORG"
 
     # Track 2: Research/Policy/Advocacy

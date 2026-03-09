@@ -111,4 +111,49 @@ describe('qualitative ui signal derivation', () => {
     expect(getSignalStates(charity).financial_health).toBe('Moderate');
     expect(getEvidenceStageRank('Verified')).toBeGreaterThan(getEvidenceStageRank('Building'));
   });
+
+  it('treats new orgs without a public score as limited-basis profiles', () => {
+    const charity = makeCharity({
+      foundedYear: 2023,
+      evaluationTrack: 'NEW_ORG',
+      amalEvaluation: {
+        charity_ein: '11-1111111',
+        charity_name: 'Test Charity',
+        amal_score: null,
+        wallet_tag: 'SADAQAH-GENERAL',
+        confidence_tier: 'LOW',
+        evaluation_date: '2026-01-01',
+        score_details: {
+          impact: {
+            score: 10,
+            rationale: '',
+            cost_per_beneficiary: null,
+            directness_level: 'INDIRECT',
+            impact_design_categories: [],
+            components: [
+              { name: 'Evidence & Outcomes', scored: 1, possible: 9, evidence: '', status: 'partial', improvement_value: 0 },
+              { name: 'Financial Health', scored: 2, possible: 7, evidence: '', status: 'partial', improvement_value: 0 },
+              { name: 'Program Ratio', scored: 2, possible: 7, evidence: '', status: 'partial', improvement_value: 0 },
+              { name: 'Governance', scored: 1, possible: 10, evidence: '', status: 'partial', improvement_value: 0 },
+            ],
+          },
+          alignment: {
+            score: 18,
+            rationale: '',
+            muslim_donor_fit_level: 'LOW',
+            cause_urgency_label: 'COMMUNITY',
+            components: [],
+          },
+          data_confidence: { overall: 0.3, badge: 'LOW' },
+          risks: { risks: [], overall_risk_level: 'HIGH', risk_summary: '', total_deduction: -3 },
+          risk_deduction: -3,
+        },
+      },
+    });
+
+    const derived = deriveUISignalsFromCharity(charity);
+    expect(derived.recommendation_cue).toBe('Mixed Signals');
+    expect(derived.assessment_label).toBe('Limited Basis');
+    expect(derived.evidence_stage).toBe('Early');
+  });
 });

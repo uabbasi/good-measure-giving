@@ -91,7 +91,7 @@ export function ProfilePage() {
       ein: s.ein,
       name: s.name,
       tier: s.tier || 'baseline',
-      amalScore: s.amalScore || 0,
+      amalScore: s.amalScore ?? null,
       walletTag: s.walletTag || 'INSUFFICIENT-DATA',
       impactTier: s.impactTier || null,
       causeTags: s.causeTags || null,

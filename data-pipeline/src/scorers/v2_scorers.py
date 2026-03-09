@@ -2040,18 +2040,18 @@ class ZakatScorer:
 
 
 # =============================================================================
-# RiskScorer (-20 pts max deduction)
+# RiskScorer (-10 pts max deduction)
 # =============================================================================
 
 
 class RiskScorer:
-    """Evaluates risks for deduction (-20 points max).
+    """Evaluates risks for deduction (-10 points max).
 
     Size-adjusted: Emerging orgs (<$1M) get no deduction for missing
     TOC or outcomes (already penalized in Credibility). Established
     orgs (>$10M) get full deductions — no excuses at that scale.
 
-    Risk deductions (capped at -20 total):
+    Risk deductions (capped at -10 total):
     - program_ratio_under_50: -5 (ProPublica 990)
     - board_under_3: -5 (ProPublica 990)
     - working_capital_under_1mo: -2 (ProPublica 990)
@@ -2379,14 +2379,14 @@ class RiskScorer:
                 total += deduction
                 _applied_checks.add(check_name)
 
-        return max(-20, total)
+        return max(-10, total)
 
     def _determine_risk_level(self, deduction: int) -> str:
-        if deduction <= -12:
+        if deduction <= -8:
             return "HIGH"
-        elif deduction <= -8:
+        elif deduction <= -5:
             return "ELEVATED"
-        elif deduction <= -3:
+        elif deduction <= -2:
             return "MODERATE"
         return "LOW"
 
@@ -2690,7 +2690,7 @@ class AmalScorerV2:
 
         zakat_note = ", with zakat compliance" if wallet_tag == "ZAKAT-ELIGIBLE" else ""
         caveat = ""
-        if risk_deduction < -10:
+        if risk_deduction <= -8:
             caveat = " (major risk deductions applied)"
         elif risk_deduction < -5:
             caveat = " (significant risk deductions applied)"

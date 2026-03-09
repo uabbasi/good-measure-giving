@@ -50,6 +50,7 @@ class Form990GrantsCollector(BaseCollector):
 
     PROPUBLICA_ORG_URL = "https://projects.propublica.org/nonprofits/organizations"
     PROPUBLICA_XML_URL = "https://projects.propublica.org/nonprofits/download-xml"
+    NO_XML_SENTINEL = "<!-- FORM990_NO_XML -->"
 
     # XML namespace for IRS e-file
     IRS_NS = {"irs": "http://www.irs.gov/efile"}
@@ -486,10 +487,10 @@ class Form990GrantsCollector(BaseCollector):
         filings = self._get_filing_object_ids(ein_clean, max_filings=3)
         if not filings:
             return FetchResult(
-                success=False,
-                raw_data=None,
+                success=True,
+                raw_data=self.NO_XML_SENTINEL,
                 content_type="xml",
-                error=f"No XML filings found for EIN {ein}",
+                error=None,
             )
 
         if self.logger:
@@ -617,6 +618,17 @@ class Form990GrantsCollector(BaseCollector):
 
         ein_clean = ein.replace("-", "")
         ein_formatted = f"{ein_clean[:2]}-{ein_clean[2:]}"
+
+        if raw_data.strip() == self.NO_XML_SENTINEL:
+            profile = Form990GrantsProfile(
+                name=f"Unknown ({ein_formatted})",
+                ein=ein_formatted,
+            )
+            return ParseResult(
+                success=True,
+                parsed_data={self.schema_key: profile.model_dump()},
+                error=None,
+            )
 
         filings_data: List[Dict[str, Any]] = []
 
@@ -749,6 +761,15 @@ class Form990GrantsCollector(BaseCollector):
         # Fetch
         fetch_result = self.fetch(ein)
         if not fetch_result.success:
+            if fetch_result.error and "No XML filings found" in fetch_result.error:
+                parse_result = self.parse(self.NO_XML_SENTINEL, ein)
+                if not parse_result.success:
+                    return False, None, parse_result.error
+                return True, {
+                    **parse_result.parsed_data,
+                    "raw_xml_object_id": None,
+                    "fetch_timestamp": datetime.now(timezone.utc).isoformat(),
+                }, None
             return False, None, fetch_result.error
 
         # Parse

@@ -47,7 +47,7 @@ export interface LegacyImpactAssessment {
 
 // Amal Framework Types
 // Valid wallet tags (based on website self-assertion model):
-// - ZAKAT-ELIGIBLE: Charity explicitly claims zakat eligibility
+// - ZAKAT-ELIGIBLE: Charity explicitly says it accepts zakat
 // - SADAQAH-STRATEGIC: High-impact work, no zakat claim
 // - SADAQAH-GENERAL: Standard charitable giving
 // - INSUFFICIENT-DATA: Not enough info to classify
@@ -715,7 +715,7 @@ export interface ScoreDetails {
 export interface AmalEvaluation {
   charity_ein: string;
   charity_name: string;
-  amal_score: number;
+  amal_score: number | null;
   wallet_tag: WalletTag;
   baseline_narrative?: BaselineNarrative;
   rich_narrative?: RichNarrative;  // Premium content with citations
@@ -1305,7 +1305,7 @@ export interface CharitySummary {
   ein: string;
   name: string;
   tier: CharityTier;
-  amalScore: number;
+  amalScore: number | null;
   walletTag: string;
   impactTier: string | null;
   evaluationTrack?: string | null;

@@ -47,7 +47,7 @@ export const AboutPage: React.FC = () => {
         <section>
           <h2 className={`text-2xl mb-4 ${headingClass}`}>The Problem</h2>
           <p className={bodyClass}>
-            Every year, billions of dollars flow through Zakat, Sadaqah, and charitable giving in Muslim communities. Yet most donors lack access to independent, rigorous evaluations of the charities they support. General-purpose evaluators like Charity Navigator focus heavily on financial ratios and often miss nuances critical to our community — Zakat compliance, work in conflict zones, grassroots organizations serving underserved populations. The result: well-intentioned giving that could do more.
+            Every year, billions of dollars flow through Zakat, Sadaqah, and charitable giving in Muslim communities. Yet most donors lack access to independent, rigorous evaluations of the charities they support. General-purpose evaluators like Charity Navigator focus heavily on financial ratios and often miss nuances critical to our community — whether a charity publicly says it accepts Zakat, work in conflict zones, and grassroots organizations serving underserved populations. The result: well-intentioned giving that could do more.
           </p>
         </section>
 

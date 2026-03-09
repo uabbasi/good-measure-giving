@@ -48,7 +48,7 @@ export const ImpactMatrix: React.FC<ImpactMatrixProps> = ({
   const getWalletLabel = (tag?: string) => {
     const cleanTag = tag?.replace(/[\[\]]/g, '') || '';
 
-    if (cleanTag.includes('ZAKAT-ELIGIBLE') || cleanTag.includes('ZAKAT-CONSENSUS') || cleanTag.includes('ZAKAT-TRADITIONAL')) return 'Zakat Eligible';
+    if (cleanTag.includes('ZAKAT-ELIGIBLE') || cleanTag.includes('ZAKAT-CONSENSUS') || cleanTag.includes('ZAKAT-TRADITIONAL')) return 'Accepts Zakat';
     if (cleanTag.includes('SADAQAH-STRATEGIC') || cleanTag.includes('STRATEGIC-SADAQAH') || cleanTag.includes('SADAQAH-CATALYTIC')) return 'Strategic Sadaqah';
     if (cleanTag.includes('INSUFFICIENT-DATA')) return 'Insufficient Data';
     if (cleanTag.includes('SADAQAH-GENERAL')) return 'General Sadaqah';
@@ -135,7 +135,7 @@ export const ImpactMatrix: React.FC<ImpactMatrixProps> = ({
           <div className={`flex flex-wrap justify-center gap-4 mt-8 pt-6 border-t ${isDark ? 'border-slate-700' : 'border-slate-100'}`}>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-              <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Zakat Eligible</span>
+              <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Accepts Zakat</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-amber-500"></div>

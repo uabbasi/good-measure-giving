@@ -61,7 +61,7 @@ interface SourceAmalDimensionScore {
 interface SourceAmalEvaluation {
   charity_ein: string;
   charity_name: string;
-  amal_score: number;
+  amal_score: number | null;
   wallet_tag: string;
   tier_1_score: number;
   tier_2_score: number;
@@ -133,6 +133,7 @@ interface SourceCharity {
   populationsServed?: string[];
   geographicCoverage?: string[];
   hideFromCurated?: boolean;  // Hide from default browse view
+  scoreSummary?: string | null;
 }
 
 /**
@@ -581,7 +582,7 @@ function buildSummaryFromDetail(detail: any): any {
     impactTier,
     confidenceTier,
     zakatClassification: detail.zakatClassification || null,
-    amalScore: amal.amal_score || null,
+    amalScore: amal.amal_score ?? null,
     walletTag: amal.wallet_tag || null,
     pillarScores,
     causeArea: amal.rich_narrative?.donor_fit_matrix?.cause_area || null,
@@ -592,7 +593,7 @@ function buildSummaryFromDetail(detail: any): any {
     hideFromCurated: detail.hideFromCurated || null,
     evaluationTrack: detail.evaluationTrack || null,
     foundedYear: detail.foundedYear || null,
-    scoreSummary: amal.score_details?.score_summary || null,
+    scoreSummary: detail.scoreSummary || amal.score_details?.score_summary || null,
     asnafServed: detail.asnafServed || null,
     rubricArchetype: detail.rubricArchetype || null,
     ui_signals_v1: detail.ui_signals_v1 || null,
@@ -673,7 +674,8 @@ async function convertAllCharities() {
   };
 
   const topCharity = convertedCharities
-    .filter(c => c.amalEvaluation?.amal_score && c.amalEvaluation.amal_score >= 70)
+    .filter(c => c.evaluationTrack !== 'NEW_ORG')
+    .filter(c => c.amalEvaluation?.amal_score != null && c.amalEvaluation.amal_score >= 70)
     .filter(c => !usesBeneficiaryCpb(c) || hasCitedBeneficiarySource(c))
     .sort((a, b) => (b.amalEvaluation?.amal_score || 0) - (a.amalEvaluation?.amal_score || 0))[0];
 
@@ -684,7 +686,7 @@ async function convertAllCharities() {
               topCharity.amalEvaluation?.summary?.headline ||
               topCharity.rawData?.mission?.substring(0, 100) || 'Leading nonprofit organization',
     amalEvaluation: {
-      amal_score: topCharity.amalEvaluation?.amal_score || 0,
+      amal_score: topCharity.amalEvaluation?.amal_score ?? 0,
       confidence_scores: {
         impact: topCharity.amalEvaluation?.confidence_scores?.impact || 0,
         alignment: topCharity.amalEvaluation?.confidence_scores?.alignment || 0,

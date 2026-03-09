@@ -6,7 +6,7 @@ export const GLOSSARY: Record<string, string> = {
   'Impact':
     'How effectively the charity creates measurable, positive change relative to the resources it uses.',
   'Alignment':
-    'How well the charity fits the priorities and values of Muslim donors, including zakat eligibility and cause relevance.',
+    'How well the charity fits the priorities and values of Muslim donors, including whether it publicly says it accepts zakat and its cause relevance.',
   'How Much We Know':
     'How much verified, cross-referenced data we have about this charity — higher means more trustworthy scores.',
   'Organizational Risk':

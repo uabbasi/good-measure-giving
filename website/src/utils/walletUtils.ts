@@ -3,7 +3,7 @@
  * Centralizes wallet tag formatting and styling to ensure consistency
  *
  * Binary classification system:
- * - ZAKAT-ELIGIBLE: Charity claims zakat eligibility on their website
+ * - ZAKAT-ELIGIBLE: Charity says it accepts zakat on its website
  * - SADAQAH-ELIGIBLE: All other charities (default)
  */
 
@@ -30,7 +30,7 @@ export const getWalletType = (tag: string | null | undefined): WalletTagType => 
 export const formatWalletTag = (tag: string | undefined): string => {
   const type = getWalletType(tag);
   switch (type) {
-    case 'zakat': return 'Zakat Eligible';
+    case 'zakat': return 'Accepts Zakat';
     case 'insufficient': return 'Insufficient Data';
     default: return 'Sadaqah';
   }

@@ -79,8 +79,24 @@ def _mirror_export_to_public_data(output_dir: Path) -> None:
     """Mirror website/data exports to website/public/data for the frontend runtime."""
     if output_dir.resolve() != WEBSITE_DATA_DIR.resolve():
         return
-    WEBSITE_PUBLIC_DATA_DIR.mkdir(parents=True, exist_ok=True)
-    shutil.copytree(output_dir, WEBSITE_PUBLIC_DATA_DIR, dirs_exist_ok=True)
+    if WEBSITE_PUBLIC_DATA_DIR.exists():
+        shutil.rmtree(WEBSITE_PUBLIC_DATA_DIR)
+    shutil.copytree(output_dir, WEBSITE_PUBLIC_DATA_DIR)
+
+
+def prune_charity_detail_files(output_dir: Path, keep_eins: set[str]) -> int:
+    """Remove stale per-charity detail files not present in the current export set."""
+    charities_dir = output_dir / "charities"
+    if not charities_dir.exists():
+        return 0
+
+    removed = 0
+    for detail_file in charities_dir.glob("charity-*.json"):
+        ein = detail_file.stem.removeprefix("charity-")
+        if ein not in keep_eins:
+            detail_file.unlink()
+            removed += 1
+    return removed
 
 
 def _safe_upper(value: Any) -> str | None:
@@ -322,11 +338,16 @@ def _derive_evidence_stage(
     return "Early"
 
 
-def _derive_recommendation_cue(score: float, confidence_badge: str, risk_level: str, cfg: dict[str, Any]) -> str:
+def _derive_recommendation_cue(
+    score: float, confidence_badge: str, risk_level: str, cfg: dict[str, Any], evaluation_track: str | None = None
+) -> str:
     cue_cfg = cfg.get("recommendation_cue", {})
     limited_max = float((cue_cfg.get("limited_match") or {}).get("score_max_exclusive", 30))
     strong_min = float((cue_cfg.get("strong_match") or {}).get("score_min", 75))
     good_min = float((cue_cfg.get("good_match") or {}).get("score_min", 60))
+
+    if _safe_upper(evaluation_track) == "NEW_ORG":
+        return "Mixed Signals"
 
     # Precedence: Limited -> Strong -> Good -> Mixed Signals
     if score < limited_max or (confidence_badge == "LOW" and risk_level == "HIGH"):
@@ -398,9 +419,15 @@ def _derive_ui_signals_v1(
         evidence_signal=signal_states["evidence"],
     )
 
-    recommendation_cue = _derive_recommendation_cue(score, confidence_badge, risk_level, cfg)
-    assessment_label = _derive_assessment_label(recommendation_cue, evidence_stage)
-    recommendation_rationale = _build_recommendation_rationale(recommendation_cue, signal_states, evidence_stage)
+    recommendation_cue = _derive_recommendation_cue(score, confidence_badge, risk_level, cfg, evaluation_track)
+    if _safe_upper(evaluation_track) == "NEW_ORG":
+        assessment_label = "Limited Basis"
+        recommendation_rationale = (
+            "Early-stage organization. We show qualitative context while it builds a longer public track record."
+        )
+    else:
+        assessment_label = _derive_assessment_label(recommendation_cue, evidence_stage)
+        recommendation_rationale = _build_recommendation_rationale(recommendation_cue, signal_states, evidence_stage)
 
     fallback_reasons: list[str] = []
     if not score_details:
@@ -1246,6 +1273,29 @@ def _extract_score_summary(evaluation: dict | None) -> str | None:
     return score_details.get("score_summary")
 
 
+def _is_new_org_track(charity_data: dict | None) -> bool:
+    return (charity_data or {}).get("evaluation_track") == "NEW_ORG"
+
+
+def _public_amal_score(evaluation: dict | None, charity_data: dict | None) -> int | None:
+    if not evaluation or _is_new_org_track(charity_data):
+        return None
+    score = evaluation.get("amal_score")
+    return score if isinstance(score, (int, float)) else None
+
+
+def _public_score_summary(evaluation: dict | None, charity_data: dict | None) -> str | None:
+    if _is_new_org_track(charity_data):
+        founded_year = (charity_data or {}).get("founded_year")
+        if isinstance(founded_year, int):
+            return (
+                f"Too early to rate numerically. This organization was founded in {founded_year} "
+                "and is shown as an emerging organization while it builds a public track record."
+            )
+        return "Too early to rate numerically. This organization is shown as an emerging organization while it builds a public track record."
+    return _extract_score_summary(evaluation)
+
+
 def build_charity_summary(
     charity: dict,
     charity_data: dict | None,
@@ -1342,7 +1392,7 @@ def build_charity_summary(
         "impactTier": evaluation.get("impact_tier") if evaluation else None,
         "confidenceTier": evaluation.get("confidence_tier") if evaluation else None,
         "zakatClassification": evaluation.get("zakat_classification") if evaluation else None,
-        "amalScore": evaluation.get("amal_score") if evaluation else None,
+        "amalScore": _public_amal_score(evaluation, charity_data),
         "walletTag": evaluation.get("wallet_tag") if evaluation else None,
         # Pillar scores for methodology visualization (impact/50, alignment/50, dataConfidence 0-1)
         "pillarScores": _extract_pillar_scores(evaluation) if evaluation else None,
@@ -1362,7 +1412,7 @@ def build_charity_summary(
         "evaluationTrack": charity_data.get("evaluation_track") if charity_data else None,
         "foundedYear": charity_data.get("founded_year") if charity_data else None,
         # Score summary sentence (deterministic, template-based)
-        "scoreSummary": _extract_score_summary(evaluation) if evaluation else None,
+        "scoreSummary": _public_score_summary(evaluation, charity_data),
         # Rubric archetype used for Impact weighting (v5.0.0+)
         "rubricArchetype": _extract_rubric_archetype(evaluation),
         # Asnaf categories for future filtering
@@ -1575,6 +1625,7 @@ def build_charity_detail(
         # Evaluation track (NEW_ORG, RESEARCH_POLICY, STANDARD)
         "evaluationTrack": charity_data.get("evaluation_track") if charity_data else None,
         "foundedYear": charity_data.get("founded_year") if charity_data else None,
+        "scoreSummary": _public_score_summary(evaluation, charity_data),
         # Form 990 filing status - prefer charity_data (persisted), fallback to pp_profile
         "form990Exempt": charity_data.get("form_990_exempt") if charity_data else pp_profile.get("form_990_exempt"),
         "form990ExemptReason": (
@@ -1621,7 +1672,7 @@ def build_charity_detail(
         detail["amalEvaluation"] = {
             "charity_ein": charity["ein"],
             "charity_name": charity.get("name"),
-            "amal_score": evaluation.get("amal_score"),
+            "amal_score": _public_amal_score(evaluation, charity_data),
             "wallet_tag": evaluation.get("wallet_tag"),
             "evaluation_date": evaluation.get("evaluated_at"),
             "rubric_version": evaluation.get("rubric_version"),
@@ -2213,6 +2264,11 @@ def main():
             indent=2,
             default=str,
         )
+
+    kept_eins = {summary.get("ein") for summary in summaries if summary.get("ein")}
+    removed_details = prune_charity_detail_files(output_dir, kept_eins)
+    if removed_details:
+        print(f"  Pruned {removed_details} stale charity detail files")
 
     # Write calibration report
     calibration_report = _build_calibration_report(

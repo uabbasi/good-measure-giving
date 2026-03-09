@@ -108,6 +108,7 @@ load_pilot_charities = _export_module.load_pilot_charities
 build_charity_summary = _export_module.build_charity_summary
 load_ui_signals_config = _export_module._load_ui_signals_config
 compute_ui_signals_config_hash = _export_module._compute_config_hash
+prune_charity_detail_files = _export_module.prune_charity_detail_files
 
 # Thread-safe printing and progress tracking
 print_lock = Lock()
@@ -1832,10 +1833,14 @@ def main():
                 indent=2,
                 default=str,
             )
+        kept_eins = {summary.get("ein") for summary in merged_summaries if summary.get("ein")}
+        removed_details = prune_charity_detail_files(WEBSITE_DATA_DIR, kept_eins)
         print(
             f"✓ Updated charities.json: {len(merged_summaries)} charities "
             f"(eligible={len(set(exportable_eins))}, rebuilt={len(summaries)}, failed={len(rebuild_failures)})"
         )
+        if removed_details:
+            print(f"✓ Pruned {removed_details} stale charity detail files")
 
         # Sync data/ → public/data/ for Vite dev server
         convert_script = Path(__file__).parent.parent / "website" / "scripts" / "convertData.ts"

@@ -21,7 +21,7 @@ export const givingPlanTourSteps: DriveStep[] = [
     popover: {
       title: 'Add Charities',
       description:
-        'Search any evaluated charity and add it to your plan. Charities are auto-assigned to matching categories based on their cause tags.',
+        'Charities you save while browsing automatically appear here. You can also search and add charities directly.',
     },
   },
   {

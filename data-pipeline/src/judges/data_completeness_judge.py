@@ -11,6 +11,7 @@ import json
 import logging
 from typing import Any
 
+from ..utils.evaluation_tracks import NEW_ORG_YEARS, is_new_org
 from .base_judge import BaseJudge, JudgeType
 from .schemas.verdict import JudgeVerdict, Severity, ValidationIssue
 
@@ -298,7 +299,7 @@ class DataCompletenessJudge(BaseJudge):
 
             has_form990 = False
             is_form990_exempt = False  # Religious orgs (NTEE X*) don't have to file
-            is_new_org = False  # Orgs with IRS ruling within last 2 years
+            is_recent_org = False  # Orgs within the NEW_ORG window
             irs_ruling_year = None
             if propublica_data:
                 filings = propublica_data.get("filings")
@@ -322,17 +323,14 @@ class DataCompletenessJudge(BaseJudge):
                             is_form990_exempt = True
                             break
 
-                # Check if this is a new org (IRS ruling within last 2 years)
-                # New orgs haven't had time to file their first 990 yet
+                # Check if this is a new org (within NEW_ORG_YEARS of founding/ruling)
+                # Newer orgs often have sparse or not-yet-available filing history.
                 irs_ruling_year = propublica_data.get("irs_ruling_year")
                 if irs_ruling_year:
                     try:
                         ruling_year = int(str(irs_ruling_year).strip('"'))
-                        from datetime import datetime
-
-                        current_year = datetime.now().year
-                        if current_year - ruling_year <= 2:
-                            is_new_org = True
+                        if is_new_org(ruling_year):
+                            is_recent_org = True
                     except (ValueError, TypeError):
                         pass
 
@@ -387,18 +385,17 @@ class DataCompletenessJudge(BaseJudge):
                             },
                         )
                     )
-                elif is_new_org:
-                    # New organizations haven't filed their first 990 yet
-                    # This is expected for orgs with IRS ruling within last 2 years
+                elif is_recent_org:
+                    # New organizations frequently lack a mature public filing trail.
                     issues.append(
                         ValidationIssue(
                             severity=Severity.INFO,
                             field="financial.new_org",
-                            message="New organization - Form 990 not yet due",
+                            message="New organization - limited Form 990 history is expected",
                             details={
                                 "ein": ein,
                                 "irs_ruling_year": irs_ruling_year,
-                                "reason": "Organizations typically file their first Form 990 1-2 years after IRS determination",
+                                "reason": f"Organizations within {NEW_ORG_YEARS} years of founding/ruling often have limited filing history",
                                 "impact": "Effectiveness score based on available data only",
                             },
                         )

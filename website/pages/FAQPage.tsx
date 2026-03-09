@@ -20,7 +20,7 @@ export const FAQPage: React.FC = () => {
     {
       category: 'general',
       q: "Why do you need a specific evaluator for Muslim charities?",
-      a: "General charity evaluators often miss nuances important to our community. They don\u2019t check for Zakat compliance, may unfairly penalize organizations working in conflict zones like Gaza or Syria, and often overlook smaller grassroots organizations that serve Muslim communities. We built this to fill that gap."
+      a: "General charity evaluators often miss nuances important to our community. They usually don\u2019t track whether a charity publicly says it accepts Zakat, may unfairly penalize organizations working in conflict zones like Gaza or Syria, and often overlook smaller grassroots organizations that serve Muslim communities. We built this to fill that gap."
     },
     {
       category: 'general',
@@ -30,7 +30,7 @@ export const FAQPage: React.FC = () => {
     {
       category: 'general',
       q: "How is this different from Charity Navigator or Candid?",
-      a: "Those are excellent resources that we actually use as data sources. But they focus primarily on financial metrics like overhead ratios. We go further by evaluating two dimensions: Impact (how effectively does this charity use donations to create change?) and Alignment (is this the right charity for Muslim donors?). We also provide Zakat/Sadaqah classification and a Data Confidence signal that other evaluators don\u2019t offer."
+      a: "Those are excellent resources that we actually use as data sources. But they focus primarily on financial metrics like overhead ratios. We go further by evaluating two dimensions: Impact (how effectively does this charity use donations to create change?) and Alignment (is this the right charity for Muslim donors?). We also provide donation-routing guidance for Zakat vs. Sadaqah, plus a Data Confidence signal that other evaluators don\u2019t offer."
     },
     {
       category: 'general',
@@ -94,7 +94,7 @@ export const FAQPage: React.FC = () => {
     {
       category: 'ai',
       q: "How do you prevent AI hallucinations?",
-      a: "Multiple safeguards work together: (1) Every factual claim must cite a source you can verify yourself (IRS filings, Charity Navigator, etc.). (2) We maintain a \u2018denylist\u2019 of high-risk fields (zakat eligibility, cost-per-beneficiary) that get extra scrutiny. (3) After narratives are generated, specialized \u2018judge\u2019 AIs audit them \u2014 checking citations exist and support claims, testing that URLs work, verifying facts against source data. (4) If validation fails, the evaluation fails \u2014 we don\u2019t publish fallback narratives. (5) All scoring uses deterministic code, never AI judgment."
+      a: "Multiple safeguards work together: (1) Every factual claim must cite a source you can verify yourself (IRS filings, Charity Navigator, etc.). (2) We maintain a \u2018denylist\u2019 of high-risk fields (public zakat-acceptance claims, cost-per-beneficiary) that get extra scrutiny. (3) After narratives are generated, specialized \u2018judge\u2019 AIs audit them \u2014 checking citations exist and support claims, testing that URLs work, verifying facts against source data. (4) If validation fails, the evaluation fails \u2014 we don\u2019t publish fallback narratives. (5) All scoring uses deterministic code, never AI judgment."
     },
     {
       category: 'ai',
@@ -115,8 +115,8 @@ export const FAQPage: React.FC = () => {
     // Zakat
     {
       category: 'zakat',
-      q: "How do you determine if a charity is Zakat-eligible?",
-      a: "We use a self-assertion model: if a charity explicitly claims Zakat eligibility on their website, we classify them as \u2018Zakat Eligible.\u2019 We verify this claim using search tools to find evidence on the charity\u2019s official website. We also note which of the eight asnaf categories (Zakat recipients) their work serves. We don\u2019t make our own independent rulings on Zakat eligibility \u2014 that\u2019s for scholars and the charity itself to determine."
+      q: "How do you determine if a charity \u2018Accepts Zakat\u2019?",
+      a: "We use a self-assertion model: if a charity explicitly says on its website that it accepts Zakat, we label it \u2018Accepts Zakat.\u2019 We verify that this public claim appears on the charity\u2019s official website. We also note which of the eight asnaf categories (Zakat recipients) their work appears to target. We do not issue our own rulings on whether giving to that charity counts as valid Zakat for your madhab \u2014 that\u2019s for qualified scholars and the charity itself to address."
     },
     {
       category: 'zakat',
@@ -126,27 +126,27 @@ export const FAQPage: React.FC = () => {
     {
       category: 'zakat',
       q: "How do you verify a charity\u2019s Zakat fund segregation?",
-      a: "We check for explicit statements on the charity\u2019s website about Zakat fund handling. A strong Zakat policy should include: (1) separate accounting for Zakat funds, (2) clear statement about which programs receive Zakat, (3) commitment to 100% Zakat reaching eligible recipients. If we can\u2019t verify these elements, we classify the charity as Sadaqah to err on the side of caution."
+      a: "We do not certify Zakat fund segregation or compliance. In some cases we may surface a charity\u2019s stated Zakat policy page or handling details if they publish them, but our main label only means the charity publicly says it accepts Zakat on its website. If you need assurance on segregation, compliance, or fiqh validity, review the charity\u2019s policy directly and consult a qualified scholar."
     },
     {
       category: 'zakat',
       q: "Is your Zakat classification a religious ruling (fatwa)?",
-      a: "Absolutely not. Our classifications are informational only, based on publicly available data about the organization\u2019s policies and programs. We report what charities claim about themselves and provide context for donors. For definitive guidance on your specific situation, please consult a qualified Islamic scholar who can consider your madhab and circumstances."
+      a: "Absolutely not. Our labels are informational only, based on publicly available data about what an organization says on its website. We report what charities claim about themselves and provide context for donors. For definitive guidance on your specific situation, please consult a qualified Islamic scholar who can consider your madhab and circumstances."
     },
     {
       category: 'zakat',
       q: "What scholarly frameworks inform your Zakat approach?",
-      a: "We don\u2019t issue religious rulings\u2014we classify based on what charities publicly claim. Our understanding of the eight asnaf categories draws from classical sources (Quran 9:60, major tafsir works) and contemporary scholarship including guidelines from the Assembly of Muslim Jurists of America (AMJA), the European Council for Fatwa and Research, and individual scholars like Dr. Yusuf al-Qaradawi\u2019s \u2018Fiqh al-Zakah.\u2019 Where madhabs differ\u2014such as on giving to non-Muslim beneficiaries or the scope of \u2018fi sabilillah\u2019\u2014we note the existence of legitimate scholarly disagreement rather than adopting one position. Our role is to help you find charities that claim Zakat eligibility; your scholar\u2019s role is to confirm whether that claim aligns with your madhab."
+      a: "We don\u2019t issue religious rulings\u2014we label based on what charities publicly claim. Our understanding of the eight asnaf categories draws from classical sources (Quran 9:60, major tafsir works) and contemporary scholarship including guidelines from the Assembly of Muslim Jurists of America (AMJA), the European Council for Fatwa and Research, and individual scholars like Dr. Yusuf al-Qaradawi\u2019s \u2018Fiqh al-Zakah.\u2019 Where madhabs differ\u2014such as on giving to non-Muslim beneficiaries or the scope of \u2018fi sabilillah\u2019\u2014we note the existence of legitimate scholarly disagreement rather than adopting one position. Our role is to help you find charities that publicly say they accept Zakat; your scholar\u2019s role is to confirm whether giving there aligns with your madhab."
     },
     {
       category: 'zakat',
       q: "What are the eight Zakat categories (asnaf)?",
-      a: "Islamic jurisprudence identifies eight categories eligible for Zakat (Quran 9:60): Al-Fuqara (the poor), Al-Masakin (the destitute), Al-Amileen (Zakat administrators), Al-Muallafatul Quloob (those being brought closer to Islam), Ar-Riqab (freeing captives \u2014 modernly interpreted as refugees and trafficking victims), Al-Gharimeen (those in debt), Fi Sabilillah (in Allah\u2019s path \u2014 Islamic education, humanitarian work), and Ibnus-Sabil (stranded travelers, displaced persons). When a charity claims Zakat eligibility, we note which categories their work serves."
+      a: "Islamic jurisprudence identifies eight categories eligible for Zakat (Quran 9:60): Al-Fuqara (the poor), Al-Masakin (the destitute), Al-Amileen (Zakat administrators), Al-Muallafatul Quloob (those being brought closer to Islam), Ar-Riqab (freeing captives \u2014 modernly interpreted as refugees and trafficking victims), Al-Gharimeen (those in debt), Fi Sabilillah (in Allah\u2019s path \u2014 Islamic education, humanitarian work), and Ibnus-Sabil (stranded travelers, displaced persons). When a charity publicly says it accepts Zakat, we note which categories its work serves."
     },
     {
       category: 'zakat',
       q: "Why is a high-scoring charity classified as \u2018Sadaqah\u2019 instead of \u2018Zakat\u2019?",
-      a: "The GMG Score measures overall strength across impact and alignment \u2014 while wallet classification is about religious compliance. A medical research organization or civil rights group might score very high but not fit traditional Zakat categories. This doesn\u2019t make them less worthy \u2014 it just means you should use your Sadaqah funds rather than Zakat. Both are important forms of giving."
+      a: "The GMG Score measures overall strength across impact and alignment, while the wallet label is a narrower routing cue about what the charity publicly says on its website. A medical research organization or civil rights group might score very high and still not publicly accept Zakat. This doesn\u2019t make it less worthy \u2014 it just means you should generally use Sadaqah funds unless the charity itself provides a Zakat pathway you are comfortable with."
     },
     {
       category: 'zakat',
@@ -156,7 +156,7 @@ export const FAQPage: React.FC = () => {
     {
       category: 'zakat',
       q: "What if a charity accepts Zakat but you classified them as Sadaqah?",
-      a: "Our classification is based on the data we have. If an organization has a Zakat fund that we missed, please email us at hello@goodmeasuregiving.org and we\u2019ll update our records. However, some organizations accept Zakat without proper segregation or clear policies \u2014 in those cases, we err on the side of caution and classify as Sadaqah until we can verify compliance."
+      a: "Our label is based on the data we have. If an organization has a page on its website saying it accepts Zakat and we missed it, please email us at hello@goodmeasuregiving.org and we\u2019ll update our records. We are not making a ruling on whether the charity is fully Zakat-compliant \u2014 only whether that public claim appears on its website."
     },
 
     // Data
@@ -263,7 +263,7 @@ export const FAQPage: React.FC = () => {
                   Why do you need a specific evaluator for Muslim charities?
                 </h3>
                 <p className={`leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                  General charity evaluators often miss nuances important to our community. They don&#x2019;t check for Zakat compliance, may unfairly penalize organizations working in conflict zones like Gaza or Syria, and often overlook smaller grassroots organizations that serve Muslim communities. We built this to fill that gap &#x2014; and to ask: <strong>would YOUR donation make more difference here than elsewhere?</strong>
+                  General charity evaluators often miss nuances important to our community. They usually don&#x2019;t track whether a charity publicly says it accepts Zakat, may unfairly penalize organizations working in conflict zones like Gaza or Syria, and often overlook smaller grassroots organizations that serve Muslim communities. We built this to fill that gap &#x2014; and to ask: <strong>would YOUR donation make more difference here than elsewhere?</strong>
                 </p>
               </article>
             </div>

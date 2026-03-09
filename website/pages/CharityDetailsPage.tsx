@@ -40,7 +40,7 @@ const formatWalletTag = (tag: string): string => {
 
   // Map to display format with modifier first
   if (cleanTag.includes('ZAKAT-ELIGIBLE') || cleanTag.includes('ZAKAT-CONSENSUS') || cleanTag.includes('ZAKAT-TRADITIONAL')) {
-    return 'Zakat Eligible';
+    return 'Accepts Zakat';
   }
   if (cleanTag.includes('SADAQAH-STRATEGIC') || cleanTag.includes('STRATEGIC-SADAQAH') || cleanTag.includes('SADAQAH-CATALYTIC')) {
     return 'Strategic Sadaqah';
@@ -157,7 +157,7 @@ export const CharityDetailsPage: React.FC = () => {
 
   // MobileHeroSummary: Compact summary for mobile, visible only on small screens
   const MobileHeroSummary: React.FC<{ amal: AmalEvaluation }> = ({ amal }) => {
-    const rating = getRatingFromScore(amal.amal_score);
+    const rating = getRatingFromScore(amal.amal_score ?? 0);
     const tier1 = amal.tier_1_strategic_fit;
     const tier2 = amal.tier_2_execution;
     const headline = amal.summary?.headline;
@@ -636,6 +636,7 @@ export const CharityDetailsPage: React.FC = () => {
               <BookmarkButton
                 charityEin={charity.ein || charity.id || ''}
                 charityName={charity.name}
+                causeTags={charity.causeTags || undefined}
                 size="lg"
                 showLabel
                 className={`px-3 py-2 rounded-lg transition-colors shadow-sm ${isDark ? 'bg-slate-800 border border-slate-700 hover:bg-slate-700' : 'bg-white border border-slate-200 hover:bg-slate-50'}`}
