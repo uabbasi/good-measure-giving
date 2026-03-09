@@ -121,6 +121,23 @@ const COLORS = ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444', '#ec4899'
 const PERCENT_DECIMALS = 2;
 const PERCENT_EPSILON = 0.01;
 
+const GEO_TAG_IDS = new Set(TAGS.geography.map(t => t.id));
+const CAUSE_TAG_IDS = new Set(TAGS.cause.map(t => t.id));
+
+/** Pick the best tag for bucket creation: geography > cause > population.
+ *  Skips generic tags like 'international' in favor of specific ones. */
+export function pickBestTag(tags: string[]): string | null {
+  // Prefer specific geography (not "international" or "conflict-zone")
+  const specificGeo = tags.find(t => GEO_TAG_IDS.has(t) && t !== 'international' && t !== 'conflict-zone');
+  if (specificGeo) return specificGeo;
+  // Then any cause tag
+  const cause = tags.find(t => CAUSE_TAG_IDS.has(t));
+  if (cause) return cause;
+  // Fallback to any known tag
+  const known = tags.find(t => ALL_TAGS.some(at => at.id === t));
+  return known || tags[0] || null;
+}
+
 function clampPercent(value: number): number {
   return Math.max(0, Math.min(100, value));
 }
@@ -155,6 +172,8 @@ function DraggableCharityRow({
   onLogDonation,
   onRemove,
   onSetTarget,
+  onMoveCharity,
+  bucketOptions,
   dimmed = false,
 }: {
   charity: BookmarkedCharity;
@@ -166,6 +185,8 @@ function DraggableCharityRow({
   onLogDonation: (ein: string, name: string) => void;
   onRemove?: (ein: string) => void;
   onSetTarget?: (ein: string, amount: number) => void;
+  onMoveCharity?: (ein: string, bucketId: string | null) => void;
+  bucketOptions?: Array<{ id: string; label: string }>;
   dimmed?: boolean;
 }) {
   const [localTarget, setLocalTarget] = useState<string>(target ? String(target) : '');
@@ -269,7 +290,25 @@ function DraggableCharityRow({
           )}
         </div>
       </td>
-      <td className={cell}></td>
+      <td className={`${cell} hidden sm:table-cell`}>
+        {onMoveCharity && bucketOptions && bucketOptions.length > 0 && (
+          <select
+            value={bucketId || ''}
+            onChange={e => onMoveCharity(charity.ein, e.target.value || null)}
+            className={`opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity text-[11px] rounded-md border px-1.5 py-1 max-w-[8rem] ${
+              isDark
+                ? 'bg-slate-800 border-slate-700 text-slate-300'
+                : 'bg-white border-slate-200 text-slate-600'
+            }`}
+            aria-label={`Category for ${charity.name}`}
+          >
+            <option value="">Uncategorized</option>
+            {bucketOptions.map(opt => (
+              <option key={opt.id} value={opt.id}>{opt.label}</option>
+            ))}
+          </select>
+        )}
+      </td>
     </tr>
   );
 }
@@ -687,24 +726,24 @@ export function UnifiedAllocationView({
     const newBuckets = [...buckets, { id: newId, tagId: tag.id, label: tag.label, percent: 0, color: COLORS[buckets.length % COLORS.length] }];
     setBuckets(newBuckets);
     triggerSave(newBuckets);
-    // Expand the new category and show suggestions so user can populate it
+    // Expand the new category
     setCollapsedBuckets(prev => { const next = new Set(prev); next.delete(newId); return next; });
-    setShowSuggestions(true);
   };
 
   const autoCreateBucketsForCharity = (charity: { causeTags: string[] | null }) => {
     const tags = charity.causeTags || [];
-    const causeTagIds = new Set(TAGS.cause.map(t => t.id));
 
     // Check if charity already matches an existing bucket
     const existingMatch = buckets.find(b => tags.includes(b.tagId));
     if (existingMatch) return existingMatch.id;
 
-    // Only create the primary (first) cause category bucket
-    const primaryTag = tags.find(t => causeTagIds.has(t));
+    // Pick best tag: prefer geography > cause > population (geography is most intuitive)
+    const primaryTag = pickBestTag(tags);
     if (!primaryTag) return '';
 
-    const tagDef = TAGS.cause.find(t => t.id === primaryTag)!;
+    const tagDef = ALL_TAGS.find(t => t.id === primaryTag);
+    if (!tagDef) return '';
+
     const newBucket = {
       id: crypto.randomUUID(),
       tagId: tagDef.id,
@@ -1678,6 +1717,8 @@ export function UnifiedAllocationView({
                         onLogDonation={onLogDonation}
                         onRemove={onRemoveCharity}
                         onSetTarget={handleSetCharityTarget}
+                        onMoveCharity={move}
+                        bucketOptions={mobileBucketOptions}
                         dimmed={zakatLens && !charityIsZakat}
                       />
                     );
@@ -1867,6 +1908,8 @@ export function UnifiedAllocationView({
                           onLogDonation={onLogDonation}
                           onRemove={onRemoveCharity}
                           onSetTarget={handleSetCharityTarget}
+                          onMoveCharity={move}
+                          bucketOptions={mobileBucketOptions}
                           dimmed={zakatLens && !charityIsZakat}
                         />
                       );

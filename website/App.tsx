@@ -23,6 +23,8 @@ const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ defaul
 import { CompareBar } from './src/components/CompareBar';
 import { MobileBottomNav } from './src/components/MobileBottomNav';
 import { WelcomeToast } from './src/components/WelcomeToast';
+import { BookmarkToast } from './src/components/BookmarkToast';
+import { BookmarkAutoCategorize } from './src/components/BookmarkAutoCategorize';
 import { NamePromptModal } from './src/auth';
 import { ScrollToTop } from './components/ScrollToTop';
 import { trackPageView } from './src/utils/analytics';
@@ -84,6 +86,8 @@ const AppContent: React.FC = () => {
       <CompareBar />
       {!isLandingPage && <MobileBottomNav />}
       <WelcomeToast />
+      <BookmarkToast />
+      <BookmarkAutoCategorize />
       <NamePromptModal />
     </div>
   );

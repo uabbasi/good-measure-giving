@@ -13,6 +13,7 @@ import { trackBookmark } from '../utils/analytics';
 interface BookmarkButtonProps {
   charityEin: string;
   charityName?: string;
+  causeTags?: string[];
   size?: 'sm' | 'md' | 'lg';
   showLabel?: boolean;
   fullWidth?: boolean;
@@ -24,6 +25,7 @@ interface BookmarkButtonProps {
 export function BookmarkButton({
   charityEin,
   charityName,
+  causeTags,
   size = 'md',
   showLabel = false,
   fullWidth = false,
@@ -73,15 +75,20 @@ export function BookmarkButton({
     try {
       await toggleBookmark(charityEin);
       trackBookmark(charityEin, charityName || '', bookmarked ? 'remove' : 'add');
+      if (!bookmarked) {
+        window.dispatchEvent(new CustomEvent('gmg:bookmark-added', {
+          detail: { charityEin, charityName: charityName || 'Charity', causeTags },
+        }));
+      }
     } catch (err) {
       console.error('Failed to toggle bookmark:', err);
     }
     setTimeout(() => setIsAnimating(false), 300);
   };
 
-  const label = bookmarked ? 'Remove from saved' : 'Save charity';
+  const label = bookmarked ? 'Remove from plan' : 'Add to Giving Plan';
   const ariaLabel = charityName
-    ? `${bookmarked ? 'Remove' : 'Save'} ${charityName}`
+    ? `${bookmarked ? 'Remove from plan:' : 'Add to Giving Plan:'} ${charityName}`
     : label;
 
   return (
@@ -135,7 +142,7 @@ export function BookmarkButton({
 
         {showLabel && (
           <span className={`text-sm font-medium ${isDark ? 'text-slate-300' : 'text-slate-700'} ${labelClassName}`}>
-            {bookmarked ? 'Saved' : 'Save'}
+            {bookmarked ? 'In Plan' : 'Add to Plan'}
           </span>
         )}
       </button>
