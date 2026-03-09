@@ -770,13 +770,6 @@ export function UnifiedAllocationView({
     setBuckets(newBuckets);
   };
 
-  const setTargetAmt = (id: string, amt: number) => {
-    if (targetNum === 0) return;
-    const pct = roundPercent(clampPercent((amt / targetNum) * 100));
-    const newBuckets = buckets.map(b => b.id === id ? { ...b, percent: pct } : b);
-    setBuckets(newBuckets);
-  };
-
   const handleSetCharityTarget = useCallback(async (ein: string, amount: number) => {
     const normalized = Math.max(0, amount);
     setCharityTargetDrafts(prev => {
@@ -784,21 +777,6 @@ export function UnifiedAllocationView({
       next.set(ein, normalized);
       return next;
     });
-
-    const bucketId = charityToBucket.get(ein);
-    if (bucketId && targetNum > 0) {
-      const bucketTargetSum = bookmarkedCharities.reduce((sum, charity) => {
-        if (charityToBucket.get(charity.ein) !== bucketId) return sum;
-        if (charity.ein === ein) return sum + normalized;
-        return sum + getCharityTarget(charity.ein);
-      }, 0);
-      const syncedPct = roundPercent(clampPercent((bucketTargetSum / targetNum) * 100));
-      const newBuckets = buckets.map(bucket => (
-        bucket.id === bucketId ? { ...bucket, percent: syncedPct } : bucket
-      ));
-      setBuckets(newBuckets);
-      triggerSave(newBuckets);
-    }
 
     if (!onSetCharityTarget) return;
     try {
@@ -811,7 +789,7 @@ export function UnifiedAllocationView({
         return next;
       });
     }
-  }, [bookmarkedCharities, buckets, charityToBucket, getCharityTarget, onSetCharityTarget, targetNum, triggerSave]);
+  }, [onSetCharityTarget]);
 
   const distributeRemainingEvenly = () => {
     if (buckets.length === 0 || !isTotalUnder) return;
@@ -840,38 +818,7 @@ export function UnifiedAllocationView({
     const newAssignments = new Map(assignments);
     bid ? newAssignments.set(ein, bid) : newAssignments.delete(ein);
     setAssignments(newAssignments);
-    const hasAnyCharityTargets = bookmarkedCharities.some(charity => getCharityTarget(charity.ein) > 0);
-    if (!hasAnyCharityTargets || targetNum === 0) {
-      triggerSave(undefined, undefined, newAssignments);
-      return;
-    }
-
-    const validBucketIds = new Set(buckets.map(bucket => bucket.id));
-    const resolveBucket = (charity: BookmarkedCharity): string | null => {
-      const assignedBucketId = newAssignments.get(charity.ein);
-      if (assignedBucketId && validBucketIds.has(assignedBucketId)) return assignedBucketId;
-      for (const bucket of buckets) {
-        if ((charity.causeTags || []).includes(bucket.tagId)) return bucket.id;
-      }
-      return null;
-    };
-
-    const sumByBucket = new Map<string, number>();
-    bookmarkedCharities.forEach(charity => {
-      const bucketId = resolveBucket(charity);
-      if (!bucketId) return;
-      sumByBucket.set(bucketId, (sumByBucket.get(bucketId) || 0) + getCharityTarget(charity.ein));
-    });
-
-    const syncedBuckets = buckets.map(bucket => {
-      const bucketTargetSum = sumByBucket.get(bucket.id) || 0;
-      return {
-        ...bucket,
-        percent: roundPercent(clampPercent((bucketTargetSum / targetNum) * 100)),
-      };
-    });
-    setBuckets(syncedBuckets);
-    triggerSave(syncedBuckets, undefined, newAssignments);
+    triggerSave(undefined, undefined, newAssignments);
   };
 
   const handleBlur = () => triggerSave();
@@ -1288,7 +1235,6 @@ export function UnifiedAllocationView({
             const gvn = bucketGiven.get(b.id) || 0;
             const pct = amt > 0 ? Math.min(100, Math.round(gvn / amt * 100)) : 0;
             const chars = bookmarkedCharities.filter(c => charityToBucket.get(c.ein) === b.id);
-            const charityTargetsSum = chars.reduce((sum, c) => sum + getCharityTarget(c.ein), 0);
             const visibleChars = zakatLens
               ? chars.filter(c => isZakatEligible(c.walletTag))
               : chars;
@@ -1352,32 +1298,9 @@ export function UnifiedAllocationView({
                   </div>
                   <div>
                     <label className={`block text-[10px] font-semibold uppercase tracking-wide mb-1 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Target</label>
-                    <div className="flex flex-col items-end gap-0.5">
-                      <div className={`inline-flex w-full items-center justify-end px-2 py-1 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'} hover:border-emerald-400 dark:hover:border-emerald-500/40 focus-within:border-emerald-500/50 transition-colors`}>
-                        <span className={`text-[11px] mr-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>$</span>
-                        <input
-                          type="text"
-                          inputMode="numeric"
-                          value={amt || ''}
-                          onChange={e => setTargetAmt(b.id, parseInt(e.target.value.replace(/\D/g, '')) || 0)}
-                          onBlur={handleBlur}
-                          onKeyDown={handleKeyDown}
-                          className={`w-16 text-right ${inputStyle} font-semibold tabular-nums`}
-                          placeholder="0"
-                        />
-                      </div>
-                      {charityTargetsSum > 0 && (
-                        <span className={`text-[10px] tabular-nums ${
-                          charityTargetsSum === amt
-                            ? 'text-emerald-500'
-                            : charityTargetsSum > amt
-                            ? 'text-amber-500'
-                            : isDark ? 'text-slate-500' : 'text-slate-400'
-                        }`}>
-                          {fmt(charityTargetsSum)} allocated
-                        </span>
-                      )}
-                    </div>
+                    <p className={`text-right text-sm font-semibold tabular-nums pt-1 ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
+                      {amt > 0 ? fmt(amt) : '—'}
+                    </p>
                   </div>
                 </div>
 
@@ -1576,8 +1499,7 @@ export function UnifiedAllocationView({
               const pct = amt > 0 ? Math.min(100, Math.round(gvn / amt * 100)) : 0;
               const chars = bookmarkedCharities.filter(c => charityToBucket.get(c.ein) === b.id);
               // Sum of charity targets within this bucket
-              const charityTargetsSum = chars.reduce((sum, c) => sum + getCharityTarget(c.ein), 0);
-              // Count for display - filters by zakat eligibility when lens is active
+                // Count for display - filters by zakat eligibility when lens is active
               const displayCount = zakatLens
                 ? chars.filter(c => isZakatEligible(c.walletTag)).length
                 : chars.length;
@@ -1673,32 +1595,9 @@ export function UnifiedAllocationView({
                       </div>
                     </td>
                     <td className={`${cell} text-right`}>
-                      <div className="flex flex-col items-end gap-0.5">
-                        <div className={`inline-flex items-center px-2 py-0.5 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'} hover:border-emerald-400 dark:hover:border-emerald-500/40 focus-within:border-emerald-500/50 transition-colors`}>
-                          <span className={`text-[11px] mr-0.5 font-medium ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>$</span>
-                          <input
-                            type="text"
-                            inputMode="numeric"
-                            value={amt || ''}
-                            onChange={e => setTargetAmt(b.id, parseInt(e.target.value.replace(/\D/g, '')) || 0)}
-                            onBlur={handleBlur}
-                            onKeyDown={handleKeyDown}
-                            className={`w-16 text-right ${inputStyle} font-semibold tabular-nums`}
-                            placeholder="0"
-                          />
-                        </div>
-                        {charityTargetsSum > 0 && (
-                          <span className={`text-[10px] tabular-nums ${
-                            charityTargetsSum === amt
-                              ? 'text-emerald-500'
-                              : charityTargetsSum > amt
-                              ? 'text-amber-500'
-                              : isDark ? 'text-slate-500' : 'text-slate-400'
-                          }`}>
-                            {fmt(charityTargetsSum)} allocated
-                          </span>
-                        )}
-                      </div>
+                      <span className={`font-semibold tabular-nums ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
+                        {amt > 0 ? fmt(amt) : '—'}
+                      </span>
                     </td>
                     <td className={`${cell} text-right tabular-nums hidden sm:table-cell`}>
                       <span className={gvn > 0 ? 'font-medium' : isDark ? 'text-slate-600' : 'text-slate-300'}>{fmt(gvn)}</span>
