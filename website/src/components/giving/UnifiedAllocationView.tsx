@@ -251,7 +251,7 @@ function DraggableCharityRow({
       </td>
       <td className={`${cell} text-right`}>
         <div className={`inline-flex items-center px-2 py-0.5 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'} hover:border-emerald-400 dark:hover:border-emerald-500/40 focus-within:border-emerald-500 transition-colors`}>
-          <span className="text-[11px] mr-0.5">$</span>
+          <span className={`text-[11px] mr-0.5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>$</span>
           <input
             type="text"
             inputMode="numeric"
@@ -259,8 +259,8 @@ function DraggableCharityRow({
             onChange={e => setLocalTarget(e.target.value.replace(/\D/g, ''))}
             onBlur={handleTargetBlur}
             onKeyDown={handleTargetKeyDown}
-            className={`w-16 text-right ${inputStyle} text-[13px] tabular-nums`}
-            placeholder="0"
+            className={`w-20 text-right ${inputStyle} text-[13px] tabular-nums`}
+            placeholder="set target"
           />
         </div>
       </td>
@@ -268,7 +268,7 @@ function DraggableCharityRow({
         <span className={given > 0 ? 'font-semibold text-emerald-600' : isDark ? 'text-slate-600' : 'text-slate-300'}>{given > 0 ? fmt(given) : '—'}</span>
       </td>
       <td className={`${cell} text-right`}>
-        <div className="flex items-center justify-end gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center justify-end gap-1">
           <button
             onClick={() => onLogDonation(charity.ein, charity.name)}
             className={`text-[11px] font-semibold px-2.5 py-1 rounded-md border transition-colors ${
@@ -282,7 +282,7 @@ function DraggableCharityRow({
           {onRemove && (
             <button
               onClick={() => onRemove(charity.ein)}
-              className={`p-1.5 rounded-md transition-colors ${isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'}`}
+              className={`p-1.5 rounded-md transition-colors opacity-40 hover:opacity-100 ${isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'}`}
               title="Remove from saved"
             >
               <X className={`w-3.5 h-3.5 ${isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'}`} />
@@ -295,7 +295,7 @@ function DraggableCharityRow({
           <select
             value={bucketId || ''}
             onChange={e => onMoveCharity(charity.ein, e.target.value || null)}
-            className={`opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity text-[11px] rounded-md border px-1.5 py-1 max-w-[8rem] ${
+            className={`text-[11px] rounded-md border px-1.5 py-1 max-w-[8rem] ${
               isDark
                 ? 'bg-slate-800 border-slate-700 text-slate-300'
                 : 'bg-white border-slate-200 text-slate-600'
@@ -412,8 +412,8 @@ function MobileCharityAllocationRow({
             onChange={e => setLocalTarget(e.target.value.replace(/\D/g, ''))}
             onBlur={commitTarget}
             onKeyDown={onTargetKeyDown}
-            className={`w-14 text-right ${inputStyle} text-[12px] font-semibold tabular-nums`}
-            placeholder="0"
+            className={`w-16 text-right ${inputStyle} text-[12px] font-semibold tabular-nums`}
+            placeholder="target"
             aria-label={`Target for ${charity.name}`}
           />
         </div>
@@ -544,6 +544,7 @@ export function UnifiedAllocationView({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showCharitySearch, setShowCharitySearch] = useState(false);
   const [charitySearchQuery, setCharitySearchQuery] = useState('');
+  const [recentlyAdded, setRecentlyAdded] = useState<Set<string>>(new Set());
   const [zakatLens, setZakatLens] = useState(false);
   const [collapsedBuckets, setCollapsedBuckets] = useState<Set<string>>(new Set());
   const [bucketSearchQueries, setBucketSearchQueries] = useState<Map<string, string>>(new Map());
@@ -1028,14 +1029,14 @@ export function UnifiedAllocationView({
           )}
           <button
             data-tour="giving-add-charity"
-            onClick={() => { setShowCharitySearch(!showCharitySearch); setCharitySearchQuery(''); }}
-            className={`text-[11px] font-medium px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1 ${
+            onClick={() => { setShowCharitySearch(!showCharitySearch); setCharitySearchQuery(''); setRecentlyAdded(new Set()); }}
+            className={`text-[11px] font-semibold px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1 ${
               showCharitySearch
                 ? isDark ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' : 'bg-blue-50 text-blue-600 border-blue-200'
-                : isDark ? 'text-slate-400 border-slate-700 hover:bg-slate-800 hover:text-slate-300' : 'text-slate-500 border-slate-200 hover:bg-slate-50 hover:text-slate-700'
+                : isDark ? 'bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-500' : 'bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700'
             }`}
           >
-            <Plus className="w-3.5 h-3.5" />Charity
+            <Plus className="w-3.5 h-3.5" />Add Charity
           </button>
           <button
             data-tour="giving-add-category"
@@ -1068,7 +1069,7 @@ export function UnifiedAllocationView({
               </p>
               {onboardingStep === 2 && (
                 <p className={`text-xs mt-1 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-                  Browse charities and tap the heart to add them here
+                  Use the <span className="font-semibold">Add Charity</span> button above, or browse charities and tap the heart icon
                 </p>
               )}
             </div>
@@ -1147,19 +1148,19 @@ export function UnifiedAllocationView({
               </svg>
             </div>
             <button
-              onClick={() => { setShowCharitySearch(false); setCharitySearchQuery(''); }}
+              onClick={() => { setShowCharitySearch(false); setCharitySearchQuery(''); setRecentlyAdded(new Set()); }}
               className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-slate-700 text-slate-400' : 'hover:bg-slate-200 text-slate-500'}`}
             >
               <X className="w-4 h-4" />
             </button>
           </div>
           {charitySearchQuery.length >= 2 && (
-            <div className={`max-h-52 overflow-y-auto rounded-lg border shadow-sm ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-white'}`}>
+            <div className={`max-h-64 overflow-y-auto rounded-lg border shadow-sm ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-white'}`}>
               {(() => {
                 const bookmarkedEins = new Set(bookmarkedCharities.map(c => c.ein));
                 const results = charities
-                  .filter(c => c.ein && !bookmarkedEins.has(c.ein) && c.name.toLowerCase().includes(charitySearchQuery.toLowerCase()))
-                  .slice(0, 10);
+                  .filter(c => c.ein && c.name.toLowerCase().includes(charitySearchQuery.toLowerCase()))
+                  .slice(0, 12);
 
                 if (results.length === 0) {
                   return (
@@ -1169,53 +1170,64 @@ export function UnifiedAllocationView({
                   );
                 }
 
-                return results.map((c, i) => (
-                  <div
-                    key={c.ein}
-                    className={`flex items-center justify-between px-3 py-2.5 ${i !== results.length - 1 ? `border-b ${borderLight}` : ''} ${
-                      isDark ? 'hover:bg-slate-700/50' : 'hover:bg-slate-50'
-                    } transition-colors`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <span className={`text-sm font-medium ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>{c.name}</span>
-                      <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-semibold border ${
-                        isDark ? 'bg-slate-700 border-slate-600 text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-500'
-                      }`}>
-                        {(c as any).amalScore || '—'}
-                      </span>
+                return results.map((c, i) => {
+                  const alreadyAdded = bookmarkedEins.has(c.ein!) || recentlyAdded.has(c.ein!);
+                  return (
+                    <div
+                      key={c.ein}
+                      className={`flex items-center justify-between px-3 py-2.5 ${i !== results.length - 1 ? `border-b ${borderLight}` : ''} ${
+                        alreadyAdded
+                          ? isDark ? 'bg-emerald-500/5' : 'bg-emerald-50/50'
+                          : isDark ? 'hover:bg-slate-700/50' : 'hover:bg-slate-50'
+                      } transition-colors`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span className={`text-sm font-medium truncate ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>{c.name}</span>
+                        <span className={`shrink-0 text-[10px] px-1.5 py-0.5 rounded-md font-semibold border ${
+                          isDark ? 'bg-slate-700 border-slate-600 text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-500'
+                        }`}>
+                          {(c as any).amalScore || '—'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0 ml-2">
+                        {alreadyAdded ? (
+                          <span className={`inline-flex items-center gap-1 text-[11px] px-3 py-1.5 rounded-lg font-semibold ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
+                            <Check className="w-3.5 h-3.5" /> Added
+                          </span>
+                        ) : (
+                          <button
+                            onClick={async () => {
+                              if (onAddCharity) {
+                                const fullCharity = charities.find(ch => ch.ein === c.ein);
+                                const causeTags = fullCharity ? (fullCharity as any).causeTags || [] : [];
+                                const bucketId = autoCreateBucketsForCharity({ causeTags });
+                                await onAddCharity(c.ein!, c.name, bucketId);
+                                if (bucketId) {
+                                  setAssignments(prev => {
+                                    const next = new Map(prev);
+                                    next.set(c.ein!, bucketId);
+                                    return next;
+                                  });
+                                }
+                                setRecentlyAdded(prev => new Set(prev).add(c.ein!));
+                              }
+                            }}
+                            className={`text-[11px] px-3 py-1.5 rounded-lg font-semibold shadow-sm ${isDark ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-emerald-500 text-white hover:bg-emerald-600'}`}
+                          >
+                            + Add
+                          </button>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={async () => {
-                          if (onAddCharity) {
-                            const fullCharity = charities.find(ch => ch.ein === c.ein);
-                            const causeTags = fullCharity ? (fullCharity as any).causeTags || [] : [];
-                            const bucketId = autoCreateBucketsForCharity({ causeTags });
-                            await onAddCharity(c.ein!, c.name, bucketId);
-                            if (bucketId) {
-                              setAssignments(prev => {
-                                const next = new Map(prev);
-                                next.set(c.ein!, bucketId);
-                                return next;
-                              });
-                            }
-                            setCharitySearchQuery('');
-                          }
-                        }}
-                        className={`text-[11px] px-3 py-1.5 rounded-lg font-semibold shadow-sm ${isDark ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-emerald-500 text-white hover:bg-emerald-600'}`}
-                      >
-                        + Add
-                      </button>
-                    </div>
-                  </div>
-                ));
+                  );
+                });
               })()}
             </div>
           )}
           {charitySearchQuery.length < 2 && (
-            <div className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-              Type at least 2 characters to search
-            </div>
+            <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+              Type at least 2 characters to search. You can add multiple charities.
+            </p>
           )}
         </div>
       )}
@@ -1402,14 +1414,24 @@ export function UnifiedAllocationView({
                       })}
                     </div>
                   ) : (
-                    <div className={`mt-1.5 text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-                      No charities in this category yet.
+                    <div className={`mt-2 flex items-center gap-2`}>
+                      <button
+                        onClick={() => { setShowCharitySearch(true); setCharitySearchQuery(''); }}
+                        className={`inline-flex items-center gap-1 text-[11px] font-semibold px-3 py-1.5 rounded-lg border transition-colors ${
+                          isDark
+                            ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20'
+                            : 'text-emerald-600 border-emerald-200 bg-emerald-50 hover:bg-emerald-100'
+                        }`}
+                      >
+                        <Plus className="w-3 h-3" />
+                        Add charity
+                      </button>
                       {matchingCharities.length > 0 && !showSuggestions && (
                         <button
                           onClick={() => setShowSuggestions(true)}
-                          className={`ml-1 font-medium ${isDark ? 'text-emerald-400 hover:text-emerald-300' : 'text-emerald-600 hover:text-emerald-700'}`}
+                          className={`text-[11px] font-medium ${isDark ? 'text-slate-400 hover:text-slate-300' : 'text-slate-500 hover:text-slate-700'}`}
                         >
-                          Show suggestions
+                          or show {matchingCharities.length} suggestions
                         </button>
                       )}
                     </div>
@@ -1696,11 +1718,39 @@ export function UnifiedAllocationView({
                       </div>
                     </td>
                     <td className={`${cell} hidden sm:table-cell`}>
-                      <button onClick={() => remove(b.id)} className={`opacity-100 sm:opacity-0 sm:group-hover:opacity-100 p-1.5 -m-1 rounded-lg transition-all ${isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'}`}>
+                      <button onClick={() => remove(b.id)} className={`p-1.5 -m-1 rounded-lg transition-all opacity-40 hover:opacity-100 ${isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'}`}>
                         <X className={`w-3.5 h-3.5 ${isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'}`} />
                       </button>
                     </td>
                   </tr>
+                  {/* Empty category hint - show add charity CTA */}
+                  {!isCollapsed && chars.length === 0 && (
+                    <tr className={`hidden sm:table-row border-b ${borderLight}`}>
+                      <td colSpan={7} className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => { setShowCharitySearch(true); setCharitySearchQuery(''); }}
+                            className={`inline-flex items-center gap-1 text-[11px] font-semibold px-3 py-1.5 rounded-lg border transition-colors ${
+                              isDark
+                                ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20'
+                                : 'text-emerald-600 border-emerald-200 bg-emerald-50 hover:bg-emerald-100'
+                            }`}
+                          >
+                            <Plus className="w-3 h-3" />
+                            Add charity
+                          </button>
+                          {matchingCharities.length > 0 && !showSuggestions && (
+                            <button
+                              onClick={() => setShowSuggestions(true)}
+                              className={`text-[11px] font-medium ${isDark ? 'text-slate-400 hover:text-slate-300' : 'text-slate-500 hover:text-slate-700'}`}
+                            >
+                              or show {matchingCharities.length} suggestions
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
                   {/* Child rows - draggable charities (collapsible) */}
                   {!isCollapsed && chars.map(c => {
                     const cGvn = donations.filter(d => d.charityEin === c.ein).reduce((s, d) => s + d.amount, 0);
@@ -1981,25 +2031,36 @@ export function UnifiedAllocationView({
       {targetNum > 0 && buckets.length === 0 && bookmarkedCharities.length === 0 && (
         <div className={`px-6 py-12 text-center border-t ${border} ${isDark ? 'bg-slate-800/20' : 'bg-slate-50/50'}`}>
           <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${isDark ? 'bg-emerald-500/10' : 'bg-emerald-50'}`}>
-            <svg className={`w-6 h-6 ${isDark ? 'text-emerald-400' : 'text-emerald-500'}`} viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-            </svg>
+            <Plus className={`w-6 h-6 ${isDark ? 'text-emerald-400' : 'text-emerald-500'}`} />
           </div>
-          <p className={`text-sm font-medium mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>No charities saved yet</p>
-          <p className={`text-xs mb-3 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-            Browse and save charities to start building your giving plan.
+          <p className={`text-sm font-medium mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Add charities to your plan</p>
+          <p className={`text-xs mb-4 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+            Search for charities above or browse our evaluations to find the right fit.
           </p>
-          <Link
-            to="/browse"
-            className={`inline-flex items-center gap-1 text-sm font-semibold px-4 py-2 rounded-lg transition-colors ${
-              isDark
-                ? 'bg-emerald-600 text-white hover:bg-emerald-500'
-                : 'bg-emerald-600 text-white hover:bg-emerald-700'
-            }`}
-          >
-            Browse Charities
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+          <div className="flex items-center justify-center gap-3">
+            <button
+              onClick={() => { setShowCharitySearch(true); setCharitySearchQuery(''); }}
+              className={`inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-lg transition-colors ${
+                isDark
+                  ? 'bg-emerald-600 text-white hover:bg-emerald-500'
+                  : 'bg-emerald-600 text-white hover:bg-emerald-700'
+              }`}
+            >
+              <Search className="w-4 h-4" />
+              Search Charities
+            </button>
+            <Link
+              to="/browse"
+              className={`inline-flex items-center gap-1 text-sm font-semibold px-4 py-2 rounded-lg border transition-colors ${
+                isDark
+                  ? 'text-slate-300 border-slate-700 hover:bg-slate-800'
+                  : 'text-slate-700 border-slate-200 hover:bg-slate-50'
+              }`}
+            >
+              Browse All
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       )}
       {targetNum > 0 && buckets.length === 0 && bookmarkedCharities.length > 0 && (
