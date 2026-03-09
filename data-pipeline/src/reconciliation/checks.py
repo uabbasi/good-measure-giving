@@ -48,15 +48,25 @@ def check_gik_inflated_ratio(metrics: CharityMetrics) -> list[ContradictionSigna
     program_ratio = metrics.program_expense_ratio
     cash_adj = metrics.cash_adjusted_program_ratio
 
-    if ratio >= 0.50:
+    if ratio >= 0.80:
+        severity = SignalSeverity.HIGH
+    elif ratio >= 0.50:
         severity = SignalSeverity.HIGH
     elif ratio >= 0.25:
         severity = SignalSeverity.MEDIUM
     else:
         return signals
 
-    headline = f"{ratio:.0%} of reported revenue is noncash (gifts-in-kind)"
-    detail_parts = [f"Noncash ratio: {ratio:.0%}"]
+    if ratio >= 0.80:
+        headline = f"{ratio:.0%} of reported revenue appears to be phantom noncash contributions"
+        detail_parts = [
+            f"Noncash ratio: {ratio:.0%}",
+            "At this level, reported program ratios are likely meaningless — "
+            "inflated by noncash valuations rather than actual cash spending on programs",
+        ]
+    else:
+        headline = f"{ratio:.0%} of reported revenue is noncash (gifts-in-kind)"
+        detail_parts = [f"Noncash ratio: {ratio:.0%}"]
     if program_ratio is not None:
         detail_parts.append(f"Reported program ratio: {program_ratio:.0%}")
     if cash_adj is not None:

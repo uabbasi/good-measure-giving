@@ -355,6 +355,9 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
   const fundRatio = hasExpenseData && financials?.fundraisingExpenses
     ? ((financials.fundraisingExpenses / totalExpenses) * 100)
     : 0;
+  const hasSignificantNoncash = (financials?.noncashRatio ?? 0) >= 0.25;
+  const cashAdjProgramRatio = financials?.cashAdjustedProgramRatio != null
+    ? financials.cashAdjustedProgramRatio * 100 : null;
 
   // Mobile collapsible section state
   const [openSections, setOpenSections] = useState<Set<string>>(new Set(['about']));
@@ -671,6 +674,25 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                 <Shield className="w-3.5 h-3.5" />
                 {isZakatEligible ? 'Accepts Zakat' : 'Sadaqah'}
               </span>
+              {isZakatEligible && (() => {
+                const policyUrl = charity.zakatClaimEvidence?.[0] ? extractZakatPolicyUrl(charity.zakatClaimEvidence[0]) : undefined;
+                return policyUrl ? (
+                  <a
+                    href={policyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`inline-flex items-center gap-1 text-xs ${
+                      isDark ? 'text-emerald-400/70 hover:text-emerald-300' : 'text-emerald-600/70 hover:text-emerald-700'
+                    }`}
+                  >
+                    View zakat policy <ExternalLink className="w-3 h-3" />
+                  </a>
+                ) : (
+                  <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                    Self-reported — no published policy found
+                  </span>
+                );
+              })()}
             </div>
           </div>
 
@@ -680,11 +702,22 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
               <div className="flex items-center gap-2">
                 <CheckCircle2 className={`w-4 h-4 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
                 <span>
-                  {programRatio.toFixed(0)}% to programs{rawProgramRatio > 100 ? ' (incl. in-kind)' : ''}
-                  {financials?.cashAdjustedProgramRatio != null && (
-                    <span className={`ml-1 text-xs ${isDark ? 'text-amber-400' : 'text-amber-600'}`}>
-                      ({(financials.cashAdjustedProgramRatio * 100).toFixed(0)}% cash-adj)
-                    </span>
+                  {hasSignificantNoncash && cashAdjProgramRatio != null ? (
+                    <>
+                      {cashAdjProgramRatio.toFixed(0)}% to programs (cash-adjusted)
+                      <span className={`ml-1 text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                        ({programRatio.toFixed(0)}% reported{rawProgramRatio > 100 ? ', incl. in-kind' : ''})
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      {programRatio.toFixed(0)}% to programs{rawProgramRatio > 100 ? ' (incl. in-kind)' : ''}
+                      {financials?.cashAdjustedProgramRatio != null && (
+                        <span className={`ml-1 text-xs ${isDark ? 'text-amber-400' : 'text-amber-600'}`}>
+                          ({(financials.cashAdjustedProgramRatio * 100).toFixed(0)}% cash-adj)
+                        </span>
+                      )}
+                    </>
                   )}
                 </span>
               </div>
@@ -1135,11 +1168,22 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                         Programs
                       </span>
                       <span className="font-mono">
-                        {programRatio.toFixed(0)}%
-                        {financials?.cashAdjustedProgramRatio != null && (
-                          <span className={`ml-1 text-xs ${isDark ? 'text-amber-400' : 'text-amber-600'}`}>
-                            ({(financials.cashAdjustedProgramRatio * 100).toFixed(0)}% cash-adj)
-                          </span>
+                        {hasSignificantNoncash && cashAdjProgramRatio != null ? (
+                          <>
+                            {cashAdjProgramRatio.toFixed(0)}% (cash-adjusted)
+                            <span className={`ml-1 text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                              ({programRatio.toFixed(0)}% reported)
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            {programRatio.toFixed(0)}%
+                            {financials?.cashAdjustedProgramRatio != null && (
+                              <span className={`ml-1 text-xs ${isDark ? 'text-amber-400' : 'text-amber-600'}`}>
+                                ({(financials.cashAdjustedProgramRatio * 100).toFixed(0)}% cash-adj)
+                              </span>
+                            )}
+                          </>
                         )}
                       </span>
                     </div>
@@ -1367,7 +1411,14 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity }) => {
                     </span>
                     <span className="font-mono">
                       {formatCurrency(financials?.programExpenses)}
-                      <span className={`ml-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>({programRatio.toFixed(0)}%)</span>
+                      {hasSignificantNoncash && cashAdjProgramRatio != null ? (
+                        <>
+                          <span className={`ml-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>({cashAdjProgramRatio.toFixed(0)}% cash-adj)</span>
+                          <span className={`ml-1 text-xs ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>({programRatio.toFixed(0)}% reported)</span>
+                        </>
+                      ) : (
+                        <span className={`ml-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>({programRatio.toFixed(0)}%)</span>
+                      )}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
