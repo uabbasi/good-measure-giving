@@ -6,3 +6,7 @@ export { AllocationWizard } from './AllocationWizard';
 export { AllocationBuilder } from './AllocationBuilder';
 export { UnifiedAllocationView } from './UnifiedAllocationView';
 export { SimpleAllocationView } from './SimpleAllocationView';
+export { AddInKindModal } from './AddInKindModal';
+export { InKindHistoryTable } from './InKindHistoryTable';
+export { InKindSummaryCard } from './InKindSummaryCard';
+export { ItemPicker } from './ItemPicker';

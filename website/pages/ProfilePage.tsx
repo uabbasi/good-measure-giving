@@ -9,6 +9,8 @@ import { useBookmarkState, useProfileState } from '../src/contexts/UserFeaturesC
 import { useAuth } from '../src/auth';
 import { useCharities } from '../src/hooks/useCharities';
 import { useGivingHistory } from '../src/hooks/useGivingHistory';
+import { useInKindDonations } from '../src/hooks/useInKindDonations';
+import type { InKindDonation } from '../src/hooks/useInKindDonations';
 import { useCharityTargets } from '../src/hooks/useCharityTargets';
 import { useGivingDashboard } from '../src/hooks/useGivingDashboard';
 import { SignInButton } from '../src/auth/SignInButton';
@@ -16,12 +18,15 @@ import {
   AddDonationModal,
   GivingHistoryTable,
   UnifiedAllocationView,
+  AddInKindModal,
+  InKindHistoryTable,
+  InKindSummaryCard,
 } from '../src/components/giving';
 import type { GivingHistoryEntry, CharitySummary } from '../types';
 import { useTour } from '../src/tours/useTour';
 import { givingPlanTourSteps } from '../src/tours/givingPlanTour';
 
-type TabId = 'overview' | 'history';
+type TabId = 'overview' | 'history' | 'in-kind';
 
 // Tab button component
 function TabButton({
@@ -76,6 +81,17 @@ export function ProfilePage() {
     exportCSV,
   } = useGivingHistory();
 
+  // In-kind donations hook
+  const {
+    donations: inKindDonations,
+    isLoading: inKindLoading,
+    addDonation: addInKindDonation,
+    updateDonation: updateInKindDonation,
+    deleteDonation: deleteInKindDonation,
+    getYearSummary: getInKindYearSummary,
+    exportCSV: exportInKindCSV,
+  } = useInKindDonations();
+
   // Charity targets hook
   const {
     targets: charityTargets,
@@ -122,6 +138,8 @@ export function ProfilePage() {
   const [showDonationModal, setShowDonationModal] = useState(false);
   const [editingDonation, setEditingDonation] = useState<GivingHistoryEntry | null>(null);
   const [prefillCharity, setPrefillCharity] = useState<{ ein: string; name: string } | null>(null);
+  const [showInKindModal, setShowInKindModal] = useState(false);
+  const [editingInKindDonation, setEditingInKindDonation] = useState<InKindDonation | null>(null);
 
   // Match bookmarks with charity data for the unified view
   const bookmarkedCharitiesForView = useMemo(() => {
@@ -167,6 +185,27 @@ export function ProfilePage() {
     const a = document.createElement('a');
     a.href = url;
     a.download = `giving-history${year ? `-${year}` : ''}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Handle in-kind donation save
+  const handleSaveInKindDonation = async (input: Parameters<typeof addInKindDonation>[0]) => {
+    if (editingInKindDonation) {
+      await updateInKindDonation(editingInKindDonation.id, input);
+    } else {
+      await addInKindDonation(input);
+    }
+  };
+
+  // Handle in-kind CSV export
+  const handleInKindExport = (year?: number) => {
+    const csv = exportInKindCSV(year);
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `in-kind-donations${year ? `-${year}` : ''}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -267,6 +306,14 @@ export function ProfilePage() {
               isDark={isDark}
             />
           </span>
+          <TabButton
+            id="in-kind"
+            label="In-Kind"
+            icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>}
+            isActive={activeTab === 'in-kind'}
+            onClick={() => setActiveTab('in-kind')}
+            isDark={isDark}
+          />
         </div>
 
         {/* Tab Content */}
@@ -394,6 +441,47 @@ export function ProfilePage() {
           </div>
         )}
 
+        {activeTab === 'in-kind' && (
+          <div className="space-y-6">
+            {/* Summary Card */}
+            <InKindSummaryCard
+              summary={getInKindYearSummary(new Date().getFullYear())}
+              taxYear={new Date().getFullYear()}
+            />
+
+            {/* History Table */}
+            <div className={`rounded-xl border p-6 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  In-Kind Donations
+                </h2>
+                <button
+                  onClick={() => {
+                    setEditingInKindDonation(null);
+                    setShowInKindModal(true);
+                  }}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-emerald-600 text-white text-sm rounded-lg hover:bg-emerald-700 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Log In-Kind Donation
+                </button>
+              </div>
+
+              <InKindHistoryTable
+                donations={inKindDonations}
+                onEdit={(donation) => {
+                  setEditingInKindDonation(donation);
+                  setShowInKindModal(true);
+                }}
+                onDelete={(id) => deleteInKindDonation(id)}
+                onExport={handleInKindExport}
+              />
+            </div>
+          </div>
+        )}
+
       </div>
 
       {/* Add/Edit Donation Modal */}
@@ -408,6 +496,17 @@ export function ProfilePage() {
         existingDonation={editingDonation || undefined}
         paymentSources={getPaymentSources()}
         prefillCharity={prefillCharity || undefined}
+      />
+
+      {/* Add/Edit In-Kind Donation Modal */}
+      <AddInKindModal
+        isOpen={showInKindModal}
+        onClose={() => {
+          setShowInKindModal(false);
+          setEditingInKindDonation(null);
+        }}
+        onSave={handleSaveInKindDonation}
+        existingDonation={editingInKindDonation || undefined}
       />
     </div>
   );
