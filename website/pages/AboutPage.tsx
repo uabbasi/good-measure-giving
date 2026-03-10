@@ -96,12 +96,12 @@ export const AboutPage: React.FC = () => {
           </p>
           <div className={`${cardClass} space-y-3`}>
             {[
-              ['IRS Form 990 filings', 'Financials, governance, compensation — the official public record.'],
+              ['IRS Form 990 filings (via ProPublica)', 'Financials, governance, compensation, and grant data — the official public record.'],
               ['Charity Navigator', 'Financial health scores, accountability ratings, and 990 analysis.'],
               ['Candid (GuideStar)', 'Transparency seals and organizational profiles.'],
               ['BBB Wise Giving Alliance', 'Standards-based accreditation for governance and fundraising.'],
-              ['ProPublica Nonprofit Explorer', 'Cross-referenced 990 data and historical filings.'],
               ['Charity websites & reports', 'Annual reports, impact data, and program descriptions.'],
+              ['Web discovery', 'Zakat claims, third-party evaluations, and awards found across the web.'],
             ].map(([source, detail]) => (
               <div key={source} className="flex items-start gap-2">
                 <span className={`mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0 ${isDark ? 'bg-emerald-500' : 'bg-emerald-400'}`} />

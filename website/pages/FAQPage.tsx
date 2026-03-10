@@ -163,7 +163,7 @@ export const FAQPage: React.FC = () => {
     {
       category: 'data',
       q: "Where does your data come from?",
-      a: "We aggregate data from 7 sources: IRS Form 990 filings (via ProPublica\u2019s API \u2014 official legal filings), Charity Navigator (scores, accountability), Candid/GuideStar (transparency seals, outcomes), BBB Wise Giving Alliance (standards compliance), charity websites (programs, mission, Zakat policies), Form 990 grant data (who they fund), and \u2018discovered\u2019 information via Grounded Search (finding zakat claims, evaluations, and awards from across the web). When sources conflict, official IRS filings take precedence over rating agencies, which take precedence over self-reported website content."
+      a: "We aggregate data from 6 sources: IRS Form 990 filings including grant data (via ProPublica\u2019s API \u2014 official legal filings), Charity Navigator (scores, accountability), Candid/GuideStar (transparency seals, outcomes), BBB Wise Giving Alliance (standards compliance), charity websites (programs, mission, Zakat policies), and \u2018discovered\u2019 information via Grounded Search (finding zakat claims, evaluations, and awards from across the web). When sources conflict, official IRS filings take precedence over rating agencies, which take precedence over self-reported website content."
     },
     {
       category: 'data',

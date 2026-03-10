@@ -102,7 +102,7 @@ export const MethodologyPage: React.FC = () => {
           <div className={`rounded-2xl p-6 ${isDark ? 'bg-emerald-900/20 border border-emerald-800/30' : 'bg-emerald-50 border border-emerald-200'}`}>
             <h2 className={`text-lg font-bold mb-3 [text-wrap:balance] ${isDark ? 'text-emerald-400' : 'text-emerald-800'}`}>TL;DR</h2>
             <p className={`text-lg leading-relaxed ${isDark ? 'text-emerald-100' : 'text-emerald-900'}`}>
-              We aggregate data from <strong>multiple sources</strong>: IRS Form 990 filings (via ProPublica API), Charity Navigator ratings, Candid transparency seals, BBB accreditation status, and charity websites. We score on two dimensions: <strong>Impact</strong> (how effectively is the charity set up to deliver results?) and <strong>Alignment</strong> (is this the right fit for Muslim donors?), with up to 10 points deducted for serious risks. A separate <strong>Data Confidence</strong> signal tells you how much data we had to work with. Scores above 75 are exceptional, and most organizations cluster in the middle score bands.
+              We aggregate data from <strong>6 independent sources</strong>: IRS Form 990 filings (via ProPublica API), Charity Navigator ratings, Candid transparency seals, BBB accreditation status, charity websites, and web-discovered information (awards, third-party evaluations, zakat claims). We score on two dimensions: <strong>Impact</strong> (how effectively is the charity set up to deliver results?) and <strong>Alignment</strong> (is this the right fit for Muslim donors?), with up to 10 points deducted for serious risks. A separate <strong>Data Confidence</strong> signal tells you how much data we had to work with. Scores above 75 are exceptional, and most organizations cluster in the middle score bands.
             </p>
           </div>
         </section>
@@ -352,8 +352,24 @@ export const MethodologyPage: React.FC = () => {
                     <span>Board under 3 members (governance concerns)</span>
                   </li>
                   <li className="flex items-start gap-2">
+                    <span className={`px-1.5 py-0.5 rounded text-xs font-mono ${isDark ? 'bg-rose-900/30 text-rose-400' : 'bg-rose-100 text-rose-700'}`}>-5</span>
+                    <span>Noncash/gift-in-kind inflation ({'\u2265'}50% of revenue is noncash contributions)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className={`px-1.5 py-0.5 rounded text-xs font-mono ${isDark ? 'bg-rose-900/30 text-rose-400' : 'bg-rose-100 text-rose-700'}`}>-5</span>
+                    <span>High domestic burn rate ({'\u2265'}70% spent domestically for international-focused orgs)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
                     <span className={`px-1.5 py-0.5 rounded text-xs font-mono ${isDark ? 'bg-amber-900/30 text-amber-400' : 'bg-amber-100 text-amber-700'}`}>-3</span>
                     <span>Charity Navigator advisory flag</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className={`px-1.5 py-0.5 rounded text-xs font-mono ${isDark ? 'bg-amber-900/30 text-amber-400' : 'bg-amber-100 text-amber-700'}`}>-3</span>
+                    <span>Related party transactions</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className={`px-1.5 py-0.5 rounded text-xs font-mono ${isDark ? 'bg-amber-900/30 text-amber-400' : 'bg-amber-100 text-amber-700'}`}>-3</span>
+                    <span>Zakat reserve hoarding ({'\u2265'}3 years reserves for zakat-accepting charities)</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className={`px-1.5 py-0.5 rounded text-xs font-mono ${isDark ? 'bg-amber-900/30 text-amber-400' : 'bg-amber-100 text-amber-700'}`}>-2</span>
@@ -368,6 +384,9 @@ export const MethodologyPage: React.FC = () => {
                     <span>No theory of change documented (size-adjusted)</span>
                   </li>
                 </ul>
+                <p className={`text-xs mt-3 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
+                  Total deductions are capped at -10 points. Some flags have moderate variants (e.g., -2 for 25-50% noncash ratio).
+                </p>
               </div>
 
               <div>
