@@ -62,9 +62,9 @@ export const CharityDetailsPage: React.FC = () => {
   const { charity, loading, error } = useCharity(id || '');
   const { isDark } = useLandingTheme();
 
-  // View preference: ?view=tabbed for tabbed view, default is terminal
+  // View preference: ?view=terminal for terminal view, default is tabbed
   // Read directly from window.location to avoid useSearchParams re-render issues
-  const useTabbed = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('view') === 'tabbed';
+  const useTerminal = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('view') === 'terminal';
 
   // Check community membership for content gating (must be called unconditionally)
   const isCommunityMember = useCommunityMember();
@@ -109,12 +109,12 @@ export const CharityDetailsPage: React.FC = () => {
     );
   }
 
-  // Rich and baseline tiers use terminal (default) or tabbed view
+  // Rich and baseline tiers use tabbed (default) or terminal view
   if (isRichTier(charity) || isBaselineTier(charity)) {
-    if (useTabbed) {
-      return <TabbedView charity={charity} />;
+    if (useTerminal) {
+      return <TerminalView charity={charity} />;
     }
-    return <TerminalView charity={charity} />;
+    return <TabbedView charity={charity} />;
   }
 
   // Hidden tier indicator (accessible via direct URL)

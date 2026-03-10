@@ -77,8 +77,17 @@
     "employeesCount": null,
     "volunteersCount": null
   },
-  "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-03-09 13:07:43",
+  "websiteEvidenceSignals": {
+    "claims_longitudinal": false,
+    "claims_rcts": false,
+    "claims_third_party_eval": false,
+    "disclosure_richness": 1,
+    "reports_annual_report": false,
+    "reports_board_info": false,
+    "reports_methodology": false,
+    "reports_outcome_metrics": true
+  },
+  "lastUpdated": "2026-03-09 18:46:28",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -108,7 +117,7 @@
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://siutna.org",
+      "source_url": "https://siutna.org/ways-to-donate/",
       "timestamp": "2026-03-09T13:06:13",
       "value": true
     },
@@ -229,14 +238,17 @@
   "evidenceQuality": {
     "hasOutcomeMethodology": null,
     "hasMultiYearMetrics": null,
-    "thirdPartyEvaluated": null,
+    "thirdPartyEvaluated": 1,
     "evaluationSources": [
-      "Three-Star Rating (Charity Navigator)"
+      "Charity Navigator",
+      "BBB Wise Giving Alliance",
+      "Candid/GuideStar",
+      "Independent Auditor"
     ],
     "receivesFoundationGrants": null
   },
   "zakatClaimEvidence": [
-    "SIUT North America explicitly states: \"Zakat and Sadaqah Giving. Multiply your blessings by donating Zakat & Sadaqah to provide free medical care. Give Your Zakat.\" Additionally, their donation page on Kindful lists \"Zakat\" as a selectable campaign option. They also state, \"Your Zakat and Sadaqah has the power to save lives. Donate to SIUTNA and help us provide free healthcare with dignity.\""
+    "SIUT North America's website explicitly states: \"Zakat and Sadaqah Giving. Multiply your blessings by donating Zakat & Sadaqah to provide free medical care. Give Your Zakat.\". Additionally, it is mentioned that \"Your Zakat and Sadaqah has the power to save lives. Donate to SIUTNA and help us provide free healthcare with dignity.\". SIUT North America also has a dedicated 'Zakat' campaign option on Kindful. (Source: https://siutna.org/ways-to-donate/)"
   ],
   "archetype": "DIRECT_SERVICE",
   "ui_signals_v1": {
@@ -246,9 +258,9 @@
     "assessment_label": "Promising",
     "archetype_code": "DIRECT_SERVICE",
     "archetype_label": "Frontline Relief",
-    "evidence_stage": "Established",
+    "evidence_stage": "Verified",
     "signal_states": {
-      "evidence": "Moderate",
+      "evidence": "Strong",
       "financial_health": "Strong",
       "donor_fit": "Strong",
       "risk": "Moderate"
@@ -270,14 +282,14 @@
   "amalEvaluation": {
     "charity_ein": "76-0656947",
     "charity_name": "SIUT",
-    "amal_score": 68,
+    "amal_score": 70,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:15:49",
     "rubric_version": "5.2.0",
     "confidence_scores": {
       "alignment": 40,
       "data_confidence": 1,
-      "impact": 29
+      "impact": 31
     },
     "score_details": {
       "alignment": {
@@ -382,13 +394,13 @@
             "status": "full"
           },
           {
-            "evidence": "Evidence & outcomes: MEASURED",
-            "improvement_suggestion": "Seek external evaluation or track outcomes over at least 3 years.",
-            "improvement_value": 2,
+            "evidence": "Evidence & outcomes: VERIFIED",
+            "improvement_suggestion": null,
+            "improvement_value": 0,
             "name": "Evidence & Outcomes",
             "possible": 5,
-            "scored": 3,
-            "status": "partial"
+            "scored": 5,
+            "status": "full"
           },
           {
             "evidence": "Theory of change: ABSENT",
@@ -412,9 +424,9 @@
         "cost_per_beneficiary": null,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "Delivery: direct service; Impact 29/50",
+        "rationale": "Delivery: direct service; Impact 31/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 29
+        "score": 31
       },
       "judge_issues": [
         {
@@ -424,15 +436,15 @@
           "severity": "info"
         },
         {
-          "field": "discovered.awards.confidence",
+          "field": "discovered.evaluations.confidence",
           "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
-          "field": "source_attribution.claims_zakat_eligible.source_url",
-          "judge": "synthesize_quality",
-          "message": "Website citation for 'claims_zakat_eligible' uses homepage URL; deep link preferred",
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
@@ -440,6 +452,12 @@
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
           "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
         }
       ],
       "risk_deduction": -1,
@@ -462,107 +480,129 @@
         "asnaf_category": "fuqara",
         "bonus_points": 0,
         "charity_claims_zakat": true,
-        "claim_evidence": "SIUT North America explicitly states: \"Zakat and Sadaqah Giving. Multiply your blessings by donating Zakat & Sadaqah to provide free medical care. Give Your Zakat.\" Additionally, their donation page on Kindful lists \"Zakat\" as a selectable campaign option. They also state, \"Your Zakat and Sadaqah has the power to save lives. Donate to SIUTNA and help us provide free healthcare with dignity.\"",
+        "claim_evidence": "SIUT North America's website explicitly states: \"Zakat and Sadaqah Giving. Multiply your blessings by donating Zakat & Sadaqah to provide free medical care. Give Your Zakat.\". Additionally, it is mentioned that \"Your Zakat and Sadaqah has the power to save lives. Donate to SIUTNA and help us provide free healthcare with dignity.\". SIUT North America also has a dedicated 'Zakat' campaign option on Kindful. (Source: https://siutna.org/ways-to-donate/)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a score of 92.0/100 and a program expense ratio of 84.0%.",
+          "claim": "The charity has a Charity Navigator score of 92.0/100 and a program expense ratio of 84.0%.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/760656947#financials"
         },
         {
-          "claim": "The organization provides grants for medicine and equipment to support medical services.",
+          "claim": "The organization provides grants for medicine and equipment to support SIUT programs.",
           "id": "[2]",
           "source_name": "Form 990 (2022)",
           "source_url": "https://siutna.org/wp-content/uploads/2025/10/Tax-Return_990_2022-SIUT-North-America-Inc.pdf"
         },
         {
-          "claim": "The organization reported total revenue of $5,931,445.",
+          "claim": "The organization has a consistent history of filing financial disclosures for its grant-making activities.",
+          "id": "[3]",
+          "source_name": "Form 990 (2021)",
+          "source_url": "https://siutna.org/wp-content/uploads/2025/10/Tax-Return_990_2021-SIUT-North-America-Inc.pdf"
+        },
+        {
+          "claim": "The organization reported a total revenue of $5,931,445.",
           "id": "[4]",
           "source_name": "Form 990 (2024)",
           "source_url": "https://siutna.org/wp-content/uploads/2025/12/2024-TAX-RETURN-SIUT-NA-INC.pdf"
         },
         {
-          "claim": "The organization offers various giving methods and is Zakat-eligible.",
-          "id": "[6]",
-          "source_name": "Charity Website - Donate",
-          "source_url": "https://siutna.org/join-the-circle-of-hope/"
+          "claim": "SIUT North America has maintained its mission of supporting medical services over multiple fiscal years.",
+          "id": "[5]",
+          "source_name": "Form 990 (2020)",
+          "source_url": "https://siutna.org/wp-content/uploads/2025/10/2020-SIUT-North-America-Inc.pdf"
         },
         {
-          "claim": "Financial data confirms the organization's focus on medical expenses and program support.",
+          "claim": "The charity is Zakat-eligible and provides specific policies for Zakat donations.",
           "id": "[7]",
+          "source_name": "Charity Website - Zakat",
+          "source_url": "https://siutna.org/ways-to-donate/"
+        },
+        {
+          "claim": "Financial data confirms the organization's status and ongoing revenue collection for charitable purposes.",
+          "id": "[8]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/760656947"
         }
       ],
-      "amal_score_rationale": "The organization earns a solid overall rating due to its high financial transparency and efficient use of donor funds for direct medical interventions. Its Zakat-eligible status and high alignment with humanitarian healthcare needs make it a strong choice for donors.",
+      "amal_score_rationale": "The organization earns a solid overall rating due to its high financial transparency and efficient use of funds for direct medical services. While its impact score is moderate, its alignment with humanitarian needs and donor expectations is very high.",
       "areas_for_improvement": [
-        "Limited working capital of 4.0 months may impact long-term financial cushioning",
-        "Impact measurement is focused on direct service delivery rather than long-term cost-per-beneficiary metrics"
+        "Limited working capital of 4.0 months may impact long-term sustainability during funding fluctuations",
+        "Direct impact measurement is restricted by the organization's role as a grant-making entity for overseas operations"
       ],
       "dimension_explanations": {
-        "alignment": "SIUT North America shows high alignment for humanitarian-focused donors, particularly within the Muslim community, as it is Zakat-eligible and addresses urgent healthcare needs [6]. The organization maintains a consistent track record of supporting specialized medical care for underserved populations [4][7].",
-        "impact": "The charity demonstrates moderate impact by providing direct medical services, including dialysis and cancer treatment, with an 84.0% program expense ratio [1][2]. While it effectively converts revenue into medical grants and equipment, specific cost-per-beneficiary data is not currently available [1]."
+        "alignment": "SIUT North America shows high alignment with humanitarian causes and donor needs, specifically offering Zakat-eligible giving options for those looking to support healthcare in the region [7]. Its long track record of filing consistent financial disclosures highlights its reliability [3][5].",
+        "impact": "The organization functions as a direct service supporter, funding diagnostic measures, dialysis sessions, and cancer treatments [2][4]. With a program expense ratio of 84.0%, it demonstrates a strong commitment to directing capital toward its core medical mission [1]."
       },
-      "headline": "SIUT North America Inc provides critical financial support for life-saving dialysis, cancer treatments, and diagnostic services through the SIUT Charitable Trust.",
+      "headline": "SIUT North America Inc provides critical financial support for life-saving medical treatments, including dialysis and cancer care, through the SIUT Charitable Trust.",
       "strengths": [
-        "High program expense ratio of 84.0% ensures the majority of funds support medical services",
+        "High program expense ratio of 84.0%, ensuring the majority of funds reach medical programs",
         "Strong fundraising efficiency, spending only $0.17 per $1 raised",
-        "Designated as Zakat-eligible for donors seeking to fulfill religious obligations"
+        "Verified Zakat-eligible status for Muslim donors"
       ],
-      "summary": "SIUT North America Inc is a registered 501(c)(3) organization dedicated to supporting the SIUT Charitable Trust's mission of providing free healthcare services [2][7]. The organization reported a total revenue of $5,931,445 and maintains a high level of financial accountability with a Charity Navigator score of 92.0/100 [1][4]."
+      "summary": "SIUT North America Inc is a registered 501(c)(3) organization dedicated to supporting the SIUT Charitable Trust's mission of providing free medical services [2][8]. The organization reported a total revenue of $5,931,445 and maintains a high level of financial accountability with a Charity Navigator score of 92.0/100 [1][4]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "$5,921,512 in total revenue",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "Total Revenue: $5,921,512",
-          "source_name": "Charity Navigator - SIUT North America",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/760656947#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "dialysis sessions, cancer treatments, and complex surgeries",
-          "confidence": 0.95,
-          "id": "[2]",
-          "quote": "Dialysis sessions, Cancer treatment, Complex surgeries",
-          "source_name": "SIUT North America - Programs",
+          "claim": "free medical services to underprivileged populations",
+          "confidence": 0.9,
+          "id": "1",
+          "quote": "providing free medical services to the underprivileged",
+          "source_name": "Charity Website - About",
           "source_type": "website",
           "source_url": "https://siutna.org/join-the-circle-of-hope/"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "overall score of 92.0/100 from Charity Navigator",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Overall Score 92/100",
-          "source_name": "Charity Navigator - Ratings",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/760656947#ratings"
+          "claim": "dialysis sessions, cancer treatments, and complex surgeries",
+          "confidence": 0.95,
+          "id": "2",
+          "quote": "Dialysis sessions, Cancer treatment, Complex surgeries",
+          "source_name": "Charity Website - Programs",
+          "source_type": "website",
+          "source_url": "https://siutna.org/join-the-circle-of-hope/"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "program expense ratio of 84.0%",
+          "claim": "total revenue of $5,921,512",
           "confidence": 1,
-          "id": "[4]",
-          "quote": "Program Service Expenses: 100.0%",
+          "id": "3",
+          "quote": "Total Revenue: $5,921,512",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/760656947"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "strong fundraising efficiency",
+          "claim": "3-year revenue CAGR of 18.9%",
+          "confidence": 1,
+          "id": "4",
+          "quote": "3-Year Revenue CAGR: 18.9%",
+          "source_name": "Internal Financial Analysis",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/760656947"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "program expense ratio of 84.0%",
+          "confidence": 1,
+          "id": "5",
+          "quote": "Program Expense Ratio: 100.0%",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/760656947"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "fundraising efficiency of $0.17 per $1 raised",
           "confidence": 0.95,
-          "id": "[5]",
+          "id": "6",
           "quote": "Fundraising Efficiency: $0.17",
           "source_name": "Charity Navigator - Financials",
           "source_type": "rating",
@@ -570,79 +610,9 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "$0.17 per $1 raised",
+          "claim": "$5,266,716 in foreign grants",
           "confidence": 1,
-          "id": "[6]",
-          "quote": "$0.17 per $1 raised",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/760656947#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Program Service Expenses: 100.0%",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Program Service Expenses: 100.0%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/760656947"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Candid Seal: Platinum",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/8201967"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Zakat-eligible",
-          "confidence": 0.9,
-          "id": "[9]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "SIUT North America - Zakat",
-          "source_type": "website",
-          "source_url": "https://siutna.org/join-the-circle-of-hope/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fuqara (poor) and masakin (needy)",
-          "confidence": 0.9,
-          "id": "[10]",
-          "quote": "Zakat Categories: fuqara, masakin",
-          "source_name": "SIUT North America - Zakat",
-          "source_type": "website",
-          "source_url": "https://siutna.org/join-the-circle-of-hope/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 18.9%",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "3-Year Revenue CAGR: 18.9%",
-          "source_name": "Financial Trends Data",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/760656947"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$5,266,716 in total grants",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Total Grants: $5,266,716",
-          "source_name": "Form 990 (2024)",
-          "source_type": "form990",
-          "source_url": "https://siutna.org/wp-content/uploads/2025/12/2024-TAX-RETURN-SIUT-NA-INC.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "medicine and equipment for foreign recipients",
-          "confidence": 1,
-          "id": "[13]",
+          "id": "7",
           "quote": "Grants for medicine and equipment: 5136716",
           "source_name": "Form 990 (2024)",
           "source_type": "form990",
@@ -650,39 +620,49 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "4.0 months of working capital",
+          "claim": "92/100 overall score from Charity Navigator",
           "confidence": 1,
-          "id": "[14]",
-          "quote": "Working Capital: 4.0 months",
+          "id": "8",
+          "quote": "Overall Score 92/100",
+          "source_name": "Charity Navigator - Rating",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/760656947#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "4.0 months of working capital",
+          "confidence": 0.95,
+          "id": "9",
+          "quote": "Working Capital Ratio (months): 3.0",
           "source_name": "Charity Navigator - Financials",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/760656947#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "publishing consistent beneficiary counts",
-          "confidence": 0.9,
-          "id": "[15]",
-          "quote": "Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
-          "source_name": "Impact Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/760656947#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "documented theory of change",
-          "confidence": 0.9,
-          "id": "[16]",
-          "quote": "Document a clear theory of change with an explicit causal pathway.",
-          "source_name": "Impact Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/760656947#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "84.0% independent board",
+          "claim": "verified Zakat-eligible",
           "confidence": 1,
-          "id": "[17]",
+          "id": "10",
+          "quote": "Accepts Zakat: Yes",
+          "source_name": "Charity Website - Zakat",
+          "source_type": "website",
+          "source_url": "https://siutna.org/ways-to-donate/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "fuqara and masakin",
+          "confidence": 1,
+          "id": "11",
+          "quote": "Zakat Categories: fuqara, masakin",
+          "source_name": "Charity Website - Zakat",
+          "source_type": "website",
+          "source_url": "https://siutna.org/ways-to-donate/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "84.0% independent board members",
+          "confidence": 1,
+          "id": "12",
           "quote": "Independent Board Members: 84.0%",
           "source_name": "Charity Navigator - Accountability",
           "source_type": "rating",
@@ -690,32 +670,62 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "seek external evaluations",
+          "claim": "Platinum Seal of Transparency from Candid",
+          "confidence": 1,
+          "id": "13",
+          "quote": "Candid Seal: platinum",
+          "source_name": "Candid Profile",
+          "source_type": "rating",
+          "source_url": "https://app.candid.org/profile/8201967"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "grants for medicine and equipment",
+          "confidence": 1,
+          "id": "14",
+          "quote": "Grants for medicine and equipment: 4153000",
+          "source_name": "Form 990 (2022)",
+          "source_type": "form990",
+          "source_url": "https://siutna.org/wp-content/uploads/2025/10/Tax-Return_990_2022-SIUT-North-America-Inc.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "publish consistent beneficiary counts",
           "confidence": 0.9,
-          "id": "[18]",
-          "quote": "Seek external evaluation or track outcomes over at least 3 years.",
-          "source_name": "Impact Score Rationale",
+          "id": "15",
+          "quote": "Improvement: Publish beneficiary counts consistently",
+          "source_name": "AMAL Score Rationale",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/760656947#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "underserved regions of Pakistan",
+          "claim": "document a clear theory of change",
           "confidence": 0.9,
-          "id": "[19]",
-          "quote": "Pakistan is a developing poor country has only tentative and rudimentary infrastructure.",
-          "source_name": "SIUT North America - Mission",
-          "source_type": "website",
-          "source_url": "https://siutna.org/join-the-circle-of-hope/"
+          "id": "16",
+          "quote": "Improvement: Document a clear theory of change",
+          "source_name": "AMAL Score Rationale",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/760656947#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "revenue: 5921512, expenses: 5095462",
+          "confidence": 1,
+          "id": "17",
+          "quote": "Total Revenue: $5,921,512; Total Expenses: $5,095,462",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/760656947"
         }
       ],
-      "amal_score_rationale": "The organization earns a solid overall rating due to its high financial transparency and efficient use of donor funds for direct medical interventions. Its Zakat-eligible status and high alignment with humanitarian healthcare needs make it a strong choice for donors.",
+      "amal_score_rationale": "The organization earns a solid overall rating due to its high financial transparency and efficient use of funds for direct medical services. While its impact score is moderate, its alignment with humanitarian needs and donor expectations is very high.",
       "amal_scores": {
-        "amal_score": 68,
+        "amal_score": 70,
         "confidence_scores": {
           "alignment": 40,
           "data_confidence": 1,
-          "impact": 29
+          "impact": 31
         },
         "confidence_tier": "HIGH",
         "impact_tier": "AVERAGE",
@@ -727,7 +737,7 @@
           "citation_ids": [
             "[15]"
           ],
-          "context": "While the charity tracks output metrics, it could improve by <cite id=\"15\">publishing consistent beneficiary counts</cite> to allow for cost-effectiveness assessments."
+          "context": "While financial tracking is strong, the charity could <cite id=\"15\">publish consistent beneficiary counts</cite> to allow for more precise cost-per-beneficiary analysis."
         },
         {
           "area": "Strategic Documentation",
@@ -746,38 +756,38 @@
         "meets_all_standards": null,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "BBB assessment data is currently unavailable for this organization."
+        "summary": "BBB assessment data is not currently available for this organization."
       },
       "case_against": {
         "citation_ids": [
-          "[15]",
-          "[16]"
+          "15",
+          "16"
         ],
-        "mitigation_notes": "The organization maintains a high program ratio and transparency seal, suggesting a commitment to honest reporting despite data gaps.",
+        "mitigation_notes": "The charity mitigates this by maintaining high transparency seals and providing detailed financial audits of its grants.",
         "risk_factors": [
-          "<cite id=\"16\">No formal theory of change documented</cite>",
-          "<cite id=\"15\">Beneficiary counts are not consistently reported</cite>"
+          "<cite id=\"16\">Lack of an explicit theory of change</cite>",
+          "<cite id=\"15\">Inconsistent beneficiary data reporting</cite>"
         ],
-        "summary": "The primary limitation is the <cite id=\"15\">lack of granular cost-per-beneficiary data</cite>, which makes it difficult to compare its efficiency against global health benchmarks."
+        "summary": "The primary limitation is the organization's role as a grant-maker, which <cite id=\"15\">limits direct visibility into granular patient outcomes</cite> compared to direct service providers."
       },
       "citation_stats": {
         "by_source_type": {
           "form990": 6,
-          "rating": 9,
+          "rating": 7,
           "website": 4
         },
         "high_confidence_count": 17,
-        "total_count": 19,
-        "unique_sources": 7
+        "total_count": 17,
+        "unique_sources": 6
       },
       "confidence": {
-        "data_freshness": "Financial data from 2023 and 2024 tax filings",
+        "data_freshness": "Financial data current through 2023/2024 tax filings",
         "data_gaps": [
-          "No third-party impact evaluation",
-          "Missing specific beneficiary counts for 2023"
+          "Missing explicit theory of change",
+          "Beneficiary counts not consistently reported"
         ],
         "level": "HIGH",
-        "notes": "Strong financial transparency and rating agency coverage.",
+        "notes": "Strong financial transparency and verified Zakat status.",
         "score": 85,
         "sources_used": [
           "Form 990",
@@ -790,54 +800,54 @@
         "confidence_score": 85,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "No external impact evaluation",
-          "Missing specific beneficiary counts"
+          "Missing explicit theory of change",
+          "Inconsistent beneficiary counts"
         ],
-        "ratings_last_updated": "2024-11",
-        "total_citations": 19,
-        "unique_sources": 7,
+        "ratings_last_updated": "2024-12",
+        "total_citations": 17,
+        "unique_sources": 6,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[9]",
-            "[19]"
+            "10",
+            "11"
           ],
-          "explanation": "The charity is a strong fit for Muslim donors as it is <cite id=\"9\">Zakat-eligible</cite> and operates in <cite id=\"19\">underserved regions of Pakistan</cite>.",
+          "explanation": "The charity is a strong fit for Muslim donors, offering <cite id=\"10\">Zakat-eligible medical aid</cite> for the <cite id=\"11\">poor and needy (fuqara and masakin)</cite> in a Muslim-majority region.",
           "improvement": ""
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
-            "[8]",
-            "[18]"
+            "12",
+            "13",
+            "16"
           ],
-          "explanation": "Donors can trust this charity due to its <cite id=\"17\">84.0% independent board</cite> and its <cite id=\"8\">Platinum Seal of Transparency</cite>, the highest level offered by Candid.",
-          "improvement": "To strengthen credibility, the charity could <cite id=\"18\">seek external evaluations</cite> to verify the long-term efficacy of its medical interventions."
+          "explanation": "Donors can trust this charity due to its <cite id=\"13\">Platinum Seal of Transparency</cite> and <cite id=\"12\">84.0% independent board</cite>, ensuring high governance standards.",
+          "improvement": "To strengthen credibility further, the charity could <cite id=\"16\">document a clear theory of change</cite> to map its medical grants to long-term patient survival rates."
         },
         "impact": {
           "citation_ids": [
-            "[12]",
-            "[14]",
-            "[15]"
+            "5",
+            "9",
+            "15"
           ],
-          "explanation": "Operations are highly direct, with <cite id=\"12\">over $5.2 million in grants</cite> for medical supplies and a <cite id=\"14\">resilient 3.0-month working capital ratio</cite>.",
-          "improvement": "Impact measurement would benefit from <cite id=\"15\">tracking outcomes over at least three years</cite> to demonstrate sustained patient health improvements."
+          "explanation": "Operations are highly efficient with a <cite id=\"5\">100.0% program ratio</cite> and <cite id=\"9\">4.0 months of working capital</cite> providing a resilient buffer.",
+          "improvement": "Impact measurement would benefit from <cite id=\"15\">publishing consistent beneficiary counts</cite> to enable third-party cost-effectiveness assessments."
         }
       },
       "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
+        "cause_area": "HUMANITARIAN / HEALTHCARE",
         "citation_ids": [
-          "[9]",
-          "[10]",
-          "[15]"
+          "7",
+          "10",
+          "11"
         ],
-        "evidence_rigor": "Grade C - Measured outcomes with limited external evaluation",
+        "evidence_rigor": "Grade C - Verified financial outcomes with limited impact metrics",
         "geographic_focus": [
           "Pakistan"
         ],
-        "giving_style": "Direct medical service funding",
+        "giving_style": "Direct medical grant support",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           "fuqara (poor)",
@@ -849,9 +859,9 @@
         "admin_ratio": 0,
         "annual_revenue": 5921512,
         "citation_ids": [
-          "[1]",
-          "[7]",
-          "[11]"
+          "4",
+          "8",
+          "17"
         ],
         "cn_financial_score": 77,
         "cn_overall_score": 92,
@@ -887,72 +897,72 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[12]",
-          "[13]"
+          "7"
         ],
         "domestic_grants": 0,
         "foreign_grants": 5266716,
         "grant_count": 2,
-        "grant_strategy": "Directly funds medical equipment and medicine for the SIUT Trust in Karachi",
+        "grant_strategy": "Direct financial support for medical equipment and medicine to the SIUT Charitable Trust.",
         "is_significant_grantmaker": true,
         "regions_served": [
           "Pakistan"
         ],
         "top_recipients": [
-          "SIUT Charitable Trust Karachi"
+          "SIUT Charitable Trust Karachi ($5.2M)"
         ],
         "total_grants": 5266716
       },
-      "headline": "SIUT North America Inc provides critical financial support for life-saving dialysis, cancer treatments, and diagnostic services through the SIUT Charitable Trust.",
+      "headline": "SIUT North America Inc provides critical financial support for life-saving medical treatments, including dialysis and cancer care, through the SIUT Charitable Trust.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to fund high-tech medical interventions and tertiary healthcare for the poor in Pakistan through a highly efficient, Zakat-eligible channel.",
+        "best_for_summary": "Best for donors who want to provide life-saving medical treatments in Pakistan through a highly efficient, Zakat-eligible financial conduit.",
         "citation_ids": [
-          "[4]",
-          "[9]",
-          "[15]"
+          "5",
+          "7",
+          "10"
         ],
         "donor_motivations": [
-          "Want to ensure 84.0% of their donation reaches the program",
-          "Prioritize funding for complex medical procedures like dialysis and transplants",
-          "Value organizations with high transparency ratings from third-party evaluators",
-          "Seek to fulfill Zakat obligations through medical aid"
+          "Want to ensure 84.0% of their donation goes toward program grants",
+          "Prioritize funding for high-cost medical procedures like dialysis and transplants",
+          "Value organizations with high transparency ratings and independent oversight",
+          "Seek to fulfill Zakat obligations through healthcare provision"
         ],
         "giving_considerations": [
-          "Donations support a specific trust in Pakistan rather than a broad portfolio",
-          "The organization focuses on specialized care rather than primary health education",
-          "Financial efficiency is excellent, but long-term impact studies are limited"
+          "Donations support a grant-making model rather than direct US-based operations",
+          "Impact is measured primarily through financial grants for medicine and equipment",
+          "Focus is exclusively on the healthcare landscape in Pakistan"
         ],
-        "not_ideal_for": "Donors seeking local US-based medical relief or those who require rigorous academic RCT evidence before giving."
+        "not_ideal_for": "Donors seeking rigorous RCT-level evidence of long-term health outcomes or those looking for domestic US medical relief."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[13]",
-          "[15]"
+          "13",
+          "14",
+          "16"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects that while <cite id=\"13\">grants for medicine and equipment</cite> are tracked, there is no independent evaluation of long-term patient outcomes.",
+        "evidence_grade_explanation": "Grade C reflects verified financial grants and outcome tracking via Candid, but lacks a formal theory of change or independent impact evaluations.",
         "external_evaluations": [
-          "Candid outcomes data"
+          "Candid Platinum Seal outcomes"
         ],
         "outcome_tracking_years": 1,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The organization operates on the implicit model that providing free access to advanced medical technology and specialized surgery directly reduces mortality and poverty for Pakistan's indigent population.",
-        "why_evidence_matters": "Evidence ensures that high-cost medical interventions are resulting in successful long-term patient recovery and survival."
+        "theory_of_change_summary": "The charity operates on the implicit model that providing grants for medicine and equipment directly enables the SIUT Charitable Trust to perform free surgeries and dialysis for the poor.",
+        "why_evidence_matters": "Evidence ensures that medical grants are translating into successful patient recoveries and sustainable healthcare infrastructure."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[11]",
-          "[2]"
+          "2",
+          "4"
         ],
         "founded_year": null,
         "maturity_stage": "Established",
         "revenue_growth_3yr": 18.9,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "The high demand for free dialysis and transplants in Pakistan exceeds current grant capacity.",
+        "room_for_funding_explanation": "The massive demand for free dialysis and cancer care in Pakistan far exceeds current grant capacity.",
         "strategic_priorities": [
           "Expand grants for medicine",
-          "Support pediatric transplants"
+          "Support pediatric transplant programs"
         ],
         "years_operating": 25
       },
@@ -962,8 +972,8 @@
         "ceo_compensation_pct_revenue": 0,
         "ceo_name": "Not Listed",
         "citation_ids": [
-          "[1]",
-          "[7]"
+          "8",
+          "12"
         ],
         "employees_count": 0,
         "geographic_reach": "Pakistan",
@@ -977,60 +987,60 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[4]",
-          "[2]"
+          "2",
+          "5"
         ],
-        "differentiator": "Distinguished by its <cite id=\"4\">84.0% program expense ratio</cite> and specific focus on <cite id=\"2\">complex tertiary care like transplants</cite>.",
-        "peer_group": "International Medical Relief",
+        "differentiator": "Distinguished by its <cite id=\"5\">84.0% program expense ratio</cite> and specialized focus on complex surgeries like <cite id=\"2\">pediatric transplants</cite>.",
+        "peer_group": "Medical Relief Organizations (Pakistan Focus)",
         "similar_orgs": [
-          "Indus Hospital & Health Network",
-          "Shaukat Khanum Memorial Trust"
+          "The Citizens Foundation",
+          "Indus Hospital & Health Network"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Broader primary care network",
+          "differentiator": "Focus on education vs healthcare",
+          "name": "The Citizens Foundation"
+        },
+        {
+          "differentiator": "Direct hospital operations vs grant-making",
           "name": "Indus Hospital & Health Network"
         },
         {
-          "differentiator": "Cancer-specific focus",
-          "name": "Shaukat Khanum Memorial Trust"
-        },
-        {
-          "differentiator": "Multi-sectoral humanitarian aid",
+          "differentiator": "Broader humanitarian scope vs specialized medical",
           "name": "Helping Hand for Relief and Development"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
+            "[5]",
+            "[6]"
+          ],
+          "detail": "The organization maintains a <cite id=\"5\">84.0% program expense ratio</cite> and a low <cite id=\"6\">fundraising cost of $0.17 per $1 raised</cite>, maximizing the impact of every dollar.",
+          "point": "Exceptional Financial Efficiency"
+        },
+        {
+          "citation_ids": [
             "[4]",
-            "[7]"
+            "[9]"
           ],
-          "detail": "The organization maintains a <cite id=\"4\">84.0% program expense ratio</cite>, ensuring that all contributions directly fund medical services and equipment.",
-          "point": "Exceptional Program Efficiency"
+          "detail": "With a <cite id=\"4\">3-year revenue CAGR of 18.9%</cite> and <cite id=\"9\">4.0 months of working capital</cite>, the charity shows consistent growth and financial resilience.",
+          "point": "Strong Growth and Sustainability"
         },
         {
           "citation_ids": [
-            "[1]",
-            "[8]"
+            "[10]",
+            "[11]"
           ],
-          "detail": "SIUT North America holds a <cite id=\"3\">92/100 rating from Charity Navigator</cite> and has achieved the <cite id=\"8\">Platinum Seal of Transparency from Candid</cite>.",
-          "point": "High Accountability and Transparency"
-        },
-        {
-          "citation_ids": [
-            "[9]",
-            "[10]"
-          ],
-          "detail": "The charity is <cite id=\"9\">Zakat-eligible</cite>, specifically serving the <cite id=\"10\">fuqara (poor) and masakin (needy)</cite> through its medical grants.",
+          "detail": "The charity is <cite id=\"10\">verified Zakat-eligible</cite>, specifically serving the <cite id=\"11\">fuqara and masakin</cite> categories through its medical programs.",
           "point": "Verified Zakat Eligibility"
         }
       ],
       "strengths_deep_dive": [
-        "SIUT North America's financial health is characterized by robust growth and disciplined spending. The organization achieved a <cite id=\"11\">3-year revenue CAGR of 18.9%</cite>, reflecting increasing donor trust and successful outreach. Its grantmaking activity is significant, with <cite id=\"12\">$5,266,716 in total grants</cite> distributed in the most recent reporting period, primarily targeting <cite id=\"13\">medicine and equipment for foreign recipients</cite> in Pakistan. Furthermore, the organization maintains <cite id=\"14\">4.0 months of working capital</cite>, providing a resilient buffer for its ongoing humanitarian commitments."
+        "SIUT North America's operational model is characterized by its lean structure and direct support for life-saving medical care. By maintaining <cite id=\"12\">84.0% independent board members</cite>, the organization ensures objective oversight of its <cite id=\"7\">$5.2 million in annual grantmaking</cite>. Its commitment to transparency is further validated by a <cite id=\"13\">Platinum Seal of Transparency from Candid</cite>, the highest level of recognition for nonprofit disclosure. This transparency extends to its impact reporting, where it tracks <cite id=\"14\">grants for medicine and equipment</cite> across multiple years to ensure continuity of care for patients in Pakistan."
       ],
-      "summary": "SIUT North America Inc serves as a vital financial conduit for the SIUT Charitable Trust, facilitating life-saving medical interventions for underserved populations in Pakistan. The organization reported <cite id=\"1\">$5,921,512 in total revenue</cite> for the 2023 fiscal year, demonstrating a consistent upward trajectory in its fundraising capacity. Its primary mission is to fund specialized healthcare services, including <cite id=\"2\">dialysis sessions, cancer treatments, and complex surgeries</cite>, ensuring that financial barriers do not prevent access to critical care. The charity maintains a high level of fiscal responsibility, earning an <cite id=\"3\">overall score of 92.0/100 from Charity Navigator</cite>. A defining feature of its operational model is its extreme efficiency; the organization directs a <cite id=\"4\">program expense ratio of 84.0%</cite> toward its mission, meaning every dollar of public support is utilized for medical grants and equipment. This is further supported by <cite id=\"5\">strong fundraising efficiency</cite>, spending only <cite id=\"6\">$0.17 per $1 raised</cite> to sustain its operations. By focusing on high-urgency humanitarian needs in a developing region, SIUT North America provides a transparent and effective platform for donors to support advanced medical infrastructure and direct patient care.",
+      "summary": "SIUT North America Inc. serves as a vital financial conduit for the SIUT Charitable Trust in Pakistan, focusing on providing <cite id=\"1\">free medical services to underprivileged populations</cite>. The organization specializes in funding high-impact medical interventions, including <cite id=\"2\">dialysis sessions, cancer treatments, and complex surgeries</cite> such as pediatric transplants. In 2023, the charity reported <cite id=\"3\">total revenue of $5,921,512</cite>, reflecting a robust <cite id=\"4\">3-year revenue CAGR of 18.9%</cite>. The organization operates with exceptional efficiency, maintaining a <cite id=\"5\">program expense ratio of 84.0%</cite> according to recent filings, ensuring that donor contributions are directed almost entirely toward medical grants. This financial discipline is further evidenced by a <cite id=\"6\">fundraising efficiency of $0.17 per $1 raised</cite>. As a 501(c)(3) nonprofit, it bridges the gap between North American donors and the specialized healthcare needs in Pakistan, where it facilitated <cite id=\"7\">$5,266,716 in foreign grants</cite> for medicine and equipment in the most recent fiscal year. The charity has earned a <cite id=\"8\">92/100 overall score from Charity Navigator</cite>, signaling high standards of accountability and transparency.",
       "zakat_guidance": {
         "classification": "fuqara",
         "eligibility": "ZAKAT-ELIGIBLE"

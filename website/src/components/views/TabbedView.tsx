@@ -527,6 +527,67 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
         </div>
       </SectionCard>
 
+      {/* Recognition & Awards */}
+      {(charity.awards?.cnBeacons?.length || charity.awards?.candidSeal || charity.awards?.bbbStatus || charity.awards?.bbbReviewUrl) && (
+        <SectionCard isDark={isDark}>
+          <SectionHeader icon={Award} title="Recognition & Awards" isDark={isDark} />
+          <div className="space-y-2">
+            {charity.awards?.cnBeacons?.map((beacon, i) => (
+              <div key={i} className={`flex items-center gap-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                <Award className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-amber-400' : 'text-amber-500'}`} />
+                {charity.awards?.cnUrl ? (
+                  <a href={charity.awards.cnUrl} target="_blank" rel="noopener noreferrer"
+                    className={`text-sm hover:underline ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
+                    {beacon}
+                  </a>
+                ) : (
+                  <span className="text-sm">{beacon}</span>
+                )}
+                <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>-- Charity Navigator</span>
+              </div>
+            ))}
+            {charity.awards?.candidSeal && (
+              <div className={`flex items-center gap-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                <Award className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-amber-400' : 'text-amber-500'}`} />
+                {charity.awards.candidUrl ? (
+                  <a href={charity.awards.candidUrl} target="_blank" rel="noopener noreferrer"
+                    className={`text-sm hover:underline ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
+                    {String(charity.awards.candidSeal).charAt(0).toUpperCase() + String(charity.awards.candidSeal).slice(1)} Seal
+                  </a>
+                ) : (
+                  <span className="text-sm">{String(charity.awards.candidSeal).charAt(0).toUpperCase() + String(charity.awards.candidSeal).slice(1)} Seal</span>
+                )}
+                <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>-- Candid</span>
+              </div>
+            )}
+            {charity.awards?.bbbStatus && (
+              <div className={`flex items-center gap-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                <Award className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-amber-400' : 'text-amber-500'}`} />
+                {charity.awards.bbbReviewUrl ? (
+                  <a href={charity.awards.bbbReviewUrl} target="_blank" rel="noopener noreferrer"
+                    className={`text-sm hover:underline ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
+                    {charity.awards.bbbStatus}
+                  </a>
+                ) : (
+                  <span className="text-sm">{charity.awards.bbbStatus}</span>
+                )}
+                <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>-- BBB Wise Giving</span>
+              </div>
+            )}
+            {!charity.awards?.bbbStatus && charity.awards?.bbbReviewUrl && (
+              <div className={`flex items-center gap-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                <ExternalLink className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-slate-400' : 'text-slate-500'}`} />
+                <a href={charity.awards.bbbReviewUrl} target="_blank" rel="noopener noreferrer"
+                  className={`text-sm hover:underline ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
+                  View BBB Evaluation
+                </a>
+                <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>-- BBB Wise Giving</span>
+              </div>
+            )}
+          </div>
+        </SectionCard>
+      )}
+
       {/* Leadership & Governance */}
       {rich?.organizational_capacity && (
         isSignedIn ? (
@@ -627,7 +688,6 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
         isSignedIn ? (
           <SectionCard isDark={isDark}>
             <SectionHeader icon={TrendingUp} title="Long-Term Outlook" isDark={isDark} infoTip={GLOSSARY['Long-Term Outlook']} />
-            <DataRow label="Founded" value={rich.long_term_outlook.founded_year} isDark={isDark} />
             <DataRow label="Years Operating" value={rich.long_term_outlook.years_operating} isDark={isDark} />
             <DataRow label="Maturity" value={rich.long_term_outlook.maturity_stage} isDark={isDark} mono={false} />
             <DataRow label="Room for Funding" value={rich.long_term_outlook.room_for_funding} isDark={isDark} />
@@ -650,67 +710,6 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
         ) : (
           <ContentPreview title="Long-Term Outlook" description="sustainability and future direction" teaser="Analysis of organizational maturity, strategic priorities, room for additional funding, and long-term sustainability trajectory." />
         )
-      )}
-
-      {/* Recognition & Awards */}
-      {(charity.awards?.cnBeacons?.length || charity.awards?.candidSeal || charity.awards?.bbbStatus || charity.awards?.bbbReviewUrl) && (
-        <SectionCard isDark={isDark}>
-          <SectionHeader icon={Award} title="Recognition & Awards" isDark={isDark} />
-          <div className="space-y-2">
-            {charity.awards?.cnBeacons?.map((beacon, i) => (
-              <div key={i} className={`flex items-center gap-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                <Award className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-amber-400' : 'text-amber-500'}`} />
-                {charity.awards?.cnUrl ? (
-                  <a href={charity.awards.cnUrl} target="_blank" rel="noopener noreferrer"
-                    className={`text-sm hover:underline ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
-                    {beacon}
-                  </a>
-                ) : (
-                  <span className="text-sm">{beacon}</span>
-                )}
-                <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>-- Charity Navigator</span>
-              </div>
-            ))}
-            {charity.awards?.candidSeal && (
-              <div className={`flex items-center gap-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                <Award className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-amber-400' : 'text-amber-500'}`} />
-                {charity.awards.candidUrl ? (
-                  <a href={charity.awards.candidUrl} target="_blank" rel="noopener noreferrer"
-                    className={`text-sm hover:underline ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
-                    {String(charity.awards.candidSeal).charAt(0).toUpperCase() + String(charity.awards.candidSeal).slice(1)} Seal
-                  </a>
-                ) : (
-                  <span className="text-sm">{String(charity.awards.candidSeal).charAt(0).toUpperCase() + String(charity.awards.candidSeal).slice(1)} Seal</span>
-                )}
-                <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>-- Candid</span>
-              </div>
-            )}
-            {charity.awards?.bbbStatus && (
-              <div className={`flex items-center gap-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                <Award className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-amber-400' : 'text-amber-500'}`} />
-                {charity.awards.bbbReviewUrl ? (
-                  <a href={charity.awards.bbbReviewUrl} target="_blank" rel="noopener noreferrer"
-                    className={`text-sm hover:underline ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
-                    {charity.awards.bbbStatus}
-                  </a>
-                ) : (
-                  <span className="text-sm">{charity.awards.bbbStatus}</span>
-                )}
-                <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>-- BBB Wise Giving</span>
-              </div>
-            )}
-            {!charity.awards?.bbbStatus && charity.awards?.bbbReviewUrl && (
-              <div className={`flex items-center gap-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                <ExternalLink className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-slate-400' : 'text-slate-500'}`} />
-                <a href={charity.awards.bbbReviewUrl} target="_blank" rel="noopener noreferrer"
-                  className={`text-sm hover:underline ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
-                  View BBB Evaluation
-                </a>
-                <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>-- BBB Wise Giving</span>
-              </div>
-            )}
-          </div>
-        </SectionCard>
       )}
 
       {/* External Links */}
@@ -966,6 +965,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
           <ContentPreview title="Evidence" description="evidence quality and evaluation details" />
         )
       )}
+
     </div>
   );
 
@@ -1025,68 +1025,68 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
         )
       )}
 
-      {/* Key Concerns */}
-      {keyConcerns.length > 0 && (
-        <SectionCard isDark={isDark}>
-          <SectionHeader icon={AlertTriangle} title="Key Concerns" isDark={isDark} />
-          {renderKeyConcerns(keyConcerns)}
-        </SectionCard>
-      )}
-
-      {/* Strengths & Growth Areas */}
-      {(strengths.length > 0 || (areasForImprovement && areasForImprovement.length > 0)) && (
-        <SectionCard isDark={isDark}>
-          <SectionHeader icon={TrendingUp} title="Strengths & Growth Areas" isDark={isDark} />
-          {strengths.length > 0 && (
-            <div className="mb-4">
-              <div className={`text-xs font-semibold mb-2 ${isDark ? 'text-emerald-400' : 'text-emerald-700'}`}>
-                Why give here?
+      {/* Balanced View — consolidated strengths, concerns, growth areas, context */}
+      {(strengths.length > 0 || keyConcerns.length > 0 || (areasForImprovement && areasForImprovement.length > 0) || rich?.case_against) ? (
+        isSignedIn || !rich?.case_against ? (
+          <SectionCard isDark={isDark}>
+            <SectionHeader icon={Scale} title="Balanced View" isDark={isDark} infoTip={GLOSSARY['Things to Know']} />
+            {rich?.case_against?.summary && isSignedIn && (
+              <p className={`text-sm mb-4 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                <SourceLinkedText text={rich.case_against.summary} citations={citations} isDark={isDark} />
+              </p>
+            )}
+            {(charity.scoreSummary || amal?.score_details?.score_summary) && !rich?.case_against && (
+              <p className={`text-sm mb-4 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                {charity.scoreSummary || amal?.score_details?.score_summary}
+              </p>
+            )}
+            {strengths.length > 0 && (
+              <div className="mb-4">
+                <div className={`text-xs font-semibold mb-2 ${isDark ? 'text-emerald-400' : 'text-emerald-700'}`}>
+                  Strengths
+                </div>
+                <ul className={`space-y-1.5 text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                  {strengths.map((s, i) => {
+                    const text = typeof s === 'object' ? s.point : s;
+                    return (
+                      <li key={i} className="flex items-start gap-2">
+                        <span className={isDark ? 'text-emerald-400' : 'text-emerald-600'}>+</span>
+                        <SourceLinkedText text={text} citations={citations} isDark={isDark} subtle />
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
-              <ul className={`space-y-1.5 text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                {strengths.map((s, i) => {
-                  const text = typeof s === 'object' ? s.point : s;
-                  return (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className={isDark ? 'text-emerald-400' : 'text-emerald-600'}>+</span>
-                      <SourceLinkedText text={text} citations={citations} isDark={isDark} subtle />
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )}
-          {areasForImprovement && areasForImprovement.length > 0 && (
-            <div>
-              <div className={`text-xs font-semibold mb-2 ${isDark ? 'text-amber-400' : 'text-amber-700'}`}>
-                Growth areas
+            )}
+            {keyConcerns.length > 0 && (
+              <div className="mb-4">
+                <div className={`text-xs font-semibold mb-2 ${isDark ? 'text-red-400' : 'text-red-700'}`}>
+                  Key Concerns
+                </div>
+                {renderKeyConcerns(keyConcerns)}
               </div>
-              <ul className={`space-y-1.5 text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                {areasForImprovement.slice(0, 4).map((a, i) => {
-                  const text = typeof a === 'object' ? a.area : a;
-                  return (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className={isDark ? 'text-amber-400' : 'text-amber-600'}>-</span>
-                      <SourceLinkedText text={text} citations={citations} isDark={isDark} subtle />
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )}
-        </SectionCard>
-      )}
-
-      {/* Things to Know / Balanced View */}
-      {rich?.case_against && (
-        isSignedIn ? (
-          <SectionCard isDark={isDark} className={`!border-2 ${isDark ? '!border-violet-600/50 !bg-violet-900/10' : '!border-violet-300 !bg-violet-50'}`}>
-            <SectionHeader icon={Scale} title="Things to Know" isDark={isDark} infoTip={GLOSSARY['Things to Know']} />
-            <p className={`text-sm mb-3 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-              <SourceLinkedText text={rich.case_against.summary} citations={citations} isDark={isDark} />
-            </p>
-            {rich.case_against.risk_factors?.length > 0 && (
-              <div className="space-y-2">
-                <div className={`text-xs font-semibold flex items-center gap-1 ${isDark ? 'text-violet-400' : 'text-violet-600'}`}>
+            )}
+            {areasForImprovement && areasForImprovement.length > 0 && (
+              <div className={keyConcerns.length > 0 || strengths.length > 0 ? '' : 'mb-4'}>
+                <div className={`text-xs font-semibold mb-2 ${isDark ? 'text-amber-400' : 'text-amber-700'}`}>
+                  Growth Areas
+                </div>
+                <ul className={`space-y-1.5 text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  {areasForImprovement.slice(0, 4).map((a, i) => {
+                    const text = typeof a === 'object' ? a.area : a;
+                    return (
+                      <li key={i} className="flex items-start gap-2">
+                        <span className={isDark ? 'text-amber-400' : 'text-amber-600'}>-</span>
+                        <SourceLinkedText text={text} citations={citations} isDark={isDark} subtle />
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+            {rich?.case_against?.risk_factors && rich.case_against.risk_factors.length > 0 && isSignedIn && (
+              <div className={`mt-4 pt-3 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+                <div className={`text-xs font-semibold mb-2 flex items-center gap-1 ${isDark ? 'text-violet-400' : 'text-violet-600'}`}>
                   <Scale className="w-3 h-3" />
                   Considerations
                 </div>
@@ -1100,49 +1100,61 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
                 </ul>
               </div>
             )}
-            {rich.case_against.mitigation_notes && (
+            {rich?.case_against?.mitigation_notes && isSignedIn && (
               <div className={`mt-3 pt-2 border-t text-xs ${isDark ? 'border-slate-700 text-slate-500' : 'border-slate-200 text-slate-500'}`}>
                 <span className="font-semibold">Mitigation:</span> {rich.case_against.mitigation_notes}
               </div>
             )}
+            {!rich?.case_against && uiSignals?.signal_states && (
+              <div className={`mt-4 pt-3 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {(Object.entries(uiSignals.signal_states) as [string, string][]).map(([key, state]) => {
+                    const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                    const pillClasses = state === 'Strong'
+                      ? (isDark ? 'bg-emerald-900/40 text-emerald-400 border-emerald-700' : 'bg-emerald-50 text-emerald-700 border-emerald-300')
+                      : state === 'Moderate'
+                      ? (isDark ? 'bg-amber-900/30 text-amber-400 border-amber-700' : 'bg-amber-50 text-amber-700 border-amber-300')
+                      : (isDark ? 'bg-slate-700/50 text-slate-400 border-slate-600' : 'bg-slate-100 text-slate-500 border-slate-300');
+                    return (
+                      <span key={key} className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border ${pillClasses}`}>
+                        {label}: {state}
+                      </span>
+                    );
+                  })}
+                </div>
+                {uiSignals?.recommendation_rationale && (
+                  <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                    {uiSignals.recommendation_rationale}
+                  </p>
+                )}
+              </div>
+            )}
           </SectionCard>
         ) : (
-          <ContentPreview title="Things to Know" description="important context and considerations" teaser={rich?.case_against?.summary || "Our analysis covers risk factors, governance concerns, and important context every donor should consider before giving."} />
+          <ContentPreview title="Balanced View" description="strengths, concerns, and important context" teaser={rich?.case_against?.summary || "Our analysis covers strengths, risk factors, and important context every donor should consider before giving."} />
         )
-      )}
+      ) : null}
 
-      {/* Baseline Things to Know (when no rich narrative) */}
-      {!rich?.case_against && (charity.scoreSummary || amal?.score_details?.score_summary || uiSignals?.signal_states) && (
-        <SectionCard isDark={isDark}>
-          <SectionHeader icon={Scale} title="Things to Know" isDark={isDark} />
-          {(charity.scoreSummary || amal?.score_details?.score_summary) && (
-            <p className={`text-sm mb-3 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-              {charity.scoreSummary || amal?.score_details?.score_summary}
-            </p>
-          )}
-          {uiSignals?.signal_states && (
-            <div className="flex flex-wrap gap-2 mb-2">
-              {(Object.entries(uiSignals.signal_states) as [string, string][]).map(([key, state]) => {
-                const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-                const pillClasses = state === 'Strong'
-                  ? (isDark ? 'bg-emerald-900/40 text-emerald-400 border-emerald-700' : 'bg-emerald-50 text-emerald-700 border-emerald-300')
-                  : state === 'Moderate'
-                  ? (isDark ? 'bg-amber-900/30 text-amber-400 border-amber-700' : 'bg-amber-50 text-amber-700 border-amber-300')
-                  : (isDark ? 'bg-slate-700/50 text-slate-400 border-slate-600' : 'bg-slate-100 text-slate-500 border-slate-300');
-                return (
-                  <span key={key} className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border ${pillClasses}`}>
-                    {label}: {state}
-                  </span>
-                );
-              })}
-            </div>
-          )}
-          {uiSignals?.recommendation_rationale && (
-            <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-              {uiSignals.recommendation_rationale}
-            </p>
-          )}
-        </SectionCard>
+      {/* Donor Fit Matrix */}
+      {rich?.donor_fit_matrix && (
+        isSignedIn ? (
+          <SectionCard isDark={isDark}>
+            <SectionHeader icon={Users} title="Donor Fit" isDark={isDark} infoTip={GLOSSARY['Donor Fit']} />
+            <DataRow label="Cause Area" value={rich.donor_fit_matrix.cause_area ? formatCauseArea(rich.donor_fit_matrix.cause_area) : undefined} isDark={isDark} mono={false} />
+            <DataRow label="Giving Style" value={rich.donor_fit_matrix.giving_style} isDark={isDark} mono={false} />
+            <DataRow label="Evidence Rigor" value={rich.donor_fit_matrix.evidence_rigor?.split(' - ')[0]} isDark={isDark} />
+            {(rich.donor_fit_matrix.geographic_focus?.length ?? 0) > 0 && (
+              <div className={`py-2 border-b ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+                <span className={`text-sm block mb-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Geographic Focus</span>
+                <span className={`text-xs ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  {rich.donor_fit_matrix.geographic_focus?.slice(0, 3).join(', ')}
+                </span>
+              </div>
+            )}
+          </SectionCard>
+        ) : (
+          <ContentPreview title="Donor Fit" description="donor fit and giving style analysis" />
+        )
       )}
 
       {/* Zakat Claim Evidence */}
@@ -1173,28 +1185,6 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
             })}
           </div>
         </SectionCard>
-      )}
-
-      {/* Donor Fit Matrix */}
-      {rich?.donor_fit_matrix && (
-        isSignedIn ? (
-          <SectionCard isDark={isDark}>
-            <SectionHeader icon={Users} title="Donor Fit" isDark={isDark} infoTip={GLOSSARY['Donor Fit']} />
-            <DataRow label="Cause Area" value={rich.donor_fit_matrix.cause_area ? formatCauseArea(rich.donor_fit_matrix.cause_area) : undefined} isDark={isDark} mono={false} />
-            <DataRow label="Giving Style" value={rich.donor_fit_matrix.giving_style} isDark={isDark} mono={false} />
-            <DataRow label="Evidence Rigor" value={rich.donor_fit_matrix.evidence_rigor?.split(' - ')[0]} isDark={isDark} />
-            {(rich.donor_fit_matrix.geographic_focus?.length ?? 0) > 0 && (
-              <div className={`py-2 border-b ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-                <span className={`text-sm block mb-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Geographic Focus</span>
-                <span className={`text-xs ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                  {rich.donor_fit_matrix.geographic_focus?.slice(0, 3).join(', ')}
-                </span>
-              </div>
-            )}
-          </SectionCard>
-        ) : (
-          <ContentPreview title="Donor Fit" description="donor fit and giving style analysis" />
-        )
       )}
 
       {/* BBB Wise Giving Assessment */}
@@ -1557,7 +1547,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
           HERO SECTION (always visible, above tabs)
           ═══════════════════════════════════════════════════════════════════════ */}
       <div className={`border-b ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-        <div className="max-w-5xl mx-auto px-6 pt-4 pb-0">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-4 pb-0">
           {/* Back link */}
           <Link
             to="/browse"
@@ -1576,7 +1566,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
           </h1>
 
           {/* Subtitle: address · cause area */}
-          <div className={`flex items-center gap-1.5 mt-1 text-sm ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
+          <div className={`flex flex-wrap items-center gap-1.5 mt-1 text-sm ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
             {getCharityAddress(charity) && (
               <span>{getCharityAddress(charity)}</span>
             )}
@@ -1588,8 +1578,8 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
             )}
           </div>
 
-          {/* Single row: signals + tags (left) — actions (right) */}
-          <div className="flex items-center justify-between mt-3 gap-4">
+          {/* Signals + tags (left) — actions (right); stacks on mobile */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-3 gap-2 sm:gap-4">
             {/* Left: signal badges */}
             <div className="flex flex-wrap items-center gap-1.5">
               <span
@@ -1707,8 +1697,8 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
             </div>
           </div>
 
-          {/* Tab bar — flush against bottom */}
-          <div className="flex gap-0 mt-3 -mb-px">
+          {/* Tab bar — scrollable on mobile */}
+          <div className={`flex gap-1 mt-3 border-b overflow-x-auto scrollbar-hide ${isDark ? 'border-slate-700' : 'border-slate-300'}`}>
             {tabs.map(tab => {
               const isActive = activeTab === tab.id;
               const Icon = tab.icon;
@@ -1719,14 +1709,14 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
                     handleTabChange(tab.id);
                     trackTabClick(charity.id ?? charity.ein ?? '', tab.id);
                   }}
-                  className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
+                  className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 text-sm font-medium rounded-t-lg -mb-px border transition-colors cursor-pointer whitespace-nowrap ${
                     isActive
                       ? isDark
-                        ? 'border-emerald-400 text-emerald-400'
-                        : 'border-emerald-600 text-emerald-700'
+                        ? 'border-slate-700 border-b-slate-900 bg-slate-900 text-emerald-400'
+                        : 'border-slate-300 border-b-white bg-white text-emerald-700'
                       : isDark
-                        ? 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-600'
-                        : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                        ? 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                        : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -1741,7 +1731,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
       {/* ═══════════════════════════════════════════════════════════════════════
           TAB CONTENT
           ═══════════════════════════════════════════════════════════════════════ */}
-      <div className="max-w-5xl mx-auto px-6 py-6">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6">
         {/* Sign-in banner for anonymous users */}
         {!isSignedIn && (
           <div className={`mb-6 rounded-xl p-5 border-2 ${
@@ -1777,7 +1767,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
           FOOTER (always visible, below tabs)
           ═══════════════════════════════════════════════════════════════════════ */}
       <div className={`border-t mt-4 pt-6 pb-8 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-        <div className={`max-w-5xl mx-auto px-6 flex items-center justify-center gap-2 text-xs flex-wrap ${
+        <div className={`max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-center gap-2 text-xs flex-wrap ${
           isDark ? 'text-slate-500' : 'text-slate-400'
         }`}>
           <span>EIN: {charity.ein}</span>
@@ -1801,7 +1791,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
       </div>
 
       {/* Organization Engagement */}
-      <div className="max-w-5xl mx-auto px-6 pb-4">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-4">
         <OrganizationEngagement
           charityName={charity.name}
           charityEin={charity.ein!}

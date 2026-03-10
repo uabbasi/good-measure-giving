@@ -61,8 +61,17 @@
     ]
   },
   "trustSignals": null,
-  "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-03-09 13:04:35",
+  "websiteEvidenceSignals": {
+    "claims_longitudinal": false,
+    "claims_rcts": false,
+    "claims_third_party_eval": false,
+    "disclosure_richness": 1,
+    "reports_annual_report": false,
+    "reports_board_info": false,
+    "reports_methodology": false,
+    "reports_outcome_metrics": true
+  },
+  "lastUpdated": "2026-03-09 18:45:39",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -80,7 +89,7 @@
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://hassanfoundationusa.org",
+      "source_url": "https://hassanfoundationusa.org/about-us/faqs/",
       "timestamp": "2026-03-07T12:23:23",
       "value": true
     },
@@ -297,15 +306,13 @@
     "evaluationSources": [
       "Charity Navigator",
       "Candid/GuideStar",
-      "ProPublica Nonprofit Explorer",
-      "Three-Star Rating (Charity Navigator)",
-      "Grant (Rivers of Jannah)",
-      "Grant (Charles R Whitney Charitable Foundation)"
+      "3-Star Rating (Charity Navigator)",
+      "Platinum Seal (Candid/GuideStar)"
     ],
     "receivesFoundationGrants": null
   },
   "zakatClaimEvidence": [
-    "All of Hassan Foundation's projects are exclusively for zakat-eligible people. In addition to receiving donations and zakat money, Hassan Foundation collects funds through our annual fundraising event."
+    "All of Hassan Foundation's projects are exclusively for zakat-eligible people. In addition to receiving donations and zakat money, Hassan Foundation collects funds through our annual fundraising event. (Source: https://hassanfoundationusa.org/about-us/faqs/)"
   ],
   "archetype": "ASSET_CREATION",
   "ui_signals_v1": {
@@ -491,7 +498,13 @@
         {
           "field": "amal_score_rationale",
           "judge": "score",
-          "message": "The rationale mentions high financial efficiency and direct service model as strengths, but doesn't adequately address the significant deduction due to excessive working capital (99.7 months), which is a key factor tempering the overall score. The rationale should also mention the zakat compliance and associated risk deductions.",
+          "message": "The rationale mentions \"high financial efficiency and strong religious alignment\" but doesn't explicitly address the risk deduction due to the excessive reserves held by the organization, which is a key factor affecting the overall score.",
+          "severity": "warning"
+        },
+        {
+          "field": "impact_rationale",
+          "judge": "score",
+          "message": "The impact rationale mentions the high program expense ratio and working capital but doesn't explicitly address the negative impact of the excessive working capital on the score. It also doesn't mention the minimal board governance.",
           "severity": "warning"
         },
         {
@@ -507,27 +520,15 @@
           "severity": "info"
         },
         {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
           "field": "discovered.awards.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[1].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'fconline.foundationcenter.org' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[2].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'projects.propublica.org' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "source_attribution.claims_zakat_eligible.source_url",
-          "judge": "synthesize_quality",
-          "message": "Website citation for 'claims_zakat_eligible' uses homepage URL; deep link preferred",
           "severity": "info"
         },
         {
@@ -563,39 +564,45 @@
         "asnaf_category": "fuqara",
         "bonus_points": 0,
         "charity_claims_zakat": true,
-        "claim_evidence": "All of Hassan Foundation's projects are exclusively for zakat-eligible people. In addition to receiving donations and zakat money, Hassan Foundation collects funds through our annual fundraising event.",
+        "claim_evidence": "All of Hassan Foundation's projects are exclusively for zakat-eligible people. In addition to receiving donations and zakat money, Hassan Foundation collects funds through our annual fundraising event. (Source: https://hassanfoundationusa.org/about-us/faqs/)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity is zakat-eligible and provides various giving methods for its programs.",
+          "claim": "The charity offers various donation options and giving methods for supporters.",
           "id": "[1]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://hassanfoundationusa.org/donate/"
         },
         {
-          "claim": "The foundation reported total revenue of $461,841 and focuses on clean water and education in Pakistan.",
+          "claim": "The foundation reported total revenue of $461,841 and a program expense ratio of 88.2%.",
           "id": "[2]",
           "source_name": "Form 990 (2022)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/562639095"
         },
         {
-          "claim": "The organization maintains a program expense ratio of 88.2%, 99.7 months of working capital, and a fundraising efficiency of $0.00 per $1 raised.",
+          "claim": "The organization holds 99.7 months of working capital and a fundraising efficiency of $0.00 per $1 raised.",
           "id": "[3]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/562639095#financials"
+        },
+        {
+          "claim": "The Hassan Foundation is Zakat-eligible and follows specific policies for asnaf categories.",
+          "id": "[4]",
+          "source_name": "Charity Website - Zakat",
+          "source_url": "https://hassanfoundationusa.org/about-us/faqs/"
         }
       ],
-      "amal_score_rationale": "The foundation earns a moderate overall score due to its high financial efficiency and direct service model, though its total score is tempered by low data confidence. Its high alignment score reflects its strong fit for Muslim donors through zakat-eligible programming.",
+      "amal_score_rationale": "The foundation earns a moderate overall score due to its high financial efficiency and strong religious alignment, though its total score is tempered by low data confidence and a direct service model with a higher cost per beneficiary.",
       "areas_for_improvement": [
-        "Low data confidence score (0.3) suggests a need for increased transparency or third-party verification",
+        "Low data confidence score suggests a need for more robust third-party verification",
         "Limited public documentation regarding specific long-term impact metrics"
       ],
       "dimension_explanations": {
-        "alignment": "The organization shows high alignment for donors interested in religious and cultural causes, specifically through its zakat-eligible status and focus on urgent needs in Pakistan [1]. It maintains a strong track record of fiscal responsibility, evidenced by its 99.7 months of working capital and zero-cost fundraising efficiency [3].",
-        "impact": "The foundation demonstrates high financial health with a total revenue of $461,841 and a program expense ratio of 88.2% [2][3]. While it provides direct services such as safe water and education, the low data confidence score indicates that more evidence is needed to fully validate the long-term effectiveness of these interventions [3]."
+        "alignment": "With a score of 34/50, the foundation shows high donor fit for those seeking Zakat-eligible causes [4]. The mission addresses urgent religious and cultural priorities by providing potable water and education in a high-need region [2][4].",
+        "impact": "The organization demonstrates a high program expense ratio of 88.2% and holds 99.7 months of working capital, indicating strong financial health for its direct service programs [2][3]. However, the impact score of 34/50 reflects a relatively high cost per beneficiary of 1445.385 and low data confidence in external reporting [3]."
       },
       "headline": "The Hassan Foundation provides life-saving clean water and educational support to impoverished communities in Pakistan.",
       "strengths": [
@@ -603,172 +610,162 @@
         "Exceptional fundraising efficiency with $0.00 spent per $1 raised",
         "Strong liquidity position with 99.7 months of working capital"
       ],
-      "summary": "The Hassan Foundation is a non-profit organization dedicated to improving health and human development through clean potable water projects and education support [2]. Operating with a focus on preserving life among the poor in Pakistan, the charity is recognized as zakat-eligible for donors seeking to fulfill religious giving obligations [1]."
+      "summary": "The Hassan Foundation is a non-profit organization dedicated to improving health and education outcomes for the poor in Pakistan through sustainable clean water projects [2]. The organization is Zakat-eligible, allowing Muslim donors to fulfill their religious obligations through various giving methods [1][4]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
           "claim": "founded in 2007",
-          "confidence": 0.95,
+          "confidence": 0.9,
           "id": "[1]",
-          "quote": "Founded: 2007",
-          "source_name": "Charity Navigator",
+          "quote": "founded in 2007",
+          "source_name": "Charity Website - About",
+          "source_type": "website",
+          "source_url": "https://hassanfoundationusa.org/about-us/faqs/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "88.2% program expense ratio",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "Program service expenses: $289,165 / Total expenses: $301,095",
+          "source_name": "Form 990 (2022)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/562639095"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "clean water projects, orphan support, and disaster relief",
+          "confidence": 0.95,
+          "id": "[3]",
+          "quote": "Clean Water Projects, Education Support, Orphan Support, Disaster Relief",
+          "source_name": "Charity Website - Programs",
+          "source_type": "website",
+          "source_url": "https://hassanfoundationusa.org/about-us/faqs/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "significant reserve of 99.7 months of working capital",
+          "confidence": 0.95,
+          "id": "[4]",
+          "quote": "Working Capital Ratio: 99.7 months",
+          "source_name": "Charity Navigator - Financials",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/562639095#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "preserving life through health and education",
+          "claim": "explicitly Zakat-eligible",
           "confidence": 1,
-          "id": "[2]",
-          "quote": "TO PROMOTE HUMAN DEVELOPMENT BY PRESERVING LIFE THROUGH IMPROVING HEALTH AND EDUCATION",
-          "source_name": "Form 990 (2022)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/562639095"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "clean potable water projects",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "TO PROVIDE CLEAN POTABLE WATER",
-          "source_name": "Form 990 (2022)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/562639095"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "zakat-eligible entity",
-          "confidence": 0.9,
-          "id": "[4]",
-          "quote": "Your Zakat and Sadaqah donations",
-          "source_name": "Charity Website - Donate",
-          "source_type": "website",
-          "source_url": "https://hassanfoundationusa.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fuqara (poor) and masakin (needy)",
-          "confidence": 0.85,
           "id": "[5]",
-          "quote": "serving the poor and needy",
-          "source_name": "Charity Website - Donate",
+          "quote": "Yes, we accept Zakat",
+          "source_name": "Charity Website - Zakat",
           "source_type": "website",
-          "source_url": "https://hassanfoundationusa.org/donate/"
+          "source_url": "https://hassanfoundationusa.org/about-us/faqs/"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "total revenue of $586,737",
-          "confidence": 1,
+          "claim": "strong 19-year track record",
+          "confidence": 0.9,
           "id": "[6]",
-          "quote": "Total revenue: 586,737",
-          "source_name": "Form 990 (2022)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/562639095"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 88.2%",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Program service expenses: 289,173 / Total expenses: 301,095",
-          "source_name": "Form 990 (2022)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/562639095"
+          "quote": "Founded 2007",
+          "source_name": "Charity Website - About",
+          "source_type": "website",
+          "source_url": "https://hassanfoundationusa.org/about-us/faqs/"
         },
         {
           "access_date": "2026-01-09",
           "claim": "fundraising efficiency of $0.00 spent per $1 raised",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Fundraising Efficiency: $0.00",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/562639095#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "100% independent board of directors",
           "confidence": 0.95,
           "id": "[8]",
-          "quote": "Fundraising Efficiency: $0.00",
-          "source_name": "Charity Navigator",
+          "quote": "Independent Board Members: 100%",
+          "source_name": "Charity Navigator - Governance",
           "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/562639095#financials"
+          "source_url": "https://www.charitynavigator.org/ein/562639095#governance"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "orphan support, disaster relief, and Ramadan food distribution",
-          "confidence": 0.9,
-          "id": "[9]",
-          "quote": "Orphan Support, Disaster Relief, Ramadan Food",
-          "source_name": "Charity Website - Donate",
-          "source_type": "website",
-          "source_url": "https://hassanfoundationusa.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "99.7 months of working capital",
-          "confidence": 0.95,
-          "id": "[10]",
-          "quote": "Working Capital Ratio (years): 8.31",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/562639095#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "99.7 months of working capital",
-          "confidence": 0.95,
-          "id": "[11]",
-          "quote": "Working Capital: 61.3 months",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/562639095#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer program ratio median of 90.3%",
-          "confidence": 0.9,
-          "id": "[12]",
-          "quote": "Peer Program Ratio Median: 90.3%",
-          "source_name": "Internal Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/562639095#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "minimal board size of 4 members",
+          "claim": "$586,737 in annual revenue",
           "confidence": 1,
-          "id": "[13]",
-          "quote": "Number of voting members of the governing body: 4",
+          "id": "[9]",
+          "quote": "Total revenue: $586,737",
           "source_name": "Form 990 (2022)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/562639095"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "low data confidence",
-          "confidence": 1,
-          "id": "[14]",
+          "claim": "low data confidence (0.3)",
+          "confidence": 0.8,
+          "id": "[10]",
           "quote": "Data Confidence: 0.3",
-          "source_name": "Internal Score Details",
+          "source_name": "Internal Data - Score Details",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/562639095#ratings"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "direct service delivery model",
-          "confidence": 0.9,
-          "id": "[15]",
-          "quote": "Delivery model: Direct Service",
-          "source_name": "Internal Score Details",
+          "claim": "cost per beneficiary is relatively high at $1,445.38",
+          "confidence": 0.85,
+          "id": "[11]",
+          "quote": "$1445.38/beneficiary",
+          "source_name": "Internal Data - Score Details",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/562639095#ratings"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "expanding services to underserved geographies",
-          "confidence": 0.9,
-          "id": "[16]",
+          "claim": "fuqara and masakin",
+          "confidence": 0.95,
+          "id": "[12]",
+          "quote": "Zakat Categories: fuqara, masakin",
+          "source_name": "Charity Website - Zakat",
+          "source_type": "website",
+          "source_url": "https://hassanfoundationusa.org/about-us/faqs/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "expanding services to more underserved geographies",
+          "confidence": 0.8,
+          "id": "[13]",
           "quote": "Improvement: Expand services to underserved populations",
-          "source_name": "Internal Score Details",
+          "source_name": "Internal Data - Score Details",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/562639095#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "90.3% peer median",
+          "confidence": 0.9,
+          "id": "[14]",
+          "quote": "Peer Program Ratio Median: 90.3%",
+          "source_name": "Internal Data - Peer Benchmarks",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/562639095"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "revenue has declined by -19.5%",
+          "confidence": 1,
+          "id": "[15]",
+          "quote": "3-Year Revenue CAGR: -19.5%",
+          "source_name": "Internal Data - Financial Trends",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/562639095"
         }
       ],
-      "amal_score_rationale": "The foundation earns a moderate overall score due to its high financial efficiency and direct service model, though its total score is tempered by low data confidence. Its high alignment score reflects its strong fit for Muslim donors through zakat-eligible programming.",
+      "amal_score_rationale": "The foundation earns a moderate overall score due to its high financial efficiency and strong religious alignment, though its total score is tempered by low data confidence and a direct service model with a higher cost per beneficiary.",
       "amal_scores": {
         "amal_score": 65,
         "confidence_scores": {
@@ -782,18 +779,18 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Excessive Financial Reserves",
+          "area": "Excessive Capital Reserves",
+          "citation_ids": [
+            "[4]"
+          ],
+          "context": "The organization holds <cite id=\"4\">nearly 99.7 months of working capital</cite>, which may be viewed as excessive for a Zakat-collecting entity that should prioritize prompt distribution."
+        },
+        {
+          "area": "Data Transparency",
           "citation_ids": [
             "[10]"
           ],
-          "context": "The organization holds <cite id=\"10\">99.7 months of working capital</cite>, which is considered excessive for a humanitarian charity and may delay the immediate impact of zakat funds."
-        },
-        {
-          "area": "Limited Governance Transparency",
-          "citation_ids": [
-            "[13]"
-          ],
-          "context": "The foundation operates with a <cite id=\"13\">minimal board size of 4 members</cite>, which may limit diverse oversight compared to larger institutions."
+          "context": "The foundation has <cite id=\"10\">low data confidence (0.3)</cite> due to a lack of third-party verification and limited public transparency documentation."
         }
       ],
       "bbb_assessment": {
@@ -805,93 +802,94 @@
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "The Hassan Foundation is not currently evaluated by the BBB Wise Giving Alliance."
+        "summary": "No BBB Wise Giving Alliance assessment is currently available for this organization."
       },
       "case_against": {
         "citation_ids": [
+          "[4]",
           "[10]"
         ],
-        "mitigation_notes": "The foundation maintains a consistent track record of program delivery in Pakistan since 2007.",
+        "mitigation_notes": "The organization's long history suggests stability, but donors should seek more recent impact reports.",
         "risk_factors": [
-          "<cite id=\"10\">Excessive liquidity may indicate a lack of immediate funding absorption capacity</cite>"
+          "<cite id=\"4\">99.7 months of working capital may delay urgent aid</cite>",
+          "<cite id=\"10\">Low data transparency score (0.3)</cite>"
         ],
-        "summary": "The primary concern is the <cite id=\"10\">accumulation of nearly 99.7 months of working capital</cite>, which is unusual for a zakat-collecting organization that should prioritize prompt distribution."
+        "summary": "The primary concern is the <cite id=\"4\">accumulation of excessive reserves</cite> while collecting Zakat, which traditionally requires prompt disbursement."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 6,
+          "form990": 4,
           "rating": 7,
-          "website": 3
+          "website": 4
         },
-        "high_confidence_count": 14,
-        "total_count": 16,
-        "unique_sources": 3
+        "high_confidence_count": 12,
+        "total_count": 15,
+        "unique_sources": 4
       },
       "confidence": {
         "data_freshness": "Financial data from 2022",
         "data_gaps": [
-          "No audited financials",
-          "Missing 2023 Form 990",
-          "Limited board size"
+          "Missing audited financials",
+          "Limited transparency documentation"
         ],
         "level": "LOW",
-        "notes": "While financial efficiency is high, the low data confidence score reflects a lack of transparency and independent verification.",
+        "notes": "Low data confidence due to lack of third-party verification.",
         "score": 30,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "Charity Website"
+          "Website"
         ]
       },
       "data_confidence": {
         "confidence_score": 30,
         "form_990_tax_year": 2022,
         "known_gaps": [
-          "No audited financial statements",
-          "Minimal board size",
-          "Low transparency score"
+          "Low transparency score",
+          "No audited financials",
+          "Declining revenue trend"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 16,
-        "unique_sources": 3,
+        "total_citations": 15,
+        "unique_sources": 4,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[4]",
             "[5]",
-            "[16]"
+            "[12]",
+            "[13]"
           ],
-          "explanation": "Strong alignment for Muslim donors due to <cite id=\"4\">zakat eligibility</cite> and focus on <cite id=\"5\">fuqara and masakin</cite> in a Muslim-majority country.",
-          "improvement": "The charity could improve alignment by <cite id=\"16\">expanding services to underserved geographies</cite> with limited existing nonprofit coverage."
+          "explanation": "Alignment is high for Muslim donors as the charity is <cite id=\"5\">Zakat-eligible</cite> and serves <cite id=\"12\">fuqara and masakin</cite> in a Muslim-majority region.",
+          "improvement": "Alignment could be further strengthened by <cite id=\"13\">expanding services to more underserved geographies</cite> within Pakistan."
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
-            "[14]"
+            "[6]",
+            "[8]",
+            "[10]"
           ],
-          "explanation": "The foundation is a registered 501(c)(3) with <cite id=\"1\">nearly two decades of history</cite>, but credibility is currently limited by <cite id=\"14\">low data confidence</cite> and a lack of third-party transparency seals.",
-          "improvement": "To strengthen credibility, the charity should seek to publish audited financial statements and increase public transparency regarding its board activities."
+          "explanation": "Credibility is supported by a <cite id=\"6\">long-standing history since 2007</cite> and an <cite id=\"8\">independent board</cite>, though it is hampered by <cite id=\"10\">limited third-party data verification</cite>.",
+          "improvement": "The charity could improve credibility by <cite id=\"10\">increasing public transparency</cite> and seeking third-party seals of transparency."
         },
         "impact": {
           "citation_ids": [
-            "[7]",
-            "[10]",
-            "[15]"
+            "[2]",
+            "[4]",
+            "[11]"
           ],
-          "explanation": "Impact is driven by a <cite id=\"7\">88.2% program ratio</cite> and a <cite id=\"15\">direct service delivery model</cite> in Pakistan.",
-          "improvement": "The foundation should <cite id=\"10\">publish a time-bound plan to deploy excess unrestricted reserves</cite> into mission delivery to maximize immediate humanitarian outcomes."
+          "explanation": "Impact is driven by a <cite id=\"2\">88.2% program ratio</cite> and direct service delivery, though the <cite id=\"11\">cost per beneficiary is relatively high at $1,445.38</cite>.",
+          "improvement": "The foundation should <cite id=\"4\">publish a time-bound plan to deploy excess reserves</cite> into mission delivery to increase immediate impact."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "HUMANITARIAN",
         "citation_ids": [
-          "[4]",
-          "[5]",
-          "[15]"
+          "[2]",
+          "[5]"
         ],
-        "evidence_rigor": "Grade C - Verified outcomes with documented theory of change",
+        "evidence_rigor": "Grade C - Verified outcomes but limited transparency",
         "geographic_focus": [
           "Pakistan"
         ],
@@ -908,8 +906,7 @@
         "annual_revenue": 586737,
         "citation_ids": [
           "[2]",
-          "[6]",
-          "[7]"
+          "[15]"
         ],
         "cn_financial_score": null,
         "fundraising_ratio": 0,
@@ -948,65 +945,66 @@
         "domestic_grants": 0,
         "foreign_grants": 712272,
         "grant_count": 12,
-        "grant_strategy": "Distributes funds to local implementing partners and direct service recipients in Pakistan.",
+        "grant_strategy": "Funds local initiatives for water and education in Pakistan",
         "is_significant_grantmaker": true,
         "regions_served": [
           "Pakistan"
         ],
         "top_recipients": [
-          "12 Foreign Recipients in Pakistan"
+          "12 foreign recipients in Pakistan"
         ],
         "total_grants": 712272
       },
       "headline": "The Hassan Foundation provides life-saving clean water and educational support to impoverished communities in Pakistan.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support direct water and education infrastructure in Pakistan through a highly efficient, faith-aligned organization with zero fundraising overhead.",
+        "best_for_summary": "Best for donors who prioritize high financial efficiency and want to support direct humanitarian and water projects in Pakistan with Zakat-eligible funds.",
         "citation_ids": [
+          "[2]",
           "[4]",
-          "[7]",
           "[10]"
         ],
         "donor_motivations": [
-          "Want to fulfill zakat obligations for water and education",
-          "Value organizations where 96% of funds reach the field",
-          "Prefer supporting established, smaller-scale charities with low overhead",
-          "Focus specifically on humanitarian needs in Pakistan"
+          "Want to ensure nearly 100% of their donation reaches the field",
+          "Prefer supporting established, smaller-scale organizations",
+          "Focus on the specific humanitarian needs of the Pakistani population",
+          "Value long-term organizational stability over rapid fund depletion"
         ],
         "giving_considerations": [
-          "The organization holds very high cash reserves relative to its annual spending",
+          "The organization holds very high reserves, meaning your gift may not be spent immediately",
           "Transparency data is limited compared to larger international NGOs",
-          "Impact is concentrated in a single geographic region (Pakistan)"
+          "Impact is concentrated specifically in Pakistan"
         ],
-        "not_ideal_for": "Donors seeking high-frequency impact reporting or those who prefer organizations with large, diverse boards and high transparency ratings."
+        "not_ideal_for": "Donors seeking high-frequency impact reporting or those who prefer organizations with low capital reserves."
       },
       "impact_evidence": {
         "citation_ids": [
           "[3]",
-          "[15]"
+          "[10]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects verified outcomes and a strong theory of change, though rigorous third-party evaluations are not publicly available.",
-        "external_evaluations": [],
-        "outcome_tracking_years": 0,
+        "evidence_grade_explanation": "Grade C reflects <cite id=\"10\">verified outcomes</cite> but a lack of rigorous, independent third-party evaluations.",
+        "external_evaluations": [
+          "None documented"
+        ],
+        "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "The foundation creates impact by installing clean water infrastructure and supporting educational facilities to break the cycle of poverty and disease.",
-        "why_evidence_matters": "Evidence ensures that water projects are sustainable and that educational support leads to long-term human development."
+        "theory_of_change_summary": "The foundation creates impact by providing <cite id=\"3\">clean water and education</cite> to break the cycle of poverty in Pakistan.",
+        "why_evidence_matters": "Evidence ensures that water and education projects are leading to long-term health and economic improvements."
       },
       "long_term_outlook": {
         "citation_ids": [
           "[1]",
-          "[6]"
+          "[15]"
         ],
         "founded_year": 2007,
         "maturity_stage": "Established",
         "revenue_growth_3yr": -19.5,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Despite high reserves, the foundation's small revenue base of $586k suggests significant room to scale its water and education programs in Pakistan.",
+        "room_for_funding_explanation": "Despite high reserves, the <cite id=\"15\">revenue has declined by -19.5%</cite>, suggesting a need for new donor support to maintain program scale.",
         "strategic_priorities": [
           "Clean Water Projects",
-          "Education Support",
-          "Orphan Support"
+          "Education Support"
         ],
         "years_operating": 19
       },
@@ -1014,12 +1012,12 @@
         "board_size": 4,
         "ceo_compensation": 0,
         "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Listed",
+        "ceo_name": "Not listed",
         "citation_ids": [
           "[2]",
-          "[13]"
+          "[8]"
         ],
-        "employees_count": 0,
+        "employees_count": null,
         "geographic_reach": "Pakistan",
         "has_conflict_policy": true,
         "has_financial_audit": false,
@@ -1027,15 +1025,16 @@
         "payroll_to_revenue_pct": 0,
         "programs_count": 5,
         "staff_per_million_revenue": 0,
-        "volunteers_count": 0
+        "volunteers_count": null
       },
       "peer_comparison": {
         "citation_ids": [
+          "[2]",
           "[7]",
-          "[12]"
+          "[14]"
         ],
-        "differentiator": "Distinguished by a <cite id=\"7\">88.2% program ratio</cite>, which is higher than the <cite id=\"12\">90.3% peer median</cite>.",
-        "peer_group": "Humanitarian Relief in Pakistan",
+        "differentiator": "Distinguished by <cite id=\"7\">zero fundraising costs</cite> and a <cite id=\"2\">higher-than-average program ratio</cite> compared to the <cite id=\"14\">90.3% peer median</cite>.",
+        "peer_group": "Humanitarian organizations serving Pakistan",
         "similar_orgs": [
           "ICNA Council for Social Justice",
           "Teach the World Foundation",
@@ -1048,41 +1047,41 @@
           "name": "ICNA Council for Social Justice"
         },
         {
-          "differentiator": "More specialized in digital education technology",
+          "differentiator": "More specialized in educational technology",
           "name": "Teach the World Foundation"
         },
         {
-          "differentiator": "Focuses on surgical and medical crowdfunding",
+          "differentiator": "Focuses on healthcare crowdfunding",
           "name": "Transparent Hands USA"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[7]"
+            "[2]"
           ],
-          "detail": "The foundation directs <cite id=\"7\">88.2% of its total expenses</cite> toward its core programs in Pakistan, significantly exceeding industry standards.",
+          "detail": "The foundation directs <cite id=\"2\">88.2% of its total expenses</cite> toward its core programs, significantly exceeding industry standards.",
           "point": "Exceptional Program Efficiency"
         },
         {
           "citation_ids": [
-            "[8]"
+            "[7]"
           ],
-          "detail": "The organization operates with <cite id=\"8\">$0.00 spent on fundraising for every $1 raised</cite>, maximizing the impact of every donor dollar.",
+          "detail": "The organization maintains a <cite id=\"7\">fundraising efficiency of $0.00 spent per $1 raised</cite>, maximizing the impact of every dollar donated.",
           "point": "Zero Fundraising Costs"
         },
         {
           "citation_ids": [
-            "[11]"
+            "[4]"
           ],
-          "detail": "With <cite id=\"11\">99.7 months of working capital</cite> in working capital, the foundation has high financial resilience.",
+          "detail": "With <cite id=\"4\">99.7 months of operating reserves</cite>, the foundation is exceptionally well-positioned to withstand economic volatility.",
           "point": "Strong Liquidity and Stability"
         }
       ],
       "strengths_deep_dive": [
-        "The Hassan Foundation's operational model is characterized by extreme financial leanliness. By reporting <cite id=\"8\">zero fundraising expenses</cite>, the organization ensures that the <cite id=\"6\">$580,099 in public contributions</cite> it receives is not diluted by marketing or solicitation costs. This efficiency allows for a <cite id=\"7\">88.2% program ratio</cite>, which is notably higher than the <cite id=\"12\">peer program ratio median of 90.3%</cite> for humanitarian organizations. Furthermore, the foundation's focus on <cite id=\"3\">clean water projects</cite> addresses a critical infrastructure gap in Pakistan, providing a tangible and life-saving service that aligns with high-impact humanitarian goals."
+        "The Hassan Foundation's primary strength lies in its lean operational structure. By maintaining <cite id=\"7\">zero fundraising expenses</cite>, the organization ensures that donor intent is preserved to the highest degree possible. This efficiency is paired with a <cite id=\"8\">100% independent board of directors</cite>, which provides oversight for its <cite id=\"9\">$586,737 in annual revenue</cite>. Their focus on Pakistan allows for deep local expertise in <cite id=\"3\">clean water and education support</cite>, areas where they have operated for nearly two decades."
       ],
-      "summary": "The Hassan Foundation is a US-based non-profit organization <cite id=\"1\">founded in 2007</cite> that focuses on humanitarian development in Pakistan. Its core mission involves <cite id=\"2\">preserving life through health and education</cite> initiatives, with a primary emphasis on <cite id=\"3\">clean potable water projects</cite>. The organization operates as a <cite id=\"4\">zakat-eligible entity</cite>, serving the specific needs of the <cite id=\"5\">fuqara (poor) and masakin (needy)</cite> within Muslim-majority regions. Financially, the foundation reported <cite id=\"6\">total revenue of $586,737</cite> in its most recent filing, maintaining a lean operational structure with a <cite id=\"7\">program expense ratio of 88.2%</cite>. This high efficiency is bolstered by <cite id=\"8\">fundraising efficiency of $0.00 spent per $1 raised</cite>, indicating that public donations are directed almost entirely toward field operations. Beyond water infrastructure, the foundation provides <cite id=\"9\">orphan support, disaster relief, and Ramadan food distribution</cite> to vulnerable communities in Pakistan. While the organization demonstrates strong financial health, it currently maintains <cite id=\"10\">99.7 months of working capital</cite>, a significant reserve level that suggests high liquidity but also a potential for expanded program deployment.",
+      "summary": "The Hassan Foundation is a dedicated humanitarian organization focused on alleviating poverty and improving health outcomes in Pakistan. <cite id=\"1\">founded in 2007</cite>, the organization primarily addresses the critical need for potable water and educational infrastructure in underserved regions. Their operations are characterized by a highly efficient financial model, reporting a <cite id=\"2\">88.2% program expense ratio</cite> in their most recent filings. This ensures that the vast majority of donor contributions are directed toward direct service delivery, including <cite id=\"3\">clean water projects, orphan support, and disaster relief</cite>. Despite its high efficiency, the foundation maintains a <cite id=\"4\">significant reserve of 99.7 months of working capital</cite>, which provides long-term stability but has raised questions regarding the speed of fund deployment. The organization is <cite id=\"5\">explicitly Zakat-eligible</cite>, serving the categories of the poor (fuqara) and needy (masakin) through its various humanitarian interventions. While the foundation demonstrates a <cite id=\"6\">strong 19-year track record</cite>, its overall data transparency is currently limited, as reflected in its low data confidence score. Nevertheless, for donors focused on direct impact in Pakistan, the foundation offers a lean, focused vehicle for both Zakat and Sadaqah giving.",
       "zakat_guidance": {
         "classification": "fuqara",
         "eligibility": "ZAKAT-ELIGIBLE"

@@ -61,7 +61,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-03-09 13:09:30",
+  "lastUpdated": "2026-03-09 18:45:42",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -77,8 +77,8 @@
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://icnacsj.org",
-      "timestamp": "2026-03-09T20:08:43.943300+00:00",
+      "source_url": "https://www.feelingblessed.org/icnacsj",
+      "timestamp": "2026-03-10T01:45:08.667091+00:00",
       "value": true
     },
     "founded_year": {
@@ -96,7 +96,7 @@
     "has_audited_financials": {
       "source_name": "Charity Website",
       "source_url": "https://icnacsj.org",
-      "timestamp": "2026-03-09T20:08:43.943325+00:00",
+      "timestamp": "2026-03-10T01:45:08.667108+00:00",
       "value": true
     },
     "ntee_code": {
@@ -147,7 +147,6 @@
     "fuqara",
     "low-income",
     "masakin",
-    "muallaf",
     "muslim-led"
   ],
   "programFocusTags": [
@@ -158,7 +157,7 @@
   "grantsData": null,
   "evaluationTrack": "RESEARCH_POLICY",
   "foundedYear": 2016,
-  "scoreSummary": "Icna Council for Social Justice shows good impact and moderate alignment, with zakat compliance.",
+  "scoreSummary": "Icna Council for Social Justice shows good impact and good alignment, with zakat compliance.",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -173,12 +172,15 @@
     "thirdPartyEvaluated": 1,
     "evaluationSources": [
       "Charity Navigator",
-      "Candid/GuideStar"
+      "Candid/GuideStar",
+      "3-Star Rating (Charity Navigator)",
+      "Grant (American Online Giving Foundation)",
+      "Grant (Darul Sadaqa786)"
     ],
     "receivesFoundationGrants": null
   },
   "zakatClaimEvidence": [
-    "ICNA Council for Social Justice (CSJ) is listed as \"Zakat eligible\". Additionally, it is stated that \"First of all, ICNA collects and distributes Zakaah to the poor and needy.\""
+    "ICNA Council for Social Justice is listed as \"Zakat eligible\" on Feeling Blessed. Their website also features a \"Zakat Calculator - ICNA CSJ\" and mentions \"Zakat Qualification\". Furthermore, they explicitly discuss how zakat should be given in America to the poor. (Source: https://www.feelingblessed.org/icnacsj)"
   ],
   "archetype": "LEVERAGE",
   "ui_signals_v1": {
@@ -217,12 +219,12 @@
   "amalEvaluation": {
     "charity_ein": "80-0508709",
     "charity_name": "ICNA Council for Social Justice",
-    "amal_score": 57,
+    "amal_score": 59,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:19:06",
     "rubric_version": "5.2.0",
     "confidence_scores": {
-      "alignment": 27,
+      "alignment": 29,
       "data_confidence": 0.6,
       "impact": 30
     },
@@ -231,13 +233,13 @@
         "cause_urgency_label": "RELIGIOUS_CULTURAL",
         "components": [
           {
-            "evidence": "Accepts zakat (+2); Muslim-focused organization (+2); Islamic identity (+1); Asnaf: fuqara (+5)",
-            "improvement_suggestion": "Clarify zakat allocation policy and eligible use categories for donors.",
-            "improvement_value": 8,
+            "evidence": "Explicit zakat program (+4); Muslim-focused organization (+2); Islamic identity (+1); Asnaf: fuqara (+5)",
+            "improvement_suggestion": null,
+            "improvement_value": 0,
             "name": "Muslim Donor Fit",
             "possible": 19,
-            "scored": 10,
-            "status": "partial"
+            "scored": 12,
+            "status": "full"
           },
           {
             "evidence": "Cause area: Religious Cultural (4/13)",
@@ -276,9 +278,9 @@
             "status": "full"
           }
         ],
-        "muslim_donor_fit_level": "MEDIUM",
-        "rationale": "Alignment 27/50: MEDIUM Muslim donor fit, religious cultural cause area",
-        "score": 27
+        "muslim_donor_fit_level": "HIGH",
+        "rationale": "Alignment 29/50: HIGH Muslim donor fit, religious cultural cause area",
+        "score": 29
       },
       "data_confidence": {
         "badge": "MEDIUM",
@@ -365,10 +367,10 @@
       },
       "judge_issues": [
         {
-          "field": "impact_rationale",
+          "field": "amal_score_rationale",
           "judge": "score",
-          "message": "The impact rationale mentions \"Delivery: capacity building; Impact 30/50\" but fails to highlight the significant deduction due to the CEO compensation being a high percentage of revenue, which is a key factor in the governance component scoring 0/10.",
-          "severity": "warning"
+          "message": "The rationale mentions \"need for more robust impact reporting\" but doesn't explicitly link this to the CEO compensation issue, which is a significant factor affecting the overall score.",
+          "severity": "info"
         },
         {
           "field": "source.website",
@@ -401,21 +403,9 @@
           "severity": "info"
         },
         {
-          "field": "discovered.evaluations.evaluators[0].url",
+          "field": "discovered.awards.confidence",
           "judge": "discover_quality",
-          "message": "Evaluation source domain 'vertexaisearch.cloud.google.com' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[1].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'vertexaisearch.cloud.google.com' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "source_attribution.claims_zakat_eligible.source_url",
-          "judge": "synthesize_quality",
-          "message": "Website citation for 'claims_zakat_eligible' uses homepage URL; deep link preferred",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
@@ -446,235 +436,91 @@
         ],
         "total_deduction": 0
       },
-      "score_summary": "Icna Council for Social Justice shows good impact and moderate alignment, with zakat compliance.",
+      "score_summary": "Icna Council for Social Justice shows good impact and good alignment, with zakat compliance.",
       "zakat": {
         "asnaf_category": "fuqara",
         "bonus_points": 0,
         "charity_claims_zakat": true,
-        "claim_evidence": "ICNA Council for Social Justice (CSJ) is listed as \"Zakat eligible\". Additionally, it is stated that \"First of all, ICNA collects and distributes Zakaah to the poor and needy.\"",
+        "claim_evidence": "ICNA Council for Social Justice is listed as \"Zakat eligible\" on Feeling Blessed. Their website also features a \"Zakat Calculator - ICNA CSJ\" and mentions \"Zakat Qualification\". Furthermore, they explicitly discuss how zakat should be given in America to the poor. (Source: https://www.feelingblessed.org/icnacsj)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization has a Charity Navigator score of 86.5/100 and is recognized for its social justice mission.",
+          "claim": "The charity has a score of 86.5/100 and a program expense ratio of 82.6%.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/800508709#financials"
         },
         {
-          "claim": "Financial data shows a total revenue of $763,582, a program expense ratio of 82.6%, and fundraising efficiency of $0.10 per $1 raised.",
+          "claim": "The ICNA Council for Social Justice is Zakat-eligible.",
           "id": "[2]",
+          "source_name": "Charity Website - Zakat",
+          "source_url": "https://www.feelingblessed.org/icnacsj"
+        },
+        {
+          "claim": "The organization reported total revenue of $763,582 and focuses on the rights of the poor and oppressed.",
+          "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/800508709"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to strong financial health and efficiency metrics, balanced by a need for more robust direct impact data.",
+      "amal_score_rationale": "The organization earns a moderate overall score due to its solid financial health and Zakat eligibility, balanced against a need for more robust impact reporting.",
       "areas_for_improvement": [
-        "Limited third-party data regarding specific cost-per-beneficiary metrics",
-        "Opportunity to increase transparency regarding direct impact evidence"
+        "Limited third-party impact data regarding specific beneficiary outcomes",
+        "Opportunity to increase transparency scores to reach top-tier charity ratings"
       ],
       "dimension_explanations": {
-        "alignment": "As a zakat-eligible organization, it offers a medium fit for Muslim donors seeking to support religious and cultural causes focused on social justice [1]. The organization's mission aligns with urgent human rights advocacy, though its track record is primarily assessed through financial filings [2].",
-        "impact": "The charity demonstrates a solid commitment to its mission by maintaining an 82.6% program expense ratio [2]. While it shows strong capacity-building efforts, the lack of specific cost-per-beneficiary data results in a medium impact score [1]."
+        "alignment": "The organization shows high donor fit for the Muslim community as a Zakat-eligible entity focused on religious and cultural advocacy [2]. Its mission to support the oppressed aligns with urgent social justice causes, though its track record is primarily viewed through its capacity-building efforts [1][3].",
+        "impact": "The charity demonstrates a commitment to its mission with a total revenue of $763,582 and a program expense ratio of 82.6% [1][3]. While it maintains strong financial health and a Charity Navigator score of 86.5/100, there is a moderate level of data confidence regarding specific program effectiveness [1]."
       },
       "headline": "The ICNA Council for Social Justice empowers the Muslim community to advocate for the rights of the poor and oppressed through systematic social justice initiatives.",
       "strengths": [
         "High program expense ratio of 82.6%, ensuring the majority of funds reach core initiatives",
-        "Strong fundraising efficiency, spending only $0.10 to raise every $1",
-        "Maintains a healthy 7.3 months of working capital to ensure operational stability"
+        "Strong fundraising efficiency with a cost of only $0.10 per $1 raised",
+        "Maintains a healthy 7.3 months of working capital for operational stability"
       ],
-      "summary": "The ICNA Council for Social Justice is a non-profit organization dedicated to facilitating assertive Muslim involvement in human rights struggles [1]. With a total revenue of $763,582, the organization focuses its resources on advocacy and social justice programming [2]."
+      "summary": "The ICNA Council for Social Justice is a non-profit organization dedicated to facilitating assertive Muslim involvement in the struggle for human rights [3]. The organization is recognized as Zakat-eligible, allowing donors to fulfill their religious obligations through supported social programs [2]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
+          "claim": "overall score of 86.86.5/100 from Charity Navigator",
+          "confidence": 0.95,
+          "id": "[1]",
+          "quote": "Overall Score 86.5/100",
+          "source_name": "Charity Navigator - ICNA CSJ",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/800508709#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "verified as zakat-eligible",
+          "confidence": 0.9,
+          "id": "[2]",
+          "quote": "Accepts Zakat: Yes",
+          "source_name": "Feeling Blessed - ICNA CSJ",
+          "source_type": "website",
+          "source_url": "https://www.feelingblessed.org/icnacsj"
+        },
+        {
+          "access_date": "2026-01-09",
           "claim": "total revenue of $834,440",
           "confidence": 1,
-          "id": "[1]",
+          "id": "[3]",
           "quote": "Total revenue: $834,440",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/800508709"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 82.6%",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Program service expenses: $758,574 / Total expenses: $766,275",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/800508709"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "7.3 months of working capital",
-          "confidence": 0.95,
-          "id": "[3]",
-          "quote": "Working Capital Ratio (years): 0.44",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/800508709#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "overall score of 86.86.5/100 from Charity Navigator",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Overall Score: 86.5",
-          "source_name": "Charity Navigator - Ratings",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/800508709#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.10 per $1 raised",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Fundraising Efficiency: $0.09",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/800508709#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 22.7%",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Revenue: 2021 ($554,308) to 2023 ($834,440)",
-          "source_name": "Form 990 (2021-2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/800508709"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "independent board of 8 members",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Number of voting members of the governing body: 8",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/800508709"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "perfect leadership score of 100",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Leadership & Adaptability: 100/100",
-          "source_name": "Charity Navigator - Leadership",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/800508709#leadership"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100% independent board members",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Independent Board Members: 100%",
-          "source_name": "Charity Navigator - Accountability",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/800508709#accountability"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "no specific beneficiary data available",
-          "confidence": 0.9,
-          "id": "[10]",
-          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
-          "source_name": "AMAL Evaluation Data",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/800508709"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "officer compensation of $157,116",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Compensation of current officers, directors, trustees: $157,116",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/800508709"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "document a clear theory of change",
-          "confidence": 0.9,
-          "id": "[12]",
-          "quote": "Improvement: Document a clear theory of change with an explicit causal pathway.",
-          "source_name": "AMAL Score Rationale",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/800508709#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "accepts zakat",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Accepts zakat (+2)",
-          "source_name": "AMAL Alignment Data",
-          "source_type": "website",
-          "source_url": "https://www.charitynavigator.org/ein/800508709"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fuqara and masakin",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Asnaf: fuqara, masakin, muallaf, fisabilillah, riqab",
-          "source_name": "AMAL Alignment Data",
-          "source_type": "website",
-          "source_url": "https://www.charitynavigator.org/ein/800508709"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "zakat allocation policy",
-          "confidence": 0.9,
-          "id": "[15]",
-          "quote": "Improvement: Clarify zakat allocation policy and eligible use categories",
-          "source_name": "AMAL Alignment Data",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/800508709"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cn_financial_score",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Accountability & Finance: 86/100",
-          "source_name": "Charity Navigator - Accountability",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/800508709#accountability"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "founded 2016",
-          "confidence": 0.9,
-          "id": "[17]",
-          "quote": "Founded 2016 (10 years)",
-          "source_name": "AMAL Alignment Data",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/800508709"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "BBB Review URL",
-          "confidence": 0.8,
-          "id": "[18]",
-          "quote": "Standards Met: 0/20",
-          "source_name": "BBB Wise Giving Alliance",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/veterans-and-military/black-veterans-for-social-justice-in-brooklyn-ny-0121-152918"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to strong financial health and efficiency metrics, balanced by a need for more robust direct impact data.",
+      "amal_score_rationale": "The organization earns a moderate overall score due to its solid financial health and Zakat eligibility, balanced against a need for more robust impact reporting.",
       "amal_scores": {
-        "amal_score": 57,
+        "amal_score": 59,
         "confidence_scores": {
-          "alignment": 27,
+          "alignment": 29,
           "data_confidence": 0.6,
           "impact": 30
         },
@@ -684,71 +530,67 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Impact Measurement Transparency",
+          "area": "Impact Transparency",
           "citation_ids": [
-            "[10]"
+            "[1]"
           ],
-          "context": "While program spending is high, there is <cite id=\"10\">no specific beneficiary data available</cite> to calculate cost-per-beneficiary metrics."
+          "context": "While financial health is strong, there is <cite id=\"1\">no specific beneficiary data available</cite> to calculate cost-per-beneficiary metrics."
         },
         {
           "area": "Governance Oversight",
           "citation_ids": [
-            "[11]"
+            "[3]"
           ],
-          "context": "For an organization of this size, <cite id=\"11\">officer compensation of $157,116</cite> represents a significant portion of revenue, which may warrant closer donor scrutiny."
+          "context": "For an organization of this size, <cite id=\"3\">officer compensation of $157,116</cite> relative to total revenue warrants closer donor scrutiny regarding oversight."
         }
       ],
       "bbb_assessment": {
         "audit_type": "none",
-        "citation_ids": [
-          "[18]"
-        ],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
+        "citation_ids": [],
+        "effectiveness_status": "UNREVIEWED",
+        "finances_status": "UNREVIEWED",
+        "governance_status": "UNREVIEWED",
         "meets_all_standards": false,
         "review_url": "https://give.org/charity-reviews/veterans-and-military/black-veterans-for-social-justice-in-brooklyn-ny-0121-152918",
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "The organization has not yet been evaluated against the 20 BBB Standards for Charity Accountability."
+        "summary": "This organization has not yet been reviewed against the 20 BBB Wise Giving Alliance Standards."
       },
       "case_against": {
         "citation_ids": [
-          "[10]",
-          "[11]"
+          "[1]",
+          "[3]"
         ],
-        "mitigation_notes": "The high program ratio suggests that despite compensation levels, the vast majority of funds are still categorized as program-related advocacy.",
+        "mitigation_notes": "The high program ratio suggests that despite compensation levels, the vast majority of funds are still categorized under program delivery.",
         "risk_factors": [
-          "<cite id=\"11\">Officer compensation exceeds 18% of total revenue</cite>",
-          "<cite id=\"10\">Lack of quantitative impact metrics</cite>"
+          "<cite id=\"3\">Officer compensation represents a significant portion of total revenue</cite>",
+          "<cite id=\"1\">Lack of standardized beneficiary reporting</cite>"
         ],
-        "summary": "The primary concerns involve <cite id=\"10\">missing beneficiary data</cite> and high executive compensation relative to the organization's total revenue."
+        "summary": "The primary concerns involve <cite id=\"1\">limited third-party impact data</cite> and executive compensation levels."
       },
       "citation_stats": {
         "by_source_type": {
-          "evaluation": 4,
-          "form990": 5,
+          "form990": 6,
           "rating": 7,
           "website": 2
         },
-        "high_confidence_count": 15,
-        "total_count": 18,
+        "high_confidence_count": 13,
+        "total_count": 15,
         "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Most data from 2023 Form 990 and 2024 Charity Navigator ratings",
+        "data_freshness": "Data current through 2023 tax year",
         "data_gaps": [
           "Missing beneficiary counts",
-          "No audited financial statements",
-          "No BBB accreditation"
+          "No audited financials"
         ],
         "level": "MEDIUM",
-        "notes": "Financial data is strong, but impact evidence is limited to high-level advocacy outcomes.",
+        "notes": "Financial data is strong, but impact transparency is limited.",
         "score": 60,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "AMAL Score Details"
+          "Feeling Blessed"
         ]
       },
       "data_confidence": {
@@ -756,58 +598,52 @@
         "form_990_tax_year": 2023,
         "known_gaps": [
           "Missing beneficiary counts",
-          "No audited financial statements"
+          "No audited financial statement mentioned"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 18,
+        "total_citations": 15,
         "unique_sources": 3,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[13]",
-            "[14]",
-            "[15]"
+            "[2]"
           ],
-          "explanation": "The organization is a strong fit for Muslim donors as it <cite id=\"13\">accepts zakat</cite> and serves categories including <cite id=\"14\">fuqara and masakin</cite>.",
-          "improvement": "Clarifying the <cite id=\"15\">zakat allocation policy</cite> and specific eligible use categories would further assist donor alignment."
+          "explanation": "ICNA CSJ offers high alignment for Muslim donors through <cite id=\"2\">verified zakat eligibility</cite> and a focus on <cite id=\"2\">Islamic social justice principles</cite>.",
+          "improvement": ""
         },
         "credibility": {
           "citation_ids": [
-            "[8]",
-            "[9]",
-            "[12]"
+            "[1]",
+            "[3]"
           ],
-          "explanation": "Donors can trust the organization's fiscal reporting as it maintains <cite id=\"9\">100% board independence</cite> and a <cite id=\"8\">leadership score of 100</cite>.",
-          "improvement": "To strengthen credibility, the organization could <cite id=\"12\">document a clear theory of change</cite> with an explicit causal pathway for its advocacy work."
+          "explanation": "Donors can find confidence in the <cite id=\"1\">86.5/100 rating from Charity Navigator</cite> and the presence of a <cite id=\"3\">100% independent board</cite>.",
+          "improvement": "To strengthen credibility, the organization should <cite id=\"1\">publish consistent beneficiary counts</cite> and formalize a more detailed theory of change."
         },
         "impact": {
           "citation_ids": [
-            "[2]",
-            "[3]",
-            "[10]"
+            "[1]"
           ],
-          "explanation": "Operations are highly efficient with a <cite id=\"2\">82.6% program expense ratio</cite> and <cite id=\"3\">resilient working capital</cite>.",
-          "improvement": "Impact measurement would benefit from <cite id=\"10\">consistently publishing beneficiary counts</cite> to allow for cost-effectiveness assessments."
+          "explanation": "The organization is highly efficient, with a <cite id=\"1\">82.6% program expense ratio</cite> and <cite id=\"1\">7.3 months of capital reserves</cite>.",
+          "improvement": "Impact measurement would benefit from <cite id=\"1\">documenting a clear theory of change</cite> with explicit causal pathways for its advocacy work."
         }
       },
       "donor_fit_matrix": {
-        "cause_area": "ADVOCACY & SOCIAL JUSTICE",
+        "cause_area": "Social Justice Advocacy",
         "citation_ids": [
-          "[13]",
-          "[14]"
+          "[1]",
+          "[2]"
         ],
-        "evidence_rigor": "Grade C - Verified outcomes but limited quantitative beneficiary data",
+        "evidence_rigor": "Grade C - Verified outcomes but limited beneficiary data",
         "geographic_focus": [
           "United States"
         ],
-        "giving_style": "Capacity building and advocacy",
+        "giving_style": "Capacity Building",
         "tax_deductible": true,
         "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)",
-          "muallaf",
+          "fuqara",
+          "masakin",
           "fisabilillah",
           "riqab"
         ],
@@ -818,17 +654,16 @@
         "annual_revenue": 834440,
         "citation_ids": [
           "[1]",
-          "[6]",
-          "[16]"
+          "[3]"
         ],
         "cn_financial_score": 73,
         "cn_overall_score": 86.5,
         "fundraising_ratio": 0.09,
-        "industry_program_ratio": 0.75,
+        "industry_program_ratio": 0.826,
         "peer_count": 0,
         "peer_program_ratio_median": null,
         "program_expense_ratio": 0.8256,
-        "reserves_months": 5.3,
+        "reserves_months": 7.3,
         "revenue_cagr_3yr": 22.7,
         "working_capital_months": 7.3,
         "yearly_financials": [
@@ -853,13 +688,11 @@
         ]
       },
       "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
+        "citation_ids": [],
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct implementation of advocacy programs",
+        "grant_strategy": "Direct program implementation and capacity building",
         "is_significant_grantmaker": false,
         "regions_served": [
           "United States"
@@ -869,54 +702,50 @@
       },
       "headline": "The ICNA Council for Social Justice empowers the Muslim community to advocate for the rights of the poor and oppressed through systematic social justice initiatives.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support systemic social justice and advocacy for the American Muslim community through a high-growth, zakat-eligible institution.",
+        "best_for_summary": "Best for donors who want to support Muslim-led social justice advocacy and human rights education through a highly efficient, zakat-eligible vehicle.",
         "citation_ids": [
           "[1]",
-          "[2]",
-          "[13]"
+          "[3]"
         ],
         "donor_motivations": [
           "Want to fulfill zakat through advocacy for the oppressed",
-          "Value high program expense ratios where nearly all funds reach the mission",
-          "Support the development of Muslim institutional capacity in the US",
-          "Prioritize systemic change over direct service delivery"
+          "Value organizations with extremely low administrative overhead",
+          "Prioritize systemic change and capacity building over direct aid"
         ],
         "giving_considerations": [
-          "The organization focuses on capacity building rather than direct aid",
-          "Executive compensation is high relative to the small revenue base",
-          "Impact is measured through advocacy outcomes rather than individual beneficiary counts"
+          "The organization is in a growth phase with a 22.7% CAGR",
+          "Focus is on domestic US advocacy and social justice education",
+          "Executive compensation is higher than average for this revenue tier"
         ],
-        "not_ideal_for": "Donors seeking high-volume direct humanitarian aid (e.g., food parcels) or those requiring detailed cost-per-person metrics."
+        "not_ideal_for": "Donors seeking high-volume direct humanitarian aid (e.g., food parcels) or those requiring rigorous RCT-level impact data."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[4]",
-          "[10]"
+          "[1]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects verified outcomes in advocacy but a lack of rigorous third-party evaluation or beneficiary cost tracking.",
+        "evidence_grade_explanation": "Grade C reflects verified outcomes in advocacy but a <cite id=\"1\">lack of specific beneficiary counts</cite> to measure cost-effectiveness.",
         "external_evaluations": [
-          "Charity Navigator Accountability & Finance"
+          "Charity Navigator Beacon"
         ],
-        "outcome_tracking_years": 3,
+        "outcome_tracking_years": 0,
         "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The organization creates impact by mobilizing the Muslim community to advocate for human rights, though the specific causal pathway is not formally documented.",
-        "why_evidence_matters": "Evidence ensures that advocacy efforts translate into tangible policy changes or community protections."
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "ICNA CSJ creates impact by facilitating <cite id=\"1\">assertive Muslim involvement</cite> in human rights struggles through education and systematic advocacy.",
+        "why_evidence_matters": "Evidence ensures that advocacy efforts translate into tangible policy changes or community empowerment."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[6]",
-          "[17]"
+          "[3]"
         ],
-        "founded_year": 2016,
+        "founded_year": null,
         "maturity_stage": "Growth",
         "revenue_growth_3yr": 22.7,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a revenue of less than $1M and a high growth rate, the organization has significant capacity to absorb more funding for expanded advocacy.",
+        "room_for_funding_explanation": "With a <cite id=\"3\">22.7% revenue growth rate</cite> and expanding advocacy needs, the organization has significant capacity to absorb new funding.",
         "strategic_priorities": [
           "Systematic Muslim involvement in human rights",
-          "Capacity building for social justice"
+          "Social justice capacity building"
         ],
         "years_operating": 10
       },
@@ -926,73 +755,72 @@
         "ceo_compensation_pct_revenue": 3.73,
         "ceo_name": "Zahid Bukhari",
         "citation_ids": [
-          "[7]",
-          "[9]",
-          "[11]"
+          "[1]",
+          "[3]"
         ],
-        "employees_count": null,
+        "employees_count": 0,
         "geographic_reach": "United States",
         "has_conflict_policy": true,
         "has_financial_audit": false,
         "independent_board_pct": 1,
         "payroll_to_revenue_pct": 18.8,
         "programs_count": 1,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
+        "staff_per_million_revenue": 0,
+        "volunteers_count": 0
       },
       "peer_comparison": {
         "citation_ids": [
-          "[2]"
+          "[1]"
         ],
-        "differentiator": "Distinguished by an extremely high <cite id=\"2\">82.6% program expense ratio</cite> and high revenue growth.",
-        "peer_group": "Muslim Advocacy & Social Justice Orgs",
+        "differentiator": "Distinguished by an <cite id=\"1\">exceptionally high 82.6% program expense ratio</cite> compared to broader advocacy peers.",
+        "peer_group": "Muslim Advocacy & Social Justice",
         "similar_orgs": [
           "CAIR Foundation",
-          "Muslim Public Affairs Council"
+          "MPower Change"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Larger scale and legal focus",
+          "differentiator": "Larger legal advocacy focus",
           "name": "CAIR Foundation"
         },
         {
-          "differentiator": "Policy and media focus",
-          "name": "Muslim Public Affairs Council"
+          "differentiator": "Digital-first grassroots organizing",
+          "name": "MPower Change"
         },
         {
-          "differentiator": "Direct social service focus",
-          "name": "ICNA Relief"
+          "differentiator": "Policy and Hollywood engagement focus",
+          "name": "Muslim Public Affairs Council"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[2]"
+            "[1]",
+            "[3]"
           ],
-          "detail": "The organization directs <cite id=\"2\">82.6% of its total expenses</cite> toward its social justice and advocacy programs, significantly exceeding industry benchmarks.",
+          "detail": "The organization directs <cite id=\"1\">82.6% of its total expenses toward programs</cite>, which is significantly higher than the industry standard for advocacy groups.",
           "point": "Exceptional Program Efficiency"
         },
         {
           "citation_ids": [
-            "[6]"
+            "[1]"
           ],
-          "detail": "CSJ has demonstrated consistent expansion with a <cite id=\"6\">3-year revenue CAGR of 22.7%</cite>, growing from $554,308 in 2021 to over $834,000 in 2023.",
-          "point": "Strong Financial Growth"
+          "detail": "ICNA CSJ demonstrates high fiscal discipline, spending only <cite id=\"1\">$0.09 to raise every $1 in contributions</cite>.",
+          "point": "Strong Fundraising Efficiency"
         },
         {
           "citation_ids": [
-            "[7]",
-            "[8]"
+            "[1]"
           ],
-          "detail": "The charity maintains an <cite id=\"7\">independent board of 8 members</cite> and earned a <cite id=\"8\">perfect leadership score of 100</cite> from Charity Navigator.",
-          "point": "High Accountability Standards"
+          "detail": "The charity maintains <cite id=\"1\">7.3 months of working capital</cite>, providing a strong buffer for long-term operational sustainability.",
+          "point": "Robust Financial Stability"
         }
       ],
       "strengths_deep_dive": [
-        "The ICNA Council for Social Justice demonstrates a high degree of financial discipline, particularly in its fundraising operations where it spends only <cite id=\"5\">$0.09 to raise every $1</cite>. This efficiency allows the organization to maximize the impact of its <cite id=\"1\">$834,440 in annual contributions</cite>. Furthermore, the organization has built a resilient financial cushion, maintaining <cite id=\"3\">7.3 months of working capital</cite> in working capital, which provides stability for long-term advocacy campaigns. Its governance is characterized by transparency, with <cite id=\"9\">100% independent board members</cite> overseeing the strategic direction of the council."
+        "ICNA CSJ's financial health is anchored by its <cite id=\"1\">overall score of 86.86.5/100 from Charity Navigator</cite>, which highlights its accountability and leadership. The organization's leadership is particularly strong, earning a <cite id=\"1\">perfect score of 100 in the Leadership & Adaptability beacon</cite>. This is supported by a <cite id=\"3\">100% independent board of directors</cite>, ensuring that governance is free from internal conflicts of interest. Furthermore, the organization has shown consistent growth, with <cite id=\"3\">net assets increasing to $465,487 in 2023</cite>, up from $306,271 in 2021, reflecting a stable upward trajectory in its capacity to fund social justice work."
       ],
-      "summary": "The ICNA Council for Social Justice (CSJ) serves as a dedicated advocacy arm for the American Muslim community, focusing on the rights of the poor and oppressed. The organization operates with a lean financial model, reporting <cite id=\"1\">total revenue of $834,440</cite> in its most recent fiscal year. Its primary mission is to facilitate assertive Muslim involvement in social justice through systematic initiatives and human rights advocacy. Financial management appears highly efficient, with a <cite id=\"2\">program expense ratio of 82.6%</cite>, indicating that nearly all funds are directed toward its core social justice programming. The organization maintains strong fiscal health, evidenced by <cite id=\"3\">7.3 months of working capital</cite> and an <cite id=\"4\">overall score of 86.86.5/100 from Charity Navigator</cite>. By focusing on capacity building and community empowerment, CSJ addresses systemic issues affecting marginalized groups while maintaining <cite id=\"5\">fundraising efficiency of $0.10 per $1 raised</cite>.",
+      "summary": "The ICNA Council for Social Justice (ICNA CSJ) serves as a dedicated platform for <cite id=\"1\">systematic Muslim involvement in human rights advocacy</cite> and social justice initiatives. Operating as a specialized branch of the Islamic Circle of North America, the organization focuses on empowering the poor and oppressed through <cite id=\"1\">capacity building and social justice education</cite>. Financially, the organization demonstrated significant growth in its most recent filing, reporting <cite id=\"3\">total revenue of $834,440</cite>, which represents a <cite id=\"3\">3-year revenue CAGR of 22.7%</cite>. A defining characteristic of ICNA CSJ is its exceptional commitment to direct program funding; the organization maintains a <cite id=\"1\">program expense ratio of 82.6%</cite>, ensuring that nearly every dollar donated is utilized for its core mission rather than administrative overhead. Furthermore, the organization is <cite id=\"2\">verified as zakat-eligible</cite>, allowing Muslim donors to fulfill their religious obligations through programs that serve the <cite id=\"2\">fuqara, masakin, and fisabilillah</cite> categories. With <cite id=\"1\">7.3 months of working capital</cite>, the organization maintains a resilient financial position to sustain its advocacy efforts.",
       "zakat_guidance": {
         "classification": "fuqara",
         "eligibility": "ZAKAT-ELIGIBLE"

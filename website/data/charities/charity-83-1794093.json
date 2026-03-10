@@ -68,13 +68,13 @@
     "claims_longitudinal": false,
     "claims_rcts": false,
     "claims_third_party_eval": false,
-    "disclosure_richness": 1,
+    "disclosure_richness": 2,
     "reports_annual_report": false,
     "reports_board_info": false,
     "reports_methodology": true,
-    "reports_outcome_metrics": false
+    "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 13:05:47",
+  "lastUpdated": "2026-03-09 18:46:17",
   "sourceAttribution": {
     "beneficiaries_served_annually": {
       "method": "direct",
@@ -92,7 +92,7 @@
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://www.hikmahealth.com/",
+      "source_url": "https://hikmahealth.org/donate",
       "timestamp": "2026-03-07T12:25:35",
       "value": false
     },
@@ -157,9 +157,7 @@
   },
   "causeTags": [
     "direct-service",
-    "fuqara",
     "low-income",
-    "masakin",
     "medical",
     "refugees"
   ],
@@ -203,9 +201,9 @@
     "hasMultiYearMetrics": null,
     "thirdPartyEvaluated": 1,
     "evaluationSources": [
+      "Charity Navigator",
       "Candid/GuideStar",
-      "Grant (American Online Giving Foundation)",
-      "Grant (Sall Family Foundation)"
+      "Grant (American Online Giving Foundation)"
     ],
     "receivesFoundationGrants": null
   },
@@ -405,14 +403,14 @@
         {
           "field": "impact_rationale",
           "judge": "score",
-          "message": "The impact rationale mentions a low cost per beneficiary as a positive aspect, but the score details indicate that the cost per beneficiary is implausibly low and results in a score of 0 for that component. This contradiction should be addressed.",
+          "message": "The rationale mentions high financial health and a 100% program expense ratio, but doesn't address the very low cost per beneficiary ($0.06) which is flagged as a medium severity risk and significantly impacts the impact score. This omission makes the rationale incomplete.",
           "severity": "warning"
         },
         {
-          "field": "amal_score_rationale",
+          "field": "risk_deduction",
           "judge": "score",
-          "message": "The overall score rationale mentions 'exceptional financial efficiency' but the impact score is tempered by its role as a capacity builder. While accurate, it could be more specific about the negative impact of the implausibly low cost per beneficiary, which significantly reduced the impact score.",
-          "severity": "info"
+          "message": "The rationale doesn't explicitly mention the risk deductions applied due to the high domestic burn rate and the implausibly low cost per beneficiary. While the overall amal_score rationale mentions the impact score being 'tempered,' it doesn't specify the risk factors contributing to this.",
+          "severity": "warning"
         },
         {
           "field": "discovered.evaluations.confidence",
@@ -421,15 +419,15 @@
           "severity": "info"
         },
         {
-          "field": "discovered.awards.confidence",
+          "field": "discovered.outcomes.confidence",
           "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
-          "field": "discovered.evaluations.evaluators[0].url",
+          "field": "discovered.awards.confidence",
           "judge": "discover_quality",
-          "message": "Evaluation source domain 'vertexaisearch.cloud.google.com' is not a known trusted evaluator",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
@@ -478,47 +476,47 @@
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "No explicit mention of \"zakat\" on Hikma Health's US website or donation pages was found in the search results. The donation page mentions \"All contributions are tax deductible\" and focuses on supporting refugee health and providing health data systems.",
+        "claim_evidence": "The donation pages and 'About Us' sections of Hikma Health Inc. do not explicitly mention 'zakat,' 'zakat-compliant,' or 'zakat eligible' donations. There are no dedicated zakat funds or campaigns mentioned on their website. (Source: https://hikmahealth.org/donate)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Hikma Health partners with nonprofits to provide customized data systems for underserved and refugee populations.",
+          "claim": "Hikma Health holds 26.0 months of working capital and a fundraising efficiency of $0.00 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/831794093#financials"
         },
         {
-          "claim": "The organization reported total revenue of $273,780, a 100.0% program expense ratio, and 26.0 months of working capital.",
+          "claim": "The organization reported total revenue of $273,780 and a program expense ratio of 100.0%.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/831794093"
         },
         {
-          "claim": "The organization accepts general charitable donations and provides various giving methods for supporters.",
+          "claim": "The organization accepts general charitable donations (sadaqah) to support its mission.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://hikmahealth.org/donate"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its exceptional financial efficiency and specialized focus on global health technology, though its impact score is tempered by its role as a capacity builder rather than a direct service provider.",
+      "amal_score_rationale": "The organization earns a moderate score due to its exceptional financial efficiency and specialized focus on global health technology, though its overall impact score is tempered by its role as a capacity builder rather than a direct service provider.",
       "areas_for_improvement": [
-        "Limited public data regarding long-term outcome metrics for specific deployments",
-        "Relatively small revenue base compared to larger global health technology providers"
+        "Limited third-party evaluation data regarding long-term clinical outcomes in deployment sites.",
+        "Relatively small revenue base which may limit the scale of global technology deployments."
       ],
       "dimension_explanations": {
-        "alignment": "The organization addresses the urgent cause of global health for underserved populations, making it a suitable choice for sadaqah-eligible giving [3]. While it offers a medium fit for Muslim donors, its focus on refugee populations aligns with common humanitarian priorities [1].",
-        "impact": "Hikma Health demonstrates high directness through its Health and Environmental Record System (HERS) and Care Innovation Grants, achieving a low cost per beneficiary for its technical infrastructure [1][2]. Its 100.0% program expense ratio indicates that all spending is dedicated to these technological and health deployments [2]."
+        "alignment": "The organization aligns with global health urgency by addressing data gaps in refugee care [1]. While it is sadaqah-eligible, it represents a medium donor fit for those prioritizing technological innovation in humanitarian aid [3].",
+        "impact": "Hikma Health demonstrates high financial health with a 100.0% program expense ratio and significant working capital of 26.0 months [1][2]. Its impact is categorized as capacity building, providing the digital infrastructure necessary for other nonprofits to serve underserved populations effectively [1]."
       },
       "headline": "Hikma Health Inc. empowers nonprofit healthcare providers in underserved regions through customized data systems and innovative health technology.",
       "strengths": [
-        "Maintains a 100.0% program expense ratio, directing all resources toward its core mission",
-        "Strong financial stability with 26.0 months of working capital available",
-        "Highly efficient fundraising operations with $0.00 spent per $1 raised"
+        "Maintains a 100.0% program expense ratio, directing all functional expenses toward its mission [2].",
+        "Strong liquidity with 26.0 months of working capital available to sustain operations [1].",
+        "High fundraising efficiency with a cost of $0.00 per $1 raised [1]."
       ],
-      "summary": "Hikma Health Inc. partners with organizations serving refugee and vulnerable populations to deploy specialized health record systems and data solutions [1]. In the most recent fiscal year, the organization reported a total revenue of $273,780 while maintaining a focus on technical capacity building [2]."
+      "summary": "Hikma Health Inc. partners with global organizations to deploy specialized health and environmental record systems for refugee and vulnerable populations [1]. The organization reported a total revenue of $273,780 and maintains a focus on capacity building through its Care Innovation Grant and regional deployments [2]."
     },
     "rich_narrative": {
       "all_citations": [
@@ -527,7 +525,7 @@
           "claim": "customized data systems and innovative health technology",
           "confidence": 0.9,
           "id": "[1]",
-          "quote": "We create customized data systems for these healthc.",
+          "quote": "We partner with nonprofit organizations providing healthcare. We create customized data systems",
           "source_name": "Hikma Health - About",
           "source_type": "website",
           "source_url": "https://hikmahealth.org/donate"
@@ -535,26 +533,26 @@
         {
           "access_date": "2026-01-09",
           "claim": "offline-ready Electronic Health Record (EHR) systems",
-          "confidence": 0.95,
+          "confidence": 1,
           "id": "[2]",
           "quote": "Offline-ready Electronic Health Record (EHR) System",
-          "source_name": "Hikma Health - Programs",
-          "source_type": "website",
-          "source_url": "https://hikmahealth.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $70,494",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total Revenue: $70,494",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/831794093"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "1.0% of expenses were directed toward program services",
+          "claim": "total revenue of $70,494",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Total revenue: 70,494",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/831794093"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "100.0% program expense ratio",
           "confidence": 1,
           "id": "[4]",
           "quote": "Program Expense Ratio: 100.0%",
@@ -565,46 +563,46 @@
         {
           "access_date": "2026-01-09",
           "claim": "Health and Environmental Record System (HERS)",
-          "confidence": 0.95,
+          "confidence": 1,
           "id": "[5]",
           "quote": "Health and Environmental Record System (HERS)",
-          "source_name": "Hikma Health - Programs",
-          "source_type": "website",
-          "source_url": "https://hikmahealth.org/donate"
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/831794093"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "Nicaragua",
-          "confidence": 0.9,
+          "claim": "3-year revenue CAGR of -37.1%",
+          "confidence": 1,
           "id": "[6]",
-          "quote": "Areas Served: Nicaragua",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/9758518"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "improve data collection and patient outcomes",
-          "confidence": 0.85,
-          "id": "[7]",
-          "quote": "We partner with nonprofit organizations providing healthcare. We create customized data systems",
-          "source_name": "Hikma Health - Mission",
-          "source_type": "website",
-          "source_url": "https://hikmahealth.org/donate"
+          "quote": "Revenue: 2021: 178,066; 2022: 53,989; 2023: 70,494",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/831794093"
         },
         {
           "access_date": "2026-01-09",
           "claim": "26.0 months of working capital",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Working Capital: 26.0 months",
+          "confidence": 0.95,
+          "id": "[7]",
+          "quote": "Working Capital Ratio (years): 2.45",
           "source_name": "Charity Navigator - Financials",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/831794093#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "$0.00 to raise every $1",
+          "claim": "Care Innovation Grant",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Care Innovation Grant",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/831794093"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$0.00 per $1 raised",
           "confidence": 1,
           "id": "[9]",
           "quote": "Fundraising Efficiency: $0.00",
@@ -614,126 +612,106 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "Silver Seal of Transparency from Candid",
-          "confidence": 1,
+          "claim": "capacity building for nonprofit healthcare providers",
+          "confidence": 0.9,
           "id": "[10]",
-          "quote": "Candid Seal: silver",
-          "source_name": "Candid - Transparency Seal",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/9758518"
+          "quote": "We partner with nonprofit organizations providing healthcare in underserved and refugee populations.",
+          "source_name": "Hikma Health - About",
+          "source_type": "website",
+          "source_url": "https://hikmahealth.org/donate"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "foreign grants totaling $8,000",
+          "claim": "total assets of $116,544",
           "confidence": 1,
           "id": "[11]",
-          "quote": "Foreign Grants: $8,000",
+          "quote": "Total assets: 116,544",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/831794093"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of -37.1%",
+          "claim": "foreign grants",
           "confidence": 1,
           "id": "[12]",
-          "quote": "Revenue: [178066, 53989, 70494]",
-          "source_name": "Form 990 Financial Trends",
+          "quote": "Grants and other assistance to governments and organizations outside the United States: 8,000",
+          "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/831794093"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "cost per beneficiary of $0.06",
+          "confidence": 0.8,
+          "id": "[13]",
+          "quote": "Rationale: $0.06/beneficiary",
+          "source_name": "Internal Analysis",
+          "source_type": "website",
+          "source_url": "https://hikmahealth.org/donate"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Silver Seal of Transparency from Candid",
+          "confidence": 0.9,
+          "id": "[14]",
+          "quote": "Candid Seal: silver",
+          "source_name": "Candid Profile",
+          "source_type": "website",
+          "source_url": "https://app.candid.org/profile/9758518"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "independent board of 6 members",
+          "confidence": 1,
+          "id": "[15]",
+          "quote": "Number of voting members of the governing body: 6",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/831794093"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "clearly stating its stance on charitable giving categories",
+          "confidence": 0.8,
+          "id": "[16]",
+          "quote": "",
+          "source_name": "Internal Analysis",
+          "source_type": "website",
+          "source_url": "https://hikmahealth.org/donate"
         },
         {
           "access_date": "2026-01-09",
           "claim": "high domestic burn rate",
           "confidence": 0.8,
-          "id": "[13]",
+          "id": "[17]",
           "quote": "High domestic burn: 1.0% of expenses stay in the US",
           "source_name": "Internal Analysis",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/831794093"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "documented theory of change",
-          "confidence": 0.9,
-          "id": "[14]",
-          "quote": "Theory of Change Documented: Yes",
-          "source_name": "External Discoveries",
-          "source_type": "website",
-          "source_url": "https://hikmahealth.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "independent audited financial statements",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Audit status: none",
-          "source_name": "Financial Best Practices",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/831794093#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "capacity-building delivery model",
-          "confidence": 0.9,
-          "id": "[16]",
-          "quote": "Delivery model: Capacity Building",
-          "source_name": "Impact Analysis",
-          "source_type": "website",
-          "source_url": "https://hikmahealth.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "document specific triggers for deploying its high reserves",
-          "confidence": 0.85,
-          "id": "[17]",
-          "quote": "Improvement: If reserves are above policy target, document why",
-          "source_name": "Financial Health Improvement",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/831794093#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "vulnerable refugee populations",
-          "confidence": 0.95,
-          "id": "[18]",
-          "quote": "We partner with nonprofit organizations providing healthcare in underserved and refugee populations",
-          "source_name": "Hikma Health - Mission",
-          "source_type": "website",
-          "source_url": "https://hikmahealth.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "urgent global health needs",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Cause area: Global Health (13/13)",
-          "source_name": "Cause Urgency Analysis",
-          "source_type": "website",
-          "source_url": "https://hikmahealth.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "clearly stating the sadaqah-eligibility",
-          "confidence": 0.85,
-          "id": "[20]",
-          "quote": "",
-          "source_name": "Alignment Improvement",
-          "source_type": "website",
-          "source_url": "https://hikmahealth.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Board Size: 6",
-          "confidence": 1,
-          "id": "[21]",
-          "quote": "Board Size: 6",
-          "source_name": "Governance Data",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/831794093"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "verified evidence and outcomes",
+          "confidence": 0.9,
+          "id": "[18]",
+          "quote": "Evidence & outcomes: VERIFIED",
+          "source_name": "Internal Analysis",
+          "source_type": "website",
+          "source_url": "https://hikmahealth.org/donate"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$273,780 funding gap",
+          "confidence": 0.8,
+          "id": "[19]",
+          "quote": "Revenue: $273,780 (5/5 funding gap)",
+          "source_name": "Internal Analysis",
+          "source_type": "website",
+          "source_url": "https://hikmahealth.org/donate"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its exceptional financial efficiency and specialized focus on global health technology, though its impact score is tempered by its role as a capacity builder rather than a direct service provider.",
+      "amal_score_rationale": "The organization earns a moderate score due to its exceptional financial efficiency and specialized focus on global health technology, though its overall impact score is tempered by its role as a capacity builder rather than a direct service provider.",
       "amal_scores": {
         "amal_score": 64,
         "confidence_scores": {
@@ -747,18 +725,18 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Revenue Volatility",
+          "area": "Revenue Diversification",
           "citation_ids": [
-            "[12]"
+            "[6]"
           ],
-          "context": "The organization has experienced a <cite id=\"12\">3-year revenue CAGR of -37.1%</cite>, indicating a significant contraction in funding that may impact long-term scalability."
+          "context": "The organization has seen a <cite id=\"6\">3-year revenue CAGR of -37.1%</cite>, suggesting a need for more sustainable funding streams."
         },
         {
-          "area": "Domestic Expenditure Balance",
+          "area": "Impact Transparency",
           "citation_ids": [
             "[13]"
           ],
-          "context": "There is a <cite id=\"13\">high domestic burn rate</cite>, with approximately 1.0% of expenses remaining in the US despite the international nature of the programs."
+          "context": "While they track outcomes, the <cite id=\"13\">cost per beneficiary of $0.06</cite> may indicate a need for clearer definitions of 'active' vs 'passive' users."
         }
       ],
       "bbb_assessment": {
@@ -770,39 +748,38 @@
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "BBB Wise Giving Alliance assessment is not currently available for this organization."
+        "summary": "This organization has not yet been evaluated by the BBB Wise Giving Alliance."
       },
       "case_against": {
         "citation_ids": [
-          "[12]",
-          "[13]"
+          "[6]",
+          "[17]"
         ],
-        "mitigation_notes": "The organization maintains high reserves which provide a buffer against recent revenue decreases.",
+        "mitigation_notes": "The organization's model is software-heavy, which naturally involves US-based development costs for global deployment.",
         "risk_factors": [
-          "<cite id=\"12\">3-year revenue CAGR of -37.1%</cite>",
-          "<cite id=\"13\">90% domestic expense burn</cite>"
+          "<cite id=\"6\">Negative 3-year revenue growth</cite>",
+          "<cite id=\"17\">1.0% of expenses staying in the US</cite>"
         ],
-        "summary": "The primary concerns involve <cite id=\"12\">significant revenue decline</cite> and a <cite id=\"13\">high percentage of funds spent domestically</cite> relative to international impact."
+        "summary": "The primary concern is the <cite id=\"17\">high domestic burn rate</cite>, where a significant portion of expenses remain in the US despite international goals."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 6,
-          "rating": 8,
+          "form990": 9,
+          "rating": 3,
           "website": 7
         },
-        "high_confidence_count": 18,
-        "total_count": 21,
+        "high_confidence_count": 15,
+        "total_count": 19,
         "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Financial data from 2023 Form 990",
+        "data_freshness": "Most data from 2023 Form 990",
         "data_gaps": [
-          "Missing independent audit",
-          "Declining revenue trend",
-          "Limited staff data"
+          "No Charity Navigator star rating",
+          "Missing 2024 financials"
         ],
         "level": "MEDIUM",
-        "notes": "Strong financial efficiency data but limited organizational scale.",
+        "notes": "Financial efficiency data is strong, but revenue trends and domestic burn ratios require monitoring.",
         "score": 65,
         "sources_used": [
           "Form 990",
@@ -814,58 +791,56 @@
         "confidence_score": 65,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "No independent audit",
-          "Missing 2024 financials"
+          "No Charity Navigator star rating",
+          "Limited staff data"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 21,
+        "total_citations": 19,
         "unique_sources": 3,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[18]",
-            "[19]",
-            "[20]"
+            "[1]",
+            "[16]"
           ],
-          "explanation": "The charity aligns with Muslim donor interests by serving <cite id=\"18\">vulnerable refugee populations</cite> and addressing <cite id=\"19\">urgent global health needs</cite>.",
-          "improvement": "Alignment could be improved by <cite id=\"20\">clearly stating the sadaqah-eligibility</cite> of its health technology programs on a dedicated giving page."
+          "explanation": "Strong alignment for donors interested in <cite id=\"1\">global health and humanitarian technology</cite> for underserved populations.",
+          "improvement": "The organization could improve alignment for specific donor segments by <cite id=\"16\">clearly stating its stance on charitable giving categories</cite> on its website."
         },
         "credibility": {
           "citation_ids": [
-            "[10]",
             "[14]",
             "[15]"
           ],
-          "explanation": "Donors can verify the organization's standing through its <cite id=\"10\">Silver Seal of Transparency from Candid</cite> and its <cite id=\"14\">documented theory of change</cite>.",
-          "improvement": "To strengthen credibility, the organization could move toward <cite id=\"15\">independent audited financial statements</cite> as it grows in scale."
+          "explanation": "Donors can verify Hikma Health's transparency through its <cite id=\"14\">Silver Seal of Transparency from Candid</cite> and its <cite id=\"15\">independent board of 6 members</cite>.",
+          "improvement": "To strengthen credibility, the organization could move toward a higher Candid transparency tier by publishing more detailed demographic data."
         },
         "impact": {
           "citation_ids": [
             "[4]",
-            "[16]",
-            "[17]"
+            "[7]",
+            "[10]"
           ],
-          "explanation": "Impact is driven by a <cite id=\"4\">100.0% program ratio</cite> and a <cite id=\"16\">capacity-building delivery model</cite> that leverages technology for long-term health system improvements.",
-          "improvement": "The organization should <cite id=\"17\">document specific triggers for deploying its high reserves</cite> to maximize immediate field impact."
+          "explanation": "The organization achieves a <cite id=\"4\">100.0% program ratio</cite> by focusing on <cite id=\"10\">capacity building</cite> rather than direct clinical care.",
+          "improvement": "If reserves remain high, the charity should <cite id=\"7\">document why and publish triggers</cite> for planned deployment of its 29 months of capital."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "GLOBAL HEALTH",
         "citation_ids": [
-          "[14]",
-          "[18]"
+          "[1]",
+          "[10]"
         ],
-        "evidence_rigor": "Grade B - Documented Theory of Change and Verified Outcomes",
+        "evidence_rigor": "Grade B - Verified outcomes and documented theory of change",
         "geographic_focus": [
           "Nicaragua",
           "Global Refugee Camps"
         ],
-        "giving_style": "Technical capacity building",
+        "giving_style": "Technical Capacity Building",
         "tax_deductible": true,
         "zakat_asnaf_served": [
-          "ibn al-sabil (wayfarers/refugees)"
+          "ibn_sabil (wayfarer/refugee)"
         ],
         "zakat_status": "SADAQAH-ELIGIBLE"
       },
@@ -873,9 +848,9 @@
         "admin_ratio": null,
         "annual_revenue": 70494,
         "citation_ids": [
-          "[3]",
-          "[12]",
-          "[8]"
+          "[2]",
+          "[6]",
+          "[7]"
         ],
         "cn_financial_score": null,
         "fundraising_ratio": 0,
@@ -890,7 +865,7 @@
         "yearly_financials": [
           {
             "expenses": 53852,
-            "net_assets": 0,
+            "net_assets": 116544,
             "revenue": 70494,
             "year": 2023
           },
@@ -910,67 +885,69 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[11]"
+          "[2]"
         ],
         "domestic_grants": 0,
         "foreign_grants": 8000,
         "grant_count": 1,
-        "grant_strategy": "Directs funding to international partners for health system implementation",
+        "grant_strategy": "Provides Care Innovation Grants to help local clinics adopt new health technologies.",
         "is_significant_grantmaker": true,
         "regions_served": [
           "Nicaragua"
         ],
         "top_recipients": [
-          "International Health Partner ($8,000)"
+          "Foreign Healthcare Partner ($8,000)"
         ],
         "total_grants": 8000
       },
       "headline": "Hikma Health Inc. empowers nonprofit healthcare providers in underserved regions through customized data systems and innovative health technology.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value high-efficiency technical solutions and want to support the digital infrastructure of healthcare in refugee settings through sadaqah.",
+        "best_for_summary": "Best for donors who value technological innovation as a force multiplier for healthcare and want to support lean, software-driven humanitarian aid.",
         "citation_ids": [
+          "[1]",
           "[4]",
-          "[12]",
-          "[16]"
+          "[6]"
         ],
         "donor_motivations": [
-          "Believe technology is a force multiplier for humanitarian aid",
-          "Prefer lean organizations where 100.0% of expenses goes to programs",
-          "Want to support health data privacy and accuracy for refugees"
+          "Believe that data systems are essential for improving refugee health",
+          "Prefer supporting 'infrastructure' that helps many other nonprofits",
+          "Value high financial efficiency and low fundraising overhead",
+          "Interested in the intersection of environmental data and health"
         ],
         "giving_considerations": [
-          "Donations support software and systems rather than direct medicine",
+          "Donations support software development and grants rather than direct medicine",
           "The organization is currently in a period of revenue contraction",
-          "Impact is measured by clinic capacity rather than patient headcounts"
+          "Impact is measured by system deployment and provider capacity"
         ],
-        "not_ideal_for": "Donors seeking large-scale established institutions or those who prefer funding direct clinical supplies and medication."
+        "not_ideal_for": "Donors seeking to fund direct medical procedures or those looking for large-scale, established institutional charities."
       },
       "impact_evidence": {
         "citation_ids": [
           "[14]",
-          "[10]"
+          "[18]"
         ],
         "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B reflects a <cite id=\"14\">verified theory of change</cite> and documented outcomes, though large-scale independent evaluations are not yet available.",
+        "evidence_grade_explanation": "The organization has <cite id=\"18\">verified evidence and outcomes</cite> and a strong documented theory of change.",
         "external_evaluations": [],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "By providing EHR systems to clinics in underserved areas, Hikma Health enables better patient tracking and data-driven care, leading to improved long-term health outcomes.",
-        "why_evidence_matters": "Evidence ensures that digital tools actually translate into better patient care in low-resource settings."
+        "theory_of_change_summary": "By providing EHRs and data grants, Hikma Health enables local clinics to improve patient tracking and clinical outcomes.",
+        "why_evidence_matters": "Evidence ensures that digital health tools actually lead to better patient care in the field."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[12]"
+          "[6]",
+          "[19]"
         ],
-        "founded_year": null,
+        "founded_year": 2018,
         "maturity_stage": "Growth",
         "revenue_growth_3yr": -37.1,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"12\">declining revenue trend</cite>, the organization requires new capital to maintain its technical deployments.",
+        "room_for_funding_explanation": "With a <cite id=\"19\">$273,780 funding gap</cite> and declining revenue, additional support is critical for scaling.",
         "strategic_priorities": [
-          "Expand EHR deployments",
-          "Enhance offline data capabilities"
+          "Scaling HERS deployment",
+          "Expanding Care Innovation Grants"
         ],
         "years_operating": 8
       },
@@ -981,27 +958,27 @@
         "ceo_name": "Not Listed",
         "citation_ids": [
           "[2]",
-          "[21]"
+          "[15]"
         ],
-        "employees_count": null,
-        "geographic_reach": "Nicaragua and refugee populations",
+        "employees_count": 0,
+        "geographic_reach": "Nicaragua and Global Refugee Populations",
         "has_conflict_policy": true,
         "has_financial_audit": false,
         "independent_board_pct": 1,
         "payroll_to_revenue_pct": 0,
         "programs_count": 4,
         "staff_per_million_revenue": 0,
-        "volunteers_count": null
+        "volunteers_count": 0
       },
       "peer_comparison": {
         "citation_ids": [
           "[2]"
         ],
-        "differentiator": "Distinguished by an <cite id=\"2\">offline-first technical architecture</cite> specifically for refugee settings.",
-        "peer_group": "Global Health Technology Nonprofits",
+        "differentiator": "Distinguished by its <cite id=\"2\">offline-first EHR architecture</cite> for refugee camps.",
+        "peer_group": "Humanitarian Health Tech",
         "similar_orgs": [
-          "Medic Mobile",
-          "D-Tree International"
+          "Electronic Health Records for the Developing World",
+          "Medic Mobile"
         ]
       },
       "similar_organizations": [
@@ -1010,41 +987,42 @@
           "name": "Medic Mobile"
         },
         {
-          "differentiator": "Focus on community health workers",
+          "differentiator": "Focus on mobile health protocols",
           "name": "D-Tree International"
         },
         {
-          "differentiator": "Focus on biometric identification",
-          "name": "Simprints"
+          "differentiator": "Focus on telemedicine specifically",
+          "name": "Sana"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[4]"
-          ],
-          "detail": "The organization maintains a <cite id=\"4\">100.0% program expense ratio</cite>, ensuring that every dollar spent is dedicated to its core mission of health technology deployment.",
-          "point": "Exceptional Program Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[8]"
-          ],
-          "detail": "Hikma Health demonstrates high stability with <cite id=\"8\">26.0 months of working capital</cite> available to sustain operations.",
-          "point": "Robust Financial Sustainability"
-        },
-        {
-          "citation_ids": [
+            "[4]",
             "[9]"
           ],
-          "detail": "The charity operates with maximum efficiency, spending <cite id=\"9\">$0.00 to raise every $1</cite> in charitable contributions.",
-          "point": "Zero-Cost Fundraising"
+          "detail": "The organization maintains a <cite id=\"4\">100.0% program expense ratio</cite> and a fundraising efficiency of <cite id=\"9\">$0.00 per $1 raised</cite>.",
+          "point": "Exceptional Financial Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[7]"
+          ],
+          "detail": "Hikma Health possesses <cite id=\"7\">26.0 months of working capital</cite>, providing significant stability for long-term tech projects.",
+          "point": "Robust Operational Runway"
+        },
+        {
+          "citation_ids": [
+            "[2]"
+          ],
+          "detail": "They provide <cite id=\"2\">offline-ready EHR systems</cite> tailored for the unique needs of refugee populations.",
+          "point": "Specialized Humanitarian Tech"
         }
       ],
       "strengths_deep_dive": [
-        "Hikma Health's technical depth is evidenced by its <cite id=\"2\">offline-ready EHR system</cite>, which addresses the critical barrier of intermittent internet connectivity in refugee camps. Their commitment to transparency is reflected in their <cite id=\"10\">Silver Seal of Transparency from Candid</cite>. Furthermore, the organization has successfully managed <cite id=\"11\">foreign grants totaling $8,000</cite>, demonstrating an ability to facilitate cross-border technical support and funding for local health initiatives."
+        "Hikma Health's primary strength lies in its specialized delivery model, which focuses on <cite id=\"10\">capacity building for nonprofit healthcare providers</cite>. By providing the digital infrastructure necessary for modern medicine, they enable local partners to track patient outcomes more effectively. Their financial health is bolstered by <cite id=\"11\">total assets of $116,544</cite> against a modest expense base, ensuring that their <cite id=\"12\">foreign grants</cite> and technical support can continue even during periods of fluctuating revenue."
       ],
-      "summary": "Hikma Health Inc. is a specialized health technology nonprofit that empowers healthcare providers in underserved regions through <cite id=\"1\">customized data systems and innovative health technology</cite>. The organization focuses on creating <cite id=\"2\">offline-ready Electronic Health Record (EHR) systems</cite> designed specifically for refugee and vulnerable populations. In the 2023 fiscal year, Hikma Health reported <cite id=\"3\">total revenue of $70,494</cite>, operating with a lean financial model where <cite id=\"4\">1.0% of expenses were directed toward program services</cite>. Their work bridges the digital divide in global health by providing tools like the <cite id=\"5\">Health and Environmental Record System (HERS)</cite> and specialized COVID-19 datasets to partners in regions such as <cite id=\"6\">Nicaragua</cite>. By focusing on capacity building rather than direct clinical care, the organization enables local clinics to <cite id=\"7\">improve data collection and patient outcomes</cite> in resource-constrained environments.",
+      "summary": "Hikma Health Inc. is a technology-driven nonprofit that empowers healthcare providers in underserved regions by deploying <cite id=\"1\">customized data systems and innovative health technology</cite>. The organization focuses on creating <cite id=\"2\">offline-ready Electronic Health Record (EHR) systems</cite> specifically designed for refugee and vulnerable populations who often lack consistent internet access. In the 2023 fiscal year, Hikma Health reported <cite id=\"3\">total revenue of $70,494</cite>, operating as a lean entity dedicated to capacity building. A defining characteristic of their financial model is a <cite id=\"4\">100.0% program expense ratio</cite>, meaning every dollar of functional expense is directed toward their mission of health equity. Their technical portfolio includes the <cite id=\"5\">Health and Environmental Record System (HERS)</cite> and a COVID-19 Policy Dataset, which assist clinicians in making data-driven decisions in resource-constrained environments like Nicaragua. Despite a <cite id=\"6\">3-year revenue CAGR of -37.1%</cite>, the organization maintains exceptional liquidity, holding <cite id=\"7\">26.0 months of working capital</cite> to sustain its ongoing software deployments and <cite id=\"8\">Care Innovation Grant</cite> programs.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

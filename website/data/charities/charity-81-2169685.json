@@ -58,17 +58,8 @@
     "employeesCount": null,
     "volunteersCount": null
   },
-  "websiteEvidenceSignals": {
-    "claims_longitudinal": false,
-    "claims_rcts": false,
-    "claims_third_party_eval": false,
-    "disclosure_richness": 1,
-    "reports_annual_report": false,
-    "reports_board_info": false,
-    "reports_methodology": false,
-    "reports_outcome_metrics": true
-  },
-  "lastUpdated": "2026-03-09 13:13:19",
+  "websiteEvidenceSignals": null,
+  "lastUpdated": "2026-03-09 18:45:48",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -137,10 +128,6 @@
   },
   "causeTags": [
     "faith-based",
-    "fisabilillah",
-    "fuqara",
-    "masakin",
-    "muallaf",
     "muslim-led"
   ],
   "programFocusTags": [
@@ -152,7 +139,7 @@
   "grantsData": null,
   "evaluationTrack": "STANDARD",
   "foundedYear": 2016,
-  "scoreSummary": "Islamska Zajednica Bosnjaka Sjeverne Amerike shows moderate impact and moderate alignment (minor risk deductions applied).",
+  "scoreSummary": "Islamska Zajednica Bosnjaka Sjeverne Amerike shows good impact and moderate alignment (minor risk deductions applied).",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -161,7 +148,20 @@
   "beneficiariesSource": null,
   "beneficiariesConfidence": null,
   "beneficiariesExcludedFromScoring": false,
-  "evidenceQuality": null,
+  "evidenceQuality": {
+    "hasOutcomeMethodology": null,
+    "hasMultiYearMetrics": null,
+    "thirdPartyEvaluated": 1,
+    "evaluationSources": [
+      "Charity Navigator",
+      "BBB Wise Giving Alliance",
+      "Candid/GuideStar",
+      "4-Star Rating (Charity Navigator)",
+      "Accredited Charity (BBB Wise Giving Alliance)",
+      "Featured Organization (Devex)"
+    ],
+    "receivesFoundationGrants": null
+  },
   "zakatClaimEvidence": null,
   "archetype": "SOVEREIGNTY",
   "ui_signals_v1": {
@@ -171,9 +171,9 @@
     "assessment_label": "Context Dependent",
     "archetype_code": "SOVEREIGNTY",
     "archetype_label": "Sovereignty Builder",
-    "evidence_stage": "Building",
+    "evidence_stage": "Established",
     "signal_states": {
-      "evidence": "Limited",
+      "evidence": "Strong",
       "financial_health": "Strong",
       "donor_fit": "Limited",
       "risk": "Limited"
@@ -187,6 +187,13 @@
     {
       "type": "risk_deduction",
       "severity": "low",
+      "headline": "No outcome measurement or metrics tracking",
+      "detail": "Source: Website/Candid",
+      "data_points": {}
+    },
+    {
+      "type": "risk_deduction",
+      "severity": "low",
       "headline": "No documented theory of change",
       "detail": "Source: Website",
       "data_points": {}
@@ -195,14 +202,14 @@
   "amalEvaluation": {
     "charity_ein": "81-2169685",
     "charity_name": "ICNAB",
-    "amal_score": 40,
+    "amal_score": 47,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:27:22",
     "rubric_version": "5.2.0",
     "confidence_scores": {
       "alignment": 20,
       "data_confidence": 0.6,
-      "impact": 21
+      "impact": 29
     },
     "score_details": {
       "alignment": {
@@ -307,13 +314,13 @@
             "status": "full"
           },
           {
-            "evidence": "Evidence & outcomes: REPORTED",
-            "improvement_suggestion": "Seek external evaluation or track outcomes over at least 3 years.",
-            "improvement_value": 6,
+            "evidence": "Evidence & outcomes: VERIFIED",
+            "improvement_suggestion": null,
+            "improvement_value": 0,
             "name": "Evidence & Outcomes",
             "possible": 10,
-            "scored": 2,
-            "status": "missing"
+            "scored": 10,
+            "status": "full"
           },
           {
             "evidence": "Theory of change: ABSENT",
@@ -337,22 +344,34 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 21/50",
+        "rationale": "Delivery: capacity building; Impact 29/50",
         "rubric_archetype": "COMMUNITY",
-        "score": 21
+        "score": 29
       },
       "judge_issues": [
         {
           "field": "discovered.zakat.confidence",
           "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
+          "message": "Low confidence (0.00) for zakat discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
-          "field": "discovered.outcomes.confidence",
+          "field": "discovered.evaluations.confidence",
           "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
           "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.zakat",
+          "judge": "discover_quality",
+          "message": "Zakat acceptance claimed but no evidence, URL, or direct verification provided",
+          "severity": "warning"
         },
         {
           "field": "source_attribution.has_audited_financials.source_url",
@@ -365,13 +384,26 @@
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
           "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
         }
       ],
-      "risk_deduction": -1,
+      "risk_deduction": -2,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "1 risk(s) identified.",
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "2 risk(s) identified.",
         "risks": [
+          {
+            "category": "impact",
+            "data_source": "Website/Candid",
+            "description": "No outcome measurement or metrics tracking",
+            "mitigation": null,
+            "severity": "low"
+          },
           {
             "category": "impact",
             "data_source": "Website",
@@ -380,9 +412,9 @@
             "severity": "low"
           }
         ],
-        "total_deduction": -1
+        "total_deduction": -2
       },
-      "score_summary": "Islamska Zajednica Bosnjaka Sjeverne Amerike shows moderate impact and moderate alignment (minor risk deductions applied).",
+      "score_summary": "Islamska Zajednica Bosnjaka Sjeverne Amerike shows good impact and moderate alignment (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -394,44 +426,44 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization focuses on fundraising for Bosniak-based Islamic centers and maintains specific financial health metrics.",
+          "claim": "The organization reported a program expense ratio of 97.9% and holds 9.2 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/812169685#financials"
         },
         {
-          "claim": "The charity reported total revenue of $4,520,145 and a program expense ratio of 97.9%.",
+          "claim": "Total revenue reached $4,520,145 with a fundraising efficiency of $0.00 per $1 raised.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/812169685"
         }
       ],
-      "amal_score_rationale": "The organization demonstrates excellent financial efficiency and liquidity, though its overall score is moderated by a specialized mission focus and a lack of third-party impact verification.",
+      "amal_score_rationale": "The organization demonstrates excellent financial efficiency and lean operations, though its overall score is moderated by a specialized focus on religious infrastructure and a lack of third-party impact verification.",
       "areas_for_improvement": [
-        "Limited public documentation regarding specific program outcomes and beneficiary metrics",
-        "Narrow focus on capacity building for a specific ethnic-religious demographic"
+        "Limited public documentation regarding specific long-term impact metrics for individual centers",
+        "Narrow donor alignment for those seeking broad humanitarian rather than specific religious-cultural causes"
       ],
       "dimension_explanations": {
-        "alignment": "The organization is sadaqah-eligible and serves a specific religious and cultural niche for the Bosniak diaspora [1]. While it maintains a strong track record within its community, the alignment score reflects a specialized donor fit and a focus on religious-cultural preservation rather than urgent humanitarian relief [2].",
-        "impact": "The charity operates with a program expense ratio of 97.9%, indicating that nearly all revenue is directed toward its mission of supporting mosques and community centers [2]. While it holds 9.2 months of working capital, the impact is categorized as capacity building, as it focuses on the infrastructure of religious institutions rather than direct social service delivery [1]."
+        "alignment": "The mission is deeply rooted in religious and cultural preservation for the Bosniak diaspora, which represents a specific niche for donors [1]. Its track record is established within this community, though it may not align with donors seeking urgent humanitarian relief [2].",
+        "impact": "The charity shows a high degree of financial health, directing 97.9% of its $4,520,145 revenue toward its programs [1][2]. While it effectively builds capacity for Bosniak mosques, there is limited external data to measure the direct social outcomes of these investments [1]."
       },
-      "headline": "Islamska Zajednica Bosnjaka Sjeverne Amerike serves as a vital financial pillar for Bosniak Islamic centers across North America, ensuring the continuity of religious and cultural community hubs.",
+      "headline": "Islamska Zajednica Bosnjaka Sjeverne Amerike serves as a vital financial pillar for Bosniak Islamic centers across North America, focusing on community infrastructure and religious preservation.",
       "strengths": [
-        "High program expense ratio of 97.9% ensures the vast majority of funds reach community initiatives",
-        "Exceptional fundraising efficiency of $0.00 per $1 raised",
-        "Strong liquidity with 9.2 months of working capital"
+        "High program expense ratio of 97.9%, indicating the vast majority of funds go directly to initiatives [1]",
+        "Exceptional fundraising efficiency with a cost of $0.00 per $1 raised [2]",
+        "Strong liquidity with 9.2 months of working capital available [1]"
       ],
-      "summary": "The organization focuses on fundraising for charitable purposes and key initiatives to support Bosniak-based Islamic centers in North America [1]. In the most recent fiscal year, the charity reported a total revenue of $4,520,145 to facilitate these community programs [2]."
+      "summary": "The organization functions as a central fundraising body dedicated to supporting Bosniak-based Islamic centers and key initiatives within the United States and Canada [1]. In the most recent fiscal period, the charity reported a total revenue of $4,520,145 to sustain these religious and cultural programs [2]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "97.9% program expense ratio",
+          "claim": "program expense ratio of 97.9%",
           "confidence": 0.9,
           "id": "[1]",
           "quote": "Program Expense Ratio: 97.9%",
-          "source_name": "Charity Navigator - IZBSA",
+          "source_name": "Charity Navigator - Financials",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/812169685#financials"
         },
@@ -444,15 +476,35 @@
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/812169685"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3-year revenue CAGR of 42.2%",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Revenue grew from $2.2M in 2021 to $4.5M in 2023",
+          "source_name": "Internal Financial Analysis",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/812169685"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "no beneficiary data available",
+          "confidence": 0.95,
+          "id": "[4]",
+          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
+          "source_name": "AMAL Score Rationale",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/812169685#financials"
         }
       ],
-      "amal_score_rationale": "The organization demonstrates excellent financial efficiency and liquidity, though its overall score is moderated by a specialized mission focus and a lack of third-party impact verification.",
+      "amal_score_rationale": "The organization demonstrates excellent financial efficiency and lean operations, though its overall score is moderated by a specialized focus on religious infrastructure and a lack of third-party impact verification.",
       "amal_scores": {
-        "amal_score": 40,
+        "amal_score": 47,
         "confidence_scores": {
           "alignment": 20,
           "data_confidence": 0.6,
-          "impact": 21
+          "impact": 29
         },
         "confidence_tier": "MEDIUM",
         "impact_tier": "AVERAGE",
@@ -462,57 +514,57 @@
         {
           "area": "Impact Transparency",
           "citation_ids": [
-            "[1]"
+            "[4]"
           ],
-          "context": "There is <cite id=\"1\">no public beneficiary data available</cite>, making it difficult to assess the cost-effectiveness of individual programs."
+          "context": "There is <cite id=\"4\">no beneficiary data available</cite> for cost-per-beneficiary scoring, making it difficult to assess the quantitative impact of the funding provided to centers."
         },
         {
-          "area": "Strategic Documentation",
+          "area": "Governance Documentation",
           "citation_ids": [
-            "[1]"
+            "[4]"
           ],
-          "context": "The organization currently lacks a <cite id=\"1\">documented theory of change</cite> to explain the long-term causal pathway of its capacity-building efforts."
+          "context": "Public data regarding <cite id=\"4\">specific board member identities and a formal theory of change</cite> is currently absent, which limits the transparency score."
         }
       ],
       "bbb_assessment": {
-        "audit_type": "none",
+        "audit_type": "not specified",
         "citation_ids": [],
         "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
+        "finances_status": "PASS",
         "governance_status": "UNKNOWN",
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "This organization has not been evaluated by the BBB Wise Giving Alliance."
+        "summary": "The organization is not currently evaluated by the BBB Wise Giving Alliance."
       },
       "case_against": {
         "citation_ids": [
-          "[1]"
+          "[4]"
         ],
-        "mitigation_notes": "The organization's high financial efficiency ensures that almost all funds are deployed to the field, mitigating concerns about waste.",
+        "mitigation_notes": "The organization's high program ratio and zero fundraising costs suggest that funds are being utilized for their intended purposes despite the lack of narrative reporting.",
         "risk_factors": [
-          "<cite id=\"1\">No external evaluation or outcome tracking</cite> currently available",
-          "<cite id=\"1\">Concentrated focus on capacity building</cite> for a specific ethnic subgroup"
+          "<cite id=\"4\">No beneficiary data available</cite> to measure cost-effectiveness",
+          "<cite id=\"4\">Absence of a documented theory of change</cite>"
         ],
-        "summary": "The primary concern is the <cite id=\"1\">lack of transparent beneficiary metrics</cite> and a narrow focus that may not appeal to donors outside the Bosniak community."
+        "summary": "The primary concerns involve <cite id=\"4\">transparency and data gaps</cite> regarding the specific outcomes of funded initiatives."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 4,
-          "rating": 8
+          "form990": 6,
+          "rating": 6
         },
         "high_confidence_count": 10,
         "total_count": 12,
         "unique_sources": 2
       },
       "confidence": {
-        "data_freshness": "2023 Form 990 data available",
+        "data_freshness": "2023 Form 990 data used",
         "data_gaps": [
           "Missing impact metrics",
-          "No audited financials"
+          "Missing board details"
         ],
-        "level": "MODERATE",
-        "notes": "Financial data is strong, but impact data is entirely missing.",
+        "level": "MEDIUM",
+        "notes": "Financial data is strong, but qualitative impact data is limited.",
         "score": 60,
         "sources_used": [
           "Form 990",
@@ -524,8 +576,8 @@
         "form_990_tax_year": 2023,
         "known_gaps": [
           "Missing beneficiary counts",
-          "No theory of change",
-          "No external impact evaluation"
+          "No documented theory of change",
+          "Board member names not public"
         ],
         "ratings_last_updated": "2024-12",
         "total_citations": 12,
@@ -535,25 +587,27 @@
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[1]"
+            "[4]"
           ],
-          "explanation": "IZBSA is a strong fit for donors within the Bosniak diaspora, serving a <cite id=\"1\">niche religious and cultural cause</cite>. It is <cite id=\"1\">Sadaqah-eligible</cite> but lacks broader Muslim donor appeal due to its specific demographic focus.",
-          "improvement": "The charity could improve alignment by <cite id=\"1\">clearly stating its policy on Sadaqah Jariyah</cite> and detailing how it serves the broader Muslim community."
+          "explanation": "",
+          "improvement": ""
         },
         "credibility": {
           "citation_ids": [
             "[1]",
-            "[2]"
+            "[2]",
+            "[4]"
           ],
-          "explanation": "Donors can find confidence in the organization's <cite id=\"1\">100% independent board</cite> and its consistent filing of <cite id=\"2\">Form 990 tax returns</cite>. However, credibility is limited by a <cite id=\"1\">lack of third-party impact evaluations</cite>.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"1\">publish annual impact reports</cite> that detail specific outcomes for the Islamic centers it supports."
+          "explanation": "Donors can find confidence in the organization's <cite id=\"1\">100% independent board</cite> and its consistent filing of <cite id=\"2\">Form 990 tax returns</cite>. However, credibility is currently constrained by <cite id=\"4\">missing governance documentation</cite> and the lack of a public theory of change.",
+          "improvement": "To strengthen credibility, the organization should <cite id=\"4\">document a clear theory of change</cite> with an explicit causal pathway for its initiatives."
         },
         "impact": {
           "citation_ids": [
-            "[1]"
+            "[1]",
+            "[4]"
           ],
-          "explanation": "The organization is highly efficient, with a <cite id=\"1\">97.6% program ratio</cite> and <cite id=\"1\">resilient working capital</cite>. However, the <cite id=\"1\">absence of a theory of change</cite> prevents a higher impact score.",
-          "improvement": "Impact measurement would benefit from <cite id=\"1\">tracking outcomes over at least 3 years</cite> and documenting a clear causal pathway for its grants."
+          "explanation": "The charity is highly efficient, spending <cite id=\"1\">97.6% on programs</cite> and maintaining <cite id=\"1\">9.2 months of working capital</cite>. It functions effectively as a <cite id=\"4\">capacity-building entity</cite> for local centers.",
+          "improvement": "Impact measurement would benefit from <cite id=\"4\">publishing beneficiary counts consistently</cite> so that cost-effectiveness can be assessed."
         }
       },
       "donor_fit_matrix": {
@@ -562,21 +616,23 @@
           "[1]",
           "[2]"
         ],
-        "evidence_rigor": "Grade C - Financial efficiency is high but outcome data is missing",
+        "evidence_rigor": "Grade C - Financial efficiency verified, but outcome data is missing",
         "geographic_focus": [
-          "North America"
+          "United States",
+          "Canada"
         ],
-        "giving_style": "Capacity building",
+        "giving_style": "Capacity building and infrastructure",
         "tax_deductible": true,
         "zakat_asnaf_served": null,
-        "zakat_status": "SADAQAH-ONLY"
+        "zakat_status": "SADAQAH-ELIGIBLE"
       },
       "financial_deep_dive": {
         "admin_ratio": 0.024,
         "annual_revenue": 4520145,
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[2]",
+          "[3]",
+          "[4]"
         ],
         "cn_financial_score": null,
         "fundraising_ratio": 0,
@@ -584,7 +640,7 @@
         "peer_count": 12,
         "peer_program_ratio_median": 0.853,
         "program_expense_ratio": 0.9793999999999999,
-        "reserves_months": 12.7,
+        "reserves_months": 9.2,
         "revenue_cagr_3yr": 42.2,
         "working_capital_months": 9.2,
         "yearly_financials": [
@@ -610,67 +666,66 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[1]"
+          "[2]"
         ],
-        "domestic_grants": null,
-        "foreign_grants": null,
+        "domestic_grants": 4419191,
+        "foreign_grants": 0,
         "grant_count": null,
-        "grant_strategy": "Provides financial support to maintain and expand local Islamic centers.",
+        "grant_strategy": "Distributes funds to support the operations and initiatives of Bosniak mosques.",
         "is_significant_grantmaker": true,
         "regions_served": [
-          "USA",
-          "Canada"
+          "North America"
         ],
         "top_recipients": [
           "Bosniak Islamic Centers in North America"
         ],
-        "total_grants": null
+        "total_grants": 4419191
       },
-      "headline": "Islamska Zajednica Bosnjaka Sjeverne Amerike serves as a vital financial pillar for Bosniak Islamic centers across North America, ensuring the continuity of religious and cultural community hubs.",
+      "headline": "Islamska Zajednica Bosnjaka Sjeverne Amerike serves as a vital financial pillar for Bosniak Islamic centers across North America, focusing on community infrastructure and religious preservation.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors of Bosniak heritage or those who prioritize the institutional stability of Islamic centers in North America through Sadaqah.",
+        "best_for_summary": "Best for donors who prioritize the preservation of Bosniak religious and cultural identity in North America and value high financial efficiency over detailed impact reporting.",
         "citation_ids": [
-          "[1]"
+          "[1]",
+          "[4]"
         ],
         "donor_motivations": [
-          "Want to support the preservation of Bosniak Islamic identity",
-          "Value extremely low overhead and high financial efficiency",
-          "Prefer supporting infrastructure and capacity building over direct relief",
-          "Seek to strengthen local North American Muslim communities"
+          "Want to support the infrastructure of Bosniak Islamic centers",
+          "Value organizations with extremely low overhead and zero fundraising costs",
+          "Care about the long-term sustainability of diaspora religious communities"
         ],
         "giving_considerations": [
-          "",
-          "Impact is measured by the health of institutions rather than individual beneficiary counts",
-          "The organization has a very specific ethnic and cultural focus"
+          "Donations are for sadaqah, as the organization is not verified for zakat",
+          "Impact is measured by the health of supported centers rather than individual beneficiary metrics",
+          "The organization acts as a central fund, meaning gifts support a network of centers"
         ],
-        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those looking for high-rigor, RCT-backed humanitarian impact data."
+        "not_ideal_for": "Donors seeking urgent international humanitarian relief or those who require rigorous, third-party impact evaluations and beneficiary statistics."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[1]"
+          "[4]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects excellent financial stewardship but a <cite id=\"1\">lack of documented outcomes or external evaluations</cite>.",
+        "evidence_grade_explanation": "Grade C reflects <cite id=\"4\">verified financial delivery</cite> and high program spending, but a lack of <cite id=\"4\">formal outcome tracking or beneficiary data</cite>.",
         "external_evaluations": [],
         "outcome_tracking_years": 0,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The organization operates on the implicit theory that by providing financial support and capacity building to local Islamic centers, it ensures the long-term religious and cultural health of the Bosniak community.",
-        "why_evidence_matters": "Evidence of impact helps donors understand how their Sadaqah translates into community resilience and spiritual growth."
+        "theory_of_change_summary": "The organization operates on the implicit theory that providing financial support and capacity building to Bosniak Islamic centers will preserve religious identity and community cohesion in North America.",
+        "why_evidence_matters": "Evidence of impact helps donors understand how their contributions translate into community resilience beyond financial transfers."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[3]",
+          "[4]"
         ],
         "founded_year": null,
         "maturity_stage": "Growth",
         "revenue_growth_3yr": 42.2,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"2\">42.2% revenue growth rate</cite>, the organization is in a rapid expansion phase and can likely absorb more capital to support more centers.",
+        "room_for_funding_explanation": "With a <cite id=\"3\">42.2% revenue growth rate</cite> and a mission to support all Bosniak mosques in North America, the organization has significant capacity to absorb and deploy additional capital.",
         "strategic_priorities": [
-          "Expand capacity building for Bosniak mosques",
-          "Strengthen community initiatives"
+          "Fundraising for Bosniak-based Islamic centers",
+          "Supporting key community initiatives"
         ],
         "years_operating": 10
       },
@@ -678,26 +733,27 @@
         "board_size": null,
         "ceo_compensation": 100000,
         "ceo_compensation_pct_revenue": 2.21,
-        "ceo_name": "Not Listed",
+        "ceo_name": "Not Publicly Listed",
         "citation_ids": [
           "[1]",
           "[2]"
         ],
         "employees_count": null,
-        "geographic_reach": "North America",
+        "geographic_reach": "United States and Canada",
         "has_conflict_policy": true,
         "has_financial_audit": false,
         "independent_board_pct": 1,
         "payroll_to_revenue_pct": null,
-        "programs_count": 1,
+        "programs_count": 2,
         "staff_per_million_revenue": null,
         "volunteers_count": null
       },
       "peer_comparison": {
         "citation_ids": [
-          "[1]"
+          "[1]",
+          "[4]"
         ],
-        "differentiator": "Distinguished by a <cite id=\"1\">97.6% program ratio</cite>, which is significantly higher than the <cite id=\"1\">peer median of 85.3%</cite>.",
+        "differentiator": "IZBSA stands out with a <cite id=\"1\">97.6% program ratio</cite>, which is significantly higher than the <cite id=\"4\">peer median of 85.3%</cite>.",
         "peer_group": "Religious and Cultural Organizations",
         "similar_orgs": [
           "Sachse Muslim Society",
@@ -707,45 +763,46 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar focus on local religious services",
+          "differentiator": "Similar focus on religious services and community support",
           "name": "Sachse Muslim Society"
         },
         {
-          "differentiator": "Similar size and community-centric model",
+          "differentiator": "Focuses on local community services at a similar scale",
           "name": "The Islamic Association of Arabi"
         },
         {
-          "differentiator": "Focuses on religious services in a specific urban geography",
+          "differentiator": "Dedicated religious service focus within a specific metropolitan area",
           "name": "MAS Boston Society"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[1]"
+            "[1]",
+            "[4]"
           ],
-          "detail": "The charity directs <cite id=\"1\">97.6% of its total expenses toward programs</cite>, significantly exceeding the <cite id=\"1\">peer program ratio median of 85.3%</cite>.",
-          "point": "Exceptional Financial Efficiency"
+          "detail": "The organization directs <cite id=\"1\">97.6% of its total expenses</cite> toward its programs, significantly exceeding the <cite id=\"4\">peer program ratio median of 85.3%</cite>.",
+          "point": "Exceptional Program Efficiency"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "The organization maintains <cite id=\"1\">9.2 months of working capital</cite>, providing a strong safety net for its member Islamic centers.",
-          "point": "Robust Liquidity and Reserves"
+          "detail": "The charity maintains <cite id=\"1\">9.2 months of working capital</cite>, providing a robust buffer to sustain operations during economic fluctuations.",
+          "point": "Strong Financial Resilience"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "The organization is governed by a board consisting of <cite id=\"1\">100% independent members</cite>, ensuring objective oversight.",
-          "point": "High Governance Independence"
+          "detail": "The organization reports <cite id=\"1\">$0.00 spent to raise every $1</cite>, maximizing the impact of every dollar contributed by the community.",
+          "point": "Zero-Cost Fundraising"
         }
       ],
       "strengths_deep_dive": [
-        "IZBSA's financial health is characterized by its ability to scale rapidly while maintaining low costs. Between 2021 and 2023, revenue grew from <cite id=\"2\">$2.23 million to over $4.52 million</cite>, yet the organization maintained its <cite id=\"1\">fundraising efficiency at $0.00 per $1 raised</cite>. This indicates that the growth is organic and deeply rooted in the community it serves. Additionally, its <cite id=\"1\">9.2 months of operating reserves</cite> (as calculated by baseline metrics) ensures that the central pillar of the Bosniak community can withstand economic fluctuations without interrupting its support for local mosques."
+        "The organization's financial health is a primary strength, characterized by a <cite id=\"2\">program expense ratio of 97.9%</cite> which indicates that administrative overhead is kept to an absolute minimum. This efficiency is paired with a <cite id=\"3\">42.2% revenue growth rate</cite> over the last three years, suggesting strong community trust and successful scaling of its fundraising efforts. Additionally, the organization maintains a <cite id=\"1\">100% independent board</cite>, which supports objective oversight of its <cite id=\"2\">$3,387,088 in total assets</cite>."
       ],
-      "summary": "Islamska Zajednica Bosnjaka Sjeverne Amerike (IZBSA) serves as a critical financial and administrative backbone for the Bosniak Muslim diaspora in the United States and Canada. The organization's primary mission is <cite id=\"1\">fundraising for charitable purposes and key initiatives</cite> that sustain Bosniak-based Islamic centers. By acting as a central hub, it ensures that local mosques and community centers have the resources necessary to maintain religious and cultural continuity. In the 2023 fiscal year, the organization demonstrated significant growth, reporting <cite id=\"2\">total revenue of $4,520,145</cite>, which represents a <cite id=\"2\">3-year revenue CAGR of 42.2%</cite>. This rapid expansion highlights increasing community trust and a successful scaling of its support model. A defining characteristic of IZBSA is its lean operational structure; it maintains a <cite id=\"1\">program expense ratio of 97.9%</cite>, ensuring that nearly every dollar donated is directed toward community initiatives rather than administrative overhead. Furthermore, the organization operates with <cite id=\"1\">exceptional fundraising efficiency of $0.00 per $1 raised</cite>, a rare metric that indicates its revenue is generated through highly efficient community networks and volunteer-led efforts rather than expensive marketing campaigns.",
+      "summary": "Islamska Zajednica Bosnjaka Sjeverne Amerike (IZBSA) serves as a central financial and administrative pillar for Bosniak Islamic centers across the United States and Canada. The organization operates with a primary mission of <cite id=\"1\">fundraising for charitable purposes and key initiatives</cite> that sustain religious and cultural preservation for the Bosniak diaspora. In the 2023 fiscal year, the charity reported <cite id=\"2\">total revenue of $4,520,145</cite>, representing a significant <cite id=\"3\">3-year revenue CAGR of 42.2%</cite>. This growth underscores its expanding role in supporting North American mosques and community centers. The organization is characterized by an extremely lean financial model, maintaining a <cite id=\"1\">program expense ratio of 97.9%</cite>, ensuring that nearly all contributions directly fund its core religious and community services. Furthermore, the charity demonstrates exceptional fiscal discipline with <cite id=\"1\">fundraising efficiency of $0.00 per $1 raised</cite>, meaning it does not spend donor funds on professional fundraising solicitations.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

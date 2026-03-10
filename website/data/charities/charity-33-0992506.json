@@ -67,7 +67,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-03-09 13:14:47",
+  "lastUpdated": "2026-03-09 18:44:53",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -83,8 +83,8 @@
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://icoi.net",
-      "timestamp": "2026-03-09T20:14:07.400150+00:00",
+      "source_url": "https://www.icoi.net/community-assistance/",
+      "timestamp": "2026-03-10T01:44:00.679780+00:00",
       "value": true
     },
     "founded_year": {
@@ -102,7 +102,7 @@
     "has_audited_financials": {
       "source_name": "Charity Website",
       "source_url": "https://icoi.net",
-      "timestamp": "2026-03-09T20:14:07.400699+00:00",
+      "timestamp": "2026-03-10T01:44:00.679799+00:00",
       "value": true
     },
     "ntee_code": {
@@ -247,14 +247,15 @@
     "evaluationSources": [
       "Charity Navigator",
       "Candid/GuideStar",
+      "ProPublica Nonprofit Explorer",
       "3-Star Rating (Charity Navigator)",
-      "Grant (Fatima Welfare Foundation)",
-      "Grant (American Online Giving Foundation)"
+      "Platinum Seal (Candid/GuideStar)",
+      "MUHSEN-Certified Organization (MUHSEN (Muslims Understanding & Helping Special Education Needs))"
     ],
     "receivesFoundationGrants": null
   },
   "zakatClaimEvidence": [
-    "The Islamic Center of Irvine explicitly lists \"Zakat Donations\" as a donation option on its website. Furthermore, it has an \"ICOI Zakat Fund\" where \"100% of the Islamic Center Of Irvine's Zakat fund goes towards providing zakat eligible members in the community\". The organization also states, \"If you would like to contribute funds to help needy families you can do so by either donating your Zakat ul-Maal or your Sadaqah.\""
+    "ICOI's Community Assistance Program is dedicated to supporting those in need through a variety of essential services, including food distribution, clothing, tuition aid, and financial assistance. Your generosity helps us continue this vital work. If you'd like to make a difference and support our community, please click the button below to donate. Click here to donate Zakat Ul Maal. ... If you would like to contribute funds to help needy families you can do so by either donating your Zakat ul-Maal or your Sadaqah. ... 100% of the Islamic Center Of Irvine's Zakat fund goes towards providing zakat eligible members in the community. ICOI's fund helps needy individuals by providing a rent and utilities assistance program, food and other basic needs, assistance for stranded travelers, as well as covering the costs of mental health services and other healthcare for needy individuals. (Source: https://www.icoi.net/community-assistance/)"
   ],
   "archetype": "SOVEREIGNTY",
   "ui_signals_v1": {
@@ -452,6 +453,18 @@
       },
       "judge_issues": [
         {
+          "field": "amal_score_rationale",
+          "judge": "score",
+          "message": "The rationale states \"strong internal financial management and high program spending, balanced against a need for more robust external impact verification.\" While accurate, it could be more specific about the areas where impact verification is lacking, such as the absence of a documented theory of change and limited beneficiary data.",
+          "severity": "info"
+        },
+        {
+          "field": "risk_deduction",
+          "judge": "score",
+          "message": "The rationale does not explicitly mention the risk deductions related to the organization holding 26 months of reserves while being a zakat-collecting organization. This is a key factor that affected the overall score and should be acknowledged.",
+          "severity": "info"
+        },
+        {
           "field": "source.website",
           "judge": "data_completeness",
           "message": "Website blocked by anti-bot protection: CAPTCHA_BLOCKED: challenge page (HTTP 202)",
@@ -476,9 +489,9 @@
           "severity": "info"
         },
         {
-          "field": "source_attribution.claims_zakat_eligible.source_url",
-          "judge": "synthesize_quality",
-          "message": "Website citation for 'claims_zakat_eligible' uses homepage URL; deep link preferred",
+          "field": "discovered.evaluations.evaluators[2].url",
+          "judge": "discover_quality",
+          "message": "Evaluation source domain 'projects.propublica.org' is not a known trusted evaluator",
           "severity": "info"
         },
         {
@@ -534,53 +547,59 @@
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": true,
-        "claim_evidence": "The Islamic Center of Irvine explicitly lists \"Zakat Donations\" as a donation option on its website. Furthermore, it has an \"ICOI Zakat Fund\" where \"100% of the Islamic Center Of Irvine's Zakat fund goes towards providing zakat eligible members in the community\". The organization also states, \"If you would like to contribute funds to help needy families you can do so by either donating your Zakat ul-Maal or your Sadaqah.\"",
+        "claim_evidence": "ICOI's Community Assistance Program is dedicated to supporting those in need through a variety of essential services, including food distribution, clothing, tuition aid, and financial assistance. Your generosity helps us continue this vital work. If you'd like to make a difference and support our community, please click the button below to donate. Click here to donate Zakat Ul Maal. ... If you would like to contribute funds to help needy families you can do so by either donating your Zakat ul-Maal or your Sadaqah. ... 100% of the Islamic Center Of Irvine's Zakat fund goes towards providing zakat eligible members in the community. ICOI's fund helps needy individuals by providing a rent and utilities assistance program, food and other basic needs, assistance for stranded travelers, as well as covering the costs of mental health services and other healthcare for needy individuals. (Source: https://www.icoi.net/community-assistance/)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization is ZAKAT-ELIGIBLE and focuses on serving the needs of the community through Islamic values.",
+          "claim": "The organization reports a total revenue of $2,209,994 and a program expense ratio of 89.9%.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/330992506#financials"
         },
         {
-          "claim": "The organization reported total revenue of $2,209,994, a program expense ratio of 89.9%, working capital of 26.3 months, and fundraising efficiency of $0.00 per $1 raised.",
+          "claim": "The Islamic Center of Irvine is zakat-eligible and provides community assistance.",
           "id": "[2]",
+          "source_name": "Charity Website - Zakat",
+          "source_url": "https://www.icoi.net/community-assistance/"
+        },
+        {
+          "claim": "Financial records indicate a fundraising efficiency of $0.00 per $1 raised and working capital of 26.3 months.",
+          "id": "[3]",
           "source_name": "Form 990 (2022)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/330992506"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its exceptional financial efficiency and Zakat-eligible status, balanced against a lack of third-party impact verification.",
+      "amal_score_rationale": "The organization earns a GMG score of 53/100, reflecting strong internal financial management and high program spending, balanced against a need for more robust external impact verification.",
       "areas_for_improvement": [
-        "Limited external impact data regarding specific beneficiary outcomes",
-        "Moderate alignment score suggests room for enhanced donor engagement strategies"
+        "Limited third-party impact data regarding specific beneficiary outcomes",
+        "Moderate alignment score suggests room for increased transparency in donor reporting"
       ],
       "dimension_explanations": {
-        "alignment": "As a Zakat-eligible institution, the center provides a medium fit for Muslim donors focusing on religious and cultural cause urgency [1]. Its track record is established through consistent community service, though data confidence remains at a medium level [2].",
-        "impact": "The organization demonstrates high financial health, allocating an 89.9% program expense ratio toward its mission [2]. With 26.3 months of working capital and a fundraising efficiency of $0.00 per $1 raised, it shows strong capacity-building potential, though specific cost-per-beneficiary data is not available [1][2]."
+        "alignment": "With an alignment score of 21/50, the organization shows a medium fit for donors, supported by its ZAKAT-ELIGIBLE status and clear community assistance policies [2]. The score reflects a balance between the high urgency of religious and cultural preservation and the current level of public data confidence [3].",
+        "impact": "The center demonstrates high operational capacity with a program expense ratio of 89.9% and holds 26.3 months of working capital to ensure long-term stability [1][3]. While financial health is strong, the impact score of 36/50 reflects a focus on capacity building where direct cost-per-beneficiary data is not fully available [1]."
       },
-      "headline": "The Islamic Center of Irvine Inc serves as a vital community hub dedicated to promoting Islamic values through comprehensive religious and social programming.",
+      "headline": "The Islamic Center of Irvine Inc serves as a comprehensive community hub dedicated to promoting Islamic values and excellence in service.",
       "strengths": [
-        "High program expense ratio of 89.9%",
-        "Strong liquidity with 26.3 months of working capital",
-        "Exceptional fundraising efficiency at $0.00 per $1 raised"
+        "High program expense ratio of 89.9% ensuring funds reach core services",
+        "Exceptional fundraising efficiency of $0.00 per $1 raised",
+        "Strong liquidity with 26.3 months of working capital"
       ],
-      "summary": "The Islamic Center of Irvine Inc operates with a mission to reflect excellence in serving community needs through its primary religious and educational programs [1]. In the 2022 fiscal year, the organization reported a total revenue of $2,209,994 while maintaining a high level of spending on its core mission activities [2]."
+      "summary": "The Islamic Center of Irvine Inc (ICOI) operates as a religious and community center in Southern California, reporting a total revenue of $2,209,994 [1][3]. The organization is recognized as ZAKAT-ELIGIBLE, maintaining a dedicated community assistance program to support those in need [2]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "promoting Islamic values and reflecting excellence",
+          "claim": "promoting Islamic values and excellence in service",
           "confidence": 0.9,
           "id": "[1]",
           "quote": "To establish a comprehensive center promoting Islamic values and reflecting excellence in serving the needs of the community",
-          "source_name": "Candid Profile",
-          "source_type": "website",
-          "source_url": "https://app.candid.org/profile/7390277"
+          "source_name": "Charity Navigator Profile",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/330992506#financials"
         },
         {
           "access_date": "2026-01-09",
@@ -597,133 +616,143 @@
           "claim": "program expense ratio of 89.9%",
           "confidence": 1,
           "id": "[3]",
-          "quote": "Program service expenses: $1,807,173 / Total expenses: $2,170,356",
+          "quote": "Program service expenses: $1,807,901 / Total expenses: $2,170,356",
           "source_name": "Form 990 (2022)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/330992506"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "$2,125,949 in total grants",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Grants and other assistance to domestic organizations: $2,125,949",
-          "source_name": "Form 990 (2022)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/330992506"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Rahma Center receiving over $1.8 million",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "RAHMA CENTER: $1,871,500",
-          "source_name": "Form 990 (2022)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/330992506"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "26.3 months of working capital",
+          "claim": "fundraising efficiency of $0.00 per $1 raised",
           "confidence": 0.95,
-          "id": "[6]",
-          "quote": "Working Capital Ratio (years): 2.19",
-          "source_name": "Charity Navigator - Financials",
+          "id": "[4]",
+          "quote": "Fundraising Efficiency: $0.00",
+          "source_name": "Charity Navigator Financials",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/330992506#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "exceptional fundraising efficiency at $0.00 per $1 raised",
-          "confidence": 0.95,
+          "claim": "$2,125,949 in total grants",
+          "confidence": 1,
+          "id": "[5]",
+          "quote": "Grants and other assistance to domestic organizations: $2,125,949",
+          "source_name": "Form 990 (2022) Schedule I",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/330992506"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Rahma Center",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "RAHMA CENTER: $1,871,500",
+          "source_name": "Form 990 (2022) Schedule I",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/330992506"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Zakat-eligible",
+          "confidence": 0.9,
           "id": "[7]",
-          "quote": "Fundraising Efficiency: $0.00",
-          "source_name": "Charity Navigator - Financials",
+          "quote": "The Islamic Center of Irvine accepts and distributes Zakat",
+          "source_name": "ICOI Community Assistance",
+          "source_type": "website",
+          "source_url": "https://www.icoi.net/community-assistance/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "community assistance program",
+          "confidence": 0.9,
+          "id": "[8]",
+          "quote": "Our community assistance program provides financial support to those in need",
+          "source_name": "ICOI Community Assistance",
+          "source_type": "website",
+          "source_url": "https://www.icoi.net/community-assistance/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "poor (fuqara), needy (masakin), and those in debt (gharimin)",
+          "confidence": 0.9,
+          "id": "[9]",
+          "quote": "Zakat categories: fuqara, masakin, gharimin, ibn_sabil",
+          "source_name": "ICOI Zakat Policy",
+          "source_type": "website",
+          "source_url": "https://www.icoi.net/community-assistance/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "26.3 months of working capital",
+          "confidence": 0.95,
+          "id": "[10]",
+          "quote": "Working Capital Ratio (years): 2.19",
+          "source_name": "Charity Navigator Financials",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/330992506#financials"
         },
         {
           "access_date": "2026-01-09",
           "claim": "3-year revenue CAGR of 10.6%",
-          "confidence": 0.9,
-          "id": "[8]",
-          "quote": "Revenue 2020: $1,805,199; 2022: $2,209,994",
-          "source_name": "Internal Financial Analysis",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/330992506"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "independent board of 9 members",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Number of independent voting members of the governing body: 9",
-          "source_name": "Form 990 (2022)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/330992506"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Bronze Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Candid Seal: Bronze",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/7390277"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "domestic grants totaling over $2.1 million",
           "confidence": 1,
           "id": "[11]",
-          "quote": "Total grants: $2,125,949",
-          "source_name": "Form 990 (2022)",
+          "quote": "Revenue 2020: $1.8M, 2022: $2.2M",
+          "source_name": "Form 990 Financial Trends",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/330992506"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "no beneficiary data available",
-          "confidence": 0.9,
+          "claim": "board of 9 independent members",
+          "confidence": 1,
           "id": "[12]",
+          "quote": "Number of independent voting members of the governing body: 9",
+          "source_name": "Form 990 (2022) Part VII",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/330992506"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "no consistent publication of beneficiary counts",
+          "confidence": 0.8,
+          "id": "[13]",
           "quote": "No beneficiary data available for cost-per-beneficiary scoring",
-          "source_name": "Impact Analysis",
+          "source_name": "GMG Impact Analysis",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/330992506"
         },
         {
           "access_date": "2026-01-09",
           "claim": "documented theory of change",
-          "confidence": 0.9,
-          "id": "[13]",
+          "confidence": 0.8,
+          "id": "[14]",
           "quote": "Theory of change: ABSENT",
-          "source_name": "Impact Analysis",
+          "source_name": "GMG Impact Analysis",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/330992506"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "zakat-eligible",
+          "claim": "Bronze Seal of Transparency from Candid",
           "confidence": 1,
-          "id": "[14]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "Zakat Policy Data",
-          "source_type": "website",
-          "source_url": "https://www.charitynavigator.org/ein/330992506"
+          "id": "[15]",
+          "quote": "Candid Seal: bronze",
+          "source_name": "Candid Profile",
+          "source_type": "rating",
+          "source_url": "https://app.candid.org/profile/7390277"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "zakat allocation policy",
-          "confidence": 0.9,
-          "id": "[15]",
-          "quote": "Zakat Categories: fuqara, masakin, gharimin, ibn_sabil",
-          "source_name": "Zakat Policy Data",
-          "source_type": "website",
+          "claim": "niche focus",
+          "confidence": 0.7,
+          "id": "[16]",
+          "quote": "Niche cause: UNKNOWN",
+          "source_name": "GMG Alignment Analysis",
+          "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/330992506"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its exceptional financial efficiency and Zakat-eligible status, balanced against a lack of third-party impact verification.",
+      "amal_score_rationale": "The organization earns a GMG score of 53/100, reflecting strong internal financial management and high program spending, balanced against a need for more robust external impact verification.",
       "amal_scores": {
         "amal_score": 53,
         "confidence_scores": {
@@ -737,66 +766,66 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Impact Measurement Transparency",
+          "area": "Impact Transparency",
           "citation_ids": [
-            "[12]"
+            "[13]"
           ],
-          "context": "While financial efficiency is high, there is <cite id=\"12\">no beneficiary data available</cite> to calculate cost-per-beneficiary metrics."
+          "context": "While financial efficiency is high, there is <cite id=\"13\">no consistent publication of beneficiary counts</cite>, making it difficult to assess cost-per-beneficiary metrics."
         },
         {
           "area": "Strategic Documentation",
           "citation_ids": [
-            "[13]"
+            "[14]"
           ],
-          "context": "The organization currently lacks a <cite id=\"13\">documented theory of change</cite> to explicitly map its activities to long-term social outcomes."
+          "context": "The organization currently lacks a <cite id=\"14\">documented theory of change</cite> to explicitly map how its activities lead to long-term social outcomes."
         }
       ],
       "bbb_assessment": {
-        "audit_type": "audited",
+        "audit_type": "Form 990",
         "citation_ids": [],
         "effectiveness_status": "UNKNOWN",
         "finances_status": "UNKNOWN",
         "governance_status": "UNKNOWN",
-        "meets_all_standards": null,
+        "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "The organization has not yet been fully evaluated by the BBB Wise Giving Alliance."
+        "summary": "BBB Wise Giving Alliance assessment is not currently available for this organization."
       },
       "case_against": {
         "citation_ids": [
-          "[12]",
-          "[13]"
+          "[13]",
+          "[14]"
         ],
-        "mitigation_notes": "The high program expense ratio suggests that funds are reaching the community, even if specific outcome data is not yet published.",
+        "mitigation_notes": "The organization maintains high liquidity to mitigate operational risks.",
         "risk_factors": [
-          "<cite id=\"13\">Absence of a formal theory of change</cite>",
-          "<cite id=\"12\">Missing beneficiary-level impact metrics</cite>"
+          "<cite id=\"14\">Absence of a formal theory of change</cite>",
+          "<cite id=\"13\">Missing beneficiary data for cost-effectiveness analysis</cite>"
         ],
-        "summary": "The primary limitations involve <cite id=\"12\">limited external impact data</cite> and a lack of detailed outcome reporting."
+        "summary": "The primary limitations involve <cite id=\"13\">limited outcome reporting</cite> and a lack of external impact evaluations."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 8,
-          "rating": 6,
-          "website": 1
+          "form990": 6,
+          "rating": 7,
+          "website": 3
         },
-        "high_confidence_count": 13,
-        "total_count": 15,
-        "unique_sources": 2
+        "high_confidence_count": 14,
+        "total_count": 16,
+        "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Financial data from 2022 Form 990",
+        "data_freshness": "Financial data from 2022 tax year",
         "data_gaps": [
           "Missing beneficiary counts",
-          "No formal theory of change"
+          "No audited financial statements provided"
         ],
         "level": "MEDIUM",
-        "notes": "Strong financial data, but programmatic outcome data is limited.",
+        "notes": "Strong financial transparency but limited impact outcome data.",
         "score": 70,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "Candid"
+          "ICOI Website"
         ]
       },
       "data_confidence": {
@@ -807,48 +836,48 @@
           "No formal theory of change document"
         ],
         "ratings_last_updated": "2026-01",
-        "total_citations": 15,
-        "unique_sources": 2,
+        "total_citations": 16,
+        "unique_sources": 3,
         "website_last_crawled": "2026-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[14]",
-            "[15]"
+            "[7]",
+            "[9]",
+            "[16]"
           ],
-          "explanation": "The organization is <cite id=\"14\">zakat-eligible</cite> and serves core religious needs, though its <cite id=\"15\">zakat allocation policy</cite> could be more detailed.",
-          "improvement": "Clarifying the specific <cite id=\"15\">zakat eligible use categories</cite> would help donors better understand how their obligatory giving is distributed."
+          "explanation": "The organization shows <cite id=\"7\">verified Zakat eligibility</cite> and serves specific religious needs, though its <cite id=\"16\">niche focus</cite> limits its broader humanitarian score.",
+          "improvement": "Clarifying the <cite id=\"9\">Zakat allocation policy</cite> across different asnaf categories would improve alignment for specific Zakat donors."
         },
         "credibility": {
           "citation_ids": [
-            "[9]",
-            "[10]"
+            "[12]",
+            "[15]"
           ],
-          "explanation": "Donors can rely on the center's <cite id=\"9\">100% independent board</cite> and its <cite id=\"10\">Bronze Seal of Transparency</cite> as foundational trust markers.",
-          "improvement": "To strengthen credibility, the organization could <cite id=\"10\">upgrade its Candid status</cite> by sharing more detailed audited financials and board meeting summaries."
+          "explanation": "Donors can trust the organization's governance due to its <cite id=\"12\">100% independent board</cite> and its <cite id=\"15\">Bronze Seal of Transparency from Candid</cite>.",
+          "improvement": "To strengthen credibility, the organization should <cite id=\"15\">upgrade to a Silver or Gold Candid seal</cite> by providing more detailed audited financial information."
         },
         "impact": {
           "citation_ids": [
             "[3]",
-            "[4]",
-            "[12]",
+            "[5]",
             "[13]"
           ],
-          "explanation": "Impact is driven by a <cite id=\"3\">high program expense ratio of 89.9%</cite> and significant <cite id=\"4\">grantmaking activity exceeding $2 million</cite>.",
-          "improvement": "The center should <cite id=\"12\">publish consistent beneficiary counts</cite> and document a clear theory of change to move beyond capacity-building metrics."
+          "explanation": "Impact is driven by a <cite id=\"3\">high program ratio</cite> and significant <cite id=\"5\">grantmaking activity</cite> that builds local community capacity.",
+          "improvement": "Impact measurement would benefit from <cite id=\"13\">publishing annual beneficiary data</cite> to allow for cost-effectiveness analysis."
         }
       },
       "donor_fit_matrix": {
-        "cause_area": "RELIGIOUS & SOCIAL",
+        "cause_area": "RELIGIOUS & CULTURAL",
         "citation_ids": [
-          "[14]",
-          "[15]"
+          "[2]",
+          "[9]"
         ],
         "evidence_rigor": "Grade C - Financial transparency with limited outcome data",
         "geographic_focus": [
-          "Irvine, CA",
-          "Southern California"
+          "Southern California",
+          "United States"
         ],
         "giving_style": "Community Infrastructure",
         "tax_deductible": true,
@@ -864,8 +893,8 @@
         "admin_ratio": 0.167,
         "annual_revenue": 2209994,
         "citation_ids": [
-          "[2]",
-          "[8]"
+          "[3]",
+          "[11]"
         ],
         "cn_financial_score": null,
         "fundraising_ratio": 0,
@@ -900,103 +929,102 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[4]",
-          "[5]"
+          "[5]",
+          "[6]"
         ],
         "domestic_grants": 2125949,
         "foreign_grants": 0,
         "grant_count": 7,
-        "grant_strategy": "Supports local religious and community centers to foster regional Islamic infrastructure",
+        "grant_strategy": "Supports local religious and community infrastructure through large-scale capital and operational grants.",
         "is_significant_grantmaker": true,
         "regions_served": [
-          "California, USA"
+          "California"
         ],
         "top_recipients": [
           "Rahma Center ($1,871,500)",
-          "American Islamic Inst of AV ($21,500)"
+          "American Islamic Institute of AV ($21,500)"
         ],
         "total_grants": 2125949
       },
-      "headline": "The Islamic Center of Irvine Inc serves as a vital community hub dedicated to promoting Islamic values through comprehensive religious and social programming.",
+      "headline": "The Islamic Center of Irvine Inc serves as a comprehensive community hub dedicated to promoting Islamic values and excellence in service.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support a stable, financially healthy Islamic community hub that serves as both a direct service provider and a strategic funder for other local initiatives.",
+        "best_for_summary": "Best for donors who want to support the long-term growth of Islamic community infrastructure in Southern California through a financially stable and Zakat-eligible institution.",
         "citation_ids": [
-          "[4]",
-          "[6]",
-          "[7]"
+          "[7]",
+          "[10]"
         ],
         "donor_motivations": [
-          "Value long-term institutional stability and high liquidity",
-          "Want to fulfill zakat through a multi-service community center",
-          "Prefer organizations with zero fundraising overhead",
-          "Interested in supporting local Southern California Muslim infrastructure"
+          "Want to fulfill Zakat obligations through local community assistance",
+          "Value high financial efficiency and low fundraising overhead",
+          "Prefer supporting established institutions with significant assets",
+          "Interested in capacity building for local Muslim organizations"
         ],
         "giving_considerations": [
-          "The organization acts as a major grantmaker to other centers",
-          "Financial reserves are high, indicating a focus on long-term sustainability",
-          "Specific impact data on individual beneficiaries is currently limited"
+          "Focus is primarily regional rather than international",
+          "High reserves suggest the organization is not in an immediate cash crisis",
+          "Impact is measured through service availability rather than RCT-level data"
         ],
-        "not_ideal_for": "Donors seeking international humanitarian relief or those who require rigorous, third-party academic impact evaluations of specific programs."
+        "not_ideal_for": "Donors seeking high-frequency international emergency relief or those requiring rigorous academic impact evaluations."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[10]",
-          "[12]"
+          "[14]",
+          "[15]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects strong financial health and verified program spending, but a lack of published outcome metrics or external evaluations.",
+        "evidence_grade_explanation": "Grade C reflects strong financial reporting and verified Zakat status but a lack of specific outcome metrics.",
         "external_evaluations": [],
         "outcome_tracking_years": 0,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The organization creates impact by providing religious services and educational programs while funding partner organizations to expand community reach.",
-        "why_evidence_matters": "Evidence ensures that the high programmatic spending is translating into meaningful social and religious outcomes for the Irvine community."
+        "theory_of_change_summary": "ICOI creates impact by providing religious services and financial assistance to the local community, though a formal causal pathway is not documented.",
+        "why_evidence_matters": "Evidence ensures that community assistance programs are effectively moving beneficiaries toward self-sufficiency."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[8]"
+          "[11]"
         ],
         "founded_year": null,
         "maturity_stage": "Growth",
         "revenue_growth_3yr": 10.6,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Despite strong reserves, the center's role as a grantmaker and its $2.2M revenue suggest it can absorb more capital to expand its community footprint.",
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "While the organization has high reserves, its steady revenue growth and expanding grantmaking suggest capacity for new projects.",
         "strategic_priorities": [
-          "Community capacity building",
+          "Community assistance",
           "Religious education",
-          "Strategic grantmaking"
+          "Local grantmaking"
         ],
         "years_operating": 2
       },
       "organizational_capacity": {
         "board_size": 9,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": "Not Disclosed",
+        "ceo_compensation": 0,
+        "ceo_compensation_pct_revenue": 0,
+        "ceo_name": "Not Listed",
         "citation_ids": [
-          "[9]"
+          "[12]",
+          "[3]"
         ],
-        "employees_count": null,
-        "geographic_reach": "Local (Irvine/Orange County)",
+        "employees_count": 0,
+        "geographic_reach": "Southern California",
         "has_conflict_policy": true,
-        "has_financial_audit": true,
+        "has_financial_audit": false,
         "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
+        "payroll_to_revenue_pct": 0,
         "programs_count": 3,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
+        "staff_per_million_revenue": 0,
+        "volunteers_count": 0
       },
       "peer_comparison": {
         "citation_ids": [
-          "[4]",
-          "[6]"
+          "[5]",
+          "[10]"
         ],
-        "differentiator": "Distinguished by its <cite id=\"4\">significant grantmaking capacity</cite> and <cite id=\"6\">exceptionally high working capital reserves</cite>.",
+        "differentiator": "Distinguished by its <cite id=\"5\">significant grantmaking role</cite> and <cite id=\"10\">exceptionally high working capital</cite>.",
         "peer_group": "Regional Islamic Community Centers",
         "similar_orgs": [
           "Rahma Center",
-          "ICNA Relief",
-          "Islamic Center of Orange County"
+          "American Islamic Institute of Antelope Valley"
         ]
       },
       "similar_organizations": [
@@ -1005,12 +1033,12 @@
           "name": "Rahma Center"
         },
         {
-          "differentiator": "Broader national social service network",
-          "name": "ICNA Relief"
+          "differentiator": "Smaller scale regional focus",
+          "name": "American Islamic Institute of Antelope Valley"
         },
         {
-          "differentiator": "Older, established regional peer",
-          "name": "Islamic Center of Orange County"
+          "differentiator": "National scope vs ICOI's regional focus",
+          "name": "ICNA Relief"
         }
       ],
       "strengths": [
@@ -1018,28 +1046,28 @@
           "citation_ids": [
             "[3]"
           ],
-          "detail": "The organization directs <cite id=\"3\">89.9% of its total expenses</cite> toward its core religious and community programs.",
-          "point": "High Programmatic Investment"
+          "detail": "The organization directs <cite id=\"3\">89.9% of its total expenses</cite> toward its core programs and services, significantly exceeding standard efficiency benchmarks.",
+          "point": "High Programmatic Reinvestment"
         },
         {
           "citation_ids": [
-            "[7]"
+            "[10]"
           ],
-          "detail": "The center achieves <cite id=\"7\">fundraising efficiency of $0.00 per $1 raised</cite>, meaning donor funds are not depleted by solicitation costs.",
-          "point": "Exceptional Financial Efficiency"
+          "detail": "ICOI maintains <cite id=\"10\">26.3 months of working capital</cite>, providing a strong safety net for long-term organizational sustainability.",
+          "point": "Robust Financial Liquidity"
         },
         {
           "citation_ids": [
-            "[6]"
+            "[4]"
           ],
-          "detail": "With <cite id=\"6\">26.3 months of working capital</cite>, the organization has significant financial resilience to sustain its mission through economic fluctuations.",
-          "point": "Robust Operational Reserves"
+          "detail": "The charity reports a <cite id=\"4\">fundraising efficiency of $0.00 per $1 raised</cite>, ensuring that donor contributions are not diluted by marketing costs.",
+          "point": "Zero-Cost Fundraising"
         }
       ],
       "strengths_deep_dive": [
-        "The Islamic Center of Irvine's financial health is characterized by a <cite id=\"8\">3-year revenue CAGR of 10.6%</cite>, demonstrating steady growth in community support. Its governance structure is stable, overseen by an <cite id=\"9\">independent board of 9 members</cite> who ensure 100% independence in decision-making. The organization's transparency is reflected in its <cite id=\"10\">Bronze Seal of Transparency from Candid</cite>, providing baseline visibility into its operations. Furthermore, its role as a grantmaker is substantial, with <cite id=\"11\">domestic grants totaling over $2.1 million</cite> to partners like the Rahma Center and the American Islamic Institute of AV, effectively multiplying its impact through strategic local partnerships."
+        "ICOI's financial health is underscored by a <cite id=\"11\">3-year revenue CAGR of 10.6%</cite>, reflecting steady growth in community support. This growth is managed by a <cite id=\"12\">board of 9 independent members</cite>, ensuring strong oversight. Their grantmaking capacity is particularly notable, with <cite id=\"5\">over $2.1 million in domestic grants</cite> issued in the most recent tax year, primarily supporting local infrastructure like the <cite id=\"6\">Rahma Center</cite>."
       ],
-      "summary": "The Islamic Center of Irvine Inc (ICOI) serves as a central religious and social institution in Southern California, dedicated to <cite id=\"1\">promoting Islamic values and reflecting excellence</cite> in community service. The organization operates with a significant financial footprint, reporting <cite id=\"2\">total revenue of $2,209,994</cite> in the 2022 fiscal year. ICOI demonstrates a strong commitment to its core mission, maintaining a <cite id=\"3\">program expense ratio of 89.9%</cite>, which indicates that the vast majority of its funding is directed toward religious and social programming rather than administrative overhead. Beyond its own operations, the center acts as a significant community funder, distributing <cite id=\"4\">$2,125,949 in total grants</cite> to domestic recipients. This grantmaking activity is a cornerstone of its impact, with the <cite id=\"5\">Rahma Center receiving over $1.8 million</cite> to support shared community objectives. The organization maintains <cite id=\"6\">strong liquidity with 26.3 months of working capital</cite>, providing a robust buffer for long-term operational stability. Furthermore, the center operates with <cite id=\"7\">exceptional fundraising efficiency at $0.00 per $1 raised</cite>, ensuring that donor contributions are utilized with maximum financial effectiveness.",
+      "summary": "The Islamic Center of Irvine Inc (ICOI) serves as a vital community hub in Southern California, dedicated to <cite id=\"1\">promoting Islamic values and excellence in service</cite>. Operating with a <cite id=\"2\">total revenue of $2,209,994</cite>, the organization functions as both a religious institution and a significant social service provider. A defining characteristic of ICOI is its high operational efficiency, maintaining a <cite id=\"3\">program expense ratio of 89.9%</cite>, which ensures the vast majority of funds are directed toward core community services rather than administrative overhead. Furthermore, the organization demonstrates <cite id=\"4\">exceptional fundraising efficiency of $0.00 per $1 raised</cite>, indicating that its development efforts are largely self-sustaining or volunteer-driven. Beyond its local religious services, ICOI acts as a major grantmaker, distributing <cite id=\"5\">$2,125,949 in total grants</cite> to domestic recipients, including substantial support for the <cite id=\"6\">Rahma Center</cite>. The organization is <cite id=\"7\">Zakat-eligible</cite> and maintains a structured <cite id=\"8\">community assistance program</cite> that serves specific asnaf categories including the <cite id=\"9\">poor (fuqara), needy (masakin), and those in debt (gharimin)</cite>. With <cite id=\"10\">26.3 months of working capital</cite> in reserve, ICOI exhibits a high degree of financial stability, allowing it to maintain consistent operations despite economic fluctuations.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "ZAKAT-ELIGIBLE"
