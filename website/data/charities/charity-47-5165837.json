@@ -2,7 +2,7 @@
   "id": "47-5165837",
   "ein": "47-5165837",
   "name": "Penny Appeal USA",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "WE ARE WORKING TO ALLEVIATE POVERTY THROUGH SUSTAINABLE PROGRAMS AND EMERGENCY RELIEF. OUR MISSION IS TO BRING ABOUT AN EQUITABLE WORLD BY TACKLING THE ROOT CAUSES OF POVERTY. OUR INTERVENTIONS FOCUS ON PROVIDING COMMUNITIES WITH ACCESSS TO WATER, EDUCATION, AND INCOME OPPORTUNITIES.",
   "programs": [
     "Thirst Relief",
@@ -62,7 +62,11 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": 0.1692874181081918
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 7,
+    "independentBoardMembers": null,
+    "ceoCompensation": 125000
+  },
   "targeting": {
     "populationsServed": [
       "Children",
@@ -93,7 +97,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 18:25:02",
+  "lastUpdated": "2026-03-09 21:44:50",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -896,7 +900,7 @@
   ],
   "evaluationTrack": "STANDARD",
   "foundedYear": 2016,
-  "scoreSummary": "Penny Appeal USA shows strong alignment and good impact, with zakat compliance.",
+  "scoreSummary": "Penny Appeal USA shows strong impact and strong alignment, with zakat compliance.",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -934,7 +938,7 @@
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
-    "assessment_label": "Context Dependent",
+    "assessment_label": "High Conviction",
     "archetype_code": "ASSET_CREATION",
     "archetype_label": "Asset Creator",
     "evidence_stage": "Verified",
@@ -942,38 +946,25 @@
       "evidence": "Strong",
       "financial_health": "Moderate",
       "donor_fit": "Strong",
-      "risk": "Limited"
+      "risk": "Strong"
     },
-    "recommendation_cue": "Mixed Signals",
-    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "recommendation_cue": "Strong Match",
+    "recommendation_rationale": "Strong donor fit, low risk profile, and credible supporting evidence for outcomes.",
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": [
-    {
-      "type": "ceo_comp_excessive",
-      "severity": "high",
-      "headline": "CEO compensation is 6.5% of revenue ($469,524 on $7,168,898)",
-      "detail": "For orgs with revenue $5-50M, CEO pay above 2% of revenue warrants scrutiny.",
-      "data_points": {
-        "ceo_compensation": 469524,
-        "comp_ratio": 0.0655,
-        "threshold": 0.02,
-        "total_revenue": 7168898
-      }
-    }
-  ],
+  "keyConcerns": null,
   "amalEvaluation": {
     "charity_ein": "47-5165837",
     "charity_name": "Penny Appeal USA",
-    "amal_score": 71,
+    "amal_score": 81,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:10:42",
     "rubric_version": "5.2.0",
     "confidence_scores": {
       "alignment": 40,
       "data_confidence": 1,
-      "impact": 31
+      "impact": 41
     },
     "score_details": {
       "alignment": {
@@ -1096,82 +1087,30 @@
             "status": "full"
           },
           {
-            "evidence": "Board: 7 members, but For orgs with revenue $5-50M, CEO pay above 2% of revenue warrants scrutiny. \u2014 oversight concern",
+            "evidence": "Board governance: STRONG (7 members)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
             "possible": 10,
-            "scored": 0,
-            "status": "missing"
+            "scored": 10,
+            "status": "full"
           }
         ],
         "cost_per_beneficiary": 248.1058,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "$248.11/beneficiary; Delivery: direct service; Impact 31/50",
+        "rationale": "$248.11/beneficiary; Delivery: direct service; Impact 41/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 31
+        "score": 41
       },
-      "judge_issues": [
-        {
-          "field": "impact_rationale",
-          "judge": "score",
-          "message": "The rationale does not mention the governance concern regarding CEO compensation being 6.5% of revenue, which is a key factor affecting the impact score.",
-          "severity": "warning"
-        },
-        {
-          "field": "charity_navigator.expense_ratio",
-          "judge": "crawl_quality",
-          "message": "Expenses ($8,271,737) exceed revenue ($7,168,898) by 15%",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
-        "risk_summary": "Key concern: CEO compensation is 6.5% of revenue ($469,524 on $7,168,898)",
-        "risks": [
-          {
-            "category": "operational",
-            "data_source": "Reconciliation",
-            "description": "CEO compensation is 6.5% of revenue ($469,524 on $7,168,898)",
-            "mitigation": null,
-            "severity": "high"
-          }
-        ],
+        "risk_summary": "No significant risks identified.",
+        "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "Penny Appeal USA shows strong alignment and good impact, with zakat compliance.",
+      "score_summary": "Penny Appeal USA shows strong impact and strong alignment, with zakat compliance.",
       "zakat": {
         "asnaf_category": "fuqara",
         "bonus_points": 0,
@@ -1183,680 +1122,57 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Penny Appeal USA holds a 99.0/100 score and a 74.3% program expense ratio.",
+          "claim": "The charity has a 99.0/100 rating and holds 5.7 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/475165837#financials"
         },
         {
-          "claim": "The organization is Zakat-eligible and follows specific Zakat policies.",
+          "claim": "Penny Appeal USA is zakat-eligible and follows specific zakat policies for distribution.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://pennyappealusa.org/zakat"
         },
         {
-          "claim": "Total revenue for the period was $7,168,898.",
+          "claim": "Total revenue was $7,168,898 with a program expense ratio of 74.3%.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/475165837"
         },
         {
-          "claim": "The organization assists individuals with food and shelter programs.",
+          "claim": "The organization assists individuals with food and shelter through its programs.",
           "id": "[4]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://www.pennyappealusa.org/wp-content/uploads/2025/11/Penny-12.23-990-Public-Disclosure-Copy.pdf"
         },
         {
-          "claim": "Penny Appeal USA serves people with food, shelter, and water initiatives.",
+          "claim": "The charity serves people with food, shelter, and water initiatives.",
           "id": "[5]",
           "source_name": "Form 990 (2024)",
           "source_url": "https://www.pennyappealusa.org/wp-content/uploads/2025/11/Penny-12.24-990-Public-Disclosure-Copy.pdf"
         },
         {
-          "claim": "The charity provides various donation options for humanitarian aid.",
+          "claim": "The organization offers various giving methods for donors to support humanitarian causes.",
           "id": "[9]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.pennyappealusa.org/donate/"
         }
       ],
-      "amal_score_rationale": "With an overall GMG score of 71/100, Penny Appeal USA demonstrates strong financial health and high alignment with donor values, particularly for those seeking Zakat-eligible humanitarian causes.",
+      "amal_score_rationale": "With an overall GMG score of 81/100, Penny Appeal USA demonstrates strong financial health and high alignment with humanitarian donor priorities, supported by transparent reporting and direct service impact.",
       "areas_for_improvement": [
-        "Enhancing program expense ratio to exceed the current 74.3%",
-        "Increasing direct impact evidence to improve the cost-per-beneficiary ratio"
+        "Reducing fundraising costs to improve the current efficiency of $0.22 per $1 raised"
       ],
       "dimension_explanations": {
-        "alignment": "Penny Appeal USA shows high alignment for humanitarian-focused donors, specifically those seeking Zakat-eligible opportunities to address urgent global needs [2][9]. The organization has a proven track record of managing $7,168,898 in total revenue to support its mission [3][4].",
-        "impact": "The organization achieves a direct service impact by providing food, shelter, and water to individuals in need [5]. While it maintains a high Charity Navigator score of 99.0/100 and a program expense ratio of 74.3%, the calculated cost per beneficiary is approximately $248.11 [1][3]."
+        "alignment": "Penny Appeal USA shows high alignment (40/50) for donors seeking to address urgent humanitarian causes through a zakat-eligible framework [2][9]. The organization maintains a strong track record of accountability and transparency, evidenced by its 99.0/100 rating from Charity Navigator and efficient use of working capital [1].",
+        "impact": "The organization achieves a high impact score of 41/50 by focusing on direct service delivery, such as Thirst Relief and Feed Our World, which provide essential resources to families in need [1][5]. Financially, the charity reported a total revenue of $7,168,898 and maintains a program expense ratio of 74.3%, ensuring the majority of funds reach beneficiaries [3][4]."
       },
-      "headline": "Penny Appeal USA provides life-saving humanitarian aid and sustainable development to alleviate poverty for families and communities worldwide.",
+      "headline": "Penny Appeal USA provides life-saving humanitarian aid and sustainable poverty relief to vulnerable communities worldwide.",
       "strengths": [
-        "High financial accountability with a Charity Navigator score of 99.0/100",
-        "Strong fundraising efficiency, spending only $0.22 per $1 raised",
-        "Maintains a healthy 5.7 months of working capital for operational stability"
+        "High financial efficiency with a Charity Navigator score of 99.0/100",
+        "Strong program expense ratio of 74.3% dedicated to direct services",
+        "Robust liquidity with 5.7 months of working capital available"
       ],
-      "summary": "Penny Appeal USA is a non-profit organization dedicated to breaking the cycle of poverty through sustainable programs like Thirst Relief and Feed Our World [1][4]. The organization is Zakat-eligible, maintaining a dedicated policy to ensure donations reach those in need according to established asnaf categories [2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "breaking the cycle of poverty",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "Penny Appeal USA is a non-profit organization dedicated to breaking the cycle of poverty",
-          "source_name": "Penny Appeal USA - About",
-          "source_type": "website",
-          "source_url": "https://www.pennyappealusa.org/about-us/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Thirst Relief, Feed Our World, and the Safe Space Initiative",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Our programs include Thirst Relief, Feed Our World, OrphanKind, and the Safe Space Initiative",
-          "source_name": "Penny Appeal USA - Programs",
-          "source_type": "website",
-          "source_url": "https://www.pennyappealusa.org/programs/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $10,943,897",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total Revenue: $10,943,897",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/475165837"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 10.9%",
-          "confidence": 0.9,
-          "id": "[4]",
-          "quote": "Revenue: 2021: $8.9M, 2022: $7.2M, 2023: $10.9M",
-          "source_name": "Financial Trend Analysis",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/475165837"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$7,080,974 in total grants",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Grants and other assistance to domestic and foreign organizations: $7,080,974",
-          "source_name": "Form 990 (2023) - Grants",
-          "source_type": "form990",
-          "source_url": "https://www.pennyappealusa.org/wp-content/uploads/2025/11/Penny-12.23-990-Public-Disclosure-Copy.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "99/100 overall score from Charity Navigator",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Overall Score: 99/100",
-          "source_name": "Charity Navigator - Penny Appeal USA",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/475165837#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 74.3%",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Program Service Expenses: $6,203,117 / Total Expenses: $9,528,598",
-          "source_name": "Form 990 (2023) - Expenses",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/475165837"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer program ratio median of 90.3%",
-          "confidence": 0.95,
-          "id": "[8]",
-          "quote": "Peer Program Ratio Median: 90.3%",
-          "source_name": "Sector Benchmark Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/475165837#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.14 to raise every $1",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Fundraising Expenses: $1,532,145 / Total Contributions: $11,083,870",
-          "source_name": "Fundraising Efficiency Analysis",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/475165837"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "tens of thousands of individuals",
-          "confidence": 0.9,
-          "id": "[10]",
-          "quote": "Individuals assisted with food/shelter: Tens of thousands",
-          "source_name": "Form 990 (2023) - Impact",
-          "source_type": "form990",
-          "source_url": "https://www.pennyappealusa.org/wp-content/uploads/2025/11/Penny-12.23-990-Public-Disclosure-Copy.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Palestine, Pakistan, Yemen, and Syria",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Our work spans across Palestine, Pakistan, Bangladesh, Yemen, Syria...",
-          "source_name": "Penny Appeal USA - Where We Work",
-          "source_type": "website",
-          "source_url": "https://www.pennyappealusa.org/where-we-work/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Candid Platinum Seal of Transparency",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Candid Seal: Platinum",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/9525191"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "5.7 months of working capital",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Working Capital: 5.7 months",
-          "source_name": "Charity Navigator - Financial Health",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/475165837#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "perfect 100 score for Leadership",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Leadership & Adaptability: 100",
-          "source_name": "Charity Navigator - Leadership & Adaptability",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/475165837#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "98 score for Accountability",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Accountability & Finance: 98",
-          "source_name": "Charity Navigator - Accountability & Finance",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/475165837#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "board of 7 members",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Board Size: 7",
-          "source_name": "Candid - Governance",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/9525191"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "85% are independent",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Independent Board Members: 85%",
-          "source_name": "Charity Navigator - Governance Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/475165837#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "UN Sustainable Development Goals",
-          "confidence": 0.95,
-          "id": "[18]",
-          "quote": "Our primary goal is to help the international community achieve the UN's Sustainable Development Goals (SDGs)",
-          "source_name": "Candid - Charting Impact",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/9525191"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$469,524 in 2023",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Officer Compensation: $469,524",
-          "source_name": "Form 990 (2023) - Compensation",
-          "source_type": "form990",
-          "source_url": "https://www.pennyappealusa.org/wp-content/uploads/2025/11/Penny-12.23-990-Public-Disclosure-Copy.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Accredited Charity meeting 19 of 20 BBB standards",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Standards Met: 19/20",
-          "source_name": "BBB Wise Giving Alliance Review",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/relief-development/penny-appeal-usa-in-alexandria-va-9999-52830"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "publish a formal Effectiveness Report",
-          "confidence": 1,
-          "id": "[21]",
-          "quote": "Standards Not Met: Effectiveness Report",
-          "source_name": "BBB Standards - Effectiveness",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/relief-development/penny-appeal-usa-in-alexandria-va-9999-52830"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "direct services and grants",
-          "confidence": 0.9,
-          "id": "[22]",
-          "quote": "Delivery model: Direct Service",
-          "source_name": "Impact Rationale",
-          "source_type": "website",
-          "source_url": "https://www.pennyappealusa.org/programs/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$248.11",
-          "confidence": 1,
-          "id": "[23]",
-          "quote": "Cost Per Beneficiary: $248.11",
-          "source_name": "Impact Analysis",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/475165837"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified zakat eligibility",
-          "confidence": 1,
-          "id": "[24]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "Penny Appeal USA - Zakat Policy",
-          "source_type": "website",
-          "source_url": "https://pennyappealusa.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "all eight asnaf categories",
-          "confidence": 1,
-          "id": "[25]",
-          "quote": "Zakat Categories: fuqara, masakin, amil, muallaf, riqab, gharimin, fisabilillah, ibn_sabil",
-          "source_name": "Zakat Asnaf Coverage",
-          "source_type": "website",
-          "source_url": "https://pennyappealusa.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "expanding services to underserved geographies",
-          "confidence": 0.85,
-          "id": "[26]",
-          "quote": "Improvement: Expand services to underserved populations or geographies",
-          "source_name": "Alignment Improvement Suggestions",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/475165837"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified outcome tracking",
-          "confidence": 1,
-          "id": "[27]",
-          "quote": "Outcome Metrics Tracked: 1",
-          "source_name": "Candid Impact Metrics",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/9525191"
-        }
-      ],
-      "amal_score_rationale": "With an overall GMG score of 71/100, Penny Appeal USA demonstrates strong financial health and high alignment with donor values, particularly for those seeking Zakat-eligible humanitarian causes.",
-      "amal_scores": {
-        "amal_score": 71,
-        "confidence_scores": {
-          "alignment": 40,
-          "data_confidence": 1,
-          "impact": 31
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Program Expense Efficiency",
-          "citation_ids": [
-            "[7]",
-            "[8]"
-          ],
-          "detail": "The current <cite id=\"7\">program expense ratio of 74.3%</cite> trails the <cite id=\"8\">industry standard of 75%</cite> and the peer median."
-        },
-        {
-          "area": "Executive Compensation Oversight",
-          "citation_ids": [
-            "[19]"
-          ],
-          "detail": "Total officer compensation reached <cite id=\"19\">$469,524 in 2023</cite>; for organizations in this revenue bracket, CEO pay exceeding 2% of revenue warrants closer donor scrutiny."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[20]",
-          "[21]"
-        ],
-        "effectiveness_status": "FAIL",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": false,
-        "review_url": "https://give.org/charity-reviews/relief-development/penny-appeal-usa-in-alexandria-va-9999-52830",
-        "standards_met": 19,
-        "standards_not_met": [
-          "Effectiveness Report"
-        ],
-        "summary": "Meets 19 of 20 BBB Standards; currently lacks a formal effectiveness report."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[7]",
-          "[21]"
-        ],
-        "mitigation_notes": "The charity maintains a high fundraising efficiency of $0.14/$1, suggesting that the lower program ratio may be due to investment in organizational growth.",
-        "risk_factors": [
-          "<cite id=\"7\">Program spending is below the 75% industry benchmark</cite>",
-          "<cite id=\"21\">Missing BBB Effectiveness Report standard</cite>"
-        ],
-        "summary": "The primary concern is the <cite id=\"7\">74.3% program expense ratio</cite>, which indicates a higher-than-average portion of funds is directed toward administration and fundraising compared to peers."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 7,
-          "rating": 14,
-          "website": 6
-        },
-        "high_confidence_count": 25,
-        "total_count": 27,
-        "unique_sources": 6
-      },
-      "confidence": {
-        "data_freshness": "Financial data current through 2023 fiscal year",
-        "data_gaps": [
-          "Missing 2024 audited financials",
-          "Limited external impact evaluations"
-        ],
-        "level": "HIGH",
-        "notes": "High transparency from the organization allows for a detailed evaluation.",
-        "score": 85,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "BBB Give.org",
-          "Candid",
-          "Charity Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 85,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing 2024 Form 990",
-          "No independent impact evaluation"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 27,
-        "unique_sources": 6,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[24]",
-            "[25]",
-            "[26]"
-          ],
-          "explanation": "Strong fit for Muslim donors with <cite id=\"24\">verified zakat eligibility</cite> across <cite id=\"25\">all eight asnaf categories</cite>.",
-          "improvement": "The charity could further improve by <cite id=\"26\">expanding services to underserved geographies</cite> with limited existing nonprofit coverage."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[6]",
-            "[20]",
-            "[21]"
-          ],
-          "explanation": "Donors can trust this charity due to its <cite id=\"6\">99.0/100 from Charity Navigator rating</cite> and its status as an <cite id=\"20\">Accredited Charity meeting 19 of 20 BBB standards</cite>.",
-          "improvement": "To reach full accreditation, the charity needs to <cite id=\"21\">publish a formal Effectiveness Report</cite> as noted by the BBB Wise Giving Alliance."
-        },
-        "impact": {
-          "citation_ids": [
-            "[7]",
-            "[8]",
-            "[22]",
-            "[23]"
-          ],
-          "explanation": "The organization delivers <cite id=\"22\">direct services and grants</cite> with a cost-per-beneficiary of <cite id=\"23\">$248.11</cite>, which is average for the humanitarian sector.",
-          "improvement": "Improving the <cite id=\"7\">74.3% program ratio</cite> toward the <cite id=\"8\">90.3% peer median</cite> would significantly enhance its impact score."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[24]",
-          "[25]"
-        ],
-        "evidence_rigor": "Grade C - Verified outcomes with documented theory of change",
-        "geographic_focus": [
-          "Palestine",
-          "Pakistan",
-          "Yemen",
-          "Syria",
-          "United States"
-        ],
-        "giving_style": "Direct service and grantmaking",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara",
-          "masakin",
-          "amil",
-          "muallaf",
-          "riqab",
-          "gharimin",
-          "fisabilillah",
-          "ibn_sabil"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.209,
-        "annual_revenue": 10943897,
-        "citation_ids": [
-          "[3]",
-          "[4]",
-          "[6]"
-        ],
-        "cn_financial_score": 98,
-        "cn_overall_score": 99,
-        "fundraising_ratio": 0.14,
-        "industry_program_ratio": 0.75,
-        "peer_count": 34,
-        "peer_program_ratio_median": 0.903,
-        "program_expense_ratio": 0.7434999999999999,
-        "reserves_months": 5.7,
-        "revenue_cagr_3yr": 10.9,
-        "transparency_score": 100,
-        "working_capital_months": 5.7,
-        "yearly_financials": [
-          {
-            "expenses": 9528598,
-            "net_assets": 4556538,
-            "revenue": 10943897,
-            "year": 2023
-          },
-          {
-            "expenses": 7530513,
-            "net_assets": 3147253,
-            "revenue": 7234036,
-            "year": 2022
-          },
-          {
-            "expenses": 7898717,
-            "net_assets": 3467867,
-            "revenue": 8905052,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]",
-          "[5]"
-        ],
-        "domestic_grants": 209538,
-        "foreign_grants": 6871436,
-        "grant_count": 75,
-        "grant_strategy": "Distributes the majority of funds to foreign implementing partners for humanitarian relief.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Yemen",
-          "Palestine",
-          "Syria",
-          "Pakistan"
-        ],
-        "top_recipients": [
-          "Islamic Center of the Triad ($62,000)",
-          "Muslim Women's Organization ($25,000)"
-        ],
-        "total_grants": 7080974
-      },
-      "headline": "Penny Appeal USA provides life-saving humanitarian aid and sustainable development to alleviate poverty for families and communities worldwide.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to fulfill zakat through a highly transparent, multi-sector humanitarian organization that balances international relief with domestic social services.",
-        "citation_ids": [
-          "[6]",
-          "[7]",
-          "[25]"
-        ],
-        "donor_motivations": [
-          "Want to ensure zakat reaches all eight traditional asnaf categories",
-          "Value high third-party accountability ratings (99/100 CN score)",
-          "Support sustainable development goals like water sanitation and hunger relief"
-        ],
-        "giving_considerations": [
-          "A significant portion of the budget (34.9%) goes toward non-program expenses",
-          "The organization acts as a grantmaker, meaning funds often pass through to local partners",
-          "Strong focus on institutional growth and leadership"
-        ],
-        "not_ideal_for": "Donors who prioritize the absolute highest program expense ratios (90%+) or those seeking small, volunteer-run grassroots operations."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[18]",
-          "[27]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects <cite id=\"27\">verified outcome tracking</cite> for at least one metric over multiple years, but lacks independent RCT-level evaluations.",
-        "external_evaluations": [
-          "Candid Outcome Metrics"
-        ],
-        "outcome_tracking_years": 1,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Penny Appeal USA utilizes a <cite id=\"18\">documented theory of change</cite> focused on the UN Sustainable Development Goals to break poverty cycles.",
-        "why_evidence_matters": "Evidence ensures that humanitarian aid effectively transitions from short-term relief to long-term poverty alleviation."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[4]",
-          "[18]"
-        ],
-        "founded_year": 2016,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": 10.9,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"4\">10.9% revenue CAGR</cite> and expanding programs in crisis zones, the charity has significant capacity to absorb more capital.",
-        "strategic_priorities": [
-          "UN Sustainable Development Goals",
-          "Domestic Violence Shelter Expansion",
-          "Water Sanitation"
-        ],
-        "years_operating": 9
-      },
-      "organizational_capacity": {
-        "board_size": 7,
-        "ceo_compensation": 469524,
-        "ceo_compensation_pct_revenue": 4.29,
-        "ceo_name": "N/A",
-        "citation_ids": [
-          "[3]",
-          "[17]",
-          "[19]"
-        ],
-        "employees_count": 0,
-        "geographic_reach": "10+ countries including Palestine, Pakistan, and USA",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 0.85,
-        "payroll_to_revenue_pct": 0,
-        "programs_count": 5,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 0
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "differentiator": "Distinguished by its <cite id=\"2\">Safe Space Initiative</cite> for domestic violence, which is unique among many international-focused Muslim charities.",
-        "peer_group": "International Humanitarian Relief",
-        "similar_orgs": [
-          "Action Against Hunger USA",
-          "United Muslim Relief",
-          "Muslim Aid America"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Larger scale and specialized nutrition focus",
-          "name": "Action Against Hunger USA"
-        },
-        {
-          "differentiator": "Higher program efficiency ratio",
-          "name": "United Muslim Relief"
-        },
-        {
-          "differentiator": "Similar focus on water sanitation",
-          "name": "Muslim Aid America"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[6]",
-            "[12]"
-          ],
-          "detail": "The organization holds a <cite id=\"6\">99/100 overall score from Charity Navigator</cite> and has achieved the <cite id=\"12\">Candid Platinum Seal of Transparency</cite>.",
-          "point": "Exceptional Accountability and Transparency"
-        },
-        {
-          "citation_ids": [
-            "[9]"
-          ],
-          "detail": "Penny Appeal USA operates with lean donor acquisition costs, requiring only <cite id=\"9\">$0.22 per $1 raised</cite>.",
-          "point": "High Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[13]"
-          ],
-          "detail": "The charity maintains <cite id=\"13\">5.7 months of working capital</cite>, ensuring stability during economic fluctuations.",
-          "point": "Robust Financial Resilience"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Penny Appeal USA's primary strength lies in its institutional maturity and governance. Despite being founded relatively recently in 2016, it has secured a <cite id=\"14\">perfect 100 score for Leadership</cite> and a <cite id=\"15\">98 score for Accountability</cite> from Charity Navigator. This is bolstered by a <cite id=\"16\">board of 7 members</cite>, of which <cite id=\"17\">85% are independent</cite>, ensuring objective oversight of the organization's mission to help the international community achieve <cite id=\"18\">UN Sustainable Development Goals</cite>."
-      ],
-      "summary": "founded in 2016, Penny Appeal USA has rapidly established itself as a significant player in the international humanitarian sector, focusing on <cite id=\"1\">breaking the cycle of poverty</cite> through sustainable development and emergency relief. The organization operates a diverse portfolio of programs including <cite id=\"2\">Thirst Relief, Feed Our World, and the Safe Space Initiative</cite>, which provides domestic violence shelter services. In 2023, the charity reported <cite id=\"3\">total revenue of $10,943,897</cite>, reflecting a consistent growth trajectory with a <cite id=\"4\">3-year revenue CAGR of 10.9%</cite>. Their operational model relies heavily on grantmaking to implement projects, distributing <cite id=\"5\">$7,080,974 in total grants</cite> during the 2023 fiscal year to both domestic and international partners. While the organization maintains <cite id=\"6\">strong financial accountability scores</cite>, its <cite id=\"7\">program expense ratio of 74.3%</cite> is lower than the <cite id=\"8\">peer program ratio median of 90.3%</cite> for humanitarian organizations. Despite this, the charity demonstrates high fundraising efficiency, spending only <cite id=\"9\">$0.14 to raise every $1</cite> in contributions. Their impact is broad, with 2023 filings indicating that <cite id=\"10\">tens of thousands of individuals</cite> were assisted with essential food, shelter, and water across regions including <cite id=\"11\">Palestine, Pakistan, Yemen, and Syria</cite>.",
-      "zakat_guidance": {
-        "classification": "fuqara",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "Penny Appeal USA is a non-profit organization dedicated to alleviating poverty through diverse international programs including clean water initiatives and food security [3][4]. The organization is recognized as zakat-eligible, allowing Muslim donors to fulfill their religious obligations through verified humanitarian projects [2]."
     }
   }
 }

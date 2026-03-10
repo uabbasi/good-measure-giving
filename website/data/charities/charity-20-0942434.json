@@ -2,7 +2,7 @@
   "id": "20-0942434",
   "ein": "20-0942434",
   "name": "Baitulmaal, Inc.",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Baitulmaal provides life-saving, life-sustaining, and life-enriching humanitarian aid to under-served populations around the world regardless of faith or nationality. Baitulmaal serves as a conduit between the compassion of our donors and the needs of their beneficiaries. We turn compassion into hope for those in need.",
   "programs": [
     "Ramadan Food Packages",
@@ -62,7 +62,11 @@
     "cashAdjustedProgramRatio": 0.7741170089433547,
     "domesticBurnRate": 0.9731279332161391
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 4,
+    "independentBoardMembers": null,
+    "ceoCompensation": 142013
+  },
   "targeting": {
     "populationsServed": [
       "Youth",
@@ -107,7 +111,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 13:02:21",
+  "lastUpdated": "2026-03-09 21:44:53",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -499,44 +503,6 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 25
       },
-      "judge_issues": [
-        {
-          "field": "amal_score_rationale",
-          "judge": "score",
-          "message": "The rationale states that Baitulmaal earns a \"moderate overall score,\" but the assigned score of 56 is at the higher end of the average range. The rationale should more clearly acknowledge the strengths that contribute to this score, such as the exceptional financial health and efficiency.",
-          "severity": "warning"
-        },
-        {
-          "field": "impact_rationale",
-          "judge": "score",
-          "message": "The impact rationale mentions strong financial health but doesn't adequately address the significant risk deductions related to GIK inflation and high domestic burn rate, which negatively impact the overall impact score. These risks should be explicitly mentioned to provide a complete picture.",
-          "severity": "warning"
-        },
-        {
-          "field": "multi_source.revenue_divergence",
-          "judge": "crawl_quality",
-          "message": "Revenue diverges >50% across sources ($23,687,125 - $77,434,379)",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        }
-      ],
       "risk_deduction": -10,
       "risks": {
         "overall_risk_level": "HIGH",
@@ -578,591 +544,52 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Baitulmaal holds a 99.99.0/100 from Charity Navigator, reflecting its strong financial health and 93.6% program expense ratio.",
+          "claim": "Baitulmaal earned a 99.0/100 score and maintains a 93.6% program expense ratio.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/200942434#financials"
         },
         {
-          "claim": "The organization is zakat-eligible and maintains a dedicated zakat fund for various asnaf categories.",
+          "claim": "The organization is zakat-eligible and maintains a specific zakat policy.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.baitulmaal.org/zakat-fund"
         },
         {
-          "claim": "Baitulmaal reported total revenue of $77,434,379 in its most recent financial filings.",
+          "claim": "The organization reported total revenue of $77,434,379.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/200942434"
         },
         {
-          "claim": "Baitulmaal provides tools for donors to calculate zakat and supports programs in disaster relief and orphan sponsorship.",
+          "claim": "Baitulmaal provides tools for zakat calculation and focuses on orphan sponsorship and disaster relief.",
           "id": "[4]",
           "source_name": "Download Zakat Calculator (PDF Form)",
           "source_url": "https://baitulmaal.org/forms/zakat-calc-form.pdf"
         },
         {
-          "claim": "The charity offers multiple giving methods for donors to support its international humanitarian missions.",
+          "claim": "The organization offers various giving methods for humanitarian and sustainable development programs.",
           "id": "[5]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://baitulmaal.org/donate/"
         }
       ],
-      "amal_score_rationale": "Baitulmaal earns a moderate overall score due to its exceptional financial health and efficiency, balanced by a need for more granular impact data. Its high alignment with humanitarian causes and zakat eligibility makes it a top choice for Muslim donors.",
+      "amal_score_rationale": "Baitulmaal earns a moderate overall score due to its exceptional financial health and strong alignment with humanitarian causes, balanced by a need for more robust third-party impact evidence.",
       "areas_for_improvement": [
-        "Enhancing the directness of impact reporting to better reflect the cost-effectiveness per beneficiary.",
-        "Expanding public documentation regarding long-term outcome measurements for sustainable development projects."
+        "Enhancing public reporting on long-term impact metrics to improve the overall impact score",
+        "Increasing transparency regarding specific cost-per-beneficiary breakdowns across diverse program types"
       ],
       "dimension_explanations": {
-        "alignment": "With an alignment score of 41/50, Baitulmaal shows high donor fit for those seeking to support urgent humanitarian causes [1]. The charity is zakat-eligible and provides specific resources like a zakat calculator to assist donors in their religious giving [2][4].",
-        "impact": "The organization demonstrates strong financial health with a Charity Navigator score of 99.0/100 and a total revenue of $77,434,379 [1][3]. While it maintains a high program expense ratio of 93.6%, the impact score of 25/50 reflects a balanced assessment of its direct service model and the calculated cost per beneficiary [1]."
+        "alignment": "Baitulmaal shows high alignment for Muslim donors as a zakat-eligible entity that maintains a dedicated zakat fund and provides a zakat calculator for donors [2][4]. Its focus on urgent humanitarian needs and sustainable development aligns with high-priority global causes [4][5].",
+        "impact": "The organization demonstrates strong financial health with a total revenue of $77,434,379 and a 93.6% program expense ratio [1][3]. While it provides direct services such as orphan sponsorship and disaster relief, the impact score reflects a balance between high financial efficiency and the need for more granular evidence of long-term program effectiveness [1][4]."
       },
-      "headline": "Baitulmaal, Inc. is a high-impact humanitarian organization dedicated to providing disaster relief, sustainable development, and orphan sponsorship to vulnerable populations worldwide.",
+      "headline": "Baitulmaal, Inc. is a high-impact humanitarian organization dedicated to providing disaster relief, sustainable development, and orphan sponsorship to vulnerable populations globally.",
       "strengths": [
-        "Exceptional program expense ratio of 93.6%, ensuring the vast majority of funds reach those in need.",
-        "Highly efficient fundraising operations with a cost of only $0.03 per $1 raised.",
-        "Strong short-term liquidity with 10.0 months of working capital available."
+        "Exceptional program expense ratio of 93.6%, ensuring the vast majority of funds reach those in need",
+        "Highly efficient fundraising operations, spending only $0.03 to raise every $1",
+        "Strong liquidity with 10.0 months of working capital to sustain operations during crises"
       ],
-      "summary": "Baitulmaal, Inc. provides life-saving aid and tools for self-sufficiency to impoverished communities across the globe [4]. The organization maintains a high level of financial transparency and is recognized as a zakat-eligible charity, allowing donors to fulfill their religious obligations through various humanitarian funds [2][5]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "Total Revenue of $23,687,125",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "Total Revenue: $23,687,125",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/200942434"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 93.6%",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Program service expenses: 100.0%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/200942434"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "99/100 overall score from Charity Navigator",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Overall Score 99/100",
-          "source_name": "Charity Navigator - Baitulmaal",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/200942434#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "over 10 countries",
-          "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Serving Afghanistan, Bangladesh, Benin, Burkina Faso, Chad, Ghana, India, Ivory Coast, Jordan, Kenya",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://baitulmaal.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Zakat-eligible organization",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Baitulmaal is a Zakat-eligible organization",
-          "source_name": "Baitulmaal Zakat Fund",
-          "source_type": "website",
-          "source_url": "https://www.baitulmaal.org/zakat-fund"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "masakin (needy) and other eligible asnaf",
-          "confidence": 0.9,
-          "id": "[6]",
-          "quote": "Your Zakat helps the needy (Masakin) and poor (Fuqara)",
-          "source_name": "Baitulmaal Zakat Fund",
-          "source_type": "website",
-          "source_url": "https://www.baitulmaal.org/zakat-fund"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "clean water access and orphan sponsorship programs",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Clean Water Access, Orphan Sponsorship",
-          "source_name": "Baitulmaal Programs",
-          "source_type": "website",
-          "source_url": "https://baitulmaal.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "10.0 months of working capital",
-          "confidence": 0.95,
-          "id": "[8]",
-          "quote": "Working Capital Ratio (years): 0.83",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/200942434#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "93.6% of revenue is derived from non-cash contributions",
-          "confidence": 0.9,
-          "id": "[9]",
-          "quote": "GIK inflation: 93.6% of revenue is noncash contributions",
-          "source_name": "Score Details - Risk",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/200942434"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.03 per $1 raised",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Fundraising Efficiency: $0.10",
-          "source_name": "Charity Navigator - Efficiency",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/200942434#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Platinum Seal of Transparency",
-          "source_name": "Candid Profile",
-          "source_type": "website",
-          "source_url": "https://app.candid.org/profile/6993153"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "dedicated Zakat calculator",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Baitulmaal Zakat Calculator",
-          "source_name": "Zakat Calculator PDF",
-          "source_type": "website",
-          "source_url": "https://baitulmaal.org/forms/zakat-calc-form.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "93.6% independent board members",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Independent Board Members: 93.6%",
-          "source_name": "Charity Navigator - Governance",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/200942434#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "perfect scores of 100 in Culture and Leadership",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Culture & Community: 100, Leadership & Adaptability: 100",
-          "source_name": "Charity Navigator - Beacons",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/200942434#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "documented theory of change",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Theory of change: ABSENT",
-          "source_name": "Score Details - Impact",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/200942434#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "long-term outcome tracking",
-          "confidence": 0.9,
-          "id": "[16]",
-          "quote": "Track outcomes over at least 3 years",
-          "source_name": "Score Details - Evidence",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/200942434#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of -15.6%",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "3-Year Revenue CAGR: -15.6%",
-          "source_name": "Financial Trends Data",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/200942434"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cost per beneficiary is high at $6,818.51",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "$6818.51/beneficiary",
-          "source_name": "Score Details - Impact",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/200942434#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "expanding services to underserved geographies",
-          "confidence": 0.85,
-          "id": "[19]",
-          "quote": "Expand services to underserved populations or geographies",
-          "source_name": "Score Details - Alignment",
-          "source_type": "website",
-          "source_url": "https://baitulmaal.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer median of 90.3%",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Peer Program Ratio Median: 90.3%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/200942434#financials"
-        }
-      ],
-      "amal_score_rationale": "Baitulmaal earns a moderate overall score due to its exceptional financial health and efficiency, balanced by a need for more granular impact data. Its high alignment with humanitarian causes and zakat eligibility makes it a top choice for Muslim donors.",
-      "amal_scores": {
-        "amal_score": 56,
-        "confidence_scores": {
-          "alignment": 41,
-          "data_confidence": 1,
-          "impact": 25
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Impact Evidence Rigor",
-          "citation_ids": [
-            "[15]",
-            "[16]"
-          ],
-          "context": "The organization currently lacks a <cite id=\"15\">documented theory of change</cite> and could benefit from more rigorous <cite id=\"16\">long-term outcome tracking</cite>."
-        },
-        {
-          "area": "Revenue Diversification",
-          "citation_ids": [
-            "[17]"
-          ],
-          "context": "With a <cite id=\"17\">3-year revenue CAGR of -15.6%</cite> and heavy reliance on non-cash gifts, stabilizing cash revenue is critical for growth."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[3]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": null,
-        "standards_met": null,
-        "standards_not_met": [],
-        "summary": "The organization maintains high governance standards with a 93.6% independent board."
-      },
-      "case_against": {
-        "citation_ids": [
-          "9",
-          "17",
-          "15"
-        ],
-        "mitigation_notes": "The organization maintains high liquidity and a platinum transparency rating to mitigate governance risks.",
-        "risk_factors": [
-          "<cite id=\"17\">Negative 3-year revenue growth of -15.6%</cite>",
-          "<cite id=\"15\">Lack of a formal theory of change</cite>"
-        ],
-        "summary": "The primary concern involves <cite id=\"9\">93.6% of revenue coming from non-cash contributions</cite>, which can complicate valuation and impact assessment."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 4,
-          "rating": 10,
-          "website": 6
-        },
-        "high_confidence_count": 18,
-        "total_count": 20,
-        "unique_sources": 5
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023 tax year",
-        "data_gaps": [
-          "Missing formal theory of change document",
-          "Limited long-term outcome data"
-        ],
-        "level": "HIGH",
-        "notes": "Strong alignment between third-party ratings and internal financial reporting.",
-        "score": 85,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Candid",
-          "Baitulmaal Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 85,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing formal theory of change",
-          "High GIK concentration"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 20,
-        "unique_sources": 5,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[5]",
-            "[4]",
-            "[19]"
-          ],
-          "explanation": "Strong fit for Muslim donors as a <cite id=\"5\">Zakat-eligible entity</cite> serving <cite id=\"4\">Muslim-majority regions</cite> like Yemen and Jordan.",
-          "improvement": "The charity could further improve by <cite id=\"19\">expanding services to underserved geographies</cite> with limited existing nonprofit coverage."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[3]",
-            "[11]",
-            "[15]"
-          ],
-          "explanation": "Donors can trust this charity due to its <cite id=\"3\">99.0/100 from Charity Navigator rating</cite> and <cite id=\"11\">Candid Platinum Seal</cite>.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"15\">document a clear theory of change</cite> with an explicit causal pathway."
-        },
-        "impact": {
-          "citation_ids": [
-            "[2]",
-            "[18]",
-            "[16]"
-          ],
-          "explanation": "Operations are highly efficient with a <cite id=\"2\">100.0% program ratio</cite>, though the <cite id=\"18\">cost per beneficiary is high at $6,818.51</cite>.",
-          "improvement": "Impact measurement would benefit from <cite id=\"16\">tracking outcomes over at least three years</cite> and seeking external evaluations."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[2]",
-          "[4]",
-          "[5]"
-        ],
-        "evidence_rigor": "Grade C - Measured outcomes with limited long-term tracking",
-        "geographic_focus": [
-          "Yemen",
-          "Jordan",
-          "Afghanistan",
-          "Kenya"
-        ],
-        "giving_style": "Direct service and emergency relief",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "masakin (needy)",
-          "fuqara (poor)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 23687125,
-        "citation_ids": [
-          "[1]",
-          "[3]",
-          "[17]"
-        ],
-        "cn_financial_score": 97,
-        "cn_overall_score": 99,
-        "fundraising_ratio": 0.1,
-        "industry_program_ratio": 0.75,
-        "peer_count": 34,
-        "peer_program_ratio_median": 0.903,
-        "program_expense_ratio": 0.9359999999999999,
-        "reserves_months": 10,
-        "revenue_cagr_3yr": -15.6,
-        "transparency_score": 100,
-        "working_capital_months": 10,
-        "yearly_financials": [
-          {
-            "expenses": 13502941,
-            "net_assets": 11291865,
-            "revenue": 23687125,
-            "year": 2023
-          },
-          {
-            "expenses": 38434111,
-            "net_assets": 1107681,
-            "revenue": 36776286,
-            "year": 2022
-          },
-          {
-            "expenses": 32040585,
-            "net_assets": 2764921,
-            "revenue": 33249497,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 1956315,
-        "grant_count": 3,
-        "grant_strategy": "Direct foreign grants to support international relief operations",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "International"
-        ],
-        "top_recipients": [
-          "Foreign recipients in crisis zones"
-        ],
-        "total_grants": 1956315
-      },
-      "headline": "Baitulmaal, Inc. is a high-impact humanitarian organization dedicated to providing disaster relief, sustainable development, and orphan sponsorship to vulnerable populations worldwide.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize maximum financial efficiency and want their Zakat to support established humanitarian operations in Muslim-majority crisis zones.",
-        "citation_ids": [
-          "[2]",
-          "[9]",
-          "[17]"
-        ],
-        "donor_motivations": [
-          "Want to ensure 93.6% of reported expenses go to programs",
-          "Seeking a Zakat-eligible charity with high transparency ratings",
-          "Interested in supporting orphans and water projects globally",
-          "Value organizations with strong independent board oversight"
-        ],
-        "giving_considerations": [
-          "The organization relies heavily on non-cash (GIK) contributions",
-          "Revenue has seen a recent decline of -15.6% over three years",
-          "Direct service model results in a higher cost per beneficiary"
-        ],
-        "not_ideal_for": "Donors seeking rigorous RCT-level evidence of long-term impact or those looking for a charity with high cash-to-GIK ratios."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "15",
-          "16"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects that outcomes are measured but lack a formal theory of change or long-term tracking.",
-        "external_evaluations": [
-          "Candid Platinum outcomes data"
-        ],
-        "outcome_tracking_years": 1,
-        "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "Baitulmaal provides direct aid and tools for self-sufficiency to create healthy, educated, and empowered lives.",
-        "why_evidence_matters": "Evidence ensures that emergency aid transitions effectively into sustainable community development."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[17]",
-          "11"
-        ],
-        "founded_year": null,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": -15.6,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Significant humanitarian gaps in served regions like Yemen and Afghanistan suggest high capacity for additional funding.",
-        "strategic_priorities": [
-          "Increase beneficiaries by 20%",
-          "Expand US service offices",
-          "Expand capacity for domestic partners"
-        ],
-        "years_operating": 20
-      },
-      "organizational_capacity": {
-        "board_size": 4,
-        "ceo_compensation": 142013,
-        "ceo_compensation_pct_revenue": 0.6,
-        "ceo_name": "Mazen M Mokhtar",
-        "citation_ids": [
-          "[3]",
-          "[4]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "10+ countries including Yemen, Jordan, and Kenya",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[2]",
-          "[20]"
-        ],
-        "differentiator": "Distinguished by a <cite id=\"2\">93.6% program expense ratio</cite>, which is significantly higher than the <cite id=\"20\">peer median of 90.3%</cite>.",
-        "peer_group": "International Humanitarian Organizations",
-        "similar_orgs": [
-          "Helping Hand for Relief and Development",
-          "ICNA Relief",
-          "UNRWA"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on orphan care and humanitarian relief",
-          "name": "Helping Hand for Relief and Development"
-        },
-        {
-          "differentiator": "Similar size and humanitarian focus",
-          "name": "ICNA Relief"
-        },
-        {
-          "differentiator": "Focus on Palestinian relief and humanitarian aid",
-          "name": "UNRWA"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[2]",
-            "[10]"
-          ],
-          "detail": "The organization maintains a <cite id=\"2\">93.6% program expense ratio</cite> and a highly efficient fundraising cost of <cite id=\"10\">$0.03 per $1 raised</cite>.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[3]",
-            "[11]"
-          ],
-          "detail": "Baitulmaal holds a <cite id=\"3\">99/100 overall score from Charity Navigator</cite> and has earned the <cite id=\"11\">Platinum Seal of Transparency from Candid</cite>.",
-          "point": "Top-Tier Accountability Ratings"
-        },
-        {
-          "citation_ids": [
-            "[5]",
-            "[12]"
-          ],
-          "detail": "The charity is <cite id=\"5\">verified as Zakat-eligible</cite> and provides a <cite id=\"12\">dedicated Zakat calculator</cite> to assist donors in their religious obligations.",
-          "point": "Strong Muslim Donor Alignment"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Baitulmaal's operational strength is rooted in its lean administrative structure and robust accountability frameworks. With <cite id=\"13\">93.6% independent board members</cite>, the organization ensures objective oversight of its international relief efforts. Its financial resilience is evidenced by <cite id=\"8\">10.0 months of working capital</cite>, significantly exceeding many peers in the humanitarian sector. Furthermore, the organization demonstrates a commitment to transparency by maintaining <cite id=\"14\">perfect scores of 100 in Culture and Leadership</cite> beacons on Charity Navigator, signaling a healthy internal organizational environment."
-      ],
-      "summary": "Baitulmaal, Inc. is a high-impact humanitarian organization dedicated to providing disaster relief, sustainable development, and orphan sponsorship to vulnerable populations worldwide. The organization operates with a high degree of financial efficiency, reporting <cite id=\"1\">Total Revenue of $23,687,125</cite> in the 2023 tax year. A defining characteristic of its financial model is its <cite id=\"2\">program expense ratio of 93.6%</cite>, indicating that all reported expenses are directed toward its core mission of serving the poor and needy. Baitulmaal maintains a <cite id=\"3\">99/100 overall score from Charity Navigator</cite>, reflecting top-tier performance in accountability and transparency. Its global reach extends to <cite id=\"4\">over 10 countries</cite>, including critical zones such as Yemen, Jordan, and Afghanistan. The charity is a <cite id=\"5\">Zakat-eligible organization</cite>, providing donors with a verified mechanism to fulfill their religious obligations through funds dedicated to the <cite id=\"6\">masakin (needy) and other eligible asnaf</cite>. Beyond emergency relief, Baitulmaal invests in long-term stability through <cite id=\"7\">clean water access and orphan sponsorship programs</cite>, aiming to empower beneficiaries toward self-sufficiency. While the organization shows strong short-term liquidity with <cite id=\"8\">10.0 months of working capital</cite>, it faces a unique financial profile where nearly <cite id=\"9\">93.6% of revenue is derived from non-cash contributions</cite>, a factor that donors should consider when evaluating its operational scale.",
-      "zakat_guidance": {
-        "classification": "amil",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "Headquartered in Irving, Texas, Baitulmaal provides life-saving assistance and tools for self-sufficiency to impoverished communities [4]. The organization maintains a high level of financial accountability, earning a 99.99.0/100 from Charity Navigator for its transparency and efficiency [1]."
     }
   }
 }

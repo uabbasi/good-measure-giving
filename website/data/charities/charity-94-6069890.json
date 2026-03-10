@@ -2,7 +2,7 @@
   "id": "94-6069890",
   "ein": "94-6069890",
   "name": "Sierra Club Foundation",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "The Sierra Club Foundation promotes climate solutions, conservation, and movement building through a powerful combination of strategic philanthropy and ...",
   "programs": [
     "Clean Power Plan Advocacy",
@@ -55,7 +55,11 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 30,
+    "independentBoardMembers": null,
+    "ceoCompensation": 322306
+  },
   "targeting": {
     "populationsServed": [
       "Men",
@@ -84,7 +88,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 18:31:27",
+  "lastUpdated": "2026-03-09 21:46:09",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -802,38 +806,25 @@
       "evidence": "Strong",
       "financial_health": "Strong",
       "donor_fit": "Limited",
-      "risk": "Moderate"
+      "risk": "Strong"
     },
     "recommendation_cue": "Good Match",
     "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": [
-    {
-      "type": "ceo_comp_excessive",
-      "severity": "medium",
-      "headline": "CEO compensation is 1.3% of revenue ($1,401,675 on $108,188,731)",
-      "detail": "For orgs with revenue >$50M, CEO pay above 1% of revenue warrants scrutiny.",
-      "data_points": {
-        "ceo_compensation": 1401675,
-        "comp_ratio": 0.013,
-        "threshold": 0.01,
-        "total_revenue": 108188731
-      }
-    }
-  ],
+  "keyConcerns": null,
   "amalEvaluation": {
     "charity_ein": "94-6069890",
     "charity_name": "Sierra Club Foundation",
-    "amal_score": 57,
+    "amal_score": 62,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:40:00",
     "rubric_version": "5.2.0",
     "confidence_scores": {
       "alignment": 21,
       "data_confidence": 0.95,
-      "impact": 36
+      "impact": 41
     },
     "score_details": {
       "alignment": {
@@ -956,73 +947,27 @@
             "status": "full"
           },
           {
-            "evidence": "Board: 30 members, but For orgs with revenue >$50M, CEO pay above 1% of revenue warrants scrutiny. \u2014 oversight concern",
+            "evidence": "Board governance: STRONG (30 members)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
             "possible": 10,
-            "scored": 5,
-            "status": "partial"
+            "scored": 10,
+            "status": "full"
           }
         ],
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 36/50",
+        "rationale": "Delivery: capacity building; Impact 41/50",
         "rubric_archetype": "SYSTEMIC_CHANGE",
-        "score": 36
+        "score": 41
       },
-      "judge_issues": [
-        {
-          "field": "propublica.expense_ratio",
-          "judge": "crawl_quality",
-          "message": "Expenses ($113,468,024) exceed revenue ($89,068,739) by 27%",
-          "severity": "warning"
-        },
-        {
-          "field": "website.ein",
-          "judge": "crawl_quality",
-          "message": "Website shows related EIN (94-1350342), likely parent/subsidiary of 94-6069890",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
-        "risk_summary": "1 risk(s) identified.",
-        "risks": [
-          {
-            "category": "operational",
-            "data_source": "Reconciliation",
-            "description": "CEO compensation is 1.3% of revenue ($1,401,675 on $108,188,731)",
-            "mitigation": null,
-            "severity": "medium"
-          }
-        ],
+        "risk_summary": "No significant risks identified.",
+        "risks": [],
         "total_deduction": 0
       },
       "score_summary": "Sierra Club Foundation shows strong impact and moderate alignment.",
@@ -1037,436 +982,40 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The Sierra Club Foundation promotes climate solutions and conservation through strategic philanthropy.",
+          "claim": "The foundation operates programs like Beyond Coal and Outdoors for All while maintaining an 86.0% program expense ratio.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/946069890#financials"
         },
         {
-          "claim": "The organization reported total revenue of $108,188,731, a program expense ratio of 86.0%, and 17.7 months of working capital.",
+          "claim": "The organization reported Total Revenue of $108,188,731 and holds 17.7 months of working capital.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/946069890"
         },
         {
-          "claim": "The foundation offers multiple ways to give for donors interested in supporting environmental causes.",
+          "claim": "The foundation offers various ways to give, supporting its status as a recipient of sadaqah or general charitable donations.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.sierraclubfoundation.org/ways-give"
         }
       ],
-      "amal_score_rationale": "The organization demonstrates exceptional financial health and efficiency, though its alignment score reflects its status as a general advocacy group rather than one tailored to specific religious donor needs.",
+      "amal_score_rationale": "The foundation demonstrates strong financial health and operational efficiency, though its alignment score reflects a focus on general advocacy rather than specific donor-fit criteria.",
       "areas_for_improvement": [
-        "Limited direct alignment with specific Muslim donor preferences or community-focused outcomes",
-        "High reliance on advocacy-based impact which can be harder to measure than direct service delivery"
+        "Limited direct alignment with specific Muslim community donor needs",
+        "Focus on long-term advocacy and capacity building may result in less immediate, quantifiable direct impact per dollar compared to direct-service charities"
       ],
       "dimension_explanations": {
-        "alignment": "While the cause of climate urgency is high, the alignment score is moderate because the organization focuses on broad environmental advocacy rather than specific Muslim community needs [1]. Donors can support these efforts through various sadaqah-eligible giving methods, though it lacks a specialized track record for Muslim donor fit [3].",
-        "impact": "The foundation achieves a high impact score by directing 86.0% of its $108,188,731 revenue toward core programs like the Beyond Coal Campaign and Outdoors for All [1][2]. Its financial stability is evidenced by 17.7 months of working capital, providing a strong capacity-building foundation for long-term environmental advocacy [2]."
+        "alignment": "The alignment score is medium, reflecting a high urgency for climate causes balanced against a low specific fit for Muslim donors seeking traditional religious alignment [1]. The organization is identified as SADAQAH-ELIGIBLE for those interested in general environmental stewardship [3].",
+        "impact": "The foundation achieves a high impact score through its capacity-building model, maintaining an 86.0% program expense Ratio and 17.7 months of working capital to ensure long-term stability [1][2]. Its programs, such as Outdoors for All, focus on systemic change and environmental justice [1]."
       },
-      "headline": "The Sierra Club Foundation serves as a strategic philanthropic engine for global climate solutions and the protection of wild spaces.",
+      "headline": "The Sierra Club Foundation empowers environmental protection and climate solutions through strategic philanthropy and grassroots movement building.",
       "strengths": [
         "High program expense ratio of 86.0% ensuring most funds reach environmental initiatives",
-        "Strong fundraising efficiency with a cost of only $0.11 per $1 raised",
+        "Strong fundraising efficiency with only $0.11 spent per $1 raised",
         "Robust liquidity with 17.7 months of working capital available"
       ],
-      "summary": "The Sierra Club Foundation promotes climate solutions, conservation, and movement building through strategic philanthropy and advocacy programs [1]. In the 2023 fiscal year, the organization reported a total revenue of $108,188,731 to support its environmental mission [2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "1960",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "Founded: 1960",
-          "source_name": "Charity Navigator - Sierra Club Foundation",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/946069890#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $89,068,739",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: $89,068,739",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/946069890"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "SADAQAH-ELIGIBLE",
-          "confidence": 0.9,
-          "id": "[9]",
-          "quote": "Your gift to the Sierra Club Foundation is tax-deductible",
-          "source_name": "Sierra Club Foundation - Ways to Give",
-          "source_type": "website",
-          "source_url": "https://www.sierraclubfoundation.org/ways-give"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 86.0%",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Program service expenses: $87,477,330 / Total expenses: $113,468,024",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/946069890"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of -9.5%",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Revenue: 2021 ($108.6M), 2022 ($87.7M), 2023 ($89.0M)",
-          "source_name": "Form 990 (2021-2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/946069890"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "0/20 standards met",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Standards Met: 0",
-          "source_name": "BBB Wise Giving Alliance",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/environment/sierra-club-foundation-in-oakland-ca-9999-53080"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "CEO compensation of $322,306",
-          "confidence": 1,
-          "id": "[24]",
-          "quote": "Dan Chu (Executive Director): $322,306",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/946069890#financials"
-        }
-      ],
-      "amal_score_rationale": "The organization demonstrates exceptional financial health and efficiency, though its alignment score reflects its status as a general advocacy group rather than one tailored to specific religious donor needs.",
-      "amal_scores": {
-        "amal_score": 57,
-        "confidence_scores": {
-          "alignment": 21,
-          "data_confidence": 0.95,
-          "impact": 36
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Revenue Growth Stability",
-          "citation_ids": [
-            "[16]"
-          ],
-          "context": "The organization has experienced a <cite id=\"16\">3-year revenue CAGR of -9.5%</cite>, indicating a recent downward trend in annual funding."
-        },
-        {
-          "area": "Impact Reporting",
-          "citation_ids": [
-            "[17]"
-          ],
-          "context": "While the Foundation tracks outcomes, it currently lacks <cite id=\"17\">consistent beneficiary counts</cite> to allow for cost-per-beneficiary analysis."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[20]"
-        ],
-        "effectiveness_status": "FAIL",
-        "finances_status": "FAIL",
-        "governance_status": "FAIL",
-        "meets_all_standards": false,
-        "review_url": "https://give.org/charity-reviews/environment/sierra-club-foundation-in-oakland-ca-9999-53080",
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "Does not currently meet BBB Wise Giving Alliance Standards for Charity Accountability."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[16]",
-          "[24]",
-          "[20]"
-        ],
-        "mitigation_notes": "The Foundation maintains massive reserves to buffer against revenue fluctuations.",
-        "risk_factors": [
-          "<cite id=\"24\">CEO compensation of $322,306</cite> and total officer pay exceeding 1% of revenue",
-          "<cite id=\"20\">Non-compliance with BBB Wise Giving Alliance standards</cite>"
-        ],
-        "summary": "The primary concerns involve <cite id=\"16\">declining revenue trends</cite> and <cite id=\"24\">high executive compensation</cite> relative to revenue for an organization of this size."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 12,
-          "rating": 10,
-          "website": 4
-        },
-        "high_confidence_count": 24,
-        "total_count": 26,
-        "unique_sources": 3
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023 tax year",
-        "data_gaps": [
-          "Missing BBB compliance details",
-          "No specific beneficiary counts"
-        ],
-        "level": "HIGH",
-        "notes": "Strong financial and governance data available.",
-        "score": 85,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 85,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing BBB standards compliance",
-          "No beneficiary counts"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 26,
-        "unique_sources": 3,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[9]",
-            "[22]",
-            "[23]"
-          ],
-          "explanation": "The charity is <cite id=\"9\">SADAQAH-ELIGIBLE</cite> and addresses the <cite id=\"22\">urgent cause of climate advocacy</cite>, though it lacks specific Muslim community programming.",
-          "improvement": "Alignment could be improved by <cite id=\"23\">clearly stating the organization's stance on zakat-eligibility</cite> or creating dedicated pathways for faith-based giving."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]",
-            "[12]",
-            "[19]",
-            "[20]"
-          ],
-          "explanation": "Donors can trust this institution due to its <cite id=\"1\">66-year track record</cite>, <cite id=\"12\">Platinum Candid status</cite>, and <cite id=\"19\">100% independent board</cite>.",
-          "improvement": "To strengthen credibility, the organization should address the <cite id=\"20\">0/20 standards met</cite> status currently listed by the BBB Wise Giving Alliance."
-        },
-        "impact": {
-          "citation_ids": [
-            "[15]",
-            "[21]",
-            "[17]"
-          ],
-          "explanation": "Impact is driven by <cite id=\"15\">massive grantmaking capacity</cite> and a <cite id=\"21\">clear theory of change</cite> focused on resource-efficient clean energy.",
-          "improvement": "Impact measurement would benefit from <cite id=\"17\">publishing consistent beneficiary counts</cite> to assess cost-effectiveness."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "ADVOCACY",
-        "citation_ids": [
-          "[1]",
-          "[9]"
-        ],
-        "evidence_rigor": "Grade B - Documented Theory of Change with tracked outcomes",
-        "geographic_focus": [
-          "United States"
-        ],
-        "giving_style": "Strategic Philanthropy",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [],
-        "zakat_status": "SADAQAH-ONLY"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.099,
-        "annual_revenue": 89068739,
-        "citation_ids": [
-          "[2]",
-          "[16]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0.13,
-        "industry_program_ratio": 0.75,
-        "peer_count": 15,
-        "peer_program_ratio_median": 0.8,
-        "program_expense_ratio": 0.8603000000000001,
-        "reserves_months": 19.8,
-        "revenue_cagr_3yr": -9.5,
-        "transparency_score": 100,
-        "working_capital_months": 17.7,
-        "yearly_financials": [
-          {
-            "expenses": 113468024,
-            "net_assets": 167535669,
-            "revenue": 89068739,
-            "year": 2023
-          },
-          {
-            "expenses": 113448406,
-            "net_assets": 176944324,
-            "revenue": 87746859,
-            "year": 2022
-          },
-          {
-            "expenses": 99059202,
-            "net_assets": 233914116,
-            "revenue": 108646694,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "domestic_grants": 281217080,
-        "foreign_grants": 0,
-        "grant_count": 65,
-        "grant_strategy": "Provides fiscal support and grants to the Sierra Club and affiliated environmental movements.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "United States"
-        ],
-        "top_recipients": [
-          "Sierra Club ($95.9M)",
-          "Sierra Club ($94.0M)"
-        ],
-        "total_grants": 281217080
-      },
-      "headline": "The Sierra Club Foundation serves as a strategic philanthropic engine for global climate solutions and the protection of wild spaces.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize long-term environmental sustainability and want to fund large-scale advocacy and legal movement-building in the US.",
-        "citation_ids": [
-          "[9]",
-          "[16]"
-        ],
-        "donor_motivations": [
-          "Value systemic change over individual direct aid",
-          "Care about climate crisis and clean energy transition",
-          "Prefer established institutions with significant financial reserves",
-          "Want to support environmental justice through strategic grantmaking"
-        ],
-        "giving_considerations": [
-          "Donations support advocacy which may have delayed or indirect impact",
-          "The organization acts as a fiscal engine for the broader Sierra Club movement",
-          "Recent revenue trends show a contraction in annual funding"
-        ],
-        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those looking for immediate, direct humanitarian relief like food or medical aid."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[21]",
-          "[26]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "The organization has a <cite id=\"21\">clear theory of change</cite> and <cite id=\"26\">tracks specific outcome metrics</cite>, though it lacks independent RCT evaluations.",
-        "external_evaluations": [
-          "Candid Outcome Tracking"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "The Foundation funds a transition to a resource-efficient clean energy economy while securing protections for public lands and waters.",
-        "why_evidence_matters": "Evidence in advocacy ensures that philanthropic capital is effectively influencing policy and conservation outcomes."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[16]"
-        ],
-        "founded_year": 1960,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": -9.5,
-        "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "While assets are high, the <cite id=\"16\">negative revenue growth</cite> suggests a need for new donor acquisition to maintain grantmaking levels.",
-        "strategic_priorities": [
-          "Clean energy economy transition",
-          "Public lands protection"
-        ],
-        "years_operating": 66
-      },
-      "organizational_capacity": {
-        "board_size": 30,
-        "ceo_compensation": 322306,
-        "ceo_compensation_pct_revenue": 0.36,
-        "ceo_name": "Dan Chu",
-        "citation_ids": [
-          "[2]",
-          "[24]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "United States",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 1.57,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[11]",
-          "[25]"
-        ],
-        "differentiator": "Distinguished by its <cite id=\"11\">exceptionally high working capital</cite> compared to the <cite id=\"25\">80.0% peer program ratio median</cite>.",
-        "peer_group": "Environmental Advocacy Organizations",
-        "similar_orgs": [
-          "Natural Resources Defense Council",
-          "Earthjustice",
-          "Union of Concerned Scientists"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar legal advocacy focus",
-          "name": "Natural Resources Defense Council"
-        },
-        {
-          "differentiator": "Heavier focus on litigation",
-          "name": "Earthjustice"
-        },
-        {
-          "differentiator": "Focus on scientific research and policy",
-          "name": "Union of Concerned Scientists"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[10]"
-          ],
-          "detail": "The organization maintains a <cite id=\"10\">program expense ratio of 86.0%</cite>, which is consistent with its role as a major grantmaker.",
-          "point": "High Program Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[11]"
-          ],
-          "detail": "The Foundation holds <cite id=\"11\">17.7 months of working capital</cite>, providing significant financial stability for long-term advocacy campaigns.",
-          "point": "Exceptional Liquidity"
-        },
-        {
-          "citation_ids": [
-            "[12]"
-          ],
-          "detail": "The charity has earned a <cite id=\"12\">Platinum Seal of Transparency from Candid</cite>, the highest level of disclosure available.",
-          "point": "Highest Transparency Recognition"
-        }
-      ],
-      "strengths_deep_dive": [
-        "The Sierra Club Foundation's financial health is anchored by its massive asset base, with <cite id=\"13\">total assets of $199,302,924</cite> reported in 2023. This allows the organization to act as a stable fiscal sponsor for numerous environmental projects. Its <cite id=\"14\">independent board of 30 members</cite> provides extensive oversight for its complex grantmaking activities, which included <cite id=\"15\">$281,217,080 in total grants</cite> distributed to domestic recipients, primarily the Sierra Club's operational arms."
-      ],
-      "summary": "Founded in <cite id=\"1\">1960</cite>, the Sierra Club Foundation serves as a strategic philanthropic engine for global climate solutions and the protection of wild spaces. The organization operates primarily as a <cite id=\"2\">grantmaking entity</cite>, distributing significant funds to support environmental advocacy and conservation efforts. In the 2023 fiscal year, the Foundation reported <cite id=\"3\">total revenue of $89,068,739</cite>, derived largely from <cite id=\"4\">$85,543,074 in contributions</cite>. Its primary mission involves <cite id=\"5\">promoting climate solutions and movement building</cite> through a combination of strategic philanthropy and direct program support. The Foundation's work is centered in the <cite id=\"6\">United States</cite>, where it funds diverse initiatives including <cite id=\"7\">Clean Power Plan Advocacy and Nature Protection</cite>. Despite its large scale, the organization maintains a <cite id=\"8\">fundraising efficiency of $0.11 per $1 raised</cite>, ensuring that the vast majority of donor contributions are directed toward its environmental objectives rather than administrative overhead. As a <cite id=\"9\">SADAQAH-ELIGIBLE</cite> organization, it offers a pathway for Muslim donors to contribute to long-term ecological sustainability and climate justice.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "The Sierra Club Foundation promotes climate solutions, conservation, and movement building by funding initiatives like the Beyond Coal Campaign and Our Wild America [1]. In the 2023 fiscal year, the organization reported a Total Revenue of $108,188,731 to support its environmental advocacy and land protection goals [2]. Donors can contribute to these efforts through various sadaqah-eligible giving methods, including cash donations and planned giving [3]."
     }
   }
 }

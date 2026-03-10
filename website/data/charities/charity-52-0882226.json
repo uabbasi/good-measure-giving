@@ -2,7 +2,7 @@
   "id": "52-0882226",
   "ein": "52-0882226",
   "name": "American Near East Refugee Aid (Anera)",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Since 1968, Anera has helped refugees and others hurt by conflicts in the Middle East live with dignity and purpose.<br>Anera, which has no political or religious affiliation, works on the ground with partners in Palestine (West Bank and Gaza), Lebanon and Jordan. We mobilize resources for immediate emergency relief and for sustainable, long-term health, education, and economic development. Our staff serve in their communities, navigating the politics that constrict progress to get help where it's needed most. That's how Anera delivered more than $100.4 million in programs in 2020 alone, and it's how we will keep building better lives until hope finds its way in the Middle East.",
   "programs": [
     "Agriculture",
@@ -59,7 +59,11 @@
     "cashAdjustedProgramRatio": 0.8621912385707651,
     "domesticBurnRate": 0.6501514179007416
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 71,
+    "independentBoardMembers": null,
+    "ceoCompensation": 287531
+  },
   "targeting": {
     "populationsServed": [
       "Youth",
@@ -98,7 +102,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 18:25:45",
+  "lastUpdated": "2026-03-09 21:44:55",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -4380,32 +4384,6 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 34
       },
-      "judge_issues": [
-        {
-          "field": "website.ein",
-          "judge": "crawl_quality",
-          "message": "Website shows related EIN (52-0882010), likely parent/subsidiary of 52-0882226",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        }
-      ],
       "risk_deduction": -7,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -4440,586 +4418,52 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Anera holds a 100.0/100 from Charity Navigator score and reports a 96.3% program expense ratio.",
+          "claim": "Anera holds a 100.0/100 score, a 96.3% program expense ratio, and a fundraising efficiency of $0.01 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/520882226#financials"
         },
         {
-          "claim": "Anera is Zakat-eligible and maintains a policy for distributing Zakat to appropriate asnaf categories.",
+          "claim": "Anera is Zakat-eligible and maintains a specific zakat policy for donors.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.anera.org/zakat"
         },
         {
-          "claim": "The organization reported total revenue of $204,317,485.",
+          "claim": "The organization reported total revenue of $204,317,485 and working capital of 1.2 months.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/520882226"
         },
         {
-          "claim": "Anera has a long history of delivering in-kind medical supplies and providing credit/loan guarantees.",
-          "id": "[4]",
-          "source_name": "Financial Statement (2007)",
-          "source_url": "https://www.anera.org/wp-content/uploads/2017/03/ANERA2007audit.pdf"
+          "claim": "The organization has a long history of distributing in-kind grants and cash awards for humanitarian relief.",
+          "id": "[7]",
+          "source_name": "Financial Statement (2010)",
+          "source_url": "https://www.anera.org/wp-content/uploads/2017/03/ANERAAuditFY10.pdf"
         },
         {
-          "claim": "The organization issues grants for education and distributes medical supplies as part of its core mission.",
-          "id": "[5]",
-          "source_name": "Financial Statement (2008)",
-          "source_url": "https://www.anera.org/wp-content/uploads/2017/03/ANERA_2008_Audit.pdf"
-        },
-        {
-          "claim": "Anera manages the distribution of in-kind medical contributions and awards grants to support regional development.",
-          "id": "[6]",
-          "source_name": "Financial Statement (2009)",
-          "source_url": "https://www.anera.org/wp-content/uploads/2017/03/ANERA2009FinancialStatements.pdf"
-        },
-        {
-          "claim": "Anera provides multiple donation options and methods for supporters to contribute to their cause.",
+          "claim": "Anera offers multiple donation options and giving methods for supporters.",
           "id": "[9]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.anera.org/donate/"
         }
       ],
-      "amal_score_rationale": "Anera earns a strong overall rating due to its perfect financial health score and high alignment with humanitarian needs, though its impact score is moderated by the high cost of complex regional service delivery.",
+      "amal_score_rationale": "Anera earns a strong overall rating due to its exceptional financial efficiency and long-standing track record of delivering direct services in high-urgency humanitarian zones. Its perfect transparency score and Zakat eligibility make it a highly aligned choice for Muslim donors.",
       "areas_for_improvement": [
         "Relatively low working capital of 1.2 months, which may limit long-term financial flexibility",
-        "High cost per beneficiary relative to some smaller-scale direct intervention models"
+        "High cost per beneficiary relative to some smaller-scale direct service interventions"
       ],
       "dimension_explanations": {
-        "alignment": "The organization shows high donor alignment through its Zakat-eligible status and its 50-year track record of addressing urgent humanitarian crises [2][5]. It offers diverse giving methods to accommodate various donor preferences, including specific Zakat funds [9].",
-        "impact": "Anera demonstrates high direct-service impact by distributing massive quantities of in-kind medical supplies and grants for education and economic development [4][6]. While the cost per beneficiary is calculated at $14,656.88, this reflects the intensive nature of their long-term infrastructure and health interventions [1]."
+        "alignment": "The organization shows high alignment for donors seeking to address urgent humanitarian needs in the Middle East, with a long history of service dating back to 1968 [1]. Anera is Zakat-eligible and provides clear policies for donors to fulfill their religious obligations through specific asnaf categories [2][9]. Its consistent focus on refugee dignity and purpose aligns with high-priority humanitarian causes [1].",
+        "impact": "Anera demonstrates high impact through direct service delivery, managing a total revenue of $204,317,485 to facilitate large-scale distributions of in-kind medical supplies and cash grants [1][3][7]. While the cost per beneficiary is calculated at approximately $14,656.88, the organization maintains a 96.3% program expense ratio, indicating that nearly all resources are directed toward its core missions of health, education, and economic development [1][3]."
       },
       "headline": "American Near East Refugee Aid (Anera) provides critical humanitarian relief and sustainable development to refugees and vulnerable communities across the Middle East.",
       "strengths": [
         "Exceptional program expense ratio of 96.3%, ensuring the vast majority of funds reach those in need",
         "Highly efficient fundraising operations with a cost of only $0.01 per $1 raised",
-        "Verified Zakat-eligible programs that adhere to Islamic philanthropic principles"
+        "Zakat-eligible programs that adhere to Islamic giving principles for humanitarian relief"
       ],
-      "summary": "founded in 1968, Anera delivers large-scale humanitarian aid, including medical supplies and emergency relief, to those affected by conflict in the Middle East [1][4]. The organization operates with high financial transparency, reporting a total revenue of $204,317,485 and maintaining a perfect Charity Navigator score [1][3]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "refugees and vulnerable communities",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "Anera has helped refugees and others hurt by conflicts in the Middle East live with dignity.",
-          "source_name": "Anera - About Us",
-          "source_type": "website",
-          "source_url": "https://anera.org/wp-content/uploads/2017/03/ANERA2007audit.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$173,279,297 in total revenue",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total Revenue: $173,279,297",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/520882226"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "96.3% program expense ratio",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Program Service Expenses: $170,808,687 out of Total Expenses: $170,808,687",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/520882226"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.01 per $1 raised",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Fundraising Efficiency: $0.01",
-          "source_name": "Charity Navigator - Anera",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/520882226#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "sustainable development programs",
-          "confidence": 0.95,
-          "id": "[5]",
-          "quote": "Programs: Agriculture, Community, Education, Health, Emergency Response",
-          "source_name": "Anera - Programs",
-          "source_type": "website",
-          "source_url": "https://anera.org/wp-content/uploads/2017/03/ANERA2007audit.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "perfect 100/100 overall score",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Overall Score: 100/100",
-          "source_name": "Charity Navigator - Anera",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/520882226#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "dating back to 1968",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Anera was founded in 1968 to respond to the refugee crisis.",
-          "source_name": "Anera - History",
-          "source_type": "website",
-          "source_url": "https://anera.org/wp-content/uploads/2017/03/ANERA2007audit.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified Zakat-eligible programs",
-          "confidence": 0.95,
-          "id": "[8]",
-          "quote": "Anera accepts Zakat and ensures it reaches those in need.",
-          "source_name": "Anera - Zakat",
-          "source_type": "website",
-          "source_url": "https://www.anera.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "delivered over $43 million in medical supplies",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "In-kind medical supplies delivered: 43,017,508",
-          "source_name": "Financial Statement (2007)",
-          "source_type": "evaluation",
-          "source_url": "https://www.anera.org/wp-content/uploads/2017/03/ANERA2007audit.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "millions in education grants",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Grants issued for education: 1,787,515",
-          "source_name": "Financial Statement (2008)",
-          "source_type": "evaluation",
-          "source_url": "https://www.anera.org/wp-content/uploads/2017/03/ANERA_2008_Audit.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Candid Seal: Platinum",
-          "source_name": "Candid - Anera Profile",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/7750121"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "96.3% independent board members",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Independent Board Members: 96.3%",
-          "source_name": "Charity Navigator - Accountability",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/520882226#accountability"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "1.2 months of working capital",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Working Capital: 1.2 months",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/520882226#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "77% of revenue is derived from non-cash contributions",
-          "confidence": 0.9,
-          "id": "[14]",
-          "quote": "GIK inflation: 77% of revenue is noncash contributions",
-          "source_name": "AMAL Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/520882226#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "average cost per beneficiary is high",
-          "confidence": 0.9,
-          "id": "[15]",
-          "quote": "Cost Per Beneficiary: $14656.88/beneficiary",
-          "source_name": "AMAL Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/520882226#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "additional underserved geographies",
-          "confidence": 0.85,
-          "id": "[16]",
-          "quote": "Improvement: Expand services to underserved populations or geographies",
-          "source_name": "AMAL Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/520882226#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer median of 90.3%",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Peer Program Ratio Median: 90.3%",
-          "source_name": "Investment Memo Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/520882226"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "three specific outcome metrics",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Outcome Metrics Tracked: 3",
-          "source_name": "Candid Outcome Tracking",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/7750121"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "revenue_cagr_3yr",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "3-Year Revenue CAGR: 24.1%",
-          "source_name": "Investment Memo Data",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/520882226"
-        }
-      ],
-      "amal_score_rationale": "Anera earns a strong overall rating due to its perfect financial health score and high alignment with humanitarian needs, though its impact score is moderated by the high cost of complex regional service delivery.",
-      "amal_scores": {
-        "amal_score": 70,
-        "confidence_scores": {
-          "alignment": 43,
-          "data_confidence": 1,
-          "impact": 34
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Financial Reserves",
-          "citation_ids": [
-            "[13]"
-          ],
-          "context": "The organization maintains <cite id=\"13\">1.2 months of working capital</cite>, which is considered lean for an entity operating in high-volatility conflict zones."
-        },
-        {
-          "area": "Gift-in-Kind (GIK) Dependency",
-          "citation_ids": [
-            "[14]"
-          ],
-          "context": "Approximately <cite id=\"14\">77% of revenue is derived from non-cash contributions</cite>, which can inflate efficiency ratios and create dependency on pharmaceutical donors."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[6]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "Maintains high standards of governance and financial accountability."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[13]",
-          "[14]"
-        ],
-        "mitigation_notes": "Anera mitigates these risks through a 50+ year track record and a highly efficient fundraising model.",
-        "risk_factors": [
-          "<cite id=\"14\">High reliance on non-cash contributions</cite>",
-          "<cite id=\"13\">Lean working capital of 1.2 months</cite>"
-        ],
-        "summary": "The primary concern is the <cite id=\"14\">77% GIK inflation risk</cite>, where the majority of reported revenue is non-cash, potentially masking the true cost of operations."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 2,
-          "form990": 4,
-          "rating": 10,
-          "website": 3
-        },
-        "high_confidence_count": 17,
-        "total_count": 19,
-        "unique_sources": 6
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023 Form 990",
-        "data_gaps": [
-          "Specific volunteer and employee counts for 2023"
-        ],
-        "level": "HIGH",
-        "notes": "Highly consistent data across multiple authoritative sources.",
-        "score": 95,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Candid",
-          "Anera Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 95,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Detailed breakdown of GIK by specific pharmaceutical donor"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 19,
-        "unique_sources": 6,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[1]",
-            "[8]",
-            "[16]"
-          ],
-          "explanation": "Alignment is very high for Muslim donors due to <cite id=\"8\">explicit Zakat policies</cite> and a focus on <cite id=\"1\">underserved populations in Gaza and the West Bank</cite>.",
-          "improvement": "Expand services to <cite id=\"16\">additional underserved geographies</cite> with limited nonprofit coverage to maximize the 'Underserved Space' metric."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[11]",
-            "[12]"
-          ],
-          "explanation": "Anera demonstrates top-tier credibility through a <cite id=\"11\">Platinum Seal from Candid</cite> and <cite id=\"12\">perfect scores in Accountability and Leadership</cite> from third-party evaluators.",
-          "improvement": "To further enhance credibility, the organization could provide more granular reporting on the specific impact of cash vs. in-kind donations."
-        },
-        "impact": {
-          "citation_ids": [
-            "[3]",
-            "[13]",
-            "[15]"
-          ],
-          "explanation": "Impact is driven by a <cite id=\"3\">100.0% program ratio</cite> and direct service delivery, though the <cite id=\"15\">average cost per beneficiary is high</cite> at over $14,000 due to the nature of large-scale infrastructure and medical aid.",
-          "improvement": "Build reserves toward a <cite id=\"13\">higher board-approved target range</cite> to ensure long-term sustainability during funding fluctuations."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[2]",
-          "[8]"
-        ],
-        "evidence_rigor": "Grade B - Outcome tracking with clear Theory of Change",
-        "geographic_focus": [
-          "Palestine",
-          "Gaza",
-          "West Bank",
-          "Lebanon",
-          "Jordan"
-        ],
-        "giving_style": "Direct service and emergency relief",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)",
-          "ibn sabil (wayfarer)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 173279297,
-        "citation_ids": [
-          "[3]",
-          "[13]",
-          "[19]"
-        ],
-        "cn_financial_score": 100,
-        "cn_overall_score": 100,
-        "fundraising_ratio": 0.01,
-        "industry_program_ratio": 0.75,
-        "peer_count": 34,
-        "peer_program_ratio_median": 0.903,
-        "program_expense_ratio": 0.9626,
-        "reserves_months": 3,
-        "revenue_cagr_3yr": 24.1,
-        "transparency_score": 100,
-        "working_capital_months": 1.2,
-        "yearly_financials": [
-          {
-            "expenses": 170808687,
-            "net_assets": 16373591,
-            "revenue": 173279297,
-            "year": 2023
-          },
-          {
-            "expenses": 107746887,
-            "net_assets": 14983021,
-            "revenue": 100752656,
-            "year": 2022
-          },
-          {
-            "expenses": 107147710,
-            "net_assets": 22196702,
-            "revenue": 112473420,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 63867775,
-        "grant_count": 438,
-        "grant_strategy": "Distributes large-scale in-kind medical and relief grants to local partners.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Middle East"
-        ],
-        "top_recipients": [
-          "438 Foreign Recipients"
-        ],
-        "total_grants": 63867775
-      },
-      "headline": "American Near East Refugee Aid (Anera) provides critical humanitarian relief and sustainable development to refugees and vulnerable communities across the Middle East.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support large-scale, institutionalized humanitarian relief in Palestine and Lebanon through a Zakat-eligible, highly transparent organization.",
-        "citation_ids": [
-          "[1]",
-          "[8]",
-          "[14]"
-        ],
-        "donor_motivations": [
-          "Want to fulfill Zakat obligations via an established 501(c)(3)",
-          "Prioritize high financial efficiency and low fundraising overhead",
-          "Care about the long-term welfare of Palestinian refugees",
-          "Value organizations with a 'Platinum' level of transparency"
-        ],
-        "giving_considerations": [
-          "Donations support a large-scale operation where GIK plays a major role",
-          "The organization focuses on high-need conflict zones with inherent risks",
-          "Ideal for those who prefer institutional stability over small-scale grassroots projects"
-        ],
-        "not_ideal_for": "Donors seeking to fund small, local US-based community projects or those wary of organizations with high in-kind donation ratios."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[18]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "Anera tracks <cite id=\"18\">three specific outcome metrics</cite> and maintains a clear, documented Theory of Change.",
-        "external_evaluations": [
-          "Candid Outcome Tracking"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "Anera uses a holistic approach combining emergency relief with long-term infrastructure in health, education, and agriculture to foster dignity and self-sufficiency.",
-        "why_evidence_matters": "Evidence ensures that large-scale distributions translate into actual improvements in community health and economic stability."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[19]"
-        ],
-        "founded_year": 1968,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": 24.1,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "The ongoing humanitarian crises in Gaza and Lebanon create a vast funding gap that Anera is uniquely positioned to fill.",
-        "strategic_priorities": [
-          "Emergency response in Gaza",
-          "Sustainable agriculture in Jordan",
-          "Healthcare infrastructure in Lebanon"
-        ],
-        "years_operating": 58
-      },
-      "organizational_capacity": {
-        "board_size": 71,
-        "ceo_compensation": 287531,
-        "ceo_compensation_pct_revenue": 0.16,
-        "ceo_name": "Sean Carroll",
-        "citation_ids": [
-          "[3]",
-          "[12]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Palestine, Lebanon, Jordan",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[3]",
-          "[17]"
-        ],
-        "differentiator": "Anera's <cite id=\"3\">100.0% program ratio</cite> significantly exceeds the <cite id=\"17\">peer median of 90.3%</cite>.",
-        "peer_group": "International Humanitarian Relief",
-        "similar_orgs": [
-          "Action Against Hunger USA",
-          "International Rescue Committee",
-          "UNRWA"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on humanitarian relief and size",
-          "name": "Action Against Hunger USA"
-        },
-        {
-          "differentiator": "Broader global refugee services",
-          "name": "International Rescue Committee"
-        },
-        {
-          "differentiator": "Intergovernmental status vs Anera's NGO status",
-          "name": "UNRWA"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[3]",
-            "[4]"
-          ],
-          "detail": "Anera maintains a <cite id=\"3\">96.3% program expense ratio</cite> and spends only <cite id=\"4\">$0.01 to raise every dollar</cite>, maximizing the impact of every donation.",
-          "point": "Maximum Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[7]"
-          ],
-          "detail": "With a history <cite id=\"7\">dating back to 1968</cite>, the organization has decades of experience navigating complex humanitarian corridors in the Middle East.",
-          "point": "Long-standing Institutional Track Record"
-        },
-        {
-          "citation_ids": [
-            "[8]"
-          ],
-          "detail": "The organization offers <cite id=\"8\">verified Zakat-eligible programs</cite> that serve the poor (fuqara) and needy (masakin) in accordance with Islamic principles.",
-          "point": "Verified Zakat Compliance"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Anera's operational strength lies in its massive logistical capacity for in-kind distributions. In previous years, the organization has successfully <cite id=\"9\">delivered over $43 million in medical supplies</cite> and managed <cite id=\"10\">millions in education grants</cite>. This scale is supported by a <cite id=\"11\">Platinum Seal of Transparency from Candid</cite> and a governance structure featuring <cite id=\"12\">96.3% independent board members</cite>, ensuring high levels of oversight for its $173 million operation."
-      ],
-      "summary": "founded in 1968, American Near East Refugee Aid (Anera) has established itself as a cornerstone of humanitarian response in the Middle East, specifically serving <cite id=\"1\">refugees and vulnerable communities</cite> in Palestine, Lebanon, and Jordan. The organization operates at a significant scale, reporting <cite id=\"2\">$173,279,297 in total revenue</cite> for the 2023 fiscal year. Anera is distinguished by its <cite id=\"3\">exceptional 96.3% program expense ratio</cite>, a metric that reflects its ability to mobilize massive quantities of in-kind medical and relief supplies. This efficiency is further underscored by a <cite id=\"4\">fundraising efficiency of $0.01 per $1 raised</cite>, ensuring that donor contributions are almost entirely directed toward field operations. Beyond emergency relief, Anera implements <cite id=\"5\">sustainable development programs</cite> in agriculture, education, and health, maintaining a <cite id=\"6\">perfect 100/100 overall score</cite> from Charity Navigator for its accountability and transparency.",
-      "zakat_guidance": {
-        "classification": "fuqara",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "founded in 1968, Anera delivers large-scale humanitarian aid, including medical supplies and educational support, to those affected by conflict in the Middle East [1][3]. The organization maintains a perfect Charity Navigator score of 100.0/100, reflecting its commitment to transparency and financial health [1]."
     }
   }
 }

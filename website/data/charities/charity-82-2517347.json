@@ -2,7 +2,7 @@
   "id": "82-2517347",
   "ein": "82-2517347",
   "name": "MedGlobal",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "MedGlobal is a humanitarian charitable non-governmental organization that provides emergency response and health programs to build resilience among vulnerable communities around the world. Our health programs support victims of wars and disasters, refugees, internally displaced persons, and marginalized communities in disaster-affected and low-resource settings.\n\nMedGlobal was launched in 2017 by a diverse group of doctors, nurses, global health specialists, and humanitarians to address the health needs of the most vulnerable populations. MedGlobal partners with local communities to address their health priorities, builds resilience through training and education and deploys healthcare volunteers, and donates medical equipment, medications and supplies.\n\nMedGlobal field teams support local health programs for vulnerable populations in North and Latin America, Africa, MENA region, Europe, and Southeast Asia. Our growing field teams and partner organizations are supported by selfless volunteer nurses, and medical professionals of all specialties from 27 countries who embrace our mission.",
   "programs": [
     "Bangladesh - Development and Relief Services",
@@ -62,7 +62,11 @@
     "cashAdjustedProgramRatio": 0.7070578263028602,
     "domesticBurnRate": 0.9503520151689966
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 1,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Elderly",
@@ -107,7 +111,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 18:46:17",
+  "lastUpdated": "2026-03-09 21:44:58",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -365,17 +369,6 @@
       }
     },
     {
-      "type": "implausible_cpb",
-      "severity": "medium",
-      "headline": "Cost per beneficiary is $0.56 \u2014 implausibly low",
-      "detail": "A cost below $1/beneficiary usually means beneficiary counts are inflated or double-counted.",
-      "data_points": {
-        "beneficiaries_served_annually": 43355054,
-        "cost_per_beneficiary": 0.56,
-        "total_expenses": 24364433
-      }
-    },
-    {
       "type": "risk_deduction",
       "severity": "high",
       "headline": "Board too small: 1 members",
@@ -462,13 +455,13 @@
       "impact": {
         "components": [
           {
-            "evidence": "A cost below $1/beneficiary usually means beneficiary counts are inflated or double-counted. \u2014 beneficiary count likely inflated",
-            "improvement_suggestion": null,
+            "evidence": "Beneficiary count appears implausible; CPB excluded pending review",
+            "improvement_suggestion": "Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
             "improvement_value": 6,
             "name": "Cost Per Beneficiary",
             "possible": 13,
             "scored": 0,
-            "status": "full"
+            "status": "missing"
           },
           {
             "evidence": "Delivery model: Direct Service",
@@ -525,93 +518,13 @@
             "status": "missing"
           }
         ],
-        "cost_per_beneficiary": 0.47778950984584173,
+        "cost_per_beneficiary": null,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "$0.48/beneficiary; Delivery: direct service; Impact 22/50",
+        "rationale": "Delivery: direct service; Impact 22/50",
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 22
       },
-      "judge_issues": [
-        {
-          "field": "impact_rationale",
-          "judge": "score",
-          "message": "The impact rationale mentions a cost per beneficiary of $0.48, but doesn't adequately explain the low impact score (22/50) despite the high program expense ratio. The rationale should emphasize the concerns about the implausibly low cost per beneficiary and the weak governance (small board) which significantly impacted the score.",
-          "severity": "warning"
-        },
-        {
-          "field": "amal_score_rationale",
-          "judge": "score",
-          "message": "The overall score rationale mentions high financial accountability but doesn't explicitly address the significant risk deductions due to the small board size and GIK inflation, which are key factors influencing the moderate overall score.",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[0].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'vertexaisearch.cloud.google.com' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[1].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'vertexaisearch.cloud.google.com' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[2].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'vertexaisearch.cloud.google.com' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[3].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'vertexaisearch.cloud.google.com' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[4].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'vertexaisearch.cloud.google.com' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -10,
       "risks": {
         "overall_risk_level": "HIGH",
@@ -637,13 +550,6 @@
             "description": "High domestic burn: 95% of expenses stay in the US despite international operations",
             "mitigation": null,
             "severity": "high"
-          },
-          {
-            "category": "impact",
-            "data_source": "Reconciliation",
-            "description": "Cost per beneficiary is $0.56 \u2014 implausibly low",
-            "mitigation": null,
-            "severity": "medium"
           }
         ],
         "total_deduction": -10
@@ -660,25 +566,37 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "MedGlobal provides medical consultations and supports health facilities in regions like Syria and Bangladesh.",
+          "claim": "MedGlobal provides medical consultations and supports health facilities in conflict zones.",
           "id": "[1]",
           "source_name": "\u0627\u0642\u0631\u0623 \u0627\u0644\u062a\u0642\u0631\u064a\u0631 \u0627\u0644\u0633\u0646\u0648\u064a \u0644\u0639\u0627 \u0645 \u0662\u0660\u0662\u0660",
           "source_url": "https://medglobal.org/wp-content/uploads/2021/03/MedGlobal_AnnualReport_Arabic_Spreads-1.pdf"
         },
         {
-          "claim": "The organization operates a clinic in Bangladesh and distributes PPE items globally.",
+          "claim": "The organization operates a clinic in Bangladesh and distributed PPE items during the pandemic.",
           "id": "[2]",
           "source_name": "Lea el Reporte Anual 2020 de MedGlobal",
           "source_url": "https://medglobal.org/wp-content/uploads/2021/03/MedGlobal_AnnualReport_Spanish_Spreads.pdf"
         },
         {
-          "claim": "MedGlobal holds a Charity Navigator score of 98.33333333333333/100.",
+          "claim": "MedGlobal offers various donation options and giving methods for supporters.",
+          "id": "[3]",
+          "source_name": "Charity Website - Donate",
+          "source_url": "https://medglobal.org/donate/"
+        },
+        {
+          "claim": "The organization engages volunteers for medical missions to regions such as Gaza.",
+          "id": "[4]",
+          "source_name": "Charity Website - Volunteer",
+          "source_url": "https://medglobal.org/announcing-2020-volunteer-missions-to-gaza/"
+        },
+        {
+          "claim": "MedGlobal has a Charity Navigator score of 98.33333333333333/100.",
           "id": "[5]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/822517347#financials"
         },
         {
-          "claim": "The organization reported total revenue of $33,542,803 and a program expense ratio of 85.9%.",
+          "claim": "Total revenue is $33,542,803 with a program expense ratio of 85.9% and fundraising efficiency of $0.05 per $1 raised.",
           "id": "[6]",
           "source_name": "Form 990 (2022)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/822517347"
@@ -690,607 +608,22 @@
           "source_url": "https://medglobal.org/save-lives-give-zakat-to-medglobal-before-the-year-ends/"
         }
       ],
-      "amal_score_rationale": "MedGlobal earns a moderate overall score due to its high financial accountability and strong alignment with urgent global health needs, though its direct impact metrics show room for growth relative to its total revenue.",
+      "amal_score_rationale": "MedGlobal earns a moderate overall score due to its exceptional financial transparency and strong alignment with urgent global health needs, though its direct impact score reflects room for growth in cost-per-beneficiary reporting.",
       "areas_for_improvement": [
-        "Relatively low working capital of 3.4 months, which may limit long-term financial cushion",
-        "Moderate impact score relative to total revenue, suggesting room for increased direct service scaling"
+        "Limited working capital reserves, currently maintained at 3.4 months",
+        "Moderate impact score relative to direct service peers"
       ],
       "dimension_explanations": {
-        "alignment": "The organization shows high alignment (39/50) for donors interested in global health and emergency response, particularly within the Muslim community as it is Zakat-eligible [7]. Its work in high-urgency areas like Syria and Bangladesh underscores a strong track record of addressing critical humanitarian crises [1][2].",
-        "impact": "MedGlobal demonstrates a direct service model with a cost per beneficiary of approximately $0.48, though its overall impact score of 22/50 reflects a need for more comprehensive evidence of long-term outcomes [5][6]. The organization reported total revenue of $33,542,803 and maintains a high program expense ratio of 85.9% [6]."
+        "alignment": "The organization shows high alignment for donors interested in global health and humanitarian relief, particularly through its dedicated Zakat-eligible programs [7]. Its focus on urgent cause areas like Syrian relief and emergency response in Pakistan contributes to a strong alignment score of 39/50 [1][3].",
+        "impact": "MedGlobal demonstrates a direct service model, providing medical consultations and PPE distribution in high-need areas like Bangladesh and Gaza [2][4]. While the organization maintains a high program expense ratio of 85.9% and total revenue of $33,542,803, the impact score of 22/50 suggests a need for more granular data on long-term health outcomes [5][6]."
       },
-      "headline": "MedGlobal, Inc. provides critical healthcare services and emergency response to vulnerable populations in conflict zones and disaster-stricken regions.",
+      "headline": "MedGlobal provides critical medical relief and sustainable healthcare solutions to vulnerable populations in conflict zones and disaster-stricken regions.",
       "strengths": [
-        "High program expense ratio of 85.9%, ensuring the majority of funds reach those in need",
-        "Exceptional fundraising efficiency with a cost of only $0.05 per $1 raised",
-        "Verified Zakat-eligible status with clear policies for Muslim donors"
+        "High financial accountability with a Charity Navigator score of 98.33333333333333/100",
+        "Strong program efficiency with 85.9% of expenses directed toward medical services",
+        "Verified Zakat-eligible status for Muslim donors"
       ],
-      "summary": "MedGlobal, Inc. is a humanitarian organization that operates health posts in the Kutupalong refugee camp in Bangladesh and provides development and relief services in Syria and Pakistan [1][2]. The organization is recognized for its financial transparency and efficiency, maintaining a Charity Navigator score of 98.33333333333333/100 [5]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "critical healthcare services and emergency response",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "MedGlobal provides critical healthcare services and emergency response",
-          "source_name": "MedGlobal Annual Report 2020 (Arabic)",
-          "source_type": "website",
-          "source_url": "https://medglobal.org/wp-content/uploads/2021/03/MedGlobal_AnnualReport_Arabic_Spreads-1.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "98.33333333333333/100 overall score from Charity Navigator",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Overall Score 98.33",
-          "source_name": "Charity Navigator - MedGlobal",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/822517347#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Gaza, Sudan, Syria, Yemen, and Bangladesh",
-          "confidence": 0.95,
-          "id": "[3]",
-          "quote": "Areas Served: Bangladesh, India, Yemen, Pakistan, Sudan, Gaza, Syria",
-          "source_name": "MedGlobal Website - Programs",
-          "source_type": "website",
-          "source_url": "https://medglobal.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$12,632,992 in total revenue",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Total Revenue: $12,632,992",
-          "source_name": "Form 990 (2022)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/822517347"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "85.9% program expense ratio",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Program Expense Ratio: 100.0%",
-          "source_name": "Form 990 (2022)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/822517347"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "189,000 medical consultations",
-          "confidence": 0.95,
-          "id": "[6]",
-          "quote": "Medical consultations provided: 189000",
-          "source_name": "MedGlobal Annual Report 2020 (Arabic)",
-          "source_type": "website",
-          "source_url": "https://medglobal.org/wp-content/uploads/2021/03/MedGlobal_AnnualReport_Arabic_Spreads-1.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "172 health facilities",
-          "confidence": 0.95,
-          "id": "[7]",
-          "quote": "Health facilities supported: 172",
-          "source_name": "MedGlobal Annual Report 2020 (Spanish)",
-          "source_type": "website",
-          "source_url": "https://medglobal.org/wp-content/uploads/2021/03/MedGlobal_AnnualReport_Spanish_Spreads.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "medical training and PPE distribution",
-          "confidence": 0.9,
-          "id": "[8]",
-          "quote": "Medical Training and Education, PPE distribution",
-          "source_name": "MedGlobal Website - Programs",
-          "source_type": "website",
-          "source_url": "https://medglobal.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "1.18 million PPE items",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "PPE items distributed: 1180000",
-          "source_name": "MedGlobal Annual Report 2020 (Spanish)",
-          "source_type": "website",
-          "source_url": "https://medglobal.org/wp-content/uploads/2021/03/MedGlobal_AnnualReport_Spanish_Spreads.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified zakat-eligible entity",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "MedGlobal is Zakat-eligible",
-          "source_name": "MedGlobal - Zakat",
-          "source_type": "website",
-          "source_url": "https://medglobal.org/save-lives-give-zakat-to-medglobal-before-the-year-ends/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.05 per $1 raised",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Fundraising Efficiency: $0.05",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/822517347#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Platinum Seal of Transparency",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/9696605"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "perfect 100/100 scores in Culture and Leadership",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Culture & Accountability: 100, Leadership: 100",
-          "source_name": "Charity Navigator - Beacons",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/822517347#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "39,000 consultations in Bangladesh refugee clinics",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Medical consultations in Bangladesh clinic: 39000",
-          "source_name": "MedGlobal Annual Report 2020 (Spanish)",
-          "source_type": "website",
-          "source_url": "https://medglobal.org/wp-content/uploads/2021/03/MedGlobal_AnnualReport_Spanish_Spreads.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3.4 months of working capital",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Working Capital Ratio: 3.4 months",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/822517347#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "tracking 5 distinct outcome metrics",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Outcome Metrics Tracked: 5",
-          "source_name": "Candid Outcomes",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/9696605"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "only 1 member",
-          "confidence": 0.8,
-          "id": "[17]",
-          "quote": "Board governance: WEAK (1 members)",
-          "source_name": "AMAL Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/822517347#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of -0.4%",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "3-Year Revenue CAGR: -0.4%",
-          "source_name": "Financial Trends Data",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/822517347"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "85.9% independent board members",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Independent Board Members: 85.9%",
-          "source_name": "Charity Navigator - Accountability",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/822517347#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$1.2 million in foreign grants",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Foreign Grants: $1,209,645",
-          "source_name": "Form 990 (2022) - Grants",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/822517347"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "low cost-per-beneficiary ratio",
-          "confidence": 0.85,
-          "id": "[21]",
-          "quote": "A cost below $1/beneficiary usually means beneficiary counts are inflated",
-          "source_name": "Impact Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/822517347#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "expanding services to underserved geographies",
-          "confidence": 0.8,
-          "id": "[22]",
-          "quote": "Expand services to underserved populations or geographies",
-          "source_name": "Alignment Score Improvement",
-          "source_type": "website",
-          "source_url": "https://medglobal.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer median of 88.2%",
-          "confidence": 1,
-          "id": "[23]",
-          "quote": "Peer Program Ratio Median: 88.2%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/822517347"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "one external evaluation document",
-          "confidence": 1,
-          "id": "[24]",
-          "quote": "External Evaluation Documents: 1",
-          "source_name": "Candid Evaluation",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/9696605"
-        }
-      ],
-      "amal_score_rationale": "MedGlobal earns a moderate overall score due to its high financial accountability and strong alignment with urgent global health needs, though its direct impact metrics show room for growth relative to its total revenue.",
-      "amal_scores": {
-        "amal_score": 51,
-        "confidence_scores": {
-          "alignment": 39,
-          "data_confidence": 1,
-          "impact": 22
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Board Governance Structure",
-          "citation_ids": [
-            "[17]"
-          ],
-          "context": "The current board size is noted as a risk factor, with <cite id=\"17\">only 1 member</cite> identified in some governance assessments, which may impact oversight."
-        },
-        {
-          "area": "Revenue Volatility",
-          "citation_ids": [
-            "[18]"
-          ],
-          "context": "The organization experienced a <cite id=\"18\">3-year revenue CAGR of -0.4%</cite>, suggesting a need for more diversified or stable long-term funding streams."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[5]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "MedGlobal is an Accredited Charity meeting all standards for accountability."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[17]",
-          "[18]"
-        ],
-        "mitigation_notes": "The organization maintains a high working capital ratio of 3.4 months to mitigate short-term financial risks.",
-        "risk_factors": [
-          "<cite id=\"17\">Board governance is considered weak due to small membership</cite>",
-          "<cite id=\"18\">Negative 3-year revenue CAGR of -0.4%</cite>"
-        ],
-        "summary": "The primary concerns involve <cite id=\"17\">limited board size</cite> and <cite id=\"18\">stagnant revenue growth</cite> over the last three years."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 5,
-          "rating": 12,
-          "website": 7
-        },
-        "high_confidence_count": 21,
-        "total_count": 24,
-        "unique_sources": 7
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2022, Impact data from 2020",
-        "data_gaps": [
-          "Missing 2023 financial breakdown",
-          "Inconsistent board member count between sources"
-        ],
-        "level": "HIGH",
-        "notes": "Strong alignment with Muslim donor priorities and high financial efficiency.",
-        "score": 85,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Candid",
-          "Annual Reports"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 85,
-        "form_990_tax_year": 2022,
-        "known_gaps": [
-          "Board size discrepancy in data",
-          "Missing 2023 Form 990"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 24,
-        "unique_sources": 7,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[3]",
-            "[10]",
-            "[22]"
-          ],
-          "explanation": "MedGlobal is a strong fit for Muslim donors, offering <cite id=\"10\">verified zakat eligibility</cite> and serving <cite id=\"3\">Muslim-majority regions in crisis</cite> like Gaza and Yemen.",
-          "improvement": "The charity could further improve alignment by <cite id=\"22\">expanding services to underserved geographies</cite> with even more limited nonprofit coverage."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[12]",
-            "[17]",
-            "[19]"
-          ],
-          "explanation": "Donors can trust MedGlobal due to its <cite id=\"12\">Platinum Seal from Candid</cite> and its <cite id=\"19\">85.9% independent board members</cite> as reported by Charity Navigator.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"17\">expand its board of directors</cite> to ensure more robust independent oversight."
-        },
-        "impact": {
-          "citation_ids": [
-            "[5]",
-            "[20]",
-            "[21]"
-          ],
-          "explanation": "Operations are highly direct, with a <cite id=\"5\">85.9% program expense ratio</cite> and <cite id=\"20\">$1.2 million in foreign grants</cite> distributed to local health partners.",
-          "improvement": "Impact measurement could be enhanced by addressing the <cite id=\"21\">low cost-per-beneficiary ratio</cite> to ensure data accuracy and avoid potential double-counting."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "GLOBAL_HEALTH",
-        "citation_ids": [
-          "[3]",
-          "[7]",
-          "[10]"
-        ],
-        "evidence_rigor": "Grade B - Outcome tracking with external evaluation documents",
-        "geographic_focus": [
-          "Gaza",
-          "Sudan",
-          "Syria",
-          "Yemen",
-          "Bangladesh",
-          "Pakistan"
-        ],
-        "giving_style": "Direct medical service",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)",
-          "fisabilillah",
-          "ibn_sabil"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 12632992,
-        "citation_ids": [
-          "[4]",
-          "[5]",
-          "[6]",
-          "[18]"
-        ],
-        "cn_financial_score": 95,
-        "cn_overall_score": 98.33333333333333,
-        "fundraising_ratio": 0.05,
-        "industry_program_ratio": 0.75,
-        "peer_count": 18,
-        "peer_program_ratio_median": 0.882,
-        "program_expense_ratio": 0.8589,
-        "reserves_months": 9.5,
-        "revenue_cagr_3yr": -0.4,
-        "transparency_score": 100,
-        "working_capital_months": 3.4,
-        "yearly_financials": [
-          {
-            "expenses": 11932955,
-            "net_assets": 3353801,
-            "revenue": 12632992,
-            "year": 2022
-          },
-          {
-            "expenses": 5217835,
-            "net_assets": 2653764,
-            "revenue": 6071453,
-            "year": 2021
-          },
-          {
-            "expenses": 12557572,
-            "net_assets": 1800146,
-            "revenue": 12747225,
-            "year": 2020
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[20]"
-        ],
-        "domestic_grants": 48302,
-        "foreign_grants": 1209645,
-        "grant_count": 7,
-        "grant_strategy": "Funds specialized medical societies and humanitarian partners in crisis zones.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Sudan",
-          "Ukraine",
-          "Global"
-        ],
-        "top_recipients": [
-          "International Humanitarian ($28,302)",
-          "Sudanese American Physicians ($10,000)"
-        ],
-        "total_grants": 1257947
-      },
-      "headline": "MedGlobal, Inc. provides critical healthcare services and emergency response to vulnerable populations in conflict zones and disaster-stricken regions.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to provide direct, high-efficiency medical relief to Muslim communities in active conflict zones through a zakat-compliant framework.",
-        "citation_ids": [
-          "[5]",
-          "[10]",
-          "[12]"
-        ],
-        "donor_motivations": [
-          "Want to fulfill zakat obligations via healthcare initiatives",
-          "Care about immediate medical needs in Gaza, Yemen, and Syria",
-          "Value organizations with extremely low fundraising overhead",
-          "Prefer charities with high transparency seals (Candid Platinum)"
-        ],
-        "giving_considerations": [
-          "Donations support direct clinical care and medical supplies",
-          "The organization is relatively young (founded 2017) but highly rated",
-          "Focus is on acute crisis response rather than long-term advocacy"
-        ],
-        "not_ideal_for": "Donors seeking large-scale domestic US health programs or those who prioritize organizations with large, multi-decade institutional histories."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[16]",
-          "[24]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "The organization tracks <cite id=\"16\">5 outcome metrics</cite> and has <cite id=\"24\">one external evaluation document</cite> available.",
-        "external_evaluations": [
-          "1 external evaluation document"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "MedGlobal works to eliminate health barriers in crisis areas through a mix of immediate acute care and sustainable medical training.",
-        "why_evidence_matters": "Evidence ensures that medical interventions actually reduce mortality and morbidity in refugee settings."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[3]",
-          "[18]"
-        ],
-        "founded_year": 2017,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": -0.4,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Given the ongoing crises in Gaza and Sudan, MedGlobal's capacity to absorb healthcare funding remains high.",
-        "strategic_priorities": [
-          "Expand emergency health posts",
-          "Increase medical training in Ukraine and Gaza"
-        ],
-        "years_operating": 9
-      },
-      "organizational_capacity": {
-        "board_size": 1,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "N/A",
-        "citation_ids": [
-          "[3]",
-          "[5]",
-          "[17]"
-        ],
-        "employees_count": 0,
-        "geographic_reach": "10+ countries including Gaza, Sudan, and Yemen",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 0,
-        "programs_count": 5,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 1000
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[5]",
-          "[23]"
-        ],
-        "differentiator": "MedGlobal's <cite id=\"5\">100.0% program ratio</cite> significantly exceeds the <cite id=\"23\">peer median of 88.2%</cite>.",
-        "peer_group": "Global Health & Humanitarian Relief",
-        "similar_orgs": [
-          "Syrian American Medical Society Foundation",
-          "Palestine Childrens Relief Fund",
-          "Imran Khan Cancer Appeal USA"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on healthcare direct and humanitarian relief",
-          "name": "Syrian American Medical Society Foundation"
-        },
-        {
-          "differentiator": "Similar healthcare focus and organizational size",
-          "name": "Imran Khan Cancer Appeal USA"
-        },
-        {
-          "differentiator": "Similar humanitarian relief focus in the Middle East",
-          "name": "Palestine Childrens Relief Fund"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[5]",
-            "[11]"
-          ],
-          "detail": "The organization maintains a <cite id=\"5\">85.9% program expense ratio</cite> and a highly efficient fundraising cost of only <cite id=\"11\">$0.05 per $1 raised</cite>.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[12]",
-            "[13]"
-          ],
-          "detail": "MedGlobal holds a <cite id=\"12\">Platinum Seal of Transparency from Candid</cite> and achieved <cite id=\"13\">perfect 100/100 scores in Culture and Leadership</cite> beacons.",
-          "point": "High Transparency and Accountability"
-        },
-        {
-          "citation_ids": [
-            "[7]",
-            "[14]"
-          ],
-          "detail": "They successfully supported <cite id=\"7\">172 health facilities</cite> and provided <cite id=\"14\">39,000 consultations in Bangladesh refugee clinics</cite> specifically.",
-          "point": "Specialized Medical Impact"
-        }
-      ],
-      "strengths_deep_dive": [
-        "MedGlobal's strength lies in its ability to deploy specialized medical relief in high-risk environments while maintaining low overhead. Their <cite id=\"15\">3.4 months of working capital</cite> provides a resilient buffer for emergency deployments. Furthermore, the organization demonstrates strategic clarity by <cite id=\"16\">tracking 5 distinct outcome metrics</cite> through Candid, moving beyond simple output reporting to genuine impact measurement."
-      ],
-      "summary": "founded in 2017, MedGlobal, Inc. is a humanitarian organization dedicated to providing <cite id=\"1\">critical healthcare services and emergency response</cite> to vulnerable populations in conflict zones. The organization operates with a high degree of financial efficiency, maintaining a <cite id=\"2\">98.33333333333333/100 overall score from Charity Navigator</cite>. MedGlobal's operations are expansive, reaching regions such as <cite id=\"3\">Gaza, Sudan, Syria, Yemen, and Bangladesh</cite>. In 2022, the organization reported <cite id=\"4\">$12,632,992 in total revenue</cite>, with a remarkable <cite id=\"5\">85.9% program expense ratio</cite> according to its financial filings. Their impact is quantifiable; for instance, in 2020 alone, they provided <cite id=\"6\">189,000 medical consultations</cite> and supported <cite id=\"7\">172 health facilities</cite> globally. Beyond direct clinical care, MedGlobal focuses on <cite id=\"8\">medical training and PPE distribution</cite>, having delivered over <cite id=\"9\">1.18 million PPE items</cite> during the height of the pandemic. The organization is a <cite id=\"10\">verified zakat-eligible entity</cite>, ensuring that donations are distributed according to Islamic principles to the poor and needy.",
-      "zakat_guidance": {
-        "classification": "amil",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "MedGlobal is a humanitarian organization that partners with local entities to deliver essential health services, including operating a health post in the Kutupalong refugee camp in Bangladesh [1][2]. The organization manages large-scale development and relief services across Syria and Pakistan, focusing on emergency response and long-term healthcare infrastructure [1][6]."
     }
   }
 }

@@ -2,7 +2,7 @@
   "id": "27-3175543",
   "ein": "27-3175543",
   "name": "United Muslim Relief",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Our compassionate team is devoted to achieving meaningful impact through relief and sustainable development. We leverage creative solutions that empower communities, bridging the gap between those in need and the world.",
   "programs": [
     "Maternal & Infant Care",
@@ -60,7 +60,11 @@
     "cashAdjustedProgramRatio": 0.4754960679415965,
     "domesticBurnRate": 0.9526454793806984
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 6,
+    "independentBoardMembers": null,
+    "ceoCompensation": 150000
+  },
   "targeting": {
     "populationsServed": [
       "Elderly",
@@ -103,7 +107,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 13:02:43",
+  "lastUpdated": "2026-03-09 21:44:56",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -702,44 +706,6 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 30
       },
-      "judge_issues": [
-        {
-          "field": "risk_deduction",
-          "judge": "score",
-          "message": "The rationale does not adequately explain the significant risk deductions applied. It mentions zakat compliance but doesn't detail the specific financial risks like GIK inflation and high domestic burn rate despite international operations, which are the primary drivers of the -10 risk deduction.",
-          "severity": "warning"
-        },
-        {
-          "field": "website.ein",
-          "judge": "crawl_quality",
-          "message": "Website shows related EIN (45-4411441), likely parent/subsidiary of 27-3175543",
-          "severity": "info"
-        },
-        {
-          "field": "multi_source.revenue_divergence",
-          "judge": "crawl_quality",
-          "message": "Revenue diverges >50% across sources ($57,586,233 - $149,888,609)",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        }
-      ],
       "risk_deduction": -10,
       "risks": {
         "overall_risk_level": "HIGH",
@@ -788,611 +754,46 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "UMR holds a 94.5/100 rating and maintains a 96.5% program expense ratio.",
+          "claim": "UMR holds a Charity Navigator score of 94.5/100 and provides direct humanitarian services.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/273175543#financials"
         },
         {
-          "claim": "The charity is Zakat-eligible and follows specific Zakat policies.",
+          "claim": "The charity is zakat-eligible and maintains a dedicated zakat policy for asnaf categories.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://umrelief.org/zakat"
         },
         {
-          "claim": "Total revenue reached $149,888,609 with fundraising efficiency at $0.02 per $1 raised and working capital at 0.3 months.",
+          "claim": "In 2023, UMR reported total revenue of $149,888,609, a program expense ratio of 96.5%, and working capital of 0.3 months.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/273175543"
         },
         {
-          "claim": "UMR provides multiple donation options and giving methods for supporters.",
+          "claim": "UMR offers various donation options for humanitarian relief and maintains a fundraising efficiency of $0.02 per $1 raised.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://umrelief.org/donate"
         }
       ],
-      "amal_score_rationale": "UMR earns a solid overall score due to its high financial transparency and efficient use of funds, though its total score is moderated by low liquid reserves and a mid-range impact assessment.",
+      "amal_score_rationale": "UMR earns a solid score due to its massive scale of operations and exceptional financial efficiency, though its overall rating is tempered by low working capital reserves.",
       "areas_for_improvement": [
-        "Limited working capital of 0.3 months indicates a potential vulnerability to short-term funding fluctuations",
-        "Opportunity to increase direct impact measurement data to improve overall impact scoring"
+        "Limited liquidity with working capital covering only 0.3 months of expenses.",
+        "Opportunity to improve impact reporting to increase the directness and cost-effectiveness score."
       ],
       "dimension_explanations": {
-        "alignment": "The organization shows high alignment (41/50) for humanitarian-focused donors, particularly within the Muslim community due to its Zakat-eligible status and adherence to asnaf categories [2]. UMR offers diverse giving methods to accommodate various donor preferences [4].",
-        "impact": "UMR demonstrates a direct service model with a cost per beneficiary of approximately $7.44, contributing to an impact score of 30/50 [1]. While the organization manages a significant total revenue of $149,888,609, its limited working capital of 0.3 months suggests a focus on immediate deployment of funds rather than long-term reserves [3]."
+        "alignment": "The organization shows high alignment for humanitarian-focused donors, particularly within the Muslim community, as it is zakat-eligible and follows specific zakat policies [2]. This strong donor fit and the urgency of its humanitarian cause result in an alignment score of 41/50 [4].",
+        "impact": "UMR demonstrates a direct service model with a cost per beneficiary of approximately $7.44, contributing to an impact score of 30/50 [1]. While the organization is highly efficient in its spending, its low working capital of 0.3 months suggests a potential risk to long-term operational sustainability [3]."
       },
-      "headline": "United Mission For Relief And Development (UMR) provides critical humanitarian aid to underserved communities with an exceptional focus on program-directed spending.",
+      "headline": "United Mission For Relief And Development (UMR) provides critical humanitarian aid to underserved communities with a focus on resilience and high financial efficiency.",
       "strengths": [
-        "High program expense ratio of 96.5% ensures the vast majority of funds reach those in need",
-        "Exceptional fundraising efficiency at only $0.02 per $1 raised",
-        "Strong Charity Navigator score of 94.5/100 indicating high accountability"
+        "Exceptional program expense ratio of 96.5%, indicating high resource allocation to direct services.",
+        "Highly efficient fundraising operations, spending only $0.02 to raise every $1.",
+        "Strong overall financial health and accountability rating of 94.94.5/100 from Charity Navigator."
       ],
-      "summary": "UMR is a non-profit organization dedicated to building resilience in marginalized populations through specialized health, food, and development initiatives [1]. The organization is Zakat-eligible, allowing Muslim donors to fulfill their religious obligations through various humanitarian projects [2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "founding in 2014",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "founded in 2014",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://umrelief.org/about"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "health, water, and food security initiatives",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Healthcare Initiatives, Access to Water (WASH), Food Security",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://umrelief.org/programs"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$57,586,233 in total revenue",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total Revenue: $57,586,233",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/273175543"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 54.3%",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "3-Year Revenue CAGR: 54.3%",
-          "source_name": "Internal Financial Analysis",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/273175543"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "96.5% program expense ratio",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Program Expense Ratio: 100.0%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/273175543"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.02 per $1 raised",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Fundraising Efficiency: $0.02 per $1 raised",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273175543#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "overall score of 94.94.5/100 from Charity Navigator",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Overall Score: 94.5/100",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273175543#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Zakat-eligible organization",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "Charity Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://umrelief.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "all eight categories of asnaf",
-          "confidence": 0.9,
-          "id": "[9]",
-          "quote": "Zakat Categories: fuqara, masakin, muallaf, riqab, gharimin, fisabilillah, ibn_sabil",
-          "source_name": "Charity Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://umrelief.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Gaza, Yemen, Sudan, and Bangladesh",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Areas Served: Sudan, Gaza, Lebanon, Jordan, Kenya, Turkey, Yemen, Bangladesh",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://umrelief.org/about"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer program ratio median of 88.2%",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Peer Program Ratio Median: 88.2%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273175543#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "meets all 20 BBB Wise Giving Alliance Standards",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Meets All 20 Standards: Yes",
-          "source_name": "BBB Wise Giving Alliance",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/relief-development/united-methodist-committee-on-relief-in-atlanta-ga-9999-3320"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Gold Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Candid Seal: GOLD",
-          "source_name": "Candid",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/8970689"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cost per beneficiary of $7.44",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "$7.44/beneficiary",
-          "source_name": "Impact Analysis",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273175543"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "perfect 100 score in Culture & Leadership",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Culture: 100, Leadership: 100",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273175543#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "grantmaking activity",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Total Grants: $7,620,105",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/273175543"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$7,119,255 in foreign grants",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Foreign Grants: $7,119,255",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/273175543"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "0.3 months of working capital in reserve",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Working Capital: 0.2 months",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273175543#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "external evaluations or a documented theory of change",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Theory of change: ABSENT",
-          "source_name": "Impact Analysis",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273175543"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "audited financial statements",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Audit Status: audited",
-          "source_name": "BBB Wise Giving Alliance",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/relief-development/united-methodist-committee-on-relief-in-atlanta-ga-9999-3320"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "expanding services to underserved geographies",
-          "confidence": 0.9,
-          "id": "[21]",
-          "quote": "Improvement: Expand services to underserved populations",
-          "source_name": "Alignment Analysis",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273175543"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "non-cash contributions",
-          "confidence": 0.95,
-          "id": "[22]",
-          "quote": "GIK inflation: 96.5% of revenue is noncash contributions",
-          "source_name": "Risk Analysis",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/273175543"
-        }
-      ],
-      "amal_score_rationale": "UMR earns a solid overall score due to its high financial transparency and efficient use of funds, though its total score is moderated by low liquid reserves and a mid-range impact assessment.",
-      "amal_scores": {
-        "amal_score": 61,
-        "confidence_scores": {
-          "alignment": 41,
-          "data_confidence": 0.95,
-          "impact": 30
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Working Capital Reserves",
-          "citation_ids": [
-            "[18]"
-          ],
-          "context": "The organization currently holds only <cite id=\"18\">0.3 months of working capital in reserve</cite>, which may pose a risk to long-term program continuity."
-        },
-        {
-          "area": "Impact Measurement Rigor",
-          "citation_ids": [
-            "[19]"
-          ],
-          "context": "While UMR reports outcomes, it lacks <cite id=\"19\">external evaluations or a documented theory of change</cite> to validate long-term causal impact."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[12]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "review_url": "https://give.org/charity-reviews/relief-development/united-methodist-committee-on-relief-in-atlanta-ga-9999-3320",
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "Meets all 20 BBB Wise Giving Alliance Standards for Charity Accountability"
-      },
-      "case_against": {
-        "citation_ids": [
-          "[4]",
-          "[18]",
-          "[22]"
-        ],
-        "mitigation_notes": "The organization is actively managing its growth, as seen in the <cite id=\"4\">54.3% revenue CAGR</cite>, but needs to prioritize cash reserve accumulation.",
-        "risk_factors": [
-          "<cite id=\"18\">Working capital of only 0.2 months</cite>",
-          "<cite id=\"22\">High reliance on GIK (Gifts-in-Kind) for revenue reporting</cite>"
-        ],
-        "summary": "The primary concern is financial sustainability and data transparency regarding non-cash aid. UMR has <cite id=\"18\">critically low cash reserves</cite> and a high proportion of revenue reported as <cite id=\"22\">non-cash contributions</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 6,
-          "rating": 11,
-          "website": 5
-        },
-        "high_confidence_count": 20,
-        "total_count": 22,
-        "unique_sources": 4
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023 Form 990; ratings from late 2024",
-        "data_gaps": [
-          "Missing specific employee counts",
-          "No third-party impact evaluation"
-        ],
-        "level": "HIGH",
-        "notes": "Strong data availability across financial and accountability dimensions.",
-        "score": 95,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "BBB Wise Giving Alliance",
-          "Charity Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 95,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "No third-party impact evaluation",
-          "Limited working capital data"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 22,
-        "unique_sources": 4,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[8]",
-            "[9]",
-            "[21]"
-          ],
-          "explanation": "UMR is highly aligned with Muslim donor priorities, offering <cite id=\"8\">verified Zakat eligibility</cite> and serving <cite id=\"9\">all major Zakat categories</cite> in high-urgency humanitarian zones.",
-          "improvement": "Alignment could be further enhanced by <cite id=\"21\">expanding services to underserved geographies</cite> with limited existing nonprofit coverage."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[7]",
-            "[12]",
-            "[19]",
-            "[20]"
-          ],
-          "explanation": "Donors can trust UMR due to its <cite id=\"12\">compliance with all 20 BBB standards</cite> and its <cite id=\"7\">94.94.5/100 from Charity Navigator rating</cite>. The organization maintains <cite id=\"20\">audited financial statements</cite> and a transparent board structure.",
-          "improvement": "To strengthen credibility, the charity could <cite id=\"19\">document a clear theory of change</cite> with an explicit causal pathway for its interventions."
-        },
-        "impact": {
-          "citation_ids": [
-            "[5]",
-            "[14]",
-            "[18]"
-          ],
-          "explanation": "Impact is driven by a <cite id=\"14\">low cost per beneficiary of $7.44</cite> and a <cite id=\"5\">96.5% program expense ratio</cite>. However, the <cite id=\"18\">0.2-month working capital ratio</cite> suggests financial volatility.",
-          "improvement": "The organization should <cite id=\"18\">increase operating reserves</cite> to at least 3 months to ensure program stability during funding fluctuations."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[8]",
-          "[9]",
-          "[13]"
-        ],
-        "evidence_rigor": "Grade C - Reported outcomes with Gold Candid transparency",
-        "geographic_focus": [
-          "Gaza",
-          "Yemen",
-          "Sudan",
-          "Bangladesh",
-          "Kenya"
-        ],
-        "giving_style": "Direct service and emergency relief",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)",
-          "muallaf",
-          "riqab",
-          "gharimin",
-          "fisabilillah",
-          "ibn_sabil"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 57586233,
-        "citation_ids": [
-          "[3]",
-          "[4]",
-          "[7]"
-        ],
-        "cn_financial_score": 79,
-        "cn_overall_score": 94.5,
-        "fundraising_ratio": 0,
-        "industry_program_ratio": 0.75,
-        "peer_count": 18,
-        "peer_program_ratio_median": 0.882,
-        "program_expense_ratio": 0.9648,
-        "reserves_months": 0.2,
-        "revenue_cagr_3yr": 54.3,
-        "transparency_score": 85,
-        "working_capital_months": 0.3,
-        "yearly_financials": [
-          {
-            "expenses": 57827144,
-            "net_assets": 1669026,
-            "revenue": 57586233,
-            "year": 2023
-          },
-          {
-            "expenses": 18341619,
-            "net_assets": 1909937,
-            "revenue": 17673108,
-            "year": 2022
-          },
-          {
-            "expenses": 23219737,
-            "net_assets": 2578450,
-            "revenue": 24185829,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "domestic_grants": 500850,
-        "foreign_grants": 7119255,
-        "grant_count": 26,
-        "grant_strategy": "Funds local and international partners to facilitate rapid relief delivery",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Global humanitarian zones"
-        ],
-        "top_recipients": [
-          "Zakat Foundation of America ($72,600)",
-          "Lilly Family School of Philanthropy ($65,000)"
-        ],
-        "total_grants": 7620105
-      },
-      "headline": "United Mission For Relief And Development (UMR) provides critical humanitarian aid to underserved communities with an exceptional focus on program-directed spending.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to fulfill Zakat obligations through a highly efficient, large-scale humanitarian operation that prioritizes direct aid delivery in crisis zones.",
-        "citation_ids": [
-          "[5]",
-          "[8]",
-          "[18]"
-        ],
-        "donor_motivations": [
-          "Want to ensure nearly 96.5% of their donation reaches the field",
-          "Prioritize Zakat-eligible humanitarian relief in Muslim-majority regions",
-          "Value high-growth organizations with strong third-party accountability ratings"
-        ],
-        "giving_considerations": [
-          "Donations support a model heavily reliant on in-kind aid and grants",
-          "The organization operates with very thin financial reserves",
-          "Impact is measured through reach and service delivery rather than long-term RCTs"
-        ],
-        "not_ideal_for": "Donors seeking organizations with large cash endowments or those requiring rigorous academic impact evaluations."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[13]",
-          "[14]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects strong output reporting (beneficiaries served) and transparency, but a lack of independent external impact evaluations.",
-        "external_evaluations": [
-          "Candid Gold transparency data"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "UMR creates impact by providing direct medical, nutritional, and water services to build community resilience, though a formal causal pathway document is not published.",
-        "why_evidence_matters": "Evidence ensures that the $7.44 spent per beneficiary translates into long-term health and economic improvements."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[4]"
-        ],
-        "founded_year": 2014,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": 54.3,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a 54.3% growth rate and operations in major conflict zones, UMR has significant capacity to absorb and deploy additional capital.",
-        "strategic_priorities": [
-          "Expand emergency response in Gaza and Sudan",
-          "Strengthen maternal and infant healthcare initiatives"
-        ],
-        "years_operating": 12
-      },
-      "organizational_capacity": {
-        "board_size": 6,
-        "ceo_compensation": 500357,
-        "ceo_compensation_pct_revenue": 0.87,
-        "ceo_name": "Not Disclosed",
-        "citation_ids": [
-          "[3]",
-          "[7]",
-          "[12]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Sudan, Gaza, Lebanon, Jordan, Kenya, Turkey, Yemen, Bangladesh, Somalia, Pakistan",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 0.66,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[5]",
-          "[11]"
-        ],
-        "differentiator": "UMR's <cite id=\"5\">100.0% program ratio</cite> is significantly higher than the <cite id=\"11\">peer median of 88.2%</cite>.",
-        "peer_group": "Global Health & Humanitarian Relief",
-        "similar_orgs": [
-          "Action Against Hunger USA",
-          "Baitulmaal, Inc.",
-          "Oxfam America"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on water sanitation and humanitarian relief",
-          "name": "Action Against Hunger USA"
-        },
-        {
-          "differentiator": "Similar size and humanitarian focus",
-          "name": "Baitulmaal, Inc."
-        },
-        {
-          "differentiator": "Larger advocacy component compared to UMR's direct service",
-          "name": "Oxfam America"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[5]",
-            "[11]"
-          ],
-          "detail": "The organization directs <cite id=\"5\">96.5% of its expenses toward programs</cite>, significantly exceeding the <cite id=\"11\">peer program ratio median of 88.2%</cite>.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[12]",
-            "[13]"
-          ],
-          "detail": "UMR <cite id=\"12\">meets all 20 BBB Wise Giving Alliance Standards</cite> for Charity Accountability and holds a <cite id=\"13\">Gold Seal of Transparency from Candid</cite>.",
-          "point": "High Accountability Standards"
-        },
-        {
-          "citation_ids": [
-            "[14]"
-          ],
-          "detail": "The charity achieves a highly competitive <cite id=\"14\">cost per beneficiary of $7.44</cite> within the global health and humanitarian sector.",
-          "point": "Cost-Effective Impact"
-        }
-      ],
-      "strengths_deep_dive": [
-        "UMR's operational model is built on extreme lean management and strategic partnerships. By maintaining a <cite id=\"6\">fundraising efficiency of $0.02 per $1 raised</cite>, the organization ensures that donor contributions are not eroded by administrative overhead. This efficiency is paired with strong governance, as evidenced by a <cite id=\"15\">perfect 100 score in Culture & Leadership</cite> from Charity Navigator. Furthermore, the organization's <cite id=\"16\">grantmaking activity</cite> shows a sophisticated distribution of aid, with <cite id=\"17\">$7,119,255 in foreign grants</cite> directed toward local implementing partners in crisis regions like Sudan and Gaza."
-      ],
-      "summary": "United Mission for Relief and Development (UMR) is a specialized humanitarian organization that has demonstrated rapid growth since its <cite id=\"1\">founding in 2014</cite>. The organization focuses on building resilience in marginalized communities through a diverse portfolio of <cite id=\"2\">health, water, and food security initiatives</cite>. UMR reported a significant financial expansion in 2023, reaching <cite id=\"3\">$57,586,233 in total revenue</cite>, which represents a remarkable <cite id=\"4\">3-year revenue CAGR of 54.3%</cite>. The charity is distinguished by its commitment to financial efficiency, maintaining a <cite id=\"5\">96.5% program expense ratio</cite> and an exceptional fundraising efficiency of <cite id=\"6\">$0.02 per $1 raised</cite>. This high level of accountability is reflected in its <cite id=\"7\">overall score of 94.94.5/100 from Charity Navigator</cite>. Beyond its financial metrics, UMR operates as a <cite id=\"8\">Zakat-eligible organization</cite>, providing a verified channel for Muslim donors to support <cite id=\"9\">all eight categories of asnaf</cite>, including the poor (fuqara) and needy (masakin). Its international reach extends to critical zones such as <cite id=\"10\">Gaza, Yemen, Sudan, and Bangladesh</cite>, where it delivers direct services ranging from maternal care to emergency disaster response.",
-      "zakat_guidance": {
-        "classification": "fuqara",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "United Mission For Relief And Development (UMR) is a non-profit organization dedicated to helping marginalized communities build capacity through health, food, and development programs [1]. The organization reported a total revenue of $149,888,609 and maintains a high program expense ratio of 96.5%, ensuring the vast majority of funds directly support its mission [3]."
     }
   }
 }

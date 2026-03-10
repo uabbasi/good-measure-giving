@@ -2,7 +2,7 @@
   "id": "53-0196605",
   "ein": "53-0196605",
   "name": "American Red CrossHQ",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Since its founding in 1881 by visionary leader Clara Barton, the American Red Cross has been the nation's premier emergency response organization. We bring shelter, food and comfort to those affected by disasters, large and small. We collect lifesaving donated blood and supply it to patients in need. We provide support to our men and women in military bases around the world, and to the families they leave behind. We train communities in CPR, first aid and other skills that save lives. And we assist our neighbors abroad with critical disaster response, preparedness and disease prevention efforts. We are able to do all this by mobilizing the power of volunteers and the generosity of donors.",
   "programs": [
     "Disaster Relief",
@@ -57,7 +57,11 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": 0.9388921102933272
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 12,
+    "independentBoardMembers": null,
+    "ceoCompensation": 1296862
+  },
   "targeting": {
     "populationsServed": [
       "Men",
@@ -91,7 +95,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 18:45:24",
+  "lastUpdated": "2026-03-09 21:45:56",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -1730,56 +1734,6 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 40
       },
-      "judge_issues": [
-        {
-          "field": "website.ein",
-          "judge": "crawl_quality",
-          "message": "Website shows related EIN (null), likely parent/subsidiary of 53-0196605",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change",
-          "judge": "discover_quality",
-          "message": "Theory of change URL found but description not extracted",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -5,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -1807,13 +1761,13 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity holds a 100.0/100 score and maintains a 90.8% program expense ratio and 12.2 months of working capital.",
+          "claim": "The organization holds a 100.0/100 score and maintains a 90.8% program expense ratio.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/530196605#financials"
         },
         {
-          "claim": "Total revenue is reported at $3,804,377,344 with a fundraising efficiency of $0.05 per $1 raised.",
+          "claim": "Total revenue for the period was $3,804,377,344.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/530196605"
@@ -1831,617 +1785,34 @@
           "source_url": "https://www.redcross.org/about-us/news-and-events/news/2026/helping-all-around-the-world.html"
         },
         {
-          "claim": "The organization provides grants to domestic individuals and foreign organizations.",
+          "claim": "The organization manages significant grants to domestic individuals and foreign organizations.",
           "id": "[8]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://www.redcross.org/content/dam/redcross/about-us/publications/2024-publications/FY24-Red-Cross-990-for-RCO.pdf"
         },
         {
-          "claim": "Financial records confirm large-scale grants to domestic individuals for disaster relief.",
-          "id": "[10]",
-          "source_name": "Form 990 (2020)",
-          "source_url": "https://www.redcross.org/content/dam/redcross/about-us/publications/2022-publications/FY21-Red-Cross-Form-990.pdf"
-        },
-        {
-          "claim": "The organization offers various donation options for general charitable giving.",
+          "claim": "The organization accepts general charitable donations (sadaqah).",
           "id": "[12]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.redcross.org/donate/donation"
         }
       ],
-      "amal_score_rationale": "The organization earns a GMG Score of 66/100, reflecting a balance between its massive operational impact and its status as a general humanitarian provider rather than a niche-aligned charity.",
+      "amal_score_rationale": "The organization earns a 66/100 GMG score due to its high-impact direct services and perfect financial transparency, though alignment with specific Muslim donor preferences is considered medium.",
       "areas_for_improvement": [
-        "Alignment with specific Muslim donor preferences is considered medium",
-        "High reliance on large-scale biomedical service revenue alongside traditional donations"
+        "High operational complexity across domestic and international branches",
+        "Reliance on large-scale biomedical service revenue alongside traditional donations"
       ],
       "dimension_explanations": {
-        "alignment": "While the cause urgency is high due to its humanitarian mission, the donor fit for those seeking specific religious alignment is medium [3][6]. The organization is classified as sadaqah-eligible, making it a suitable choice for general voluntary charity rather than specific religious obligations [12].",
-        "impact": "The organization demonstrates high impact through direct service delivery, maintaining a program expense ratio of 90.8% [1][2]. With total revenue of $3,804,377,344 and 12.2 months of working capital, it possesses the financial stability to respond to large-scale disasters immediately [1][10]."
+        "alignment": "As a humanitarian leader, the organization addresses urgent global needs, making it a strong candidate for sadaqah [12]. While it has a long track record of service, the alignment for Muslim donors is rated as medium due to its broad secular mission [3][6].",
+        "impact": "The organization demonstrates high impact through direct service delivery, maintaining a program expense ratio of 90.8% [1][2]. Its financial health is robust, evidenced by a fundraising efficiency of $0.05 per $1 raised and a total revenue of $3,804,377,344 [1][8]."
       },
       "headline": "The American Red Cross provides critical humanitarian relief and lifesaving services through a massive network of volunteers and donors.",
       "strengths": [
         "Exceptional financial accountability with a Charity Navigator score of 100.0/100",
-        "High program efficiency with 90.8% of expenses directed toward services",
-        "Strong fundraising efficiency at only $0.05 per $1 raised"
+        "High program efficiency with 90.8% of expenses directed toward humanitarian services",
+        "Strong liquidity with 12.2 months of working capital available"
       ],
       "summary": "The American Red Cross prevents and alleviates human suffering in the face of emergencies by mobilizing the power of volunteers and the generosity of donors [3]. The organization operates major programs including Lifesaving Blood services, Training Services, and support for America\u2019s military families [1][8]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "preventing and alleviating human suffering",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "The American Red Cross prevents and alleviates human suffering in the face of emergencies",
-          "source_name": "Charity Website - About",
-          "source_type": "website",
-          "source_url": "https://www.redcross.org/about-us/who-we-are/governance.html"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "1881",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "founded in 1881",
-          "source_name": "Charity Website - About",
-          "source_type": "website",
-          "source_url": "https://www.redcross.org/about-us/who-we-are/governance.html"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$3,217,077,611 in total revenue",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total revenue: $3,217,077,611",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/530196605"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$2.16 billion generated through program service revenue",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Program service revenue: $2,167,924,872",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/530196605"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "biomedical products and blood services",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Biomedical Products/Services Revenue: 2011917984",
-          "source_name": "Form 990 (2022)",
-          "source_type": "form990",
-          "source_url": "https://www.redcross.org/content/dam/redcross/about-us/publications/2023-publications/ARC-Form-990-PIC.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$597 million in grants to domestic individuals",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Grants to domestic individuals: 597241647",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://www.redcross.org/content/dam/redcross/about-us/publications/2024-publications/FY24-Red-Cross-990-for-RCO.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$61 million in grants to foreign organizations",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Grants to foreign organizations/individuals: 61439558",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://www.redcross.org/content/dam/redcross/about-us/publications/2024-publications/FY24-Red-Cross-990-for-RCO.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "overall score of 100.0/100 from Charity Navigator",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Overall Score 100/100",
-          "source_name": "Charity Navigator - Ratings",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/530196605#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "mobilizing a massive network of volunteers",
-          "confidence": 0.95,
-          "id": "[9]",
-          "quote": "90% of the humanitarian work of the Red Cross is performed by volunteers",
-          "source_name": "Charity Website - Volunteer",
-          "source_type": "website",
-          "source_url": "https://www.redcross.org/volunteer/volunteer-opportunities.html"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Platinum Seal of Transparency",
-          "source_name": "Candid - Profile",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/7794260"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "90.8% of its expenses toward programs",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Program Expense Ratio: 100.0%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/530196605"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "90.3% peer program ratio median",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Peer Program Ratio Median: 90.3%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/530196605#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.06 to raise every $1",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Fundraising efficiency: $0.05 per $1 raised",
-          "source_name": "Baseline Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/530196605#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "12.2 months of working capital",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Working Capital: 12.2 months",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/530196605#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "independent board comprising 92% of its members",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Independent Board Members: 92%",
-          "source_name": "Charity Navigator - Accountability",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/530196605#accountability"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$215 million in total grantmaking activity",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Total Grants: $215,740,740",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://www.redcross.org/content/dam/redcross/about-us/publications/2024-publications/FY24-Red-Cross-990-for-RCO.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "high domestic burn rate",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "90.8% of expenses stay in the US",
-          "source_name": "Risk Deduction Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/530196605"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "publish beneficiary counts more consistently",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Publish beneficiary counts consistently so cost-effectiveness can be assessed",
-          "source_name": "Score Details - Impact",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/530196605#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "meeting all 20 BBB Wise Giving Alliance standards",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Standards Met: 0/20",
-          "source_name": "BBB Wise Giving Alliance",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/human-services/american-red-cross-north-alabama-chapter-in-huntsville-al-0513-5002433"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "",
-          "source_name": "Score Details - Alignment",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/530196605#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "adding a dedicated page for Muslim donors",
-          "confidence": 1,
-          "id": "[21]",
-          "quote": "",
-          "source_name": "Score Details - Alignment",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/530196605#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "8 distinct outcome metrics",
-          "confidence": 1,
-          "id": "[22]",
-          "quote": "Outcome Metrics Tracked: 8",
-          "source_name": "Candid Outcome Tracking",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/7794260"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a GMG Score of 66/100, reflecting a balance between its massive operational impact and its status as a general humanitarian provider rather than a niche-aligned charity.",
-      "amal_scores": {
-        "amal_score": 66,
-        "confidence_scores": {
-          "alignment": 31,
-          "data_confidence": 1,
-          "impact": 40
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Geographic Concentration of Spending",
-          "citation_ids": [
-            "[17]"
-          ],
-          "context": "Despite its global mission, there is a <cite id=\"17\">high domestic burn rate</cite>, with approximately 90.8% of expenses staying within the United States."
-        },
-        {
-          "area": "Impact Measurement Transparency",
-          "citation_ids": [
-            "[18]"
-          ],
-          "context": "While operations are efficient, the charity could <cite id=\"18\">publish beneficiary counts more consistently</cite> to allow for better cost-per-beneficiary assessments."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[19]"
-        ],
-        "effectiveness_status": "FAIL",
-        "finances_status": "FAIL",
-        "governance_status": "FAIL",
-        "meets_all_standards": false,
-        "review_url": "https://give.org/charity-reviews/human-services/american-red-cross-north-alabama-chapter-in-huntsville-al-0513-5002433",
-        "standards_met": 0,
-        "standards_not_met": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          17,
-          18,
-          19,
-          20
-        ],
-        "summary": "Currently does not meet BBB Wise Giving Alliance Standards for Charity Accountability according to the latest review."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[17]",
-          "[19]"
-        ],
-        "mitigation_notes": "The organization is a massive, established institution with a 145-year track record of service.",
-        "risk_factors": [
-          "<cite id=\"17\">90.8% of expenses are domestic</cite>",
-          "<cite id=\"19\">Currently meets 0/20 BBB standards</cite>"
-        ],
-        "summary": "The primary limitation is the <cite id=\"17\">high domestic concentration of spending</cite> and the lack of specific religious alignment for Muslim donors."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 7,
-          "rating": 12,
-          "website": 3
-        },
-        "high_confidence_count": 22,
-        "total_count": 22,
-        "unique_sources": 10
-      },
-      "confidence": {
-        "data_freshness": "Most data from 2023 Form 990 and 2024 Charity Navigator updates",
-        "data_gaps": [
-          "Missing BBB accreditation",
-          "Inconsistent beneficiary reporting"
-        ],
-        "level": "HIGH",
-        "notes": "Extremely strong financial and transparency data available.",
-        "score": 90,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Candid",
-          "BBB",
-          "Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 90,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing specific beneficiary counts for cost-effectiveness",
-          "BBB accreditation pending"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 22,
-        "unique_sources": 10,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[20]",
-            "[21]"
-          ],
-          "explanation": "",
-          "improvement": "Alignment could be improved by <cite id=\"21\">adding a dedicated page for Muslim donors</cite> to clarify how their contributions support specific community needs."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[8]",
-            "[10]",
-            "[15]",
-            "[19]"
-          ],
-          "explanation": "Donors can trust this institution due to its <cite id=\"8\">100.0/100 from Charity Navigator rating</cite>, <cite id=\"10\">Platinum Candid Seal</cite>, and <cite id=\"15\">92% independent board</cite>.",
-          "improvement": "To further strengthen credibility, the organization could work toward <cite id=\"19\">meeting all 20 BBB Wise Giving Alliance standards</cite>."
-        },
-        "impact": {
-          "citation_ids": [
-            "[11]",
-            "[6]",
-            "[18]"
-          ],
-          "explanation": "The charity operates with <cite id=\"11\">100.0% program efficiency</cite> and provides <cite id=\"6\">direct service delivery</cite> across disaster and biomedical sectors.",
-          "improvement": "Impact measurement would benefit from <cite id=\"18\">documenting a clear theory of change</cite> with an explicit causal pathway for its various programs."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[1]",
-          "[10]"
-        ],
-        "evidence_rigor": "Grade B - Strong outcome tracking through Candid",
-        "geographic_focus": [
-          "USA",
-          "Global",
-          "Pakistan",
-          "Mozambique"
-        ],
-        "giving_style": "Direct service and emergency relief",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          ""
-        ],
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 3217077611,
-        "citation_ids": [
-          "[2]",
-          "[8]",
-          "[14]"
-        ],
-        "cn_financial_score": 100,
-        "cn_overall_score": 100,
-        "fundraising_ratio": 0.06,
-        "industry_program_ratio": 0.75,
-        "peer_count": 34,
-        "peer_program_ratio_median": 0.903,
-        "program_expense_ratio": 0.9079999999999999,
-        "reserves_months": 13,
-        "revenue_cagr_3yr": 2,
-        "transparency_score": 100,
-        "working_capital_months": 12.2,
-        "yearly_financials": [
-          {
-            "expenses": 2971106889,
-            "net_assets": 3019994931,
-            "revenue": 3217077611,
-            "year": 2023
-          },
-          {
-            "expenses": 3048182336,
-            "net_assets": 2700290098,
-            "revenue": 3182229338,
-            "year": 2022
-          },
-          {
-            "expenses": 2796025309,
-            "net_assets": 2368387311,
-            "revenue": 3090183560,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[8]"
-        ],
-        "domestic_grants": 597241647,
-        "foreign_grants": 61439558,
-        "grant_count": 148,
-        "grant_strategy": "Provides direct financial assistance to disaster victims and grants to international partners.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "USA",
-          "Global"
-        ],
-        "top_recipients": [
-          "International Federation of Red Cross"
-        ],
-        "total_grants": 215740740
-      },
-      "headline": "The American Red Cross provides critical humanitarian relief and lifesaving services through a massive network of volunteers and donors.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value established, large-scale institutional stability and want to support a wide range of humanitarian services from disaster relief to blood supply.",
-        "citation_ids": [
-          "[2]",
-          "[3]",
-          "[17]"
-        ],
-        "donor_motivations": [
-          "Value long-term institutional track records",
-          "Want to support domestic disaster relief in the US",
-          "Appreciate highly efficient fundraising operations",
-          "Prefer organizations with diversified revenue streams"
-        ],
-        "giving_considerations": [
-          "Gifts support a massive, multi-billion dollar operation",
-          "Most spending is focused on domestic US needs",
-          "The organization is a secular entity without specific religious compliance frameworks"
-        ],
-        "not_ideal_for": ""
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[22]",
-          "[10]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "The charity tracks <cite id=\"22\">8 distinct outcome metrics</cite> and holds a Platinum Candid seal, though it lacks independent RCT-level evaluations.",
-        "external_evaluations": [
-          "Candid Platinum outcomes"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "The organization alleviates suffering by mobilizing volunteers and donors to provide immediate disaster relief and critical health services.",
-        "why_evidence_matters": "Evidence ensures that large-scale humanitarian interventions effectively reach those in crisis."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[2]",
-          "[3]"
-        ],
-        "founded_year": 1881,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": 2,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "As a primary responder to national disasters, the organization has a constant need for flexible funding to meet unpredictable crises.",
-        "strategic_priorities": [
-          "Expand biomedical services",
-          "Strengthen disaster resilience"
-        ],
-        "years_operating": 145
-      },
-      "organizational_capacity": {
-        "board_size": 12,
-        "ceo_compensation": 1296862,
-        "ceo_compensation_pct_revenue": 0.04,
-        "ceo_name": "Gail Mcgovern",
-        "citation_ids": [
-          "[2]",
-          "[8]",
-          "[15]"
-        ],
-        "employees_count": 15000,
-        "geographic_reach": "Global reach with 94% US focus",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 0.92,
-        "payroll_to_revenue_pct": 18,
-        "programs_count": 5,
-        "staff_per_million_revenue": 4.6,
-        "volunteers_count": 300000
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[5]"
-        ],
-        "differentiator": "Distinguished by its <cite id=\"5\">massive biomedical and blood services infrastructure</cite> which generates significant program revenue.",
-        "peer_group": "International humanitarian organizations",
-        "similar_orgs": [
-          "Direct Relief",
-          "Save the Children Federation",
-          "Doctors Without Borders"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "More focused on medical supply chain",
-          "name": "Direct Relief"
-        },
-        {
-          "differentiator": "Higher focus on international child welfare",
-          "name": "Save the Children Federation"
-        },
-        {
-          "differentiator": "Higher percentage of international medical staff",
-          "name": "Doctors Without Borders"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[8]",
-            "[10]"
-          ],
-          "detail": "The organization holds a <cite id=\"8\">perfect 100/100 overall score from Charity Navigator</cite> and a <cite id=\"10\">Platinum Seal of Transparency from Candid</cite>.",
-          "point": "Exceptional Accountability and Transparency"
-        },
-        {
-          "citation_ids": [
-            "[11]",
-            "[12]"
-          ],
-          "detail": "The charity directs <cite id=\"11\">90.8% of its expenses toward programs</cite>, significantly exceeding the <cite id=\"12\">90.3% peer program ratio median</cite>.",
-          "point": "High Program Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[13]"
-          ],
-          "detail": "The organization demonstrates lean operations by spending only <cite id=\"13\">$0.06 to raise every $1</cite> in charitable contributions.",
-          "point": "Strong Fundraising Efficiency"
-        }
-      ],
-      "strengths_deep_dive": [
-        "The American Red Cross exhibits remarkable financial stability and governance. It maintains <cite id=\"14\">12.2 months of working capital</cite>, ensuring it can sustain operations during major crises. Its governance is bolstered by an <cite id=\"15\">independent board comprising 92% of its members</cite>, which oversees a complex operation that includes <cite id=\"16\">$215 million in total grantmaking activity</cite> to both domestic and international recipients."
-      ],
-      "summary": "The American National Red Cross is a cornerstone of global humanitarian efforts, dedicated to <cite id=\"1\">preventing and alleviating human suffering</cite> during emergencies. Founded in <cite id=\"2\">1881</cite>, the organization has evolved into a massive institution that manages <cite id=\"3\">$3,217,077,611 in total revenue</cite> as of 2023. Its operations are uniquely diversified, with <cite id=\"4\">$2.16 billion generated through program service revenue</cite>, largely from its critical role in providing <cite id=\"5\">biomedical products and blood services</cite>. Beyond its domestic disaster response, which includes providing <cite id=\"6\">$597 million in grants to domestic individuals</cite>, the organization maintains a significant international presence, delivering <cite id=\"7\">$61 million in grants to foreign organizations</cite> to support global relief. The charity operates with high efficiency, maintaining <cite id=\"8\">a perfect 100/100 overall score from Charity Navigator</cite>, reflecting its status as a highly accountable and transparent entity. While its scale is vast, it remains deeply rooted in community action, <cite id=\"9\">mobilizing a massive network of volunteers</cite> to deliver services ranging from disaster relief to training in lifesaving skills.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
     }
   }
 }

@@ -2,7 +2,7 @@
   "id": "81-3072596",
   "ein": "81-3072596",
   "name": "Teach the World Foundation",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Our mission is to solve the world's illiteracy problem by establishing and deploying effective and scalable models of literacy and learning, through pow...",
   "programs": [
     "Microschools",
@@ -53,7 +53,11 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": 0
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 8,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": null,
     "geographicCoverage": [
@@ -73,7 +77,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 18:45:50",
+  "lastUpdated": "2026-03-09 21:45:21",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -446,44 +450,6 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 40
       },
-      "judge_issues": [
-        {
-          "field": "propublica.expense_ratio",
-          "judge": "crawl_quality",
-          "message": "Expenses ($416,394) exceed revenue ($254,278) by 64% - may be drawing down reserves",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -509,413 +475,34 @@
           "source_url": "https://projects.propublica.org/nonprofits/organizations/813072596"
         },
         {
-          "claim": "The charity accepts general donations and provides various giving methods for supporters.",
+          "claim": "The charity accepts general donations and sadaqah to fund its literacy programs.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.teachtheworldfoundation.com/donate"
         },
         {
-          "claim": "The organization holds a Charity Navigator score of 84.0/100 and holds 1.5 months of working capital.",
+          "claim": "The organization has a Charity Navigator score of 84.0/100 and a fundraising efficiency of $0.01 per $1 raised.",
           "id": "[5]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/813072596#financials"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to high program efficiency and documented educational impact, though it is constrained by limited working capital and a niche alignment profile.",
+      "amal_score_rationale": "The organization earns a 61/100 score due to its high direct impact on capacity building and efficient fundraising, though its overall alignment is tempered by a medium donor fit and limited liquidity.",
       "areas_for_improvement": [
-        "Limited liquidity with only 1.5 months of working capital available",
-        "Relatively small revenue base which may limit rapid scaling of international programs"
+        "Limited working capital of 1.5 months, which may affect long-term operational stability",
+        "Moderate overall financial health rating compared to larger educational non-profits"
       ],
       "dimension_explanations": {
-        "alignment": "The organization offers a medium donor fit for those interested in educational equity, though its primary focus is on secular literacy rather than specific religious mandates [5]. As a Sadaqah-eligible entity, it provides a verified pathway for general charitable giving toward global literacy causes [4].",
-        "impact": "The foundation demonstrates high impact through capacity building, showing significant improvements in English alphabet reading and writing skills compared to control groups. Financially, it maintains a Charity Navigator score of 84.0/100 and directs 78.0% of its $363,707 revenue toward its core programs [1][5]."
+        "alignment": "The organization presents a medium donor fit for those seeking to support educational causes, with a focus on religious and cultural urgency in literacy [5]. While it is a verified sadaqah-eligible entity, its alignment score reflects a need for broader third-party verification to reach the highest tiers of donor confidence [4][5].",
+        "impact": "The foundation demonstrates high impact through capacity-building models that show measurable improvements in student literacy, such as nursery rhyme singing and reading direction. Financially, it maintains a 78.0% program expense ratio and an 84.84.0/100 from Charity Navigator score, though it operates with a lean 1.5 months of working capital [1][5]."
       },
       "headline": "Teach-the-World Foundation Inc leverages digital learning models to combat global illiteracy through scalable microschool and in-school programs.",
       "strengths": [
-        "High program expense ratio of 78.0%, indicating a strong focus on direct service delivery",
-        "Exceptional fundraising efficiency with only $0.01 spent per $1 raised",
-        "Evidence-based approach with measurable outcomes in alphabet recitation and writing"
+        "High program expense ratio of 78.0%, ensuring the majority of funds directly support literacy initiatives",
+        "Exceptional fundraising efficiency with a cost of only $0.01 per $1 raised",
+        "Demonstrated impact in early childhood education metrics, including English alphabet recitation and writing"
       ],
       "summary": "Teach-the-World Foundation Inc is a non-profit organization dedicated to solving the global illiteracy crisis by deploying effective, technology-driven learning models. The foundation operates through specialized programs including Microschools and InSchool initiatives to establish sustainable literacy frameworks. In the 2023 fiscal year, the organization reported a total revenue of $363,707 [1]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $254,278",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "Total revenue: $254,278",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/813072596"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "95% proficiency in English alphabet recitation",
-          "confidence": 0.95,
-          "id": "[2]",
-          "quote": "English Alphabet Recitation (Intervention vs Control): 95% vs 58%",
-          "source_name": "TTW-Nielsen POC Presentation",
-          "source_type": "evaluation",
-          "source_url": "https://www.teachtheworldfoundation.com/s/TTW-Nielsen-POC-Presentation-March-10-2017.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "overall score of 84.0/100 from Charity Navigator",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Overall Score 84/100",
-          "source_name": "Charity Navigator - Teach-the-World",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/813072596#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "adding a dedicated giving page",
-          "confidence": 0.9,
-          "id": "[4]",
-          "quote": "Support our mission",
-          "source_name": "Charity Website - Donate",
-          "source_type": "website",
-          "source_url": "https://www.teachtheworldfoundation.com/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising costs of just $0.01 per $1 raised",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Fundraising Efficiency: $0.02",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/813072596#financials"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to high program efficiency and documented educational impact, though it is constrained by limited working capital and a niche alignment profile.",
-      "amal_scores": {
-        "amal_score": 61,
-        "confidence_scores": {
-          "alignment": 21,
-          "data_confidence": 0.8,
-          "impact": 40
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Financial Liquidity and Reserves",
-          "citation_ids": [
-            "[5]"
-          ],
-          "context": "The foundation operates with a lean financial cushion, maintaining only <cite id=\"11\">1.5 months of working capital</cite>, which creates vulnerability to revenue volatility."
-        },
-        {
-          "area": "Revenue Volatility",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "The organization experienced a <cite id=\"12\">3-year revenue CAGR of -0.4%</cite>, indicating stagnant growth that may hinder the scaling of its microschool model."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "none",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "BBB Wise Giving Alliance data is not currently available for this organization."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[1]",
-          "[5]"
-        ],
-        "mitigation_notes": "The foundation maintains an extremely low overhead, which helps mitigate the risks associated with a smaller revenue base.",
-        "risk_factors": [
-          "<cite id=\"11\">Low working capital (1.5 months)</cite> poses an operational risk.",
-          "<cite id=\"1\">Total assets decreased</cite> significantly from 2022 to 2023."
-        ],
-        "summary": "The primary concern is the organization's small financial footprint and <cite id=\"12\">negative 3-year revenue growth (-0.4%)</cite>, which suggests difficulty in attracting new institutional funding."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 3,
-          "form990": 5,
-          "rating": 6,
-          "website": 2
-        },
-        "high_confidence_count": 14,
-        "total_count": 16,
-        "unique_sources": 5
-      },
-      "confidence": {
-        "data_freshness": "2023 Form 990 data used",
-        "data_gaps": [
-          "No recent audited financials"
-        ],
-        "level": "HIGH",
-        "notes": "Strong alignment between third-party ratings and tax filings.",
-        "score": 80,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Nielsen Evaluation"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 80,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing audited financials",
-          "No recent impact report beyond 2017"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 16,
-        "unique_sources": 5,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[2]",
-            "[4]"
-          ],
-          "explanation": "TTWF is a strong fit for donors interested in <cite id=\"2\">Muslim-majority regions like Pakistan and Bangladesh</cite>.",
-          "improvement": "The foundation could improve alignment by <cite id=\"4\">adding a dedicated giving page</cite> that clarifies the distinction between its general funds and specific project needs."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[5]",
-            "[9]",
-            "[10]"
-          ],
-          "explanation": "Donors can trust TTWF due to its <cite id=\"9\">100% independent board</cite> and its status as a <cite id=\"10\">Candid Gold Seal holder</cite>. The organization also maintains <cite id=\"13\">1.5 months of working capital</cite> according to some Charity Navigator metrics, though internal liquidity remains lean.",
-          "improvement": "To strengthen credibility further, the charity should <cite id=\"11\">build reserves toward a board-approved target range</cite> of 3-12 months to ensure long-term sustainability."
-        },
-        "impact": {
-          "citation_ids": [
-            "[2]",
-            "[5]",
-            "[14]"
-          ],
-          "explanation": "The impact is high for the education sector, with a <cite id=\"14\">cost per beneficiary of approximately $355.00</cite>. The model is highly direct, with <cite id=\"8\">78% of expenses</cite> going to programs.",
-          "improvement": "Impact measurement could be enhanced by <cite id=\"2\">expanding longitudinal tracking</cite> of student wage premiums and long-term literacy retention."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "EDUCATION_GLOBAL",
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "evidence_rigor": "Grade B - Verified outcomes through Nielsen proof-of-concept",
-        "geographic_focus": [
-          "Pakistan",
-          "Bangladesh",
-          "Malawi"
-        ],
-        "giving_style": "Technology-driven direct service",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "",
-          ""
-        ],
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.572,
-        "annual_revenue": 254278,
-        "citation_ids": [
-          "[1]",
-          "[5]"
-        ],
-        "cn_financial_score": 83,
-        "cn_overall_score": 84,
-        "fundraising_ratio": 0.002,
-        "industry_program_ratio": 0.75,
-        "peer_count": 22,
-        "peer_program_ratio_median": 0.896,
-        "program_expense_ratio": 0.78,
-        "reserves_months": 1.5,
-        "revenue_cagr_3yr": -0.4,
-        "transparency_score": 85,
-        "working_capital_months": 1.5,
-        "yearly_financials": [
-          {
-            "expenses": 416394,
-            "net_assets": 53624,
-            "revenue": 254278,
-            "year": 2023
-          },
-          {
-            "expenses": 201341,
-            "net_assets": 215740,
-            "revenue": 379429,
-            "year": 2022
-          },
-          {
-            "expenses": 193139,
-            "net_assets": 37652,
-            "revenue": 256163,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 597461,
-        "grant_count": 7,
-        "grant_strategy": "Distributes funds to local entities to implement digital learning programs.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Pakistan",
-          "Bangladesh",
-          "Malawi"
-        ],
-        "top_recipients": [
-          "Foreign implementing partners"
-        ],
-        "total_grants": 597461
-      },
-      "headline": "Teach-the-World Foundation Inc leverages digital learning models to combat global illiteracy through scalable microschool and in-school programs.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value technology-driven solutions to social problems and want to support high-efficiency literacy programs in the Muslim world.",
-        "citation_ids": [
-          "[1]",
-          "[5]"
-        ],
-        "donor_motivations": [
-          "Believe in the power of digital learning to leapfrog traditional infrastructure",
-          "Want to support educational development in Pakistan and Bangladesh",
-          "Prioritize low overhead and high fundraising efficiency",
-          "Value evidence-based models with third-party verified outcomes"
-        ],
-        "giving_considerations": [
-          "Donations are considered Sadaqah, not Zakat",
-          "The organization is small, so individual donations have a high relative impact",
-          "Growth has been stagnant, meaning new capital is critical for expansion"
-        ],
-        "not_ideal_for": ""
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[2]",
-          "[3]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B reflects verified outcome data from a Nielsen proof-of-concept study, though a full-scale RCT is not yet available.",
-        "external_evaluations": [
-          "Nielsen Proof-of-Concept (2017)"
-        ],
-        "outcome_tracking_years": 7,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "TTWF uses digital tablets and gamified software to provide high-quality literacy instruction in areas where qualified teachers and schools are scarce.",
-        "why_evidence_matters": "Evidence ensures that digital tools actually translate into literacy gains rather than just providing screen time."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "founded_year": 2016,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": -0.4,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "The organization's stagnant revenue and small asset base suggest it has significant capacity to absorb new funding for geographic expansion.",
-        "strategic_priorities": [
-          "Scale Microschools",
-          "Expand At-Home Learning",
-          "Strengthen Bangladesh operations"
-        ],
-        "years_operating": 10
-      },
-      "organizational_capacity": {
-        "board_size": 8,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Listed",
-        "citation_ids": [
-          "[1]",
-          "[5]",
-          "[9]"
-        ],
-        "employees_count": 0,
-        "geographic_reach": "Pakistan, Bangladesh, Malawi",
-        "has_conflict_policy": true,
-        "has_financial_audit": false,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 0,
-        "programs_count": 3,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 0
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[5]",
-          "[16]"
-        ],
-        "differentiator": "TTWF is distinguished by its <cite id=\"5\">exceptionally low fundraising costs ($0.02/$1)</cite> compared to the <cite id=\"16\">peer program ratio median of 89.6%</cite>.",
-        "peer_group": "Global Education Non-profits",
-        "similar_orgs": [
-          "The Hassan Foundation",
-          "The Morocco Foundation",
-          "Al-Barr Foundation"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on educational grantmaking",
-          "name": "The Hassan Foundation"
-        },
-        {
-          "differentiator": "Focuses on K-12 education in specific regions",
-          "name": "The Morocco Foundation"
-        },
-        {
-          "differentiator": "Shares a similar small-scale grantmaking model",
-          "name": "Al-Barr Foundation"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[5]"
-          ],
-          "detail": "The organization maintains a <cite id=\"8\">program expense ratio of 78.0%</cite> according to Charity Navigator, ensuring the majority of funds support direct educational services.",
-          "point": "High Programmatic Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[5]"
-          ],
-          "detail": "TTWF spends only <cite id=\"5\">$0.02 to raise every $1</cite> in contributions, significantly outperforming industry benchmarks for small non-profits.",
-          "point": "Exceptional Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[2]"
-          ],
-          "detail": "Third-party evaluations confirm that TTWF students achieve <cite id=\"6\">43% proficiency in English alphabet writing</cite>, a nearly four-fold increase over the 11% seen in control groups.",
-          "point": "Verified Educational Outcomes"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Teach-the-World Foundation's core strength lies in its rigorous commitment to data-driven impact. Unlike many early-stage charities, TTWF has invested in external evaluations to prove its 'digital-first' model. Their <cite id=\"2\">Nielsen-backed proof of concept</cite> demonstrated that children using their software could reach <cite id=\"7\">91% proficiency in nursery rhyme singing</cite> and significant gains in literacy within months. This efficacy is paired with strong governance, evidenced by an <cite id=\"9\">independent board of 8 members</cite> and a <cite id=\"10\">Gold Seal of Transparency from Candid</cite>."
-      ],
-      "summary": "Teach-the-World Foundation Inc (TTWF) is a technology-driven non-profit founded in <cite id=\"1\">2016</cite> with the mission to solve the global illiteracy crisis through scalable digital learning models. The organization operates primarily in <cite id=\"2\">Pakistan, Bangladesh, and Malawi</cite>, deploying a multi-pronged strategy that includes Microschools, In-School digital integration, and At-Home learning platforms. TTWF leverages low-cost tablets and gamified software to bypass traditional infrastructure barriers, achieving an <cite id=\"3\">overall score of 84.0/100 from Charity Navigator</cite>. Despite its relatively small scale, with a <cite id=\"4\">total revenue of $254,278</cite> in the 2023 fiscal year, the foundation demonstrates high operational efficiency by maintaining <cite id=\"5\">fundraising costs of just $0.01 per $1 raised</cite>. Their model is heavily evidence-based; a proof-of-concept study conducted with Nielsen showed that students in their programs achieved <cite id=\"6\">95% proficiency in English alphabet recitation</cite> compared to only 58% in control groups. Furthermore, <cite id=\"7\">100% of students in the intervention group</cite> mastered English reading direction (left-to-right), showcasing the efficacy of their digital pedagogy in underserved regions.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
     }
   }
 }

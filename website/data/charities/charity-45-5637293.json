@@ -43,12 +43,12 @@
   "financials": {
     "totalRevenue": 1759964,
     "totalExpenses": 1530084,
-    "programExpenses": null,
+    "programExpenses": 100000,
     "adminExpenses": null,
     "fundraisingExpenses": null,
-    "programExpenseRatio": null,
+    "programExpenseRatio": "1.0000",
     "fiscalYear": 2023,
-    "dataSource": null,
+    "dataSource": "mixed",
     "totalAssets": 431195,
     "totalLiabilities": 1,
     "netAssets": null,
@@ -64,62 +64,94 @@
   },
   "targeting": {
     "populationsServed": [
-      "Women",
-      "Men",
+      "Children",
       "Adults",
+      "Communities",
+      "Men",
       "Youth",
       "Families",
-      "Children",
-      "Communities"
+      "Women"
     ],
     "geographicCoverage": [
       "Pakistan"
     ]
   },
-  "trustSignals": null,
+  "trustSignals": {
+    "hasAnnualReport": null,
+    "hasAuditedFinancials": 1,
+    "candidSeal": "silver",
+    "isConflictZone": 0,
+    "nonprofitSizeTier": "mid_nonprofit",
+    "employeesCount": null,
+    "volunteersCount": null
+  },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-03-04 21:35:41",
+  "lastUpdated": "2026-03-09 21:45:11",
   "sourceAttribution": {
+    "admin_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/455637293#financials",
+      "timestamp": "2026-03-07T12:26:30",
+      "value": 0
+    },
     "candid_seal": {
       "source_name": "Candid",
       "source_url": "https://app.candid.org/profile/9382379",
-      "timestamp": "2026-02-15T22:39:01",
+      "timestamp": "2026-03-07T12:26:28",
       "value": "silver"
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
       "source_url": "https://thenoorproject.org",
-      "timestamp": "2026-03-05T05:43:11.507103+00:00",
+      "timestamp": "2026-03-10T04:39:41.767831+00:00",
       "value": true
     },
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/455637293",
-      "timestamp": "2026-02-15T22:39:01",
+      "timestamp": "2026-03-07T12:26:30",
       "value": 2014
+    },
+    "fundraising_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/455637293#financials",
+      "timestamp": "2026-03-07T12:26:30",
+      "value": 0
     },
     "has_audited_financials": {
       "source_name": "Charity Website",
       "source_url": "https://thenoorproject.org",
-      "timestamp": "2026-03-05T05:43:11.507129+00:00",
-      "value": false
+      "timestamp": "2026-03-10T04:39:41.767875+00:00",
+      "value": true
     },
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/455637293",
-      "timestamp": "2026-02-15T22:39:01",
+      "timestamp": "2026-03-07T12:26:30",
       "value": "K30"
+    },
+    "program_expense_ratio": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/455637293#financials",
+      "timestamp": "2026-03-07T12:26:30",
+      "value": 1
+    },
+    "program_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/455637293#financials",
+      "timestamp": "2026-03-07T12:26:30",
+      "value": 100000
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/455637293",
-      "timestamp": "2026-02-15T22:39:01",
+      "timestamp": "2026-03-07T12:26:30",
       "value": 1759964
     },
     "transparency_score": {
       "source_name": "Candid Silver Seal",
       "source_url": "https://app.candid.org/profile/9382379",
-      "timestamp": "2026-02-15T22:39:01",
+      "timestamp": "2026-03-07T12:26:28",
       "value": 70
     },
     "working_capital_months": {
@@ -130,7 +162,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/455637293",
-      "timestamp": "2026-02-15T22:39:01",
+      "timestamp": "2026-03-07T12:26:30",
       "value": 3.4
     }
   },
@@ -161,7 +193,7 @@
   "grantsData": null,
   "evaluationTrack": "STANDARD",
   "foundedYear": 2014,
-  "scoreSummary": "For the Needy & Hungry Foundation Inc shows strong alignment and limited impact, with zakat compliance (significant risk deductions applied).",
+  "scoreSummary": "For the Needy & Hungry Foundation Inc shows strong alignment and moderate impact, with zakat compliance (significant risk deductions applied).",
   "form990Exempt": 1,
   "form990ExemptReason": "Exempt from Form 990 filing",
   "noFilings": false,
@@ -191,10 +223,10 @@
     "assessment_label": "Context Dependent",
     "archetype_code": "RESILIENCE",
     "archetype_label": "Community Resilience",
-    "evidence_stage": "Established",
+    "evidence_stage": "Verified",
     "signal_states": {
       "evidence": "Strong",
-      "financial_health": "Limited",
+      "financial_health": "Strong",
       "donor_fit": "Strong",
       "risk": "Limited"
     },
@@ -204,6 +236,13 @@
     "fallback_reasons": null
   },
   "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "medium",
+      "headline": "Expense components don't sum to total (>10% difference)",
+      "detail": "Financial data may be inconsistent across sources or reporting periods.",
+      "data_points": {}
+    },
     {
       "type": "risk_deduction",
       "severity": "high",
@@ -229,14 +268,14 @@
   "amalEvaluation": {
     "charity_ein": "45-5637293",
     "charity_name": "The Noor Project",
-    "amal_score": 43,
+    "amal_score": 54,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-02-04 20:45:58",
-    "rubric_version": "5.0.0",
+    "rubric_version": "5.2.0",
     "confidence_scores": {
       "alignment": 36,
-      "data_confidence": 0.41,
-      "impact": 14
+      "data_confidence": 0.8,
+      "impact": 25
     },
     "score_details": {
       "alignment": {
@@ -293,24 +332,24 @@
         "score": 36
       },
       "data_confidence": {
-        "badge": "MEDIUM",
+        "badge": "HIGH",
         "data_quality_label": "MODERATE",
         "data_quality_value": 0.67,
-        "overall": 0.41,
+        "overall": 0.8,
         "transparency_label": "SILVER",
         "transparency_value": 0.57,
-        "verification_tier": "MODERATE",
-        "verification_value": 0.7
+        "verification_tier": "HIGH",
+        "verification_value": 1
       },
       "impact": {
         "components": [
           {
-            "evidence": "Insufficient data for cost-per-beneficiary calculation",
+            "evidence": "No beneficiary data available for cost-per-beneficiary scoring; high program ratio (\u226585%) suggests efficient delivery",
             "improvement_suggestion": "Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
-            "improvement_value": 6,
+            "improvement_value": 0,
             "name": "Cost Per Beneficiary",
             "possible": 13,
-            "scored": 0,
+            "scored": 6,
             "status": "missing"
           },
           {
@@ -332,13 +371,13 @@
             "status": "full"
           },
           {
-            "evidence": "Program expense ratio: unknown",
+            "evidence": "Program expense ratio: 100%",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Program Ratio",
             "possible": 5,
-            "scored": 0,
-            "status": "missing"
+            "scored": 5,
+            "status": "full"
           },
           {
             "evidence": "Evidence & outcomes: VERIFIED",
@@ -371,13 +410,13 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 14/50",
+        "rationale": "Delivery: capacity building; Impact 25/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 14
+        "score": 25
       },
       "risk_deduction": -7,
       "risks": {
-        "overall_risk_level": "MODERATE",
+        "overall_risk_level": "ELEVATED",
         "risk_summary": "Key concern: Board too small: 1 members",
         "risks": [
           {
@@ -404,7 +443,7 @@
         ],
         "total_deduction": -7
       },
-      "score_summary": "For the Needy & Hungry Foundation Inc shows strong alignment and limited impact, with zakat compliance (significant risk deductions applied).",
+      "score_summary": "For the Needy & Hungry Foundation Inc shows strong alignment and moderate impact, with zakat compliance (significant risk deductions applied).",
       "zakat": {
         "asnaf_category": "fuqara",
         "bonus_points": 0,
@@ -416,34 +455,34 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The Noor Project operates programs including the Noor Grammar School, vocational training, and a clinic, and is identified as Zakat-eligible.",
+          "claim": "The organization operates The Noor Project programs and is recognized for its financial metadata and Zakat eligibility.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/455637293#financials"
         },
         {
-          "claim": "The organization reported total revenue of $1,759,964 and holds 3.4 months of working capital.",
+          "claim": "The charity reported total revenue of $1,759,964, a 100.0% program expense ratio, 3.4 months of working capital, and $0.00 fundraising efficiency.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/455637293"
         }
       ],
-      "amal_score_rationale": "The foundation earns a moderate overall score due to its high alignment with global education needs and Zakat eligibility, though its impact score is tempered by a lack of direct evidence regarding cost-effectiveness.",
+      "amal_score_rationale": "The organization demonstrates strong financial efficiency and alignment with high-urgency causes, though its overall score is moderated by limited working capital and a lack of external impact data.",
       "areas_for_improvement": [
-        "Limited third-party impact data or independent program evaluations",
-        "Transparency regarding specific cost-per-beneficiary metrics is currently unavailable"
+        "Limited liquidity with only 3.4 months of working capital available",
+        "Lack of third-party impact evaluations to verify long-term poverty alleviation outcomes"
       ],
       "dimension_explanations": {
-        "alignment": "With a high alignment score of 36/50, the charity is well-suited for donors prioritizing global education and poverty alleviation, and it is verified as Zakat-eligible [1]. The mission specifically targets the socio-economic elevation of marginalized families [2].",
-        "impact": "The organization focuses on capacity building through its school and vocational programs, though its impact score of 14/50 reflects a lack of available data regarding specific cost-per-beneficiary outcomes [1]. The foundation holds 3.4 months of working capital to sustain these initiatives [2]."
+        "alignment": "With a high alignment score of 36/50, the charity is recognized as Zakat-eligible and addresses urgent global education needs, making it a strong fit for Muslim donors [1].",
+        "impact": "The foundation focuses on capacity building through education and vocational training, though its impact score of 25/50 reflects a lack of specific cost-per-beneficiary data despite a perfect 100.0% program expense ratio [1][2]."
       },
-      "headline": "For the Needy & Hungry Foundation Inc, operating as The Noor Project, works to lift marginalized families out of poverty through integrated education, vocational training, and healthcare services.",
+      "headline": "For the Needy & Hungry Foundation Inc operates The Noor Project to empower marginalized families through integrated education, healthcare, and vocational training.",
       "strengths": [
-        "Maintains a Zakat-eligible status for Muslim donors",
-        "Provides a multi-sector approach combining education, health, and job training",
-        "holds 3.4 months of working capital to support ongoing operations"
+        "Exceptional 100.0% program expense ratio ensures maximum funding reaches beneficiaries",
+        "Highly efficient fundraising operations with $0.00 spent per $1 raised",
+        "Comprehensive service model addressing education, health, and economic stability"
       ],
-      "summary": "The Noor Project reported a total revenue of $1,759,964 to support its mission of raising families above the poverty line [1][2]. Its core programs include the Noor Grammar School, vocational training centers, and a dedicated clinic and pharmacy to provide essential services to underserved communities [1]."
+      "summary": "The organization reported a total revenue of $1,759,964 and maintains a 100.0% program expense ratio, ensuring all funds are directed toward its core missions [1][2]. Its primary initiatives include The Noor Grammar School, vocational training centers, and a dedicated clinic and pharmacy to support community health [1]."
     }
   }
 }

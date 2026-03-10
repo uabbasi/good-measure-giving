@@ -2,7 +2,7 @@
   "id": "47-1675693",
   "ein": "47-1675693",
   "name": "Support Life Foundation",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Our goal is to alleviate the various forms of oppression in society by developing unique programs that maximize impact, minimize cost, and bring everyone together in support.",
   "programs": [
     "You Are Not Alone (YANA)",
@@ -60,7 +60,11 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 3,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Youth",
@@ -98,7 +102,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 18:25:43",
+  "lastUpdated": "2026-03-09 21:45:00",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -211,7 +215,7 @@
   "grantsData": null,
   "evaluationTrack": "STANDARD",
   "foundedYear": 2017,
-  "scoreSummary": "Support Life Foundation shows good impact and good alignment (minor risk deductions applied).",
+  "scoreSummary": "Support Life Foundation shows good impact and good alignment.",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -258,22 +262,11 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": [
-    {
-      "type": "geographic_mismatch",
-      "severity": "medium",
-      "headline": "Claims 13 geographic areas but no foreign grants on Schedule F",
-      "detail": "Organization lists international operations but IRS filings show no foreign grant activity.",
-      "data_points": {
-        "geographic_areas_claimed": 13,
-        "has_schedule_f_data": false
-      }
-    }
-  ],
+  "keyConcerns": null,
   "amalEvaluation": {
     "charity_ein": "47-1675693",
     "charity_name": "Support Life Foundation",
-    "amal_score": 63,
+    "amal_score": 64,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:10:49",
     "rubric_version": "5.2.0",
@@ -419,60 +412,14 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 32
       },
-      "judge_issues": [
-        {
-          "field": "website.ein",
-          "judge": "crawl_quality",
-          "message": "Website shows related EIN (null), likely parent/subsidiary of 47-1675693",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[1].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'fconline.foundationcenter.org' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
-      "risk_deduction": -1,
+      "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
-        "risk_summary": "1 risk(s) identified.",
-        "risks": [
-          {
-            "category": "operational",
-            "data_source": "Reconciliation",
-            "description": "Claims 13 geographic areas but no foreign grants on Schedule F",
-            "mitigation": null,
-            "severity": "medium"
-          }
-        ],
-        "total_deduction": -1
+        "risk_summary": "No significant risks identified.",
+        "risks": [],
+        "total_deduction": 0
       },
-      "score_summary": "Support Life Foundation shows good impact and good alignment (minor risk deductions applied).",
+      "score_summary": "Support Life Foundation shows good impact and good alignment.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -484,438 +431,52 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization holds a Charity Navigator score of 76.0/100 and maintains a 95.1% program expense ratio.",
+          "claim": "The charity has a 76.0/100 score, a 95.1% program expense ratio, and a cost per beneficiary of 587.9435.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/471675693#financials"
         },
         {
-          "claim": "Support Life Foundation reported total revenue of $1,078,197 and holds 7.1 months of working capital.",
+          "claim": "The organization reported total revenue of $1,078,197 and holds 7.1 months of working capital.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/471675693"
         },
         {
-          "claim": "Key programs include Project Educate, The Hiring, and You Are Not Alone: Community Food Share.",
+          "claim": "The foundation operates Project Educate, The Hiring, and You Are Not Alone: Community Food Share.",
           "id": "[3]",
           "source_name": "Charity Website - Programs",
           "source_url": "https://supportlives.org/programs"
         },
         {
-          "claim": "The organization offers various donation options for supporters to contribute sadaqah.",
+          "claim": "The organization accepts general donations and sadaqah to support its social justice mission.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://supportlives.org/donate"
+        },
+        {
+          "claim": "The organization offers volunteer opportunities to engage with its community-based programs.",
+          "id": "[5]",
+          "source_name": "Charity Website - Volunteer",
+          "source_url": "https://supportlives.org/Volunteer"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its exceptional financial efficiency and low overhead, balanced against a need for more robust external impact data.",
+      "amal_score_rationale": "The organization earns a moderate overall score due to its exceptional financial efficiency and sadaqah-eligible status, balanced against a mid-range impact assessment and a Charity Navigator score of 76.0/100.",
       "areas_for_improvement": [
-        "Enhancing third-party impact verification to improve overall transparency scores",
-        "Expanding public documentation regarding long-term program outcomes"
+        "Overall Charity Navigator score of 76.0/100 suggests room for improvement in governance or transparency metrics",
+        "High cost per beneficiary relative to other capacity-building initiatives"
       ],
       "dimension_explanations": {
-        "alignment": "Alignment is rated at 32/50, representing a medium fit for donors interested in humanitarian causes and social justice [3]. The organization is identified as sadaqah-eligible, offering a verified pathway for general charitable giving within the community [4].",
-        "impact": "The foundation demonstrates a moderate impact score of 32/50, reflecting its role in capacity building through community food shares and educational programs [3]. While financial health is strong with a 76.76.0/100 from Charity Navigator score, the cost per beneficiary is calculated at 587.9435, indicating a resource-intensive model for direct service delivery [1]."
+        "alignment": "With an alignment score of 32/50, the organization offers a medium donor fit for those seeking to support humanitarian causes through sadaqah [4]. The foundation provides various engagement pathways, including volunteer opportunities for community members to support their social justice mission [5].",
+        "impact": "The foundation demonstrates a moderate impact score of 32/50, characterized by a capacity-building directness model and a cost per beneficiary of 587.9435 [1]. Its primary initiatives include 'Project Educate,' 'The Hiring,' and the 'You Are Not Alone' food share program, which focus on immediate community needs [3]."
       },
       "headline": "Support Life Foundation is a community-based organization dedicated to social and economic justice through high-efficiency programming.",
       "strengths": [
-        "Exceptional program expense ratio of 95.1%, ensuring the vast majority of funds reach beneficiaries",
+        "Exceptional program expense ratio of 95.1%, ensuring the vast majority of funds reach the community",
         "Strong fundraising efficiency with a cost of $0.00 per $1 raised",
         "Healthy liquidity with 7.1 months of working capital available"
       ],
-      "summary": "Based in New York, the Support Life Foundation provides essential services designed to minimize costs for underserved communities through initiatives like Project Educate and The Hiring [3]. The organization operates with a high degree of financial transparency, reporting total revenue of $1,078,197 and maintaining a program expense ratio of 95.1% [1][2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 95.1%",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "Program Expense Ratio: 95.1%",
-          "source_name": "Charity Navigator - Support Life Foundation",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/471675693#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $1,228,678",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total Revenue: $1,228,678",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/471675693"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Project Educate, Hot Meals, and the Health Center Yaound\u00e9",
-          "confidence": 0.95,
-          "id": "[3]",
-          "quote": "Our programs include Project Educate, Hot Meals, and Health Center Yaound\u00e9.",
-          "source_name": "Support Life Foundation - Programs",
-          "source_type": "website",
-          "source_url": "https://supportlives.org/programs"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of -22.8%",
-          "confidence": 0.9,
-          "id": "[6]",
-          "quote": "Revenue: 2021 ($2.06M), 2022 ($576K), 2023 ($1.22M)",
-          "source_name": "Internal Financial Analysis",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/471675693"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 0.95,
-          "id": "[7]",
-          "quote": "Candid Platinum Seal of Transparency",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/9417987"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "meets all 20 BBB standards",
-          "confidence": 0.85,
-          "id": "[8]",
-          "quote": "This charity meets all 20 Standards for Charity Accountability.",
-          "source_name": "BBB Wise Giving Alliance",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/cancer/friend-for-life-cancer-support-network-in-louisville-ky-0402-26000131"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its exceptional financial efficiency and low overhead, balanced against a need for more robust external impact data.",
-      "amal_scores": {
-        "amal_score": 63,
-        "confidence_scores": {
-          "alignment": 32,
-          "data_confidence": 0.85,
-          "impact": 32
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Governance Structure",
-          "citation_ids": [
-            "[7]"
-          ],
-          "context": "The organization currently operates with a <cite id=\"7\">board size of only 3 members</cite>, which limits independent oversight compared to larger institutions."
-        },
-        {
-          "area": "Revenue Volatility",
-          "citation_ids": [
-            "[6]"
-          ],
-          "context": "The foundation has experienced a <cite id=\"6\">3-year revenue CAGR of -22.8%</cite>, suggesting a need for more diversified and stable long-term funding streams."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[8]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "review_url": "https://give.org/charity-reviews/cancer/friend-for-life-cancer-support-network-in-louisville-ky-0402-26000131",
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "Meets all 20 BBB Wise Giving Alliance Standards for Charity Accountability"
-      },
-      "case_against": {
-        "citation_ids": [
-          "[1]",
-          "[6]",
-          "[7]"
-        ],
-        "mitigation_notes": "The organization maintains high liquidity (7.1 months) to mitigate short-term revenue fluctuations.",
-        "risk_factors": [
-          "<cite id=\"6\">Negative 22.8% revenue growth</cite> over three years",
-          "<cite id=\"7\">Small board size</cite> may limit strategic oversight"
-        ],
-        "summary": "The primary concerns involve <cite id=\"1\">accountability scores (76/100)</cite> related to governance and a <cite id=\"6\">significant decline in revenue</cite> over the last three years."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 4,
-          "rating": 7,
-          "website": 4
-        },
-        "high_confidence_count": 13,
-        "total_count": 15,
-        "unique_sources": 5
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023 Form 990",
-        "data_gaps": [
-          "Declining revenue trend",
-          "Small board size"
-        ],
-        "level": "HIGH",
-        "notes": "Strong financial transparency despite governance limitations.",
-        "score": 85,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Candid",
-          "BBB",
-          "Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 85,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Small board size",
-          "Negative revenue growth trend"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 5,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[6]"
-          ],
-          "explanation": "The charity is a strong fit for sadaqah-seeking donors, serving <cite id=\"6\">underserved populations</cite> and addressing <cite id=\"6\">high-urgency humanitarian needs</cite>.",
-          "improvement": "To improve alignment with Muslim donors, the organization could <cite id=\"6\">add a dedicated page</cite> clarifying the religious context of its humanitarian services."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[7]",
-            "[8]"
-          ],
-          "explanation": "Donors can trust the organization's transparency due to its <cite id=\"7\">Platinum Candid Seal</cite> and the fact that it <cite id=\"8\">meets all 20 BBB standards</cite> for accountability.",
-          "improvement": "To strengthen credibility, the foundation should <cite id=\"7\">expand its board of directors</cite> beyond the current three members to enhance independent oversight."
-        },
-        "impact": {
-          "citation_ids": [
-            "[1]",
-            "[6]",
-            "[7]"
-          ],
-          "explanation": "The foundation is highly efficient, spending <cite id=\"1\">95.1% on programs according to Charity Navigator</cite> with a <cite id=\"6\">cost per beneficiary of $587.94</cite>.",
-          "improvement": "Impact measurement would benefit from <cite id=\"7\">documenting a clear theory of change</cite> with an explicit causal pathway for its various international programs."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "GLOBAL_HEALTH",
-        "citation_ids": [
-          "[3]",
-          "[6]",
-          "[7]"
-        ],
-        "evidence_rigor": "Grade C - Verified outcomes with developing theory of change",
-        "geographic_focus": [
-          "USA",
-          "Sierra Leone",
-          "Cameroon"
-        ],
-        "giving_style": "Direct service and capacity building",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "ibn_sabil (wayfarer)"
-        ],
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.094,
-        "annual_revenue": 1228678,
-        "citation_ids": [
-          "[1]",
-          "[2]",
-          "[6]"
-        ],
-        "cn_financial_score": 52,
-        "cn_overall_score": 76,
-        "fundraising_ratio": 0,
-        "industry_program_ratio": 0.75,
-        "peer_count": 18,
-        "peer_program_ratio_median": 0.882,
-        "program_expense_ratio": 0.951,
-        "reserves_months": 7.1,
-        "revenue_cagr_3yr": -22.8,
-        "transparency_score": 100,
-        "working_capital_months": 7.1,
-        "yearly_financials": [
-          {
-            "expenses": 1298079,
-            "net_assets": 766242,
-            "revenue": 1228678,
-            "year": 2023
-          },
-          {
-            "expenses": 651490,
-            "net_assets": 835643,
-            "revenue": 576541,
-            "year": 2022
-          },
-          {
-            "expenses": 1528595,
-            "net_assets": 910592,
-            "revenue": 2061967,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct service delivery through owned programs",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "USA",
-          "Sierra Leone",
-          "Cameroon"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "Support Life Foundation is a community-based organization dedicated to social and economic justice through high-efficiency programming.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize high financial efficiency and want their sadaqah to support a mix of domestic California-based aid and West African health initiatives.",
-        "citation_ids": [
-          "[1]",
-          "[6]",
-          "[7]"
-        ],
-        "donor_motivations": [
-          "Value extremely low overhead and zero fundraising costs",
-          "Support community-based social and economic justice",
-          "Interested in supporting health and education in Sierra Leone and Cameroon",
-          "Prefer organizations with high transparency seals (Candid Platinum)"
-        ],
-        "giving_considerations": [
-          "The organization is smaller than global peers like CARE or Oxfam",
-          "Revenue has decreased recently, meaning new donations have high marginal utility",
-          "Governance is centralized within a small board"
-        ],
-        "not_ideal_for": "Donors specifically seeking to fulfill Zakat obligations or those who require a large, institutionalized board of directors."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[7]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "The organization tracks <cite id=\"7\">outcome metrics</cite> and has a clear goal to <cite id=\"7\">house 250 refugee families</cite>, but lacks independent RCT evaluations.",
-        "external_evaluations": [
-          "Candid Platinum disclosure"
-        ],
-        "outcome_tracking_years": 1,
-        "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The foundation aims to reduce poverty and improve health by providing direct services (meals, education, healthcare) that minimize costs for the underserved.",
-        "why_evidence_matters": "Evidence ensures that high program spending translates into measurable improvements in beneficiary well-being."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[6]",
-          "[7]"
-        ],
-        "founded_year": 2017,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": -22.8,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"6\">negative revenue growth rate</cite> and ambitious goals like <cite id=\"7\">distributing 5 million pounds of food</cite>, the foundation has significant capacity to absorb new capital.",
-        "strategic_priorities": [
-          "Expand food distribution",
-          "Increase refugee housing support"
-        ],
-        "years_operating": 9
-      },
-      "organizational_capacity": {
-        "board_size": 3,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not listed",
-        "citation_ids": [
-          "[3]",
-          "[7]",
-          "[8]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "USA (California), Sierra Leone, Cameroon",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[1]",
-          "[6]"
-        ],
-        "differentiator": "The foundation's <cite id=\"1\">95.1% program ratio</cite> exceeds the <cite id=\"6\">peer median of 88.2%</cite>.",
-        "peer_group": "Global Health and Humanitarian Relief",
-        "similar_orgs": [
-          "CARE USA",
-          "Oxfam America",
-          "Muslim Hands USA"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Larger scale and broader advocacy reach",
-          "name": "CARE USA"
-        },
-        {
-          "differentiator": "Focus on systemic policy change alongside relief",
-          "name": "Oxfam America"
-        },
-        {
-          "differentiator": "Similar size with specific focus on Muslim communities",
-          "name": "Muslim Hands USA"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]",
-            "[6]"
-          ],
-          "detail": "The organization directs <cite id=\"1\">95.1% of its total expenses toward programs</cite>, outperforming the <cite id=\"6\">peer program ratio median of 88.2%</cite>.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The foundation maintains <cite id=\"1\">7.1 months of working capital</cite>, providing a strong financial cushion for its humanitarian operations.",
-          "point": "Robust Liquidity and Reserves"
-        },
-        {
-          "citation_ids": [
-            "[7]"
-          ],
-          "detail": "Support Life Foundation holds a <cite id=\"7\">Platinum Seal of Transparency from Candid</cite>, the highest level of disclosure available.",
-          "point": "Highest Transparency Recognition"
-        }
-      ],
-      "strengths_deep_dive": [
-        "The Support Life Foundation demonstrates a remarkable ability to scale its impact with minimal overhead. According to its <cite id=\"2\">2023 Form 990 filing</cite>, the organization managed over $1.2 million in contributions with <cite id=\"1\">zero fundraising expenses</cite>. This lean operational model allows for a diverse range of programs, from <cite id=\"3\">Teacher For Every Village</cite> in West Africa to local <cite id=\"3\">Hot Meals programs</cite> in California. Furthermore, the organization <cite id=\"8\">meets all 20 BBB Wise Giving Alliance Standards</cite> for Charity Accountability, confirming its commitment to ethical governance and financial reporting."
-      ],
-      "summary": "founded in 2017, the Support Life Foundation is a community-based organization focused on social and economic justice through high-efficiency programming in the United States and West Africa. The organization operates with a lean financial model, reporting <cite id=\"1\">total revenue of $1,228,678</cite> in 2023. Their mission is centered on providing programs that minimize costs while maximizing direct aid to underserved populations, specifically through initiatives like <cite id=\"3\">Project Educate, Hot Meals, and the Health Center Yaound\u00e9</cite>. The foundation maintains a <cite id=\"1\">program expense ratio of 95.1%</cite>, which is significantly higher than the <cite id=\"1\">industry standard of 75%</cite>. This efficiency is further evidenced by a <cite id=\"1\">fundraising efficiency of $0.00 per $1 raised</cite>, indicating that nearly every dollar donated is directed toward service delivery rather than administrative overhead. Geographically, the foundation serves multiple counties in California, including <cite id=\"3\">San Mateo, Alameda, and Sacramento</cite>, while also maintaining international operations in <cite id=\"3\">Sierra Leone and Cameroon</cite>. Despite its high financial efficiency, the organization holds an <cite id=\"1\">overall score of 76.0/100 from Charity Navigator</cite>, reflecting a need for strengthened governance and accountability documentation.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "Based in the United States, Support Life Foundation operates as a social justice organization focused on providing community programs that minimize costs for participants [3]. In the 2023 fiscal year, the organization reported a total revenue of $1,078,197 while maintaining a highly efficient program expense ratio of 95.1% [1][2]."
     }
   }
 }

@@ -2,7 +2,7 @@
   "id": "26-1441032",
   "ein": "26-1441032",
   "name": "Emgage Foundation",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Emgage is a national, non-partisan organization that informs and mobilizes Muslim American voters in support of policies that enable our communities to ...",
   "programs": [
     "Million Muslim Votes Campaign",
@@ -59,7 +59,11 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 4,
+    "independentBoardMembers": null,
+    "ceoCompensation": 125000
+  },
   "targeting": {
     "populationsServed": [
       "Men",
@@ -102,7 +106,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 18:27:42",
+  "lastUpdated": "2026-03-09 21:45:22",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -508,7 +512,7 @@
   ],
   "evaluationTrack": "RESEARCH_POLICY",
   "foundedYear": 2017,
-  "scoreSummary": "Emgage Foundation shows good impact and moderate alignment (minor risk deductions applied).",
+  "scoreSummary": "Emgage Foundation shows strong impact and moderate alignment.",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -542,7 +546,7 @@
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
-    "assessment_label": "Context Dependent",
+    "assessment_label": "Promising",
     "archetype_code": "SOVEREIGNTY",
     "archetype_label": "Sovereignty Builder",
     "evidence_stage": "Established",
@@ -550,48 +554,25 @@
       "evidence": "Strong",
       "financial_health": "Strong",
       "donor_fit": "Limited",
-      "risk": "Limited"
+      "risk": "Moderate"
     },
-    "recommendation_cue": "Mixed Signals",
-    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": [
-    {
-      "type": "ceo_comp_excessive",
-      "severity": "high",
-      "headline": "CEO compensation is 17.1% of revenue ($694,497 on $4,069,674)",
-      "detail": "For orgs with revenue <$5M, CEO pay above 5% of revenue warrants scrutiny.",
-      "data_points": {
-        "ceo_compensation": 694497,
-        "comp_ratio": 0.1707,
-        "threshold": 0.05,
-        "total_revenue": 4069674
-      }
-    },
-    {
-      "type": "geographic_mismatch",
-      "severity": "medium",
-      "headline": "Claims 14 geographic areas but no foreign grants on Schedule F",
-      "detail": "Organization lists international operations but IRS filings show no foreign grant activity.",
-      "data_points": {
-        "geographic_areas_claimed": 14,
-        "has_schedule_f_data": false
-      }
-    }
-  ],
+  "keyConcerns": null,
   "amalEvaluation": {
     "charity_ein": "26-1441032",
     "charity_name": "Emgage Foundation",
-    "amal_score": 54,
+    "amal_score": 60,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:25:47",
     "rubric_version": "5.2.0",
     "confidence_scores": {
       "alignment": 22,
       "data_confidence": 0.95,
-      "impact": 33
+      "impact": 38
     },
     "score_details": {
       "alignment": {
@@ -714,89 +695,30 @@
             "status": "partial"
           },
           {
-            "evidence": "Board: 4 members, but For orgs with revenue <$5M, CEO pay above 5% of revenue warrants scrutiny. \u2014 oversight concern",
+            "evidence": "Board governance: MINIMAL (4 members)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
             "possible": 10,
-            "scored": 0,
-            "status": "missing"
+            "scored": 5,
+            "status": "partial"
           }
         ],
         "cost_per_beneficiary": 3.7107690267906714,
         "directness_level": "SYSTEMIC_CHANGE",
         "impact_design_categories": [],
-        "rationale": "$3.71/beneficiary; Delivery: systemic change; Impact 33/50",
+        "rationale": "$3.71/beneficiary; Delivery: systemic change; Impact 38/50",
         "rubric_archetype": "SYSTEMIC_CHANGE",
-        "score": 33
+        "score": 38
       },
-      "judge_issues": [
-        {
-          "field": "impact_rationale",
-          "judge": "score",
-          "message": "The impact rationale mentions a cost per beneficiary of $3.71, but this is a general benchmark and not specific to the organization's direct service delivery. The rationale should emphasize the systemic change delivery model and the focus on long-term political empowerment and voter turnout increases, which are more difficult to quantify than direct service delivery.",
-          "severity": "warning"
-        },
-        {
-          "field": "risks_rationale",
-          "judge": "score",
-          "message": "The risk summary mentions the CEO compensation as a key concern, but it doesn't explicitly state that this concern led to a risk deduction. The rationale should clearly explain that the high CEO compensation relative to revenue resulted in a deduction from the overall score.",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
-      "risk_deduction": -1,
+      "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
-        "risk_summary": "Key concern: CEO compensation is 17.1% of revenue ($694,497 on $4,069,674)",
-        "risks": [
-          {
-            "category": "operational",
-            "data_source": "Reconciliation",
-            "description": "CEO compensation is 17.1% of revenue ($694,497 on $4,069,674)",
-            "mitigation": null,
-            "severity": "high"
-          },
-          {
-            "category": "operational",
-            "data_source": "Reconciliation",
-            "description": "Claims 14 geographic areas but no foreign grants on Schedule F",
-            "mitigation": null,
-            "severity": "medium"
-          }
-        ],
-        "total_deduction": -1
+        "risk_summary": "No significant risks identified.",
+        "risks": [],
+        "total_deduction": 0
       },
-      "score_summary": "Emgage Foundation shows good impact and moderate alignment (minor risk deductions applied).",
+      "score_summary": "Emgage Foundation shows strong impact and moderate alignment.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -808,621 +730,46 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Emgage programs focus on voter turnout and civic leadership, including the Million Muslim Votes campaign.",
+          "claim": "The organization focuses on voter turnout and programs like the Million Muslim Votes campaign.",
           "id": "[1]",
           "source_name": "Annual Report (2016)",
           "source_url": "https://emgageusa.org/wp-content/uploads/2020/07/Emgage-2016-Annual-Report.pdf"
         },
         {
-          "claim": "The organization accepts sadaqah and general charitable donations for its advocacy work.",
+          "claim": "The organization accepts general donations and sadaqah for its operations.",
           "id": "[2]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://emgageusa.org/donate/"
         },
         {
-          "claim": "The organization is identified by EIN 26-1441032 and operates as a national non-partisan foundation.",
+          "claim": "The organization holds 15.3 months of working capital.",
           "id": "[3]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/261441032#financials"
         },
         {
-          "claim": "The foundation reported total revenue of $4,069,674, a program expense ratio of 93.3%, working capital of 15.3 months, and fundraising efficiency of $0.02 per $1 raised.",
+          "claim": "The organization reported total revenue of $4,069,674, a program expense ratio of 93.3%, and fundraising efficiency of $0.02 per $1 raised.",
           "id": "[4]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/261441032"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its high financial efficiency and systemic impact, balanced by a lower alignment for donors seeking traditional charitable interventions.",
+      "amal_score_rationale": "The organization earns a 60/100 reflecting strong financial health and high program spending, balanced against a lower alignment score for donors seeking traditional charitable services.",
       "areas_for_improvement": [
-        "Limited alignment for traditional Muslim donors seeking direct humanitarian aid rather than systemic advocacy.",
-        "Impact metrics are focused on systemic change, which can be more difficult to quantify than direct service delivery."
+        "Limited alignment for traditional Muslim donors seeking direct humanitarian aid or religious services",
+        "Reliance on systemic advocacy which can be difficult to measure in short-term quantitative metrics"
       ],
       "dimension_explanations": {
-        "alignment": "As a sadaqah-eligible advocacy group, the organization offers a unique pathway for donors interested in civic representation, though it may have lower fit for those prioritizing urgent humanitarian relief [2]. Its track record in mobilizing the 'Million Muslim Votes' reflects a specific focus on the urgency of political advocacy within the Muslim American community [1].",
-        "impact": "The foundation demonstrates a commitment to systemic change through its Emerging Leaders and Muslim Civic Table programs, achieving a total revenue of $4,069,674 to fuel these initiatives [3][4]. While its cost per beneficiary is calculated at approximately 3.71, the organization focuses on long-term political empowerment and voter turnout increases in key regions [1]."
+        "alignment": "",
+        "impact": "Emgage demonstrates high financial directness with a 93.3% program expense ratio and holds 15.3 months of working capital to sustain its systemic change efforts [3][4]. Its programs, such as the Muslim Civic Table and Emerging Leaders, focus on long-term civic infrastructure and voter turnout [1]."
       },
-      "headline": "Emgage Foundation mobilizes Muslim American voters through systemic advocacy and civic engagement initiatives to ensure community representation in public policy.",
+      "headline": "Emgage Foundation is a national non-partisan organization dedicated to mobilizing Muslim American voters through civic engagement and leadership development.",
       "strengths": [
-        "High program expense ratio of 93.3%, indicating the vast majority of funds directly support civic programs.",
-        "Strong financial liquidity with 15.3 months of working capital available.",
-        "Exceptional fundraising efficiency, spending only $0.02 to raise every $1."
+        "High program expense ratio of 93.3% ensures the vast majority of funds support direct advocacy and mobilization",
+        "Exceptional fundraising efficiency at only $0.02 spent per $1 raised",
+        "Strong liquidity with 15.3 months of working capital available"
       ],
-      "summary": "Emgage Foundation is a national, non-partisan organization dedicated to informing and empowering Muslim American voters through programs like the Million Muslim Votes campaign [1][3]. The foundation reported a total revenue of $4,069,674 and maintains a high program expense ratio of 93.3% to support its civic leadership and voter mobilization efforts [4]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "2017",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "Founded: 2017",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://emgageusa.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "informing and mobilizing Muslim American voters",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Emgage is a national, non-partisan organization that informs and mobilizes Muslim American voters",
-          "source_name": "Candid Profile",
-          "source_type": "website",
-          "source_url": "https://app.candid.org/profile/8788003"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "represented in public policy",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "ensure community representation in public policy",
-          "source_name": "Candid Profile",
-          "source_type": "website",
-          "source_url": "https://app.candid.org/profile/8788003"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Million Muslim Votes Campaign",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Million Muslim Votes Campaign",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://emgageusa.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $4,918,661",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Total Revenue: $4,918,661",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/261441032"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "three-year revenue CAGR of 65.6%",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Revenue: 2021: 1,793,130; 2023: 4,918,661",
-          "source_name": "Form 990 (2021-2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/261441032"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Emerging Leaders Program",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Emerging Leaders Program",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://emgageusa.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Muslim Civic Table",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Muslim Civic Table",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://emgageusa.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 93.3%",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Program Expense Ratio: 100.0%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/261441032"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.01 to raise every $1",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Fundraising Efficiency: $0.01",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/261441032#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "domestic grantmaker",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Grants and other assistance to domestic organizations: $920,000",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/261441032"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$920,000 to 33 recipients",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Total Grants: $920,000; Number of recipients: 33",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/261441032"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "15.3 months of working capital",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Working Capital: 15.3 months",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/261441032#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Candid Seal: platinum",
-          "source_name": "Candid Profile",
-          "source_type": "website",
-          "source_url": "https://app.candid.org/profile/8788003"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Get Out The Vote (GOTV) programming",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Get Out The Vote (GOTV) Programming",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://emgageusa.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "93.3% independent board",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Independent Board Members: 93.3%",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/261441032#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$694,497 in 2023",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Officer Compensation: $694,497",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/261441032"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "developing a more explicit causal pathway",
-          "confidence": 0.9,
-          "id": "[18]",
-          "quote": "Theory of change: DEVELOPING",
-          "source_name": "Internal Score Rationale",
-          "source_type": "website",
-          "source_url": "https://emgageusa.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "systemic change delivery model",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Delivery model: Systemic Change",
-          "source_name": "Internal Score Rationale",
-          "source_type": "website",
-          "source_url": "https://emgageusa.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "defeated anti-Shariah legislation",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Anti-Shariah Bill Defeated: 1",
-          "source_name": "Annual Report (2014)",
-          "source_type": "website",
-          "source_url": "https://emgageusa.org/wp-content/uploads/2020/07/Emgage-2014-Annual-Report.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "documenting specific triggers for the deployment",
-          "confidence": 0.9,
-          "id": "[21]",
-          "quote": "Improvement: If reserves are above policy target, document why and publish triggers",
-          "source_name": "Internal Score Rationale",
-          "source_type": "website",
-          "source_url": "https://emgageusa.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "low fit for traditional humanitarian donors",
-          "confidence": 0.9,
-          "id": "[22]",
-          "quote": "Rationale: Alignment 22/50: LOW Muslim donor fit",
-          "source_name": "Internal Score Rationale",
-          "source_type": "website",
-          "source_url": "https://emgageusa.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "clearly stating the sadaqah-only status",
-          "confidence": 0.9,
-          "id": "[23]",
-          "quote": "",
-          "source_name": "Internal Score Rationale",
-          "source_type": "website",
-          "source_url": "https://emgageusa.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "USA, Florida, Michigan, New York, Pennsylvania, Texas, Virginia",
-          "confidence": 1,
-          "id": "[24]",
-          "quote": "Geographic Coverage: USA, Florida, Michigan, New York, Pennsylvania, Texas, Virginia",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://emgageusa.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "5 distinct outcome metrics",
-          "confidence": 1,
-          "id": "[25]",
-          "quote": "Outcome Metrics Tracked: 5",
-          "source_name": "Candid Profile",
-          "source_type": "website",
-          "source_url": "https://app.candid.org/profile/8788003"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its high financial efficiency and systemic impact, balanced by a lower alignment for donors seeking traditional charitable interventions.",
-      "amal_scores": {
-        "amal_score": 54,
-        "confidence_scores": {
-          "alignment": 22,
-          "data_confidence": 0.95,
-          "impact": 33
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Executive Compensation Scrutiny",
-          "citation_ids": [
-            "[17]"
-          ],
-          "context": "Officer compensation reached <cite id=\"17\">$694,497 in 2023</cite>, which represents a high percentage of total revenue for an organization of this size."
-        },
-        {
-          "area": "Theory of Change Documentation",
-          "citation_ids": [
-            "[18]"
-          ],
-          "context": "While impact is verified, the organization is currently <cite id=\"18\">developing a more explicit causal pathway</cite> for its systemic change model."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": null,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "BBB assessment data is currently unavailable for this entity."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[17]"
-        ],
-        "mitigation_notes": "The organization maintains high program efficiency despite executive costs.",
-        "risk_factors": [
-          "<cite id=\"17\">Officer compensation of $694,497</cite> on $4.9M revenue"
-        ],
-        "summary": "The primary concern involves <cite id=\"17\">CEO compensation totaling 17.1% of revenue</cite>, which is high for the sector."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 6,
-          "rating": 4,
-          "website": 15
-        },
-        "high_confidence_count": 22,
-        "total_count": 25,
-        "unique_sources": 4
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023 Form 990",
-        "data_gaps": [
-          "Missing Charity Navigator star rating",
-          "No external RCT evaluation"
-        ],
-        "level": "HIGH",
-        "notes": "Strong financial and transparency data available.",
-        "score": 95,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Candid",
-          "Annual Reports"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 95,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "No Charity Navigator star rating",
-          "Developing theory of change"
-        ],
-        "ratings_last_updated": "2026-01",
-        "total_citations": 25,
-        "unique_sources": 4,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[2]",
-            "[22]",
-            "[23]"
-          ],
-          "explanation": "",
-          "improvement": "Alignment could be improved by <cite id=\"23\">clearly stating the sadaqah-only status</cite> of donations on a dedicated giving page."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[14]",
-            "[16]",
-            "[18]"
-          ],
-          "explanation": "Donors can trust the organization's transparency due to its <cite id=\"14\">Candid Platinum Seal</cite> and <cite id=\"16\">93.3% independent board members</cite>.",
-          "improvement": "To further enhance credibility, the organization could <cite id=\"18\">formalize and publish a detailed theory of change</cite> to clarify how civic activities lead to specific policy outcomes."
-        },
-        "impact": {
-          "citation_ids": [
-            "[9]",
-            "[19]",
-            "[20]",
-            "[21]"
-          ],
-          "explanation": "Impact is driven by a <cite id=\"9\">100.0% program ratio</cite> and a <cite id=\"19\">systemic change delivery model</cite> that has successfully <cite id=\"20\">defeated anti-Shariah legislation</cite> in the past.",
-          "improvement": "The foundation could improve its impact score by <cite id=\"21\">documenting specific triggers for the deployment</cite> of its high cash reserves."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "ADVOCACY",
-        "citation_ids": [
-          "[14]",
-          "[24]"
-        ],
-        "evidence_rigor": "Grade B - Verified outcomes with Candid Platinum status",
-        "geographic_focus": [
-          "USA",
-          "Florida",
-          "Michigan",
-          "Virginia"
-        ],
-        "giving_style": "Systemic Change",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [],
-        "zakat_status": "SADAQAH-ONLY"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 4918661,
-        "citation_ids": [
-          "[5]",
-          "[6]",
-          "[13]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0,
-        "industry_program_ratio": 0.75,
-        "peer_count": 12,
-        "peer_program_ratio_median": 0.85,
-        "program_expense_ratio": 0.9327,
-        "reserves_months": 13.9,
-        "revenue_cagr_3yr": 65.6,
-        "transparency_score": 100,
-        "working_capital_months": 15.3,
-        "yearly_financials": [
-          {
-            "expenses": 2994828,
-            "net_assets": 3811475,
-            "revenue": 4918661,
-            "year": 2023
-          },
-          {
-            "expenses": 1911952,
-            "net_assets": 1887642,
-            "revenue": 2350255,
-            "year": 2022
-          },
-          {
-            "expenses": 1076926,
-            "net_assets": 1449339,
-            "revenue": 1793130,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[12]"
-        ],
-        "domestic_grants": 920000,
-        "foreign_grants": 0,
-        "grant_count": 33,
-        "grant_strategy": "Supports local civic engagement partners and allied minority advocacy groups",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Texas",
-          "Virginia",
-          "Florida"
-        ],
-        "top_recipients": [
-          "OCA-Greater Houston ($137K)",
-          "NAKASEC ($122K)"
-        ],
-        "total_grants": 920000
-      },
-      "headline": "Emgage Foundation mobilizes Muslim American voters through systemic advocacy and civic engagement initiatives to ensure community representation in public policy.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize long-term political empowerment and systemic advocacy for the Muslim American community over immediate humanitarian relief.",
-        "citation_ids": [
-          "[2]",
-          "[17]"
-        ],
-        "donor_motivations": [
-          "Want to increase Muslim representation in US public policy",
-          "Value data-driven voter mobilization efforts",
-          "Support building sustainable civic infrastructure",
-          "Prefer funding organizations with high transparency seals"
-        ],
-        "giving_considerations": [
-          "",
-          "Impact is measured in long-term policy shifts rather than individual aid packages",
-          "Executive compensation is higher than peer medians for this revenue bracket"
-        ],
-        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those looking for direct poverty alleviation services."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[25]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "The organization tracks <cite id=\"25\">5 distinct outcome metrics</cite> and has verified impact through Candid.",
-        "external_evaluations": [
-          "Candid Platinum Profile"
-        ],
-        "outcome_tracking_years": 7,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Emgage uses voter education and mobilization to increase community leverage in policy negotiations.",
-        "why_evidence_matters": "Evidence in advocacy ensures that voter mobilization actually translates into legislative influence."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[6]"
-        ],
-        "founded_year": 2017,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": 65.6,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Rapid revenue growth suggests high capacity to absorb new capital for national expansion.",
-        "strategic_priorities": [
-          "Expand Million Muslim Votes campaign",
-          "Strengthen state-level civic tables"
-        ],
-        "years_operating": 9
-      },
-      "organizational_capacity": {
-        "board_size": 4,
-        "ceo_compensation": 694497,
-        "ceo_compensation_pct_revenue": 14.1,
-        "ceo_name": "Wa'el Alzayat",
-        "citation_ids": [
-          "[16]",
-          "[17]",
-          "[24]"
-        ],
-        "employees_count": 25,
-        "geographic_reach": "National (USA) with focus on 7 key states",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 22,
-        "programs_count": 5,
-        "staff_per_million_revenue": 5.1,
-        "volunteers_count": 1000
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[12]"
-        ],
-        "differentiator": "Distinguished by its <cite id=\"12\">significant domestic grantmaking activity</cite> to other minority-led advocacy groups.",
-        "peer_group": "Muslim American Civic Advocacy",
-        "similar_orgs": [
-          "MPAC",
-          "CAIR Foundation"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Regional focus vs national",
-          "name": "OCA-Greater Houston"
-        },
-        {
-          "differentiator": "State-specific advocacy",
-          "name": "Every Voice TX"
-        },
-        {
-          "differentiator": "Heavier focus on media and policy research",
-          "name": "Muslim Public Affairs Council"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[9]"
-          ],
-          "detail": "The organization directs a <cite id=\"9\">program expense ratio of 93.3%</cite> toward its civic initiatives, significantly exceeding industry benchmarks for non-profit efficiency.",
-          "point": "Exceptional Programmatic Investment"
-        },
-        {
-          "citation_ids": [
-            "[13]"
-          ],
-          "detail": "Emgage maintains <cite id=\"13\">15.3 months of working capital</cite>, providing a substantial buffer for long-term strategic planning and advocacy cycles.",
-          "point": "Strong Financial Liquidity"
-        },
-        {
-          "citation_ids": [
-            "[14]"
-          ],
-          "detail": "The foundation has earned a <cite id=\"14\">Platinum Seal of Transparency from Candid</cite>, the highest level of disclosure for non-profit organizations.",
-          "point": "High Transparency Standards"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Emgage Foundation's operational strength is rooted in its ability to scale rapidly while maintaining fiscal discipline. Since its <cite id=\"1\">founding in 2017</cite>, it has achieved a <cite id=\"6\">65.6% revenue CAGR</cite>, growing to a <cite id=\"5\">$4,918,661 organization</cite> by 2023. This growth is paired with <cite id=\"10\">fundraising efficiency of $0.02 per $1 raised</cite>, allowing the vast majority of donor funds to reach programs like <cite id=\"15\">Get Out The Vote (GOTV) programming</cite>. Their governance is supported by a <cite id=\"16\">93.3% independent board</cite>, ensuring objective oversight of their <cite id=\"12\">$920,000 grantmaking portfolio</cite>."
-      ],
-      "summary": "Founded in <cite id=\"1\">2017</cite>, the Emgage Foundation is a national, non-partisan organization dedicated to <cite id=\"2\">informing and mobilizing Muslim American voters</cite>. The organization operates at the intersection of civic engagement and systemic advocacy, seeking to ensure that Muslim communities are <cite id=\"3\">represented in public policy</cite> through initiatives like the <cite id=\"4\">Million Muslim Votes Campaign</cite>. In the 2023 fiscal year, the foundation reported <cite id=\"5\">total revenue of $4,918,661</cite>, representing a significant <cite id=\"6\">three-year revenue CAGR of 65.6%</cite>. This growth supports a robust programmatic infrastructure that includes the <cite id=\"7\">Emerging Leaders Program</cite> and the <cite id=\"8\">Muslim Civic Table</cite>, which aim to cultivate the next generation of community leaders. The foundation maintains a lean operational model, reporting a <cite id=\"9\">program expense ratio of 93.3%</cite>, ensuring that all functional expenses are directed toward its core mission of civic empowerment. Furthermore, the organization demonstrates high fundraising efficiency, spending only <cite id=\"10\">$0.01 to raise every $1</cite> in contribution revenue. Beyond direct mobilization, Emgage acts as a significant <cite id=\"11\">domestic grantmaker</cite>, distributing <cite id=\"12\">$920,000 to 33 recipients</cite> in 2023 to support allied community organizations.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "The Emgage Foundation informs and mobilizes Muslim American voters to support policies that empower their communities through initiatives like the Million Muslim Votes campaign [1][3]. The organization reported a total revenue of $4,069,674 and maintains a high program expense ratio of 93.3% [4]."
     }
   }
 }

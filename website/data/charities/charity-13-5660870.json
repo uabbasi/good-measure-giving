@@ -2,7 +2,7 @@
   "id": "13-5660870",
   "ein": "13-5660870",
   "name": "International Rescue Committee",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "The International Rescue Committee (IRC) responds to the world's worst humanitarian crises, helping to restore health, safety, education, economic well being, and power to people devastated by conflict and disaster. Founded in 1933 at the call of Albert Einstein, the IRC is at work in over 40 countries and 26 U.S. cities helping people to survive, reclaim control of their future and strengthen their communities.",
   "programs": [
     "Malnutrition Treatment",
@@ -62,7 +62,11 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": 0.19364305125015235
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 35,
+    "independentBoardMembers": null,
+    "ceoCompensation": 1153123
+  },
   "targeting": {
     "populationsServed": [
       "Youth",
@@ -103,7 +107,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 18:25:12",
+  "lastUpdated": "2026-03-09 21:44:44",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -9001,62 +9005,6 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 34
       },
-      "judge_issues": [
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[2].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'charitywatch.org' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[6].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'academicworks.cuny.edu' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[7].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'hqai.org' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -9076,619 +9024,58 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The IRC has a Charity Navigator score of 97.0/100 and a program expense ratio of 87.7%.",
+          "claim": "The IRC has a Charity Navigator score of 97.0/100, a program expense ratio of 87.7%, and fundraising efficiency of $0.05 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/135660870#financials"
         },
         {
-          "claim": "The International Rescue Committee is Zakat-eligible and maintains a policy for distributing Zakat to valid asnaf categories.",
+          "claim": "The International Rescue Committee is Zakat-eligible and maintains a specific Zakat policy and fund.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://rescue.org/zakat-fund"
         },
         {
-          "claim": "The organization reported total revenue of $1,529,582,620.",
+          "claim": "The organization reported total revenue of $1,529,582,620 and maintains working capital of 2.4 months.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/135660870"
         },
         {
-          "claim": "IRC programs have led to the purchase of health furnishing items and increased villager opinions of education service quality.",
+          "claim": "IRC programs have led to measurable increases in average credit scores and liquid assets for humanitarian migrants.",
+          "id": "[4]",
+          "source_name": "Financial Statement (2024)",
+          "source_url": "https://www.rescue.org/sites/default/files/2024-07/Assessing%20the%20Impact%20of%20Financial%20Capabilities%20Services%20for%20Newly%20Arrived%20Humanitarian%20Migrants.pdf"
+        },
+        {
+          "claim": "The IRC's programs have successfully increased villager opinions of education service quality and facilitated the purchase of health furnishing items.",
           "id": "[6]",
-          "source_name": "Report: Participatory Development in Fragile and Conflict-affected Contexts: An Impact Evaluation of the Tuungane 2 Program",
+          "source_name": "Report: Participatory Development in Fragile and Conflict-affected Contexts",
           "source_url": "https://www.rescue.org/sites/default/files/document/3747/tuungane2-evaluationfinalreport.pdf"
         },
         {
-          "claim": "The IRC provides various donation options and methods for supporting humanitarian relief.",
+          "claim": "The IRC offers various donation options and methods to support its humanitarian missions.",
           "id": "[7]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.rescue.org/donate"
         }
       ],
-      "amal_score_rationale": "The IRC maintains a strong overall standing due to its massive operational scale and high financial transparency, reflected in its Charity Navigator score of 97.0/100.",
+      "amal_score_rationale": "The IRC earns a strong overall rating due to its massive operational scale, high financial transparency, and its status as a Zakat-eligible provider of direct humanitarian services. Its efficiency in fundraising and high program spending ratio demonstrate excellent stewardship of donor funds.",
       "areas_for_improvement": [
-        "Relatively lean working capital of 2.4 months",
-        "Opportunities to improve direct impact measurement scores"
+        "Working capital is currently at 2.4 months, which is slightly below the ideal threshold for long-term liquidity.",
+        "Enhancing direct cost-per-beneficiary reporting to further improve impact transparency."
       ],
       "dimension_explanations": {
-        "alignment": "With a high donor fit and a focus on urgent humanitarian causes, the IRC is particularly well-aligned for those seeking to support displaced populations [1]. Furthermore, the organization is Zakat-eligible, maintaining a specific fund to assist eligible categories of beneficiaries in accordance with Islamic principles [2][7].",
-        "impact": "The IRC demonstrates high direct service impact by providing health furnishings and improving local perceptions of education quality in conflict-affected areas [6]. While the organization maintains a high program expense ratio of 87.7%, its impact score of 34/50 reflects a robust commitment to direct service delivery despite the complexities of humanitarian logistics [1][3]."
+        "alignment": "The organization shows high alignment for donors due to its focus on urgent humanitarian causes and its Zakat-eligible status, which allows Muslim donors to fulfill religious obligations through a dedicated policy [2][7]. Its long track record and high donor fit are supported by a fundraising efficiency of $0.05 per $1 raised [1][3].",
+        "impact": "The IRC demonstrates high impact through direct service delivery, maintaining an 87.7% program expense ratio and achieving measurable outcomes such as improved credit scores for migrants and increased quality in education services [1][4][6]. While the impact score of 34/50 reflects high directness, further data on specific cost-per-beneficiary metrics would enhance this rating [1]."
       },
-      "headline": "The International Rescue Committee provides critical humanitarian aid to help people survive and rebuild their lives in the wake of global crises.",
+      "headline": "The International Rescue Committee provides life-saving humanitarian aid and long-term recovery support to people displaced by conflict and disaster worldwide.",
       "strengths": [
-        "High financial efficiency with a program expense ratio of 87.7%",
-        "Strong fundraising efficiency of $0.05 per $1 raised",
-        "Designated as Zakat-eligible for Muslim donors"
+        "High program expense ratio of 87.7%, ensuring the vast majority of funds reach those in need.",
+        "Exceptional fundraising efficiency with a cost of only $0.05 per $1 raised.",
+        "Verified Zakat-eligible status with a dedicated fund for eligible beneficiaries."
       ],
-      "summary": "The International Rescue Committee (IRC) delivers essential services in safety, empowerment, and economic wellbeing to populations affected by conflict and disaster [1][6]. In the most recent fiscal period, the organization managed a total revenue of $1,529,582,620 to support its global humanitarian missions [3]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "founded in 1933",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "founded in 1933 at the call of Albert Einstein",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://www.rescue.org/about"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$1,341,268,864 in total revenue",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: $1,341,268,864",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/135660870"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "over 40 countries",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "The IRC helps people... in over 40 countries",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/135660870"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 87.7%",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Program service expenses / Total expenses = 87.7%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/135660870"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "industry standard of 75%",
-          "confidence": 0.9,
-          "id": "[5]",
-          "quote": "Industry Standard: 75%",
-          "source_name": "Charity Navigator - Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/135660870#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "zakat-eligible donations",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "100% of your Zakat will go directly to those in need",
-          "source_name": "Charity Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://rescue.org/zakat-fund"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "97/100 overall score from Charity Navigator",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Overall Score: 97/100",
-          "source_name": "Charity Navigator - Ratings",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/135660870#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Candid Seal: Platinum",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/6941471"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.06 to raise every $1",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Fundraising Efficiency: $0.06",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/135660870#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "meets all 20 BBB Wise Giving Alliance Standards",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "This organization meets all 20 Standards for Charity Accountability",
-          "source_name": "BBB Wise Giving Alliance",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/relief-development/international-rescue-committee-in-new-york-ny-9999-3041"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "over $1.4 billion in total grants",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Grants and other assistance to domestic and foreign: $1,408,507,364",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/135660870"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$1.24 billion distributed to foreign recipients",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Grants and other assistance to foreign organizations: $1,241,929,375",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/135660870"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "average liquid asset increase of $1,381.80",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Average liquid asset increase: 1381.8",
-          "source_name": "Financial Capability Impact Report",
-          "source_type": "evaluation",
-          "source_url": "https://www.rescue.org/sites/default/files/2024-07/Assessing%20the%20Impact%20of%20Financial%20Capabilities%20Services%20for%20Newly%20Arrived%20Humanitarian%20Migrants.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "perfect 100/100 scores",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Culture & Community: 100, Leadership & Adaptability: 100",
-          "source_name": "Charity Navigator - Beacons",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/135660870#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "2.4 months of working capital",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Working Capital Ratio: 2.3 months",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/135660870#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "consistency of beneficiary counts",
-          "confidence": 0.8,
-          "id": "[16]",
-          "quote": "Beneficiary count appears implausible; CPB excluded pending review",
-          "source_name": "AMAL Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/135660870#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "35-member board",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Number of voting members of the governing body: 35",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/135660870"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "97% independent membership",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Independent Board Members: 97%",
-          "source_name": "Charity Navigator - Accountability",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/135660870#accountability"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "build reserves toward a 3-12 month target range",
-          "confidence": 0.9,
-          "id": "[19]",
-          "quote": "Build reserves toward your board-approved target range (often 3-12 months)",
-          "source_name": "AMAL Score Improvement",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/135660870#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "expand services to underserved geographies",
-          "confidence": 0.9,
-          "id": "[20]",
-          "quote": "Expand services to underserved populations or geographies with limited nonprofit coverage",
-          "source_name": "AMAL Score Alignment Improvement",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/135660870#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 18.8%",
-          "confidence": 1,
-          "id": "[21]",
-          "quote": "3-Year Revenue CAGR: 18.8%",
-          "source_name": "Financial Trends Data",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/135660870"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "8 distinct outcome metrics",
-          "confidence": 1,
-          "id": "[22]",
-          "quote": "Outcome Metrics Tracked: 8",
-          "source_name": "Candid Metrics",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/6941471"
-        }
-      ],
-      "amal_score_rationale": "The IRC maintains a strong overall standing due to its massive operational scale and high financial transparency, reflected in its Charity Navigator score of 97.0/100.",
-      "amal_scores": {
-        "amal_score": 77,
-        "confidence_scores": {
-          "alignment": 43,
-          "data_confidence": 1,
-          "impact": 34
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Working Capital Reserves",
-          "citation_ids": [
-            "[15]"
-          ],
-          "context": "The IRC maintains <cite id=\"15\">2.4 months of working capital</cite> in working capital, which is considered lean for an organization of its size and volatility risk."
-        },
-        {
-          "area": "Beneficiary Data Transparency",
-          "citation_ids": [
-            "[16]"
-          ],
-          "context": "While program outcomes are tracked, the <cite id=\"16\">consistency of beneficiary counts</cite> across all global programs could be improved to allow for better cost-per-beneficiary analysis."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[10]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "review_url": "https://give.org/charity-reviews/relief-development/international-rescue-committee-in-new-york-ny-9999-3041",
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "Meets all 20 BBB Wise Giving Alliance Standards for Charity Accountability"
-      },
-      "case_against": {
-        "citation_ids": [
-          "[15]",
-          "[16]",
-          "[21]"
-        ],
-        "mitigation_notes": "The IRC mitigates these risks through a <cite id=\"21\">3-year revenue CAGR of 18.8%</cite>, showing strong growth and donor trust.",
-        "risk_factors": [
-          "<cite id=\"15\">Working capital of 2.3 months</cite> provides a limited buffer for sudden funding shifts.",
-          "<cite id=\"16\">Inconsistent beneficiary reporting</cite> makes cost-effectiveness comparisons difficult."
-        ],
-        "summary": "The primary concerns involve the organization's <cite id=\"15\">lean liquidity</cite> and the complexity of verifying impact across such a vast geographic footprint."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 2,
-          "form990": 7,
-          "rating": 10,
-          "website": 3
-        },
-        "high_confidence_count": 20,
-        "total_count": 22,
-        "unique_sources": 7
-      },
-      "confidence": {
-        "data_freshness": "Most data from 2023 and 2024 filings",
-        "data_gaps": [
-          "Missing 2024 Form 990",
-          "Beneficiary counts are not consistently aggregated for cost-effectiveness"
-        ],
-        "level": "HIGH",
-        "notes": "Extremely high data availability for a large-scale international NGO.",
-        "score": 95,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "BBB Wise Giving Alliance",
-          "Candid",
-          "Internal Impact Reports"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 95,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Beneficiary counts not aggregated into a single cost-per-beneficiary metric"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 22,
-        "unique_sources": 7,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[6]",
-            "[3]",
-            "[20]"
-          ],
-          "explanation": "The IRC is highly aligned with Muslim donor priorities through its <cite id=\"6\">verified Zakat fund</cite> and extensive operations in <cite id=\"3\">Muslim-majority crisis zones</cite>.",
-          "improvement": "To maximize alignment, the IRC could <cite id=\"20\">expand services to underserved geographies</cite> where other major NGOs have limited coverage."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[8]",
-            "[10]",
-            "[17]",
-            "[18]",
-            "[16]"
-          ],
-          "explanation": "The IRC is among the most transparent nonprofits globally, holding a <cite id=\"8\">Platinum Seal from Candid</cite> and <cite id=\"10\">full BBB accreditation</cite>. Governance is overseen by a <cite id=\"17\">35-member board</cite> with <cite id=\"18\">97% independent membership</cite>.",
-          "improvement": "Credibility is already high, but could be further bolstered by publishing more frequent <cite id=\"16\">third-party impact evaluations</cite> for its largest regional programs."
-        },
-        "impact": {
-          "citation_ids": [
-            "[4]",
-            "[14]",
-            "[19]"
-          ],
-          "explanation": "With a <cite id=\"4\">87.7% program ratio</cite> and <cite id=\"14\">98/100 Impact & Results score</cite> from Charity Navigator, the IRC demonstrates high-efficiency direct service delivery.",
-          "improvement": "The IRC should <cite id=\"19\">build reserves toward a 3-12 month target range</cite> to ensure long-term stability against revenue volatility."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[2]",
-          "[6]"
-        ],
-        "evidence_rigor": "Grade B - Strong outcome tracking and some external evaluations",
-        "geographic_focus": [
-          "Africa",
-          "Middle East",
-          "Asia",
-          "United States"
-        ],
-        "giving_style": "Direct service and large-scale relief",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)",
-          "ibn sabil (wayfarer)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.05,
-        "annual_revenue": 1341268864,
-        "citation_ids": [
-          "[3]",
-          "[21]",
-          "[7]"
-        ],
-        "cn_financial_score": 90,
-        "cn_overall_score": 97,
-        "fundraising_ratio": 0.006,
-        "industry_program_ratio": 0.75,
-        "peer_count": 34,
-        "peer_program_ratio_median": 0.903,
-        "program_expense_ratio": 0.8772,
-        "reserves_months": 2.3,
-        "revenue_cagr_3yr": 18.8,
-        "transparency_score": 100,
-        "working_capital_months": 2.4,
-        "yearly_financials": [
-          {
-            "expenses": 1428761701,
-            "net_assets": 281028899,
-            "revenue": 1341268864,
-            "year": 2023
-          },
-          {
-            "expenses": 1270160699,
-            "net_assets": 335855165,
-            "revenue": 1373898628,
-            "year": 2022
-          },
-          {
-            "expenses": 904147041,
-            "net_assets": 304306790,
-            "revenue": 950664386,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "domestic_grants": 166577989,
-        "foreign_grants": 1241929375,
-        "grant_count": 952,
-        "grant_strategy": "Distributes massive funding to local and international partners for direct service delivery.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Africa",
-          "Asia",
-          "Middle East"
-        ],
-        "top_recipients": [
-          "Catholic Charities Archdiocese of San Antonio ($19.2M)",
-          "Church World Service ($14.3M)"
-        ],
-        "total_grants": 1408507364
-      },
-      "headline": "The International Rescue Committee provides critical humanitarian aid to help people survive and rebuild their lives in the wake of global crises.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to fulfill their zakat through a high-capacity, globally recognized institution that prioritizes financial efficiency and direct aid in conflict zones.",
-        "citation_ids": [
-          "[4]",
-          "[6]",
-          "[8]",
-          "[15]"
-        ],
-        "donor_motivations": [
-          "Want to ensure over 90 cents of every dollar goes to programs",
-          "Seek to support refugees and displaced persons globally",
-          "Value a secular organization with a dedicated, verified Zakat pathway",
-          "Prefer organizations with the highest transparency ratings (Candid Platinum)"
-        ],
-        "giving_considerations": [
-          "Gifts support a massive global operation rather than a single local project",
-          "The organization operates with lean reserves to maximize immediate aid",
-          "Highly efficient fundraising means more of your gift is used for the cause"
-        ],
-        "not_ideal_for": "Donors seeking small-scale, grassroots community projects or those who prefer organizations with large endowment-style reserves."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[22]",
-          "[6]",
-          "[13]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "The IRC tracks <cite id=\"22\">8 distinct outcome metrics</cite> via Candid and publishes external impact evaluations for specific programs.",
-        "external_evaluations": [
-          "Tuungane 2 Program Evaluation",
-          "Financial Capabilities Services Impact Assessment"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": true,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "The IRC aims to deliver high-quality, cost-effective programs that serve as a model for global humanitarian response, focusing on safety, health, and economic wellbeing.",
-        "why_evidence_matters": "Rigorous evidence ensures that large-scale interventions actually improve lives rather than just providing temporary relief."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[21]",
-          "[22]"
-        ],
-        "founded_year": 1933,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": 18.8,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "As a primary responder to global crises, the IRC's capacity to absorb funds is high, especially given its <cite id=\"21\">18.8% revenue growth</cite>.",
-        "strategic_priorities": [
-          "Model for global humanitarian response",
-          "High-quality cost-effective programs",
-          "Expansion of local partnerships"
-        ],
-        "years_operating": 93
-      },
-      "organizational_capacity": {
-        "board_size": 35,
-        "ceo_compensation": 3931525,
-        "ceo_compensation_pct_revenue": 0.29,
-        "ceo_name": "David Miliband",
-        "citation_ids": [
-          "[3]",
-          "[17]",
-          "[18]"
-        ],
-        "employees_count": 0,
-        "geographic_reach": "Africa, US, Europe, Asia, South America",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 0.97,
-        "payroll_to_revenue_pct": 0,
-        "programs_count": 5,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 0
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[4]",
-          "[5]"
-        ],
-        "differentiator": "The IRC's <cite id=\"4\">87.7% program ratio</cite> is significantly higher than the <cite id=\"5\">peer median of 90.3%</cite>.",
-        "peer_group": "International Humanitarian Organizations",
-        "similar_orgs": [
-          "Save the Children Federation",
-          "CARE USA",
-          "Doctors Without Borders"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on humanitarian relief and scale.",
-          "name": "Save the Children Federation"
-        },
-        {
-          "differentiator": "Focuses more on long-term development and women's empowerment.",
-          "name": "CARE USA"
-        },
-        {
-          "differentiator": "More specialized in medical emergency response.",
-          "name": "Doctors Without Borders"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[4]"
-          ],
-          "detail": "The IRC directs <cite id=\"4\">87.7% of its total expenses</cite> toward program services, ensuring that the vast majority of donor funds reach beneficiaries directly.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[9]"
-          ],
-          "detail": "The organization spends only <cite id=\"9\">$0.06 to raise every $1</cite> in private contributions, reflecting a highly optimized development operation.",
-          "point": "High Fundraising Productivity"
-        },
-        {
-          "citation_ids": [
-            "[10]"
-          ],
-          "detail": "The IRC <cite id=\"10\">meets all 20 BBB Wise Giving Alliance Standards</cite> for Charity Accountability, covering governance, finances, and effectiveness.",
-          "point": "Rigorous Accountability Standards"
-        }
-      ],
-      "strengths_deep_dive": [
-        "The IRC's operational strength is rooted in its ability to manage complex, large-scale grants while maintaining lean overhead. In 2023, the organization managed <cite id=\"11\">over $1.4 billion in total grants</cite>, with <cite id=\"12\">$1.24 billion distributed to foreign recipients</cite> to support international relief. Their impact is backed by documented evidence; for example, evaluations of their financial capability services showed an <cite id=\"13\">average liquid asset increase of $1,381.80</cite> for participants. Furthermore, the organization maintains <cite id=\"14\">perfect 100/100 scores</cite> in both Culture & Community and Leadership & Adaptability from Charity Navigator, indicating a healthy and resilient internal structure."
-      ],
-      "summary": "The International Rescue Committee (IRC) is a global humanitarian powerhouse <cite id=\"1\">founded in 1933</cite> at the call of Albert Einstein to assist those fleeing oppression. Today, the organization operates at a massive scale, reporting <cite id=\"2\">$1,341,268,864 in total revenue</cite> for the 2023 tax year. The IRC specializes in emergency response, health care, and economic recovery, maintaining a presence in <cite id=\"3\">over 40 countries</cite> including crisis zones like Afghanistan, Syria, and Yemen. The organization demonstrates exceptional financial efficiency, maintaining a <cite id=\"4\">program expense ratio of 87.7%</cite>, which significantly exceeds the <cite id=\"5\">industry standard of 75%</cite>. For Muslim donors, the IRC has established a dedicated pathway for faith-based giving, ensuring that <cite id=\"6\">zakat-eligible donations</cite> are directed toward the poor (fuqara), the needy (masakin), and wayfarers (ibn sabil). This commitment to transparency and effectiveness is validated by a <cite id=\"7\">97/100 overall score from Charity Navigator</cite> and a <cite id=\"8\">Platinum Seal of Transparency from Candid</cite>.",
-      "zakat_guidance": {
-        "classification": "fuqara",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "The International Rescue Committee (IRC) helps individuals affected by humanitarian crises to survive and rebuild through programs focused on safety, empowerment, and economic wellbeing [1][6]. With a total revenue of $1,529,582,620, the organization maintains a high Charity Navigator score of 97.0/100, reflecting its commitment to financial health and accountability [1][3]."
     }
   }
 }

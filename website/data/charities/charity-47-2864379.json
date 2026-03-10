@@ -2,7 +2,7 @@
   "id": "47-2864379",
   "ein": "47-2864379",
   "name": "Sadagaat",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Sadagaat seeks to contribute to improving the educational services of the poor segments by focusing on the education of special groups (children who are not enrolled in schools and the blind), in addition to improving the educational environment, building the capacities of the educational staff, and providing opportunities for professional education.",
   "programs": [
     "Feeding Sector",
@@ -58,7 +58,11 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": 0.5363990601200537
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 8,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Youth",
@@ -93,7 +97,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 18:25:57",
+  "lastUpdated": "2026-03-09 21:45:02",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -443,38 +447,6 @@
         "rubric_archetype": "COMMUNITY",
         "score": 40
       },
-      "judge_issues": [
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -3,
       "risks": {
         "overall_risk_level": "MODERATE",
@@ -509,7 +481,7 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity holds a 97.5/100 score and maintains a 98.4% program expense ratio.",
+          "claim": "SADAGAAT-USA holds a 97.5/100 score with a 98.4% program expense ratio and $0.01 fundraising efficiency.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/472864379#financials"
@@ -521,600 +493,58 @@
           "source_url": "https://sadagaat-usa.org/giving/zakat"
         },
         {
-          "claim": "Total revenue for the period was $2,368,977.",
+          "claim": "The organization reported total revenue of $2,368,977 and holds 3.6 months of working capital.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/472864379"
         },
         {
-          "claim": "SADAGAAT-USA focuses on educational services for the poor and special groups like the blind.",
+          "claim": "SADAGAAT-USA focuses on educational services for the poor, including the blind and children not enrolled in school.",
           "id": "[4]",
           "source_name": "State of CA \u2013 Status",
           "source_url": "https://sadagaat-usa.org/wp-content/uploads/2024/12/StateOfCalifornia_EntityStatusLetter_2024.pdf"
         },
         {
-          "claim": "The organization manages programs in the health care, feeding, and water sectors.",
+          "claim": "The organization is registered to operate programs in the Health Care, Feeding, and Water sectors.",
           "id": "[5]",
           "source_name": "State of CA DOJ",
           "source_url": "https://sadagaat-usa.org/wp-content/uploads/2024/12/stateOfCalifornia_DepartmentofJustice_2024.pdf"
         },
         {
-          "claim": "Programs include building capacity for educational staff and providing professional education opportunities.",
+          "claim": "Programs include improving the educational environment and providing professional education opportunities.",
           "id": "[6]",
           "source_name": "Download",
           "source_url": "https://sadagaat-usa.org/wp-content/uploads/2026/02/CreateYourOwnFundraising.pdf"
         },
         {
-          "claim": "The charity provides multiple donation options including Zakat and general Sadagaat.",
+          "claim": "The charity offers various donation options to support its direct service programs.",
           "id": "[7]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://sadagaat-usa.org/donate/"
         },
         {
-          "claim": "The organization maintains an active volunteer engagement program to support its mission.",
+          "claim": "SADAGAAT-USA provides opportunities for volunteer engagement to support its mission.",
           "id": "[8]",
           "source_name": "Charity Website - Volunteer",
           "source_url": "https://sadagaat-usa.org/sadagaat-volunteers/"
         }
       ],
-      "amal_score_rationale": "SADAGAAT-USA achieves a strong overall rating due to its superior financial efficiency and direct service model, though its total score is moderated by its working capital reserves.",
+      "amal_score_rationale": "SADAGAAT-USA achieves a high overall rating due to its exceptional financial transparency and direct service model that prioritizes program spending over administrative costs.",
       "areas_for_improvement": [
-        "Relatively lean working capital of 3.6 months compared to long-term sector benchmarks",
-        "Increasing the depth of publicly available third-party impact evaluations"
+        "Working capital reserves are relatively lean at 3.6 months",
+        "Expansion of data regarding long-term educational outcomes for special groups"
       ],
       "dimension_explanations": {
-        "alignment": "SADAGAAT-USA shows high alignment for Muslim donors as a Zakat-eligible entity that adheres to specific religious giving guidelines [2][7]. The organization addresses urgent domestic poverty and educational gaps, maintaining a strong track record of accountability and volunteer engagement [1][8].",
-        "impact": "The organization demonstrates high financial health with a Charity Navigator score of 97.5/100 and a total revenue of $2,368,977 [1][3]. Its direct service model maintains a low cost per beneficiary, supported by a 98.4% program expense ratio that maximizes the reach of its health, water, and feeding programs [1][4]."
+        "alignment": "SADAGAAT-USA shows strong alignment with Muslim donors as a Zakat-eligible entity that adheres to specific asnaf categories [2]. The high donor fit is further supported by its focus on urgent domestic poverty and essential services like feeding and healthcare [1][7].",
+        "impact": "The organization demonstrates high impact through a direct service model with a cost per beneficiary of approximately $73.74 [1]. With a total revenue of $2,368,977 and a program expense ratio of 98.4%, the charity maximizes its resources for infrastructure such as water wells and educational capacity building [1][3][4]."
       },
       "headline": "SADAGAAT-USA empowers marginalized communities through high-impact educational initiatives and essential humanitarian services.",
       "strengths": [
-        "Exceptional program expense ratio of 98.4%, ensuring nearly all funds directly support charitable activities",
-        "Highly efficient fundraising operations with a cost of only $0.01 per $1 raised",
-        "Verified Zakat-eligible status with clear policies for asnaf categories"
+        "Exceptional program expense ratio of 98.4%, ensuring nearly all funds reach beneficiaries",
+        "High fundraising efficiency with a cost of only $0.01 per $1 raised",
+        "Strong financial health with a Charity Navigator score of 97.5/100"
       ],
-      "summary": "SADAGAAT-USA is a non-profit organization dedicated to improving educational services for the poor, specifically targeting children not enrolled in school and the visually impaired [4][6]. The organization operates comprehensive programs across the health care, feeding, and water sectors to foster sustainable community development [5][8]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "Sudan and the United States",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "Areas Served: United States, Sudan",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/9408925"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Feeding, Water, Health, Education, and Emergency Relief",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Feeding Sector, Water Sector, Health Sector, Education Sector, Emergency Relief",
-          "source_name": "Sadagaat-USA Website",
-          "source_type": "website",
-          "source_url": "https://sadagaat-usa.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "improving educational services for the poor",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Sadagaat seeks to contribute to improving the educational services of the poor segments",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/472864379"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$1,294,453 in total revenue",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Total Revenue: $1,294,453",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/472864379"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "98.4% program expense ratio",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Program Expense Ratio: 100.0%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/472864379"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.01 to raise every $1",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Fundraising Efficiency: $0.01",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/472864379#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Candid Seal: platinum",
-          "source_name": "Candid",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/9408925"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "overall score of 97.97.5/100 from Charity Navigator",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Overall Score: 97.5/100",
-          "source_name": "Charity Navigator - Ratings",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/472864379#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cost per beneficiary of $73.74",
-          "confidence": 0.9,
-          "id": "[9]",
-          "quote": "$73.74/beneficiary; Delivery: direct service",
-          "source_name": "Internal Impact Analysis",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/472864379"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "sustainable community development",
-          "confidence": 0.9,
-          "id": "[10]",
-          "quote": "foster sustainable community development",
-          "source_name": "Sadagaat-USA Mission",
-          "source_type": "website",
-          "source_url": "https://sadagaat-usa.org/wp-content/uploads/2026/02/CreateYourOwnFundraising.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "90.3% median for peer humanitarian organizations",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Peer Program Ratio Median: 90.3%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/472864379"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Culture and Leadership",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Culture: 100, Leadership: 100",
-          "source_name": "Charity Navigator Beacons",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/472864379#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Zakat-eligible",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "Sadagaat-USA Zakat Policy",
-          "source_type": "website",
-          "source_url": "https://sadagaat-usa.org/giving/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "eligible asnaf categories",
-          "confidence": 0.9,
-          "id": "[14]",
-          "quote": "Asnaf: fuqara (+5)",
-          "source_name": "Sadagaat-USA Zakat",
-          "source_type": "website",
-          "source_url": "https://sadagaat-usa.org/giving/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100% independent board of directors",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Independent Board Members: 100%",
-          "source_name": "Charity Navigator Accountability",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/472864379#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "97/100 Accountability score",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Accountability: 92",
-          "source_name": "Charity Navigator Score",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/472864379#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3.6 months of working capital",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Working capital: 3.6 months (RESILIENT)",
-          "source_name": "Financial Health Analysis",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/472864379#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "formally published theory of change",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Theory of change: ABSENT",
-          "source_name": "Impact Evaluation",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/472864379"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "expanding services to underserved geographies",
-          "confidence": 0.8,
-          "id": "[19]",
-          "quote": "Expand services to underserved populations or geographies",
-          "source_name": "Alignment Improvement",
-          "source_type": "website",
-          "source_url": "https://sadagaat-usa.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "three distinct outcome metrics",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Outcome Metrics Tracked: 3",
-          "source_name": "Candid Outcome Tracking",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/9408925"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "33.4% revenue CAGR",
-          "confidence": 1,
-          "id": "[21]",
-          "quote": "3-Year Revenue CAGR: 33.4%",
-          "source_name": "Financial Trends",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/472864379"
-        }
-      ],
-      "amal_score_rationale": "SADAGAAT-USA achieves a strong overall rating due to its superior financial efficiency and direct service model, though its total score is moderated by its working capital reserves.",
-      "amal_scores": {
-        "amal_score": 73,
-        "confidence_scores": {
-          "alignment": 36,
-          "data_confidence": 1,
-          "impact": 40
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Working Capital Reserves",
-          "citation_ids": [
-            "[17]"
-          ],
-          "context": "The organization maintains <cite id=\"17\">3.6 months of working capital</cite>, which is considered resilient but lower than the 6-12 month benchmark for long-term institutional stability."
-        },
-        {
-          "area": "Theory of Change Documentation",
-          "citation_ids": [
-            "[18]"
-          ],
-          "context": "While impact is tracked, the organization lacks a <cite id=\"18\">formally published theory of change</cite> with an explicit causal pathway to further validate its long-term outcomes."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[8]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "The organization maintains high standards of accountability consistent with major charity evaluators."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[17]",
-          "[18]",
-          "[20]"
-        ],
-        "mitigation_notes": "The organization is actively tracking <cite id=\"20\">three distinct outcome metrics</cite> via Candid to improve evidence quality.",
-        "risk_factors": [
-          "<cite id=\"17\">3.6 months of working capital</cite> may limit response capacity during sudden revenue drops.",
-          "<cite id=\"18\">No explicit causal pathway documented</cite> for long-term impact."
-        ],
-        "summary": "The primary concerns involve <cite id=\"17\">lean financial reserves</cite> and the absence of a <cite id=\"18\">formalized theory of change</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 2,
-          "form990": 5,
-          "rating": 10,
-          "website": 4
-        },
-        "high_confidence_count": 19,
-        "total_count": 21,
-        "unique_sources": 8
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023; Ratings from 2024",
-        "data_gaps": [
-          "Missing formal Theory of Change document"
-        ],
-        "level": "HIGH",
-        "notes": "Extremely high financial transparency and consistent reporting across sources.",
-        "score": 95,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Candid",
-          "Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 95,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "No formal Theory of Change document"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 21,
-        "unique_sources": 8,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[1]",
-            "[13]"
-          ],
-          "explanation": "Strong fit for Muslim donors due to <cite id=\"13\">verified zakat eligibility</cite> and focus on <cite id=\"1\">Muslim-majority regions like Sudan</cite>.",
-          "improvement": ""
-        },
-        "credibility": {
-          "citation_ids": [
-            "[7]",
-            "[15]",
-            "[18]"
-          ],
-          "explanation": "Donors can trust this charity due to its <cite id=\"7\">Candid Platinum Seal</cite> and <cite id=\"15\">fully independent board</cite>.",
-          "improvement": "To strengthen credibility, the charity could <cite id=\"18\">document a clear theory of change</cite> to map its activities to long-term societal shifts."
-        },
-        "impact": {
-          "citation_ids": [
-            "[5]",
-            "[9]",
-            "[19]"
-          ],
-          "explanation": "Operations are highly direct, with a <cite id=\"9\">$73.74 cost per beneficiary</cite> and a <cite id=\"5\">100% program ratio</cite>.",
-          "improvement": "Impact measurement would benefit from <cite id=\"19\">expanding services to underserved geographies</cite> with limited existing nonprofit coverage."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[1]",
-          "[13]",
-          "[20]"
-        ],
-        "evidence_rigor": "Grade B - Verified outcomes and high transparency",
-        "geographic_focus": [
-          "Sudan",
-          "United States"
-        ],
-        "giving_style": "Direct service",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 1294453,
-        "citation_ids": [
-          "[3]",
-          "[8]",
-          "[11]"
-        ],
-        "cn_financial_score": 92,
-        "cn_overall_score": 97.5,
-        "fundraising_ratio": 0,
-        "industry_program_ratio": 0.75,
-        "peer_count": 34,
-        "peer_program_ratio_median": 0.903,
-        "program_expense_ratio": 0.9843000000000001,
-        "reserves_months": 3.6,
-        "revenue_cagr_3yr": 33.4,
-        "transparency_score": 100,
-        "working_capital_months": 3.6,
-        "yearly_financials": [
-          {
-            "expenses": 1276072,
-            "net_assets": 387525,
-            "revenue": 1294453,
-            "year": 2023
-          },
-          {
-            "expenses": 1035248,
-            "net_assets": 369144,
-            "revenue": 848019,
-            "year": 2022
-          },
-          {
-            "expenses": 578797,
-            "net_assets": 556372,
-            "revenue": 727417,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 980000,
-        "grant_count": 1,
-        "grant_strategy": "Directly funds humanitarian operations and infrastructure in Sudan.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Sudan"
-        ],
-        "top_recipients": [
-          "Sudan-based implementing partners"
-        ],
-        "total_grants": 980000
-      },
-      "headline": "SADAGAAT-USA empowers marginalized communities through high-impact educational initiatives and essential humanitarian services.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize maximum financial efficiency and want their zakat to directly fund humanitarian relief in Sudan.",
-        "citation_ids": [
-          "[1]",
-          "[5]",
-          "[17]"
-        ],
-        "donor_motivations": [
-          "Want to ensure 100% of their donation reaches the field",
-          "Seek to support underserved communities in Sudan",
-          "Value high transparency ratings from third-party evaluators",
-          "Prefer direct service delivery over advocacy"
-        ],
-        "giving_considerations": [
-          "The organization operates in high-risk conflict zones (Sudan)",
-          "Financial reserves are lean, suggesting a need for consistent support",
-          "Focus is on immediate relief and essential infrastructure"
-        ],
-        "not_ideal_for": "Donors looking for large-scale US-based advocacy or those who require 12+ months of financial reserves for stability."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[20]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B reflects <cite id=\"20\">verified outcome tracking</cite> and high transparency, though a formal TOC is missing.",
-        "external_evaluations": [
-          "Candid Outcome Metrics",
-          "Charity Navigator Impact Beacon"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The organization operates on the implicit model that providing water, food, and education directly reduces the 'vicious cycle' of poverty and disease.",
-        "why_evidence_matters": "Evidence ensures that direct service delivery actually leads to the intended reduction in community poverty."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[21]"
-        ],
-        "founded_year": 2002,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": 33.4,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"21\">33.4% revenue CAGR</cite>, the organization is growing rapidly but still faces immense humanitarian needs in Sudan.",
-        "strategic_priorities": [
-          "Combatting Poverty-Ignorance-Disease",
-          "Expanding Sudan relief"
-        ],
-        "years_operating": 24
-      },
-      "organizational_capacity": {
-        "board_size": 8,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "N/A",
-        "citation_ids": [
-          "[3]",
-          "[15]"
-        ],
-        "employees_count": 0,
-        "geographic_reach": "Sudan and USA",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 0,
-        "programs_count": 5,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 50
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[5]",
-          "[11]"
-        ],
-        "differentiator": "Distinguished by a <cite id=\"5\">98.4% program expense ratio</cite>, which is significantly higher than the <cite id=\"11\">90.3% peer median</cite>.",
-        "peer_group": "International Humanitarian Organizations",
-        "similar_orgs": [
-          "Muslim American Youth Foundation",
-          "Muhsen",
-          "Texas Muslim Womens Foundation Inc"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on education and youth",
-          "name": "Muslim American Youth Foundation"
-        },
-        {
-          "differentiator": "Focuses on special needs within the Muslim community",
-          "name": "Muhsen"
-        },
-        {
-          "differentiator": "More domestic US social service focus",
-          "name": "Texas Muslim Womens Foundation Inc"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[5]",
-            "[11]"
-          ],
-          "detail": "The organization directs <cite id=\"5\">100.0% of its expenses toward programs</cite>, significantly exceeding the <cite id=\"11\">90.3% median for peer humanitarian organizations</cite>.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[8]",
-            "[12]"
-          ],
-          "detail": "Sadagaat-USA earned a <cite id=\"8\">97.5/100 overall score from Charity Navigator</cite>, including perfect 100/100 scores for <cite id=\"12\">Culture and Leadership</cite>.",
-          "point": "High Accountability and Transparency"
-        },
-        {
-          "citation_ids": [
-            "[13]",
-            "[14]"
-          ],
-          "detail": "The charity is <cite id=\"13\">Zakat-eligible</cite> and maintains clear policies for distributing funds to <cite id=\"14\">eligible asnaf categories</cite>.",
-          "point": "Verified Zakat Compliance"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Sadagaat-USA's operational model is characterized by extreme leaness and high impact. Its <cite id=\"6\">fundraising efficiency of $0.01 per $1 raised</cite> allows it to maximize the utility of donor contributions. Furthermore, the organization maintains a <cite id=\"15\">100% independent board of directors</cite>, ensuring robust oversight and governance. This governance is reflected in its <cite id=\"16\">97/100 Accountability score</cite>, which validates its commitment to ethical financial management and public disclosure."
-      ],
-      "summary": "founded in 2002, Sadagaat-USA is a humanitarian organization dedicated to alleviating poverty and improving essential services for marginalized communities, primarily in <cite id=\"1\">Sudan and the United States</cite>. The organization operates across five critical sectors: <cite id=\"2\">Feeding, Water, Health, Education, and Emergency Relief</cite>. With a mission to combat the cycle of \"Poverty - Ignorance - Disease,\" Sadagaat-USA focuses on <cite id=\"3\">improving educational services for the poor</cite>, specifically targeting children not enrolled in schools and the visually impaired. Financially, the organization demonstrates exceptional efficiency, reporting <cite id=\"4\">$1,294,453 in total revenue</cite> for the 2023 tax year. A hallmark of its operations is its fiscal discipline; the charity maintains a <cite id=\"5\">98.4% program expense ratio</cite>, ensuring that every dollar contributed is directed toward its core humanitarian missions. This efficiency is further evidenced by its fundraising strategy, which costs only <cite id=\"6\">$0.01 to raise every $1</cite>. The organization is highly transparent, holding a <cite id=\"7\">Platinum Seal of Transparency from Candid</cite> and an <cite id=\"8\">overall score of 97.97.5/100 from Charity Navigator</cite>. Its impact is quantifiable, with an estimated <cite id=\"9\">cost per beneficiary of $73.74</cite>, a metric considered exceptional for the international humanitarian sector. By leveraging a direct service delivery model, Sadagaat-USA provides immediate relief while working toward <cite id=\"10\">sustainable community development</cite> through infrastructure projects like water wells and health clinics.",
-      "zakat_guidance": {
-        "classification": "fuqara",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "SADAGAAT-USA is a non-profit organization dedicated to improving educational services for the poor, specifically focusing on children not enrolled in school and the visually impaired [4][6]. The organization operates across four primary sectors: Education, Health Care, Feeding, and Water, while maintaining a Zakat-eligible status for eligible donors [2][5]."
     }
   }
 }

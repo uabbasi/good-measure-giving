@@ -2,7 +2,7 @@
   "id": "26-3531888",
   "ein": "26-3531888",
   "name": "Islamic Oasis",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "PAGE 2 PART 3 1 ORGANIZATION MISSION MONTHLY FOOD PANTRY, LIFE SKILLS FOR LOW INCOME AND REFUGEE FAMILIES FAMILIES AND INDIVIDIUALS",
   "programs": [
     "Emergency Response",
@@ -51,7 +51,11 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": null,
+    "independentBoardMembers": null,
+    "ceoCompensation": 44000
+  },
   "targeting": {
     "populationsServed": [
       "Families",
@@ -78,7 +82,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": false
   },
-  "lastUpdated": "2026-03-09 13:12:49",
+  "lastUpdated": "2026-03-09 21:45:37",
   "sourceAttribution": {
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
@@ -393,32 +397,6 @@
         "rubric_archetype": "COMMUNITY",
         "score": 25
       },
-      "judge_issues": [
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -6,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -453,545 +431,46 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity reported a total revenue of $6,039,144 and a program expense ratio of 5.0%.",
+          "claim": "The charity reports a program expense ratio of 5.0%, working capital of 17.2 months, and fundraising efficiency of $0.00 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/263531888#financials"
         },
         {
-          "claim": "The organization is Zakat-eligible and serves specific asnaf categories.",
+          "claim": "The organization is Zakat-eligible and accepts donations for specific asnaf categories.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://islamicoasis.org/donate"
         },
         {
-          "claim": "The mission includes a monthly food pantry and life skills for refugees, with programs for emergency response and medical support.",
+          "claim": "Total revenue reached $6,039,144 with core programs including a food pantry, emergency response, and medical support.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/263531888"
         },
         {
-          "claim": "The charity provides various giving methods and donation options for supporters.",
+          "claim": "The charity provides multiple donation options and giving methods for supporters.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://islamicoasis.org/donate"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate score of 53/100, reflecting strong financial stability and religious alignment offset by a very low program expense ratio.",
+      "amal_score_rationale": "The organization earns a moderate score of 53/100, reflecting strong financial stability and religious alignment, balanced against a very low program expense ratio.",
       "areas_for_improvement": [
-        "Low program expense ratio of 5.0% relative to total revenue",
-        "Limited public documentation regarding specific impact metrics"
+        "Low program expense ratio of 5.0% suggests significant funds are directed toward non-programmatic costs",
+        "Limited public documentation regarding specific impact metrics and long-term beneficiary outcomes"
       ],
       "dimension_explanations": {
-        "alignment": "Islamic Oasis Center CO shows high alignment for Muslim donors as a Zakat-eligible entity serving asnaf categories including the poor and refugees [2]. The organization facilitates religious giving through structured donation options on its website [4].",
-        "impact": "The charity reported a total revenue of $6,039,144, yet its program expense ratio stands at 5.0% [1][3]. While it holds 17.2 months of working capital, the direct expenditure on services like the food pantry and medical support is low relative to its total annual intake [3]."
+        "alignment": "Alignment is high for Muslim donors as the organization is Zakat-eligible and serves asnaf categories within the refugee and low-income community [2]. The mission focuses on high-urgency needs such as food security and medical support [3][4].",
+        "impact": "The charity demonstrates a direct service impact through its food pantry and emergency response programs, though its program expense ratio is currently 5.0% [1][3]. While it holds 17.2 months of working capital, the lack of cost-per-beneficiary data results in a medium impact score [1]."
       },
       "headline": "Islamic Oasis Center CO provides essential food security and life skills training to low-income and refugee families.",
       "strengths": [
-        "High fundraising efficiency with $0.00 spent per $1 raised",
-        "Strong liquidity with 17.2 months of working capital",
-        "Clear religious alignment through Zakat-eligible programming"
+        "Maintains a high level of liquidity with 17.2 months of working capital",
+        "Exceptional fundraising efficiency at $0.00 per $1 raised",
+        "Direct service model providing tangible aid like food and medical support"
       ],
-      "summary": "Based in Colorado, Islamic Oasis Center CO operates a monthly food pantry and offers emergency response and medical support programs [1][3]. The organization is recognized as Zakat-eligible, allowing donors to fulfill their religious obligations through various giving methods [2][4]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "essential food security and life skills training",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "MONTHLY FOOD PANTRY, LIFE SKILLS FOR LOW INCOME AND REFUGEE FAMILIES",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/263531888"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$6,039,144 in total revenue",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: 6,039,144",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/263531888"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 17.9%",
-          "confidence": 0.95,
-          "id": "[3]",
-          "quote": "Revenue: 2021: 4.3M, 2022: 5.3M, 2023: 6.0M",
-          "source_name": "Internal Financial Analysis",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/263531888"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "emergency response, medical support, and water projects",
-          "confidence": 0.9,
-          "id": "[4]",
-          "quote": "Emergency Response, Medical Support, Masjid Construction, Water Projects",
-          "source_name": "Islamic Oasis Website",
-          "source_type": "website",
-          "source_url": "https://islamicoasis.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "17.2 months of working capital",
-          "confidence": 0.95,
-          "id": "[5]",
-          "quote": "Working Capital Ratio (years): 1.55",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/263531888#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 5.0%",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Program service expenses: 187,000 / Total expenses: 4,000,361",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/263531888"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Zakat-eligible entity",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "Islamic Oasis - Donate",
-          "source_type": "website",
-          "source_url": "https://islamicoasis.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fuqara (poor) and masakin (needy)",
-          "confidence": 0.9,
-          "id": "[8]",
-          "quote": "Zakat Categories: fuqara, masakin",
-          "source_name": "Islamic Oasis - Zakat Policy",
-          "source_type": "website",
-          "source_url": "https://islamicoasis.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.00 spent to raise every $1",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Fundraising Efficiency: $0.00",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/263531888#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "founding in 2008",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Founded: 2008",
-          "source_name": "Islamic Oasis - About",
-          "source_type": "website",
-          "source_url": "https://islamicoasis.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$5,726,976 by the end of 2023",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Net assets or fund balances at end of year: 5,726,976",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/263531888"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100% independent board of directors",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Independent Board Members: 100%",
-          "source_name": "Charity Navigator - Accountability",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/263531888#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "90.3% peer median",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Peer Program Ratio Median: 90.3%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/263531888"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "insufficient data for cost-per-beneficiary calculations",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Insufficient data for cost-per-beneficiary calculation",
-          "source_name": "Score Rationale",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/263531888#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "documented theory of change",
-          "confidence": 0.9,
-          "id": "[15]",
-          "quote": "Theory of Change Documented: Yes",
-          "source_name": "External Discoveries",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/263531888"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "documenting a clear causal pathway",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Document a clear theory of change with an explicit causal pathway.",
-          "source_name": "Impact Improvement Suggestions",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/263531888"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "expanding services to additional underserved geographies",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Expand services to underserved populations or geographies with limited nonprofit coverage.",
-          "source_name": "Alignment Improvement Suggestions",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/263531888"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a moderate score of 53/100, reflecting strong financial stability and religious alignment offset by a very low program expense ratio.",
-      "amal_scores": {
-        "amal_score": 53,
-        "confidence_scores": {
-          "alignment": 34,
-          "data_confidence": 0.6,
-          "impact": 25
-        },
-        "confidence_tier": "MEDIUM",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Financial Reporting Transparency",
-          "citation_ids": [
-            "[6]",
-            "[13]"
-          ],
-          "context": "The reported <cite id=\"6\">program expense ratio of 5.0%</cite> is significantly below the <cite id=\"13\">90.3% peer median</cite>, indicating a need for more detailed expense allocation in tax filings."
-        },
-        {
-          "area": "Impact Measurement",
-          "citation_ids": [
-            "[14]"
-          ],
-          "context": "There is currently <cite id=\"14\">insufficient data for cost-per-beneficiary calculations</cite>, making it difficult for donors to assess the direct efficiency of interventions."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "none",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "This organization has not yet been evaluated against BBB Wise Giving Alliance standards."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[6]",
-          "[13]",
-          "[14]"
-        ],
-        "mitigation_notes": "The organization's high liquidity and independent board suggest capacity for correction, but donors should seek clarification on how the $6M in revenue is being deployed.",
-        "risk_factors": [
-          "<cite id=\"6\">Program expense ratio is only 4.7%</cite>",
-          "<cite id=\"14\">Missing cost-per-beneficiary data</cite>"
-        ],
-        "summary": "The primary concern is the <cite id=\"6\">critically low program expense ratio of 5.0%</cite>, which is far below the <cite id=\"13\">industry standard of 75%</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 4,
-          "form990": 5,
-          "rating": 5,
-          "website": 3
-        },
-        "high_confidence_count": 15,
-        "total_count": 17,
-        "unique_sources": 4
-      },
-      "confidence": {
-        "data_freshness": "Financial data current through 2023 tax year",
-        "data_gaps": [
-          "Incomplete expense breakdown in Form 990",
-          "Missing audited financials"
-        ],
-        "level": "MODERATE",
-        "notes": "The low program ratio is a significant data quality concern that impacts the overall score.",
-        "score": 60,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Charity Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 60,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Incomplete expense breakdown",
-          "Missing beneficiary counts"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 17,
-        "unique_sources": 4,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[2]",
-            "[7]",
-            "[8]",
-            "[17]"
-          ],
-          "explanation": "The charity shows <cite id=\"7\">high Muslim donor fit</cite> through its <cite id=\"2\">Zakat-eligible programming</cite> and focus on <cite id=\"8\">underserved refugee populations</cite>.",
-          "improvement": "Alignment could be further enhanced by <cite id=\"17\">expanding services to additional underserved geographies</cite> with limited existing nonprofit coverage."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[12]",
-            "[14]",
-            "[15]"
-          ],
-          "explanation": "Donors can find confidence in the organization's <cite id=\"12\">100% independent board</cite> and its <cite id=\"15\">documented theory of change</cite>. However, the lack of detailed financial breakdowns in public filings limits full transparency.",
-          "improvement": "To strengthen credibility, the charity should <cite id=\"14\">publish consistent beneficiary counts</cite> and detailed audited financial statements to clarify its high asset-to-program ratio."
-        },
-        "impact": {
-          "citation_ids": [
-            "[1]",
-            "[6]",
-            "[16]"
-          ],
-          "explanation": "The organization utilizes a <cite id=\"1\">direct service delivery model</cite>, but the <cite id=\"6\">4.7% program ratio</cite> suggests that only a small fraction of revenue is currently recorded as direct program spending.",
-          "improvement": "Impact scores would improve by <cite id=\"16\">documenting a clear causal pathway</cite> in a formal theory of change and improving the reporting of program-related expenses."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[1]",
-          "[7]"
-        ],
-        "evidence_rigor": "Grade C - Verified outcomes but limited cost-effectiveness data",
-        "geographic_focus": [
-          "Colorado",
-          "Gaza",
-          "Afghanistan",
-          "Sudan"
-        ],
-        "giving_style": "Direct service and emergency relief",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": null,
-        "annual_revenue": 6039144,
-        "citation_ids": [
-          "[3]",
-          "[5]",
-          "[6]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0,
-        "industry_program_ratio": 0.75,
-        "peer_count": 34,
-        "peer_program_ratio_median": 0.903,
-        "program_expense_ratio": 0.05,
-        "reserves_months": 18.6,
-        "revenue_cagr_3yr": 17.9,
-        "working_capital_months": 17.2,
-        "yearly_financials": [
-          {
-            "expenses": 4000361,
-            "net_assets": 5726976,
-            "revenue": 6039144,
-            "year": 2023
-          },
-          {
-            "expenses": 4214885,
-            "net_assets": 3688193,
-            "revenue": 5335463,
-            "year": 2022
-          },
-          {
-            "expenses": 2862826,
-            "net_assets": 2567615,
-            "revenue": 4342316,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct service delivery rather than grantmaking",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "International"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "Islamic Oasis Center CO provides essential food security and life skills training to low-income and refugee families.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize supporting a Colorado-based Muslim institution with a strong religious identity and significant financial reserves for long-term stability.",
-        "citation_ids": [
-          "[6]",
-          "[7]",
-          "[11]"
-        ],
-        "donor_motivations": [
-          "Want to fulfill Zakat through a locally-managed organization",
-          "Value high financial liquidity and long-term organizational survival",
-          "Support a mix of domestic food security and international emergency relief"
-        ],
-        "giving_considerations": [
-          "Financial reporting currently shows a very low percentage of funds reaching programs",
-          "The organization is in a high-growth phase with rapidly increasing assets",
-          "Direct service model ensures no middle-man organizations are used"
-        ],
-        "not_ideal_for": "Donors who require a high program-to-overhead ratio (75%+) or those seeking rigorous third-party impact evaluations."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[2]",
-          "[15]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects verified outcomes and a documented theory of change, but a lack of cost-per-beneficiary data.",
-        "external_evaluations": [
-          "Internal outcome tracking"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "The organization provides direct food and medical aid to stabilize families, supplemented by life skills training to foster long-term self-sufficiency.",
-        "why_evidence_matters": "Evidence ensures that the $6M in annual contributions is effectively translating into improved lives for refugees."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[3]",
-          "[10]"
-        ],
-        "founded_year": 2008,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": 17.9,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"3\">17.9% growth rate</cite> and expanding international programs, the charity has high capacity to absorb new capital.",
-        "strategic_priorities": [
-          "Expand food pantry capacity",
-          "Increase international medical support"
-        ],
-        "years_operating": 18
-      },
-      "organizational_capacity": {
-        "board_size": null,
-        "ceo_compensation": 44000,
-        "ceo_compensation_pct_revenue": 0.73,
-        "ceo_name": "Not Disclosed",
-        "citation_ids": [
-          "[3]",
-          "[4]",
-          "[12]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "10 countries including USA, Gaza, and Afghanistan",
-        "has_conflict_policy": true,
-        "has_financial_audit": false,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[5]"
-        ],
-        "differentiator": "Distinguished by <cite id=\"5\">exceptionally high working capital (17.2 months)</cite> compared to peers.",
-        "peer_group": "Humanitarian Community Services",
-        "similar_orgs": [
-          "Sachse Muslim Society",
-          "The Islamic Association of Arabi",
-          "ICNAB"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar community focus and size",
-          "name": "Sachse Muslim Society"
-        },
-        {
-          "differentiator": "Similar regional service model",
-          "name": "The Islamic Association of Arabi"
-        },
-        {
-          "differentiator": "Comparable humanitarian scope",
-          "name": "ICNAB"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[9]"
-          ],
-          "detail": "The organization reports a fundraising efficiency of <cite id=\"9\">$0.00 spent to raise every $1</cite>, ensuring that donor acquisition costs do not detract from the bottom line.",
-          "point": "Exceptional Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[5]"
-          ],
-          "detail": "The charity maintains <cite id=\"5\">17.2 months of working capital</cite> in working capital, providing a significant buffer for long-term sustainability.",
-          "point": "Robust Financial Reserves"
-        },
-        {
-          "citation_ids": [
-            "[7]",
-            "[8]"
-          ],
-          "detail": "The organization is <cite id=\"7\">Zakat-eligible</cite> and explicitly directs funds to <cite id=\"8\">eligible asnaf categories</cite> including the poor and needy.",
-          "point": "Verified Zakat Alignment"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Islamic Oasis Center CO has established a long-term track record since its <cite id=\"10\">founding in 2008</cite>, evolving into a multi-faceted relief agency. Its financial position is characterized by rapid growth, with net assets increasing to <cite id=\"11\">$5,726,976 by the end of 2023</cite>. The organization's governance is marked by a <cite id=\"12\">100% independent board of directors</cite>, which provides critical oversight for its diverse international programs ranging from <cite id=\"4\">orphan sponsorship to masjid construction</cite> across 10 countries."
-      ],
-      "summary": "founded in 2008, Islamic Oasis Center CO is a Colorado-based humanitarian organization dedicated to serving low-income and refugee families through <cite id=\"1\">essential food security and life skills training</cite>. The organization has demonstrated significant growth, reporting <cite id=\"2\">$6,039,144 in total revenue</cite> for the 2023 tax year, representing a <cite id=\"3\">3-year revenue CAGR of 17.9%</cite>. Beyond its domestic food pantry operations, the charity maintains a broad international footprint, providing <cite id=\"4\">emergency response, medical support, and water projects</cite> in crisis zones including Gaza, Afghanistan, and Sudan. While the organization demonstrates strong financial liquidity with <cite id=\"5\">17.2 months of working capital</cite>, its reported <cite id=\"6\">program expense ratio of 5.0%</cite> is notably low, suggesting that current financial reporting may not fully capture the breadth of its service delivery. As a <cite id=\"7\">Zakat-eligible entity</cite>, it provides a verified pathway for Muslim donors to support the <cite id=\"8\">fuqara (poor) and masakin (needy)</cite> through direct service programs.",
-      "zakat_guidance": {
-        "classification": "amil",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "Based in Colorado, Islamic Oasis Center CO operates a monthly food pantry and offers emergency response and medical support to vulnerable populations [1][3]. The organization is recognized as Zakat-eligible, allowing donors to fulfill their religious obligations through various giving methods [2][4]."
     }
   }
 }

@@ -1386,11 +1386,27 @@ class RichNarrativeGenerator:
                 corrections.append(f"Working capital: {llm_wc} -> {actual_wc} months")
             fd["working_capital_months"] = actual_wc
 
+        # 5. CEO Compensation — pin to actual individual CEO comp from CN or DB
+        # ProPublica's compensation_current_officers is aggregate for ALL officers,
+        # so the LLM may use either that or CN's individual value. Override with ground truth.
+        oc = rich_content.get("organizational_capacity", {})
+        if oc:
+            actual_ceo_comp = charity_data.get("ceo_compensation")
+            if actual_ceo_comp is not None:
+                llm_ceo_comp = oc.get("ceo_compensation")
+                if llm_ceo_comp is not None and abs(float(llm_ceo_comp) - float(actual_ceo_comp)) > 1:
+                    corrections.append(f"CEO compensation: {llm_ceo_comp:,.0f} -> {actual_ceo_comp:,.0f}")
+                oc["ceo_compensation"] = float(actual_ceo_comp)
+                # Recalculate pct of revenue if we have revenue
+                total_rev = charity_data.get("total_revenue")
+                if total_rev and float(total_rev) > 0:
+                    oc["ceo_compensation_pct_revenue"] = round(float(actual_ceo_comp) / float(total_rev) * 100, 2)
+
         # Log corrections if any
         if corrections:
             logger.info(f"{ein}: Fixing metrics - {', '.join(corrections)}")
 
-        # 5. Fix wrong values in narrative text (pass original LLM values so we
+        # 6. Fix wrong values in narrative text (pass original LLM values so we
         # can detect what the LLM generated before JSON fields were corrected above)
         rich_content = self._fix_narrative_values(rich_content, source_attr, original_llm_values)
 

@@ -2,7 +2,7 @@
   "id": "46-4451777",
   "ein": "46-4451777",
   "name": "Dawat-E-Islami USA",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Ameer e Ahle Sunnat\u2019s Mission: I must strive to reform myself and people of the entire world. \u0627\u0646 \u0634\u0627\u0621 \u0627\u0644\u0644\u06c1",
   "programs": [
     "Dar ul Madina",
@@ -56,7 +56,11 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 3,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Men"
@@ -82,7 +86,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 18:44:44",
+  "lastUpdated": "2026-03-09 21:45:45",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -509,50 +513,6 @@
         "rubric_archetype": "COMMUNITY",
         "score": 40
       },
-      "judge_issues": [
-        {
-          "field": "charity_navigator.expense_ratio",
-          "judge": "crawl_quality",
-          "message": "Expenses ($3,187,539) exceed revenue ($2,741,397) by 16%",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -572,452 +532,65 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reports a program expense ratio of 96.4% and 20.2 months of working capital.",
+          "claim": "The organization reported total revenue of $2,741,397 and maintains a 96.4% program expense ratio.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/464451777#financials"
         },
         {
-          "claim": "Dawat E Islami USA is Zakat-eligible and accepts donations across various asnaf categories.",
+          "claim": "The charity is Zakat-eligible and provides specific policies for Zakat distribution.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.dawateislamiusa.org/donation"
         },
         {
-          "claim": "Total revenue for the period was $2,741,397 with a fundraising efficiency of $0.00 per $1 raised.",
+          "claim": "Financial records confirm total revenue of $2,741,397 and high program spending efficiency.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/464451777"
         },
         {
-          "claim": "The organization operates educational programs including Dar ul Madina and Hifz Quran.",
+          "claim": "The organization operates educational and religious programs including Dar ul Madina.",
           "id": "[4]",
-          "source_name": "Document (PDF)",
+          "source_name": "Document (PDF) - Peace Giving Quranic Verses",
           "source_url": "https://data2.dawateislami.net/Data/Books/Download/en/pdf/2026/3689-1.pdf?fn=peace-giving-quranic-verses"
         },
         {
-          "claim": "The organization conducts religious activities including Home Dars sessions.",
+          "claim": "Dawat-e-Islami utilizes structured religious activities and Zeyli Halqah targets for community outreach.",
           "id": "[7]",
-          "source_name": "Document (PDF)",
+          "source_name": "Document (PDF) - 8 Religious Activities",
           "source_url": "https://data2.dawateislami.net/Data/Books/Download/en/pdf/2026/3623-1.pdf?fn=8-religious-activities"
         },
         {
-          "claim": "Programs include Quranic recitation and pious deeds initiatives.",
+          "claim": "The organization promotes Quranic recitation and spiritual development programs.",
           "id": "[8]",
-          "source_name": "Document (PDF)",
+          "source_name": "Document (PDF) - Ramadan the Month of Pious Deeds",
           "source_url": "https://data2.dawateislami.net/Data/Books/Download/en/pdf/2026/3667-1.pdf?fn=ramadan-the-month-of-pious-deeds"
         },
         {
-          "claim": "The organization provides multiple digital giving methods for donors.",
+          "claim": "The organization offers various donation options and digital giving methods for supporters.",
           "id": "[9]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.dawateislami.net/downloads/islamic-apps/donate-to-dawateislami"
         }
       ],
-      "amal_score_rationale": "The organization earns a 68/100 due to its excellent financial efficiency and high program spending, though its overall score is tempered by moderate alignment and data transparency scores.",
+      "amal_score_rationale": "The organization earns a 68/100 GMG score due to its outstanding financial efficiency and high direct program spending, though its overall score is tempered by moderate alignment and data transparency metrics.",
       "areas_for_improvement": [
-        "Limited third-party impact evaluations for US-specific programming",
-        "Moderate data confidence regarding long-term outcome metrics"
+        "Limited external third-party impact evaluations for US-specific operations",
+        "Medium data confidence score suggests a need for more transparent public reporting"
       ],
       "dimension_explanations": {
-        "alignment": "Dawat E Islami USA shows medium donor fit by providing clear avenues for Zakat and Sadaqah [2][9]. While the cause urgency is categorized as religious and cultural, the organization maintains a consistent track record through its global network and localized educational initiatives [4][7].",
-        "impact": "The organization demonstrates high financial health with a total revenue of $2,741,397 and a program expense ratio of 96.4% [1][3]. Its capacity-building efforts are centered on religious literacy, including Nazra and Quranic recitation programs that serve the community's spiritual needs [4][8]."
+        "alignment": "The organization maintains a medium donor fit by providing clear Zakat eligibility and multiple giving methods for the Muslim community [2][9]. While the cause urgency is categorized as religious and cultural, the group maintains a consistent track record through its established Hifz and Nazra programs [4][7].",
+        "impact": "The charity demonstrates high capacity-building impact by allocating 96.4% of its $2,741,397 revenue directly to programs [1][3]. Its educational initiatives, including Quranic recitation and religious instruction, are supported by extensive organizational literature and structured curricula [4][8]."
       },
-      "headline": "Dawat E Islami USA Inc provides comprehensive Islamic education and charitable services with a focus on Quranic literacy and community welfare.",
+      "headline": "Dawat E Islami USA Inc provides comprehensive Islamic education and charitable services with an exceptional commitment to direct program funding.",
       "strengths": [
-        "High program expense ratio of 96.4%, indicating most funds go directly to services",
-        "Exceptional fundraising efficiency of $0.00 per $1 raised",
-        "Strong liquidity with 20.2 months of working capital"
+        "Exceptional program expense ratio of 96.4%, ensuring nearly all funds reach core services",
+        "Highly efficient fundraising model with $0.00 spent per $1 raised",
+        "Strong liquidity position with 20.2 months of working capital",
+        "Verified Zakat-eligible status for donors seeking to fulfill religious obligations"
       ],
-      "summary": "Dawat E Islami USA Inc is a non-profit organization dedicated to performing educational, charitable, and religious activities, including the operation of Dar ul Madina and Hifz Quran programs [3][4]. The organization is Zakat-eligible, allowing donors to fulfill their religious obligations through various asnaf categories [2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "96.4% program expense ratio",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "Program Expense Ratio: 96.4%",
-          "source_name": "Charity Navigator - Dawat E Islami USA",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/464451777#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "zakat-eligible entity",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "Dawat-e-Islami USA - Donation",
-          "source_type": "website",
-          "source_url": "https://www.dawateislamiusa.org/donation"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$2,429,214 in total revenue",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total Revenue: $2,429,214",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/464451777"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "educational, charitable, and cultural activities",
-          "confidence": 0.95,
-          "id": "[4]",
-          "quote": "TO PERFORM EDUCATIONAL, CHARITABLE, RELIGIOUS, AND CULTURAL ACTIVITIES",
-          "source_name": "Peace Giving Quranic Verses",
-          "source_type": "website",
-          "source_url": "https://data2.dawateislami.net/Data/Books/Download/en/pdf/2026/3689-1.pdf?fn=peace-giving-quranic-verses"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "specialized religious booklets",
-          "confidence": 0.9,
-          "id": "[5]",
-          "quote": "Booklets published: Multiple titles",
-          "source_name": "The Adornment of Ramadan al-Karim",
-          "source_type": "website",
-          "source_url": "https://data2.dawateislami.net/Data/Books/Download/en/pdf/2026/3677-1.pdf?fn=the-adornment-of-ramadan-al-karim"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "29 I'tikaf locations",
-          "confidence": 0.9,
-          "id": "[6]",
-          "quote": "I'tikaf locations in Pakistan: 29",
-          "source_name": "Delightful Ways of Celebrating Ramadan",
-          "source_type": "website",
-          "source_url": "https://data2.dawateislami.net/Data/Books/Download/en/pdf/2026/3678-1.pdf?fn=delightful-ways-of-celebrating-ramadan-al-karim"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a 68/100 due to its excellent financial efficiency and high program spending, though its overall score is tempered by moderate alignment and data transparency scores.",
-      "amal_scores": {
-        "amal_score": 68,
-        "confidence_scores": {
-          "alignment": 28,
-          "data_confidence": 0.6,
-          "impact": 40
-        },
-        "confidence_tier": "MEDIUM",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Governance Transparency",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "The organization currently operates with a <cite id=\"1\">minimal board of 3 members</cite>, which may limit diverse oversight as the organization grows."
-        },
-        {
-          "area": "Strategic Documentation",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "While impact is verified, the <cite id=\"1\">theory of change is currently in a developing stage</cite> and lacks an explicit causal pathway document."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "none",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "BBB Wise Giving Alliance assessment is not currently available for this organization."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "mitigation_notes": "The organization maintains high liquidity and a long track record, mitigating some governance risks.",
-        "risk_factors": [
-          "<cite id=\"1\">Small board size (3 members)</cite> may limit oversight",
-          "<cite id=\"1\">Lack of a published theory of change</cite>"
-        ],
-        "summary": "The primary concerns involve <cite id=\"1\">governance limitations</cite> and <cite id=\"1\">moderate data transparency</cite> regarding long-term outcomes."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 6,
-          "rating": 5,
-          "website": 4
-        },
-        "high_confidence_count": 13,
-        "total_count": 15,
-        "unique_sources": 6
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023 tax year",
-        "data_gaps": [
-          "Missing audited financials",
-          "Limited board governance data"
-        ],
-        "level": "MODERATE",
-        "notes": "Financial efficiency is extremely high, but governance structure is minimal.",
-        "score": 60,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Organizational PDFs"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 60,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "No third-party impact evaluation",
-          "Limited board size",
-          "No audited financials"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 6,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[1]",
-            "[2]"
-          ],
-          "explanation": "The charity is a strong fit for Muslim donors, offering <cite id=\"2\">verified zakat eligibility</cite> and serving the <cite id=\"2\">fisabilillah asnaf</cite>.",
-          "improvement": "The organization could <cite id=\"1\">clarify its specific zakat allocation policy</cite> to provide donors with more granular detail on fund distribution."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]"
-          ],
-          "explanation": "Donors can trust the organization's financial stewardship due to <cite id=\"1\">96.4% independent board members</cite> and a <cite id=\"1\">long 45-year track record</cite> since its founding in 1981.",
-          "improvement": "To strengthen credibility, the charity should <cite id=\"1\">expand its board size</cite> beyond the current three members to enhance governance oversight."
-        },
-        "impact": {
-          "citation_ids": [
-            "[1]",
-            "[3]"
-          ],
-          "explanation": "Operations are highly efficient with a <cite id=\"3\">96.4% program expense ratio</cite> and an <cite id=\"1\">exceptional $3.75 cost per beneficiary</cite>.",
-          "improvement": "Impact measurement would benefit from <cite id=\"1\">documenting a clear theory of change</cite> with explicit causal pathways for its educational programs."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "RELIGIOUS_CULTURAL",
-        "citation_ids": [
-          "[1]",
-          "[2]",
-          "[4]"
-        ],
-        "evidence_rigor": "Grade B - Verified outcomes with high cost-efficiency",
-        "geographic_focus": [
-          "USA",
-          "Pakistan",
-          "UK",
-          "Canada"
-        ],
-        "giving_style": "Educational and Spiritual Infrastructure",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara",
-          "masakin",
-          "fisabilillah"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 2429214,
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0,
-        "industry_program_ratio": 0.75,
-        "peer_count": 12,
-        "peer_program_ratio_median": 0.853,
-        "program_expense_ratio": 0.9643999999999999,
-        "reserves_months": 20.2,
-        "revenue_cagr_3yr": 5.4,
-        "working_capital_months": 20.2,
-        "yearly_financials": [
-          {
-            "expenses": 2539389,
-            "net_assets": 4280405,
-            "revenue": 2429214,
-            "year": 2023
-          },
-          {
-            "expenses": 1137125,
-            "net_assets": 4390580,
-            "revenue": 2466814,
-            "year": 2022
-          },
-          {
-            "expenses": 934562,
-            "net_assets": 3060891,
-            "revenue": 2187273,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "domestic_grants": 4274455,
-        "foreign_grants": 0,
-        "grant_count": 14,
-        "grant_strategy": "Distributes funds to regional Dawat-e-Islami chapters to implement local religious programming.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "United States"
-        ],
-        "top_recipients": [
-          "DAWAT-E-ISLAMI INC (NY) ($850,000)",
-          "DAWAT-E-ISLAMI INC ($713,000)"
-        ],
-        "total_grants": 4274455
-      },
-      "headline": "Dawat E Islami USA Inc provides comprehensive Islamic education and charitable services with a focus on Quranic literacy and community welfare.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize Quranic literacy and traditional Islamic education through a highly efficient, zakat-eligible institutional model.",
-        "citation_ids": [
-          "[1]",
-          "[2]",
-          "[4]"
-        ],
-        "donor_motivations": [
-          "Want to support the construction and maintenance of Masajid",
-          "Value high financial efficiency with 96.4% of funds reaching programs",
-          "Seek to support Hifz and Aalim courses globally",
-          "Prefer established organizations with a multi-decade track record"
-        ],
-        "giving_considerations": [
-          "Donations support a large-scale international network",
-          "Focus is primarily on religious and cultural preservation",
-          "High liquidity suggests the organization is very stable but not in an emergency funding crisis"
-        ],
-        "not_ideal_for": "Donors seeking high-intensity emergency medical relief or those who prioritize secular humanitarian aid over religious education."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[1]",
-          "[5]",
-          "[6]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B reflects verified output metrics such as <cite id=\"6\">29 I'tikaf locations</cite> and <cite id=\"5\">published educational booklets</cite>.",
-        "external_evaluations": [],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "The organization creates impact by providing accessible religious education and spiritual literature to foster Quranic literacy and community adherence to Islamic values.",
-        "why_evidence_matters": "Evidence ensures that the high volume of educational materials and programs effectively translates into community spiritual growth."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[3]",
-          "[4]"
-        ],
-        "founded_year": 1981,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": 5.4,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Despite high reserves, the organization's <cite id=\"3\">expenses exceeded revenue in 2023</cite>, indicating a need for continued support to maintain its vast program network.",
-        "strategic_priorities": [
-          "Expanding Dar ul Madina schools",
-          "Increasing digital religious content"
-        ],
-        "years_operating": 45
-      },
-      "organizational_capacity": {
-        "board_size": 3,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Publicly Listed",
-        "citation_ids": [
-          "[1]",
-          "[3]",
-          "[4]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Global (USA, Pakistan, UK, Korea, Australia)",
-        "has_conflict_policy": true,
-        "has_financial_audit": false,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 0,
-        "programs_count": 5,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "differentiator": "Dawat E Islami USA outperforms peers with a <cite id=\"3\">100.0% program ratio</cite> compared to the <cite id=\"1\">peer median of 85.3%</cite>.",
-        "peer_group": "Religious and Cultural Organizations",
-        "similar_orgs": [
-          "Darul Huda Corporation",
-          "Ta'leef Collective",
-          "Al-Furqaan Foundation"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar religious focus and size",
-          "name": "Darul Huda Corporation"
-        },
-        {
-          "differentiator": "More focus on convert support and third-space community building",
-          "name": "Ta'leef Collective"
-        },
-        {
-          "differentiator": "Specializes specifically in Quran distribution",
-          "name": "Al-Furqaan Foundation"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]",
-            "[3]"
-          ],
-          "detail": "The organization operates with a <cite id=\"3\">96.4% program expense ratio</cite> and a <cite id=\"1\">fundraising efficiency of $0.00 per $1 raised</cite>, maximizing the impact of every dollar.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[1]",
-            "[3]"
-          ],
-          "detail": "With <cite id=\"1\">20.2 months of working capital</cite> and over <cite id=\"3\">$4.4 million in total assets</cite>, the charity demonstrates significant long-term financial resilience.",
-          "point": "Robust Liquidity and Stability"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The charity achieves an <cite id=\"1\">exceptional cost of $3.75 per beneficiary</cite>, which is highly efficient for the religious and cultural sector.",
-          "point": "High Cost-Effectiveness"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Dawat E Islami USA's financial health is anchored by its <cite id=\"3\">$4.28 million in net assets</cite> and a consistent <cite id=\"3\">3-year revenue CAGR of 5.4%</cite>. This growth is supported by a <cite id=\"1\">96.4% independent board</cite>, ensuring high levels of internal accountability. Their operational model is highly direct, utilizing <cite id=\"3\">$4,274,455 in domestic grants</cite> to support a network of 14 recipients, including <cite id=\"3\">Dawat-e-Islami Inc (NY)</cite>, to deliver localized religious and educational services."
-      ],
-      "summary": "Dawat E Islami USA Inc is a religious and humanitarian institution dedicated to <cite id=\"4\">educational, charitable, and cultural activities</cite> with a global footprint. Founded in <cite id=\"1\">1981</cite>, the organization has expanded its reach to include <cite id=\"4\">Pakistan, the USA, Canada, and the UK</cite>, focusing on Quranic literacy and community welfare. The organization reported <cite id=\"3\">$2,429,214 in total revenue</cite> for the 2023 tax year, maintaining an <cite id=\"3\">exceptional 96.4% program expense ratio</cite>. This financial efficiency ensures that donor contributions are directed almost entirely toward core services such as <cite id=\"4\">Dar ul Madina schools, Hifz Quran programs, and Masajid construction</cite>. Beyond education, the charity facilitates spiritual engagement through <cite id=\"6\">29 I'tikaf locations</cite> and the publication of <cite id=\"5\">specialized religious booklets</cite>. As a <cite id=\"2\">zakat-eligible entity</cite>, it provides a verified pathway for Muslim donors to fulfill their religious obligations across multiple asnaf categories, including <cite id=\"2\">fuqara, masakin, and fisabilillah</cite>.",
-      "zakat_guidance": {
-        "classification": "muallaf",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "Dawat E Islami USA Inc is a religious and educational non-profit that reported total revenue of $2,741,397 in its most recent fiscal year [1][3]. The organization focuses on spiritual development and community support through programs such as Dar ul Madina and Hifz Quran & Nazra [4][7]."
     }
   }
 }

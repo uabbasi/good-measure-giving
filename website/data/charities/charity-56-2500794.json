@@ -2,7 +2,7 @@
   "id": "56-2500794",
   "ein": "56-2500794",
   "name": "Givelight Foundation",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Givelight Foundations primary exempt purpose is to provide shelter, clothing and food to children who have been orphaned by a natural disaster or other global crisis; to provide educational, spiritual and social services to the children residing in these orphanages.",
   "programs": [
     "Indonesia - Noordeen",
@@ -62,7 +62,11 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": 0.5866553206630478
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 4,
+    "independentBoardMembers": null,
+    "ceoCompensation": 134108
+  },
   "targeting": {
     "populationsServed": [
       "Youth",
@@ -106,7 +110,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 18:45:49",
+  "lastUpdated": "2026-03-09 21:45:06",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -319,18 +323,6 @@
       "data_points": {
         "reserves_months": 135
       }
-    },
-    {
-      "type": "ceo_comp_excessive",
-      "severity": "medium",
-      "headline": "CEO compensation is 6.0% of revenue ($137,082 on $2,270,848)",
-      "detail": "For orgs with revenue <$5M, CEO pay above 5% of revenue warrants scrutiny.",
-      "data_points": {
-        "ceo_compensation": 137082,
-        "comp_ratio": 0.0604,
-        "threshold": 0.05,
-        "total_revenue": 2270848
-      }
     }
   ],
   "amalEvaluation": {
@@ -466,7 +458,7 @@
             "status": "partial"
           },
           {
-            "evidence": "Board: 4 members, but For orgs with revenue <$5M, CEO pay above 5% of revenue warrants scrutiny. \u2014 oversight concern",
+            "evidence": "Board governance: MINIMAL (4 members)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
@@ -482,66 +474,15 @@
         "rubric_archetype": "EDUCATION",
         "score": 33
       },
-      "judge_issues": [
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "working_capital_months",
-          "judge": "synthesize_quality",
-          "message": "Extremely high working capital (135.0 months) may indicate hoarding or data error",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
-        "risk_summary": "2 risk(s) identified.",
+        "risk_summary": "1 risk(s) identified.",
         "risks": [
           {
             "category": "financial",
             "data_source": "Form 990 Schedule F",
             "description": "High domestic burn: 59% of expenses stay in the US despite international operations",
-            "mitigation": null,
-            "severity": "medium"
-          },
-          {
-            "category": "operational",
-            "data_source": "Reconciliation",
-            "description": "CEO compensation is 6.0% of revenue ($137,082 on $2,270,848)",
             "mitigation": null,
             "severity": "medium"
           }
@@ -560,13 +501,13 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "GiveLight Foundation has a Charity Navigator score of 94.66666666666667/100 and maintains high financial accountability.",
+          "claim": "GiveLight Foundation holds a Charity Navigator score of 94.66666666666667/100.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/562500794#financials"
         },
         {
-          "claim": "The charity is zakat-eligible and provides specific policies for zakat donations.",
+          "claim": "The organization is zakat-eligible and provides specific policies for zakat donations.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://givelight.org/donate/"
@@ -578,618 +519,40 @@
           "source_url": "https://projects.propublica.org/nonprofits/organizations/562500794"
         },
         {
-          "claim": "GiveLight operates the Noordeen home in Indonesia and provides direct care for orphans.",
+          "claim": "GiveLight operates the Rahmatan lil \u2018Alamain home in Indonesia.",
           "id": "[4]",
           "source_name": "Nabila \u2013 Rahmatan lil \u2018Alamain",
           "source_url": "https://givelight.org/wp-content/uploads/2022/11/Nabilah_Rahmatan-efb.pdf"
         },
         {
-          "claim": "The foundation tracks outcomes such as university degrees attained and the number of orphanage homes operating in Sri Lanka and Bangladesh.",
+          "claim": "The foundation tracks outcomes such as university degrees attained and meals provided per day.",
           "id": "[5]",
           "source_name": "Annual Report (2019)",
           "source_url": "https://givelight.org/wp-content/uploads/2020/04/2019-Annual-Report-Website-482.pdf"
         },
         {
-          "claim": "The organization offers various giving methods and donation options for supporters.",
+          "claim": "Donors have multiple giving methods to support orphan care and educational programs.",
           "id": "[6]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://givelight.org/donate/"
         }
       ],
-      "amal_score_rationale": "GiveLight Foundation earns a solid score due to its exceptional financial health, high program spending, and clear alignment with donor values through zakat eligibility.",
+      "amal_score_rationale": "The organization earns a solid overall rating due to its high financial transparency and efficient use of capital, though its total score is moderated by medium data confidence levels.",
       "areas_for_improvement": [
-        "Improving data confidence through more recent third-party impact evaluations",
-        "Expanding program reporting beyond the primary regions of Indonesia, Sri Lanka, and Bangladesh"
+        "Improving data confidence and third-party impact verification to move beyond medium-level reporting.",
+        "Expanding public documentation of long-term beneficiary outcomes beyond the 2019 reporting cycle."
       ],
       "dimension_explanations": {
-        "alignment": "The organization shows high alignment for donors interested in global education and orphan care, and it explicitly accepts zakat donations [2][6]. Its long track record of building homes in response to natural disasters establishes it as a reliable entity for crisis relief [4][5].",
-        "impact": "The foundation demonstrates direct impact by operating physical homes and providing meals and university-level education to orphans [4][5]. With a program expense ratio of 88.7% and a Charity Navigator score of 94.66666666666667/100, the organization shows strong financial management and effectiveness in delivering services [1][3]."
+        "alignment": "The charity shows high alignment for Muslim donors through its zakat-eligible status and focus on global education and orphan care [2][6]. Its track record includes establishing dedicated homes like the Noordeen in Sri Lanka and the Rahmatan lil \u2018Alamain in Indonesia [4][5].",
+        "impact": "GiveLight demonstrates direct service effectiveness by maintaining a high program expense ratio of 88.7% and achieving a Charity Navigator score of 94.66666666666667/100 [1][3]. The foundation has successfully scaled its model to provide university degrees and daily meals for orphans across multiple international sites [5]."
       },
       "headline": "GiveLight Foundation provides a global network of loving homes and educational support for orphaned children facing extreme circumstances.",
       "strengths": [
-        "High program expense ratio of 88.7% ensures most funds reach beneficiaries",
-        "Exceptional fundraising efficiency of $0.00 per $1 raised",
-        "Strong liquidity with 135.0 months of working capital"
+        "High program expense ratio of 88.7%, ensuring the vast majority of funds reach beneficiaries.",
+        "Exceptional fundraising efficiency with a cost of $0.00 per $1 raised.",
+        "Strong financial stability with 135.0 months of working capital."
       ],
-      "summary": "GiveLight Foundation is a crisis relief organization that builds sustainable homes and families for orphans in countries including Indonesia, Sri Lanka, and Bangladesh [4][5]. The organization is recognized for its high financial accountability and is officially zakat-eligible for Muslim donors [1][2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2025-01-09",
-          "claim": "loving homes and educational support for orphaned children",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "GiveLight is a world-recognized crisis relief organization building loving homes & family for orphans",
-          "source_name": "Charity Website - Mission",
-          "source_type": "website",
-          "source_url": "https://givelight.org/donate/"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "$2,186,834 in total revenue",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total Revenue: $2,186,834",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/562500794"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "88.7% program expense ratio",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Program Expense Ratio: 100.0%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/562500794"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "permanent orphanages and scholarship funds",
-          "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Orphanage Construction and Operation, K-12 Scholarships, Higher Education Fund",
-          "source_name": "Annual Report (2019)",
-          "source_type": "website",
-          "source_url": "https://givelight.org/wp-content/uploads/2020/04/2019-Annual-Report-Website-482.pdf"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "94.66666666666667/100 overall score from Charity Navigator",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Overall Score: 94.67",
-          "source_name": "Charity Navigator - Ratings",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/562500794#financials"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "verified as zakat-eligible",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "Charity Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://givelight.org/donate/"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "exceptional fundraising efficiency of $0.00 per $1 raised",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Fundraising Efficiency: $0.00",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/562500794#financials"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "135.0 months of working capital",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Working capital: 135.0 months",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/562500794#financials"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "$631,954 in foreign grants",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Foreign Grants: $631,954",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/562500794"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "documented its theory of change",
-          "confidence": 0.8,
-          "id": "[10]",
-          "quote": "Theory of Change Documented: Yes",
-          "source_name": "External Discoveries",
-          "source_type": "website",
-          "source_url": "https://givelight.org/donate/"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "'My Prophet, My Honor' curriculum",
-          "confidence": 0.9,
-          "id": "[11]",
-          "quote": "Key Outcomes: Application of prophetic teachings in community",
-          "source_name": "Outcome PDF",
-          "source_type": "website",
-          "source_url": "https://givelight.org/wp-content/uploads/2022/11/my_prophet_my_honor-93c.pdf"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "4 members",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Board Size: 4",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/562500794"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "$134,108",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "CEO (Dian Alyan): $134,108",
-          "source_name": "Charity Navigator - Leadership",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/562500794#leadership"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "separate restricted or endowment funds from operating reserves",
-          "confidence": 0.9,
-          "id": "[14]",
-          "quote": "Improvement: Separate restricted/endowment funds from operating reserves",
-          "source_name": "Score Details - Improvement",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/562500794#financials"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "-3.3% three-year revenue CAGR",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "3-Year Revenue CAGR: -3.3%",
-          "source_name": "Financial Trends",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/562500794"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "21-year track record",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Founded: 2005",
-          "source_name": "Charity Website - About",
-          "source_type": "website",
-          "source_url": "https://givelight.org/donate/"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "$1377.81 per beneficiary",
-          "confidence": 0.9,
-          "id": "[17]",
-          "quote": "Evidence: $1377.81/beneficiary",
-          "source_name": "Score Details - Impact",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/562500794#impact"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "documenting a clearer theory of change",
-          "confidence": 0.9,
-          "id": "[18]",
-          "quote": "Improvement: Document a clear theory of change with an explicit causal pathway.",
-          "source_name": "Score Details - Improvement",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/562500794#impact"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "eight asnaf categories",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Zakat Categories: fuqara, masakin, amil, muallaf, riqab, gharimin, fisabilillah, ibn_sabil",
-          "source_name": "Charity Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://givelight.org/donate/"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "expanding services to additional underserved geographies",
-          "confidence": 0.9,
-          "id": "[20]",
-          "quote": "Improvement: Expand services to underserved populations or geographies",
-          "source_name": "Score Details - Alignment",
-          "source_type": "website",
-          "source_url": "https://givelight.org/donate/"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "peer median of 90.3%",
-          "confidence": 1,
-          "id": "[21]",
-          "quote": "Peer Program Ratio Median: 90.3%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/562500794#financials"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "87.0",
-          "confidence": 1,
-          "id": "[22]",
-          "quote": "Accountability: 87",
-          "source_name": "Charity Navigator - Beacon",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/562500794#financials"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "5",
-          "confidence": 1,
-          "id": "[23]",
-          "quote": "Programs: Orphanage Construction, K-12 Scholarships, Higher Education, Family Scholarships, Global Essay",
-          "source_name": "Charity Website - Programs",
-          "source_type": "website",
-          "source_url": "https://givelight.org/donate/"
-        }
-      ],
-      "amal_score_rationale": "GiveLight Foundation earns a solid score due to its exceptional financial health, high program spending, and clear alignment with donor values through zakat eligibility.",
-      "amal_scores": {
-        "amal_score": 69,
-        "confidence_scores": {
-          "alignment": 38,
-          "data_confidence": 0.6,
-          "impact": 33
-        },
-        "confidence_tier": "MEDIUM",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Governance Oversight",
-          "citation_ids": [
-            "[12]",
-            "[13]"
-          ],
-          "context": "The board currently consists of <cite id=\"12\">4 members</cite>, and the CEO compensation of <cite id=\"13\">$134,108</cite> warrants closer scrutiny relative to the organization's revenue size."
-        },
-        {
-          "area": "Financial Transparency",
-          "citation_ids": [
-            "[14]"
-          ],
-          "context": "To improve its financial health score, the charity should <cite id=\"14\">separate restricted or endowment funds from operating reserves</cite> and publish a clear reserve-use policy."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[5]"
-        ],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": null,
-        "standards_met": null,
-        "standards_not_met": [],
-        "summary": "The organization undergoes financial audits and maintains high transparency scores on other rating platforms."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[12]",
-          "[15]"
-        ],
-        "mitigation_notes": "The organization maintains exceptional liquidity with over 135.0 months of working capital to buffer against revenue fluctuations.",
-        "risk_factors": [
-          "<cite id=\"15\">Negative 3-year revenue growth of -3.3%</cite>",
-          "<cite id=\"12\">Board size of only 4 members</cite> may limit diverse oversight"
-        ],
-        "summary": "Concerns include <cite id=\"15\">declining revenue trends (-3.3% CAGR)</cite> and potential governance risks due to a <cite id=\"12\">small board size</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 5,
-          "rating": 10,
-          "website": 8
-        },
-        "high_confidence_count": 20,
-        "total_count": 23,
-        "unique_sources": 6
-      },
-      "confidence": {
-        "data_freshness": "Most data from 2023 Form 990 and 2024 Charity Navigator updates",
-        "data_gaps": [
-          "Missing 2022 financial data",
-          "Limited independent impact evaluations"
-        ],
-        "level": "MEDIUM",
-        "notes": "Strong financial data for 2023, but historical trends are incomplete due to missing 2022 figures.",
-        "score": 60,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Charity Website",
-          "Outcome Reports"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 60,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing 2022 revenue data in trend analysis",
-          "Small board size relative to revenue"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 23,
-        "unique_sources": 6,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[6]",
-            "[19]",
-            "[20]"
-          ],
-          "explanation": "Strong alignment for Muslim donors as the charity <cite id=\"6\">accepts zakat</cite> and serves <cite id=\"19\">eight asnaf categories</cite> including the poor and wayfarers.",
-          "improvement": "Alignment could be further strengthened by <cite id=\"20\">expanding services to additional underserved geographies</cite> with limited nonprofit coverage."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[5]",
-            "[12]",
-            "[16]"
-          ],
-          "explanation": "Donors can trust GiveLight due to its <cite id=\"5\">94.66666666666667/100 rating</cite> and its <cite id=\"16\">21-year track record</cite> since being founded in 2005.",
-          "improvement": "Credibility could be enhanced by expanding the <cite id=\"12\">board of directors</cite> beyond the current 4 members to increase independent oversight."
-        },
-        "impact": {
-          "citation_ids": [
-            "[3]",
-            "[17]",
-            "[18]"
-          ],
-          "explanation": "Impact is driven by <cite id=\"3\">100.0% program efficiency</cite> and a direct service model that costs approximately <cite id=\"17\">$1377.81 per beneficiary</cite>.",
-          "improvement": "The foundation could improve its impact score by <cite id=\"18\">documenting a clearer theory of change</cite> with more explicit causal pathways for its educational outcomes."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[6]",
-          "[18]",
-          "[19]"
-        ],
-        "evidence_rigor": "Grade C - Verified evidence and outcomes with developing theory of change",
-        "geographic_focus": [
-          "Indonesia",
-          "Bangladesh",
-          "Pakistan",
-          "Afghanistan",
-          "Sri Lanka",
-          "Morocco"
-        ],
-        "giving_style": "Direct service and long-term infrastructure",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)",
-          "amil",
-          "muallaf",
-          "riqab",
-          "gharimin",
-          "fisabilillah",
-          "ibn_sabil"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 2186834,
-        "citation_ids": [
-          "[3]",
-          "[15]",
-          "[22]"
-        ],
-        "cn_financial_score": 87,
-        "cn_overall_score": 94.66666666666667,
-        "fundraising_ratio": 0,
-        "industry_program_ratio": 0.75,
-        "peer_count": 34,
-        "peer_program_ratio_median": 0.903,
-        "program_expense_ratio": 0.8867,
-        "reserves_months": 135,
-        "revenue_cagr_3yr": -3.3,
-        "working_capital_months": 135,
-        "yearly_financials": [
-          {
-            "expenses": 1002635,
-            "net_assets": 11277369,
-            "revenue": 2186834,
-            "year": 2023
-          },
-          {
-            "expenses": 17522,
-            "net_assets": 0,
-            "revenue": 0,
-            "year": 2022
-          },
-          {
-            "expenses": 835031,
-            "net_assets": 8524406,
-            "revenue": 2338392,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[9]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 631954,
-        "grant_count": 3,
-        "grant_strategy": "Directly funds the construction and operation of orphanages through international partners.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "South Asia",
-          "Southeast Asia"
-        ],
-        "top_recipients": [
-          "Foreign recipients in Indonesia and Bangladesh"
-        ],
-        "total_grants": 631954
-      },
-      "headline": "GiveLight Foundation provides a global network of loving homes and educational support for orphaned children facing extreme circumstances.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize maximum financial efficiency and want their zakat to fund long-term, sustainable homes and education for orphans in Muslim-majority countries.",
-        "citation_ids": [
-          "[3]",
-          "[5]",
-          "[12]",
-          "[15]"
-        ],
-        "donor_motivations": [
-          "Want 88.7% of their donation to reach program services",
-          "Value long-term stability for orphans over temporary relief",
-          "Seek to fulfill zakat through an organization serving all eight asnaf categories",
-          "Prefer supporting established organizations with high third-party accountability ratings"
-        ],
-        "giving_considerations": [
-          "The organization has a very high reserve ratio, meaning immediate cash needs may be lower than peers",
-          "Governance is concentrated in a small board",
-          "Revenue has seen a slight decline over the last three years"
-        ],
-        "not_ideal_for": "Donors seeking high-growth startups or those who prefer organizations with large, diverse boards of directors."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[5]",
-          "[10]",
-          "[11]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects verified outcomes and a documented theory of change, though it lacks independent RCT-level evaluations.",
-        "external_evaluations": [
-          "Charity Navigator Impact Beacon"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "GiveLight builds permanent homes and provides holistic education to create 'active citizens' who apply prophetic teachings in their communities.",
-        "why_evidence_matters": "Evidence ensures that the 'loving homes' model effectively leads to long-term success for orphans, such as university degree attainment."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[15]",
-          "[16]",
-          "[23]"
-        ],
-        "founded_year": 2005,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": -3.3,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "The organization's goal to build beautiful homes on a global scale requires significant capital for construction and long-term maintenance.",
-        "strategic_priorities": [
-          "Orphanage Construction",
-          "Higher Education Fund expansion",
-          "Global Essay Competition"
-        ],
-        "years_operating": 21
-      },
-      "organizational_capacity": {
-        "board_size": 4,
-        "ceo_compensation": 134108,
-        "ceo_compensation_pct_revenue": 6.13,
-        "ceo_name": "Dian Alyan",
-        "citation_ids": [
-          "[12]",
-          "[13]",
-          "[23]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Indonesia, Bangladesh, Cambodia, Sri Lanka, Morocco, Pakistan, USA, Malaysia",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 0.75,
-        "payroll_to_revenue_pct": 6.27,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[3]",
-          "[21]"
-        ],
-        "differentiator": "Distinguished by a <cite id=\"3\">100.0% program ratio</cite>, which significantly exceeds the <cite id=\"21\">peer median of 90.3%</cite>.",
-        "peer_group": "International Humanitarian & Orphan Care",
-        "similar_orgs": [
-          "Humanity for Relief and Development",
-          "Developments in Literacy",
-          "The Noor Project"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on orphan care and humanitarian relief with a comparable organizational size.",
-          "name": "Humanity for Relief and Development"
-        },
-        {
-          "differentiator": "Shares a focus on education for the poor (fuqara) and needy (masakin).",
-          "name": "Developments in Literacy"
-        },
-        {
-          "differentiator": "Similar size but includes a focus on the fisabilillah asnaf category.",
-          "name": "The Noor Project"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[3]",
-            "[7]"
-          ],
-          "detail": "The organization directs <cite id=\"3\">88.7% of its expenses to programs</cite> and maintains a <cite id=\"7\">fundraising efficiency of $0.00 per $1 raised</cite>.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[8]"
-          ],
-          "detail": "GiveLight maintains <cite id=\"8\">135.0 months of working capital</cite>, providing significant long-term stability for its orphanages.",
-          "point": "Robust Financial Reserves"
-        },
-        {
-          "citation_ids": [
-            "[5]"
-          ],
-          "detail": "The charity holds a <cite id=\"5\">94.66666666666667/100 rating from Charity Navigator</cite> with a perfect score of 100 in Leadership.",
-          "point": "High Accountability Standards"
-        }
-      ],
-      "strengths_deep_dive": [
-        "GiveLight Foundation's strength lies in its ability to convert donor capital into direct services with minimal overhead. By reporting a <cite id=\"3\">88.7% program expense ratio</cite>, the organization demonstrates a lean operational model where administrative costs are likely covered by specific board or restricted funding. This is complemented by <cite id=\"9\">$631,954 in foreign grants</cite> distributed to international partners, ensuring that funds reach high-need regions like Indonesia and Bangladesh. Furthermore, the organization has <cite id=\"10\">documented its theory of change</cite>, focusing on holistic development through religious literacy and active citizenship, as evidenced by their <cite id=\"11\">'My Prophet, My Honor' curriculum</cite>."
-      ],
-      "summary": "founded in 2005, GiveLight Foundation is a global humanitarian organization dedicated to providing <cite id=\"1\">loving homes and educational support for orphaned children</cite> in response to extreme circumstances. The organization operates with a high degree of financial efficiency, reporting <cite id=\"2\">$2,186,834 in total revenue</cite> for the 2023 fiscal year while maintaining a <cite id=\"3\">88.7% program expense ratio</cite>. GiveLight's model focuses on long-term sustainability, moving beyond emergency relief to establish <cite id=\"4\">permanent orphanages and scholarship funds</cite> in countries such as Indonesia, Pakistan, and Bangladesh. The foundation has earned a <cite id=\"5\">94.66666666666667/100 overall score from Charity Navigator</cite>, reflecting strong performance in accountability and leadership. For Muslim donors, the organization is <cite id=\"6\">verified as zakat-eligible</cite>, supporting multiple asnaf categories including the poor (fuqara) and needy (masakin). Its operations are characterized by <cite id=\"7\">exceptional fundraising efficiency of $0.00 per $1 raised</cite>, ensuring that public contributions are directed entirely toward its core mission of orphan care and education.",
-      "zakat_guidance": {
-        "classification": "fuqara",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "GiveLight Foundation is a crisis relief organization that builds sustainable homes and families for orphans in countries including Indonesia, Sri Lanka, and Bangladesh [4][5]. The organization is recognized as zakat-eligible, allowing donors to fulfill their religious obligations through direct support of vulnerable children [2][6]."
     }
   }
 }

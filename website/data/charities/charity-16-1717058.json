@@ -2,7 +2,7 @@
   "id": "16-1717058",
   "ein": "16-1717058",
   "name": "SYRIAN AMERICAN MEDICAL SOCIETY FOUNDATION",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "SAMS works to serve the medical needs of patients in need, regardless of religious background, race, ethnicity, or political affiliation.",
   "programs": [
     "Medical Missions",
@@ -58,7 +58,11 @@
     "cashAdjustedProgramRatio": 0.9287677399958157,
     "domesticBurnRate": 0.7252485161449291
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 8,
+    "independentBoardMembers": null,
+    "ceoCompensation": 182509
+  },
   "targeting": {
     "populationsServed": [
       "Youth",
@@ -88,7 +92,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-03-09 13:02:26",
+  "lastUpdated": "2026-03-09 21:44:55",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -2098,38 +2102,6 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 42
       },
-      "judge_issues": [
-        {
-          "field": "baseline_narrative.risks.risk_summary",
-          "judge": "score",
-          "message": "The risk summary mentions a high domestic burn rate (73% of expenses stay in the US) but does not explain how this impacts the overall score. This is a key concern that should be addressed in the rationale.",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -5,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -2157,441 +2129,69 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "SAMS maintains high financial accountability and efficient fundraising metrics.",
+          "claim": "SAMS Foundation is a humanitarian organization providing medical relief.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/161717058#financials"
         },
         {
-          "claim": "The organization is zakat-eligible and maintains a specific zakat policy for donors.",
+          "claim": "The charity is zakat-eligible and follows specific zakat policies.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.sams-usa.net/zakat"
         },
         {
-          "claim": "The foundation reported total revenue of $61,395,982 and a program expense ratio of 95.6%.",
+          "claim": "The organization reported total revenue of $61,395,982 and a program expense ratio of 95.6%.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/161717058"
         },
         {
-          "claim": "SAMS provides extensive medical services inside Syria and specialized mental health support.",
+          "claim": "SAMS provides primary and specialty healthcare centers and medical missions.",
           "id": "[4]",
           "source_name": "Human Devastation Syndrome: The Impact of Conflict on Mental Health",
           "source_url": "https://sams-usa.net/wp-content/uploads/2018/11/Mental-health-report-17.pdf"
         },
         {
-          "claim": "The organization facilitates support groups for children in Jordan and Syria.",
+          "claim": "The organization provides medical services inside Syria.",
+          "id": "[5]",
+          "source_name": "R",
+          "source_url": "https://sams-usa.net/wp-content/uploads/2018/11/Mental-health-report-17.pdf"
+        },
+        {
+          "claim": "SAMS supports children through support groups in Jordan and Syria.",
           "id": "[6]",
           "source_name": "ead",
           "source_url": "https://sams-usa.net/wp-content/uploads/2018/11/Mental-health-report-16.pdf"
         },
         {
-          "claim": "Therapeutic interventions by SAMS have led to a reduction in PTSD symptoms among patients.",
+          "claim": "Therapy programs have resulted in a reduction in PTSD symptoms.",
           "id": "[7]",
           "source_name": "the Report Here",
           "source_url": "https://sams-usa.net/wp-content/uploads/2018/11/Mental-health-report-17.pdf"
+        },
+        {
+          "claim": "The organization offers various donation options and giving methods.",
+          "id": "[8]",
+          "source_name": "Charity Website - Donate",
+          "source_url": "https://sams-usa.net/donate/"
         }
       ],
-      "amal_score_rationale": "SAMS earns a high overall score due to its exceptional financial efficiency, direct service impact in high-urgency conflict zones, and clear alignment with donor values through zakat-eligible programming.",
+      "amal_score_rationale": "SAMS Foundation earns a high overall score due to its exceptional financial efficiency, direct service impact, and strong alignment with urgent global health needs in conflict zones.",
       "areas_for_improvement": [
-        "Increasing working capital reserves beyond the current 4.6 months to enhance long-term sustainability",
-        "Expanding public reporting on specific cost-per-beneficiary metrics across all specialty programs"
+        "Working capital reserves are currently at 4.6 months, which may limit long-term sustainability during extended funding gaps"
       ],
       "dimension_explanations": {
-        "alignment": "SAMS shows strong alignment with humanitarian and faith-based donor priorities as a ZAKAT-ELIGIBLE organization with a transparent zakat policy [2]. The foundation addresses high-urgency global health needs while maintaining a lean operational structure, spending only $0.02 to raise every dollar [1][3].",
-        "impact": "The organization demonstrates high impact through direct service delivery, maintaining a 95.6% program expense ratio and providing critical medical services inside Syria and neighboring countries [3][4]. Their specialized mental health interventions have shown documented success in supporting children and reducing trauma symptoms in conflict-affected populations [6][7]."
+        "alignment": "SAMS is highly aligned with the needs of Muslim donors, as it is officially Zakat-eligible and adheres to specific Zakat policies and asnaf categories [2]. The organization addresses the high-urgency cause of global health in crisis regions with a proven track record of providing medical services inside Syria and surrounding areas [5][6].",
+        "impact": "The organization demonstrates high impact through direct medical service delivery, including medical missions and specialized healthcare centers [4][7]. Financial health is robust, characterized by a total revenue of $61,395,982 and a program expense ratio of 95.6%, which maximizes the resources available for patient care [3]. Furthermore, their MHPSS programs have shown measurable effectiveness, such as a reduction in PTSD symptoms among therapy participants [7]."
       },
       "headline": "The Syrian American Medical Society Foundation provides life-saving medical relief and specialized healthcare to vulnerable populations regardless of background or affiliation.",
       "strengths": [
-        "High program expense ratio of 95.6%, ensuring the vast majority of funds reach those in need",
-        "Exceptional fundraising efficiency with a cost of only $0.02 per $1 raised",
-        "Comprehensive Mental Health and Psychosocial Support (MHPSS) programs that demonstrate measurable reductions in PTSD symptoms"
+        "Exceptional program expense ratio of 95.6%, ensuring the vast majority of funds reach those in need",
+        "Highly efficient fundraising operations with a cost of only $0.02 per $1 raised",
+        "Strong focus on specialized Mental Health and Psychosocial Support (MHPSS) in conflict areas"
       ],
-      "summary": "The Syrian American Medical Society (SAMS) Foundation is a humanitarian organization dedicated to delivering essential primary and specialty healthcare services to patients in crisis zones [1][4]. In the most recent fiscal year, the organization reported a total revenue of $61,395,982 to support its extensive network of medical missions and health centers [3]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "Candid Platinum Seal of Transparency",
-          "source_name": "Charity Navigator - SAMS",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/8554722"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "zakat eligibility verified",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "SAMS is a Zakat-eligible organization",
-          "source_name": "SAMS - Zakat",
-          "source_type": "website",
-          "source_url": "https://www.sams-usa.net/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$99,929,862 in total revenue",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total revenue: $99,929,862",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/161717058"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3.5 million medical services",
-          "confidence": 0.9,
-          "id": "[4]",
-          "quote": "Medical services provided: 3,500,000",
-          "source_name": "SAMS Mental Health Report",
-          "source_type": "evaluation",
-          "source_url": "https://sams-usa.net/wp-content/uploads/2018/11/Mental-health-report-17.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "reduction in PTSD symptoms",
-          "confidence": 0.9,
-          "id": "[7]",
-          "quote": "Reduction in PTSD symptoms after therapy",
-          "source_name": "SAMS Impact Report",
-          "source_type": "evaluation",
-          "source_url": "https://sams-usa.net/wp-content/uploads/2018/11/Mental-health-report-17.pdf"
-        }
-      ],
-      "amal_score_rationale": "SAMS earns a high overall score due to its exceptional financial efficiency, direct service impact in high-urgency conflict zones, and clear alignment with donor values through zakat-eligible programming.",
-      "amal_scores": {
-        "amal_score": 80,
-        "confidence_scores": {
-          "alignment": 43,
-          "data_confidence": 0.95,
-          "impact": 42
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Cost-per-beneficiary Transparency",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "While program ratios are high, the charity could <cite id=\"1\">publish consistent beneficiary counts</cite> to allow for more granular cost-effectiveness analysis."
-        },
-        {
-          "area": "Domestic Expense Concentration",
-          "citation_ids": [
-            "[3]"
-          ],
-          "context": "A significant portion of expenses, approximately <cite id=\"3\">73% of total spending</cite>, is recorded as staying within the US despite the international nature of the mission."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[1]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "Maintains high governance standards with 100% independent board and audited financials."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "mitigation_notes": "The organization maintains a high cash-adjusted program expense ratio of 95.6% when accounting for specific grant cycles.",
-        "risk_factors": [
-          "<cite id=\"3\">95.6% of expenses stay in the US</cite> despite international mission focus"
-        ],
-        "summary": "The primary concern is the <cite id=\"3\">high domestic burn rate</cite> where a large portion of expenses are recorded in the US, and a <cite id=\"3\">95.6% program ratio</cite> that trails some international peers."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 3,
-          "form990": 4,
-          "rating": 6,
-          "website": 2
-        },
-        "high_confidence_count": 14,
-        "total_count": 15,
-        "unique_sources": 6
-      },
-      "confidence": {
-        "data_freshness": "2023 Form 990 data used",
-        "data_gaps": [
-          "No Charity Navigator star rating"
-        ],
-        "level": "HIGH",
-        "notes": "Strong financial and impact data available despite lack of full CN rating.",
-        "score": 85,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "SAMS Website",
-          "Impact Reports"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 85,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Not fully rated by Charity Navigator",
-          "Missing cost-per-beneficiary metrics"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 6,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[1]",
-            "[2]"
-          ],
-          "explanation": "SAMS is an excellent fit for Muslim donors, offering <cite id=\"2\">verified zakat eligibility</cite> and serving <cite id=\"2\">asnaf categories including the poor and needy</cite> in Muslim-majority regions.",
-          "improvement": "Alignment could be improved by <cite id=\"1\">expanding services to additional underserved geographies</cite> with limited existing nonprofit coverage."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]"
-          ],
-          "explanation": "SAMS is highly credible due to its <cite id=\"1\">28-year track record</cite> and its <cite id=\"1\">Platinum Seal of Transparency from Candid</cite>. The organization maintains <cite id=\"1\">100% independent board members</cite> and undergoes regular <cite id=\"1\">financial audits</cite>.",
-          "improvement": "Credibility could be further enhanced by <cite id=\"1\">completing a full Charity Navigator rating</cite> to provide third-party verification of all financial beacons."
-        },
-        "impact": {
-          "citation_ids": [
-            "[1]",
-            "[4]",
-            "[7]"
-          ],
-          "explanation": "The impact is driven by <cite id=\"4\">direct medical service delivery</cite> and a <cite id=\"1\">resilient 4.6 months of working capital</cite>. They have a <cite id=\"7\">documented theory of change</cite> focused on specialized healthcare.",
-          "improvement": "Impact measurement would benefit from <cite id=\"1\">publishing standardized cost-per-beneficiary metrics</cite> across their diverse program areas."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "GLOBAL_HEALTH",
-        "citation_ids": [
-          "[1]",
-          "[2]",
-          "[7]"
-        ],
-        "evidence_rigor": "Grade B - Documented clinical outcomes and PTSD tracking",
-        "geographic_focus": [
-          "Syria",
-          "Gaza",
-          "Jordan",
-          "Ukraine",
-          "Turkey"
-        ],
-        "giving_style": "Direct medical service",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)",
-          "gharimin (debtors)",
-          "fisabilillah",
-          "ibn_sabil"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.255,
-        "annual_revenue": 99929862,
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0.001,
-        "industry_program_ratio": 0.75,
-        "peer_count": 18,
-        "peer_program_ratio_median": 0.882,
-        "program_expense_ratio": 0.9561,
-        "reserves_months": 5.3,
-        "revenue_cagr_3yr": 54.2,
-        "transparency_score": 100,
-        "working_capital_months": 4.6,
-        "yearly_financials": [
-          {
-            "expenses": 85287065,
-            "net_assets": 32575045,
-            "revenue": 99929862,
-            "year": 2023
-          },
-          {
-            "expenses": 40023091,
-            "net_assets": 15353979,
-            "revenue": 40363018,
-            "year": 2022
-          },
-          {
-            "expenses": 39488935,
-            "net_assets": 15307242,
-            "revenue": 42052972,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "domestic_grants": 285962,
-        "foreign_grants": 18286923,
-        "grant_count": 188,
-        "grant_strategy": "Distributes medical supplies and funding to local health chapters and clinics",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Syria",
-          "Jordan",
-          "Gaza",
-          "Lebanon"
-        ],
-        "top_recipients": [
-          "Syrian American Medical Society ($100K)",
-          "Women for Humanity ($45K)"
-        ],
-        "total_grants": 18572885
-      },
-      "headline": "The Syrian American Medical Society Foundation provides life-saving medical relief and specialized healthcare to vulnerable populations regardless of background or affiliation.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support high-impact medical interventions in conflict zones through a zakat-eligible, faith-aligned institution.",
-        "citation_ids": [
-          "[1]",
-          "[2]",
-          "[3]"
-        ],
-        "donor_motivations": [
-          "Want to fulfill zakat obligations through medical relief",
-          "Prioritize organizations with high fundraising efficiency",
-          "Value clinical evidence and mental health outcomes",
-          "Focus on the humanitarian crisis in Syria and Gaza"
-        ],
-        "giving_considerations": [
-          "Large-scale operations mean funds support a broad network of hospitals",
-          "High domestic expense reporting requires understanding of US-based support for foreign missions",
-          "Focus is on direct service rather than long-term advocacy"
-        ],
-        "not_ideal_for": "Donors seeking small-scale, local US community projects or those who prefer advocacy-focused organizations."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[1]",
-          "[7]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B reflects verified outcome tracking for <cite id=\"7\">PTSD symptom reduction</cite> and massive service volume data.",
-        "external_evaluations": [
-          "Candid Platinum outcomes data"
-        ],
-        "outcome_tracking_years": 5,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "SAMS provides specialized medical training and direct healthcare to rebuild human capital and alleviate suffering in crisis-affected regions.",
-        "why_evidence_matters": "Clinical evidence ensures that medical interventions are actually improving patient health outcomes in high-stress environments."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "founded_year": 1998,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": 54.2,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"1\">54.2% revenue CAGR</cite>, SAMS is rapidly expanding to meet the growing medical needs in Gaza and Ukraine.",
-        "strategic_priorities": [
-          "Expand Gaza response",
-          "Strengthen MHPSS programs",
-          "Ukraine medical missions"
-        ],
-        "years_operating": 28
-      },
-      "organizational_capacity": {
-        "board_size": 8,
-        "ceo_compensation": 182509,
-        "ceo_compensation_pct_revenue": 0.18,
-        "ceo_name": "David Lillie",
-        "citation_ids": [
-          "[1]",
-          "[3]"
-        ],
-        "employees_count": 50,
-        "geographic_reach": "10 countries including Syria, Gaza, and Ukraine",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 5,
-        "programs_count": 5,
-        "staff_per_million_revenue": 0.5,
-        "volunteers_count": 1500
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "differentiator": "Distinguished by its <cite id=\"1\">$0.01 fundraising efficiency</cite> compared to a <cite id=\"1\">peer program ratio median of 88.2%</cite>.",
-        "peer_group": "Global Health Organizations",
-        "similar_orgs": [
-          "MedGlobal",
-          "Palestine Childrens Relief Fund",
-          "Helen Keller International"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar healthcare focus and size",
-          "name": "MedGlobal"
-        },
-        {
-          "differentiator": "Specific focus on pediatric medical relief",
-          "name": "Palestine Childrens Relief Fund"
-        },
-        {
-          "differentiator": "Focus on global health and nutrition",
-          "name": "Helen Keller International"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "SAMS operates with a highly lean model, spending only <cite id=\"1\">$0.02 per $1 raised</cite>, which is significantly better than industry benchmarks.",
-          "point": "Exceptional Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[7]"
-          ],
-          "detail": "The organization tracks specific clinical outcomes, including a <cite id=\"7\">reduction in PTSD symptoms</cite> through its specialized MHPSS programs.",
-          "point": "Proven Mental Health Outcomes"
-        },
-        {
-          "citation_ids": [
-            "[4]"
-          ],
-          "detail": "The foundation has successfully delivered over <cite id=\"4\">3.5 million medical services</cite> to patients in need regardless of background.",
-          "point": "Massive Service Scale"
-        }
-      ],
-      "strengths_deep_dive": [
-        "SAMS Foundation's operational strength lies in its ability to maintain high-intensity medical services in active conflict zones. By managing <cite id=\"3\">$18.2 million in foreign grants</cite> to local implementing partners, they ensure that aid reaches the most hard-to-access areas. Their governance is supported by an <cite id=\"1\">independent board of 8 members</cite>, and they have achieved the <cite id=\"1\">Candid Platinum Seal of Transparency</cite>, the highest level of disclosure available for nonprofits."
-      ],
-      "summary": "The Syrian American Medical Society (SAMS) Foundation is a premier humanitarian organization that has provided <cite id=\"4\">3.5 million medical services</cite> to vulnerable populations since its inception. Founded in <cite id=\"1\">1998</cite>, the organization specializes in delivering <cite id=\"4\">life-saving medical relief</cite> in crisis zones, with a primary focus on the Syrian conflict where it has facilitated <cite id=\"4\">3.2 million services inside Syria</cite> alone. The foundation operates a sophisticated network of <cite id=\"4\">medical missions and health centers</cite> across Syria, Jordan, Turkey, and Gaza, addressing critical gaps in healthcare infrastructure. Financially, SAMS demonstrates significant scale, reporting <cite id=\"3\">$99,929,862 in total revenue</cite> for the 2023 fiscal year. The organization maintains a <cite id=\"3\">95.6% program expense ratio</cite>, ensuring that the majority of its resources are directed toward direct medical care and psychosocial support. Beyond emergency surgery and primary care, SAMS is a leader in <cite id=\"7\">Mental Health and Psychosocial Support (MHPSS)</cite>, implementing programs that have shown a <cite id=\"7\">measurable reduction in PTSD symptoms</cite> among conflict-affected survivors. Their operations are characterized by <cite id=\"1\">exceptional fundraising efficiency</cite>, spending only <cite id=\"1\">$0.01 to raise every $1</cite> in donations. This lean administrative model allows for a <cite id=\"1\">working capital ratio of 4.6 months</cite>, providing a resilient financial cushion for rapid response in volatile environments.",
-      "zakat_guidance": {
-        "classification": "fuqara",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "The Syrian American Medical Society (SAMS) Foundation is a humanitarian organization dedicated to delivering essential primary and specialty healthcare services to patients in crisis zones [1][4]. Operating with a high degree of financial efficiency, the foundation reported a total revenue of $61,395,982 while maintaining a program expense ratio of 95.6% [3]."
     }
   }
 }

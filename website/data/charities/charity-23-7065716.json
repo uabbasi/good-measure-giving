@@ -59,7 +59,11 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 2,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Families"
@@ -77,7 +81,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 18:28:33",
+  "lastUpdated": "2026-03-09 21:45:33",
   "sourceAttribution": {
     "candid_seal": {
       "source_name": "Candid",
@@ -338,44 +342,6 @@
         "rubric_archetype": "COMMUNITY",
         "score": 16
       },
-      "judge_issues": [
-        {
-          "field": "amal_score_rationale",
-          "judge": "score",
-          "message": "The rationale mentions a lack of transparent financial performance data and third-party ratings, but doesn't explicitly mention the small board size (2 members) which is a key risk factor and contributes to the low score.",
-          "severity": "warning"
-        },
-        {
-          "field": "financial.form990_exempt",
-          "judge": "data_completeness",
-          "message": "Religious organization (Form 990-exempt) - limited financial data available",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        }
-      ],
       "risk_deduction": -5,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -403,487 +369,52 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization focuses on sustainable lives and reports metrics on weekend school enrollment and Quran distribution.",
+          "claim": "The organization reports outcomes for Zakat distribution, weekend school enrollment, and religious services.",
           "id": "[1]",
           "source_name": "Annual Report (2023)",
           "source_url": "https://isgh.org/wp-content/uploads/2024/09/ISGH-Annual-Report-2024-Final-093024-Pages.pdf"
         },
         {
-          "claim": "The organization is profiled for its financial metadata and religious mission.",
+          "claim": "The organization offers multiple giving methods for community members to support its programs.",
+          "id": "[2]",
+          "source_name": "Charity Website - Donate",
+          "source_url": "https://isgh.org/donate/"
+        },
+        {
+          "claim": "ISGH is registered under EIN 23-7065716 and maintains a profile for financial metadata.",
           "id": "[3]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/237065716#financials"
         },
         {
-          "claim": "The charity is zakat-eligible and follows specific policies for Zakat-Ul-Maal distribution.",
+          "claim": "The organization is Zakat-eligible and follows specific policies for distributing aid to eligible categories.",
           "id": "[4]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://isgh.org/assistance/"
         },
         {
-          "claim": "Financial data and program descriptions including funeral services and cemetery development are documented in tax filings.",
+          "claim": "Financial data and organizational structure are documented through public tax filings.",
           "id": "[5]",
           "source_name": "Form 990 (2025)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/237065716"
         }
       ],
-      "amal_score_rationale": "The organization receives a score of 34/100, reflecting its strong community presence and religious alignment, tempered by a lack of transparent financial performance data and third-party ratings.",
+      "amal_score_rationale": "The organization receives a score of 34/100, reflecting a strong religious and cultural alignment for Muslim donors balanced against significant gaps in available financial reporting and impact metrics.",
       "areas_for_improvement": [
-        "Limited public availability of standardized financial efficiency metrics",
-        "Low data confidence due to incomplete third-party financial evaluations"
+        "Limited public financial transparency regarding specific program expense ratios",
+        "Low data confidence due to missing third-party financial evaluations"
       ],
       "dimension_explanations": {
-        "alignment": "With an alignment score of 23/50, ISGH demonstrates a medium fit for donors seeking to support religious and cultural causes [1]. The organization is verified as zakat-eligible, adhering to specific asnaf categories for distribution, which aligns with the requirements of many Muslim donors [4].",
-        "impact": "The organization's impact is characterized by its capacity-building efforts, such as weekend school enrollment and the distribution of religious materials [1]. However, the overall impact score of 16/50 reflects a medium level of effectiveness due to the absence of specific cost-per-beneficiary data and standardized financial reporting [3][5]."
+        "alignment": "Alignment is rated at 23/50, indicating a medium fit for donors seeking to fulfill religious obligations like Zakat through an established community institution with a long track record in the Greater Houston area [4][5].",
+        "impact": "The organization's impact score of 16/50 is considered medium, as it demonstrates capacity building through weekend school enrollment and Quran distribution, yet lacks specific cost-per-beneficiary data and third-party verification of effectiveness [1][5]."
       },
       "headline": "The Islamic Society of Greater Houston serves as a central pillar for the Muslim community in Texas, focusing on sustainable living through comprehensive social and religious services.",
       "strengths": [
-        "Established provider of essential religious services including funeral and cemetery management",
-        "Maintains a structured zakat distribution system to support local beneficiaries",
-        "Operates multiple community-focused programs including weekend schools and Quran distribution"
+        "Established infrastructure for Zakat collection and distribution to eligible asnaf categories",
+        "Comprehensive lifecycle services including weekend schools and funeral management",
+        "Strong local presence with a mission focused on community sustainability"
       ],
-      "summary": "The Islamic Society of Greater Houston (ISGH) is a non-profit organization dedicated to helping the community live sustainable lives through religious, educational, and social programs [1][3]. As a zakat-eligible entity, the organization manages the distribution of Zakat-Ul-Maal to those in need and maintains essential community infrastructure, including funeral services and cemetery development [4][5]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2025-01-09",
-          "claim": "founding in 1969",
-          "confidence": 1,
-          "id": "[1]",
-          "quote": "Founded 1969",
-          "source_name": "ISGH Website - About",
-          "source_type": "website",
-          "source_url": "https://isgh.org/assistance/"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "funeral services and cemetery development",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Funeral Services, Cemetery Development",
-          "source_name": "ISGH Website - Programs",
-          "source_type": "website",
-          "source_url": "https://isgh.org/assistance/"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "$5.4 million in Zakat and Sadaqa",
-          "confidence": 0.95,
-          "id": "[3]",
-          "quote": "Total Zakat/Sadaqa Distributed: 5400000",
-          "source_name": "ISGH Annual Report 2024",
-          "source_type": "website",
-          "source_url": "https://isgh.org/wp-content/uploads/2024/09/ISGH-Annual-Report-2024-Final-093024-Pages.pdf"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "weekend school enrollment of 1,871 students",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Weekend School Enrollment: 1871",
-          "source_name": "ISGH Annual Report 2024",
-          "source_type": "website",
-          "source_url": "https://isgh.org/wp-content/uploads/2024/09/ISGH-Annual-Report-2024-Final-093024-Pages.pdf"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "2,030 Qurans",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Qurans Distributed: 2030",
-          "source_name": "ISGH Annual Report 2024",
-          "source_type": "website",
-          "source_url": "https://isgh.org/wp-content/uploads/2024/09/ISGH-Annual-Report-2024-Final-093024-Pages.pdf"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "196,650 emergency meals to Gaza",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Emergency Meals (Gaza): 196650",
-          "source_name": "ISGH Annual Report 2023",
-          "source_type": "website",
-          "source_url": "https://isgh.org/wp-content/uploads/2023/09/ISGH-Annual-Report-2023-Final-092323.pdf"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "1,262 one-time surgical procedures",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "One-Time Surgical Sponsorships: 1262",
-          "source_name": "ISGH Annual Report 2023",
-          "source_type": "website",
-          "source_url": "https://isgh.org/wp-content/uploads/2023/09/ISGH-Annual-Report-2023-Final-092323.pdf"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "Bronze Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Candid Seal: bronze",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/7145445"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "3,600 Ramadan food vouchers",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Ramadan Food Vouchers: 3600",
-          "source_name": "ISGH Annual Report 2023",
-          "source_type": "website",
-          "source_url": "https://isgh.org/wp-content/uploads/2023/09/ISGH-Annual-Report-2023-Final-092323.pdf"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "2,938 health screenings",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Medical Mission Screenings: 2938",
-          "source_name": "ISGH Annual Report 2022",
-          "source_type": "website",
-          "source_url": "https://isgh.org/wp-content/uploads/2022/09/2022-ISGH-Annual-Report-Final-093022.pdf"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "1,451 medical treatments",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Medical Mission Treatments: 1451",
-          "source_name": "ISGH Annual Report 2022",
-          "source_type": "website",
-          "source_url": "https://isgh.org/wp-content/uploads/2022/09/2022-ISGH-Annual-Report-Final-093022.pdf"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "support for 418 disabled youth",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Disabled Youth Sponsorship: 418",
-          "source_name": "ISGH Annual Report 2022",
-          "source_type": "website",
-          "source_url": "https://isgh.org/wp-content/uploads/2022/09/2022-ISGH-Annual-Report-Final-093022.pdf"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "insufficient data for cost-per-beneficiary calculations",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Insufficient data for cost-per-beneficiary calculation; Board size: 2",
-          "source_name": "AMAL Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/237065716#ratings"
-        },
-        {
-          "access_date": "2025-01-09",
-          "claim": "verified zakat eligibility",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Accepts Zakat: Yes; Categories: fuqara, masakin",
-          "source_name": "ISGH Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://isgh.org/assistance/"
-        }
-      ],
-      "amal_score_rationale": "The organization receives a score of 34/100, reflecting its strong community presence and religious alignment, tempered by a lack of transparent financial performance data and third-party ratings.",
-      "amal_scores": {
-        "amal_score": 34,
-        "confidence_scores": {
-          "alignment": 23,
-          "data_confidence": 0.2,
-          "impact": 16
-        },
-        "confidence_tier": "LOW",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Financial Transparency and Reporting",
-          "citation_ids": [
-            "[13]"
-          ],
-          "context": "There is <cite id=\"13\">insufficient data for cost-per-beneficiary calculations</cite> and the program expense ratio remains unknown due to limited financial filings."
-        },
-        {
-          "area": "Governance Structure",
-          "citation_ids": [
-            "[13]"
-          ],
-          "context": "The organization currently operates with a <cite id=\"13\">board size of only 2 members</cite>, which falls below standard governance recommendations for an organization of this scale."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "none",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "The organization is not currently evaluated by the BBB Wise Giving Alliance."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[13]"
-        ],
-        "mitigation_notes": "The organization's 57-year history and physical infrastructure provide some assurance of stability despite reporting gaps.",
-        "risk_factors": [
-          "<cite id=\"13\">Board size of 2 members</cite> is a significant governance risk",
-          "<cite id=\"13\">Unknown program expense ratio</cite> prevents efficiency benchmarking"
-        ],
-        "summary": "The primary concerns involve <cite id=\"13\">governance risks</cite> and a lack of financial granularly."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "rating": 2,
-          "website": 12
-        },
-        "high_confidence_count": 14,
-        "total_count": 14,
-        "unique_sources": 5
-      },
-      "confidence": {
-        "data_freshness": "Annual report data is current to 2024; financial filings are missing.",
-        "data_gaps": [
-          "Missing 2023/2024 Form 990",
-          "No independent financial audit",
-          "Limited governance documentation"
-        ],
-        "level": "LOW",
-        "notes": "While program output data is strong, the lack of financial transparency significantly lowers the overall confidence score.",
-        "score": 20,
-        "sources_used": [
-          "Annual Reports (2022-2024)",
-          "Charity Website",
-          "Charity Navigator Profile"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 20,
-        "form_990_tax_year": null,
-        "known_gaps": [
-          "Missing Form 990",
-          "Small board size",
-          "No independent financial audit available"
-        ],
-        "ratings_last_updated": "2024-09",
-        "total_citations": 14,
-        "unique_sources": 5,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[13]",
-            "[14]"
-          ],
-          "explanation": "Strong alignment for Muslim donors due to <cite id=\"14\">verified zakat eligibility</cite> and services targeting <cite id=\"14\">fuqara and masakin</cite> categories.",
-          "improvement": "Alignment could be further improved by <cite id=\"13\">clarifying specific zakat allocation policies</cite> and providing more detailed reporting on how zakat funds are segregated from general sadaqa."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[8]",
-            "[13]"
-          ],
-          "explanation": "While ISGH is a historic institution, credibility is currently limited by a <cite id=\"8\">Bronze Candid seal</cite> and a <cite id=\"13\">lack of recent Form 990 data</cite> or a fully rated Charity Navigator profile.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"13\">expand its board of directors</cite> and publish audited financial statements to provide better visibility into its overhead and efficiency."
-        },
-        "impact": {
-          "citation_ids": [
-            "[6]",
-            "[13]"
-          ],
-          "explanation": "Impact is evidenced by high-volume outputs such as <cite id=\"6\">196,650 emergency meals</cite>, but the lack of <cite id=\"13\">standardized cost-per-beneficiary data</cite> makes it difficult to assess relative efficiency.",
-          "improvement": "The organization could improve its impact score by <cite id=\"13\">seeking external evaluations</cite> and documenting a clear theory of change with explicit causal pathways."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "RELIGIOUS_CULTURAL",
-        "citation_ids": [
-          "[1]",
-          "[14]"
-        ],
-        "evidence_rigor": "Grade C - Reported outcomes without independent verification",
-        "geographic_focus": [
-          "USA (Texas)"
-        ],
-        "giving_style": "Institutional Support",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": null,
-        "annual_revenue": null,
-        "citation_ids": [
-          "[13]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": null,
-        "industry_program_ratio": 0.75,
-        "peer_count": 22,
-        "peer_program_ratio_median": 0.896,
-        "program_expense_ratio": null,
-        "reserves_months": null,
-        "revenue_cagr_3yr": null,
-        "transparency_score": 50,
-        "yearly_financials": []
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]",
-          "[6]"
-        ],
-        "domestic_grants": null,
-        "foreign_grants": null,
-        "grant_count": null,
-        "grant_strategy": "Distributes zakat and sadaqa directly to individuals and through international relief partnerships.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "USA",
-          "Gaza"
-        ],
-        "top_recipients": [],
-        "total_grants": 5400000
-      },
-      "headline": "The Islamic Society of Greater Houston serves as a central pillar for the Muslim community in Texas, focusing on sustainable living through comprehensive social and religious services.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize supporting established Islamic community infrastructure and essential religious services in the United States.",
-        "citation_ids": [
-          "[1]",
-          "[13]"
-        ],
-        "donor_motivations": [
-          "Want to support the maintenance of local masjids and Islamic schools",
-          "Value the provision of essential services like Islamic funerals and burials",
-          "Prefer giving to long-standing institutions with deep community roots",
-          "Seeking to fulfill zakat through a major regional hub"
-        ],
-        "giving_considerations": [
-          "Donations support a wide array of programs, from local education to international relief",
-          "Financial transparency is lower than national humanitarian peers",
-          "The organization acts as a central fiscal agent for multiple community initiatives"
-        ],
-        "not_ideal_for": "Donors who require rigorous, third-party audited financial efficiency ratios or those seeking organizations with large, independent governing boards."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[3]",
-          "[13]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects that while the organization <cite id=\"3\">reports significant output metrics</cite>, it lacks independent impact evaluations or longitudinal studies.",
-        "external_evaluations": [
-          "Candid outcomes data"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "DEVELOPING",
-        "theory_of_change_summary": "ISGH operates on the principle that providing essential religious and social services creates a sustainable environment for the Muslim community to thrive.",
-        "why_evidence_matters": "Evidence ensures that the millions distributed in zakat are effectively moving families toward self-sufficiency."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[1]",
-          "[2]"
-        ],
-        "founded_year": 1969,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": null,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "As a central hub for a rapidly growing Muslim population in Texas, ISGH has significant capacity to expand its <cite id=\"2\">cemetery and educational infrastructure</cite>.",
-        "strategic_priorities": [
-          "Cemetery development",
-          "Youth education expansion",
-          "Sustainable community living"
-        ],
-        "years_operating": 57
-      },
-      "organizational_capacity": {
-        "board_size": 2,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": null,
-        "citation_ids": [
-          "[13]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Greater Houston Area, Texas",
-        "has_conflict_policy": false,
-        "has_financial_audit": false,
-        "independent_board_pct": null,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "differentiator": "Distinguished by its <cite id=\"2\">comprehensive funeral and cemetery infrastructure</cite> which peers like MCC East Bay also provide but at different scales.",
-        "peer_group": "Religious and Community Services (USA)",
-        "similar_orgs": [
-          "MCC East Bay",
-          "The Islamic Society of Southern California",
-          "Al Ummah Community Center"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on religious and community services",
-          "name": "MCC East Bay"
-        },
-        {
-          "differentiator": "Regional focus in California with similar service model",
-          "name": "The Islamic Society of Southern California"
-        },
-        {
-          "differentiator": "Focus on community-centric social services",
-          "name": "Al Ummah Community Center"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]",
-            "[2]"
-          ],
-          "detail": "Operating for <cite id=\"1\">over 55 years</cite>, ISGH has built a robust infrastructure for <cite id=\"2\">essential religious services</cite> that are often underserved by secular nonprofits.",
-          "point": "Deep-rooted community institutional presence"
-        },
-        {
-          "citation_ids": [
-            "[3]",
-            "[9]"
-          ],
-          "detail": "The organization successfully managed the distribution of <cite id=\"3\">$5.4 million in community support funds</cite> and provided <cite id=\"9\">3,600 Ramadan food vouchers</cite> to families in need.",
-          "point": "High-volume social welfare distribution"
-        },
-        {
-          "citation_ids": [
-            "[10]",
-            "[11]"
-          ],
-          "detail": "Through its medical missions, the organization conducted <cite id=\"10\">2,938 health screenings</cite> and provided <cite id=\"11\">1,451 medical treatments</cite> to the community.",
-          "point": "Diverse humanitarian and medical impact"
-        }
-      ],
-      "strengths_deep_dive": [
-        "ISGH's strength lies in its ability to provide 'cradle-to-grave' services that integrate faith with social utility. Their educational programs are a cornerstone of the community, evidenced by <cite id=\"4\">nearly 1,900 students enrolled in weekend schools</cite>. Furthermore, their medical mission demonstrates a commitment to holistic community health, facilitating <cite id=\"7\">over 1,200 surgical sponsorships</cite> and providing <cite id=\"12\">support for 418 disabled youth</cite>. This multi-faceted approach allows the organization to act as a central hub for both religious identity and essential social safety nets in the Greater Houston area."
-      ],
-      "summary": "The Islamic Society of Greater Houston (ISGH) serves as the primary infrastructure for the Muslim community in Texas, operating as a comprehensive service provider since its <cite id=\"1\">founding in 1969</cite>. As one of the largest Islamic societies in the United States, it manages a vast network of religious and social services, including <cite id=\"2\">funeral services and cemetery development</cite>. The organization's impact is characterized by its dual focus on spiritual maintenance and social welfare, notably distributing <cite id=\"3\">$5.4 million in Zakat and Sadaqa</cite> during the 2023-2024 period. Beyond financial assistance, ISGH maintains a significant educational footprint with a <cite id=\"4\">weekend school enrollment of 1,871 students</cite> and the distribution of <cite id=\"5\">2,030 Qurans</cite> to the community. Its humanitarian reach extended globally in 2023, providing <cite id=\"6\">196,650 emergency meals to Gaza</cite> and sponsoring <cite id=\"7\">1,262 one-time surgical procedures</cite>. Despite this extensive operational scale, the organization maintains a <cite id=\"8\">Bronze Seal of Transparency from Candid</cite>, though detailed financial breakdowns and independent impact evaluations remain limited in the public domain.",
-      "zakat_guidance": {
-        "classification": "amil",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "The Islamic Society of Greater Houston (ISGH) provides essential community support through programs such as Zakat-Ul-Maal distribution, funeral services, and cemetery development [1][3]. As a Zakat-eligible organization, it facilitates religious giving to support local beneficiaries and maintains various educational and social initiatives [2][4]."
     }
   }
 }

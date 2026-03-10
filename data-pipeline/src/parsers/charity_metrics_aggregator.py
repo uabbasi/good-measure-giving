@@ -1713,14 +1713,16 @@ class CharityMetricsAggregator:
             cn_profile.get("ceo_name") if cn_profile else None,
         )
 
-        # FIX #19: ProPublica stores compensation_current_officers, not ceo_compensation
+        # Charity Navigator has individual CEO compensation (from keyPersons array).
+        # ProPublica's compensation_current_officers is AGGREGATE for all officers — not CEO-specific.
+        # Prefer CN individual CEO comp; fall back to ProPublica aggregate only when nothing else is available.
         metrics_data["ceo_compensation"] = _first_non_none(
-            propublica_990.get("compensation_current_officers") if propublica_990 else None,
-            candid_profile.get("ceo_compensation") if candid_profile else None,
             cn_profile.get("ceo_compensation") if cn_profile else None,
+            candid_profile.get("ceo_compensation") if candid_profile else None,
+            propublica_990.get("compensation_current_officers") if propublica_990 else None,
         )
         if metrics_data.get("ceo_compensation") is not None:
-            comp_src = "propublica" if propublica_990 and propublica_990.get("compensation_current_officers") is not None else "candid" if candid_profile and candid_profile.get("ceo_compensation") is not None else "charity_navigator"
+            comp_src = "charity_navigator" if cn_profile and cn_profile.get("ceo_compensation") is not None else "candid" if candid_profile and candid_profile.get("ceo_compensation") is not None else "propublica"
             _track("ceo_compensation", comp_src, metrics_data["ceo_compensation"])
 
         # Additional transparency & governance fields

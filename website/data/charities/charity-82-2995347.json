@@ -2,7 +2,7 @@
   "id": "82-2995347",
   "ein": "82-2995347",
   "name": "Bloom Charity Nfp",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "BLOOM Charity\u2019s mission is to support vulnerable children around the world with a holistic approach to their health and well-being.",
   "programs": [
     "From Bump to BLOOM",
@@ -54,7 +54,11 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 3,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Youth",
@@ -79,7 +83,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 13:06:05",
+  "lastUpdated": "2026-03-09 21:45:10",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -257,19 +261,7 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": [
-    {
-      "type": "implausible_cpb",
-      "severity": "medium",
-      "headline": "Cost per beneficiary is $0.39 \u2014 implausibly low",
-      "detail": "A cost below $1/beneficiary usually means beneficiary counts are inflated or double-counted.",
-      "data_points": {
-        "beneficiaries_served_annually": 1500000,
-        "cost_per_beneficiary": 0.39,
-        "total_expenses": 578892
-      }
-    }
-  ],
+  "keyConcerns": null,
   "amalEvaluation": {
     "charity_ein": "82-2995347",
     "charity_name": "Bloom Charity Nfp",
@@ -349,13 +341,13 @@
       "impact": {
         "components": [
           {
-            "evidence": "A cost below $1/beneficiary usually means beneficiary counts are inflated or double-counted. \u2014 beneficiary count likely inflated",
-            "improvement_suggestion": null,
+            "evidence": "Beneficiary count appears implausible; CPB excluded pending review",
+            "improvement_suggestion": "Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
             "improvement_value": 6,
             "name": "Cost Per Beneficiary",
             "possible": 13,
             "scored": 0,
-            "status": "full"
+            "status": "missing"
           },
           {
             "evidence": "Delivery model: Direct Service",
@@ -412,70 +404,18 @@
             "status": "partial"
           }
         ],
-        "cost_per_beneficiary": 0.38078866666666666,
+        "cost_per_beneficiary": null,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "$0.38/beneficiary; Delivery: direct service; Impact 30/50",
+        "rationale": "Delivery: direct service; Impact 30/50",
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 30
       },
-      "judge_issues": [
-        {
-          "field": "impact_rationale",
-          "judge": "score",
-          "message": "The rationale mentions the excellent program expense ratio but does not explicitly address the low cost-per-beneficiary issue, which is a significant factor in the impact score.",
-          "severity": "warning"
-        },
-        {
-          "field": "multi_source.revenue_divergence",
-          "judge": "crawl_quality",
-          "message": "Revenue diverges >50% across sources ($158,297 - $551,810)",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
-        "risk_summary": "1 risk(s) identified.",
-        "risks": [
-          {
-            "category": "impact",
-            "data_source": "Reconciliation",
-            "description": "Cost per beneficiary is $0.39 \u2014 implausibly low",
-            "mitigation": null,
-            "severity": "medium"
-          }
-        ],
+        "risk_summary": "No significant risks identified.",
+        "risks": [],
         "total_deduction": 0
       },
       "score_summary": "BLOOM Charity shows exceptional alignment and good impact, with zakat compliance.",
@@ -490,607 +430,64 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "BLOOM Charity holds a Charity Navigator score of 89.5/100 and maintains a 98.7% program expense ratio.",
+          "claim": "BLOOM Charity holds a Charity Navigator score of 89.5/100 and maintains high financial accountability.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/822995347#financials"
         },
         {
-          "claim": "The organization reported total revenue of $551,810 and holds 21.3 months of working capital.",
+          "claim": "The organization reported total revenue of $551,810 and a program expense ratio of 98.7%.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/822995347"
         },
         {
-          "claim": "BLOOM Charity is Zakat-eligible and provides information on asnaf categories.",
+          "claim": "BLOOM Charity is Zakat-eligible and provides guidance on asnaf categories for donors.",
           "id": "[3]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://bloomcharity.org/donate"
         },
         {
-          "claim": "The charity organizes holiday celebrations and builds PlayGardens for children.",
+          "claim": "The charity builds PlayGardens and hosts holiday celebrations for children in Morocco.",
           "id": "[4]",
           "source_name": "Annual Report (2022)",
           "source_url": "https://bloomcharity.org/wp-content/uploads/sites/917/2025/03/BLOOM-Annual-Report-2022.pdf"
         },
         {
-          "claim": "The organization tracks metrics regarding children with access to completed PlayGardens.",
+          "claim": "Programs focus on providing children in institutional care with access to therapeutic play spaces.",
           "id": "[5]",
           "source_name": "Annual Report (2021)",
           "source_url": "https://bloomcharity.org/wp-content/uploads/sites/917/2025/03/2021-Annual-Report.pdf"
         },
         {
-          "claim": "Recent outcomes include providing meals in Gaza and serving families via Agafay Park.",
+          "claim": "Recent outcomes include providing meals in Gaza and serving families through Agafay Park.",
           "id": "[6]",
           "source_name": "See the 2024 Report",
           "source_url": "https://bloomcharity.org/wp-content/uploads/sites/917/2025/08/2024-AR-BLOOM.pdf"
         },
         {
-          "claim": "The charity focuses on providing orphans with daily access to play and outdoor spaces.",
-          "id": "[7]",
-          "source_name": "Annual Report (2018)",
-          "source_url": "https://bloomcharity.org/wp-content/uploads/sites/917/2025/03/AnnualReport2018_compressed.pdf"
-        },
-        {
-          "claim": "The organization measures success by the number of children gaining new access to play spaces.",
-          "id": "[8]",
-          "source_name": "Annual Report (2019)",
-          "source_url": "https://indd.adobe.com/view/publication/bdf44c2a-5c64-4dc9-9410-98cf8ad5342f/rb0t/publication-web-resources/pdf/AnnualReport2020.pdf"
-        },
-        {
-          "claim": "The charity offers various donation options to support its humanitarian missions.",
+          "claim": "Donation options include various giving methods to support enrichment programs.",
           "id": "[9]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://bloomcharity.org/donate/"
-        },
-        {
-          "claim": "BLOOM Charity provides engagement opportunities for volunteers to support their cause.",
-          "id": "[10]",
-          "source_name": "Charity Website - Volunteer",
-          "source_url": "https://bloomcharity.org/get-involved/"
         }
       ],
-      "amal_score_rationale": "BLOOM Charity earns a GMG score of 77/100 due to its elite financial efficiency and strong alignment with humanitarian causes, though its impact score reflects a need for more direct-service scaling.",
+      "amal_score_rationale": "BLOOM Charity earns a solid 77/100 GMG score due to its high financial efficiency and strong alignment with humanitarian needs, though there is room to improve direct impact reporting metrics.",
       "areas_for_improvement": [
-        "Expanding the directness of impact to reach a higher score in beneficiary cost-efficiency.",
-        "Increasing data confidence through further third-party impact evaluations."
+        "Impact measurement could be strengthened to move beyond direct service outputs toward long-term beneficiary outcomes.",
+        "Increasing total revenue from $551,810 to scale PlayGarden initiatives across more regions."
       ],
       "dimension_explanations": {
-        "alignment": "BLOOM Charity shows high alignment (47/50) for donors interested in humanitarian aid and child welfare, particularly as a Zakat-eligible organization [3][9]. Its programs, such as providing meals in Gaza and supporting families at Agafay Park, address urgent humanitarian needs with a proven track record of service [6][10].",
-        "impact": "The organization demonstrates a direct service model, focusing on 'Morocco's Magical PlayGardens' and enrichment programs that provide orphans and children in crisis with daily access to play and outdoors [7][8]. While the program expense ratio is an excellent 98.7%, the impact score of 30/50 reflects the specific cost-per-beneficiary metrics associated with building physical infrastructure like PlayGardens [1][2][5]."
+        "alignment": "With an alignment score of 47/50, BLOOM shows high donor fit and addresses urgent humanitarian needs [1]. The charity is Zakat-eligible and focuses on vulnerable children, which strongly resonates with Muslim donor priorities regarding orphan care and crisis relief [3][5].",
+        "impact": "The organization demonstrates a direct service model, reporting a total revenue of $551,810 and a program expense ratio of 98.7% [1][2]. While they successfully provide meals in Gaza and build PlayGardens for orphans, the impact score of 30/50 reflects a need for more comprehensive data on long-term cost-effectiveness per beneficiary [4][6]."
       },
-      "headline": "BLOOM Charity advocates for children in crisis through specialized enrichment programs and the creation of therapeutic play spaces.",
+      "headline": "BLOOM Charity provides critical advocacy and enrichment services for children in crisis, specializing in the creation of therapeutic play spaces in Morocco.",
       "strengths": [
-        "Exceptional program expense ratio of 98.7%, ensuring nearly all funds directly support children's services.",
-        "Highly efficient fundraising operations, spending only $0.01 to raise every $1.",
-        "Strong liquidity with 21.3 months of working capital available to sustain operations."
+        "Exceptional program expense ratio of 98.7%, ensuring nearly all funds directly support child services.",
+        "Highly efficient fundraising operations with a cost of only $0.01 per $1 raised.",
+        "Strong liquidity position with 21.3 months of working capital available."
       ],
-      "summary": "BLOOM Charity is a non-profit organization dedicated to providing essential services and advocacy for vulnerable children, particularly those in institutional care or crisis environments [4][6]. The organization reported a total revenue of $551,810 and maintains a high level of financial transparency with a Charity Navigator score of 89.5/100 [1][2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "advocating for children in institutional care",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "BLOOM Charity is a non-profit organization dedicated to providing essential services and advocacy for vulnerable children, particularly those in institutional care",
-          "source_name": "Annual Report (2022)",
-          "source_type": "website",
-          "source_url": "https://bloomcharity.org/wp-content/uploads/sites/917/2025/03/BLOOM-Annual-Report-2022.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "therapeutic play spaces known as PlayGardens",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "creation of therapeutic play spaces and specialized enrichment programs",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/822995347"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 19.3%",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "3-Year Revenue CAGR: 19.3%",
-          "source_name": "Internal Financial Analysis",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/822995347"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Morocco, Palestine, Pakistan, and the USA",
-          "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Geographic Coverage: Morocco, Palestine, Pakistan, USA, Egypt",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://bloomcharity.org/get-involved/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "700,000 meals in Gaza",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Meals provided in Gaza: 700000",
-          "source_name": "2024 Report",
-          "source_type": "website",
-          "source_url": "https://bloomcharity.org/wp-content/uploads/sites/917/2025/08/2024-AR-BLOOM.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "15,000 families through Agafay Park",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Families served by Agafay Park: 15000",
-          "source_name": "2024 Report",
-          "source_type": "website",
-          "source_url": "https://bloomcharity.org/wp-content/uploads/sites/917/2025/08/2024-AR-BLOOM.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "98.7% program expense ratio",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Program Expense Ratio: 100.0%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/822995347"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.01 per $1 raised",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Fundraising Efficiency: $0.01 per $1 raised",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/822995347"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Candid Seal: PLATINUM",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/9658274"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "overall score of 89.89.5/100 from Charity Navigator",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Overall Score: 89.5/100",
-          "source_name": "Charity Navigator - Ratings",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/822995347#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "21.3 months of working capital",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Working Capital: 21.3 months of working capital",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/822995347#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "completed 11 PlayGardens",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "PlayGardens built: 11",
-          "source_name": "2024 Report",
-          "source_type": "website",
-          "source_url": "https://bloomcharity.org/wp-content/uploads/sites/917/2025/08/2024-AR-BLOOM.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "800 children with daily access to play",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Children with access to PlayGardens: 800",
-          "source_name": "Annual Report (2021)",
-          "source_type": "website",
-          "source_url": "https://bloomcharity.org/wp-content/uploads/sites/917/2025/03/2021-Annual-Report.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Candid status",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Candid Seal: PLATINUM",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/9658274"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "5 distinct outcome metrics",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Outcome Metrics Tracked: 5",
-          "source_name": "Candid Outcomes",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/9658274"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "minimal board size of 1 to 3 members",
-          "confidence": 0.9,
-          "id": "[16]",
-          "quote": "Board Size: 1",
-          "source_name": "Candid Governance",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/9658274"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cost per beneficiary of $0.38",
-          "confidence": 0.85,
-          "id": "[17]",
-          "quote": "Rationale: $0.38/beneficiary",
-          "source_name": "Internal Impact Analysis",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/822995347"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified zakat eligibility",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "Charity Website - Donate",
-          "source_type": "website",
-          "source_url": "https://bloomcharity.org/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "orphans (masakin/fuqara)",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Zakat Categories: fuqara, masakin, fisabilillah",
-          "source_name": "Charity Website - Donate",
-          "source_type": "website",
-          "source_url": "https://bloomcharity.org/donate"
-        }
-      ],
-      "amal_score_rationale": "BLOOM Charity earns a GMG score of 77/100 due to its elite financial efficiency and strong alignment with humanitarian causes, though its impact score reflects a need for more direct-service scaling.",
-      "amal_scores": {
-        "amal_score": 77,
-        "confidence_scores": {
-          "alignment": 47,
-          "data_confidence": 0.85,
-          "impact": 30
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Governance Structure",
-          "citation_ids": [
-            "[16]"
-          ],
-          "context": "The organization currently operates with a <cite id=\"16\">minimal board size of 1 to 3 members</cite>, which may limit independent oversight as the charity scales."
-        },
-        {
-          "area": "Beneficiary Data Clarity",
-          "citation_ids": [
-            "[17]"
-          ],
-          "context": "While impact is high, the <cite id=\"17\">cost per beneficiary of $0.38</cite> suggests that beneficiary counts may include indirect reach, which could benefit from more granular reporting."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "none",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "BBB Wise Giving Alliance evaluation is not currently available for this organization."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[16]",
-          "[17]"
-        ],
-        "mitigation_notes": "The charity compensates for its small size with high transparency and consistent reporting of physical infrastructure projects (PlayGardens).",
-        "risk_factors": [
-          "<cite id=\"16\">Small board size</cite> may pose risks to long-term institutional sustainability.",
-          "<cite id=\"17\">Low cost-per-beneficiary</cite> suggests potential over-counting of reach."
-        ],
-        "summary": "The primary concerns involve <cite id=\"16\">limited board oversight</cite> and the need for more rigorous third-party impact evaluations."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 1,
-          "form990": 4,
-          "rating": 7,
-          "website": 7
-        },
-        "high_confidence_count": 17,
-        "total_count": 19,
-        "unique_sources": 6
-      },
-      "confidence": {
-        "data_freshness": "Most data from 2023 and 2024 reports",
-        "data_gaps": [
-          "Missing audited financials",
-          "Small board size"
-        ],
-        "level": "HIGH",
-        "notes": "Strong financial and output data; governance is the primary area of limited information.",
-        "score": 85,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Candid",
-          "Annual Reports"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 85,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Small board size",
-          "No audited financial statements provided"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 19,
-        "unique_sources": 6,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[18]",
-            "[19]"
-          ],
-          "explanation": "Strong fit for Muslim donors due to <cite id=\"18\">verified zakat eligibility</cite> and focus on <cite id=\"19\">orphans (masakin/fuqara)</cite> in Muslim-majority regions.",
-          "improvement": ""
-        },
-        "credibility": {
-          "citation_ids": [
-            "[9]",
-            "[10]",
-            "[16]"
-          ],
-          "explanation": "BLOOM is highly transparent, holding the <cite id=\"9\">highest level of transparency (Platinum) from Candid</cite> and an <cite id=\"10\">89.5/100 rating from Charity Navigator</cite>.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"16\">expand its board of directors</cite> to include more independent members to meet standard governance benchmarks."
-        },
-        "impact": {
-          "citation_ids": [
-            "[7]",
-            "[12]",
-            "[17]"
-          ],
-          "explanation": "The charity is highly efficient, with a <cite id=\"7\">100.0% program ratio</cite> and a <cite id=\"12\">track record of building 11 PlayGardens</cite> for vulnerable children.",
-          "improvement": "Impact reporting could be improved by <cite id=\"17\">clarifying the distinction between direct and indirect beneficiaries</cite> to provide a more accurate cost-per-impact metric."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[3]",
-          "[4]",
-          "[15]"
-        ],
-        "evidence_rigor": "Grade C - Verified outcomes and infrastructure tracking",
-        "geographic_focus": [
-          "Morocco",
-          "Palestine",
-          "Pakistan",
-          "Egypt",
-          "USA"
-        ],
-        "giving_style": "Direct service and infrastructure",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)",
-          "fisabilillah"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 158297,
-        "citation_ids": [
-          "[2]",
-          "[3]",
-          "[10]"
-        ],
-        "cn_financial_score": 69,
-        "cn_overall_score": 89.5,
-        "fundraising_ratio": 0.03,
-        "industry_program_ratio": 0.75,
-        "peer_count": 0,
-        "peer_program_ratio_median": null,
-        "program_expense_ratio": 0.9865999999999999,
-        "reserves_months": 3.1,
-        "revenue_cagr_3yr": 19.3,
-        "transparency_score": 100,
-        "working_capital_months": 21.3,
-        "yearly_financials": [
-          {
-            "expenses": 99381,
-            "net_assets": 176519,
-            "revenue": 158297,
-            "year": 2023
-          },
-          {
-            "expenses": 94095,
-            "net_assets": null,
-            "revenue": 107186,
-            "year": 2022
-          },
-          {
-            "expenses": 118002,
-            "net_assets": null,
-            "revenue": 111146,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
-        "domestic_grants": 468774,
-        "foreign_grants": 0,
-        "grant_count": 1,
-        "grant_strategy": "Funds specific implementing partners for childhood enrichment and crisis mobilization.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "USA",
-          "International Partners"
-        ],
-        "top_recipients": [
-          "HAYA WASHINGTON ($468,774)"
-        ],
-        "total_grants": 468774
-      },
-      "headline": "BLOOM Charity advocates for children in crisis through specialized enrichment programs and the creation of therapeutic play spaces.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support niche, high-efficiency interventions for orphans and vulnerable children in Muslim-majority countries with zakat-eligible funds.",
-        "citation_ids": [
-          "[7]",
-          "[16]",
-          "[18]"
-        ],
-        "donor_motivations": [
-          "Want to ensure 100% of their donation reaches the field",
-          "Value the psychological and emotional well-being of orphans",
-          "Prefer supporting smaller, agile organizations with high growth",
-          "Seek to fulfill zakat through specialized child welfare programs"
-        ],
-        "giving_considerations": [
-          "The organization is small and relies on a lean staff and board",
-          "Impact is focused on specific infrastructure (PlayGardens) rather than broad systemic change",
-          "Financial data shows high efficiency but limited total volume compared to global peers"
-        ],
-        "not_ideal_for": "Donors seeking large-scale policy advocacy or those who require a large, independent board of directors for risk mitigation."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[14]",
-          "[15]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects consistent tracking of outputs (gardens built, meals served) and some outcome metrics, but lacks independent RCT-level evaluation.",
-        "external_evaluations": [
-          "Candid Outcome Metrics"
-        ],
-        "outcome_tracking_years": 5,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "BLOOM creates impact by providing therapeutic play environments that improve the emotional and developmental outcomes for children in institutional care.",
-        "why_evidence_matters": "Evidence ensures that play-based interventions actually lead to improved childhood development in high-stress environments."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[3]",
-          "[6]"
-        ],
-        "founded_year": 2017,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": 19.3,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a small budget and high growth, BLOOM can absorb significant new funding to expand its PlayGarden model to more orphanages.",
-        "strategic_priorities": [
-          "Expanding PlayGardens",
-          "Gaza emergency relief",
-          "Early childhood enrichment"
-        ],
-        "years_operating": 9
-      },
-      "organizational_capacity": {
-        "board_size": 1,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Listed",
-        "citation_ids": [
-          "[2]",
-          "[4]",
-          "[16]"
-        ],
-        "employees_count": 0,
-        "geographic_reach": "5 countries (Morocco, Palestine, Pakistan, USA, Egypt)",
-        "has_conflict_policy": true,
-        "has_financial_audit": false,
-        "independent_board_pct": 0,
-        "payroll_to_revenue_pct": 0,
-        "programs_count": 4,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[2]",
-          "[7]"
-        ],
-        "differentiator": "Distinguished by its <cite id=\"2\">niche focus on therapeutic play</cite> and an <cite id=\"7\">unusually high 100% program ratio</cite>.",
-        "peer_group": "International Child Welfare Charities",
-        "similar_orgs": [
-          "Helping Hand for Relief and Development",
-          "Islamic Relief USA"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Much larger scale and broader humanitarian scope",
-          "name": "Helping Hand for Relief"
-        },
-        {
-          "differentiator": "Global reach with extensive disaster response capacity",
-          "name": "Islamic Relief USA"
-        },
-        {
-          "differentiator": "Focuses primarily on domestic US social services",
-          "name": "ICNA Relief"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[7]"
-          ],
-          "detail": "The organization maintains a <cite id=\"7\">98.7% program expense ratio</cite>, meaning all reported expenses are dedicated to its core mission of child enrichment.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[8]"
-          ],
-          "detail": "BLOOM spends only <cite id=\"8\">$0.03 to raise every $1</cite>, indicating a highly efficient donor acquisition and retention model.",
-          "point": "High Fundraising Productivity"
-        },
-        {
-          "citation_ids": [
-            "[11]"
-          ],
-          "detail": "The charity holds <cite id=\"11\">21.3 months of working capital</cite> in working capital, providing a solid buffer for its international programs.",
-          "point": "Robust Liquidity and Stability"
-        }
-      ],
-      "strengths_deep_dive": [
-        "BLOOM's operational model is built on high-impact, low-overhead interventions. Since its inception, it has successfully <cite id=\"12\">completed 11 PlayGardens</cite>, providing over <cite id=\"13\">800 children with daily access to play</cite>. Its ability to pivot during crises is evidenced by its <cite id=\"5\">Gaza emergency response</cite>, which delivered substantial food aid while maintaining its core focus on childhood enrichment. The organization's <cite id=\"14\">Platinum Candid status</cite> reflects a commitment to sharing comprehensive outcome metrics, including tracking <cite id=\"15\">5 distinct outcome metrics</cite> to verify its impact on the ground."
-      ],
-      "summary": "founded in 2017, BLOOM Charity is a specialized non-profit dedicated to <cite id=\"1\">advocating for children in institutional care</cite> and crisis environments. The organization focuses on early childhood development by creating <cite id=\"2\">therapeutic play spaces known as PlayGardens</cite>, which provide vulnerable children with essential access to the outdoors and emotional enrichment. Despite its relatively small scale, the charity has demonstrated significant operational growth, achieving a <cite id=\"3\">3-year revenue CAGR of 19.3%</cite>. BLOOM's impact extends across several regions, including <cite id=\"4\">Morocco, Palestine, Pakistan, and the USA</cite>. In response to urgent humanitarian needs, the organization recently expanded its scope to provide <cite id=\"5\">700,000 meals in Gaza</cite> and support for <cite id=\"6\">15,000 families through Agafay Park</cite>. Financially, the organization is characterized by extreme leaness, reporting a <cite id=\"7\">98.7% program expense ratio</cite> in its most recent filings, ensuring that donor contributions are directed almost entirely toward service delivery. This efficiency is further reflected in its <cite id=\"8\">fundraising efficiency of $0.01 per $1 raised</cite>, well below industry averages for organizations of its size. The charity maintains a <cite id=\"9\">Platinum Seal of Transparency from Candid</cite> and an <cite id=\"10\">overall score of 89.89.5/100 from Charity Navigator</cite>, signaling strong accountability to its donor base.",
-      "zakat_guidance": {
-        "classification": "amil",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "BLOOM Charity is a humanitarian organization dedicated to advocating for vulnerable children through specialized enrichment programs and the development of 'Magical PlayGardens' [4][6]. The organization maintains a high level of financial transparency and is recognized as Zakat-eligible, allowing donors to fulfill religious obligations through their contributions [3][9]."
     }
   }
 }

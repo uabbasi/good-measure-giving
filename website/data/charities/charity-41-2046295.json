@@ -2,7 +2,7 @@
   "id": "41-2046295",
   "ein": "41-2046295",
   "name": "The Citizens Foundation USA",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "The Citizens Foundation, USA (TCF-USA) is a professionally managed tax-exempt charity, with a support network of volunteer chapters across the USA. We support the building of civil society in Pakistan by providing quality education to underprivileged children, promoting gender equality & partnering for reform of public education. We believe that education is a basic human right. Universal access to education is a prerequisite for democratic institutions to flourish in Pakistan and for its people to compete in a global economy. <br>TCF currently has 1,833 schools in all the provinces of Pakistan with 280,000 children enrolled, nearly half of them girls. TCF has trained and employed 13,000 women as teachers and principals, making it the largest employer of women in the private sector. <br>TCF also provides scholarships for tertiary education to the deserving graduates of its' secondary schools and an adult literacy program that has transformed the lives of women.",
   "programs": [
     "TCF Schools",
@@ -61,7 +61,11 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": 0
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 15,
+    "independentBoardMembers": null,
+    "ceoCompensation": 155000
+  },
   "targeting": {
     "populationsServed": [
       "Youth",
@@ -85,7 +89,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-03-09 12:59:54",
+  "lastUpdated": "2026-03-09 21:44:45",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -600,38 +604,6 @@
         "rubric_archetype": "EDUCATION",
         "score": 49
       },
-      "judge_issues": [
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change",
-          "judge": "discover_quality",
-          "message": "Theory of change URL found but description not extracted",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -651,618 +623,70 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization holds a Charity Navigator score of 99.33333333333333/100 and demonstrates high cost-effectiveness.",
+          "claim": "The charity holds a Charity Navigator score of 99.33333333333333/100 and maintains a program expense ratio of 89.5%.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/412046295#financials"
         },
         {
-          "claim": "The Citizens Foundation USA is zakat-eligible and follows specific asnaf categories for distribution.",
+          "claim": "The organization is zakat-eligible and provides a policy for asnaf categories.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.tcfusa.org/zakat"
         },
         {
-          "claim": "The organization reported total revenue of $21,703,144 and focuses on operational support for schools and scholarship programs.",
+          "claim": "The organization reported total revenue of $21,703,144 and focuses on building civil society through education.",
+          "id": "[3]",
+          "source_name": "Form 990 (2023)",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/412046295"
+        },
+        {
+          "claim": "TCF-USA provides operational support for schools, constructs new school units, and offers higher education scholarships.",
           "id": "[4]",
           "source_name": "Form 990 (2024)",
           "source_url": "https://www.tcfusa.org/wp-content/uploads/2025/09/IRS-Form-990-for-2024.pdf"
         },
         {
-          "claim": "TCF-USA programs include higher education scholarships and converting schools to solar energy.",
+          "claim": "The organization converts schools to solar energy and provides higher education scholarships.",
           "id": "[5]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://www.tcfusa.org/wp-content/uploads/2024/11/IRS-Form-990-for-2023.pdf"
         },
         {
-          "claim": "The charity provides multiple donation options and methods for supporting its mission.",
+          "claim": "The organization focuses on increasing school unit capacity.",
+          "id": "[7]",
+          "source_name": "Form 990 (2021)",
+          "source_url": "https://www.tcfusa.org/wp-content/uploads/2022/11/TCFUSA-IRS-Form-990-2021.pdf"
+        },
+        {
+          "claim": "TCF-USA offers various donation options and giving methods for supporters.",
           "id": "[8]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.tcfusa.org/donate/"
         },
         {
-          "claim": "The organization offers volunteer opportunities to engage the community in its educational mission.",
+          "claim": "The organization provides volunteer opportunities and engagement programs.",
           "id": "[9]",
           "source_name": "Charity Website - Volunteer",
           "source_url": "https://www.tcfusa.org/volunteer-program/"
         }
       ],
-      "amal_score_rationale": "With a GMG score of 87/100, TCF-USA demonstrates high organizational effectiveness and strong financial stewardship, particularly through its direct service model and low overhead costs.",
+      "amal_score_rationale": "With an overall GMG score of 87/100, TCF-USA demonstrates high transparency and operational excellence. Its direct service model and strong alignment with global education needs make it a highly effective choice for donors.",
       "areas_for_improvement": [
-        "Working capital reserves are currently at 4.7 months, which is slightly below the common nonprofit benchmark of 6-12 months for long-term sustainability.",
-        "Continued expansion of solar energy conversions for schools to further reduce long-term operational costs."
+        "Working capital reserves are relatively lean at 4.7 months, which may limit long-term fiscal flexibility during economic downturns.",
+        "Continued reliance on international fundraising to sustain large-scale infrastructure projects in Pakistan."
       ],
       "dimension_explanations": {
-        "alignment": "TCF-USA shows strong alignment with donor interests, particularly for those seeking to address the urgent cause of global education in Pakistan [1]. The organization is zakat-eligible and provides clear pathways for donors to contribute through various methods, including volunteer engagement and structured giving [2][8][9].",
-        "impact": "The organization achieves a high impact score of 49/50 by maintaining a direct service model that provides education at a cost-effective rate per beneficiary [1]. Its programs include building new school units, providing higher education scholarships, and converting existing facilities to solar power to ensure sustainable operations [4][5]."
+        "alignment": "The organization earns a high alignment score of 38/50 due to its strong fit for Muslim donors seeking zakat-eligible causes and its focus on the urgent global need for education [2][8]. Its long track record of building school capacity and fostering volunteer engagement further reinforces its alignment with community-driven development [7][9].",
+        "impact": "TCF-USA achieves a high impact score of 49/50 by maintaining a direct service model that constructs and operates schools, providing scholarships, and converting facilities to solar energy [4][5]. The organization operates with a total revenue of $21,703,144 and maintains a high program expense ratio of 89.5%, reflecting a strong commitment to its mission [1][3]."
       },
-      "headline": "The Citizens Foundation USA empowers underprivileged children in Pakistan through a robust network of high-quality schools and educational programs.",
+      "headline": "The Citizens Foundation USA empowers underprivileged children in Pakistan through high-quality education and sustainable school infrastructure.",
       "strengths": [
-        "Exceptional program expense ratio of 89.5%, ensuring the vast majority of funds directly support educational initiatives.",
-        "Highly efficient fundraising operations, spending only $0.09 to raise every $1.",
-        "Strong financial health and accountability, evidenced by a Charity Navigator score of 99.33333333333333/100."
+        "High program expense ratio of 89.5%, ensuring the vast majority of funds directly support educational initiatives.",
+        "Exceptional fundraising efficiency, spending only $0.09 to raise every $1.",
+        "Strong financial health and accountability with a Charity Navigator score of 99.33333333333333/100."
       ],
-      "summary": "The Citizens Foundation USA (TCF-USA) supports the development of civil society in Pakistan by providing quality education to marginalized youth through school construction and operational support [4]. The organization maintains a high level of financial transparency and is recognized as zakat-eligible, allowing donors to fulfill their religious obligations while supporting educational equity [2][8]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "building civil society in Pakistan",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "The Citizens Foundation, USA supports the building of civil society in Pakistan by providing quality education",
-          "source_name": "Candid Profile - Mission",
-          "source_type": "website",
-          "source_url": "https://app.candid.org/profile/7608831"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "founding in 1995",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Founded: 1995",
-          "source_name": "TCF-USA About Us",
-          "source_type": "website",
-          "source_url": "https://www.tcfusa.org/about-us/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "operational support for 534 schools",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Operational support for schools: 534",
-          "source_name": "Form 990 (2024)",
-          "source_type": "form990",
-          "source_url": "https://www.tcfusa.org/wp-content/uploads/2025/09/IRS-Form-990-for-2024.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "construction of 17 new school units",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "New school units constructed: 17",
-          "source_name": "Form 990 (2024)",
-          "source_type": "form990",
-          "source_url": "https://www.tcfusa.org/wp-content/uploads/2025/09/IRS-Form-990-for-2024.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Total Revenue of $18,303,365",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Total Revenue: $18,303,365",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/412046295"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 89.5%",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Program Expense Ratio: 89.5%",
-          "source_name": "Financial Summary",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/412046295"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified zakat-eligible charity",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "TCF-USA Zakat",
-          "source_type": "website",
-          "source_url": "https://www.tcfusa.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fuqara (poor) and masakin (needy)",
-          "confidence": 0.95,
-          "id": "[8]",
-          "quote": "Zakat Categories: fuqara, masakin",
-          "source_name": "TCF-USA Zakat Policy",
-          "source_type": "website",
-          "source_url": "https://www.tcfusa.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "133,000 higher education scholarships",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Higher education scholarships: 133000",
-          "source_name": "Form 990 (2024)",
-          "source_type": "form990",
-          "source_url": "https://www.tcfusa.org/wp-content/uploads/2025/09/IRS-Form-990-for-2024.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "converting 8 schools to solar energy",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Schools converted to solar: 8",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://www.tcfusa.org/wp-content/uploads/2024/11/IRS-Form-990-for-2023.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "industry standard of 75%",
-          "confidence": 0.9,
-          "id": "[11]",
-          "quote": "Industry Standard: 75%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/412046295"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "overall score of 99.99.33333333333333/100 from Charity Navigator",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Overall Score: 99.33/100",
-          "source_name": "Charity Navigator Rating",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/412046295#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Candid Seal: platinum",
-          "source_name": "Candid Seal",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/7608831"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cost per beneficiary of only $55.37",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "$55.37/beneficiary (exceptional for EDUCATION_GLOBAL)",
-          "source_name": "Impact Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/412046295#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.09 per $1 raised",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Fundraising Efficiency: $0.09 per $1 raised",
-          "source_name": "Charity Navigator Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/412046295#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "independent board of 15 members",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Board Size: 15; Independent Board Members: 100%",
-          "source_name": "Governance Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/412046295#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100% score for Culture and Leadership",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Culture: 100, Leadership: 100",
-          "source_name": "Charity Navigator Beacons",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/412046295#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$52,989,235 in total foreign grants",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Foreign Grants: $52,989,235",
-          "source_name": "Grantmaking Activity",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/412046295"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of -4.1%",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "3-Year Revenue CAGR: -4.1%",
-          "source_name": "Financial Trends",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/412046295"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "working capital sits at 4.7 months",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Working capital: 4.7 months",
-          "source_name": "Impact Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/412046295#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "expanding services to geographies with limited nonprofit coverage",
-          "confidence": 0.9,
-          "id": "[21]",
-          "quote": "Improvement: Expand services to underserved populations or geographies with limited nonprofit coverage.",
-          "source_name": "Alignment Improvement",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/412046295"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "remove barriers of class and privilege",
-          "confidence": 0.95,
-          "id": "[22]",
-          "quote": "The TCF model works to remove barriers of class and privilege by providing access to quality educ",
-          "source_name": "Candid Impact Goal",
-          "source_type": "website",
-          "source_url": "https://app.candid.org/profile/7608831"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified outcome tracking",
-          "confidence": 1,
-          "id": "[23]",
-          "quote": "Outcome Metrics Tracked: 4; Evidence & outcomes: VERIFIED",
-          "source_name": "Candid Metrics",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/7608831"
-        }
-      ],
-      "amal_score_rationale": "With a GMG score of 87/100, TCF-USA demonstrates high organizational effectiveness and strong financial stewardship, particularly through its direct service model and low overhead costs.",
-      "amal_scores": {
-        "amal_score": 87,
-        "confidence_scores": {
-          "alignment": 38,
-          "data_confidence": 1,
-          "impact": 49
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Revenue Growth Stability",
-          "citation_ids": [
-            "[19]"
-          ],
-          "context": "The organization has seen a <cite id=\"19\">3-year revenue CAGR of -4.1%</cite>, suggesting a need to diversify or expand the donor base to reverse the slight downward trend."
-        },
-        {
-          "area": "Working Capital Reserves",
-          "citation_ids": [
-            "[20]"
-          ],
-          "context": "Current <cite id=\"20\">working capital sits at 4.7 months</cite>, which is resilient but slightly below the ideal 6-12 month benchmark for large institutions."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[16]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "Maintains high governance standards with a fully independent board and audited financials."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[19]"
-        ],
-        "mitigation_notes": "The organization maintains strong net assets of over $7 million to buffer against short-term fluctuations.",
-        "risk_factors": [
-          "<cite id=\"19\">Negative 3-year revenue CAGR of -4.1%</cite>"
-        ],
-        "summary": "The primary concern is a <cite id=\"19\">slight contraction in revenue growth</cite> over the last three years, which may limit future expansion capacity."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 8,
-          "rating": 10,
-          "website": 5
-        },
-        "high_confidence_count": 21,
-        "total_count": 23,
-        "unique_sources": 6
-      },
-      "confidence": {
-        "data_freshness": "Includes 2024 Form 990 data",
-        "data_gaps": [
-          "Missing specific employee count"
-        ],
-        "level": "HIGH",
-        "notes": "Extremely high financial transparency and consistent reporting across multiple years.",
-        "score": 95,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Website",
-          "Candid"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 95,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Employee count not specified in summary data"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 23,
-        "unique_sources": 6,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[7]",
-            "[8]",
-            "[21]"
-          ],
-          "explanation": "Strong alignment for Muslim donors through <cite id=\"7\">verified zakat eligibility</cite> and a focus on <cite id=\"8\">underserved populations in Pakistan</cite>.",
-          "improvement": "Alignment could be maximized by <cite id=\"21\">expanding services to geographies with even more limited nonprofit coverage</cite>."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[12]",
-            "[13]",
-            "[16]"
-          ],
-          "explanation": "Donors can trust TCF-USA due to its <cite id=\"13\">Candid Platinum Seal</cite>, <cite id=\"16\">100% independent board</cite>, and <cite id=\"12\">99/100 Accountability score</cite>.",
-          "improvement": "To further enhance credibility, the organization could publish more frequent third-party impact evaluations beyond its internal outcome tracking."
-        },
-        "impact": {
-          "citation_ids": [
-            "[3]",
-            "[6]"
-          ],
-          "explanation": "Impact is driven by a <cite id=\"6\">89.5% program ratio</cite> and a direct service model that <cite id=\"3\">supports over 500 schools</cite>.",
-          "improvement": ""
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "EDUCATION_GLOBAL",
-        "citation_ids": [
-          "[2]",
-          "[7]"
-        ],
-        "evidence_rigor": "Grade A - Verified outcomes and high transparency",
-        "geographic_focus": [
-          "Pakistan"
-        ],
-        "giving_style": "Direct service / School support",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.003,
-        "annual_revenue": 18303365,
-        "citation_ids": [
-          "[5]",
-          "[12]",
-          "[19]"
-        ],
-        "cn_financial_score": 98,
-        "cn_overall_score": 99.33333333333333,
-        "fundraising_ratio": 0.01,
-        "industry_program_ratio": 0.75,
-        "peer_count": 22,
-        "peer_program_ratio_median": 0.896,
-        "program_expense_ratio": 0.8946,
-        "reserves_months": 4.7,
-        "revenue_cagr_3yr": -4.1,
-        "transparency_score": 100,
-        "working_capital_months": 4.7,
-        "yearly_financials": [
-          {
-            "expenses": 17954324,
-            "net_assets": 7060799,
-            "revenue": 18303365,
-            "year": 2023
-          },
-          {
-            "expenses": 21554327,
-            "net_assets": 6656524,
-            "revenue": 20690557,
-            "year": 2022
-          },
-          {
-            "expenses": 18791754,
-            "net_assets": 7610390,
-            "revenue": 19916524,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[18]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 52989235,
-        "grant_count": 22,
-        "grant_strategy": "Directly funds the operations and construction of schools managed by its partner organization in Pakistan.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Pakistan"
-        ],
-        "top_recipients": [
-          "The Citizens Foundation (Pakistan)"
-        ],
-        "total_grants": 52989235
-      },
-      "headline": "The Citizens Foundation USA empowers underprivileged children in Pakistan through a robust network of high-quality schools and educational programs.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support large-scale, high-efficiency educational infrastructure in Pakistan with zakat-eligible contributions.",
-        "citation_ids": [
-          "[6]",
-          "[7]",
-          "[19]"
-        ],
-        "donor_motivations": [
-          "Want to fulfill zakat through educational empowerment",
-          "Value extreme financial efficiency and low overhead",
-          "Prefer supporting established institutions with a 30-year track record",
-          "Interested in systemic change through civil society building"
-        ],
-        "giving_considerations": [
-          "Donations support a massive network rather than a single local project",
-          "The organization is currently in a high-maturity stage with stable but not growing revenue",
-          "Impact is measured by school operationality and scholarship numbers"
-        ],
-        "not_ideal_for": "Donors seeking to fund advocacy-based educational reform or those looking for small-scale, grassroots startup projects."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[22]",
-          "[23]"
-        ],
-        "evidence_grade": "A",
-        "evidence_grade_explanation": "Grade A due to <cite id=\"23\">verified outcome tracking</cite> and high transparency regarding school operational data.",
-        "external_evaluations": [
-          "Candid outcomes data",
-          "Charity Navigator Beacon scores"
-        ],
-        "outcome_tracking_years": 4,
-        "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "TCF seeks to <cite id=\"22\">remove barriers of class and privilege</cite> by providing quality education to make children agents of positive change.",
-        "why_evidence_matters": "Evidence ensures that school construction translates into actual learning outcomes and long-term student success."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[2]",
-          "[4]",
-          "[10]"
-        ],
-        "founded_year": 1995,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": -4.1,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With <cite id=\"4\">17 new school units constructed</cite> recently, the need for ongoing operational funding remains high.",
-        "strategic_priorities": [
-          "Solar energy conversion",
-          "Higher education scholarships",
-          "School network expansion"
-        ],
-        "years_operating": 31
-      },
-      "organizational_capacity": {
-        "board_size": 15,
-        "ceo_compensation": 352421,
-        "ceo_compensation_pct_revenue": 1.92,
-        "ceo_name": "Not Listed",
-        "citation_ids": [
-          "[3]",
-          "[16]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Pakistan-wide",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": 5000
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[6]",
-          "[11]"
-        ],
-        "differentiator": "TCF-USA's <cite id=\"6\">89.5% program ratio</cite> is significantly higher than the <cite id=\"11\">peer median of 89.6%</cite>.",
-        "peer_group": "Global Education (Pakistan Focus)",
-        "similar_orgs": [
-          "Developments in Literacy",
-          "Iqra Fund",
-          "Islamic Services Foundation"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on K-12 education but at a smaller scale",
-          "name": "Developments in Literacy"
-        },
-        {
-          "differentiator": "Focuses on remote regions with a smaller operational footprint",
-          "name": "Iqra Fund"
-        },
-        {
-          "differentiator": "Similar size and educational focus",
-          "name": "Islamic Services Foundation"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[6]",
-            "[11]"
-          ],
-          "detail": "The charity maintains a <cite id=\"6\">89.5% program expense ratio</cite>, which significantly exceeds the <cite id=\"11\">industry standard of 75%</cite>.",
-          "point": "Exceptional Financial Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[12]",
-            "[13]"
-          ],
-          "detail": "TCF-USA holds an <cite id=\"12\">overall score of 99.99.33333333333333/100 from Charity Navigator</cite> and a <cite id=\"13\">Platinum Seal of Transparency from Candid</cite>.",
-          "point": "High Accountability and Transparency"
-        },
-        {
-          "citation_ids": [
-            "[3]",
-            "[14]"
-          ],
-          "detail": "The organization supports <cite id=\"3\">534 schools</cite> and has a <cite id=\"14\">cost per beneficiary of only $55.37</cite>, demonstrating high-impact delivery.",
-          "point": "Proven Impact at Scale"
-        }
-      ],
-      "strengths_deep_dive": [
-        "TCF-USA's operational model is built on extreme cost-effectiveness and transparency. With a <cite id=\"15\">fundraising efficiency of $0.09 per $1 raised</cite>, the organization minimizes overhead to maximize classroom impact. Their governance is robust, featuring an <cite id=\"16\">independent board of 15 members</cite> and a <cite id=\"17\">100% score for Culture and Leadership</cite> from Charity Navigator. This institutional maturity allows them to manage large-scale grants, including <cite id=\"18\">$52,989,235 in total foreign grants</cite> distributed to implementing partners in Pakistan."
-      ],
-      "summary": "The Citizens Foundation USA (TCF-USA) is a premier educational nonprofit dedicated to <cite id=\"1\">building civil society in Pakistan</cite> by providing high-quality education to underprivileged children. Since its <cite id=\"2\">founding in 1995</cite>, the organization has established a massive footprint, providing <cite id=\"3\">operational support for 534 schools</cite> and facilitating the <cite id=\"4\">construction of 17 new school units</cite> in the most recent reporting period. TCF-USA operates with exceptional financial efficiency, reporting <cite id=\"5\">Total Revenue of $18,303,365</cite> with a <cite id=\"6\">program expense ratio of 89.5%</cite>, ensuring that nearly every dollar donated reaches the classroom. The organization is a <cite id=\"7\">verified zakat-eligible charity</cite>, specifically serving the <cite id=\"8\">fuqara (poor) and masakin (needy)</cite> through its educational programs. Beyond basic schooling, TCF-USA invests in long-term student success, providing <cite id=\"9\">133,000 higher education scholarships</cite> to help alumni transition into professional careers. Their commitment to sustainability is further evidenced by infrastructure improvements, such as <cite id=\"10\">converting 8 schools to solar energy</cite> to reduce long-term utility costs and environmental impact.",
-      "zakat_guidance": {
-        "classification": "fuqara",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "The Citizens Foundation USA (TCF-USA) supports the development of civil society in Pakistan by providing quality education to marginalized youth through school construction and operational support [3][4]. The organization is recognized as zakat-eligible, allowing donors to fulfill their religious obligations while supporting educational equity [2]."
     }
   }
 }

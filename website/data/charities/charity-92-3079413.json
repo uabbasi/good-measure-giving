@@ -2,7 +2,7 @@
   "id": "92-3079413",
   "ein": "92-3079413",
   "name": "Humaniti",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "HUMANITI FOUNDATION IS A UNITED STATES NON-PROFIT ORGANIZATION WITH THE SPECIFIC, AND PRIMARY PURPOSE TO RAISE FUNDS AND MAKE DISTRIBUTIONS FOR CHARITAB...",
   "programs": [
     "HEAL",
@@ -51,7 +51,11 @@
     "cashAdjustedProgramRatio": 0.946851013605073,
     "domesticBurnRate": null
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 2,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Men"
@@ -77,7 +81,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 18:25:55",
+  "lastUpdated": "2026-03-09 21:45:07",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -445,68 +449,6 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 23
       },
-      "judge_issues": [
-        {
-          "field": "amal_score_rationale",
-          "judge": "score",
-          "message": "The rationale mentions \"high financial efficiency\" as a reason for the moderate score, but the negative working capital is a significant financial concern that should be given more weight in the rationale. The rationale should emphasize the negative working capital as a major factor limiting the overall score.",
-          "severity": "warning"
-        },
-        {
-          "field": "impact_rationale",
-          "judge": "score",
-          "message": "The impact rationale mentions a cost per beneficiary of $4054.945 and negative working capital, but it doesn't adequately explain how these factors contribute to the overall impact score of 23/50. The rationale should explicitly state that the high cost per beneficiary and negative working capital are significant weaknesses that lower the impact score.",
-          "severity": "warning"
-        },
-        {
-          "field": "risk_deduction",
-          "judge": "score",
-          "message": "The risk deduction of -10 is not explicitly mentioned in the overall amal_score_rationale. The rationale should acknowledge the significant risk deductions due to the small board size and GIK inflation, as these substantially lower the overall score.",
-          "severity": "warning"
-        },
-        {
-          "field": "propublica.expense_ratio",
-          "judge": "crawl_quality",
-          "message": "Expenses ($474,737) exceed revenue ($233,066) by 104% - may be drawing down reserves",
-          "severity": "warning"
-        },
-        {
-          "field": "multi_source.revenue_divergence",
-          "judge": "crawl_quality",
-          "message": "Revenue diverges >80% across sources ($233,066 - $13,567,039) - different fiscal years (1 year spread)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "working_capital_months",
-          "judge": "synthesize_quality",
-          "message": "Negative working capital (-6.1 months) indicates financial stress",
-          "severity": "warning"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": -10,
       "risks": {
         "overall_risk_level": "HIGH",
@@ -541,419 +483,46 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reports a program expense ratio of 95.7% and working capital of -6.1 months.",
+          "claim": "The organization reports a program expense ratio of 95.7% and a working capital of -6.1 months.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/923079413#financials"
         },
         {
-          "claim": "The charity is zakat-eligible and maintains a specific zakat policy for asnaf categories.",
+          "claim": "The charity is zakat-eligible and maintains a specific zakat policy for distributions.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://humanitifoundation.org/zakat"
         },
         {
-          "claim": "Total revenue for the period was $13,567,039, supporting programs such as HEAL and Clean Water.",
+          "claim": "Total revenue for the period was $13,567,039, with a fundraising efficiency of $0.00 per $1 raised.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/923079413"
         },
         {
-          "claim": "The foundation offers various donation options and giving methods for supporters.",
+          "claim": "The foundation offers various giving methods and donation options for its humanitarian programs.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://humanitifoundation.org/donate/"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its high financial efficiency and strong alignment with religious giving, balanced against concerns regarding its negative working capital and medium data confidence.",
+      "amal_score_rationale": "The organization demonstrates a high commitment to direct service with a 95.7% program expense ratio, though its overall score is tempered by a negative working capital position and medium data confidence.",
       "areas_for_improvement": [
-        "Negative working capital of -6.1 months indicates potential short-term liquidity challenges",
-        "Limited third-party impact data to verify long-term program outcomes"
+        "Negative working capital of -6.1 months",
+        "Limited third-party impact verification data"
       ],
       "dimension_explanations": {
-        "alignment": "Humaniti Foundation shows high donor fit for those seeking religious and cultural alignment, specifically through its zakat-eligible status and defined asnaf categories [2]. The organization provides multiple donation options to facilitate these contributions, addressing urgent humanitarian needs through a faith-based lens [4].",
-        "impact": "The foundation demonstrates a direct service model with a total revenue of $13,567,039 and a program expense ratio of 95.7% [1][3]. While the cost per beneficiary is calculated at 4054.945, the organization's negative working capital of -6.1 months suggests a need for improved financial reserves to sustain its HEAL and Clean Water programs [1][3]."
+        "alignment": "The foundation shows high donor fit for those seeking religious and cultural alignment, as it maintains a dedicated zakat policy and provides multiple donation options for asnaf categories [2][4]. The urgency of its humanitarian mission contributes to its alignment score, though the medium data confidence suggests a need for more transparent track record reporting [1].",
+        "impact": "Humaniti Foundation reports a total revenue of $13,567,039, directing the vast majority of these funds toward programs like HEAL and Clean Water [3]. While the organization maintains a high program expense ratio of 95.7%, its financial health is challenged by a working capital of -6.1 months, and its direct service model results in a calculated cost per beneficiary of $4,054.945 [1][3]."
       },
-      "headline": "Humaniti Foundation is a dedicated non-profit organization focused on providing essential humanitarian aid and clean water initiatives to vulnerable communities.",
+      "headline": "Humaniti Foundation is a United States non-profit dedicated to global humanitarian relief through high-efficiency programming and zakat-eligible distributions.",
       "strengths": [
-        "High program expense ratio of 95.7%, ensuring the vast majority of funds reach those in need",
-        "Exceptional fundraising efficiency with a cost of $0.00 per $1 raised",
+        "High program expense ratio of 95.7%",
+        "Exceptional fundraising efficiency of $0.00 per $1 raised",
         "Clear zakat eligibility and policy for religious giving"
       ],
-      "summary": "Based in the United States, Humaniti Foundation operates with the primary purpose of raising and distributing funds for charitable causes, including its HEAL and Clean Water programs [1][3]. The organization is recognized as zakat-eligible, allowing donors to fulfill their religious obligations through various giving methods [2][4]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 95.7%",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "Program Expense Ratio: 100.0%",
-          "source_name": "Charity Navigator - Humaniti Foundation",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/923079413#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "HEAL, Clean Water, and Emergency Relief programs",
-          "confidence": 0.9,
-          "id": "[2]",
-          "quote": "Programs: HEAL, Clean Water, Emergency Relief, Food / Hot Meals, Orphan Care",
-          "source_name": "Humaniti Foundation - Programs",
-          "source_type": "website",
-          "source_url": "https://humanitifoundation.org/about-us/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$233,066 in total revenue",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total Revenue: $233,066; Total Expenses: $474,737; Net Assets: -$241,671",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/923079413"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "explicitly zakat-eligible",
-          "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "Humaniti Foundation - Zakat",
-          "source_type": "website",
-          "source_url": "https://humanitifoundation.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "small board of only 2 members",
-          "confidence": 0.85,
-          "id": "[5]",
-          "quote": "Board governance: WEAK (2 members); Evidence & outcomes: VERIFIED",
-          "source_name": "AMAL Score Details",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/923079413#ratings"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its high financial efficiency and strong alignment with religious giving, balanced against concerns regarding its negative working capital and medium data confidence.",
-      "amal_scores": {
-        "amal_score": 40,
-        "confidence_scores": {
-          "alignment": 27,
-          "data_confidence": 0.6,
-          "impact": 23
-        },
-        "confidence_tier": "MEDIUM",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Governance and Board Oversight",
-          "citation_ids": [
-            "[5]"
-          ],
-          "context": "The organization currently operates with a <cite id=\"5\">small board of only 2 members</cite>, which may limit independent oversight."
-        },
-        {
-          "area": "Financial Liquidity",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "The foundation reports <cite id=\"1\">--6.1 months of working capital</cite>, suggesting potential challenges in sustaining long-term operations without continuous new funding."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "none",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "No BBB Wise Giving Alliance assessment is currently available for this organization."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[3]",
-          "[5]"
-        ],
-        "mitigation_notes": "The organization is in its first year of operation (founded 2023), which often accounts for initial financial volatility.",
-        "risk_factors": [
-          "<cite id=\"3\">Total liabilities exceed total assets</cite>",
-          "<cite id=\"5\">Board consists of only 2 members</cite>"
-        ],
-        "summary": "The primary concerns involve <cite id=\"3\">negative net assets of -$241,671</cite> and a <cite id=\"5\">board size that does not meet standard governance benchmarks</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 2,
-          "form990": 5,
-          "rating": 4,
-          "website": 4
-        },
-        "high_confidence_count": 13,
-        "total_count": 15,
-        "unique_sources": 5
-      },
-      "confidence": {
-        "data_freshness": "Data from 2023 tax year",
-        "data_gaps": [
-          "Missing multi-year trends",
-          "Small board size risk"
-        ],
-        "level": "MODERATE",
-        "notes": "Financial efficiency is high but governance and liquidity are key areas of concern.",
-        "score": 60,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Charity Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 60,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Small board size",
-          "Negative net assets",
-          "Limited historical data"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 5,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[2]",
-            "[4]",
-            "[5]"
-          ],
-          "explanation": "The organization shows <cite id=\"4\">high Muslim donor fit</cite> by serving <cite id=\"2\">underserved populations in Muslim-majority crisis zones</cite>.",
-          "improvement": "The foundation could improve alignment by <cite id=\"5\">expanding services to additional underserved geographies</cite> with limited nonprofit coverage."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[1]",
-            "[3]",
-            "[5]"
-          ],
-          "explanation": "Donors can verify the organization's activities through its <cite id=\"3\">2023 Form 990 filing</cite> and its <cite id=\"1\">profile on Charity Navigator</cite>. However, credibility is tempered by a <cite id=\"5\">lack of board diversity</cite>.",
-          "improvement": "To strengthen credibility, the charity should <cite id=\"5\">expand its board of directors</cite> beyond two members to improve governance and oversight."
-        },
-        "impact": {
-          "citation_ids": [
-            "[3]",
-            "[5]"
-          ],
-          "explanation": "The foundation achieves impact through <cite id=\"5\">direct service delivery</cite> and significant <cite id=\"3\">grantmaking to specialized medical and relief partners</cite>.",
-          "improvement": "Impact measurement would benefit from <cite id=\"5\">publishing a board-approved reserve policy</cite> to ensure financial sustainability for its programs."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[2]",
-          "[4]",
-          "[5]"
-        ],
-        "evidence_rigor": "Grade C - Verified outcomes with strong theory of change",
-        "geographic_focus": [
-          "Gaza",
-          "Sudan",
-          "Pakistan",
-          "Yemen"
-        ],
-        "giving_style": "Direct service and Grantmaking",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 233066,
-        "citation_ids": [
-          "[1]",
-          "[3]",
-          "[5]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0,
-        "industry_program_ratio": 0.75,
-        "peer_count": 34,
-        "peer_program_ratio_median": 0.903,
-        "program_expense_ratio": 0.9573,
-        "reserves_months": 0.6,
-        "revenue_cagr_3yr": null,
-        "working_capital_months": -6.1,
-        "yearly_financials": [
-          {
-            "expenses": 474737,
-            "net_assets": -241671,
-            "revenue": 233066,
-            "year": 2023
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
-        "domestic_grants": 1184980,
-        "foreign_grants": 0,
-        "grant_count": 5,
-        "grant_strategy": "Distributes funds to specialized medical and humanitarian partners for direct service delivery.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Gaza",
-          "Egypt",
-          "Jordan"
-        ],
-        "top_recipients": [
-          "Fajr Scientific ($500K)",
-          "Good Gifts ($301K)",
-          "Gifts of Kindness ($292K)"
-        ],
-        "total_grants": 1184980
-      },
-      "headline": "Humaniti Foundation is a dedicated non-profit organization focused on providing essential humanitarian aid and clean water initiatives to vulnerable communities.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize maximum financial efficiency and want their entire contribution to reach humanitarian projects in high-conflict zones.",
-        "citation_ids": [
-          "[1]",
-          "[3]",
-          "[5]"
-        ],
-        "donor_motivations": [
-          "Want to ensure 95.7% of their donation goes to programs",
-          "Seek to fulfill zakat through a US-based humanitarian organization",
-          "Prioritize aid for Gaza, Sudan, and Yemen",
-          "Value lean operations with zero fundraising costs"
-        ],
-        "giving_considerations": [
-          "The organization is in its early growth stage (founded 2023)",
-          "Financial reserves are currently low",
-          "Governance is centralized within a very small board"
-        ],
-        "not_ideal_for": "Donors seeking an established institution with decades of financial history or those who require large, independent boards for governance assurance."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[2]",
-          "[5]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects <cite id=\"5\">verified evidence and outcomes</cite> but lacks long-term longitudinal studies or RCTs.",
-        "external_evaluations": [
-          "Internal outcome tracking"
-        ],
-        "outcome_tracking_years": 1,
-        "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "The foundation utilizes a <cite id=\"5\">strong theory of change</cite> by providing <cite id=\"2\">direct relief and clean water infrastructure</cite> to reduce mortality and poverty in crisis zones.",
-        "why_evidence_matters": "Evidence ensures that clean water and medical interventions are reaching the intended beneficiaries effectively."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[3]",
-          "[5]"
-        ],
-        "founded_year": 2023,
-        "maturity_stage": "Startup",
-        "revenue_growth_3yr": null,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "As a new organization with <cite id=\"3\">negative net assets</cite>, there is significant capacity to absorb funding to stabilize the balance sheet.",
-        "strategic_priorities": [
-          "Stabilize financial reserves",
-          "Expand board governance",
-          "Scale HEAL program"
-        ],
-        "years_operating": 2
-      },
-      "organizational_capacity": {
-        "board_size": 2,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not listed",
-        "citation_ids": [
-          "[2]",
-          "[3]",
-          "[5]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "7 countries including Sudan, Gaza, and Pakistan",
-        "has_conflict_policy": true,
-        "has_financial_audit": false,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 0,
-        "programs_count": 5,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[1]",
-          "[5]"
-        ],
-        "differentiator": "Humaniti Foundation maintains a <cite id=\"1\">95.7% program ratio</cite>, which is significantly higher than the <cite id=\"5\">peer median of 90.3%</cite>.",
-        "peer_group": "International humanitarian organizations",
-        "similar_orgs": [
-          "Amoud Foundation",
-          "Abdul Sattar Edhi International Foundation",
-          "Ehsaas Foundation"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar humanitarian focus and size",
-          "name": "Amoud Foundation"
-        },
-        {
-          "differentiator": "Smaller scale but longer history",
-          "name": "Abdul Sattar Edhi International Foundation"
-        },
-        {
-          "differentiator": "Smaller scale humanitarian relief",
-          "name": "Ehsaas Foundation"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The organization directs <cite id=\"1\">95.7% of its expenses toward programs</cite>, ensuring no donor funds are lost to administrative overhead.",
-          "point": "Maximum Program Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "Humaniti Foundation reports a <cite id=\"1\">fundraising efficiency of $0.00 per $1 raised</cite>, indicating highly lean operations.",
-          "point": "Exceptional Fundraising Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[4]"
-          ],
-          "detail": "The foundation maintains a <cite id=\"4\">clear zakat policy</cite> and accepts donations specifically for <cite id=\"4\">zakat-eligible humanitarian causes</cite>.",
-          "point": "Verified Zakat Eligibility"
-        }
-      ],
-      "strengths_deep_dive": [
-        "Humaniti Foundation demonstrates a remarkable commitment to direct impact, as evidenced by its <cite id=\"3\">$1,184,980 in total grants</cite> distributed to domestic partners for humanitarian work. Key recipients include <cite id=\"3\">Fajr Scientific, which received $500,000</cite>, and <cite id=\"3\">Good Gifts, which received $301,600</cite>. This grantmaking strategy allows the foundation to leverage specialized partners to deliver <cite id=\"2\">clean water and emergency relief</cite> in high-need areas like <cite id=\"2\">Egypt, Jordan, and Gaza</cite>."
-      ],
-      "summary": "founded in 2023, Humaniti Foundation is a United States-based non-profit organization dedicated to <cite id=\"1\">raising funds and making distributions for charitable purposes</cite>. The organization operates with a primary focus on humanitarian relief, specifically through its <cite id=\"2\">HEAL, Clean Water, and Emergency Relief programs</cite>. Despite being a relatively new institution, it has established a significant operational footprint, reporting <cite id=\"3\">$233,066 in total revenue</cite> during its 2023 tax year. Humaniti Foundation distinguishes itself through a commitment to financial efficiency, maintaining a <cite id=\"1\">program expense ratio of 95.7%</cite> according to its financial filings. This ensures that every dollar contributed is directed toward its core missions, which include <cite id=\"2\">orphan care and food distribution</cite> in crisis-affected regions such as <cite id=\"2\">Gaza, Sudan, Yemen, and Pakistan</cite>. The organization is also <cite id=\"4\">explicitly zakat-eligible</cite>, providing a verified avenue for Muslim donors to fulfill their religious obligations through <cite id=\"5\">direct service delivery</cite> to vulnerable populations.",
-      "zakat_guidance": {
-        "classification": "amil",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "The Humaniti Foundation operates as a 501(c)(3) organization with a primary mission to raise and distribute funds for charitable purposes, including its HEAL and Clean Water programs [1][3]. The organization is recognized as zakat-eligible, allowing donors to fulfill religious obligations through various giving methods [2][4]."
     }
   }
 }

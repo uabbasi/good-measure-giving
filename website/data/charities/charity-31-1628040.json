@@ -2,7 +2,7 @@
   "id": "31-1628040",
   "ein": "31-1628040",
   "name": "Helping Hand for Relief and Development",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "Helping Hand for Relief and Development is a global humanitarian relief and development organization responding to human sufferings in emergency and disastrous situations anywhere all over the world regardless race, gender, ethnicity, class, location, religion, color, cultural diversity and social background; with special focus on countries where the massive population is living below the poverty line. In addition to our emergency relief efforts in natural or man made disaster areas, we also work on long term relief and development programs like livelihood, economic empowerment, orphan and widows support program and skill development program.",
   "programs": [
     "Orphan Support",
@@ -64,7 +64,11 @@
     "cashAdjustedProgramRatio": 0.8710838588769552,
     "domesticBurnRate": 0.4477311274625534
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 10,
+    "independentBoardMembers": null,
+    "ceoCompensation": 157220
+  },
   "targeting": {
     "populationsServed": [
       "Youth",
@@ -99,7 +103,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 18:24:53",
+  "lastUpdated": "2026-03-09 21:44:51",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -619,23 +623,12 @@
         "noncash_ratio": 0.324,
         "cash_adjusted_program_ratio": 0.871
       }
-    },
-    {
-      "type": "high_fundraising_ratio",
-      "severity": "high",
-      "headline": "Fundraising costs are 39% of total expenses",
-      "detail": "High fundraising spend reduces funds available for programs.",
-      "data_points": {
-        "fundraising_expense_ratio": 0.39,
-        "fundraising_expenses": 5287373,
-        "total_expenses": 88166059
-      }
     }
   ],
   "amalEvaluation": {
     "charity_ein": "31-1628040",
     "charity_name": "Helping Hand for Relief and Development",
-    "amal_score": 74,
+    "amal_score": 76,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:11:10",
     "rubric_version": "5.2.0",
@@ -781,48 +774,10 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 37
       },
-      "judge_issues": [
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
-      "risk_deduction": -4,
+      "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
-        "risk_summary": "Key concern: Fundraising costs are 39% of total expenses",
+        "risk_summary": "1 risk(s) identified.",
         "risks": [
           {
             "category": "financial",
@@ -830,16 +785,9 @@
             "description": "GIK inflation: 32% of revenue is noncash contributions",
             "mitigation": null,
             "severity": "medium"
-          },
-          {
-            "category": "financial",
-            "data_source": "Reconciliation",
-            "description": "Fundraising costs are 39% of total expenses",
-            "mitigation": null,
-            "severity": "high"
           }
         ],
-        "total_deduction": -4
+        "total_deduction": -2
       },
       "score_summary": "Helping Hand for Relief and Development shows strong alignment and strong impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
@@ -853,37 +801,37 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "HHRD holds a 100.100.0/100 from Charity Navigator score and maintains a 91.2% program expense ratio.",
+          "claim": "HHRD holds a 100.0/100 score, a 91.2% program expense ratio, and 10.4 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/311628040#financials"
         },
         {
-          "claim": "The organization is Zakat-eligible and follows specific Zakat policies and asnaf categories.",
+          "claim": "The charity is Zakat-eligible and follows specific zakat policies and asnaf categories.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www1.hhrd.org/zakat"
         },
         {
-          "claim": "Total revenue for the organization reached $89,337,007.",
+          "claim": "Total revenue for the organization is $89,337,007.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/311628040"
         },
         {
-          "claim": "HHRD provides immediate response in disasters and effective long-term programs.",
+          "claim": "HHRD provides immediate response in disasters and effective program management.",
           "id": "[4]",
           "source_name": "Charity Website - Programs",
           "source_url": "https://www1.hhrd.org/Programs/Shelter-Relief-Program/Learning-Center"
         },
         {
-          "claim": "The organization operates youth empowerment initiatives as part of its service portfolio.",
+          "claim": "The organization operates a Youth Empowerment Program to engage younger generations.",
           "id": "[6]",
           "source_name": "Charity Website - Programs",
           "source_url": "https://www1.hhrd.org/Programs/Youth-Empowerment/Youth-Empowerment-Program"
         },
         {
-          "claim": "HHRD manages comprehensive rehabilitation centers for children and individuals with disabilities.",
+          "claim": "HHRD manages Comprehensive Rehabilitation Centers for physical rehabilitation.",
           "id": "[7]",
           "source_name": "Charity Website - Programs",
           "source_url": "https://www1.hhrd.org/Programs/Physical-Rehabilitation/Comprehensive-Rehabilitation-Centers"
@@ -893,581 +841,30 @@
           "id": "[13]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.hhrd.org/donate"
-        }
-      ],
-      "amal_score_rationale": "HHRD earns a strong overall standing due to its perfect financial transparency rating and high program expense ratio, though its impact score is moderated by the cost-intensive nature of its direct service model.",
-      "areas_for_improvement": [
-        "Enhancing data transparency to improve the medium data confidence rating",
-        "Reducing the relatively high cost per beneficiary to maximize the impact of direct services"
-      ],
-      "dimension_explanations": {
-        "alignment": "HHRD shows strong alignment with Muslim donors through its Zakat-eligible status and focus on high-urgency humanitarian causes [2][13]. Its long track record of service and diverse program offerings, including youth empowerment and disability support, establish it as a highly fit organization for donors seeking reliable humanitarian impact [6][7].",
-        "impact": "The organization demonstrates high financial efficiency with a 91.2% program expense ratio and a total revenue of $89,337,007 [1][3]. While it provides direct services such as orphan sponsorship and physical rehabilitation, the cost per beneficiary is approximately $1,076.55, reflecting the intensive nature of its comprehensive care programs [4][7]."
-      },
-      "headline": "Helping Hand for Relief and Development is a top-rated humanitarian organization dedicated to global disaster relief and sustainable community development.",
-      "strengths": [
-        "Maintains a perfect Charity Navigator score of 100.0/100 for financial health and accountability",
-        "High program efficiency with 91.2% of total expenses directed toward its mission",
-        "Exceptional fundraising efficiency, spending only $0.06 to raise every $1",
-        "Strong liquidity with 10.4 months of working capital available"
-      ],
-      "summary": "Helping Hand for Relief and Development (HHRD) is a global humanitarian organization that integrates resources to provide immediate disaster response and long-term effective programs for people in need [1][4]. The organization is recognized as Zakat-eligible, maintaining a dedicated policy to ensure donations reach appropriate beneficiaries according to established guidelines [2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "immediate disaster response and long-term programs",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "We strive to provide immediate response in disasters, and effective Programs in places of suffering",
-          "source_name": "HHRD Programs",
-          "source_type": "website",
-          "source_url": "https://www1.hhrd.org/Programs/Shelter-Relief-Program/Learning-Center"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "Zakat-eligible",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "HHRD is a Zakat-eligible organization",
-          "source_name": "HHRD Zakat Policy",
-          "source_type": "website",
-          "source_url": "https://www1.hhrd.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $94,048,415",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total Revenue: $94,048,415",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/311628040"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 91.2%",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Program Service Expenses: $80,776,432 / Total Expenses: $89,544,869",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/311628040"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "perfect overall score of 100/100",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Overall Score 100/100",
-          "source_name": "Charity Navigator - HHRD",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/311628040#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "accountability and transparency",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Accountability & Finance: 100",
-          "source_name": "Charity Navigator - HHRD",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/311628040#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "orphan support, healthcare, and education",
-          "confidence": 0.95,
-          "id": "[7]",
-          "quote": "Programs: Orphan Support, Skills and Livelihood, Education Support, Healthcare & Nutrition",
-          "source_name": "HHRD Programs",
-          "source_type": "website",
-          "source_url": "https://www1.hhrd.org/Programs/Shelter-Relief-Program/Learning-Center"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Jordan, Pakistan, and Afghanistan",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Regions: Jordan, Pakistan, Afghanistan",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://www1.hhrd.org/Portals/0/ThemePluginPro/uploads/2024/11/12/990-23.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.06 to raise every $1",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Fundraising Efficiency: $0.06",
-          "source_name": "Charity Navigator - HHRD",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/311628040#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "industry standard of 75%",
-          "confidence": 0.9,
-          "id": "[10]",
-          "quote": "Industry Standard: 75%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/311628040#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "10.4 months of working capital",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Working capital: 10.4 months",
-          "source_name": "Financial Health Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/311628040#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$48,691,370 in foreign grants",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Foreign Grants: $48,691,370",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://www1.hhrd.org/Portals/0/ThemePluginPro/uploads/2024/11/12/990-23.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100% independent board",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Independent Board Members: 100%",
-          "source_name": "Charity Navigator - HHRD",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/311628040#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cost per beneficiary is $1076.55",
-          "confidence": 0.9,
+          "claim": "The organization provides volunteer opportunities and engagement for supporters.",
           "id": "[14]",
-          "quote": "$1076.55/beneficiary",
-          "source_name": "Impact Rationale",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/311628040#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "theory of change is currently classified as developing",
-          "confidence": 0.9,
-          "id": "[15]",
-          "quote": "Theory of change: DEVELOPING",
-          "source_name": "Impact Score Details",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/311628040#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "20/20 compliance with BBB standards",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Meets All 20 Standards: Yes",
-          "source_name": "BBB Wise Giving Alliance",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/relief-development/helping-hand-for-relief-and-development-in-southfield-mi-9999-17667"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "direct service model",
-          "confidence": 0.9,
-          "id": "[17]",
-          "quote": "Delivery model: Direct Service",
-          "source_name": "Impact Score Details",
-          "source_type": "evaluation",
-          "source_url": "https://www.charitynavigator.org/ein/311628040#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "high Muslim donor fit",
-          "confidence": 0.9,
-          "id": "[18]",
-          "quote": "Alignment 41/50: HIGH Muslim donor fit",
-          "source_name": "Alignment Rationale",
-          "source_type": "website",
-          "source_url": "https://www1.hhrd.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "multiple asnaf categories",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Zakat Categories: fuqara, masakin, amil, fisabilillah, ibn_sabil",
-          "source_name": "HHRD Zakat Policy",
-          "source_type": "website",
-          "source_url": "https://www1.hhrd.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "expanding services to underserved geographies",
-          "confidence": 0.85,
-          "id": "[20]",
-          "quote": "Improvement: Expand services to underserved populations or geographies",
-          "source_name": "Alignment Improvement",
-          "source_type": "website",
-          "source_url": "https://www1.hhrd.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 8.2%",
-          "confidence": 1,
-          "id": "[21]",
-          "quote": "3-Year Revenue CAGR: 8.2%",
-          "source_name": "Financial Trend Data",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/311628040"
+          "source_name": "Charity Website - Volunteer",
+          "source_url": "https://www1.hhrd.org/Get-Involved/About-Us"
         }
       ],
-      "amal_score_rationale": "HHRD earns a strong overall standing due to its perfect financial transparency rating and high program expense ratio, though its impact score is moderated by the cost-intensive nature of its direct service model.",
-      "amal_scores": {
-        "amal_score": 74,
-        "confidence_scores": {
-          "alignment": 41,
-          "data_confidence": 0.6,
-          "impact": 37
-        },
-        "confidence_tier": "MEDIUM",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
+      "amal_score_rationale": "HHRD earns a strong overall standing due to its exceptional financial transparency, high program spending efficiency, and its status as a trusted, Zakat-eligible provider of direct humanitarian services.",
       "areas_for_improvement": [
-        {
-          "area": "High Cost Per Beneficiary",
-          "citation_ids": [
-            "[14]"
-          ],
-          "context": "The current average <cite id=\"14\">cost per beneficiary is $1076.55</cite>, which is relatively high for the humanitarian sector and may limit the total number of individuals served."
-        },
-        {
-          "area": "Strategic Documentation",
-          "citation_ids": [
-            "[15]"
-          ],
-          "context": "While programs are effective, the organization's <cite id=\"15\">theory of change is currently classified as developing</cite> and would benefit from more explicit causal mapping."
-        }
+        "Enhance data transparency to move beyond medium confidence levels in impact reporting.",
+        "Address the relatively high cost per beneficiary to optimize resource distribution across diverse programs."
       ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[16]"
-        ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
-        "meets_all_standards": true,
-        "review_url": "https://give.org/charity-reviews/relief-development/helping-hand-for-relief-and-development-in-southfield-mi-9999-17667",
-        "standards_met": 20,
-        "standards_not_met": [],
-        "summary": "Meets all 20 BBB Wise Giving Alliance Standards for Charity Accountability"
-      },
-      "case_against": {
-        "citation_ids": [
-          "[14]",
-          "[15]"
-        ],
-        "mitigation_notes": "The organization maintains high liquidity and transparency scores, which mitigates financial risk while they refine impact metrics.",
-        "risk_factors": [
-          "<cite id=\"14\">Average cost per beneficiary of $1076.55</cite>",
-          "<cite id=\"15\">Theory of change is still in the developing stage</cite>"
-        ],
-        "summary": "The primary concerns involve <cite id=\"14\">high per-beneficiary costs</cite> and a lack of a <cite id=\"15\">fully matured theory of change</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "evaluation": 3,
-          "form990": 6,
-          "rating": 8,
-          "website": 4
-        },
-        "high_confidence_count": 18,
-        "total_count": 21,
-        "unique_sources": 6
-      },
-      "confidence": {
-        "data_freshness": "Financial data current through 2023 Form 990",
-        "data_gaps": [
-          "Developing theory of change",
-          "High cost per beneficiary relative to peers"
-        ],
-        "level": "HIGH",
-        "notes": "Strong data availability across all financial and governance metrics.",
-        "score": 74,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "BBB Wise Giving Alliance",
-          "HHRD Website"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 74,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Developing theory of change",
-          "High cost per beneficiary"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 21,
-        "unique_sources": 6,
-        "website_last_crawled": "2025-01"
-      },
       "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[18]",
-            "[2]",
-            "[19]",
-            "[20]"
-          ],
-          "explanation": "The organization has <cite id=\"18\">high Muslim donor fit</cite> as it is <cite id=\"2\">Zakat-eligible</cite> and serves <cite id=\"19\">multiple asnaf categories</cite> including the poor and needy.",
-          "improvement": "Alignment could be strengthened by <cite id=\"20\">expanding services to underserved geographies</cite> with limited existing nonprofit coverage."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[16]",
-            "[13]",
-            "[15]"
-          ],
-          "explanation": "Donors can trust HHRD due to its <cite id=\"16\">20/20 compliance with BBB standards</cite> and its <cite id=\"13\">fully independent board of 10 members</cite>.",
-          "improvement": "To further enhance credibility, the organization could move from a <cite id=\"15\">developing theory of change</cite> to a fully documented and published impact framework."
-        },
-        "impact": {
-          "citation_ids": [
-            "[17]",
-            "[14]",
-            "[15]"
-          ],
-          "explanation": "HHRD delivers impact through a <cite id=\"17\">direct service model</cite> and high cash-adjusted program ratios, though <cite id=\"14\">cost per beneficiary remains at $1076.55</cite>.",
-          "improvement": "Impact could be improved by <cite id=\"15\">documenting a clear theory of change</cite> with an explicit causal pathway to better track long-term outcomes."
-        }
+        "alignment": "The organization shows high alignment for Muslim donors through its Zakat-eligible programs and focus on urgent humanitarian causes [2][13]. With a long track record of service and diverse engagement opportunities including youth empowerment and volunteering, HHRD maintains a strong fit for donors seeking established international relief pathways [6][14].",
+        "impact": "HHRD demonstrates high financial effectiveness with a total revenue of $89,337,007 and a program expense ratio of 91.2% [1][3]. The organization provides direct services through specialized initiatives like the Orphan Sponsorship Program and Comprehensive Rehabilitation Centers [4][7]. While its financial health is robust with 10.4 months of working capital, the impact score reflects a medium data confidence level regarding specific long-term outcomes [1]."
       },
-      "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
-        "citation_ids": [
-          "[2]",
-          "[8]"
-        ],
-        "evidence_rigor": "Grade C - Verified outcomes but developing theory of change",
-        "geographic_focus": [
-          "Jordan",
-          "Pakistan",
-          "Afghanistan",
-          "Palestine",
-          "Kenya"
-        ],
-        "giving_style": "Direct service",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "fuqara",
-          "masakin",
-          "amil",
-          "fisabilillah",
-          "ibn_sabil"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.038,
-        "annual_revenue": 94048415,
-        "citation_ids": [
-          "[3]",
-          "[8]",
-          "[9]",
-          "[11]"
-        ],
-        "cn_financial_score": 100,
-        "cn_overall_score": 100,
-        "fundraising_ratio": 0.06,
-        "industry_program_ratio": 0.75,
-        "peer_count": 34,
-        "peer_program_ratio_median": 0.903,
-        "program_expense_ratio": 0.9117000000000001,
-        "reserves_months": 10.4,
-        "revenue_cagr_3yr": 8.2,
-        "working_capital_months": 10.4,
-        "yearly_financials": [
-          {
-            "expenses": 89544869,
-            "net_assets": 77549193,
-            "revenue": 94048415,
-            "year": 2023
-          },
-          {
-            "expenses": 62212147,
-            "net_assets": 72500210,
-            "revenue": 85449122,
-            "year": 2022
-          },
-          {
-            "expenses": 68598567,
-            "net_assets": 52185869,
-            "revenue": 80329408,
-            "year": 2021
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[12]"
-        ],
-        "domestic_grants": 2262581,
-        "foreign_grants": 48691370,
-        "grant_count": 38,
-        "grant_strategy": "Distributes large-scale foreign grants to international partners for direct relief.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "Jordan",
-          "Pakistan",
-          "Haiti"
-        ],
-        "top_recipients": [
-          "NAIMA ($654,725)",
-          "ANERA ($200,001)"
-        ],
-        "total_grants": 50953951
-      },
-      "headline": "Helping Hand for Relief and Development is a top-rated humanitarian organization dedicated to global disaster relief and sustainable community development.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to fulfill their zakat obligations through a highly transparent, top-rated institution with a massive global reach in Muslim-majority regions.",
-        "citation_ids": [
-          "[5]",
-          "[2]",
-          "[14]"
-        ],
-        "donor_motivations": [
-          "Want to ensure 100% accountability via top-tier ratings",
-          "Prioritize zakat-eligible humanitarian relief",
-          "Value organizations with strong financial reserves and low fundraising costs"
-        ],
-        "giving_considerations": [
-          "Donations support large-scale international grants",
-          "The cost to serve an individual beneficiary is higher than some lean-model peers",
-          "Focus is on direct service delivery rather than advocacy"
-        ],
-        "not_ideal_for": "Donors seeking low-cost, high-volume interventions (e.g., $1/meal) or those looking for a published, academic theory of change."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[15]",
-          "[5]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects verified outcomes and a direct service model, but the theory of change is still developing.",
-        "external_evaluations": [
-          "Charity Navigator Accountability & Finance Beacon"
-        ],
-        "outcome_tracking_years": 3,
-        "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "HHRD creates impact by integrating resources to provide immediate disaster relief and long-term development programs like orphan support and healthcare.",
-        "why_evidence_matters": "Evidence ensures that the $94 million in annual revenue is effectively translating into improved lives for beneficiaries."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[21]",
-          "[7]"
-        ],
-        "founded_year": 1999,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": 8.2,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"21\">3-year revenue CAGR of 8.2%</cite> and massive humanitarian needs in Gaza and Afghanistan, HHRD has significant capacity to absorb more funding.",
-        "strategic_priorities": [
-          "Disaster response",
-          "Orphan support",
-          "Healthcare & Nutrition"
-        ],
-        "years_operating": 27
-      },
-      "organizational_capacity": {
-        "board_size": 10,
-        "ceo_compensation": 352892,
-        "ceo_compensation_pct_revenue": 0.37,
-        "ceo_name": "Mr. Javaid Siddiqi",
-        "citation_ids": [
-          "[8]",
-          "[13]",
-          "[16]"
-        ],
-        "employees_count": 0,
-        "geographic_reach": "Jordan, Pakistan, Afghanistan, Palestine, Kenya, and more",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 0,
-        "programs_count": 5,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 0
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[4]",
-          "[10]",
-          "[5]"
-        ],
-        "differentiator": "HHRD's <cite id=\"4\">90.2% program ratio</cite> is nearly identical to the <cite id=\"10\">peer median of 90.3%</cite>, but it stands out with a <cite id=\"5\">perfect 100/100 CN score</cite>.",
-        "peer_group": "International Humanitarian Organizations",
-        "similar_orgs": [
-          "Baitulmaal, Inc.",
-          "Action Against Hunger USA",
-          "UNRWA"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on orphan care and humanitarian relief",
-          "name": "Baitulmaal, Inc."
-        },
-        {
-          "differentiator": "Global scale with similar humanitarian focus",
-          "name": "Action Against Hunger USA"
-        },
-        {
-          "differentiator": "Large-scale relief specifically for Palestinian refugees",
-          "name": "UNRWA"
-        }
-      ],
+      "headline": "Helping Hand for Relief and Development is a top-rated global humanitarian organization dedicated to disaster response and long-term community empowerment.",
       "strengths": [
-        {
-          "citation_ids": [
-            "[5]",
-            "[6]"
-          ],
-          "detail": "HHRD maintains a <cite id=\"5\">perfect 100/100 overall score</cite> from Charity Navigator, including <cite id=\"6\">maximum scores for leadership and accountability</cite>.",
-          "point": "Perfect Accountability Rating"
-        },
-        {
-          "citation_ids": [
-            "[4]",
-            "[10]"
-          ],
-          "detail": "The organization directs <cite id=\"4\">90.2% of its total expenses</cite> toward its humanitarian programs, exceeding the <cite id=\"10\">industry standard of 75%</cite>.",
-          "point": "High Program Efficiency"
-        },
-        {
-          "citation_ids": [
-            "[11]"
-          ],
-          "detail": "HHRD maintains <cite id=\"11\">10.4 months of working capital</cite>, providing a significant buffer for emergency response operations.",
-          "point": "Strong Financial Resilience"
-        }
+        "Maintains a perfect Charity Navigator score of 100.0/100 for financial health and accountability.",
+        "Highly efficient program expense ratio of 91.2%, ensuring the vast majority of funds reach beneficiaries.",
+        "Strong fundraising efficiency with a cost of only $0.06 per $1 raised."
       ],
-      "strengths_deep_dive": [
-        "HHRD's financial health is anchored by its ability to maintain <cite id=\"9\">fundraising efficiency of $0.06 per $1 raised</cite>, allowing more capital to flow directly to international grants. In 2023, the organization distributed <cite id=\"12\">$48,691,370 in foreign grants</cite> to support global relief efforts. This is supported by a <cite id=\"13\">100% independent board</cite> that ensures rigorous oversight of the <cite id=\"3\">$94 million in annual revenue</cite>."
-      ],
-      "summary": "Helping Hand for Relief and Development (HHRD) is a global humanitarian organization that integrates resources to provide <cite id=\"1\">immediate disaster response and long-term programs</cite> for people in need. The organization is recognized as <cite id=\"2\">Zakat-eligible</cite>, maintaining a dedicated policy to ensure donations reach appropriate beneficiaries according to established guidelines. HHRD operates with a high level of financial efficiency, reporting <cite id=\"3\">total revenue of $94,048,415</cite> in 2023, with a <cite id=\"4\">program expense ratio of 91.2%</cite>. This ensures that the vast majority of donor contributions are directed toward its core mission of humanitarian relief and sustainable development. The organization has achieved a <cite id=\"5\">perfect overall score of 100/100</cite> from Charity Navigator, reflecting its commitment to <cite id=\"6\">accountability and transparency</cite>. HHRD's diverse program portfolio includes <cite id=\"7\">orphan support, healthcare, and education</cite>, reaching vulnerable populations in regions such as <cite id=\"8\">Jordan, Pakistan, and Afghanistan</cite>. Furthermore, the organization demonstrates exceptional fundraising efficiency, spending only <cite id=\"9\">$0.06 to raise every $1</cite> in revenue, which is significantly better than many industry peers.",
-      "zakat_guidance": {
-        "classification": "amil",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "Helping Hand for Relief and Development (HHRD) is a non-profit organization that integrates resources to provide immediate disaster response and effective program management for people in need [1][4]. The organization is recognized as Zakat-eligible, allowing donors to fulfill their religious obligations through various humanitarian initiatives [2]."
     }
   }
 }

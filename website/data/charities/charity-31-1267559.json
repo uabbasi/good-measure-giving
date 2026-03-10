@@ -2,7 +2,7 @@
   "id": "31-1267559",
   "ein": "31-1267559",
   "name": "MCA",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "To provide religious, social, and educational services to enable the Muslim community to fulfill its responsibilities and contribute to the betterment o...",
   "programs": [
     "Religious Services",
@@ -60,7 +60,11 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 3,
+    "independentBoardMembers": null,
+    "ceoCompensation": null
+  },
   "targeting": {
     "populationsServed": [
       "Children",
@@ -83,7 +87,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 18:28:26",
+  "lastUpdated": "2026-03-09 21:45:31",
   "sourceAttribution": {
     "beneficiaries_served_annually": {
       "method": "direct",
@@ -370,44 +374,6 @@
         "rubric_archetype": "COMMUNITY",
         "score": 21
       },
-      "judge_issues": [
-        {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.30) for zakat discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -427,7 +393,7 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization's profile metadata and financial fields are documented via Charity Navigator.",
+          "claim": "The organization's profile and financial metadata are tracked by major charity evaluators.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/311267559#financials"
@@ -439,564 +405,52 @@
           "source_url": "https://donorbox.org/maca-zakat-donation"
         },
         {
-          "claim": "Financial data, including assets and compensation, is reported through public tax filings.",
+          "claim": "Financial data, including assets and compensation, is reported through standard non-profit filings.",
           "id": "[3]",
           "source_name": "Form 990 (2025)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/311267559"
         },
         {
-          "claim": "The organization provides religious, social, and educational programs to the Muslim community.",
+          "claim": "The organization provides religious, social, and educational programs for the Muslim community.",
           "id": "[4]",
           "source_name": "Stocks",
           "source_url": "https://qr.scanned.page/uploads/pdf/bI4zvE_d94f8cb8f473e932.pdf"
         },
         {
-          "claim": "The organization facilitates various donation methods to support its community betterment mission.",
+          "claim": "The MCA serves the San Francisco Bay Area through various community-focused initiatives.",
           "id": "[5]",
           "source_name": "Donate stock to mca \u2013 download file",
           "source_url": "https://www.mcabayarea.org/wp-content/uploads/2024/09/Donating-stock-to-MCA-1.pdf"
         },
         {
-          "claim": "MCA focuses on capacity building and providing a platform for community responsibilities.",
+          "claim": "The organization's programs are designed to enable the community to fulfill its social responsibilities.",
           "id": "[6]",
           "source_name": "Download PDF File",
           "source_url": "https://www.mcabayarea.org/wp-content/uploads/2024/09/Donating-stock-to-MCA.pdf"
         },
         {
-          "claim": "The charity offers multiple giving methods to support its religious and social service programs.",
+          "claim": "The organization offers multiple donation methods, including Zakat and general contributions.",
           "id": "[7]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.mcabayarea.org/donate/"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score reflecting its strong alignment with donor needs and religious urgency, though its impact score is tempered by a focus on capacity building rather than direct, scalable metrics.",
+      "amal_score_rationale": "The organization earns a moderate overall score, reflecting its strong cultural alignment and essential community services balanced against a lack of detailed impact data and external financial ratings.",
       "areas_for_improvement": [
-        "Limited third-party impact verification for specific program outcomes",
-        "Opportunity to increase transparency regarding cost-per-beneficiary metrics"
+        "Limited public availability of granular impact metrics and cost-per-beneficiary data",
+        "Need for increased transparency regarding third-party financial evaluations"
       ],
       "dimension_explanations": {
-        "alignment": "With a score of 27/50, the charity demonstrates a high donor fit for those seeking to fulfill religious obligations such as Zakat [2]. The cause urgency is categorized as religious and cultural, supported by a long-standing track record of providing essential community services [5][7].",
-        "impact": "The organization focuses on capacity building through its religious and social service programs [4][6]. While it maintains a consistent presence in the San Francisco Bay Area, the impact score of 21/50 reflects a lack of specific third-party data regarding cost-per-beneficiary and long-term outcome evidence [1][3]."
+        "alignment": "MCA demonstrates high alignment for Muslim donors due to its Zakat-eligible status and its role in addressing urgent religious and cultural needs within the community [2][7]. Its long-standing track record as a community pillar reinforces its suitability for donors prioritized by cause urgency [5][6].",
+        "impact": "The organization focuses on capacity building through its religious and social service programs, though specific outcomes and cost-efficiency metrics remain largely internal [4][6]. While it maintains a consistent presence in the Bay Area, the lack of third-party verification for program effectiveness contributes to a medium impact score [1][3]."
       },
       "headline": "The Muslim Community Association of the San Francisco Bay Area serves as a vital hub for religious, social, and educational services tailored to the needs of the regional Muslim community.",
       "strengths": [
-        "Verified Zakat-eligible status with clear donation pathways for religious obligations",
-        "Diverse program offerings including religious services, social services, and educational initiatives",
-        "High data confidence with accessible financial and organizational documentation"
+        "Verified Zakat-eligible status with clear policies for distribution to those in need",
+        "Multifaceted program approach covering religious, social, and educational dimensions",
+        "High donor alignment for those seeking to support established Islamic infrastructure in the Bay Area"
       ],
-      "summary": "The Muslim Community Association of the San Francisco Bay Area (MCA) provides comprehensive religious services, social support, and educational programs to empower the local community [4][5]. As a Zakat-eligible organization, it facilitates the distribution of charitable funds to those in need according to established asnaf categories [2][7]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-01-09",
-          "claim": "religious, social, and educational services",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "To provide religious, social, and educational services",
-          "source_name": "Charity Navigator Profile",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/311267559#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "1981",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Founded: 1981",
-          "source_name": "MCA Website",
-          "source_type": "website",
-          "source_url": "https://www.mcabayarea.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Granada Islamic School and a Weekend Islamic School",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Granada Islamic School, Weekend Islamic School (WIS)",
-          "source_name": "MCA Programs",
-          "source_type": "website",
-          "source_url": "https://www.mcabayarea.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Zakat-eligible organization",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "MCA Zakat Donation",
-          "source_type": "website",
-          "source_url": "https://donorbox.org/maca-zakat-donation"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "eligible recipients such as the needy (masakin)",
-          "confidence": 0.95,
-          "id": "[5]",
-          "quote": "Asnaf: masakin",
-          "source_name": "MCA Zakat Policy",
-          "source_type": "website",
-          "source_url": "https://donorbox.org/maca-zakat-donation"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "social services and community outreach",
-          "confidence": 0.9,
-          "id": "[6]",
-          "quote": "Social Services, Zakah Distribution",
-          "source_name": "MCA Organizational Data",
-          "source_type": "website",
-          "source_url": "https://qr.scanned.page/uploads/pdf/bI4zvE_d94f8cb8f473e932.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Candid Seal: PLATINUM",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/7336334"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "",
-          "source_name": "Charity Navigator Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/311267559#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "top-rated nonprofit",
-          "confidence": 0.9,
-          "id": "[9]",
-          "quote": "recognized as a 'Great Nonprofits 2020 Top-Rated Nonprofit'",
-          "source_name": "External Awards Discovery",
-          "source_type": "website",
-          "source_url": "https://www.mcabayarea.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "40 years of service",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Founded 1981 (45 years)",
-          "source_name": "MCA History",
-          "source_type": "website",
-          "source_url": "https://www.mcabayarea.org/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "documented theory of change",
-          "confidence": 0.9,
-          "id": "[11]",
-          "quote": "Theory of Change Documented: Yes",
-          "source_name": "Candid Impact Data",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/7336334"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "four distinct outcome metrics",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Outcome Metrics Tracked: 4",
-          "source_name": "Candid Metrics",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/7336334"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "0.0% program expense ratio",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Program Expense Ratio (CN): 0.0%",
-          "source_name": "Charity Navigator Financial Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/311267559#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "incomplete expense breakdown data",
-          "confidence": 0.85,
-          "id": "[14]",
-          "quote": "Program expense ratio: unknown",
-          "source_name": "Financial Analysis",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/311267559#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "insufficient data for cost-per-beneficiary calculations",
-          "confidence": 0.9,
-          "id": "[15]",
-          "quote": "Insufficient data for cost-per-beneficiary calculation",
-          "source_name": "Impact Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/311267559#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "publish a board-approved reserve policy",
-          "confidence": 0.9,
-          "id": "[16]",
-          "quote": "Improvement: Publish current reserve levels and a board-approved reserve policy",
-          "source_name": "Financial Health Improvement",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/311267559#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "minimal 3-member board",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Board governance: MINIMAL (3 members)",
-          "source_name": "Governance Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/311267559#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "consistently publishing beneficiary counts",
-          "confidence": 0.9,
-          "id": "[18]",
-          "quote": "Improvement: Publish beneficiary counts consistently",
-          "source_name": "Impact Improvement",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/311267559"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Muslim-focused organization",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Muslim-focused organization (+2)",
-          "source_name": "Alignment Score Details",
-          "source_type": "website",
-          "source_url": "https://donorbox.org/maca-zakat-donation"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "expanding services to underserved geographies",
-          "confidence": 0.9,
-          "id": "[20]",
-          "quote": "Improvement: Expand services to underserved populations or geographies",
-          "source_name": "Alignment Improvement",
-          "source_type": "website",
-          "source_url": "https://www.mcabayarea.org/donate/"
-        }
-      ],
-      "amal_score_rationale": "The organization earns a moderate overall score reflecting its strong alignment with donor needs and religious urgency, though its impact score is tempered by a focus on capacity building rather than direct, scalable metrics.",
-      "amal_scores": {
-        "amal_score": 48,
-        "confidence_scores": {
-          "alignment": 27,
-          "data_confidence": 0.8,
-          "impact": 21
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Financial Disclosure Detail",
-          "citation_ids": [
-            "[13]",
-            "[14]"
-          ],
-          "context": "Current data shows a <cite id=\"13\">0.0% program expense ratio</cite> in some reporting, which suggests <cite id=\"14\">incomplete expense breakdown data</cite> rather than a lack of spending on programs."
-        },
-        {
-          "area": "Impact Measurement",
-          "citation_ids": [
-            "[15]"
-          ],
-          "context": "There is <cite id=\"15\">insufficient data for cost-per-beneficiary calculations</cite>, making it difficult for donors to assess the direct economic efficiency of services."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "none",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "BBB Wise Giving Alliance assessment is not currently available for this organization."
-      },
-      "case_against": {
-        "citation_ids": [
-          "14",
-          "15",
-          "17"
-        ],
-        "mitigation_notes": "The organization's Platinum transparency seal suggests that data exists but may not be fully integrated into third-party rating platforms yet.",
-        "risk_factors": [
-          "<cite id=\"15\">No cost-per-beneficiary data available</cite>",
-          "<cite id=\"17\">Small board size (3 members) limits governance oversight</cite>"
-        ],
-        "summary": "The primary concern is the <cite id=\"14\">lack of detailed financial breakdown</cite> in public databases, which obscures the exact percentage of funds reaching programs."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "rating": 10,
-          "website": 10
-        },
-        "high_confidence_count": 18,
-        "total_count": 20,
-        "unique_sources": 7
-      },
-      "confidence": {
-        "data_freshness": "Most data from 2024-2025 website and Candid updates",
-        "data_gaps": [
-          "Missing detailed program expense breakdown",
-          "Missing 2024-2025 Form 990 data"
-        ],
-        "level": "HIGH",
-        "notes": "Strong organizational data but financial ratio data is incomplete.",
-        "score": 80,
-        "sources_used": [
-          "Charity Navigator",
-          "Candid",
-          "MCA Website",
-          "Donorbox"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 80,
-        "form_990_tax_year": null,
-        "known_gaps": [
-          "Missing detailed Form 990 expense breakdown",
-          "Limited financial health metrics"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 20,
-        "unique_sources": 7,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[2]",
-            "[4]",
-            "[19]",
-            "[20]"
-          ],
-          "explanation": "The organization has <cite id=\"4\">high Muslim donor fit</cite> as it is a <cite id=\"19\">Muslim-focused organization</cite> that <cite id=\"2\">accepts Zakat</cite> for humanitarian and religious services.",
-          "improvement": "Alignment could be enhanced by <cite id=\"20\">expanding services to underserved geographies</cite> outside of its current well-covered mainstream reach."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[7]",
-            "[9]",
-            "[10]",
-            "[16]",
-            "[17]"
-          ],
-          "explanation": "Donors can trust MCA due to its <cite id=\"7\">Platinum Candid Seal</cite> and its <cite id=\"10\">45-year history</cite> of service. It has also received <cite id=\"9\">awards as a top-rated nonprofit</cite>.",
-          "improvement": "To strengthen credibility, the charity should <cite id=\"16\">publish a board-approved reserve policy</cite> and increase the size of its <cite id=\"17\">minimal 3-member board</cite>."
-        },
-        "impact": {
-          "citation_ids": [
-            "[1]",
-            "[12]",
-            "[18]"
-          ],
-          "explanation": "The impact is driven by <cite id=\"1\">direct capacity building</cite> and education, with <cite id=\"12\">outcome tracking in place</cite> for four key metrics.",
-          "improvement": "Impact assessment would improve by <cite id=\"18\">consistently publishing beneficiary counts</cite> to allow for cost-per-beneficiary analysis."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "RELIGIOUS_CULTURAL",
-        "citation_ids": [
-          "[2]",
-          "[4]",
-          "[5]",
-          "[11]"
-        ],
-        "evidence_rigor": "Grade B - Outcome tracking and documented theory of change",
-        "geographic_focus": [
-          "Santa Clara County, CA"
-        ],
-        "giving_style": "Community Infrastructure",
-        "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "masakin (needy)"
-        ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": null,
-        "annual_revenue": 0,
-        "citation_ids": [
-          "[1]",
-          "[8]",
-          "[13]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0,
-        "industry_program_ratio": 0.75,
-        "peer_count": 22,
-        "peer_program_ratio_median": 0.896,
-        "program_expense_ratio": 0,
-        "reserves_months": 0,
-        "revenue_cagr_3yr": null,
-        "transparency_score": 100,
-        "yearly_financials": []
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[1]"
-        ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct service provider rather than a grantmaking foundation.",
-        "is_significant_grantmaker": false,
-        "regions_served": [
-          "California"
-        ],
-        "top_recipients": [],
-        "total_grants": 0
-      },
-      "headline": "The Muslim Community Association of the San Francisco Bay Area serves as a vital hub for religious, social, and educational services tailored to the needs of the regional Muslim community.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value long-term community institutional building and want to support established Islamic educational and religious infrastructure in Northern California.",
-        "citation_ids": [
-          "[2]",
-          "[4]",
-          "[7]"
-        ],
-        "donor_motivations": [
-          "Want to fulfill Zakat obligations through a trusted local institution",
-          "Value K-12 Islamic education and youth development",
-          "Prefer supporting organizations with a deep, multi-decade history",
-          "Appreciate high levels of administrative transparency"
-        ],
-        "giving_considerations": [
-          "Donations support a large, multi-facility institution with diverse programs",
-          "Financial reporting on specific program ratios is currently less granular than international NGOs",
-          "Impact is localized to the San Francisco Bay Area community"
-        ],
-        "not_ideal_for": "Donors seeking international emergency relief or those who require rigorous RCT-level evidence of social interventions."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[11]",
-          "[12]"
-        ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B reflects that the organization has a <cite id=\"11\">documented theory of change</cite> and <cite id=\"12\">tracks four outcome metrics</cite> via Candid.",
-        "external_evaluations": [
-          "Candid Outcome Metrics"
-        ],
-        "outcome_tracking_years": 1,
-        "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "The organization provides religious and educational services to enable the Muslim community to fulfill its responsibilities and contribute to society.",
-        "why_evidence_matters": "Evidence ensures that community services are actually meeting the religious and social needs of the population effectively."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[2]",
-          "[10]"
-        ],
-        "founded_year": 1981,
-        "maturity_stage": "Institution",
-        "revenue_growth_3yr": null,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "As a community hub serving a growing population, there is significant capacity to expand educational and social service offerings.",
-        "strategic_priorities": [
-          "Religious Services",
-          "Educational Excellence",
-          "Social Welfare"
-        ],
-        "years_operating": 45
-      },
-      "organizational_capacity": {
-        "board_size": 3,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": "Not Listed",
-        "citation_ids": [
-          "[1]",
-          "[17]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "Santa Clara County, CA",
-        "has_conflict_policy": true,
-        "has_financial_audit": false,
-        "independent_board_pct": null,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[8]",
-          "[10]"
-        ],
-        "differentiator": "MCA is distinguished by its <cite id=\"10\">45-year track record</cite> and its <cite id=\"8\">zero-cost fundraising efficiency</cite> compared to peers.",
-        "peer_group": "Education and Religious Services",
-        "similar_orgs": [
-          "Islamic Educational Foundation",
-          "Muslim Community Center Chicago",
-          "Islamic Society of Northwest Suburbs of Chicago"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Similar focus on religious services and K-12 education.",
-          "name": "Islamic Educational Foundation"
-        },
-        {
-          "differentiator": "Larger organization with a similar multi-service model.",
-          "name": "Muslim Community Center Chicago"
-        },
-        {
-          "differentiator": "Comparable focus on religious and educational community needs.",
-          "name": "Islamic Society of Northwest Suburbs of Chicago"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[2]",
-            "[10]"
-          ],
-          "detail": "The organization has been <cite id=\"2\">operating since 1981</cite>, demonstrating over <cite id=\"10\">four decades of stability</cite> and community trust in the San Francisco Bay Area.",
-          "point": "Long-standing Institutional Track Record"
-        },
-        {
-          "citation_ids": [
-            "[7]"
-          ],
-          "detail": "MCA holds a <cite id=\"7\">Platinum Seal of Transparency from Candid</cite>, indicating a commitment to sharing comprehensive organizational and outcome data.",
-          "point": "Highest Level of Transparency"
-        },
-        {
-          "citation_ids": [
-            "[4]",
-            "[5]"
-          ],
-          "detail": "The charity maintains <cite id=\"4\">dedicated Zakat donation pathways</cite> and serves specific <cite id=\"5\">asnaf categories like the masakin</cite>.",
-          "point": "Verified Zakat Distribution"
-        }
-      ],
-      "strengths_deep_dive": [
-        "The Muslim Community Association's strength lies in its multi-faceted service model. It successfully integrates <cite id=\"3\">K-12 education through Granada Islamic School</cite> with essential <cite id=\"1\">religious services and social welfare programs</cite>. This holistic approach is supported by a <cite id=\"8\">highly efficient fundraising model</cite> where the cost to raise funds is effectively zero. Furthermore, the organization's <cite id=\"11\">documented theory of change</cite> and tracking of <cite id=\"12\">four distinct outcome metrics</cite> via Candid demonstrate a shift toward evidence-based community development."
-      ],
-      "summary": "The Muslim Community Association of the San Francisco Bay Area (MCA) serves as a central pillar for the regional Muslim community, providing a wide array of <cite id=\"1\">religious, social, and educational services</cite>. Established in <cite id=\"2\">1981</cite>, the organization has grown into a significant institution that manages multiple facilities, including the <cite id=\"3\">Granada Islamic School and a Weekend Islamic School</cite>. As a <cite id=\"4\">Zakat-eligible organization</cite>, MCA facilitates the collection and distribution of mandatory alms to support <cite id=\"5\">eligible recipients such as the needy (masakin)</cite> within the local community. Beyond its religious functions, the association is recognized for its <cite id=\"6\">social services and community outreach</cite>, which aim to empower individuals and foster social cohesion. The organization maintains a high level of transparency, evidenced by its <cite id=\"7\">Platinum Seal of Transparency from Candid</cite>, the highest level of recognition for nonprofit disclosure. Despite this, MCA remains a <cite id=\"9\">top-rated nonprofit</cite> with a long-standing track record of over <cite id=\"10\">40 years of service</cite> in Santa Clara County.",
-      "zakat_guidance": {
-        "classification": "amil",
-        "eligibility": "ZAKAT-ELIGIBLE"
-      }
+      "summary": "The Muslim Community Association of the San Francisco Bay Area (MCA) provides comprehensive religious services, social support, and educational programs to empower the local community [4][5]. As a Zakat-eligible organization, it facilitates the collection and distribution of mandatory alms to designated asnaf categories in accordance with Islamic principles [2][7]."
     }
   }
 }
