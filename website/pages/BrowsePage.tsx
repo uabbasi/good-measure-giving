@@ -312,14 +312,6 @@ export const BrowsePage: React.FC = () => {
 
   const includeCuratedHidden = browseStyle === 'power' || selectedPathId === 'browse';
 
-  // Count of default browseable set (excludes hidden/curated-hidden)
-  const defaultViewCount = useMemo(() =>
-    includeCuratedHidden
-      ? evaluatedCharities.length
-      : evaluatedCharities.filter(c => !c.hideFromCurated).length,
-    [evaluatedCharities, includeCuratedHidden]
-  );
-
   // Current year for established calculation
   const currentYear = new Date().getFullYear();
 
@@ -715,7 +707,7 @@ export const BrowsePage: React.FC = () => {
               </span>
             ) : (
               <span className={`px-3 py-1 rounded-full ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`}>
-                {defaultViewCount} charities evaluated
+                {evaluatedCharities.length} charities evaluated
               </span>
             )}
           </div>

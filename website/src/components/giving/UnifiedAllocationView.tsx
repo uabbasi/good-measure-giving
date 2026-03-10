@@ -117,7 +117,18 @@ export const TAGS = {
 };
 
 export const ALL_TAGS = [...TAGS.geography, ...TAGS.cause, ...TAGS.population];
-const COLORS = ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444', '#ec4899', '#06b6d4', '#84cc16'];
+// Palette: muted jewel tones at consistent saturation/lightness for pastel harmony
+// Hues spaced ~45° apart, saturation ~45-55%, lightness ~55-62%
+const COLORS = [
+  '#5ba88a', // sage green (brand-adjacent)
+  '#5b8fb8', // steel blue
+  '#8b7cb8', // soft violet
+  '#7a9e6e', // olive green
+  '#7aab7a', // moss green
+  '#8a9eb8', // slate blue
+  '#a8849e', // dusty mauve
+  '#7ab5a8', // seafoam
+];
 const PERCENT_DECIMALS = 2;
 const PERCENT_EPSILON = 0.01;
 
@@ -175,6 +186,7 @@ function DraggableCharityRow({
   onMoveCharity,
   bucketOptions,
   dimmed = false,
+  isEvenRow = false,
 }: {
   charity: BookmarkedCharity;
   bucketId: string | null;
@@ -188,6 +200,7 @@ function DraggableCharityRow({
   onMoveCharity?: (ein: string, bucketId: string | null) => void;
   bucketOptions?: Array<{ id: string; label: string }>;
   dimmed?: boolean;
+  isEvenRow?: boolean;
 }) {
   const [localTarget, setLocalTarget] = useState<string>(target ? String(target) : '');
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
@@ -206,7 +219,7 @@ function DraggableCharityRow({
   } : dimmed ? { opacity: 0.4 } : undefined;
 
   const wt = getWalletType(charity.walletTag);
-  const cell = `px-3 py-2.5 text-[13px] ${isDark ? 'text-slate-300' : 'text-slate-700'}`;
+  const cell = `px-2.5 py-1.5 text-[13px] ${isDark ? 'text-slate-300' : 'text-slate-700'}`;
   const border = isDark ? 'border-slate-800/50' : 'border-slate-100';
   const inputStyle = `bg-transparent border-0 focus:outline-none focus:ring-0 p-0 ${isDark ? 'text-slate-200 placeholder-slate-600' : 'text-slate-700 placeholder-slate-300'}`;
 
@@ -234,11 +247,15 @@ function DraggableCharityRow({
     }
   };
 
+  const evenRowBg = isEvenRow && bucketColor
+    ? isDark ? `${bucketColor}18` : `${bucketColor}10`
+    : undefined;
+
   return (
     <tr
       ref={setNodeRef}
-      style={style}
-      className={`hidden sm:table-row border-b ${border} group transition-all ${isDragging ? 'z-50 shadow-lg' : ''} ${isDark ? 'hover:bg-slate-800/40' : 'hover:bg-slate-50'} ${dimmed ? 'pointer-events-auto' : ''}`}
+      style={{ ...style, backgroundColor: evenRowBg, borderBottomColor: bucketColor ? `${bucketColor}20` : undefined }}
+      className={`hidden sm:table-row border-b group transition-all ${isDragging ? 'z-50 shadow-lg' : ''} ${isDark ? 'hover:bg-slate-800/40' : 'hover:bg-slate-50'} ${dimmed ? 'pointer-events-auto' : ''}`}
     >
       <td className={`${cell} w-0 pr-0`} style={{ borderLeft: bucketColor ? `4px solid ${bucketColor}40` : undefined }}>
         <button {...listeners} {...attributes} className={`cursor-grab active:cursor-grabbing p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity ${isDark ? 'hover:bg-slate-700' : 'hover:bg-slate-200'}`}>
@@ -286,7 +303,7 @@ function DraggableCharityRow({
               <span className="text-emerald-500 font-medium text-[12px]">Done</span>
             </div>
           ) : (
-            <span className="text-amber-500 font-medium">{fmt(remaining)} left</span>
+            <span className={`font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{fmt(remaining)} left</span>
           )
         ) : (
           <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</span>
@@ -461,7 +478,10 @@ function DroppableCategory({ id, color, children, isDark }: { id: string; color:
     <tbody
       ref={setNodeRef}
       className={`transition-all ${isOver ? (isDark ? 'bg-emerald-500/10' : 'bg-emerald-50/80') : ''}`}
-      style={{ borderLeft: isOver ? `3px solid ${color}` : undefined }}
+      style={{
+        borderLeft: isOver ? `3px solid ${color}` : undefined,
+        boxShadow: isDark ? undefined : `inset 0 -2px 0 ${color}15`,
+      }}
     >
       {children}
     </tbody>
@@ -478,7 +498,7 @@ function GhostSuggestionRow({
   isDark: boolean;
   onAdd: () => void;
 }) {
-  const cell = `px-3 py-2 text-[13px]`;
+  const cell = `px-2.5 py-1 text-[13px]`;
 
   return (
     <tr
@@ -921,8 +941,8 @@ export function UnifiedAllocationView({
   };
 
   // Styles - Refined & elegant
-  const headerCell = `px-3 py-2.5 text-[10px] font-semibold uppercase tracking-wider ${isDark ? 'text-slate-500' : 'text-slate-400'}`;
-  const cell = `px-3 py-2.5 text-[13px] ${isDark ? 'text-slate-300' : 'text-slate-700'}`;
+  const headerCell = `px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider ${isDark ? 'text-slate-500' : 'text-slate-400'}`;
+  const cell = `px-2.5 py-1.5 text-[13px] ${isDark ? 'text-slate-300' : 'text-slate-700'}`;
   const rowHover = isDark ? 'hover:bg-slate-800/40' : 'hover:bg-slate-50';
   const border = isDark ? 'border-slate-800' : 'border-slate-200';
   const borderLight = isDark ? 'border-slate-800/50' : 'border-slate-100';
@@ -931,9 +951,9 @@ export function UnifiedAllocationView({
   return (
     <div className={`rounded-xl border overflow-hidden text-sm ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'} shadow-sm`}>
       {/* Header bar - gradient accent */}
-      <div className={`flex flex-col gap-3 px-4 py-3.5 border-b sm:flex-row sm:items-center sm:justify-between ${border} ${isDark ? 'bg-gradient-to-r from-slate-800/50 to-slate-900' : 'bg-gradient-to-r from-slate-50 to-white'}`}>
-        <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
-          <div className="flex items-center gap-2.5">
+      <div className={`flex flex-col gap-2 px-3 py-2.5 border-b sm:flex-row sm:items-center sm:justify-between ${border} ${isDark ? 'bg-gradient-to-r from-slate-800/50 to-slate-900' : 'bg-gradient-to-r from-slate-50 to-white'}`}>
+        <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-3">
+          <div className="flex items-center gap-2">
             <div className={`flex items-center gap-1.5 px-2 py-1 rounded-md ${isDark ? 'bg-emerald-500/10' : 'bg-emerald-50'}`}>
               <span className={`text-[10px] font-bold tracking-wide ${isDark ? 'text-emerald-500' : 'text-emerald-600'}`}>ZAKAT</span>
             </div>
@@ -1267,7 +1287,7 @@ export function UnifiedAllocationView({
       {/* Table with drag-and-drop */}
       {targetNum > 0 && (
         <>
-        <div className="sm:hidden px-3 py-3 space-y-2.5">
+        <div className="sm:hidden px-2.5 py-2 space-y-2">
           {buckets.map(b => {
             const amt = Math.round(targetNum * b.percent / 100);
             const gvn = bucketGiven.get(b.id) || 0;
@@ -1298,8 +1318,13 @@ export function UnifiedAllocationView({
             return (
               <div
                 key={b.id}
-                className={`rounded-lg border p-3 ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'} ${categoryDimmed ? 'opacity-50' : ''}`}
-                style={{ borderLeft: `4px solid ${b.color}` }}
+                className={`rounded-lg border p-2.5 ${isDark ? 'border-slate-700' : 'border-slate-200'} ${categoryDimmed ? 'opacity-50' : ''}`}
+                style={{
+                  borderLeft: `4px solid ${b.color}`,
+                  background: isDark
+                    ? `linear-gradient(180deg, ${b.color}15 0%, transparent 40%)`
+                    : `linear-gradient(180deg, ${b.color}0c 0%, white 40%)`,
+                }}
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
@@ -1350,7 +1375,7 @@ export function UnifiedAllocationView({
                       {amt > 0 ? fmt(amt) : '—'}
                     </p>
                     {amt > 0 && mBucketUnallocated > 0 && chars.length > 0 && (
-                      <p className="text-right text-[10px] font-medium text-amber-500">{fmt(mBucketUnallocated)} to allocate</p>
+                      <p className="text-right text-[10px] font-medium text-slate-400">{fmt(mBucketUnallocated)} to allocate</p>
                     )}
                     {amt > 0 && mBucketUnallocated < 0 && chars.length > 0 && (
                       <p className="text-right text-[10px] font-medium text-blue-400">{fmt(Math.abs(mBucketUnallocated))} over</p>
@@ -1541,9 +1566,9 @@ export function UnifiedAllocationView({
                 <th className={`${headerCell} w-6 hidden sm:table-cell`}></th>
                 <th className={`${headerCell} text-left`}>Category</th>
                 <th className={`${headerCell} text-right w-20`}>%</th>
-                <th className={`${headerCell} text-right w-24`}>Amount</th>
+                <th className={`${headerCell} text-right w-24`}>Target</th>
                 <th className={`${headerCell} text-right w-20 hidden sm:table-cell`}>Paid</th>
-                <th className={`${headerCell} text-right w-24 hidden sm:table-cell`}>Remaining</th>
+                <th className={`${headerCell} text-right w-24 hidden sm:table-cell`}>Left</th>
                 <th className={`${headerCell} w-8 hidden sm:table-cell`}></th>
               </tr>
             </thead>
@@ -1586,9 +1611,10 @@ export function UnifiedAllocationView({
                     className={`border-b ${borderLight} ${rowHover} group transition-all ${categoryDimmed ? 'opacity-40' : ''}`}
                     style={{
                       background: isDark
-                        ? `linear-gradient(90deg, ${b.color}15 ${pct}%, transparent ${pct}%)`
-                        : `linear-gradient(90deg, ${b.color}08 ${pct}%, transparent ${pct}%)`,
+                        ? `linear-gradient(90deg, ${b.color}40 0%, ${b.color}20 100%)`
+                        : `linear-gradient(90deg, ${b.color}30 0%, ${b.color}18 100%)`,
                       borderLeft: `4px solid ${b.color}`,
+                      borderTop: `2px solid ${b.color}50`,
                     }}
                   >
                     <td
@@ -1660,34 +1686,9 @@ export function UnifiedAllocationView({
                         <span className={`text-[11px] ml-0.5 font-medium ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>%</span>
                       </div>
                     </td>
-                    <td className={`${cell} text-right`}>
-                      <span className={`font-semibold tabular-nums ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
-                        {amt > 0 ? fmt(amt) : '—'}
-                      </span>
-                      {amt > 0 && chars.length > 0 && bucketUnallocated > 0 && (
-                        <div className="text-[10px] font-medium text-amber-500">{fmt(bucketUnallocated)} to allocate</div>
-                      )}
-                      {amt > 0 && chars.length > 0 && bucketUnallocated < 0 && (
-                        <div className="text-[10px] font-medium text-blue-400">{fmt(Math.abs(bucketUnallocated))} over</div>
-                      )}
-                    </td>
-                    <td className={`${cell} text-right tabular-nums hidden sm:table-cell`}>
-                      <span className={gvn > 0 ? 'font-medium' : isDark ? 'text-slate-600' : 'text-slate-300'}>{fmt(gvn)}</span>
-                    </td>
-                    <td className={`${cell} text-right tabular-nums hidden sm:table-cell`}>
-                      {amt > 0 ? (
-                        amt - gvn <= 0 ? (
-                          <div className="flex items-center justify-end gap-1">
-                            <Check className="w-3.5 h-3.5 text-emerald-500" />
-                            <span className="text-emerald-500 font-medium text-[12px]">Done</span>
-                          </div>
-                        ) : (
-                          <span className="text-amber-500 font-medium">{fmt(amt - gvn)} left</span>
-                        )
-                      ) : (
-                        <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</span>
-                      )}
-                    </td>
+                    <td className={`${cell} text-right`}></td>
+                    <td className={`${cell} hidden sm:table-cell`}></td>
+                    <td className={`${cell} hidden sm:table-cell`}></td>
                     <td className={`${cell} hidden sm:table-cell`}>
                       <button onClick={() => remove(b.id)} className={`p-1.5 -m-1 rounded-lg transition-all opacity-40 hover:opacity-100 ${isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'}`}>
                         <X className={`w-3.5 h-3.5 ${isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'}`} />
@@ -1697,7 +1698,7 @@ export function UnifiedAllocationView({
                   {/* Empty category hint - show add charity CTA */}
                   {!isCollapsed && chars.length === 0 && (
                     <tr className={`hidden sm:table-row border-b ${borderLight}`}>
-                      <td colSpan={7} className="px-4 py-3">
+                      <td colSpan={7} className="px-3 py-2">
                         <div className="flex items-center gap-3">
                           <button
                             onClick={() => { setShowCharitySearch(true); setCharitySearchQuery(''); }}
@@ -1723,7 +1724,7 @@ export function UnifiedAllocationView({
                     </tr>
                   )}
                   {/* Child rows - draggable charities (collapsible) */}
-                  {!isCollapsed && chars.map(c => {
+                  {!isCollapsed && chars.map((c, ci) => {
                     const cGvn = donations.filter(d => d.charityEin === c.ein).reduce((s, d) => s + d.amount, 0);
                     const charityIsZakat = isZakatEligible(c.walletTag);
                     return (
@@ -1741,6 +1742,7 @@ export function UnifiedAllocationView({
                         onMoveCharity={move}
                         bucketOptions={mobileBucketOptions}
                         dimmed={zakatLens && !charityIsZakat}
+                        isEvenRow={ci % 2 === 0}
                       />
                     );
                   })}
@@ -1783,13 +1785,59 @@ export function UnifiedAllocationView({
                       )}
                     </>
                   )}
+                  {/* Category subtotal row - actuals */}
+                  {chars.length > 0 && (
+                    <tr
+                      className={`hidden sm:table-row border-b ${borderLight}`}
+                      style={{
+                        background: isDark
+                          ? `linear-gradient(90deg, ${b.color}40 0%, ${b.color}20 100%)`
+                          : `linear-gradient(90deg, ${b.color}30 0%, ${b.color}18 100%)`,
+                        borderLeft: `4px solid ${b.color}`,
+                      }}
+                    >
+                      <td className={`${cell}`}></td>
+                      <td className={`${cell} text-right`} colSpan={2}>
+                        <span className={`text-[11px] font-semibold uppercase tracking-wide ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                          Subtotal
+                        </span>
+                      </td>
+                      <td className={`${cell} text-right tabular-nums`}>
+                        <span className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>{fmt(bucketCharityTargets)}</span>
+                        {amt > 0 && bucketUnallocated > 0 && (
+                          <div className={`text-[10px] font-medium ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>{fmt(bucketUnallocated)} unassigned</div>
+                        )}
+                        {amt > 0 && bucketUnallocated < 0 && (
+                          <div className="text-[10px] font-medium text-blue-400">{fmt(Math.abs(bucketUnallocated))} over</div>
+                        )}
+                      </td>
+                      <td className={`${cell} text-right tabular-nums`}>
+                        <span className={gvn > 0 ? `font-semibold ${isDark ? 'text-emerald-400' : 'text-emerald-600'}` : isDark ? 'text-slate-600' : 'text-slate-300'}>{fmt(gvn)}</span>
+                      </td>
+                      <td className={`${cell} text-right tabular-nums`}>
+                        {bucketCharityTargets > 0 ? (
+                          bucketCharityTargets - gvn <= 0 ? (
+                            <div className="flex items-center justify-end gap-1">
+                              <Check className="w-3.5 h-3.5 text-emerald-500" />
+                              <span className="text-emerald-500 font-medium text-[11px]">Done</span>
+                            </div>
+                          ) : (
+                            <span className={`font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{fmt(bucketCharityTargets - gvn)}</span>
+                          )
+                        ) : (
+                          <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</span>
+                        )}
+                      </td>
+                      <td className={cell}></td>
+                    </tr>
+                  )}
                 </DroppableCategory>
               );
             })}
             {/* Total row */}
             {buckets.length > 0 && (
               <tbody>
-                <tr className={`border-t-2 ${border} ${isDark ? 'bg-slate-800/60' : 'bg-slate-100/80'}`}>
+                <tr className={`border-t-2 ${border} ${isDark ? 'bg-slate-700/80' : 'bg-slate-200/80'}`}>
                   <td className={`${cell} hidden sm:table-cell`}></td>
                   <td className={`${cell} font-bold text-base`}>Total</td>
                   <td className={`${cell} text-right`}>
@@ -1806,7 +1854,7 @@ export function UnifiedAllocationView({
                   <td className={`${cell} text-right font-bold text-base tabular-nums`}>
                     <div>{fmt(totalCharityTargets)}</div>
                     {unallocatedAmount > 0 && (
-                      <div className="text-[10px] font-medium text-amber-500">{fmt(unallocatedAmount)} to allocate</div>
+                      <div className="text-[10px] font-medium text-slate-400">{fmt(unallocatedAmount)} to allocate</div>
                     )}
                     {unallocatedAmount < 0 && (
                       <div className="text-[10px] font-medium text-blue-400">{fmt(Math.abs(unallocatedAmount))} over</div>
@@ -1820,7 +1868,7 @@ export function UnifiedAllocationView({
                       const totalTarget = Math.round(targetNum * totalPct / 100);
                       const totalRemaining = totalTarget - totalGiven;
                       return totalRemaining > 0 ? (
-                        <span className="text-amber-500">{fmt(totalRemaining)} left</span>
+                        <span className={`font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{fmt(totalRemaining)} left</span>
                       ) : totalTarget > 0 ? (
                         <div className="flex items-center justify-end gap-1">
                           <Check className="w-4 h-4 text-emerald-500" />
@@ -1833,7 +1881,7 @@ export function UnifiedAllocationView({
                 {/* Warning row when not at 100% */}
                 {!isTotalBalanced && (
                   <tr className={`hidden sm:table-row border-t ${isDark ? 'border-red-500/20 bg-red-500/5' : 'border-red-100 bg-red-50/50'}`}>
-                    <td colSpan={7} className="px-4 py-2.5">
+                    <td colSpan={7} className="px-3 py-2">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <div className={`w-2 h-2 rounded-full ${isTotalUnder ? 'bg-red-500' : 'bg-amber-500'} animate-pulse`} />
@@ -1874,7 +1922,7 @@ export function UnifiedAllocationView({
                 )}
                 {!isTotalBalanced && (
                   <tr className={`sm:hidden border-t ${isDark ? 'border-red-500/20 bg-red-500/5' : 'border-red-100 bg-red-50/50'}`}>
-                    <td colSpan={3} className="px-3 py-2.5">
+                    <td colSpan={3} className="px-2.5 py-2">
                       <div className="flex items-center gap-2">
                         <div className={`w-2 h-2 rounded-full ${isTotalUnder ? 'bg-red-500' : 'bg-amber-500'} animate-pulse`} />
                         <span className={`text-xs font-medium ${isDark ? 'text-red-400' : 'text-red-600'}`}>
@@ -1919,7 +1967,7 @@ export function UnifiedAllocationView({
           {(unassigned.length > 0 || activeCharity) && (
             <div className="hidden sm:block">
             <DroppableUncategorized isDark={isDark} isActive={!!activeCharity}>
-              <div className={`px-4 py-2.5 flex items-center gap-2.5 border-t ${isDark ? 'bg-amber-500/5 border-amber-500/20' : 'bg-amber-50/70 border-amber-200/50'}`}>
+              <div className={`px-3 py-2 flex items-center gap-2 border-t ${isDark ? 'bg-amber-500/5 border-amber-500/20' : 'bg-amber-50/70 border-amber-200/50'}`}>
                 <div className="w-2.5 h-2.5 rounded-md bg-amber-500" />
                 <span className={`text-[10px] font-bold tracking-wider ${isDark ? 'text-amber-400' : 'text-amber-600'}`}>
                   {unassigned.length > 0 ? 'NEEDS CATEGORY' : 'DROP TO UNASSIGN'}
