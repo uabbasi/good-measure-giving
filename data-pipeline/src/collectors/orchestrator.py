@@ -1162,6 +1162,13 @@ class DataCollectionOrchestrator:
         elif source == "reconciled":
             parsed_json = {"reconciled_profile": data.get("reconciled_profile", {})}
 
+        # Website uses combined fetch+parse, so apply the same numeric bounds
+        # validation here that extract.py applies for the other sources.
+        if source == "website":
+            from src.validators.bounds_validator import validate_dict_bounds
+
+            parsed_json = validate_dict_bounds(parsed_json, ein=ein, log_warnings=True)
+
         # Check if data is meaningful
         is_meaningful = self._is_meaningful_data(parsed_json)
 

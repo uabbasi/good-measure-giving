@@ -76,6 +76,15 @@ class TestGIKInflatedRatio:
         m = _make_metrics(noncash_ratio=0.10)
         assert check_gik_inflated_ratio(m) == []
 
+    def test_phantom_language_at_80_percent(self):
+        """>=80% noncash triggers 'phantom' headline and 'meaningless' detail."""
+        m = _make_metrics(noncash_ratio=0.85, program_expense_ratio=0.95, cash_adjusted_program_ratio=0.20)
+        signals = check_gik_inflated_ratio(m)
+        assert len(signals) == 1
+        assert signals[0].severity == SignalSeverity.HIGH
+        assert "phantom" in signals[0].headline.lower()
+        assert "meaningless" in signals[0].detail.lower()
+
     def test_none_noncash_no_signal(self):
         m = _make_metrics()
         assert check_gik_inflated_ratio(m) == []

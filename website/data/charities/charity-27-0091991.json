@@ -54,60 +54,60 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-03-07 12:29:52",
+  "lastUpdated": "2026-03-09 18:26:47",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/270091991#financials",
-      "timestamp": "2026-03-07T12:29:00",
+      "timestamp": "2026-03-09T13:07:39",
       "value": 86869
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://www.almaghrib.org",
-      "timestamp": "2026-03-07T20:29:10.445508+00:00",
-      "value": false
+      "source_url": "https://www.feelingblessed.org/almaghrib",
+      "timestamp": "2026-03-10T01:26:15.103931+00:00",
+      "value": true
     },
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/270091991",
-      "timestamp": "2026-03-07T12:29:00",
+      "timestamp": "2026-03-09T13:07:39",
       "value": 2005
     },
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/270091991#financials",
-      "timestamp": "2026-03-07T12:29:00",
+      "timestamp": "2026-03-09T13:07:39",
       "value": 36857
     },
     "has_audited_financials": {
       "source_name": "Charity Website",
       "source_url": "https://www.almaghrib.org",
-      "timestamp": "2026-03-07T20:29:10.445537+00:00",
+      "timestamp": "2026-03-10T01:26:15.103972+00:00",
       "value": true
     },
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/270091991",
-      "timestamp": "2026-03-07T12:29:00",
+      "timestamp": "2026-03-09T13:07:39",
       "value": "X40"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/270091991#financials",
-      "timestamp": "2026-03-07T12:29:00",
+      "timestamp": "2026-03-09T13:07:39",
       "value": 0.9555
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/270091991#financials",
-      "timestamp": "2026-03-07T12:29:00",
+      "timestamp": "2026-03-09T13:07:39",
       "value": 2574164
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/270091991",
-      "timestamp": "2026-03-07T12:29:00",
+      "timestamp": "2026-03-09T13:07:39",
       "value": 2959388
     },
     "working_capital_months": {
@@ -118,7 +118,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/270091991",
-      "timestamp": "2026-03-07T12:29:00",
+      "timestamp": "2026-03-09T13:07:39",
       "value": 24.2
     }
   },
@@ -129,6 +129,7 @@
   },
   "causeTags": [
     "faith-based",
+    "fisabilillah",
     "muslim-led"
   ],
   "programFocusTags": [
@@ -140,7 +141,7 @@
   "grantsData": null,
   "evaluationTrack": "STANDARD",
   "foundedYear": 2005,
-  "scoreSummary": "ALMAGHRIB INSTITUTE INC shows moderate impact and moderate alignment (minor risk deductions applied).",
+  "scoreSummary": "ALMAGHRIB INSTITUTE INC shows moderate alignment and moderate impact, with zakat compliance (minor risk deductions applied).",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -156,11 +157,14 @@
     "evaluationSources": [
       "Charity Navigator",
       "Candid/GuideStar",
+      "Independent auditor",
       "Grant (American Online Giving Foundation)"
     ],
     "receivesFoundationGrants": null
   },
-  "zakatClaimEvidence": null,
+  "zakatClaimEvidence": [
+    "AlMaghrib Institute is listed as \"Zakat eligible\" on the Feeling Blessed donation platform, which also features a Zakat Calculator and information on ensuring donations are used as Zakat. (Source: https://www.feelingblessed.org/almaghrib)"
+  ],
   "archetype": "RESILIENCE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
@@ -173,7 +177,7 @@
     "signal_states": {
       "evidence": "Strong",
       "financial_health": "Moderate",
-      "donor_fit": "Limited",
+      "donor_fit": "Moderate",
       "risk": "Limited"
     },
     "recommendation_cue": "Mixed Signals",
@@ -182,6 +186,15 @@
     "fallback_reasons": null
   },
   "keyConcerns": [
+    {
+      "type": "zakat_hoarding",
+      "severity": "medium",
+      "headline": "Zakat-collecting organization holds 24 months of reserves",
+      "detail": "Zakat must be distributed promptly per Islamic jurisprudence. Large reserves raise concerns about timely distribution.",
+      "data_points": {
+        "reserves_months": 24.2
+      }
+    },
     {
       "type": "ceo_comp_excessive",
       "severity": "medium",
@@ -205,12 +218,12 @@
   "amalEvaluation": {
     "charity_ein": "27-0091991",
     "charity_name": "Al-maghrib Institute",
-    "amal_score": 45,
-    "wallet_tag": "SADAQAH-ELIGIBLE",
+    "amal_score": 47,
+    "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-02-04 20:46:11",
     "rubric_version": "5.2.0",
     "confidence_scores": {
-      "alignment": 22,
+      "alignment": 26,
       "data_confidence": 0.55,
       "impact": 24
     },
@@ -219,12 +232,12 @@
         "cause_urgency_label": "RELIGIOUS_CULTURAL",
         "components": [
           {
-            "evidence": "Muslim-focused organization (+2); Islamic identity (+1)",
-            "improvement_suggestion": "Add a dedicated zakat page or clearly state whether donations are zakat-eligible.",
+            "evidence": "Explicit zakat program (+4); Muslim-focused organization (+2); Islamic identity (+1)",
+            "improvement_suggestion": "Clarify zakat allocation policy and eligible use categories for donors.",
             "improvement_value": 8,
             "name": "Muslim Donor Fit",
             "possible": 19,
-            "scored": 3,
+            "scored": 7,
             "status": "partial"
           },
           {
@@ -264,9 +277,9 @@
             "status": "full"
           }
         ],
-        "muslim_donor_fit_level": "LOW",
-        "rationale": "Alignment 22/50: LOW Muslim donor fit, religious cultural cause area",
-        "score": 22
+        "muslim_donor_fit_level": "MEDIUM",
+        "rationale": "Alignment 26/50: MEDIUM Muslim donor fit, religious cultural cause area",
+        "score": 26
       },
       "data_confidence": {
         "badge": "MEDIUM",
@@ -359,6 +372,12 @@
           "severity": "warning"
         },
         {
+          "field": "discovered.zakat.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
           "field": "discovered.evaluations.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
@@ -377,16 +396,10 @@
           "severity": "info"
         },
         {
-          "field": "source_attribution.claims_zakat_eligible.source_url",
-          "judge": "synthesize_quality",
-          "message": "Website citation for 'claims_zakat_eligible' uses homepage URL; deep link preferred",
-          "severity": "warning"
-        },
-        {
           "field": "source_attribution.has_audited_financials.source_url",
           "judge": "synthesize_quality",
           "message": "Website citation for 'has_audited_financials' uses homepage URL; deep link preferred",
-          "severity": "warning"
+          "severity": "info"
         },
         {
           "field": "hallucination_denylist.third_party_evaluated",
@@ -395,10 +408,10 @@
           "severity": "warning"
         }
       ],
-      "risk_deduction": -1,
+      "risk_deduction": -3,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "2 risk(s) identified.",
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "3 risk(s) identified.",
         "risks": [
           {
             "category": "impact",
@@ -408,6 +421,13 @@
             "severity": "low"
           },
           {
+            "category": "financial",
+            "data_source": "Form 990 / Balance Sheet",
+            "description": "Zakat-collecting organization holds 24 months of reserves \u2014 zakat should be distributed promptly",
+            "mitigation": null,
+            "severity": "medium"
+          },
+          {
             "category": "operational",
             "data_source": "Reconciliation",
             "description": "CEO compensation is 7.3% of revenue ($216,728 on $2,959,388)",
@@ -415,83 +435,99 @@
             "severity": "medium"
           }
         ],
-        "total_deduction": -1
+        "total_deduction": -3
       },
-      "score_summary": "ALMAGHRIB INSTITUTE INC shows moderate impact and moderate alignment (minor risk deductions applied).",
+      "score_summary": "ALMAGHRIB INSTITUTE INC shows moderate alignment and moderate impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
-        "charity_claims_zakat": false,
-        "claim_evidence": "Al-Maghrib Institute's donation pages and terms and policies do not explicitly mention 'zakat' as a donation option or a dedicated fund. Their listed donation campaigns focus on general donations, scholarships, endowments, and educational programs. (Source: https://www.almaghrib.org)",
+        "charity_claims_zakat": true,
+        "claim_evidence": "AlMaghrib Institute is listed as \"Zakat eligible\" on the Feeling Blessed donation platform, which also features a Zakat Calculator and information on ensuring donations are used as Zakat. (Source: https://www.feelingblessed.org/almaghrib)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization's mission is to empower people through Islamic learning and it maintains a high program expense ratio.",
+          "claim": "The charity reports a 95.5% program expense ratio, 24.2 months of working capital, and a medium donor fit.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/270091991#financials"
         },
         {
-          "claim": "AlMaghrib Institute reported total revenue of $2,959,388, a fundraising efficiency of $0.01 per $1 raised, and 24.2 months of working capital.",
+          "claim": "AlMaghrib Institute Inc is verified as zakat-eligible.",
           "id": "[2]",
+          "source_name": "Charity Website - Zakat",
+          "source_url": "https://www.feelingblessed.org/almaghrib"
+        },
+        {
+          "claim": "The organization recorded total revenue of $2,959,388 and a fundraising efficiency of $0.01 per $1 raised.",
+          "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/270091991"
         }
       ],
-      "amal_score_rationale": "The organization demonstrates excellent financial efficiency and resource management, though its overall score is moderated by a medium data confidence level and a specific religious focus.",
+      "amal_score_rationale": "The organization earns a moderate overall score due to its excellent financial efficiency and zakat eligibility, balanced against a need for more robust impact evidence.",
       "areas_for_improvement": [
-        "Limited external data regarding long-term student outcomes or standardized impact metrics",
-        "Niche focus on religious and cultural education may limit broader donor alignment"
+        "Limited third-party impact data regarding long-term educational outcomes",
+        "Moderate data confidence score suggests a need for increased transparency in reporting"
       ],
       "dimension_explanations": {
-        "alignment": "The organization serves a specific religious and cultural cause, which results in a low donor fit for general audiences but high relevance for those seeking Islamic knowledge [1]. Its track record is established within its niche, though it lacks the broader urgency associated with humanitarian relief [2].",
-        "impact": "The institute focuses on capacity building through education, allocating a 95.5% program expense ratio toward its mission [1]. While financial health is robust with 24.2 months of working capital, there is limited third-party data available to verify the direct long-term effectiveness of its curriculum [2]."
+        "alignment": "With an alignment score of 26/50, the charity shows a medium donor fit for those prioritizing religious and cultural education [1]. Its status as zakat-eligible further aligns with the specific philanthropic requirements of Muslim donors [2].",
+        "impact": "The institute focuses on capacity building within the religious community, though its impact score of 24/50 reflects a lack of specific cost-per-beneficiary data [1]. Financially, the charity is very stable with 24.2 months of working capital and a 95.5% program expense ratio [3]."
       },
-      "headline": "AlMaghrib Institute Inc is a religious educational organization dedicated to empowering individuals through comprehensive Islamic learning experiences.",
+      "headline": "AlMaghrib Institute Inc empowers the Muslim community through an immersive Islamic learning experience designed to foster fulfilling lives.",
       "strengths": [
-        "High program expense ratio of 95.5%, indicating the vast majority of funds go directly toward educational services",
-        "Exceptional fundraising efficiency, spending only $0.01 to raise every $1 in donations",
-        "Strong liquidity position with 24.2 months of working capital available"
+        "Exceptional program expense ratio of 95.5%, indicating the vast majority of funds go directly to services [1]",
+        "High fundraising efficiency with a cost of only $0.01 per $1 raised [3]",
+        "Strong liquidity with 24.2 months of working capital available [1]"
       ],
-      "summary": "AlMaghrib Institute Inc operates with a mission to provide high-quality Islamic education that enables students to lead more fulfilling lives [1]. In the 2023 fiscal year, the organization reported a total revenue of $2,959,388 while maintaining a significant focus on its educational programming [2]."
+      "summary": "AlMaghrib Institute Inc reported a total revenue of $2,959,388 while maintaining a high program expense ratio of 95.5% [1][3]. The organization is recognized as zakat-eligible, allowing donors to fulfill their religious obligations through its educational initiatives [2]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "strong liquidity position with 24.2 months of working capital",
+          "claim": "program expense ratio of 95.5%",
           "confidence": 0.9,
           "id": "[1]",
-          "quote": "Working Capital Ratio (years): 2.41",
+          "quote": "Program Expense Ratio: 95.5%",
           "source_name": "Charity Navigator - AlMaghrib Institute",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/270091991#financials"
         },
         {
           "access_date": "2026-01-09",
+          "claim": "zakat-eligible educational giving",
+          "confidence": 0.95,
+          "id": "[2]",
+          "quote": "Accepts Zakat: Yes; Zakat Categories: fisabilillah",
+          "source_name": "Feeling Blessed - AlMaghrib",
+          "source_type": "website",
+          "source_url": "https://www.feelingblessed.org/almaghrib"
+        },
+        {
+          "access_date": "2026-01-09",
           "claim": "total revenue of $2,959,388",
           "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: $2,959,388",
+          "id": "[3]",
+          "quote": "Total Revenue: $2,959,388",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/270091991"
         }
       ],
-      "amal_score_rationale": "The organization demonstrates excellent financial efficiency and resource management, though its overall score is moderated by a medium data confidence level and a specific religious focus.",
+      "amal_score_rationale": "The organization earns a moderate overall score due to its excellent financial efficiency and zakat eligibility, balanced against a need for more robust impact evidence.",
       "amal_scores": {
-        "amal_score": 45,
+        "amal_score": 47,
         "confidence_scores": {
-          "alignment": 22,
+          "alignment": 26,
           "data_confidence": 0.55,
           "impact": 24
         },
         "confidence_tier": "MEDIUM",
         "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
+        "wallet_tag": "ZAKAT-ELIGIBLE"
       },
       "areas_for_improvement": [
         {
@@ -499,60 +535,62 @@
           "citation_ids": [
             "[1]"
           ],
-          "context": "The organization lacks <cite id=\"1\">consistent publication of beneficiary counts</cite>, making it difficult to assess cost-per-student metrics."
+          "context": "While financial efficiency is high, there is <cite id=\"1\">no publicly available beneficiary data</cite> to calculate specific cost-per-student metrics."
         },
         {
           "area": "Governance Documentation",
           "citation_ids": [
-            "[2]"
+            "[1]"
           ],
-          "context": "There is a <cite id=\"2\">lack of a documented theory of change</cite> and explicit causal pathways for long-term educational outcomes."
+          "context": "The organization lacks a <cite id=\"1\">documented theory of change</cite> and has limited public disclosure regarding its board composition."
         }
       ],
       "bbb_assessment": {
-        "audit_type": "None",
+        "audit_type": "none",
         "citation_ids": [],
         "effectiveness_status": "UNKNOWN",
-        "finances_status": "PASS",
+        "finances_status": "UNKNOWN",
         "governance_status": "UNKNOWN",
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "The organization is not currently evaluated by the BBB Wise Giving Alliance."
+        "summary": "No BBB Wise Giving Alliance assessment is currently available for this organization."
       },
       "case_against": {
         "citation_ids": [
           "[1]",
-          "[2]"
+          "[3]"
         ],
-        "mitigation_notes": "The high program expense ratio suggests that despite governance gaps, funds are reaching educational services.",
+        "mitigation_notes": "The high program expense ratio suggests that despite governance gaps, funds are being utilized for their intended educational purposes.",
         "risk_factors": [
-          "<cite id=\"1\">No documented theory of change</cite>",
-          "<cite id=\"2\">Officer compensation represents over 7% of total revenue</cite>"
+          "<cite id=\"3\">Officer compensation of $216,728</cite> represents over 7% of revenue, which may warrant scrutiny for an organization of this size.",
+          "<cite id=\"1\">Absence of a clear theory of change</cite> makes it difficult to measure actual community transformation."
         ],
-        "summary": "The primary concerns involve <cite id=\"1\">limited governance transparency</cite> and the lack of a formal impact evaluation framework."
+        "summary": "The primary concerns involve <cite id=\"1\">governance oversight</cite> and data transparency rather than financial mismanagement."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 7,
-          "rating": 5
+          "form990": 5,
+          "rating": 5,
+          "website": 2
         },
-        "high_confidence_count": 12,
+        "high_confidence_count": 10,
         "total_count": 12,
-        "unique_sources": 2
+        "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Financial data current through 2023 tax year",
+        "data_freshness": "Financial data is current to 2023 tax year",
         "data_gaps": [
-          "Missing beneficiary data",
-          "No external impact evaluation"
+          "Missing beneficiary counts",
+          "No board list"
         ],
         "level": "MEDIUM",
-        "notes": "Financial transparency is high, but impact and governance data are limited.",
+        "notes": "Financial data is robust, but organizational transparency is low.",
         "score": 55,
         "sources_used": [
           "Form 990",
-          "Charity Navigator"
+          "Charity Navigator",
+          "Feeling Blessed"
         ]
       },
       "data_confidence": {
@@ -560,61 +598,62 @@
         "form_990_tax_year": 2023,
         "known_gaps": [
           "Missing beneficiary counts",
-          "No documented theory of change",
-          "Limited board transparency"
+          "No board list",
+          "No theory of change"
         ],
         "ratings_last_updated": "2024-12",
         "total_citations": 12,
-        "unique_sources": 2,
+        "unique_sources": 3,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[1]"
+            "[2]"
           ],
-          "explanation": "",
-          "improvement": "Alignment could be improved by <cite id=\"1\">clearly stating the sadaqah-only status</cite> of donations to assist donor intent."
+          "explanation": "Strong alignment for donors seeking <cite id=\"2\">zakat-eligible Islamic education</cite> with a focus on the <cite id=\"2\">fisabilillah category</cite>.",
+          "improvement": "Clarify the specific <cite id=\"2\">zakat allocation policy</cite> to provide donors with more granular detail on how their funds are distributed."
         },
         "credibility": {
           "citation_ids": [
             "[1]",
-            "[2]"
+            "[3]"
           ],
-          "explanation": "Donors can verify the organization's scale through <cite id=\"2\">official 2023 tax filings</cite> showing nearly $3 million in revenue, though credibility is tempered by <cite id=\"1\">limited independent board oversight data</cite>.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"1\">publish a clear theory of change</cite> and provide more transparency regarding its board composition."
+          "explanation": "Credibility is supported by <cite id=\"3\">consistent IRS Form 990 filings</cite> and a 21-year track record, though it is hindered by <cite id=\"1\">low transparency scores</cite> and lack of independent board data.",
+          "improvement": "To strengthen credibility, the organization should publish an annual impact report and <cite id=\"1\">disclose its full board of directors</cite>."
         },
         "impact": {
           "citation_ids": [
-            "[1]",
-            "[2]"
+            "[1]"
           ],
-          "explanation": "Impact is driven by a <cite id=\"2\">95.4% program ratio</cite>, but overall effectiveness is hard to quantify without <cite id=\"1\">standardized beneficiary reporting</cite>.",
-          "improvement": "Impact measurement would benefit from <cite id=\"1\">consistently tracking and publishing student outcomes</cite> and cost-per-beneficiary data."
+          "explanation": "Impact is driven by a <cite id=\"1\">95.4% program ratio</cite>, but the lack of <cite id=\"1\">formal outcome tracking</cite> makes it difficult to verify the long-term efficacy of its learning model.",
+          "improvement": "Publish <cite id=\"1\">consistent beneficiary counts</cite> so that cost-effectiveness can be assessed relative to peer educational institutions."
         }
       },
       "donor_fit_matrix": {
-        "cause_area": "RELIGIOUS EDUCATION",
+        "cause_area": "EDUCATION",
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[2]",
+          "[3]"
         ],
-        "evidence_rigor": "Grade C - Verified outcomes but limited public metrics",
+        "evidence_rigor": "Grade C - Verified outcomes but no external evaluation",
         "geographic_focus": [
-          "North America",
+          "United States",
           "Global Online"
         ],
         "giving_style": "Capacity Building",
         "tax_deductible": true,
-        "zakat_asnaf_served": [],
-        "zakat_status": "SADAQAH-ELIGIBLE"
+        "zakat_asnaf_served": [
+          "fisabilillah"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
       },
       "financial_deep_dive": {
         "admin_ratio": 0.045,
         "annual_revenue": 2959388,
         "citation_ids": [
           "[1]",
-          "[2]"
+          "[3]"
         ],
         "cn_financial_score": null,
         "fundraising_ratio": 0.001,
@@ -622,7 +661,7 @@
         "peer_count": 0,
         "peer_program_ratio_median": null,
         "program_expense_ratio": 0.9555,
-        "reserves_months": 28.9,
+        "reserves_months": 24.2,
         "revenue_cagr_3yr": 7.2,
         "working_capital_months": 24.2,
         "yearly_financials": [
@@ -647,64 +686,65 @@
         ]
       },
       "grantmaking_profile": {
-        "citation_ids": [],
+        "citation_ids": [
+          "[3]"
+        ],
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Not a grantmaking organization",
+        "grant_strategy": "Direct service provider; not a grantmaking foundation.",
         "is_significant_grantmaker": false,
         "regions_served": [],
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "AlMaghrib Institute Inc is a religious educational organization dedicated to empowering individuals through comprehensive Islamic learning experiences.",
+      "headline": "AlMaghrib Institute Inc empowers the Muslim community through an immersive Islamic learning experience designed to foster fulfilling lives.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize long-term Islamic intellectual capital and value organizations with high financial efficiency and sustainable earned-income models.",
+        "best_for_summary": "Best for donors who prioritize high-efficiency Islamic educational infrastructure and want to fulfill zakat through the empowerment of students and scholars.",
         "citation_ids": [
           "[1]",
           "[2]"
         ],
         "donor_motivations": [
-          "Want to support high-quality Islamic educational infrastructure",
-          "Value lean operations with minimal fundraising overhead",
-          "Prefer supporting established institutions with a 20+ year history",
-          "Interested in capacity building within the Muslim community"
+          "Want to support the preservation and dissemination of Islamic knowledge",
+          "Value organizations with extremely low overhead and fundraising costs",
+          "Seek to fulfill zakat obligations via the fisabilillah category"
         ],
         "giving_considerations": [
-          "",
-          "Focus is on religious/cultural education rather than emergency relief",
-          "Limited public data on specific student impact numbers"
+          "Donations support a mix of tuition-based and philanthropic education",
+          "The organization has strong liquidity, meaning gifts contribute to long-term stability",
+          "Limited public data is available regarding specific student graduation rates or career outcomes"
         ],
-        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those looking for immediate humanitarian relief in crisis zones."
+        "not_ideal_for": "Donors seeking high-transparency humanitarian aid with rigorous third-party impact evaluations or those focused on immediate poverty relief."
       },
       "impact_evidence": {
         "citation_ids": [
           "[1]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects verified educational delivery but a <cite id=\"1\">lack of published beneficiary counts</cite> and cost-effectiveness data.",
+        "evidence_grade_explanation": "Grade C reflects verified program delivery and high financial efficiency, but a lack of external evaluations or published beneficiary metrics.",
         "external_evaluations": [
           "None documented"
         ],
         "outcome_tracking_years": 0,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The organization creates impact by providing structured Islamic knowledge to empower individuals, though the <cite id=\"1\">causal pathway is not formally documented</cite>.",
-        "why_evidence_matters": "Evidence ensures that educational programs are effectively translating into student knowledge and community benefit."
+        "theory_of_change_summary": "The organization operates on the premise that immersive Islamic education leads to more fulfilling lives and a stronger community, though this pathway is not formally documented.",
+        "why_evidence_matters": "Evidence ensures that educational programs are effectively translating into community leadership and religious literacy."
       },
       "long_term_outlook": {
         "citation_ids": [
           "[1]",
-          "[2]"
+          "[3]"
         ],
         "founded_year": 2005,
         "maturity_stage": "Established",
         "revenue_growth_3yr": 7.2,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"2\">7.2% revenue CAGR</cite> and high program demand, the institute has capacity to expand its digital and physical educational offerings.",
+        "room_for_funding_explanation": "Despite high reserves, the niche nature of Islamic higher education and the 7.2% growth rate suggest capacity for expanded digital and physical offerings.",
         "strategic_priorities": [
-          "Educational capacity building",
-          "Digital learning expansion"
+          "Expanding immersive learning experiences",
+          "Community empowerment"
         ],
         "years_operating": 21
       },
@@ -712,12 +752,13 @@
         "board_size": null,
         "ceo_compensation": 216728,
         "ceo_compensation_pct_revenue": 7.32,
-        "ceo_name": "Not Listed",
+        "ceo_name": "Not Disclosed",
         "citation_ids": [
-          "[2]"
+          "[1]",
+          "[3]"
         ],
         "employees_count": null,
-        "geographic_reach": "Global",
+        "geographic_reach": "Global/Online",
         "has_conflict_policy": true,
         "has_financial_audit": false,
         "independent_board_pct": null,
@@ -728,9 +769,9 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[2]"
+          "[1]"
         ],
-        "differentiator": "Distinguished by an <cite id=\"2\">exceptionally high 95.5% program expense ratio</cite> and high earned income from services.",
+        "differentiator": "Distinguished by an <cite id=\"1\">exceptionally high program expense ratio of 95.5%</cite> compared to smaller religious nonprofits.",
         "peer_group": "Islamic Educational Institutions",
         "similar_orgs": [
           "Zaytuna College",
@@ -739,7 +780,7 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Accredited academic degree focus",
+          "differentiator": "Accredited liberal arts college focus",
           "name": "Zaytuna College"
         },
         {
@@ -747,40 +788,41 @@
           "name": "Bayyinah Institute"
         },
         {
-          "differentiator": "Higher focus on Islamic degrees",
-          "name": "Guidance College"
+          "differentiator": "Focus on traditional seminary training",
+          "name": "Qalam Institute"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[2]"
+            "[1]",
+            "[3]"
           ],
-          "detail": "The organization directs <cite id=\"2\">95.4% of its total expenses toward program services</cite>, significantly exceeding industry benchmarks for educational nonprofits.",
+          "detail": "The organization directs <cite id=\"1\">95.4% of its total expenses</cite> toward its educational programs, significantly exceeding industry benchmarks for direct service delivery.",
           "point": "Exceptional Program Efficiency"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "AlMaghrib demonstrates elite fiscal discipline, <cite id=\"1\">spending just $0.01 per $1 raised of revenue</cite>.",
-          "point": "Highly Efficient Fundraising"
+          "detail": "AlMaghrib demonstrates elite fiscal management by spending only <cite id=\"1\">$0.01 to raise every $1</cite> in contributions.",
+          "point": "Superior Fundraising Performance"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "The institute maintains <cite id=\"1\">24.2 months of working capital</cite>, ensuring operational continuity during economic fluctuations.",
-          "point": "Robust Financial Reserves"
+          "detail": "The institute maintains <cite id=\"1\">24.2 months of working capital</cite>, providing a massive buffer against economic volatility.",
+          "point": "Robust Financial Liquidity"
         }
       ],
       "strengths_deep_dive": [
-        "AlMaghrib Institute's financial model is characterized by high directness and sustainability. With <cite id=\"2\">total assets of $5,604,790</cite> and minimal <cite id=\"2\">liabilities of $175,285</cite>, the organization operates from a position of significant net strength. Its ability to generate <cite id=\"2\">over $2.1 million in program service revenue</cite> suggests a high degree of value-alignment with its students, reducing over-reliance on traditional donor cycles. This financial health is coupled with a <cite id=\"2\">3-year revenue CAGR of 7.2%</cite>, indicating steady, managed growth in its educational reach."
+        "AlMaghrib's financial health is anchored by its ability to generate diverse revenue streams, including <cite id=\"3\">$2,104,898 in program service revenue</cite> alongside <cite id=\"3\">$786,472 in contributions</cite>. This hybrid model of earned income and philanthropy has led to a <cite id=\"3\">3-year revenue CAGR of 7.2%</cite>, indicating steady growth. Furthermore, the organization maintains a strong balance sheet with <cite id=\"3\">$5,604,790 in total assets</cite> against minimal <cite id=\"3\">liabilities of $175,285</cite>."
       ],
-      "summary": "AlMaghrib Institute Inc is a religious educational organization dedicated to <cite id=\"1\">empowering individuals through comprehensive Islamic learning experiences</cite>. Operating as a capacity-building entity, the institute focuses on high-quality educational delivery, reporting <cite id=\"2\">total revenue of $2,959,388</cite> in the 2023 fiscal year. The organization maintains an exceptionally lean financial profile, with a <cite id=\"2\">program expense ratio of 95.5%</cite>, ensuring that nearly all contributions directly support its educational mission. This efficiency is further highlighted by its fundraising operations, which <cite id=\"1\">spend only $0.01 to raise every $1 in donations</cite>. While the organization is not fully rated by Charity Navigator, its financial filings demonstrate a <cite id=\"1\">strong liquidity position with 24.2 months of working capital</cite>, providing significant stability for its long-term educational initiatives. The institute's revenue is diversified, with <cite id=\"2\">$2,104,898 generated from program service revenue</cite>, reflecting a sustainable model that balances charitable contributions with earned income from its student base.",
+      "summary": "AlMaghrib Institute Inc is a prominent educational organization dedicated to providing <cite id=\"1\">immersive Islamic learning experiences</cite> aimed at community empowerment. Operating as a 501(c)(3) tax-exempt entity, the institute reported <cite id=\"3\">total revenue of $2,959,388</cite> in the 2023 tax year. The organization distinguishes itself through a highly efficient financial model, dedicating a <cite id=\"1\">program expense ratio of 95.5%</cite> to its core educational services. This lean operational structure is further evidenced by its <cite id=\"1\">fundraising efficiency of $0.01 per $1 raised</cite>, ensuring that nearly all donor contributions directly support its mission. Beyond its financial efficiency, AlMaghrib serves as a critical platform for <cite id=\"2\">zakat-eligible educational giving</cite>, specifically categorizing its work under the <cite id=\"2\">fisabilillah (in the way of Allah) asnaf category</cite>. By bridging the gap between academic Islamic studies and practical community application, the institute maintains a <cite id=\"3\">net asset position of $5,429,505</cite>, reflecting long-term organizational stability and a significant <cite id=\"1\">working capital reserve of 24.2 months</cite>.",
       "zakat_guidance": {
         "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
+        "eligibility": "ZAKAT-ELIGIBLE"
       }
     }
   }

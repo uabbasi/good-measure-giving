@@ -116,6 +116,12 @@ class ZakatJudge(BaseJudge):
                     metadata["confidence"] = "llm_verified"
             except Exception as e:
                 logger.warning(f"LLM zakat verification failed for {evaluation.get('charity_ein', 'unknown')}: {e}")
+                self.add_issue(
+                    issues,
+                    Severity.ERROR,
+                    "llm_verification",
+                    f"Could not complete LLM zakat verification: {str(e)[:100]}",
+                )
                 metadata["llm_failed"] = True
                 metadata["llm_error"] = str(e)[:200]
 

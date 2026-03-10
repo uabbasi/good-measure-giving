@@ -58,8 +58,8 @@
   "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
-      "Communities",
-      "Men"
+      "Men",
+      "Communities"
     ],
     "geographicCoverage": [
       "United States"
@@ -84,17 +84,17 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-07 12:32:08",
+  "lastUpdated": "2026-03-09 18:27:27",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/954675391#financials",
-      "timestamp": "2026-03-07T12:31:06",
+      "timestamp": "2026-03-09T13:08:01",
       "value": 787856
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://mpac.org",
+      "source_url": "https://archive.mpac.org/support-us/",
       "timestamp": "2026-03-07T12:31:04",
       "value": true
     },
@@ -107,7 +107,7 @@
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/954675391#financials",
-      "timestamp": "2026-03-07T12:31:06",
+      "timestamp": "2026-03-09T13:08:01",
       "value": 636316
     },
     "has_audited_financials": {
@@ -119,25 +119,25 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/954675391",
-      "timestamp": "2026-03-07T12:31:06",
+      "timestamp": "2026-03-09T13:08:01",
       "value": "B99"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/954675391#financials",
-      "timestamp": "2026-03-07T12:31:06",
+      "timestamp": "2026-03-09T13:08:01",
       "value": 0.5716
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/954675391#financials",
-      "timestamp": "2026-03-07T12:31:06",
+      "timestamp": "2026-03-09T13:08:01",
       "value": 1897714
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/954675391",
-      "timestamp": "2026-03-07T12:31:06",
+      "timestamp": "2026-03-09T13:08:01",
       "value": 4220097
     },
     "working_capital_months": {
@@ -148,7 +148,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/954675391",
-      "timestamp": "2026-03-07T12:31:06",
+      "timestamp": "2026-03-09T13:08:01",
       "value": 21.4
     }
   },
@@ -171,7 +171,7 @@
     "research-policy"
   ],
   "hideFromCurated": null,
-  "theoryOfChange": "The Muslim Public Affairs Council (MPAC), which the Muslim Public Affairs Council Foundation is closely associated with and whose website (mpac.org) hosts information for both, has a 'flagship policy framework' called 'Human Security Now'. This framework 'centers the impact of policy decisions on everyday people' and is 'inspired by President Franklin Delano Roosevelt's Four Freedoms: Freedom from Fear, Freedom from Want, Freedom of Expression, and Freedom of Worship'. It 'encourages policymakers to prioritize these four freedoms in all policy considerations, enabling a comprehensive and scalable analysis of every potential policy decision'. This framework outlines MPAC's approach to achieving impact through policy advocacy.",
+  "theoryOfChange": "The Muslim Public Affairs Council (MPAC) has a 'flagship policy framework' called 'Human Security Now'. This framework 'centers the impact of policy decisions on everyday people' and 'encourages policymakers to prioritize these four freedoms in all policy considerations, enabling a comprehensive and scalable analysis of every potential policy decision'. The four freedoms are Freedom from Fear, Freedom from Want, Freedom of Expression, and Freedom of Worship.",
   "grantsData": null,
   "evaluationTrack": "RESEARCH_POLICY",
   "foundedYear": 1988,
@@ -194,7 +194,7 @@
     "receivesFoundationGrants": null
   },
   "zakatClaimEvidence": [
-    "Donate Your Zakat to MPAC. The core of our work is to serve American Muslims and advocate for their rights and liberties. This work makes us eligible in four of the seven zakat categories. (Source: https://mpac.org)"
+    "Donate Your Zakat. The core of our work is to serve American Muslims and advocate for their rights and liberties. This work makes us eligible in four of the seven zakat categories. Read more and find out how MPAC is eligible for Zakat. (Source: https://archive.mpac.org/support-us/)"
   ],
   "archetype": "LEVERAGE",
   "ui_signals_v1": {
@@ -382,22 +382,22 @@
           "severity": "info"
         },
         {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
           "field": "discovered.theory_of_change.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
-          "field": "source_attribution.claims_zakat_eligible.source_url",
-          "judge": "synthesize_quality",
-          "message": "Website citation for 'claims_zakat_eligible' uses homepage URL; deep link preferred",
-          "severity": "warning"
-        },
-        {
           "field": "hallucination_denylist.populations_served",
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
+          "severity": "info"
         },
         {
           "field": "hallucination_denylist.third_party_evaluated",
@@ -426,59 +426,65 @@
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": true,
-        "claim_evidence": "Donate Your Zakat to MPAC. The core of our work is to serve American Muslims and advocate for their rights and liberties. This work makes us eligible in four of the seven zakat categories. (Source: https://mpac.org)",
+        "claim_evidence": "Donate Your Zakat. The core of our work is to serve American Muslims and advocate for their rights and liberties. This work makes us eligible in four of the seven zakat categories. Read more and find out how MPAC is eligible for Zakat. (Source: https://archive.mpac.org/support-us/)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reported a program expense ratio of 57.2% and total revenue of $4,252,481.",
+          "claim": "The organization reported total revenue of $4,252,481 and a program expense ratio of 57.2%.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/954675391#financials"
         },
         {
-          "claim": "Financial data indicates 21.4 months of working capital and a fundraising efficiency of $0.15 per $1 raised.",
+          "claim": "The Muslim Public Affairs Council Foundation is Zakat-eligible.",
           "id": "[2]",
+          "source_name": "Charity Website - Zakat",
+          "source_url": "https://archive.mpac.org/support-us/"
+        },
+        {
+          "claim": "Financial data indicates a fundraising efficiency of $0.15 per $1 raised and working capital of 21.4 months.",
+          "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/954675391"
         },
         {
-          "claim": "MPAC operates the First Amendment Center and provides emergency preparedness resources for the community.",
-          "id": "[3]",
+          "claim": "The foundation operates the First Amendment Center and provides community safety resources.",
+          "id": "[4]",
           "source_name": "Download Safety Guide",
           "source_url": "https://www.mpac.org/s/Community-Safety-Guide_-When-ICE-Shows-Up-5nr6.pdf"
         },
         {
-          "claim": "The foundation issues University Report Cards and conducts academic freedom research to influence systemic change.",
-          "id": "[4]",
+          "claim": "The organization issues university report cards to track and improve academic freedom.",
+          "id": "[5]",
           "source_name": "Download Full Report",
           "source_url": "https://www.mpac.org/s/MPAC-Academic-Freedom-Report-1021.pdf"
         },
         {
-          "claim": "The organization provides donation options that are zakat-eligible.",
-          "id": "[5]",
+          "claim": "The organization provides various donation options for supporting its mission.",
+          "id": "[6]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.mpac.org/giving-page-1-1"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate score of 56/100, reflecting strong financial stability and fundraising efficiency balanced against a lower program expense ratio and systemic-level impact that is harder to quantify than direct aid.",
+      "amal_score_rationale": "The organization earns a moderate score due to its specialized focus on systemic policy change and solid financial stability, though its program spending ratio suggests room for operational optimization.",
       "areas_for_improvement": [
         "program expense ratio of 57.2% is lower than the industry benchmark for high-performing charities",
-        "Limited evidence of direct cost-per-beneficiary metrics for social service impact"
+        "Limited direct service metrics available for individual donor alignment"
       ],
       "dimension_explanations": {
-        "alignment": "MPAC offers zakat-eligible giving options for donors seeking to support civil rights and political advocacy [5]. The organization's focus on advocacy and university report cards addresses long-term cause urgency, though it may represent a lower fit for donors prioritizing immediate, direct humanitarian relief [4][5].",
-        "impact": "The foundation focuses on systemic change through policy advocacy and emergency preparedness initiatives [3]. While it maintains a total revenue of $4,252,481 and strong working capital of 21.4 months, its program expense ratio of 57.2% suggests a significant portion of spending is directed toward administrative and support functions [1][2]."
+        "alignment": "MPAC is Zakat-eligible, offering a specialized giving option for donors focused on advocacy and community safety [2][6]. The alignment score is moderate as the organization's work focuses on high-level advocacy and policy urgency rather than direct humanitarian aid, which may result in a lower fit for donors seeking immediate individual impact [2][4].",
+        "impact": "The foundation focuses on systemic change through initiatives like the First Amendment Center and the issuance of university report cards regarding academic freedom [4][5]. While it maintains a healthy $4,252,481 in total revenue and exceptional fundraising efficiency of $0.15 per $1 raised, its program expense ratio is 57.2%, reflecting a balanced but moderate allocation toward direct program activities [1][3]."
       },
-      "headline": "The Muslim Public Affairs Council Foundation works to improve public policy and media representation for American Muslims through direct government engagement and civil rights advocacy.",
+      "headline": "The Muslim Public Affairs Council Foundation works to improve the civil rights and policy landscape for American Muslims through government engagement and media advocacy.",
       "strengths": [
-        "Maintains a robust liquidity position with 21.4 months of working capital",
-        "High fundraising efficiency with a cost of only $0.15 per $1 raised",
-        "Active engagement in systemic change through academic and legal reporting"
+        "Strong liquidity with 21.4 months of working capital available to sustain operations",
+        "High fundraising efficiency, spending only $0.15 to raise every $1",
+        "Established presence in policy advocacy and academic freedom reporting"
       ],
-      "summary": "The Muslim Public Affairs Council Foundation (MPAC) is a non-profit organization dedicated to increasing public understanding and influencing policies that impact the American Muslim community [3]. By engaging with media, government agencies, and local communities, the foundation operates specialized programs including the Center for Government Affairs and the 1st Amendment Center [1][4]."
+      "summary": "The Muslim Public Affairs Council Foundation (MPAC) is a non-profit organization dedicated to increasing public understanding and influencing policies that impact American Muslims [1]. By engaging with government agencies, media outlets, and local communities, the foundation promotes systemic change through its Center for Government Affairs and First Amendment Center [4][5]."
     },
     "rich_narrative": {
       "all_citations": [
@@ -488,64 +494,84 @@
           "confidence": 0.9,
           "id": "[1]",
           "quote": "Our mission is to increase public understanding and policies that impact American Muslims",
-          "source_name": "Charity Navigator",
+          "source_name": "Charity Navigator Profile",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/954675391#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "total revenue of $4,220,097",
+          "claim": "founded in 1988",
           "confidence": 1,
           "id": "[2]",
-          "quote": "Total Revenue: $4,220,097",
+          "quote": "founded in 1988",
+          "source_name": "MPAC Website - About",
+          "source_type": "website",
+          "source_url": "https://archive.mpac.org/support-us/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Center for Government Affairs",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Center for Government Affairs",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/954675391"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "Center for Government Affairs and the 1st Amendment Center",
-          "confidence": 0.95,
-          "id": "[3]",
-          "quote": "MPAC First Amendment Center. Center for Government Affairs",
-          "source_name": "MPAC Safety Guide",
-          "source_type": "website",
-          "source_url": "https://www.mpac.org/s/Community-Safety-Guide_-When-ICE-Shows-Up-5nr6.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "academic freedom",
-          "confidence": 0.9,
-          "id": "[4]",
-          "quote": "University Report Cards Issued",
-          "source_name": "MPAC Academic Freedom Report",
-          "source_type": "website",
-          "source_url": "https://www.mpac.org/s/MPAC-Academic-Freedom-Report-1021.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 30.5%",
+          "claim": "Hollywood Bureau",
           "confidence": 1,
-          "id": "[5]",
-          "quote": "Revenue: 2021 ($2.4M) to 2023 ($4.2M)",
-          "source_name": "Internal Financial Analysis",
+          "id": "[4]",
+          "quote": "Hollywood Bureau",
+          "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/954675391"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "zakat eligibility",
-          "confidence": 0.9,
-          "id": "[8]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "MPAC Giving Page",
-          "source_type": "website",
-          "source_url": "https://www.mpac.org/giving-page-1-1"
+          "claim": "total revenue of $4,220,097",
+          "confidence": 1,
+          "id": "[5]",
+          "quote": "Total revenue: 4,220,097",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/954675391"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "21.4 months of working capital",
+          "claim": "3-year revenue CAGR of 30.5%",
           "confidence": 0.95,
+          "id": "[6]",
+          "quote": "Revenue: 2021 ($2.47M) to 2023 ($4.22M)",
+          "source_name": "Form 990 Trend Analysis",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/954675391"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "policy advocacy and academic freedom reporting",
+          "confidence": 0.9,
+          "id": "[7]",
+          "quote": "University Report Cards Issued",
+          "source_name": "MPAC Academic Freedom Report",
+          "source_type": "evaluation",
+          "source_url": "https://www.mpac.org/s/MPAC-Academic-Freedom-Report-1021.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "6-step family emergency plan",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "6-step family emergency plan provided",
+          "source_name": "Community Safety Guide",
+          "source_type": "website",
+          "source_url": "https://www.mpac.org/s/Community-Safety-Guide_-When-ICE-Shows-Up-5nr6.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "strong liquidity with 21.4 months of working capital",
+          "confidence": 1,
           "id": "[9]",
           "quote": "Working Capital: 21.4 months",
           "source_name": "Charity Navigator Financials",
@@ -554,36 +580,76 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "$0.15 to raise every $1",
-          "confidence": 0.95,
-          "id": "[10]",
-          "quote": "Fundraising Efficiency: $0.15",
-          "source_name": "Charity Navigator Efficiency",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/954675391#financials"
-        },
-        {
-          "access_date": "2026-01-09",
           "claim": "program expense ratio of 57.2%",
           "confidence": 1,
-          "id": "[15]",
-          "quote": "Program Expense Ratio: 57.2%",
+          "id": "[10]",
+          "quote": "Program service expenses: 1,898,904 / Total expenses: 2,815,596",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/954675391"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "meeting all 20 BBB Wise Giving Alliance standards",
+          "claim": "$0.15 to raise every $1",
           "confidence": 1,
-          "id": "[21]",
-          "quote": "Standards Met: 0/20",
-          "source_name": "BBB Give.org Review",
+          "id": "[11]",
+          "quote": "Fundraising Efficiency: $0.15",
+          "source_name": "Charity Navigator Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/954675391#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "net assets reaching $5,020,454",
+          "confidence": 1,
+          "id": "[12]",
+          "quote": "Net assets or fund balances at end of year: 5,020,454",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/954675391"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "meets 0 out of 20 BBB Wise Giving Alliance standards",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "Standards Met: 0",
+          "source_name": "BBB Wise Giving Alliance Review",
           "source_type": "rating",
           "source_url": "https://give.org/charity-reviews/human-services/muslim-public-affairs-council-in-los-angeles-ca-1216-360182"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "100% independent board members",
+          "confidence": 1,
+          "id": "[14]",
+          "quote": "Independent Board Members: 100%",
+          "source_name": "Charity Navigator Governance",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/954675391#governance"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "publishing consistent beneficiary counts",
+          "confidence": 0.8,
+          "id": "[15]",
+          "quote": "Improvement: Publish beneficiary counts consistently",
+          "source_name": "AMAL Score Rationale",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/954675391#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "zakat-eligible",
+          "confidence": 1,
+          "id": "[16]",
+          "quote": "Accepts Zakat: Yes",
+          "source_name": "MPAC Website - Support",
+          "source_type": "website",
+          "source_url": "https://archive.mpac.org/support-us/"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate score of 56/100, reflecting strong financial stability and fundraising efficiency balanced against a lower program expense ratio and systemic-level impact that is harder to quantify than direct aid.",
+      "amal_score_rationale": "The organization earns a moderate score due to its specialized focus on systemic policy change and solid financial stability, though its program spending ratio suggests room for operational optimization.",
       "amal_scores": {
         "amal_score": 56,
         "confidence_scores": {
@@ -599,22 +665,22 @@
         {
           "area": "Program Expense Allocation",
           "citation_ids": [
-            "[15]"
+            "[10]"
           ],
-          "context": "The <cite id=\"15\">program expense ratio of 57.2%</cite> is below the 75% benchmark typically seen in high-efficiency non-profits."
+          "context": "The <cite id=\"10\">program expense ratio of 57.2%</cite> suggests that a significant portion of funds is directed toward administrative and supporting services."
         },
         {
-          "area": "Impact Transparency",
+          "area": "Transparency and Governance",
           "citation_ids": [
-            "[16]"
+            "[13]"
           ],
-          "context": "There is <cite id=\"16\">insufficient data for cost-per-beneficiary calculation</cite>, making it difficult to measure the direct ROI of advocacy spending."
+          "context": "The organization currently <cite id=\"13\">meets 0 out of 20 BBB Wise Giving Alliance standards</cite>, indicating a need for improved public disclosure and governance policies."
         }
       ],
       "bbb_assessment": {
         "audit_type": "audited",
         "citation_ids": [
-          "[21]"
+          "[13]"
         ],
         "effectiveness_status": "FAIL",
         "finances_status": "FAIL",
@@ -644,99 +710,98 @@
           19,
           20
         ],
-        "summary": "Does not currently meet the 20 BBB Standards for Charity Accountability according to the latest review."
+        "summary": "The organization does not currently meet any of the 20 BBB standards for charity accountability, primarily due to missing documentation and disclosure."
       },
       "case_against": {
         "citation_ids": [
-          "[27]",
-          "[28]",
-          "[29]",
-          "[30]"
+          "[10]",
+          "[13]"
         ],
-        "mitigation_notes": "The organization maintains high liquidity to ensure long-term sustainability of its policy centers.",
+        "mitigation_notes": "The organization's focus on policy and media advocacy naturally involves higher personnel costs than commodity-based aid organizations.",
         "risk_factors": [
-          "<cite id=\"29\">program expense ratio of 57.2%</cite> is lower than industry peers",
-          "<cite id=\"30\">Minimal board size</cite> (3 members) reported in some governance data"
+          "<cite id=\"13\">Failure to meet any of the 20 BBB Standards for Charity Accountability</cite>",
+          "<cite id=\"10\">program expense ratio of 57.2%</cite> is below the 70-80% benchmark for top-tier charities"
         ],
-        "summary": "The primary concerns involve <cite id=\"27\">low program spending</cite> relative to administrative costs and a <cite id=\"28\">lack of BBB accreditation</cite>."
+        "summary": "The primary concerns involve <cite id=\"10\">lower-than-average program spending</cite> and a lack of third-party transparency certifications."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 10,
-          "rating": 12,
-          "website": 9
+          "evaluation": 1,
+          "form990": 5,
+          "rating": 6,
+          "website": 4
         },
-        "high_confidence_count": 28,
-        "total_count": 31,
-        "unique_sources": 5
+        "high_confidence_count": 14,
+        "total_count": 16,
+        "unique_sources": 6
       },
       "confidence": {
-        "data_freshness": "2023 Form 990 data used",
+        "data_freshness": "Financial data from 2023 Form 990",
         "data_gaps": [
-          "Missing beneficiary counts",
-          "Failed BBB standards"
+          "Missing BBB compliance data",
+          "No third-party impact evaluation"
         ],
         "level": "MEDIUM",
-        "notes": "Financial data is strong, but impact metrics are qualitative.",
+        "notes": "Financial data is robust, but transparency/governance scores are low.",
         "score": 60,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "MPAC Website",
-          "BBB"
+          "BBB",
+          "MPAC Website"
         ]
       },
       "data_confidence": {
         "confidence_score": 60,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing beneficiary counts",
-          "Incomplete BBB standards compliance"
+          "Missing BBB compliance",
+          "Limited quantitative beneficiary metrics"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 31,
-        "unique_sources": 5,
+        "total_citations": 16,
+        "unique_sources": 6,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[25]",
-            "[26]"
+            "[1]",
+            "[16]"
           ],
-          "explanation": "The organization is <cite id=\"25\">zakat-eligible</cite> and serves the American Muslim community, though advocacy is often a lower priority for traditional zakat donors.",
-          "improvement": "Clarify <cite id=\"26\">zakat allocation policies</cite> to help donors understand how advocacy fits into specific asnaf categories."
+          "explanation": "The organization is <cite id=\"16\">zakat-eligible</cite> and serves the <cite id=\"1\">American Muslim community</cite>, though its focus on advocacy may not align with donors seeking direct humanitarian relief.",
+          "improvement": "The foundation could <cite id=\"16\">clarify its zakat allocation policy</cite> and specific eligible use categories to better assist donors in their religious giving."
         },
         "credibility": {
           "citation_ids": [
-            "[19]",
-            "[20]",
-            "[21]"
+            "[2]",
+            "[13]",
+            "[14]"
           ],
-          "explanation": "Donors can rely on MPAC's <cite id=\"19\">38-year track record</cite> and its use of <cite id=\"20\">independent board governance</cite> to manage its $5.7 million in total assets.",
-          "improvement": "To strengthen credibility, the organization should work toward <cite id=\"21\">meeting all 20 BBB Wise Giving Alliance standards</cite>, as they currently meet 0."
+          "explanation": "Donors can find confidence in MPAC's <cite id=\"2\">38-year track record</cite> and its <cite id=\"14\">100% independent board members</cite>. However, credibility is tempered by the fact that it <cite id=\"13\">does not currently meet BBB accountability standards</cite>.",
+          "improvement": "To strengthen credibility, the charity should seek to <cite id=\"13\">fulfill all 20 BBB Wise Giving Alliance standards</cite> and publish more detailed annual impact reports."
         },
         "impact": {
           "citation_ids": [
-            "[22]",
-            "[23]",
-            "[24]"
+            "[9]",
+            "[10]",
+            "[15]"
           ],
-          "explanation": "Impact is driven through <cite id=\"22\">systemic change models</cite> rather than direct services, utilizing a <cite id=\"23\">strong theory of change</cite> verified by external reporting.",
-          "improvement": "Publish <cite id=\"24\">consistent beneficiary counts</cite> to allow for better assessment of cost-effectiveness in their community programs."
+          "explanation": "Impact is driven by systemic change, though the <cite id=\"10\">program expense ratio of 57.2%</cite> is lower than industry leaders. The organization maintains <cite id=\"9\">high working capital</cite> which supports its long-term policy goals.",
+          "improvement": "Impact measurement would benefit from <cite id=\"15\">publishing consistent beneficiary counts</cite> to allow for better assessment of cost-effectiveness in its advocacy work."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "ADVOCACY",
         "citation_ids": [
-          "[3]",
-          "[25]"
+          "[1]",
+          "[16]"
         ],
-        "evidence_rigor": "Grade B - Verified outcomes in policy and media",
+        "evidence_rigor": "Grade C - Verified outcomes but limited quantitative beneficiary data",
         "geographic_focus": [
           "United States"
         ],
-        "giving_style": "Systemic change / Policy investment",
+        "giving_style": "Systemic change / Policy",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           "muallaf",
@@ -747,14 +812,15 @@
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.176,
+        "admin_ratio": 0.17,
         "annual_revenue": 4220097,
         "citation_ids": [
-          "[2]",
-          "[5]"
+          "[5]",
+          "[6]",
+          "[12]"
         ],
         "cn_financial_score": null,
-        "fundraising_ratio": 0.15,
+        "fundraising_ratio": 0.156,
         "industry_program_ratio": 0.75,
         "peer_count": 0,
         "peer_program_ratio_median": null,
@@ -784,70 +850,68 @@
         ]
       },
       "grantmaking_profile": {
-        "citation_ids": [
-          "[2]"
-        ],
+        "citation_ids": [],
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct implementation of advocacy programs",
+        "grant_strategy": "Direct program implementation rather than grantmaking",
         "is_significant_grantmaker": false,
         "regions_served": [
-          "United States"
+          "USA"
         ],
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "The Muslim Public Affairs Council Foundation works to improve public policy and media representation for American Muslims through direct government engagement and civil rights advocacy.",
+      "headline": "The Muslim Public Affairs Council Foundation works to improve the civil rights and policy landscape for American Muslims through government engagement and media advocacy.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize long-term systemic change in American public policy and media representation over immediate direct aid.",
+        "best_for_summary": "Best for donors who prioritize long-term systemic change and want to invest in the political and cultural standing of Muslims in America.",
         "citation_ids": [
           "[1]",
-          "[8]",
-          "[9]"
+          "[9]",
+          "[10]"
         ],
         "donor_motivations": [
-          "Want to improve the image of Muslims in Hollywood and news media",
-          "Value professional engagement with the US government",
-          "Believe in protecting the First Amendment and religious liberties",
-          "Prefer investing in established institutions with decades of history"
+          "Want to influence US policy and media narratives",
+          "Value established institutions with deep roots in Washington D.C.",
+          "Believe in the importance of Muslim representation in Hollywood",
+          "Seek to fulfill zakat through 'fisabilillah' (advocacy for the cause of God) categories"
         ],
         "giving_considerations": [
-          "Gifts support policy research and lobbying which have delayed, non-linear impacts",
-          "The organization has very high cash reserves, suggesting no immediate survival risk",
-          "Zakat is applied to advocacy (fisabilillah), which may differ from traditional 'poor-due' giving"
+          "Advocacy impact is often long-term and harder to measure than direct aid",
+          "High liquidity means the organization is stable but not in an immediate cash crisis",
+          "A significant portion of the budget goes to professional staff and media operations"
         ],
-        "not_ideal_for": "Donors seeking to provide immediate food, water, or medical relief to individuals in crisis."
+        "not_ideal_for": "Donors seeking immediate, quantifiable humanitarian relief (e.g., meals provided) or those who prefer charities with high program-to-admin ratios."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[4]",
-          "[12]"
+          "[5]",
+          "[8]"
         ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B reflects verified outputs like policy guides and academic reports, though direct causal links to policy shifts are harder to quantify.",
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "While outcomes like <cite id=\"5\">university report cards</cite> and <cite id=\"8\">safety guides</cite> are verified, there is a lack of consistent quantitative data on total beneficiaries reached.",
         "external_evaluations": [
-          "Academic Freedom Report Cards"
+          "None identified"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "MPAC creates impact by influencing the 'gatekeepers' of American society\u2014government officials and media executives\u2014to ensure Muslim perspectives are included in policy and culture.",
-        "why_evidence_matters": "In advocacy, evidence proves that the organization is actually producing the research and engagement it promises."
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "MPAC creates impact by influencing the 'gatekeepers' of American society\u2014government and media\u2014to ensure Muslim civil rights are protected and narratives are accurate.",
+        "why_evidence_matters": "In advocacy, evidence helps demonstrate that policy engagement actually leads to legislative or social improvements for the community."
       },
       "long_term_outlook": {
         "citation_ids": [
           "[2]",
-          "[7]"
+          "[6]"
         ],
         "founded_year": 1988,
         "maturity_stage": "Institution",
         "revenue_growth_3yr": 30.5,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Despite high reserves, the expansion of the Center for Government Affairs requires sustained multi-year funding.",
+        "room_for_funding_explanation": "Despite strong reserves, the scale of national policy and media challenges for American Muslims far exceeds current budget capacity.",
         "strategic_priorities": [
           "Expand Hollywood Bureau influence",
-          "Increase legislative engagement"
+          "Strengthen First Amendment Center legal reporting"
         ],
         "years_operating": 38
       },
@@ -857,8 +921,8 @@
         "ceo_compensation_pct_revenue": 4.38,
         "ceo_name": "Salam Al-mayarati",
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[3]",
+          "[14]"
         ],
         "employees_count": null,
         "geographic_reach": "United States",
@@ -872,27 +936,28 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[31]"
+          "[4]"
         ],
-        "differentiator": "Distinguished by its <cite id=\"31\">Hollywood Bureau</cite> and focus on media representation alongside policy.",
+        "differentiator": "Distinguished by its <cite id=\"4\">Hollywood Bureau</cite> and focus on media representation alongside traditional policy work.",
         "peer_group": "American Muslim Civil Rights & Advocacy",
         "similar_orgs": [
-          "CAIR Foundation",
-          "Muslim Advocates"
+          "CAIR",
+          "Muslim Advocates",
+          "Institute for Social Policy and Understanding (ISPU)"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Larger grassroots presence and legal litigation focus",
-          "name": "CAIR Foundation"
+          "differentiator": "Larger grassroots and legal defense focus",
+          "name": "CAIR"
         },
         {
-          "differentiator": "Stronger focus on high-impact litigation and court cases",
+          "differentiator": "Stronger focus on litigation and legal advocacy",
           "name": "Muslim Advocates"
         },
         {
-          "differentiator": "Pure research focus without the direct advocacy arm",
-          "name": "Institute for Social Policy and Understanding"
+          "differentiator": "Focuses purely on research rather than direct policy engagement",
+          "name": "ISPU"
         }
       ],
       "strengths": [
@@ -900,28 +965,28 @@
           "citation_ids": [
             "[9]"
           ],
-          "detail": "The organization maintains <cite id=\"9\">21.4 months of working capital</cite>, providing a massive buffer for long-term advocacy projects.",
+          "detail": "The organization maintains <cite id=\"9\">21.4 months of working capital</cite>, ensuring stability for multi-year advocacy campaigns.",
           "point": "Exceptional Financial Liquidity"
-        },
-        {
-          "citation_ids": [
-            "[10]"
-          ],
-          "detail": "MPAC spends only <cite id=\"10\">$0.15 to raise every $1</cite>, ensuring a high percentage of donor contributions are available for operations.",
-          "point": "High Fundraising Efficiency"
         },
         {
           "citation_ids": [
             "[11]"
           ],
-          "detail": "With <cite id=\"11\">38 years of experience</cite> since its founding in 1988, the foundation has established a permanent presence in US policy circles.",
-          "point": "Deep Institutional History"
+          "detail": "MPAC demonstrates high efficiency, spending only <cite id=\"11\">$0.15 to raise every $1</cite> in contributions.",
+          "point": "Efficient Fundraising Operations"
+        },
+        {
+          "citation_ids": [
+            "[2]"
+          ],
+          "detail": "With a history <cite id=\"2\">dating back to 1988</cite>, the foundation has established a permanent presence in Washington D.C. and Hollywood.",
+          "point": "Deep Institutional Experience"
         }
       ],
       "strengths_deep_dive": [
-        "MPAC's primary strength lies in its ability to produce high-level policy resources, such as their <cite id=\"12\">Community Safety Guide for ICE interactions</cite>, which provides a 6-step family emergency plan. This systemic approach is supported by a <cite id=\"13\">100% independent board of directors</cite>, ensuring objective oversight of their $4.2 million budget. Furthermore, the organization has successfully diversified its income, generating <cite id=\"14\">$104,912 in program service revenue</cite> alongside traditional contributions."
+        "MPAC's primary strength lies in its ability to influence systemic change through specialized bureaus. The <cite id=\"4\">Hollywood Bureau</cite> serves as a bridge to the entertainment industry, while the <cite id=\"3\">Center for Government Affairs</cite> ensures Muslim voices are heard in policy discussions. This systemic approach is supported by a robust financial base, with <cite id=\"12\">net assets reaching $5,020,454</cite> by the end of 2023, allowing the organization to weather political cycles and maintain a consistent presence in the civil rights landscape."
       ],
-      "summary": "The Muslim Public Affairs Council Foundation (MPAC) is a long-standing advocacy institution dedicated to <cite id=\"1\">increasing public understanding and policies</cite> that impact American Muslims. Founded in <cite id=\"2\">1988</cite>, the organization operates at the intersection of government, media, and community engagement to secure civil rights and improve representation. MPAC manages several specialized initiatives, including the <cite id=\"3\">Center for Government Affairs and the 1st Amendment Center</cite>, which focus on legislative advocacy and protecting religious freedoms. In the fiscal year 2023, the organization reported <cite id=\"4\">total revenue of $4,220,097</cite>, marking a significant period of growth with a <cite id=\"5\">3-year revenue CAGR of 30.5%</cite>. While many humanitarian charities focus on direct aid, MPAC specializes in <cite id=\"6\">systemic change through academic and legal reporting</cite>, such as issuing university report cards on academic freedom. Their work extends into the entertainment industry via the <cite id=\"7\">Hollywood Bureau</cite>, which consults on authentic Muslim narratives in media. Despite its specialized niche, the organization maintains <cite id=\"8\">zakat eligibility</cite>, directing funds toward advocacy efforts categorized under fisabilillah and other eligible asnaf.",
+      "summary": "The Muslim Public Affairs Council Foundation (MPAC) is a long-standing advocacy organization dedicated to <cite id=\"1\">increasing public understanding and policies</cite> that impact American Muslims. <cite id=\"2\">founded in 1988</cite>, the organization has spent over three decades engaging with government agencies, media outlets, and local communities to promote systemic change. MPAC operates through several specialized divisions, including the <cite id=\"3\">Center for Government Affairs</cite> and the <cite id=\"4\">Hollywood Bureau</cite>, which works to improve Muslim representation in entertainment. In 2023, the foundation reported <cite id=\"5\">total revenue of $4,220,097</cite>, representing a significant <cite id=\"6\">3-year revenue CAGR of 30.5%</cite>. While many Muslim charities focus on direct humanitarian aid, MPAC occupies a niche space in <cite id=\"7\">policy advocacy and academic freedom reporting</cite>, aiming to secure the civil rights of the American Muslim community through institutional engagement. Their work includes practical community resources, such as a <cite id=\"8\">6-step family emergency plan</cite> for interactions with law enforcement, alongside high-level policy briefs. Financially, the organization maintains <cite id=\"9\">strong liquidity with 21.4 months of working capital</cite>, providing a significant buffer for its long-term advocacy projects. However, its <cite id=\"10\">program expense ratio of 57.2%</cite> is lower than many direct-service peers, reflecting the high personnel costs associated with specialized policy and media work.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "ZAKAT-ELIGIBLE"

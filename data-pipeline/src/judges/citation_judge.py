@@ -160,6 +160,14 @@ class CitationJudge(BaseJudge):
                 cost_usd = llm_result.cost
                 metadata["llm_verified_count"] = llm_result.verified_count
                 metadata["llm_failed_count"] = llm_result.failed_count
+            else:
+                self.add_issue(
+                    issues,
+                    Severity.ERROR,
+                    "llm_verification",
+                    "Could not complete LLM citation verification",
+                )
+                metadata["llm_failed"] = True
 
         # Determine pass/fail
         error_count = len([i for i in issues if i.severity == Severity.ERROR])

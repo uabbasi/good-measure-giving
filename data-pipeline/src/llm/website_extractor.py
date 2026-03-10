@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup
 from pydantic import BaseModel
 
 from ..validators.llm_responses import PAGE_TYPE_SCHEMAS
-from .llm_client import MODEL_GPT52, LLMClient, LLMTask
+from .llm_client import MODEL_GEMINI_31_PRO, MODEL_GEMINI_3_PRO, MODEL_GPT52, LLMClient, LLMTask
 
 
 def _is_empty(val: Any) -> bool:
@@ -65,15 +65,16 @@ class WebsiteExtractor:
     """
     Extract structured data from charity websites using LLMs.
 
-    Uses LLMTask.WEBSITE_EXTRACTION for optimal model selection:
-    - Primary: Gemini 2.5 Flash-Lite (cheap, fast)
-    - Fallback: Claude Haiku 4.5 (strict JSON)
+    Uses LLMTask.WEBSITE_EXTRACTION for the primary extraction pass,
+    then a Gemini-first verifier chain for hallucination-prone fields.
     """
 
     def __init__(
         self,
         provider: str = "gemini",  # Kept for backward compatibility, ignored
         api_key: Optional[str] = None,  # Kept for backward compatibility, ignored
+        verifier_model: str = MODEL_GEMINI_31_PRO,
+        verifier_fallback_models: Optional[List[str]] = None,
         logger=None,
     ):
         """
@@ -82,17 +83,25 @@ class WebsiteExtractor:
         Args:
             provider: Ignored (kept for backward compatibility)
             api_key: Ignored (kept for backward compatibility)
+            verifier_model: Primary verifier model for ensemble validation
+            verifier_fallback_models: Ordered fallback chain for verifier failures
             logger: Logger instance
         """
         self.logger = logger
 
         # Initialize LLMClient with WEBSITE_EXTRACTION task
         self.llm_client = LLMClient(task=LLMTask.WEBSITE_EXTRACTION, logger=logger)
+        self.verifier_model = verifier_model
+        self.verifier_fallback_models = (
+            list(verifier_fallback_models)
+            if verifier_fallback_models is not None
+            else [MODEL_GEMINI_3_PRO, MODEL_GPT52]
+        )
 
         # Load page-specific prompts from YAML (T051)
         self.page_prompts = self._load_page_prompts()
 
-    # Fields where Flash is known to hallucinate — require GPT-5.2 confirmation
+    # Fields where Flash is known to hallucinate — require verifier confirmation
     HALLUCINATION_PRONE_FIELDS = {
         "systemic_leverage_data",
         "absorptive_capacity_data",
@@ -139,7 +148,7 @@ class WebsiteExtractor:
         """
         Extract structured data using dual-model ensemble.
 
-        Flash extracts first (high recall, cheap), then GPT-5.2 validates
+        Flash extracts first (high recall, cheap), then the verifier validates
         hallucination-prone fields. Fields both models agree on are kept;
         Flash-only claims in prone fields are dropped.
 
@@ -158,7 +167,7 @@ class WebsiteExtractor:
         if "error" in flash_data:
             return flash_data, flash_cost
 
-        # 2. GPT-5.2 extraction (validator — high precision)
+        # 2. Verifier extraction (validator — high precision)
         verifier_data, verifier_cost = self._extract_with_verifier(prompt)
         total_cost = flash_cost + verifier_cost
 
@@ -167,7 +176,7 @@ class WebsiteExtractor:
                 self.logger.warning("Verifier extraction failed, using Flash-only (unverified)")
             return flash_data, total_cost
 
-        # 3. Merge: Flash baseline, verified by GPT-5.2
+        # 3. Merge: Flash baseline, verified by the precision model
         merged = self._merge_ensemble(flash_data, verifier_data)
 
         if self.logger:
@@ -195,14 +204,18 @@ class WebsiteExtractor:
         return merged, total_cost
 
     def _extract_with_verifier(self, prompt: str) -> Tuple[Dict[str, Any], float]:
-        """Run GPT-5.2 as a precision verifier."""
+        """Run the configured verifier chain as a precision validator."""
         try:
             verifier = LLMClient(
-                model=MODEL_GPT52,
+                model=self.verifier_model,
                 logger=self.logger,
             )
+            verifier.fallback_models = list(self.verifier_fallback_models)
             if self.logger:
-                self.logger.info(f"Running verifier ({MODEL_GPT52}) for ensemble...")
+                fallback_str = f" with fallbacks {self.verifier_fallback_models}" if self.verifier_fallback_models else ""
+                self.logger.info(
+                    f"Running verifier ({self.verifier_model}) for ensemble{fallback_str}..."
+                )
 
             llm_response = verifier.generate(prompt=prompt, temperature=0, max_tokens=8192, json_mode=True)
 
@@ -241,7 +254,7 @@ class WebsiteExtractor:
 
     def _merge_ensemble(self, flash: Dict[str, Any], verifier: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Merge Flash (high recall) with GPT-5.2 (high precision).
+        Merge Flash (high recall) with verifier output (high precision).
 
         Strategy:
         - Trusted fields: keep Flash value (URLs, contact info, etc.)

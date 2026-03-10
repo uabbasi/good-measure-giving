@@ -62,11 +62,11 @@
   "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
-      "Children",
-      "Adults",
-      "Poor",
       "Youth",
-      "Men"
+      "Poor",
+      "Men",
+      "Children",
+      "Adults"
     ],
     "geographicCoverage": [
       "United States"
@@ -91,29 +91,29 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-07 12:57:19",
+  "lastUpdated": "2026-03-09 18:31:22",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/631135091#financials",
-      "timestamp": "2026-03-07T12:56:05",
+      "timestamp": "2026-03-09T13:19:04",
       "value": 1803843
     },
     "candid_seal": {
       "source_name": "Candid",
       "source_url": "https://app.candid.org/profile/8017416",
-      "timestamp": "2026-03-07T12:56:05",
+      "timestamp": "2026-03-09T13:19:04",
       "value": "gold"
     },
     "charity_navigator_score": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/631135091#ratings",
-      "timestamp": "2026-03-07T12:56:05",
+      "timestamp": "2026-03-09T13:19:04",
       "value": 97
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://eji.org",
+      "source_url": "https://eji.org/ways-to-give/",
       "timestamp": "2026-03-07T12:56:01",
       "value": false
     },
@@ -126,7 +126,7 @@
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/631135091#financials",
-      "timestamp": "2026-03-07T12:56:05",
+      "timestamp": "2026-03-09T13:19:04",
       "value": 241666
     },
     "has_audited_financials": {
@@ -138,31 +138,31 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/631135091",
-      "timestamp": "2026-03-07T12:56:05",
+      "timestamp": "2026-03-09T13:19:04",
       "value": "R63"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/631135091#financials",
-      "timestamp": "2026-03-07T12:56:05",
+      "timestamp": "2026-03-09T13:19:04",
       "value": 0.9688
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/631135091#financials",
-      "timestamp": "2026-03-07T12:56:05",
+      "timestamp": "2026-03-09T13:19:04",
       "value": 73577665
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/631135091",
-      "timestamp": "2026-03-07T12:56:05",
+      "timestamp": "2026-03-09T13:19:04",
       "value": 67268484
     },
     "transparency_score": {
       "source_name": "Candid Gold Seal",
       "source_url": "https://app.candid.org/profile/8017416",
-      "timestamp": "2026-03-07T12:56:05",
+      "timestamp": "2026-03-09T13:19:04",
       "value": 85
     },
     "working_capital_months": {
@@ -173,7 +173,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/631135091",
-      "timestamp": "2026-03-07T12:56:05",
+      "timestamp": "2026-03-09T13:19:04",
       "value": 91.1
     }
   },
@@ -329,19 +329,12 @@
       "data_points": {
         "reserves_months": 91.1
       }
-    },
-    {
-      "type": "risk_deduction",
-      "severity": "medium",
-      "headline": "No outcome measurement or metrics tracking",
-      "detail": "Source: Website/Candid",
-      "data_points": {}
     }
   ],
   "amalEvaluation": {
     "charity_ein": "63-1135091",
     "charity_name": "Equal Justice Initiative",
-    "amal_score": 61,
+    "amal_score": 63,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:39:46",
     "rubric_version": "5.2.0",
@@ -489,22 +482,22 @@
       },
       "judge_issues": [
         {
-          "field": "bbb.name_match",
-          "judge": "crawl_quality",
-          "message": "BBB name 'Equal Justice America' may not match 'Equal Justice Initiative' (similarity: 67%)",
-          "severity": "warning"
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
         },
         {
-          "field": "source_attribution.claims_zakat_eligible.source_url",
-          "judge": "synthesize_quality",
-          "message": "Website citation for 'claims_zakat_eligible' uses homepage URL; deep link preferred",
-          "severity": "warning"
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
         },
         {
           "field": "hallucination_denylist.populations_served",
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
+          "severity": "info"
         },
         {
           "field": "hallucination_denylist.third_party_evaluated",
@@ -513,18 +506,11 @@
           "severity": "warning"
         }
       ],
-      "risk_deduction": -4,
+      "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
-        "risk_summary": "2 risk(s) identified.",
+        "risk_summary": "1 risk(s) identified.",
         "risks": [
-          {
-            "category": "impact",
-            "data_source": "Website/Candid",
-            "description": "No outcome measurement or metrics tracking",
-            "mitigation": null,
-            "severity": "medium"
-          },
           {
             "category": "financial",
             "data_source": "Reconciliation",
@@ -533,21 +519,21 @@
             "severity": "medium"
           }
         ],
-        "total_deduction": -4
+        "total_deduction": -2
       },
       "score_summary": "Equal Justice Initiative shows strong impact and moderate alignment (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "Organization is in zakat denylist (partners but doesn't collect directly) (Source: https://eji.org)",
+        "claim_evidence": "Organization is in zakat denylist (partners but doesn't collect directly) (Source: https://eji.org/ways-to-give/)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "EJI holds a 97.0/100 score and a 96.9% program expense ratio.",
+          "claim": "The organization holds a 97.0/100 score and maintains a 96.9% program expense ratio.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/631135091#financials"
@@ -559,44 +545,44 @@
           "source_url": "https://eji.org/wp-content/uploads/2005/11/Equal-Justice-Initiative-Donation-Instructions.pdf"
         },
         {
-          "claim": "The organization reported total revenue of $79,602,278.",
+          "claim": "Total revenue reached $79,602,278.",
           "id": "[3]",
           "source_name": "Financial Statement (2025)",
           "source_url": "https://eji.org/wp-content/uploads/2005/11/Annual-Financial-Information-FY2025.pdf"
         },
         {
-          "claim": "EJI's work includes death row commutations and scholarship fund awards.",
+          "claim": "The organization achieved death row commutations and awarded scholarship funds.",
           "id": "[4]",
           "source_name": "Read the report (PDF)",
           "source_url": "https://eji.org/wp-content/uploads/2005/11/2025-eji-activity-report.pdf"
         },
         {
-          "claim": "Donors can contribute to EJI's mission through various giving methods.",
+          "claim": "The organization offers various donation options for general charitable giving.",
           "id": "[5]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://eji.org/ways-to-give/"
         },
         {
-          "claim": "Financial data and organizational structure are documented in the Form 990.",
+          "claim": "Financial data confirms the organization's revenue and asset structure.",
           "id": "[6]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/631135091"
         }
       ],
-      "amal_score_rationale": "EJI earns a 61/100 score, reflecting world-class financial efficiency and a strong track record in criminal justice reform, though its alignment with specific Muslim donor needs is moderate.",
+      "amal_score_rationale": "EJI earns a 63/100 based on its extraordinary financial health and transparency, though its score is moderated by its focus on broad advocacy and capacity building rather than direct service metrics.",
       "areas_for_improvement": [
-        "Limited direct alignment with specific Muslim donor preferences or religious frameworks",
-        "Focus on systemic advocacy and capacity building rather than high-volume direct service delivery"
+        "Limited direct alignment with specific religious donor requirements",
+        "High reliance on advocacy-based outcomes which can be difficult to quantify in traditional cost-per-beneficiary metrics"
       ],
       "dimension_explanations": {
-        "alignment": "The organization offers a medium fit for Muslim donors seeking to provide sadaqah toward social justice and anti-poverty initiatives [5]. While the cause urgency is high due to its focus on advocacy and systemic reform, the organization does not have specific religious programming [2][6].",
-        "impact": "EJI demonstrates high impact through its capacity-building efforts, including securing death row commutations and awarding scholarship funds [4]. The organization maintains a high Charity Navigator score of 97.0/100 and manages a total revenue of $79,602,278 with a 96.9% program expense ratio [1][3]."
+        "alignment": "The organization is categorized as Sadaqah-eligible, offering a medium fit for donors focused on social justice and anti-poverty initiatives [5]. While its mission addresses urgent systemic issues, its primary focus on advocacy and criminal justice reform represents a specific niche within charitable giving [2][6].",
+        "impact": "EJI demonstrates high impact through its legal successes, including death row commutations and the provision of scholarship funds to those affected by the justice system [4]. The organization maintains a 97.97.0/100 from Charity Navigator score, reflecting a 96.9% program expense ratio and a total revenue of $79,602,278 [1][3]."
       },
       "headline": "The Equal Justice Initiative provides critical legal representation and advocacy to challenge racial and economic injustice within the American legal system.",
       "strengths": [
-        "Exceptional program expense ratio of 96.9%, ensuring nearly all funds directly support mission-driven work",
-        "High financial stability with 91.1 months of working capital available",
-        "Maximum fundraising efficiency with a cost of $0.00 per $1 raised"
+        "Exceptional financial efficiency with a 96.9% program expense ratio",
+        "Highly effective fundraising operations with $0.00 spent per $1 raised",
+        "Substantial liquidity with 91.1 months of working capital available"
       ],
       "summary": "The Equal Justice Initiative (EJI) is a non-profit organization dedicated to ending mass incarceration and excessive punishment while protecting the basic human rights of the most vulnerable [2]. Based in Montgomery, Alabama, the organization provides legal assistance to the poor, the incarcerated, and individuals facing execution [4]."
     },
@@ -604,43 +590,43 @@
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "founded in 1989",
+          "claim": "1989",
           "confidence": 1,
           "id": "[1]",
-          "quote": "EJI was founded in 1989",
+          "quote": "founded in 1989 by Bryan Stevenson",
           "source_name": "Charity Website",
           "source_type": "website",
           "source_url": "https://eji.org/about/"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "facing execution or extreme punishment",
+          "claim": "ending mass incarceration and excessive punishment",
           "confidence": 1,
           "id": "[2]",
-          "quote": "legal representation to the poor, the incarcerated, and the condemned facing execution or extreme punishment",
+          "quote": "EJI is a non-profit organization dedicated to ending mass incarceration and excessive punishment",
           "source_name": "EJI Donation Instructions",
           "source_type": "website",
           "source_url": "https://eji.org/wp-content/uploads/2005/11/Equal-Justice-Initiative-Donation-Instructions.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "97/100 overall score from Charity Navigator",
+          "claim": "legal representation to the poor, the incarcerated, and the condemned",
           "confidence": 1,
           "id": "[3]",
-          "quote": "Overall Score 97/100",
-          "source_name": "Charity Navigator - EJI",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/631135091#ratings"
+          "quote": "EJI provides legal assistance to the poor, the incarcerated, and individuals facing execution",
+          "source_name": "EJI Activity Report 2025",
+          "source_type": "website",
+          "source_url": "https://eji.org/wp-content/uploads/2005/11/2025-eji-activity-report.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "96.9% program expense ratio",
+          "claim": "criminal justice reform, racial justice, and public education",
           "confidence": 1,
           "id": "[4]",
-          "quote": "Program Service Expenses: 100.0%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/631135091"
+          "quote": "Our work includes criminal justice reform, racial justice, and public education",
+          "source_name": "EJI Activity Report 2025",
+          "source_type": "website",
+          "source_url": "https://eji.org/wp-content/uploads/2005/11/2025-eji-activity-report.pdf"
         },
         {
           "access_date": "2026-01-09",
@@ -654,19 +640,49 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "$59.9 million in public contributions",
+          "claim": "96.9% program expense ratio",
           "confidence": 1,
           "id": "[6]",
-          "quote": "Contributions and grants: $59,946,029",
+          "quote": "Program service expenses: $55,139,943; Total expenses: $55,139,943",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/631135091"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "launching a mobile grocery",
+          "claim": "Legacy Museum and the National Memorial for Peace and Justice",
           "confidence": 1,
           "id": "[7]",
+          "quote": "EJI opened the Legacy Museum and the National Memorial for Peace and Justice",
+          "source_name": "EJI Activity Report 2025",
+          "source_type": "website",
+          "source_url": "https://eji.org/wp-content/uploads/2005/11/2025-eji-activity-report.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "37 death row commutations",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Death row commutations: 37",
+          "source_name": "EJI Activity Report 2025",
+          "source_type": "website",
+          "source_url": "https://eji.org/wp-content/uploads/2005/11/2025-eji-activity-report.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$370,000 in scholarship funds",
+          "confidence": 1,
+          "id": "[9]",
+          "quote": "Scholarship funds awarded: 370000",
+          "source_name": "EJI Activity Report 2025",
+          "source_type": "website",
+          "source_url": "https://eji.org/wp-content/uploads/2005/11/2025-eji-activity-report.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "launch of a mobile grocery",
+          "confidence": 1,
+          "id": "[10]",
           "quote": "Launch of mobile grocery: 1",
           "source_name": "Annual Financial Information FY2025",
           "source_type": "website",
@@ -676,49 +692,49 @@
           "access_date": "2026-01-09",
           "claim": "7,200 families",
           "confidence": 1,
-          "id": "[8]",
-          "quote": "Families served: 7200",
-          "source_name": "2025 EJI Activity Report",
-          "source_type": "website",
-          "source_url": "https://eji.org/wp-content/uploads/2005/11/2025-eji-activity-report.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "37 death row commutations",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Death row commutations: 37",
-          "source_name": "2025 EJI Activity Report",
-          "source_type": "website",
-          "source_url": "https://eji.org/wp-content/uploads/2005/11/2025-eji-activity-report.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$370,000 in scholarship funds",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Scholarship funds awarded: 370000",
-          "source_name": "2025 EJI Activity Report",
-          "source_type": "website",
-          "source_url": "https://eji.org/wp-content/uploads/2005/11/2025-eji-activity-report.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.00 per $1 raised",
-          "confidence": 1,
           "id": "[11]",
+          "quote": "Families served: 7200",
+          "source_name": "EJI Activity Report 2025",
+          "source_type": "website",
+          "source_url": "https://eji.org/wp-content/uploads/2005/11/2025-eji-activity-report.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$0.00 to raise every $1",
+          "confidence": 1,
+          "id": "[12]",
           "quote": "Fundraising Efficiency: $0.00",
-          "source_name": "Charity Navigator - Financials",
+          "source_name": "Charity Navigator",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/631135091#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "91.1 months of working capital",
+          "claim": "overall score of 97.0/100 from Charity Navigator",
           "confidence": 1,
-          "id": "[12]",
-          "quote": "Working Capital Ratio: 91.1 months",
-          "source_name": "Charity Navigator - Financials",
+          "id": "[13]",
+          "quote": "Overall Score: 97/100",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/631135091#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "perfect 100 in Leadership & Adaptability",
+          "confidence": 1,
+          "id": "[14]",
+          "quote": "Leadership & Adaptability: 100",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/631135091#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "100.3 months of operating reserves",
+          "confidence": 1,
+          "id": "[15]",
+          "quote": "Working Capital Ratio: 100.3 months",
+          "source_name": "Charity Navigator",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/631135091#financials"
         },
@@ -726,126 +742,86 @@
           "access_date": "2026-01-09",
           "claim": "Gold Seal of Transparency from Candid",
           "confidence": 1,
-          "id": "[13]",
-          "quote": "Candid Seal: Gold",
-          "source_name": "Candid Profile",
+          "id": "[16]",
+          "quote": "Candid Seal: gold",
+          "source_name": "Candid",
           "source_type": "rating",
           "source_url": "https://app.candid.org/profile/8017416"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "perfect 100 Leadership score",
+          "claim": "9-member board",
           "confidence": 1,
-          "id": "[14]",
-          "quote": "Leadership & Adaptability: 100",
-          "source_name": "Charity Navigator - Beacons",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/631135091#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer program ratio median is 88.2%",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Peer Program Ratio Median: 88.2%",
-          "source_name": "Internal Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/631135091#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$50,375,000 in total grants",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Grants and other assistance to domestic organizations: $50,375,000",
+          "id": "[17]",
+          "quote": "Number of voting members of the governing body: 9",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/631135091"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "publish consistent beneficiary counts",
-          "confidence": 0.9,
-          "id": "[17]",
-          "quote": "Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
-          "source_name": "AMAL Score Improvement Suggestion",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/631135091#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "lack of specific Muslim donor alignment",
-          "confidence": 0.9,
+          "claim": "anti-poverty initiatives",
+          "confidence": 1,
           "id": "[18]",
-          "quote": "Alignment 27/50: MEDIUM Muslim donor fit",
-          "source_name": "AMAL Alignment Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/631135091#financials"
+          "quote": "EJI's anti-poverty work provides support to families",
+          "source_name": "Charity Website",
+          "source_type": "website",
+          "source_url": "https://eji.org/projects/anti-poverty-work/"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "meeting all 20 BBB Wise Giving Alliance standards",
+          "claim": "health clinic",
           "confidence": 1,
           "id": "[19]",
+          "quote": "The EJI Health Clinic provides medical care",
+          "source_name": "Charity Website",
+          "source_type": "website",
+          "source_url": "https://eji.org/projects/eji-health-clinic/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "no consistent beneficiary count",
+          "confidence": 0.9,
+          "id": "[20]",
+          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
+          "source_name": "AMAL Internal Assessment",
+          "source_type": "evaluation",
+          "source_url": "https://eji.org/wp-content/uploads/2005/11/2025-eji-activity-report.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "pursue BBB Wise Giving Alliance accreditation",
+          "confidence": 1,
+          "id": "[21]",
           "quote": "Standards Met: 0/20",
-          "source_name": "BBB Wise Giving Alliance",
+          "source_name": "BBB Give.org",
           "source_type": "rating",
           "source_url": "https://give.org/charity-reviews/other/equal-justice-america-in-midlothian-va-0603-26009850"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "strong theory of change",
-          "confidence": 0.9,
-          "id": "[20]",
-          "quote": "Theory of change: STRONG",
-          "source_name": "AMAL Impact Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/631135091#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "publish a time-bound plan to deploy excess unrestricted reserves",
-          "confidence": 0.9,
-          "id": "[21]",
-          "quote": "Publish a time-bound plan to deploy excess unrestricted reserves into mission delivery",
-          "source_name": "AMAL Financial Improvement Suggestion",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/631135091#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "underserved populations and the poor",
+          "claim": "clearly stating the eligibility of its programs",
           "confidence": 0.9,
           "id": "[22]",
-          "quote": "Serves underserved populations (+3)",
-          "source_name": "AMAL Alignment Components",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/631135091"
+          "quote": "",
+          "source_name": "AMAL Internal Assessment",
+          "source_type": "evaluation",
+          "source_url": "https://eji.org/ways-to-give/"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "expand services to geographies",
-          "confidence": 0.9,
-          "id": "[23]",
-          "quote": "Expand services to underserved populations or geographies with limited nonprofit coverage.",
-          "source_name": "AMAL Alignment Improvement Suggestion",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/631135091"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of -28.9%",
+          "claim": "peer median of 88.2%",
           "confidence": 1,
-          "id": "[24]",
-          "quote": "3-Year Revenue CAGR: -28.9%",
-          "source_name": "Financial Trend Data",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/631135091"
+          "id": "[23]",
+          "quote": "Peer Program Ratio Median: 88.2%",
+          "source_name": "AMAL Peer Benchmarks",
+          "source_type": "evaluation",
+          "source_url": "https://www.charitynavigator.org/ein/631135091"
         }
       ],
-      "amal_score_rationale": "EJI earns a 61/100 score, reflecting world-class financial efficiency and a strong track record in criminal justice reform, though its alignment with specific Muslim donor needs is moderate.",
+      "amal_score_rationale": "EJI earns a 63/100 based on its extraordinary financial health and transparency, though its score is moderated by its focus on broad advocacy and capacity building rather than direct service metrics.",
       "amal_scores": {
-        "amal_score": 61,
+        "amal_score": 63,
         "confidence_scores": {
           "alignment": 27,
           "data_confidence": 0.95,
@@ -859,142 +835,124 @@
         {
           "area": "Excessive Capital Reserves",
           "citation_ids": [
-            "[12]"
+            "[15]"
           ],
-          "detail": "The organization holds <cite id=\"12\">over 91.1 months of working capital</cite>, which is significantly higher than industry standards for immediate deployment."
+          "context": "The organization holds <cite id=\"15\">over 91.1 months of working capital</cite>, which is significantly higher than industry benchmarks for immediate mission deployment."
         },
         {
-          "area": "Transparency in Beneficiary Metrics",
+          "area": "Limited Cost-Effectiveness Data",
           "citation_ids": [
-            "[17]"
+            "[20]"
           ],
-          "detail": "While legal outcomes are clear, EJI could <cite id=\"17\">publish consistent beneficiary counts</cite> to allow for more precise cost-per-beneficiary assessments."
+          "context": "While program spending is high, there is <cite id=\"20\">no consistent beneficiary count</cite> provided to calculate traditional cost-per-beneficiary metrics."
         }
       ],
       "bbb_assessment": {
         "audit_type": "audited",
         "citation_ids": [
-          "[19]"
+          "[21]"
         ],
-        "effectiveness_status": "FAIL",
-        "finances_status": "FAIL",
-        "governance_status": "FAIL",
+        "effectiveness_status": "NOT REVIEWED",
+        "finances_status": "NOT REVIEWED",
+        "governance_status": "NOT REVIEWED",
         "meets_all_standards": false,
         "review_url": "https://give.org/charity-reviews/other/equal-justice-america-in-midlothian-va-0603-26009850",
         "standards_met": 0,
-        "standards_not_met": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          17,
-          18,
-          19,
-          20
-        ],
-        "summary": "Does not currently meet BBB Wise Giving Alliance Standards for Charity Accountability."
+        "standards_not_met": [],
+        "summary": "EJI has not yet been reviewed by the BBB Wise Giving Alliance."
       },
       "case_against": {
         "citation_ids": [
-          "[12]",
-          "[24]"
+          "[15]"
         ],
-        "mitigation_notes": "The organization maintains massive reserves to weather funding volatility.",
+        "mitigation_notes": "The organization is utilizing funds for large-scale capital projects like the Legacy Museum.",
         "risk_factors": [
-          "<cite id=\"24\">3-year revenue CAGR of -28.9%</cite> indicates declining revenue trends."
+          "<cite id=\"15\">91.1 months of working capital</cite> may suggest capital is not being deployed as urgently as possible."
         ],
-        "summary": "The primary concern is the <cite id=\"12\">excessive accumulation of net assets</cite> relative to annual spending."
+        "summary": "The primary concern is the <cite id=\"15\">excessive accumulation of net assets</cite> relative to annual spending."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 7,
-          "rating": 10,
-          "website": 7
+          "evaluation": 4,
+          "form990": 4,
+          "rating": 7,
+          "website": 8
         },
-        "high_confidence_count": 24,
-        "total_count": 24,
+        "high_confidence_count": 21,
+        "total_count": 23,
         "unique_sources": 6
       },
       "confidence": {
-        "data_freshness": "Financials from 2023, Activity reports from 2025",
+        "data_freshness": "Financial data from 2023; Activity reports from 2025",
         "data_gaps": [
-          "Missing BBB compliance",
-          "Declining revenue trend"
+          "No BBB review completed",
+          "Missing granular cost-per-beneficiary data"
         ],
         "level": "HIGH",
-        "notes": "Extremely high financial transparency and verified legal outcomes.",
+        "notes": "Extremely high financial transparency and consistent reporting.",
         "score": 95,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "EJI Website",
-          "BBB"
+          "EJI Activity Reports",
+          "Candid"
         ]
       },
       "data_confidence": {
         "confidence_score": 95,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Declining revenue trend",
-          "BBB non-compliance"
+          "No BBB accreditation",
+          "Limited cost-per-beneficiary data"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 24,
+        "total_citations": 23,
         "unique_sources": 6,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[22]",
-            "[23]"
+            "[3]",
+            "[4]",
+            "[22]"
           ],
-          "explanation": "Alignment is moderate as EJI serves <cite id=\"22\">underserved populations and the poor</cite>, though it lacks a specific faith-based framework.",
-          "improvement": "The organization could <cite id=\"23\">expand services to geographies</cite> with even more limited nonprofit coverage to increase its underserved space score."
+          "explanation": "EJI is a strong fit for donors interested in <cite id=\"4\">racial justice and poverty alleviation</cite>, serving the <cite id=\"3\">poor and incarcerated</cite>.",
+          "improvement": "The organization could improve alignment for specific faith-based donors by <cite id=\"22\">clearly stating the eligibility of its programs</cite> for various types of charitable giving."
         },
         "credibility": {
           "citation_ids": [
+            "[1]",
             "[13]",
-            "[14]",
-            "[19]"
+            "[16]",
+            "[21]"
           ],
-          "explanation": "EJI is highly credible, evidenced by a <cite id=\"14\">100/100 Leadership score</cite> and <cite id=\"13\">Candid Gold status</cite>.",
-          "improvement": "Credibility could be further enhanced by <cite id=\"19\">meeting all 20 BBB Wise Giving Alliance standards</cite>, as current data shows 0/20 standards met."
+          "explanation": "Donors can trust EJI due to its <cite id=\"13\">97.0/100 from Charity Navigator rating</cite> and its <cite id=\"16\">Gold Seal of Transparency</cite>. The organization has been <cite id=\"1\">operating for 37 years</cite> with a consistent track record of legal success.",
+          "improvement": "To further strengthen credibility, the organization could <cite id=\"21\">pursue BBB Wise Giving Alliance accreditation</cite>, as it currently meets 0 of 20 standards due to lack of review."
         },
         "impact": {
           "citation_ids": [
-            "[4]",
-            "[20]",
-            "[21]"
+            "[6]",
+            "[8]",
+            "[11]",
+            "[20]"
           ],
-          "explanation": "Impact is driven by a <cite id=\"4\">100.0% program ratio</cite> and a <cite id=\"20\">strong theory of change</cite> focused on criminal justice reform.",
-          "improvement": "EJI should <cite id=\"21\">publish a time-bound plan to deploy excess unrestricted reserves</cite> into mission delivery."
+          "explanation": "EJI demonstrates high efficiency with a <cite id=\"6\">96.9% program expense ratio</cite>. Its impact is verified through <cite id=\"8\">37 death row commutations</cite> and serving <cite id=\"11\">7,200 families</cite>.",
+          "improvement": "Impact measurement would benefit from <cite id=\"20\">publishing consistent beneficiary counts</cite> to allow for cost-effectiveness assessments."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "ADVOCACY",
         "citation_ids": [
-          "[1]",
+          "[3]",
           "[6]"
         ],
-        "evidence_rigor": "Grade B - Strong outcome tracking and verified impact",
+        "evidence_rigor": "Grade B - Strong outcome tracking and verified legal successes",
         "geographic_focus": [
           "United States",
           "Alabama"
         ],
-        "giving_style": "Systemic Change",
+        "giving_style": "Direct legal service and public education",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           "",
@@ -1006,18 +964,17 @@
         "admin_ratio": 0,
         "annual_revenue": 67268484,
         "citation_ids": [
-          "[5]",
           "[6]",
-          "[24]"
+          "[13]"
         ],
         "cn_financial_score": 94,
         "cn_overall_score": 97,
         "fundraising_ratio": 0,
         "industry_program_ratio": 0.75,
-        "peer_count": 16,
+        "peer_count": 18,
         "peer_program_ratio_median": 0.882,
         "program_expense_ratio": 0.9688,
-        "reserves_months": 100.3,
+        "reserves_months": 91.1,
         "revenue_cagr_3yr": -28.9,
         "transparency_score": 85,
         "working_capital_months": 91.1,
@@ -1049,7 +1006,7 @@
         "domestic_grants": 50375000,
         "foreign_grants": 0,
         "grant_count": 9,
-        "grant_strategy": "Supports infrastructure for racial justice and local food security.",
+        "grant_strategy": "Supports related foundations and local community services",
         "is_significant_grantmaker": true,
         "regions_served": [
           "Alabama",
@@ -1063,53 +1020,56 @@
       },
       "headline": "The Equal Justice Initiative provides critical legal representation and advocacy to challenge racial and economic injustice within the American legal system.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize systemic legal reform and want their contributions to be managed with maximum financial efficiency.",
+        "best_for_summary": "Best for donors who prioritize systemic reform of the American legal system and value high-efficiency organizations with massive financial stability.",
         "citation_ids": [
-          "[4]",
-          "[12]"
+          "6",
+          "12",
+          "15"
         ],
         "donor_motivations": [
-          "Passionate about ending mass incarceration and the death penalty",
-          "Value organizations with zero fundraising costs",
-          "Support racial justice and public education on history",
-          "Prefer funding established institutions with deep legal expertise"
+          "Want to support racial justice and civil rights",
+          "Value organizations that provide direct legal aid to the indigent",
+          "Prefer charities with zero fundraising overhead",
+          "Interested in public education regarding historical injustice"
         ],
         "giving_considerations": [
-          "Donations support long-term legal battles rather than immediate aid",
-          "The organization is extremely well-funded with large reserves",
-          "Focus is primarily domestic (US-based)"
+          "Donations support a very well-funded institution with large reserves",
+          "Impact is often long-term (legal cases) rather than immediate relief",
+          "The organization is a major grantmaker to related foundations"
         ],
-        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those looking for international humanitarian relief."
+        "not_ideal_for": "Donors seeking to fulfill Zakat obligations or those who prefer funding smaller, under-resourced grassroots organizations."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[9]",
-          "[20]"
+          "[4]",
+          "[8]",
+          "[11]"
         ],
         "evidence_grade": "B",
-        "evidence_grade_explanation": "Strong evidence of outcomes like commutations, but lacks independent RCT-level evaluation.",
+        "evidence_grade_explanation": "The organization tracks specific legal outcomes and community service metrics, though it lacks independent RCT-level evaluations.",
         "external_evaluations": [
           "Charity Navigator Accountability & Finance"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "EJI uses legal representation, public education, and community support to challenge systemic injustice.",
-        "why_evidence_matters": "Evidence ensures that legal advocacy translates into actual freedom and policy change."
+        "theory_of_change_summary": "EJI uses a combination of direct legal representation, policy advocacy, and public education to challenge systemic injustice and change the narrative about race in America.",
+        "why_evidence_matters": "Evidence of commutations and families served proves that legal advocacy translates into saved lives and community support."
       },
       "long_term_outlook": {
         "citation_ids": [
           "[1]",
-          "[24]"
+          "[4]"
         ],
         "founded_year": 1989,
         "maturity_stage": "Institution",
         "revenue_growth_3yr": -28.9,
         "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "While reserves are high, systemic legal work requires long-term capital commitments.",
+        "room_for_funding_explanation": "While EJI has high reserves, its large-scale educational and legal projects require significant sustained capital.",
         "strategic_priorities": [
           "Criminal Justice Reform",
-          "Racial Justice Education"
+          "Public Education",
+          "Racial Justice"
         ],
         "years_operating": 37
       },
@@ -1120,10 +1080,10 @@
         "ceo_name": "Bryan Stevenson",
         "citation_ids": [
           "[6]",
-          "[14]"
+          "13"
         ],
         "employees_count": 150,
-        "geographic_reach": "United States, primarily Alabama",
+        "geographic_reach": "United States",
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 0.5,
@@ -1134,11 +1094,11 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "4",
-          "15"
+          "6",
+          "23"
         ],
-        "differentiator": "EJI outperforms peers with a <cite id=\"4\">100.0% program ratio</cite> compared to the <cite id=\"15\">88.2% peer median</cite>.",
-        "peer_group": "Legal Advocacy & Human Rights",
+        "differentiator": "EJI's <cite id=\"6\">100.0% program ratio</cite> significantly exceeds the <cite id=\"23\">peer median of 88.2%</cite>.",
+        "peer_group": "Legal Advocacy and Human Rights",
         "similar_orgs": [
           "Southern Poverty Law Center",
           "ACLU Foundation",
@@ -1147,46 +1107,47 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Broader focus on hate groups",
+          "differentiator": "Broader focus on hate groups and civil rights litigation",
           "name": "Southern Poverty Law Center"
         },
         {
-          "differentiator": "Wider range of civil liberties",
+          "differentiator": "Larger national chapter-based structure",
           "name": "ACLU Foundation"
         },
         {
-          "differentiator": "Specific focus on DNA exonerations",
+          "differentiator": "Specific focus on DNA evidence and exonerations",
           "name": "Innocence Project"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[4]",
-            "[11]"
+            "[6]",
+            "[12]"
           ],
-          "detail": "The organization maintains a <cite id=\"4\">96.9% program expense ratio</cite> and a fundraising efficiency of <cite id=\"11\">$0.00 per $1 raised</cite>.",
+          "detail": "The organization maintains a <cite id=\"6\">96.9% program expense ratio</cite> and spends <cite id=\"12\">$0.00 to raise every $1</cite> in contributions.",
           "point": "Exceptional Financial Efficiency"
         },
         {
           "citation_ids": [
-            "[12]"
+            "[13]",
+            "[14]"
           ],
-          "detail": "EJI holds <cite id=\"12\">91.1 months of working capital</cite> in working capital, ensuring long-term sustainability.",
-          "point": "Robust Financial Stability"
+          "detail": "EJI holds an <cite id=\"13\">overall score of 97.0/100 from Charity Navigator</cite>, including a <cite id=\"14\">perfect 100 in Leadership & Adaptability</cite>.",
+          "point": "Robust Accountability and Leadership"
         },
         {
           "citation_ids": [
-            "[9]"
+            "[8]"
           ],
-          "detail": "The organization has successfully secured <cite id=\"9\">37 death row commutations</cite> for the condemned.",
+          "detail": "The organization has successfully secured <cite id=\"8\">37 death row commutations</cite> for individuals facing execution.",
           "point": "Proven Legal Outcomes"
         }
       ],
       "strengths_deep_dive": [
-        "EJI's operational model is characterized by extreme leaness and high accountability. The organization holds a <cite id=\"13\">Gold Seal of Transparency from Candid</cite> and a <cite id=\"14\">perfect 100 Leadership score</cite> from Charity Navigator. Financially, the organization is an outlier in its peer group; while the <cite id=\"15\">peer program ratio median is 88.2%</cite>, EJI directs <cite id=\"4\">96.9% of its expenses to programs</cite>. This efficiency is paired with significant grantmaking, including <cite id=\"16\">$50,375,000 in total grants</cite> to domestic partners like the Legacy Foundation to further racial justice initiatives."
+        "EJI's financial health is characterized by <cite id=\"15\">100.3 months of operating reserves</cite>, providing immense stability for long-term legal battles. This liquidity is paired with a <cite id=\"16\">Gold Seal of Transparency from Candid</cite>, reflecting a high standard of public disclosure. Their governance is supported by a <cite id=\"17\">9-member board</cite> that oversees a diverse portfolio of programs, from <cite id=\"18\">anti-poverty initiatives</cite> to the operation of a <cite id=\"19\">health clinic</cite>."
       ],
-      "summary": "The Equal Justice Initiative (EJI) is a Montgomery-based legal advocacy organization <cite id=\"1\">founded in 1989</cite> that provides critical representation to the poor, the incarcerated, and individuals <cite id=\"2\">facing execution or extreme punishment</cite>. Operating with a <cite id=\"3\">97/100 overall score from Charity Navigator</cite>, EJI maintains an <cite id=\"4\">exceptional 96.9% program expense ratio</cite>, ensuring that every dollar contributed directly fuels its mission to challenge racial and economic injustice. In the 2023 fiscal year, the organization reported <cite id=\"5\">$67,268,484 in total revenue</cite>, supported largely by <cite id=\"6\">$59.9 million in public contributions</cite>. Beyond the courtroom, EJI has expanded its impact through public education and community services, recently <cite id=\"7\">launching a mobile grocery</cite> and providing support to <cite id=\"8\">7,200 families</cite>. Their legal work remains prolific, having secured <cite id=\"9\">37 death row commutations</cite> and awarding <cite id=\"10\">$370,000 in scholarship funds</cite> to support affected communities.",
+      "summary": "Founded in <cite id=\"1\">1989</cite>, the Equal Justice Initiative (EJI) is a Montgomery-based non-profit dedicated to <cite id=\"2\">ending mass incarceration and excessive punishment</cite> in the United States. The organization provides <cite id=\"3\">legal representation to the poor, the incarcerated, and the condemned</cite> who have been denied fair treatment in the legal system. EJI's work is multifaceted, encompassing <cite id=\"4\">criminal justice reform, racial justice, and public education</cite>. Financially, the organization is exceptionally lean, reporting <cite id=\"5\">$67,268,484 in total revenue</cite> for the 2023 tax year with a <cite id=\"6\">96.9% program expense ratio</cite>. Beyond legal advocacy, EJI has expanded its impact through the <cite id=\"7\">Legacy Museum and the National Memorial for Peace and Justice</cite>, which serve as critical tools for public education on the history of racial injustice. Their direct service impact is significant; in recent reporting, the organization noted <cite id=\"8\">37 death row commutations</cite> and provided <cite id=\"9\">$370,000 in scholarship funds</cite>. EJI also addresses immediate community needs, such as through the <cite id=\"10\">launch of a mobile grocery</cite> to combat food insecurity and serving <cite id=\"11\">7,200 families</cite> through various outreach programs.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

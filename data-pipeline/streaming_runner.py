@@ -217,6 +217,12 @@ def _phase_artifacts_exist(
     eval_repo: EvaluationRepository,
 ) -> tuple[bool, str]:
     """Verify cached phase outputs still exist before allowing a cache skip."""
+    from src.schemas.phase_contracts import (
+        validate_discover_output,
+        validate_extract_output,
+        validate_synthesize_output,
+    )
+
     if phase == "crawl":
         rows = raw_repo.get_for_charity(ein) or []
         has_successful_raw = any(row.get("success") for row in rows)
@@ -226,9 +232,9 @@ def _phase_artifacts_exist(
 
     if phase == "extract":
         rows = raw_repo.get_for_charity(ein) or []
-        has_parsed = any(row.get("success") and row.get("parsed_json") for row in rows)
-        if not has_parsed:
-            return False, "no parsed_json rows in raw_scraped_data"
+        contract = validate_extract_output(ein, rows)
+        if not contract:
+            return False, "; ".join(contract.errors) or "extract contract failed"
         return True, ""
 
     if phase == "discover":
@@ -238,12 +244,18 @@ def _phase_artifacts_exist(
         has_profile = isinstance(profile, dict) and bool(profile)
         if not discovered or not discovered.get("success") or not has_profile:
             return False, "missing discovered_profile artifact"
+        contract = validate_discover_output(profile)
+        if not contract:
+            return False, "; ".join(contract.errors) or "discover contract failed"
         return True, ""
 
     if phase == "synthesize":
         synth_data = data_repo.get(ein)
         if not synth_data:
             return False, "missing charity_data row"
+        contract = validate_synthesize_output(synth_data)
+        if not contract:
+            return False, "; ".join(contract.errors) or "synthesize contract failed"
         return True, ""
 
     if phase == "baseline":
@@ -252,12 +264,15 @@ def _phase_artifacts_exist(
             return False, "missing evaluations row"
         if evaluation.get("amal_score") is None:
             return False, "evaluations row missing amal_score"
+        baseline_narrative = evaluation.get("baseline_narrative")
+        if not isinstance(baseline_narrative, dict) or not baseline_narrative:
+            return False, "evaluations row missing baseline_narrative"
         return True, ""
 
     if phase == "rich":
         evaluation = eval_repo.get(ein)
         rich_narrative = evaluation.get("rich_narrative") if evaluation else None
-        if not rich_narrative:
+        if not isinstance(rich_narrative, dict) or not rich_narrative:
             return False, "missing rich_narrative"
         return True, ""
 

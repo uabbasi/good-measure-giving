@@ -22,10 +22,34 @@ from ..agents.gemini_search import (
     DEFAULT_MAX_OUTPUT_TOKENS,
     GeminiSearchClient,
     SearchGroundingResult,
+    extract_json_from_response,
 )
 from ..schemas.discovery import ZakatDict
 
 logger = logging.getLogger(__name__)
+
+_GROUNDING_REDIRECT_PREFIX = "https://vertexaisearch.cloud.google.com/grounding-api-redirect/"
+
+
+def _resolve_grounding_redirect(url: str) -> str:
+    """Follow a Vertex AI grounding redirect to get the real destination URL.
+
+    Gemini Search returns opaque redirect URLs instead of the actual page URLs.
+    These are simple HTTP 302 redirects that resolve to the real page.
+    Returns the original URL if it's not a grounding redirect or resolution fails.
+    """
+    if not url or not url.startswith(_GROUNDING_REDIRECT_PREFIX):
+        return url
+    try:
+        resp = requests.head(url, allow_redirects=False, timeout=5)
+        if resp.status_code in (301, 302, 303, 307, 308):
+            location = resp.headers.get("Location", "")
+            if location and not location.startswith(_GROUNDING_REDIRECT_PREFIX):
+                logger.info(f"Resolved grounding redirect → {location}")
+                return location
+    except requests.RequestException as e:
+        logger.debug(f"Failed to resolve grounding redirect: {e}")
+    return url
 
 # Common zakat page URL patterns to check directly
 # Order matters - check dedicated zakat pages first, then general donate pages
@@ -315,32 +339,51 @@ class ZakatVerificationService:
             parsed = urlparse(website_url)
             charity_domain = parsed.netloc.lower().replace("www.", "")
 
-        # Extract JSON from response text
+        # Use shared JSON extraction helper so truncated markdown responses
+        # get the same repair behavior as the other discovery services.
         text = result.text.strip()
+        json_str = extract_json_from_response(text)
 
-        # Handle markdown code blocks
-        if "```json" in text:
-            text = text.split("```json")[1].split("```")[0].strip()
-        elif "```" in text:
-            text = text.split("```")[1].split("```")[0].strip()
+        if not json_str:
+            if result.source_count == 0:
+                logger.info(f"No zakat evidence found for {charity_name} (0 search sources)")
+                return ZakatVerification(
+                    accepts_zakat=False,
+                    accepts_zakat_evidence=None,
+                    accepts_zakat_url=None,
+                    zakat_categories_served=[],
+                    confidence=0.0,
+                    source_count=0,
+                    cost_usd=result.cost_usd,
+                    error=None,
+                )
 
-        try:
-            data = json.loads(text)
-        except json.JSONDecodeError as e:
-            error_msg = f"Failed to parse zakat response JSON for {charity_name}: {e}"
+            error_msg = f"No JSON found in zakat response for {charity_name} ({result.source_count} sources)"
             logger.warning(error_msg)
             logger.debug(f"Raw response: {result.text[:500]}")
-            # D-005: Safer heuristic - require explicit "accepts_zakat": true pattern
-            # to avoid misinterpreting negations like "does not accept zakat is true"
-            import re
-
-            accepts = bool(re.search(r'"accepts_zakat"\s*:\s*true', text.lower()))
             return ZakatVerification(
-                accepts_zakat=accepts,
+                accepts_zakat=False,
                 accepts_zakat_evidence=None,
                 accepts_zakat_url=None,
                 zakat_categories_served=[],
-                confidence=0.3,
+                confidence=0.0,
+                source_count=result.source_count,
+                cost_usd=result.cost_usd,
+                error=error_msg,
+            )
+
+        try:
+            data = json.loads(json_str)
+        except json.JSONDecodeError as e:
+            error_msg = f"Failed to parse zakat response JSON for {charity_name}: {e}"
+            logger.warning(error_msg)
+            logger.debug(f"Extracted JSON: {json_str[:500]}")
+            return ZakatVerification(
+                accepts_zakat=False,
+                accepts_zakat_evidence=None,
+                accepts_zakat_url=None,
+                zakat_categories_served=[],
+                confidence=0.0,
                 source_count=result.source_count,
                 cost_usd=result.cost_usd,
                 error=error_msg,
@@ -406,12 +449,12 @@ class ZakatVerificationService:
                         is_exact_match = chunk_domain == charity_domain
                         is_subdomain = chunk_domain.endswith("." + charity_domain)
                         if is_exact_match or is_subdomain:
-                            source_url = chunk.uri
+                            source_url = _resolve_grounding_redirect(chunk.uri)
                             source_from_charity_domain = True
                             break
             # Fall back to first source (but mark as third-party)
             if not source_url and result.grounding_metadata.grounding_chunks[0].uri:
-                source_url = result.grounding_metadata.grounding_chunks[0].uri
+                source_url = _resolve_grounding_redirect(result.grounding_metadata.grounding_chunks[0].uri)
 
         # Calculate confidence from evidence quality + grounding supports
         #

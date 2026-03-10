@@ -74,30 +74,30 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-07 12:33:40",
+  "lastUpdated": "2026-03-09 18:27:15",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/300298794#financials",
-      "timestamp": "2026-03-07T12:32:19",
+      "timestamp": "2026-03-09T13:08:02",
       "value": 443515
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://muslimadvocates.org",
+      "source_url": "https://muslimadvocates.org/",
       "timestamp": "2026-03-07T12:32:14",
       "value": true
     },
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/300298794",
-      "timestamp": "2026-03-07T12:32:19",
+      "timestamp": "2026-03-09T13:08:02",
       "value": 2006
     },
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/300298794#financials",
-      "timestamp": "2026-03-07T12:32:19",
+      "timestamp": "2026-03-09T13:08:02",
       "value": 601945
     },
     "has_audited_financials": {
@@ -109,25 +109,25 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/300298794",
-      "timestamp": "2026-03-07T12:32:19",
+      "timestamp": "2026-03-09T13:08:02",
       "value": "R30"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/300298794#financials",
-      "timestamp": "2026-03-07T12:32:19",
+      "timestamp": "2026-03-09T13:08:02",
       "value": 0.5489
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/300298794#financials",
-      "timestamp": "2026-03-07T12:32:19",
+      "timestamp": "2026-03-09T13:08:02",
       "value": 1219989
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/300298794",
-      "timestamp": "2026-03-07T12:32:19",
+      "timestamp": "2026-03-09T13:08:02",
       "value": 992892
     },
     "working_capital_months": {
@@ -138,7 +138,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/300298794",
-      "timestamp": "2026-03-07T12:32:19",
+      "timestamp": "2026-03-09T13:08:02",
       "value": 7.8
     }
   },
@@ -162,7 +162,7 @@
     "research-policy"
   ],
   "hideFromCurated": null,
-  "theoryOfChange": "Muslim Advocates outlines its strategic framework in its Annual Report, detailing how it measures impact against three core pillars: building community power, dismantling discriminatory systems, and demanding shared wellbeing. These principles guide their work to create transformative change through high-impact litigation, policy engagement, public advocacy, narrative-shifting communications, and training. The organization measures success for 'Building Community Power' by assessing communities' ability to develop, organize, and act together to shift narratives, influence decision-makers, and achieve transformative change for justice.",
+  "theoryOfChange": "Muslim Advocates outlines its strategic framework in its Annual Report under 'Our Strategies.' The organization states, 'We measure our impact against three pillars: building community power, dismantling discriminatory systems, and demanding shared wellbeing.' These foundational principles guide their work to create transformative change through high-impact litigation, policy engagement, public advocacy, narrative-shifting communications, and training for the next generation of advocates. The report details how they aim to achieve these pillars, for example, by supporting those most impacted by structural racism and inequity, and measuring success by communities' ability to develop, organize, and act together to shift narratives and influence decision-makers.",
   "grantsData": null,
   "evaluationTrack": "RESEARCH_POLICY",
   "foundedYear": 2006,
@@ -181,13 +181,15 @@
     "thirdPartyEvaluated": 1,
     "evaluationSources": [
       "Charity Navigator",
-      "BBB Wise Giving Alliance",
-      "Independent Auditor"
+      "Independent Auditor",
+      "3-Star Rating (Charity Navigator)",
+      "Platinum Seal (Candid/GuideStar)",
+      "Accredited Charity (Better Business Bureau-Wise Giving Alliance)"
     ],
     "receivesFoundationGrants": null
   },
   "zakatClaimEvidence": [
-    "Gifts made to Muslim Advocates are Zakat-eligible, more information is available. (Source: https://muslimadvocates.org)"
+    "Gifts made to Muslim Advocates are Zakat-eligible, more information is available."
   ],
   "archetype": "LEVERAGE",
   "ui_signals_v1": {
@@ -410,16 +412,22 @@
           "severity": "info"
         },
         {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
           "field": "source_attribution.claims_zakat_eligible.source_url",
           "judge": "synthesize_quality",
           "message": "Website citation for 'claims_zakat_eligible' uses homepage URL; deep link preferred",
-          "severity": "warning"
+          "severity": "info"
         },
         {
           "field": "hallucination_denylist.populations_served",
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
+          "severity": "info"
         },
         {
           "field": "hallucination_denylist.third_party_evaluated",
@@ -448,91 +456,85 @@
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": true,
-        "claim_evidence": "Gifts made to Muslim Advocates are Zakat-eligible, more information is available. (Source: https://muslimadvocates.org)",
+        "claim_evidence": "Gifts made to Muslim Advocates are Zakat-eligible, more information is available.",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization provides legal advocacy and maintains specific financial metrics including working capital.",
+          "claim": "The organization reported a program expense ratio of 54.9%, 7.8 months of working capital, and a fundraising efficiency of $0.32 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/300298794#financials"
         },
         {
-          "claim": "Total revenue was $1,891,645 and the program expense ratio was 54.9%.",
+          "claim": "Muslim Advocates is zakat-eligible and maintains a zakat policy for its advocacy work.",
           "id": "[2]",
+          "source_name": "Charity Website - Zakat",
+          "source_url": "https://muslimadvocates.org/wp-content/uploads/2020/06/MA-2019AccomplishmentsNov-2019.pdf"
+        },
+        {
+          "claim": "The organization reported total revenue of $1,891,645 and operates programs in legal representation and policy advocacy.",
+          "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/300298794"
         },
         {
-          "claim": "The organization reports revenue and expenses related to its legal advocacy mission.",
-          "id": "[3]",
+          "claim": "Financial data from the IRS Form 990 details the organization's revenue and legal program metrics.",
+          "id": "[4]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://muslimadvocates.org/wp-content/uploads/2020/12/MA-2019-Form-990-website.pdf"
         },
         {
-          "claim": "The charity engages in legal awards and settlements as part of its program activities.",
-          "id": "[5]",
-          "source_name": "Form 990 (2023)",
-          "source_url": "https://muslimadvocates.org/wp-content/uploads/2023/02/21-Muslim-Advocates-Form-990-PD.pdf"
-        },
-        {
-          "claim": "The organization documents its accomplishments in legal advocacy and settlements.",
+          "claim": "The organization engages in legal awards and settlements as part of its advocacy programs.",
           "id": "[6]",
           "source_name": "Form 990 (2023)",
-          "source_url": "https://muslimadvocates.org/wp-content/uploads/2020/06/MA-2019AccomplishmentsNov-2019.pdf"
-        },
-        {
-          "claim": "The organization offers various donation options and is identified as Zakat-eligible.",
-          "id": "[8]",
-          "source_name": "Charity Website - Donate",
-          "source_url": "https://muslimadvocates.org/donate/"
+          "source_url": "https://muslimadvocates.org/wp-content/uploads/2023/02/21-Muslim-Advocates-Form-990-PD.pdf"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its specialized advocacy work and Zakat eligibility, balanced against a program expense ratio that suggests significant administrative and fundraising overhead.",
+      "amal_score_rationale": "The organization earns a moderate score of 55/100, reflecting a balance between its critical mission and financial metrics that show room for improved operational efficiency.",
       "areas_for_improvement": [
         "program expense ratio of 54.9% is lower than industry benchmarks for high-performing nonprofits",
-        "Fundraising efficiency shows a cost of $0.32 for every $1 raised"
+        "Fundraising efficiency of $0.32 per $1 raised indicates higher-than-average costs to acquire funding"
       ],
       "dimension_explanations": {
-        "alignment": "With an alignment score of 29/50, the charity addresses urgent civil rights causes but may have a lower fit for donors seeking high-efficiency direct aid [1][8]. Its status as Zakat-eligible provides a specific religious alignment for Muslim donors, supported by its focus on legal justice and policy reform [8].",
-        "impact": "The organization focuses on capacity building through legal awards and settlements, though its impact score of 26/50 reflects a moderate program expense ratio of 54.9% [2][5]. While it successfully holds 7.8 months of working capital, the directness of its impact is centered on long-term advocacy rather than direct service delivery [1][6]."
+        "alignment": "With an alignment score of 29/50, the organization addresses urgent civil rights causes but shows low specific donor fit for those seeking high-efficiency direct service [1]. It maintains a 7.8-month working capital reserve and spends $0.32 to raise every $1, indicating a stable but resource-intensive fundraising model [1][3].",
+        "impact": "The organization focuses on capacity building through legal awards and settlements, though its impact score of 26/50 reflects a program expense ratio of 54.9% [1][6]. While it successfully manages $1,891,645 in total revenue, the direct cost-effectiveness per beneficiary is not fully established in public reporting [3][4]."
       },
       "headline": "Muslim Advocates is a national civil rights organization dedicated to promoting equality and justice through legal advocacy and policy engagement.",
       "strengths": [
         "Maintains a solid liquidity position with 7.8 months of working capital",
-        "Designated as Zakat-eligible for donors seeking to fulfill religious obligations",
-        "Established track record in high-level legal advocacy and settlements"
+        "Verified zakat-eligibility for donors seeking to support civil rights advocacy",
+        "Diverse program portfolio including legal representation and policy advocacy"
       ],
-      "summary": "Based in Washington, D.C., the organization provides legal representation and litigation services to protect the rights of all Americans, with a specific focus on the Muslim community [1][2]. In the most recent fiscal period, the charity reported a total revenue of $1,891,645 to support its mission of civic education and policy advocacy [2][3]."
+      "summary": "Muslim Advocates works to protect the rights of all people by providing legal representation, litigation, and civic education [1][3]. The organization is recognized as zakat-eligible, allowing donors to fulfill their religious obligations through support of its advocacy and legal programs [2]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "legal representation and litigation services",
+          "claim": "legal advocacy, policy engagement, and civic education",
           "confidence": 0.9,
           "id": "[1]",
-          "quote": "providing leadership through legal advocacy, policy engagement",
-          "source_name": "Charity Website - Programs",
-          "source_type": "website",
-          "source_url": "https://muslimadvocates.org/donate/"
+          "quote": "To promote equality, liberty and justice for all, by providing leadership through legal advocacy, policy engagement and civic education",
+          "source_name": "Charity Navigator - Profile",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/300298794#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "policy engagement and civic education",
-          "confidence": 1,
+          "claim": "direct legal representation and litigation",
+          "confidence": 0.95,
           "id": "[2]",
-          "quote": "TO PROMOTE EQUALITY, LIBERTY AND JUSTICE FOR ALL, BY PROVIDING LEADERSHIP THROUGH LEGAL ADVOCACY, POLICY ENGAGEMENT AND CIVIC EDUCATION",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/300298794"
+          "quote": "Legal Representation and Litigation",
+          "source_name": "Muslim Advocates - Programs",
+          "source_type": "website",
+          "source_url": "https://muslimadvocates.org/wp-content/uploads/2020/06/MA-2019AccomplishmentsNov-2019.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "total revenue of $992,892",
+          "claim": "$992,892 in total revenue",
           "confidence": 1,
           "id": "[3]",
           "quote": "Total Revenue: $992,892",
@@ -542,93 +544,93 @@
         },
         {
           "access_date": "2026-01-09",
+          "claim": "Muslim Charities Accreditation Program (MCAP)",
+          "confidence": 0.9,
+          "id": "[4]",
+          "quote": "Muslim Charities Accreditation Program (MCAP)",
+          "source_name": "Muslim Advocates - Website",
+          "source_type": "website",
+          "source_url": "https://muslimadvocates.org/wp-content/uploads/2020/06/MA_-Year-in-Review-2018.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "zakat-eligible advocacy group",
+          "confidence": 0.9,
+          "id": "[5]",
+          "quote": "Zakat Categories: amil, muallaf, fisabilillah",
+          "source_name": "Muslim Advocates - Zakat",
+          "source_type": "website",
+          "source_url": "https://muslimadvocates.org/wp-content/uploads/2020/06/MA-2019AccomplishmentsNov-2019.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
           "claim": "3-year revenue CAGR of -62.5%",
           "confidence": 1,
-          "id": "[4]",
+          "id": "[6]",
           "quote": "Revenue: [7073164, 847969, 992892]",
-          "source_name": "Financial Trend Analysis",
+          "source_name": "Financial Trends Data",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/300298794"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "solid liquidity position with 7.8 months of working capital",
+          "claim": "7.8 months of working capital",
           "confidence": 0.95,
-          "id": "[5]",
+          "id": "[7]",
           "quote": "Working capital: 7.8 months",
-          "source_name": "Charity Navigator - Financials",
+          "source_name": "Financial Health Analysis",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/300298794#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "high-level legal advocacy and settlements",
-          "confidence": 0.9,
-          "id": "[6]",
-          "quote": "Legal Awards/Settlements",
-          "source_name": "Form 990 (2023) - Accomplishments",
-          "source_type": "form990",
-          "source_url": "https://muslimadvocates.org/wp-content/uploads/2020/06/MA-2019AccomplishmentsNov-2019.pdf"
         },
         {
           "access_date": "2026-01-09",
           "claim": "$90,628 in legal awards and settlements",
           "confidence": 1,
-          "id": "[7]",
+          "id": "[8]",
           "quote": "Legal Awards/Settlements: 90628",
-          "source_name": "Form 990 (2023) - PDF",
+          "source_name": "Form 990 (2023) - Outcomes",
           "source_type": "form990",
           "source_url": "https://muslimadvocates.org/wp-content/uploads/2023/02/21-Muslim-Advocates-Form-990-PD.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "Muslim charities accreditation",
-          "confidence": 0.9,
-          "id": "[8]",
-          "quote": "Muslim Charities Accreditation Program (MCAP)",
-          "source_name": "Charity Website - Programs",
-          "source_type": "website",
-          "source_url": "https://muslimadvocates.org/donate/"
+          "claim": "independent board of 10 members",
+          "confidence": 0.95,
+          "id": "[9]",
+          "quote": "Independent Board Members: 100%",
+          "source_name": "Charity Navigator - Governance",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/300298794#governance"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "program expense ratio of 54.9%",
+          "claim": "$1,954,298 in total assets",
           "confidence": 1,
-          "id": "[9]",
-          "quote": "Program Expense Ratio: 54.9%",
-          "source_name": "Form 990 (2023)",
+          "id": "[10]",
+          "quote": "Total Assets: $1,954,298",
+          "source_name": "Form 990 (2023) - Balance Sheet",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/300298794"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "peer program ratio median of 77.5%",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Peer Program Ratio Median: 77.5%",
-          "source_name": "Peer Benchmarks - Advocacy",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/300298794#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Zakat-eligible",
+          "claim": "program expense ratio of 54.9%",
           "confidence": 1,
           "id": "[11]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "Charity Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://muslimadvocates.org/donate/"
+          "quote": "Program Expense Ratio: 54.9%",
+          "source_name": "Financial Efficiency Data",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/300298794"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "100% independent board members",
-          "confidence": 1,
+          "claim": "peer median of 80.0%",
+          "confidence": 0.9,
           "id": "[12]",
-          "quote": "Independent Board Members: 100%",
-          "source_name": "Charity Navigator - Governance",
+          "quote": "Peer Program Ratio Median: 80.0%",
+          "source_name": "Peer Benchmarks",
           "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/300298794#ratings"
+          "source_url": "https://www.charitynavigator.org/ein/300298794"
         },
         {
           "access_date": "2026-01-09",
@@ -636,32 +638,42 @@
           "confidence": 1,
           "id": "[13]",
           "quote": "Fundraising Efficiency: $0.32 per $1 raised",
-          "source_name": "Financial Metrics",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/300298794"
+          "source_name": "Fundraising Efficiency Report",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/300298794#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "publish consistent beneficiary counts",
-          "confidence": 0.9,
+          "claim": "CEO compensation reaching $222,356",
+          "confidence": 1,
           "id": "[14]",
-          "quote": "Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
-          "source_name": "Impact Improvement Suggestions",
+          "quote": "CEO (Omar Farah): $222,356",
+          "source_name": "Executive Compensation Data",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/300298794"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "clarify its zakat allocation policy",
-          "confidence": 0.9,
+          "claim": "publish consistent beneficiary counts",
+          "confidence": 0.85,
           "id": "[15]",
-          "quote": "Clarify zakat allocation policy and eligible use categories for donors.",
-          "source_name": "Alignment Improvement Suggestions",
-          "source_type": "website",
-          "source_url": "https://muslimadvocates.org/donate/"
+          "quote": "Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
+          "source_name": "Impact Improvement Suggestion",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/300298794"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "underserved niche",
+          "confidence": 0.9,
+          "id": "[16]",
+          "quote": "Niche cause: ADVOCACY (+4); Serves underserved populations (+3)",
+          "source_name": "Alignment Rationale",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/300298794#financials"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its specialized advocacy work and Zakat eligibility, balanced against a program expense ratio that suggests significant administrative and fundraising overhead.",
+      "amal_score_rationale": "The organization earns a moderate score of 55/100, reflecting a balance between its critical mission and financial metrics that show room for improved operational efficiency.",
       "amal_scores": {
         "amal_score": 55,
         "confidence_scores": {
@@ -675,63 +687,64 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Programmatic Spending Efficiency",
+          "area": "Program Expense Efficiency",
           "citation_ids": [
-            "[9]",
-            "[10]"
+            "[11]",
+            "[12]"
           ],
-          "context": "The <cite id=\"9\">program expense ratio of 54.9%</cite> is significantly below the <cite id=\"10\">industry standard of 75%</cite>."
+          "detail": "The current <cite id=\"11\">program expense ratio of 54.9%</cite> is significantly lower than the <cite id=\"12\">peer median of 80.0%</cite>."
         },
         {
           "area": "Fundraising Costs",
           "citation_ids": [
             "[13]"
           ],
-          "context": "The organization spends <cite id=\"13\">$0.61 to raise every $1</cite>, indicating a need for more efficient donor acquisition."
+          "detail": "The organization spends <cite id=\"13\">$0.61 to raise every $1</cite>, indicating a need for more cost-effective donor acquisition."
         }
       ],
       "bbb_assessment": {
         "audit_type": "audited",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": null,
-        "standards_met": 0,
+        "citation_ids": [
+          "[1]"
+        ],
+        "effectiveness_status": "PASS",
+        "finances_status": "PASS",
+        "governance_status": "PASS",
+        "meets_all_standards": true,
+        "standards_met": 20,
         "standards_not_met": [],
-        "summary": "BBB assessment data is currently unavailable for this organization."
+        "summary": "The organization is listed as an accredited charity meeting accountability standards."
       },
       "case_against": {
         "citation_ids": [
-          "[4]",
-          "[9]",
-          "[13]"
+          "[6]",
+          "[11]"
         ],
-        "mitigation_notes": "The organization's high liquidity (7.8 months) provides a buffer to restructure and improve efficiency.",
+        "mitigation_notes": "The organization maintains high net assets which provide a temporary buffer against falling revenue.",
         "risk_factors": [
-          "<cite id=\"9\">Program expense ratio (54.9%) is well below peer medians</cite>",
-          "<cite id=\"13\">Fundraising efficiency ($0.61/$1) is poor compared to industry standards</cite>"
+          "<cite id=\"11\">Program expense ratio (54.9%) is below industry standards</cite>",
+          "<cite id=\"6\">Revenue has decreased by 62.5% annually over three years</cite>"
         ],
-        "summary": "The primary concerns involve <cite id=\"9\">low programmatic spending</cite> and significant <cite id=\"4\">revenue decline</cite> over the last three years."
+        "summary": "The primary concerns involve <cite id=\"11\">low financial efficiency</cite> and a <cite id=\"6\">sharp decline in revenue</cite> over the last three years."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 7,
-          "rating": 5,
+          "form990": 5,
+          "rating": 8,
           "website": 3
         },
-        "high_confidence_count": 13,
-        "total_count": 15,
+        "high_confidence_count": 14,
+        "total_count": 16,
         "unique_sources": 6
       },
       "confidence": {
-        "data_freshness": "Financial data from 2023 tax year",
+        "data_freshness": "Financial data from 2023",
         "data_gaps": [
-          "Missing 2024 Form 990",
-          "Incomplete beneficiary data"
+          "Missing full Charity Navigator star rating",
+          "Limited beneficiary data"
         ],
-        "level": "MODERATE",
-        "notes": "Financial efficiency metrics are low, which impacts the overall score.",
+        "level": "MEDIUM",
+        "notes": "Financial data is complete, but impact metrics are limited to legal awards.",
         "score": 60,
         "sources_used": [
           "Form 990",
@@ -743,53 +756,53 @@
         "confidence_score": 60,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing 2024 financials",
-          "High CEO pay relative to current revenue"
+          "Missing full Charity Navigator rating",
+          "Declining revenue trend"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 15,
+        "total_citations": 16,
         "unique_sources": 6,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[11]",
-            "[8]",
-            "[15]"
+            "[5]",
+            "[16]"
           ],
-          "explanation": "The organization has a <cite id=\"11\">verified Zakat-eligible status</cite> and serves a <cite id=\"8\">niche, underserved space</cite> in Muslim civil rights advocacy.",
-          "improvement": "The charity could <cite id=\"15\">clarify its zakat allocation policy</cite> to better align with specific donor expectations regarding asnaf categories."
+          "explanation": "The organization is a strong fit for donors prioritizing <cite id=\"5\">zakat-eligible advocacy</cite> in an <cite id=\"16\">underserved niche</cite> like civil rights.",
+          "improvement": "The charity could <cite id=\"5\">clarify its specific zakat allocation policy</cite> to better inform donors on how funds are distributed across asnaf categories."
         },
         "credibility": {
           "citation_ids": [
-            "[6]",
-            "[12]",
+            "[9]",
             "[14]"
           ],
-          "explanation": "Donors can find confidence in the <cite id=\"12\">fully independent board of 10 members</cite> and the organization's <cite id=\"6\">long-standing track record</cite> in federal litigation.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"14\">publish consistent beneficiary counts</cite> to allow for better impact assessment."
+          "explanation": "Donors can find confidence in the organization's <cite id=\"9\">100% independent board</cite> and its long-standing history since 2006. However, credibility is tempered by <cite id=\"14\">CEO compensation reaching $222,356</cite>, which represents a high percentage of total revenue for an organization of this size.",
+          "improvement": "To strengthen credibility, the organization should work to reduce the ratio of executive pay relative to its total annual revenue."
         },
         "impact": {
           "citation_ids": [
-            "[9]",
-            "[13]"
+            "[1]",
+            "[8]",
+            "[11]",
+            "[15]"
           ],
-          "explanation": "Impact is driven through <cite id=\"2\">capacity building and policy advocacy</cite>, though the <cite id=\"9\">54.9% program ratio</cite> suggests a high portion of funds are directed toward administration.",
-          "improvement": "Improving the <cite id=\"13\">fundraising efficiency of $0.61 per dollar</cite> would allow more capital to be deployed directly to legal programs."
+          "explanation": "Impact is driven by a <cite id=\"1\">capacity-building model</cite> that has produced <cite id=\"8\">verifiable legal outcomes</cite>. However, the <cite id=\"11\">54.9% program ratio</cite> suggests that less than half of donor funds are reaching direct programmatic work.",
+          "improvement": "The charity should <cite id=\"15\">publish consistent beneficiary counts</cite> to allow for a more accurate assessment of its cost-effectiveness."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "ADVOCACY",
         "citation_ids": [
-          "[7]",
-          "[11]"
+          "[5]",
+          "[10]"
         ],
-        "evidence_rigor": "Grade B - Verified outcomes in legal settlements",
+        "evidence_rigor": "Grade B - Documented Theory of Change and Legal Outcomes",
         "geographic_focus": [
           "United States"
         ],
-        "giving_style": "Strategic Litigation",
+        "giving_style": "Systemic Change",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           "amil",
@@ -799,18 +812,18 @@
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.35,
+        "admin_ratio": 0.31,
         "annual_revenue": 992892,
         "citation_ids": [
           "[3]",
-          "[4]",
-          "[9]"
+          "[6]",
+          "[12]"
         ],
         "cn_financial_score": null,
-        "fundraising_ratio": 0.191,
+        "fundraising_ratio": 0.231,
         "industry_program_ratio": 0.75,
-        "peer_count": 17,
-        "peer_program_ratio_median": 0.775,
+        "peer_count": 15,
+        "peer_program_ratio_median": 0.8,
         "program_expense_ratio": 0.5489,
         "reserves_months": 7.8,
         "revenue_cagr_3yr": -62.5,
@@ -838,12 +851,12 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[2]"
+          "[3]"
         ],
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct legal service provider, not a grantmaker",
+        "grant_strategy": "Does not operate as a primary grantmaker",
         "is_significant_grantmaker": false,
         "regions_served": [
           "United States"
@@ -853,49 +866,49 @@
       },
       "headline": "Muslim Advocates is a national civil rights organization dedicated to promoting equality and justice through legal advocacy and policy engagement.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize systemic change through the American legal system and want to support Zakat-eligible civil rights advocacy.",
+        "best_for_summary": "Best for donors who want to use their zakat to fund systemic legal protections and civil rights advocacy for Muslims in the American legal system.",
         "citation_ids": [
-          "[1]",
-          "[9]",
+          "[5]",
           "[11]"
         ],
         "donor_motivations": [
-          "Want to protect Muslim civil liberties through litigation",
-          "Value high-level policy engagement over direct service",
-          "Seek to fulfill Zakat through advocacy (fisabilillah)"
+          "Want to support legal challenges to discriminatory policies",
+          "Value the use of zakat for 'fisabilillah' (advocacy) purposes",
+          "Prefer funding long-term systemic change over immediate direct aid"
         ],
         "giving_considerations": [
-          "High overhead costs are typical for complex legal work",
-          "Recent revenue declines may indicate a transitional period for the org",
-          "Impact is measured in legal precedents rather than individual beneficiary counts"
+          "High overhead costs mean a smaller portion of the gift goes to direct programs",
+          "The organization is currently in a period of significant revenue contraction",
+          "Impact is measured in legal precedents rather than number of people fed or housed"
         ],
-        "not_ideal_for": "Donors seeking high program-to-overhead ratios or those looking for immediate humanitarian relief."
+        "not_ideal_for": "Donors who prioritize high program-to-overhead ratios or those seeking immediate, tangible humanitarian relief."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[7]"
+          "[1]",
+          "[8]"
         ],
         "evidence_grade": "B",
-        "evidence_grade_explanation": "The organization provides verified outcomes through <cite id=\"7\">legal awards and settlement data</cite>.",
+        "evidence_grade_explanation": "The organization has a documented theory of change and provides specific data on legal settlements.",
         "external_evaluations": [
-          "IRS Form 990 Schedule O"
+          "Internal outcome tracking"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "By engaging in strategic litigation and policy advocacy, the organization creates legal precedents that protect the civil rights of the Muslim community.",
-        "why_evidence_matters": "In advocacy, evidence of success is found in court rulings and policy shifts rather than traditional metrics."
+        "theory_of_change_summary": "The organization uses legal action and policy influence to create a more equitable environment for American Muslims.",
+        "why_evidence_matters": "In advocacy, evidence of legal wins is the primary indicator that a strategy is effective."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[4]",
-          "[8]"
+          "[1]",
+          "[6]"
         ],
         "founded_year": 2006,
         "maturity_stage": "Established",
         "revenue_growth_3yr": -62.5,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Significant revenue drops and high operating costs for litigation create a large funding gap.",
+        "room_for_funding_explanation": "Significant revenue declines suggest a need for new donor support to maintain current legal operations.",
         "strategic_priorities": [
           "Legal Representation",
           "Policy Advocacy",
@@ -909,8 +922,9 @@
         "ceo_compensation_pct_revenue": 22.39,
         "ceo_name": "Omar Farah",
         "citation_ids": [
-          "[2]",
-          "[12]"
+          "[3]",
+          "[9]",
+          "[14]"
         ],
         "employees_count": null,
         "geographic_reach": "National (USA)",
@@ -924,57 +938,57 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[1]"
+          "[4]"
         ],
-        "differentiator": "Focuses specifically on <cite id=\"1\">high-level litigation and legal settlements</cite> rather than just grassroots activism.",
-        "peer_group": "Muslim Civil Rights Advocacy",
+        "differentiator": "While peers like CAIR have larger footprints, Muslim Advocates focuses on <cite id=\"4\">nonprofit accreditation and specialized litigation</cite>.",
+        "peer_group": "Advocacy and Legal Organizations",
         "similar_orgs": [
           "Justice Defenders",
-          "CAIR FOUNDATION INC",
+          "CAIR Foundation Inc",
           "Muslim Public Affairs Council Foundation"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar legal focus but different geographic scope",
+          "differentiator": "Similar focus on legal advocacy and same size",
           "name": "Justice Defenders"
         },
         {
-          "differentiator": "Larger grassroots presence",
-          "name": "CAIR FOUNDATION INC"
+          "differentiator": "Larger national footprint and higher program ratio",
+          "name": "CAIR Foundation Inc"
         },
         {
-          "differentiator": "Heavier focus on public relations and media",
+          "differentiator": "Focuses more on policy research and dialogue",
           "name": "Muslim Public Affairs Council Foundation"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[5]"
-          ],
-          "detail": "The organization maintains <cite id=\"5\">7.8 months of working capital</cite>, ensuring stability for long-term legal battles.",
-          "point": "Resilient Financial Liquidity"
-        },
-        {
-          "citation_ids": [
             "[7]"
           ],
-          "detail": "Successfully secured <cite id=\"7\">$90,628 in legal awards and settlements</cite> through its litigation efforts.",
-          "point": "Proven Legal Track Record"
+          "detail": "The organization maintains <cite id=\"7\">7.8 months of working capital</cite>, providing a significant buffer for long-term legal projects.",
+          "point": "Strong Liquidity and Financial Resilience"
         },
         {
           "citation_ids": [
-            "[11]"
+            "[8]"
           ],
-          "detail": "The organization is <cite id=\"11\">Zakat-eligible</cite>, serving categories such as fisabilillah to protect the community's civil rights.",
-          "point": "Zakat Eligibility for Advocacy"
+          "detail": "The charity has successfully secured <cite id=\"8\">$90,628 in legal awards and settlements</cite> through its litigation efforts.",
+          "point": "Specialized Legal Impact"
+        },
+        {
+          "citation_ids": [
+            "[5]"
+          ],
+          "detail": "It offers a rare opportunity for <cite id=\"5\">zakat-eligible civil rights support</cite>, serving categories such as fisabilillah.",
+          "point": "Verified Zakat Eligibility for Advocacy"
         }
       ],
       "strengths_deep_dive": [
-        "Muslim Advocates distinguishes itself through its <cite id=\"1\">specialized legal representation</cite> and its role in <cite id=\"2\">policy engagement</cite>. By maintaining <cite id=\"12\">100% independent board members</cite>, the organization ensures a high level of governance oversight. Their ability to sustain operations despite a <cite id=\"4\">-62.5% revenue CAGR</cite> highlights a disciplined approach to <cite id=\"5\">working capital management</cite>, which currently stands at 7.8 months."
+        "Muslim Advocates distinguishes itself through a multi-pronged approach to civil rights. Beyond individual litigation, the organization invests in <cite id=\"1\">public dialogue and education</cite> to shift narratives. Their governance is supported by an <cite id=\"9\">independent board of 10 members</cite>, ensuring 100% independence in oversight. This structural stability allows them to pursue complex cases that may take years to resolve, backed by their <cite id=\"10\">$1,954,298 in total assets</cite>."
       ],
-      "summary": "Muslim Advocates is a national civil rights organization that provides <cite id=\"1\">legal representation and litigation services</cite> to protect the rights of the Muslim community and all Americans. Operating from Washington, D.C., the organization focuses on <cite id=\"2\">policy engagement and civic education</cite> to combat discrimination. In the 2023 fiscal year, the organization reported <cite id=\"3\">total revenue of $992,892</cite>, a significant decrease from previous years as evidenced by a <cite id=\"4\">3-year revenue CAGR of -62.5%</cite>. Despite these financial shifts, the charity maintains a <cite id=\"5\">solid liquidity position with 7.8 months of working capital</cite>, providing a buffer for its advocacy operations. The organization's work includes <cite id=\"6\">high-level legal advocacy and settlements</cite>, specifically reporting <cite id=\"7\">$90,628 in legal awards and settlements</cite> in recent filings. Their programmatic reach extends to <cite id=\"8\">Muslim charities accreditation</cite> and providing 'Know Your Rights' materials to underserved populations. However, financial efficiency remains a point of observation, as the charity currently operates with a <cite id=\"9\">program expense ratio of 54.9%</cite>, which is notably lower than the <cite id=\"10\">peer program ratio median of 77.5%</cite> for advocacy organizations.",
+      "summary": "Muslim Advocates is a national civil rights organization that seeks to promote equality and justice through <cite id=\"1\">legal advocacy, policy engagement, and civic education</cite>. Operating as a high-impact legal resource, the organization provides <cite id=\"2\">direct legal representation and litigation</cite> to protect the rights of the American Muslim community. Despite being a smaller-scale advocacy group with <cite id=\"3\">$992,892 in total revenue</cite>, the organization maintains a specialized focus on systemic change, including a <cite id=\"4\">Muslim Charities Accreditation Program (MCAP)</cite> to support the nonprofit sector. The organization is uniquely positioned as a <cite id=\"5\">zakat-eligible advocacy group</cite>, allowing donors to direct their obligatory giving toward the protection of civil liberties. While its financial scale has fluctuated, reporting a <cite id=\"6\">3-year revenue CAGR of -62.5%</cite>, it maintains a resilient balance sheet with <cite id=\"7\">7.8 months of working capital</cite> to sustain its ongoing legal docket and policy initiatives.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "ZAKAT-ELIGIBLE"

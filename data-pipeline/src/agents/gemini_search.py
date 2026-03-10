@@ -99,56 +99,84 @@ def _repair_truncated_json(json_str: str) -> Optional[str]:
     """
     Attempt to repair truncated JSON by closing open structures.
 
-    This handles cases where the response was cut off mid-JSON.
+    Handles truncation anywhere — inside strings, arrays, nested objects.
+
+    Strategy: collect every comma position outside strings, then try
+    truncating at each (right-to-left) and closing open structures
+    until json.loads succeeds.  This preserves the maximum amount of data.
     """
-    # Count unclosed structures
+    if not json_str or json_str[0] != "{":
+        return None
+
+    # Collect comma positions and closing-structure positions outside strings.
+    # Any of these is a candidate truncation point.
     in_string = False
     escape_next = False
-    open_braces = 0
-    open_brackets = 0
-    last_complete_pos = 0
+    cut_candidates: list[int] = []
 
     for i, char in enumerate(json_str):
         if escape_next:
             escape_next = False
             continue
         if char == "\\":
-            escape_next = True
+            if in_string:
+                escape_next = True
             continue
         if char == '"':
             in_string = not in_string
             continue
         if in_string:
             continue
-        if char == "{":
-            open_braces += 1
-        elif char == "}":
-            open_braces -= 1
-            if open_braces >= 0:
-                last_complete_pos = i + 1
-        elif char == "[":
-            open_brackets += 1
-        elif char == "]":
-            open_brackets -= 1
-            if open_brackets >= 0:
-                last_complete_pos = i + 1
-        elif char == "," and open_braces == 1 and open_brackets == 0:
-            # Top-level comma - marks end of a complete field
-            last_complete_pos = i + 1
+        if char == ",":
+            cut_candidates.append(i)
+        elif char in ("}", "]"):
+            cut_candidates.append(i + 1)
 
-    # Truncate to last complete position and close structures
-    if last_complete_pos > 0:
-        repaired = json_str[:last_complete_pos].rstrip().rstrip(",")
-        # Add closing brackets/braces as needed
-        repaired += "]" * open_brackets + "}" * open_braces
-        # D-009: Validate repaired JSON is actually valid before returning
+    # Try each candidate from rightmost (most data) to leftmost
+    closers = {"[": "]", "{": "}"}
+    for pos in reversed(cut_candidates):
+        truncated = json_str[:pos].rstrip().rstrip(",")
+        if not truncated:
+            continue
+
+        # Recount open structures on the truncated fragment
+        in_str = False
+        esc = False
+        stack: list[str] = []
+        for char in truncated:
+            if esc:
+                esc = False
+                continue
+            if char == "\\":
+                if in_str:
+                    esc = True
+                continue
+            if char == '"':
+                in_str = not in_str
+                continue
+            if in_str:
+                continue
+            if char == "{":
+                stack.append("{")
+            elif char == "}":
+                if stack and stack[-1] == "{":
+                    stack.pop()
+            elif char == "[":
+                stack.append("[")
+            elif char == "]":
+                if stack and stack[-1] == "[":
+                    stack.pop()
+
+        suffix = "".join(closers[s] for s in reversed(stack))
+        repaired = truncated + suffix
+
         try:
             json.loads(repaired)
             return repaired
         except json.JSONDecodeError:
-            logger.warning(f"Repaired JSON still invalid: {repaired[:100]}...")
-            return None
+            continue
 
+    logger.warning(f"Repaired JSON still invalid: {json_str[:100]}...")
     return None
 
 

@@ -113,10 +113,11 @@ class FactualJudge(BaseJudge):
                 logger.error(f"Factual judge LLM verification failed: {e}")
                 self.add_issue(
                     issues,
-                    Severity.WARNING,
+                    Severity.ERROR,
                     "llm_verification",
                     f"Could not complete LLM verification: {str(e)[:100]}",
                 )
+                metadata["llm_failed"] = True
                 break
 
         # Determine pass/fail

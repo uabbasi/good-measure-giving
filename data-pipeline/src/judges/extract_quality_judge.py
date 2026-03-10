@@ -147,15 +147,18 @@ class ExtractQualityJudge(BaseJudge):
         """E-J-002: Validate numeric fields are within reasonable bounds."""
         issues = []
 
-        # Import bounds from the validator module
+        # Import bounds helpers from the validator module
         try:
-            from src.validators.bounds_validator import FIELD_BOUNDS
+            from src.validators.bounds_validator import get_bounds
         except ImportError:
-            logger.warning("Could not import FIELD_BOUNDS, skipping bounds validation")
+            logger.warning("Could not import bounds helpers, skipping bounds validation")
             return []
 
         # Fields to check across all sources
         numeric_fields = [
+            "beneficiaries_served_annually",
+            "total_beneficiaries",
+            "annual_beneficiaries",
             "total_revenue",
             "total_expenses",
             "total_assets",
@@ -174,11 +177,11 @@ class ExtractQualityJudge(BaseJudge):
             "year_founded",
         ]
 
-        # All these are authoritative sources - bounds violations are ERRORs
         sources_to_check = [
             ("propublica", "propublica_990"),
             ("charity_navigator", "cn_profile"),
             ("candid", "candid_profile"),
+            ("website", "website_profile"),
         ]
 
         for source_name, schema_key in sources_to_check:
@@ -202,7 +205,7 @@ class ExtractQualityJudge(BaseJudge):
                     continue
 
                 # Check against bounds if defined
-                bounds = FIELD_BOUNDS.get(field_name)
+                bounds = get_bounds(field_name)
                 if bounds:
                     min_val, max_val = bounds
                     # Skip 0 values for count fields where 0 means "not found"

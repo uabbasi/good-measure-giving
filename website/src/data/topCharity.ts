@@ -21,7 +21,7 @@ interface FeaturedCharityData extends CharityProfile {
 export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
   "name": "The Citizens Foundation USA",
   "ein": "41-2046295",
-  "headline": "The Citizens Foundation USA empowers underprivileged children in Pakistan through high-quality education and sustainable school infrastructure.",
+  "headline": "The Citizens Foundation USA empowers underprivileged children in Pakistan through a robust network of high-quality schools and educational programs.",
   "amalEvaluation": {
     "amal_score": 87,
     "confidence_scores": {
@@ -186,10 +186,22 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
           "severity": "info"
         },
         {
+          "field": "discovered.theory_of_change.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.theory_of_change",
+          "judge": "discover_quality",
+          "message": "Theory of change URL found but description not extracted",
+          "severity": "info"
+        },
+        {
           "field": "hallucination_denylist.populations_served",
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
+          "severity": "info"
         },
         {
           "field": "hallucination_denylist.third_party_evaluated",
@@ -215,5 +227,5 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
       }
     }
   },
-  "impactHighlight": "The Citizens Foundation USA empowers underprivileged children in Pakistan through high-quality education and sustainable school infrastructure."
+  "impactHighlight": "The Citizens Foundation USA empowers underprivileged children in Pakistan through a robust network of high-quality schools and educational programs."
 };

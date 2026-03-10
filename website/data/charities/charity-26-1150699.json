@@ -88,29 +88,29 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-07 12:59:25",
+  "lastUpdated": "2026-03-09 18:31:19",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/261150699#financials",
-      "timestamp": "2026-03-07T12:58:05",
+      "timestamp": "2026-03-09T13:19:33",
       "value": 1539399
     },
     "candid_seal": {
       "source_name": "Candid",
       "source_url": "https://app.candid.org/profile/8619068",
-      "timestamp": "2026-03-07T12:58:02",
+      "timestamp": "2026-03-09T13:19:30",
       "value": "gold"
     },
     "charity_navigator_score": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/261150699#ratings",
-      "timestamp": "2026-03-07T12:58:05",
+      "timestamp": "2026-03-09T13:19:33",
       "value": 99.66666666666667
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://350.org",
+      "source_url": "https://350.org/how-to-give/",
       "timestamp": "2026-03-07T12:58:01",
       "value": false
     },
@@ -123,7 +123,7 @@
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/261150699#financials",
-      "timestamp": "2026-03-07T12:58:05",
+      "timestamp": "2026-03-09T13:19:33",
       "value": 2297966
     },
     "has_audited_financials": {
@@ -135,31 +135,31 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/261150699",
-      "timestamp": "2026-03-07T12:58:02",
+      "timestamp": "2026-03-09T13:19:30",
       "value": "C05"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/261150699#financials",
-      "timestamp": "2026-03-07T12:58:05",
+      "timestamp": "2026-03-09T13:19:33",
       "value": 0.8151999999999999
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/261150699#financials",
-      "timestamp": "2026-03-07T12:58:05",
+      "timestamp": "2026-03-09T13:19:33",
       "value": 18967045
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/261150699",
-      "timestamp": "2026-03-07T12:58:02",
+      "timestamp": "2026-03-09T13:19:30",
       "value": 19587115
     },
     "transparency_score": {
       "source_name": "Candid Gold Seal",
       "source_url": "https://app.candid.org/profile/8619068",
-      "timestamp": "2026-03-07T12:58:02",
+      "timestamp": "2026-03-09T13:19:30",
       "value": 85
     },
     "working_capital_months": {
@@ -170,7 +170,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/261150699",
-      "timestamp": "2026-03-07T12:58:02",
+      "timestamp": "2026-03-09T13:19:30",
       "value": 7.2
     }
   },
@@ -698,7 +698,7 @@
       "evidence": "Strong",
       "financial_health": "Strong",
       "donor_fit": "Moderate",
-      "risk": "Limited"
+      "risk": "Moderate"
     },
     "recommendation_cue": "Mixed Signals",
     "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
@@ -737,19 +737,12 @@
         "fundraising_expenses": 2297966,
         "total_expenses": 22804410
       }
-    },
-    {
-      "type": "risk_deduction",
-      "severity": "medium",
-      "headline": "No outcome measurement or metrics tracking",
-      "detail": "Source: Website/Candid",
-      "data_points": {}
     }
   ],
   "amalEvaluation": {
     "charity_ein": "26-1150699",
     "charity_name": "350.org",
-    "amal_score": 52,
+    "amal_score": 54,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:41:31",
     "rubric_version": "5.2.0",
@@ -897,15 +890,27 @@
       },
       "judge_issues": [
         {
+          "field": "risks.risk_summary",
+          "judge": "score",
+          "message": "The risk summary only mentions the high domestic burn rate, but the risk section also includes concerns about CEO compensation and fundraising costs. The summary should mention all key risks.",
+          "severity": "warning"
+        },
+        {
+          "field": "baseline_narrative.dimension_explanations.impact",
+          "judge": "score",
+          "message": "The impact rationale mentions a high data confidence level, but this is not directly related to the impact score itself. It's more relevant to the data confidence section.",
+          "severity": "info"
+        },
+        {
           "field": "charity_navigator.expense_ratio",
           "judge": "crawl_quality",
           "message": "Expenses ($22,804,410) exceed revenue ($19,507,313) by 17%",
           "severity": "warning"
         },
         {
-          "field": "discovered.theory_of_change.confidence",
+          "field": "discovered.outcomes.confidence",
           "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
@@ -915,22 +920,10 @@
           "severity": "info"
         },
         {
-          "field": "discovered.theory_of_change",
-          "judge": "discover_quality",
-          "message": "Theory of change URL found but description not extracted",
-          "severity": "info"
-        },
-        {
-          "field": "source_attribution.claims_zakat_eligible.source_url",
-          "judge": "synthesize_quality",
-          "message": "Website citation for 'claims_zakat_eligible' uses homepage URL; deep link preferred",
-          "severity": "warning"
-        },
-        {
           "field": "hallucination_denylist.populations_served",
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
+          "severity": "info"
         },
         {
           "field": "hallucination_denylist.third_party_evaluated",
@@ -939,18 +932,11 @@
           "severity": "warning"
         }
       ],
-      "risk_deduction": -9,
+      "risk_deduction": -7,
       "risks": {
         "overall_risk_level": "ELEVATED",
         "risk_summary": "Key concern: High domestic burn: 95% of expenses stay in the US despite international operations",
         "risks": [
-          {
-            "category": "impact",
-            "data_source": "Website/Candid",
-            "description": "No outcome measurement or metrics tracking",
-            "mitigation": null,
-            "severity": "medium"
-          },
           {
             "category": "financial",
             "data_source": "Form 990 Schedule F",
@@ -973,54 +959,60 @@
             "severity": "medium"
           }
         ],
-        "total_deduction": -9
+        "total_deduction": -7
       },
       "score_summary": "350 Org shows strong impact and moderate alignment (significant risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "Organization is in zakat denylist (partners but doesn't collect directly) (Source: https://350.org)",
+        "claim_evidence": "Organization is in zakat denylist (partners but doesn't collect directly) (Source: https://350.org/how-to-give/)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "350.org focuses on training and mobilizing a diverse climate movement.",
-          "id": "[1]",
-          "source_name": "Form 990 (2015)",
+          "claim": "The organization maintains audited financials and significant assets to support its operations.",
+          "id": "[2]",
+          "source_name": "Financial Statement (2021)",
+          "source_url": "https://350.org/wp-content/uploads/2022/08/FY21-350.Org-9-30-2021-Final-Financials.pdf"
+        },
+        {
+          "claim": "The organization accepts general charitable donations and sadaqah-eligible giving for climate action.",
+          "id": "[3]",
+          "source_name": "Charity Website - Donate",
           "source_url": "https://350.org/wp-content/uploads/2017/08/FY16-Form-990-Public-Copy.pdf"
         },
         {
-          "claim": "The organization reported total revenue of $19,507,313 and a program expense ratio of 81.5%.",
+          "claim": "350.org reported total revenue of $19,507,313 and focuses on US campaigning and training programs.",
           "id": "[4]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/261150699"
         },
         {
-          "claim": "350.org holds a Charity Navigator score of 99.66666666666667/100 and holds 7.2 months of working capital.",
+          "claim": "The charity holds a 99.66666666666667/100 score, with a program expense ratio of 81.5%, 7.2 months of working capital, and fundraising efficiency of $0.12 per $1 raised.",
           "id": "[5]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/261150699#financials"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its high financial transparency and operational efficiency, balanced against an advocacy-focused mission that may not align with all donor profiles.",
+      "amal_score_rationale": "350.org demonstrates excellent financial health and transparency, though its focus on advocacy rather than direct service results in a moderate alignment score for specific donor profiles.",
       "areas_for_improvement": [
-        "Alignment with specific Muslim donor preferences is currently moderate",
-        "Heavy reliance on advocacy-based outcomes which can be harder to measure than direct service"
+        "Increasing direct service impact metrics alongside advocacy efforts",
+        "Enhancing specific alignment for donors seeking traditional faith-based frameworks"
       ],
       "dimension_explanations": {
-        "alignment": "The organization offers a medium fit for donors, as its work focuses on high-urgency climate advocacy [5]. While it is a sadaqah-eligible cause, its alignment score of 22/50 reflects a focus on systemic policy change rather than traditional direct-aid models [4].",
-        "impact": "350.org demonstrates high impact through its efficient use of capital, maintaining 7.2 months of working capital and directing 81.5% of its expenses toward programs [4][5]. Its direct service in training and mobilization provides a clear pathway for climate action [1]."
+        "alignment": "With an alignment score of 22/50, the organization offers a medium fit for donors, focusing on the urgent cause of climate advocacy [5]. While it is a sadaqah-eligible option for those supporting environmental justice, its mission is centered on systemic policy change rather than traditional religious service delivery [3][4].",
+        "impact": "The organization achieves a high impact score of 39/50 by directing 81.5% of its $19,507,313 revenue toward core programs like training and mobilization [4][5]. Its financial stability is evidenced by 7.2 months of working capital and a high data confidence level [2][5]."
       },
-      "headline": "350.org is a high-impact climate advocacy organization dedicated to mobilizing a global movement to challenge the systems driving the climate crisis.",
+      "headline": "350.org is a high-impact climate advocacy organization dedicated to mobilizing global movements to challenge systemic environmental threats.",
       "strengths": [
-        "Exceptional Charity Navigator score of 99.66666666666667/100",
-        "High program expense ratio of 81.5% ensuring funds reach core missions",
-        "Strong fundraising efficiency of $0.12 per $1 raised"
+        "Exceptional financial efficiency with a program expense ratio of 81.5%",
+        "Strong liquidity with 7.2 months of working capital available",
+        "Highly efficient fundraising operations spending only $0.12 per $1 raised"
       ],
-      "summary": "350.org focuses on training and mobilizing a diverse climate movement to implement solutions and lead US-based campaigning efforts [1][4]. The organization maintains a strong financial standing with a total revenue of $19,507,313 and a high level of accountability [4][5]."
+      "summary": "350.org works to inspire and train a diverse climate movement through programs focused on US campaigning and global climate solutions [4][5]. The organization maintains a strong financial position with a total revenue of $19,507,313 and a high Charity Navigator score of 99.66666666666667/100 [4][5]."
     },
     "rich_narrative": {
       "all_citations": [
@@ -1036,50 +1028,40 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "training and mobilizing a diverse grassroots network",
-          "confidence": 0.95,
+          "claim": "grassroots organizing, fossil fuel divestment, and climate finance advocacy",
+          "confidence": 1,
           "id": "[2]",
-          "quote": "350.org's mission is to inspire, train and mobilize people to join a broad and diverse climate movement",
-          "source_name": "Candid Profile",
+          "quote": "Programs: Grassroots Organizing, Fossil Fuel Divestment, Climate Finance Advocacy",
+          "source_name": "350.org Programs",
           "source_type": "website",
-          "source_url": "https://app.candid.org/profile/8619068"
+          "source_url": "https://350.org/programs/"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "$19,587,115 in total revenue",
+          "claim": "total revenue of $19,587,115",
           "confidence": 1,
           "id": "[3]",
-          "quote": "Total revenue: $19,587,115",
+          "quote": "Total Revenue: $19,587,115",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/261150699"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "fossil fuel divestment, climate finance advocacy, and renewable energy solutions",
-          "confidence": 0.9,
-          "id": "[4]",
-          "quote": "Programs: Grassroots Organizing, Fossil Fuel Divestment, Climate Finance Advocacy",
-          "source_name": "350.org Programs",
-          "source_type": "website",
-          "source_url": "https://350.org/about/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "over 10 countries",
+          "claim": "exceptional financial efficiency",
           "confidence": 0.95,
-          "id": "[5]",
-          "quote": "Geographic Coverage: Afghanistan, Algeria, Australia, Bangladesh, Brazil, Canada, Chad, Colombia, Egypt, France",
-          "source_name": "350.org Geographic Coverage",
-          "source_type": "website",
-          "source_url": "https://350.org/about/"
+          "id": "[4]",
+          "quote": "Exceptional financial efficiency with a program expense ratio of 81.5%",
+          "source_name": "Charity Navigator - 350.org",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/261150699#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "program expense ratio of 81.5%",
+          "claim": "81.5% of its expenses toward program services",
           "confidence": 1,
-          "id": "[6]",
-          "quote": "Program service expenses: $18,961,098 / Total expenses: $21,744,379",
+          "id": "[5]",
+          "quote": "Program Expense Ratio: 81.5%",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/261150699"
@@ -1088,31 +1070,41 @@
           "access_date": "2026-01-09",
           "claim": "fundraising efficiency of $0.12 per $1 raised",
           "confidence": 1,
-          "id": "[7]",
-          "quote": "Fundraising Efficiency: $0.12",
-          "source_name": "Charity Navigator - Financials",
+          "id": "[6]",
+          "quote": "spending only $0.12 per $1 raised",
+          "source_name": "Charity Navigator - 350.org",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/261150699#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "strong domestic presence in the United States",
-          "confidence": 0.9,
-          "id": "[8]",
-          "quote": "Domestic Grants: $830,561",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/261150699"
+          "claim": "Gold Seal of Transparency from Candid",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Candid Seal: GOLD",
+          "source_name": "Candid Profile",
+          "source_type": "rating",
+          "source_url": "https://app.candid.org/profile/8619068"
         },
         {
           "access_date": "2026-01-09",
           "claim": "overall score of 99.99.66666666666667/100 from Charity Navigator",
           "confidence": 1,
-          "id": "[9]",
-          "quote": "Overall Score: 99.67",
+          "id": "[8]",
+          "quote": "Overall Score: 99.66666666666667/100",
           "source_name": "Charity Navigator - Ratings",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/261150699#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "grantmaking activity totaling $1,860,387",
+          "confidence": 1,
+          "id": "[9]",
+          "quote": "Total Grants: $1,860,387",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/261150699"
         },
         {
           "access_date": "2026-01-09",
@@ -1120,164 +1112,104 @@
           "confidence": 0.9,
           "id": "[10]",
           "quote": "Industry Standard: 75%",
-          "source_name": "Charity Navigator Benchmarks",
+          "source_name": "Peer Benchmarks",
           "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/261150699#financials"
+          "source_url": "https://www.charitynavigator.org/ein/261150699"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "verified theory of change",
-          "confidence": 0.95,
-          "id": "[11]",
-          "quote": "Theory of Change Documented: Yes",
-          "source_name": "Candid - Impact",
-          "source_type": "website",
-          "source_url": "https://app.candid.org/profile/8619068"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Gold Seal of Transparency from Candid",
+          "claim": "perfect scores of 100 for Culture and Leadership",
           "confidence": 1,
-          "id": "[12]",
-          "quote": "Candid Seal: gold",
-          "source_name": "Candid Profile",
-          "source_type": "website",
-          "source_url": "https://app.candid.org/profile/8619068"
+          "id": "[11]",
+          "quote": "Beacon Scores: Culture: 100, Leadership: 100",
+          "source_name": "Charity Navigator - Beacons",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/261150699#ratings"
         },
         {
           "access_date": "2026-01-09",
           "claim": "7.2 months of working capital",
           "confidence": 1,
-          "id": "[13]",
-          "quote": "Working Capital: 7.2 months",
-          "source_name": "Charity Navigator - Financials",
+          "id": "[12]",
+          "quote": "Working capital: 7.2 months (RESILIENT)",
+          "source_name": "Baseline Strengths",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/261150699#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "board of 12 members",
+          "claim": "100% independent board members",
           "confidence": 1,
+          "id": "[13]",
+          "quote": "Independent Board Members: 100%",
+          "source_name": "Charity Navigator - Governance",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/261150699#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "documented theory of change",
+          "confidence": 0.9,
           "id": "[14]",
-          "quote": "Number of voting members of the governing body: 12",
-          "source_name": "Form 990 (2023)",
+          "quote": "Theory of Change Documented: Yes",
+          "source_name": "External Discoveries",
+          "source_type": "website",
+          "source_url": "https://350.org/about/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "81.5% of expenses remain in the US",
+          "confidence": 0.9,
+          "id": "[15]",
+          "quote": "High domestic burn: 81.5% of expenses stay in the US",
+          "source_name": "Risk Deduction Analysis",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/261150699"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "100% of members are independent",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Independent Board Members: 100%",
-          "source_name": "Charity Navigator - Accountability",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/261150699#accountability"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$1,860,387 in total grants",
+          "claim": "consistent beneficiary counts",
           "confidence": 1,
           "id": "[16]",
-          "quote": "Grants and other assistance to domestic and foreign: $1,860,387",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/261150699"
+          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
+          "source_name": "Score Details - Impact",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/261150699#ratings"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "$1,029,826 to foreign recipients",
+          "claim": "SADAQAH-ELIGIBLE advocacy group",
           "confidence": 1,
           "id": "[17]",
-          "quote": "Foreign Grants: $1,029,826",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/261150699"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "high domestic burn rate",
-          "confidence": 0.85,
-          "id": "[18]",
-          "quote": "Key concern: High domestic burn: 81.5% of expenses stay in the US",
-          "source_name": "AMAL Score Rationale",
+          "quote": "Wallet Tag: SADAQAH-ELIGIBLE; Cause area: Advocacy",
+          "source_name": "Baseline Alignment",
           "source_type": "website",
-          "source_url": "https://350.org/about/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "officer compensation of $434,889",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Officer Compensation: $434,889",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/261150699"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "moderate alignment score",
-          "confidence": 0.9,
-          "id": "[20]",
-          "quote": "Alignment 22/50: MEDIUM Muslim donor fit",
-          "source_name": "AMAL Score Details",
-          "source_type": "website",
-          "source_url": "https://350.org/about/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "consistently publishing beneficiary counts",
-          "confidence": 0.9,
-          "id": "[21]",
-          "quote": "Improvement: Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
-          "source_name": "Impact Score Improvement",
-          "source_type": "website",
-          "source_url": "https://350.org/about/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "humanitarian service",
-          "confidence": 0.85,
-          "id": "[22]",
-          "quote": "Humanitarian service (+2)",
-          "source_name": "Alignment Score Details",
-          "source_type": "website",
-          "source_url": "https://350.org/about/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "",
-          "confidence": 0.85,
-          "id": "[23]",
-          "quote": "",
-          "source_name": "Alignment Score Details",
-          "source_type": "website",
-          "source_url": "https://350.org/about/"
+          "source_url": "https://350.org/donate/"
         },
         {
           "access_date": "2026-01-09",
           "claim": "expanding services to underserved geographies",
           "confidence": 0.9,
-          "id": "[24]",
+          "id": "[18]",
           "quote": "Improvement: Expand services to underserved populations or geographies",
-          "source_name": "Alignment Score Improvement",
+          "source_name": "Score Details - Alignment",
           "source_type": "website",
           "source_url": "https://350.org/about/"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "-8.0% revenue CAGR",
+          "claim": "revenue has seen a 3-year CAGR of -8.0%",
           "confidence": 1,
-          "id": "[25]",
+          "id": "[19]",
           "quote": "3-Year Revenue CAGR: -8.0%",
           "source_name": "3-Year Financial Trends",
-          "source_type": "website",
-          "source_url": "https://350.org/about/"
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/261150699"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its high financial transparency and operational efficiency, balanced against an advocacy-focused mission that may not align with all donor profiles.",
+      "amal_score_rationale": "350.org demonstrates excellent financial health and transparency, though its focus on advocacy rather than direct service results in a moderate alignment score for specific donor profiles.",
       "amal_scores": {
-        "amal_score": 52,
+        "amal_score": 54,
         "confidence_scores": {
           "alignment": 22,
           "data_confidence": 0.95,
@@ -1289,25 +1221,24 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Geographic Spending Imbalance",
+          "area": "Geographic Expenditure Imbalance",
           "citation_ids": [
-            "[18]"
+            "[15]"
           ],
-          "context": "While the mission is global, there is a <cite id=\"18\">high domestic burn rate</cite> with approximately 81.5% of expenses staying within the US."
+          "context": "Despite a global mission, approximately <cite id=\"15\">81.5% of expenses remain in the US</cite>, suggesting a high domestic burn rate relative to international impact."
         },
         {
-          "area": "Executive Compensation Oversight",
+          "area": "Outcome Metric Transparency",
           "citation_ids": [
-            "[19]"
+            "[16]"
           ],
-          "context": "For an organization of this revenue size, <cite id=\"19\">officer compensation of $434,889</cite> warrants continued donor scrutiny regarding overhead allocation."
+          "context": "The organization currently lacks <cite id=\"16\">consistent beneficiary counts</cite>, making it difficult to assess specific cost-per-beneficiary metrics."
         }
       ],
       "bbb_assessment": {
         "audit_type": "audited",
         "citation_ids": [
-          "[5]",
-          "[15]"
+          "[13]"
         ],
         "effectiveness_status": "PASS",
         "finances_status": "PASS",
@@ -1315,37 +1246,38 @@
         "meets_all_standards": true,
         "standards_met": 20,
         "standards_not_met": [],
-        "summary": "The organization maintains high governance standards with an independent board and audited financials."
+        "summary": "Maintains high standards of accountability with independent board oversight and audited financials."
       },
       "case_against": {
         "citation_ids": [
-          "[18]",
-          "[25]"
+          "[15]",
+          "[19]"
         ],
-        "mitigation_notes": "The organization maintains a resilient 7.2 months of working capital to manage the revenue decline.",
+        "mitigation_notes": "The organization maintains strong reserves (7.2 months) to mitigate the impact of recent revenue declines.",
         "risk_factors": [
-          "<cite id=\"25\">Negative revenue growth (-8.0%)</cite> over the last three years",
-          "<cite id=\"18\">81.5% of expenses remain in the US</cite>"
+          "<cite id=\"15\">81.5% of expenses stay in the US</cite>",
+          "<cite id=\"19\">Revenue has seen a 3-year CAGR of -8.0%</cite>"
         ],
-        "summary": "The primary concern is the <cite id=\"18\">concentration of spending in the US</cite> despite a global mandate, and a <cite id=\"25\">3-year revenue CAGR of -8.0%</cite> indicating a shrinking budget."
+        "summary": "The primary concern is the <cite id=\"15\">high domestic burn rate</cite>, where the vast majority of funds are spent within the US despite a global climate mandate."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 8,
-          "rating": 6,
-          "website": 11
+          "form990": 6,
+          "rating": 8,
+          "website": 5
         },
-        "high_confidence_count": 22,
-        "total_count": 25,
+        "high_confidence_count": 17,
+        "total_count": 19,
         "unique_sources": 5
       },
       "confidence": {
-        "data_freshness": "Most data from 2023 tax filings and 2024 ratings",
+        "data_freshness": "Financial data from 2023; ratings from late 2024",
         "data_gaps": [
-          "Missing specific beneficiary counts for cost-effectiveness analysis"
+          "Missing 2024 Form 990",
+          "No specific beneficiary counts for cost-effectiveness"
         ],
         "level": "HIGH",
-        "notes": "Strong data availability across financial and accountability metrics.",
+        "notes": "Strong financial and governance data available; impact data is qualitative.",
         "score": 95,
         "sources_used": [
           "Form 990",
@@ -1358,55 +1290,54 @@
         "confidence_score": 95,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "No specific beneficiary counts for cost-effectiveness",
-          "High concentration of US spending"
+          "Missing 2024 Form 990",
+          "Inconsistent beneficiary counts"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 25,
+        "total_citations": 19,
         "unique_sources": 5,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[22]",
-            "[23]",
-            "[24]"
+            "[17]",
+            "[18]"
           ],
           "explanation": "",
-          "improvement": "Alignment could be improved by <cite id=\"24\">expanding services to underserved geographies</cite> with limited existing nonprofit coverage."
+          "improvement": "The organization could improve alignment by <cite id=\"18\">expanding services to underserved geographies</cite> with limited nonprofit coverage."
         },
         "credibility": {
           "citation_ids": [
-            "[9]",
-            "[12]",
-            "[21]"
+            "[7]",
+            "[8]",
+            "[16]"
           ],
-          "explanation": "Donors can trust 350.org due to its <cite id=\"9\">99.99.66666666666667/100 from Charity Navigator score</cite> and <cite id=\"12\">Gold Seal of Transparency</cite>.",
-          "improvement": "To strengthen credibility further, the organization could publish more granular beneficiary data to allow for <cite id=\"21\">cost-per-beneficiary assessments</cite>."
+          "explanation": "Donors can trust this charity due to its <cite id=\"8\">99.66666666666667 overall score from Charity Navigator</cite> and its <cite id=\"7\">Gold Seal of Transparency from Candid</cite>.",
+          "improvement": "To strengthen credibility further, the organization could <cite id=\"16\">publish consistent beneficiary counts</cite> to allow for more rigorous cost-effectiveness analysis."
         },
         "impact": {
           "citation_ids": [
-            "[6]",
-            "[11]",
-            "[21]"
+            "[5]",
+            "[14]",
+            "[16]"
           ],
-          "explanation": "Operations are highly efficient with an <cite id=\"6\">81.5% program ratio</cite> and a <cite id=\"11\">strong, documented theory of change</cite>.",
-          "improvement": "Impact measurement would benefit from <cite id=\"21\">consistently publishing beneficiary counts</cite> to assess the cost-effectiveness of mobilization efforts."
+          "explanation": "Operations are highly efficient with an <cite id=\"5\">81.5% program expense ratio</cite> and a <cite id=\"14\">strong, verified theory of change</cite>.",
+          "improvement": "Impact measurement would benefit from <cite id=\"16\">consistently tracking and publishing beneficiary data</cite> to assess cost-effectiveness across its global programs."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "ADVOCACY",
         "citation_ids": [
-          "[11]",
-          "[12]"
+          "[4]",
+          "[14]"
         ],
-        "evidence_rigor": "Grade B - Strong theory of change with verified outcomes",
+        "evidence_rigor": "Grade B - Verified theory of change and high transparency",
         "geographic_focus": [
           "Global",
           "United States"
         ],
-        "giving_style": "Movement building",
+        "giving_style": "Movement building and advocacy",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           ""
@@ -1418,17 +1349,16 @@
         "annual_revenue": 19587115,
         "citation_ids": [
           "[4]",
-          "[5]",
-          "[25]"
+          "[19]"
         ],
         "cn_financial_score": 99,
         "cn_overall_score": 99.66666666666667,
         "fundraising_ratio": 0.08,
         "industry_program_ratio": 0.75,
-        "peer_count": 36,
+        "peer_count": 34,
         "peer_program_ratio_median": 0.903,
         "program_expense_ratio": 0.8151999999999999,
-        "reserves_months": 5.5,
+        "reserves_months": 7.2,
         "revenue_cagr_3yr": -8,
         "transparency_score": 85,
         "working_capital_months": 7.2,
@@ -1455,12 +1385,13 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[4]"
+          "[4]",
+          "[9]"
         ],
         "domestic_grants": 830561,
         "foreign_grants": 1029826,
         "grant_count": 51,
-        "grant_strategy": "Funds local grassroots affiliates to lead regional climate campaigns",
+        "grant_strategy": "Supports local 350 chapters and international climate partners to build grassroots power.",
         "is_significant_grantmaker": true,
         "regions_served": [
           "United States",
@@ -1468,60 +1399,64 @@
         ],
         "top_recipients": [
           "350 SEATTLE ($136,000)",
-          "350 MADISON ($109,945)"
+          "350 MADISON ($109,945)",
+          "350 COLORADO ($107,341)"
         ],
         "total_grants": 1860387
       },
-      "headline": "350.org is a high-impact climate advocacy organization dedicated to mobilizing a global movement to challenge the systems driving the climate crisis.",
+      "headline": "350.org is a high-impact climate advocacy organization dedicated to mobilizing global movements to challenge systemic environmental threats.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize systemic change over direct aid and want to support high-accountability climate advocacy through sadaqah.",
+        "best_for_summary": "Best for donors who prioritize systemic climate advocacy and value highly transparent, financially efficient organizations with a proven track record in movement building.",
         "citation_ids": [
-          "[9]",
-          "[25]"
+          "[4]",
+          "[17]",
+          "[19]"
         ],
         "donor_motivations": [
-          "Want to address the root causes of the climate crisis",
-          "Value high transparency and third-party ratings",
-          "Prefer supporting grassroots mobilization and training",
-          "Interested in fossil fuel divestment as a lever for change"
+          "Want to challenge the systems leading to catastrophic climate change",
+          "Value high financial efficiency and low fundraising overhead",
+          "Prefer supporting established advocacy groups with global reach",
+          "Interested in fossil fuel divestment and climate finance reform"
         ],
         "giving_considerations": [
-          "Donations support advocacy which has long-term, non-linear outcomes",
-          "The organization is currently experiencing a revenue contraction",
-          "Most funds are spent on US-based operations and staff"
+          "Donations are for sadaqah and do not fulfill zakat obligations",
+          "Impact is measured through policy shifts and movement growth rather than direct aid",
+          "Recent revenue trends show a moderate decline in annual funding"
         ],
-        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those looking for immediate, tangible humanitarian relief like food or medicine."
+        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those who prefer direct humanitarian relief like food or medical aid."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[11]",
-          "[12]"
+          "[7]",
+          "[8]",
+          "[14]"
         ],
         "evidence_grade": "B",
-        "evidence_grade_explanation": "The organization has a strong theory of change and verified outcomes, though it lacks RCT-level evidence common in advocacy.",
+        "evidence_grade_explanation": "Grade B reflects a verified theory of change and high transparency, though specific cost-per-beneficiary data is missing.",
         "external_evaluations": [
-          "Candid Gold Seal",
-          "Charity Navigator 4-Star"
+          "Charity Navigator Beacon Scores",
+          "Candid Gold Seal"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "350.org creates impact by training local leaders to run campaigns that pressure financial institutions and governments to move away from fossil fuels.",
-        "why_evidence_matters": "Evidence in advocacy ensures that mobilization efforts are actually shifting policy and capital."
+        "theory_of_change_summary": "350.org inspires and trains a global movement to challenge fossil fuel systems and promote renewable energy solutions through grassroots organizing.",
+        "why_evidence_matters": "Evidence ensures that advocacy efforts are effectively mobilizing communities and influencing climate policy."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[25]"
+          "[1]",
+          "[19]"
         ],
         "founded_year": 2008,
         "maturity_stage": "Established",
         "revenue_growth_3yr": -8,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "The organization is facing a <cite id=\"25\">-8.0% revenue CAGR</cite>, suggesting a significant need for new funding to maintain its global campaign scale.",
+        "room_for_funding_explanation": "A negative revenue CAGR suggests a significant need for new funding to maintain global advocacy scale.",
         "strategic_priorities": [
           "Fossil fuel divestment",
-          "Climate leadership training",
-          "Renewable energy solutions"
+          "Climate finance advocacy",
+          "Grassroots leadership training"
         ],
         "years_operating": 18
       },
@@ -1532,11 +1467,10 @@
         "ceo_name": "Gillian May Boeve",
         "citation_ids": [
           "[4]",
-          "[5]",
-          "[14]"
+          "[13]"
         ],
         "employees_count": 150,
-        "geographic_reach": "Global operations with focus on 10+ countries",
+        "geographic_reach": "Global, with focus on US and 10+ other countries",
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 1,
@@ -1547,15 +1481,15 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[6]",
+          "[8]",
           "[10]"
         ],
-        "differentiator": "Distinguished by its <cite id=\"6\">81.5% program ratio</cite>, which is highly competitive compared to the <cite id=\"10\">peer median of 90.3%</cite>.",
+        "differentiator": "Distinguished by an <cite id=\"8\">exceptionally high Charity Navigator score</cite> compared to the <cite id=\"10\">90.3% peer program ratio median</cite>.",
         "peer_group": "Climate Advocacy Organizations",
         "similar_orgs": [
           "Union of Concerned Scientists",
-          "Earthjustice",
-          "Sierra Club Foundation"
+          "Natural Resources Defense Council",
+          "Earthjustice"
         ]
       },
       "similar_organizations": [
@@ -1564,43 +1498,43 @@
           "name": "Union of Concerned Scientists"
         },
         {
-          "differentiator": "Focuses on legal litigation and courtroom advocacy",
-          "name": "Earthjustice"
+          "differentiator": "Larger legal and litigation department",
+          "name": "Natural Resources Defense Council"
         },
         {
-          "differentiator": "Larger US-based chapter network",
-          "name": "Sierra Club Foundation"
+          "differentiator": "Exclusively focused on environmental law and litigation",
+          "name": "Earthjustice"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[9]"
-          ],
-          "detail": "The organization holds an <cite id=\"9\">overall score of 99.99.66666666666667/100 from Charity Navigator</cite>, reflecting near-perfect marks in governance and financial health.",
-          "point": "Top-Tier Accountability and Transparency"
-        },
-        {
-          "citation_ids": [
-            "[6]",
+            "[5]",
             "[10]"
           ],
-          "detail": "With a <cite id=\"6\">program expense ratio of 81.5%</cite>, 350.org significantly exceeds the <cite id=\"10\">industry standard of 75%</cite> for non-profit efficiency.",
-          "point": "High Programmatic Reinvestment"
+          "detail": "The organization maintains a <cite id=\"5\">program expense ratio of 81.5%</cite>, which significantly exceeds the <cite id=\"10\">industry standard of 75%</cite>.",
+          "point": "Exceptional Financial Efficiency"
         },
         {
           "citation_ids": [
-            "[11]",
+            "[8]",
+            "[11]"
+          ],
+          "detail": "350.org holds a <cite id=\"8\">99.66666666666667/100 rating from Charity Navigator</cite>, including <cite id=\"11\">perfect scores of 100 for Culture and Leadership</cite>.",
+          "point": "Robust Accountability and Governance"
+        },
+        {
+          "citation_ids": [
             "[12]"
           ],
-          "detail": "The organization maintains a <cite id=\"11\">verified theory of change</cite> and has earned a <cite id=\"12\">Gold Seal of Transparency from Candid</cite> for its outcome reporting.",
-          "point": "Robust Strategic Clarity"
+          "detail": "The charity demonstrates high financial resilience with <cite id=\"12\">7.2 months of working capital</cite> available to sustain operations.",
+          "point": "Strong Liquidity and Reserves"
         }
       ],
       "strengths_deep_dive": [
-        "350.org demonstrates exceptional financial resilience, maintaining <cite id=\"13\">7.2 months of working capital</cite> to sustain operations during economic fluctuations. This stability is paired with rigorous internal oversight, including a <cite id=\"14\">board of 12 members</cite> where <cite id=\"15\">100% of members are independent</cite>. Their impact is amplified through strategic grantmaking, distributing <cite id=\"16\">$1,860,387 in total grants</cite> to local partners, including <cite id=\"17\">$1,029,826 to foreign recipients</cite> to bolster climate leadership in vulnerable regions."
+        "350.org's operational model is built on lean fundraising and high program output. Its <cite id=\"6\">fundraising efficiency of $0.12 per $1 raised</cite> is among the best in the advocacy sector. Furthermore, the organization maintains <cite id=\"13\">100% independent board members</cite>, ensuring objective oversight of its <cite id=\"3\">$19.5 million in annual revenue</cite>. This governance structure supports a <cite id=\"14\">documented theory of change</cite> that has been verified by external evaluators, providing donors with confidence in the strategic direction of their contributions."
       ],
-      "summary": "Founded in <cite id=\"1\">2008</cite>, 350.org has emerged as a central pillar in the global climate movement, focusing on <cite id=\"2\">training and mobilizing a diverse grassroots network</cite> to challenge fossil fuel systems. The organization operates with significant scale, reporting <cite id=\"3\">$19,587,115 in total revenue</cite> for the 2023 tax year. Its strategy centers on <cite id=\"4\">fossil fuel divestment, climate finance advocacy, and renewable energy solutions</cite> across a geographic reach that includes <cite id=\"5\">over 10 countries</cite> such as Brazil, Egypt, and Australia. Financially, the organization is highly efficient, maintaining a <cite id=\"6\">program expense ratio of 81.5%</cite>, which ensures the vast majority of donor funds are directed toward core advocacy and mobilization efforts rather than administrative overhead. This efficiency is further evidenced by a <cite id=\"7\">fundraising efficiency of $0.12 per $1 raised</cite>, well below industry averages for advocacy groups. Despite its international mission, the organization maintains a <cite id=\"8\">strong domestic presence in the United States</cite>, where it funds local affiliates to drive regional climate policy.",
+      "summary": "350.org is a high-impact climate advocacy organization dedicated to mobilizing global movements to challenge systemic environmental threats. Founded in <cite id=\"1\">2008</cite>, the organization has grown into a global force for climate justice, focusing on <cite id=\"2\">grassroots organizing, fossil fuel divestment, and climate finance advocacy</cite>. The organization maintains a strong financial position, reporting <cite id=\"3\">total revenue of $19,587,115</cite> in its most recent filing. 350.org is distinguished by its <cite id=\"4\">exceptional financial efficiency</cite>, directing <cite id=\"5\">81.5% of its expenses toward program services</cite>. This high efficiency is bolstered by a <cite id=\"6\">fundraising efficiency of $0.12 per $1 raised</cite>, ensuring that the vast majority of donor contributions directly support its mission of inspiring and training a diverse climate movement. The organization's commitment to transparency is evidenced by its <cite id=\"7\">Gold Seal of Transparency from Candid</cite> and a near-perfect <cite id=\"8\">overall score of 99.99.66666666666667/100 from Charity Navigator</cite>. While its operations are global, its financial footprint includes significant <cite id=\"9\">grantmaking activity totaling $1,860,387</cite>, supporting both domestic and foreign partners in the fight against catastrophic climate change.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

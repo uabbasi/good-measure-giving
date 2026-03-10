@@ -115,6 +115,8 @@ class ReconciliationEngine:
         "charity_navigator": "cn_profile",
         "candid": "candid_profile",
         "website": "website_profile",
+        "bbb": "bbb_profile",
+        "discovered": "discovered_profile",
     }
 
     def _load_raw_data(self, ein: str) -> dict[str, dict]:
@@ -429,6 +431,8 @@ class ReconciliationEngine:
             values: dict[str, float] = {}
 
             for source, data in raw_data.items():
+                if source not in self.mapper.FIELD_MAPPINGS:
+                    continue
                 mapped = self.mapper.map_source_to_unified(source, data)
                 if field in mapped and mapped[field] is not None:
                     try:

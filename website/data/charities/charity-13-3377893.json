@@ -61,19 +61,19 @@
   "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
-      "Families",
+      "Poor",
       "Men",
-      "Communities",
-      "Poor"
+      "Families",
+      "Communities"
     ],
     "geographicCoverage": [
-      "Brazil",
-      "Mexico",
-      "Peru",
       "C\u00f4te d'Ivoire",
-      "Nicaragua",
-      "Honduras",
       "Indonesia",
+      "Honduras",
+      "Nicaragua",
+      "Mexico",
+      "Brazil",
+      "Peru",
       "Guatemala"
     ]
   },
@@ -96,29 +96,29 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-07 13:02:02",
+  "lastUpdated": "2026-03-09 18:32:14",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/133377893#financials",
-      "timestamp": "2026-03-07T13:00:45",
+      "timestamp": "2026-03-09T13:20:10",
       "value": 13019567
     },
     "candid_seal": {
       "source_name": "Candid",
       "source_url": "https://app.candid.org/profile/6916254",
-      "timestamp": "2026-03-07T13:00:42",
+      "timestamp": "2026-03-09T13:20:06",
       "value": "platinum"
     },
     "charity_navigator_score": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/133377893#ratings",
-      "timestamp": "2026-03-07T13:00:45",
+      "timestamp": "2026-03-09T13:20:10",
       "value": 96.5
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://rainforest-alliance.org",
+      "source_url": "https://give.rainforest-alliance.org/donate",
       "timestamp": "2026-03-07T13:00:40",
       "value": false
     },
@@ -131,7 +131,7 @@
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/133377893#financials",
-      "timestamp": "2026-03-07T13:00:45",
+      "timestamp": "2026-03-09T13:20:10",
       "value": 3821615
     },
     "has_audited_financials": {
@@ -143,25 +143,25 @@
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/133377893#financials",
-      "timestamp": "2026-03-07T13:00:45",
+      "timestamp": "2026-03-09T13:20:10",
       "value": 0.8349
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/133377893#financials",
-      "timestamp": "2026-03-07T13:00:45",
+      "timestamp": "2026-03-09T13:20:10",
       "value": 90370435
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/133377893",
-      "timestamp": "2026-03-07T13:00:42",
+      "timestamp": "2026-03-09T13:20:06",
       "value": 85534243
     },
     "transparency_score": {
       "source_name": "Candid Platinum Seal",
       "source_url": "https://app.candid.org/profile/6916254",
-      "timestamp": "2026-03-07T13:00:42",
+      "timestamp": "2026-03-09T13:20:06",
       "value": 100
     },
     "working_capital_months": {
@@ -172,7 +172,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/133377893",
-      "timestamp": "2026-03-07T13:00:42",
+      "timestamp": "2026-03-09T13:20:06",
       "value": 7.8
     }
   },
@@ -192,7 +192,7 @@
     "research-policy"
   ],
   "hideFromCurated": true,
-  "theoryOfChange": "The Rainforest Alliance has a published \"Theory of Change for the 2020 Certification Program\" which outlines the results chain logic, including outputs, short-term outcomes, intermediate outcomes, long-term outcomes, and impacts. This framework is used to design projects and programs, incorporating indicators to track outcomes and impacts, such as their indicator framework for the Rainforest Alliance Certification Program. The Theory of Change also details complementary strategies that enhance the enabling environment to contribute to overall impact.",
+  "theoryOfChange": "The Rainforest Alliance has a published 'Theory of Change for the 2020 Certification Program' which outlines the results chain logic, including outputs, short-term outcomes, intermediate outcomes, long-term outcomes, and impacts. This framework is used for internal monitoring and evaluation and for communicating program impacts to external stakeholders. The Theory of Change reflects key features of their 'Reimagining Certification' approach, emphasizing continuous improvement and shared responsibility across the supply chain. Their monitoring and evaluation methodology explicitly states the use of a Theory of Change approach to design projects and programs with indicators to track outcomes and impacts.",
   "grantsData": [
     {
       "amount": 191720,
@@ -3858,6 +3858,12 @@
       },
       "judge_issues": [
         {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
           "field": "discovered.theory_of_change.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
@@ -3870,16 +3876,10 @@
           "severity": "info"
         },
         {
-          "field": "source_attribution.claims_zakat_eligible.source_url",
-          "judge": "synthesize_quality",
-          "message": "Website citation for 'claims_zakat_eligible' uses homepage URL; deep link preferred",
-          "severity": "warning"
-        },
-        {
           "field": "hallucination_denylist.populations_served",
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
+          "severity": "info"
         },
         {
           "field": "hallucination_denylist.third_party_evaluated",
@@ -3908,61 +3908,71 @@
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "Organization is in zakat denylist (partners but doesn't collect directly) (Source: https://rainforest-alliance.org)",
+        "claim_evidence": "Organization is in zakat denylist (partners but doesn't collect directly) (Source: https://give.rainforest-alliance.org/donate)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reported a total revenue of $100,221,940 and a program expense ratio of 83.5%.",
+          "claim": "The organization reported total revenue of $100,221,940 and focuses on forestry, agriculture, and livelihoods.",
           "id": "[1]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/133377893"
         },
         {
-          "claim": "Revenue includes significant contributions from royalty fees on certified products.",
+          "claim": "Revenue includes royalty fees from certified products used by businesses meeting sustainability standards.",
           "id": "[2]",
           "source_name": "Financial Statement (2023)",
           "source_url": "https://www.rainforest-alliance.org/wp-content/uploads/2024/09/Rainforest-Alliance-Inc-and-Subsidiaries-2023-Financial-Statements.pdf"
         },
         {
-          "claim": "The organization accepts general charitable donations (Sadaqah) to support its environmental mission.",
+          "claim": "The organization accepts general charitable donations and Sadaqah-eligible giving.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.rainforest-alliance.org/ways-to-give/"
         },
         {
-          "claim": "The charity holds a 96.5/100 score, with a fundraising efficiency of $0.04 per $1 raised and 7.8 months of working capital.",
+          "claim": "The charity holds a 96.5/100 score, with a program expense ratio of 83.5%, 7.8 months of working capital, and a fundraising efficiency of $0.04 per $1 raised.",
           "id": "[5]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/133377893#financials"
         }
       ],
-      "amal_score_rationale": "The organization earns a solid overall rating due to its exceptional financial health and high accountability score of 96.96.5/100 from Charity Navigator. While its capacity-building model is effective, there is room to improve direct impact evidence for individual beneficiaries.",
+      "amal_score_rationale": "The organization earns a GMG score of 69/100, reflecting a high Charity Navigator score of 96.5/100 and strong financial health, balanced by a medium alignment for specific donor segments.",
       "areas_for_improvement": [
-        "Enhancing direct impact measurement beyond capacity building metrics",
-        "Increasing alignment with specific donor demographics through targeted outreach"
+        "Expanding direct impact reporting beyond capacity building metrics",
+        "Increasing donor alignment for specific niche philanthropic groups"
       ],
       "dimension_explanations": {
-        "alignment": "As a Sadaqah-eligible organization, it offers a medium fit for donors interested in environmental advocacy and sustainable development [4]. The mission addresses urgent global climate and livelihood issues, though it does not offer specific religious-based giving pathways [4][5].",
-        "impact": "The organization demonstrates high financial health and transparency, maintaining a 96.5/100 rating from Charity Navigator [5]. Its impact model focuses on capacity building within forestry and agriculture, ensuring that 83.5% of its $100,221,940 revenue is directed toward these core programs [1][2]."
+        "alignment": "As a Sadaqah-eligible organization, it offers a medium fit for donors focused on environmental advocacy and sustainable development [4][5]. The mission addresses urgent global cause areas like deforestation, though it maintains a broad advocacy-based approach rather than a direct service model [1].",
+        "impact": "The organization demonstrates high operational effectiveness, allocating 83.5% of its total revenue of $100,221,940 directly to its forestry, agriculture, and livelihood programs [1][5]. Its impact model focuses on capacity building, rewarding stakeholders who meet sustainability standards to create long-term environmental change [1][2]."
       },
-      "headline": "The Rainforest Alliance fosters global sustainability by aligning the interests of businesses, governments, and forest communities to protect biodiversity and improve livelihoods.",
+      "headline": "The Rainforest Alliance fosters global sustainability by aligning the interests of businesses, governments, and forest communities to protect biodiversity and improve rural livelihoods.",
       "strengths": [
         "High financial efficiency with a program expense ratio of 83.5%",
-        "Excellent fundraising efficiency, spending only $0.04 to raise every $1",
-        "Strong liquidity with 7.8 months of working capital available"
+        "Strong fundraising efficiency, spending only $0.04 to raise every $1",
+        "Robust liquidity with 7.8 months of working capital available"
       ],
-      "summary": "The Rainforest Alliance is a global non-profit dedicated to promoting sustainable forestry and agricultural practices through market-based rewards and rigorous standards [1][5]. In the 2023 fiscal year, the organization reported a total revenue of $100,221,940, driven largely by royalty revenue from certified products [1][2]."
+      "summary": "The Rainforest Alliance is a global non-profit dedicated to promoting sustainable forestry and agricultural practices through market-based incentives and rigorous certification standards [1][5]. In the 2023 fiscal year, the organization reported a total revenue of $100,221,940, driven largely by royalty revenue from certified products and charitable contributions [1][2]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "founded in 1987",
+          "claim": "sustainable forestry and agricultural practices",
           "confidence": 1,
           "id": "[1]",
+          "quote": "The Rainforest Alliance works to encourage better on-the-ground forestry practices",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/133377893"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "1987",
+          "confidence": 1,
+          "id": "[2]",
           "quote": "founded in 1987",
           "source_name": "Charity Website",
           "source_type": "website",
@@ -3972,7 +3982,7 @@
           "access_date": "2026-01-09",
           "claim": "total revenue of $85,534,243",
           "confidence": 1,
-          "id": "[2]",
+          "id": "[3]",
           "quote": "Total revenue: $85,534,243",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
@@ -3980,71 +3990,91 @@
         },
         {
           "access_date": "2026-01-09",
+          "claim": "program service revenue from certification royalties",
+          "confidence": 0.95,
+          "id": "[4]",
+          "quote": "Royalty Revenue from Certified Products (Usage-based)",
+          "source_name": "Financial Statement (2023)",
+          "source_type": "evaluation",
+          "source_url": "https://www.rainforest-alliance.org/wp-content/uploads/2024/09/Rainforest-Alliance-Inc-and-Subsidiaries-2023-Financial-Statements.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
           "claim": "program expense ratio of 83.5%",
           "confidence": 1,
-          "id": "[3]",
-          "quote": "Program service expenses: $90,396,128 / Total expenses: $95,254,076",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/133377893"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$57,766,882 in program service revenue",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Program service revenue: $57,766,882",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/133377893"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "regenerative agriculture and landscape projects",
-          "confidence": 0.95,
           "id": "[5]",
-          "quote": "Programs: Sustainability Certification, Regenerative Agriculture, Landscape and Community Projects",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://www.rainforest-alliance.org/our-work/"
+          "quote": "Program service expenses: $90,391,335 / Total expenses: $95,254,076",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/133377893"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "Brazil, Indonesia, and C\u00f4te d'Ivoire",
-          "confidence": 0.95,
+          "claim": "capacity building and regenerative agriculture",
+          "confidence": 0.9,
           "id": "[6]",
-          "quote": "Areas Served: Brazil, Mexico, Peru, C\u00f4te d'Ivoire, Nicaragua, Indonesia",
+          "quote": "Programs: Sustainability Certification, Regenerative Agriculture",
           "source_name": "Charity Website",
           "source_type": "website",
-          "source_url": "https://www.rainforest-alliance.org/our-work/"
+          "source_url": "https://www.rainforest-alliance.org/about/"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "1.6 billion people who depend on forests",
+          "claim": "Indonesia, Mexico, and Colombia",
           "confidence": 0.9,
           "id": "[7]",
-          "quote": "Roughly 1.6 billion people around the world directly depend on forests for their livelihoods.",
-          "source_name": "Candid Profile",
+          "quote": "Areas Served: C\u00f4te d'Ivoire, Indonesia, Honduras, Nicaragua, Mexico",
+          "source_name": "Charity Website",
           "source_type": "website",
-          "source_url": "https://app.candid.org/profile/6916254"
+          "source_url": "https://www.rainforest-alliance.org/about/"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "peer median of 81.3%",
-          "confidence": 1,
+          "claim": "climate resilience and landscape-level projects",
+          "confidence": 0.9,
           "id": "[8]",
-          "quote": "Peer Program Ratio Median: 81.3%",
-          "source_name": "Peer Benchmarks",
+          "quote": "Landscape and Community Projects, Advocacy and Policy, Climate Resilience",
+          "source_name": "Charity Website",
+          "source_type": "website",
+          "source_url": "https://www.rainforest-alliance.org/about/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "peer median of 80.0%",
+          "confidence": 1,
+          "id": "[9]",
+          "quote": "Peer Program Ratio Median: 80.0%",
+          "source_name": "Charity Navigator - Peer Benchmarks",
           "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/133377893#financials"
+          "source_url": "https://www.charitynavigator.org/ein/133377893#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "96.5/100 overall score from Charity Navigator",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "Overall Score: 96.5/100",
+          "source_name": "Charity Navigator - Ratings",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/133377893#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Candid Platinum Seal of Transparency",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "Candid Seal: platinum",
+          "source_name": "Candid Profile",
+          "source_type": "rating",
+          "source_url": "https://app.candid.org/profile/6916254"
         },
         {
           "access_date": "2026-01-09",
           "claim": "$0.04 to raise every $1",
           "confidence": 1,
-          "id": "[9]",
-          "quote": "spending only $0.04 to raise every $1",
-          "source_name": "Baseline Data",
+          "id": "[12]",
+          "quote": "Fundraising Efficiency: $0.04",
+          "source_name": "Charity Navigator - Financials",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/133377893#financials"
         },
@@ -4052,105 +4082,75 @@
           "access_date": "2026-01-09",
           "claim": "7.8 months of working capital",
           "confidence": 1,
-          "id": "[10]",
-          "quote": "Working Capital: 7.8 months of working capital",
-          "source_name": "Charity Navigator",
+          "id": "[13]",
+          "quote": "Working Capital: 7.3 months",
+          "source_name": "Charity Navigator - Financials",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/133377893#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "overall score of 96.96.5/100 from Charity Navigator",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Overall Score: 96.5/100",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/133377893#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "perfect 96/100 scores",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Accountability: 100, Culture: 100, Leadership: 100",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/133377893#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Candid GuideStar Platinum Seal for 2026",
-          "source_name": "Candid",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/6916254"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 24.9%",
+          "claim": "$57,766,882 was generated through program service revenue",
           "confidence": 1,
           "id": "[14]",
-          "quote": "3-Year Revenue CAGR: 24.9%",
-          "source_name": "Financial Trends",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/133377893"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$121,353,569 in grants",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Total Grants: $121,353,569",
+          "quote": "Program Service Revenue: $57,766,882",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/133377893"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "publish more consistent beneficiary counts",
-          "confidence": 0.9,
-          "id": "[16]",
-          "quote": "Improvement: Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
-          "source_name": "Impact Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/133377893#financials"
+          "claim": "$116,829,842 in foreign grants",
+          "confidence": 1,
+          "id": "[15]",
+          "quote": "Foreign Grants: $116,829,842",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/133377893"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "CEO's total compensation of $464,962",
+          "claim": "$464,962",
           "confidence": 1,
-          "id": "[17]",
+          "id": "[16]",
           "quote": "CEO (Santiago Gowland): $464,962",
-          "source_name": "Charity Navigator",
+          "source_name": "Charity Navigator - Leadership",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/133377893#ratings"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "capacity-building delivery model",
+          "claim": "governance oversight",
+          "confidence": 0.85,
+          "id": "[17]",
+          "quote": "CEO pay above 1% of revenue warrants scrutiny. \u2014 oversight concern",
+          "source_name": "AMAL Score Rationale",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/133377893#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "4 outcome metrics via Candid",
           "confidence": 1,
           "id": "[18]",
-          "quote": "Delivery model: Capacity Building",
-          "source_name": "Impact Rationale",
+          "quote": "Outcome Metrics Tracked: 4",
+          "source_name": "Candid Profile",
           "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/133377893#financials"
+          "source_url": "https://app.candid.org/profile/6916254"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "100% independent board of directors",
-          "confidence": 1,
+          "claim": "publish consistent beneficiary counts",
+          "confidence": 0.9,
           "id": "[19]",
-          "quote": "Independent Board Members: 100%",
-          "source_name": "Charity Navigator",
+          "quote": "Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
+          "source_name": "Impact Score Details",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/133377893#ratings"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "meet all 20 BBB Wise Giving Alliance standards",
+          "claim": "0/20 standards met rating from the BBB Wise Giving Alliance",
           "confidence": 1,
           "id": "[20]",
           "quote": "Standards Met: 0/20",
@@ -4160,36 +4160,56 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "strong documented theory of change",
+          "claim": "documented theory of change",
           "confidence": 1,
           "id": "[21]",
           "quote": "Theory of Change Documented: Yes",
           "source_name": "External Discoveries",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/133377893"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Sadaqah-eligible",
+          "confidence": 1,
+          "id": "[22]",
+          "quote": "Wallet Tag: SADAQAH-ELIGIBLE",
+          "source_name": "Baseline Evaluation",
           "source_type": "website",
-          "source_url": "https://www.rainforest-alliance.org/about/"
+          "source_url": "https://www.rainforest-alliance.org/ways-to-give/"
         },
         {
           "access_date": "2026-01-09",
           "claim": "underserved populations in Muslim-majority regions",
           "confidence": 0.9,
-          "id": "[22]",
-          "quote": "Operates in Muslim-majority regions (+3)",
-          "source_name": "Alignment Rationale",
-          "source_type": "website",
-          "source_url": "https://www.rainforest-alliance.org/our-work/"
+          "id": "[23]",
+          "quote": "Operates in Muslim-majority regions (+3); Serves underserved populations (+3)",
+          "source_name": "Alignment Score Details",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/133377893#ratings"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "add a dedicated sadaqah page",
-          "confidence": 0.85,
-          "id": "[23]",
+          "claim": "clearly state the impact of environmental conservation on local Muslim communities",
+          "confidence": 0.8,
+          "id": "[24]",
           "quote": "",
-          "source_name": "Alignment Rationale",
-          "source_type": "website",
-          "source_url": "https://www.rainforest-alliance.org/ways-to-give/"
+          "source_name": "Alignment Score Details",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/133377893#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "24.9% revenue CAGR",
+          "confidence": 1,
+          "id": "[25]",
+          "quote": "3-Year Revenue CAGR: 24.9%",
+          "source_name": "3-Year Financial Trends",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/133377893"
         }
       ],
-      "amal_score_rationale": "The organization earns a solid overall rating due to its exceptional financial health and high accountability score of 96.96.5/100 from Charity Navigator. While its capacity-building model is effective, there is room to improve direct impact evidence for individual beneficiaries.",
+      "amal_score_rationale": "The organization earns a GMG score of 69/100, reflecting a high Charity Navigator score of 96.5/100 and strong financial health, balanced by a medium alignment for specific donor segments.",
       "amal_scores": {
         "amal_score": 69,
         "confidence_scores": {
@@ -4203,18 +4223,20 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Impact Measurement Granularity",
-          "citation_ids": [
-            "[16]"
-          ],
-          "context": "While the organization tracks broad outcomes, it could <cite id=\"16\">publish more consistent beneficiary counts</cite> to allow for detailed cost-per-beneficiary assessments."
-        },
-        {
           "area": "Executive Compensation Oversight",
           "citation_ids": [
+            "[16]",
             "[17]"
           ],
-          "context": "The <cite id=\"17\">CEO's total compensation of $464,962</cite> represents a significant portion of revenue for an organization of this scale, warranting closer board scrutiny."
+          "context": "The CEO's compensation of <cite id=\"16\">$464,962</cite> represents a significant portion of revenue for an organization of this scale, which may warrant closer donor scrutiny regarding <cite id=\"17\">governance oversight</cite>."
+        },
+        {
+          "area": "Impact Metric Reporting",
+          "citation_ids": [
+            "[18]",
+            "[19]"
+          ],
+          "context": "While the organization tracks <cite id=\"18\">4 outcome metrics via Candid</cite>, there is a need to <cite id=\"19\">publish consistent beneficiary counts</cite> to better assess cost-per-beneficiary effectiveness."
         }
       ],
       "bbb_assessment": {
@@ -4229,78 +4251,60 @@
         "review_url": "https://give.org/charity-reviews/environment/rainforest-alliance-in-new-york-ny-9999-2096",
         "standards_met": 0,
         "standards_not_met": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          17,
-          18,
-          19,
-          20
+          "All 20 standards (Review Incomplete)"
         ],
-        "summary": "The organization currently does not meet any of the 20 BBB Standards for Charity Accountability."
+        "summary": "The organization has not yet completed the BBB Wise Giving Alliance review process."
       },
       "case_against": {
         "citation_ids": [
+          "[16]",
           "[17]",
-          "[18]",
           "[20]"
         ],
-        "mitigation_notes": "The organization maintains high third-party ratings from Charity Navigator and Candid despite BBB reporting gaps.",
+        "mitigation_notes": "The organization maintains high transparency through Candid and Charity Navigator, which mitigates some governance concerns.",
         "risk_factors": [
-          "<cite id=\"20\">0 out of 20 BBB standards met</cite>",
-          "<cite id=\"17\">High executive compensation relative to revenue</cite>"
+          "<cite id=\"16\">CEO compensation exceeds 1% of revenue</cite> for a large-scale organization",
+          "<cite id=\"20\">Currently meets 0 out of 20 BBB standards</cite> due to incomplete review"
         ],
-        "summary": "The primary concerns involve <cite id=\"20\">non-compliance with BBB standards</cite> and a delivery model focused on <cite id=\"18\">capacity building rather than direct aid</cite>."
+        "summary": "The primary concerns involve <cite id=\"17\">governance oversight regarding executive pay</cite> and a lack of <cite id=\"20\">BBB Wise Giving Alliance accreditation</cite>."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 5,
-          "rating": 11,
-          "website": 7
+          "evaluation": 1,
+          "form990": 7,
+          "rating": 13,
+          "website": 4
         },
-        "high_confidence_count": 21,
-        "total_count": 23,
+        "high_confidence_count": 22,
+        "total_count": 25,
         "unique_sources": 5
       },
       "confidence": {
-        "data_freshness": "Financial data from 2023; ratings from late 2024",
+        "data_freshness": "Financial data from 2023; Ratings from late 2024",
         "data_gaps": [
-          "Missing BBB compliance data",
-          "No granular beneficiary impact metrics"
+          "Missing BBB accreditation details",
+          "No specific beneficiary counts provided in source data"
         ],
         "level": "HIGH",
-        "notes": "Strong financial and transparency data available from multiple authoritative sources.",
+        "notes": "Strong financial and accountability data available from multiple third-party sources.",
         "score": 85,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
           "Candid",
-          "Charity Website",
-          "BBB"
+          "BBB Wise Giving Alliance",
+          "Rainforest Alliance Website"
         ]
       },
       "data_confidence": {
         "confidence_score": 85,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing BBB compliance",
-          "Limited granular beneficiary data"
+          "Missing BBB accreditation",
+          "Limited cost-per-beneficiary data"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 23,
+        "total_citations": 25,
         "unique_sources": 5,
         "website_last_crawled": "2025-01"
       },
@@ -4308,47 +4312,50 @@
         "alignment": {
           "citation_ids": [
             "[22]",
-            "[23]"
+            "[23]",
+            "[24]"
           ],
-          "explanation": "The charity serves <cite id=\"22\">underserved populations in Muslim-majority regions</cite> like Indonesia and C\u00f4te d'Ivoire, though it lacks specific faith-based programming.",
-          "improvement": "The organization could <cite id=\"23\">add a dedicated sadaqah page</cite> to better communicate its alignment with Muslim donor priorities."
+          "explanation": "The charity is <cite id=\"22\">Sadaqah-eligible</cite> and serves <cite id=\"23\">underserved populations in Muslim-majority regions</cite> such as Indonesia and C\u00f4te d'Ivoire.",
+          "improvement": "Alignment could be strengthened by <cite id=\"24\">clearly stating the impact of environmental conservation on local Muslim communities</cite> to better resonate with faith-driven donors."
         },
         "credibility": {
           "citation_ids": [
-            "[12]",
-            "[13]",
-            "[19]",
+            "[10]",
+            "[11]",
             "[20]"
           ],
-          "explanation": "Donors can trust this charity due to its <cite id=\"12\">perfect accountability scores</cite>, <cite id=\"13\">Candid Platinum status</cite>, and <cite id=\"19\">100% independent board of directors</cite>.",
-          "improvement": "To further enhance credibility, the organization should work to <cite id=\"20\">meet all 20 BBB Wise Giving Alliance standards</cite>, as current reviews show 0 standards met."
+          "explanation": "Donors can trust this organization due to its <cite id=\"10\">perfect 96/100 scores in Accountability, Culture, and Leadership</cite> from Charity Navigator, as well as its <cite id=\"11\">Platinum status on Candid</cite>.",
+          "improvement": "To further enhance credibility, the organization should address the <cite id=\"20\">0/20 standards met rating from the BBB Wise Giving Alliance</cite> by completing their formal review process."
         },
         "impact": {
           "citation_ids": [
-            "[3]",
-            "[16]",
+            "[5]",
+            "[19]",
             "[21]"
           ],
-          "explanation": "Operations are highly efficient with a <cite id=\"3\">83.5% program ratio</cite> and a <cite id=\"21\">strong documented theory of change</cite>.",
-          "improvement": "Impact assessment would benefit from <cite id=\"16\">publishing specific beneficiary data</cite> to move beyond capacity-building metrics."
+          "explanation": "Impact is driven by a <cite id=\"5\">83.5% program ratio</cite> and a <cite id=\"21\">documented theory of change</cite> that focuses on systemic market shifts in agriculture.",
+          "improvement": "Impact assessment would benefit from <cite id=\"19\">publishing specific beneficiary data</cite> to move beyond capacity-building metrics to direct outcome tracking."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "ADVOCACY",
         "citation_ids": [
-          "[6]",
-          "[21]"
+          "[1]",
+          "[21]",
+          "[23]"
         ],
-        "evidence_rigor": "Grade B - Strong theory of change with outcome tracking",
+        "evidence_rigor": "Grade B - Verified outcomes with documented Theory of Change",
         "geographic_focus": [
-          "Brazil",
           "Indonesia",
-          "C\u00f4te d'Ivoire",
-          "Mexico"
+          "Mexico",
+          "Colombia",
+          "Ghana",
+          "Vietnam"
         ],
         "giving_style": "Market-based sustainability",
         "tax_deductible": true,
         "zakat_asnaf_served": [
+          "",
           ""
         ],
         "zakat_status": "SADAQAH-ELIGIBLE"
@@ -4357,16 +4364,16 @@
         "admin_ratio": 0.011,
         "annual_revenue": 85534243,
         "citation_ids": [
-          "[2]",
+          "[1]",
           "[10]",
-          "[14]"
+          "[13]"
         ],
         "cn_financial_score": 100,
         "cn_overall_score": 96.5,
         "fundraising_ratio": 0.04,
         "industry_program_ratio": 0.75,
-        "peer_count": 16,
-        "peer_program_ratio_median": 0.813,
+        "peer_count": 15,
+        "peer_program_ratio_median": 0.8,
         "program_expense_ratio": 0.8349,
         "reserves_months": 7.3,
         "revenue_cagr_3yr": 24.9,
@@ -4395,77 +4402,76 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
+          "[1]",
           "[15]"
         ],
         "domestic_grants": 4523727,
         "foreign_grants": 116829842,
         "grant_count": 384,
-        "grant_strategy": "Distributes significant funding to local partners for on-the-ground sustainability work.",
+        "grant_strategy": "Distributes significant funding to local implementing partners for sustainability standards.",
         "is_significant_grantmaker": true,
         "regions_served": [
-          "Global",
-          "Latin America",
-          "Africa",
-          "Southeast Asia"
+          "Global South",
+          "Southeast Asia",
+          "Latin America"
         ],
         "top_recipients": [
-          "CDP NORTH AMERICA ($947K)",
-          "CONSERVATION INT FOUNDATION ($662K)"
+          "CDP NORTH AMERICA ($947,745)",
+          "CONSERVATION INT FOUNDATION ($662,929)"
         ],
         "total_grants": 121353569
       },
-      "headline": "The Rainforest Alliance fosters global sustainability by aligning the interests of businesses, governments, and forest communities to protect biodiversity and improve livelihoods.",
+      "headline": "The Rainforest Alliance fosters global sustainability by aligning the interests of businesses, governments, and forest communities to protect biodiversity and improve rural livelihoods.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value market-driven environmental solutions and want to support long-term systemic change in global agriculture and forestry.",
+        "best_for_summary": "Best for donors who prioritize systemic environmental change and want to support market-based solutions for sustainable agriculture and forestry.",
         "citation_ids": [
-          "[3]",
-          "[17]",
-          "[18]"
+          "[1]",
+          "[5]",
+          "[22]"
         ],
         "donor_motivations": [
-          "Want to address climate change through sustainable supply chains",
-          "Value organizations with high financial efficiency and low fundraising costs",
-          "Prefer supporting rural livelihoods through capacity building",
-          "Interested in protecting biodiversity in tropical rainforests"
+          "Value long-term climate resilience over short-term relief",
+          "Support the intersection of environmental conservation and rural poverty alleviation",
+          "Prefer organizations with high financial efficiency and low fundraising costs",
+          "Interested in supporting sustainable development in the Global South"
         ],
         "giving_considerations": [
-          "Donations support advocacy and certification rather than direct emergency relief",
-          "The organization has a large institutional footprint with high executive pay",
-          "Impact is measured through systemic changes rather than individual beneficiary counts"
+          "Donations support advocacy and certification rather than direct service delivery",
+          "The organization operates at a massive scale where individual gifts are pooled for systemic impact",
+          "Focus is on capacity building for farmers and foresters"
         ],
-        "not_ideal_for": ""
+        "not_ideal_for": "Donors seeking to fulfill Zakat obligations or those looking for immediate, direct humanitarian aid like food or medicine."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[13]",
+          "[18]",
           "[21]"
         ],
         "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B reflects a strong, documented theory of change and consistent tracking of outcome metrics through Candid.",
+        "evidence_grade_explanation": "The organization has a verified theory of change and tracks multiple outcome metrics, though it lacks independent RCT-level evaluations.",
         "external_evaluations": [
-          "Candid Platinum outcomes"
+          "Candid Outcome Metrics",
+          "Charity Navigator Impact Beacon"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "The organization uses market-based incentives to reward sustainable land management, thereby protecting forests and improving farmer livelihoods.",
-        "why_evidence_matters": "Evidence ensures that certification standards actually lead to improved environmental and economic outcomes for forest communities."
+        "theory_of_change_summary": "The Rainforest Alliance uses a market-based approach to reward sustainable land management, creating a cycle of conservation and improved livelihoods.",
+        "why_evidence_matters": "Evidence ensures that certification standards actually lead to preserved biodiversity and higher income for farmers."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[1]",
-          "[5]",
-          "[14]"
+          "[2]",
+          "[25]"
         ],
         "founded_year": 1987,
         "maturity_stage": "Institution",
         "revenue_growth_3yr": 24.9,
-        "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "The organization has a high revenue growth rate but also significant expenses related to its global certification infrastructure.",
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "With a <cite id=\"25\">24.9% revenue CAGR</cite>, the organization is in a growth phase and can absorb significant capital to expand its certification reach.",
         "strategic_priorities": [
-          "Regenerative agriculture",
-          "Climate resilience",
-          "Landscape projects"
+          "Expand Regenerative Agriculture",
+          "Strengthen Climate Resilience in the Global South"
         ],
         "years_operating": 39
       },
@@ -4476,11 +4482,11 @@
         "ceo_name": "Mr. Santiago Gowland",
         "citation_ids": [
           "[1]",
-          "[17]",
-          "[19]"
+          "[10]",
+          "[16]"
         ],
         "employees_count": 500,
-        "geographic_reach": "Global (Brazil, Indonesia, Ghana, etc.)",
+        "geographic_reach": "Global, with focus on 10+ key tropical nations",
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 1,
@@ -4491,10 +4497,11 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[4]"
+          "[5]",
+          "[9]"
         ],
-        "differentiator": "Distinguished by its <cite id=\"4\">high program service revenue</cite> from certification royalties, reducing dependence on traditional donations.",
-        "peer_group": "Environmental Advocacy & Research",
+        "differentiator": "Distinguished by a <cite id=\"5\">83.5% program expense ratio</cite>, which is significantly higher than the <cite id=\"9\">80.0% peer median</cite>.",
+        "peer_group": "Environmental Advocacy and Research",
         "similar_orgs": [
           "Natural Resources Defense Council",
           "Union of Concerned Scientists",
@@ -4503,46 +4510,47 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "More US policy focused",
+          "differentiator": "More focused on US legal advocacy",
           "name": "Natural Resources Defense Council"
         },
         {
-          "differentiator": "Heavier focus on scientific research",
+          "differentiator": "Heavier focus on scientific research and policy",
           "name": "Union of Concerned Scientists"
         },
         {
-          "differentiator": "Focus on human rights advocacy",
+          "differentiator": "Focuses on human rights rather than environmental certification",
           "name": "Human Rights Watch, Inc."
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[3]",
-            "[8]"
+            "[5]",
+            "[9]"
           ],
-          "detail": "The organization directs <cite id=\"3\">83.5% of its total expenses</cite> toward program services, significantly exceeding the <cite id=\"8\">peer median of 81.3%</cite> for advocacy-focused organizations.",
+          "detail": "The organization directs <cite id=\"5\">83.5% of its total expenses</cite> toward its programs, significantly exceeding the <cite id=\"9\">peer median of 80.0%</cite>.",
           "point": "Exceptional Financial Efficiency"
         },
         {
           "citation_ids": [
-            "[9]"
+            "[10]",
+            "[11]"
           ],
-          "detail": "The charity spends only <cite id=\"9\">$0.04 to raise every $1</cite> in contributions, reflecting a highly efficient development operation.",
-          "point": "Strong Fundraising Performance"
+          "detail": "The charity holds a <cite id=\"10\">96.5/100 overall score from Charity Navigator</cite> and has achieved the <cite id=\"11\">Candid Platinum Seal of Transparency</cite>.",
+          "point": "High Accountability and Transparency"
         },
         {
           "citation_ids": [
-            "[10]"
+            "[12]"
           ],
-          "detail": "With <cite id=\"10\">7.8 months of working capital</cite> in reserves, the organization maintains a strong liquidity position to weather economic fluctuations.",
-          "point": "Robust Financial Resilience"
+          "detail": "The organization is highly effective in its resource mobilization, spending only <cite id=\"12\">$0.04 to raise every $1</cite> in charitable contributions.",
+          "point": "Strong Fundraising Efficiency"
         }
       ],
       "strengths_deep_dive": [
-        "The Rainforest Alliance demonstrates a high level of organizational maturity and transparency, evidenced by its <cite id=\"11\">overall score of 96.96.5/100 from Charity Navigator</cite>. This includes <cite id=\"12\">perfect 96/100 scores</cite> in Accountability, Culture, and Leadership beacons. Their impact is further validated by a <cite id=\"13\">Platinum Seal of Transparency from Candid</cite>, the highest level of disclosure available. Financially, the organization has shown rapid growth with a <cite id=\"14\">3-year revenue CAGR of 24.9%</cite>, allowing for expanded grantmaking activity which totaled <cite id=\"15\">$121,353,569 in grants</cite> to domestic and foreign partners in the most recent reporting period."
+        "The Rainforest Alliance demonstrates remarkable financial resilience and operational scale. With <cite id=\"13\">7.8 months of working capital</cite> in reserve, the organization is well-positioned to sustain its long-term advocacy and certification programs even during economic fluctuations. Its revenue model is notably diversified; while it receives significant contributions, <cite id=\"14\">$57,766,882 was generated through program service revenue</cite>, indicating a successful market-based approach where certification royalties fund further conservation efforts. This financial stability supports a massive grantmaking operation, with <cite id=\"15\">$116,829,842 in foreign grants</cite> distributed to 367 recipients to implement on-the-ground sustainability standards."
       ],
-      "summary": "The Rainforest Alliance is a global non-profit organization that works at the intersection of business, agriculture, and forests to make responsible business the new normal. <cite id=\"1\">founded in 1987</cite>, the organization has spent nearly four decades developing market-based solutions to protect biodiversity and improve the livelihoods of rural communities. In the 2023 fiscal year, the organization reported <cite id=\"2\">total revenue of $85,534,243</cite>, demonstrating significant scale in its operations. The charity operates with high financial efficiency, maintaining a <cite id=\"3\">program expense ratio of 83.5%</cite>, which ensures that the vast majority of funding is directed toward its core mission of sustainability. Their model is uniquely sustainable, generating <cite id=\"4\">$57,766,882 in program service revenue</cite> primarily through royalty fees from certified products. This diversified income stream supports a wide range of initiatives, including <cite id=\"5\">regenerative agriculture and landscape projects</cite> across critical regions such as <cite id=\"6\">Brazil, Indonesia, and C\u00f4te d'Ivoire</cite>. By aligning the interests of <cite id=\"7\">1.6 billion people who depend on forests</cite> with global market demands, the Rainforest Alliance creates a scalable framework for environmental conservation and climate resilience.",
+      "summary": "The Rainforest Alliance is a global non-profit organization dedicated to protecting biodiversity and improving rural livelihoods by promoting <cite id=\"1\">sustainable forestry and agricultural practices</cite>. Founded in <cite id=\"2\">1987</cite>, the organization has spent nearly four decades aligning the interests of businesses, governments, and forest communities. In the 2023 fiscal year, the organization reported <cite id=\"3\">total revenue of $85,534,243</cite>, which is largely driven by <cite id=\"4\">program service revenue from certification royalties</cite> and charitable contributions. The organization operates with high financial efficiency, maintaining a <cite id=\"5\">program expense ratio of 83.5%</cite>, ensuring that the vast majority of funds are directed toward its core mission of environmental conservation and community resilience. Their model focuses on <cite id=\"6\">capacity building and regenerative agriculture</cite> across critical landscapes in <cite id=\"7\">Indonesia, Mexico, and Colombia</cite>. By leveraging market-based incentives, the Rainforest Alliance transforms how the world produces, sources, and consumes, specifically targeting <cite id=\"8\">climate resilience and landscape-level projects</cite>.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

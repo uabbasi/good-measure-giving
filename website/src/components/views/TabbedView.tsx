@@ -1,10 +1,10 @@
 /**
  * TabbedView: Clean tabbed layout for charity details (desktop only).
- * 3 tabs: Overview, Impact & Giving, Organization.
+ * 5 tabs: Overview, Impact, Giving, Financials, Organization.
  * Niche.com-inspired card-based design as alternative to Bloomberg terminal layout.
  */
 
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { getCharityAddress, formatCauseArea, formatShortRevenue } from '../../utils/formatters';
 import {
@@ -28,7 +28,6 @@ import {
   Users,
   Globe,
   BookOpen,
-  Building2,
   FileText,
   Heart,
 } from 'lucide-react';
@@ -42,7 +41,6 @@ import { useCharities } from '../../hooks/useCharities';
 import { useGivingHistory } from '../../hooks/useGivingHistory';
 import { ReportIssueButton } from '../ReportIssueButton';
 import { SourceLinkedText } from '../SourceLinkedText';
-import { ActionsBar } from '../ActionsBar';
 import { AddDonationModal } from '../giving/AddDonationModal';
 import { getCauseCategoryTagClasses, getEvidenceStageClasses, getEvidenceStageLabel } from '../../utils/scoreConstants';
 import { deriveUISignalsFromCharity, getArchetypeDescription } from '../../utils/scoreUtils';
@@ -54,6 +52,7 @@ import { OrganizationEngagement } from '../OrganizationEngagement';
 import { ContentPreview } from '../ContentPreview';
 import { resolveCitationUrls, resolveSourceUrl } from '../../utils/citationUrls';
 import { ShareButton } from '../ShareButton';
+import { CompareButton } from '../CompareButton';
 
 interface TabbedViewProps {
   charity: CharityProfile;
@@ -66,7 +65,7 @@ interface NarrativeCitation {
   claim?: string;
 }
 
-type TabId = 'overview' | 'impact' | 'giving' | 'financials' | 'organization';
+type TabId = 'overview' | 'impact' | 'giving' | 'financials';
 
 // --- Utility functions (same as TerminalView) ---
 
@@ -260,7 +259,13 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
   const { charities: allCharities } = useCharities();
   const { addDonation, getPaymentSources } = useGivingHistory();
   const [showDonationModal, setShowDonationModal] = useState(false);
-  const [activeTab, setActiveTab] = useState<TabId>('overview');
+  const validTabs: TabId[] = ['overview', 'giving', 'impact', 'financials'];
+  const hashTab = window.location.hash.replace('#', '') as TabId;
+  const [activeTab, setActiveTab] = useState<TabId>(validTabs.includes(hashTab) ? hashTab : 'overview');
+  const handleTabChange = useCallback((tab: TabId) => {
+    setActiveTab(tab);
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${tab}`);
+  }, []);
 
   const amal = charity.amalEvaluation;
   const baseline = amal?.baseline_narrative;
@@ -417,10 +422,9 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
   // --- Tab definitions ---
   const tabs: { id: TabId; label: string; icon: React.ElementType }[] = [
     { id: 'overview', label: 'Overview', icon: BookOpen },
-    { id: 'impact', label: 'Impact', icon: Target },
     { id: 'giving', label: 'Giving', icon: Heart },
+    { id: 'impact', label: 'Impact', icon: Target },
     { id: 'financials', label: 'Financials', icon: BarChart3 },
-    { id: 'organization', label: 'Organization', icon: Building2 },
   ];
 
   // ==========================================================================
@@ -523,13 +527,244 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
         </div>
       </SectionCard>
 
-      {/* Key Concerns */}
-      {keyConcerns.length > 0 && (
+      {/* Leadership & Governance */}
+      {rich?.organizational_capacity && (
+        isSignedIn ? (
+          <SectionCard isDark={isDark}>
+            <SectionHeader icon={Users} title="Leadership & Governance" isDark={isDark} />
+            {rich.organizational_capacity.ceo_name && (
+              <div className={`mb-3 pb-3 border-b ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+                <div className={`text-sm font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  {rich.organizational_capacity.ceo_name}
+                </div>
+                <div className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                  CEO/Executive Director
+                  {!!rich.organizational_capacity.ceo_compensation && (
+                    <span className="ml-2 font-mono">({formatCurrency(rich.organizational_capacity.ceo_compensation)})</span>
+                  )}
+                </div>
+              </div>
+            )}
+            <div className={`space-y-1.5 text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+              {!!rich.organizational_capacity.board_size && (
+                <div className="flex justify-between">
+                  <span>Board Size</span>
+                  <span className="font-mono">{rich.organizational_capacity.board_size}</span>
+                </div>
+              )}
+              {rich.organizational_capacity.independent_board_pct != null && (
+                <div className="flex justify-between">
+                  <span>Independent</span>
+                  <span className="font-mono">{(rich.organizational_capacity.independent_board_pct * 100).toFixed(0)}%</span>
+                </div>
+              )}
+              {!!rich.organizational_capacity.employees_count && (
+                <div className="flex justify-between">
+                  <span>Employees</span>
+                  <span className="font-mono">{rich.organizational_capacity.employees_count}</span>
+                </div>
+              )}
+              {rich.organizational_capacity.volunteers_count != null && rich.organizational_capacity.volunteers_count > 0 && (
+                <div className="flex justify-between">
+                  <span>Volunteers</span>
+                  <span className="font-mono">{rich.organizational_capacity.volunteers_count}</span>
+                </div>
+              )}
+            </div>
+            <div className={`mt-3 pt-3 border-t grid grid-cols-2 gap-2 text-sm ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+              <div className="flex items-center gap-1.5">
+                {rich.organizational_capacity.has_conflict_policy ? (
+                  <CheckCircle2 className={`w-4 h-4 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
+                ) : (
+                  <AlertCircle className={`w-4 h-4 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} />
+                )}
+                <span className={isDark ? 'text-slate-400' : 'text-slate-600'}>COI Policy</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                {rich.organizational_capacity.has_financial_audit ? (
+                  <CheckCircle2 className={`w-4 h-4 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
+                ) : (
+                  <AlertCircle className={`w-4 h-4 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} />
+                )}
+                <span className={isDark ? 'text-slate-400' : 'text-slate-600'}>Audited</span>
+              </div>
+            </div>
+          </SectionCard>
+        ) : (
+          <ContentPreview title="Leadership & Governance" description="leadership and governance details" />
+        )
+      )}
+
+      {/* Baseline Governance fallback */}
+      {!rich?.organizational_capacity && charity.baselineGovernance && (
         <SectionCard isDark={isDark}>
-          <SectionHeader icon={AlertTriangle} title="Key Concerns" isDark={isDark} />
-          {renderKeyConcerns(keyConcerns)}
+          <SectionHeader icon={Users} title="Governance" isDark={isDark} />
+          <div className={`space-y-1.5 text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+            {!!charity.baselineGovernance.boardSize && (
+              <div className="flex justify-between">
+                <span className={isDark ? 'text-slate-400' : 'text-slate-500'}>Board Size</span>
+                <span className="font-mono">{charity.baselineGovernance.boardSize}</span>
+              </div>
+            )}
+            {!!charity.baselineGovernance.independentBoardMembers && (
+              <div className="flex justify-between">
+                <span className={isDark ? 'text-slate-400' : 'text-slate-500'}>Independent Members</span>
+                <span className="font-mono">{charity.baselineGovernance.independentBoardMembers}</span>
+              </div>
+            )}
+            {!!charity.baselineGovernance.ceoCompensation && (
+              <div className="flex justify-between">
+                <span className={isDark ? 'text-slate-400' : 'text-slate-500'}>CEO Compensation</span>
+                <span className="font-mono">{formatCurrency(charity.baselineGovernance.ceoCompensation)}</span>
+              </div>
+            )}
+          </div>
         </SectionCard>
       )}
+
+      {/* Long-Term Outlook */}
+      {rich?.long_term_outlook && (
+        isSignedIn ? (
+          <SectionCard isDark={isDark}>
+            <SectionHeader icon={TrendingUp} title="Long-Term Outlook" isDark={isDark} infoTip={GLOSSARY['Long-Term Outlook']} />
+            <DataRow label="Founded" value={rich.long_term_outlook.founded_year} isDark={isDark} />
+            <DataRow label="Years Operating" value={rich.long_term_outlook.years_operating} isDark={isDark} />
+            <DataRow label="Maturity" value={rich.long_term_outlook.maturity_stage} isDark={isDark} mono={false} />
+            <DataRow label="Room for Funding" value={rich.long_term_outlook.room_for_funding} isDark={isDark} />
+            {(rich.long_term_outlook.strategic_priorities?.length ?? 0) > 0 && (
+              <div className={`mt-3 pt-3 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+                <div className={`text-xs font-semibold mb-1.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                  Strategic Priorities
+                </div>
+                <ul className={`text-sm space-y-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  {rich.long_term_outlook.strategic_priorities?.slice(0, 3).map((priority, i) => (
+                    <li key={i} className="flex items-start gap-1">
+                      <span className="text-emerald-500">-</span>
+                      {priority}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </SectionCard>
+        ) : (
+          <ContentPreview title="Long-Term Outlook" description="sustainability and future direction" teaser="Analysis of organizational maturity, strategic priorities, room for additional funding, and long-term sustainability trajectory." />
+        )
+      )}
+
+      {/* Recognition & Awards */}
+      {(charity.awards?.cnBeacons?.length || charity.awards?.candidSeal || charity.awards?.bbbStatus || charity.awards?.bbbReviewUrl) && (
+        <SectionCard isDark={isDark}>
+          <SectionHeader icon={Award} title="Recognition & Awards" isDark={isDark} />
+          <div className="space-y-2">
+            {charity.awards?.cnBeacons?.map((beacon, i) => (
+              <div key={i} className={`flex items-center gap-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                <Award className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-amber-400' : 'text-amber-500'}`} />
+                {charity.awards?.cnUrl ? (
+                  <a href={charity.awards.cnUrl} target="_blank" rel="noopener noreferrer"
+                    className={`text-sm hover:underline ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
+                    {beacon}
+                  </a>
+                ) : (
+                  <span className="text-sm">{beacon}</span>
+                )}
+                <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>-- Charity Navigator</span>
+              </div>
+            ))}
+            {charity.awards?.candidSeal && (
+              <div className={`flex items-center gap-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                <Award className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-amber-400' : 'text-amber-500'}`} />
+                {charity.awards.candidUrl ? (
+                  <a href={charity.awards.candidUrl} target="_blank" rel="noopener noreferrer"
+                    className={`text-sm hover:underline ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
+                    {String(charity.awards.candidSeal).charAt(0).toUpperCase() + String(charity.awards.candidSeal).slice(1)} Seal
+                  </a>
+                ) : (
+                  <span className="text-sm">{String(charity.awards.candidSeal).charAt(0).toUpperCase() + String(charity.awards.candidSeal).slice(1)} Seal</span>
+                )}
+                <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>-- Candid</span>
+              </div>
+            )}
+            {charity.awards?.bbbStatus && (
+              <div className={`flex items-center gap-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                <Award className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-amber-400' : 'text-amber-500'}`} />
+                {charity.awards.bbbReviewUrl ? (
+                  <a href={charity.awards.bbbReviewUrl} target="_blank" rel="noopener noreferrer"
+                    className={`text-sm hover:underline ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
+                    {charity.awards.bbbStatus}
+                  </a>
+                ) : (
+                  <span className="text-sm">{charity.awards.bbbStatus}</span>
+                )}
+                <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>-- BBB Wise Giving</span>
+              </div>
+            )}
+            {!charity.awards?.bbbStatus && charity.awards?.bbbReviewUrl && (
+              <div className={`flex items-center gap-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                <ExternalLink className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-slate-400' : 'text-slate-500'}`} />
+                <a href={charity.awards.bbbReviewUrl} target="_blank" rel="noopener noreferrer"
+                  className={`text-sm hover:underline ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
+                  View BBB Evaluation
+                </a>
+                <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>-- BBB Wise Giving</span>
+              </div>
+            )}
+          </div>
+        </SectionCard>
+      )}
+
+      {/* External Links */}
+      <SectionCard isDark={isDark}>
+        <SectionHeader icon={Globe} title="External Links" isDark={isDark} />
+        <div className="space-y-2">
+          {charity.website && (
+            <a
+              href={charity.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackExternalLinkClick(charity.id ?? charity.ein ?? '', 'website', charity.website!)}
+              className={`flex items-center gap-2 text-sm py-1 ${isDark ? 'text-emerald-400 hover:text-emerald-300' : 'text-emerald-600 hover:text-emerald-700'}`}
+            >
+              Website <ExternalLink className="w-3 h-3" />
+            </a>
+          )}
+          <a
+            href={`https://www.charitynavigator.org/ein/${(charity.ein ?? charity.id ?? '').replace(/-/g, '')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackExternalLinkClick(charity.id ?? charity.ein ?? '', 'source', `https://www.charitynavigator.org/ein/${(charity.ein ?? charity.id ?? '').replace(/-/g, '')}`)}
+            className={`flex items-center justify-between text-sm py-1 ${isDark ? 'text-slate-400 hover:text-slate-300' : 'text-slate-500 hover:text-slate-600'}`}
+          >
+            <span className="flex items-center gap-1">Charity Navigator <ExternalLink className="w-3 h-3" /></span>
+            {charity.scores?.overall && (
+              <span className={`font-mono ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>{Math.round(charity.scores.overall)}</span>
+            )}
+          </a>
+          <a
+            href={`https://projects.propublica.org/nonprofits/organizations/${(charity.ein ?? charity.id ?? '').replace(/-/g, '')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackExternalLinkClick(charity.id ?? charity.ein ?? '', 'source', `https://projects.propublica.org/nonprofits/organizations/${(charity.ein ?? charity.id ?? '').replace(/-/g, '')}`)}
+            className={`flex items-center gap-2 text-sm py-1 ${isDark ? 'text-slate-400 hover:text-slate-300' : 'text-slate-500 hover:text-slate-600'}`}
+          >
+            ProPublica 990 <ExternalLink className="w-3 h-3" />
+          </a>
+          {rich?.bbb_assessment?.review_url && (
+            <a
+              href={rich.bbb_assessment.review_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackOutboundClick(charity.id ?? charity.ein ?? '', charity.name, 'give.org')}
+              className={`flex items-center justify-between text-sm py-1 ${isDark ? 'text-slate-400 hover:text-slate-300' : 'text-slate-500 hover:text-slate-600'}`}
+            >
+              <span className="flex items-center gap-1">BBB Wise Giving <ExternalLink className="w-3 h-3" /></span>
+              {rich.bbb_assessment.meets_all_standards && (
+                <span className={`font-medium text-xs ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>Accredited</span>
+              )}
+            </a>
+          )}
+        </div>
+      </SectionCard>
 
     </div>
   );
@@ -539,197 +774,6 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
   // ==========================================================================
   const renderImpactTab = () => (
     <div className="space-y-5">
-      {/* Strengths & Growth Areas */}
-      {(strengths.length > 0 || (areasForImprovement && areasForImprovement.length > 0)) && (
-        <SectionCard isDark={isDark}>
-          <SectionHeader icon={TrendingUp} title="Strengths & Growth Areas" isDark={isDark} />
-          {strengths.length > 0 && (
-            <div className="mb-4">
-              <div className={`text-xs font-semibold mb-2 ${isDark ? 'text-emerald-400' : 'text-emerald-700'}`}>
-                Why give here?
-              </div>
-              <ul className={`space-y-1.5 text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                {strengths.map((s, i) => {
-                  const text = typeof s === 'object' ? s.point : s;
-                  return (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className={isDark ? 'text-emerald-400' : 'text-emerald-600'}>+</span>
-                      <SourceLinkedText text={text} citations={citations} isDark={isDark} subtle />
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )}
-          {areasForImprovement && areasForImprovement.length > 0 && (
-            <div>
-              <div className={`text-xs font-semibold mb-2 ${isDark ? 'text-amber-400' : 'text-amber-700'}`}>
-                Growth areas
-              </div>
-              <ul className={`space-y-1.5 text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                {areasForImprovement.slice(0, 4).map((a, i) => {
-                  const text = typeof a === 'object' ? a.area : a;
-                  return (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className={isDark ? 'text-amber-400' : 'text-amber-600'}>-</span>
-                      <SourceLinkedText text={text} citations={citations} isDark={isDark} subtle />
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )}
-        </SectionCard>
-      )}
-
-      {/* Impact Evidence */}
-      {rich?.impact_evidence && (
-        isSignedIn ? (
-          <SectionCard isDark={isDark}>
-            <SectionHeader icon={Shield} title="Impact Evidence" isDark={isDark} infoTip={GLOSSARY['Impact Evidence']} />
-            {charity.evaluationTrack === 'NEW_ORG' && (
-              <div className={`mb-3 p-2 rounded text-xs ${
-                isDark ? 'bg-sky-900/30 text-sky-300 border border-sky-800/50' : 'bg-sky-50 text-sky-700 border border-sky-200'
-              }`}>
-                <strong>Emerging org evaluation:</strong> As a newer organization{charity.foundedYear ? ` (est. ${charity.foundedYear})` : ''},
-                evidence is assessed on theory of change and early indicators rather than years of outcome data.
-              </div>
-            )}
-            <div className="flex items-start gap-2 mb-3">
-              <span className={`px-2 py-1 rounded font-mono font-bold text-sm flex-shrink-0 ${
-                rich.impact_evidence.evidence_grade === 'A' || rich.impact_evidence.evidence_grade === 'B'
-                  ? isDark ? 'bg-emerald-900/50 text-emerald-400' : 'bg-emerald-100 text-emerald-700'
-                  : rich.impact_evidence.evidence_grade === 'C' || rich.impact_evidence.evidence_grade === 'D'
-                  ? isDark ? 'bg-amber-900/50 text-amber-400' : 'bg-amber-100 text-amber-700'
-                  : isDark ? 'bg-red-900/50 text-red-400' : 'bg-red-100 text-red-700'
-              }`}>
-                {rich.impact_evidence.evidence_grade}
-              </span>
-              <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                <SourceLinkedText text={rich.impact_evidence.evidence_grade_explanation || ''} citations={citations} isDark={isDark} />
-              </span>
-            </div>
-            <div className={`space-y-1.5 text-xs ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-              <div className="flex justify-between">
-                <span>RCT Available</span>
-                <span className={`font-mono ${rich.impact_evidence.rct_available ? isDark ? 'text-emerald-400' : 'text-emerald-600' : isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-                  {rich.impact_evidence.rct_available ? 'YES' : 'NO'}
-                </span>
-              </div>
-              {rich.impact_evidence.theory_of_change && (
-                <div className="flex justify-between">
-                  <span className="flex items-center gap-1">Theory of Change <InfoTip text={GLOSSARY['Theory of Change']} isDark={isDark} /></span>
-                  <span className="font-mono">{rich.impact_evidence.theory_of_change.toUpperCase()}</span>
-                </div>
-              )}
-            </div>
-            {rich.impact_evidence.theory_of_change_summary && (
-              <div className={`mt-3 pt-3 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-                <div className={`text-xs font-semibold mb-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                  Theory of Change Summary
-                </div>
-                <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                  <SourceLinkedText text={rich.impact_evidence.theory_of_change_summary} citations={citations} isDark={isDark} />
-                </p>
-                {theoryOfChangeCitations.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {theoryOfChangeCitations.map((c, i) => (
-                      <a
-                        key={`${c.id || 'toc'}-${i}`}
-                        href={c.source_url || undefined}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] border ${
-                          isDark ? 'border-emerald-800/60 text-emerald-400 hover:bg-emerald-900/20' : 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
-                        }`}
-                        title={c.source_name || 'Source'}
-                      >
-                        {(c.source_name || `Source ${i + 1}`).replace(/^Charity Website\s*-\s*/i, '')}
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-            {rich.impact_evidence.external_evaluations && rich.impact_evidence.external_evaluations.length > 0 && (
-              <div className={`mt-2 pt-2 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-                <div className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>External Evaluations</div>
-                <div className={`text-xs mt-1 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                  {rich.impact_evidence.external_evaluations.slice(0, 2).join(', ')}
-                </div>
-              </div>
-            )}
-          </SectionCard>
-        ) : (
-          <ContentPreview title="Impact Evidence" description="evidence quality and evaluation details" />
-        )
-      )}
-
-      {/* Baseline Theory of Change fallback */}
-      {!rich?.impact_evidence && charity.theoryOfChange && (
-        <SectionCard isDark={isDark}>
-          <SectionHeader icon={Target} title="Theory of Change" isDark={isDark} infoTip={GLOSSARY['Theory of Change']} />
-          <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-            <SourceLinkedText text={charity.theoryOfChange} citations={citations} isDark={isDark} />
-          </p>
-          {theoryOfChangeCitations.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {theoryOfChangeCitations.map((c, i) => (
-                <a
-                  key={`${c.id || 'toc-fallback'}-${i}`}
-                  href={c.source_url || undefined}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] border ${
-                    isDark ? 'border-emerald-800/60 text-emerald-400 hover:bg-emerald-900/20' : 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
-                  }`}
-                  title={c.source_name || 'Source'}
-                >
-                  {(c.source_name || `Source ${i + 1}`).replace(/^Charity Website\s*-\s*/i, '')}
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              ))}
-            </div>
-          )}
-        </SectionCard>
-      )}
-
-      {/* Evidence Quality Checklist */}
-      {charity.evidenceQuality && (
-        <SectionCard isDark={isDark}>
-          <SectionHeader icon={CheckCircle2} title="Evidence Quality" isDark={isDark} infoTip={GLOSSARY['Evidence Quality']} />
-          <div className="space-y-2">
-            {[
-              { key: 'hasOutcomeMethodology', label: 'Outcome methodology documented' },
-              { key: 'hasMultiYearMetrics', label: 'Multi-year metrics tracked' },
-              { key: 'thirdPartyEvaluated', label: 'Third-party evaluated' },
-              { key: 'receivesFoundationGrants', label: 'Receives foundation grants' },
-            ].map(({ key, label }) => {
-              const val = (charity.evidenceQuality as Record<string, unknown>)?.[key];
-              if (val === null || val === undefined) return null;
-              return (
-                <div key={key} className="flex items-center gap-2 text-sm">
-                  {val ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  ) : (
-                    <AlertCircle className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-slate-600' : 'text-slate-400'}`} />
-                  )}
-                  <span className={val ? (isDark ? 'text-slate-300' : 'text-slate-700') : (isDark ? 'text-slate-500' : 'text-slate-400')}>
-                    {label}
-                  </span>
-                </div>
-              );
-            })}
-            {charity.evidenceQuality.evaluationSources && charity.evidenceQuality.evaluationSources.length > 0 && (
-              <div className={`mt-2 pt-2 border-t text-xs ${isDark ? 'border-slate-800 text-slate-500' : 'border-slate-200 text-slate-400'}`}>
-                Sources: {charity.evidenceQuality.evaluationSources.join(', ')}
-              </div>
-            )}
-          </div>
-        </SectionCard>
-      )}
-
       {/* Methodology Details */}
       {amal?.score_details && (
         charity.evaluationTrack === 'NEW_ORG' ? (
@@ -758,6 +802,168 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
               theoryOfChangeSummary={rich?.impact_evidence?.theory_of_change_summary || charity.theoryOfChange}
             />
           </SectionCard>
+        )
+      )}
+
+      {/* Evidence */}
+      {(rich?.impact_evidence || charity.evidenceQuality || rich?.citation_stats) && (
+        isSignedIn || charity.evidenceQuality ? (
+          <SectionCard isDark={isDark}>
+            <SectionHeader icon={Shield} title="Evidence" isDark={isDark} infoTip={GLOSSARY['Impact Evidence']} />
+            {/* Impact Evidence grade + details (signed-in with rich) */}
+            {rich?.impact_evidence && isSignedIn && (
+              <>
+                {charity.evaluationTrack === 'NEW_ORG' && (
+                  <div className={`mb-3 p-2 rounded text-xs ${
+                    isDark ? 'bg-sky-900/30 text-sky-300 border border-sky-800/50' : 'bg-sky-50 text-sky-700 border border-sky-200'
+                  }`}>
+                    <strong>Emerging org evaluation:</strong> As a newer organization{charity.foundedYear ? ` (est. ${charity.foundedYear})` : ''},
+                    evidence is assessed on theory of change and early indicators rather than years of outcome data.
+                  </div>
+                )}
+                <div className="flex items-start gap-2 mb-3">
+                  <span className={`px-2 py-1 rounded font-mono font-bold text-sm flex-shrink-0 ${
+                    rich.impact_evidence.evidence_grade === 'A' || rich.impact_evidence.evidence_grade === 'B'
+                      ? isDark ? 'bg-emerald-900/50 text-emerald-400' : 'bg-emerald-100 text-emerald-700'
+                      : rich.impact_evidence.evidence_grade === 'C' || rich.impact_evidence.evidence_grade === 'D'
+                      ? isDark ? 'bg-amber-900/50 text-amber-400' : 'bg-amber-100 text-amber-700'
+                      : isDark ? 'bg-red-900/50 text-red-400' : 'bg-red-100 text-red-700'
+                  }`}>
+                    {rich.impact_evidence.evidence_grade}
+                  </span>
+                  <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    <SourceLinkedText text={rich.impact_evidence.evidence_grade_explanation || ''} citations={citations} isDark={isDark} />
+                  </span>
+                </div>
+                <div className={`space-y-1.5 text-xs ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                  <div className="flex justify-between">
+                    <span>RCT Available</span>
+                    <span className={`font-mono ${rich.impact_evidence.rct_available ? isDark ? 'text-emerald-400' : 'text-emerald-600' : isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                      {rich.impact_evidence.rct_available ? 'YES' : 'NO'}
+                    </span>
+                  </div>
+                  {rich.impact_evidence.theory_of_change && (
+                    <div className="flex justify-between">
+                      <span className="flex items-center gap-1">Theory of Change <InfoTip text={GLOSSARY['Theory of Change']} isDark={isDark} /></span>
+                      <span className="font-mono">{rich.impact_evidence.theory_of_change.toUpperCase()}</span>
+                    </div>
+                  )}
+                </div>
+                {rich.impact_evidence.theory_of_change_summary && (
+                  <div className={`mt-3 pt-3 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+                    <div className={`text-xs font-semibold mb-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                      Theory of Change Summary
+                    </div>
+                    <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                      <SourceLinkedText text={rich.impact_evidence.theory_of_change_summary} citations={citations} isDark={isDark} />
+                    </p>
+                    {theoryOfChangeCitations.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {theoryOfChangeCitations.map((c, i) => (
+                          <a
+                            key={`${c.id || 'toc'}-${i}`}
+                            href={c.source_url || undefined}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] border ${
+                              isDark ? 'border-emerald-800/60 text-emerald-400 hover:bg-emerald-900/20' : 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
+                            }`}
+                            title={c.source_name || 'Source'}
+                          >
+                            {(c.source_name || `Source ${i + 1}`).replace(/^Charity Website\s*-\s*/i, '')}
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {rich.impact_evidence.external_evaluations && rich.impact_evidence.external_evaluations.length > 0 && (
+                  <div className={`mt-2 pt-2 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+                    <div className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>External Evaluations</div>
+                    <div className={`text-xs mt-1 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                      {rich.impact_evidence.external_evaluations.slice(0, 2).join(', ')}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+            {/* Evidence quality checklist */}
+            {charity.evidenceQuality && (
+              <div className={`${rich?.impact_evidence && isSignedIn ? `mt-4 pt-4 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}` : ''}`}>
+                <div className="space-y-2">
+                  {[
+                    { key: 'hasOutcomeMethodology', label: 'Outcome methodology documented' },
+                    { key: 'hasMultiYearMetrics', label: 'Multi-year metrics tracked' },
+                    { key: 'thirdPartyEvaluated', label: 'Third-party evaluated' },
+                    { key: 'receivesFoundationGrants', label: 'Receives foundation grants' },
+                  ].map(({ key, label }) => {
+                    const val = (charity.evidenceQuality as Record<string, unknown>)?.[key];
+                    if (val === null || val === undefined) return null;
+                    return (
+                      <div key={key} className="flex items-center gap-2 text-sm">
+                        {val ? (
+                          <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                        ) : (
+                          <AlertCircle className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-slate-600' : 'text-slate-400'}`} />
+                        )}
+                        <span className={val ? (isDark ? 'text-slate-300' : 'text-slate-700') : (isDark ? 'text-slate-500' : 'text-slate-400')}>
+                          {label}
+                        </span>
+                      </div>
+                    );
+                  })}
+                  {charity.evidenceQuality.evaluationSources && charity.evidenceQuality.evaluationSources.length > 0 && (
+                    <div className={`mt-2 pt-2 border-t text-xs ${isDark ? 'border-slate-800 text-slate-500' : 'border-slate-200 text-slate-400'}`}>
+                      Sources: {charity.evidenceQuality.evaluationSources.join(', ')}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            {/* Citation stats (signed-in only) */}
+            {rich?.citation_stats && isSignedIn && (
+              <div className={`mt-4 pt-4 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+                <div className={`space-y-1.5 text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                  <div className="flex justify-between">
+                    <span>Total Citations</span>
+                    <span className="font-mono">{rich.citation_stats.total_count}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Unique Sources</span>
+                    <span className="font-mono">{rich.citation_stats.unique_sources}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Strong Sources</span>
+                    <span className={`font-mono ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
+                      {rich.citation_stats.high_confidence_count}
+                    </span>
+                  </div>
+                </div>
+                {rich.citation_stats.by_source_type && (
+                  <div className={`mt-2 pt-2 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+                    <div className="flex flex-wrap gap-1">
+                      {Object.entries(rich.citation_stats.by_source_type).map(([type, count]) => (
+                        <span key={type} className={`px-1.5 py-0.5 rounded text-xs ${isDark ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-600'}`}>
+                          {type}: {count}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {rich?.data_confidence?.form_990_tax_year && (
+                  <div className={`mt-2 pt-2 border-t text-xs ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+                    <div className="flex justify-between">
+                      <span className={isDark ? 'text-slate-500' : 'text-slate-400'}>990 Tax Year</span>
+                      <span className={`font-mono ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>{rich.data_confidence.form_990_tax_year}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </SectionCard>
+        ) : (
+          <ContentPreview title="Evidence" description="evidence quality and evaluation details" />
         )
       )}
     </div>
@@ -817,6 +1023,57 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
         ) : (
           <ContentPreview title="Best For" description="which donors this charity fits best" teaser={idealDonorProfile?.best_for_summary || "Discover which donor profiles and giving styles align best with this charity's strengths."} />
         )
+      )}
+
+      {/* Key Concerns */}
+      {keyConcerns.length > 0 && (
+        <SectionCard isDark={isDark}>
+          <SectionHeader icon={AlertTriangle} title="Key Concerns" isDark={isDark} />
+          {renderKeyConcerns(keyConcerns)}
+        </SectionCard>
+      )}
+
+      {/* Strengths & Growth Areas */}
+      {(strengths.length > 0 || (areasForImprovement && areasForImprovement.length > 0)) && (
+        <SectionCard isDark={isDark}>
+          <SectionHeader icon={TrendingUp} title="Strengths & Growth Areas" isDark={isDark} />
+          {strengths.length > 0 && (
+            <div className="mb-4">
+              <div className={`text-xs font-semibold mb-2 ${isDark ? 'text-emerald-400' : 'text-emerald-700'}`}>
+                Why give here?
+              </div>
+              <ul className={`space-y-1.5 text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                {strengths.map((s, i) => {
+                  const text = typeof s === 'object' ? s.point : s;
+                  return (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className={isDark ? 'text-emerald-400' : 'text-emerald-600'}>+</span>
+                      <SourceLinkedText text={text} citations={citations} isDark={isDark} subtle />
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+          {areasForImprovement && areasForImprovement.length > 0 && (
+            <div>
+              <div className={`text-xs font-semibold mb-2 ${isDark ? 'text-amber-400' : 'text-amber-700'}`}>
+                Growth areas
+              </div>
+              <ul className={`space-y-1.5 text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                {areasForImprovement.slice(0, 4).map((a, i) => {
+                  const text = typeof a === 'object' ? a.area : a;
+                  return (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className={isDark ? 'text-amber-400' : 'text-amber-600'}>-</span>
+                      <SourceLinkedText text={text} citations={citations} isDark={isDark} subtle />
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+        </SectionCard>
       )}
 
       {/* Things to Know / Balanced View */}
@@ -940,6 +1197,93 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
         )
       )}
 
+      {/* BBB Wise Giving Assessment */}
+      {rich?.bbb_assessment && (
+        isSignedIn ? (
+          (rich.bbb_assessment.meets_all_standards ||
+           (rich.bbb_assessment.standards_met && rich.bbb_assessment.standards_met > 0) ||
+           (rich.bbb_assessment.standards_not_met && rich.bbb_assessment.standards_not_met.length > 0) ||
+           rich.bbb_assessment.review_url || rich.bbb_assessment.summary || rich.bbb_assessment.audit_type) ? (
+            <SectionCard isDark={isDark} className={`!border-l-4 ${
+              rich.bbb_assessment.meets_all_standards
+                ? isDark ? '!border-emerald-500' : '!border-emerald-500'
+                : isDark ? '!border-amber-500' : '!border-amber-500'
+            }`}>
+              <SectionHeader icon={Shield} title="BBB Wise Giving" isDark={isDark} infoTip={GLOSSARY['BBB Wise Giving']} />
+              <div className="flex items-center gap-2 mb-3">
+                {rich.bbb_assessment.meets_all_standards ? (
+                  <CheckCircle2 className={`w-5 h-5 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
+                ) : (
+                  <AlertTriangle className={`w-5 h-5 ${isDark ? 'text-amber-400' : 'text-amber-600'}`} />
+                )}
+                <span className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  {rich.bbb_assessment.meets_all_standards ? 'Meets All Standards' : 'Standards Review'}
+                </span>
+                {rich.bbb_assessment.standards_met != null && rich.bbb_assessment.standards_met > 0 && (
+                  <span className={`text-xs font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                    ({rich.bbb_assessment.standards_met}/20)
+                  </span>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-1.5 mb-3">
+                {['governance', 'effectiveness', 'finances'].map((category) => {
+                  const statusKey = `${category}_status` as 'governance_status' | 'effectiveness_status' | 'finances_status';
+                  const status = rich.bbb_assessment![statusKey];
+                  const isPassing = status === 'pass' || status === 'Pass' || status === 'PASS';
+                  return status && status !== 'NEUTRAL' ? (
+                    <div key={category} className="flex items-center gap-1.5 text-sm">
+                      {isPassing ? (
+                        <CheckCircle2 className={`w-4 h-4 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
+                      ) : (
+                        <AlertCircle className={`w-4 h-4 ${isDark ? 'text-amber-400' : 'text-amber-600'}`} />
+                      )}
+                      <span className={`capitalize ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>{category}</span>
+                    </div>
+                  ) : null;
+                })}
+                {rich.bbb_assessment.audit_type && (
+                  <div className="flex items-center gap-1.5 text-sm">
+                    <CheckCircle2 className={`w-4 h-4 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
+                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>{rich.bbb_assessment.audit_type}</span>
+                  </div>
+                )}
+              </div>
+              {rich.bbb_assessment.summary && (
+                <p className={`text-xs mb-2 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  <SourceLinkedText text={rich.bbb_assessment.summary} citations={citations} isDark={isDark} subtle />
+                </p>
+              )}
+              {rich.bbb_assessment.standards_not_met && rich.bbb_assessment.standards_not_met.length > 0 && (
+                <div className={`pt-2 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
+                  <div className={`text-xs font-semibold mb-1 flex items-center gap-1 ${isDark ? 'text-amber-400' : 'text-amber-600'}`}>
+                    <AlertTriangle className="w-3 h-3" />
+                    Not Met
+                  </div>
+                  <ul className={`text-xs space-y-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    {rich.bbb_assessment.standards_not_met.slice(0, 3).map((std, i) => (
+                      <li key={i}>- {std}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {rich.bbb_assessment.review_url && (
+                <a
+                  href={rich.bbb_assessment.review_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackOutboundClick(charity.id ?? charity.ein ?? '', charity.name, 'give.org')}
+                  className={`mt-2 inline-flex items-center gap-1 text-xs font-medium ${isDark ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'}`}
+                >
+                  View on give.org <ExternalLink className="w-3 h-3" />
+                </a>
+              )}
+            </SectionCard>
+          ) : null
+        ) : (
+          <ContentPreview title="BBB Assessment" description="BBB Wise Giving standards review" />
+        )
+      )}
+
       {/* Similar Organizations */}
       {(rich?.similar_organizations || rich?.peer_comparison) && (
         <SectionCard isDark={isDark}>
@@ -992,9 +1336,9 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
   );
 
   // ==========================================================================
-  // RENDER: Organization Tab
+  // RENDER: Financials Tab
   // ==========================================================================
-  const renderOrganizationTab = () => (
+  const renderFinancialsTab = () => (
     <div className="space-y-5">
       {/* Financial Overview */}
       <SectionCard isDark={isDark}>
@@ -1201,387 +1545,6 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
         )
       )}
 
-      {/* Leadership & Governance */}
-      {rich?.organizational_capacity && (
-        isSignedIn ? (
-          <SectionCard isDark={isDark}>
-            <SectionHeader icon={Users} title="Leadership & Governance" isDark={isDark} />
-            {rich.organizational_capacity.ceo_name && (
-              <div className={`mb-3 pb-3 border-b ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-                <div className={`text-sm font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                  {rich.organizational_capacity.ceo_name}
-                </div>
-                <div className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-                  CEO/Executive Director
-                  {!!rich.organizational_capacity.ceo_compensation && (
-                    <span className="ml-2 font-mono">({formatCurrency(rich.organizational_capacity.ceo_compensation)})</span>
-                  )}
-                </div>
-              </div>
-            )}
-            <div className={`space-y-1.5 text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-              {!!rich.organizational_capacity.board_size && (
-                <div className="flex justify-between">
-                  <span>Board Size</span>
-                  <span className="font-mono">{rich.organizational_capacity.board_size}</span>
-                </div>
-              )}
-              {rich.organizational_capacity.independent_board_pct != null && (
-                <div className="flex justify-between">
-                  <span>Independent</span>
-                  <span className="font-mono">{(rich.organizational_capacity.independent_board_pct * 100).toFixed(0)}%</span>
-                </div>
-              )}
-              {!!rich.organizational_capacity.employees_count && (
-                <div className="flex justify-between">
-                  <span>Employees</span>
-                  <span className="font-mono">{rich.organizational_capacity.employees_count}</span>
-                </div>
-              )}
-              {rich.organizational_capacity.volunteers_count != null && rich.organizational_capacity.volunteers_count > 0 && (
-                <div className="flex justify-between">
-                  <span>Volunteers</span>
-                  <span className="font-mono">{rich.organizational_capacity.volunteers_count}</span>
-                </div>
-              )}
-            </div>
-            <div className={`mt-3 pt-3 border-t grid grid-cols-2 gap-2 text-sm ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-              <div className="flex items-center gap-1.5">
-                {rich.organizational_capacity.has_conflict_policy ? (
-                  <CheckCircle2 className={`w-4 h-4 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
-                ) : (
-                  <AlertCircle className={`w-4 h-4 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} />
-                )}
-                <span className={isDark ? 'text-slate-400' : 'text-slate-600'}>COI Policy</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                {rich.organizational_capacity.has_financial_audit ? (
-                  <CheckCircle2 className={`w-4 h-4 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
-                ) : (
-                  <AlertCircle className={`w-4 h-4 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} />
-                )}
-                <span className={isDark ? 'text-slate-400' : 'text-slate-600'}>Audited</span>
-              </div>
-            </div>
-          </SectionCard>
-        ) : (
-          <ContentPreview title="Leadership & Governance" description="leadership and governance details" />
-        )
-      )}
-
-      {/* Baseline Governance fallback */}
-      {!rich?.organizational_capacity && charity.baselineGovernance && (
-        <SectionCard isDark={isDark}>
-          <SectionHeader icon={Users} title="Governance" isDark={isDark} />
-          <div className={`space-y-1.5 text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-            {!!charity.baselineGovernance.boardSize && (
-              <div className="flex justify-between">
-                <span className={isDark ? 'text-slate-400' : 'text-slate-500'}>Board Size</span>
-                <span className="font-mono">{charity.baselineGovernance.boardSize}</span>
-              </div>
-            )}
-            {!!charity.baselineGovernance.independentBoardMembers && (
-              <div className="flex justify-between">
-                <span className={isDark ? 'text-slate-400' : 'text-slate-500'}>Independent Members</span>
-                <span className="font-mono">{charity.baselineGovernance.independentBoardMembers}</span>
-              </div>
-            )}
-            {!!charity.baselineGovernance.ceoCompensation && (
-              <div className="flex justify-between">
-                <span className={isDark ? 'text-slate-400' : 'text-slate-500'}>CEO Compensation</span>
-                <span className="font-mono">{formatCurrency(charity.baselineGovernance.ceoCompensation)}</span>
-              </div>
-            )}
-          </div>
-        </SectionCard>
-      )}
-
-      {/* Recognition / Awards */}
-      {(charity.awards?.cnBeacons?.length || charity.awards?.candidSeal || charity.awards?.bbbStatus || charity.awards?.bbbReviewUrl) && (
-        <SectionCard isDark={isDark}>
-          <SectionHeader icon={Award} title="Recognition & Awards" isDark={isDark} />
-          <div className="space-y-2">
-            {charity.awards?.cnBeacons?.map((beacon, i) => (
-              <div key={i} className={`flex items-center gap-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                <Award className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-amber-400' : 'text-amber-500'}`} />
-                {charity.awards?.cnUrl ? (
-                  <a href={charity.awards.cnUrl} target="_blank" rel="noopener noreferrer"
-                    className={`text-sm hover:underline ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
-                    {beacon}
-                  </a>
-                ) : (
-                  <span className="text-sm">{beacon}</span>
-                )}
-                <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>-- Charity Navigator</span>
-              </div>
-            ))}
-            {charity.awards?.candidSeal && (
-              <div className={`flex items-center gap-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                <Award className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-amber-400' : 'text-amber-500'}`} />
-                {charity.awards.candidUrl ? (
-                  <a href={charity.awards.candidUrl} target="_blank" rel="noopener noreferrer"
-                    className={`text-sm hover:underline ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
-                    {String(charity.awards.candidSeal).charAt(0).toUpperCase() + String(charity.awards.candidSeal).slice(1)} Seal
-                  </a>
-                ) : (
-                  <span className="text-sm">{String(charity.awards.candidSeal).charAt(0).toUpperCase() + String(charity.awards.candidSeal).slice(1)} Seal</span>
-                )}
-                <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>-- Candid</span>
-              </div>
-            )}
-            {charity.awards?.bbbStatus && (
-              <div className={`flex items-center gap-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                <Award className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-amber-400' : 'text-amber-500'}`} />
-                {charity.awards.bbbReviewUrl ? (
-                  <a href={charity.awards.bbbReviewUrl} target="_blank" rel="noopener noreferrer"
-                    className={`text-sm hover:underline ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
-                    {charity.awards.bbbStatus}
-                  </a>
-                ) : (
-                  <span className="text-sm">{charity.awards.bbbStatus}</span>
-                )}
-                <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>-- BBB Wise Giving</span>
-              </div>
-            )}
-            {!charity.awards?.bbbStatus && charity.awards?.bbbReviewUrl && (
-              <div className={`flex items-center gap-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                <ExternalLink className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-slate-400' : 'text-slate-500'}`} />
-                <a href={charity.awards.bbbReviewUrl} target="_blank" rel="noopener noreferrer"
-                  className={`text-sm hover:underline ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
-                  View BBB Evaluation
-                </a>
-                <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>-- BBB Wise Giving</span>
-              </div>
-            )}
-          </div>
-        </SectionCard>
-      )}
-
-      {/* BBB Wise Giving Assessment */}
-      {rich?.bbb_assessment && (
-        isSignedIn ? (
-          (rich.bbb_assessment.meets_all_standards ||
-           (rich.bbb_assessment.standards_met && rich.bbb_assessment.standards_met > 0) ||
-           (rich.bbb_assessment.standards_not_met && rich.bbb_assessment.standards_not_met.length > 0) ||
-           rich.bbb_assessment.review_url || rich.bbb_assessment.summary || rich.bbb_assessment.audit_type) ? (
-            <SectionCard isDark={isDark} className={`!border-l-4 ${
-              rich.bbb_assessment.meets_all_standards
-                ? isDark ? '!border-emerald-500' : '!border-emerald-500'
-                : isDark ? '!border-amber-500' : '!border-amber-500'
-            }`}>
-              <SectionHeader icon={Shield} title="BBB Wise Giving" isDark={isDark} infoTip={GLOSSARY['BBB Wise Giving']} />
-              <div className="flex items-center gap-2 mb-3">
-                {rich.bbb_assessment.meets_all_standards ? (
-                  <CheckCircle2 className={`w-5 h-5 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
-                ) : (
-                  <AlertTriangle className={`w-5 h-5 ${isDark ? 'text-amber-400' : 'text-amber-600'}`} />
-                )}
-                <span className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                  {rich.bbb_assessment.meets_all_standards ? 'Meets All Standards' : 'Standards Review'}
-                </span>
-                {rich.bbb_assessment.standards_met != null && rich.bbb_assessment.standards_met > 0 && (
-                  <span className={`text-xs font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                    ({rich.bbb_assessment.standards_met}/20)
-                  </span>
-                )}
-              </div>
-              <div className="grid grid-cols-2 gap-1.5 mb-3">
-                {['governance', 'effectiveness', 'finances'].map((category) => {
-                  const statusKey = `${category}_status` as 'governance_status' | 'effectiveness_status' | 'finances_status';
-                  const status = rich.bbb_assessment![statusKey];
-                  const isPassing = status === 'pass' || status === 'Pass' || status === 'PASS';
-                  return status && status !== 'NEUTRAL' ? (
-                    <div key={category} className="flex items-center gap-1.5 text-sm">
-                      {isPassing ? (
-                        <CheckCircle2 className={`w-4 h-4 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
-                      ) : (
-                        <AlertCircle className={`w-4 h-4 ${isDark ? 'text-amber-400' : 'text-amber-600'}`} />
-                      )}
-                      <span className={`capitalize ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>{category}</span>
-                    </div>
-                  ) : null;
-                })}
-                {rich.bbb_assessment.audit_type && (
-                  <div className="flex items-center gap-1.5 text-sm">
-                    <CheckCircle2 className={`w-4 h-4 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
-                    <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>{rich.bbb_assessment.audit_type}</span>
-                  </div>
-                )}
-              </div>
-              {rich.bbb_assessment.summary && (
-                <p className={`text-xs mb-2 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  <SourceLinkedText text={rich.bbb_assessment.summary} citations={citations} isDark={isDark} subtle />
-                </p>
-              )}
-              {rich.bbb_assessment.standards_not_met && rich.bbb_assessment.standards_not_met.length > 0 && (
-                <div className={`pt-2 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
-                  <div className={`text-xs font-semibold mb-1 flex items-center gap-1 ${isDark ? 'text-amber-400' : 'text-amber-600'}`}>
-                    <AlertTriangle className="w-3 h-3" />
-                    Not Met
-                  </div>
-                  <ul className={`text-xs space-y-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                    {rich.bbb_assessment.standards_not_met.slice(0, 3).map((std, i) => (
-                      <li key={i}>- {std}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {rich.bbb_assessment.review_url && (
-                <a
-                  href={rich.bbb_assessment.review_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => trackOutboundClick(charity.id ?? charity.ein ?? '', charity.name, 'give.org')}
-                  className={`mt-2 inline-flex items-center gap-1 text-xs font-medium ${isDark ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'}`}
-                >
-                  View on give.org <ExternalLink className="w-3 h-3" />
-                </a>
-              )}
-            </SectionCard>
-          ) : null
-        ) : (
-          <ContentPreview title="BBB Assessment" description="BBB Wise Giving standards review" />
-        )
-      )}
-
-      {/* Long-Term Outlook */}
-      {rich?.long_term_outlook && (
-        isSignedIn ? (
-          <SectionCard isDark={isDark}>
-            <SectionHeader icon={TrendingUp} title="Long-Term Outlook" isDark={isDark} infoTip={GLOSSARY['Long-Term Outlook']} />
-            <DataRow label="Founded" value={rich.long_term_outlook.founded_year} isDark={isDark} />
-            <DataRow label="Years Operating" value={rich.long_term_outlook.years_operating} isDark={isDark} />
-            <DataRow label="Maturity" value={rich.long_term_outlook.maturity_stage} isDark={isDark} mono={false} />
-            <DataRow label="Room for Funding" value={rich.long_term_outlook.room_for_funding} isDark={isDark} />
-            {(rich.long_term_outlook.strategic_priorities?.length ?? 0) > 0 && (
-              <div className={`mt-3 pt-3 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-                <div className={`text-xs font-semibold mb-1.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                  Strategic Priorities
-                </div>
-                <ul className={`text-sm space-y-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  {rich.long_term_outlook.strategic_priorities?.slice(0, 3).map((priority, i) => (
-                    <li key={i} className="flex items-start gap-1">
-                      <span className="text-emerald-500">-</span>
-                      {priority}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </SectionCard>
-        ) : (
-          <ContentPreview title="Long-Term Outlook" description="sustainability and future direction" teaser="Analysis of organizational maturity, strategic priorities, room for additional funding, and long-term sustainability trajectory." />
-        )
-      )}
-
-      {/* Data Quality / Citation Stats */}
-      {rich?.citation_stats && (
-        isSignedIn ? (
-          <SectionCard isDark={isDark}>
-            <SectionHeader icon={FileText} title="Data Quality" isDark={isDark} />
-            {rich?.data_confidence?.confidence_score != null && (
-              <div className={`mb-3 pb-3 border-b ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-                <div className="flex justify-between items-center">
-                  <span className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Confidence Score</span>
-                  <span className={`text-lg font-mono font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                    {rich.data_confidence.confidence_score}%
-                  </span>
-                </div>
-              </div>
-            )}
-            <div className={`space-y-1.5 text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-              <div className="flex justify-between">
-                <span>Total Citations</span>
-                <span className="font-mono">{rich.citation_stats.total_count}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Unique Sources</span>
-                <span className="font-mono">{rich.citation_stats.unique_sources}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Strong Sources</span>
-                <span className={`font-mono ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
-                  {rich.citation_stats.high_confidence_count}
-                </span>
-              </div>
-            </div>
-            {rich.citation_stats.by_source_type && (
-              <div className={`mt-2 pt-2 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-                <div className="flex flex-wrap gap-1">
-                  {Object.entries(rich.citation_stats.by_source_type).map(([type, count]) => (
-                    <span key={type} className={`px-1.5 py-0.5 rounded text-xs ${isDark ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-600'}`}>
-                      {type}: {count}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-            {rich?.data_confidence?.form_990_tax_year && (
-              <div className={`mt-2 pt-2 border-t text-xs ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-                <div className="flex justify-between">
-                  <span className={isDark ? 'text-slate-500' : 'text-slate-400'}>990 Tax Year</span>
-                  <span className={`font-mono ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>{rich.data_confidence.form_990_tax_year}</span>
-                </div>
-              </div>
-            )}
-          </SectionCard>
-        ) : (
-          <ContentPreview title="Data Quality" description="citation statistics and source details" />
-        )
-      )}
-
-      {/* External Links */}
-      <SectionCard isDark={isDark}>
-        <SectionHeader icon={Globe} title="External Links" isDark={isDark} />
-        <div className="space-y-2">
-          {charity.website && (
-            <a
-              href={charity.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackExternalLinkClick(charity.id ?? charity.ein ?? '', 'website', charity.website!)}
-              className={`flex items-center gap-2 text-sm py-1 ${isDark ? 'text-emerald-400 hover:text-emerald-300' : 'text-emerald-600 hover:text-emerald-700'}`}
-            >
-              Website <ExternalLink className="w-3 h-3" />
-            </a>
-          )}
-          <a
-            href={`https://www.charitynavigator.org/ein/${(charity.ein ?? charity.id ?? '').replace(/-/g, '')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackExternalLinkClick(charity.id ?? charity.ein ?? '', 'source', `https://www.charitynavigator.org/ein/${(charity.ein ?? charity.id ?? '').replace(/-/g, '')}`)}
-            className={`flex items-center justify-between text-sm py-1 ${isDark ? 'text-slate-400 hover:text-slate-300' : 'text-slate-500 hover:text-slate-600'}`}
-          >
-            <span className="flex items-center gap-1">Charity Navigator <ExternalLink className="w-3 h-3" /></span>
-            {charity.scores?.overall && (
-              <span className={`font-mono ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>{Math.round(charity.scores.overall)}</span>
-            )}
-          </a>
-          <a
-            href={`https://projects.propublica.org/nonprofits/organizations/${(charity.ein ?? charity.id ?? '').replace(/-/g, '')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackExternalLinkClick(charity.id ?? charity.ein ?? '', 'source', `https://projects.propublica.org/nonprofits/organizations/${(charity.ein ?? charity.id ?? '').replace(/-/g, '')}`)}
-            className={`flex items-center gap-2 text-sm py-1 ${isDark ? 'text-slate-400 hover:text-slate-300' : 'text-slate-500 hover:text-slate-600'}`}
-          >
-            ProPublica 990 <ExternalLink className="w-3 h-3" />
-          </a>
-          {rich?.bbb_assessment?.review_url && (
-            <a
-              href={rich.bbb_assessment.review_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackOutboundClick(charity.id ?? charity.ein ?? '', charity.name, 'give.org')}
-              className={`flex items-center justify-between text-sm py-1 ${isDark ? 'text-slate-400 hover:text-slate-300' : 'text-slate-500 hover:text-slate-600'}`}
-            >
-              <span className="flex items-center gap-1">BBB Wise Giving <ExternalLink className="w-3 h-3" /></span>
-              {rich.bbb_assessment.meets_all_standards && (
-                <span className={`font-medium text-xs ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>Accredited</span>
-              )}
-            </a>
-          )}
-        </div>
-      </SectionCard>
     </div>
   );
 
@@ -1599,179 +1562,153 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
           <Link
             to="/browse"
             aria-label="Back to browse"
-            className={`inline-flex items-center gap-1 text-sm mb-3 ${
-              isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-slate-900'
+            className={`inline-flex items-center gap-1 text-xs mb-3 ${
+              isDark ? 'text-slate-500 hover:text-white' : 'text-slate-400 hover:text-slate-900'
             }`}
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-3 h-3" />
             Browse
           </Link>
 
-          {/* Qualitative snapshot row */}
-          <div className="flex flex-wrap items-center gap-2 mb-2">
-            <span
-              className={`px-2 py-1 rounded text-xs font-semibold border ${isDark ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-slate-100 text-slate-600 border-slate-200'}`}
-              title={getArchetypeDescription(uiSignals.archetype_code || charity.archetype)}
-            >
-              {uiSignals.archetype_label}
-            </span>
-            <span className={`px-2 py-1 rounded text-xs font-semibold border ${getEvidenceStageClasses(uiSignals.evidence_stage, isDark)}`}>
-              {getEvidenceStageLabel(uiSignals.evidence_stage)}
-            </span>
-            <RecommendationCue cue={uiSignals.recommendation_cue} rationale={null} isDark={isDark} compact />
-            <span className={`inline-flex items-center gap-1.5 text-sm ${
-              isZakatEligible ? isDark ? 'text-emerald-400' : 'text-emerald-600' : isDark ? 'text-slate-400' : 'text-slate-500'
-            }`}>
-              <Shield className="w-3.5 h-3.5" />
-              {isZakatEligible ? 'Accepts Zakat' : 'Sadaqah'}
-            </span>
-            {isZakatEligible && (() => {
-              const policyUrl = charity.zakatClaimEvidence?.[0] ? extractZakatPolicyUrl(charity.zakatClaimEvidence[0]) : undefined;
-              return policyUrl ? (
-                <a
-                  href={policyUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`inline-flex items-center gap-1 text-xs ${
-                    isDark ? 'text-emerald-400/70 hover:text-emerald-300' : 'text-emerald-600/70 hover:text-emerald-700'
-                  }`}
-                >
-                  View zakat policy <ExternalLink className="w-3 h-3" />
-                </a>
-              ) : (
-                <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-                  Self-reported — no published policy found
-                </span>
-              );
-            })()}
-          </div>
-
-          {/* Charity name */}
+          {/* Name — dominant element */}
           <h1 className={`text-2xl font-bold leading-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
             {charity.name}
           </h1>
-          {getCharityAddress(charity) && (
-            <p className={`mt-1 text-sm ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-              {getCharityAddress(charity)}
-            </p>
-          )}
 
-          {/* Badges row */}
-          <div className="flex flex-wrap items-center gap-2 mt-2">
+          {/* Subtitle: address · cause area */}
+          <div className={`flex items-center gap-1.5 mt-1 text-sm ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
+            {getCharityAddress(charity) && (
+              <span>{getCharityAddress(charity)}</span>
+            )}
+            {getCharityAddress(charity) && charity.causeArea && (
+              <span className={isDark ? 'text-slate-700' : 'text-slate-300'}>·</span>
+            )}
             {charity.causeArea && (
-              <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
-                isDark ? 'bg-slate-800 text-slate-300' : 'bg-slate-100 text-slate-600'
-              }`}>
-                {formatCauseArea(charity.causeArea)}
-              </span>
+              <span className={isDark ? 'text-slate-400' : 'text-slate-600'}>{formatCauseArea(charity.causeArea)}</span>
             )}
-            {!!charity.trustSignals?.isConflictZone && (
-              <span className={`px-2 py-0.5 rounded text-xs font-semibold uppercase tracking-wide ${
-                isDark ? 'bg-orange-900/50 text-orange-400' : 'bg-orange-100 text-orange-700'
-              }`}>
-                Conflict Zone
-              </span>
-            )}
-            {charity.categoryMetadata?.neglectedness === 'HIGH' && (
-              <span className={`px-2 py-0.5 rounded text-xs font-semibold uppercase tracking-wide ${
-                isDark ? 'bg-violet-900/50 text-violet-400' : 'bg-violet-100 text-violet-700'
-              }`}>
-                Neglected Cause
-              </span>
-            )}
-            {charity.evaluationTrack === 'NEW_ORG' && (
-              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold ${
-                isDark ? 'bg-amber-900/50 text-amber-300' : 'bg-amber-100 text-amber-700'
-              }`}>
-                <TrendingUp className="w-3 h-3" />
-                Emerging
-              </span>
-            )}
-            {charity.evaluationTrack === 'RESEARCH_POLICY' && (
-              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold ${
-                isDark ? 'bg-indigo-900/50 text-indigo-300' : 'bg-indigo-100 text-indigo-700'
-              }`}>
-                <Landmark className="w-3 h-3" />
-                Research & Policy
-              </span>
-            )}
-            {getDifferentiatorTags(charity, isDark).map((tag, i) => (
-              <span key={i} className={`px-2 py-0.5 rounded text-xs font-semibold ${tag.colorClass}`}>
-                {tag.label}
-              </span>
-            ))}
           </div>
 
-          {/* Action buttons */}
-          <div className="flex items-center gap-3 mt-4">
-            {donateUrl && (
-              <a
-                href={donateUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={handleDonateClick}
-                className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold ${
-                  isDark ? 'bg-emerald-600 hover:bg-emerald-500 text-white' : 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                }`}
+          {/* Single row: signals + tags (left) — actions (right) */}
+          <div className="flex items-center justify-between mt-3 gap-4">
+            {/* Left: signal badges */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span
+                className={`px-2 py-0.5 rounded text-[11px] font-semibold ${isDark ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-500'}`}
+                title={getArchetypeDescription(uiSignals.archetype_code || charity.archetype)}
               >
-                Donate <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-            )}
-            {isSignedIn && (
-              <>
-                <button
-                  onClick={() => setShowDonationModal(true)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium border ${
-                    isDark ? 'bg-slate-800 text-emerald-300 border-slate-700 hover:bg-slate-700' : 'bg-white text-emerald-700 border-slate-200 hover:bg-slate-50'
+                {uiSignals.archetype_label}
+              </span>
+              <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${getEvidenceStageClasses(uiSignals.evidence_stage, isDark)}`}>
+                {getEvidenceStageLabel(uiSignals.evidence_stage)}
+              </span>
+              <RecommendationCue cue={uiSignals.recommendation_cue} rationale={null} isDark={isDark} compact />
+              {isZakatEligible && (() => {
+                const rawUrl = charity.zakatClaimEvidence?.[0] ? extractZakatPolicyUrl(charity.zakatClaimEvidence[0]) : undefined;
+                // Only link if URL has a real path (not just homepage)
+                const isDeepLink = rawUrl ? new URL(rawUrl).pathname.replace(/\/$/, '') !== '' : false;
+                const policyUrl = isDeepLink ? rawUrl : undefined;
+                const badgeClass = `inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold ${
+                  isDark ? 'bg-emerald-900/40 text-emerald-400' : 'bg-emerald-100 text-emerald-700'
+                }`;
+                return policyUrl ? (
+                  <a href={policyUrl} target="_blank" rel="noopener noreferrer" className={`${badgeClass} hover:opacity-80`}>
+                    <Shield className="w-3 h-3" />
+                    Accepts Zakat <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                  </a>
+                ) : (
+                  <span className={badgeClass}>
+                    <Shield className="w-3 h-3" />
+                    Accepts Zakat
+                  </span>
+                );
+              })()}
+              {!!charity.trustSignals?.isConflictZone && (
+                <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${
+                  isDark ? 'bg-orange-900/50 text-orange-400' : 'bg-orange-100 text-orange-700'
+                }`}>
+                  Conflict Zone
+                </span>
+              )}
+              {charity.categoryMetadata?.neglectedness === 'HIGH' && (
+                <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${
+                  isDark ? 'bg-violet-900/50 text-violet-400' : 'bg-violet-100 text-violet-700'
+                }`}>
+                  Neglected
+                </span>
+              )}
+              {charity.evaluationTrack === 'NEW_ORG' && (
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold ${
+                  isDark ? 'bg-amber-900/50 text-amber-300' : 'bg-amber-100 text-amber-700'
+                }`}>
+                  Emerging
+                </span>
+              )}
+              {charity.evaluationTrack === 'RESEARCH_POLICY' && (
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold ${
+                  isDark ? 'bg-indigo-900/50 text-indigo-300' : 'bg-indigo-100 text-indigo-700'
+                }`}>
+                  Research & Policy
+                </span>
+              )}
+              {getDifferentiatorTags(charity, isDark).map((tag, i) => (
+                <span key={i} className={`px-2 py-0.5 rounded text-[11px] font-semibold ${tag.colorClass}`}>
+                  {tag.label}
+                </span>
+              ))}
+            </div>
+
+            {/* Right: inline actions */}
+            <div className="flex items-center gap-1 flex-shrink-0">
+              {isSignedIn ? (
+                <>
+                  <button
+                    data-tour="action-log-donation"
+                    onClick={() => setShowDonationModal(true)}
+                    className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
+                      isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+                    }`}
+                  >
+                    <Plus className="w-3 h-3" />
+                    Log
+                  </button>
+                  <CompareButton charityEin={charity.ein!} charityName={charity.name} size="sm" />
+                  <span data-tour="action-save">
+                    <BookmarkButton charityEin={charity.ein || charity.id || ''} charityName={charity.name} causeTags={charity.causeTags || undefined} showLabel size="sm" />
+                  </span>
+                  <ShareButton charityId={charity.ein!} charityName={charity.name} isDark={isDark} />
+                </>
+              ) : (
+                <>
+                  <SignInButton variant="custom" isDark={isDark}>
+                    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium cursor-pointer transition-colors ${
+                      isDark ? 'text-emerald-400 hover:text-emerald-300 hover:bg-slate-800' : 'text-emerald-600 hover:text-emerald-700 hover:bg-slate-100'
+                    }`}>
+                      <LogIn className="w-3 h-3" />
+                      Sign in
+                    </span>
+                  </SignInButton>
+                  <ShareButton charityId={charity.ein!} charityName={charity.name} isDark={isDark} />
+                </>
+              )}
+              {donateUrl && (
+                <a
+                  data-tour="action-donate"
+                  href={donateUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={handleDonateClick}
+                  className={`inline-flex items-center gap-1 px-3 py-1 rounded text-xs font-semibold transition-colors ${
+                    isDark ? 'bg-emerald-600 hover:bg-emerald-500 text-white' : 'bg-emerald-600 hover:bg-emerald-700 text-white'
                   }`}
                 >
-                  <Plus className="w-3.5 h-3.5" />
-                  Log Donation
-                </button>
-                <BookmarkButton
-                  charityEin={charity.ein || charity.id || ''}
-                  charityName={charity.name}
-                  causeTags={charity.causeTags || undefined}
-                  showLabel
-                  size="sm"
-                  buttonClassName={`!rounded-lg border !px-3 !py-2 ${
-                    isDark ? 'bg-slate-800 border-slate-700 hover:bg-slate-700' : 'bg-white border-slate-200 hover:bg-slate-50'
-                  }`}
-                  labelClassName="text-sm font-medium"
-                />
-              </>
-            )}
-            {!isSignedIn && (
-              <SignInButton variant="custom" isDark={isDark}>
-                <span className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-bold cursor-pointer transition-colors ${
-                  isDark ? 'bg-emerald-700/80 text-white border border-emerald-600 hover:bg-emerald-600' : 'bg-emerald-600 text-white hover:bg-emerald-700'
-                }`}>
-                  <LogIn className="w-3.5 h-3.5" />
-                  Sign in -- Free
-                </span>
-              </SignInButton>
-            )}
+                  Donate <ExternalLink className="w-3 h-3" />
+                </a>
+              )}
+            </div>
           </div>
 
-          {/* ActionsBar */}
-          <div className="mt-3">
-            <ActionsBar
-              charityEin={charity.ein!}
-              charityName={charity.name}
-              onLogDonation={() => setShowDonationModal(true)}
-              variant="terminal"
-              donateUrl={donateUrl}
-              onDonateClick={handleDonateClick}
-              walletTag={amal?.wallet_tag}
-              causeArea={rich?.donor_fit_matrix?.cause_area}
-              showMobileQuickActions={false}
-              zakatPolicyUrl={charity.zakatClaimEvidence?.[0] ? extractZakatPolicyUrl(charity.zakatClaimEvidence[0]) : undefined}
-              causeTags={charity.causeTags || undefined}
-            />
-          </div>
-
-          {/* Tab bar */}
-          <div className="flex gap-0 mt-4 -mb-px">
+          {/* Tab bar — flush against bottom */}
+          <div className="flex gap-0 mt-3 -mb-px">
             {tabs.map(tab => {
               const isActive = activeTab === tab.id;
               const Icon = tab.icon;
@@ -1779,7 +1716,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
                 <button
                   key={tab.id}
                   onClick={() => {
-                    setActiveTab(tab.id);
+                    handleTabChange(tab.id);
                     trackTabClick(charity.id ?? charity.ein ?? '', tab.id);
                   }}
                   className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
@@ -1834,7 +1771,6 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
         {activeTab === 'impact' && renderImpactTab()}
         {activeTab === 'giving' && renderGivingTab()}
         {activeTab === 'financials' && renderFinancialsTab()}
-        {activeTab === 'organization' && renderOrganizationTab()}
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════════

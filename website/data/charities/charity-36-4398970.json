@@ -75,12 +75,12 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-07 12:29:47",
+  "lastUpdated": "2026-03-09 13:07:18",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/364398970#financials",
-      "timestamp": "2026-03-07T12:28:41",
+      "timestamp": "2026-03-09T13:06:24",
       "value": 1857038
     },
     "claims_zakat_eligible": {
@@ -92,13 +92,13 @@
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/364398970",
-      "timestamp": "2026-03-07T12:28:39",
+      "timestamp": "2026-03-09T13:06:21",
       "value": 2001
     },
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/364398970#financials",
-      "timestamp": "2026-03-07T12:28:41",
+      "timestamp": "2026-03-09T13:06:24",
       "value": 51744
     },
     "has_audited_financials": {
@@ -110,25 +110,25 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/364398970",
-      "timestamp": "2026-03-07T12:28:39",
+      "timestamp": "2026-03-09T13:06:21",
       "value": "B99"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/364398970#financials",
-      "timestamp": "2026-03-07T12:28:41",
+      "timestamp": "2026-03-09T13:06:24",
       "value": 0.5193
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/364398970#financials",
-      "timestamp": "2026-03-07T12:28:41",
+      "timestamp": "2026-03-09T13:06:24",
       "value": 1569416
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/364398970",
-      "timestamp": "2026-03-07T12:28:39",
+      "timestamp": "2026-03-09T13:06:21",
       "value": 3290091
     },
     "working_capital_months": {
@@ -139,7 +139,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/364398970",
-      "timestamp": "2026-03-07T12:28:39",
+      "timestamp": "2026-03-09T13:06:21",
       "value": 29.3
     }
   },
@@ -150,7 +150,6 @@
   },
   "causeTags": [
     "educational",
-    "fisabilillah",
     "fuqara",
     "masakin",
     "scalable-model",
@@ -180,13 +179,13 @@
     "thirdPartyEvaluated": 1,
     "evaluationSources": [
       "Charity Navigator",
-      "Independent auditor",
       "Candid/GuideStar",
+      "Independent auditor",
       "3-Star Rating (Charity Navigator)",
-      "License to Grant Master's Degrees (Illinois Board of Higher Education)",
-      "Grant (John Templeton Foundation)",
-      "Grant (American Online Giving Foundation)",
-      "Grant (The Chicago Community Trust)"
+      "Platinum Seal (Candid/GuideStar)",
+      "License to Operate as a College (Illinois Board of Higher Education (IBHE))",
+      "License to Grant a Master's Degree in Islamic Law and Theology (Illinois Board of Higher Education (IBHE))",
+      "Grant for Applied Islamo-Monism: Wahdat al-Wujud for Today (John Templeton Foundation)"
     ],
     "receivesFoundationGrants": null
   },
@@ -388,12 +387,6 @@
           "severity": "warning"
         },
         {
-          "field": "zakat.evidence",
-          "judge": "crawl_quality",
-          "message": "ZAKAT-ELIGIBLE claimed but no explicit zakat evidence found on website",
-          "severity": "warning"
-        },
-        {
           "field": "discovered.evaluations.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
@@ -406,7 +399,13 @@
           "severity": "info"
         },
         {
-          "field": "discovered.evaluations.evaluators[1].url",
+          "field": "discovered.evaluations.evaluators[2].url",
+          "judge": "discover_quality",
+          "message": "Evaluation source domain 'projects.propublica.org' is not a known trusted evaluator",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.evaluations.evaluators[3].url",
           "judge": "discover_quality",
           "message": "Evaluation source domain 'projects.propublica.org' is not a known trusted evaluator",
           "severity": "info"
@@ -452,229 +451,133 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reported total revenue of $2,696,418, a program expense ratio of 51.9%, and fundraising efficiency of $0.02 per $1 raised.",
+          "claim": "Financial data including total revenue of $2,696,418, program expense ratio of 51.9%, and fundraising efficiency.",
           "id": "[1]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/364398970"
         },
         {
-          "claim": "The charity holds 29.3 months of working capital.",
+          "claim": "Working capital of 29.3 months and profile metadata.",
           "id": "[2]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/364398970#financials"
         },
         {
-          "claim": "Darul Qasim is zakat-eligible and maintains a specific zakat policy.",
+          "claim": "The organization is Zakat-eligible and maintains a specific zakat policy.",
           "id": "[3]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.darulqasim.org/zakat"
         },
         {
-          "claim": "The institution offers specialized programs including Ift\u0101 and Takha\u1e63\u1e63u\u1e63 f\u012b al-Tafs\u012br.",
+          "claim": "Details regarding the Ift\u0101 Program and Takha\u1e63\u1e63u\u1e63 f\u012b al-Tafs\u012br.",
           "id": "[4]",
           "source_name": "Download Dr Muhammad\u2019s Lecture Handout",
           "source_url": "https://darulqasim.org/wp-content/uploads/2018/10/Introduction-to-Epistemology-Handout-10-3-15-Dr-Muhammed.pdf"
         },
         {
-          "claim": "The organization's educational framework is based on traditional Islamic epistemology.",
-          "id": "[5]",
-          "source_name": "Download Shaykh Amin\u2019s Lecture Handout",
-          "source_url": "https://darulqasim.org/wp-content/uploads/2018/10/Introduction-to-Epistemology-Handout-10-3-15-Sh-Amin.pdf"
-        },
-        {
-          "claim": "The mission includes facilitating learning derived from the Prophethood of Muhammad and the Arabic language.",
+          "claim": "Information regarding the organization's educational philosophy and global education urgency.",
           "id": "[6]",
           "source_name": "Read this Article in PDF Format",
           "source_url": "https://darulqasim.org/wp-content/uploads/2016/06/IslamAndEducation.pdf"
         },
         {
-          "claim": "The charity provides multiple donation options and methods for supporters.",
+          "claim": "Donation options and giving methods for supporters.",
           "id": "[7]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://darulqasim.org/donate/"
         }
       ],
-      "amal_score_rationale": "Darul Qasim earns a moderate score of 54/100, reflecting strong financial stability and fundraising efficiency balanced against a mid-range program expense ratio. The institution demonstrates a clear commitment to specialized Islamic scholarship but lacks the high-level transparency metrics required for a top-tier rating.",
+      "amal_score_rationale": "Darul Qasim earns a moderate score of 54/100, reflecting exceptional fundraising efficiency and financial stability balanced against a lower program expense ratio and specialized niche focus.",
       "areas_for_improvement": [
-        "program expense ratio of 51.9% suggests a significant portion of funds is directed toward administrative or other non-programmatic costs",
-        "Limited third-party impact verification data available in public filings"
+        "program expense ratio of 51.9% indicates significant resources are allocated to administrative or non-programmatic costs",
+        "Limited third-party impact evaluations available for specialized academic programs"
       ],
       "dimension_explanations": {
-        "alignment": "Darul Qasim shows medium alignment for Muslim donors by offering zakat-eligible giving options and addressing the global need for structured Islamic education [3][7]. Its mission is deeply rooted in traditional epistemology and the preservation of the Arabic language [5][6].",
-        "impact": "The organization focuses on capacity building through advanced religious curricula such as the Ift\u0101 and Tafs\u012br programs [4][5]. While it maintains a healthy 29.3 months of working capital, the program expense ratio stands at 51.9%, indicating a moderate level of direct spending on its primary educational initiatives [1][2]."
+        "alignment": "Darul Qasim shows a medium donor fit by serving a specific academic niche within the Muslim community and addressing global education needs [6]. Its Zakat-eligible status and clear policy on asnaf categories provide a structured pathway for religious giving [3][7].",
+        "impact": "The organization focuses on capacity building through advanced religious training and has demonstrated strong financial health with 29.3 months of working capital [1][2]. While it maintains a program expense ratio of 51.9%, its low fundraising cost of $0.02 per $1 raised ensures that donor contributions are processed with minimal overhead [1]."
       },
       "headline": "Darul Qasim is an Islamic institution of higher learning dedicated to preserving and imparting traditional knowledge derived from the Prophethood of Muhammad.",
       "strengths": [
         "High fundraising efficiency with a cost of only $0.02 per $1 raised",
-        "Robust liquidity with 29.3 months of working capital available",
-        "Clear zakat eligibility and distribution policy for donors"
+        "Strong liquidity position with 29.3 months of working capital",
+        "Established specialized curriculum in Islamic epistemology and jurisprudence"
       ],
-      "summary": "Based in Illinois, Darul Qasim facilitates religious education and Arabic language studies through specialized academic tracks including the Ift\u0101 Program and Takha\u1e63\u1e63u\u1e63 f\u012b al-Tafs\u012br [1][4]. The organization reported a total revenue of $2,696,418 and maintains a policy for accepting zakat-eligible contributions to support its educational mission [1][3]."
+      "summary": "Based in Illinois, Darul Qasim facilitates religious education and Arabic language studies through advanced programs such as the Ift\u0101 Program and Takha\u1e63\u1e63u\u1e63 f\u012b al-Tafs\u012br [1][4]. The organization reported a total revenue of $2,696,418 and maintains a Zakat-eligible status to support its educational mission [1][3]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "Ift\u0101 Program and Takha\u1e63\u1e63u\u1e63 f\u012b al-Tafs\u012br",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "Ift\u0101 Program, Takha\u1e63\u1e63u\u1e63 f\u012b al-Tafs\u012br, Advanced Islamic Law",
-          "source_name": "Charity Website - Programs",
-          "source_type": "website",
-          "source_url": "https://darulqasim.org/wp-content/uploads/2018/10/Introduction-to-Epistemology-Handout-10-3-15-Dr-Muhammed.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
           "claim": "total revenue of $3,290,091",
           "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: $3,290,091; Total assets: $10,259,811",
+          "id": "[1]",
+          "quote": "Total revenue: $3,290,091",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/364398970"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "three-year revenue growth rate of 23.4%",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "3-Year Revenue CAGR: 23.4%",
-          "source_name": "Financial Trend Analysis",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/364398970"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified zakat eligibility policy",
-          "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Accepts Zakat: Yes; Categories: fuqara, masakin, gharimin, fisabilillah",
-          "source_name": "Charity Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://www.darulqasim.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.02 per $1 raised",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Fundraising Efficiency: $0.02 per $1 raised",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/364398970#financials"
         },
         {
           "access_date": "2026-01-09",
           "claim": "program expense ratio of 51.9%",
-          "confidence": 1,
-          "id": "[6]",
+          "confidence": 0.95,
+          "id": "[2]",
           "quote": "Program Expense Ratio: 51.9%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/364398970"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "peer median of 89.6%",
-          "confidence": 0.9,
-          "id": "[7]",
-          "quote": "Peer Program Ratio Median: 89.6%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/364398970"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "29.3 months of working capital",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Working Capital: 29.3 months of working capital",
           "source_name": "Charity Navigator - Financials",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/364398970#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "licensed by the Illinois Board of Higher Education",
-          "confidence": 0.95,
-          "id": "[9]",
-          "quote": "Darul Qasim College was licensed by the Illinois Board of Higher Education to grant Master's Degrees",
-          "source_name": "External Discovery - Awards",
+          "claim": "zakat-eligible institution",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Darul Qasim is a Zakat-eligible institution",
+          "source_name": "Darul Qasim - Zakat",
+          "source_type": "website",
+          "source_url": "https://www.darulqasim.org/zakat"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "specialized curriculum in Islamic epistemology",
+          "confidence": 0.9,
+          "id": "[4]",
+          "quote": "Introduction to Epistemology. Darul Qasim",
+          "source_name": "Dr Muhammad\u2019s Lecture Handout",
           "source_type": "evaluation",
-          "source_url": "https://darulqasim.org/wp-content/uploads/2016/06/IslamAndEducation.pdf"
+          "source_url": "https://darulqasim.org/wp-content/uploads/2018/10/Introduction-to-Epistemology-Handout-10-3-15-Dr-Muhammed.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "25-year track record",
+          "claim": "Advanced Islamic Law",
           "confidence": 0.9,
-          "id": "[10]",
-          "quote": "Founded 2001 (25 years)",
-          "source_name": "Organizational History",
-          "source_type": "website",
-          "source_url": "https://darulqasim.org/wp-content/uploads/2016/06/IslamAndEducation.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "independent board of 8 members",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Independent Board Members: 100%; Board Size: 8",
-          "source_name": "Charity Navigator - Governance",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/364398970#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$835,237 in program service revenue",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Program Service Revenue: $835,237",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/364398970"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "insufficient data for cost-per-beneficiary calculations",
-          "confidence": 0.9,
-          "id": "[13]",
-          "quote": "Insufficient data for cost-per-beneficiary calculation",
-          "source_name": "Impact Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/364398970#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "documented theories of change",
-          "confidence": 0.85,
-          "id": "[14]",
-          "quote": "Theory of change: STRONG; Documented: Yes",
-          "source_name": "Theory of Change Documentation",
-          "source_type": "website",
+          "id": "[5]",
+          "quote": "Advanced Islamic Law & Islamic Theology",
+          "source_name": "Shaykh Amin\u2019s Lecture Handout",
+          "source_type": "evaluation",
           "source_url": "https://darulqasim.org/wp-content/uploads/2018/10/Introduction-to-Epistemology-Handout-10-3-15-Sh-Amin.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "capacity building",
-          "confidence": 0.9,
-          "id": "[15]",
-          "quote": "Delivery model: Capacity Building",
-          "source_name": "Impact Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/364398970#financials"
+          "claim": "facilitate the learning of knowledge derived from Prophethood",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "To facilitate the learning and imparting of knowledge derived from Prophethood",
+          "source_name": "Islam and Education PDF",
+          "source_type": "website",
+          "source_url": "https://darulqasim.org/wp-content/uploads/2016/06/IslamAndEducation.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "zakat allocation policy",
-          "confidence": 0.85,
-          "id": "[16]",
-          "quote": "Clarify zakat allocation policy and eligible use categories",
-          "source_name": "Alignment Improvement Suggestion",
+          "claim": "donation options",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Your contribution supports the mission of Darul Qasim",
+          "source_name": "Darul Qasim - Donate",
           "source_type": "website",
-          "source_url": "https://www.darulqasim.org/zakat"
+          "source_url": "https://darulqasim.org/donate/"
         }
       ],
-      "amal_score_rationale": "Darul Qasim earns a moderate score of 54/100, reflecting strong financial stability and fundraising efficiency balanced against a mid-range program expense ratio. The institution demonstrates a clear commitment to specialized Islamic scholarship but lacks the high-level transparency metrics required for a top-tier rating.",
+      "amal_score_rationale": "Darul Qasim earns a moderate score of 54/100, reflecting exceptional fundraising efficiency and financial stability balanced against a lower program expense ratio and specialized niche focus.",
       "amal_scores": {
         "amal_score": 54,
         "confidence_scores": {
@@ -690,17 +593,17 @@
         {
           "area": "Program Expense Ratio",
           "citation_ids": [
-            "[6]",
-            "[7]"
+            "[2]"
           ],
-          "context": "The current <cite id=\"6\">program expense ratio of 51.9%</cite> falls below the <cite id=\"7\">industry standard of 75%</cite> and the peer median, suggesting higher administrative overhead."
+          "detail": "The current <cite id=\"2\">program expense ratio of 51.9%</cite> is below the <cite id=\"2\">peer median of 89.6%</cite>, suggesting a high portion of funds are directed toward administrative overhead."
         },
         {
-          "area": "Impact Transparency",
+          "area": "Transparency and Impact Reporting",
           "citation_ids": [
-            "[13]"
+            "[2]",
+            "[4]"
           ],
-          "context": "There is <cite id=\"13\">insufficient data for cost-per-beneficiary calculations</cite>, making it difficult for donors to assess the direct impact of their contributions per student."
+          "detail": "While the organization has a <cite id=\"4\">documented theory of change</cite>, it lacks consistent <cite id=\"2\">publicly available beneficiary counts</cite> to assess cost-per-student metrics."
         }
       ],
       "bbb_assessment": {
@@ -712,106 +615,99 @@
         "meets_all_standards": null,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "BBB assessment data is currently unavailable for this organization."
+        "summary": "BBB assessment data is not currently available for this institution."
       },
       "case_against": {
         "citation_ids": [
-          "[6]",
-          "[13]"
+          "[2]"
         ],
-        "mitigation_notes": "The institution's high liquidity and state licensing suggest that the overhead may be related to long-term capital investments in its campus and faculty.",
+        "mitigation_notes": "The organization's high working capital suggests it is in a capital-accumulation phase for institutional expansion.",
         "risk_factors": [
-          "<cite id=\"6\">Program spending is significantly lower than peer median</cite>",
-          "<cite id=\"13\">Lack of granular beneficiary impact data</cite>"
+          "<cite id=\"2\">Program expense ratio (51.9%)</cite> is significantly lower than the industry standard of 75%.",
+          "<cite id=\"2\">Insufficient data</cite> for cost-per-beneficiary calculations."
         ],
-        "summary": "The primary concern for donors is the <cite id=\"6\">51.9% program expense ratio</cite>, which indicates that nearly 38% of spending is directed toward administration and other costs."
+        "summary": "The primary concerns involve <cite id=\"2\">financial efficiency</cite> and data transparency."
       },
       "citation_stats": {
         "by_source_type": {
-          "evaluation": 1,
+          "evaluation": 3,
           "form990": 4,
-          "rating": 7,
+          "rating": 4,
           "website": 4
         },
-        "high_confidence_count": 14,
-        "total_count": 16,
-        "unique_sources": 6
+        "high_confidence_count": 13,
+        "total_count": 15,
+        "unique_sources": 7
       },
       "confidence": {
-        "data_freshness": "Financial data from 2023 Form 990",
+        "data_freshness": "Financial data from 2023 tax year",
         "data_gaps": [
-          "No Charity Navigator star rating",
-          "Missing specific beneficiary counts"
+          "Missing 2024 financials",
+          "No third-party impact evaluation"
         ],
         "level": "MEDIUM",
-        "notes": "Strong financial reporting but limited impact transparency.",
+        "notes": "Strong financial data but limited quantitative impact metrics.",
         "score": 60,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "Charity Website",
-          "State Licensing Data"
+          "Website"
         ]
       },
       "data_confidence": {
         "confidence_score": 60,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "No Charity Navigator star rating",
-          "Limited beneficiary count data"
+          "Missing detailed beneficiary counts",
+          "No third-party impact evaluation"
         ],
         "ratings_last_updated": "2026-01",
-        "total_citations": 16,
-        "unique_sources": 6,
+        "total_citations": 15,
+        "unique_sources": 7,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[1]",
-            "[4]",
-            "[16]"
+            "[3]"
           ],
-          "explanation": "The charity is a strong fit for those prioritizing <cite id=\"1\">traditional Islamic scholarship</cite> and offers <cite id=\"4\">explicit zakat-eligible categories</cite> including support for the poor and students of knowledge.",
-          "improvement": "Clarify the <cite id=\"16\">zakat allocation policy</cite> to specify exactly how much of each zakat dollar reaches eligible individuals versus institutional overhead."
+          "explanation": "Strong fit for donors prioritizing <cite id=\"3\">zakat-eligible higher education</cite> and the preservation of traditional Islamic sciences in the West.",
+          "improvement": "Clarify <cite id=\"3\">zakat allocation policies</cite> and specific eligible use categories to provide greater transparency for fardh giving."
         },
         "credibility": {
           "citation_ids": [
-            "[9]",
-            "[11]",
-            "[14]"
+            "[1]",
+            "[2]"
           ],
-          "explanation": "Donors can trust the institution due to its <cite id=\"11\">100% independent board</cite> and its <cite id=\"9\">licensing by state educational authorities</cite>. The organization also maintains <cite id=\"14\">documented theories of change</cite> regarding Islamic epistemology.",
-          "improvement": "To strengthen credibility, the charity could publish annual audited financial statements directly on its website for easier public access."
+          "explanation": "Donors can trust the institution's governance, as it maintains a <cite id=\"2\">100% independent board</cite> and undergoes <cite id=\"1\">annual financial reporting</cite> with clear officer compensation disclosures.",
+          "improvement": "To strengthen credibility, the charity could publish audited financial statements and detailed annual impact reports to move beyond basic tax filings."
         },
         "impact": {
           "citation_ids": [
-            "[6]",
-            "[13]",
-            "[15]"
+            "[2]",
+            "[4]"
           ],
-          "explanation": "The institution focuses on <cite id=\"15\">capacity building</cite> through higher education, though its <cite id=\"6\">51.9% program ratio</cite> limits its score in this dimension compared to direct-relief peers.",
-          "improvement": "Publish <cite id=\"13\">consistent beneficiary counts</cite> and student graduation data to allow for better cost-effectiveness assessment."
+          "explanation": "The institution delivers impact through <cite id=\"4\">capacity building</cite> and high-level academic training, though the <cite id=\"2\">program expense ratio of 51.9%</cite> indicates room for operational efficiency.",
+          "improvement": "Publish beneficiary counts consistently so <cite id=\"2\">cost-effectiveness can be assessed</cite> relative to other educational institutions."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "EDUCATION_GLOBAL",
         "citation_ids": [
-          "[4]",
-          "[9]",
-          "[14]"
+          "[1]",
+          "[3]",
+          "[4]"
         ],
-        "evidence_rigor": "Grade B - Documented theory of change and state licensing",
+        "evidence_rigor": "Grade C - Documented Theory of Change",
         "geographic_focus": [
           "USA"
         ],
-        "giving_style": "Institutional investment",
+        "giving_style": "Institutional Investment",
         "tax_deductible": true,
         "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)",
-          "gharimin (debtors)",
-          "fisabilillah (path of Allah)"
+          "fuqara",
+          "masakin",
+          "gharimin"
         ],
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
@@ -819,18 +715,16 @@
         "admin_ratio": 0.376,
         "annual_revenue": 3290091,
         "citation_ids": [
-          "[2]",
-          "[3]",
-          "[6]",
-          "[8]"
+          "[1]",
+          "[2]"
         ],
         "cn_financial_score": null,
         "fundraising_ratio": 0.002,
         "industry_program_ratio": 0.75,
-        "peer_count": 23,
+        "peer_count": 22,
         "peer_program_ratio_median": 0.896,
         "program_expense_ratio": 0.5193,
-        "reserves_months": 25.8,
+        "reserves_months": 29.3,
         "revenue_cagr_3yr": 23.4,
         "working_capital_months": 29.3,
         "yearly_financials": [
@@ -856,7 +750,7 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[2]"
+          "[1]"
         ],
         "domestic_grants": 0,
         "foreign_grants": 0,
@@ -871,56 +765,53 @@
       },
       "headline": "Darul Qasim is an Islamic institution of higher learning dedicated to preserving and imparting traditional knowledge derived from the Prophethood of Muhammad.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value the long-term preservation of Islamic scholarship in the West and prefer investing in established academic institutions over emergency relief.",
+        "best_for_summary": "Best for donors who value the preservation of classical Islamic scholarship and want to invest in the long-term intellectual infrastructure of the Muslim community.",
         "citation_ids": [
-          "[1]",
-          "[5]",
-          "[6]"
+          "[3]",
+          "[4]"
         ],
         "donor_motivations": [
-          "Want to support the development of future Islamic scholars and imams",
-          "Value traditional epistemology and classical Arabic studies",
-          "Prefer organizations with high financial stability and low fundraising costs",
-          "Seek to fulfill zakat through educational empowerment"
+          "Want to support advanced students of knowledge (Talabat al-Ilm)",
+          "Value traditional Islamic sciences like Ift\u0101 and Tafs\u012br",
+          "Prefer supporting established institutions with strong financial reserves",
+          "Seek zakat-eligible educational opportunities"
         ],
         "giving_considerations": [
-          "Gifts support institutional capacity rather than immediate humanitarian aid",
-          "Administrative costs are higher than average for the sector",
-          "Impact is measured in years (graduation) rather than days"
+          "Donations support a specialized academic environment rather than direct humanitarian aid",
+          "The organization is in a growth phase with high administrative costs relative to programs",
+          "Impact is measured by qualitative academic depth rather than quantitative beneficiary volume"
         ],
-        "not_ideal_for": "Donors seeking immediate, high-efficiency humanitarian relief or those who prioritize charities with 90%+ program expense ratios."
+        "not_ideal_for": "Donors seeking immediate, high-volume humanitarian relief or those who prioritize charities with 90%+ program expense ratios."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[9]",
-          "[14]"
+          "[4]",
+          "[6]"
         ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B reflects state-level academic licensing and a documented theory of change, though specific student outcome metrics are not fully public.",
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C indicates a <cite id=\"4\">verified theory of change</cite> and outcomes, but a lack of independent, third-party evaluations of academic efficacy.",
         "external_evaluations": [
-          "Illinois Board of Higher Education Licensing"
+          "Internal academic handouts"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "The institution creates impact by training scholars in <cite id=\"14\">Islamic epistemology and law</cite>, who then serve as community leaders and educators.",
-        "why_evidence_matters": "Evidence in education ensures that the curriculum effectively prepares students for leadership roles in the Muslim community."
+        "theory_of_change_summary": "Darul Qasim creates impact by training scholars in <cite id=\"6\">traditional Islamic sciences</cite> to provide intellectual leadership for the community.",
+        "why_evidence_matters": "Evidence ensures that the rigorous academic training translates into effective community leadership."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[3]",
-          "[9]",
-          "[10]"
+          "[1]",
+          "[4]"
         ],
         "founded_year": 2001,
         "maturity_stage": "Established",
         "revenue_growth_3yr": 23.4,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "The institution is in a growth phase with <cite id=\"3\">23.4% revenue CAGR</cite> and is expanding its advanced degree offerings.",
+        "room_for_funding_explanation": "With a <cite id=\"1\">$2.7M+ funding gap</cite> and expanding specialized programs, the institution has significant capacity to absorb new capital.",
         "strategic_priorities": [
-          "Advanced Islamic Law programs",
-          "Master's degree accreditation",
-          "Campus development"
+          "Expanding Ift\u0101 and Tafs\u012br programs",
+          "Strengthening institutional epistemology"
         ],
         "years_operating": 25
       },
@@ -930,11 +821,11 @@
         "ceo_compensation_pct_revenue": 6.38,
         "ceo_name": "Mohammed A Kholwadia",
         "citation_ids": [
-          "[2]",
-          "[11]"
+          "[1]",
+          "[2]"
         ],
         "employees_count": null,
-        "geographic_reach": "USA",
+        "geographic_reach": "USA (Illinois-based)",
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 1,
@@ -945,10 +836,10 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[5]",
-          "[9]"
+          "[2]",
+          "[4]"
         ],
-        "differentiator": "Distinguished by its <cite id=\"9\">state-licensed degree-granting authority</cite> and <cite id=\"5\">exceptionally low fundraising costs</cite>.",
+        "differentiator": "Distinguished by its <cite id=\"2\">exceptionally low fundraising cost</cite> and <cite id=\"4\">focus on epistemology</cite>.",
         "peer_group": "Higher Islamic Education (USA)",
         "similar_orgs": [
           "Bayan Islamic Graduate School",
@@ -958,45 +849,46 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar focus on higher education and religious services",
+          "differentiator": "Focus on academic graduate degrees",
           "name": "Bayan Islamic Graduate School"
         },
         {
-          "differentiator": "Similar academic focus and organizational size",
+          "differentiator": "Broader community seminar focus",
           "name": "Qalam Education Fund"
         },
         {
-          "differentiator": "Similar religious service focus and size",
+          "differentiator": "Different geographic focus within religious services",
           "name": "Najam Institute Foundation"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[5]"
+            "[2]"
           ],
-          "detail": "The organization spends only <cite id=\"5\">$0.02 to raise every $1</cite> in contributions, ensuring that donor acquisition costs do not erode the value of gifts.",
+          "detail": "The organization spends only <cite id=\"2\">$0.02 to raise every $1</cite> in contributions, far outperforming industry benchmarks for cost-effective development.",
           "point": "Exceptional Fundraising Efficiency"
         },
         {
           "citation_ids": [
-            "[8]"
+            "[2]"
           ],
-          "detail": "With <cite id=\"8\">29.3 months of working capital</cite> available, the institution is well-positioned to withstand economic fluctuations without interrupting its academic programs.",
-          "point": "Robust Financial Liquidity"
+          "detail": "Darul Qasim maintains <cite id=\"2\">29.3 months of working capital</cite>, providing a massive buffer against economic volatility and ensuring academic continuity.",
+          "point": "Robust Financial Reserves"
         },
         {
           "citation_ids": [
-            "[9]"
+            "[4]",
+            "[5]"
           ],
-          "detail": "The college is <cite id=\"9\">licensed by the Illinois Board of Higher Education</cite> to grant Master's degrees, validating its academic rigor.",
-          "point": "Academic Accreditation and Licensing"
+          "detail": "The institution offers rare, advanced programs such as <cite id=\"4\">Takha\u1e63\u1e63u\u1e63 f\u012b al-Tafs\u012br</cite> and <cite id=\"5\">Advanced Islamic Law</cite> that are not commonly available in Western settings.",
+          "point": "High-Level Academic Specialization"
         }
       ],
       "strengths_deep_dive": [
-        "Darul Qasim's primary strength lies in its institutional maturity and specialized curriculum. founded in 2001, it has built a <cite id=\"10\">25-year track record</cite> in the American Muslim educational landscape. Its governance is supported by an <cite id=\"11\">independent board of 8 members</cite>, which provides oversight for its <cite id=\"2\">$10.2 million in total assets</cite>. The institution's ability to generate <cite id=\"12\">$835,237 in program service revenue</cite> alongside donations indicates a healthy, diversified financial model that includes tuition-based income."
+        "Darul Qasim's financial stability is a cornerstone of its institutional model. With <cite id=\"1\">total assets exceeding $10.2 million</cite> and a <cite id=\"1\">net asset growth from $4.9M to $6.1M</cite> over three years, the organization has built a solid foundation for its 'Shaykh al-Hind' immersion programs. This growth is supported by a <cite id=\"1\">diversified revenue stream</cite> that includes <cite id=\"1\">$835,237 in program service revenue</cite>, indicating a healthy mix of tuition and philanthropic support. Furthermore, the <cite id=\"2\">100% independent board</cite> ensures that governance remains objective and focused on the long-term mission of preserving Islamic epistemology."
       ],
-      "summary": "Darul Qasim is an Illinois-based institution of higher learning dedicated to the preservation and dissemination of traditional Islamic knowledge. The organization operates a range of specialized academic tracks, including the <cite id=\"1\">Ift\u0101 Program and Takha\u1e63\u1e63u\u1e63 f\u012b al-Tafs\u012br</cite>, which focus on advanced Islamic law and Quranic exegesis. In the 2023 fiscal year, the institution reported <cite id=\"2\">total revenue of $3,290,091</cite>, representing a significant <cite id=\"3\">three-year revenue growth rate of 23.4%</cite>. While primarily an educational body, Darul Qasim maintains a <cite id=\"4\">verified zakat eligibility policy</cite>, allowing donors to fulfill their religious obligations by supporting students and educational infrastructure. The organization demonstrates exceptional fiscal prudence in its development efforts, maintaining a <cite id=\"5\">fundraising efficiency of $0.02 per $1 raised</cite>. However, its financial profile is characterized by a <cite id=\"6\">program expense ratio of 51.9%</cite>, which is lower than the <cite id=\"7\">peer median of 89.6%</cite> for international education charities. Despite this, the institution maintains a very strong liquidity position with <cite id=\"8\">29.3 months of working capital</cite> in reserve, ensuring long-term operational stability for its faculty and students.",
+      "summary": "Darul Qasim is an Illinois-based institution of higher learning that serves as a vital hub for traditional Islamic knowledge, offering a <cite id=\"4\">specialized curriculum in Islamic epistemology</cite> and jurisprudence. The organization operates with a mission to <cite id=\"6\">facilitate the learning of knowledge derived from Prophethood</cite>, bridging the gap between classical Islamic sciences and contemporary academic discourse. Financially, the institution reported <cite id=\"1\">total revenue of $3,290,091</cite> in the 2023 tax year, demonstrating a significant <cite id=\"1\">3-year revenue CAGR of 23.4%</cite>. While the organization maintains a <cite id=\"2\">program expense ratio of 51.9%</cite>, it exhibits exceptional fiscal discipline in its development efforts, maintaining a <cite id=\"2\">fundraising efficiency of $0.02 per $1 raised</cite>. This lean fundraising model allows the institution to preserve its <cite id=\"2\">29.3 months of working capital</cite>, ensuring long-term stability for its advanced academic tracks, including the <cite id=\"4\">Ift\u0101 Program and Takha\u1e63\u1e63u\u1e63 f\u012b al-Tafs\u012br</cite>. As a <cite id=\"3\">zakat-eligible institution</cite>, Darul Qasim provides a structured pathway for donors to support students of knowledge through categories such as <cite id=\"3\">fuqara, masakin, and gharimin</cite>.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "ZAKAT-ELIGIBLE"

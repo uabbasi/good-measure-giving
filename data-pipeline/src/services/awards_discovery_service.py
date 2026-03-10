@@ -200,6 +200,17 @@ class AwardsDiscoveryService:
         try:
             data = json.loads(json_str)
         except json.JSONDecodeError as e:
+            if result.source_count == 0:
+                logger.info(f"No awards found for {charity_name} (0 search sources)")
+                return AwardsDiscovery(
+                    has_awards=False,
+                    awards=[],
+                    awards_evidence=None,
+                    confidence=0.0,
+                    source_count=0,
+                    cost_usd=result.cost_usd,
+                    error=None,
+                )
             error_msg = f"Failed to parse awards response JSON for {charity_name}: {e}"
             logger.error(error_msg)
             logger.debug(f"Extracted JSON (first 500 chars): {json_str[:500]}")

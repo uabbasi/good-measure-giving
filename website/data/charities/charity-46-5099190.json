@@ -64,8 +64,8 @@
   "targeting": {
     "populationsServed": [
       "Men",
-      "Adults",
-      "Youth"
+      "Youth",
+      "Adults"
     ],
     "geographicCoverage": [
       "Global",
@@ -91,12 +91,12 @@
     "reports_methodology": false,
     "reports_outcome_metrics": false
   },
-  "lastUpdated": "2026-03-07 12:48:42",
+  "lastUpdated": "2026-03-09 13:17:16",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/465099190#financials",
-      "timestamp": "2026-03-07T12:46:54",
+      "timestamp": "2026-03-09T13:15:56",
       "value": 96036
     },
     "beneficiaries_served_annually": {
@@ -110,13 +110,13 @@
     "candid_seal": {
       "source_name": "Candid",
       "source_url": "https://app.candid.org/profile/9415658",
-      "timestamp": "2026-03-07T12:46:52",
+      "timestamp": "2026-03-09T13:15:53",
       "value": "platinum"
     },
     "charity_navigator_score": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/465099190#ratings",
-      "timestamp": "2026-03-07T12:46:54",
+      "timestamp": "2026-03-09T13:15:56",
       "value": 84.5
     },
     "claims_zakat_eligible": {
@@ -134,7 +134,7 @@
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/465099190#financials",
-      "timestamp": "2026-03-07T12:46:54",
+      "timestamp": "2026-03-09T13:15:56",
       "value": 90883
     },
     "has_audited_financials": {
@@ -146,31 +146,31 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190",
-      "timestamp": "2026-03-07T12:46:54",
+      "timestamp": "2026-03-09T13:15:56",
       "value": "X40"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/465099190#financials",
-      "timestamp": "2026-03-07T12:46:54",
+      "timestamp": "2026-03-09T13:15:56",
       "value": 0.7521
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/465099190#financials",
-      "timestamp": "2026-03-07T12:46:54",
+      "timestamp": "2026-03-09T13:15:56",
       "value": 686318
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190",
-      "timestamp": "2026-03-07T12:46:54",
+      "timestamp": "2026-03-09T13:15:56",
       "value": 816038
     },
     "transparency_score": {
       "source_name": "Candid Platinum Seal",
       "source_url": "https://app.candid.org/profile/9415658",
-      "timestamp": "2026-03-07T12:46:52",
+      "timestamp": "2026-03-09T13:15:53",
       "value": 100
     },
     "working_capital_months": {
@@ -181,7 +181,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190",
-      "timestamp": "2026-03-07T12:46:54",
+      "timestamp": "2026-03-09T13:15:56",
       "value": 10.9
     }
   },
@@ -194,8 +194,6 @@
     "educational",
     "faith-based",
     "fisabilillah",
-    "fuqara",
-    "masakin",
     "muslim-led",
     "research",
     "scalable-model",
@@ -248,14 +246,14 @@
   "zakatClaimEvidence": [
     "Dedicated zakat page found at https://ghamidicenter.com/donate (Source: https://ghamidicenter.com/donate)"
   ],
-  "archetype": "SOVEREIGNTY",
+  "archetype": "LEVERAGE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Context Dependent",
-    "archetype_code": "SOVEREIGNTY",
-    "archetype_label": "Sovereignty Builder",
+    "archetype_code": "LEVERAGE",
+    "archetype_label": "Strategic Advocacy",
     "evidence_stage": "Verified",
     "signal_states": {
       "evidence": "Strong",
@@ -442,28 +440,22 @@
       },
       "judge_issues": [
         {
-          "field": "bbb.name_match",
-          "judge": "crawl_quality",
-          "message": "BBB name 'Latino Learning Center, Inc.' may not match 'Ghamidi Center of Islamic Learning' (similarity: 50%)",
+          "field": "amal_score_rationale",
+          "judge": "score",
+          "message": "The rationale mentions a \"medium impact rating\" which is not accurate. The impact tier is AVERAGE, but the impact score is 27/50, which is slightly above average. The rationale should reflect this nuance.",
           "severity": "warning"
         },
         {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
+          "field": "amal_score_rationale",
+          "judge": "score",
+          "message": "The rationale does not mention the risk deductions due to high domestic burn and CEO compensation, which significantly impacted the final score.",
+          "severity": "warning"
         },
         {
           "field": "hallucination_denylist.populations_served",
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "warning"
+          "severity": "info"
         },
         {
           "field": "hallucination_denylist.third_party_evaluated",
@@ -474,7 +466,7 @@
       ],
       "risk_deduction": -5,
       "risks": {
-        "overall_risk_level": "MODERATE",
+        "overall_risk_level": "ELEVATED",
         "risk_summary": "Key concern: High domestic burn: 97% of expenses stay in the US despite international operations",
         "risks": [
           {
@@ -506,255 +498,75 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity holds a score of 84.5/100 and focuses on rational Islamic education.",
+          "claim": "The charity has a score of 84.5/100 and a program expense ratio of 75.2%.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/465099190#financials"
         },
         {
-          "claim": "The organization is Zakat-eligible and provides details on asnaf categories.",
+          "claim": "The organization is Zakat-eligible and provides a policy for religious giving.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://ghamidicenter.com/donate"
         },
         {
-          "claim": "Total revenue was $1,026,174 with a program expense ratio of 75.2%.",
+          "claim": "Total Revenue was $1,026,174 and the organization holds 10.9 months of working capital.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190"
         },
         {
-          "claim": "The charity offers various donation options and methods for supporting its mission.",
+          "claim": "The charity offers various donation options including support for its Education and Translation programs.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://ghamidicenter.com/donate/"
         }
       ],
-      "amal_score_rationale": "The charity earns a moderate overall score reflecting a solid financial foundation and clear mission, though its direct impact efficiency and alignment metrics show room for further optimization.",
+      "amal_score_rationale": "The charity maintains a solid financial foundation and high efficiency, though its overall score is moderated by a medium impact rating and specific focus on capacity building.",
       "areas_for_improvement": [
-        "Direct impact measurement per beneficiary remains relatively high at $1,715.80",
-        "Overall financial and accountability score has room for growth to reach top-tier ratings"
+        "High cost per beneficiary relative to other educational programs",
+        "Limited direct impact data beyond capacity-building activities"
       ],
       "dimension_explanations": {
-        "alignment": "AL-Mawrid shows medium alignment for donors seeking global education causes, specifically those interested in rationalist Islamic discourse [1]. Its Zakat-eligible status provides a clear pathway for religious giving, though its specific niche in objective thinking may represent a specialized donor fit [2][4].",
-        "impact": "The organization demonstrates moderate impact with a program expense ratio of 75.2% and a Charity Navigator score of 84.5/100 [1][3]. While it successfully builds capacity through its Education Program and translations, the cost per beneficiary is calculated at 1715.795, suggesting a focus on intensive educational depth rather than broad scale [3]."
+        "alignment": "The charity offers a medium fit for donors seeking intellectual and rationalist Islamic discourse, addressing the urgent need for global religious education [2]. It reported a Total Revenue of $1,026,174, reflecting a stable track record for its specialized mission [3].",
+        "impact": "The organization demonstrates moderate effectiveness with a program expense ratio of 75.2% and a Charity Navigator score of 84.5/100 [1][3]. While it holds 10.9 months of working capital, the impact is primarily focused on capacity building through translations and educational media [1]."
       },
-      "headline": "AL-Mawrid United States Inc promotes a rational and objective understanding of Islam through comprehensive educational programs and global outreach.",
+      "headline": "AL-Mawrid United States Inc promotes a rational and objective approach to Islamic education through scholarly discourse and digital outreach.",
       "strengths": [
         "High fundraising efficiency with only $0.09 spent per $1 raised",
         "Strong liquidity with 10.9 months of working capital available",
-        "Transparent Zakat policy and eligibility for Muslim donors"
+        "Transparent Zakat policy and eligibility for religious giving"
       ],
-      "summary": "Based in the United States, this organization focuses on teaching Islamic principles through the lens of reason and rationality [1]. The charity is Zakat-eligible and maintains a diverse range of programs including the AskGhamidi platform and various translation initiatives [2][4]."
+      "summary": "AL-Mawrid United States Inc is a non-profit organization dedicated to teaching Islamic principles based on reason and rationality through its Education Program and AskGhamidi platform [1][3]. The organization is Zakat-eligible, allowing donors to fulfill their religious obligations while supporting educational translations and global outreach [2][4]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "founded in 2014",
-          "confidence": 1,
+          "claim": "rational and objective approach to Islamic education",
+          "confidence": 0.9,
           "id": "[1]",
-          "quote": "Founded: 2014",
-          "source_name": "Charity Website",
+          "quote": "Our mission is to teach people how to explore, understand, discuss, and practice Islam based on reason, rationality, and objective thinking.",
+          "source_name": "Al-Mawrid US - Mission",
           "source_type": "website",
-          "source_url": "https://ghamidicenter.com/donate/"
+          "source_url": "https://ghamidicenter.com/donate"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "$816,038 in total revenue",
-          "confidence": 1,
+          "claim": "religious thought can be revisited and discussed",
+          "confidence": 0.9,
           "id": "[2]",
-          "quote": "Total revenue: $816,038",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190"
+          "quote": "We aim to provide research and educational environment where religious thought of Islam can continue to evolve and get revisited.",
+          "source_name": "Candid Profile",
+          "source_type": "website",
+          "source_url": "https://app.candid.org/profile/9415658"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "$704,499 in public contributions",
+          "claim": "total revenue of $816,038",
           "confidence": 1,
           "id": "[3]",
-          "quote": "Contributions and grants: $704,499",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "AskGhamidi platform, live weekend programs, and the '23 Questions' video series",
-          "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Programs: Sunday School, Live Weekend Programs, 23 Questions Video Series",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://ghamidicenter.com/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "75.2% of expenses staying within the United States",
-          "confidence": 0.9,
-          "id": "[5]",
-          "quote": "High domestic burn: 75.2% of expenses stay in the US",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "overall score of 84.84.5/100 from Charity Navigator",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Overall Score: 84.5/100",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/465099190#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$0.11 to raise every $1",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Fundraising Efficiency: $0.09 per $1 raised",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/465099190#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "10.9 months of working capital",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Working Capital: 10.9 months",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/465099190#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Ghamidi Center of Islamic Learning has received the Platinum Seal of Transparency from Candid/GuideStar.",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://app.candid.org/profile/9415658"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "2023 Form 990",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Tax Year: 2023",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio at 75.2%",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Program Expense Ratio: 75.2%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100% independent board",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Independent Board Members: 100%",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/465099190#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Zakat-eligible status",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "Charity Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://ghamidicenter.com/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fisabilillah, fuqara, and masakin",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Zakat Categories: fisabilillah, fuqara, masakin",
-          "source_name": "Charity Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://ghamidicenter.com/donate"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "cost of $1,715.80 per beneficiary",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "$1715.80/beneficiary",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "CEO compensation of $140,000",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "CEO (Farhan Saiyed): $140,000",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/465099190#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "strong financial efficiency",
-          "confidence": 0.95,
-          "id": "[17]",
-          "quote": "Fundraising Efficiency: $0.09 per $1 raised",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/465099190#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "governance and cost-effectiveness concerns",
-          "confidence": 0.9,
-          "id": "[18]",
-          "quote": "Board: 3 members... CEO pay above 5% of revenue warrants scrutiny.",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Candid Seal",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Platinum Seal of Transparency from Candid",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://app.candid.org/profile/9415658"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "perfect 100 score in the Culture & Community beacon",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Culture: 100",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/465099190#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "three members",
-          "confidence": 1,
-          "id": "[21]",
-          "quote": "Board Size: 3",
+          "quote": "Total Revenue: $816,038",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190"
@@ -763,134 +575,134 @@
           "access_date": "2026-01-09",
           "claim": "program expense ratio of 75.2%",
           "confidence": 1,
-          "id": "[22]",
-          "quote": "Program Expense Ratio: 75.2%",
+          "id": "[4]",
+          "quote": "Program Service Expenses: $686,609 / Total Expenses: $829,967",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "developing theory of change",
+          "claim": "23 Questions video series and Sohbah study circles",
           "confidence": 0.9,
-          "id": "[23]",
-          "quote": "Theory of change: DEVELOPING",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "documenting a clear theory of change",
-          "confidence": 0.95,
-          "id": "[24]",
-          "quote": "Improvement: Document a clear theory of change with an explicit causal pathway.",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "rationalist Islamic education",
-          "confidence": 1,
-          "id": "[25]",
-          "quote": "Our mission is to teach people how to explore, understand, discuss, and practice Islam based on reason, rationality, and objective thinking.",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://ghamidicenter.com/donate/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified Zakat eligibility",
-          "confidence": 1,
-          "id": "[26]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "Charity Website - Zakat",
+          "id": "[5]",
+          "quote": "Programs: Sunday School, Live Weekend Programs, 23 Questions Video Series, 23 Questions Books Project, Sohbah Study Circle Program",
+          "source_name": "Al-Mawrid US - Programs",
           "source_type": "website",
           "source_url": "https://ghamidicenter.com/donate"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "clarifying its Zakat allocation policy",
-          "confidence": 0.95,
-          "id": "[27]",
-          "quote": "Improvement: Clarify zakat allocation policy and eligible use categories for donors.",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "high domestic burn",
+          "claim": "Platinum Seal of Transparency from Candid",
           "confidence": 1,
-          "id": "[28]",
-          "quote": "Key concern: High domestic burn: 75.2% of expenses stay in the US",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190"
+          "id": "[6]",
+          "quote": "Candid Seal: Platinum",
+          "source_name": "Candid - Al-Mawrid United States",
+          "source_type": "rating",
+          "source_url": "https://app.candid.org/profile/9415658"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "75.2% of expenses are domestic",
+          "claim": "10.9 months of working capital",
           "confidence": 1,
-          "id": "[29]",
-          "quote": "75.2% of expenses stay in the US despite international operations",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190"
+          "id": "[7]",
+          "quote": "Working Capital Ratio: 10.9 months",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/465099190#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "CEO pay exceeds 5% of total revenue",
-          "confidence": 0.95,
-          "id": "[30]",
-          "quote": "CEO pay above 5% of revenue warrants scrutiny.",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Small board size (3 members)",
+          "claim": "zakat-eligible institution",
           "confidence": 1,
-          "id": "[31]",
-          "quote": "Board: 3 members",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "focus on rationalist Islamic thought",
-          "confidence": 1,
-          "id": "[32]",
-          "quote": "Islam based on reason, rationality, and objective thinking.",
-          "source_name": "Charity Website",
+          "id": "[8]",
+          "quote": "Accepts Zakat: Yes",
+          "source_name": "Al-Mawrid US - Donate",
           "source_type": "website",
-          "source_url": "https://ghamidicenter.com/donate/"
+          "source_url": "https://ghamidicenter.com/donate"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "5 outcome metrics are tracked",
+          "claim": "$0.11 to raise every $1",
           "confidence": 1,
-          "id": "[33]",
-          "quote": "Outcome Metrics Tracked: 5",
+          "id": "[9]",
+          "quote": "Fundraising Efficiency: $0.11",
+          "source_name": "Charity Navigator - Efficiency",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/465099190#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "overall score of 84.84.5/100 from Charity Navigator",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "Overall Score: 84.5/100",
+          "source_name": "Charity Navigator - Rating",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/465099190#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "100% independent board",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "Independent Board Members: 100%",
+          "source_name": "Charity Navigator - Governance",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/465099190#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "cost of $1715.80 per beneficiary",
+          "confidence": 0.8,
+          "id": "[12]",
+          "quote": "$1715.80/beneficiary; Delivery: capacity building",
+          "source_name": "Internal Impact Analysis",
+          "source_type": "evaluation",
+          "source_url": "https://ghamidicenter.com/donate"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3 board members",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "Number of voting members of the governing body: 3",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of -0.1%",
+          "claim": "tracks 5 outcome metrics",
           "confidence": 1,
-          "id": "[34]",
+          "id": "[14]",
+          "quote": "Outcome Metrics Tracked: 5",
+          "source_name": "Candid Outcomes",
+          "source_type": "rating",
+          "source_url": "https://app.candid.org/profile/9415658"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "documenting a clear theory of change",
+          "confidence": 0.8,
+          "id": "[15]",
+          "quote": "Theory of change: DEVELOPING. Improvement: Document a clear theory of change.",
+          "source_name": "Internal Score Rationale",
+          "source_type": "evaluation",
+          "source_url": "https://ghamidicenter.com/donate"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "slight negative CAGR of -0.1%",
+          "confidence": 1,
+          "id": "[16]",
           "quote": "3-Year Revenue CAGR: -0.1%",
-          "source_name": "Form 990 (2023)",
+          "source_name": "Financial Trend Analysis",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/465099190"
         }
       ],
-      "amal_score_rationale": "The charity earns a moderate overall score reflecting a solid financial foundation and clear mission, though its direct impact efficiency and alignment metrics show room for further optimization.",
+      "amal_score_rationale": "The charity maintains a solid financial foundation and high efficiency, though its overall score is moderated by a medium impact rating and specific focus on capacity building.",
       "amal_scores": {
         "amal_score": 47,
         "confidence_scores": {
@@ -906,16 +718,17 @@
         {
           "area": "High Cost Per Beneficiary",
           "citation_ids": [
-            "[15]"
+            "[12]"
           ],
-          "detail": "The current impact model results in a <cite id=\"15\">cost of $1,715.80 per beneficiary</cite>, which is significantly higher than many global education peers."
+          "detail": "The current impact model results in a <cite id=\"12\">cost of $1715.80 per beneficiary</cite>, which is high compared to other global education peers."
         },
         {
-          "area": "Executive Compensation Oversight",
+          "area": "Governance and Oversight",
           "citation_ids": [
-            "[16]"
+            "[3]",
+            "[13]"
           ],
-          "detail": "For an organization with revenue under $1M, the <cite id=\"16\">CEO compensation of $140,000</cite> represents a high percentage of total revenue, which may warrant donor scrutiny."
+          "detail": "With only <cite id=\"13\">3 board members</cite> and CEO compensation representing a significant portion of revenue, the organization faces potential oversight risks."
         }
       ],
       "bbb_assessment": {
@@ -928,40 +741,39 @@
         "review_url": "https://give.org/charity-reviews/education-literacy/latino-learning-center-inc-in-houston-tx-0915-8318",
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "The organization has not yet been reviewed by the BBB Wise Giving Alliance."
+        "summary": "This organization has not yet been fully reviewed against BBB Wise Giving Alliance standards."
       },
       "case_against": {
         "citation_ids": [
-          "[28]",
-          "[29]",
-          "[30]",
-          "[31]"
+          "[12]",
+          "[13]"
         ],
-        "mitigation_notes": "The organization is actively tracking 5 outcome metrics via Candid to improve impact transparency.",
+        "mitigation_notes": "The organization is actively tracking outcomes and maintains high transparency levels to offset governance concerns.",
         "risk_factors": [
-          "<cite id=\"30\">CEO pay exceeds 5% of total revenue</cite>",
-          "<cite id=\"31\">Small board size (3 members)</cite>"
+          "<cite id=\"13\">Small board size (3 members)</cite> limits diverse oversight",
+          "<cite id=\"12\">High cost per beneficiary</cite> compared to peer organizations"
         ],
-        "summary": "The primary concerns involve <cite id=\"28\">high domestic burn</cite> and limited board size. Despite a global mission, <cite id=\"29\">75.2% of expenses are domestic</cite>."
+        "summary": "The primary concerns involve <cite id=\"12\">high domestic spending (97%)</cite> relative to international reach and a small board of directors."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 18,
-          "rating": 8,
-          "website": 8
+          "evaluation": 2,
+          "form990": 5,
+          "rating": 6,
+          "website": 3
         },
-        "high_confidence_count": 32,
-        "total_count": 34,
+        "high_confidence_count": 14,
+        "total_count": 16,
         "unique_sources": 4
       },
       "confidence": {
-        "data_freshness": "Data current as of 2023 tax filings and 2024 ratings",
+        "data_freshness": "Data current through 2023 Form 990 and 2024 Charity Navigator updates",
         "data_gaps": [
-          "No audited financial statements",
-          "Limited staff data"
+          "Missing audited financials",
+          "Small board size"
         ],
         "level": "HIGH",
-        "notes": "Strong alignment between third-party ratings and official tax filings.",
+        "notes": "Strong financial reporting but limited governance depth.",
         "score": 85,
         "sources_used": [
           "Form 990",
@@ -974,75 +786,73 @@
         "confidence_score": 85,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "No audited financial statements",
-          "Small board size"
+          "Small board size",
+          "No audited financial statements provided"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 34,
+        "total_citations": 16,
         "unique_sources": 4,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[25]",
-            "[26]",
-            "[27]"
+            "[2]",
+            "[8]"
           ],
-          "explanation": "The organization is a strong fit for donors seeking <cite id=\"25\">rationalist Islamic education</cite> and offers <cite id=\"26\">verified Zakat eligibility</cite>.",
-          "improvement": "The charity could improve alignment by <cite id=\"27\">clarifying its Zakat allocation policy</cite> and specific eligible use categories for donors."
+          "explanation": "The charity is a strong fit for donors seeking <cite id=\"8\">zakat-eligible educational initiatives</cite> focused on rationalist Islamic thought.",
+          "improvement": "The organization could improve alignment by <cite id=\"2\">clarifying its zakat allocation policy</cite> and specific eligible use categories for donors."
         },
         "credibility": {
           "citation_ids": [
-            "[19]",
-            "[20]",
-            "[21]"
+            "[6]",
+            "[11]",
+            "[13]"
           ],
-          "explanation": "Donors can trust the organization's transparency due to its <cite id=\"19\">Platinum Candid Seal</cite> and <cite id=\"20\">perfect 100 score in the Culture & Community beacon</cite> from Charity Navigator.",
-          "improvement": "To strengthen credibility, the organization should expand its board beyond <cite id=\"21\">three members</cite> to enhance institutional oversight."
+          "explanation": "Donors can trust the organization's transparency due to its <cite id=\"6\">Platinum Candid Seal</cite> and <cite id=\"11\">independent board composition</cite>.",
+          "improvement": "To strengthen credibility, the charity should <cite id=\"13\">expand its board beyond 3 members</cite> to enhance organizational oversight."
         },
         "impact": {
           "citation_ids": [
-            "[22]",
-            "[23]",
-            "[24]"
+            "[4]",
+            "[14]",
+            "[15]"
           ],
-          "explanation": "The charity maintains a <cite id=\"22\">program expense ratio of 75.2%</cite>, but its impact is limited by a <cite id=\"23\">developing theory of change</cite> that lacks explicit causal pathways.",
-          "improvement": "Impact measurement would benefit from <cite id=\"24\">documenting a clear theory of change</cite> with an explicit causal pathway to better justify the high cost per beneficiary."
+          "explanation": "The organization maintains an <cite id=\"4\">75.2% program expense ratio</cite> and tracks <cite id=\"14\">5 distinct outcome metrics</cite> through Candid.",
+          "improvement": "Impact measurement would benefit from <cite id=\"15\">documenting a clear theory of change</cite> with an explicit causal pathway for its educational programs."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "EDUCATION_GLOBAL",
         "citation_ids": [
           "[2]",
-          "[3]"
+          "[8]"
         ],
-        "evidence_rigor": "Grade C - Verified outcome tracking via Candid",
+        "evidence_rigor": "Grade C - Outcome tracking via Candid",
         "geographic_focus": [
           "United States",
           "Global"
         ],
-        "giving_style": "Educational & Research Support",
+        "giving_style": "Capacity Building / Scholarly Support",
         "tax_deductible": true,
         "zakat_asnaf_served": [
-          "fisabilillah",
-          "fuqara",
-          "masakin"
+          "fisabilillah"
         ],
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.063,
+        "admin_ratio": 0.062,
         "annual_revenue": 816038,
         "citation_ids": [
           "[3]",
-          "[6]"
+          "[7]",
+          "[10]"
         ],
         "cn_financial_score": 69,
         "cn_overall_score": 84.5,
         "fundraising_ratio": 0.11,
         "industry_program_ratio": 0.75,
-        "peer_count": 21,
+        "peer_count": 22,
         "peer_program_ratio_median": 0.896,
         "program_expense_ratio": 0.7521,
         "reserves_months": 13.4,
@@ -1077,77 +887,80 @@
         "domestic_grants": 0,
         "foreign_grants": 24815,
         "grant_count": 1,
-        "grant_strategy": "Supports international translation and research partners",
+        "grant_strategy": "Limited foreign grants to support international scholarly partners",
         "is_significant_grantmaker": false,
         "regions_served": [
           "International"
         ],
         "top_recipients": [
-          "Confidential Foreign Recipient ($24,815)"
+          "Foreign recipient ($24,815)"
         ],
         "total_grants": 24815
       },
-      "headline": "AL-Mawrid United States Inc promotes a rational and objective understanding of Islam through comprehensive educational programs and global outreach.",
+      "headline": "AL-Mawrid United States Inc promotes a rational and objective approach to Islamic education through scholarly discourse and digital outreach.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value a rationalist, reason-based approach to Islamic scholarship and want to support the intellectual legacy of Javed Ahmad Ghamidi.",
+        "best_for_summary": "Best for donors who value intellectual Islamic scholarship and want to support zakat-eligible educational media and rationalist discourse.",
         "citation_ids": [
           "[1]",
-          "[26]"
+          "[8]",
+          "[13]"
         ],
         "donor_motivations": [
           "Want to support the evolution of modern Islamic thought",
-          "Value high transparency and Platinum-level reporting",
-          "Prefer supporting educational media and digital outreach",
-          "Seek Zakat-eligible opportunities in the 'fisabilillah' category"
+          "Value high transparency and platinum-level data sharing",
+          "Prefer funding scholarly research and digital outreach over direct relief",
+          "Seek to fulfill zakat through educational 'fisabilillah' categories"
         ],
         "giving_considerations": [
-          "Donations primarily support US-based operations and staff",
-          "The organization is in a growth phase with a small governing board",
-          "Cost per direct beneficiary is higher than traditional relief charities"
+          "Gifts support a US-based scholarly operation with high per-person costs",
+          "The organization is in a growth stage with a small governing board",
+          "Impact is measured through educational reach rather than poverty alleviation"
         ],
-        "not_ideal_for": "Donors seeking high-volume, low-cost humanitarian relief or those who prefer large, established traditional seminaries."
+        "not_ideal_for": "Donors seeking high-volume humanitarian relief or those who prefer organizations with large, diverse governing boards."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[33]"
+          "[14]",
+          "[15]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects that while <cite id=\"33\">5 outcome metrics are tracked</cite>, there is no independent external evaluation of long-term behavioral change.",
+        "evidence_grade_explanation": "Grade C reflects that the organization <cite id=\"14\">tracks 5 outcome metrics</cite> but lacks independent third-party evaluations.",
         "external_evaluations": [
-          "1 evaluation document available via Candid"
+          "1 external evaluation document"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The organization operates on the premise that providing rational Islamic education will lead to a more enlightened and objective practice of faith globally.",
-        "why_evidence_matters": "Evidence ensures that educational content is effectively reaching and influencing the target audience's understanding of faith."
+        "theory_of_change": "DEVELOPING",
+        "theory_of_change_summary": "The organization aims to create a research environment where Islamic thought is revisited through reason, though a formal causal pathway is not fully documented.",
+        "why_evidence_matters": "Evidence ensures that educational content effectively reaches and influences the target audience's understanding."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[1]"
+          "[16]"
         ],
         "founded_year": 2014,
         "maturity_stage": "Growth",
         "revenue_growth_3yr": -0.1,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a <cite id=\"34\">3-year revenue CAGR of -0.1%</cite>, the organization needs additional funding to scale its translation and research projects.",
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "The organization has stable revenue but faces a <cite id=\"16\">slight negative CAGR of -0.1%</cite>, suggesting a need for new donor acquisition.",
         "strategic_priorities": [
-          "Expand '23 Questions' book project",
-          "Enhance AskGhamidi digital platform"
+          "Expand digital educational reach",
+          "Strengthen scholarly research environment"
         ],
         "years_operating": 12
       },
       "organizational_capacity": {
         "board_size": 3,
         "ceo_compensation": 140000,
-        "ceo_compensation_pct_revenue": 17.15,
+        "ceo_compensation_pct_revenue": 17.1,
         "ceo_name": "Farhan Saiyed",
         "citation_ids": [
           "[3]",
-          "[6]"
+          "[11]",
+          "[13]"
         ],
         "employees_count": 0,
-        "geographic_reach": "Global reach via digital platforms; US-based physical operations",
+        "geographic_reach": "Global reach via digital platforms; US-based operations",
         "has_conflict_policy": true,
         "has_financial_audit": false,
         "independent_board_pct": 1,
@@ -1158,10 +971,10 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[32]"
+          "[1]"
         ],
-        "differentiator": "Distinguished by its <cite id=\"32\">focus on rationalist Islamic thought</cite> compared to more traditional peers like Darul Qasim.",
-        "peer_group": "Global Education & Religious Services",
+        "differentiator": "Distinguished by its <cite id=\"1\">focus on rationalist discourse</cite> and high liquidity compared to peers.",
+        "peer_group": "Global Islamic Education",
         "similar_orgs": [
           "American Imam Academy",
           "Darul Qasim",
@@ -1174,41 +987,42 @@
           "name": "American Imam Academy"
         },
         {
-          "differentiator": "Same size but more traditional curriculum",
+          "differentiator": "Similar size and religious service focus",
           "name": "Darul Qasim"
         },
         {
-          "differentiator": "Academic focus on graduate-level Islamic studies",
+          "differentiator": "Academic graduate school focus",
           "name": "Bayan Islamic Graduate School"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[7]"
+            "[9]"
           ],
-          "detail": "The organization demonstrates exceptional fiscal discipline in its development efforts, spending only <cite id=\"7\">$0.11 to raise every $1</cite> in contributions.",
+          "detail": "The organization demonstrates exceptional fiscal discipline, spending only <cite id=\"9\">$0.11 to raise every $1</cite> in total contributions.",
           "point": "High Fundraising Efficiency"
         },
         {
           "citation_ids": [
-            "[8]"
+            "[7]"
           ],
-          "detail": "The charity maintains <cite id=\"8\">10.9 months of working capital</cite>, providing significant financial resilience and the ability to sustain programs during economic volatility.",
-          "point": "Strong Liquidity and Reserves"
+          "detail": "The charity maintains <cite id=\"7\">10.9 months of working capital</cite>, significantly exceeding the standard 3-6 month benchmark for non-profits.",
+          "point": "Robust Financial Reserves"
         },
         {
           "citation_ids": [
-            "[9]"
+            "[10]",
+            "[11]"
           ],
-          "detail": "The organization has earned the <cite id=\"9\">Platinum Seal of Transparency from Candid</cite>, indicating a commitment to public disclosure and outcome tracking.",
-          "point": "Highest Transparency Recognition"
+          "detail": "AL-Mawrid US holds an <cite id=\"10\">overall score of 84.84.5/100 from Charity Navigator</cite>, supported by a <cite id=\"11\">100% independent board</cite>.",
+          "point": "Strong Accountability Standards"
         }
       ],
       "strengths_deep_dive": [
-        "Al-Mawrid US excels in financial stability and administrative leaneness. According to its <cite id=\"10\">2023 Form 990</cite>, the organization managed to keep its <cite id=\"11\">program expense ratio at 75.2%</cite>, which is a commendable level of direct service funding for an educational entity. Furthermore, its governance structure is characterized by a <cite id=\"12\">100% independent board</cite>, ensuring that oversight remains free from internal conflicts of interest. This structural integrity is paired with a clear <cite id=\"13\">Zakat-eligible status</cite>, allowing Muslim donors to fulfill their religious obligations through programs that serve the <cite id=\"14\">fisabilillah, fuqara, and masakin</cite> categories."
+        "AL-Mawrid's operational strength lies in its lean fundraising model and significant liquidity. By maintaining <cite id=\"9\">fundraising costs at $0.09 per $1 raised</cite>, the organization ensures that the vast majority of donor funds are available for its core educational mission. This efficiency is paired with a <cite id=\"6\">Platinum Seal of Transparency</cite>, indicating that the leadership proactively shares outcome metrics and strategic goals. Furthermore, the organization's <cite id=\"4\">75.2% program expense ratio</cite> demonstrates a commitment to direct service delivery, even as it navigates the high-cost environment of US-based scholarly production."
       ],
-      "summary": "Al-Mawrid United States Inc, also known as the Ghamidi Center of Islamic Learning, is a non-profit organization dedicated to promoting a rational and objective understanding of Islam. Founded in <cite id=\"1\">2014</cite>, the organization serves as a primary vehicle for the religious research and educational methodology of Javed Ahmad Ghamidi. The charity reported <cite id=\"2\">$816,038 in total revenue</cite> for the 2023 tax year, primarily driven by <cite id=\"3\">$704,499 in public contributions</cite>. Its operations focus on making Islamic scholarship accessible through modern media, including the <cite id=\"4\">AskGhamidi platform, live weekend programs, and the '23 Questions' video series</cite>. While the organization maintains a global reach through digital translation initiatives, its financial footprint remains concentrated, with <cite id=\"5\">75.2% of expenses staying within the United States</cite>. The charity holds an <cite id=\"6\">overall score of 84.84.5/100 from Charity Navigator</cite>, reflecting a solid foundation in accountability and culture, though it faces challenges in scaling its direct impact relative to its operating costs.",
+      "summary": "founded in 2014, AL-Mawrid United States Inc is a non-profit organization dedicated to promoting a <cite id=\"1\">rational and objective approach to Islamic education</cite> through scholarly discourse and digital outreach. The organization operates primarily through its Education Program and the AskGhamidi platform, which seeks to provide a research-oriented environment where <cite id=\"2\">religious thought can be revisited and discussed</cite>. Financially, the organization reported <cite id=\"3\">total revenue of $816,038</cite> in 2023, with a <cite id=\"4\">program expense ratio of 75.2%</cite>. While the organization is headquartered in the United States, it maintains a global reach through digital media, including its <cite id=\"5\">23 Questions video series and Sohbah study circles</cite>. The charity holds a <cite id=\"6\">Platinum Seal of Transparency from Candid</cite>, reflecting a high level of voluntary data sharing. Despite its educational focus, the organization maintains <cite id=\"7\">strong liquidity with 10.9 months of working capital</cite>, providing a significant buffer for its ongoing operations. As a <cite id=\"8\">zakat-eligible institution</cite>, it offers Muslim donors a pathway to support intellectual and educational capacity building within the faith.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "ZAKAT-ELIGIBLE"

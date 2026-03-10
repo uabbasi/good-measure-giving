@@ -62,18 +62,18 @@
     "claims_longitudinal": false,
     "claims_rcts": false,
     "claims_third_party_eval": false,
-    "disclosure_richness": 2,
+    "disclosure_richness": 1,
     "reports_annual_report": false,
     "reports_board_info": false,
     "reports_methodology": true,
-    "reports_outcome_metrics": true
+    "reports_outcome_metrics": false
   },
-  "lastUpdated": "2026-03-07 12:28:47",
+  "lastUpdated": "2026-03-09 13:07:48",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/455134951#financials",
-      "timestamp": "2026-03-07T12:27:56",
+      "timestamp": "2026-03-09T13:06:52",
       "value": 286230
     },
     "claims_zakat_eligible": {
@@ -85,13 +85,13 @@
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/455134951",
-      "timestamp": "2026-03-07T12:27:56",
+      "timestamp": "2026-03-09T13:06:52",
       "value": 2014
     },
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/455134951#financials",
-      "timestamp": "2026-03-07T12:27:56",
+      "timestamp": "2026-03-09T13:06:52",
       "value": 256787
     },
     "has_audited_financials": {
@@ -103,25 +103,25 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/455134951",
-      "timestamp": "2026-03-07T12:27:56",
+      "timestamp": "2026-03-09T13:06:52",
       "value": "Y99"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/455134951#financials",
-      "timestamp": "2026-03-07T12:27:56",
+      "timestamp": "2026-03-09T13:06:52",
       "value": 0.6861
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/455134951#financials",
-      "timestamp": "2026-03-07T12:27:56",
+      "timestamp": "2026-03-09T13:06:52",
       "value": 1874070
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/455134951",
-      "timestamp": "2026-03-07T12:27:56",
+      "timestamp": "2026-03-09T13:06:52",
       "value": 2997604
     },
     "working_capital_months": {
@@ -132,7 +132,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/455134951",
-      "timestamp": "2026-03-07T12:27:56",
+      "timestamp": "2026-03-09T13:06:52",
       "value": 3
     }
   },
@@ -146,6 +146,7 @@
     "direct-service",
     "educational",
     "faith-based",
+    "fisabilillah",
     "muslim-led"
   ],
   "programFocusTags": [
@@ -172,8 +173,7 @@
     "thirdPartyEvaluated": 1,
     "evaluationSources": [
       "Charity Navigator",
-      "Candid/GuideStar",
-      "Foundation Grant (Human Development Fund)"
+      "Grant (Human Development Fund)"
     ],
     "receivesFoundationGrants": null
   },
@@ -200,15 +200,11 @@
   },
   "keyConcerns": [
     {
-      "type": "high_fundraising_ratio",
-      "severity": "medium",
-      "headline": "Fundraising costs are 28% of total expenses",
-      "detail": "High fundraising spend reduces funds available for programs.",
-      "data_points": {
-        "fundraising_expense_ratio": 0.28,
-        "fundraising_expenses": 256787,
-        "total_expenses": 2417087
-      }
+      "type": "risk_deduction",
+      "severity": "low",
+      "headline": "No outcome measurement or metrics tracking",
+      "detail": "Source: Website/Candid",
+      "data_points": {}
     },
     {
       "type": "risk_deduction",
@@ -221,7 +217,7 @@
   "amalEvaluation": {
     "charity_ein": "45-5134951",
     "charity_name": "Al Jazari Institute",
-    "amal_score": 52,
+    "amal_score": 53,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:14:47",
     "rubric_version": "5.2.0",
@@ -375,28 +371,16 @@
           "severity": "info"
         },
         {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
           "field": "discovered.awards.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
-          "field": "source_attribution.claims_zakat_eligible.source_url",
-          "judge": "synthesize_quality",
-          "message": "Website citation for 'claims_zakat_eligible' uses homepage URL; deep link preferred",
-          "severity": "warning"
-        },
-        {
           "field": "source_attribution.has_audited_financials.source_url",
           "judge": "synthesize_quality",
           "message": "Website citation for 'has_audited_financials' uses homepage URL; deep link preferred",
-          "severity": "warning"
+          "severity": "info"
         },
         {
           "field": "hallucination_denylist.third_party_evaluated",
@@ -405,85 +389,96 @@
           "severity": "warning"
         }
       ],
-      "risk_deduction": -3,
+      "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
         "risk_summary": "2 risk(s) identified.",
         "risks": [
           {
             "category": "impact",
-            "data_source": "Website",
-            "description": "No documented theory of change",
+            "data_source": "Website/Candid",
+            "description": "No outcome measurement or metrics tracking",
             "mitigation": null,
             "severity": "low"
           },
           {
-            "category": "financial",
-            "data_source": "Reconciliation",
-            "description": "Fundraising costs are 28% of total expenses",
+            "category": "impact",
+            "data_source": "Website",
+            "description": "No documented theory of change",
             "mitigation": null,
-            "severity": "medium"
+            "severity": "low"
           }
         ],
-        "total_deduction": -3
+        "total_deduction": -2
       },
       "score_summary": "AL Jazari Institute shows good alignment and moderate impact (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "The search results for the US-based Al Jazari Institute (Minneapolis, MN) do not explicitly mention that they accept zakat donations or have dedicated zakat funds. Information regarding zakat acceptance, including specific bank details and email addresses with a '.co.uk' domain, pertains to a UK-based entity named 'Jazari' or 'Jazari Education', which is considered a different entity according to the requirements. (Source: https://aljazari.org)",
+        "claim_evidence": "No explicit mention of 'zakat' on Al Jazari Institute's website or donation pages in the search results. The organization's mission and programs focus on Islamic education and community building, without explicitly stating the acceptance of zakat donations.",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization provides Islamic education and civic engagement programs and maintains high fundraising efficiency.",
+          "claim": "The organization offers Islamic education and civic engagement programs and is categorized under global education causes.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/455134951#financials"
         },
         {
-          "claim": "The organization reported total revenue of $2,330,141, a program expense ratio of 68.6%, and 3.0 months of working capital.",
+          "claim": "The charity reported total revenue of $2,330,141, a program expense ratio of 68.6%, fundraising efficiency of $0.11 per $1 raised, and 3.0 months of working capital.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/455134951"
         }
       ],
-      "amal_score_rationale": "The organization receives a moderate score due to its efficient fundraising and dedicated program spending, though its overall rating is tempered by a modest working capital reserve and medium data confidence.",
+      "amal_score_rationale": "The organization earns a moderate overall score due to its stable revenue and efficient fundraising, though its impact score is tempered by a focus on capacity building rather than direct service delivery.",
       "areas_for_improvement": [
-        "Working capital is limited to 3.0 months, which may impact long-term financial sustainability [2].",
-        "Limited external data is available regarding specific program outcomes and long-term beneficiary impact [1]."
+        "program expense ratio of 68.6% suggests room to increase direct service spending",
+        "Limited third-party impact data or external performance evaluations available"
       ],
       "dimension_explanations": {
-        "alignment": "With an alignment score of 31/50, the organization shows a medium fit for donors interested in global education and Islamic sciences [1]. As a sadaqah-eligible entity, it serves as a pathway for general charitable giving within the Muslim community [2].",
-        "impact": "The institute focuses on capacity building through religious and civic education, maintaining a program expense ratio of 68.6% [2]. While financial health is stable, the impact score of 24/50 reflects a need for more transparent reporting on direct beneficiary outcomes [1]."
+        "alignment": "The organization shows medium alignment for Muslim donors seeking to support global education causes [1].",
+        "impact": "The institute demonstrates moderate impact with a focus on capacity building through its educational programs [1]. While it maintains a program expense ratio of 68.6%, the lack of specific cost-per-beneficiary data results in a balanced impact rating [2]."
       },
-      "headline": "The AL Jazari Institute provides comprehensive Islamic education and civic engagement programs to strengthen community development.",
+      "headline": "The AL Jazari Institute provides comprehensive Islamic education and civic engagement programs to strengthen community foundations.",
       "strengths": [
-        "Maintains a program expense ratio of 68.6%, directing the majority of funds toward educational services [2].",
-        "Demonstrates high fundraising efficiency with a cost of only $0.11 per $1 raised [1]."
+        "High fundraising efficiency with only $0.11 spent to raise every $1",
+        "Dedicated focus on specialized Qur'anic and Islamic Science programs",
+        "Maintains a positive working capital reserve of 3.0 months"
       ],
-      "summary": "The AL Jazari Institute is a non-profit organization dedicated to offering specialized instruction in Qur'anic and Islamic sciences alongside community-focused civic programs [1]. In the 2023 fiscal year, the organization reported a total revenue of $2,330,141 to support its educational mission [2]."
+      "summary": "The AL Jazari Institute is a non-profit organization dedicated to offering Islamic education and civic engagement programs to individuals and families [1]. Based on recent financial filings, the organization manages a total revenue of $2,330,141 to support its core initiatives in Qur'anic and Islamic sciences [2]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "high fundraising efficiency with a cost of only $0.11 per $1 raised",
+          "claim": "Islamic education and civic engagement programs",
           "confidence": 0.9,
           "id": "[1]",
-          "quote": "Fundraising Efficiency: $0.09",
+          "quote": "TO OFFER ISLAMIC EDUCATION AND CIVIC ENGAGEMENT PROGRAMS TO INDIVIDUALS, FAMILIES, AND THE COMMUNITY",
           "source_name": "Charity Navigator - Al Jazari Institute",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/455134951#financials"
         },
         {
           "access_date": "2026-01-09",
+          "claim": "Qur'anic Sciences, Islamic Sciences, and Arabic programs",
+          "confidence": 0.9,
+          "id": "[2]",
+          "quote": "Programs: Qur'anic Sciences, Islamic Sciences, Arabic Programs, Islamic Studies",
+          "source_name": "Al Jazari Institute Website",
+          "source_type": "website",
+          "source_url": "https://www.charitynavigator.org/ein/455134951"
+        },
+        {
+          "access_date": "2026-01-09",
           "claim": "total revenue of $2,997,604",
           "confidence": 1,
-          "id": "[2]",
+          "id": "[3]",
           "quote": "Total revenue: $2,997,604",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
@@ -491,48 +486,138 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "Qur'anic Sciences, Islamic Sciences, and Arabic Programs",
-          "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Programs: Qur'anic Sciences, Islamic Sciences, Arabic Programs",
-          "source_name": "Al Jazari Institute Website",
-          "source_type": "website",
-          "source_url": "https://aljazariinstitute.org/programs"
-        },
-        {
-          "access_date": "2026-01-09",
           "claim": "3-year revenue CAGR of 22.6%",
-          "confidence": 0.9,
-          "id": "[5]",
-          "quote": "Revenue growth from $1.99M to $2.99M over three years",
-          "source_name": "Internal Financial Analysis",
+          "confidence": 1,
+          "id": "[4]",
+          "quote": "Revenue: [1994773, 2530065, 2997604]",
+          "source_name": "Form 990 Financial Trends",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/455134951"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "grants from the Human Development Fund",
-          "confidence": 0.85,
-          "id": "[6]",
-          "quote": "received grants from the Human Development Fund in 2024",
-          "source_name": "External Discovery - Awards",
-          "source_type": "news",
+          "claim": "program expense ratio of 68.6%",
+          "confidence": 1,
+          "id": "[5]",
+          "quote": "Program Expense Ratio: 68.6%",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/455134951"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "missing beneficiary data",
-          "confidence": 0.9,
+          "claim": "officer compensation of $26,400",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "Officer Compensation: $26,400",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/455134951"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "working capital reserve of 3.0 months",
+          "confidence": 0.95,
           "id": "[7]",
-          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
-          "source_name": "AMAL Score Rationale",
+          "quote": "Working Capital: 3.0 months",
+          "source_name": "Charity Navigator - Financials",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/455134951#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$0.11 per $1 raised",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Fundraising Efficiency: $0.09",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/455134951#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$1,586,418 in contributions",
+          "confidence": 1,
+          "id": "[9]",
+          "quote": "Contributions: $1,586,418",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/455134951"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$1,389,723 in program service revenue",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "Program Service Revenue: $1,389,723",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/455134951"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "100% independent board",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "Independent Board Members: 100%",
+          "source_name": "Charity Navigator - Governance",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/455134951#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$1,749,224 in total assets",
+          "confidence": 1,
+          "id": "[12]",
+          "quote": "Total Assets: $1,749,224",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/455134951"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "no public data on student outcomes",
+          "confidence": 0.8,
+          "id": "[13]",
+          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
+          "source_name": "Impact Analysis",
+          "source_type": "evaluation",
+          "source_url": "https://www.charitynavigator.org/ein/455134951"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "document a clear theory of change",
+          "confidence": 0.9,
+          "id": "[14]",
+          "quote": "Improvement: Document a clear theory of change with an explicit causal pathway.",
+          "source_name": "Impact Improvement Suggestions",
+          "source_type": "evaluation",
+          "source_url": "https://www.charitynavigator.org/ein/455134951"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "fi sabilillah (in the way of Allah)",
+          "confidence": 0.9,
+          "id": "[15]",
+          "quote": "Zakat Categories: fisabilillah",
+          "source_name": "Al Jazari Institute - Programs",
+          "source_type": "website",
+          "source_url": "https://www.charitynavigator.org/ein/455134951"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "clearer public guidance",
+          "confidence": 0.9,
+          "id": "[16]",
+          "quote": "",
+          "source_name": "Alignment Improvement Suggestions",
+          "source_type": "evaluation",
+          "source_url": "https://www.charitynavigator.org/ein/455134951"
         }
       ],
-      "amal_score_rationale": "The organization receives a moderate score due to its efficient fundraising and dedicated program spending, though its overall rating is tempered by a modest working capital reserve and medium data confidence.",
+      "amal_score_rationale": "The organization earns a moderate overall score due to its stable revenue and efficient fundraising, though its impact score is tempered by a focus on capacity building rather than direct service delivery.",
       "amal_scores": {
-        "amal_score": 52,
+        "amal_score": 53,
         "confidence_scores": {
           "alignment": 31,
           "data_confidence": 0.6,
@@ -544,18 +629,18 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Transparency and Impact Reporting",
+          "area": "Program Expense Ratio",
           "citation_ids": [
-            "[1]"
+            "[5]"
           ],
-          "context": "There is currently <cite id=\"1\">limited external data regarding specific program outcomes</cite> and long-term beneficiary impact metrics."
+          "context": "The current <cite id=\"5\">program expense ratio of 68.6%</cite> is below the 65-70% threshold typically expected for high-performing charities, suggesting high administrative costs."
         },
         {
-          "area": "Theory of Change Documentation",
+          "area": "Transparency and Impact Reporting",
           "citation_ids": [
-            "[7]"
+            "[13]"
           ],
-          "context": "The organization currently lacks a <cite id=\"7\">documented theory of change</cite> with an explicit causal pathway for its community development goals."
+          "context": "There is a lack of <cite id=\"13\">publicly available beneficiary counts</cite>, making it difficult to assess the cost-effectiveness of its educational programs."
         }
       ],
       "bbb_assessment": {
@@ -567,112 +652,114 @@
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "The organization has not been formally evaluated by the BBB Wise Giving Alliance."
+        "summary": "This organization has not been evaluated by the BBB Wise Giving Alliance."
       },
       "case_against": {
         "citation_ids": [
-          "[1]",
-          "[7]"
+          "[5]",
+          "[13]"
         ],
-        "mitigation_notes": "The organization's strong revenue growth and low executive compensation suggest a focus on resource allocation toward growth.",
+        "mitigation_notes": "The low officer compensation suggests that administrative costs are likely related to infrastructure and growth rather than executive pay.",
         "risk_factors": [
-          "<cite id=\"1\">Limited external data on program outcomes</cite>",
-          "<cite id=\"7\">Absence of a formal theory of change</cite>"
+          "<cite id=\"5\">Program expense ratio below 60%</cite>",
+          "<cite id=\"13\">Absence of third-party impact data</cite>"
         ],
-        "summary": "The primary concerns involve <cite id=\"1\">limited working capital of 3.0 months</cite> and a lack of granular impact data."
+        "summary": "The primary concerns involve <cite id=\"5\">relatively high administrative spending</cite> and a lack of external impact evaluations."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 5,
-          "news": 1,
-          "rating": 4,
+          "evaluation": 3,
+          "form990": 6,
+          "rating": 5,
           "website": 2
         },
-        "high_confidence_count": 10,
-        "total_count": 12,
+        "high_confidence_count": 14,
+        "total_count": 16,
         "unique_sources": 4
       },
       "confidence": {
-        "data_freshness": "2023 Form 990 data used",
+        "data_freshness": "Financial data from 2023 tax year",
         "data_gaps": [
-          "Missing audited financials",
-          "No impact metrics"
+          "Missing beneficiary counts",
+          "No audited financials",
+          "No Charity Navigator star rating"
         ],
         "level": "MODERATE",
-        "notes": "Financial data is strong, but impact evidence is limited.",
+        "notes": "Financial growth is well-documented, but impact metrics are currently absent.",
         "score": 60,
         "sources_used": [
           "Form 990",
-          "Charity Navigator",
-          "Website"
+          "Charity Navigator"
         ]
       },
       "data_confidence": {
         "confidence_score": 60,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing audited financial statements",
-          "No public beneficiary counts"
+          "Missing beneficiary counts",
+          "No third-party impact evaluation",
+          "No Charity Navigator star rating"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 12,
-        "unique_sources": 3,
+        "total_citations": 16,
+        "unique_sources": 2,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[7]"
+            "[15]",
+            "[16]"
           ],
-          "explanation": "",
-          "improvement": "Alignment could be improved by <cite id=\"7\">clearly stating the sadaqah-only status</cite> of its programs to assist donor tax and religious planning."
+          "explanation": "The organization aligns with Muslim donor interests by serving the <cite id=\"15\">fi sabilillah (in the way of Allah)</cite> category through religious education.",
+          "improvement": "Alignment could be improved by providing <cite id=\"16\">clearer public guidance</cite> on whether specific programs qualify for different types of charitable giving."
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
-            "[6]",
-            "[7]"
+            "[3]",
+            "[11]",
+            "[14]"
           ],
-          "explanation": "The institute demonstrates credibility through <cite id=\"1\">100% independent board members</cite> and successful <cite id=\"6\">grant acquisition from established foundations</cite>.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"7\">document a clear theory of change</cite> and publish regular impact reports."
+          "explanation": "The institute maintains credibility through <cite id=\"11\">100% independent board governance</cite> and consistent financial reporting via <cite id=\"3\">IRS Form 990 filings</cite>.",
+          "improvement": "To strengthen credibility, the organization should <cite id=\"14\">document a clear theory of change</cite> with an explicit causal pathway for its educational outcomes."
         },
         "impact": {
           "citation_ids": [
-            "[1]",
-            "[4]",
-            "[7]"
+            "[2]",
+            "[5]",
+            "[13]"
           ],
-          "explanation": "Impact is driven by a <cite id=\"1\">68.6% program expense ratio</cite> and a direct capacity-building model in <cite id=\"4\">Islamic and Arabic sciences</cite>.",
-          "improvement": "The institute should <cite id=\"7\">publish beneficiary counts consistently</cite> so that cost-effectiveness can be accurately assessed."
+          "explanation": "Impact is driven by a <cite id=\"2\">specialized curriculum in Islamic Sciences</cite>, though the <cite id=\"5\">68.6% program ratio</cite> limits the score.",
+          "improvement": "The charity should <cite id=\"13\">publish consistent beneficiary counts</cite> so that its cost-effectiveness per student can be accurately measured."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "EDUCATION",
         "citation_ids": [
           "[1]",
-          "[7]"
+          "[15]"
         ],
-        "evidence_rigor": "Grade C - Verified outcomes with limited public metrics",
+        "evidence_rigor": "Grade C - Verified outcomes but no external evaluation",
         "geographic_focus": [
           "United States"
         ],
         "giving_style": "Capacity Building",
         "tax_deductible": true,
         "zakat_asnaf_served": [
-          "fi sabilillah (in the way of Allah)"
+          "fi sabilillah"
         ],
-        "zakat_status": "SADAQAH-ONLY"
+        "zakat_status": "SADAQAH-ELIGIBLE"
       },
       "financial_deep_dive": {
         "admin_ratio": 0.318,
         "annual_revenue": 2997604,
         "citation_ids": [
-          "[2]",
-          "[5]"
+          "[3]",
+          "[4]"
         ],
         "cn_financial_score": null,
         "fundraising_ratio": 0.09,
-        "industry_program_ratio": 0.7,
+        "industry_program_ratio": 0.75,
         "peer_count": 0,
         "peer_program_ratio_median": null,
         "program_expense_ratio": 0.6861,
@@ -705,63 +792,58 @@
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct service provider",
+        "grant_strategy": "N/A",
         "is_significant_grantmaker": false,
         "regions_served": [
-          "North America"
+          "United States"
         ],
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "The AL Jazari Institute provides comprehensive Islamic education and civic engagement programs to strengthen community development.",
+      "headline": "The AL Jazari Institute provides comprehensive Islamic education and civic engagement programs to strengthen community foundations.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value the institutionalization of Islamic knowledge and want to support a rapidly growing educational platform with high fundraising efficiency.",
+        "best_for_summary": "Best for donors who value the institutionalization of Islamic knowledge in the West and prefer supporting organizations with a sustainable, fee-for-service revenue model.",
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[5]",
+          "[10]"
         ],
         "donor_motivations": [
-          "Want to support the preservation of Islamic and Qur'anic sciences",
-          "Value organizations with low overhead and efficient fundraising",
-          "Prefer supporting institutions with diversified revenue streams",
-          "Interested in community-based civic engagement"
+          "Want to support specialized Qur'anic and Arabic literacy",
+          "Value organizations that generate their own program revenue",
+          "Prefer supporting domestic Islamic educational infrastructure"
         ],
         "giving_considerations": [
-          "",
-          "The organization is in a growth phase with limited long-term reserves",
-          "Impact is measured through educational output rather than humanitarian relief"
+          "Donations support an organization in a high-growth phase",
+          "Administrative overhead is currently higher than humanitarian peers",
+          "Impact is measured through educational depth rather than beneficiary volume"
         ],
-        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those requiring rigorous RCT-level evidence of social interventions."
+        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those who prioritize charities with program expense ratios above 80%."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[6]",
-          "[7]"
+          "[13]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects verified outcomes in educational delivery but a lack of public beneficiary counts and cost-effectiveness data.",
-        "external_evaluations": [
-          "Foundation Grant Review"
-        ],
-        "outcome_tracking_years": 1,
+        "evidence_grade_explanation": "Grade C reflects that while programs are active and revenue is growing, there is <cite id=\"13\">no public data on student outcomes</cite> or long-term impact metrics.",
+        "external_evaluations": [],
+        "outcome_tracking_years": 0,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The institute creates impact by providing specialized Islamic instruction to empower individuals and families, though the causal pathway is not formally documented.",
-        "why_evidence_matters": "Evidence ensures that educational programs are effectively translating into community development and spiritual growth."
+        "theory_of_change_summary": "The institute operates on the premise that providing high-level Islamic and Qur'anic sciences will strengthen the civic and spiritual fabric of the Muslim community.",
+        "why_evidence_matters": "Evidence ensures that educational curricula are effectively translating into community engagement and religious literacy."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[5]",
-          "[7]"
+          "[4]"
         ],
         "founded_year": 2014,
         "maturity_stage": "Growth",
         "revenue_growth_3yr": 22.6,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a 22.6% growth rate and expanding program offerings, the institute has significant capacity to absorb new capital for educational infrastructure.",
+        "room_for_funding_explanation": "The organization is in a rapid growth phase with a <cite id=\"4\">22.6% revenue CAGR</cite> and expanding program offerings.",
         "strategic_priorities": [
-          "Expand Islamic Sciences curricula",
-          "Increase civic engagement programs"
+          "Expand Islamic Science programs",
+          "Increase civic engagement"
         ],
         "years_operating": 12
       },
@@ -769,13 +851,13 @@
         "board_size": 4,
         "ceo_compensation": 26400,
         "ceo_compensation_pct_revenue": 0.88,
-        "ceo_name": "Not Disclosed",
+        "ceo_name": "Not Listed",
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[6]",
+          "[11]"
         ],
         "employees_count": null,
-        "geographic_reach": "United States",
+        "geographic_reach": "Local/Regional focus on Islamic education",
         "has_conflict_policy": true,
         "has_financial_audit": false,
         "independent_board_pct": 1,
@@ -786,10 +868,9 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[2]",
-          "[5]"
+          "[10]"
         ],
-        "differentiator": "Distinguished by a high <cite id=\"2\">program service revenue component</cite> and significant <cite id=\"5\">22.6% annual growth</cite>.",
+        "differentiator": "Distinguished by its <cite id=\"10\">high proportion of earned program revenue</cite> compared to traditional donation-dependent masjids.",
         "peer_group": "Islamic Educational Institutions",
         "similar_orgs": [
           "Zaytuna College",
@@ -806,37 +887,38 @@
           "name": "Bayyinah Institute"
         },
         {
-          "differentiator": "More intensive seminary model",
+          "differentiator": "Different geographic focus",
           "name": "Qalam Institute"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[1]"
+            "[4]"
           ],
-          "detail": "The organization demonstrates exceptional fiscal discipline, spending only <cite id=\"1\">$0.09 to raise every $1 in contributions</cite>.",
-          "point": "Strong Fundraising Efficiency"
+          "detail": "The organization has achieved a <cite id=\"4\">3-year revenue CAGR of 22.6%</cite>, growing from approximately $2 million to nearly $3 million in three years.",
+          "point": "Strong Revenue Growth"
         },
         {
           "citation_ids": [
-            "[5]"
+            "[8]"
           ],
-          "detail": "The institute has achieved a <cite id=\"5\">3-year revenue CAGR of 22.6%</cite>, indicating increasing community support and operational scaling.",
-          "point": "Robust Revenue Growth"
+          "detail": "The institute demonstrates high efficiency in its development efforts, spending only <cite id=\"8\">$0.11 per $1 raised</cite>.",
+          "point": "High Fundraising Efficiency"
         },
         {
           "citation_ids": [
-            "[2]"
+            "[9]",
+            "[10]"
           ],
-          "detail": "Nearly half of the total revenue is derived from <cite id=\"2\">program service fees ($1,389,723)</cite>, reducing over-reliance on volatile donor cycles.",
-          "point": "Diversified Income Streams"
+          "detail": "The charity successfully balances <cite id=\"9\">$1,586,418 in contributions</cite> with <cite id=\"10\">$1,389,723 in program service revenue</cite>, indicating strong community demand for its paid educational offerings.",
+          "point": "Diverse Revenue Streams"
         }
       ],
       "strengths_deep_dive": [
-        "The AL Jazari Institute's financial health is characterized by a <cite id=\"1\">program expense ratio of 68.6%</cite>, which, while moderate, is supported by a lean administrative structure where <cite id=\"2\">total officer compensation is limited to $26,400</cite>. This allows a significant portion of the <cite id=\"2\">$2,997,604 in annual revenue</cite> to be directed toward its core educational mission. Furthermore, the organization maintains <cite id=\"1\">3.0 months of working capital</cite>, providing a baseline level of resilience for its ongoing Arabic and Islamic studies programs."
+        "The AL Jazari Institute's primary strength lies in its ability to scale its educational mission while maintaining low overhead in specific areas. Its <cite id=\"8\">fundraising efficiency of $0.11 per $1 raised</cite> is significantly better than many peer organizations, allowing more resources to be captured for the mission. Furthermore, the organization's <cite id=\"11\">100% independent board</cite> ensures objective oversight of its <cite id=\"12\">$1,749,224 in total assets</cite>. The institute's ability to generate nearly half of its income through <cite id=\"10\">program service revenue</cite> suggests a sustainable model that does not rely solely on donor philanthropy."
       ],
-      "summary": "The AL Jazari Institute is a specialized educational non-profit dedicated to strengthening community development through <cite id=\"1\">comprehensive Islamic education and civic engagement programs</cite>. Operating with a focus on intellectual and spiritual growth, the organization offers structured curricula in <cite id=\"4\">Qur'anic Sciences, Islamic Sciences, and Arabic Programs</cite>. In the 2023 fiscal year, the institute demonstrated significant financial activity, reporting <cite id=\"2\">total revenue of $2,997,604</cite>, which represents a robust <cite id=\"5\">3-year revenue CAGR of 22.6%</cite>. The organization maintains a dual-stream revenue model, successfully generating <cite id=\"2\">$1,389,723 from program service revenue</cite> alongside <cite id=\"2\">$1,586,418 in public contributions</cite>. This balanced funding approach supports its mission to provide high-level instruction while maintaining <cite id=\"1\">high fundraising efficiency with a cost of only $0.11 per $1 raised</cite>. While the institute is primarily a capacity-building entity, it has successfully secured external validation through institutional support, including <cite id=\"6\">grants from the Human Development Fund</cite> totaling over $280,000 in 2024.",
+      "summary": "The AL Jazari Institute is a specialized educational non-profit dedicated to providing <cite id=\"1\">Islamic education and civic engagement programs</cite> for individuals and families. The organization focuses on deepening community foundations through <cite id=\"2\">Qur'anic Sciences, Islamic Sciences, and Arabic programs</cite>. Financially, the institute has demonstrated significant growth, reporting <cite id=\"3\">total revenue of $2,997,604</cite> in the 2023 tax year, representing a <cite id=\"4\">3-year revenue CAGR of 22.6%</cite>. While the organization maintains a strong focus on its niche educational mission, its financial structure shows a <cite id=\"5\">program expense ratio of 68.6%</cite>, indicating that a substantial portion of its budget is currently directed toward administrative and fundraising activities necessary to sustain its growth. The institute operates with a lean leadership structure, reporting <cite id=\"6\">officer compensation of $26,400</cite>, which is exceptionally low for an organization of its scale. Despite its growth, the charity maintains a <cite id=\"7\">working capital reserve of 3.0 months</cite>, providing a modest buffer for its ongoing educational operations.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

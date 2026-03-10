@@ -205,6 +205,18 @@ class TheoryOfChangeDiscoveryService:
         try:
             data = json.loads(json_str)
         except json.JSONDecodeError as e:
+            if result.source_count == 0:
+                logger.info(f"No ToC found for {charity_name} (0 search sources)")
+                return TheoryOfChangeDiscovery(
+                    has_theory_of_change=False,
+                    theory_of_change_url=None,
+                    theory_of_change_type=None,
+                    toc_evidence=None,
+                    confidence=0.0,
+                    source_count=0,
+                    cost_usd=result.cost_usd,
+                    error=None,
+                )
             error_msg = f"Failed to parse ToC response JSON for {charity_name}: {e}"
             logger.error(error_msg)
             logger.debug(f"Extracted JSON (first 500 chars): {json_str[:500]}")

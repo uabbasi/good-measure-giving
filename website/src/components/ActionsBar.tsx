@@ -52,14 +52,14 @@ export function ActionsBar({
 
   // Terminal variant: Bloomberg-style compact bar
   if (variant === 'terminal') {
-    const terminalBtn = `inline-flex items-center gap-1.5 px-2 py-1 text-xs font-mono uppercase tracking-wide transition-colors ${
+    const actionBtn = `inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
       isDark
-        ? 'text-slate-500 hover:text-amber-400'
-        : 'text-slate-400 hover:text-amber-600'
+        ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+        : 'text-slate-500 hover:text-slate-900 hover:bg-slate-200'
     }`;
 
     return (
-      <div className={`${showMobileQuickActions ? '' : 'hidden sm:block'} border-b ${isDark ? 'border-slate-800/50 bg-slate-950' : 'border-slate-200 bg-slate-100'}`}>
+      <div className={`${showMobileQuickActions ? '' : 'hidden sm:block'}`}>
         {/* Mobile quick actions */}
         {showMobileQuickActions && (
         <div className={`sm:hidden sticky top-16 z-30 border-b ${isDark ? 'border-slate-800 bg-slate-950/95' : 'border-slate-200 bg-white/95'} backdrop-blur`}>
@@ -136,65 +136,55 @@ export function ActionsBar({
         </div>
         )}
 
-        <div className={`${showMobileQuickActions ? 'hidden sm:block' : ''} px-6`} data-tour="actions-bar">
-          <div className="flex items-center justify-between py-2">
-            {/* Cause Area + Wallet Tag (left side) */}
-            <div className="flex items-center gap-2">
+        <div className={`${showMobileQuickActions ? 'hidden sm:block' : ''} px-6 py-2.5 rounded-lg mt-3 ${
+          isDark ? 'bg-slate-800/60 border border-slate-700/50' : 'bg-slate-50 border border-slate-200'
+        }`} data-tour="actions-bar">
+          <div className="flex items-center justify-between">
+            {/* Left: Context labels */}
+            <div className="flex items-center gap-3">
               {causeArea && (
-                <span className={`text-xs font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                <span className={`text-xs font-semibold ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
                   {formatCauseArea(causeArea)}
                 </span>
               )}
-              {causeArea && walletTag && (
-                <span className={isDark ? 'text-slate-700' : 'text-slate-300'}>·</span>
-              )}
               {walletTag && (
                 <>
-                  <span data-tour="wallet-tag" className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-mono font-semibold uppercase tracking-wide ${
+                  <span data-tour="wallet-tag" className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold ${
                     walletTag.includes('ZAKAT')
-                      ? isDark ? 'bg-emerald-900/50 text-emerald-400 border border-emerald-700/50' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                      : isDark ? 'bg-slate-800 text-slate-400 border border-slate-700' : 'bg-slate-100 text-slate-500 border border-slate-200'
+                      ? isDark ? 'bg-emerald-900/40 text-emerald-400' : 'bg-emerald-100 text-emerald-700'
+                      : isDark ? 'bg-slate-700 text-slate-400' : 'bg-slate-200 text-slate-500'
                   }`}>
                     <Shield className="w-3 h-3" />
-                    {walletTag.includes('ZAKAT') ? 'Accepts Zakat' : 'Sadaqah'}
+                    {walletTag.includes('ZAKAT') ? 'Zakat Eligible' : 'Sadaqah'}
                   </span>
-                  {walletTag.includes('ZAKAT') && (
-                    zakatPolicyUrl ? (
-                      <a
-                        href={zakatPolicyUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`text-xs border-b border-dotted transition-colors ${isDark ? 'text-slate-600 border-slate-600 hover:text-emerald-400 hover:border-emerald-400' : 'text-slate-400 border-slate-400 hover:text-emerald-600 hover:border-emerald-600'}`}
-                      >
-                        source page
-                      </a>
-                    ) : (
-                      <span className={`text-xs ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>
-                        source page
-                      </span>
-                    )
+                  {walletTag.includes('ZAKAT') && zakatPolicyUrl && (
+                    <a
+                      href={zakatPolicyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`text-xs transition-colors ${isDark ? 'text-slate-500 hover:text-emerald-400' : 'text-slate-400 hover:text-emerald-600'}`}
+                    >
+                      View policy <ExternalLink className="w-3 h-3 inline" />
+                    </a>
                   )}
                 </>
               )}
             </div>
-            {/* Action buttons */}
-            <div className="flex items-center gap-3">
+            {/* Right: Actions */}
+            <div className="flex items-center gap-1">
               {isSignedIn ? (
                 <>
                   {onLogDonation && (
-                    <button data-tour="action-log-donation" onClick={onLogDonation} className={terminalBtn}>
-                      <Plus className="w-3 h-3" aria-hidden="true" />
-                      <span className={isDark ? 'text-emerald-500' : 'text-emerald-600'}>Log Donation</span>
+                    <button data-tour="action-log-donation" onClick={onLogDonation} className={actionBtn}>
+                      <Plus className="w-3.5 h-3.5" aria-hidden="true" />
+                      Log
                     </button>
                   )}
-                  <span className={`${isDark ? 'text-slate-700' : 'text-slate-300'}`}>│</span>
                   <CompareButton
                     charityEin={charityEin}
                     charityName={charityName}
                     size="sm"
-                    className="!text-xs !font-mono !uppercase !tracking-wide"
                   />
-                  <span className={`${isDark ? 'text-slate-700' : 'text-slate-300'}`}>│</span>
                   <span data-tour="action-save">
                     <BookmarkButton
                       charityEin={charityEin}
@@ -202,7 +192,6 @@ export function ActionsBar({
                       causeTags={causeTags}
                       showLabel
                       size="sm"
-                      className="!text-xs !font-mono !uppercase !tracking-wide"
                     />
                   </span>
                 </>
@@ -211,42 +200,37 @@ export function ActionsBar({
                   variant="custom"
                   isDark={isDark}
                 >
-                  <span className={`inline-flex items-center gap-1.5 px-2 py-1 text-xs font-mono uppercase tracking-wide cursor-pointer transition-colors ${
-                    isDark ? 'text-emerald-500 hover:text-emerald-400' : 'text-emerald-600 hover:text-emerald-500'
+                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium cursor-pointer transition-colors ${
+                    isDark ? 'text-emerald-400 hover:text-emerald-300 hover:bg-slate-700' : 'text-emerald-600 hover:text-emerald-700 hover:bg-slate-200'
                   }`}>
-                    <LogIn className="w-3 h-3" aria-hidden="true" />
-                    Sign in to log donations, compare & save
+                    <LogIn className="w-3.5 h-3.5" aria-hidden="true" />
+                    Sign in
                   </span>
                 </SignInButton>
               )}
 
-              <span className={`${isDark ? 'text-slate-700' : 'text-slate-300'}`}>│</span>
               <ShareButton
                 charityId={charityEin}
                 charityName={charityName}
                 isDark={isDark}
-                className="!text-xs !font-mono !uppercase !tracking-wide"
               />
 
               {donateUrl && (
-                <>
-                  <span className={`${isDark ? 'text-slate-700' : 'text-slate-300'}`}>│</span>
-                  <a
-                    data-tour="action-donate"
-                    href={donateUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={onDonateClick}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono uppercase tracking-wide rounded transition-colors ${
-                      isDark
-                        ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
-                        : 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                    }`}
-                  >
-                    Donate
-                    <ExternalLink className="w-3 h-3" aria-hidden="true" />
-                  </a>
-                </>
+                <a
+                  data-tour="action-donate"
+                  href={donateUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={onDonateClick}
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold transition-colors ${
+                    isDark
+                      ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                      : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                  }`}
+                >
+                  Donate
+                  <ExternalLink className="w-3 h-3" aria-hidden="true" />
+                </a>
               )}
             </div>
           </div>

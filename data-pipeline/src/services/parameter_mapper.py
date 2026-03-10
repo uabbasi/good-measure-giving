@@ -30,7 +30,7 @@ class ParameterMapper:
     # Extended for agentic pipeline (Phase 4)
     FIELD_PRIORITY = {
         # Financial data - IRS filings are authoritative
-        "financial": ["propublica", "candid", "charity_navigator", "website"],
+        "financial": ["propublica", "candid", "charity_navigator", "website", "bbb"],
         # Mission/programs - charity's own website is authoritative
         "mission": ["website", "candid", "charity_navigator"],
         "programs": ["website", "candid", "charity_navigator"],
@@ -132,6 +132,15 @@ class ParameterMapper:
             "domestic_grants": "domestic_grants",
             "foreign_grants": "foreign_grants",
             "total_grants": "total_grants",
+        },
+        # BBB Wise Giving Alliance
+        "bbb": {
+            "name": "name",
+            "ein": "ein",
+            "program_expense_ratio": "program_expense_ratio",
+            "fundraising_expense_ratio": "fundraising_expense_ratio",
+            "board_size": "board_size",
+            "has_financial_audit": "has_required_audit",
         },
         # Charity Website
         "website": {

@@ -630,10 +630,10 @@ def run_export_quality_check(summary: dict[str, Any]) -> tuple[bool, list[dict]]
         has_errors = any(issue.severity == Severity.ERROR for issue in verdict.issues)
         return not has_errors, issues
     except Exception as e:
-        return True, [
+        return False, [
             {
                 "judge": "export_quality",
-                "severity": "warning",
+                "severity": "error",
                 "field": "judge_execution",
                 "message": f"Quality judge failed: {str(e)[:100]}",
             }
@@ -820,7 +820,15 @@ def _build_key_concerns(score_details: dict[str, Any], charity_data: dict | None
         if isinstance(noncash_ratio, (int, float)) and noncash_ratio >= 0.25:
             severity = "high" if noncash_ratio >= 0.50 else "medium"
             cash_adj = _get_metric(charity_data, "cash_adjusted_program_ratio")
-            headline = f"{noncash_ratio:.0%} of reported revenue is noncash (gifts-in-kind)"
+            if noncash_ratio >= 0.80:
+                headline = f"{noncash_ratio:.0%} of reported revenue appears to be phantom noncash contributions"
+                detail = (
+                    "At this level, reported program ratios are likely meaningless — "
+                    "inflated by noncash valuations rather than actual cash spending on programs."
+                )
+            else:
+                headline = f"{noncash_ratio:.0%} of reported revenue is noncash (gifts-in-kind)"
+                detail = "Noncash contributions inflate reported program ratios. Cash-adjusted metrics better reflect actual spending."
             data_points: dict[str, Any] = {"noncash_ratio": round(noncash_ratio, 3)}
             if isinstance(cash_adj, (int, float)):
                 data_points["cash_adjusted_program_ratio"] = round(cash_adj, 3)
@@ -828,7 +836,7 @@ def _build_key_concerns(score_details: dict[str, Any], charity_data: dict | None
                 "type": "gik_inflation",
                 "severity": severity,
                 "headline": headline,
-                "detail": "Noncash contributions inflate reported program ratios. Cash-adjusted metrics better reflect actual spending.",
+                "detail": detail,
                 "data_points": data_points,
             })
 
@@ -938,6 +946,14 @@ def _normalize_public_url(url: Any) -> str | None:
     return candidate
 
 
+def _is_homepage_url(url: str | None) -> bool:
+    """Return True if url points to the domain root with no meaningful path."""
+    if not url:
+        return True
+    parsed = urlparse(url)
+    return parsed.path.rstrip("/") == ""
+
+
 def _select_canonical_zakat_url(
     charity_data: dict | None, _evaluation: dict | None, fallback_website: str | None
 ) -> str | None:
@@ -946,7 +962,9 @@ def _select_canonical_zakat_url(
     Priority:
     1) Discovery-phase zakat_policy_url (from direct HTTP check or Gemini search)
     2) Source attribution for claims_zakat_eligible
-    3) Charity website fallback
+
+    Homepage URLs are rejected — linking to a homepage as "zakat policy" is
+    misleading. The evidence text is kept but without a source annotation.
 
     NOTE: Baseline narrative citations are NOT used here because the narrative
     LLM can hallucinate source URLs (e.g., attaching an unrelated PDF URL to
@@ -957,7 +975,7 @@ def _select_canonical_zakat_url(
         zakat_meta = charity_data.get("zakat_metadata")
         if isinstance(zakat_meta, dict):
             url = _normalize_public_url(zakat_meta.get("zakat_policy_url"))
-            if url:
+            if url and not _is_homepage_url(url):
                 return url
 
     # 2) Source attribution for claims_zakat_eligible
@@ -967,11 +985,11 @@ def _select_canonical_zakat_url(
             zakat_attr = source_attribution.get("claims_zakat_eligible")
             if isinstance(zakat_attr, dict):
                 url = _normalize_public_url(zakat_attr.get("source_url"))
-                if url:
+                if url and not _is_homepage_url(url):
                     return url
 
-    # 3) Charity website fallback
-    return _normalize_public_url(fallback_website)
+    # No homepage fallback — evidence is kept but without a source link
+    return None
 
 
 def _rewrite_evidence_source(evidence: str, canonical_url: str | None) -> str:

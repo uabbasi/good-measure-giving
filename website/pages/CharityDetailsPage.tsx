@@ -25,7 +25,7 @@ import { CharityProfile, AmalEvaluation, RatingColor } from '../types';
 import { ScoreVisualizer, ScoreVariant } from '../components/ScoreVisualizer';
 import { AssessmentCard, RatingIcon } from '../components/MetricCard';
 import { SourceAttribution } from '../src/components/SourceAttribution';
-import { TerminalView } from '../src/components/views';
+import { TerminalView, TabbedView } from '../src/components/views';
 import { isRichTier, isBaselineTier, isHiddenTier } from '../src/utils/tierUtils';
 import { useCommunityMember, CommunityGate, JoinCommunityPrompt } from '../src/auth';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
@@ -61,6 +61,10 @@ export const CharityDetailsPage: React.FC = () => {
   // Load charity from exported JSON files
   const { charity, loading, error } = useCharity(id || '');
   const { isDark } = useLandingTheme();
+
+  // View preference: ?view=tabbed for tabbed view, default is terminal
+  // Read directly from window.location to avoid useSearchParams re-render issues
+  const useTabbed = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('view') === 'tabbed';
 
   // Check community membership for content gating (must be called unconditionally)
   const isCommunityMember = useCommunityMember();
@@ -105,8 +109,11 @@ export const CharityDetailsPage: React.FC = () => {
     );
   }
 
-  // Rich and baseline tiers use the terminal view
+  // Rich and baseline tiers use terminal (default) or tabbed view
   if (isRichTier(charity) || isBaselineTier(charity)) {
+    if (useTabbed) {
+      return <TabbedView charity={charity} />;
+    }
     return <TerminalView charity={charity} />;
   }
 
