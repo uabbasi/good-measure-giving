@@ -206,7 +206,6 @@ function DraggableCharityRow({
   } : dimmed ? { opacity: 0.4 } : undefined;
 
   const wt = getWalletType(charity.walletTag);
-  const isZakat = wt === 'zakat';
   const cell = `px-3 py-2.5 text-[13px] ${isDark ? 'text-slate-300' : 'text-slate-700'}`;
   const border = isDark ? 'border-slate-800/50' : 'border-slate-100';
   const inputStyle = `bg-transparent border-0 focus:outline-none focus:ring-0 p-0 ${isDark ? 'text-slate-200 placeholder-slate-600' : 'text-slate-700 placeholder-slate-300'}`;
@@ -218,9 +217,20 @@ function DraggableCharityRow({
     }
   };
 
+  const remaining = (target || 0) - given;
+
   const handleTargetKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      (e.target as HTMLInputElement).blur();
+      handleTargetBlur();
+      const input = e.target as HTMLInputElement;
+      const allInputs = document.querySelectorAll<HTMLInputElement>('[data-charity-amount]');
+      const arr = Array.from(allInputs);
+      const idx = arr.indexOf(input);
+      if (idx >= 0 && idx < arr.length - 1) {
+        arr[idx + 1].focus();
+      } else {
+        input.blur();
+      }
     }
   };
 
@@ -231,23 +241,23 @@ function DraggableCharityRow({
       className={`hidden sm:table-row border-b ${border} group transition-all ${isDragging ? 'z-50 shadow-lg' : ''} ${isDark ? 'hover:bg-slate-800/40' : 'hover:bg-slate-50'} ${dimmed ? 'pointer-events-auto' : ''}`}
     >
       <td className={`${cell} w-0 pr-0`} style={{ borderLeft: bucketColor ? `4px solid ${bucketColor}40` : undefined }}>
-        <button {...listeners} {...attributes} className={`cursor-grab active:cursor-grabbing p-1 rounded-md opacity-100 sm:opacity-30 sm:group-hover:opacity-100 transition-opacity ${isDark ? 'hover:bg-slate-700' : 'hover:bg-slate-200'}`}>
+        <button {...listeners} {...attributes} className={`cursor-grab active:cursor-grabbing p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity ${isDark ? 'hover:bg-slate-700' : 'hover:bg-slate-200'}`}>
           <GripVertical className="w-3.5 h-3.5" />
         </button>
       </td>
-      <td className={`${cell} pl-1`}>
-        <Link to={`/charity/${charity.ein}`} className={`hover:underline font-medium ${isDark ? 'text-slate-200 hover:text-white' : 'text-slate-700 hover:text-slate-900'}`}>{charity.name}</Link>
-      </td>
-      <td className={`${cell} text-right`}>
-        <span className={`text-[10px] px-2 py-0.5 rounded-md font-bold border ${
-          wt === 'zakat'
-            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600'
-            : isDark
-            ? 'bg-slate-800 border-slate-700 text-slate-400'
-            : 'bg-slate-100 border-slate-200 text-slate-500'
-        }`}>
-          {charity.amalScore || '—'}
-        </span>
+      <td className={`${cell} pl-1`} colSpan={2}>
+        <div className="flex items-center gap-2">
+          <Link to={`/charity/${charity.ein}`} className={`hover:underline font-medium truncate ${isDark ? 'text-slate-200 hover:text-white' : 'text-slate-700 hover:text-slate-900'}`}>{charity.name}</Link>
+          <span className={`shrink-0 text-[10px] px-1.5 py-0.5 rounded-md font-bold border ${
+            wt === 'zakat'
+              ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600'
+              : isDark
+              ? 'bg-slate-800 border-slate-700 text-slate-400'
+              : 'bg-slate-100 border-slate-200 text-slate-500'
+          }`}>
+            {charity.amalScore || '—'}
+          </span>
+        </div>
       </td>
       <td className={`${cell} text-right`}>
         <div className={`inline-flex items-center px-2 py-0.5 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'} hover:border-emerald-400 dark:hover:border-emerald-500/40 focus-within:border-emerald-500 transition-colors`}>
@@ -255,17 +265,32 @@ function DraggableCharityRow({
           <input
             type="text"
             inputMode="numeric"
+            data-charity-amount
             value={localTarget}
             onChange={e => setLocalTarget(e.target.value.replace(/\D/g, ''))}
             onBlur={handleTargetBlur}
             onKeyDown={handleTargetKeyDown}
-            className={`w-20 text-right ${inputStyle} text-[13px] tabular-nums`}
-            placeholder="set target"
+            className={`w-24 text-right ${inputStyle} text-sm tabular-nums`}
+            placeholder="0"
           />
         </div>
       </td>
       <td className={`${cell} text-right tabular-nums`}>
         <span className={given > 0 ? 'font-semibold text-emerald-600' : isDark ? 'text-slate-600' : 'text-slate-300'}>{given > 0 ? fmt(given) : '—'}</span>
+      </td>
+      <td className={`${cell} text-right tabular-nums`}>
+        {target && target > 0 ? (
+          remaining <= 0 ? (
+            <div className="flex items-center justify-end gap-1">
+              <Check className="w-3.5 h-3.5 text-emerald-500" />
+              <span className="text-emerald-500 font-medium text-[12px]">Done</span>
+            </div>
+          ) : (
+            <span className="text-amber-500 font-medium">{fmt(remaining)} left</span>
+          )
+        ) : (
+          <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</span>
+        )}
       </td>
       <td className={`${cell} text-right`}>
         <div className="flex items-center justify-end gap-1">
@@ -289,25 +314,6 @@ function DraggableCharityRow({
             </button>
           )}
         </div>
-      </td>
-      <td className={`${cell} hidden sm:table-cell`}>
-        {onMoveCharity && bucketOptions && bucketOptions.length > 0 && (
-          <select
-            value={bucketId || ''}
-            onChange={e => onMoveCharity(charity.ein, e.target.value || null)}
-            className={`text-[11px] rounded-md border px-1.5 py-1 max-w-[8rem] ${
-              isDark
-                ? 'bg-slate-800 border-slate-700 text-slate-300'
-                : 'bg-white border-slate-200 text-slate-600'
-            }`}
-            aria-label={`Category for ${charity.name}`}
-          >
-            <option value="">Uncategorized</option>
-            {bucketOptions.map(opt => (
-              <option key={opt.id} value={opt.id}>{opt.label}</option>
-            ))}
-          </select>
-        )}
       </td>
     </tr>
   );
@@ -399,9 +405,14 @@ function MobileCharityAllocationRow({
       </div>
       <div className="mt-1.5 flex items-center justify-between gap-2">
         <span className={`text-[10px] ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-          {categoryTarget > 0
-            ? `Given ${fmt(given)} • ${formatPercent(shareOfCategory)}% of category`
-            : `Given ${fmt(given)}`}
+          {(() => {
+            const rem = (target || 0) - given;
+            const paidStr = `Paid ${fmt(given)}`;
+            const remStr = target && target > 0 ? (rem > 0 ? ` · ${fmt(rem)} left` : ' · Done') : '';
+            return categoryTarget > 0
+              ? `${paidStr}${remStr} · ${formatPercent(shareOfCategory)}% of category`
+              : `${paidStr}${remStr}`;
+          })()}
         </span>
         <div className={`inline-flex items-center px-2 py-1 rounded-md border ${isDark ? 'border-slate-700 bg-slate-900/60' : 'border-slate-200 bg-white'} hover:border-emerald-400 dark:hover:border-emerald-500/40 focus-within:border-emerald-500 transition-colors`}>
           <span className={`text-[11px] mr-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>$</span>
@@ -413,7 +424,7 @@ function MobileCharityAllocationRow({
             onBlur={commitTarget}
             onKeyDown={onTargetKeyDown}
             className={`w-16 text-right ${inputStyle} text-[12px] font-semibold tabular-nums`}
-            placeholder="target"
+            placeholder="0"
             aria-label={`Target for ${charity.name}`}
           />
         </div>
@@ -481,13 +492,13 @@ function GhostSuggestionRow({
       <td className={`${cell} w-0 pr-0`}>
         <Plus className={`w-3.5 h-3.5 opacity-40 group-hover:opacity-100 ${isDark ? 'group-hover:text-emerald-400' : 'group-hover:text-emerald-500'}`} />
       </td>
-      <td className={`${cell} pl-1 italic font-medium`}>
-        {charity.name}
-      </td>
-      <td className={`${cell} text-right`}>
-        <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-medium opacity-50 group-hover:opacity-80 ${isDark ? 'bg-slate-800 border border-slate-700' : 'bg-slate-100 border border-slate-200'}`}>
-          {charity.amalScore || '—'}
-        </span>
+      <td className={`${cell} pl-1 italic font-medium`} colSpan={2}>
+        <div className="flex items-center gap-2">
+          {charity.name}
+          <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-medium opacity-50 group-hover:opacity-80 ${isDark ? 'bg-slate-800 border border-slate-700' : 'bg-slate-100 border border-slate-200'}`}>
+            {charity.amalScore || '—'}
+          </span>
+        </div>
       </td>
       <td className={cell}></td>
       <td className={cell}></td>
@@ -668,6 +679,19 @@ export function UnifiedAllocationView({
   }, [buckets, donations, charityToBucket]);
 
   const totalGiven = Array.from(bucketGiven.values()).reduce((s, v) => s + v, 0);
+
+  // Zakat eligibility helper
+  const isZakatEligible = useCallback((walletTag: string | null) => {
+    return getWalletType(walletTag) === 'zakat';
+  }, []);
+
+  const totalCharityTargets = useMemo(() => {
+    const eligible = zakatLens
+      ? bookmarkedCharities.filter(c => isZakatEligible(c.walletTag))
+      : bookmarkedCharities;
+    return eligible.reduce((sum, c) => sum + (getCharityTarget(c.ein) || 0), 0);
+  }, [bookmarkedCharities, getCharityTarget, zakatLens, isZakatEligible]);
+  const unallocatedAmount = targetNum - totalCharityTargets;
   const hasTarget = targetNum > 0;
   const hasSavedCharities = bookmarkedCharities.length > 0;
   const hasLoggedDonation = donations.length > 0;
@@ -682,11 +706,6 @@ export function UnifiedAllocationView({
     : !hasLoggedDonation
     ? 3
     : 0;
-
-  // Zakat eligibility helper
-  const isZakatEligible = useCallback((walletTag: string | null) => {
-    return getWalletType(walletTag) === 'zakat';
-  }, []);
 
   // Calculate zakat-only totals
   const zakatStats = useMemo(() => {
@@ -768,6 +787,10 @@ export function UnifiedAllocationView({
   const setPct = (id: string, v: number) => {
     const newBuckets = buckets.map(b => b.id === id ? { ...b, percent: roundPercent(clampPercent(v)) } : b);
     setBuckets(newBuckets);
+  };
+
+  const setLabel = (id: string, newLabel: string) => {
+    setBuckets(prev => prev.map(b => b.id === id ? { ...b, label: newLabel } : b));
   };
 
   const handleSetCharityTarget = useCallback(async (ein: string, amount: number) => {
@@ -951,8 +974,23 @@ export function UnifiedAllocationView({
                     : isDark ? 'text-slate-500 border-slate-700 hover:text-slate-400 hover:bg-slate-800' : 'text-slate-400 border-slate-200 hover:text-slate-600 hover:bg-slate-50'
                 }`}
               >
-                {zakatLens ? 'Zakat only' : 'Zakat'}
+                {zakatLens ? 'Showing zakat-eligible only' : 'Hide sadaqah'}
               </button>
+              {totalCharityTargets > 0 && (
+                <span className={`ml-2 text-[11px] font-medium px-2.5 py-1 rounded-md border ${
+                  unallocatedAmount === 0
+                    ? isDark ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' : 'text-emerald-600 border-emerald-200 bg-emerald-50'
+                    : unallocatedAmount < 0
+                    ? isDark ? 'text-blue-400 border-blue-500/30 bg-blue-500/10' : 'text-blue-500 border-blue-200 bg-blue-50'
+                    : isDark ? 'text-amber-400 border-amber-500/30 bg-amber-500/10' : 'text-amber-600 border-amber-200 bg-amber-50'
+                }`}>
+                  {unallocatedAmount === 0
+                    ? `${fmt(totalCharityTargets)} allocated${zakatLens ? ' (zakat)' : ''}`
+                    : unallocatedAmount < 0
+                    ? `${fmt(Math.abs(unallocatedAmount))} over${zakatLens ? ' (zakat)' : ''}`
+                    : `${fmt(unallocatedAmount)} to allocate${zakatLens ? ' (zakat)' : ''}`}
+                </span>
+              )}
             </div>
           )}
         </div>
@@ -1235,6 +1273,9 @@ export function UnifiedAllocationView({
             const gvn = bucketGiven.get(b.id) || 0;
             const pct = amt > 0 ? Math.min(100, Math.round(gvn / amt * 100)) : 0;
             const chars = bookmarkedCharities.filter(c => charityToBucket.get(c.ein) === b.id);
+            const mBucketEligible = zakatLens ? chars.filter(c => isZakatEligible(c.walletTag)) : chars;
+            const mBucketCharityTargets = mBucketEligible.reduce((sum, c) => sum + (getCharityTarget(c.ein) || 0), 0);
+            const mBucketUnallocated = amt - mBucketCharityTargets;
             const visibleChars = zakatLens
               ? chars.filter(c => isZakatEligible(c.walletTag))
               : chars;
@@ -1264,10 +1305,17 @@ export function UnifiedAllocationView({
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <div className="w-2.5 h-2.5 rounded-full" style={{ background: b.color }} />
-                      <span className={`font-semibold text-sm truncate ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>{b.label}</span>
+                      <input
+                        type="text"
+                        value={b.label}
+                        onChange={e => setLabel(b.id, e.target.value)}
+                        onBlur={handleBlur}
+                        onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
+                        className={`font-semibold text-sm truncate bg-transparent border-0 focus:outline-none focus:ring-0 p-0 max-w-[10rem] ${isDark ? 'text-slate-100' : 'text-slate-900'}`}
+                      />
                     </div>
                     <div className={`mt-1 text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-                      {displayCount} {displayCount === 1 ? 'charity' : 'charities'} • Given {fmt(gvn)} • {pct}%
+                      {displayCount} {displayCount === 1 ? 'charity' : 'charities'} • Paid {fmt(gvn)} • {pct}%
                     </div>
                   </div>
                   <button
@@ -1297,10 +1345,16 @@ export function UnifiedAllocationView({
                     </div>
                   </div>
                   <div>
-                    <label className={`block text-[10px] font-semibold uppercase tracking-wide mb-1 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Target</label>
+                    <label className={`block text-[10px] font-semibold uppercase tracking-wide mb-1 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Amount</label>
                     <p className={`text-right text-sm font-semibold tabular-nums pt-1 ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
                       {amt > 0 ? fmt(amt) : '—'}
                     </p>
+                    {amt > 0 && mBucketUnallocated > 0 && chars.length > 0 && (
+                      <p className="text-right text-[10px] font-medium text-amber-500">{fmt(mBucketUnallocated)} to allocate</p>
+                    )}
+                    {amt > 0 && mBucketUnallocated < 0 && chars.length > 0 && (
+                      <p className="text-right text-[10px] font-medium text-blue-400">{fmt(Math.abs(mBucketUnallocated))} over</p>
+                    )}
                   </div>
                 </div>
 
@@ -1430,7 +1484,7 @@ export function UnifiedAllocationView({
                 </span>
               </div>
               <div className={`mt-1 text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Target {fmt(Math.round(targetNum * totalPct / 100))} • Given {fmt(totalGiven)}
+                Amount {fmt(Math.round(targetNum * totalPct / 100))} • Paid {fmt(totalGiven)}
               </div>
             </div>
           )}
@@ -1487,9 +1541,9 @@ export function UnifiedAllocationView({
                 <th className={`${headerCell} w-6 hidden sm:table-cell`}></th>
                 <th className={`${headerCell} text-left`}>Category</th>
                 <th className={`${headerCell} text-right w-20`}>%</th>
-                <th className={`${headerCell} text-right w-24`}>Target</th>
-                <th className={`${headerCell} text-right w-20 hidden sm:table-cell`}>Given</th>
-                <th className={`${headerCell} w-28 hidden sm:table-cell`}>Progress</th>
+                <th className={`${headerCell} text-right w-24`}>Amount</th>
+                <th className={`${headerCell} text-right w-20 hidden sm:table-cell`}>Paid</th>
+                <th className={`${headerCell} text-right w-24 hidden sm:table-cell`}>Remaining</th>
                 <th className={`${headerCell} w-8 hidden sm:table-cell`}></th>
               </tr>
             </thead>
@@ -1498,7 +1552,9 @@ export function UnifiedAllocationView({
               const gvn = bucketGiven.get(b.id) || 0;
               const pct = amt > 0 ? Math.min(100, Math.round(gvn / amt * 100)) : 0;
               const chars = bookmarkedCharities.filter(c => charityToBucket.get(c.ein) === b.id);
-              // Sum of charity targets within this bucket
+              const bucketEligible = zakatLens ? chars.filter(c => isZakatEligible(c.walletTag)) : chars;
+              const bucketCharityTargets = bucketEligible.reduce((sum, c) => sum + (getCharityTarget(c.ein) || 0), 0);
+              const bucketUnallocated = amt - bucketCharityTargets;
                 // Count for display - filters by zakat eligibility when lens is active
               const displayCount = zakatLens
                 ? chars.filter(c => isZakatEligible(c.walletTag)).length
@@ -1535,7 +1591,10 @@ export function UnifiedAllocationView({
                       borderLeft: `4px solid ${b.color}`,
                     }}
                   >
-                    <td className={`${cell} hidden sm:table-cell`}>
+                    <td
+                      className={`${cell} hidden sm:table-cell ${chars.length > 0 ? 'cursor-pointer' : ''}`}
+                      onClick={() => chars.length > 0 && toggleCollapse(b.id)}
+                    >
                       {chars.length > 0 && (
                         <ChevronDown
                           className={`w-4 h-4 transition-transform ${isCollapsed ? '-rotate-90' : ''} ${isDark ? 'text-slate-500' : 'text-slate-400'}`}
@@ -1543,13 +1602,20 @@ export function UnifiedAllocationView({
                       )}
                     </td>
                     <td
-                      className={`${cell} sm:cursor-pointer select-none`}
-                      onClick={() => chars.length > 0 && toggleCollapse(b.id)}
+                      className={`${cell} select-none`}
                     >
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2.5 min-w-0">
                           <div className="w-3 h-3 rounded-md shadow-sm" style={{ background: b.color }} />
-                          <span className="font-semibold truncate">{b.label}</span>
+                          <input
+                            type="text"
+                            value={b.label}
+                            onChange={e => setLabel(b.id, e.target.value)}
+                            onBlur={handleBlur}
+                            onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
+                            onClick={e => e.stopPropagation()}
+                            className={`font-semibold truncate bg-transparent border-0 focus:outline-none focus:ring-0 p-0 max-w-[12rem] ${isDark ? 'text-white' : 'text-slate-900'}`}
+                          />
                           {displayCount > 0 && (
                             <span
                               className="text-[10px] px-2 py-0.5 rounded-full font-semibold border"
@@ -1576,7 +1642,7 @@ export function UnifiedAllocationView({
                         </button>
                       </div>
                       <div className={`sm:hidden mt-1 text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-                        Given {fmt(gvn)} • {pct}%
+                        Paid {fmt(gvn)} • {pct}%
                       </div>
                     </td>
                     <td className={`${cell} text-right`}>
@@ -1598,23 +1664,29 @@ export function UnifiedAllocationView({
                       <span className={`font-semibold tabular-nums ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
                         {amt > 0 ? fmt(amt) : '—'}
                       </span>
+                      {amt > 0 && chars.length > 0 && bucketUnallocated > 0 && (
+                        <div className="text-[10px] font-medium text-amber-500">{fmt(bucketUnallocated)} to allocate</div>
+                      )}
+                      {amt > 0 && chars.length > 0 && bucketUnallocated < 0 && (
+                        <div className="text-[10px] font-medium text-blue-400">{fmt(Math.abs(bucketUnallocated))} over</div>
+                      )}
                     </td>
                     <td className={`${cell} text-right tabular-nums hidden sm:table-cell`}>
                       <span className={gvn > 0 ? 'font-medium' : isDark ? 'text-slate-600' : 'text-slate-300'}>{fmt(gvn)}</span>
                     </td>
-                    <td className={`${cell} hidden sm:table-cell`}>
-                      <div className="flex items-center gap-2.5">
-                        <div className={`flex-1 h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-slate-700' : 'bg-slate-200'} shadow-inner`}>
-                          <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(pct, 100)}%`, background: `linear-gradient(90deg, ${b.color}, ${b.color}cc)` }} />
-                        </div>
-                        {pct >= 100 ? (
-                          <div className="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500/15">
+                    <td className={`${cell} text-right tabular-nums hidden sm:table-cell`}>
+                      {amt > 0 ? (
+                        amt - gvn <= 0 ? (
+                          <div className="flex items-center justify-end gap-1">
                             <Check className="w-3.5 h-3.5 text-emerald-500" />
+                            <span className="text-emerald-500 font-medium text-[12px]">Done</span>
                           </div>
                         ) : (
-                          <span className={`text-[11px] font-medium tabular-nums w-8 text-right ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>{pct}%</span>
-                        )}
-                      </div>
+                          <span className="text-amber-500 font-medium">{fmt(amt - gvn)} left</span>
+                        )
+                      ) : (
+                        <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</span>
+                      )}
                     </td>
                     <td className={`${cell} hidden sm:table-cell`}>
                       <button onClick={() => remove(b.id)} className={`p-1.5 -m-1 rounded-lg transition-all opacity-40 hover:opacity-100 ${isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'}`}>
@@ -1731,11 +1803,31 @@ export function UnifiedAllocationView({
                       {totalPctLabel}%
                     </span>
                   </td>
-                  <td className={`${cell} text-right font-bold text-base tabular-nums`}>{fmt(Math.round(targetNum * totalPct / 100))}</td>
+                  <td className={`${cell} text-right font-bold text-base tabular-nums`}>
+                    <div>{fmt(totalCharityTargets)}</div>
+                    {unallocatedAmount > 0 && (
+                      <div className="text-[10px] font-medium text-amber-500">{fmt(unallocatedAmount)} to allocate</div>
+                    )}
+                    {unallocatedAmount < 0 && (
+                      <div className="text-[10px] font-medium text-blue-400">{fmt(Math.abs(unallocatedAmount))} over</div>
+                    )}
+                  </td>
                   <td className={`${cell} text-right font-bold text-base tabular-nums hidden sm:table-cell`}>
                     <span className="text-emerald-600">{fmt(totalGiven)}</span>
                   </td>
-                  <td className={`${cell} hidden sm:table-cell`}></td>
+                  <td className={`${cell} text-right font-bold text-base tabular-nums hidden sm:table-cell`}>
+                    {(() => {
+                      const totalTarget = Math.round(targetNum * totalPct / 100);
+                      const totalRemaining = totalTarget - totalGiven;
+                      return totalRemaining > 0 ? (
+                        <span className="text-amber-500">{fmt(totalRemaining)} left</span>
+                      ) : totalTarget > 0 ? (
+                        <div className="flex items-center justify-end gap-1">
+                          <Check className="w-4 h-4 text-emerald-500" />
+                        </div>
+                      ) : null;
+                    })()}
+                  </td>
                   <td className={`${cell} hidden sm:table-cell`}></td>
                 </tr>
                 {/* Warning row when not at 100% */}
