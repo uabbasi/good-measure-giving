@@ -19,14 +19,14 @@ interface FeaturedCharityData extends CharityProfile {
 }
 
 export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
-  "name": "The Citizens Foundation USA",
-  "ein": "41-2046295",
-  "headline": "The Citizens Foundation USA empowers underprivileged children in Pakistan through a robust network of high-quality schools and educational programs.",
+  "name": "International Aid Charity",
+  "ein": "46-3973114",
+  "headline": "International Aid Charity provides high-impact humanitarian relief and social support to marginalized communities through efficient financial management.",
   "amalEvaluation": {
-    "amal_score": 87,
+    "amal_score": 91,
     "confidence_scores": {
-      "impact": 49,
-      "alignment": 38,
+      "impact": 48,
+      "alignment": 43,
       "dataConfidence": 0
     },
     "trust": {
@@ -43,24 +43,24 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
     },
     "score_details": {
       "alignment": {
-        "cause_urgency_label": "EDUCATION_GLOBAL",
+        "cause_urgency_label": "HUMANITARIAN",
         "components": [
           {
-            "evidence": "Explicit zakat program (+4); Muslim-focused organization (+2); Asnaf: fuqara (+5); Operates in Muslim-majority regions (+3); Humanitarian service (+2)",
+            "evidence": "Explicit zakat program (+4); Muslim-focused organization (+2); Asnaf: masakin (+5); Operates in Muslim-majority regions (+3); Strong humanitarian service (+4)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Muslim Donor Fit",
             "possible": 19,
-            "scored": 16,
+            "scored": 18,
             "status": "full"
           },
           {
-            "evidence": "Cause area: Education Global (10/13)",
+            "evidence": "Cause area: Humanitarian (13/13)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Cause Urgency",
             "possible": 13,
-            "scored": 10,
+            "scored": 13,
             "status": "full"
           },
           {
@@ -73,47 +73,47 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "status": "partial"
           },
           {
-            "evidence": "Founded 1995 (31 years — 6/6)",
+            "evidence": "Founded 2014 (12 years — 4/6)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Track Record",
             "possible": 6,
-            "scored": 6,
+            "scored": 4,
             "status": "full"
           },
           {
-            "evidence": "Revenue: $21.7M (3/5 funding gap)",
+            "evidence": "Revenue: $851,150 (5/5 funding gap)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Funding Gap",
             "possible": 5,
-            "scored": 3,
+            "scored": 5,
             "status": "full"
           }
         ],
         "muslim_donor_fit_level": "HIGH",
-        "rationale": "Alignment 38/50: HIGH Muslim donor fit, education global cause area",
-        "score": 38
+        "rationale": "Alignment 43/50: HIGH Muslim donor fit, humanitarian cause area",
+        "score": 43
       },
       "data_confidence": {
         "badge": "HIGH",
         "data_quality_label": "HIGH",
         "data_quality_value": 1,
-        "overall": 1,
-        "transparency_label": "PLATINUM",
-        "transparency_value": 1,
+        "overall": 0.95,
+        "transparency_label": "GOLD",
+        "transparency_value": 0.86,
         "verification_tier": "HIGH",
         "verification_value": 1
       },
       "impact": {
         "components": [
           {
-            "evidence": "$55.37/beneficiary (exceptional for EDUCATION_GLOBAL)",
+            "evidence": "$49.53/beneficiary (exceptional for HUMANITARIAN)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Cost Per Beneficiary",
-            "possible": 10,
-            "scored": 10,
+            "possible": 13,
+            "scored": 12,
             "status": "full"
           },
           {
@@ -126,7 +126,7 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "status": "full"
           },
           {
-            "evidence": "Working capital: 4.7 months (RESILIENT)",
+            "evidence": "Working capital: 4.4 months (RESILIENT)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Financial Health",
@@ -135,7 +135,7 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "status": "full"
           },
           {
-            "evidence": "Program expense ratio: 89%",
+            "evidence": "Program expense ratio: 88%",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Program Ratio",
@@ -148,8 +148,8 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Evidence & Outcomes",
-            "possible": 6,
-            "scored": 6,
+            "possible": 5,
+            "scored": 5,
             "status": "full"
           },
           {
@@ -157,12 +157,12 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Theory of Change",
-            "possible": 7,
-            "scored": 7,
+            "possible": 5,
+            "scored": 5,
             "status": "full"
           },
           {
-            "evidence": "Board governance: STRONG (15 members)",
+            "evidence": "Board governance: ADEQUATE (6 members)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
@@ -171,12 +171,12 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
             "status": "full"
           }
         ],
-        "cost_per_beneficiary": 55.370275,
+        "cost_per_beneficiary": 49.5267,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "$55.37/beneficiary; Delivery: direct service; Impact 49/50",
-        "rubric_archetype": "EDUCATION",
-        "score": 49
+        "rationale": "$49.53/beneficiary; Delivery: direct service; Impact 48/50",
+        "rubric_archetype": "DIRECT_SERVICE",
+        "score": 48
       },
       "judge_issues": [
         {
@@ -186,15 +186,9 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
           "severity": "info"
         },
         {
-          "field": "discovered.theory_of_change.confidence",
+          "field": "discovered.awards.confidence",
           "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change",
-          "judge": "discover_quality",
-          "message": "Theory of change URL found but description not extracted",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
@@ -217,15 +211,15 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "The Citizens Foundation USA shows exceptional impact and strong alignment, with zakat compliance.",
+      "score_summary": "International Aid Charity shows exceptional impact and exceptional alignment, with zakat compliance.",
       "zakat": {
-        "asnaf_category": "fuqara",
+        "asnaf_category": "amil",
         "bonus_points": 0,
         "charity_claims_zakat": true,
-        "claim_evidence": "Dedicated zakat page found at https://www.tcfusa.org/zakat (Source: https://www.tcfusa.org/zakat)",
+        "claim_evidence": "Dedicated zakat page found at https://iacharity.org/zakat (Source: https://iacharity.org/zakat)",
         "notes": null
       }
     }
   },
-  "impactHighlight": "The Citizens Foundation USA empowers underprivileged children in Pakistan through a robust network of high-quality schools and educational programs."
+  "impactHighlight": "International Aid Charity provides high-impact humanitarian relief and social support to marginalized communities through efficient financial management."
 };

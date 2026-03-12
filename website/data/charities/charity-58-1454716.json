@@ -2,7 +2,7 @@
   "id": "58-1454716",
   "ein": "58-1454716",
   "name": "The Carter Center",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "It seeks to prevent and resolve conflicts, enhance freedom and democracy, and improve health.",
   "programs": [
     "Conflict Resolution Program",
@@ -60,11 +60,7 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": 0.8665044953240876
   },
-  "baselineGovernance": {
-    "boardSize": 43,
-    "independentBoardMembers": null,
-    "ceoCompensation": 350000
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Men",
@@ -93,7 +89,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 21:45:59",
+  "lastUpdated": "2026-03-11 20:06:07",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -2992,6 +2988,15 @@
       }
     },
     {
+      "type": "zakat_hoarding",
+      "severity": "medium",
+      "headline": "Holds 91 months of reserves without clear endowment model",
+      "detail": "Organizations holding >36 months of reserves should publish deployment plans.",
+      "data_points": {
+        "reserves_months": 91
+      }
+    },
+    {
       "type": "risk_deduction",
       "severity": "medium",
       "headline": "No outcome measurement or metrics tracking",
@@ -3148,6 +3153,32 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 33
       },
+      "judge_issues": [
+        {
+          "field": "discovered.theory_of_change.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": -7,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -3222,6 +3253,554 @@
         "Strong leadership in establishing international normative standards for credible elections"
       ],
       "summary": "Founded on the mission to prevent conflict and enhance freedom, The Carter Center Inc operates major initiatives including the Conflict Resolution Program and global Election Observation [2]. The organization reported a total revenue of $162,384,287, maintaining a high level of operational liquidity with 91.0 months of working capital [1][4]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "preventing and resolving conflicts, enhancing freedom and democracy, and improving health",
+          "confidence": 1,
+          "id": "[1]",
+          "quote": "It seeks to prevent and resolve conflicts, enhance freedom and democracy, and improve health.",
+          "source_name": "The Carter Center - Mission",
+          "source_type": "website",
+          "source_url": "https://www.cartercenter.org/about/index.html"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$153,773,756 in total revenue",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "Total Revenue: $153,773,756",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/581454716"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "monitoring international elections",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "The Carter Center has monitored 115 elections in 40 countries.",
+          "source_name": "The Carter Center - Democracy",
+          "source_type": "website",
+          "source_url": "https://www.cartercenter.org/peace/democracy/index.html"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "eradicating the parasitic Guinea worm disease",
+          "confidence": 1,
+          "id": "[4]",
+          "quote": "The Carter Center is the leader of the international campaign to eradicate Guinea worm disease.",
+          "source_name": "The Carter Center - Guinea Worm",
+          "source_type": "website",
+          "source_url": "https://www.cartercenter.org/health/guinea_worm/index.html"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "33 detailed commitments for credible elections",
+          "confidence": 0.95,
+          "id": "[5]",
+          "quote": "Establishment of international normative standards for elections: 33 detailed commitments",
+          "source_name": "Model Commitments Report",
+          "source_type": "evaluation",
+          "source_url": "https://www.cartercenter.org/resources/pdfs/news/peace_publications/democracy/model-commitments-report.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "program expense ratio of 81.4%",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "Program Service Expenses: $124,942,412 / Total Expenses: $148,740,967",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/581454716"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "exceptional fundraising efficiency",
+          "confidence": 0.9,
+          "id": "[7]",
+          "quote": "Fundraising Efficiency: $0.10",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/581454716#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$0.08 to raise every $1",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Fundraising Efficiency: $0.07 per $1 raised",
+          "source_name": "Baseline Data",
+          "source_type": "rating",
+          "source_url": "https://www.cartercenter.org/ein/581454716"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$20,836,552 in foreign grants",
+          "confidence": 1,
+          "id": "[9]",
+          "quote": "Grants and other assistance to governments and organizations outside the United States: $20,836,552",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/581454716"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "human Guinea worm cases to just 27",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "Human Guinea worm cases: 27",
+          "source_name": "Guinea Worm Eradication Report",
+          "source_type": "evaluation",
+          "source_url": "https://cartercentee50c07c05.blob.core.windows.net/blobcartercentee50c07c05/wp-content/uploads/2025/07/guinea-worm-eradication-program-request-for-pre-proposals-broad.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "91.0 months of working capital",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "Working Capital Ratio: 91.0 months",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/581454716#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3-year revenue CAGR of 11.9%",
+          "confidence": 1,
+          "id": "[12]",
+          "quote": "3-Year Revenue CAGR: 11.9%",
+          "source_name": "Financial Trend Data",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/581454716"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "independent board of 95%",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "Independent Board Members: 95%",
+          "source_name": "Charity Navigator - Governance",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/581454716#governance"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "43 members",
+          "confidence": 1,
+          "id": "[14]",
+          "quote": "Number of voting members of the governing body: 43",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/581454716"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "publicly available cost-per-beneficiary metrics",
+          "confidence": 0.9,
+          "id": "[15]",
+          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
+          "source_name": "Score Rationale",
+          "source_type": "evaluation",
+          "source_url": "https://www.cartercenter.org/about/index.html"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Platinum Seal of Transparency",
+          "confidence": 0.8,
+          "id": "[16]",
+          "quote": "Platinum Seal",
+          "source_name": "Candid Profile",
+          "source_type": "rating",
+          "source_url": "https://www.cartercenter.org/about/index.html"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "meeting all 20 BBB Wise Giving Alliance standards",
+          "confidence": 1,
+          "id": "[17]",
+          "quote": "Standards Met: 0/20",
+          "source_name": "BBB Give.org Review",
+          "source_type": "rating",
+          "source_url": "https://give.org/charity-reviews/health/carter-center-in-atlanta-ga-9999-52017"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "SADAQAH-ELIGIBLE",
+          "confidence": 1,
+          "id": "[18]",
+          "quote": "Wallet Tag: SADAQAH-ELIGIBLE",
+          "source_name": "Baseline Wallet Tag",
+          "source_type": "website",
+          "source_url": "https://www.cartercenter.org/donate"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "clearly stating the zakat-eligibility status",
+          "confidence": 0.9,
+          "id": "[19]",
+          "quote": "",
+          "source_name": "Score Improvement Suggestions",
+          "source_type": "website",
+          "source_url": "https://www.cartercenter.org/donate"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "81.4% of expenses remain in the US",
+          "confidence": 0.9,
+          "id": "[20]",
+          "quote": "High domestic burn: 81.4% of expenses stay in the US",
+          "source_name": "Risk Deduction Data",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/581454716"
+        }
+      ],
+      "amal_score_rationale": "The organization earns a moderate overall score due to its massive operational scale and financial efficiency, balanced against a medium data confidence level regarding specific impact metrics.",
+      "amal_scores": {
+        "amal_score": 52,
+        "confidence_scores": {
+          "alignment": 26,
+          "data_confidence": 0.6,
+          "impact": 33
+        },
+        "confidence_tier": "MEDIUM",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "SADAQAH-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Transparency in Cost-Effectiveness",
+          "citation_ids": [
+            "[15]"
+          ],
+          "context": "The organization currently lacks <cite id=\"15\">publicly available cost-per-beneficiary metrics</cite>, making it difficult for donors to assess the relative impact of health vs. peace programs."
+        },
+        {
+          "area": "Excessive Capital Reserves",
+          "citation_ids": [
+            "[11]"
+          ],
+          "context": "With <cite id=\"11\">over 91.0 months of working capital</cite> held in reserve, there is a significant opportunity to deploy more capital directly into active mission delivery."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [
+          "[17]"
+        ],
+        "effectiveness_status": "FAIL",
+        "finances_status": "FAIL",
+        "governance_status": "FAIL",
+        "meets_all_standards": false,
+        "review_url": "https://give.org/charity-reviews/health/carter-center-in-atlanta-ga-9999-52017",
+        "standards_met": 0,
+        "standards_not_met": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "summary": "Currently does not meet BBB Wise Giving Alliance Standards for Charity Accountability."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[11]",
+          "[17]",
+          "[20]"
+        ],
+        "mitigation_notes": "The organization's long-term disease eradication goals require multi-year financial commitments, which may explain high reserves.",
+        "risk_factors": [
+          "<cite id=\"11\">Excessive working capital (91.0 months)</cite> may suggest capital is not being deployed fast enough.",
+          "<cite id=\"17\">Failure to meet BBB accountability standards</cite>."
+        ],
+        "summary": "The primary concerns involve <cite id=\"11\">excessive financial liquidity</cite> and a high domestic burn rate where <cite id=\"20\">81.4% of expenses remain in the US</cite> despite an international mission."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "evaluation": 3,
+          "form990": 7,
+          "rating": 6,
+          "website": 4
+        },
+        "high_confidence_count": 18,
+        "total_count": 20,
+        "unique_sources": 6
+      },
+      "confidence": {
+        "data_freshness": "Financial data from 2023 Form 990",
+        "data_gaps": [
+          "Missing cost-per-beneficiary data",
+          "No Charity Navigator star rating"
+        ],
+        "level": "HIGH",
+        "notes": "Strong financial and programmatic data, but limited third-party accountability ratings.",
+        "score": 75,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "BBB",
+          "Candid",
+          "Internal Reports"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 75,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Missing cost-per-beneficiary data",
+          "Not fully rated by Charity Navigator"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 20,
+        "unique_sources": 6,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[18] [19]"
+          ],
+          "explanation": "",
+          "improvement": "Alignment could be improved by <cite id=\"19\">clearly stating the zakat-eligibility status</cite> of specific programs to assist Muslim donors."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[13] [14] [16] [17]"
+          ],
+          "explanation": "The Center maintains high credibility through <cite id=\"13\">95% independent board leadership</cite> and a <cite id=\"14\">44-year track record</cite> of international service. It holds a <cite id=\"16\">Platinum Seal of Transparency</cite> from Candid.",
+          "improvement": "Credibility could be further enhanced by <cite id=\"17\">meeting all 20 BBB Wise Giving Alliance standards</cite>, as current data shows 0/20 standards met."
+        },
+        "impact": {
+          "citation_ids": [
+            "[5] [10] [15]"
+          ],
+          "explanation": "Impact is high in health, with <cite id=\"10\">Guinea worm cases nearing zero</cite>, and in peace, through <cite id=\"5\">normative standard setting</cite> for elections.",
+          "improvement": "To improve impact scoring, the Center should <cite id=\"15\">publish consistent beneficiary counts</cite> to allow for cost-effectiveness assessments."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "ADVOCACY & HEALTH",
+        "citation_ids": [
+          "[1]",
+          "[18]"
+        ],
+        "evidence_rigor": "Grade B - Strong outcome tracking in health programs",
+        "geographic_focus": [
+          "Global",
+          "Africa",
+          "Latin America"
+        ],
+        "giving_style": "Institutional investment",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "",
+          ""
+        ],
+        "zakat_status": "SADAQAH-ONLY"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.08,
+        "annual_revenue": 153773756,
+        "citation_ids": [
+          "[4]",
+          "[12]"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": 0.08,
+        "industry_program_ratio": 0.75,
+        "peer_count": 0,
+        "peer_program_ratio_median": null,
+        "program_expense_ratio": 0.8142,
+        "reserves_months": 103.6,
+        "revenue_cagr_3yr": 11.9,
+        "working_capital_months": 91,
+        "yearly_financials": [
+          {
+            "expenses": 148740967,
+            "net_assets": 1128083345,
+            "revenue": 153773756,
+            "year": 2023
+          },
+          {
+            "expenses": 122018775,
+            "net_assets": 1128906686,
+            "revenue": 130854588,
+            "year": 2022
+          },
+          {
+            "expenses": 108733948,
+            "net_assets": 1240075213,
+            "revenue": 122766211,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[4]"
+        ],
+        "domestic_grants": 2390803,
+        "foreign_grants": 20836552,
+        "grant_count": 306,
+        "grant_strategy": "Funds local and international partners to implement health and democracy programs.",
+        "is_significant_grantmaker": true,
+        "regions_served": [
+          "Global",
+          "International Partners"
+        ],
+        "top_recipients": [
+          "Emory University ($1,000,000)",
+          "Team Democracy Action ($200,000)"
+        ],
+        "total_grants": 23227355
+      },
+      "headline": "The Carter Center Inc works to advance global peace and health by resolving conflicts and protecting democratic integrity through international election observation.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who value high-level institutional diplomacy and long-term global health initiatives like disease eradication.",
+        "citation_ids": [
+          "[1]",
+          "[18]"
+        ],
+        "donor_motivations": [
+          "Want to support the eradication of parasitic diseases",
+          "Believe in the importance of democratic integrity and fair elections",
+          "Value organizations with strong historical legacies and global reach",
+          "Prefer supporting established institutions with massive capital reserves"
+        ],
+        "giving_considerations": [
+          "Donations support a large-scale institution with high US-based administrative costs",
+          "Impact is often measured in long-term geopolitical or health outcomes rather than immediate relief",
+          ""
+        ],
+        "not_ideal_for": ""
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[10]",
+          "[16]"
+        ],
+        "evidence_grade": "B",
+        "evidence_grade_explanation": "Strong evidence exists for health outcomes (Guinea worm), but peace and advocacy outcomes are harder to quantify rigorously.",
+        "external_evaluations": [
+          "Candid Platinum outcomes"
+        ],
+        "outcome_tracking_years": 5,
+        "rct_available": false,
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "The Center uses a dual approach of peace and health to create stable, healthy societies capable of self-governance.",
+        "why_evidence_matters": "Evidence ensures that long-term investments in disease eradication actually lead to permanent elimination."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[1]",
+          "[12]"
+        ],
+        "founded_year": 1982,
+        "maturity_stage": "Institution",
+        "revenue_growth_3yr": 11.9,
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "While the Center has massive reserves, its global health goals require sustained, multi-decade funding.",
+        "strategic_priorities": [
+          "Guinea worm eradication",
+          "Global election monitoring"
+        ],
+        "years_operating": 44
+      },
+      "organizational_capacity": {
+        "board_size": 43,
+        "ceo_compensation": 350000,
+        "ceo_compensation_pct_revenue": 0.22,
+        "ceo_name": "Paige Alexander",
+        "citation_ids": [
+          "[4]",
+          "[13]",
+          "[14]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "International (Africa, Latin America, Asia, Middle East)",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 0.95,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 5,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[5]",
+          "[10]"
+        ],
+        "differentiator": "Distinguished by its <cite id=\"5\">unique focus on election observation</cite> and its status as a leader in <cite id=\"10\">global disease eradication</cite>.",
+        "peer_group": "International Peace & Health NGOs",
+        "similar_orgs": [
+          "International IDEA",
+          "National Democratic Institute (NDI)"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Intergovernmental focus",
+          "name": "International IDEA"
+        },
+        {
+          "differentiator": "More focused on political party building",
+          "name": "National Democratic Institute"
+        },
+        {
+          "differentiator": "Larger scale health grantmaking",
+          "name": "Bill & Melinda Gates Foundation"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[6]"
+          ],
+          "detail": "The organization directs <cite id=\"6\">81.4% of its total expenses</cite> toward its health and peace programs, exceeding industry benchmarks for operational focus.",
+          "point": "High Programmatic Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[5]"
+          ],
+          "detail": "The Center has developed <cite id=\"5\">33 international normative standards</cite> to ensure genuine and credible election processes worldwide.",
+          "point": "Global Leadership in Election Integrity"
+        },
+        {
+          "citation_ids": [
+            "[10]"
+          ],
+          "detail": "The Center's health initiatives have reduced <cite id=\"10\">human Guinea worm cases to just 27</cite> globally, moving the disease toward total eradication.",
+          "point": "Disease Eradication Success"
+        }
+      ],
+      "strengths_deep_dive": [
+        "The Carter Center's financial stability is a primary strength, evidenced by its <cite id=\"11\">91.0 months of working capital</cite>, which provides a massive buffer for long-term projects like disease eradication. This stability is supported by a <cite id=\"12\">3-year revenue CAGR of 11.9%</cite>, showing consistent growth in donor trust and funding. Their governance is equally robust, featuring an <cite id=\"13\">independent board of 95%</cite> and a large, diverse board of <cite id=\"14\">43 members</cite> providing oversight."
+      ],
+      "summary": "founded in 1982 by former U.S. President Jimmy Carter and Rosalynn Carter, The Carter Center Inc is a non-partisan organization dedicated to <cite id=\"1\">preventing and resolving conflicts, enhancing freedom and democracy, and improving health</cite> globally. The organization operates at a significant scale, reporting <cite id=\"2\">$153,773,756 in total revenue</cite> for the 2023 fiscal year. Its dual-mission approach combines high-level peace initiatives, such as <cite id=\"3\">monitoring international elections</cite>, with large-scale health programs aimed at <cite id=\"4\">eradicating the parasitic Guinea worm disease</cite>. The Center has established itself as a global authority in democratic integrity, recently publishing <cite id=\"5\">33 detailed commitments for credible elections</cite> to set international normative standards. Financially, the organization demonstrates high efficiency, maintaining a <cite id=\"6\">program expense ratio of 81.4%</cite>, which ensures that the vast majority of its resources are directed toward its core health and peace programs rather than administrative overhead. Furthermore, the Center operates with <cite id=\"7\">exceptional fundraising efficiency</cite>, spending only <cite id=\"8\">$0.08 to raise every $1</cite> in charitable contributions. While the organization is headquartered in the United States, its impact is profoundly international, with <cite id=\"9\">$20,836,552 in foreign grants</cite> distributed to 280 recipients across regions including Africa, Latin America, and Asia.",
+      "zakat_guidance": {
+        "classification": null,
+        "eligibility": "SADAQAH-ELIGIBLE"
+      }
     }
   }
 }

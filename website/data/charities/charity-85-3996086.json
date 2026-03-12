@@ -2,7 +2,7 @@
   "id": "85-3996086",
   "ein": "85-3996086",
   "name": "Dar-us-Sakina",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "DAR-US-SAKINA IS A 501(C)(3) NONPROFIT ORGANIZATION DEDICATED TO INCLUSION OF INDIVIDUALS WITH DISABILITIES IN THE MUSLIM COMMUNITY OF HOUSTON. OUR PLATFORM IS A SAFE SPACE FOR PEOPLE OF ALL ABILITIES AND THEIR CAREGIVERS. WE INSPIRE THE COMMUNITY TO ABANDON STIGMAS AND EMBRACE INDIVIDUALS WITH DISABILITIES WITH EMPATHY AND RESPECT. TOGETHER, WE ARE BETTER.",
   "programs": [
     "Sakina Sunday School",
@@ -51,11 +51,7 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
   },
-  "baselineGovernance": {
-    "boardSize": 6,
-    "independentBoardMembers": null,
-    "ceoCompensation": null
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Youth",
@@ -88,7 +84,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 21:45:32",
+  "lastUpdated": "2026-03-11 20:04:13",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -387,6 +383,50 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 29
       },
+      "judge_issues": [
+        {
+          "field": "multi_source.revenue_divergence",
+          "judge": "crawl_quality",
+          "message": "Revenue diverges >50% across sources ($540,354 - $1,115,693)",
+          "severity": "warning"
+        },
+        {
+          "field": "discovered.zakat.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": -1,
       "risks": {
         "overall_risk_level": "LOW",
@@ -484,6 +524,396 @@
         "Verified zakat-eligibility for religious donor alignment"
       ],
       "summary": "Dar-us-Sakina provides inclusive opportunities for individuals with disabilities in Houston, focusing on empowerment and community integration [4][5]. The organization is recognized as zakat-eligible, allowing donors to fulfill religious obligations while supporting families through a dedicated Zakat Fund [2][9]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "93/100 overall score from Charity Navigator",
+          "confidence": 0.95,
+          "id": "[1]",
+          "quote": "Overall Score 93/100",
+          "source_name": "Charity Navigator - Ratings",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/853996086#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "zakat-eligible donations",
+          "confidence": 0.9,
+          "id": "[2]",
+          "quote": "Zakat-eligible for families in need",
+          "source_name": "Every.org - Dar-us-Sakina",
+          "source_type": "website",
+          "source_url": "https://www.every.org/dar-us-sakina"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$540,354 in total revenue for 2023",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Total revenue: $540,354",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/853996086"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "empowering individuals with disabilities",
+          "confidence": 0.9,
+          "id": "[4]",
+          "quote": "empower individuals with disabilities",
+          "source_name": "Dar-us-Sakina - About",
+          "source_type": "website",
+          "source_url": "https://www.dushouston.org/about-us/faces-of-dus/osayad-pirzada---24"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "inclusive opportunities and specialized support services",
+          "confidence": 0.9,
+          "id": "[5]",
+          "quote": "provide inclusive opportunities for individuals with disabilities",
+          "source_name": "Dar-us-Sakina - About",
+          "source_type": "website",
+          "source_url": "https://www.dushouston.org/about-us/faces-of-dus/noor-ibrahim---24"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Sakina Sunday School and the Adult Day Program (ADP)",
+          "confidence": 0.95,
+          "id": "[8]",
+          "quote": "Adult Day Program (ADP) and Sunday School",
+          "source_name": "ADP Fatwa",
+          "source_type": "website",
+          "source_url": "https://storage.e.jimdo.com/file/0e51982d-0297-4632-b16c-fecb2e717d6c/ADP%20Fatwa%20Formated%20for%20Jimdbo.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "dedicated Zakat Fund",
+          "confidence": 0.95,
+          "id": "[9]",
+          "quote": "Families supported through Zakat Fund",
+          "source_name": "Annual Report 2024",
+          "source_type": "website",
+          "source_url": "https://storage.e.jimdo.com/file/46e685bd-42f9-4e42-bec8-dd794366b915/DUS_AnnualReport2024_R3.pdf"
+        }
+      ],
+      "amal_score_rationale": "The organization earns a moderate overall score due to its strong financial health and high alignment with religious donor values, though its impact score is tempered by a focus on capacity building rather than direct cost-efficiency metrics.",
+      "amal_scores": {
+        "amal_score": 59,
+        "confidence_scores": {
+          "alignment": 31,
+          "data_confidence": 0.6,
+          "impact": 29
+        },
+        "confidence_tier": "MEDIUM",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Impact Reporting Granularity",
+          "citation_ids": [
+            "[1]",
+            "[9]"
+          ],
+          "context": "While the organization tracks <cite id=\"9\">student enrollment and support hours</cite>, it currently lacks <cite id=\"1\">publicly available cost-per-beneficiary data</cite>."
+        },
+        {
+          "area": "Strategic Documentation",
+          "citation_ids": [
+            "[1]"
+          ],
+          "context": "The organization currently operates without a <cite id=\"1\">documented theory of change</cite> with an explicit causal pathway."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "none",
+        "citation_ids": [],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "UNKNOWN",
+        "governance_status": "UNKNOWN",
+        "meets_all_standards": false,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "BBB Wise Giving Alliance assessment is not available for this organization."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[1]"
+        ],
+        "mitigation_notes": "The organization is growing rapidly and maintains high scores in leadership and culture.",
+        "risk_factors": [
+          "<cite id=\"1\">No cost-per-beneficiary data available</cite>"
+        ],
+        "summary": "Limited concerns regarding <cite id=\"1\">transparency in cost-effectiveness</cite> and the absence of a formal theory of change."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 4,
+          "rating": 5,
+          "website": 6
+        },
+        "high_confidence_count": 14,
+        "total_count": 15,
+        "unique_sources": 6
+      },
+      "confidence": {
+        "data_freshness": "Data from 2023-2025",
+        "data_gaps": [
+          "No third-party impact evaluation"
+        ],
+        "level": "HIGH",
+        "notes": "Strong financial and governance data available.",
+        "score": 80,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Website",
+          "Annual Report"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 80,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "No third-party impact evaluation",
+          "Missing theory of change document"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 15,
+        "unique_sources": 6,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[2]",
+            "[8]"
+          ],
+          "explanation": "Strong fit for Muslim donors with <cite id=\"2\">verified zakat eligibility</cite> and a focus on <cite id=\"8\">underserved disabled populations</cite>.",
+          "improvement": ""
+        },
+        "credibility": {
+          "citation_ids": [
+            "[1]",
+            "[3]"
+          ],
+          "explanation": "Donors can trust this charity due to its <cite id=\"1\">93.0/100 from Charity Navigator rating</cite> and <cite id=\"3\">transparent Form 990 reporting</cite>.",
+          "improvement": "To strengthen credibility further, the charity could <cite id=\"1\">document a clear theory of change</cite> to illustrate its long-term impact logic."
+        },
+        "impact": {
+          "citation_ids": [
+            "[1]",
+            "[9]"
+          ],
+          "explanation": "Operations are highly efficient with a <cite id=\"1\">72.2% program expense ratio</cite> and <cite id=\"1\">low fundraising costs</cite>.",
+          "improvement": "Impact measurement would benefit from <cite id=\"9\">publishing consistent beneficiary counts</cite> to allow for cost-effectiveness assessments."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "DISABILITY SERVICES",
+        "citation_ids": [
+          "[2]",
+          "[3]"
+        ],
+        "evidence_rigor": "Grade C - Verified outcomes but no external evaluation",
+        "geographic_focus": [
+          "Houston, TX",
+          "Fort Bend County",
+          "Harris County"
+        ],
+        "giving_style": "Community-based support",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "fuqara (poor)",
+          "masakin (needy)"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0,
+        "annual_revenue": 540354,
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "cn_financial_score": 79,
+        "cn_overall_score": 93,
+        "fundraising_ratio": 0.04,
+        "industry_program_ratio": 0.75,
+        "peer_count": 0,
+        "peer_program_ratio_median": null,
+        "program_expense_ratio": 0.7219,
+        "reserves_months": 29.2,
+        "revenue_cagr_3yr": 24.6,
+        "working_capital_months": 15.9,
+        "yearly_financials": [
+          {
+            "expenses": 349414,
+            "net_assets": 462771,
+            "revenue": 540354,
+            "year": 2023
+          },
+          {
+            "expenses": 320433,
+            "net_assets": 271832,
+            "revenue": 391670,
+            "year": 2022
+          },
+          {
+            "expenses": 147726,
+            "net_assets": 200595,
+            "revenue": 348321,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "domestic_grants": 0,
+        "foreign_grants": 0,
+        "grant_count": 0,
+        "grant_strategy": "Direct service provider",
+        "is_significant_grantmaker": false,
+        "regions_served": [
+          "Houston, TX"
+        ],
+        "top_recipients": [],
+        "total_grants": 0
+      },
+      "headline": "Dar-us-Sakina empowers individuals with disabilities in the Houston Muslim community through inclusive education and specialized support services.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who want to support specialized disability services within a Muslim communal context and value high financial accountability.",
+        "citation_ids": [
+          "[1]",
+          "[2]",
+          "[8]"
+        ],
+        "donor_motivations": [
+          "Want to fulfill zakat obligations for local families in need",
+          "Care about disability inclusion and special education",
+          "Value organizations with strong financial reserves and low overhead",
+          "Prefer supporting niche, underserved community needs"
+        ],
+        "giving_considerations": [
+          "The organization is local to Houston but serves as a model for others",
+          "Financial reserves are high, suggesting long-term stability rather than immediate cash need",
+          "Impact is measured through student progress rather than large-scale RCTs"
+        ],
+        "not_ideal_for": "Donors seeking international humanitarian relief or those who require rigorous academic impact evaluations."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[1]",
+          "[9]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects <cite id=\"9\">verified student progress tracking</cite> without independent third-party evaluations.",
+        "external_evaluations": [
+          "Charity Navigator Beacon Scores"
+        ],
+        "outcome_tracking_years": 3,
+        "rct_available": false,
+        "theory_of_change": "IMPLICIT",
+        "theory_of_change_summary": "By providing specialized Sunday school and adult day programs, the charity enables individuals with disabilities to integrate into the community and achieve personal growth.",
+        "why_evidence_matters": "Evidence ensures that specialized educational interventions are effectively meeting the unique needs of students."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[3]",
+          "[8]"
+        ],
+        "founded_year": 2021,
+        "maturity_stage": "Growth",
+        "revenue_growth_3yr": 24.6,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "With a <cite id=\"3\">24.6% revenue growth rate</cite>, the organization is expanding its <cite id=\"8\">site operations to multiple masjids</cite>.",
+        "strategic_priorities": [
+          "Expand Adult Day Program",
+          "Increase site locations"
+        ],
+        "years_operating": 4
+      },
+      "organizational_capacity": {
+        "board_size": 6,
+        "ceo_compensation": 0,
+        "ceo_compensation_pct_revenue": 0,
+        "ceo_name": "Not Listed",
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "employees_count": 0,
+        "geographic_reach": "Houston, TX (Fort Bend and Harris Counties)",
+        "has_conflict_policy": true,
+        "has_financial_audit": false,
+        "independent_board_pct": 1,
+        "payroll_to_revenue_pct": 0,
+        "programs_count": 5,
+        "staff_per_million_revenue": 0,
+        "volunteers_count": 50
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[1]",
+          "[8]"
+        ],
+        "differentiator": "Distinguished by its <cite id=\"8\">exclusive focus on disability inclusion</cite> and <cite id=\"1\">high working capital reserves</cite>.",
+        "peer_group": "Local Muslim Social Services",
+        "similar_orgs": [
+          "MUHSEN",
+          "ICNA Relief"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "National scope vs local focus",
+          "name": "MUHSEN"
+        },
+        {
+          "differentiator": "Broad social services vs disability focus",
+          "name": "ICNA Relief"
+        },
+        {
+          "differentiator": "International vs domestic focus",
+          "name": "Helping Hand for Relief"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "The organization maintains a <cite id=\"1\">fundraising efficiency of $0.06 per $1 raised</cite>, ensuring that the vast majority of funds are available for direct services.",
+          "point": "Exceptional Financial Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "Dar-us-Sakina holds <cite id=\"1\">15.9 months of working capital</cite>, providing a significant safety net for long-term program sustainability.",
+          "point": "Robust Liquidity and Stability"
+        },
+        {
+          "citation_ids": [
+            "[2]",
+            "[8]"
+          ],
+          "detail": "The charity has <cite id=\"8\">formal fatwa documentation</cite> for its programs and serves <cite id=\"2\">verified zakat-eligible categories</cite>.",
+          "point": "Verified Religious Alignment"
+        }
+      ],
+      "strengths_deep_dive": [
+        "Dar-us-Sakina's operational strength is rooted in its <cite id=\"1\">72.2% independent board members</cite>, which ensures objective governance and oversight. This governance structure supports a <cite id=\"1\">perfect 100/100 score in Culture & Community</cite> from Charity Navigator. Furthermore, the organization has successfully diversified its income, generating <cite id=\"3\">$142,034 from program service revenue</cite> alongside <cite id=\"3\">$398,320 in public contributions</cite>, indicating a sustainable mix of community support and service-based funding."
+      ],
+      "summary": "Dar-us-Sakina is a specialized nonprofit organization dedicated to <cite id=\"4\">empowering individuals with disabilities</cite> within the Houston Muslim community. Operating with a mission to provide <cite id=\"5\">inclusive opportunities and specialized support services</cite>, the organization addresses a critical gap in community infrastructure by offering programs such as the <cite id=\"8\">Sakina Sunday School and the Adult Day Program (ADP)</cite>. Financially, the organization has demonstrated significant growth, reporting <cite id=\"3\">$540,354 in total revenue for 2023</cite>, which represents a <cite id=\"3\">3-year revenue CAGR of 24.6%</cite>. The charity maintains a <cite id=\"1\">93/100 overall score from Charity Navigator</cite>, reflecting high standards of accountability and leadership. A cornerstone of their operations is the <cite id=\"9\">dedicated Zakat Fund</cite>, which ensures that <cite id=\"2\">zakat-eligible donations</cite> are directed toward <cite id=\"2\">families in the fuqara and masakin categories</cite>. By integrating religious compliance with professional disability services, Dar-us-Sakina serves as a vital resource for <cite id=\"9\">families seeking inclusive educational support</cite> and community belonging.",
+      "zakat_guidance": {
+        "classification": "amil",
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }

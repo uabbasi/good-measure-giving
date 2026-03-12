@@ -2,7 +2,7 @@
   "id": "81-2822877",
   "ein": "81-2822877",
   "name": "Yaqeen Institute for Islamic Research",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "Books Yaqeen Books provides high-quality, well-researched Islamic books and ebooks focused on providing practical solutions to contemporary problems.",
   "programs": [
     "Research Papers",
@@ -61,11 +61,7 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
   },
-  "baselineGovernance": {
-    "boardSize": 13,
-    "independentBoardMembers": null,
-    "ceoCompensation": 179500
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Youth",
@@ -92,13 +88,13 @@
     "claims_longitudinal": false,
     "claims_rcts": false,
     "claims_third_party_eval": true,
-    "disclosure_richness": 1,
+    "disclosure_richness": 2,
     "reports_annual_report": false,
     "reports_board_info": false,
     "reports_methodology": true,
-    "reports_outcome_metrics": false
+    "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 21:45:34",
+  "lastUpdated": "2026-03-11 20:05:00",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -192,6 +188,9 @@
   "causeTags": [
     "direct-service",
     "faith-based",
+    "fisabilillah",
+    "fuqara",
+    "masakin",
     "muslim-led",
     "research",
     "usa",
@@ -202,11 +201,11 @@
     "religious-services"
   ],
   "hideFromCurated": null,
-  "theoryOfChange": "Dismantling doubts and nurturing conviction through research-backed content to support spiritual and intellectual stability.",
+  "theoryOfChange": "Yaqeen Institute for Islamic Research has published 'Faithful Activism: A Sunnah Framework,' which provides instructional notes and a guiding framework for Muslims to engage in healthy civic participation in various social spaces. It outlines a systematic treatment and a procedural approach to achieve this aim, detailing 'the what and the how' of their approach to activism. The document also discusses expanding religious and political frameworks and a Muslim moral framework. Additionally, their 'Methodology (usul)' section describes a 'theoretical framework and principles used to derive rulings from the primary sources of Islam,' which involves the study of legal theory, textual interpretation, and rules of deduction.",
   "grantsData": null,
   "evaluationTrack": "RESEARCH_POLICY",
   "foundedYear": 2017,
-  "scoreSummary": "Yaqeen Research Institute Inc shows strong impact and moderate alignment, with zakat compliance.",
+  "scoreSummary": "Yaqeen Research Institute Inc shows exceptional impact and moderate alignment, with zakat compliance (minor risk deductions applied).",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -240,14 +239,25 @@
       "evidence": "Strong",
       "financial_health": "Strong",
       "donor_fit": "Moderate",
-      "risk": "Strong"
+      "risk": "Moderate"
     },
     "recommendation_cue": "Good Match",
     "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "high_fundraising_ratio",
+      "severity": "high",
+      "headline": "Fundraising costs are 89% of total expenses",
+      "detail": "High fundraising spend reduces funds available for programs.",
+      "data_points": {
+        "fundraising_expense_ratio": 0.89,
+        "total_expenses": 6321238
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "81-2822877",
     "charity_name": "Yaqeen Institute for Islamic Research",
@@ -258,7 +268,7 @@
     "confidence_scores": {
       "alignment": 24,
       "data_confidence": 1,
-      "impact": 42
+      "impact": 44
     },
     "score_details": {
       "alignment": {
@@ -372,13 +382,13 @@
             "status": "full"
           },
           {
-            "evidence": "Theory of change: DEVELOPING",
-            "improvement_suggestion": "Document a clear theory of change with an explicit causal pathway.",
-            "improvement_value": 2,
+            "evidence": "Theory of change: STRONG",
+            "improvement_suggestion": null,
+            "improvement_value": 0,
             "name": "Theory of Change",
             "possible": 7,
-            "scored": 5,
-            "status": "partial"
+            "scored": 7,
+            "status": "full"
           },
           {
             "evidence": "Board governance: STRONG (13 members)",
@@ -393,18 +403,70 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 42/50",
+        "rationale": "Delivery: capacity building; Impact 44/50",
         "rubric_archetype": "SYSTEMIC_CHANGE",
-        "score": 42
+        "score": 44
       },
-      "risk_deduction": 0,
+      "judge_issues": [
+        {
+          "field": "amal_score_rationale",
+          "judge": "score",
+          "message": "The rationale mentions \"medium alignment rating regarding donor fit and cause urgency\" but does not mention the risk deduction due to high fundraising costs, which also contributes to the moderation of the overall score.",
+          "severity": "warning"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.theory_of_change.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
+      "risk_deduction": -2,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "Key concern: Fundraising costs are 89% of total expenses",
+        "risks": [
+          {
+            "category": "financial",
+            "data_source": "Reconciliation",
+            "description": "Fundraising costs are 89% of total expenses",
+            "mitigation": null,
+            "severity": "high"
+          }
+        ],
+        "total_deduction": -2
       },
-      "score_summary": "Yaqeen Research Institute Inc shows strong impact and moderate alignment, with zakat compliance.",
+      "score_summary": "Yaqeen Research Institute Inc shows exceptional impact and moderate alignment, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -416,7 +478,7 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a Charity Navigator score of 96.0/100 and high financial accountability.",
+          "claim": "The charity earned a 96.0/100 score for financial health and accountability.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/812822877#financials"
@@ -428,7 +490,7 @@
           "source_url": "https://yaqeeninstitute.org/zakat"
         },
         {
-          "claim": "Total revenue was $11,478,684 with a program expense ratio of 86.1%.",
+          "claim": "Total revenue for the period was $11,478,684.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/812822877"
@@ -440,34 +502,587 @@
           "source_url": "https://4713562.fs1.hubspotusercontent-na1.net/hubfs/4713562/Annual%20Reports/AnnualReport2025_RGB.pdf"
         },
         {
-          "claim": "Programs include infographics and video content with high engagement metrics.",
-          "id": "[5]",
-          "source_name": "Annual Report (2021)",
-          "source_url": "https://yaqeeninstitute.org/wp-content/uploads/2022/01/Yaqeen_Institute_Annual_Report_2020-2021.pdf"
-        },
-        {
-          "claim": "The organization offers various giving methods including Sadaqah.",
+          "claim": "The organization provides various giving methods including Sadaqah.",
           "id": "[6]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://yaqeeninstitute.org/greet-ramadan-with-sadaqah"
         }
       ],
-      "amal_score_rationale": "The organization demonstrates strong financial health and operational efficiency, though its focus on capacity building through research results in a moderate impact score compared to direct-service charities.",
+      "amal_score_rationale": "The organization demonstrates strong financial health and high data confidence, though its overall score is moderated by a medium alignment rating regarding donor fit and cause urgency.",
       "areas_for_improvement": [
-        "Enhancing direct impact measurement beyond content consumption metrics to better demonstrate long-term behavioral or social change",
-        "Strengthening donor alignment for those seeking high-urgency advocacy or direct humanitarian intervention"
+        "Expanding direct beneficiary impact measurement beyond digital engagement metrics",
+        "Increasing alignment with specific donor segments to improve overall cause urgency ratings"
       ],
       "dimension_explanations": {
-        "alignment": "Yaqeen offers a medium fit for Muslim donors, providing a clear zakat policy and eligibility for those looking to support Islamic advocacy and education [2][6]. The organization reported total revenue of $11,478,684, reflecting a stable track record in the research and advocacy space [3].",
-        "impact": "The institute demonstrates high effectiveness in content distribution, reaching significant audiences through research papers, infographics, and the DoubleTake program [4][5]. While it maintains a strong program expense ratio of 86.1% and a Charity Navigator score of 96.0/100, the impact is categorized as capacity building rather than direct service [1][3]."
+        "alignment": "The organization offers a medium fit for donors, focusing on advocacy and intellectual research rather than direct service [1]. It is officially ZAKAT-ELIGIBLE, maintaining a specific zakat policy to ensure contributions are handled according to asnaf categories [2][6].",
+        "impact": "The institute demonstrates high effectiveness in capacity building, utilizing a total revenue of $11,478,684 to produce research papers, infographics, and curriculum used by students globally [3][4]. With a program expense ratio of 86.1%, the organization efficiently converts donations into educational output, supported by high data confidence [1]."
       },
       "headline": "Yaqeen Research Institute Inc addresses contemporary challenges through high-quality Islamic research and educational resources.",
       "strengths": [
-        "High program expense ratio of 86.1%, ensuring the vast majority of funds support core research and educational initiatives",
+        "High program expense ratio of 86.1%, ensuring the majority of funds support core research and educational initiatives",
         "Exceptional fundraising efficiency of $0.00 per $1 raised, indicating highly effective resource acquisition",
-        "Strong financial health with 12.0 months of working capital and a Charity Navigator score of 96.0/100"
+        "Strong liquidity with 12.0 months of working capital available to sustain operations"
       ],
-      "summary": "Yaqeen Research Institute Inc is a research-focused organization that produces books, ebooks, and multimedia content to provide practical solutions to modern problems [4]. The institute maintains a high level of financial transparency and is recognized as a zakat-eligible entity [1][2]."
+      "summary": "Yaqeen Research Institute Inc is a non-profit organization dedicated to providing well-researched Islamic books, ebooks, and multimedia content focused on practical solutions to modern problems [4]. The institute maintains a high standard of financial transparency and accountability, earning a 96.96.0/100 from Charity Navigator [1]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "high-quality Islamic research and educational resources",
+          "confidence": 0.95,
+          "id": "[1]",
+          "quote": "Yaqeen Research Institute Inc addresses contemporary challenges through high-quality Islamic research and educational resources.",
+          "source_name": "Annual Report (2025)",
+          "source_type": "website",
+          "source_url": "https://4713562.fs1.hubspotusercontent-na1.net/hubfs/4713562/Annual%20Reports/AnnualReport2025_RGB.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $8,759,241",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "Total Revenue: $8,759,241",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/812822877"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "96/100 overall score from Charity Navigator",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Overall Score 96/100",
+          "source_name": "Charity Navigator - Ratings",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/812822877#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "100,000,000 total views across platforms",
+          "confidence": 0.95,
+          "id": "[4]",
+          "quote": "Total views across platforms: 100000000",
+          "source_name": "Annual Report (2025)",
+          "source_type": "website",
+          "source_url": "https://4713562.fs1.hubspotusercontent-na1.net/hubfs/4713562/Annual%20Reports/AnnualReport2025_RGB.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "37,075 students utilizing its specialized curriculum",
+          "confidence": 0.95,
+          "id": "[5]",
+          "quote": "Students using curriculum: 37075",
+          "source_name": "Annual Report (2025)",
+          "source_type": "website",
+          "source_url": "https://4713562.fs1.hubspotusercontent-na1.net/hubfs/4713562/Annual%20Reports/AnnualReport2025_RGB.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "medical mission treatments and orphan sponsorship",
+          "confidence": 0.9,
+          "id": "[6]",
+          "quote": "Medical Mission Treatments: 1565; Orphans Sponsored: 690",
+          "source_name": "Annual Report (2022)",
+          "source_type": "website",
+          "source_url": "https://yaqeeninstitute.org/wp-content/uploads/2023/01/Yaqeen_Institute_Annual_Report_2021-2022.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "86.1% program expense ratio",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Program Expense Ratio: 100.0%",
+          "source_name": "Financial Data Summary",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/812822877"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "fundraising efficiency of $0.00 per $1 raised",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Fundraising Efficiency: $0.00",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/812822877#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "12.0 months of working capital",
+          "confidence": 1,
+          "id": "[9]",
+          "quote": "Working capital: 12.0 months",
+          "source_name": "Financial Health Metrics",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/812822877#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Platinum Seal of Transparency from Candid",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "Candid Seal: platinum",
+          "source_name": "Candid Profile",
+          "source_type": "rating",
+          "source_url": "https://app.candid.org/profile/9623388"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "13-member board",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "Board Size: 13",
+          "source_name": "Governance Data",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/812822877"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "documented Theory of Change",
+          "confidence": 0.9,
+          "id": "[12]",
+          "quote": "Theory of Change Documented: Yes",
+          "source_name": "External Discoveries",
+          "source_type": "website",
+          "source_url": "https://yaqeeninstitute.org/about-us"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3-year revenue CAGR of 3.5%",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "3-Year Revenue CAGR: 3.5%",
+          "source_name": "Financial Trends",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/812822877"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "publish beneficiary counts consistently",
+          "confidence": 0.9,
+          "id": "[14]",
+          "quote": "Improvement: Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
+          "source_name": "Impact Score Details",
+          "source_type": "website",
+          "source_url": "https://yaqeeninstitute.org/our-impact"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "clarify zakat allocation policy",
+          "confidence": 0.9,
+          "id": "[15]",
+          "quote": "Improvement: Clarify zakat allocation policy and eligible use categories for donors.",
+          "source_name": "Alignment Score Details",
+          "source_type": "website",
+          "source_url": "https://yaqeeninstitute.org/zakat"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "audited financial statements",
+          "confidence": 1,
+          "id": "[16]",
+          "quote": "Audit Status: audited",
+          "source_name": "BBB Wise Giving Alliance",
+          "source_type": "rating",
+          "source_url": "https://give.org/charity-reviews/law-public-interest/american-consumer-institute-center-for-citizen-research-in-arlington-va-9999-54237"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "conflict of interest policy",
+          "confidence": 1,
+          "id": "[17]",
+          "quote": "Conflict of Interest Policy: Yes",
+          "source_name": "BBB Wise Giving Alliance",
+          "source_type": "rating",
+          "source_url": "https://give.org/charity-reviews/law-public-interest/american-consumer-institute-center-for-citizen-research-in-arlington-va-9999-54237"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "10/20 standards met at BBB",
+          "confidence": 1,
+          "id": "[18]",
+          "quote": "Standards Met: 10/20",
+          "source_name": "BBB Wise Giving Alliance",
+          "source_type": "rating",
+          "source_url": "https://give.org/charity-reviews/law-public-interest/american-consumer-institute-center-for-citizen-research-in-arlington-va-9999-54237"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "zakat-eligible",
+          "confidence": 1,
+          "id": "[19]",
+          "quote": "Accepts Zakat: Yes",
+          "source_name": "Charity Website - Zakat",
+          "source_type": "website",
+          "source_url": "https://yaqeeninstitute.org/zakat"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "fuqara, masakin, and fisabilillah",
+          "confidence": 1,
+          "id": "[20]",
+          "quote": "Zakat Categories: fuqara, masakin, fisabilillah",
+          "source_name": "Charity Website - Zakat",
+          "source_type": "website",
+          "source_url": "https://yaqeeninstitute.org/zakat"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "verified evidence and outcomes",
+          "confidence": 0.9,
+          "id": "[21]",
+          "quote": "Evidence & outcomes: VERIFIED",
+          "source_name": "Impact Score Details",
+          "source_type": "website",
+          "source_url": "https://yaqeeninstitute.org/our-impact"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Reviving the essence of orthodoxy",
+          "confidence": 0.9,
+          "id": "[22]",
+          "quote": "Our vision is to inspire a world of faithful changemakers by reviving the essence of orthodoxy.",
+          "source_name": "Candid Outcome Tracking",
+          "source_type": "rating",
+          "source_url": "https://app.candid.org/profile/9623388"
+        }
+      ],
+      "amal_score_rationale": "The organization demonstrates strong financial health and high data confidence, though its overall score is moderated by a medium alignment rating regarding donor fit and cause urgency.",
+      "amal_scores": {
+        "amal_score": 66,
+        "confidence_scores": {
+          "alignment": 24,
+          "data_confidence": 1,
+          "impact": 44
+        },
+        "confidence_tier": "HIGH",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Beneficiary Impact Measurement",
+          "citation_ids": [
+            "[14]"
+          ],
+          "context": "While digital reach is high, the charity could <cite id=\"14\">publish beneficiary counts consistently</cite> to allow for better cost-effectiveness assessments."
+        },
+        {
+          "area": "Zakat Policy Transparency",
+          "citation_ids": [
+            "[15]"
+          ],
+          "context": "Donors would benefit if the organization would <cite id=\"15\">clarify zakat allocation policy</cite> and specific eligible use categories."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [
+          "[18]"
+        ],
+        "effectiveness_status": "FAIL",
+        "finances_status": "PASS",
+        "governance_status": "FAIL",
+        "meets_all_standards": false,
+        "review_url": "https://give.org/charity-reviews/law-public-interest/american-consumer-institute-center-for-citizen-research-in-arlington-va-9999-54237",
+        "standards_met": 10,
+        "standards_not_met": [
+          "Board Oversight",
+          "Board Compensation",
+          "Effectiveness Policy"
+        ],
+        "summary": "Meets 10 of 20 BBB standards; improvements needed in board oversight and formal effectiveness policies."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[18]",
+          "[14]"
+        ],
+        "mitigation_notes": "The organization maintains high transparency through Candid and Charity Navigator to offset governance gaps.",
+        "risk_factors": [
+          "<cite id=\"18\">Issues with board oversight and effectiveness policy</cite> per BBB review",
+          "<cite id=\"14\">Limited cost-per-beneficiary data</cite>"
+        ],
+        "summary": "The primary concerns involve <cite id=\"18\">meeting only 10 of 20 BBB standards</cite> and a lack of granular data on direct beneficiary costs."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 5,
+          "rating": 9,
+          "website": 8
+        },
+        "high_confidence_count": 20,
+        "total_count": 22,
+        "unique_sources": 6
+      },
+      "confidence": {
+        "data_freshness": "Financial data from 2023; impact data from 2025",
+        "data_gaps": [
+          "Missing employee count",
+          "No recent external RCT evaluation"
+        ],
+        "level": "HIGH",
+        "notes": "Strong alignment between financial reporting and third-party ratings.",
+        "score": 85,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Annual Reports",
+          "BBB"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 85,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Missing employee count",
+          "Limited cost-per-beneficiary metrics"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 22,
+        "unique_sources": 6,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[19]",
+            "[20]",
+            "[15]"
+          ],
+          "explanation": "The organization is <cite id=\"19\">zakat-eligible</cite> and serves the <cite id=\"20\">fuqara, masakin, and fisabilillah</cite> categories through its educational and research missions.",
+          "improvement": "Alignment scores would improve by providing more <cite id=\"15\">explicit details on zakat-eligible use categories</cite> for research activities."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[10]",
+            "[16]",
+            "[17]",
+            "[18]"
+          ],
+          "explanation": "Yaqeen is highly credible, holding a <cite id=\"10\">Platinum Seal of Transparency</cite> and maintaining <cite id=\"16\">audited financial statements</cite> with a <cite id=\"17\">conflict of interest policy</cite> in place.",
+          "improvement": "To further enhance credibility, the organization could address the <cite id=\"18\">10/20 standards met at BBB</cite> by improving board oversight and compensation policies."
+        },
+        "impact": {
+          "citation_ids": [
+            "[7]",
+            "[12]",
+            "[14]"
+          ],
+          "explanation": "Impact is driven by a <cite id=\"7\">86.1% program expense ratio</cite> and a <cite id=\"12\">strong theory of change</cite> focused on capacity building.",
+          "improvement": "Impact reporting could be strengthened by <cite id=\"14\">tracking cost-per-beneficiary</cite> across its curriculum and research programs."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "RESEARCH & EDUCATION",
+        "citation_ids": [
+          "[19]",
+          "[20]",
+          "[4]"
+        ],
+        "evidence_rigor": "Grade B - Strong outcome tracking via digital metrics",
+        "geographic_focus": [
+          "Global",
+          "United States"
+        ],
+        "giving_style": "Intellectual Capacity Building",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "fuqara",
+          "masakin",
+          "fisabilillah"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0,
+        "annual_revenue": 8759241,
+        "citation_ids": [
+          "[2]",
+          "[3]",
+          "[13]"
+        ],
+        "cn_financial_score": 92,
+        "cn_overall_score": 96,
+        "fundraising_ratio": 0,
+        "industry_program_ratio": 0.86,
+        "peer_count": 0,
+        "peer_program_ratio_median": null,
+        "program_expense_ratio": 0.8613,
+        "reserves_months": 12,
+        "revenue_cagr_3yr": 3.5,
+        "transparency_score": 100,
+        "working_capital_months": 12,
+        "yearly_financials": [
+          {
+            "expenses": 5007425,
+            "net_assets": 4998959,
+            "revenue": 8759241,
+            "year": 2023
+          },
+          {
+            "expenses": 3962760,
+            "net_assets": 5773689,
+            "revenue": 7284666,
+            "year": 2022
+          },
+          {
+            "expenses": 3068556,
+            "net_assets": 3048663,
+            "revenue": 8177689,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "domestic_grants": 0,
+        "foreign_grants": 0,
+        "grant_count": 0,
+        "grant_strategy": "Direct implementation of research and content production",
+        "is_significant_grantmaker": false,
+        "regions_served": [
+          "Global"
+        ],
+        "top_recipients": [],
+        "total_grants": 0
+      },
+      "headline": "Yaqeen Research Institute Inc addresses contemporary challenges through high-quality Islamic research and educational resources.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who value intellectual dawah and want to fund high-quality Islamic research that addresses modern doubts and educational gaps.",
+        "citation_ids": [
+          "[4]",
+          "[9]",
+          "[19]"
+        ],
+        "donor_motivations": [
+          "Want to support the intellectual defense of Islamic orthodoxy",
+          "Value high-production digital content and curriculum for youth",
+          "Prefer organizations with high financial transparency and low fundraising costs",
+          "Seek to fulfill zakat through educational 'fisabilillah' pathways"
+        ],
+        "giving_considerations": [
+          "Impact is measured primarily through digital engagement rather than physical aid",
+          "The organization is an established institution with significant reserves",
+          "Focus is on long-term mindset shifts rather than immediate crisis relief"
+        ],
+        "not_ideal_for": "Donors seeking direct, tangible humanitarian relief (e.g., food/water) as their primary impact metric."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[12]",
+          "[21]",
+          "[4]"
+        ],
+        "evidence_grade": "B",
+        "evidence_grade_explanation": "Grade B reflects <cite id=\"21\">verified evidence and outcomes</cite> with extensive tracking of digital reach and curriculum adoption.",
+        "external_evaluations": [
+          "Candid Platinum outcomes"
+        ],
+        "outcome_tracking_years": 3,
+        "rct_available": false,
+        "theory_of_change": "PUBLISHED",
+        "theory_of_change_summary": "Yaqeen utilizes a <cite id=\"12\">documented theory of change</cite> to dismantle doubts and nurture conviction through peer-reviewed research and multimedia dissemination.",
+        "why_evidence_matters": "Evidence ensures that research is actually reaching and influencing the intended audience."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[13]",
+          "[22]"
+        ],
+        "founded_year": null,
+        "maturity_stage": "Established",
+        "revenue_growth_3yr": 3.5,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "As a research institute, additional funding allows for the expansion of curriculum and translation of materials into more languages.",
+        "strategic_priorities": [
+          "Reviving the essence of orthodoxy",
+          "Expanding digital curriculum"
+        ],
+        "years_operating": 9
+      },
+      "organizational_capacity": {
+        "board_size": 13,
+        "ceo_compensation": 179500,
+        "ceo_compensation_pct_revenue": 1.56,
+        "ceo_name": "Omar Suleiman",
+        "citation_ids": [
+          "[3]",
+          "[11]",
+          "[17]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "Global reach with a focus on the United States",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 0.66,
+        "payroll_to_revenue_pct": 6.1,
+        "programs_count": 5,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[4]",
+          "[10]"
+        ],
+        "differentiator": "Distinguished by its <cite id=\"4\">massive digital reach of 100 million views</cite> and <cite id=\"10\">Platinum transparency rating</cite>.",
+        "peer_group": "Islamic Research & Advocacy",
+        "similar_orgs": [
+          "Al-Maghrib Institute",
+          "Zaytuna College"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "More focus on seminars/classes",
+          "name": "Al-Maghrib Institute"
+        },
+        {
+          "differentiator": "Accredited academic institution",
+          "name": "Zaytuna College"
+        },
+        {
+          "differentiator": "Smaller, female-led focus",
+          "name": "The Qarawiyyin Project"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[7]",
+            "[8]"
+          ],
+          "detail": "The organization maintains a <cite id=\"7\">86.1% program expense ratio</cite> and a <cite id=\"8\">fundraising efficiency of $0.00 per $1 raised</cite>, maximizing the impact of every dollar.",
+          "point": "Exceptional Financial Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[9]"
+          ],
+          "detail": "Yaqeen holds <cite id=\"9\">12.0 months of working capital</cite>, providing significant resilience and long-term sustainability for its research initiatives.",
+          "point": "Strong Operational Reserves"
+        },
+        {
+          "citation_ids": [
+            "[3]",
+            "[10]"
+          ],
+          "detail": "The institute has earned a <cite id=\"10\">Platinum Seal of Transparency from Candid</cite> and a <cite id=\"3\">96/100 rating from Charity Navigator</cite>.",
+          "point": "High Accountability Standards"
+        }
+      ],
+      "strengths_deep_dive": [
+        "Yaqeen's strength lies in its ability to scale intellectual content globally. With <cite id=\"4\">100 million views across platforms</cite>, the organization demonstrates massive digital reach. This is supported by a robust governance structure consisting of a <cite id=\"11\">13-member board</cite> and a <cite id=\"12\">documented Theory of Change</cite> that guides its research priorities. Financially, the organization has shown steady growth with a <cite id=\"13\">3-year revenue CAGR of 3.5%</cite>, reaching <cite id=\"2\">$8,759,241 in total revenue</cite> by the 2023 tax year."
+      ],
+      "summary": "Yaqeen Research Institute Inc is a global non-profit research organization dedicated to addressing contemporary challenges through <cite id=\"1\">high-quality Islamic research and educational resources</cite>. The institute focuses on dismantling doubts and nurturing conviction by producing peer-reviewed research papers, curriculum, and multimedia content. In 2023, the organization reported <cite id=\"2\">total revenue of $8,759,241</cite>, reflecting a stable financial base for its intellectual output. Yaqeen maintains a <cite id=\"3\">96/100 overall score from Charity Navigator</cite>, signaling strong institutional health and transparency. Its reach is extensive, with digital engagement metrics showing <cite id=\"4\">100,000,000 total views across platforms</cite> and <cite id=\"5\">37,075 students utilizing its specialized curriculum</cite>. Beyond digital content, the organization has historically engaged in humanitarian efforts, including <cite id=\"6\">medical mission treatments and orphan sponsorship</cite>, though its primary focus remains capacity building through knowledge. The institute operates with a <cite id=\"7\">86.1% program expense ratio</cite> according to recent financial filings, ensuring that donor contributions are directed toward its core mission of research and education.",
+      "zakat_guidance": {
+        "classification": null,
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }

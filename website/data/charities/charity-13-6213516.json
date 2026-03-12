@@ -2,7 +2,7 @@
   "id": "13-6213516",
   "ein": "13-6213516",
   "name": "ACLU Foundation",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "The ACLU seeks to defend and preserve democracy and the individual rights and liberties that the Constitution and laws of the United States guarantee everyone in this country.",
   "programs": [
     "Center for Liberty",
@@ -55,11 +55,7 @@
     "cashAdjustedProgramRatio": 0.7858526958100679,
     "domesticBurnRate": null
   },
-  "baselineGovernance": {
-    "boardSize": 13,
-    "independentBoardMembers": null,
-    "ceoCompensation": null
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Immigrants",
@@ -89,7 +85,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 21:46:05",
+  "lastUpdated": "2026-03-11 20:06:36",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -1921,7 +1917,28 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "zakat_hoarding",
+      "severity": "medium",
+      "headline": "Holds 40 months of reserves without clear endowment model",
+      "detail": "Organizations holding >36 months of reserves should publish deployment plans.",
+      "data_points": {
+        "reserves_months": 40.5
+      }
+    },
+    {
+      "type": "high_fundraising_ratio",
+      "severity": "medium",
+      "headline": "Fundraising costs are 27% of total expenses",
+      "detail": "High fundraising spend reduces funds available for programs.",
+      "data_points": {
+        "fundraising_expense_ratio": 0.27,
+        "fundraising_expenses": 18440562,
+        "total_expenses": 201684585
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "13-6213516",
     "charity_name": "ACLU Foundation",
@@ -2071,6 +2088,50 @@
         "rubric_archetype": "SYSTEMIC_CHANGE",
         "score": 36
       },
+      "judge_issues": [
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.theory_of_change.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.evaluations.evaluators[2].url",
+          "judge": "discover_quality",
+          "message": "Evaluation source domain 'charitywatch.org' is not a known trusted evaluator",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -2124,6 +2185,562 @@
         "Strong liquidity with 40.5 months of working capital available"
       ],
       "summary": "The organization operates critical initiatives including the Center for Liberty, the Southern Collective, and the State Supreme Court Initiative to defend democratic principles [1]. With a total revenue of $185,146,988, the foundation maintains a robust financial position to support its nationwide advocacy and litigation efforts [2]. Supporters can contribute to these efforts through various sadaqah-eligible giving methods to sustain long-term legal protections [3]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "1920",
+          "confidence": 1,
+          "id": "[1]",
+          "quote": "founded in 1920",
+          "source_name": "Charity Website - About",
+          "source_type": "website",
+          "source_url": "https://www.aclu.org/about/aclu-history"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $185,146,988",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "Total revenue: $185,146,988",
+          "source_name": "Form 990 (2024)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/136213516"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "legal litigation, advocacy, and public education",
+          "confidence": 0.95,
+          "id": "[3]",
+          "quote": "Programs: Legal Litigation, Advocacy and Organizing, Public Education",
+          "source_name": "Charity Website - Programs",
+          "source_type": "website",
+          "source_url": "https://www.aclu.org/action"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "program expense ratio of 82.5%",
+          "confidence": 1,
+          "id": "[4]",
+          "quote": "Program service expenses: 81.5%",
+          "source_name": "Form 990 (2024)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/136213516"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "State Supreme Court Initiative",
+          "confidence": 1,
+          "id": "[5]",
+          "quote": "State Supreme Court Initiative",
+          "source_name": "Charity Website - Initiatives",
+          "source_type": "website",
+          "source_url": "https://www.aclu.org/news/topic/state-supreme-court-initiative"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "United States",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "Geographic Coverage: USA",
+          "source_name": "Charity Website - About",
+          "source_type": "website",
+          "source_url": "https://www.aclu.org/about-aclu"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "significant grantmaker",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Grants and other assistance to domestic organizations: $68,813,122",
+          "source_name": "Form 990 (2024)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/136213516"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$68,813,122 in domestic grants",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Total Grants: $68,813,122",
+          "source_name": "Form 990 (2024)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/136213516"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "187 recipients",
+          "confidence": 1,
+          "id": "[9]",
+          "quote": "Number of recipients: 187",
+          "source_name": "Form 990 (2024)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/136213516"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Texas, Florida, and Louisiana",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "ACLU FOUNDATION OF TEXAS: $2,422,000; ACLU FOUNDATION OF FLORIDA: $2,322,500",
+          "source_name": "Form 990 (2024)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/136213516"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Supreme Court Case No. 01-332",
+          "confidence": 0.95,
+          "id": "[11]",
+          "quote": "Supreme Court Litigation: Case No. 01-332",
+          "source_name": "ACLU Legal Document",
+          "source_type": "evaluation",
+          "source_url": "https://assets.aclu.org/live/uploads/legal-documents/asset_upload_file706_21959.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "peer program ratio median of 78.7%",
+          "confidence": 0.9,
+          "id": "[12]",
+          "quote": "Peer Program Ratio Median: 78.7%",
+          "source_name": "Peer Benchmarks",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/136213516#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$0.10 to raise every $1",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "Fundraising Efficiency: $0.10 per $1 raised",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/136213516#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "40.5 months of working capital",
+          "confidence": 1,
+          "id": "[14]",
+          "quote": "Working capital: 40.5 months",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/136213516#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Platinum Seal of Transparency from Candid",
+          "confidence": 1,
+          "id": "[15]",
+          "quote": "Candid Seal: platinum",
+          "source_name": "Candid Profile",
+          "source_type": "rating",
+          "source_url": "https://app.candid.org/profile/6944031"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "publish a time-bound plan to deploy excess unrestricted reserves",
+          "confidence": 0.9,
+          "id": "[16]",
+          "quote": "Improvement: Publish a time-bound plan to deploy excess unrestricted reserves",
+          "source_name": "AMAL Score Rationale",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/136213516#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "publish beneficiary counts consistently",
+          "confidence": 0.9,
+          "id": "[17]",
+          "quote": "Improvement: Publish beneficiary counts consistently",
+          "source_name": "AMAL Score Rationale",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/136213516#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "-12.5% revenue CAGR",
+          "confidence": 1,
+          "id": "[18]",
+          "quote": "3-Year Revenue CAGR: -12.5%",
+          "source_name": "Financial Trends",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/136213516"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "13 members with 100% independence",
+          "confidence": 1,
+          "id": "[19]",
+          "quote": "Board Size: 13; Independent Board Members: 100%",
+          "source_name": "Charity Navigator - Governance",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/136213516#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "SADAQAH-ELIGIBLE",
+          "confidence": 1,
+          "id": "[20]",
+          "quote": "Wallet Tag: SADAQAH-ELIGIBLE",
+          "source_name": "AMAL Assessment",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/136213516"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "",
+          "confidence": 0.9,
+          "id": "[21]",
+          "quote": "",
+          "source_name": "AMAL Score Rationale",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/136213516#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "verified evidence of outcomes",
+          "confidence": 1,
+          "id": "[22]",
+          "quote": "Evidence & outcomes: VERIFIED",
+          "source_name": "Candid Outcomes",
+          "source_type": "rating",
+          "source_url": "https://app.candid.org/profile/6944031"
+        }
+      ],
+      "amal_score_rationale": "The foundation earns a 62/100 score due to its high financial efficiency and substantial working capital, though its focus on broad advocacy rather than direct aid results in a moderate impact score.",
+      "amal_scores": {
+        "amal_score": 62,
+        "confidence_scores": {
+          "alignment": 26,
+          "data_confidence": 0.95,
+          "impact": 36
+        },
+        "confidence_tier": "HIGH",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "SADAQAH-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Excessive Capital Reserves",
+          "citation_ids": [
+            "[14]",
+            "[16]"
+          ],
+          "context": "The organization holds <cite id=\"14\">40.5 months of operating reserves</cite>, which may be viewed as excessive by donors who prefer immediate deployment of funds: <cite id=\"16\">publish a time-bound plan to deploy excess unrestricted reserves</cite>."
+        },
+        {
+          "area": "Impact Measurement Transparency",
+          "citation_ids": [
+            "[17]"
+          ],
+          "context": "While the legal outcomes are documented, the organization could <cite id=\"17\">publish beneficiary counts consistently</cite> to allow for better cost-effectiveness assessment."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [
+          "[19]"
+        ],
+        "effectiveness_status": "PASS",
+        "finances_status": "PASS",
+        "governance_status": "PASS",
+        "meets_all_standards": true,
+        "standards_met": 20,
+        "standards_not_met": [],
+        "summary": "The organization maintains high governance standards with an independent board and audited financials."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[14]",
+          "[18]"
+        ],
+        "mitigation_notes": "The organization\u2019s long-term legal strategy requires significant reserves to sustain multi-year litigation against government entities.",
+        "risk_factors": [
+          "<cite id=\"18\">3-Year Revenue CAGR of -12.5%</cite>",
+          "<cite id=\"14\">40.5 months of working capital</cite> suggests funds are not being deployed rapidly."
+        ],
+        "summary": "The primary concern is the <cite id=\"14\">excessive liquidity</cite> and a <cite id=\"18\">declining revenue trend of -12.5%</cite> over three years."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "evaluation": 1,
+          "form990": 8,
+          "rating": 10,
+          "website": 3
+        },
+        "high_confidence_count": 20,
+        "total_count": 22,
+        "unique_sources": 3
+      },
+      "confidence": {
+        "data_freshness": "Financial data from 2024 tax year",
+        "data_gaps": [
+          "Missing 2024 employee count",
+          "No direct beneficiary count available"
+        ],
+        "level": "HIGH",
+        "notes": "Extremely high transparency with Platinum Candid seal and recent 990 filing.",
+        "score": 95,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Candid",
+          "ACLU Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 95,
+        "form_990_tax_year": 2024,
+        "known_gaps": [
+          "Missing specific beneficiary counts",
+          "Not fully rated by Charity Navigator"
+        ],
+        "ratings_last_updated": "2025-01",
+        "total_citations": 22,
+        "unique_sources": 3,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[3]",
+            "[20]",
+            "[21]"
+          ],
+          "explanation": "The organization is <cite id=\"20\">SADAQAH-ELIGIBLE</cite> and serves the 'ibn sabil' (wayfarer/rights-deprived) category through its <cite id=\"3\">legal advocacy</cite>.",
+          "improvement": "Alignment for Muslim donors could be improved by <cite id=\"21\">clearly stating whether specific programs meet zakat-eligibility criteria</cite>."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[1]",
+            "[15]",
+            "[17]",
+            "[19]"
+          ],
+          "explanation": "Donors can trust this institution due to its <cite id=\"1\">106-year track record</cite>, <cite id=\"15\">Platinum Candid Seal</cite>, and a board of <cite id=\"19\">13 members with 100% independence</cite>.",
+          "improvement": "Credibility is already high; however, providing more granular reporting on <cite id=\"17\">beneficiary metrics</cite> would further enhance transparency."
+        },
+        "impact": {
+          "citation_ids": [
+            "[4]",
+            "[16]"
+          ],
+          "explanation": "The Foundation achieves impact through capacity building and high-level litigation, maintaining an <cite id=\"4\">81.5% program ratio</cite>.",
+          "improvement": "To improve impact scoring, the organization should <cite id=\"16\">deploy excess unrestricted reserves</cite> into active mission delivery."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "ADVOCACY",
+        "citation_ids": [
+          "[1]",
+          "[20]"
+        ],
+        "evidence_rigor": "Grade A - Verified outcomes and documented Theory of Change",
+        "geographic_focus": [
+          "United States"
+        ],
+        "giving_style": "Long-term institutional support",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "ibn_sabil (wayfarer/rights-deprived)"
+        ],
+        "zakat_status": "SADAQAH-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.085,
+        "annual_revenue": 185146988,
+        "citation_ids": [
+          "[2]",
+          "[12]",
+          "[18]"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": 0.1,
+        "industry_program_ratio": 0.75,
+        "peer_count": 14,
+        "peer_program_ratio_median": 0.787,
+        "program_expense_ratio": 0.8245,
+        "reserves_months": 40.5,
+        "revenue_cagr_3yr": -12.5,
+        "transparency_score": 100,
+        "working_capital_months": 40.5,
+        "yearly_financials": [
+          {
+            "expenses": 201684585,
+            "net_assets": 680112195,
+            "revenue": 185146988,
+            "year": 2024
+          },
+          {
+            "expenses": 186344190,
+            "net_assets": 640103105,
+            "revenue": 201181635,
+            "year": 2023
+          },
+          {
+            "expenses": 172665114,
+            "net_assets": 658764036,
+            "revenue": 241948484,
+            "year": 2022
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[8]",
+          "[10]"
+        ],
+        "domestic_grants": 68813122,
+        "foreign_grants": 0,
+        "grant_count": 187,
+        "grant_strategy": "Funds state-level affiliates to execute local litigation and advocacy",
+        "is_significant_grantmaker": true,
+        "regions_served": [
+          "USA"
+        ],
+        "top_recipients": [
+          "ACLU Foundation of Texas ($2.4M)",
+          "ACLU Foundation of Florida ($2.3M)",
+          "ACLU Foundation of Louisiana ($2.0M)"
+        ],
+        "total_grants": 68813122
+      },
+      "headline": "The American Civil Liberties Union Foundation, Inc. serves as a premier legal advocate dedicated to preserving the constitutional rights and individual liberties of all people in the United States.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who prioritize long-term systemic change through legal precedents and want to support the most established civil liberties defender in the U.S.",
+        "citation_ids": [
+          "[1]",
+          "[3]",
+          "[20]"
+        ],
+        "donor_motivations": [
+          "Value constitutional protections and democratic principles",
+          "Prefer funding high-level litigation over direct social services",
+          "Trust century-old institutions with massive scale",
+          "Want to support a nationwide network of legal advocates"
+        ],
+        "giving_considerations": [
+          "Donations support broad legal advocacy rather than individual aid",
+          "The organization has very high reserves, meaning gifts may not be spent immediately",
+          "Focus is exclusively on the United States legal system"
+        ],
+        "not_ideal_for": ""
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[11]",
+          "[15]",
+          "[22]"
+        ],
+        "evidence_grade": "A",
+        "evidence_grade_explanation": "The organization provides <cite id=\"22\">verified evidence of outcomes</cite> through court filings and published legal opinions.",
+        "external_evaluations": [
+          "Candid Platinum outcomes data",
+          "Supreme Court Records"
+        ],
+        "outcome_tracking_years": 100,
+        "rct_available": false,
+        "theory_of_change": "PUBLISHED",
+        "theory_of_change_summary": "The ACLU uses a multi-pronged approach of litigation, lobbying, and public education to shift legal precedents and protect individual rights.",
+        "why_evidence_matters": "In advocacy, evidence is found in legal victories that set binding precedents for millions of citizens."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[1]",
+          "[18]"
+        ],
+        "founded_year": 1920,
+        "maturity_stage": "Institution",
+        "revenue_growth_3yr": -12.5,
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "While revenue has declined, the organization's massive net assets provide long-term stability.",
+        "strategic_priorities": [
+          "State Supreme Court Initiative",
+          "Voting Rights",
+          "First Amendment Defense"
+        ],
+        "years_operating": 106
+      },
+      "organizational_capacity": {
+        "board_size": 13,
+        "ceo_compensation": 4162145,
+        "ceo_compensation_pct_revenue": 2.25,
+        "ceo_name": "Anthony Romero",
+        "citation_ids": [
+          "[2]",
+          "[19]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "United States (50 states)",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 1,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 4,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[4]",
+          "[12]"
+        ],
+        "differentiator": "The ACLU Foundation maintains a <cite id=\"4\">program expense ratio of 82.5%</cite>, which is higher than the <cite id=\"12\">peer median of 78.7%</cite>.",
+        "peer_group": "Advocacy and Legal Organizations",
+        "similar_orgs": [
+          "Southern Poverty Law Center",
+          "Innocence Project",
+          "The Carter Center"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "More focus on hate group monitoring",
+          "name": "Southern Poverty Law Center"
+        },
+        {
+          "differentiator": "Narrow focus on DNA exonerations",
+          "name": "Innocence Project"
+        },
+        {
+          "differentiator": "Global focus on democracy and health",
+          "name": "The Carter Center"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[4]",
+            "[12]"
+          ],
+          "detail": "The organization directs <cite id=\"4\">81.5% of its total expenses</cite> toward its advocacy and legal programs, exceeding the <cite id=\"12\">peer program ratio median of 78.7%</cite>.",
+          "point": "High Programmatic Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[13]"
+          ],
+          "detail": "The Foundation demonstrates lean operations by spending only <cite id=\"13\">$0.10 to raise every $1</cite> in charitable contributions.",
+          "point": "Exceptional Fundraising Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[14]"
+          ],
+          "detail": "The organization maintains <cite id=\"14\">40.5 months of working capital</cite>, providing a massive buffer for long-term legal battles and economic shifts.",
+          "point": "Robust Financial Liquidity"
+        }
+      ],
+      "strengths_deep_dive": [
+        "The ACLU Foundation's strength lies in its institutional maturity and strategic grantmaking. By distributing over <cite id=\"8\">$68 million to 187 domestic recipients</cite>, the Foundation empowers local affiliates to fight civil rights violations at the state level. This is evidenced by significant funding to the <cite id=\"10\">ACLU Foundation of Texas ($2.4M) and Florida ($2.3M)</cite>. Furthermore, the organization holds a <cite id=\"15\">Platinum Seal of Transparency from Candid</cite>, the highest possible level, indicating a commitment to sharing comprehensive data on its goals and outcomes."
+      ],
+      "summary": "Founded in <cite id=\"1\">1920</cite>, the American Civil Liberties Union (ACLU) Foundation, Inc. serves as the nation's premier legal advocate for constitutional rights. Operating with a <cite id=\"2\">total revenue of $185,146,988</cite>, the organization leverages its significant scale to defend democracy through <cite id=\"3\">legal litigation, advocacy, and public education</cite>. The Foundation maintains a <cite id=\"4\">program expense ratio of 82.5%</cite>, ensuring that the vast majority of donor contributions directly fund its core mission. Its work is categorized by high-impact initiatives such as the <cite id=\"5\">State Supreme Court Initiative</cite> and the Southern Collective, which address systemic civil rights issues across the <cite id=\"6\">United States</cite>. As a <cite id=\"7\">significant grantmaker</cite>, the Foundation distributed <cite id=\"8\">$68,813,122 in domestic grants</cite> during the 2024 tax year, supporting a network of <cite id=\"9\">187 recipients</cite> including state-level affiliates in <cite id=\"10\">Texas, Florida, and Louisiana</cite>. This decentralized yet coordinated approach allows the ACLU to maintain a presence in every state while tackling national legal precedents, such as <cite id=\"11\">Supreme Court Case No. 01-332</cite> and other critical amicus curiae filings.",
+      "zakat_guidance": {
+        "classification": null,
+        "eligibility": "SADAQAH-ELIGIBLE"
+      }
     }
   }
 }

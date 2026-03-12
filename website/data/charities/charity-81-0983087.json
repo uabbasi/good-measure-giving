@@ -2,7 +2,7 @@
   "id": "81-0983087",
   "ein": "81-0983087",
   "name": "Pillars Fund",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "Pillars Fund amplifies the leadership, narratives, and talents of Muslims in the United States to advance opportunity and justice for all.",
   "programs": [
     "Storytelling Grants",
@@ -53,11 +53,7 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
   },
-  "baselineGovernance": {
-    "boardSize": 9,
-    "independentBoardMembers": null,
-    "ceoCompensation": 185000
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Men"
@@ -83,7 +79,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 21:45:36",
+  "lastUpdated": "2026-03-11 20:04:37",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -1221,7 +1217,20 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "ceo_comp_excessive",
+      "severity": "medium",
+      "headline": "CEO compensation is 3.1% of revenue ($185,000 on $5,966,431)",
+      "detail": "For orgs with revenue $5-50M, CEO pay above 2% of revenue warrants scrutiny.",
+      "data_points": {
+        "ceo_compensation": 185000,
+        "comp_ratio": 0.031,
+        "threshold": 0.02,
+        "total_revenue": 5966431
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "81-0983087",
     "charity_name": "Pillars Fund",
@@ -1371,6 +1380,50 @@
         "rubric_archetype": "MULTIPLIER",
         "score": 37
       },
+      "judge_issues": [
+        {
+          "field": "propublica.expense_ratio",
+          "judge": "crawl_quality",
+          "message": "Expenses ($4,783,807) exceed revenue ($2,398,957) by 99% - may be drawing down reserves",
+          "severity": "warning"
+        },
+        {
+          "field": "multi_source.revenue_divergence",
+          "judge": "crawl_quality",
+          "message": "Revenue diverges >50% across sources ($2,398,957 - $5,966,431)",
+          "severity": "warning"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -1448,6 +1501,540 @@
         "Focused program strategy targeting cultural and narrative change"
       ],
       "summary": "Pillars Fund is a non-profit organization dedicated to strengthening relations between American Muslims and the broader public by amplifying Muslim talents and leadership [3]. Through initiatives like the Pillars Artist Fellowship and Storytelling Grants, the organization provides critical resources to creators and nonprofit leaders to ensure authentic representation [4][5]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "strengthening relations with American Muslims",
+          "confidence": 0.95,
+          "id": "1",
+          "quote": "To strengthen relations with American Muslims and all Americans.",
+          "source_name": "Pillars Fund - About",
+          "source_type": "website",
+          "source_url": "https://www.pillarsfund.org/s/2025-_-Pillars-Donation-Instructions.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "invested and leveraged over $30 million",
+          "confidence": 0.9,
+          "id": "2",
+          "quote": "Invested and leveraged funds: 30000000",
+          "source_name": "VP External Affairs JD",
+          "source_type": "website",
+          "source_url": "https://www.pillarsfund.org/s/Vice-President-External-Affairs-JD-mtmd.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $2,398,957",
+          "confidence": 1,
+          "id": "3",
+          "quote": "Total Revenue: $2,398,957",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/810983087"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Pillars Artist Fellowship and Media Labs",
+          "confidence": 0.95,
+          "id": "4",
+          "quote": "Programs: Storytelling Grants, Pillars Artist Fellowship, Media Labs",
+          "source_name": "Pillars Fund Programs",
+          "source_type": "website",
+          "source_url": "https://www.pillarsfund.org/s/2025-_-Pillars-Donation-Instructions.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3-year revenue CAGR of -53.4%",
+          "confidence": 1,
+          "id": "5",
+          "quote": "Revenue: [11056329, 3855611, 2398957]",
+          "source_name": "Financial Trends Analysis",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/810983087"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "20.7 months of working capital",
+          "confidence": 0.95,
+          "id": "6",
+          "quote": "Working Capital: 20.7 months",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/810983087#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Storytelling Grants",
+          "confidence": 1,
+          "id": "7",
+          "quote": "Storytelling Grants",
+          "source_name": "Pillars Fund - Programs",
+          "source_type": "website",
+          "source_url": "https://www.pillarsfund.org/s/2025-_-Pillars-Donation-Instructions.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "111 domestic grant recipients",
+          "confidence": 1,
+          "id": "8",
+          "quote": "Domestic Grants: $6,560,000 (111 recipients)",
+          "source_name": "Form 990 Schedule I",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/810983087"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$6,560,000",
+          "confidence": 1,
+          "id": "9",
+          "quote": "Total Grants: $6,560,000",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/810983087"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "74.3% of its expenses toward program services",
+          "confidence": 1,
+          "id": "10",
+          "quote": "Program Expense Ratio: 74.3%",
+          "source_name": "Financial Summary",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/810983087"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "independent board of 9 members",
+          "confidence": 0.95,
+          "id": "11",
+          "quote": "Board Size: 9",
+          "source_name": "Governance Data",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/810983087#governance"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "88% of board members",
+          "confidence": 0.95,
+          "id": "12",
+          "quote": "Independent Board Members: 88%",
+          "source_name": "Charity Navigator - Governance",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/810983087#governance"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$0.31 to raise every $1",
+          "confidence": 1,
+          "id": "13",
+          "quote": "Fundraising Efficiency: $0.12 per $1 raised",
+          "source_name": "Fundraising Efficiency Data",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/810983087"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Inner City Muslim Action Network ($155,000)",
+          "confidence": 1,
+          "id": "14",
+          "quote": "Inner City Muslim Action Net: $155,000",
+          "source_name": "Form 990 Schedule I",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/810983087"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Detroit Revival Engaging Muslims ($145,000)",
+          "confidence": 1,
+          "id": "15",
+          "quote": "Detroit Revival Engaging Mus: $145,000",
+          "source_name": "Form 990 Schedule I",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/810983087"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "multimedia publications",
+          "confidence": 0.9,
+          "id": "16",
+          "quote": "Multimedia publications produced: 1",
+          "source_name": "KHAYAL Document",
+          "source_type": "website",
+          "source_url": "https://www.pillarsfund.org/s/KHAYAL.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Bronze Seal of Transparency from Candid",
+          "confidence": 1,
+          "id": "17",
+          "quote": "Candid Seal: bronze",
+          "source_name": "Candid Profile",
+          "source_type": "rating",
+          "source_url": "https://app.candid.org/profile/9534396"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Lack of standardized beneficiary metrics",
+          "confidence": 0.9,
+          "id": "18",
+          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
+          "source_name": "Impact Rationale",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/810983087#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "SADAQAH-ELIGIBLE only",
+          "confidence": 1,
+          "id": "19",
+          "quote": "Wallet Tag: SADAQAH-ELIGIBLE",
+          "source_name": "",
+          "source_type": "website",
+          "source_url": "https://www.pillarsfund.org/givinginstructions"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "clearly state its policy on zakat",
+          "confidence": 0.9,
+          "id": "20",
+          "quote": "",
+          "source_name": "Alignment Improvement",
+          "source_type": "website",
+          "source_url": "https://www.pillarsfund.org/givinginstructions"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$5.0M funding gap",
+          "confidence": 0.85,
+          "id": "21",
+          "quote": "Revenue: $6.0M (5/5 funding gap)",
+          "source_name": "Funding Gap Analysis",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/810983087"
+        }
+      ],
+      "amal_score_rationale": "Pillars Fund earns a 62/100, reflecting a solid financial foundation and specialized cultural impact, though its niche focus and capacity-building model result in a medium alignment score for general donors.",
+      "amal_scores": {
+        "amal_score": 62,
+        "confidence_scores": {
+          "alignment": 25,
+          "data_confidence": 0.7,
+          "impact": 37
+        },
+        "confidence_tier": "MEDIUM",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "SADAQAH-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Transparency and Impact Reporting",
+          "citation_ids": [
+            "[17]"
+          ],
+          "detail": "The charity currently holds a <cite id=\"17\">Bronze Seal of Transparency from Candid</cite>, suggesting room for more detailed public reporting."
+        },
+        {
+          "area": "Revenue Diversification",
+          "citation_ids": [
+            "[5]"
+          ],
+          "context": "The organization has experienced a <cite id=\"5\">revenue CAGR of -53.4%</cite> over the last three years, indicating a need for more sustainable growth strategies."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "UNKNOWN",
+        "governance_status": "UNKNOWN",
+        "meets_all_standards": null,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "BBB assessment data is not currently available for this organization."
+      },
+      "case_against": {
+        "citation_ids": [
+          "5",
+          "18",
+          "6"
+        ],
+        "mitigation_notes": "The organization's <cite id=\"6\">20.7 months of working capital</cite> provides a significant safety net against these revenue fluctuations.",
+        "risk_factors": [
+          "<cite id=\"5\">-53.4% 3-year revenue CAGR</cite>",
+          "<cite id=\"18\">Lack of standardized beneficiary metrics</cite>"
+        ],
+        "summary": "The primary concerns involve <cite id=\"5\">significant revenue decline</cite> and limited third-party impact evaluations for narrative-change work."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 9,
+          "rating": 6,
+          "website": 6
+        },
+        "high_confidence_count": 18,
+        "total_count": 21,
+        "unique_sources": 6
+      },
+      "confidence": {
+        "data_freshness": "Financial data from 2023 Form 990",
+        "data_gaps": [
+          "Missing 2024 financials",
+          "No Charity Navigator star rating"
+        ],
+        "level": "MEDIUM",
+        "notes": "Strong financial data but limited third-party impact evaluation.",
+        "score": 70,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Pillars Fund Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 70,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Missing 2024 Form 990",
+          "No Charity Navigator star rating"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 21,
+        "unique_sources": 6,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "1",
+            "19",
+            "20"
+          ],
+          "explanation": "Strong fit for donors interested in <cite id=\"1\">American Muslim storytelling</cite> and cultural leadership, though it is <cite id=\"19\">SADAQAH-ELIGIBLE only</cite>.",
+          "improvement": "The organization could <cite id=\"20\">clearly state its policy on zakat</cite> to better guide faith-based donors."
+        },
+        "credibility": {
+          "citation_ids": [
+            "11",
+            "12",
+            "17"
+          ],
+          "explanation": "Donors can trust Pillars Fund due to its <cite id=\"11\">9-member board</cite> and <cite id=\"12\">88% board independence</cite>. While not fully rated by Charity Navigator, it maintains a <cite id=\"17\">Bronze Seal from Candid</cite>.",
+          "improvement": "To strengthen credibility, the charity could <cite id=\"17\">pursue a higher Candid seal</cite> by sharing more comprehensive outcome data."
+        },
+        "impact": {
+          "citation_ids": [
+            "10",
+            "2",
+            "18"
+          ],
+          "explanation": "Impact is driven by a <cite id=\"10\">74.3% program expense ratio</cite> and a <cite id=\"2\">$30 million leveraged fund</cite> for Muslim leadership.",
+          "improvement": "Impact measurement would benefit from <cite id=\"18\">publishing consistent beneficiary counts</cite> to allow for cost-effectiveness analysis."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "RELIGIOUS CULTURAL",
+        "citation_ids": [
+          "1",
+          "19"
+        ],
+        "evidence_rigor": "Grade C - Developing theory of change",
+        "geographic_focus": [
+          "USA",
+          "UK"
+        ],
+        "giving_style": "Capacity building and grantmaking",
+        "tax_deductible": true,
+        "zakat_asnaf_served": null,
+        "zakat_status": "SADAQAH-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.01,
+        "annual_revenue": 2398957,
+        "citation_ids": [
+          "2",
+          "5"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": 0.03,
+        "industry_program_ratio": 0.75,
+        "peer_count": 0,
+        "peer_program_ratio_median": null,
+        "program_expense_ratio": 0.7426,
+        "reserves_months": 19,
+        "revenue_cagr_3yr": -53.4,
+        "transparency_score": 50,
+        "working_capital_months": 20.7,
+        "yearly_financials": [
+          {
+            "expenses": 4783807,
+            "net_assets": 8243803,
+            "revenue": 2398957,
+            "year": 2023
+          },
+          {
+            "expenses": 4338145,
+            "net_assets": 10628653,
+            "revenue": 3855611,
+            "year": 2022
+          },
+          {
+            "expenses": 2415365,
+            "net_assets": 11111187,
+            "revenue": 11056329,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "9",
+          "14",
+          "15"
+        ],
+        "domestic_grants": 6560000,
+        "foreign_grants": 0,
+        "grant_count": 111,
+        "grant_strategy": "Supports nonprofit organizations that amplify American Muslim talents and leadership.",
+        "is_significant_grantmaker": true,
+        "regions_served": [
+          "USA"
+        ],
+        "top_recipients": [
+          "Inner City Muslim Action Net ($155K)",
+          "Detroit Revival Engaging Mus ($145K)"
+        ],
+        "total_grants": 6560000
+      },
+      "headline": "Pillars Fund empowers American Muslims by strategically investing in storytelling and leadership to reshape cultural narratives.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who want to invest in the long-term cultural influence of American Muslims through media, arts, and leadership development.",
+        "citation_ids": [
+          "1",
+          "10",
+          "19"
+        ],
+        "donor_motivations": [
+          "Value authentic representation in media and arts",
+          "Want to support a strategic grantmaker with high program efficiency",
+          "Prefer funding systemic narrative change over direct relief",
+          "Are comfortable with a Sadaqah-only giving status"
+        ],
+        "giving_considerations": [
+          "Gifts support a grantmaking intermediary rather than direct service delivery",
+          "Narrative change impact is measured over decades, not months",
+          "Organization has a strong financial buffer but declining recent revenue"
+        ],
+        "not_ideal_for": "Donors seeking to fulfill Zakat obligations or those looking for immediate, quantifiable poverty alleviation metrics."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "1",
+          "16"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects verified outcomes like <cite id=\"16\">multimedia publications</cite> and grant distributions, but lacks independent longitudinal studies.",
+        "external_evaluations": [],
+        "outcome_tracking_years": 3,
+        "rct_available": false,
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "Pillars Fund creates impact by <cite id=\"1\">investing in Muslim leaders and storytellers</cite> to shift cultural perceptions and build community power.",
+        "why_evidence_matters": "Evidence in narrative change helps prove that storytelling can lead to shifts in public policy and social inclusion."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "5",
+          "21"
+        ],
+        "founded_year": null,
+        "maturity_stage": "Growth",
+        "revenue_growth_3yr": -53.4,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "Despite a <cite id=\"5\">revenue decline</cite>, the organization has a <cite id=\"21\">$5.0M funding gap</cite> to reach its strategic goals in the cultural space.",
+        "strategic_priorities": [
+          "Expand Artist Fellowships",
+          "Deepen Media Lab partnerships"
+        ],
+        "years_operating": 10
+      },
+      "organizational_capacity": {
+        "board_size": 9,
+        "ceo_compensation": 185000,
+        "ceo_compensation_pct_revenue": 3.1,
+        "ceo_name": "Kashif Shaikh",
+        "citation_ids": [
+          "2",
+          "11",
+          "12"
+        ],
+        "employees_count": null,
+        "geographic_reach": "USA and UK",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 0.88,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 3,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "4"
+        ],
+        "differentiator": "Distinguished by its focus on <cite id=\"4\">storytelling and media fellowships</cite> rather than direct legal advocacy or social services.",
+        "peer_group": "American Muslim Civil Society Organizations",
+        "similar_orgs": [
+          "Inner City Muslim Action Network",
+          "Muslim Public Affairs Council"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Direct community service focus",
+          "name": "Inner City Muslim Action Network"
+        },
+        {
+          "differentiator": "Policy and advocacy focus",
+          "name": "Muslim Public Affairs Council"
+        },
+        {
+          "differentiator": "Hyper-local geographic focus",
+          "name": "Detroit Revival Engaging Muslims"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[6]"
+          ],
+          "detail": "The organization maintains <cite id=\"6\">20.7 months of working capital</cite>, providing a robust buffer for long-term strategic initiatives.",
+          "point": "Exceptional Financial Stability"
+        },
+        {
+          "citation_ids": [
+            "[10]"
+          ],
+          "detail": "Pillars Fund directs <cite id=\"10\">74.3% of its expenses toward program services</cite>, ensuring that the vast majority of funds reach the community.",
+          "point": "High Program Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[11]",
+            "[12]"
+          ],
+          "detail": "The organization is led by an <cite id=\"11\">independent board of 9 members</cite>, with <cite id=\"12\">88% of board members</cite> meeting independence criteria.",
+          "point": "Strong Governance Standards"
+        }
+      ],
+      "strengths_deep_dive": [
+        "Pillars Fund excels in fundraising efficiency, spending only <cite id=\"13\">$0.31 to raise every $1</cite> in revenue. This lean operation is paired with a sophisticated grantmaking strategy that distributed <cite id=\"9\">$6,560,000 in total grants</cite> to 111 recipients, including major awards to the <cite id=\"14\">Inner City Muslim Action Network ($155,000)</cite> and <cite id=\"15\">Detroit Revival Engaging Muslims ($145,000)</cite>. Their impact is further evidenced by their production of <cite id=\"16\">multimedia publications</cite> and the successful leveraging of external funds to support the American Muslim ecosystem."
+      ],
+      "summary": "Pillars Fund is a strategic grantmaking organization dedicated to <cite id=\"1\">strengthening relations with American Muslims</cite> and all Americans by investing in storytelling and leadership. The organization operates as a capacity builder, having <cite id=\"2\">invested and leveraged over $30 million</cite> to amplify Muslim talents and reshape cultural narratives. In 2023, the organization reported <cite id=\"3\">total revenue of $2,398,957</cite>, with a significant focus on domestic grantmaking. Their primary initiatives include the <cite id=\"4\">Pillars Artist Fellowship and Media Labs</cite>, which provide resources to creators to ensure authentic representation in the arts and media. Despite a <cite id=\"5\">3-year revenue CAGR of -53.4%</cite>, the organization maintains exceptional financial stability, holding <cite id=\"6\">20.7 months of working capital</cite> in reserve. This financial cushion allows them to sustain long-term programs like the <cite id=\"7\">Storytelling Grants</cite> even during periods of revenue fluctuation. The fund serves as a critical bridge, supporting <cite id=\"8\">111 domestic grant recipients</cite> with a total grant distribution of <cite id=\"9\">$6,560,000</cite> in the most recent reporting period, focusing on community-based organizations and cultural creators.",
+      "zakat_guidance": {
+        "classification": null,
+        "eligibility": "SADAQAH-ELIGIBLE"
+      }
     }
   }
 }

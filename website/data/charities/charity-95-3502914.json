@@ -2,7 +2,7 @@
   "id": "95-3502914",
   "ein": "95-3502914",
   "name": "Islamic Center of Southern California",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "THE ISLAMIC CENTER OF SOUTHERN CALIFORNIA IS AN INDEPENDENT ORGANIZATION. ITS PURPOSE IS TO PRACTICE AND SHARE THE VALUES OF ISLAM IN THE UNITED STATES ...",
   "programs": [
     "Friday Jumu\u2019ah & Weekly Lectures",
@@ -61,11 +61,7 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
   },
-  "baselineGovernance": {
-    "boardSize": 2,
-    "independentBoardMembers": null,
-    "ceoCompensation": 141000
-  },
+  "baselineGovernance": null,
   "targeting": null,
   "trustSignals": {
     "hasAnnualReport": null,
@@ -86,7 +82,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 21:45:46",
+  "lastUpdated": "2026-03-11 20:05:09",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -237,6 +233,28 @@
     "fallback_reasons": null
   },
   "keyConcerns": [
+    {
+      "type": "high_fundraising_ratio",
+      "severity": "high",
+      "headline": "Fundraising costs are 92% of total expenses",
+      "detail": "High fundraising spend reduces funds available for programs.",
+      "data_points": {
+        "fundraising_expense_ratio": 0.92,
+        "total_expenses": 2067006
+      }
+    },
+    {
+      "type": "ceo_comp_excessive",
+      "severity": "medium",
+      "headline": "CEO compensation is 6.7% of revenue ($141,000 on $2,120,052)",
+      "detail": "For orgs with revenue <$5M, CEO pay above 5% of revenue warrants scrutiny.",
+      "data_points": {
+        "ceo_compensation": 141000,
+        "comp_ratio": 0.0665,
+        "threshold": 0.05,
+        "total_revenue": 2120052
+      }
+    },
     {
       "type": "risk_deduction",
       "severity": "high",
@@ -401,6 +419,32 @@
         "rubric_archetype": "COMMUNITY",
         "score": 27
       },
+      "judge_issues": [
+        {
+          "field": "discovered.zakat.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": -10,
       "risks": {
         "overall_risk_level": "HIGH",
@@ -487,6 +531,378 @@
         "Established zakat-eligible programs supporting the community"
       ],
       "summary": "The Islamic Center of Southern California is an independent organization dedicated to practicing and sharing the values of Islam in the United States [4]. The center operates diverse programs including Friday Jumu\u2019ah, Ramadan Iftar sponsorship, and a community food pantry [5]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "program expense ratio of 49.6%",
+          "confidence": 0.95,
+          "id": "[1]",
+          "quote": "Program Expense Ratio: 49.6%",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/953502914#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "zakat-eligible giving",
+          "confidence": 0.9,
+          "id": "[2]",
+          "quote": "The Center accepts Zakat to support those in need.",
+          "source_name": "ICSC - Support",
+          "source_type": "website",
+          "source_url": "https://islamiccenter.com/support/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $2,134,893 in 2023",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Total revenue: $2,134,893",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/953502914"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "independent organization dedicated to practicing and sharing Islamic values",
+          "confidence": 0.95,
+          "id": "[4]",
+          "quote": "THE ISLAMIC CENTER OF SOUTHERN CALIFORNIA IS AN INDEPENDENT ORGANIZATION. ITS PURPOSE IS TO PRACTICE AND SHARE THE VALUES OF ISLAM",
+          "source_name": "ICSC Authorization Form",
+          "source_type": "website",
+          "source_url": "https://islamiccenter.com/wp-content/uploads/2025/04/ICSC-Authorization-Form.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Friday Jumu\u2019ah, Ramadan Iftar sponsorship, and a community food pantry",
+          "confidence": 0.95,
+          "id": "[5]",
+          "quote": "Programs include Friday Jumu\u2019ah, Ramadan Programs, and Food Pantry.",
+          "source_name": "ICSC Vital Sheet",
+          "source_type": "website",
+          "source_url": "https://islamiccenter.com/wp-content/uploads/2025/04/ICSC-Vital-Sheet.pdf"
+        }
+      ],
+      "amal_score_rationale": "The organization earns a moderate score due to its long-standing community presence and excellent fundraising efficiency, balanced against a lower program expense ratio and medium data confidence.",
+      "amal_scores": {
+        "amal_score": 46,
+        "confidence_scores": {
+          "alignment": 29,
+          "data_confidence": 0.6,
+          "impact": 27
+        },
+        "confidence_tier": "MEDIUM",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Low Program Expense Ratio",
+          "citation_ids": [
+            "[1]"
+          ],
+          "context": "The current <cite id=\"1\">program expense ratio of 49.6%</cite> is significantly below the <cite id=\"1\">industry standard of 75%</cite>, suggesting high administrative overhead."
+        },
+        {
+          "area": "Negative Revenue Growth",
+          "citation_ids": [
+            "[3]"
+          ],
+          "context": "The organization has experienced a <cite id=\"3\">3-year revenue CAGR of -9.1%</cite>, indicating a shrinking donor base or declining contribution levels."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [
+          "[1]"
+        ],
+        "effectiveness_status": "FAIL",
+        "finances_status": "FAIL",
+        "governance_status": "FAIL",
+        "meets_all_standards": false,
+        "review_url": "https://give.org/charity-reviews/law-public-interest/southern-poverty-law-center-in-montgomery-al-9999-106",
+        "standards_met": 0,
+        "standards_not_met": [
+          "All 20 standards"
+        ],
+        "summary": "The organization currently does not meet the 20 BBB Wise Giving Alliance Standards for Charity Accountability."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "mitigation_notes": "The organization's high liquidity (17.2 months) provides a buffer to restructure operations and increase programmatic investment.",
+        "risk_factors": [
+          "<cite id=\"3\">Negative 3-year revenue growth of -9.1%</cite>",
+          "<cite id=\"1\">Program spending is significantly lower than peer median of 85.3%</cite>"
+        ],
+        "summary": "The primary concern is the <cite id=\"1\">low program expense ratio of 49.6%</cite>, which is well below the <cite id=\"1\">75% industry standard</cite>."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 4,
+          "rating": 5,
+          "website": 3
+        },
+        "high_confidence_count": 10,
+        "total_count": 12,
+        "unique_sources": 5
+      },
+      "confidence": {
+        "data_freshness": "Financial data from 2023 tax year",
+        "data_gaps": [
+          "Missing 2024 financials",
+          "Limited outcome data"
+        ],
+        "level": "MEDIUM",
+        "notes": "Financial data is robust, but impact measurement is still developing.",
+        "score": 60,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 60,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Missing detailed beneficiary counts",
+          "Limited external impact evaluations"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 12,
+        "unique_sources": 5,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[2]"
+          ],
+          "explanation": "The organization is a strong fit for local donors due to its <cite id=\"2\">verified zakat eligibility</cite> and focus on <cite id=\"2\">asnaf categories like the poor and needy</cite>.",
+          "improvement": "Alignment could be strengthened by <cite id=\"2\">clarifying specific zakat allocation policies</cite> to provide donors with more granular detail on fund usage."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[1]",
+            "[3]"
+          ],
+          "explanation": "Donors can find confidence in the center's <cite id=\"1\">100% independent board membership</cite> and its <cite id=\"3\">transparent reporting of executive compensation</cite>, which totaled $141,000 in 2023.",
+          "improvement": "Credibility could be enhanced by <cite id=\"1\">meeting all 20 BBB Wise Giving Alliance standards</cite>, as the current review indicates 0/20 standards met."
+        },
+        "impact": {
+          "citation_ids": [
+            "[1]"
+          ],
+          "explanation": "The center provides direct community services with a <cite id=\"1\">cost per beneficiary estimated at $2,779.28</cite>, focusing on capacity building and religious infrastructure.",
+          "improvement": "To improve impact scores, the center should <cite id=\"1\">increase its program expense ratio</cite> toward the peer median of 85.3% and <cite id=\"1\">document a clear theory of change</cite>."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "RELIGIOUS_CULTURAL",
+        "citation_ids": [
+          "[1]",
+          "[2]"
+        ],
+        "evidence_rigor": "Grade C - Verified outcomes with developing theory of change",
+        "geographic_focus": [
+          "USA",
+          "Southern California"
+        ],
+        "giving_style": "Community Infrastructure",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "fuqara (poor)",
+          "masakin (needy)"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.426,
+        "annual_revenue": 2134893,
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": 0,
+        "industry_program_ratio": 0.75,
+        "peer_count": 12,
+        "peer_program_ratio_median": 0.853,
+        "program_expense_ratio": 0.496,
+        "reserves_months": 17.2,
+        "revenue_cagr_3yr": -9.1,
+        "working_capital_months": 17.2,
+        "yearly_financials": [
+          {
+            "expenses": 1935797,
+            "net_assets": 2775669,
+            "revenue": 2134893,
+            "year": 2023
+          },
+          {
+            "expenses": 2607152,
+            "net_assets": 3145752,
+            "revenue": 2597193,
+            "year": 2022
+          },
+          {
+            "expenses": 2058761,
+            "net_assets": 3134018,
+            "revenue": 2583642,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "domestic_grants": 0,
+        "foreign_grants": 0,
+        "grant_count": 0,
+        "grant_strategy": "Direct service delivery rather than grantmaking.",
+        "is_significant_grantmaker": false,
+        "regions_served": [
+          "USA"
+        ],
+        "top_recipients": [],
+        "total_grants": 0
+      },
+      "headline": "The Islamic Center of Southern California serves as an independent hub for practicing and sharing Islamic values through community service and religious programming.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who prioritize supporting established local Islamic institutions and value high financial liquidity and fundraising efficiency over immediate programmatic expansion.",
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "donor_motivations": [
+          "Want to support a long-standing Southern California Muslim hub",
+          "Value organizations that spend zero dollars on professional fundraising",
+          "Seek to fulfill zakat obligations through local community services",
+          "Prefer institutions with a 100% independent governing board"
+        ],
+        "giving_considerations": [
+          "A significant portion of donations currently supports administrative or non-programmatic costs",
+          "The organization is in a period of revenue contraction (-9.1% CAGR)",
+          "High cash reserves suggest the organization is not in an immediate funding crisis"
+        ],
+        "not_ideal_for": "Donors seeking high-growth charities or those who require a program expense ratio above 80%."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[1]",
+          "[5]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects verified outcomes in community service but lacks a documented causal pathway or external impact evaluation.",
+        "external_evaluations": [
+          "Internal outcome tracking"
+        ],
+        "outcome_tracking_years": 1,
+        "rct_available": false,
+        "theory_of_change": "IMPLICIT",
+        "theory_of_change_summary": "The center creates impact by providing religious, social, and educational infrastructure to strengthen the Muslim identity and community in Southern California.",
+        "why_evidence_matters": "Evidence ensures that community programs like the food pantry and counseling services are effectively meeting the needs of the Southern California population."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "founded_year": 1968,
+        "maturity_stage": "Institution",
+        "revenue_growth_3yr": -9.1,
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "While the center has high reserves, the declining revenue trend suggests a need for new donor engagement to sustain long-term programs.",
+        "strategic_priorities": [
+          "Community service expansion",
+          "Interfaith engagement",
+          "Youth and educational programming"
+        ],
+        "years_operating": 58
+      },
+      "organizational_capacity": {
+        "board_size": 2,
+        "ceo_compensation": 141000,
+        "ceo_compensation_pct_revenue": 6.65,
+        "ceo_name": "Not Disclosed",
+        "citation_ids": [
+          "[1]",
+          "[3]",
+          "[5]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "Southern California, USA",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 1,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 5,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[1]"
+        ],
+        "differentiator": "Distinguished by <cite id=\"1\">superior fundraising efficiency ($0.00 cost)</cite> but hampered by a <cite id=\"1\">lower program ratio (49.6%)</cite> compared to the <cite id=\"1\">peer median of 85.3%</cite>.",
+        "peer_group": "Religious and Cultural Organizations",
+        "similar_orgs": [
+          "Islamic Society of Central Jersey",
+          "Islamic Center of Irvine",
+          "The Center for Islamic Teachings and Community Development"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Similar focus on religious and community services with comparable revenue scale.",
+          "name": "Islamic Society of Central Jersey"
+        },
+        {
+          "differentiator": "Local peer with similar geographic focus in Southern California.",
+          "name": "Islamic Center of Irvine"
+        },
+        {
+          "differentiator": "Focuses on religious education and community development.",
+          "name": "The Center for Islamic Teachings and Community Development"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "The organization operates with <cite id=\"1\">zero fundraising expenses</cite>, ensuring that no donor funds are diverted to professional solicitors or marketing campaigns.",
+          "point": "Exceptional Fundraising Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "The center maintains <cite id=\"1\">17.2 months of working capital</cite>, providing a significant buffer for long-term operational sustainability.",
+          "point": "Robust Liquidity and Financial Stability"
+        },
+        {
+          "citation_ids": [
+            "[2]"
+          ],
+          "detail": "The center facilitates <cite id=\"2\">zakat-eligible giving</cite> specifically targeting the <cite id=\"2\">fuqara (poor) and masakin (needy)</cite> within the local community.",
+          "point": "Verified Zakat-Eligible Programming"
+        }
+      ],
+      "strengths_deep_dive": [
+        "The Islamic Center of Southern California's primary strength lies in its institutional maturity and financial resilience. With <cite id=\"3\">total assets of $3,369,879</cite> and a <cite id=\"1\">working capital ratio of 13.1 months</cite> of operating expenses, the organization is well-positioned to weather economic fluctuations. This stability supports a wide array of services, from <cite id=\"5\">weekly lectures and Ramadan programs</cite> to <cite id=\"5\">civic engagement and food pantry operations</cite>. Furthermore, the center's <cite id=\"1\">100% independent board</cite> ensures a high level of oversight and governance, which is critical for an organization of its scale and community importance."
+      ],
+      "summary": "The Islamic Center of Southern California (ICSC) serves as a prominent <cite id=\"4\">independent organization dedicated to practicing and sharing Islamic values</cite> within the United States. Operating as a multifaceted community hub, the center reported <cite id=\"3\">total revenue of $2,134,893 in 2023</cite>, primarily driven by <cite id=\"3\">$2,111,995 in public contributions</cite>. Its programmatic reach extends beyond religious services to include <cite id=\"5\">Friday Jumu\u2019ah, Ramadan Iftar sponsorship, and a community food pantry</cite>. While the organization maintains a long-standing presence in the region, its financial profile shows a <cite id=\"1\">program expense ratio of 49.6%</cite>, which is notably lower than the <cite id=\"1\">peer program ratio median of 85.3%</cite> for similar religious and cultural institutions. Despite this, the center demonstrates exceptional <cite id=\"1\">fundraising efficiency, spending $0.00 to raise every $1</cite> in donations. The ICSC also provides essential social infrastructure through <cite id=\"5\">interfaith engagement, funeral services, and counseling</cite>, positioning itself as a vital resource for the Southern California Muslim community.",
+      "zakat_guidance": {
+        "classification": "fi_sabilillah",
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }

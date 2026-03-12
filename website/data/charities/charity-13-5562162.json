@@ -2,7 +2,7 @@
   "id": "13-5562162",
   "ein": "13-5562162",
   "name": "Helen Keller International",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "Guided by our founder\u2019s remarkable legacy, Helen Keller Intl works to improve the lives of people around the world by protecting vision, enhancing nutri...",
   "programs": [
     "Saving Sight",
@@ -60,11 +60,7 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": 0.3459801402403371
   },
-  "baselineGovernance": {
-    "boardSize": 31,
-    "independentBoardMembers": null,
-    "ceoCompensation": 421457
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Youth",
@@ -105,7 +101,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 21:46:13",
+  "lastUpdated": "2026-03-11 20:07:07",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -8319,6 +8315,56 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 35
       },
+      "judge_issues": [
+        {
+          "field": "charity_navigator.expense_ratio",
+          "judge": "crawl_quality",
+          "message": "Expenses ($103,633,379) exceed revenue ($75,653,633) by 37% - may be drawing down reserves",
+          "severity": "warning"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.evaluations.evaluators[6].url",
+          "judge": "discover_quality",
+          "message": "Evaluation source domain 'ifpri.org' is not a known trusted evaluator",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.evaluations.evaluators[7].url",
+          "judge": "discover_quality",
+          "message": "Evaluation source domain 'r4d.org' is not a known trusted evaluator",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -8379,6 +8425,568 @@
         "Robust liquidity with 18.6 months of working capital available"
       ],
       "summary": "Guided by the remarkable legacy of its founder, Helen Keller International works to improve global health by protecting vision and enhancing nutrition for those in need [1][8]. The organization operates large-scale programs including the US Vision Program and various international health initiatives aimed at saving sight and reducing malnutrition [1][7]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "1915",
+          "confidence": 1,
+          "id": "[1]",
+          "quote": "founded in 1915",
+          "source_name": "Charity Website - About",
+          "source_type": "website",
+          "source_url": "http://helenkellerintl.org/wp-content/uploads/2024/08/FY23_HKI-Financial-Statements-FINAL.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "protecting vision and enhancing nutrition",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "improve the lives of people around the world by protecting vision, enhancing nutrition",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/135562162"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $145,494,796",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Total Revenue: $145,494,796",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "http://helenkellerintl.org/wp-content/uploads/2024/08/FY23_HKI-Financial-Statements-FINAL.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "program expense ratio of 82.8%",
+          "confidence": 1,
+          "id": "[4]",
+          "quote": "Program services: $84,090,192 / Total expenses: $94,271,740",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "http://helenkellerintl.org/wp-content/uploads/2024/08/FY23_HKI-Financial-Statements-FINAL.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Africa, Asia, and the United States",
+          "confidence": 0.95,
+          "id": "[5]",
+          "quote": "Africa, United States, Africa, United States",
+          "source_name": "Charity Website - Programs",
+          "source_type": "website",
+          "source_url": "http://helenkellerintl.org/wp-content/uploads/2024/08/FY23_HKI-Financial-Statements-FINAL.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "distributing Vitamin A",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "Distributing Vitamin A, Eliminating Diseases of Poverty",
+          "source_name": "Charity Website - Programs",
+          "source_type": "website",
+          "source_url": "http://helenkellerintl.org/wp-content/uploads/2024/08/FY23_HKI-Financial-Statements-FINAL.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "overall score of 99.99.5/100 from Charity Navigator",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Overall Score 99.50",
+          "source_name": "Charity Navigator - Ratings",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/135562162#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Platinum Seal of Transparency from Candid",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Platinum Seal of Transparency",
+          "source_name": "Candid - Profile",
+          "source_type": "rating",
+          "source_url": "https://app.candid.org/profile/6935964"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "direct service delivery model",
+          "confidence": 0.9,
+          "id": "[9]",
+          "quote": "Delivery model: Direct Service",
+          "source_name": "AMAL Baseline Evaluation",
+          "source_type": "website",
+          "source_url": "http://helenkellerintl.org/wp-content/uploads/2024/08/FY23_HKI-Financial-Statements-FINAL.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "peer median of 83.0%",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "Peer Program Ratio Median: 83.0%",
+          "source_name": "Investment Memo Data",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/135562162"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$0.03 to raise every $1",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "Fundraising Efficiency $0.03",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/135562162#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "18.6 months of working capital",
+          "confidence": 1,
+          "id": "[12]",
+          "quote": "Working Capital Ratio (months) 14.6",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/135562162#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3-year revenue CAGR of 27.7%",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "3-Year Revenue CAGR: 27.7%",
+          "source_name": "Investment Memo Data",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/135562162"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$67,778,288 in foreign grants",
+          "confidence": 1,
+          "id": "[14]",
+          "quote": "Foreign Grants: $67,778,288",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "http://helenkellerintl.org/wp-content/uploads/2024/08/FY23_HKI-Financial-Statements-FINAL.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "document a clearer theory of change",
+          "confidence": 0.9,
+          "id": "[15]",
+          "quote": "Document a clear theory of change with an explicit causal pathway",
+          "source_name": "Score Details - Impact",
+          "source_type": "evaluation",
+          "source_url": "http://helenkellerintl.org/wp-content/uploads/2024/08/FY23_HKI-Financial-Statements-FINAL.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "expand services to underserved geographies",
+          "confidence": 0.9,
+          "id": "[16]",
+          "quote": "Expand services to underserved populations or geographies",
+          "source_name": "Score Details - Alignment",
+          "source_type": "evaluation",
+          "source_url": "http://helenkellerintl.org/wp-content/uploads/2024/08/FY23_HKI-Financial-Statements-FINAL.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "20/20 compliance with BBB standards",
+          "confidence": 1,
+          "id": "[17]",
+          "quote": "Meets All 20 Standards: Yes",
+          "source_name": "BBB Wise Giving Alliance",
+          "source_type": "rating",
+          "source_url": "https://give.org/charity-reviews/health/helen-keller-intl-in-new-york-ny-9999-52223"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "100% independent board",
+          "confidence": 1,
+          "id": "[18]",
+          "quote": "Independent Board Members 100%",
+          "source_name": "Charity Navigator - Accountability",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/135562162#accountability"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "over $112 million in in-kind medicine",
+          "confidence": 1,
+          "id": "[19]",
+          "quote": "In-kind medicine distribution value: 112960950",
+          "source_name": "Form 990 (2021)",
+          "source_type": "form990",
+          "source_url": "https://helenkellerintl.org/wp-content/uploads/2024/06/HelenKellerIntl_FY21FinancialStatements.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "humanitarian service in Africa and Asia",
+          "confidence": 1,
+          "id": "[20]",
+          "quote": "Cambodia, Nepal, Senegal, Tanzania, Sierra Leone",
+          "source_name": "Charity Website - Geography",
+          "source_type": "website",
+          "source_url": "http://helenkellerintl.org/wp-content/uploads/2024/08/FY23_HKI-Financial-Statements-FINAL.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "alleviating extreme poverty",
+          "confidence": 1,
+          "id": "[21]",
+          "quote": "Cause Area: EXTREME_POVERTY",
+          "source_name": "Investment Memo Data",
+          "source_type": "website",
+          "source_url": "http://helenkellerintl.org/wp-content/uploads/2024/08/FY23_HKI-Financial-Statements-FINAL.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "high cost per beneficiary",
+          "confidence": 1,
+          "id": "[22]",
+          "quote": "$2063.76/beneficiary",
+          "source_name": "Score Details - Impact",
+          "source_type": "evaluation",
+          "source_url": "http://helenkellerintl.org/wp-content/uploads/2024/08/FY23_HKI-Financial-Statements-FINAL.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "9 outcome metrics tracked",
+          "confidence": 1,
+          "id": "[23]",
+          "quote": "Outcome Metrics Tracked: 9",
+          "source_name": "Candid Outcome Tracking",
+          "source_type": "rating",
+          "source_url": "https://app.candid.org/profile/6935964"
+        }
+      ],
+      "amal_score_rationale": "With a GMG score of 72/100, Helen Keller International is a highly transparent and efficient organization that demonstrates strong alignment with global health priorities and donor expectations.",
+      "amal_scores": {
+        "amal_score": 72,
+        "confidence_scores": {
+          "alignment": 37,
+          "data_confidence": 1,
+          "impact": 35
+        },
+        "confidence_tier": "HIGH",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "SADAQAH-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Strategic Documentation",
+          "citation_ids": [
+            "[15]"
+          ],
+          "context": "While operations are effective, the organization could <cite id=\"15\">document a clearer theory of change</cite> with an explicit causal pathway to further validate its long-term impact."
+        },
+        {
+          "area": "Geographic Expansion",
+          "citation_ids": [
+            "[16]"
+          ],
+          "context": "There is an opportunity to <cite id=\"16\">expand services to underserved geographies</cite> with limited nonprofit coverage to address unmet global health needs."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [
+          "[17]"
+        ],
+        "effectiveness_status": "PASS",
+        "finances_status": "PASS",
+        "governance_status": "PASS",
+        "meets_all_standards": true,
+        "review_url": "https://give.org/charity-reviews/health/helen-keller-intl-in-new-york-ny-9999-52223",
+        "standards_met": 20,
+        "standards_not_met": [],
+        "summary": "Meets all 20 BBB Wise Giving Alliance Standards for Charity Accountability"
+      },
+      "case_against": {
+        "citation_ids": [
+          "[22]"
+        ],
+        "mitigation_notes": "This cost reflects the intensive nature of surgical and specialized medical interventions.",
+        "risk_factors": [
+          "<cite id=\"22\">$2,063.76 average cost per beneficiary</cite>"
+        ],
+        "summary": "The primary limitation is a <cite id=\"22\">high cost per beneficiary</cite> compared to some high-volume global health peers."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "evaluation": 3,
+          "form990": 7,
+          "rating": 9,
+          "website": 4
+        },
+        "high_confidence_count": 23,
+        "total_count": 23,
+        "unique_sources": 8
+      },
+      "confidence": {
+        "data_freshness": "Financial data from 2023; Ratings from late 2024",
+        "data_gaps": [
+          "No RCT-level evidence available"
+        ],
+        "level": "HIGH",
+        "notes": "Extremely high data availability across all major transparency platforms.",
+        "score": 95,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "BBB",
+          "Candid",
+          "Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 95,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "No RCT-level evidence available"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 23,
+        "unique_sources": 8,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[20]",
+            "[21]",
+            "[16]"
+          ],
+          "explanation": "Strong alignment for Muslim donors due to its <cite id=\"20\">humanitarian service in Africa and Asia</cite> and focus on <cite id=\"21\">alleviating extreme poverty</cite>.",
+          "improvement": "Alignment could be enhanced by <cite id=\"16\">expanding services to additional underserved Muslim-majority regions</cite>."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[17]",
+            "[8]",
+            "[18]"
+          ],
+          "explanation": "Donors can trust this charity due to its <cite id=\"17\">20/20 compliance with BBB standards</cite>, <cite id=\"8\">Platinum Candid status</cite>, and <cite id=\"18\">100% independent board</cite>.",
+          "improvement": "Credibility is already near-perfect; maintaining current <cite id=\"8\">Platinum transparency levels</cite> is recommended."
+        },
+        "impact": {
+          "citation_ids": [
+            "[4]",
+            "[19]",
+            "[15]"
+          ],
+          "explanation": "Impact is driven by a <cite id=\"4\">82.8% program ratio</cite> and the distribution of <cite id=\"19\">over $112 million in in-kind medicine</cite>.",
+          "improvement": "Impact measurement would benefit from <cite id=\"15\">publishing a formal theory of change</cite> to link activities to long-term health outcomes."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "GLOBAL_HEALTH",
+        "citation_ids": [
+          "[5]",
+          "[23]"
+        ],
+        "evidence_rigor": "Grade B - Verified outcomes with 9 metrics tracked via Candid",
+        "geographic_focus": [
+          "Africa",
+          "Cambodia",
+          "Nepal",
+          "USA"
+        ],
+        "giving_style": "Direct service and medicine distribution",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "",
+          ""
+        ],
+        "zakat_status": "SADAQAH-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.078,
+        "annual_revenue": 145494796,
+        "citation_ids": [
+          "[2]",
+          "[13]",
+          "[11]"
+        ],
+        "cn_financial_score": 99,
+        "cn_overall_score": 99.5,
+        "fundraising_ratio": 0.03,
+        "industry_program_ratio": 0.75,
+        "peer_count": 14,
+        "peer_program_ratio_median": 0.83,
+        "program_expense_ratio": 0.828,
+        "reserves_months": 14.6,
+        "revenue_cagr_3yr": 27.7,
+        "transparency_score": 100,
+        "working_capital_months": 18.6,
+        "yearly_financials": [
+          {
+            "expenses": 94271740,
+            "net_assets": 145778832,
+            "revenue": 145494796,
+            "year": 2023
+          },
+          {
+            "expenses": 92115451,
+            "net_assets": 94226222,
+            "revenue": 121068878,
+            "year": 2022
+          },
+          {
+            "expenses": 77837206,
+            "net_assets": 65726751,
+            "revenue": 89163376,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[14]"
+        ],
+        "domestic_grants": 5947003,
+        "foreign_grants": 67778288,
+        "grant_count": 878,
+        "grant_strategy": "Distributes medicine and supports health research through academic and local partners.",
+        "is_significant_grantmaker": true,
+        "regions_served": [
+          "Africa",
+          "Asia"
+        ],
+        "top_recipients": [
+          "University of California Davis ($1.4M)"
+        ],
+        "total_grants": 73725291
+      },
+      "headline": "Helen Keller International honors its founder\u2019s legacy by delivering life-changing vision and nutrition interventions to vulnerable populations worldwide.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who value long-standing institutional stability and want to fund direct, life-saving medical interventions in the world's most vulnerable regions.",
+        "citation_ids": [
+          "[1]",
+          "[7]",
+          "[22]"
+        ],
+        "donor_motivations": [
+          "Want to support a century-old legacy of humanitarian service",
+          "Value high financial transparency and 4-star ratings",
+          "Prefer funding direct medical services like sight-saving surgeries",
+          "Seek to support large-scale nutrition programs in Africa and Asia"
+        ],
+        "giving_considerations": [
+          "Donations support a large-scale institution with significant assets",
+          "Interventions are specialized, leading to a higher cost per beneficiary than basic aid",
+          "The organization has a strong presence in both international and US domestic health"
+        ],
+        "not_ideal_for": "Donors specifically seeking to fulfill Zakat obligations or those looking for small-scale, grassroots community projects."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[23]"
+        ],
+        "evidence_grade": "B",
+        "evidence_grade_explanation": "Grade B reflects <cite id=\"23\">9 outcome metrics tracked</cite> and a verified direct service model, though a formal causal pathway document is still developing.",
+        "external_evaluations": [
+          "Candid Platinum outcomes data"
+        ],
+        "outcome_tracking_years": 3,
+        "rct_available": false,
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "The organization improves lives by integrating vision protection and nutritional enhancement into local health systems.",
+        "why_evidence_matters": "Evidence ensures that large-scale medicine distributions translate into measurable health improvements."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[1]",
+          "[13]"
+        ],
+        "founded_year": 1915,
+        "maturity_stage": "Institution",
+        "revenue_growth_3yr": 27.7,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "With a <cite id=\"13\">27.7% revenue growth rate</cite>, the organization is rapidly scaling to meet global health gaps.",
+        "strategic_priorities": [
+          "Eliminating diseases of poverty",
+          "Scaling Vitamin A distribution"
+        ],
+        "years_operating": 111
+      },
+      "organizational_capacity": {
+        "board_size": 31,
+        "ceo_compensation": 421457,
+        "ceo_compensation_pct_revenue": 0.56,
+        "ceo_name": "Kathy Spahn",
+        "citation_ids": [
+          "[2]",
+          "[11]",
+          "[18]"
+        ],
+        "employees_count": 100,
+        "geographic_reach": "Global (Africa, Asia, USA)",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 1,
+        "payroll_to_revenue_pct": 2.26,
+        "programs_count": 5,
+        "staff_per_million_revenue": 0.68,
+        "volunteers_count": 0
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[4]",
+          "[10]"
+        ],
+        "differentiator": "Distinguished by a <cite id=\"4\">82.8% program ratio</cite>, which is significantly higher than the <cite id=\"10\">peer median of 83.0%</cite>.",
+        "peer_group": "Extreme Poverty & Global Health",
+        "similar_orgs": [
+          "Syrian American Medical Society Foundation",
+          "Palestine Childrens Relief Fund"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Similar healthcare focus and size",
+          "name": "Syrian American Medical Society Foundation"
+        },
+        {
+          "differentiator": "Direct healthcare delivery in crisis zones",
+          "name": "Palestine Childrens Relief Fund"
+        },
+        {
+          "differentiator": "Smaller scale, mental health focus",
+          "name": "Khalil Center"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[7]"
+          ],
+          "detail": "The organization maintains an <cite id=\"7\">overall score of 99.99.5/100 from Charity Navigator</cite>, reflecting rigorous internal controls and transparency.",
+          "point": "Exceptional Financial Accountability"
+        },
+        {
+          "citation_ids": [
+            "[4]",
+            "[10]"
+          ],
+          "detail": "A substantial <cite id=\"4\">82.8% of total expenses</cite> are dedicated to direct program services, exceeding the <cite id=\"10\">peer median of 83.0%</cite>.",
+          "point": "High Program Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[11]"
+          ],
+          "detail": "The charity spends only <cite id=\"11\">$0.03 to raise every $1</cite> in contributions, maximizing the impact of every donation.",
+          "point": "Strong Fundraising Efficiency"
+        }
+      ],
+      "strengths_deep_dive": [
+        "Helen Keller International demonstrates remarkable financial health and operational stability, maintaining <cite id=\"12\">18.6 months of working capital</cite> to ensure program continuity. This fiscal resilience is paired with a <cite id=\"13\">3-year revenue CAGR of 27.7%</cite>, indicating strong growth and donor trust. Furthermore, the organization is a significant grantmaker, distributing <cite id=\"14\">$67,778,288 in foreign grants</cite> to support local health infrastructure and medicine distribution in crisis-affected regions."
+      ],
+      "summary": "Founded in <cite id=\"1\">1915</cite>, Helen Keller International is a global health organization dedicated to <cite id=\"2\">protecting vision and enhancing nutrition</cite> for vulnerable populations. The organization operates at a significant scale, reporting <cite id=\"3\">total revenue of $145,494,796</cite> in its most recent fiscal year. Its operations are characterized by high efficiency, with a <cite id=\"4\">program expense ratio of 82.8%</cite>, ensuring that the vast majority of funds directly support its mission. The charity's work spans across <cite id=\"5\">Africa, Asia, and the United States</cite>, focusing on large-scale interventions such as <cite id=\"6\">distributing Vitamin A</cite> and eliminating diseases of poverty. Helen Keller International maintains exceptional transparency and accountability standards, evidenced by its <cite id=\"7\">overall score of 99.99.5/100 from Charity Navigator</cite> and a <cite id=\"8\">Platinum Seal of Transparency from Candid</cite>. By leveraging a <cite id=\"9\">direct service delivery model</cite>, the organization provides life-changing medical interventions and nutritional support to millions of children and families in underserved regions.",
+      "zakat_guidance": {
+        "classification": null,
+        "eligibility": "SADAQAH-ELIGIBLE"
+      }
     }
   }
 }

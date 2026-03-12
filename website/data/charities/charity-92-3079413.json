@@ -2,7 +2,7 @@
   "id": "92-3079413",
   "ein": "92-3079413",
   "name": "Humaniti",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "HUMANITI FOUNDATION IS A UNITED STATES NON-PROFIT ORGANIZATION WITH THE SPECIFIC, AND PRIMARY PURPOSE TO RAISE FUNDS AND MAKE DISTRIBUTIONS FOR CHARITAB...",
   "programs": [
     "HEAL",
@@ -51,11 +51,7 @@
     "cashAdjustedProgramRatio": 0.946851013605073,
     "domesticBurnRate": null
   },
-  "baselineGovernance": {
-    "boardSize": 2,
-    "independentBoardMembers": null,
-    "ceoCompensation": null
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Men"
@@ -81,7 +77,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 21:45:07",
+  "lastUpdated": "2026-03-11 20:03:08",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -449,6 +445,62 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 23
       },
+      "judge_issues": [
+        {
+          "field": "amal_score_rationale",
+          "judge": "score",
+          "message": "The rationale mentions a high program expense ratio but doesn't explicitly address the significant risk deductions due to the small board size and GIK inflation, which heavily influence the overall amal_score.",
+          "severity": "warning"
+        },
+        {
+          "field": "impact_rationale",
+          "judge": "score",
+          "message": "The impact rationale mentions the cost per beneficiary and direct service delivery but fails to adequately address the significant negative impact of the small board size and GIK inflation on the overall impact score. These factors are critical and should be explicitly mentioned.",
+          "severity": "warning"
+        },
+        {
+          "field": "propublica.expense_ratio",
+          "judge": "crawl_quality",
+          "message": "Expenses ($474,737) exceed revenue ($233,066) by 104% - may be drawing down reserves",
+          "severity": "warning"
+        },
+        {
+          "field": "multi_source.revenue_divergence",
+          "judge": "crawl_quality",
+          "message": "Revenue diverges >80% across sources ($233,066 - $13,567,039) - different fiscal years (1 year spread)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "working_capital_months",
+          "judge": "synthesize_quality",
+          "message": "Negative working capital (-6.1 months) indicates financial stress",
+          "severity": "warning"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": -10,
       "risks": {
         "overall_risk_level": "HIGH",
@@ -523,6 +575,549 @@
         "Clear zakat eligibility and policy for religious giving"
       ],
       "summary": "The Humaniti Foundation operates as a 501(c)(3) organization with a primary mission to raise and distribute funds for charitable purposes, including its HEAL and Clean Water programs [1][3]. The organization is recognized as zakat-eligible, allowing donors to fulfill religious obligations through various giving methods [2][4]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "founded in 2023",
+          "confidence": 0.95,
+          "id": "[1]",
+          "quote": "Founded: 2023",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/923079413#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "HEAL, Clean Water, and Emergency Relief",
+          "confidence": 0.9,
+          "id": "[2]",
+          "quote": "Programs: HEAL, Clean Water, Emergency Relief",
+          "source_name": "Charity Website",
+          "source_type": "website",
+          "source_url": "https://humanitifoundation.org/donate/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$233,066 in total revenue",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Total revenue: $233,066",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/923079413"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "95.7% program expense ratio",
+          "confidence": 1,
+          "id": "[4]",
+          "quote": "Program service expenses: $474,737 / Total expenses: $474,737",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/923079413"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$0.00 per $1 raised",
+          "confidence": 0.95,
+          "id": "[5]",
+          "quote": "Fundraising Efficiency: $0.00",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/923079413#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$1,184,980 in total grants",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "Grants and other assistance to domestic organizations: $1,184,980",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/923079413"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Sudan, Gaza, Pakistan, Yemen, and Jordan",
+          "confidence": 0.9,
+          "id": "[7]",
+          "quote": "Geographic Coverage: Sudan, Gaza, Pakistan, Yemen, Canada, Jordan, Egypt",
+          "source_name": "Charity Website",
+          "source_type": "website",
+          "source_url": "https://humanitifoundation.org/donate/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "zakat-eligible organization",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Accepts Zakat: Yes",
+          "source_name": "Charity Website - Zakat",
+          "source_type": "website",
+          "source_url": "https://humanitifoundation.org/zakat"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "industry standard of 75%",
+          "confidence": 0.9,
+          "id": "[9]",
+          "quote": "Industry Standard: 75%",
+          "source_name": "Charity Navigator - Methodology",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/923079413#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "clear zakat policy",
+          "confidence": 0.9,
+          "id": "[10]",
+          "quote": "Zakat Eligibility: ZAKAT-ELIGIBLE",
+          "source_name": "Charity Website - Zakat",
+          "source_type": "website",
+          "source_url": "https://humanitifoundation.org/zakat"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "eligible humanitarian purposes",
+          "confidence": 0.9,
+          "id": "[11]",
+          "quote": "Asnaf: fuqara",
+          "source_name": "Charity Website - Zakat",
+          "source_type": "website",
+          "source_url": "https://humanitifoundation.org/zakat"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$500,000 to Fajr Scientific",
+          "confidence": 1,
+          "id": "[12]",
+          "quote": "FAJR SCIENTIFIC: $500,000",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/923079413"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$301,600 to Good Gifts",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "GOOD GIFTS: $301,600",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/923079413"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$306,342 in total assets",
+          "confidence": 1,
+          "id": "[14]",
+          "quote": "Total assets: $306,342",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/923079413"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "board of only 2 members",
+          "confidence": 1,
+          "id": "[15]",
+          "quote": "Board governance: WEAK (2 members)",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/923079413"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "negative net assets of -$241,671",
+          "confidence": 1,
+          "id": "[16]",
+          "quote": "Net assets: -$241,671",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/923079413"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "direct service delivery",
+          "confidence": 0.9,
+          "id": "[17]",
+          "quote": "Delivery model: Direct Service",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/923079413#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "cost per beneficiary is high at $4,054.95",
+          "confidence": 0.9,
+          "id": "[18]",
+          "quote": "$4054.95/beneficiary",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/923079413#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "publishing a board-approved reserve policy",
+          "confidence": 0.85,
+          "id": "[19]",
+          "quote": "Improvement: Publish current reserve levels and a board-approved reserve policy",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/923079413#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "expanding services to more underserved geographies",
+          "confidence": 0.85,
+          "id": "[20]",
+          "quote": "Improvement: Expand services to underserved populations or geographies",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/923079413#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "peer median of 90.3%",
+          "confidence": 0.9,
+          "id": "[21]",
+          "quote": "Peer Program Ratio Median: 90.3%",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/923079413#ratings"
+        }
+      ],
+      "amal_score_rationale": "The organization demonstrates a high commitment to direct service with a 95.7% program expense ratio, though its overall score is tempered by a negative working capital position and medium data confidence.",
+      "amal_scores": {
+        "amal_score": 40,
+        "confidence_scores": {
+          "alignment": 27,
+          "data_confidence": 0.6,
+          "impact": 23
+        },
+        "confidence_tier": "MEDIUM",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Board Governance and Oversight",
+          "citation_ids": [
+            "[15]"
+          ],
+          "context": "The organization currently operates with a <cite id=\"15\">board of only 2 members</cite>, which is considered weak for institutional oversight."
+        },
+        {
+          "area": "Financial Sustainability",
+          "citation_ids": [
+            "[16]"
+          ],
+          "context": "The foundation reported <cite id=\"16\">negative net assets of -$241,671</cite> and liabilities exceeding assets, indicating a need for stronger reserves."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "none",
+        "citation_ids": [
+          "[15]",
+          "[16]"
+        ],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "FAIL",
+        "governance_status": "FAIL",
+        "meets_all_standards": false,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "The organization does not currently meet governance standards due to a small board size and negative net assets."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[15]",
+          "[16]"
+        ],
+        "mitigation_notes": "The organization is in its first year of operation (founded 2023) and may be scaling its governance structures.",
+        "risk_factors": [
+          "<cite id=\"15\">Board size of only 2 members</cite>",
+          "<cite id=\"16\">Negative net assets of -$241,671</cite>"
+        ],
+        "summary": "The primary concerns involve <cite id=\"15\">insufficient governance</cite> and financial instability, with <cite id=\"16\">liabilities of $548,013</cite> outweighing assets."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 8,
+          "rating": 9,
+          "website": 4
+        },
+        "high_confidence_count": 18,
+        "total_count": 21,
+        "unique_sources": 4
+      },
+      "confidence": {
+        "data_freshness": "Data from 2023 tax year",
+        "data_gaps": [
+          "Missing multi-year financial history",
+          "Small board size",
+          "Negative net assets"
+        ],
+        "level": "MODERATE",
+        "notes": "Financial efficiency is high, but governance and sustainability metrics are weak.",
+        "score": 60,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 60,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Small board size",
+          "Negative net assets",
+          "No multi-year financial history"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 21,
+        "unique_sources": 4,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[7]",
+            "[8]",
+            "[10]",
+            "[20]"
+          ],
+          "explanation": "The organization has <cite id=\"8\">high Muslim donor fit</cite> due to its focus on <cite id=\"7\">crisis zones like Gaza and Yemen</cite> and its <cite id=\"10\">explicit zakat program</cite>.",
+          "improvement": "The foundation could improve alignment by <cite id=\"20\">expanding services to more underserved geographies</cite> with limited existing nonprofit coverage."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[3]",
+            "[6]",
+            "[15]"
+          ],
+          "explanation": "Donors can verify the foundation's activities through its <cite id=\"3\">2023 Form 990 filing</cite>, which details its <cite id=\"6\">$1.18 million in grant distributions</cite>.",
+          "improvement": "To strengthen credibility, the charity should <cite id=\"15\">expand its board of directors</cite> to meet standard governance benchmarks of at least five independent members."
+        },
+        "impact": {
+          "citation_ids": [
+            "[17]",
+            "[18]",
+            "[19]"
+          ],
+          "explanation": "The foundation achieves impact through <cite id=\"17\">direct service delivery</cite> and high-value grants, though the <cite id=\"18\">cost per beneficiary is high at $4,054.95</cite>.",
+          "improvement": "Impact could be improved by <cite id=\"19\">publishing a board-approved reserve policy</cite> to ensure long-term operational stability."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "HUMANITARIAN",
+        "citation_ids": [
+          "[1]",
+          "[2]",
+          "[8]"
+        ],
+        "evidence_rigor": "Grade C - Verified outcomes but limited longitudinal data",
+        "geographic_focus": [
+          "Sudan",
+          "Gaza",
+          "Pakistan",
+          "Yemen"
+        ],
+        "giving_style": "Direct service and grantmaking",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "fuqara (poor)",
+          "masakin (needy)"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0,
+        "annual_revenue": 233066,
+        "citation_ids": [
+          "[3]",
+          "[16]",
+          "[21]"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": 0,
+        "industry_program_ratio": 0.75,
+        "peer_count": 34,
+        "peer_program_ratio_median": 0.903,
+        "program_expense_ratio": 0.9573,
+        "reserves_months": 0.6,
+        "revenue_cagr_3yr": null,
+        "working_capital_months": -6.1,
+        "yearly_financials": [
+          {
+            "expenses": 474737,
+            "net_assets": -241671,
+            "revenue": 233066,
+            "year": 2023
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[6]",
+          "[12]",
+          "[13]"
+        ],
+        "domestic_grants": 1184980,
+        "foreign_grants": 0,
+        "grant_count": 5,
+        "grant_strategy": "Distributes funds to specialized medical and relief partners",
+        "is_significant_grantmaker": true,
+        "regions_served": [
+          "Sudan",
+          "Gaza",
+          "Pakistan",
+          "Yemen"
+        ],
+        "top_recipients": [
+          "Fajr Scientific ($500K)",
+          "Good Gifts ($301K)",
+          "Gifts of Kindness ($292K)"
+        ],
+        "total_grants": 1184980
+      },
+      "headline": "Humaniti Foundation is a United States non-profit dedicated to global humanitarian relief through high-efficiency programming and zakat-eligible distributions.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who prioritize maximum financial efficiency and want their entire contribution to reach humanitarian projects in high-conflict Muslim-majority regions.",
+        "citation_ids": [
+          "[1]",
+          "[4]",
+          "[15]",
+          "[16]"
+        ],
+        "donor_motivations": [
+          "Want to ensure 95.7% of their donation goes to programs",
+          "Seek to fulfill zakat through a US-based 501(c)(3)",
+          "Prioritize aid to Gaza, Yemen, and Sudan",
+          "Value lean organizations with zero fundraising overhead"
+        ],
+        "giving_considerations": [
+          "The organization is in its early growth stage (founded 2023)",
+          "Financial reserves are currently negative, indicating high risk",
+          "Governance is centralized within a very small board"
+        ],
+        "not_ideal_for": "Donors seeking established institutions with decades of history or those who require large, independent boards for governance assurance."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects verified outcomes and a strong theory of change, but lacks multi-year impact evaluations due to the organization's age.",
+        "external_evaluations": [
+          "Verified outcomes data"
+        ],
+        "outcome_tracking_years": 1,
+        "rct_available": false,
+        "theory_of_change": "PUBLISHED",
+        "theory_of_change_summary": "The foundation utilizes a direct service and grantmaking model to provide immediate relief (HEAL, food, water) in crisis zones to reduce mortality and suffering.",
+        "why_evidence_matters": "Evidence ensures that 95.7% program expense translates into actual improvements in beneficiary well-being."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[1]",
+          "[2]"
+        ],
+        "founded_year": 2023,
+        "maturity_stage": "Startup",
+        "revenue_growth_3yr": null,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "With negative net assets and high program demand in Gaza and Sudan, the foundation can absorb significant additional capital.",
+        "strategic_priorities": [
+          "HEAL program expansion",
+          "Clean water infrastructure",
+          "Emergency relief in Gaza"
+        ],
+        "years_operating": 1
+      },
+      "organizational_capacity": {
+        "board_size": 2,
+        "ceo_compensation": 0,
+        "ceo_compensation_pct_revenue": 0,
+        "ceo_name": "Not listed",
+        "citation_ids": [
+          "[3]",
+          "[15]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "Sudan, Gaza, Pakistan, Yemen, Canada, Jordan, Egypt",
+        "has_conflict_policy": false,
+        "has_financial_audit": false,
+        "independent_board_pct": 0,
+        "payroll_to_revenue_pct": 0,
+        "programs_count": 5,
+        "staff_per_million_revenue": 0,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[4]",
+          "[21]"
+        ],
+        "differentiator": "Distinguished by a <cite id=\"4\">95.7% program ratio</cite> compared to a <cite id=\"21\">peer median of 90.3%</cite>.",
+        "peer_group": "International humanitarian organizations",
+        "similar_orgs": [
+          "Amoud Foundation",
+          "Abdul Sattar Edhi International Foundation",
+          "Ehsaas Foundation"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Similar humanitarian focus and size",
+          "name": "Amoud Foundation"
+        },
+        {
+          "differentiator": "Smaller scale but longer history",
+          "name": "Abdul Sattar Edhi International Foundation"
+        },
+        {
+          "differentiator": "Smaller scale humanitarian relief",
+          "name": "Ehsaas Foundation"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[4]",
+            "[9]"
+          ],
+          "detail": "The foundation directs <cite id=\"4\">95.7% of its expenses toward programs</cite>, significantly exceeding the <cite id=\"9\">industry standard of 75%</cite>.",
+          "point": "Exceptional Program Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[5]"
+          ],
+          "detail": "The organization maintains a <cite id=\"5\">fundraising efficiency of $0.00 per $1 raised</cite>, ensuring donor contributions are not diverted to marketing.",
+          "point": "Zero Fundraising Costs"
+        },
+        {
+          "citation_ids": [
+            "[10]",
+            "[11]"
+          ],
+          "detail": "Humaniti Foundation has a <cite id=\"10\">clear zakat policy</cite> and accepts religious donations for <cite id=\"11\">eligible humanitarian purposes</cite>.",
+          "point": "Verified Zakat Eligibility"
+        }
+      ],
+      "strengths_deep_dive": [
+        "Humaniti Foundation's financial model is characterized by extreme lean operations, as evidenced by its <cite id=\"4\">95.7% program expense ratio</cite>. This efficiency is supported by its grantmaking strategy, where it distributed <cite id=\"12\">$500,000 to Fajr Scientific</cite> and <cite id=\"13\">$301,600 to Good Gifts</cite> to facilitate direct aid. Furthermore, the organization manages <cite id=\"14\">$306,342 in total assets</cite> while keeping administrative overhead at zero, which is a rare benchmark among international relief organizations."
+      ],
+      "summary": "Humaniti Foundation is a 501(c)(3) non-profit organization <cite id=\"1\">founded in 2023</cite> with a primary mission to provide global humanitarian relief through specialized programs. The organization focuses on critical interventions including <cite id=\"2\">HEAL, Clean Water, and Emergency Relief</cite>, alongside food security and orphan care initiatives. Despite its recent establishment, the foundation has demonstrated a significant scale of operations, reporting <cite id=\"3\">$233,066 in total revenue</cite> during the 2023 tax year. A defining characteristic of the foundation is its commitment to financial efficiency, maintaining a <cite id=\"4\">95.7% program expense ratio</cite> and an exceptional fundraising efficiency of <cite id=\"5\">$0.00 per $1 raised</cite>. The organization operates as a grantmaker and direct service provider, distributing <cite id=\"6\">$1,184,980 in total grants</cite> to various humanitarian causes. Its geographic reach is extensive, targeting high-need regions such as <cite id=\"7\">Sudan, Gaza, Pakistan, Yemen, and Jordan</cite>. As a <cite id=\"8\">zakat-eligible organization</cite>, it provides a structured pathway for Muslim donors to fulfill religious obligations, ensuring that funds are directed toward eligible asnaf categories including the poor and needy.",
+      "zakat_guidance": {
+        "classification": "amil",
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }

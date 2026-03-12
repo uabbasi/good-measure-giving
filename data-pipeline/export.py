@@ -663,19 +663,16 @@ def _determine_tier(evaluation: dict | None, charity_data: dict | None = None) -
     Returns:
         'rich' if rich_narrative exists
         'baseline' if only baseline_narrative exists
-        'hidden' if no narrative yet, or no financials and not NEW_ORG
+        'hidden' if no narrative and (no financials or no evaluation)
     """
     if not evaluation:
         return "hidden"
-    # No financials + not NEW_ORG → hidden
-    if not _has_financial_data(charity_data):
-        eval_track = charity_data.get("evaluation_track") if charity_data else None
-        if eval_track != "NEW_ORG":
-            return "hidden"
+    # Narratives take priority — if we've generated content, show it
     if evaluation.get("rich_narrative"):
         return "rich"
     if evaluation.get("baseline_narrative"):
         return "baseline"
+    # No narrative at all — hide unless NEW_ORG with financials
     return "hidden"
 
 

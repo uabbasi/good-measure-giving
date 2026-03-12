@@ -2,7 +2,7 @@
   "id": "23-2202414",
   "ein": "23-2202414",
   "name": "International Institute of Islamic Thought",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": null,
   "programs": [
     "Muslim Leadership Training Program",
@@ -49,11 +49,7 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": 0.7498942868521478
   },
-  "baselineGovernance": {
-    "boardSize": 3,
-    "independentBoardMembers": null,
-    "ceoCompensation": null
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": null,
     "geographicCoverage": [
@@ -79,7 +75,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": false
   },
-  "lastUpdated": "2026-03-09 21:45:38",
+  "lastUpdated": "2026-03-11 20:04:42",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -551,6 +547,50 @@
         "rubric_archetype": "SYSTEMIC_CHANGE",
         "score": 33
       },
+      "judge_issues": [
+        {
+          "field": "risks.risk_summary",
+          "judge": "score",
+          "message": "The risk summary mentions 'High domestic burn: 75% of expenses stay in the US despite international operations' as the key concern. While this is technically correct, the grants data shows that the organization is making significant grants to foreign organizations for 'Academic Outreach'. This nuance could be added to the risk summary to provide a more complete picture.",
+          "severity": "info"
+        },
+        {
+          "field": "mission",
+          "judge": "basic_info",
+          "message": "Missing mission: Mission statement needed for donor understanding",
+          "severity": "warning"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.evaluations.evaluators[0].url",
+          "judge": "discover_quality",
+          "message": "Evaluation source domain 'givefreely.com' is not a known trusted evaluator",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.evaluations.evaluators[2].url",
+          "judge": "discover_quality",
+          "message": "Evaluation source domain 'cidt.org.uk' is not a known trusted evaluator",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": -6,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -643,6 +683,387 @@
         "Extensive track record in academic publishing, addressing modern issues like bioethics and human rights through an Islamic lens."
       ],
       "summary": "The International Institute of Islamic Thought (IIIT) focuses on the reform of Islamic thought and the integration of knowledge through scholarly publications and educational programs [1][3]. The organization reported a total revenue of $8,955,918 and operates key initiatives such as the Muslim Leadership Training Program and the Winter Student Program (WSP) in Islamic Studies [7][8]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "scholarly publication on Usul al-Fiqh",
+          "confidence": 0.9,
+          "id": "[1]",
+          "quote": "Scholarly publication on Usul al-Fiqh",
+          "source_name": "IIIT - Islam Method Design",
+          "source_type": "website",
+          "source_url": "https://iiit.org/wp-content/uploads/islam_method_design-mid_light.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "human rights, gender equality, and bioethics",
+          "confidence": 0.9,
+          "id": "[2]",
+          "quote": "Scholarly engagement with modern issues (human rights, gender equality, bioethics)",
+          "source_name": "IIIT - Islamic Legal Methodology Review",
+          "source_type": "website",
+          "source_url": "https://iiit.org/wp-content/uploads/Book-Review-ERIOUICHE-MOHAMMED-Islamic-Legal-Methodology.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "published over 600 titles",
+          "confidence": 0.95,
+          "id": "[3]",
+          "quote": "Total titles published: 600",
+          "source_name": "IIIT - Islamic Legal Methodology Book",
+          "source_type": "website",
+          "source_url": "https://iiit.org/wp-content/uploads/Islamic-Legal-Methodology-A-New-Perspective-On-U\u015f\u016dl-Al-Fiqh.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Sadaqah-eligible only",
+          "confidence": 0.85,
+          "id": "[6]",
+          "quote": "Donate to IIIT",
+          "source_name": "IIIT - Donate",
+          "source_type": "website",
+          "source_url": "https://iiit.org/en/donate-iiit/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "95.0% program expense ratio",
+          "confidence": 0.95,
+          "id": "[7]",
+          "quote": "Program Expense Ratio: 95.0%",
+          "source_name": "Charity Navigator - IIIT",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/232202414#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $8,955,918",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Total Revenue: $8,955,918",
+          "source_name": "Form 990 (2023) - IIIT",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/232202414"
+        }
+      ],
+      "amal_score_rationale": "The organization earns a moderate score due to its high financial efficiency and specialized academic output, though it lacks the broad donor alignment and direct impact data typical of high-scoring charities.",
+      "amal_scores": {
+        "amal_score": 49,
+        "confidence_scores": {
+          "alignment": 22,
+          "data_confidence": 0.55,
+          "impact": 33
+        },
+        "confidence_tier": "MEDIUM",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "SADAQAH-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Transparency and Impact Reporting",
+          "citation_ids": [
+            "[7]"
+          ],
+          "context": "There is <cite id=\"7\">limited public data on specific beneficiary counts</cite>, making it difficult to assess the cost-effectiveness of individual training programs."
+        },
+        {
+          "area": "Financial Sustainability and Reserves",
+          "citation_ids": [
+            "[7]"
+          ],
+          "context": "The organization currently reports <cite id=\"7\">0.0 months of working capital in reserve</cite>, indicating a potential vulnerability to revenue fluctuations."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "UNKNOWN",
+        "governance_status": "UNKNOWN",
+        "meets_all_standards": false,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "No BBB Wise Giving Alliance evaluation is currently available for this organization."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[7]",
+          "[8]"
+        ],
+        "mitigation_notes": "The organization maintains a long track record of 45 years, suggesting institutional stability despite low liquid reserves.",
+        "risk_factors": [
+          "<cite id=\"7\">0.0 months of working capital</cite> available for operations",
+          "<cite id=\"8\">Small board size (3 members)</cite> limits diverse governance oversight"
+        ],
+        "summary": "The primary concerns involve <cite id=\"8\">high domestic burn</cite>, with 95.0% of expenses remaining in the US despite a global mission, and <cite id=\"7\">low financial reserves</cite>."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 6,
+          "rating": 5,
+          "website": 4
+        },
+        "high_confidence_count": 12,
+        "total_count": 15,
+        "unique_sources": 5
+      },
+      "confidence": {
+        "data_freshness": "Financial data from 2023",
+        "data_gaps": [
+          "Missing employee count",
+          "No Charity Navigator star rating"
+        ],
+        "level": "MEDIUM",
+        "notes": "Financial data is strong, but governance and impact metrics are limited.",
+        "score": 55,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 55,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Missing employee count",
+          "No Charity Navigator star rating",
+          "Limited beneficiary impact metrics"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 15,
+        "unique_sources": 5,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[2]",
+            "[6]"
+          ],
+          "explanation": "The organization is a strong fit for those prioritizing <cite id=\"2\">intellectual reform and academic research</cite>, though it is <cite id=\"6\">Sadaqah-eligible only</cite>.",
+          "improvement": "The organization could improve alignment for Muslim donors by <cite id=\"6\">clearly stating its stance on Sadaqah Jariyah</cite> opportunities within its research endowments."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[8]"
+          ],
+          "explanation": "Donors can verify the organization's long-standing history since <cite id=\"8\">1981</cite> and its <cite id=\"8\">100% independent board</cite>. However, credibility is tempered by <cite id=\"8\">minimal board size</cite> and a lack of third-party transparency seals.",
+          "improvement": "To strengthen credibility, the charity could <cite id=\"8\">expand its board of directors</cite> beyond the current three members to enhance oversight."
+        },
+        "impact": {
+          "citation_ids": [
+            "[3]",
+            "[7]",
+            "[8]"
+          ],
+          "explanation": "Impact is driven by a <cite id=\"7\">96.6% program ratio</cite> and a <cite id=\"3\">massive library of 600+ publications</cite>. The delivery model focuses on <cite id=\"8\">capacity building</cite> through grants and training.",
+          "improvement": "Impact measurement would benefit from <cite id=\"7\">publishing consistent beneficiary counts</cite> to allow for cost-per-student or cost-per-scholar analysis."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "EDUCATION & RESEARCH",
+        "citation_ids": [
+          "[7]",
+          "[8]"
+        ],
+        "evidence_rigor": "Grade B - Strong theory of change and verified outcomes",
+        "geographic_focus": [
+          "USA",
+          "Canada",
+          "International"
+        ],
+        "giving_style": "Academic & Capacity Building",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [],
+        "zakat_status": "SADAQAH-ONLY"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.034,
+        "annual_revenue": 8955918,
+        "citation_ids": [
+          "[7]",
+          "[8]"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": 0,
+        "industry_program_ratio": 0.75,
+        "peer_count": 22,
+        "peer_program_ratio_median": 0.896,
+        "program_expense_ratio": 0.95,
+        "reserves_months": 0,
+        "revenue_cagr_3yr": -5.8,
+        "working_capital_months": 0,
+        "yearly_financials": [
+          {
+            "expenses": 9918350,
+            "net_assets": -23497,
+            "revenue": 8955918,
+            "year": 2023
+          },
+          {
+            "expenses": 15758286,
+            "net_assets": 934032,
+            "revenue": 16355779,
+            "year": 2022
+          },
+          {
+            "expenses": 15016577,
+            "net_assets": -58061,
+            "revenue": 10094733,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[8]"
+        ],
+        "domestic_grants": 3166500,
+        "foreign_grants": 2480636,
+        "grant_count": 19,
+        "grant_strategy": "Supports academic foundations and religious centers to build community infrastructure",
+        "is_significant_grantmaker": true,
+        "regions_served": [
+          "USA",
+          "International"
+        ],
+        "top_recipients": [
+          "YORK FOUNDATION ($3,000,000)",
+          "DIYANET CENTER OF AMERICA ($50,000)"
+        ],
+        "total_grants": 5647136
+      },
+      "headline": "The International Institute of Islamic Thought (IIIT) is a scholarly organization dedicated to the intellectual advancement of Islamic thought through academic research and leadership training.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who value long-term intellectual investment and want to fund the academic foundations of modern Islamic thought.",
+        "citation_ids": [
+          "[7]",
+          "[8]"
+        ],
+        "donor_motivations": [
+          "Want to support the integration of Islamic values with modern social sciences",
+          "Value scholarly research and academic publishing as a form of Sadaqah Jariyah",
+          "Prefer funding institutional capacity and leadership training over direct aid",
+          "Trust established organizations with a 40+ year history"
+        ],
+        "giving_considerations": [
+          "",
+          "Impact is measured in intellectual output and scholarly influence rather than lives saved",
+          "The organization has a very high domestic spending ratio relative to its international mission"
+        ],
+        "not_ideal_for": ""
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[2]",
+          "[3]"
+        ],
+        "evidence_grade": "B",
+        "evidence_grade_explanation": "Grade B reflects a strong theory of change and verified scholarly outputs, though it lacks quantitative beneficiary impact data.",
+        "external_evaluations": [
+          "Scholarly book reviews"
+        ],
+        "outcome_tracking_years": 3,
+        "rct_available": false,
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "IIIT creates impact by producing scholarly content and training leaders who can apply Islamic principles to modern societal challenges.",
+        "why_evidence_matters": "Evidence in research helps ensure that the intellectual output is relevant and academically rigorous."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[7]",
+          "[8]"
+        ],
+        "founded_year": 1981,
+        "maturity_stage": "Institution",
+        "revenue_growth_3yr": -5.8,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "With a <cite id=\"8\">negative 3-year revenue CAGR of -5.8%</cite> and <cite id=\"7\">zero months of reserves</cite>, the organization has significant capacity for new funding.",
+        "strategic_priorities": [
+          "Advancing Education in Muslim Societies (AEMS)",
+          "Islamic Studies Pedagogy"
+        ],
+        "years_operating": 45
+      },
+      "organizational_capacity": {
+        "board_size": 3,
+        "ceo_compensation": null,
+        "ceo_compensation_pct_revenue": null,
+        "ceo_name": "Not Listed",
+        "citation_ids": [
+          "[7]",
+          "[8]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "International (USA, Canada, Global)",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 1,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 5,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[7]"
+        ],
+        "differentiator": "Distinguished by an <cite id=\"7\">exceptionally high 96.6% program ratio</cite> compared to the <cite id=\"7\">peer median of 89.6%</cite>.",
+        "peer_group": "Global Islamic Education and Research",
+        "similar_orgs": [
+          "Yaqeen Institute for Islamic Research",
+          "INSTITUTE FOR SOCIAL POLICY AND UNDERSTANDING",
+          "The Family & Youth Institute"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Larger organization with broader public outreach",
+          "name": "Yaqeen Institute for Islamic Research"
+        },
+        {
+          "differentiator": "Focuses more on social policy and US-based research",
+          "name": "INSTITUTE FOR SOCIAL POLICY AND UNDERSTANDING"
+        },
+        {
+          "differentiator": "Smaller organization focused on mental health and youth",
+          "name": "The Family & Youth Institute"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[7]"
+          ],
+          "detail": "The organization directs <cite id=\"7\">96.6% of its total expenses</cite> toward its educational and research programs, significantly exceeding the <cite id=\"7\">industry standard of 75%</cite>.",
+          "point": "Exceptional Program Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[7]"
+          ],
+          "detail": "IIIT demonstrates remarkable fiscal discipline by spending <cite id=\"7\">$0.00 to raise every $1</cite> in charitable contributions.",
+          "point": "Highly Efficient Fundraising"
+        },
+        {
+          "citation_ids": [
+            "[1]",
+            "[3]"
+          ],
+          "detail": "The institute has established a massive intellectual footprint with <cite id=\"3\">over 600 published titles</cite> and ongoing <cite id=\"1\">scholarly publications on Usul al-Fiqh</cite>.",
+          "point": "Prolific Academic Output"
+        }
+      ],
+      "strengths_deep_dive": [
+        "IIIT's primary strength lies in its role as an intellectual engine for the Muslim community. By focusing on <cite id=\"2\">scholarly engagement with modern issues</cite>, the institute provides a framework for navigating complex ethical landscapes. Its financial structure is notably lean, with <cite id=\"8\">contributions totaling $8,928,813</cite> fueling a massive grantmaking apparatus that supports institutions like the <cite id=\"8\">York Foundation and the Diyanet Center of America</cite>. This model allows IIIT to act as both a content creator and a strategic funder within the Islamic academic ecosystem."
+      ],
+      "summary": "The International Institute of Islamic Thought (IIIT) is a specialized academic institution <cite id=\"8\">founded in 1981</cite> to promote the intellectual advancement of Islamic thought through research and leadership training. Operating with a <cite id=\"8\">total revenue of $8,955,918</cite>, the organization serves as a global hub for scholars and students seeking to integrate traditional Islamic knowledge with modern social sciences. IIIT maintains a highly efficient financial model, dedicating a <cite id=\"7\">95.0% program expense ratio</cite> to its core missions of publishing and education. The institute has a prolific output, having <cite id=\"3\">published over 600 titles</cite> that address critical contemporary issues such as <cite id=\"2\">human rights, gender equality, and bioethics</cite>. Beyond publishing, IIIT fosters the next generation of thinkers through initiatives like the <cite id=\"7\">Winter Student Program (WSP) in Islamic Studies</cite> and the <cite id=\"7\">Muslim Leadership Training Program</cite>. While the organization is a significant grantmaker, distributing <cite id=\"8\">$5,647,136 in total grants</cite> to both domestic and foreign recipients, its focus remains primarily on <cite id=\"8\">academic capacity building</cite> rather than direct humanitarian relief.",
+      "zakat_guidance": {
+        "classification": null,
+        "eligibility": "SADAQAH-ELIGIBLE"
+      }
     }
   }
 }

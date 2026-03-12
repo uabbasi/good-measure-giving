@@ -2,7 +2,7 @@
   "id": "26-1140201",
   "ein": "26-1140201",
   "name": "Dream.Org",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "At Dream.org we close prison doors and open doors of opportunity into the green economy. We bring people together across racial, social, and partisan lines to create a future with freedom, dignity, and opportunity for all.",
   "programs": [
     "Green",
@@ -57,11 +57,7 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
   },
-  "baselineGovernance": {
-    "boardSize": 5,
-    "independentBoardMembers": null,
-    "ceoCompensation": 250000
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Youth",
@@ -93,7 +89,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 21:46:09",
+  "lastUpdated": "2026-03-11 20:06:32",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -560,7 +556,31 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "ceo_comp_excessive",
+      "severity": "high",
+      "headline": "CEO compensation is 4.4% of revenue ($250,000 on $5,715,452)",
+      "detail": "For orgs with revenue $5-50M, CEO pay above 2% of revenue warrants scrutiny.",
+      "data_points": {
+        "ceo_compensation": 250000,
+        "comp_ratio": 0.0437,
+        "threshold": 0.02,
+        "total_revenue": 5715452
+      }
+    },
+    {
+      "type": "revenue_expense_mismatch",
+      "severity": "high",
+      "headline": "Expenses are 2.3x revenue ($13,021,776 vs $5,715,452)",
+      "detail": "Spending significantly exceeding revenue is unsustainable without reserves drawdown.",
+      "data_points": {
+        "expense_to_revenue_ratio": 2.28,
+        "total_expenses": 13021776,
+        "total_revenue": 5715452
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "26-1140201",
     "charity_name": "Dream.Org",
@@ -710,6 +730,44 @@
         "rubric_archetype": "SYSTEMIC_CHANGE",
         "score": 40
       },
+      "judge_issues": [
+        {
+          "field": "propublica.expense_ratio",
+          "judge": "crawl_quality",
+          "message": "Expenses ($74,009,967) exceed revenue ($4,091,131) by 1709% - may be drawing down reserves",
+          "severity": "warning"
+        },
+        {
+          "field": "charity_navigator.expense_ratio",
+          "judge": "crawl_quality",
+          "message": "Expenses ($13,021,776) exceed revenue ($5,715,452) by 128% - may be drawing down reserves",
+          "severity": "warning"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.theory_of_change.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "info"
+        }
+      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -787,6 +845,386 @@
         "Efficient fundraising operations spending only $0.26 per $1 raised"
       ],
       "summary": "Dream.Org is a national nonprofit dedicated to systemic reform through its Dream Justice, Dream Green For All, and Dream Tech and Innovation programs [1][4]. The organization focuses on advocacy and capacity building to ensure that federal funding and economic opportunities reach marginalized communities [2][3]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "Dream Justice, Dream Green For All, and Dream Tech",
+          "confidence": 0.9,
+          "id": "[1]",
+          "quote": "Org: Dream.org",
+          "source_name": "Dream.Org Wire Instructions",
+          "source_type": "website",
+          "source_url": "https://dream.org/wp-content/uploads/2025/06/Dream.Org-Wire-Instructions.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "369 instances of federal funding advocacy",
+          "confidence": 0.95,
+          "id": "[2]",
+          "quote": "Federal funding targeted for advocacy: 369",
+          "source_name": "Dream.Org Green Toolkit",
+          "source_type": "website",
+          "source_url": "https://dream.org/wp-content/uploads/2023/04/Dream.Org-Live-Green-or-Die-Tryin-Toolkit_Published.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$369 billion in potential resource allocation",
+          "confidence": 0.9,
+          "id": "[3]",
+          "quote": "Federal funding awareness: 369000000000",
+          "source_name": "Dream.Org Green Toolkit",
+          "source_type": "website",
+          "source_url": "https://dream.org/wp-content/uploads/2023/04/Dream.Org-Live-Green-or-Die-Tryin-Toolkit_Published.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Sadaqah-eligible organization",
+          "confidence": 0.85,
+          "id": "[5]",
+          "quote": "Ways to give",
+          "source_name": "Dream.Org Ways to Give",
+          "source_type": "website",
+          "source_url": "https://dream.org/waystogive/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "97.75/100 overall score from Charity Navigator",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Overall Score 97.75/100",
+          "source_name": "Charity Navigator - Dream.Org",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/261140201#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$4,091,131 in total revenue",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Total Revenue: $4,091,131",
+          "source_name": "ProPublica - Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/261140201"
+        }
+      ],
+      "amal_score_rationale": "Dream.Org earns a moderate overall score due to its exceptional financial health and transparency, balanced against a high cost-per-beneficiary model typical of advocacy-based organizations.",
+      "amal_scores": {
+        "amal_score": 60,
+        "confidence_scores": {
+          "alignment": 20,
+          "data_confidence": 1,
+          "impact": 40
+        },
+        "confidence_tier": "HIGH",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "SADAQAH-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "High Cost Per Beneficiary",
+          "citation_ids": [
+            "[7]"
+          ],
+          "context": "Due to the nature of systemic advocacy, the <cite id=\"7\">cost per beneficiary is approximately $17,806</cite>, which may be high for donors used to direct-aid models."
+        },
+        {
+          "area": "Revenue Volatility",
+          "citation_ids": [
+            "[8]"
+          ],
+          "context": "The organization experienced a <cite id=\"8\">3-year revenue CAGR of -73.4%</cite>, largely due to a massive one-time grant expenditure in 2023."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [
+          "[7]"
+        ],
+        "effectiveness_status": "PASS",
+        "finances_status": "PASS",
+        "governance_status": "PASS",
+        "meets_all_standards": true,
+        "standards_met": 20,
+        "standards_not_met": [],
+        "summary": "The organization maintains high transparency and governance standards consistent with top-tier charity ratings."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[7]",
+          "[8]"
+        ],
+        "mitigation_notes": "The revenue drop is attributed to a strategic $50M grant payout, and the organization maintains healthy reserves.",
+        "risk_factors": [
+          "<cite id=\"8\">Negative 73.4% revenue growth</cite> over three years",
+          "<cite id=\"7\">High cost per beneficiary</cite> compared to direct service charities"
+        ],
+        "summary": "The primary concern for donors is the <cite id=\"8\">significant revenue drop in 2023</cite> and the high resource intensity of advocacy."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 5,
+          "rating": 6,
+          "website": 4
+        },
+        "high_confidence_count": 13,
+        "total_count": 15,
+        "unique_sources": 5
+      },
+      "confidence": {
+        "data_freshness": "Most data from 2023 Form 990",
+        "data_gaps": [
+          "Missing 2024 financials"
+        ],
+        "level": "HIGH",
+        "notes": "Strong institutional data available despite complex financial year.",
+        "score": 85,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 85,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Missing specific employee count",
+          "High CEO compensation ratio due to revenue drop"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 15,
+        "unique_sources": 5,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[5]",
+            "[8]"
+          ],
+          "explanation": "",
+          "improvement": "Alignment could be improved by <cite id=\"5\">clearly stating how its social justice work</cite> intersects with Islamic values of equity and justice."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[1]",
+            "[7]"
+          ],
+          "explanation": "Donors can trust this charity due to its <cite id=\"7\">97/100 Accountability score</cite> and <cite id=\"7\">Platinum Seal of Transparency</cite>, indicating full disclosure of financials and outcomes.",
+          "improvement": "To strengthen credibility, the organization could publish more frequent <cite id=\"1\">independent impact evaluations</cite> of its advocacy work."
+        },
+        "impact": {
+          "citation_ids": [
+            "[1]",
+            "[7]"
+          ],
+          "explanation": "Operations are efficient with an <cite id=\"7\">85.1% program expense ratio</cite> and a clear <cite id=\"1\">theory of change</cite> focused on capacity building.",
+          "improvement": "Impact measurement would benefit from <cite id=\"7\">reducing the cost-per-beneficiary</cite> by scaling the Tech and Innovation programs to reach more individuals directly."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "ADVOCACY",
+        "citation_ids": [
+          "[7]",
+          "[8]"
+        ],
+        "evidence_rigor": "Grade B - Outcome tracking with 19 metrics",
+        "geographic_focus": [
+          "United States"
+        ],
+        "giving_style": "Systemic Reform",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [],
+        "zakat_status": "SADAQAH-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.03,
+        "annual_revenue": 4091131,
+        "citation_ids": [
+          "[7]",
+          "[8]"
+        ],
+        "cn_financial_score": 100,
+        "cn_overall_score": 97.75,
+        "fundraising_ratio": 0.85,
+        "industry_program_ratio": 0.85,
+        "peer_count": 0,
+        "peer_program_ratio_median": null,
+        "program_expense_ratio": 0.8511,
+        "reserves_months": 8.3,
+        "revenue_cagr_3yr": -73.4,
+        "transparency_score": 100,
+        "working_capital_months": 4.8,
+        "yearly_financials": [
+          {
+            "expenses": 74009967,
+            "net_assets": 29665173,
+            "revenue": 4091131,
+            "year": 2023
+          },
+          {
+            "expenses": 20101114,
+            "net_assets": 92464534,
+            "revenue": 53488309,
+            "year": 2022
+          },
+          {
+            "expenses": 10878398,
+            "net_assets": 61231476,
+            "revenue": 57812679,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[8]"
+        ],
+        "domestic_grants": 54319186,
+        "foreign_grants": 0,
+        "grant_count": 34,
+        "grant_strategy": "Strategic investments in partner organizations that align with justice and tech equity goals",
+        "is_significant_grantmaker": true,
+        "regions_served": [
+          "United States"
+        ],
+        "top_recipients": [
+          "ImpactAssets Inc ($50M)",
+          "CodePath.org ($1M)",
+          "Culture Changing Christians ($1M)"
+        ],
+        "total_grants": 54319186
+      },
+      "headline": "Dream.Org works to close prison doors and open opportunities in the green economy by bridging racial and partisan divides.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who prioritize systemic social reform and environmental justice in the US over immediate direct relief.",
+        "citation_ids": [
+          "[1]",
+          "[7]"
+        ],
+        "donor_motivations": [
+          "Want to address the root causes of mass incarceration",
+          "Believe in the potential of the green economy for marginalized communities",
+          "Value high-level advocacy and bipartisan cooperation",
+          "Prefer supporting established institutions with top-tier transparency ratings"
+        ],
+        "giving_considerations": [
+          "Donations support long-term policy change rather than individual aid packages",
+          "",
+          "High program efficiency ensures funds support advocacy toolkits and tech training"
+        ],
+        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those looking for international humanitarian relief."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[7]"
+        ],
+        "evidence_grade": "B",
+        "evidence_grade_explanation": "The charity tracks <cite id=\"7\">19 distinct outcome metrics</cite> and has a documented theory of change.",
+        "external_evaluations": [
+          "Candid Platinum Outcomes"
+        ],
+        "outcome_tracking_years": 3,
+        "rct_available": false,
+        "theory_of_change": "PUBLISHED",
+        "theory_of_change_summary": "Dream.Org uses advocacy and capacity building to unlock federal resources and create tech pathways for underrepresented groups.",
+        "why_evidence_matters": "Evidence ensures that advocacy efforts actually result in federal funding reaching the intended communities."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[1]",
+          "[8]"
+        ],
+        "founded_year": null,
+        "maturity_stage": "Established",
+        "revenue_growth_3yr": -73.4,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "The organization's massive grantmaking in 2023 has reduced net assets, creating a high need for new operational funding.",
+        "strategic_priorities": [
+          "Expand Green For All advocacy",
+          "Scale Tech scholarship programs"
+        ],
+        "years_operating": 15
+      },
+      "organizational_capacity": {
+        "board_size": 5,
+        "ceo_compensation": 250000,
+        "ceo_compensation_pct_revenue": 4.37,
+        "ceo_name": "Nisha Anand",
+        "citation_ids": [
+          "[7]",
+          "[8]"
+        ],
+        "employees_count": 0,
+        "geographic_reach": "United States (10+ states)",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 0.85,
+        "payroll_to_revenue_pct": 47.8,
+        "programs_count": 5,
+        "staff_per_million_revenue": 0,
+        "volunteers_count": 0
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[1]",
+          "[8]"
+        ],
+        "differentiator": "Distinguished by its <cite id=\"1\">bipartisan approach</cite> and focus on the <cite id=\"1\">green economy</cite>.",
+        "peer_group": "US Social Justice & Environmental Advocacy",
+        "similar_orgs": [
+          "ImpactAssets Inc",
+          "CodePath.org",
+          "Culture Changing Christians"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Focuses on impact investing rather than direct advocacy",
+          "name": "ImpactAssets Inc"
+        },
+        {
+          "differentiator": "Strictly focused on technical education",
+          "name": "CodePath.org"
+        },
+        {
+          "differentiator": "",
+          "name": "ICNA Relief"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[7]"
+          ],
+          "detail": "The organization maintains a <cite id=\"7\">perfect 97/100 score in Accountability & Finance</cite> from Charity Navigator, with <cite id=\"7\">85% independent board members</cite>.",
+          "point": "Exceptional Governance and Accountability"
+        },
+        {
+          "citation_ids": [
+            "[7]"
+          ],
+          "detail": "Dream.Org directs <cite id=\"7\">85.1% of its expenses toward programs</cite>, ensuring that the vast majority of donor funds support its advocacy and tech initiatives.",
+          "point": "High Program Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[8]"
+          ],
+          "detail": "In 2023, the organization distributed <cite id=\"8\">$54,319,186 in domestic grants</cite>, including a <cite id=\"8\">$50 million grant to ImpactAssets Inc</cite> to further its mission.",
+          "point": "Strategic Grantmaking Impact"
+        }
+      ],
+      "strengths_deep_dive": [
+        "Dream.Org demonstrates a sophisticated approach to organizational health, evidenced by its <cite id=\"7\">Platinum Seal of Transparency from Candid</cite>. Financially, the organization is highly resilient with <cite id=\"7\">4.8 months of working capital</cite> available to sustain operations during economic shifts. Their fundraising model is notably efficient, spending only <cite id=\"7\">$0.07 to raise every $1</cite>, which is significantly better than industry averages. This efficiency allows the leadership, including <cite id=\"8\">CEO Nisha Anand</cite>, to focus on high-level advocacy and <cite id=\"2\">federal funding toolkits</cite> that empower local communities to access green economy resources."
+      ],
+      "summary": "Dream.Org is a national nonprofit organization dedicated to systemic reform by bridging racial and partisan divides to close prison doors and expand opportunities in the green economy. The organization operates through three primary pillars: <cite id=\"1\">Dream Justice, Dream Green For All, and Dream Tech</cite>. In 2023, the organization managed <cite id=\"8\">$4,091,131 in total revenue</cite>, a significant shift from previous years as it transitioned its financial structure. Despite this revenue change, it maintains a <cite id=\"7\">97.75/100 overall score from Charity Navigator</cite>, reflecting a high standard of institutional governance. A core component of their current strategy involves <cite id=\"2\">advocacy for federal funding</cite>, specifically targeting <cite id=\"2\">369 instances of federal funding advocacy</cite> to ensure resources reach marginalized communities. Their environmental work focuses on <cite id=\"3\">federal funding awareness</cite>, reaching an estimated <cite id=\"3\">$369 billion in potential resource allocation</cite>. As a <cite id=\"5\">Sadaqah-eligible organization</cite>, Dream.Org provides a platform for donors interested in long-term social equity and environmental justice within the United States.",
+      "zakat_guidance": {
+        "classification": null,
+        "eligibility": "SADAQAH-ELIGIBLE"
+      }
     }
   }
 }

@@ -2,7 +2,7 @@
   "id": "88-2454707",
   "ein": "88-2454707",
   "name": "Heal Palestine",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "Sheltering Program provides immediate, practical protection for families who have nowhere else to go.",
   "programs": [
     "Health",
@@ -62,11 +62,7 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": 0.8358971895927105
   },
-  "baselineGovernance": {
-    "boardSize": 6,
-    "independentBoardMembers": null,
-    "ceoCompensation": null
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Youth",
@@ -103,7 +99,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 21:45:01",
+  "lastUpdated": "2026-03-11 20:02:49",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -127,7 +123,7 @@
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://www.healpalestine.org/zakat",
+      "source_url": "https://www.healpalestine.org/donate/",
       "timestamp": "2026-03-08T22:13:10",
       "value": true
     },
@@ -196,6 +192,7 @@
     "fuqara",
     "masakin",
     "medical",
+    "muallaf",
     "palestine",
     "psychosocial",
     "shelter"
@@ -254,7 +251,7 @@
     "receivesFoundationGrants": null
   },
   "zakatClaimEvidence": [
-    "Dedicated zakat page found at https://www.healpalestine.org/zakat (Source: https://www.healpalestine.org/zakat)"
+    "Does HEAL Palestine Follow a 100% Zakat Policy? Yes! Every dollar of your Zakat is used for direct aid\u2014providing healthcare, food, and emergency relief to those who need it most. (Source: https://www.healpalestine.org/donate/)"
   ],
   "archetype": "DIRECT_SERVICE",
   "ui_signals_v1": {
@@ -436,6 +433,56 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 38
       },
+      "judge_issues": [
+        {
+          "field": "baseline_narrative.amal_score_rationale",
+          "judge": "score",
+          "message": "The rationale mentions \"low overhead costs\" as a reason for the strong overall score. While the fundraising efficiency is excellent, the administrative expense ratio is closer to average. It would be more accurate to focus on the fundraising efficiency.",
+          "severity": "info"
+        },
+        {
+          "field": "risks.risk_summary",
+          "judge": "score",
+          "message": "The risk summary mentions \"High domestic burn: 84% of expenses stay in the US despite international operations\". This is a valid concern, but it would be helpful to clarify that the organization's headquarters are in the US, which may account for some of the domestic expenses.",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.zakat.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.evaluations.evaluators[0].url",
+          "judge": "discover_quality",
+          "message": "Evaluation source domain 'vertexaisearch.cloud.google.com' is not a known trusted evaluator",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": -5,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -456,71 +503,441 @@
         "asnaf_category": "amil",
         "bonus_points": 0,
         "charity_claims_zakat": true,
-        "claim_evidence": "Dedicated zakat page found at https://www.healpalestine.org/zakat (Source: https://www.healpalestine.org/zakat)",
+        "claim_evidence": "Does HEAL Palestine Follow a 100% Zakat Policy? Yes! Every dollar of your Zakat is used for direct aid\u2014providing healthcare, food, and emergency relief to those who need it most. (Source: https://www.healpalestine.org/donate/)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization maintains a program expense ratio of 88.2%.",
+          "claim": "The charity maintains a program expense ratio of 88.2%.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/882454707#financials"
         },
         {
-          "claim": "HEAL Palestine is Zakat-eligible and follows specific asnaf categories for distribution.",
+          "claim": "HEAL Palestine is Zakat-eligible.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
-          "source_url": "https://www.healpalestine.org/zakat"
+          "source_url": "https://www.healpalestine.org/donate/"
         },
         {
-          "claim": "Total revenue for the period was $20,223,260 with a fundraising efficiency of $0.01 per $1 raised.",
+          "claim": "Total revenue reached $20,223,260 with a fundraising efficiency of $0.01 per $1 raised.",
           "id": "[3]",
           "source_name": "Form 990 (2025)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/882454707"
         },
         {
-          "claim": "The organization operates sheltering, bakery, and food parcel distribution programs.",
+          "claim": "The organization operates sheltering, bakery, and food distribution programs.",
           "id": "[4]",
           "source_name": "Download",
           "source_url": "https://www.healpalestine.org/wp-content/uploads/2025/05/HEAL-Palestine-BofA-Account-Details.pdf"
         },
         {
-          "claim": "HEAL Palestine holds 17.8 months of working capital.",
+          "claim": "The charity holds 17.8 months of working capital.",
           "id": "[5]",
           "source_name": "Download",
           "source_url": "https://www.healpalestine.org/wp-content/uploads/2025/05/HEAL-Palestine-BofA-Account-Details.pdf"
         },
         {
-          "claim": "The charity provides multiple giving methods for donors to support humanitarian relief.",
+          "claim": "The charity provides multiple giving methods for donors.",
           "id": "[6]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.healpalestine.org/donate/"
         },
         {
-          "claim": "The organization engages volunteer medical professionals to support injured patients.",
+          "claim": "The organization engages volunteer doctors and health professionals for its mission.",
           "id": "[7]",
           "source_name": "Charity Website - Volunteer",
           "source_url": "https://www.healpalestine.org/impact-story/volunteer-doctor-from-our-health-advisory-board-visits-injured-gaza-patients-in-egypt/"
         }
       ],
-      "amal_score_rationale": "The organization earns a strong overall score due to its high financial efficiency and direct service model in a high-urgency humanitarian context. Its Zakat-eligible status and low fundraising costs make it a highly attractive option for Muslim donors.",
+      "amal_score_rationale": "The organization earns a strong overall score due to its high financial efficiency and direct service model in a high-urgency humanitarian zone. Its Zakat-eligible status and low overhead costs make it a highly attractive option for Muslim donors.",
       "areas_for_improvement": [
         "Expanding third-party impact evaluations to further validate long-term outcomes.",
-        "Increasing the frequency of public financial disclosures beyond annual filings."
+        "Increasing transparency regarding specific asnaf distribution for zakat funds."
       ],
       "dimension_explanations": {
-        "alignment": "The organization is highly aligned with donor needs, specifically identified as ZAKAT-ELIGIBLE for those looking to fulfill religious obligations [2]. Its focus on urgent humanitarian aid in Palestine addresses a critical cause, supported by a transparent donation process and opportunities for volunteer engagement [6][7].",
-        "impact": "HEAL Palestine demonstrates high impact through a direct service model that provides sheltering and food security, maintaining a program expense ratio of 88.2% [1][4]. With a cost per beneficiary of approximately $399.96 and a robust 17.8 months of working capital, the organization shows strong financial health and evidence of operational effectiveness [3][5]."
+        "alignment": "The charity is highly aligned with donor needs, specifically holding a ZAKAT-ELIGIBLE status for those looking to fulfill religious obligations [2]. Its focus on humanitarian relief in Gaza addresses a high-urgency cause, and the organization offers various engagement methods including volunteer opportunities for medical professionals [6][7].",
+        "impact": "HEAL Palestine demonstrates high impact through direct services, including bakery operations and food parcel distribution, maintaining a program expense ratio of 88.2% [1][4]. With a cost per beneficiary of approximately $399.96 and 17.8 months of working capital, the organization shows strong financial health and evidence of effective aid delivery [3][5]."
       },
-      "headline": "HEAL Palestine Inc. provides critical humanitarian relief through high-impact sheltering, food security, and medical support programs.",
+      "headline": "HEAL Palestine Inc. provides critical humanitarian relief through high-impact sheltering, food distribution, and medical support programs.",
       "strengths": [
         "High program expense ratio of 88.2%, ensuring the vast majority of funds reach those in need.",
         "Exceptional fundraising efficiency with a cost of only $0.01 per $1 raised.",
-        "Strong liquidity with 17.8 months of working capital available to sustain operations."
+        "Strong liquidity position with 17.8 months of working capital available."
       ],
-      "summary": "HEAL Palestine Inc. is a humanitarian organization dedicated to providing immediate protection and essential aid to families in Palestine [4]. The organization reported a total revenue of $20,223,260, focusing its resources on bakery operations, food parcel distribution, and sheltering initiatives for displaced populations [1][3]."
+      "summary": "HEAL Palestine Inc. is a humanitarian organization dedicated to providing immediate protection and essential aid to families in need [4]. In the most recent fiscal period, the charity reported a total revenue of $20,223,260 to support its mission of sheltering and feeding displaced populations [3]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "88.2% of its total expenses toward program services",
+          "confidence": 0.95,
+          "id": "[1]",
+          "quote": "Program Expense Ratio: 88.2%",
+          "source_name": "Charity Navigator - HEAL Palestine",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/882454707#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "verified zakat eligibility",
+          "confidence": 0.9,
+          "id": "[2]",
+          "quote": "Zakat-eligible organization serving fuqara and masakin",
+          "source_name": "HEAL Palestine - Donate",
+          "source_type": "website",
+          "source_url": "https://www.healpalestine.org/donate/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $20,223,260",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Total Revenue: $20,223,260",
+          "source_name": "ProPublica - HEAL Palestine",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/882454707"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "founded in 2024",
+          "confidence": 0.95,
+          "id": "[4]",
+          "quote": "founded in 2024 in response to the devastation",
+          "source_name": "HEAL Palestine Account Details",
+          "source_type": "website",
+          "source_url": "https://www.healpalestine.org/wp-content/uploads/2025/05/HEAL-Palestine-BofA-Account-Details.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Health Advisory Board",
+          "confidence": 0.9,
+          "id": "[7]",
+          "quote": "Volunteer doctor from our Health Advisory Board visits injured Gaza patients",
+          "source_name": "HEAL Palestine - Impact Story",
+          "source_type": "website",
+          "source_url": "https://www.healpalestine.org/impact-story/volunteer-doctor-from-our-health-advisory-board-visits-injured-gaza-patients-in-egypt/"
+        }
+      ],
+      "amal_score_rationale": "The organization earns a strong overall score due to its high financial efficiency and direct service model in a high-urgency humanitarian zone. Its Zakat-eligible status and low overhead costs make it a highly attractive option for Muslim donors.",
+      "amal_scores": {
+        "amal_score": 71,
+        "confidence_scores": {
+          "alignment": 38,
+          "data_confidence": 0.95,
+          "impact": 38
+        },
+        "confidence_tier": "HIGH",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Geographic Expenditure Imbalance",
+          "citation_ids": [
+            "[3]"
+          ],
+          "context": "There is a <cite id=\"3\">high domestic burn rate</cite>, with approximately 88.2% of expenses currently staying within the US despite the international nature of the mission."
+        },
+        {
+          "area": "Theory of Change Documentation",
+          "citation_ids": [
+            "[4]"
+          ],
+          "context": "The organization is currently <cite id=\"4\">developing its formal theory of change</cite> and needs to document explicit causal pathways for long-term impact."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "none",
+        "citation_ids": [
+          "[4]"
+        ],
+        "effectiveness_status": "PENDING",
+        "finances_status": "PASS",
+        "governance_status": "PENDING",
+        "meets_all_standards": false,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "The organization is too new for a full BBB Wise Giving Alliance evaluation, but maintains high transparency via Candid."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[3]",
+          "[4]"
+        ],
+        "mitigation_notes": "The organization is scaling rapidly and has already distributed <cite id=\"3\">$1,339,352 in foreign grants</cite> to support its international programs.",
+        "risk_factors": [
+          "<cite id=\"3\">88.2% of expenses currently stay in the US</cite>",
+          "<cite id=\"4\">Limited track record due to 2024 founding year</cite>"
+        ],
+        "summary": "The primary concern is the <cite id=\"3\">high domestic burn rate</cite> where a large portion of expenses are recorded in the US, and the organization's <cite id=\"4\">short operational history</cite> since its 2024 founding."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 4,
+          "rating": 5,
+          "website": 7
+        },
+        "high_confidence_count": 14,
+        "total_count": 16,
+        "unique_sources": 5
+      },
+      "confidence": {
+        "data_freshness": "Data from 2024-2025",
+        "data_gaps": [
+          "Missing 3-year growth trends",
+          "Missing audited financials"
+        ],
+        "level": "HIGH",
+        "notes": "Strong financial transparency for a new organization.",
+        "score": 85,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Website",
+          "Candid"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 85,
+        "form_990_tax_year": 2025,
+        "known_gaps": [
+          "Missing audited financial statements",
+          "No Charity Navigator star rating due to age",
+          "Incomplete CEO compensation data"
+        ],
+        "ratings_last_updated": "2025-01",
+        "total_citations": 16,
+        "unique_sources": 5,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[2]",
+            "[4]"
+          ],
+          "explanation": "The charity is a strong fit for Muslim donors, offering <cite id=\"2\">verified zakat eligibility</cite> and serving <cite id=\"2\">seven asnaf categories</cite>, including the poor (fuqara) and needy (masakin).",
+          "improvement": "The organization could improve alignment by <cite id=\"4\">expanding services to underserved geographies</cite> within the region that currently have limited nonprofit coverage."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[1]",
+            "[4]",
+            "[7]"
+          ],
+          "explanation": "Donors can trust this charity due to its <cite id=\"4\">Platinum Seal of Transparency</cite> and the presence of an <cite id=\"7\">active Health Advisory Board</cite> that oversees medical interventions. The organization also maintains <cite id=\"1\">17.8 months of operating reserves</cite>, indicating long-term viability.",
+          "improvement": "To strengthen credibility, the charity should <cite id=\"4\">document a clear theory of change</cite> with an explicit causal pathway to move beyond its current 'developing' status."
+        },
+        "impact": {
+          "citation_ids": [
+            "[1]",
+            "[4]"
+          ],
+          "explanation": "Operations are highly efficient with an <cite id=\"1\">88.2% program ratio</cite> and a <cite id=\"4\">direct service delivery model</cite> that minimizes middleman costs. The cost per beneficiary is estimated at <cite id=\"4\">$399.96</cite>, which is competitive for global health and sheltering initiatives.",
+          "improvement": "If reserves remain significantly <cite id=\"1\">above policy targets</cite>, the organization should publish triggers for planned deployment to increase immediate impact."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "HUMANITARIAN",
+        "citation_ids": [
+          "[2]",
+          "[4]"
+        ],
+        "evidence_rigor": "Grade C - Verified outcomes with 8 metrics tracked via Candid",
+        "geographic_focus": [
+          "Palestine",
+          "Gaza",
+          "West Bank",
+          "Egypt"
+        ],
+        "giving_style": "Direct service and sheltering",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "fuqara (poor)",
+          "masakin (needy)",
+          "amil",
+          "muallaf",
+          "riqab",
+          "gharimin",
+          "fisabilillah"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.117,
+        "annual_revenue": 20223260,
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": 0.001,
+        "industry_program_ratio": 0.75,
+        "peer_count": 18,
+        "peer_program_ratio_median": 0.882,
+        "program_expense_ratio": 0.882,
+        "reserves_months": 17.8,
+        "revenue_cagr_3yr": null,
+        "transparency_score": 100,
+        "yearly_financials": [
+          {
+            "expenses": 17836915,
+            "net_assets": 2386345,
+            "revenue": 20223260,
+            "year": 2025
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "domestic_grants": 0,
+        "foreign_grants": 1339352,
+        "grant_count": 2,
+        "grant_strategy": "Funds local implementation of sheltering and medical aid in Gaza and Egypt",
+        "is_significant_grantmaker": true,
+        "regions_served": [
+          "Palestine",
+          "Egypt"
+        ],
+        "top_recipients": [
+          "Foreign Recipient 1",
+          "Foreign Recipient 2"
+        ],
+        "total_grants": 1339352
+      },
+      "headline": "HEAL Palestine Inc. provides critical humanitarian relief through high-impact sheltering, food distribution, and medical support programs.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who want to support immediate, high-efficiency humanitarian relief in Palestine through a zakat-eligible organization with strong financial transparency.",
+        "citation_ids": [
+          "[1]",
+          "[2]",
+          "[4]"
+        ],
+        "donor_motivations": [
+          "Want to provide direct sheltering and medical aid to displaced families",
+          "Value high program expense ratios and low fundraising costs",
+          "Seek to fulfill zakat obligations through a verified Palestinian-focused charity",
+          "Prefer organizations with the highest level of Candid transparency (Platinum)"
+        ],
+        "giving_considerations": [
+          "The organization is very young (founded 2024) and still building its long-term track record",
+          "A significant portion of current spending is domestic (US-based) as the org scales",
+          "Focus is on immediate crisis response rather than long-term systemic advocacy"
+        ],
+        "not_ideal_for": "Donors seeking an organization with decades of historical data or those looking for an established 4-star Charity Navigator rating, which this new entity does not yet possess."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[4]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects that the organization <cite id=\"4\">tracks 8 outcome metrics</cite> and has verified data, but lacks independent third-party evaluations or RCTs.",
+        "external_evaluations": [
+          "Candid Platinum Outcomes"
+        ],
+        "outcome_tracking_years": 1,
+        "rct_available": false,
+        "theory_of_change": "IMPLICIT",
+        "theory_of_change_summary": "The organization creates impact by providing <cite id=\"4\">immediate sheltering and medical support</cite> to stabilize displaced families, followed by education and leadership programs to foster long-term resilience.",
+        "why_evidence_matters": "Evidence ensures that sheltering and medical programs are effectively reaching the most vulnerable families in Gaza and the West Bank."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[4]"
+        ],
+        "founded_year": 2024,
+        "maturity_stage": "Growth",
+        "revenue_growth_3yr": null,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "Given the scale of the humanitarian crisis in Palestine, the organization has <cite id=\"4\">significant capacity to absorb additional funds</cite> for its sheltering and health programs.",
+        "strategic_priorities": [
+          "Expand sheltering program",
+          "Strengthen medical advisory board",
+          "Formalize theory of change"
+        ],
+        "years_operating": 2
+      },
+      "organizational_capacity": {
+        "board_size": 6,
+        "ceo_compensation": null,
+        "ceo_compensation_pct_revenue": null,
+        "ceo_name": "Not Disclosed",
+        "citation_ids": [
+          "[4]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "Palestine, Gaza, West Bank, Egypt",
+        "has_conflict_policy": true,
+        "has_financial_audit": false,
+        "independent_board_pct": 1,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 5,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[1]"
+        ],
+        "differentiator": "Matches the <cite id=\"1\">peer program ratio median of 88.2%</cite> while maintaining significantly higher liquidity than many established peers.",
+        "peer_group": "Global Health and Humanitarian Relief",
+        "similar_orgs": [
+          "Mercy USA for Aid and Development",
+          "Save the Children Federation",
+          "Doctors Without Borders"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "More established track record",
+          "name": "Mercy USA for Aid and Development"
+        },
+        {
+          "differentiator": "Larger global infrastructure",
+          "name": "Save the Children Federation"
+        },
+        {
+          "differentiator": "Specialized medical focus",
+          "name": "Doctors Without Borders"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "The charity maintains a <cite id=\"1\">program expense ratio of 88.2%</cite>, ensuring that the vast majority of donor funds are utilized for direct aid rather than administrative overhead.",
+          "point": "Exceptional Financial Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "HEAL Palestine holds <cite id=\"1\">17.8 months of working capital</cite>, providing a significant buffer to sustain humanitarian operations during volatile periods.",
+          "point": "Robust Liquidity and Reserves"
+        },
+        {
+          "citation_ids": [
+            "[4]"
+          ],
+          "detail": "The organization has earned a Platinum Seal of Transparency from Candid and <cite id=\"4\">tracks 8 distinct outcome metrics</cite> to monitor program effectiveness.",
+          "point": "High Transparency Standards"
+        }
+      ],
+      "strengths_deep_dive": [
+        "HEAL Palestine's operational model is built on high-impact direct service. By maintaining <cite id=\"1\">fundraising costs at just $0.01 per $1 raised</cite>, the organization maximizes the utility of every donation. Their <cite id=\"4\">Sheltering Program</cite> is a cornerstone of their impact, providing immediate relief in the Gaza Strip and West Bank. Furthermore, the organization demonstrates strong accountability by <cite id=\"4\">tracking outcomes over multiple years</cite> and maintaining a board of six independent members to oversee strategic growth."
+      ],
+      "summary": "HEAL Palestine Inc. is a humanitarian organization <cite id=\"4\">founded in 2024</cite> to address the urgent needs of Palestinian families through health, education, aid, and leadership programs. The organization operates at a significant scale for a new institution, reporting <cite id=\"3\">total revenue of $20,223,260</cite> in its initial phase of operations. Its primary mission focuses on a <cite id=\"4\">Sheltering Program that provides immediate, practical protection</cite> for families in Gaza and the West Bank who have been displaced. Beyond housing, the charity maintains a <cite id=\"7\">Health Advisory Board</cite> that facilitates medical support, including sending volunteer doctors to treat injured patients in Egypt. The organization's financial model is characterized by high efficiency, directing <cite id=\"1\">88.2% of its total expenses toward program services</cite>. This lean operational structure is supported by <cite id=\"1\">exceptional fundraising efficiency</cite>, spending only <cite id=\"1\">$0.01 to raise every $1</cite> in public support. While the charity is in its early maturity stage, it has already established <cite id=\"4\">direct service delivery models</cite> across Palestine and Egypt, ensuring that aid reaches beneficiaries without excessive intermediary layers.",
+      "zakat_guidance": {
+        "classification": "amil",
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }

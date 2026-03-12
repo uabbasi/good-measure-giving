@@ -2,7 +2,7 @@
   "id": "47-5015710",
   "ein": "47-5015710",
   "name": "Chicago Community Bond Fund",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "Chicago Community Bond Fund pays bond for people in Cook County, Illinois. Through a revolving fund, CCBF supports individuals whose communities cannot ...",
   "programs": [],
   "geographicCoverage": [],
@@ -51,11 +51,7 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
   },
-  "baselineGovernance": {
-    "boardSize": 8,
-    "independentBoardMembers": null,
-    "ceoCompensation": 85000
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Communities"
@@ -72,7 +68,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-03-09 21:46:07",
+  "lastUpdated": "2026-03-11 20:06:54",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -94,8 +90,8 @@
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://chicagobond.org",
-      "timestamp": "2026-03-10T04:43:44.466923+00:00",
+      "source_url": "https://chicagobond.org/wp-content/uploads/2018/11/ccbf_year_end_2018_nov10-1.pdf",
+      "timestamp": "2026-03-12T03:06:21.781210+00:00",
       "value": false
     },
     "founded_year": {
@@ -113,7 +109,7 @@
     "has_audited_financials": {
       "source_name": "Charity Website",
       "source_url": "https://chicagobond.org",
-      "timestamp": "2026-03-10T04:43:44.466964+00:00",
+      "timestamp": "2026-03-12T03:06:21.781236+00:00",
       "value": true
     },
     "ntee_code": {
@@ -165,6 +161,8 @@
   },
   "causeTags": [
     "faith-based",
+    "fuqara",
+    "masakin",
     "muslim-led"
   ],
   "programFocusTags": [
@@ -176,7 +174,7 @@
   "grantsData": null,
   "evaluationTrack": "RESEARCH_POLICY",
   "foundedYear": 2015,
-  "scoreSummary": "Chicago Community Bond Fund shows moderate impact and moderate alignment.",
+  "scoreSummary": "Chicago Community Bond Fund shows moderate alignment and limited impact (minor risk deductions applied).",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -192,8 +190,9 @@
     "evaluationSources": [
       "Charity Navigator",
       "Candid/GuideStar",
-      "Independent Auditor",
-      "Four-Star Rating (Charity Navigator)"
+      "Independent auditor",
+      "Four-Star Rating (Charity Navigator)",
+      "Recognition for advocacy leading to the Illinois Pretrial Fairness Act (Illinois State Legislature/Governor)"
     ],
     "receivesFoundationGrants": null
   },
@@ -203,7 +202,7 @@
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
-    "assessment_label": "Context Dependent",
+    "assessment_label": "Well Documented Low Score",
     "archetype_code": "LEVERAGE",
     "archetype_label": "Strategic Advocacy",
     "evidence_stage": "Verified",
@@ -211,10 +210,10 @@
       "evidence": "Strong",
       "financial_health": "Limited",
       "donor_fit": "Limited",
-      "risk": "Strong"
+      "risk": "Limited"
     },
-    "recommendation_cue": "Mixed Signals",
-    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "recommendation_cue": "Limited Match",
+    "recommendation_rationale": "Evidence quality is well documented, but results are weak on the current rubric dimensions.",
     "used_fallback": false,
     "fallback_reasons": null
   },
@@ -225,19 +224,51 @@
       "headline": "Total expenses exceed 3x total revenue",
       "detail": "Financial data may be inconsistent across sources or reporting periods.",
       "data_points": {}
+    },
+    {
+      "type": "ceo_comp_excessive",
+      "severity": "high",
+      "headline": "CEO compensation is 16.6% of revenue ($85,000 on $510,635)",
+      "detail": "For orgs with revenue <$5M, CEO pay above 5% of revenue warrants scrutiny.",
+      "data_points": {
+        "ceo_compensation": 85000,
+        "comp_ratio": 0.1665,
+        "threshold": 0.05,
+        "total_revenue": 510635
+      }
+    },
+    {
+      "type": "revenue_expense_mismatch",
+      "severity": "high",
+      "headline": "Expenses are 5.0x revenue ($2,539,788 vs $510,635)",
+      "detail": "Spending significantly exceeding revenue is unsustainable without reserves drawdown.",
+      "data_points": {
+        "expense_to_revenue_ratio": 4.97,
+        "total_expenses": 2539788,
+        "total_revenue": 510635
+      }
+    },
+    {
+      "type": "zakat_hoarding",
+      "severity": "medium",
+      "headline": "Holds 47 months of reserves without clear endowment model",
+      "detail": "Organizations holding >36 months of reserves should publish deployment plans.",
+      "data_points": {
+        "reserves_months": 47.4
+      }
     }
   ],
   "amalEvaluation": {
     "charity_ein": "47-5015710",
     "charity_name": "Chicago Community Bond Fund",
-    "amal_score": 42,
+    "amal_score": 30,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:39:49",
     "rubric_version": "5.2.0",
     "confidence_scores": {
       "alignment": 21,
       "data_confidence": 0.95,
-      "impact": 21
+      "impact": 11
     },
     "score_details": {
       "alignment": {
@@ -324,8 +355,8 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 47.4 months (EXCESSIVE)",
-            "improvement_suggestion": "Publish a time-bound plan to deploy excess unrestricted reserves into mission delivery, while keeping a clear operating reserve floor.",
+            "evidence": "Working capital: 47.4 months, but Spending significantly exceeding revenue is unsustainable without reserves drawdown. \u2014 unsustainable",
+            "improvement_suggestion": "Increase operating reserves to reduce continuity risk; set a board-approved minimum (typically at least 3 months).",
             "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
@@ -360,69 +391,527 @@
             "status": "partial"
           },
           {
-            "evidence": "Board governance: STRONG (8 members)",
+            "evidence": "Board: 8 members, but For orgs with revenue <$5M, CEO pay above 5% of revenue warrants scrutiny. \u2014 oversight concern",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
             "possible": 10,
-            "scored": 10,
-            "status": "full"
+            "scored": 0,
+            "status": "missing"
           }
         ],
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 21/50",
+        "rationale": "Delivery: capacity building; Impact 11/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 21
+        "score": 11
       },
-      "risk_deduction": 0,
+      "judge_issues": [
+        {
+          "field": "amal_score_rationale",
+          "judge": "score",
+          "message": "The rationale states that the organization maintains high financial health and transparency standards, but the risk assessment identifies significant financial concerns, including expenses exceeding revenue and high CEO compensation. This discrepancy should be addressed in the rationale.",
+          "severity": "warning"
+        },
+        {
+          "field": "impact_rationale",
+          "judge": "score",
+          "message": "The impact rationale mentions the capacity-building nature of the work but doesn't fully explain the low impact score. The high CEO compensation and expenses exceeding revenue are significant factors contributing to the low score and should be explicitly mentioned.",
+          "severity": "warning"
+        },
+        {
+          "field": "source.website",
+          "judge": "data_completeness",
+          "message": "Website blocked by anti-bot protection: CAPTCHA_BLOCKED: challenge page (HTTP 202)",
+          "severity": "warning"
+        },
+        {
+          "field": "propublica.expense_ratio",
+          "judge": "crawl_quality",
+          "message": "Expenses ($1,780,401) exceed revenue ($751,883) by 137% - may be drawing down reserves",
+          "severity": "warning"
+        },
+        {
+          "field": "charity_navigator.expense_ratio",
+          "judge": "crawl_quality",
+          "message": "Expenses ($2,539,788) exceed revenue ($510,635) by 397% - may be drawing down reserves",
+          "severity": "warning"
+        },
+        {
+          "field": "discovered.zakat.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "source_attribution.has_audited_financials.source_url",
+          "judge": "synthesize_quality",
+          "message": "Website citation for 'has_audited_financials' uses homepage URL; deep link preferred",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
+      "risk_deduction": -2,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "Key concern: CEO compensation is 16.6% of revenue ($85,000 on $510,635)",
+        "risks": [
+          {
+            "category": "operational",
+            "data_source": "Reconciliation",
+            "description": "CEO compensation is 16.6% of revenue ($85,000 on $510,635)",
+            "mitigation": null,
+            "severity": "high"
+          },
+          {
+            "category": "financial",
+            "data_source": "Reconciliation",
+            "description": "Expenses are 5.0x revenue ($2,539,788 vs $510,635)",
+            "mitigation": null,
+            "severity": "high"
+          },
+          {
+            "category": "financial",
+            "data_source": "Reconciliation",
+            "description": "Holds 47 months of reserves without clear endowment model",
+            "mitigation": null,
+            "severity": "medium"
+          }
+        ],
+        "total_deduction": -2
       },
-      "score_summary": "Chicago Community Bond Fund shows moderate impact and moderate alignment.",
+      "score_summary": "Chicago Community Bond Fund shows moderate alignment and limited impact (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "Organization is in zakat denylist (partners but doesn't collect directly)",
+        "claim_evidence": "Organization is in zakat denylist (partners but doesn't collect directly) (Source: https://chicagobond.org/wp-content/uploads/2018/11/ccbf_year_end_2018_nov10-1.pdf)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization earned a Charity Navigator score of 96.0/100 and holds 47.4 months of working capital.",
+          "claim": "The charity holds a 96.0/100 score and holds 47.4 months of working capital with a fundraising efficiency of $0.11 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/475015710#financials"
         },
         {
-          "claim": "Chicago Community Bond Fund reported total revenue of $510,635 and a fundraising efficiency of $0.11 per $1 raised.",
+          "claim": "The organization is eligible for general charitable giving (sadaqah).",
           "id": "[2]",
+          "source_name": "Charity Website - Zakat",
+          "source_url": "https://chicagobond.org/wp-content/uploads/2018/11/ccbf_year_end_2018_nov10-1.pdf"
+        },
+        {
+          "claim": "The organization reported total revenue of $510,635 and focuses on revolving bond fund programs.",
+          "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/475015710"
         }
       ],
-      "amal_score_rationale": "The organization maintains excellent financial health and transparency, though its overall score is moderated by its specific focus on advocacy and a lower alignment with traditional donor profiles.",
+      "amal_score_rationale": "The organization maintains high financial health and transparency standards, though its specific advocacy-based mission results in a lower alignment score for general donor fit.",
       "areas_for_improvement": [
-        "Limited direct alignment for donors specifically seeking traditional Muslim-focused charitable causes",
-        "Moderate impact score reflecting the advocacy-heavy nature of the work versus direct service scaling"
+        "Limited direct impact data regarding cost per beneficiary",
+        "Low alignment for donors seeking traditional religious charitable structures"
       ],
       "dimension_explanations": {
-        "alignment": "With an alignment score of 21/50, the charity is categorized as sadaqah-eligible; while it addresses urgent systemic issues, it has a low specific fit for donors prioritizing traditional religious institutional support [1].",
-        "impact": "The organization demonstrates high financial stability with 47.4 months of working capital, though its impact score of 21/50 reflects a focus on capacity building and advocacy rather than high-volume direct service metrics [1][2]."
+        "alignment": "The alignment score is medium, reflecting a high cause urgency in the advocacy space but a low fit for traditional donors [1]. Contributions are considered sadaqah-eligible, supporting general social justice efforts rather than specific religious pathways [2].",
+        "impact": "The organization demonstrates strong financial health with a total revenue of $510,635 and high data confidence [1][3]. However, the impact score is low because the capacity-building nature of the work lacks specific third-party verification of cost-per-beneficiary effectiveness [1]."
       },
-      "headline": "The Chicago Community Bond Fund provides critical financial support to individuals in Cook County by paying bond for those whose communities cannot afford it.",
+      "headline": "The Chicago Community Bond Fund provides critical financial support to individuals in Cook County by paying bond for those who cannot afford it.",
       "strengths": [
-        "High financial accountability with a Charity Navigator score of 96.0/100",
-        "Strong fundraising efficiency of $0.11 per $1 raised",
-        "Robust liquidity with 47.4 months of working capital"
+        "High Charity Navigator score of 96.0/100 indicating strong accountability and transparency",
+        "Exceptional fundraising efficiency with only $0.11 spent to raise every $1",
+        "Robust liquidity with 47.4 months of working capital available"
       ],
-      "summary": "The Chicago Community Bond Fund (CCBF) operates a revolving fund to secure the release of individuals from pretrial detention in Cook County, Illinois [1]. In the most recent fiscal year, the organization reported a total revenue of $510,635 to support its mission of ending money bond and mass incarceration [2]."
+      "summary": "The Chicago Community Bond Fund (CCBF) operates a revolving fund to support individuals in Cook County whose communities lack the resources to pay for their release from pretrial detention [1]. The organization focuses on ending the use of monetary bond and reducing the harms of the criminal legal system [3]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "96/100 overall score from Charity Navigator",
+          "confidence": 0.95,
+          "id": "[1]",
+          "quote": "Overall Score & Rating: 96/100",
+          "source_name": "Charity Navigator - Ratings",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/475015710#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $751,883",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Total revenue: $751,883",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/475015710"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "",
+          "confidence": 1,
+          "id": "[4]",
+          "quote": "Program service expenses: 100.0%",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/475015710"
+        }
+      ],
+      "amal_score_rationale": "The organization maintains high financial health and transparency standards, though its specific advocacy-based mission results in a lower alignment score for general donor fit.",
+      "amal_scores": {
+        "amal_score": 30,
+        "confidence_scores": {
+          "alignment": 21,
+          "data_confidence": 0.95,
+          "impact": 11
+        },
+        "confidence_tier": "HIGH",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "SADAQAH-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Financial Sustainability",
+          "citation_ids": [
+            "[3]",
+            "[16]"
+          ],
+          "context": "The organization has seen a <cite id=\"16\">3-year revenue CAGR of -26.5%</cite>, while expenses have increased, leading to an unsustainable drawdown of assets."
+        },
+        {
+          "area": "Executive Compensation Oversight",
+          "citation_ids": [
+            "[3]",
+            "[17]"
+          ],
+          "context": "The CEO compensation represents <cite id=\"17\">16.6% of total revenue</cite>, which is significantly higher than the 5% threshold typically expected for organizations of this size."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "UNKNOWN",
+        "governance_status": "UNKNOWN",
+        "meets_all_standards": false,
+        "review_url": "https://give.org/charity-reviews/community-development-civic-organizations/bond-hill-community-council-in-cincinnati-oh-0292-11046464",
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "The organization has not yet been fully evaluated against all 20 BBB standards."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[3]",
+          "[29]",
+          "[30]"
+        ],
+        "mitigation_notes": "The organization maintains high net assets of over $7 million, providing a buffer against recent revenue declines.",
+        "risk_factors": [
+          "<cite id=\"29\">3-year revenue CAGR of -26.5%</cite>",
+          "<cite id=\"30\">CEO pay exceeds 16% of total revenue</cite>"
+        ],
+        "summary": "The primary concerns involve <cite id=\"28\">declining revenue trends</cite> and high executive pay relative to the organization's current scale."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 15,
+          "rating": 12,
+          "website": 4
+        },
+        "high_confidence_count": 28,
+        "total_count": 31,
+        "unique_sources": 3
+      },
+      "confidence": {
+        "data_freshness": "Data current through 2023 tax year",
+        "data_gaps": [
+          "Missing cost-per-beneficiary metrics"
+        ],
+        "level": "HIGH",
+        "notes": "Strong financial and transparency data available.",
+        "score": 95,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Candid"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 95,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Missing cost-per-beneficiary data",
+          "No specific founding year in provided data"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 31,
+        "unique_sources": 3,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[26]",
+            "[27]"
+          ],
+          "explanation": "While the cause area is urgent, there is <cite id=\"26\">low Muslim donor fit</cite> as the organization does not focus on faith-based outreach or religious frameworks.",
+          "improvement": "The organization could <cite id=\"27\">clearly state its eligibility for sadaqah</cite> or engage more directly with the specific needs of the Muslim community in Cook County."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[1]",
+            "[3]",
+            "[9]",
+            "[20]",
+            "[22]"
+          ],
+          "explanation": "Donors can trust the organization's governance due to its <cite id=\"20\">96/100 accountability score</cite> and its <cite id=\"21\">Gold Seal of Transparency</cite>.",
+          "improvement": "To strengthen credibility, the charity should address the high <cite id=\"22\">CEO compensation ratio of 16.6%</cite> to align with industry benchmarks for small nonprofits."
+        },
+        "impact": {
+          "citation_ids": [
+            "[3]",
+            "[23]",
+            "[24]",
+            "[25]"
+          ],
+          "explanation": "The organization shows <cite id=\"23\">90.2% program expense ratio</cite>, but impact measurement is limited by <cite id=\"24\">insufficient data for cost-per-beneficiary calculations</cite>.",
+          "improvement": "The charity should <cite id=\"25\">publish consistent beneficiary counts</cite> to allow for a more rigorous assessment of its cost-effectiveness."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "CRIMINAL JUSTICE",
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "evidence_rigor": "Grade C - Basic theory of change and verified outcomes",
+        "geographic_focus": [
+          "Cook County, Illinois"
+        ],
+        "giving_style": "Systemic advocacy & direct aid",
+        "tax_deductible": true,
+        "zakat_asnaf_served": null,
+        "zakat_status": "SADAQAH-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0,
+        "annual_revenue": 751883,
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "cn_financial_score": 92,
+        "cn_overall_score": 96,
+        "fundraising_ratio": 0.07,
+        "industry_program_ratio": 0.75,
+        "peer_count": 0,
+        "peer_program_ratio_median": null,
+        "program_expense_ratio": 0.902,
+        "reserves_months": 47.4,
+        "revenue_cagr_3yr": -26.5,
+        "transparency_score": 85,
+        "working_capital_months": 47.4,
+        "yearly_financials": [
+          {
+            "expenses": 1780401,
+            "net_assets": 7028869,
+            "revenue": 751883,
+            "year": 2023
+          },
+          {
+            "expenses": 1709185,
+            "net_assets": 8057387,
+            "revenue": 897686,
+            "year": 2022
+          },
+          {
+            "expenses": 1447267,
+            "net_assets": 8868886,
+            "revenue": 1391112,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "domestic_grants": 0,
+        "foreign_grants": 0,
+        "grant_count": 0,
+        "grant_strategy": "Direct payment of bonds rather than third-party grants",
+        "is_significant_grantmaker": false,
+        "regions_served": [
+          "Illinois"
+        ],
+        "top_recipients": [],
+        "total_grants": 0
+      },
+      "headline": "The Chicago Community Bond Fund provides critical financial support to individuals in Cook County by paying bond for those who cannot afford it.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who prioritize criminal justice reform and want to support direct legal interventions for marginalized individuals in the Chicago area.",
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "donor_motivations": [
+          "Passionate about ending the cycle of pretrial detention",
+          "Value high transparency and third-party accountability ratings",
+          "Interested in supporting legislative advocacy alongside direct aid",
+          "Prefer local, community-focused interventions"
+        ],
+        "giving_considerations": [
+          "Donations are treated as sadaqah, not zakat",
+          "The organization is currently navigating a period of declining revenue",
+          "High executive compensation may be a concern for some donors"
+        ],
+        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those looking for international humanitarian relief efforts."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[1]",
+          "[2]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "The organization has verified outcomes and a documented theory of change, but lacks rigorous cost-per-beneficiary data.",
+        "external_evaluations": [
+          "Charity Navigator Beacon Scores"
+        ],
+        "outcome_tracking_years": 3,
+        "rct_available": false,
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "CCBF uses a revolving fund to provide immediate relief from detention while leveraging those cases to advocate for the total abolition of money bond.",
+        "why_evidence_matters": "Evidence ensures that bond payments effectively lead to pretrial liberty without compromising legal outcomes."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "founded_year": null,
+        "maturity_stage": "Growth",
+        "revenue_growth_3yr": -26.5,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "Significant revenue declines over the last three years indicate a high need for new donor support to maintain operations.",
+        "strategic_priorities": [
+          "Ending monetary bond",
+          "Supporting pretrial liberty"
+        ],
+        "years_operating": 9
+      },
+      "organizational_capacity": {
+        "board_size": 8,
+        "ceo_compensation": 85000,
+        "ceo_compensation_pct_revenue": 16.65,
+        "ceo_name": "Not Disclosed",
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "employees_count": 0,
+        "geographic_reach": "Cook County, Illinois",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 1,
+        "payroll_to_revenue_pct": 0,
+        "programs_count": 2,
+        "staff_per_million_revenue": 0,
+        "volunteers_count": 0
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[1]",
+          "[31]"
+        ],
+        "differentiator": "Distinguished by its <cite id=\"31\">revolving fund model</cite> specifically targeting Cook County pretrial detention.",
+        "peer_group": "Criminal Justice Advocacy",
+        "similar_orgs": [
+          "The Bail Project",
+          "Brooklyn Community Bail Fund"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "National scope vs local focus",
+          "name": "The Bail Project"
+        },
+        {
+          "differentiator": "Focus on New York jurisdiction",
+          "name": "Brooklyn Community Bail Fund"
+        },
+        {
+          "differentiator": "Broader social services with Muslim focus",
+          "name": "ICNA Relief"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[1]",
+            "[8]",
+            "[9]"
+          ],
+          "detail": "The organization holds a <cite id=\"8\">96/100 overall score from Charity Navigator</cite> and a <cite id=\"9\">Gold Seal of Transparency from Candid</cite>.",
+          "point": "Exceptional Transparency and Accountability"
+        },
+        {
+          "citation_ids": [
+            "[1]",
+            "[10]"
+          ],
+          "detail": "CCBF demonstrates efficient operations, spending only <cite id=\"10\">$0.07 to raise every $1</cite> in contributions.",
+          "point": "High Fundraising Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[1]",
+            "[11]"
+          ],
+          "detail": "The charity maintains <cite id=\"11\">47.4 months of working capital</cite> in working capital, ensuring the revolving fund remains solvent.",
+          "point": "Robust Financial Reserves"
+        }
+      ],
+      "strengths_deep_dive": [
+        "The Chicago Community Bond Fund excels in financial accountability, maintaining a <cite id=\"12\">90.2% independent board of directors</cite> and a <cite id=\"13\">perfect 100 score in Culture & Community</cite> from Charity Navigator. Its revolving fund model is highly efficient, as <cite id=\"14\">90.2% of expenses are directed toward programs</cite>, ensuring that donor contributions are utilized for direct bond payments and related advocacy. Furthermore, the organization has demonstrated significant legislative impact, contributing to the <cite id=\"15\">elimination of cash bail in Illinois</cite> through its policy work."
+      ],
+      "summary": "The Chicago Community Bond Fund (CCBF) operates as a critical intervention in the criminal legal system, primarily by managing a <cite id=\"1\">revolving fund to pay bond</cite> for individuals in Cook County who cannot afford it. Beyond direct financial assistance, the organization is a prominent advocate for systemic change, having received <cite id=\"2\">recognition for advocacy leading to the Illinois Pretrial Fairness Act</cite>. This high degree of programmatic focus is paired with strong third-party oversight, as evidenced by a <cite id=\"5\">96/100 overall score from Charity Navigator</cite>. The organization maintains a significant financial cushion, reporting <cite id=\"6\">47.4 months of working capital</cite>, which provides long-term stability for its revolving fund model. While its primary mission is legal and systemic advocacy, it serves a vital role for marginalized communities in Illinois by <cite id=\"7\">reducing the harms of pretrial detention</cite> and supporting individuals whose communities lack the resources for release.",
+      "zakat_guidance": {
+        "classification": null,
+        "eligibility": "SADAQAH-ELIGIBLE"
+      }
     }
   }
 }

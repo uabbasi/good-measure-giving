@@ -2,7 +2,7 @@
   "id": "36-4787320",
   "ein": "36-4787320",
   "name": "Justice Defenders",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "Defending justice with defenceless communities in Africa through legal education, training, and practice.",
   "programs": [
     "Legal Education",
@@ -54,11 +54,7 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": 0.5184987744206442
   },
-  "baselineGovernance": {
-    "boardSize": 5,
-    "independentBoardMembers": null,
-    "ceoCompensation": 145000
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Men",
@@ -91,7 +87,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 21:45:54",
+  "lastUpdated": "2026-03-11 20:05:36",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -280,6 +276,29 @@
       "data_points": {
         "domestic_burn_rate": 0.518
       }
+    },
+    {
+      "type": "ceo_comp_excessive",
+      "severity": "high",
+      "headline": "CEO compensation is 10.9% of revenue ($145,000 on $1,331,729)",
+      "detail": "For orgs with revenue <$5M, CEO pay above 5% of revenue warrants scrutiny.",
+      "data_points": {
+        "ceo_compensation": 145000,
+        "comp_ratio": 0.1089,
+        "threshold": 0.05,
+        "total_revenue": 1331729
+      }
+    },
+    {
+      "type": "revenue_expense_mismatch",
+      "severity": "high",
+      "headline": "Expenses are 2.3x revenue ($3,023,876 vs $1,331,729)",
+      "detail": "Spending significantly exceeding revenue is unsustainable without reserves drawdown.",
+      "data_points": {
+        "expense_to_revenue_ratio": 2.27,
+        "total_expenses": 3023876,
+        "total_revenue": 1331729
+      }
     }
   ],
   "amalEvaluation": {
@@ -431,6 +450,50 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 42
       },
+      "judge_issues": [
+        {
+          "field": "propublica.expense_ratio",
+          "judge": "crawl_quality",
+          "message": "Expenses ($4,168,934) exceed revenue ($1,868,837) by 123% - may be drawing down reserves",
+          "severity": "warning"
+        },
+        {
+          "field": "charity_navigator.expense_ratio",
+          "judge": "crawl_quality",
+          "message": "Expenses ($3,023,876) exceed revenue ($1,331,729) by 127% - may be drawing down reserves",
+          "severity": "warning"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.theory_of_change.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
@@ -522,6 +585,373 @@
         "Efficient fundraising operations, spending only $0.17 to raise every $1"
       ],
       "summary": "Justice Defenders (USA) is a non-profit organization dedicated to defending justice within defenseless communities in Africa by providing legal education, training, and practice [3][4]. The organization operates with a mission to equip prisoners and prison staff with the skills to provide legal services to those who cannot afford representation [5]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "91/100 overall score from Charity Navigator",
+          "confidence": 0.95,
+          "id": "[1]",
+          "quote": "Overall Score 91/100",
+          "source_name": "Charity Navigator - Justice Defenders",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/364787320#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $1,868,837",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "Total revenue: $1,868,837",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/364787320"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "release of 15,338 prisoners",
+          "confidence": 0.95,
+          "id": "[3]",
+          "quote": "Prisoners released: 15338",
+          "source_name": "Annual Report (2024)",
+          "source_type": "website",
+          "source_url": "https://www.justice-defenders.org/s/Justice-Defenders2024-Annual-Report.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "370 paralegals trained",
+          "confidence": 0.95,
+          "id": "[5]",
+          "quote": "Paralegals trained: 370",
+          "source_name": "Annual Report (2023)",
+          "source_type": "website",
+          "source_url": "https://www.justice-defenders.org/s/66c36b5f529bf575f2973590_JD_Annual_Report-2023.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "clearly defining how its legal aid services",
+          "confidence": 0.9,
+          "id": "[8]",
+          "quote": "Our governance and legal education practices",
+          "source_name": "Charity Website - Governance",
+          "source_type": "website",
+          "source_url": "https://www.justice-defenders.org/governance"
+        }
+      ],
+      "amal_score_rationale": "The organization earns a moderate overall score due to its high impact in legal capacity building and strong financial health, though its alignment score is tempered by a low fit for traditional Muslim donor priorities.",
+      "amal_scores": {
+        "amal_score": 67,
+        "confidence_scores": {
+          "alignment": 27,
+          "data_confidence": 1,
+          "impact": 42
+        },
+        "confidence_tier": "HIGH",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "SADAQAH-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Program Expense Ratio",
+          "citation_ids": [
+            "[2]"
+          ],
+          "context": "The <cite id=\"2\">program expense ratio of 58.5%</cite> is significantly lower than industry benchmarks for high-performing charities, suggesting a high portion of spending on administrative or fundraising costs."
+        },
+        {
+          "area": "Revenue Volatility",
+          "citation_ids": [
+            "[2]"
+          ],
+          "context": "The organization has experienced a <cite id=\"2\">3-year revenue CAGR of -13.8%</cite>, indicating a recent downward trend in funding that may impact future scaling."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [
+          "[1]"
+        ],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "UNKNOWN",
+        "governance_status": "UNKNOWN",
+        "meets_all_standards": null,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "The organization provides audited financial statements and maintains high transparency through Candid and Charity Navigator."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[2]"
+        ],
+        "mitigation_notes": "The organization maintains high liquidity to manage revenue fluctuations.",
+        "risk_factors": [
+          "<cite id=\"2\">Negative revenue growth of -13.8%</cite> over the last three years",
+          "<cite id=\"2\">High officer compensation</cite> relative to total revenue"
+        ],
+        "summary": "The primary concern is the <cite id=\"2\">low program expense ratio of 58.5%</cite>, which is well below the 70% threshold typically expected of efficient non-profits."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 6,
+          "rating": 5,
+          "website": 4
+        },
+        "high_confidence_count": 14,
+        "total_count": 15,
+        "unique_sources": 5
+      },
+      "confidence": {
+        "data_freshness": "2023 Form 990 and 2024 Annual Report",
+        "data_gaps": [
+          "Detailed staff counts",
+          "Recent growth explanation"
+        ],
+        "level": "HIGH",
+        "notes": "Strong alignment between tax filings and impact reports.",
+        "score": 85,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Annual Reports"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 85,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Missing employee count",
+          "Low program expense ratio requires context"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 15,
+        "unique_sources": 5,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[3]",
+            "[8]"
+          ],
+          "explanation": "",
+          "improvement": "The charity could improve alignment by <cite id=\"8\">clearly defining how its legal aid services</cite> align with Islamic principles of justice and social welfare."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[1]"
+          ],
+          "explanation": "Donors can trust this charity due to its <cite id=\"1\">Platinum Seal of Transparency from Candid</cite> and an <cite id=\"1\">independent board comprising 90% of members</cite>.",
+          "improvement": "To strengthen credibility further, the organization could improve its <cite id=\"1\">Accountability & Finance beacon score</cite> which currently sits at 82."
+        },
+        "impact": {
+          "citation_ids": [
+            "[2]",
+            "[3]"
+          ],
+          "explanation": "The organization shows high impact through its <cite id=\"3\">verified outcomes</cite>, including a cost-effective model estimated at <cite id=\"3\">$27.22 per beneficiary</cite>.",
+          "improvement": "Impact scores would benefit from increasing the <cite id=\"2\">program expense ratio from 58.5%</cite> to closer to the peer median to ensure more funds reach direct services."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "ADVOCACY",
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "evidence_rigor": "Grade B - Verified outcome tracking and annual reporting",
+        "geographic_focus": [
+          "Kenya",
+          "Uganda",
+          "Gambia"
+        ],
+        "giving_style": "Capacity Building",
+        "tax_deductible": true,
+        "zakat_asnaf_served": null,
+        "zakat_status": "SADAQAH-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.43,
+        "annual_revenue": 1868837,
+        "citation_ids": [
+          "[1]",
+          "[2]"
+        ],
+        "cn_financial_score": 82,
+        "cn_overall_score": 91,
+        "fundraising_ratio": 0.12,
+        "industry_program_ratio": 0.75,
+        "peer_count": 0,
+        "peer_program_ratio_median": null,
+        "program_expense_ratio": 0.5852,
+        "reserves_months": 9.2,
+        "revenue_cagr_3yr": -13.8,
+        "transparency_score": 100,
+        "working_capital_months": 9.2,
+        "yearly_financials": [
+          {
+            "expenses": 4168934,
+            "net_assets": 3179723,
+            "revenue": 1868837,
+            "year": 2023
+          },
+          {
+            "expenses": 1592264,
+            "net_assets": 5320822,
+            "revenue": 6333817,
+            "year": 2022
+          },
+          {
+            "expenses": 2287627,
+            "net_assets": 579269,
+            "revenue": 2517601,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[2]"
+        ],
+        "domestic_grants": 0,
+        "foreign_grants": 1456000,
+        "grant_count": 2,
+        "grant_strategy": "Funds foreign entities to implement legal training and education programs.",
+        "is_significant_grantmaker": true,
+        "regions_served": [
+          "Africa"
+        ],
+        "top_recipients": [
+          "Foreign Implementing Partners"
+        ],
+        "total_grants": 1456000
+      },
+      "headline": "Justice Defenders empowers incarcerated individuals and defenseless communities in Africa through legal education and professional training to ensure fair access to justice.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who value systemic legal reform and human rights advocacy, particularly those interested in empowering marginalized populations through education.",
+        "citation_ids": [
+          "[1]",
+          "[2]"
+        ],
+        "donor_motivations": [
+          "Want to support long-term justice system reform in Africa",
+          "Value education and professional training as a means of empowerment",
+          "Prefer supporting established organizations with high transparency ratings"
+        ],
+        "giving_considerations": [
+          "Donations support a capacity-building model rather than immediate relief",
+          "The organization is currently navigating a period of revenue contraction",
+          "A significant portion of the budget is currently directed toward non-programmatic expenses"
+        ],
+        "not_ideal_for": "Donors seeking high program-to-overhead ratios or those specifically looking to fulfill zakat obligations."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "evidence_grade": "B",
+        "evidence_grade_explanation": "The organization tracks specific outcomes such as <cite id=\"3\">releases and graduates</cite> over multiple years, though independent RCTs are not present.",
+        "external_evaluations": [
+          "Candid Platinum outcomes"
+        ],
+        "outcome_tracking_years": 5,
+        "rct_available": false,
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "Justice Defenders creates impact by training prisoners and staff to provide legal services, leading to fair trials and systemic justice reform.",
+        "why_evidence_matters": "Evidence ensures that legal training actually translates into freedom and fair treatment for the incarcerated."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "founded_year": 2007,
+        "maturity_stage": "Established",
+        "revenue_growth_3yr": -13.8,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "With a goal to reach <cite id=\"1\">1,000,000 people by 2030</cite>, the organization has significant capacity to absorb new funding.",
+        "strategic_priorities": [
+          "Expand legal education accessibility",
+          "Increase strategic litigation"
+        ],
+        "years_operating": 19
+      },
+      "organizational_capacity": {
+        "board_size": 5,
+        "ceo_compensation": 145000,
+        "ceo_compensation_pct_revenue": 10.89,
+        "ceo_name": "Not Disclosed",
+        "citation_ids": [
+          "[1]",
+          "[2]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "Kenya, Uganda, Gambia",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 0.9,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 4,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "differentiator": "Unique focus on <cite id=\"3\">training prisoners as legal professionals</cite> rather than just providing external counsel.",
+        "peer_group": "International Legal Advocacy",
+        "similar_orgs": [
+          "Innocence Project",
+          "International Justice Mission"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Focuses on DNA evidence and US-based exonerations",
+          "name": "Innocence Project"
+        },
+        {
+          "differentiator": "Focuses on human trafficking and slavery",
+          "name": "International Justice Mission"
+        },
+        {
+          "differentiator": "Former name/precursor with similar mission",
+          "name": "African Prisons Project"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "The organization maintains a <cite id=\"1\">91/100 overall score from Charity Navigator</cite>, driven by strong governance and transparency practices.",
+          "point": "High Financial Accountability"
+        },
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "Justice Defenders operates with high efficiency, spending only <cite id=\"1\">$0.12 to raise every $1</cite> in contributions.",
+          "point": "Exceptional Fundraising Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "The charity holds <cite id=\"1\">9.2 months of working capital</cite>, providing a significant buffer for long-term program stability.",
+          "point": "Strong Liquidity and Resilience"
+        }
+      ],
+      "strengths_deep_dive": [
+        "Justice Defenders demonstrates a profound impact through its capacity-building model, which has led to the <cite id=\"3\">release of over 15,000 individuals</cite> through legal support. Beyond direct litigation, their educational programs are highly effective, with <cite id=\"5\">370 paralegals trained</cite> and <cite id=\"3\">2,032 individuals released through Alternative Dispute Resolution (ADR)</cite>. This dual approach of education and practice ensures that the impact is sustainable within the African justice systems they serve."
+      ],
+      "summary": "Justice Defenders is a specialized legal advocacy organization that empowers incarcerated individuals and prison staff in Africa through <cite id=\"3\">legal education and professional training</cite>. founded in 2007, the organization addresses the systemic lack of legal representation by transforming prisoners into paralegals and lawyers who can provide <cite id=\"5\">legal services to those in conflict with the law</cite>. In 2023, the organization reported <cite id=\"2\">total revenue of $1,868,837</cite>, maintaining a stable financial base to support its operations in <cite id=\"3\">Kenya, Uganda, and Gambia</cite>. Their unique model focuses on <cite id=\"3\">strategic litigation and paralegal training</cite> to ensure fair hearings for defenseless communities. The organization has achieved significant scale, facilitating the <cite id=\"3\">release of 15,338 prisoners</cite> as reported in their most recent annual cycle. By providing access to the University of London's law degree program within prison walls, they have successfully seen <cite id=\"3\">47 law degree graduates</cite> emerge from their programs. Despite its relatively small financial footprint, the organization maintains <cite id=\"1\">a 91/100 overall score from Charity Navigator</cite>, reflecting a high standard of institutional accountability and transparency.",
+      "zakat_guidance": {
+        "classification": null,
+        "eligibility": "SADAQAH-ELIGIBLE"
+      }
     }
   }
 }

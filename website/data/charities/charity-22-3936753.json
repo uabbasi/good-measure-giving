@@ -2,7 +2,7 @@
   "id": "22-3936753",
   "ein": "22-3936753",
   "name": "charity: water",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "charity: water is a nonprofit organization bringing clean and safe drinking water to people in developing countries. The organization inspires giving and empowers others to fundraise for sustainable water solutions. 100% of public donations are sent to local partners on the ground, who build and implement the projects. When the projects are completed, charity: water proves every one of them using GPS coordinates, photos and details of the community served.",
   "programs": [
     "Spring protections",
@@ -60,11 +60,7 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": 0
   },
-  "baselineGovernance": {
-    "boardSize": 12,
-    "independentBoardMembers": null,
-    "ceoCompensation": 250000
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Men"
@@ -93,7 +89,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 21:46:03",
+  "lastUpdated": "2026-03-11 20:06:41",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -123,7 +119,7 @@
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "http://www.charitywater.org",
+      "source_url": "https://www.charitywater.org/about",
       "timestamp": "2026-03-07T12:53:40",
       "value": false
     },
@@ -220,7 +216,7 @@
     "water-sanitation"
   ],
   "hideFromCurated": true,
-  "theoryOfChange": "Charity Water utilizes a 'monitoring and evaluation framework \u2013 called the MAP Framework' to understand the impact of funded projects, maximize effectiveness, and guide future funding priorities. This framework involves collecting data across a range of water, sanitation, and hygiene (WASH) indicators. The MAP Framework includes two primary data collection types: Annual Check-ins, which are household surveys conducted at the baseline and endline of a grant, and Post-Implementation Monitoring (PIM), a comprehensive assessment of past funded work performed every few years. The organization also details its approach to planning, choosing locations, finding appropriate technology, selecting partners, and ensuring sustainability of projects.",
+  "theoryOfChange": "Charity Water utilizes a 'MAP Framework' which is a monitoring and evaluation framework designed to collect data across various water, sanitation, and hygiene (WASH) indicators. This framework helps them understand the impact of funded projects, maximize effectiveness, and guide future funding decisions. The MAP Framework includes two types of data collection: Annual Check-ins (household surveys at baseline and endline of a grant) and Post-Implementation Monitoring (a comprehensive assessment of past work every few years). The framework aims to answer questions about immediate improvements, sustained access, and reasons for water point functionality issues.",
   "grantsData": [
     {
       "amount": 2600000,
@@ -1204,6 +1200,44 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 48
       },
+      "judge_issues": [
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.theory_of_change.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -1216,32 +1250,26 @@
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "Organization is in zakat denylist (partners but doesn't collect directly)",
+        "claim_evidence": "Organization is in zakat denylist (partners but doesn't collect directly) (Source: https://www.charitywater.org/about)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a 100.0/100 score and a fundraising efficiency of $0.11 per $1 raised.",
+          "claim": "The charity has a 100.0/100 score and a program expense ratio of 81.3%.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/223936753#financials"
         },
         {
-          "claim": "The organization was founded to bring clean and safe drinking water to people in need.",
+          "claim": "The organization's mission is to bring clean and safe drinking water to people in need.",
           "id": "[2]",
           "source_name": "Charity Website - About",
           "source_url": "https://www.charitywater.org/about/scott-harrison-story"
         },
         {
-          "claim": "The organization has a clear mission and established leadership for global water projects.",
-          "id": "[4]",
-          "source_name": "Charity Website - About",
-          "source_url": "https://www.charitywater.org/about/executive-team"
-        },
-        {
-          "claim": "The organization offers various donation options for general charitable support.",
+          "claim": "The organization offers various donation options for general charitable giving.",
           "id": "[5]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.charitywater.org/donate/the-spring"
@@ -1253,34 +1281,537 @@
           "source_url": "https://assets.ctfassets.net/2w85ks0ylymt/4GBRpmxY2rhfGYqkjrEmEX/b0ef853be55e8560690d81d0fa42f40f/990-2020.pdf"
         },
         {
-          "claim": "General donation pathways are available for supporters.",
+          "claim": "Donations support clean water initiatives globally.",
           "id": "[7]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.charitywater.org/donate"
         },
         {
-          "claim": "Total revenue was $95,010,230 with a program expense ratio of 81.3% and 10.1 months of working capital.",
+          "claim": "Total revenue was $95,010,230 with a fundraising efficiency of $0.11 per $1 raised and 10.1 months of working capital.",
           "id": "[9]",
           "source_name": "Form 990 (2022)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/223936753"
         }
       ],
-      "amal_score_rationale": "The organization earns a strong overall score due to its exceptional financial transparency and direct-service impact model, though its alignment score is moderated by its general-audience focus.",
+      "amal_score_rationale": "The organization earns a strong overall score due to its exceptional financial transparency and direct impact model, though its alignment score is moderated by its status as a general sadaqah-eligible charity rather than a zakat-verified one.",
       "areas_for_improvement": [
-        "Moderate alignment for specific donor demographics seeking high-frequency religious engagement",
-        "program expense ratio of 81.3% is solid but leaves room for growth compared to specialized peers"
+        "",
+        "program expense ratio of 81.3% is solid but leaves room for growth compared to some peer organizations"
       ],
       "dimension_explanations": {
-        "alignment": "Its long track record and clear mission provide a reliable pathway for general charitable giving [2][4].",
-        "impact": "The organization demonstrates high impact through direct service delivery, maintaining a program expense ratio of 81.3% to fund water projects globally [1][6]. With a high data confidence level, the charity efficiently utilizes its $95,010,230 in total revenue to provide clean water and sanitation services to vulnerable populations [9]."
+        "alignment": "It offers a medium fit for Muslim donors looking for established, high-transparency global water initiatives [1][2].",
+        "impact": "The organization demonstrates high impact through direct service delivery, maintaining a program expense ratio of 81.3% and funding thousands of water projects globally [1][6]. Its financial health is robust, supported by a total revenue of $95,010,230 and a fundraising efficiency of $0.11 per $1 raised [9]."
       },
       "headline": "charity: water is a highly-rated non-profit dedicated to ending the global water crisis through sustainable community-led solutions.",
       "strengths": [
-        "Exceptional financial health with a perfect 100.100.0/100 from Charity Navigator score",
-        "High fundraising efficiency with only $0.11 spent per $1 raised",
+        "Exceptional financial accountability with a perfect 100.0/100 rating from Charity Navigator",
+        "High fundraising efficiency, spending only $0.11 to raise every $1",
         "Strong liquidity with 10.1 months of working capital available"
       ],
-      "summary": "Founded to bring clean and safe drinking water to people in need, charity: water implements diverse programs including drilled wells, spring protections, and hygiene education [2][6]. The organization reported a total revenue of $95,010,230 and maintains a perfect Charity Navigator score of 100.0/100, reflecting its commitment to financial transparency and accountability [1][9]."
+      "summary": "Founded to bring clean and safe drinking water to people in need, charity: water implements diverse programs including drilled wells, spring protections, and hygiene education [2][6]. The organization reported a total revenue of $95,010,230 and maintains a perfect Charity Navigator score of 100.0/100, reflecting its commitment to financial health and transparency [1][9]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2025-01-09",
+          "claim": "clean and safe drinking water",
+          "confidence": 1,
+          "id": "[1]",
+          "quote": "bringing clean and safe drinking water to people in need",
+          "source_name": "Charity Website - About",
+          "source_type": "website",
+          "source_url": "https://www.charitywater.org/about/scott-harrison-story"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "drilled wells, spring protections, and piped systems",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "Spring protections, Drilled wells, Piped systems",
+          "source_name": "Charity Website - Programs",
+          "source_type": "website",
+          "source_url": "https://www.charitywater.org/about/request-speaker"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "funded 9,395 water projects",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Total water projects funded: 9395",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://assets.ctfassets.net/2w85ks0ylymt/3Ylywwa8SVy8zbefGJtzcB/d53b6d7612a14de18d9562a9280d51f7/Charity_Global_Inc._Final_2023_Form_990_PIC_Website.pdf"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "perfect 100/100 rating from Charity Navigator",
+          "confidence": 1,
+          "id": "[4]",
+          "quote": "Overall Score: 100/100",
+          "source_name": "Charity Navigator - Ratings",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/223936753#financials"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "total revenue of $96,818,300",
+          "confidence": 1,
+          "id": "[5]",
+          "quote": "Total Revenue: $96,818,300",
+          "source_name": "Form 990 (2022)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/223936753"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "fundraising efficiency of $0.11 per $1 raised",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "Fundraising Efficiency: $0.11 per $1 raised",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/223936753#financials"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "Platinum Seal of Transparency from Candid",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Platinum Seal of Transparency",
+          "source_name": "Candid Profile",
+          "source_type": "rating",
+          "source_url": "https://app.candid.org/profile/7092310"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "10.1 months of working capital",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Working Capital: 10.1 months",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/223936753#financials"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "board of 12 members",
+          "confidence": 1,
+          "id": "[9]",
+          "quote": "Number of voting members of the governing body: 12",
+          "source_name": "Form 990 (2022)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/223936753"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "91% independent membership",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "Independent Board Members: 91%",
+          "source_name": "Charity Navigator - Accountability",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/223936753#accountability"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "$3.17 per beneficiary",
+          "confidence": 0.9,
+          "id": "[11]",
+          "quote": "$3.17/beneficiary (exceptional for EXTREME_POVERTY)",
+          "source_name": "Internal Impact Data",
+          "source_type": "website",
+          "source_url": "https://www.charitywater.org/about/scott-harrison-story"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "program expense ratio of 81.3%",
+          "confidence": 1,
+          "id": "[12]",
+          "quote": "Program Expense Ratio: 81.3%",
+          "source_name": "Form 990 (2022)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/223936753"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "peer median of 83.0%",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "Peer Program Ratio Median: 83.0%",
+          "source_name": "Peer Benchmarks",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/223936753"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "adding a dedicated zakat page",
+          "confidence": 0.9,
+          "id": "[14]",
+          "quote": "Improvement: Add a dedicated zakat page",
+          "source_name": "Alignment Improvement",
+          "source_type": "website",
+          "source_url": "https://www.charitywater.org/donate"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "compliance with all 20 BBB Wise Giving Alliance standards",
+          "confidence": 1,
+          "id": "[15]",
+          "quote": "Meets All 20 Standards: Yes",
+          "source_name": "BBB Wise Giving Alliance",
+          "source_type": "rating",
+          "source_url": "https://give.org/charity-reviews/relief-development/charitywater-in-franklin-tn-9999-17687"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "verified theory of change",
+          "confidence": 1,
+          "id": "[16]",
+          "quote": "Theory of Change Documented: Yes",
+          "source_name": "Candid Outcome Tracking",
+          "source_type": "rating",
+          "source_url": "https://app.candid.org/profile/7092310"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "Muslim-majority regions like Afghanistan and Algeria",
+          "confidence": 1,
+          "id": "[17]",
+          "quote": "Geographic Coverage: Afghanistan, Algeria",
+          "source_name": "Geographic Coverage",
+          "source_type": "website",
+          "source_url": "https://www.charitywater.org/about/request-speaker"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "2.1% revenue CAGR",
+          "confidence": 1,
+          "id": "[18]",
+          "quote": "3-Year Revenue CAGR: 2.1%",
+          "source_name": "Financial Trends",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/223936753"
+        }
+      ],
+      "amal_score_rationale": "The organization earns a strong overall score due to its exceptional financial transparency and direct impact model, though its alignment score is moderated by its status as a general sadaqah-eligible charity rather than a zakat-verified one.",
+      "amal_scores": {
+        "amal_score": 77,
+        "confidence_scores": {
+          "alignment": 29,
+          "data_confidence": 1,
+          "impact": 48
+        },
+        "confidence_tier": "HIGH",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "SADAQAH-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Program Expense Ratio",
+          "citation_ids": [
+            "[12]",
+            "[13]"
+          ],
+          "context": "While healthy, the <cite id=\"12\">program expense ratio of 81.3%</cite> is lower than the <cite id=\"13\">peer median of 83.0%</cite>."
+        },
+        {
+          "area": "Muslim Donor Specificity",
+          "citation_ids": [
+            "[14]"
+          ],
+          "context": ""
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [
+          "[15]"
+        ],
+        "effectiveness_status": "PASS",
+        "finances_status": "PASS",
+        "governance_status": "PASS",
+        "meets_all_standards": true,
+        "review_url": "https://give.org/charity-reviews/relief-development/charitywater-in-franklin-tn-9999-17687",
+        "standards_met": 20,
+        "standards_not_met": [],
+        "summary": "Meets all 20 BBB Wise Giving Alliance Standards for Charity Accountability"
+      },
+      "case_against": {
+        "citation_ids": [
+          "[12]",
+          "[13]"
+        ],
+        "mitigation_notes": "The charity's '100% model' uses specific private donations to cover these overheads, ensuring public donations are protected for direct project use.",
+        "risk_factors": [
+          "<cite id=\"13\">Program ratio is below the 83% peer median</cite>"
+        ],
+        "summary": "The primary concern is the <cite id=\"12\">81.3% program expense ratio</cite>, which suggests a higher portion of funds is allocated to administrative or fundraising costs compared to peers."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 6,
+          "rating": 8,
+          "website": 4
+        },
+        "high_confidence_count": 16,
+        "total_count": 18,
+        "unique_sources": 6
+      },
+      "confidence": {
+        "data_freshness": "Financials from 2022/2023",
+        "data_gaps": [
+          ""
+        ],
+        "level": "HIGH",
+        "notes": "Strong data availability with perfect accountability scores.",
+        "score": 95,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "BBB",
+          "Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 95,
+        "form_990_tax_year": 2022,
+        "known_gaps": [
+          ""
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 18,
+        "unique_sources": 6,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[17]",
+            "[14]"
+          ],
+          "explanation": "",
+          "improvement": "Alignment could be strengthened by <cite id=\"14\">adding a dedicated zakat page</cite> or clarifying the eligibility of its water projects for religious giving."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[15]",
+            "[7]"
+          ],
+          "explanation": "Donors can trust this charity due to its <cite id=\"15\">compliance with all 20 BBB Wise Giving Alliance standards</cite> and its <cite id=\"7\">Platinum Seal of Transparency</cite>.",
+          "improvement": ""
+        },
+        "impact": {
+          "citation_ids": [
+            "[11]",
+            "[16]",
+            "[12]",
+            "[13]"
+          ],
+          "explanation": "The charity demonstrates high impact with a <cite id=\"11\">$3.17 cost per beneficiary</cite> and a <cite id=\"16\">verified theory of change</cite>.",
+          "improvement": "To improve the impact score, the charity could aim to bring its <cite id=\"12\">81.3% program expense ratio</cite> closer to the <cite id=\"13\">peer median of 83.0%</cite>."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "EXTREME_POVERTY",
+        "citation_ids": [
+          "[17]",
+          "[16]"
+        ],
+        "evidence_rigor": "Grade A - Verified outcomes and GPS tracking",
+        "geographic_focus": [
+          "Asia",
+          "Africa"
+        ],
+        "giving_style": "Direct service / Infrastructure",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [],
+        "zakat_status": "SADAQAH-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.213,
+        "annual_revenue": 96818300,
+        "citation_ids": [
+          "[5]",
+          "[12]",
+          "[13]"
+        ],
+        "cn_financial_score": 100,
+        "cn_overall_score": 100,
+        "fundraising_ratio": 0.111,
+        "industry_program_ratio": 0.75,
+        "peer_count": 14,
+        "peer_program_ratio_median": 0.83,
+        "program_expense_ratio": 0.8133,
+        "reserves_months": 12.2,
+        "revenue_cagr_3yr": 2.1,
+        "transparency_score": 100,
+        "working_capital_months": 10.1,
+        "yearly_financials": [
+          {
+            "expenses": 101269828,
+            "net_assets": 85519094,
+            "revenue": 96818300,
+            "year": 2022
+          },
+          {
+            "expenses": 98791943,
+            "net_assets": 94215221,
+            "revenue": 101611139,
+            "year": 2021
+          },
+          {
+            "expenses": 62891317,
+            "net_assets": 90841226,
+            "revenue": 92858715,
+            "year": 2020
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[9]"
+        ],
+        "domestic_grants": 0,
+        "foreign_grants": 165310357,
+        "grant_count": 87,
+        "grant_strategy": "Funds local partners to implement and maintain water projects",
+        "is_significant_grantmaker": true,
+        "regions_served": [
+          "Asia",
+          "Africa"
+        ],
+        "top_recipients": [
+          "International implementing partners"
+        ],
+        "total_grants": 165310357
+      },
+      "headline": "charity: water is a highly-rated non-profit dedicated to ending the global water crisis through sustainable community-led solutions.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who prioritize radical transparency, financial accountability, and want to fund tangible water infrastructure in underserved global regions.",
+        "citation_ids": [
+          "[4]",
+          "[17]"
+        ],
+        "donor_motivations": [
+          "Value high-tech tracking and GPS verification of projects",
+          "Prefer an organization with a perfect third-party accountability rating",
+          "Want to ensure 100% of their public donation goes to the field",
+          "Care about sustainable water access in Africa and Asia"
+        ],
+        "giving_considerations": [
+          "Donations are considered Sadaqah, not Zakat",
+          "The organization has a large mainstream presence and high visibility",
+          "Focus is on long-term infrastructure rather than emergency relief"
+        ],
+        "not_ideal_for": "Donors specifically looking to fulfill Zakat obligations or those seeking to support small, grassroots local charities."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[16]"
+        ],
+        "evidence_grade": "A",
+        "evidence_grade_explanation": "Grade A reflects verified outcome tracking and a <cite id=\"16\">strong, documented theory of change</cite>.",
+        "external_evaluations": [
+          "Candid outcomes data"
+        ],
+        "outcome_tracking_years": 3,
+        "rct_available": false,
+        "theory_of_change": "PUBLISHED",
+        "theory_of_change_summary": "charity: water provides sustainable water solutions through local partners to improve health and education outcomes.",
+        "why_evidence_matters": "Evidence ensures that water projects remain functional and continue to serve the community years after installation."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[18]"
+        ],
+        "founded_year": 2006,
+        "maturity_stage": "Established",
+        "revenue_growth_3yr": 2.1,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "The global water crisis requires billions in investment; the charity's <cite id=\"18\">2.1% revenue CAGR</cite> shows steady but absorbable growth.",
+        "strategic_priorities": [
+          "Expand piped water systems",
+          "Increase hygiene education"
+        ],
+        "years_operating": 20
+      },
+      "organizational_capacity": {
+        "board_size": 12,
+        "ceo_compensation": 250000,
+        "ceo_compensation_pct_revenue": 0.26,
+        "ceo_name": "Scott Harrison",
+        "citation_ids": [
+          "[9]",
+          "[10]"
+        ],
+        "employees_count": 100,
+        "geographic_reach": "Asia and Africa",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 0.91,
+        "payroll_to_revenue_pct": 10,
+        "programs_count": 5,
+        "staff_per_million_revenue": 1,
+        "volunteers_count": 0
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[4]"
+        ],
+        "differentiator": "Distinguished by a <cite id=\"4\">perfect 100.0/100 from Charity Navigator score</cite> and unique '100% model' for public donations.",
+        "peer_group": "Extreme Poverty & Water Sanitation",
+        "similar_orgs": [
+          "Action Against Hunger USA",
+          "United Muslim Relief",
+          "Paani"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Broader focus on nutrition",
+          "name": "Action Against Hunger USA"
+        },
+        {
+          "differentiator": "",
+          "name": "United Muslim Relief"
+        },
+        {
+          "differentiator": "Smaller, focused on Pakistan",
+          "name": "Paani"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[4]",
+            "[7]"
+          ],
+          "detail": "The organization holds a <cite id=\"4\">perfect 100.0/100 from Charity Navigator</cite> and a <cite id=\"7\">Platinum Seal of Transparency from Candid</cite>.",
+          "point": "Exceptional Accountability and Transparency"
+        },
+        {
+          "citation_ids": [
+            "[6]"
+          ],
+          "detail": "They spend only <cite id=\"6\">$0.11 to raise every $1</cite>, which is significantly better than industry averages.",
+          "point": "High Fundraising Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[3]"
+          ],
+          "detail": "The charity has a documented track record of <cite id=\"3\">funding 9,395 water projects</cite> and utilizes GPS tracking for project transparency.",
+          "point": "Verified Impact and Project Tracking"
+        }
+      ],
+      "strengths_deep_dive": [
+        "charity: water distinguishes itself through a rigorous commitment to financial health, evidenced by <cite id=\"8\">10.1 months of working capital</cite> available to sustain operations. This resilience is paired with a high governance standard, featuring a <cite id=\"9\">board of 12 members</cite> with <cite id=\"10\">91% independent membership</cite>. Their operational model is highly effective in the extreme poverty sector, achieving an estimated cost of <cite id=\"11\">$3.17 per beneficiary</cite>, which is considered exceptional for water and sanitation interventions."
+      ],
+      "summary": "founded in 2006, charity: water is a global non-profit dedicated to solving the water crisis by providing <cite id=\"1\">clean and safe drinking water</cite> to communities in need. The organization utilizes a diverse array of technical solutions, including <cite id=\"2\">drilled wells, spring protections, and piped systems</cite>, tailored to the specific needs of the regions they serve. With a focus on sustainability and community-led maintenance, they have successfully <cite id=\"3\">funded 9,395 water projects</cite> as of their most recent reporting period. Financially, the organization is characterized by exceptional transparency, maintaining a <cite id=\"4\">perfect 100/100 rating from Charity Navigator</cite>. In 2022, the charity reported <cite id=\"5\">total revenue of $96,818,300</cite>, demonstrating significant scale and the ability to manage large-scale humanitarian operations. Their unique '100% model' ensures that public donations go directly to water projects, while private donors and sponsors cover all operating costs, contributing to a <cite id=\"6\">fundraising efficiency of $0.11 per $1 raised</cite>.",
+      "zakat_guidance": {
+        "classification": null,
+        "eligibility": "SADAQAH-ELIGIBLE"
+      }
     }
   }
 }

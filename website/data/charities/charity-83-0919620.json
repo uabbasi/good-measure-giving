@@ -2,7 +2,7 @@
   "id": "83-0919620",
   "ein": "83-0919620",
   "name": "Humanity for Relief and Development",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "THE ORGANIZATION IS A NONPROFIT\nORGANIZATION ON A MISSION TO IMPROVE THE LIVES OF INDIVIDUALS AND FAMILIES\nAFFECTED BY THE WAR IN YEMEN THROUGH A RANGE OF SUSTAINABLE PROJECTS, PROVIDING\nTANGIBLE RESULTS WITH A POSITIVE IMPACT.",
   "programs": [
     "Food Distribution",
@@ -57,11 +57,7 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": 0.8099588798224213
   },
-  "baselineGovernance": {
-    "boardSize": 5,
-    "independentBoardMembers": null,
-    "ceoCompensation": 90768
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Youth",
@@ -87,7 +83,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-03-09 21:45:55",
+  "lastUpdated": "2026-03-11 20:05:42",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -546,6 +542,80 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 34
       },
+      "judge_issues": [
+        {
+          "field": "risks_risk_summary",
+          "judge": "score",
+          "message": "The risk summary mentions a high domestic burn rate (81% of expenses stay in the US despite international operations) as a key concern. This is a significant factor that should be more explicitly addressed in the overall amal_score_rationale, as it directly impacts the efficiency and effectiveness of the organization's international programs. The current rationale focuses on financial accountability and zakat eligibility but doesn't adequately address this potential inefficiency.",
+          "severity": "warning"
+        },
+        {
+          "field": "impact_rationale",
+          "judge": "score",
+          "message": "The impact rationale mentions a Charity Navigator score of 97.33333333333333/100, which is primarily a financial score. While this contributes to the overall assessment, it's important to clarify that this score doesn't directly reflect program impact or outcomes. The rationale could be more precise in distinguishing between financial health and program effectiveness.",
+          "severity": "info"
+        },
+        {
+          "field": "source.website",
+          "judge": "data_completeness",
+          "message": "Website blocked by anti-bot protection: CAPTCHA_BLOCKED: challenge page (HTTP 202)",
+          "severity": "warning"
+        },
+        {
+          "field": "propublica.expense_ratio",
+          "judge": "crawl_quality",
+          "message": "Expenses ($4,391,518) exceed revenue ($3,669,260) by 20%",
+          "severity": "warning"
+        },
+        {
+          "field": "charity_navigator.expense_ratio",
+          "judge": "crawl_quality",
+          "message": "Expenses ($4,391,518) exceed revenue ($3,669,260) by 20%",
+          "severity": "warning"
+        },
+        {
+          "field": "discovered.zakat.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "source_attribution.has_audited_financials.source_url",
+          "judge": "synthesize_quality",
+          "message": "Website citation for 'has_audited_financials' uses homepage URL; deep link preferred",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": -6,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -614,6 +684,371 @@
         "Robust liquidity with 15.0 months of working capital available"
       ],
       "summary": "Humanity for Relief and Development (HRD) is a non-profit organization dedicated to improving the lives of individuals and families in Yemen through food distribution, medical relief, and orphanage support [1][3]. The organization is recognized as zakat-eligible, ensuring that donations are distributed in accordance with established asnaf categories [2]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "97.33333333333333/100 overall score from Charity Navigator",
+          "confidence": 1,
+          "id": "[1]",
+          "quote": "Overall Score & Rating: 97.33",
+          "source_name": "Charity Navigator - Humanity for Relief and Development",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/830919620#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "verified as zakat-eligible",
+          "confidence": 0.95,
+          "id": "[2]",
+          "quote": "HRD ensures all Zakat donations are distributed to eligible asnaf.",
+          "source_name": "HRD Global - Zakat Eligibility",
+          "source_type": "website",
+          "source_url": "https://hrdglobal.org/zakat-eligibility/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $3,669,260",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Total revenue: $3,669,260",
+          "source_name": "Form 990 (2024)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/830919620"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "all 20 BBB Wise Giving Alliance Standards",
+          "confidence": 1,
+          "id": "[4]",
+          "quote": "This charity meets all 20 Standards for Charity Accountability.",
+          "source_name": "BBB Wise Giving Alliance Review",
+          "source_type": "rating",
+          "source_url": "https://give.org/charity-reviews/relief-development/helping-hand-for-relief-and-development-in-southfield-mi-9999-17667"
+        }
+      ],
+      "amal_score_rationale": "HRD earns a solid rating due to its high financial accountability score of 97.33 and its direct service model in a high-urgency region. The organization maintains strong alignment with donor expectations through its zakat-eligible status and efficient use of funds.",
+      "amal_scores": {
+        "amal_score": 63,
+        "confidence_scores": {
+          "alignment": 35,
+          "data_confidence": 1,
+          "impact": 34
+        },
+        "confidence_tier": "HIGH",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Impact Measurement Transparency",
+          "citation_ids": [
+            "[1]"
+          ],
+          "context": "While HRD tracks 6 outcome metrics, there is currently <cite id=\"1\">no beneficiary data available for cost-per-beneficiary scoring</cite>, which limits granular impact analysis."
+        },
+        {
+          "area": "Strategic Documentation",
+          "citation_ids": [
+            "[1]"
+          ],
+          "context": "The organization currently lacks a <cite id=\"1\">documented theory of change</cite> with an explicit causal pathway for its long-term interventions."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [
+          "[4]"
+        ],
+        "effectiveness_status": "PASS",
+        "finances_status": "PASS",
+        "governance_status": "PASS",
+        "meets_all_standards": true,
+        "review_url": "https://give.org/charity-reviews/relief-development/helping-hand-for-relief-and-development-in-southfield-mi-9999-17667",
+        "standards_met": 20,
+        "standards_not_met": [],
+        "summary": "Meets all 20 BBB Wise Giving Alliance Standards for Charity Accountability"
+      },
+      "case_against": {
+        "citation_ids": [
+          "[1]"
+        ],
+        "mitigation_notes": "The organization maintains high transparency seals and is actively tracking 6 outcome metrics via Candid to improve reporting.",
+        "risk_factors": [
+          "<cite id=\"1\">Missing cost-per-beneficiary data</cite>",
+          "<cite id=\"1\">78.1% of expenses categorized as domestic</cite>"
+        ],
+        "summary": "The primary concern is a <cite id=\"1\">high domestic burn rate</cite>, where a significant portion of expenses stay in the US despite the international mission."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 5,
+          "rating": 10,
+          "website": 3
+        },
+        "high_confidence_count": 18,
+        "total_count": 18,
+        "unique_sources": 4
+      },
+      "confidence": {
+        "data_freshness": "Data includes 2024 Form 990 and recent Charity Navigator ratings",
+        "data_gaps": [
+          "Missing beneficiary counts",
+          "Missing theory of change"
+        ],
+        "level": "HIGH",
+        "notes": "Strong financial and transparency data available.",
+        "score": 85,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "BBB",
+          "Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 85,
+        "form_990_tax_year": 2024,
+        "known_gaps": [
+          "No cost-per-beneficiary data",
+          "No formal theory of change document"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 15,
+        "unique_sources": 4,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[1]",
+            "[2]"
+          ],
+          "explanation": "HRD is a strong fit for Muslim donors, offering <cite id=\"2\">verified zakat eligibility</cite> and serving <cite id=\"2\">underserved populations</cite> in Muslim-majority regions.",
+          "improvement": "The organization could improve alignment by <cite id=\"1\">expanding services to additional underserved geographies</cite> with limited nonprofit coverage."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[1]",
+            "[4]"
+          ],
+          "explanation": "Donors can trust HRD due to its <cite id=\"4\">attainment of all 20 BBB standards</cite> and its <cite id=\"1\">Platinum Candid Seal</cite>. The organization undergoes <cite id=\"4\">independent audits</cite> and maintains high scores for board governance.",
+          "improvement": "To strengthen credibility further, the charity could <cite id=\"1\">publish consistent beneficiary counts</cite> to allow for independent verification of impact scale."
+        },
+        "impact": {
+          "citation_ids": [
+            "[1]"
+          ],
+          "explanation": "Operations are efficient with an <cite id=\"1\">78.1% program expense ratio</cite> and <cite id=\"1\">direct service delivery</cite> in high-need areas like Yemen.",
+          "improvement": "Impact measurement would benefit from <cite id=\"1\">documenting a clear theory of change</cite> and publishing triggers for the deployment of its <cite id=\"1\">high working capital reserves</cite>."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "HUMANITARIAN",
+        "citation_ids": [
+          "[1]",
+          "[2]"
+        ],
+        "evidence_rigor": "Grade C - Outcome tracking via Candid",
+        "geographic_focus": [
+          "Yemen",
+          "Pakistan"
+        ],
+        "giving_style": "Direct service",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "fuqara (poor)",
+          "masakin (needy)"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.104,
+        "annual_revenue": 3669260,
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "cn_financial_score": 92,
+        "cn_overall_score": 97.33333333333333,
+        "fundraising_ratio": 0.08,
+        "industry_program_ratio": 0.75,
+        "peer_count": 14,
+        "peer_program_ratio_median": 0.83,
+        "program_expense_ratio": 0.7811,
+        "reserves_months": 20.8,
+        "revenue_cagr_3yr": -1.9,
+        "transparency_score": 100,
+        "working_capital_months": 15,
+        "yearly_financials": [
+          {
+            "expenses": 4391518,
+            "net_assets": 5489945,
+            "revenue": 3669260,
+            "year": 2024
+          },
+          {
+            "expenses": 3289496,
+            "net_assets": 6287485,
+            "revenue": 3310129,
+            "year": 2023
+          },
+          {
+            "expenses": 1846483,
+            "net_assets": 6343856,
+            "revenue": 3815280,
+            "year": 2022
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "domestic_grants": 50000,
+        "foreign_grants": 834569,
+        "grant_count": 15,
+        "grant_strategy": "Distributes funds to international implementing partners for direct relief.",
+        "is_significant_grantmaker": true,
+        "regions_served": [
+          "Yemen",
+          "Palestine"
+        ],
+        "top_recipients": [
+          "Rebuilding Alliance ($50,000)"
+        ],
+        "total_grants": 884569
+      },
+      "headline": "Humanity for Relief and Development provides critical humanitarian aid and sustainable support to families affected by the ongoing crisis in Yemen.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who want to support humanitarian relief in Yemen through a highly transparent, zakat-eligible organization with strong financial reserves.",
+        "citation_ids": [
+          "[1]",
+          "[2]"
+        ],
+        "donor_motivations": [
+          "Want to fulfill zakat obligations for the poor and needy",
+          "Prioritize high transparency ratings and BBB accreditation",
+          "Value organizations with significant liquidity for emergency response",
+          "Focus on the humanitarian crisis in Yemen"
+        ],
+        "giving_considerations": [
+          "The organization has a high domestic expense ratio relative to international grants",
+          "Specific cost-per-beneficiary metrics are not yet publicly available",
+          "Revenue has seen a slight 3-year decline of -1.9%"
+        ],
+        "not_ideal_for": "Donors seeking rigorous RCT-level evidence of long-term economic outcomes or those who prefer organizations with very low domestic overhead."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[1]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects that the organization tracks <cite id=\"1\">6 outcome metrics</cite> and manages its profile on Candid, but lacks independent external evaluations.",
+        "external_evaluations": [
+          "Candid outcomes data"
+        ],
+        "outcome_tracking_years": 1,
+        "rct_available": false,
+        "theory_of_change": "IMPLICIT",
+        "theory_of_change_summary": "HRD seeks to empower individuals in conflict zones by providing access to food security and livelihood development, though a formal causal map is not published.",
+        "why_evidence_matters": "Evidence ensures that the $3.6M in annual revenue is effectively translating into improved life outcomes for families in Yemen."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[1]"
+        ],
+        "founded_year": null,
+        "maturity_stage": "Growth",
+        "revenue_growth_3yr": -1.9,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "The ongoing crisis in Yemen presents needs that far exceed the current $3.7M scale of the organization.",
+        "strategic_priorities": [
+          "Food security",
+          "Livelihood development",
+          "Medical relief"
+        ],
+        "years_operating": 8
+      },
+      "organizational_capacity": {
+        "board_size": 5,
+        "ceo_compensation": 90768,
+        "ceo_compensation_pct_revenue": 2.47,
+        "ceo_name": "Not Listed",
+        "citation_ids": [
+          "[1]",
+          "[3]",
+          "[4]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "Yemen and Pakistan",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 0.57,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 3,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[1]"
+        ],
+        "differentiator": "HRD maintains a <cite id=\"1\">higher working capital ratio (15.0 months)</cite> than many peers in the humanitarian sector.",
+        "peer_group": "Extreme Poverty Relief",
+        "similar_orgs": [
+          "Givelight Foundation",
+          "KinderUSA",
+          "Developments in Literacy"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Similar focus on orphan care and humanitarian relief at a similar scale.",
+          "name": "Givelight Foundation"
+        },
+        {
+          "differentiator": "Focuses on humanitarian relief for children in similar conflict-affected regions.",
+          "name": "KinderUSA"
+        },
+        {
+          "differentiator": "Shares a focus on educational support and serving the fuqara in Pakistan.",
+          "name": "Developments in Literacy"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "The organization maintains a <cite id=\"1\">perfect 100 score in both Culture and Leadership</cite> beacons from Charity Navigator, alongside a <cite id=\"1\">97/100 for Accountability</cite>.",
+          "point": "Exceptional Financial Accountability"
+        },
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "HRD demonstrates lean operations, spending only <cite id=\"1\">$0.08 to raise every $1</cite> in contributions.",
+          "point": "High Fundraising Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[1]",
+            "[4]"
+          ],
+          "detail": "The charity holds a <cite id=\"1\">Platinum Seal of Transparency from Candid</cite> and meets <cite id=\"4\">all 20 BBB Wise Giving Alliance Standards</cite>.",
+          "point": "Verified Transparency"
+        }
+      ],
+      "strengths_deep_dive": [
+        "Humanity for Relief and Development excels in financial health and governance. With <cite id=\"1\">15.0 months of working capital in reserve</cite>, the organization is better positioned than many peers to handle sudden humanitarian crises without interrupting ongoing services. Their governance is supported by a <cite id=\"3\">board of 5 members</cite> and a formal <cite id=\"4\">conflict of interest policy</cite>. Furthermore, their grantmaking activity shows a strategic approach to local partnerships, distributing <cite id=\"3\">$834,569 in foreign grants</cite> to 14 different recipients to facilitate on-the-ground relief in conflict zones."
+      ],
+      "summary": "Humanity for Relief and Development (HRD) is a humanitarian organization primarily focused on providing life-saving assistance to vulnerable populations in Yemen and Pakistan. The organization operates with a high degree of financial efficiency, maintaining a <cite id=\"1\">97.33333333333333/100 overall score from Charity Navigator</cite>. In the 2024 fiscal year, HRD reported <cite id=\"3\">total revenue of $3,669,260</cite>, with a strong commitment to direct service delivery. The charity's operations are characterized by a <cite id=\"1\">program expense ratio of 78.1%</cite>, ensuring that the vast majority of donor funds reach those in need. HRD's primary interventions include food security through its 'Mercy Bakery' initiatives, medical relief, and support for orphans. The organization is <cite id=\"2\">verified as zakat-eligible</cite>, specifically serving the asnaf categories of <cite id=\"2\">fuqara (the poor) and masakin (the needy)</cite>. Despite its international focus, the organization maintains <cite id=\"1\">15.0 months of working capital</cite>, providing significant financial stability and a robust cushion for emergency response scaling.",
+      "zakat_guidance": {
+        "classification": "fuqara",
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }

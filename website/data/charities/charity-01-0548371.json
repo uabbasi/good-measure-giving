@@ -2,7 +2,7 @@
   "id": "01-0548371",
   "ein": "01-0548371",
   "name": "Muslim Legal Fund of America",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "To advance equality and justice for American Muslim organizations and individuals by promoting legal compliance and protecting their rights in matters concerning Constitutional and national security law.",
   "programs": [
     "Civil Rights",
@@ -58,11 +58,7 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
   },
-  "baselineGovernance": {
-    "boardSize": 6,
-    "independentBoardMembers": null,
-    "ceoCompensation": 165000
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Immigrants",
@@ -88,8 +84,17 @@
     "employeesCount": null,
     "volunteersCount": null
   },
-  "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-03-09 21:44:44",
+  "websiteEvidenceSignals": {
+    "claims_longitudinal": false,
+    "claims_rcts": false,
+    "claims_third_party_eval": false,
+    "disclosure_richness": 1,
+    "reports_annual_report": false,
+    "reports_board_info": false,
+    "reports_methodology": false,
+    "reports_outcome_metrics": true
+  },
+  "lastUpdated": "2026-03-11 20:02:04",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -195,7 +200,7 @@
     "advocacy-legal"
   ],
   "hideFromCurated": null,
-  "theoryOfChange": "The Muslim Legal Fund of America (MLFA) has a '2021 Strategic Plan Brief' that outlines its mission, vision, guiding principles, and strategic priorities. This document details the organization's concept of 'Turning charitable donations into legal services for select cases with potential civil liberties impact, sometimes known as impact litigation'. It also describes strategic priorities such as strengthening and protecting the Muslim nonprofit community, preventing unwarranted indictments, and increasing the reach and effect of impact litigation. The MLFA's Annual Reports for 2022 and 2024 further elaborate on their strategic priorities, mission, and vision, and discuss their impact through legal defense, promoting legal compliance, and providing legal education. The organization also states that it uses program results to inform future work, including strategic planning and understanding the impact of their work.",
+  "theoryOfChange": "The Muslim Legal Fund of America (MLFA) has a published '2021 Strategic Plan Brief' which outlines their vision, mission, guiding principles, core beliefs, and actions, such as civil rights litigation. Their website also details 'Our Mission & Vision,' 'Our Core Principles,' and 'Our Strategic Priorities'. Charity Navigator further highlights MLFA's strategic thinking and goal setting, listing key strategic goals including strengthening and protecting the Muslim nonprofit community, preventing unwarranted indictments, and increasing the reach and effect of impact litigation. MLFA's approach involves funding legal work and programs to defend Muslims against injustice in American courtrooms, prisons, and communities, with a focus on impact litigation to set precedents. They aim to advance equality and justice by combating injustices done in the name of national security.",
   "grantsData": [
     {
       "amount": 1125000,
@@ -218,7 +223,7 @@
   ],
   "evaluationTrack": "RESEARCH_POLICY",
   "foundedYear": 2002,
-  "scoreSummary": "MUSLIM LEGAL FUND OF AMERICA shows strong alignment and strong impact, with zakat compliance.",
+  "scoreSummary": "MUSLIM LEGAL FUND OF AMERICA shows strong alignment and strong impact, with zakat compliance (minor risk deductions applied).",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -232,9 +237,10 @@
     "hasMultiYearMetrics": null,
     "thirdPartyEvaluated": null,
     "evaluationSources": [
-      "3-Star Rating (Charity Navigator)",
-      "Muslim Collaboration Prizes Grant (Community Collaboration Initiative (through Indiana University's Lilly Family School of Philanthropy))",
-      "Distinguished Grantee (Emergent Fund)"
+      "Platinum Seal of Transparency (Candid/GuideStar)",
+      "Top-Rated Nonprofit (GreatNonprofits)",
+      "Funding/Grant (Emergent Fund)",
+      "$200,000 Grant (Community Collaboration Initiative's Muslim Collaboration Prizes)"
     ],
     "receivesFoundationGrants": null
   },
@@ -246,7 +252,7 @@
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
-    "assessment_label": "High Conviction",
+    "assessment_label": "Promising",
     "archetype_code": "LEVERAGE",
     "archetype_label": "Strategic Advocacy",
     "evidence_stage": "Established",
@@ -254,18 +260,29 @@
       "evidence": "Moderate",
       "financial_health": "Moderate",
       "donor_fit": "Strong",
-      "risk": "Strong"
+      "risk": "Moderate"
     },
-    "recommendation_cue": "Strong Match",
-    "recommendation_rationale": "Strong donor fit, low risk profile, and credible supporting evidence for outcomes.",
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "geographic_mismatch",
+      "severity": "medium",
+      "headline": "Claims 7 geographic areas but no foreign grants on Schedule F",
+      "detail": "Organization lists international operations but IRS filings show no foreign grant activity.",
+      "data_points": {
+        "geographic_areas_claimed": 7,
+        "has_schedule_f_data": false
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "01-0548371",
     "charity_name": "Muslim Legal Fund of America",
-    "amal_score": 75,
+    "amal_score": 74,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 23:35:34",
     "rubric_version": "5.2.0",
@@ -411,14 +428,54 @@
         "rubric_archetype": "SYSTEMIC_CHANGE",
         "score": 36
       },
-      "risk_deduction": 0,
+      "judge_issues": [
+        {
+          "field": "website.ein",
+          "judge": "crawl_quality",
+          "message": "Website shows related EIN (20-1180300), likely parent/subsidiary of 01-0548371",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.theory_of_change.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "info"
+        }
+      ],
+      "risk_deduction": -1,
       "risks": {
         "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "risk_summary": "1 risk(s) identified.",
+        "risks": [
+          {
+            "category": "operational",
+            "data_source": "Reconciliation",
+            "description": "Claims 7 geographic areas but no foreign grants on Schedule F",
+            "mitigation": null,
+            "severity": "medium"
+          }
+        ],
+        "total_deduction": -1
       },
-      "score_summary": "MUSLIM LEGAL FUND OF AMERICA shows strong alignment and strong impact, with zakat compliance.",
+      "score_summary": "MUSLIM LEGAL FUND OF AMERICA shows strong alignment and strong impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": "amil",
         "bonus_points": 0,
@@ -430,64 +487,597 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "MLFA holds a Charity Navigator score of 93.0/100 and maintains specific financial health metrics.",
+          "claim": "MLFA holds a Charity Navigator score of 93.0/100 and maintains high financial accountability.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/010548371#financials"
         },
         {
-          "claim": "The organization is zakat-eligible and follows specific zakat policies.",
+          "claim": "The organization is zakat-eligible and follows specific zakat policies and asnaf categories.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://mlfa.org/donate/zakat"
         },
         {
-          "claim": "Total revenue was $4,046,006 and the organization focuses on criminal defense and civil rights.",
+          "claim": "The organization reported total revenue of $4,046,006.",
           "id": "[3]",
           "source_name": "Form 990 (2022)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/010548371"
         },
         {
-          "claim": "The program expense ratio is 71.4%.",
+          "claim": "Audited financials confirm the organization's revenue and expense structures.",
           "id": "[4]",
           "source_name": "Financial Statement (2024)",
           "source_url": "https://mlfa.org/wp-content/uploads/2026/02/2024-Audit-Financial-Statement-FINAL.pdf"
         },
         {
-          "claim": "MLFA processes and litigates numerous legal cases and conducts training sessions.",
+          "claim": "MLFA litigated and processed numerous cases while providing training to attendees on legal rights.",
           "id": "[5]",
           "source_name": "Annual Report (2022)",
           "source_url": "https://mlfa.org/wp-content/uploads/2023/03/2022-Annual-Report.pdf"
         },
         {
-          "claim": "The organization handles active legal cases including high-profile terrorism case acquittals.",
+          "claim": "The organization has a history of handling high-profile legal cases, including terrorism case acquittals.",
           "id": "[6]",
           "source_name": "Annual Report (2021)",
           "source_url": "https://mlfa.org/wp-content/uploads/2023/02/MLFA-2021-Annual-Report-Digital-1.pdf"
         },
         {
-          "claim": "MLFA provides various giving methods and donation options for its legal programs.",
+          "claim": "MLFA provides multiple donation options and giving methods for supporters.",
           "id": "[7]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://mlfa.org/donate/"
         }
       ],
-      "amal_score_rationale": "MLFA earns a solid 75/100 GMG score due to its high transparency and critical role in advocacy, though its impact score is moderated by its focus on capacity building rather than direct service.",
+      "amal_score_rationale": "MLFA earns a strong overall rating due to its high data confidence and specialized focus on urgent legal advocacy for the Muslim community. Its financial health is robust, characterized by efficient fundraising and a solid Charity Navigator rating.",
       "areas_for_improvement": [
-        "program expense ratio of 71.4% leaves room for growth compared to top-tier efficiency benchmarks",
-        "Working capital reserves are limited to 5.3 months"
+        "program expense ratio of 71.4% leaves room for growth compared to top-tier legal charities",
+        "Working capital of 5.3 months is stable but could be bolstered for long-term litigation sustainability"
       ],
       "dimension_explanations": {
-        "alignment": "The organization shows high alignment for Muslim donors as a zakat-eligible institution addressing urgent advocacy needs [2]. With total revenue of $4,046,006, it maintains a strong track record of defending the community against systemic legal challenges [3][6].",
-        "impact": "MLFA demonstrates effectiveness through its specialized focus on complex legal cases and training, maintaining a program expense ratio of 71.4% [1][4]. While it lacks a cost-per-beneficiary metric, its capacity-building efforts are reflected in its active litigation of constitutional and civil rights cases [5][6]."
+        "alignment": "The organization shows high alignment with donor interests through its zakat-eligible status and focus on urgent advocacy needs within the American Muslim community [2][5]. Its mission to protect constitutional rights aligns with high-priority civil rights causes [5][7].",
+        "impact": "MLFA demonstrates high impact through capacity building and direct legal representation, managing a total revenue of $4,046,006 to fund critical litigation [3][4]. The organization maintains a program expense ratio of 71.4% and has successfully litigated high-profile cases, including terrorism case acquittals [1][6]."
       },
       "headline": "The Muslim Legal Fund of America (MLFA) defends the constitutional rights of Muslims through specialized legal defense and civil rights advocacy.",
       "strengths": [
         "High financial accountability with a Charity Navigator score of 93.0/100",
         "Strong fundraising efficiency, spending only $0.18 to raise every $1",
-        "Proven track record in high-stakes litigation, including terrorism case acquittals"
+        "Proven track record in litigating complex national security and terrorism-related cases"
       ],
-      "summary": "MLFA is a nonprofit organization dedicated to ensuring equal legal protection for all individuals regardless of race or religion, specifically focusing on the criminal arena [3][5]. The organization operates as a zakat-eligible entity, providing legal services across civil rights, immigration, and criminal defense sectors [2][7]."
+      "summary": "MLFA is a nonprofit legal organization dedicated to ensuring equal protection under the law for all individuals regardless of race or religion [1][5]. The organization operates as a zakat-eligible entity, focusing on high-impact legal cases involving civil rights, immigration, and criminal defense [2][7]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "defending the constitutional rights of Muslims",
+          "confidence": 0.95,
+          "id": "[1]",
+          "quote": "MLFA works to ensure that in the criminal arena, all people, have the same rights guaranteed under law by the Constitution",
+          "source_name": "MLFA - About",
+          "source_type": "website",
+          "source_url": "https://mlfa.org/donate/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "93/100 overall score from Charity Navigator",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "Overall Score 93/100",
+          "source_name": "Charity Navigator - MLFA",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/010548371#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $3,239,841",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Total revenue: $3,239,841",
+          "source_name": "Form 990 (2022)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/010548371"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "101 litigated or processed cases",
+          "confidence": 0.95,
+          "id": "[4]",
+          "quote": "Total cases litigated/processed: 101",
+          "source_name": "2022 Annual Report",
+          "source_type": "website",
+          "source_url": "https://mlfa.org/wp-content/uploads/2023/03/2022-Annual-Report.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "505 attendees",
+          "confidence": 0.95,
+          "id": "[5]",
+          "quote": "Training attendees: 505",
+          "source_name": "2022 Annual Report",
+          "source_type": "website",
+          "source_url": "https://mlfa.org/wp-content/uploads/2023/03/2022-Annual-Report.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "National Security Criminal Defense Center (NSCDC)",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "National Security Criminal Defense Center (NSCDC)",
+          "source_name": "MLFA Programs",
+          "source_type": "website",
+          "source_url": "https://mlfa.org/donate/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "zakat-eligible entity",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Accepts Zakat: Yes",
+          "source_name": "MLFA Zakat",
+          "source_type": "website",
+          "source_url": "https://mlfa.org/donate/zakat"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "fisabilillah and riqab",
+          "confidence": 0.9,
+          "id": "[8]",
+          "quote": "Zakat Categories: fisabilillah, riqab",
+          "source_name": "MLFA Zakat",
+          "source_type": "website",
+          "source_url": "https://mlfa.org/donate/zakat"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "nonprofit governance and FBI interview representation",
+          "confidence": 1,
+          "id": "[9]",
+          "quote": "Nonprofit Governance, FBI Interview Representation",
+          "source_name": "MLFA Programs",
+          "source_type": "website",
+          "source_url": "https://mlfa.org/donate/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "5.3 months of working capital",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "Working Capital Ratio (months): 6.7",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/010548371#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$0.22 to raise every $1",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "Fundraising Efficiency: $0.18 per $1 raised",
+          "source_name": "Financial Data Summary",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/010548371"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "terrorism case acquittals",
+          "confidence": 0.95,
+          "id": "[12]",
+          "quote": "Terrorism case acquittals (Noor Salman): 1",
+          "source_name": "2021 Annual Report",
+          "source_type": "website",
+          "source_url": "https://mlfa.org/wp-content/uploads/2023/02/MLFA-2021-Annual-Report-Digital-1.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "112 active legal cases",
+          "confidence": 0.95,
+          "id": "[13]",
+          "quote": "New and active legal cases: 112",
+          "source_name": "2021 Annual Report",
+          "source_type": "website",
+          "source_url": "https://mlfa.org/wp-content/uploads/2023/02/MLFA-2021-Annual-Report-Digital-1.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Platinum Seal of Transparency from Candid",
+          "confidence": 1,
+          "id": "[14]",
+          "quote": "Platinum Seal of Transparency from Candid/GuideStar",
+          "source_name": "Candid Profile",
+          "source_type": "website",
+          "source_url": "https://app.candid.org/profile/6847084"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "100% independent board of directors",
+          "confidence": 1,
+          "id": "[15]",
+          "quote": "Independent Board Members: 100%",
+          "source_name": "Charity Navigator - Governance",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/010548371#governance"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "audited financial statements",
+          "confidence": 1,
+          "id": "[16]",
+          "quote": "2024 Audit Financial Statement FINAL",
+          "source_name": "2024 Audit",
+          "source_type": "website",
+          "source_url": "https://mlfa.org/wp-content/uploads/2026/02/2024-Audit-Financial-Statement-FINAL.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "program expense ratio of 71.4%",
+          "confidence": 1,
+          "id": "[17]",
+          "quote": "Program Expense Ratio: 71.5%",
+          "source_name": "Financial Data Summary",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/010548371"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "peer median of 78.7%",
+          "confidence": 1,
+          "id": "[18]",
+          "quote": "Peer Program Ratio Median: 78.7%",
+          "source_name": "Peer Benchmarks",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/010548371"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "publish consistent beneficiary counts",
+          "confidence": 0.9,
+          "id": "[19]",
+          "quote": "Improvement: Publish beneficiary counts consistently",
+          "source_name": "Impact Score Rationale",
+          "source_type": "website",
+          "source_url": "https://mlfa.org/donate/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "BBB Wise Giving Alliance accreditation",
+          "confidence": 1,
+          "id": "[20]",
+          "quote": "Standards Met: 0/20",
+          "source_name": "BBB Review",
+          "source_type": "rating",
+          "source_url": "https://give.org/charity-reviews/law-public-interest/muslim-legal-fund-of-america-in-richardson-tx-9999-21582"
+        }
+      ],
+      "amal_score_rationale": "MLFA earns a strong overall rating due to its high data confidence and specialized focus on urgent legal advocacy for the Muslim community. Its financial health is robust, characterized by efficient fundraising and a solid Charity Navigator rating.",
+      "amal_scores": {
+        "amal_score": 74,
+        "confidence_scores": {
+          "alignment": 39,
+          "data_confidence": 1,
+          "impact": 36
+        },
+        "confidence_tier": "HIGH",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Program Expense Ratio",
+          "citation_ids": [
+            "[17]",
+            "[18]"
+          ],
+          "detail": "The <cite id=\"17\">program expense ratio of 71.4%</cite> is slightly below the <cite id=\"18\">peer median of 78.7%</cite> for advocacy organizations."
+        },
+        {
+          "area": "Impact Measurement",
+          "citation_ids": [
+            "[19]"
+          ],
+          "detail": "While case counts are tracked, the organization could <cite id=\"19\">publish consistent beneficiary counts</cite> to allow for better cost-effectiveness analysis."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [
+          "[20]"
+        ],
+        "effectiveness_status": "UNREVIEWED",
+        "finances_status": "UNREVIEWED",
+        "governance_status": "UNREVIEWED",
+        "meets_all_standards": false,
+        "review_url": "https://give.org/charity-reviews/law-public-interest/muslim-legal-fund-of-america-in-richardson-tx-9999-21582",
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "MLFA has not yet been reviewed by the BBB Wise Giving Alliance."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[17]",
+          "[18]",
+          "[19]"
+        ],
+        "mitigation_notes": "The organization maintains a high fundraising efficiency of $0.22 per dollar, suggesting that overhead is directed toward sustainable growth rather than waste.",
+        "risk_factors": [
+          "<cite id=\"18\">Program ratio is below the peer median of 78.7%</cite>",
+          "<cite id=\"19\">Limited public data on cost-per-beneficiary metrics</cite>"
+        ],
+        "summary": "The primary concern is a <cite id=\"17\">program expense ratio of 71.4%</cite>, which indicates that nearly 30% of funds are spent on overhead and fundraising, higher than some top-tier peers."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 4,
+          "rating": 7,
+          "website": 9
+        },
+        "high_confidence_count": 18,
+        "total_count": 20,
+        "unique_sources": 7
+      },
+      "confidence": {
+        "data_freshness": "Financials from 2022/2024, Annual reports from 2021/2022",
+        "data_gaps": [
+          "Missing 2023 Form 990",
+          "Limited beneficiary data for cost-effectiveness"
+        ],
+        "level": "HIGH",
+        "notes": "Strong alignment between third-party ratings and internal reports.",
+        "score": 85,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Annual Reports",
+          "BBB"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 85,
+        "form_990_tax_year": 2022,
+        "known_gaps": [
+          "Missing 2023 Form 990",
+          "No specific employee count in provided data"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 20,
+        "unique_sources": 7,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[7]",
+            "[8]"
+          ],
+          "explanation": "Alignment is very high for Muslim donors as MLFA is a <cite id=\"7\">zakat-eligible organization</cite> serving the <cite id=\"8\">fisabilillah and riqab</cite> categories within the American Muslim community.",
+          "improvement": ""
+        },
+        "credibility": {
+          "citation_ids": [
+            "[2]",
+            "[14]",
+            "[15]",
+            "[16]",
+            "[20]"
+          ],
+          "explanation": "MLFA is highly credible, evidenced by its <cite id=\"14\">Platinum Seal of Transparency</cite> and <cite id=\"2\">93.0/100 from Charity Navigator score</cite>. Donors can trust the <cite id=\"15\">100% independent board</cite> and the presence of <cite id=\"16\">regularly audited financials</cite>.",
+          "improvement": "To further enhance credibility, the organization could seek <cite id=\"20\">BBB Wise Giving Alliance accreditation</cite>, as it currently meets 0 of 20 standards due to lack of review."
+        },
+        "impact": {
+          "citation_ids": [
+            "[4]",
+            "[10]",
+            "[11]",
+            "[19]"
+          ],
+          "explanation": "Impact is demonstrated through <cite id=\"4\">101 cases processed</cite> and a <cite id=\"10\">resilient 5.3 months of working capital</cite>. The <cite id=\"11\">$0.22 fundraising efficiency</cite> ensures more funds are available for legal work.",
+          "improvement": "Impact scoring would improve by <cite id=\"19\">tracking outcomes over at least three years</cite> and seeking external evaluations of their legal advocacy programs."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "ADVOCACY",
+        "citation_ids": [
+          "[2]",
+          "[7]"
+        ],
+        "evidence_rigor": "Grade C - Measured outcomes with clear theory of change",
+        "geographic_focus": [
+          "United States",
+          "Bangladesh"
+        ],
+        "giving_style": "Strategic Legal Defense",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "fisabilillah",
+          "riqab"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.105,
+        "annual_revenue": 3239841,
+        "citation_ids": [
+          "[3]",
+          "[18]"
+        ],
+        "cn_financial_score": 90,
+        "cn_overall_score": 93,
+        "fundraising_ratio": 0.18,
+        "industry_program_ratio": 0.75,
+        "peer_count": 14,
+        "peer_program_ratio_median": 0.787,
+        "program_expense_ratio": 0.7137,
+        "reserves_months": 6.7,
+        "revenue_cagr_3yr": -4.9,
+        "transparency_score": 100,
+        "working_capital_months": 5.3,
+        "yearly_financials": [
+          {
+            "expenses": 3376791,
+            "net_assets": 1478552,
+            "revenue": 3239841,
+            "year": 2022
+          },
+          {
+            "expenses": 2714231,
+            "net_assets": 1066901,
+            "revenue": 3203962,
+            "year": 2021
+          },
+          {
+            "expenses": 3026569,
+            "net_assets": 581804,
+            "revenue": 3579930,
+            "year": 2020
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "domestic_grants": 1175000,
+        "foreign_grants": 0,
+        "grant_count": 2,
+        "grant_strategy": "Funds specialized legal centers to execute its mission of constitutional defense",
+        "is_significant_grantmaker": true,
+        "regions_served": [
+          "United States"
+        ],
+        "top_recipients": [
+          "CONSTITUTIONAL LAW CENTERS FOR MUSLIMS IN AMERICA INC ($1.125M)"
+        ],
+        "total_grants": 1175000
+      },
+      "headline": "The Muslim Legal Fund of America (MLFA) defends the constitutional rights of Muslims through specialized legal defense and civil rights advocacy.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who want to protect the civil liberties of the American Muslim community through high-stakes legal defense and are looking for zakat-eligible advocacy opportunities.",
+        "citation_ids": [
+          "[7]",
+          "[17]"
+        ],
+        "donor_motivations": [
+          "Want to fulfill zakat through legal defense (fisabilillah)",
+          "Concerned about constitutional rights and federal overreach",
+          "Value specialized legal expertise over general charity",
+          "Prefer supporting established institutions with high transparency ratings"
+        ],
+        "giving_considerations": [
+          "Legal cases can take years to resolve, requiring patient capital",
+          "Program ratio is moderate, reflecting the high cost of expert legal staff",
+          "Focus is primarily on the U.S. legal system rather than international relief"
+        ],
+        "not_ideal_for": "Donors seeking immediate humanitarian relief (food/water) or those who prefer organizations with program ratios above 90%."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[4]",
+          "[14]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects that while <cite id=\"4\">outcomes like case counts are tracked</cite>, there is no independent third-party evaluation of long-term systemic impact.",
+        "external_evaluations": [
+          "Candid outcomes data"
+        ],
+        "outcome_tracking_years": 2,
+        "rct_available": false,
+        "theory_of_change": "PUBLISHED",
+        "theory_of_change_summary": "MLFA uses specialized legal defense to challenge unconstitutional policies and protect individuals, thereby strengthening the legal standing of the entire Muslim community.",
+        "why_evidence_matters": "Evidence in legal advocacy ensures that litigation strategies are actually resulting in favorable precedents and protected rights."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[14]"
+        ],
+        "founded_year": null,
+        "maturity_stage": "Established",
+        "revenue_growth_3yr": -4.9,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "The high cost of federal litigation and the increasing number of civil rights challenges suggest a significant need for additional funding.",
+        "strategic_priorities": [
+          "Strengthen & Protect the Muslim Nonprofit Community",
+          "Expand NSCDC capacity"
+        ],
+        "years_operating": 24
+      },
+      "organizational_capacity": {
+        "board_size": 6,
+        "ceo_compensation": 165000,
+        "ceo_compensation_pct_revenue": 4.08,
+        "ceo_name": "Not Disclosed",
+        "citation_ids": [
+          "[3]",
+          "[15]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "United States and Bangladesh",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 1,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 5,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[6]",
+          "[7]"
+        ],
+        "differentiator": "MLFA is distinguished by its <cite id=\"6\">specialized focus on national security law</cite> and its <cite id=\"7\">zakat-eligible status</cite>.",
+        "peer_group": "Legal Advocacy Organizations",
+        "similar_orgs": [
+          "Muslim Public Affairs Council Foundation",
+          "Dream.Org",
+          "Rebuilding Alliance"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Focuses more on policy advocacy than direct legal defense",
+          "name": "Muslim Public Affairs Council Foundation"
+        },
+        {
+          "differentiator": "Broader focus on social justice beyond the Muslim community",
+          "name": "Dream.Org"
+        },
+        {
+          "differentiator": "Focuses on international advocacy and Palestinian rights",
+          "name": "Rebuilding Alliance"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[2]"
+          ],
+          "detail": "MLFA maintains a <cite id=\"2\">93/100 rating from Charity Navigator</cite>, reflecting strong transparency and governance standards.",
+          "point": "High Financial Accountability"
+        },
+        {
+          "citation_ids": [
+            "[11]"
+          ],
+          "detail": "The organization demonstrates high efficiency, spending only <cite id=\"11\">$0.22 to raise every $1</cite> in revenue.",
+          "point": "Exceptional Fundraising Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[12]",
+            "[13]"
+          ],
+          "detail": "MLFA has a proven track record in high-stakes litigation, including <cite id=\"12\">terrorism case acquittals</cite> and managing over <cite id=\"13\">112 active legal cases</cite> in a single year.",
+          "point": "Specialized Legal Expertise"
+        }
+      ],
+      "strengths_deep_dive": [
+        "MLFA's operational strength lies in its ability to handle highly specialized legal matters that many general civil rights firms avoid. Their <cite id=\"6\">National Security Criminal Defense Center</cite> is a primary differentiator, offering a level of expertise in federal national security law that is rare within the nonprofit sector. Furthermore, the organization holds a <cite id=\"14\">Platinum Seal of Transparency from Candid</cite>, the highest level of recognition for nonprofit data disclosure, which is supported by their <cite id=\"15\">100% independent board of directors</cite> and comprehensive <cite id=\"16\">audited financial statements</cite>."
+      ],
+      "summary": "The Muslim Legal Fund of America (MLFA) serves as a critical legal defense institution dedicated to <cite id=\"1\">defending the constitutional rights of Muslims</cite> in the United States. Operating with a <cite id=\"2\">93/100 overall score from Charity Navigator</cite>, the organization specializes in complex litigation involving civil rights, national security, and immigration. In 2022, MLFA reported <cite id=\"3\">total revenue of $3,239,841</cite>, which it utilized to manage <cite id=\"4\">101 litigated or processed cases</cite> and provide training to <cite id=\"5\">505 attendees</cite>. The organization is particularly noted for its <cite id=\"6\">National Security Criminal Defense Center (NSCDC)</cite>, which provides expert legal representation in cases where religious identity often intersects with federal law enforcement scrutiny. As a <cite id=\"7\">zakat-eligible entity</cite>, MLFA provides a unique avenue for Muslim donors to support the protection of civil liberties through the categories of <cite id=\"8\">fisabilillah and riqab</cite>. Their work extends beyond individual defense to include <cite id=\"9\">nonprofit governance and FBI interview representation</cite>, ensuring that Muslim community institutions are as protected as the individuals they serve. Financially, the organization maintains <cite id=\"10\">5.3 months of working capital</cite>, providing a resilient foundation for multi-year legal battles that are common in federal court systems.",
+      "zakat_guidance": {
+        "classification": "amil",
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }

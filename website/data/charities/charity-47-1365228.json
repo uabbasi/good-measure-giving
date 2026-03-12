@@ -2,7 +2,7 @@
   "id": "47-1365228",
   "ein": "47-1365228",
   "name": "Sachse Muslim Society",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "Organization that was established in 2014 dedicated exclusively to religeous education and community service in Sachse and its surrounding areas.",
   "programs": [],
   "geographicCoverage": [],
@@ -54,7 +54,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-03-09 21:45:42",
+  "lastUpdated": "2026-03-11 20:04:59",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -359,6 +359,50 @@
         "rubric_archetype": "COMMUNITY",
         "score": 6
       },
+      "judge_issues": [
+        {
+          "field": "amal_score_rationale",
+          "judge": "score",
+          "message": "The rationale mentions the gap between revenue and program spending and limited third-party verification, but it doesn't explicitly mention the high working capital as a contributing factor to the low score. The high working capital is a significant concern, especially for a Zakat-collecting organization, and should be included in the rationale.",
+          "severity": "warning"
+        },
+        {
+          "field": "impact_rationale",
+          "judge": "score",
+          "message": "The impact rationale mentions strong financial stability but doesn't adequately address the significant deductions due to the low program expense ratio, lack of a theory of change, and weak governance. These factors heavily influence the low impact score and should be more explicitly discussed in the rationale.",
+          "severity": "warning"
+        },
+        {
+          "field": "source.website",
+          "judge": "data_completeness",
+          "message": "Critical source 'website' failed: No data found on any pages",
+          "severity": "warning"
+        },
+        {
+          "field": "discovered.zakat.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "source_attribution.has_audited_financials.source_url",
+          "judge": "synthesize_quality",
+          "message": "Website citation for 'has_audited_financials' uses homepage URL; deep link preferred",
+          "severity": "info"
+        }
+      ],
       "risk_deduction": -9,
       "risks": {
         "overall_risk_level": "HIGH",
@@ -434,6 +478,343 @@
         "Zakat-eligible status for religious giving"
       ],
       "summary": "founded in 2014, the Sachse Muslim Society provides religious education and community services to Sachse and its surrounding areas [2]. The organization is currently focused on a masjid construction project and is verified as Zakat-eligible [1]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "establishment of a permanent spiritual home",
+          "confidence": 0.9,
+          "id": "[1]",
+          "quote": "dedicated exclusively to religeous education and community service in Sachse",
+          "source_name": "LaunchGood - Sachse Masjid",
+          "source_type": "website",
+          "source_url": "https://www.launchgood.com/campaign/build_sachse_masjid"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $2,799,757 in 2023",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "Total revenue: 2,799,757",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/471365228"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "63.0 months of working capital",
+          "confidence": 0.95,
+          "id": "[3]",
+          "quote": "Working Capital Ratio (years): 6.98",
+          "source_name": "Charity Navigator - Sachse Muslim Society",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/471365228#financials"
+        }
+      ],
+      "amal_score_rationale": "The low overall score reflects a significant gap between total revenue and program spending, alongside limited third-party verification of impact data.",
+      "amal_scores": {
+        "amal_score": 19,
+        "confidence_scores": {
+          "alignment": 22,
+          "data_confidence": 0.6,
+          "impact": 6
+        },
+        "confidence_tier": "MEDIUM",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Low Program Expense Ratio",
+          "citation_ids": [
+            "[2]"
+          ],
+          "context": "The current <cite id=\"2\">program expense ratio is 13.6%</cite>, which is significantly lower than industry standards for operational charities."
+        },
+        {
+          "area": "Transparency and Impact Reporting",
+          "citation_ids": [
+            "[3]"
+          ],
+          "context": "There is <cite id=\"3\">insufficient data for cost-per-beneficiary calculations</cite>, making it difficult for donors to assess the direct impact of their contributions."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "none",
+        "citation_ids": [],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "UNKNOWN",
+        "governance_status": "UNKNOWN",
+        "meets_all_standards": false,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "The organization is not currently evaluated by the BBB Wise Giving Alliance."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[2]",
+          "[3]"
+        ],
+        "mitigation_notes": "The organization is currently in a construction phase, which often results in high asset accumulation before program services expand.",
+        "risk_factors": [
+          "<cite id=\"2\">Program expense ratio is critically low at 13.6%</cite>",
+          "<cite id=\"3\">No external evaluation or outcome tracking</cite> available"
+        ],
+        "summary": "The primary concern is the <cite id=\"2\">low program expense ratio of 13.6%</cite>, which suggests that the majority of funds are being held in reserve or used for non-programmatic costs."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 5,
+          "rating": 4,
+          "website": 3
+        },
+        "high_confidence_count": 10,
+        "total_count": 12,
+        "unique_sources": 3
+      },
+      "confidence": {
+        "data_freshness": "Financial data current through 2023",
+        "data_gaps": [
+          "Missing board data",
+          "No independent audit"
+        ],
+        "level": "MODERATE",
+        "notes": "Financial data is strong, but governance and impact transparency are limited.",
+        "score": 60,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "LaunchGood"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 60,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Missing audited financials",
+          "No board member disclosure",
+          "No external impact evaluation"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 12,
+        "unique_sources": 3,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[1]",
+            "[3]"
+          ],
+          "explanation": "The charity has a <cite id=\"1\">verified Zakat-eligible status</cite> and serves a niche religious-cultural cause, though its <cite id=\"3\">Zakat allocation policy</cite> remains unclarified.",
+          "improvement": "Clarify the specific zakat allocation policy and eligible use categories for donors to improve alignment scores."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[2]",
+            "[3]"
+          ],
+          "explanation": "The organization is a registered 501(c)(3) with <cite id=\"2\">verified Form 990 filings</cite>, but lacks a high transparency profile due to <cite id=\"3\">unknown board members</cite> and missing audited financials.",
+          "improvement": "To strengthen credibility, the charity should publish its full board roster and undergo an independent financial audit."
+        },
+        "impact": {
+          "citation_ids": [
+            "[2]",
+            "[3]"
+          ],
+          "explanation": "Impact is currently limited as the organization is in a capital-intensive phase, resulting in a <cite id=\"2\">program expense ratio of 13.6%</cite> and <cite id=\"3\">excessive working capital of 63 months</cite>.",
+          "improvement": "Publish a time-bound plan to deploy excess unrestricted reserves into mission delivery and <cite id=\"3\">consistently report beneficiary counts</cite>."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "RELIGIOUS-CULTURAL",
+        "citation_ids": [
+          "[1]",
+          "[2]"
+        ],
+        "evidence_rigor": "Grade C - Reported outcomes without external verification",
+        "geographic_focus": [
+          "Sachse, Texas",
+          "North Texas"
+        ],
+        "giving_style": "Capital Investment",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "fisabilillah (in the way of Allah)",
+          "fuqara (poor)"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.531,
+        "annual_revenue": 2799757,
+        "citation_ids": [
+          "[2]",
+          "[3]"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": 0.111,
+        "industry_program_ratio": 0.75,
+        "peer_count": 12,
+        "peer_program_ratio_median": 0.8,
+        "program_expense_ratio": 0.1363,
+        "reserves_months": 83.8,
+        "revenue_cagr_3yr": 290.8,
+        "working_capital_months": 63,
+        "yearly_financials": [
+          {
+            "expenses": 786367,
+            "net_assets": 4131104,
+            "revenue": 2799757,
+            "year": 2023
+          },
+          {
+            "expenses": 329769,
+            "net_assets": 2142398,
+            "revenue": 1290707,
+            "year": 2022
+          },
+          {
+            "expenses": 219107,
+            "net_assets": 1181460,
+            "revenue": 183346,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [],
+        "domestic_grants": 0,
+        "foreign_grants": 0,
+        "grant_count": 0,
+        "grant_strategy": "N/A",
+        "is_significant_grantmaker": false,
+        "regions_served": [
+          "North Texas"
+        ],
+        "top_recipients": [],
+        "total_grants": 0
+      },
+      "headline": "The Sachse Muslim Society is a community-focused organization dedicated to religious education and the establishment of a permanent spiritual home in North Texas.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who want to invest in the long-term religious infrastructure of a growing Muslim community in North Texas and are comfortable with a capital-campaign focus.",
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "donor_motivations": [
+          "Want to contribute to the establishment of a new Masjid",
+          "Value local community development in the Dallas-Fort Worth area",
+          "Prefer supporting organizations with high financial liquidity and low debt risk",
+          "Seek to fulfill Zakat through religious educational infrastructure"
+        ],
+        "giving_considerations": [
+          "Donations are currently supporting a construction phase rather than direct social services",
+          "The organization holds very high cash reserves relative to its annual spending",
+          "Limited data is available on specific educational outcomes or student metrics"
+        ],
+        "not_ideal_for": "Donors seeking immediate humanitarian impact or those who prioritize charities with high program-to-overhead ratios."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects that while the organization <cite id=\"3\">reports outcomes</cite>, there is no third-party evaluation or rigorous impact data.",
+        "external_evaluations": [],
+        "outcome_tracking_years": 0,
+        "rct_available": false,
+        "theory_of_change": "IMPLICIT",
+        "theory_of_change_summary": "The organization operates on the premise that establishing a physical masjid and educational center will foster community cohesion and religious literacy.",
+        "why_evidence_matters": "Evidence ensures that the funds used for construction and education are effectively translating into community benefit."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[2]"
+        ],
+        "founded_year": 2014,
+        "maturity_stage": "Growth",
+        "revenue_growth_3yr": 290.8,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "The ongoing masjid construction project requires significant capital beyond current annual revenue.",
+        "strategic_priorities": [
+          "Masjid construction completion",
+          "Expansion of religious education programs"
+        ],
+        "years_operating": 12
+      },
+      "organizational_capacity": {
+        "board_size": 0,
+        "ceo_compensation": 0,
+        "ceo_compensation_pct_revenue": 0,
+        "ceo_name": "Not Disclosed",
+        "citation_ids": [
+          "[2]",
+          "[3]"
+        ],
+        "employees_count": 0,
+        "geographic_reach": "Sachse, TX and surrounding areas",
+        "has_conflict_policy": false,
+        "has_financial_audit": false,
+        "independent_board_pct": 0,
+        "payroll_to_revenue_pct": 0,
+        "programs_count": 2,
+        "staff_per_million_revenue": 0,
+        "volunteers_count": 50
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[2]"
+        ],
+        "differentiator": "Distinguished by an <cite id=\"2\">extraordinary 3-year revenue growth rate of 290.8%</cite>.",
+        "peer_group": "Local Religious Organizations",
+        "similar_orgs": [
+          "ICNA Relief",
+          "Helping Hand for Relief and Development"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Broader national social service focus",
+          "name": "ICNA Relief"
+        },
+        {
+          "differentiator": "International humanitarian focus",
+          "name": "Helping Hand for Relief"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[3]"
+          ],
+          "detail": "The organization maintains <cite id=\"3\">63.0 months of working capital</cite>, providing a massive buffer for long-term construction projects.",
+          "point": "Exceptional Financial Liquidity"
+        },
+        {
+          "citation_ids": [
+            "[3]"
+          ],
+          "detail": "The society demonstrates lean donor acquisition, spending only <cite id=\"3\">$0.11 to raise every $1</cite> in contributions.",
+          "point": "High Fundraising Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[2]"
+          ],
+          "detail": "The organization has seen explosive growth with a <cite id=\"2\">3-year revenue CAGR of 290.8%</cite>, indicating strong community backing.",
+          "point": "Rapid Revenue Growth"
+        }
+      ],
+      "strengths_deep_dive": [
+        "The Sachse Muslim Society's primary strength lies in its robust financial position and community trust. With <cite id=\"2\">total assets reaching $8,345,604</cite> against <cite id=\"2\">liabilities of $4,214,500</cite>, the organization has built a solid foundation for its capital campaign. This financial health is further evidenced by its ability to attract significant external support, including a <cite id=\"1\">$50,000 grant from United Mission For Relief & Development</cite> and a <cite id=\"1\">$25,000 grant from the Oothala Foundation</cite>. These contributions, paired with a <cite id=\"3\">fundraising efficiency of $0.08 per $1 raised</cite>, suggest a highly motivated donor base and efficient internal processes for securing capital."
+      ],
+      "summary": "The Sachse Muslim Society is a community-focused organization founded in 2014 to serve the religious and educational needs of the Muslim community in North Texas. Currently, the organization is primarily focused on the <cite id=\"1\">establishment of a permanent spiritual home</cite> through a masjid construction project. Financially, the society reported <cite id=\"2\">total revenue of $2,799,757 in 2023</cite>, which represents a significant <cite id=\"2\">3-year revenue CAGR of 290.8%</cite>. While the organization maintains <cite id=\"3\">high liquidity with 63.0 months of working capital</cite>, its current operational model reflects a heavy emphasis on capital accumulation for construction rather than immediate service delivery. The organization is <cite id=\"1\">verified as Zakat-eligible</cite>, allowing donors to contribute toward the religious infrastructure and educational programming of the Sachse area.",
+      "zakat_guidance": {
+        "classification": "fi_sabilillah",
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }

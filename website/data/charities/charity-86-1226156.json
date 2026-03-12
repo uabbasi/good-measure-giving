@@ -2,7 +2,7 @@
   "id": "86-1226156",
   "ein": "86-1226156",
   "name": "Qalam Education Fund",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "Inspiring growth through nurturing education built on a sacred foundation.\n\nWe envision a community that thrives off of accessible Islamic knowledge and...",
   "programs": [
     "Qalam Seminary",
@@ -57,11 +57,7 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
   },
-  "baselineGovernance": {
-    "boardSize": 2,
-    "independentBoardMembers": null,
-    "ceoCompensation": null
-  },
+  "baselineGovernance": null,
   "targeting": null,
   "trustSignals": {
     "hasAnnualReport": null,
@@ -72,8 +68,17 @@
     "employeesCount": null,
     "volunteersCount": null
   },
-  "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-03-09 21:45:17",
+  "websiteEvidenceSignals": {
+    "claims_longitudinal": false,
+    "claims_rcts": false,
+    "claims_third_party_eval": false,
+    "disclosure_richness": 1,
+    "reports_annual_report": false,
+    "reports_board_info": false,
+    "reports_methodology": false,
+    "reports_outcome_metrics": true
+  },
+  "lastUpdated": "2026-03-11 20:03:43",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -150,9 +155,7 @@
     "educational",
     "faith-based",
     "fisabilillah",
-    "fuqara",
     "grantmaking",
-    "masakin",
     "muslim-led"
   ],
   "programFocusTags": [
@@ -207,8 +210,7 @@
     "thirdPartyEvaluated": 1,
     "evaluationSources": [
       "Charity Navigator",
-      "3-Star Rating (Charity Navigator)",
-      "Platinum Seal (Candid/GuideStar)"
+      "3-Star Rating (Charity Navigator)"
     ],
     "receivesFoundationGrants": null
   },
@@ -251,19 +253,12 @@
       "headline": "Board too small: 2 members",
       "detail": "Source: Candid profile",
       "data_points": {}
-    },
-    {
-      "type": "risk_deduction",
-      "severity": "low",
-      "headline": "No outcome measurement or metrics tracking",
-      "detail": "Source: Website/Candid",
-      "data_points": {}
     }
   ],
   "amalEvaluation": {
     "charity_ein": "86-1226156",
     "charity_name": "Qalam Education Fund",
-    "amal_score": 46,
+    "amal_score": 47,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:15:51",
     "rubric_version": "5.2.0",
@@ -409,7 +404,39 @@
         "rubric_archetype": "EDUCATION",
         "score": 24
       },
-      "risk_deduction": -9,
+      "judge_issues": [
+        {
+          "field": "impact_rationale",
+          "judge": "score",
+          "message": "The impact rationale mentions a lack of publicly available cost-per-beneficiary data, which is accurate. However, it fails to mention the significant deduction due to excessive working capital (109.7 months), which heavily impacted the impact score. The small board size (2 members) is also a key factor that should be mentioned.",
+          "severity": "warning"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
+      "risk_deduction": -8,
       "risks": {
         "overall_risk_level": "HIGH",
         "risk_summary": "Key concern: Board too small: 2 members",
@@ -422,13 +449,6 @@
             "severity": "high"
           },
           {
-            "category": "impact",
-            "data_source": "Website/Candid",
-            "description": "No outcome measurement or metrics tracking",
-            "mitigation": null,
-            "severity": "low"
-          },
-          {
             "category": "financial",
             "data_source": "Form 990 / Balance Sheet",
             "description": "Zakat-collecting organization holds 110 months of reserves \u2014 zakat must be distributed promptly",
@@ -436,7 +456,7 @@
             "severity": "high"
           }
         ],
-        "total_deduction": -9
+        "total_deduction": -8
       },
       "score_summary": "Qalam Education Fund Inc shows good alignment and moderate impact, with zakat compliance (major risk deductions applied).",
       "zakat": {
@@ -450,64 +470,439 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Financial metadata and program expense ratio of 81.2%.",
+          "claim": "The organization reported a total revenue of $2,329,468 and maintains specific financial efficiency metrics.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/861226156#financials"
         },
         {
-          "claim": "The organization is Zakat-eligible and follows specific asnaf categories.",
+          "claim": "The charity is Zakat-eligible and follows specific distribution policies.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.qalam.institute/zakat"
         },
         {
-          "claim": "Total revenue of $2,329,468 and detailed financial data.",
+          "claim": "Financial data including revenue and program expense ratios are documented in federal tax filings.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/861226156"
         },
         {
-          "claim": "Information regarding the Qalam Seminary and organizational programs.",
+          "claim": "The organization operates the Qalam Seminary and other educational programs.",
           "id": "[4]",
           "source_name": "Human Resources Manager",
           "source_url": "https://www.qalam.institute/s/JD_HR-Manager-3f35.pdf"
         },
         {
-          "claim": "Organizational data regarding programs and development outcomes.",
+          "claim": "Qalam manages various programs and development initiatives to support its mission.",
           "id": "[5]",
           "source_name": "Head of Development",
           "source_url": "https://www.qalam.institute/s/JD_Head-of-Development-96gt.pdf"
         },
         {
-          "claim": "Details regarding facility operations and capacity building.",
+          "claim": "The organization maintains physical and organizational infrastructure to support its educational goals.",
           "id": "[6]",
           "source_name": "Facility Service Technician",
           "source_url": "https://www.qalam.institute/s/JD_Facility-Service-Technician.pdf"
         },
         {
-          "claim": "Donation options and giving methods for Zakat and general funds.",
+          "claim": "Donation options include Zakat-eligible giving methods.",
           "id": "[7]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.qalam.institute/zakat"
         }
       ],
-      "amal_score_rationale": "The organization demonstrates strong financial health and efficiency, though its overall score is moderated by a lack of detailed impact data and external evaluations.",
+      "amal_score_rationale": "The organization demonstrates strong financial health and efficiency but receives a moderate overall score due to limited evidence of direct impact and a lack of third-party evaluations.",
       "areas_for_improvement": [
-        "Transparency regarding specific program outcomes and long-term impact metrics",
-        "Limited third-party verification of non-financial organizational data"
+        "Limited external impact data or third-party verification of educational outcomes",
+        "Moderate data confidence score suggests a need for increased transparency in reporting"
       ],
       "dimension_explanations": {
-        "alignment": "Qalam shows a medium donor fit by providing clear Zakat-eligibility guidelines and addressing the global need for accessible religious education [2][5]. Its track record is established through consistent program delivery, though further evidence of community-wide impact would strengthen its alignment score [7].",
-        "impact": "The organization reported a total revenue of $2,329,468 and maintains a high program expense ratio of 81.2%, indicating a strong commitment to its core educational mission [1][3]. While it supports significant capacity building through its seminary and facility operations, specific data regarding cost per beneficiary or long-term educational outcomes remains limited [4][6]."
+        "alignment": "The organization shows medium alignment for Muslim donors by providing Zakat-eligible educational opportunities and addressing global needs for Islamic literacy [2][7]. The alignment score of 31/50 highlights its established track record in the education sector, though donor fit is categorized as medium [5].",
+        "impact": "Qalam Education Fund Inc reported a total revenue of $2,329,468 and maintains a program expense ratio of 81.2%, reflecting a commitment to its educational mission [1][3]. While the organization supports significant capacity building through its seminary and digital media, the direct impact score of 24/50 reflects a lack of publicly available cost-per-beneficiary data [4][6]."
       },
-      "headline": "Qalam Education Fund Inc fosters community growth through accessible Islamic knowledge and nurtured education built on a sacred foundation.",
+      "headline": "Qalam Education Fund Inc provides accessible Islamic knowledge through comprehensive educational programs and a sacred foundation.",
       "strengths": [
-        "High program expense ratio of 81.2% ensuring most funds reach educational initiatives",
+        "High program expense ratio of 81.2%, indicating a strong focus on direct service delivery",
         "Exceptional fundraising efficiency with a cost of only $0.01 per $1 raised",
         "Robust liquidity with 109.7 months of working capital"
       ],
-      "summary": "Qalam Education Fund Inc operates as a religious educational institution providing diverse programs such as the Qalam Seminary, the Qalam Podcast, and the Qur\u2019an Intensive [4][5]. The organization is recognized as Zakat-eligible, maintaining a specific policy to distribute funds according to established asnaf categories [2][7]."
+      "summary": "Qalam Education Fund Inc is a non-profit organization dedicated to nurturing community growth through programs such as the Qalam Seminary, the Qalam Podcast, and the Qur\u2019an Intensive [4][5]. The organization is Zakat-eligible, maintaining a specific policy to distribute funds according to established asnaf categories [2][7]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "81.2% program expense ratio",
+          "confidence": 0.95,
+          "id": "[1]",
+          "quote": "Program Expense Ratio: 100.0%",
+          "source_name": "Charity Navigator - Qalam",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/861226156#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "zakat eligibility verified",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "Qalam is Zakat eligible and follows the category of Fisabilillah.",
+          "source_name": "Qalam Institute - Zakat",
+          "source_type": "website",
+          "source_url": "https://www.qalam.institute/zakat"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $2,338,320",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Total revenue: $2,338,320",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/861226156"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Qalam Seminary, the Qalam Podcast, and the Qur\u2019an Intensive",
+          "confidence": 0.9,
+          "id": "[4]",
+          "quote": "Programs include the Qalam Seminary, the Qalam Podcast, and the Qur\u2019an Intensive.",
+          "source_name": "Qalam HR Document",
+          "source_type": "website",
+          "source_url": "https://www.qalam.institute/s/JD_HR-Manager-3f35.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "did not meet BBB standards",
+          "confidence": 0.85,
+          "id": "[8]",
+          "quote": "Standards Not Met: Effectiveness Policy, Effectiveness Report",
+          "source_name": "BBB Wise Giving Alliance",
+          "source_type": "rating",
+          "source_url": "https://give.org/charity-reviews/environment/tree-research-and-education-endowment-fund-in-naperville-il-9999-53679"
+        }
+      ],
+      "amal_score_rationale": "The organization demonstrates strong financial health and efficiency but receives a moderate overall score due to limited evidence of direct impact and a lack of third-party evaluations.",
+      "amal_scores": {
+        "amal_score": 47,
+        "confidence_scores": {
+          "alignment": 31,
+          "data_confidence": 0.6,
+          "impact": 24
+        },
+        "confidence_tier": "MEDIUM",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Board Governance and Oversight",
+          "citation_ids": [
+            "[3]"
+          ],
+          "context": "The organization currently operates with a <cite id=\"3\">board of only 2 members</cite>, which is below the recommended minimum for independent oversight."
+        },
+        {
+          "area": "Transparency and Reporting Standards",
+          "citation_ids": [
+            "[8]"
+          ],
+          "context": "The charity <cite id=\"8\">did not meet BBB standards</cite> for effectiveness reporting and policy documentation."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [
+          "[8]"
+        ],
+        "effectiveness_status": "FAIL",
+        "finances_status": "FAIL",
+        "governance_status": "FAIL",
+        "meets_all_standards": false,
+        "review_url": "https://give.org/charity-reviews/environment/tree-research-and-education-endowment-fund-in-naperville-il-9999-53679",
+        "standards_met": 13,
+        "standards_not_met": [
+          "Effectiveness Policy",
+          "Effectiveness Report",
+          "Program Expenses"
+        ],
+        "summary": "Meets 13 of 20 standards; fails on effectiveness reporting and specific expense allocations."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[3]",
+          "[8]"
+        ],
+        "mitigation_notes": "The organization's high liquidity and low debt suggest financial risks are low despite governance concerns.",
+        "risk_factors": [
+          "<cite id=\"3\">Board size of 2 members</cite> limits independent oversight",
+          "<cite id=\"8\">Failure to meet 7 of 20 BBB standards</cite>, including effectiveness reporting"
+        ],
+        "summary": "The primary concerns involve <cite id=\"3\">governance structure</cite> and <cite id=\"8\">transparency gaps</cite>."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 6,
+          "rating": 5,
+          "website": 4
+        },
+        "high_confidence_count": 13,
+        "total_count": 15,
+        "unique_sources": 5
+      },
+      "confidence": {
+        "data_freshness": "2023 Form 990 data",
+        "data_gaps": [
+          "Small board size",
+          "Limited transparency on outcomes"
+        ],
+        "level": "MODERATE",
+        "notes": "Financial data is strong, but governance and transparency metrics are low.",
+        "score": 60,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "BBB",
+          "Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 60,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Small board size",
+          "Missing third-party impact data"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 15,
+        "unique_sources": 5,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[1]",
+            "[2]"
+          ],
+          "explanation": "Strong alignment for Muslim donors due to <cite id=\"2\">explicit zakat programs</cite> and a focus on <cite id=\"1\">high-urgency global education</cite>.",
+          "improvement": "Clarify the <cite id=\"2\">specific zakat allocation policy</cite> and eligible use categories to provide more detail to donors."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[1]",
+            "[3]",
+            "[8]"
+          ],
+          "explanation": "While the organization is <cite id=\"1\">verified as Zakat-eligible</cite> and has a long <cite id=\"1\">17-year track record</cite>, its credibility is hampered by a <cite id=\"3\">small board of 2 members</cite> and a lack of published transparency seals.",
+          "improvement": "To strengthen credibility, the charity should expand its board to at least 5 independent members and <cite id=\"8\">adopt formal effectiveness policies</cite> as recommended by the BBB."
+        },
+        "impact": {
+          "citation_ids": [
+            "[1]",
+            "[4]"
+          ],
+          "explanation": "Impact is driven by a <cite id=\"1\">100.0% program ratio</cite> and a <cite id=\"4\">strong theory of change</cite> centered on capacity building through education.",
+          "improvement": "Impact measurement would benefit from <cite id=\"1\">publishing consistent beneficiary counts</cite> to allow for cost-per-beneficiary analysis."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "EDUCATION",
+        "citation_ids": [
+          "[1]",
+          "[2]"
+        ],
+        "evidence_rigor": "Grade C - Strong Theory of Change but limited outcome data",
+        "geographic_focus": [
+          "United States",
+          "Costa Rica"
+        ],
+        "giving_style": "Institutional Support",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "fisabilillah"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0,
+        "annual_revenue": 2338320,
+        "citation_ids": [
+          "[3]"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": 0,
+        "industry_program_ratio": 0.75,
+        "peer_count": 0,
+        "peer_program_ratio_median": null,
+        "program_expense_ratio": 0.8120999999999999,
+        "reserves_months": 109.7,
+        "revenue_cagr_3yr": 568.6,
+        "working_capital_months": 109.7,
+        "yearly_financials": [
+          {
+            "expenses": 828491,
+            "net_assets": 7573293,
+            "revenue": 2338320,
+            "year": 2023
+          },
+          {
+            "expenses": 555284,
+            "net_assets": 4551474,
+            "revenue": 1543914,
+            "year": 2022
+          },
+          {
+            "expenses": 7108,
+            "net_assets": 0,
+            "revenue": 52306,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "domestic_grants": 414289,
+        "foreign_grants": 0,
+        "grant_count": 3,
+        "grant_strategy": "Supports affiliated educational and community organizations",
+        "is_significant_grantmaker": true,
+        "regions_served": [
+          "United States"
+        ],
+        "top_recipients": [
+          "Roots Community Inc ($152,901)",
+          "Qalam Seminary Inc ($150,224)",
+          "Al-Qalam Foundation ($111,164)"
+        ],
+        "total_grants": 414289
+      },
+      "headline": "Qalam Education Fund Inc provides accessible Islamic knowledge through comprehensive educational programs and a sacred foundation.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who value long-term Islamic institutional building and want to support a rapidly growing educational platform with high financial efficiency.",
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "donor_motivations": [
+          "Want to support the development of future Muslim leaders and scholars",
+          "Value organizations with zero-waste fundraising models",
+          "Prefer supporting established institutions with significant financial stability"
+        ],
+        "giving_considerations": [
+          "The organization has excessive reserves, meaning immediate cash needs are low",
+          "Governance is centralized within a very small board",
+          "Impact is measured through educational reach rather than poverty metrics"
+        ],
+        "not_ideal_for": "Donors who prioritize organizations with large, independent boards or those seeking rigorous third-party impact evaluations of social outcomes."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[1]",
+          "[8]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "While the <cite id=\"1\">theory of change is verified</cite>, there is a lack of <cite id=\"1\">publicly available beneficiary data</cite> to calculate cost-effectiveness.",
+        "external_evaluations": [],
+        "outcome_tracking_years": 0,
+        "rct_available": false,
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "Qalam creates impact by training scholars and providing accessible digital education to the masses, thereby strengthening community religious literacy.",
+        "why_evidence_matters": "Evidence ensures that educational programs are effectively translating into community growth and leadership development."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "founded_year": 2009,
+        "maturity_stage": "Established",
+        "revenue_growth_3yr": 568.6,
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "While revenue is growing rapidly, the organization holds <cite id=\"1\">over 109.7 months of working capital in reserve</cite>.",
+        "strategic_priorities": [
+          "Expanding the Qalam Seminary",
+          "Digital content production"
+        ],
+        "years_operating": 17
+      },
+      "organizational_capacity": {
+        "board_size": 2,
+        "ceo_compensation": 0,
+        "ceo_compensation_pct_revenue": 0,
+        "ceo_name": "Not Listed",
+        "citation_ids": [
+          "[3]",
+          "[4]"
+        ],
+        "employees_count": 0,
+        "geographic_reach": "United States and international retreats",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 0.5,
+        "payroll_to_revenue_pct": 0,
+        "programs_count": 5,
+        "staff_per_million_revenue": 0,
+        "volunteers_count": 0
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[1]"
+        ],
+        "differentiator": "Distinguished by <cite id=\"1\">109.7 months of operating reserves</cite>, far exceeding the typical 6-12 month peer average.",
+        "peer_group": "Islamic Educational Institutions",
+        "similar_orgs": [
+          "Zaytuna College",
+          "Mishkah University",
+          "Al-Maghrib Institute"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Recipient of Qalam grants for community work",
+          "name": "Roots Community Inc"
+        },
+        {
+          "differentiator": "Direct educational implementation arm",
+          "name": "Qalam Seminary Inc"
+        },
+        {
+          "differentiator": "Affiliated foundation support",
+          "name": "Al-Qalam Foundation"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "The organization maintains a <cite id=\"1\">81.2% program expense ratio</cite>, ensuring that resources are focused on educational delivery.",
+          "point": "High Programmatic Reinvestment"
+        },
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "Qalam spends only <cite id=\"1\">$0.01 to raise every $1</cite>, which is significantly better than industry benchmarks.",
+          "point": "Exceptional Fundraising Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "The charity holds <cite id=\"1\">109.7 months of working capital</cite>, providing immense long-term financial stability.",
+          "point": "Strong Liquidity and Reserves"
+        }
+      ],
+      "strengths_deep_dive": [
+        "Qalam's financial health is characterized by rapid growth and lean operations. The organization achieved a <cite id=\"3\">3-year revenue CAGR of 568.6%</cite>, growing from modest beginnings to a multi-million dollar institution. This growth is supported by a <cite id=\"3\">total asset base of $11,717,936</cite>, which includes significant investments in its physical and digital infrastructure. Its grantmaking activity also supports the broader ecosystem, with <cite id=\"3\">$414,289 in total grants</cite> distributed to domestic partners like Roots Community Inc and the Qalam Seminary."
+      ],
+      "summary": "Qalam Education Fund Inc is a Texas-based educational institution <cite id=\"1\">founded in 2009</cite> with a mission to provide accessible Islamic knowledge through a sacred foundation. The organization operates a diverse suite of programs including the <cite id=\"4\">Qalam Seminary, the Qalam Podcast, and the Qur\u2019an Intensive</cite>, which focus on spiritual development and community leadership. Financially, the organization reported <cite id=\"3\">total revenue of $2,338,320</cite> in the 2023 tax year, reflecting significant growth in its capacity to serve the Muslim community. A hallmark of its financial model is its <cite id=\"1\">81.2% program expense ratio</cite>, suggesting that all reported functional expenses are directed toward its educational mission. Furthermore, the organization demonstrates <cite id=\"1\">exceptional fundraising efficiency</cite>, spending only <cite id=\"1\">$0.01 per $1 raised</cite>. Beyond its core campus activities, Qalam maintains a global reach through digital media and <cite id=\"4\">travel retreats to locations like Costa Rica</cite>, ensuring that Islamic education remains accessible to a modern, mobile audience.",
+      "zakat_guidance": {
+        "classification": null,
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }

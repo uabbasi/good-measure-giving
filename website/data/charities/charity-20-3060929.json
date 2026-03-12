@@ -2,7 +2,7 @@
   "id": "20-3060929",
   "ein": "20-3060929",
   "name": "Texas Muslim Womens Foundation Inc",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "Founded in 2005, Texas Muslim Women's Foundation (TMWF) aims to empower, promote and support all women and their families, with a special focus on North Texas. We are an equal opportunity provider. We engage all members of the community \u2013 women, men, seniors, families and youth through our various programs. We provide social and family violence services that foster peace and well-being in the home through our Peace in the Home Services and Peaceful Oasis Shelter. In addition, TMWF also arranges leadership skills development for Muslim youth to inspire the next generation to build a promising future for our society and educational programs for Muslim and non-Muslim community members to learn about topics essential to individual and community welfare.",
   "programs": [
     "Social Services",
@@ -59,11 +59,7 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
   },
-  "baselineGovernance": {
-    "boardSize": 2,
-    "independentBoardMembers": null,
-    "ceoCompensation": 115000
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Youth",
@@ -104,7 +100,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 21:45:30",
+  "lastUpdated": "2026-03-11 20:04:24",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -251,6 +247,16 @@
     "fallback_reasons": null
   },
   "keyConcerns": [
+    {
+      "type": "geographic_mismatch",
+      "severity": "medium",
+      "headline": "Claims 5 geographic areas but no foreign grants on Schedule F",
+      "detail": "Organization lists international operations but IRS filings show no foreign grant activity.",
+      "data_points": {
+        "geographic_areas_claimed": 5,
+        "has_schedule_f_data": false
+      }
+    },
     {
       "type": "risk_deduction",
       "severity": "high",
@@ -408,6 +414,50 @@
         "rubric_archetype": "COMMUNITY",
         "score": 35
       },
+      "judge_issues": [
+        {
+          "field": "risks",
+          "judge": "score",
+          "message": "The rationale mentions zakat compliance and minor risk deductions but does not explicitly mention the key concern of the small board size (2 members) which is the primary driver for the risk deduction of -5. This omission makes the rationale incomplete.",
+          "severity": "warning"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.theory_of_change.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": -5,
       "risks": {
         "overall_risk_level": "ELEVATED",
@@ -499,6 +549,546 @@
         "Maintains a high Charity Navigator score of 98.66666666666667/100"
       ],
       "summary": "Texas Muslim Women's Foundation Inc is a non-profit organization dedicated to improving well-being through social services, youth leadership, and education programs [1][3]. The foundation operates as a zakat-eligible entity, providing critical support to survivors of domestic violence through emergency shelters and transitional housing [2][6]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "founded in 2005",
+          "confidence": 1,
+          "id": "[1]",
+          "quote": "founded in 2005",
+          "source_name": "Charity Website",
+          "source_type": "website",
+          "source_url": "https://tmwf.org/about-us/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "emergency shelters, transitional housing, and rapid re-housing",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "Crisis Shelters, Senior Permanent Supportive Housing, Transitional Housing (HUD Rapid Re-Housing)",
+          "source_name": "Charity Website - Programs",
+          "source_type": "website",
+          "source_url": "https://tmwf.org/programs/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $4,665,216",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Total revenue: 4,665,216",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://tmwf.org/wp-content/uploads/2024/07/2023-Form-990.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3-year revenue CAGR of 17.3%",
+          "confidence": 0.95,
+          "id": "[4]",
+          "quote": "Revenue: 2021: 3,393,180; 2023: 4,665,216",
+          "source_name": "Internal Financial Analysis",
+          "source_type": "form990",
+          "source_url": "https://tmwf.org/wp-content/uploads/2024/07/2023-Form-990.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "program expense ratio of 86.0%",
+          "confidence": 1,
+          "id": "[5]",
+          "quote": "Program service expenses: 3,369,328 / Total expenses: 4,859,880",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://tmwf.org/wp-content/uploads/2024/07/2023-Form-990.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$0.04 per $1 raised",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "Fundraising expenses: 144,357 / Total revenue: 4,665,216",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://tmwf.org/wp-content/uploads/2024/07/2023-Form-990.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "186 survivors in shelters",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Survivors housed in shelters: 186",
+          "source_name": "Form 990 (2023) - Outcomes",
+          "source_type": "form990",
+          "source_url": "https://tmwf.org/wp-content/uploads/2024/07/2023-Form-990.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "204 survivors through transitional or rapid re-housing programs",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Survivors in transitional/rapid re-housing: 204",
+          "source_name": "Form 990 (2023) - Outcomes",
+          "source_type": "form990",
+          "source_url": "https://tmwf.org/wp-content/uploads/2024/07/2023-Form-990.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "social services, senior supportive housing, and the 'Food 4 Good' program",
+          "confidence": 1,
+          "id": "[9]",
+          "quote": "Social Services, Senior Permanent Supportive Housing, Food 4 Good",
+          "source_name": "Charity Website - Programs",
+          "source_type": "website",
+          "source_url": "https://tmwf.org/programs/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "zakat-eligible organization",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "Accepts Zakat: Yes",
+          "source_name": "Charity Website - Ways to Give",
+          "source_type": "website",
+          "source_url": "https://tmwf.org/ways-to-give/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "overall score of 98.98.66666666666667/100 from Charity Navigator",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "Overall Score: 98.67",
+          "source_name": "Charity Navigator - Ratings",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/203060929#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$0.04 to raise every $1",
+          "confidence": 1,
+          "id": "[12]",
+          "quote": "Fundraising Efficiency: $0.04",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/203060929#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "137 emergency shelter residents",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "Emergency shelter residents: 137",
+          "source_name": "Form 990 (2024)",
+          "source_type": "form990",
+          "source_url": "https://tmwf.org/wp-content/uploads/2025/09/2024-TMWF-990-Form.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "216 non-residential domestic violence clients",
+          "confidence": 1,
+          "id": "[14]",
+          "quote": "Non-residential DV clients: 216",
+          "source_name": "Form 990 (2024)",
+          "source_type": "form990",
+          "source_url": "https://tmwf.org/wp-content/uploads/2025/09/2024-TMWF-990-Form.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3.7 months of working capital",
+          "confidence": 1,
+          "id": "[15]",
+          "quote": "Working Capital: 3.7 months",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/203060929#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Senior Permanent Supportive Housing",
+          "confidence": 1,
+          "id": "[16]",
+          "quote": "Senior Permanent Supportive Housing",
+          "source_name": "Charity Website - Programs",
+          "source_type": "website",
+          "source_url": "https://tmwf.org/programs/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "100% independent board",
+          "confidence": 1,
+          "id": "[17]",
+          "quote": "Independent Board Members: 100%",
+          "source_name": "Charity Navigator - Accountability",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/203060929#accountability"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "board size of only 2 members",
+          "confidence": 0.9,
+          "id": "[18]",
+          "quote": "Board governance: WEAK (2 members)",
+          "source_name": "Internal Governance Audit",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/203060929#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "publish beneficiary counts more consistently",
+          "confidence": 0.9,
+          "id": "[19]",
+          "quote": "Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
+          "source_name": "Impact Assessment Suggestion",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/203060929"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "asnaf categories including the poor and wayfarers",
+          "confidence": 1,
+          "id": "[20]",
+          "quote": "Zakat Categories: fuqara, masakin, gharimin, fisabilillah, ibn_sabil",
+          "source_name": "Charity Website - Zakat",
+          "source_type": "website",
+          "source_url": "https://tmwf.org/ways-to-give/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "expanding services to geographies",
+          "confidence": 0.85,
+          "id": "[21]",
+          "quote": "Expand services to underserved populations or geographies",
+          "source_name": "Alignment Improvement Suggestion",
+          "source_type": "website",
+          "source_url": "https://tmwf.org/about-us/"
+        }
+      ],
+      "amal_score_rationale": "The organization earns a GMG score of 65/100, reflecting high financial accountability and strong alignment with donor needs, though impact scores are moderated by the direct service nature of the work.",
+      "amal_scores": {
+        "amal_score": 65,
+        "confidence_scores": {
+          "alignment": 35,
+          "data_confidence": 0.6,
+          "impact": 35
+        },
+        "confidence_tier": "MEDIUM",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Board Governance Expansion",
+          "citation_ids": [
+            "[18]"
+          ],
+          "context": "The current board structure is noted as a risk factor due to having only <cite id=\"18\">2 members</cite>, which limits diverse oversight."
+        },
+        {
+          "area": "Impact Transparency",
+          "citation_ids": [
+            "[19]"
+          ],
+          "context": "While direct services are clear, the foundation could <cite id=\"19\">publish beneficiary counts more consistently</cite> to allow for better cost-per-beneficiary assessment."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "UNKNOWN",
+        "governance_status": "UNKNOWN",
+        "meets_all_standards": null,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "BBB assessment data is not currently available for this organization."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[15]",
+          "[18]"
+        ],
+        "mitigation_notes": "The organization maintains high transparency scores and independent board status despite its small size.",
+        "risk_factors": [
+          "<cite id=\"18\">Small board size (2 members)</cite> creates governance risks",
+          "<cite id=\"15\">Limited working capital reserves</cite> of 3.7 months"
+        ],
+        "summary": "The primary concern is organizational governance, specifically a <cite id=\"18\">board size of only 2 members</cite>, which is significantly below the recommended minimum for non-profits."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 7,
+          "rating": 8,
+          "website": 6
+        },
+        "high_confidence_count": 19,
+        "total_count": 21,
+        "unique_sources": 6
+      },
+      "confidence": {
+        "data_freshness": "Most data from 2023-2024 fiscal years",
+        "data_gaps": [
+          "Missing 2024 full financial audit details",
+          "Limited board size data"
+        ],
+        "level": "HIGH",
+        "notes": "Strong alignment between tax filings and third-party ratings.",
+        "score": 85,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Charity Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 85,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Small board size risk",
+          "Missing specific employee counts"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 21,
+        "unique_sources": 6,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[10]",
+            "[20]",
+            "[21]"
+          ],
+          "explanation": "Strong alignment for Muslim donors through <cite id=\"10\">verified zakat eligibility</cite> and a focus on <cite id=\"20\">asnaf categories including the poor and wayfarers</cite>.",
+          "improvement": "Alignment could be further enhanced by <cite id=\"21\">expanding services to geographies</cite> with limited existing nonprofit coverage."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[11]",
+            "[17]",
+            "[18]"
+          ],
+          "explanation": "TMWF is highly credible, evidenced by its <cite id=\"11\">98.98.66666666666667/100 from Charity Navigator score</cite> and a <cite id=\"17\">100% independent board</cite>.",
+          "improvement": "To strengthen credibility, the organization should expand its board beyond the current <cite id=\"18\">2 members</cite> to meet standard governance best practices."
+        },
+        "impact": {
+          "citation_ids": [
+            "[5]",
+            "[7]",
+            "[19]"
+          ],
+          "explanation": "The foundation delivers high-impact direct services, maintaining a <cite id=\"5\">86.0% program expense ratio</cite> and providing shelter for <cite id=\"7\">hundreds of survivors annually</cite>.",
+          "improvement": "Impact measurement would benefit from <cite id=\"19\">consistent publication of beneficiary data</cite> to facilitate cost-effectiveness analysis."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "DOMESTIC_POVERTY",
+        "citation_ids": [
+          "[3]",
+          "[10]",
+          "[20]"
+        ],
+        "evidence_rigor": "Grade B - Verified outcomes through Form 990 reporting",
+        "geographic_focus": [
+          "North Texas",
+          "USA"
+        ],
+        "giving_style": "Direct service",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "fuqara (poor)",
+          "masakin (needy)",
+          "gharimin (debtors)",
+          "fisabilillah",
+          "ibn_sabil (wayfarers)"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.277,
+        "annual_revenue": 4665216,
+        "citation_ids": [
+          "[3]",
+          "[11]"
+        ],
+        "cn_financial_score": 96,
+        "cn_overall_score": 98.66666666666667,
+        "fundraising_ratio": 0.03,
+        "industry_program_ratio": 0.75,
+        "peer_count": 1,
+        "peer_program_ratio_median": null,
+        "program_expense_ratio": 0.8599,
+        "reserves_months": 3.7,
+        "revenue_cagr_3yr": 17.3,
+        "working_capital_months": 3.7,
+        "yearly_financials": [
+          {
+            "expenses": 4859880,
+            "net_assets": 1502794,
+            "revenue": 4665216,
+            "year": 2023
+          },
+          {
+            "expenses": 3307392,
+            "net_assets": 1691877,
+            "revenue": 3356114,
+            "year": 2022
+          },
+          {
+            "expenses": 3292829,
+            "net_assets": 1655411,
+            "revenue": 3393180,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "domestic_grants": 0,
+        "foreign_grants": 0,
+        "grant_count": 0,
+        "grant_strategy": "Direct service provider; does not primarily engage in grantmaking.",
+        "is_significant_grantmaker": false,
+        "regions_served": [
+          "USA"
+        ],
+        "top_recipients": [],
+        "total_grants": 0
+      },
+      "headline": "Texas Muslim Women's Foundation provides comprehensive social services and domestic violence support to empower women and families in North Texas.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who want to support domestic violence survivors within a culturally sensitive, Islamic framework in the United States.",
+        "citation_ids": [
+          "[1]",
+          "[10]",
+          "[18]"
+        ],
+        "donor_motivations": [
+          "Want to fulfill zakat obligations through domestic social services",
+          "Care about women's empowerment and safety in the Muslim community",
+          "Value high fundraising efficiency and low overhead",
+          "Prefer supporting established local institutions with a 20-year track record"
+        ],
+        "giving_considerations": [
+          "Donations support direct shelter and housing costs",
+          "The organization is a key player in the North Texas social safety net",
+          "Governance is currently centralized in a very small board"
+        ],
+        "not_ideal_for": "Donors seeking international relief projects or those who prioritize organizations with large, multi-disciplinary boards of directors."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[7]",
+          "[8]",
+          "[11]"
+        ],
+        "evidence_grade": "B",
+        "evidence_grade_explanation": "Grade B reflects verified annual reporting of survivors served and housed across multiple fiscal years.",
+        "external_evaluations": [
+          "Charity Navigator Beacon Scores"
+        ],
+        "outcome_tracking_years": 3,
+        "rct_available": false,
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "TMWF provides a continuum of care from emergency crisis intervention to permanent housing to break the cycle of domestic violence.",
+        "why_evidence_matters": "Tracking shelter and housing placements ensures that donor funds are successfully transitioning families from crisis to stability."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[1]",
+          "[4]"
+        ],
+        "founded_year": 2005,
+        "maturity_stage": "Established",
+        "revenue_growth_3yr": 17.3,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "With a 17.3% growth rate and expanding housing programs, TMWF can absorb capital to increase shelter capacity.",
+        "strategic_priorities": [
+          "Expand crisis shelter capacity",
+          "Strengthen sustainability",
+          "Capacity building"
+        ],
+        "years_operating": 21
+      },
+      "organizational_capacity": {
+        "board_size": 2,
+        "ceo_compensation": 115000,
+        "ceo_compensation_pct_revenue": 3.05,
+        "ceo_name": "Not Listed",
+        "citation_ids": [
+          "[3]",
+          "[11]",
+          "[18]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "North Texas (Dallas, Collin, Denton, Tarrant, Rockwall counties)",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 1,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 5,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[2]"
+        ],
+        "differentiator": "Distinguished by its <cite id=\"2\">culturally specific domestic violence shelter model</cite> and high fundraising efficiency.",
+        "peer_group": "Domestic Poverty & Social Services",
+        "similar_orgs": [
+          "Rahima Foundation",
+          "Heart Women & Girls",
+          "Abdul Sattar Edhi International Foundation"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Similar focus on community services and organization size.",
+          "name": "Rahima Foundation"
+        },
+        {
+          "differentiator": "Smaller scale but shares educational and faith-based focus.",
+          "name": "Heart Women & Girls"
+        },
+        {
+          "differentiator": "Similar focus on community services and size.",
+          "name": "Abdul Sattar Edhi International Foundation"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[11]"
+          ],
+          "detail": "The organization holds an <cite id=\"11\">overall score of 98.98.66666666666667/100 from Charity Navigator</cite>, including perfect 100/100 marks for both Culture and Leadership.",
+          "point": "Exceptional Accountability and Culture"
+        },
+        {
+          "citation_ids": [
+            "[12]"
+          ],
+          "detail": "TMWF demonstrates remarkable fiscal discipline, requiring only <cite id=\"12\">$0.04 to raise every $1</cite>, ensuring more funds are available for direct services.",
+          "point": "High Fundraising Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[13]",
+            "[14]"
+          ],
+          "detail": "In 2024, the foundation successfully served <cite id=\"13\">137 emergency shelter residents</cite> and <cite id=\"14\">216 non-residential domestic violence clients</cite>.",
+          "point": "Verified Impact in Crisis Intervention"
+        }
+      ],
+      "strengths_deep_dive": [
+        "TMWF's operational strength lies in its specialized focus on domestic violence within the Muslim community, a historically underserved space. Their financial health is robust, characterized by <cite id=\"15\">3.7 months of working capital</cite>, which Charity Navigator classifies as resilient. This stability supports a diverse range of programs, from <cite id=\"16\">Senior Permanent Supportive Housing</cite> to youth leadership, all while maintaining a <cite id=\"17\">100% independent board</cite> to ensure objective oversight and governance."
+      ],
+      "summary": "The Texas Muslim Women's Foundation (TMWF) is a specialized social service provider dedicated to empowering women and families through culturally sensitive support, with a primary focus on domestic violence intervention. Founded in <cite id=\"1\">2005</cite>, the organization has grown into a vital resource in North Texas, offering a comprehensive continuum of care that includes <cite id=\"2\">emergency shelters, transitional housing, and rapid re-housing</cite>. In the 2023 fiscal year, the foundation reported <cite id=\"3\">total revenue of $4,665,216</cite>, reflecting a significant <cite id=\"4\">3-year revenue CAGR of 17.3%</cite>. TMWF operates with high financial efficiency, maintaining a <cite id=\"5\">program expense ratio of 86.0%</cite> while spending only <cite id=\"6\">$0.04 per $1 raised</cite> in fundraising costs. Their impact is quantifiable through direct service delivery; for instance, in 2023, they provided housing for <cite id=\"7\">186 survivors in shelters</cite> and supported <cite id=\"8\">204 survivors through transitional or rapid re-housing programs</cite>. Beyond housing, the foundation addresses the root causes of instability through <cite id=\"9\">social services, senior supportive housing, and the 'Food 4 Good' program</cite>. As a <cite id=\"10\">zakat-eligible organization</cite>, TMWF provides a critical avenue for Muslim donors to support vulnerable populations including the poor (fuqara) and the needy (masakin) within a faith-aligned framework.",
+      "zakat_guidance": {
+        "classification": "fuqara",
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }

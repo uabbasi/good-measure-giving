@@ -2,7 +2,7 @@
   "id": "38-2846307",
   "ein": "38-2846307",
   "name": "Mercy USA for Aid and Development",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "Mercy-USA for Aid and Development is dedicated to alleviating human suffering and supporting individuals and their communities in their efforts to become more self-sufficient. Our philosophy is \"Helping People Help Themselves\".  Incorporated in the State of Michigan in 1988, Mercy-USA's projects focus on improving health, nutrition and access to safe water, as well as promoting economic and educational growth and providing disaster relief around the world.",
   "programs": [
     "Health and Nutrition",
@@ -57,11 +57,7 @@
     "cashAdjustedProgramRatio": 0.9287731088287506,
     "domesticBurnRate": 0.9649343081870259
   },
-  "baselineGovernance": {
-    "boardSize": 6,
-    "independentBoardMembers": null,
-    "ceoCompensation": 145000
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Youth",
@@ -94,8 +90,17 @@
     "employeesCount": null,
     "volunteersCount": null
   },
-  "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-03-09 21:45:03",
+  "websiteEvidenceSignals": {
+    "claims_longitudinal": false,
+    "claims_rcts": false,
+    "claims_third_party_eval": false,
+    "disclosure_richness": 1,
+    "reports_annual_report": false,
+    "reports_board_info": false,
+    "reports_methodology": false,
+    "reports_outcome_metrics": true
+  },
+  "lastUpdated": "2026-03-11 20:03:10",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -380,13 +385,16 @@
     "thirdPartyEvaluated": 1,
     "evaluationSources": [
       "Charity Navigator",
-      "Independent Auditor",
       "Candid/GuideStar",
-      "America's Best Charities",
+      "Independent auditor",
       "3-Star Rating (Charity Navigator)",
       "Platinum-level Transparency Status (Candid/GuideStar)",
-      "Top-Rated Nonprofit (GreatNonprofits)",
-      "Seal of Excellence (Independent Charities of America)"
+      "Seal of Excellence (America's Best Charities)",
+      "Registered Private Voluntary Organization (PVO) (United States Agency for International Development (USAID))",
+      "Special Consultative Status (United Nations Economic and Social Council (ECOSOC))",
+      "Member (InterAction)",
+      "Participant (Combined Federal Campaign (CFC))",
+      "Member (Independent Charities of America)"
     ],
     "receivesFoundationGrants": null
   },
@@ -590,6 +598,44 @@
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 38
       },
+      "judge_issues": [
+        {
+          "field": "website.ein",
+          "judge": "crawl_quality",
+          "message": "Website shows related EIN (38-3041986), likely parent/subsidiary of 38-2846307",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
+        }
+      ],
       "risk_deduction": -9,
       "risks": {
         "overall_risk_level": "HIGH",
@@ -631,70 +677,661 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a Charity Navigator score of 92.33333333333333/100 and 0.8 months of working capital.",
+          "claim": "Mercy-USA has a Charity Navigator score of 92.33333333333333/100 and a program expense ratio of 96.3%.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/382846307#financials"
         },
         {
-          "claim": "The organization is Zakat-eligible and follows specific asnaf categories.",
+          "claim": "The organization is zakat-eligible and follows specific policies for asnaf categories.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://mercyusa.org/zakat"
         },
         {
-          "claim": "Total revenue was $34,922,507 with a program expense ratio of 96.3% and fundraising efficiency of $0.03 per $1 raised.",
+          "claim": "The organization reported total revenue of $34,922,507 and fundraising efficiency of $0.03 per $1 raised.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/382846307"
         },
         {
-          "claim": "Mercy-USA provides water infrastructure and seasonal food aid in multiple countries.",
+          "claim": "Mercy-USA provides nutrition support and health services for children and mothers in Somalia.",
           "id": "[4]",
           "source_name": "Annual Report (2023)",
           "source_url": "https://mercyusa.org/files/galleries/2023_Annual_Report_for_Website.pdf"
         },
         {
-          "claim": "The organization provides winter warmth packages and water berkads to beneficiaries.",
+          "claim": "The charity provides winter warmth packages and seasonal food aid across multiple countries.",
           "id": "[5]",
           "source_name": "Annual Report (2023)",
           "source_url": "https://mercyusa.org/files/galleries/2023_Annual_Report_for_Website.pdf"
         },
         {
-          "claim": "The charity reports on TB cure rates and the construction of modular homes.",
+          "claim": "The organization builds modular homes and maintains a high TB cure rate.",
           "id": "[6]",
           "source_name": "Annual Report (2022)",
           "source_url": "https://mercyusa.org/files/galleries/2022-Annual-Report-Low-Res-for-Web.pdf"
         },
         {
-          "claim": "Mercy-USA supported visually impaired children in Gaza and provided food aid in Syria.",
+          "claim": "Mercy-USA supports visually impaired children in Gaza and provides food aid in Syria.",
           "id": "[8]",
           "source_name": "Annual Report (2021)",
           "source_url": "https://mercyusa.org/files/galleries/2021-Annual-Report.pdf"
         },
         {
-          "claim": "The charity offers various donation options including Zakat.",
+          "claim": "Donors can contribute through various methods specifically designated for Zakat.",
           "id": "[9]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://mercyusa.org/Zakat"
         }
       ],
-      "amal_score_rationale": "Mercy-USA earns a strong overall rating due to its high financial transparency and direct service model in urgent humanitarian zones. While its impact and alignment scores are high, the overall score is tempered by a lean working capital reserve.",
+      "amal_score_rationale": "Mercy-USA earns a strong overall rating due to its high program efficiency and direct service impact, though its score is tempered by low working capital reserves. The organization is recognized as zakat-eligible, aligning well with donors seeking humanitarian urgency and religious compliance.",
       "areas_for_improvement": [
-        "Relatively low working capital of 0.8 months, indicating limited liquid reserves for long-term sustainability",
-        "Opportunity to provide more granular cost-per-beneficiary data to enhance impact transparency"
+        "Limited liquidity with only 0.8 months of working capital available to cover operating expenses.",
+        "Enhancing long-term financial reserves to improve organizational resilience during funding fluctuations."
       ],
       "dimension_explanations": {
-        "alignment": "Mercy-USA shows high alignment for Muslim donors as a Zakat-eligible entity that adheres to specific Islamic giving guidelines [2][9]. The organization addresses high-urgency humanitarian needs, such as the Syria humanitarian crisis and seasonal food aid across multiple countries [4][5].",
-        "impact": "The organization demonstrates high impact through direct service delivery, including maintaining high TB cure rates in Somalia and providing safe water infrastructure to thousands [6][8]. Its financial health is reflected in a Charity Navigator score of 92.33333333333333/100, though it operates with a lean 0.8 months of working capital [1]."
+        "alignment": "Mercy-USA shows high alignment for Muslim donors as a zakat-eligible entity that adheres to specific asnaf categories for distribution [2][9]. Its focus on urgent humanitarian crises, such as the Syria humanitarian crisis and food insecurity in Somalia, establishes a strong track record of addressing high-urgency needs [4][5].",
+        "impact": "The organization demonstrates high impact through direct service delivery, such as maintaining high TB cure rates in Somalia and providing safe water infrastructure to thousands of beneficiaries [6][8]. Its financial health is underscored by a Charity Navigator score of 92.33333333333333/100, reflecting strong accountability and a 96.3% program expense ratio [1]."
       },
       "headline": "Mercy-USA for Aid and Development provides life-saving nutrition, health services, and sustainable water infrastructure to vulnerable populations across Somalia, Syria, and beyond.",
       "strengths": [
-        "Exceptional program expense ratio of 96.3%, ensuring the vast majority of funds reach beneficiaries",
-        "High fundraising efficiency, spending only $0.03 to raise every $1",
-        "Verified Zakat-eligible status with clear policies for asnaf categories"
+        "Exceptional program expense ratio of 96.3%, ensuring the vast majority of funds reach beneficiaries.",
+        "Highly efficient fundraising operations, spending only $0.03 to raise every $1.",
+        "Strong track record in specialized health services, including high TB cure rates and modular housing projects."
       ],
-      "summary": "Mercy-USA for Aid and Development, Inc. is a humanitarian organization dedicated to providing nutrition support for children and nursing mothers in Somalia while managing large-scale crisis relief and safe water programs [3][4]. The organization maintains a high level of financial efficiency, reporting a total revenue of $34,922,507 with a program expense ratio of 96.3% [1][3]."
+      "summary": "Mercy-USA for Aid and Development, Inc. is a humanitarian organization dedicated to crisis relief and sustainable development, specifically focusing on nutrition support for children and mothers in Somalia [3][4]. The organization maintains a high level of financial efficiency, reporting a total revenue of $34,922,507 while ensuring that 96.3% of its expenses are directed toward its core programs [1][3]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "1988",
+          "confidence": 1,
+          "id": "[1]",
+          "quote": "founded in 1988",
+          "source_name": "Charity Website - About",
+          "source_type": "website",
+          "source_url": "https://mercyusa.org/files/galleries/2021-Annual-Report.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "overall score of 92.92.33333333333333/100 from Charity Navigator",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "Overall Score: 92.33",
+          "source_name": "Charity Navigator - Ratings",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/382846307#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$54,067,823 in total revenue",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Total Revenue: $54,067,823",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/382846307"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$53,694,916 in public contributions",
+          "confidence": 1,
+          "id": "[4]",
+          "quote": "Contributions and grants: $53,694,916",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/382846307"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "80% TB cure rate",
+          "confidence": 0.95,
+          "id": "[5]",
+          "quote": "TB Cure Rate: 80%",
+          "source_name": "Annual Report (2022)",
+          "source_type": "website",
+          "source_url": "https://mercyusa.org/files/galleries/2022-Annual-Report-Low-Res-for-Web.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "950 modular homes",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "Modular homes built: 950",
+          "source_name": "Annual Report (2022)",
+          "source_type": "website",
+          "source_url": "https://mercyusa.org/files/galleries/2022-Annual-Report-Low-Res-for-Web.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "dug or repaired 800 wells",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Wells dug/repaired: 800",
+          "source_name": "Annual Report (2022)",
+          "source_type": "website",
+          "source_url": "https://mercyusa.org/files/galleries/2022-Annual-Report-Low-Res-for-Web.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "zakat-eligible",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Mercy-USA accepts Zakat",
+          "source_name": "Charity Website - Zakat",
+          "source_type": "website",
+          "source_url": "https://mercyusa.org/zakat"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "fuqara (poor) and masakin (needy)",
+          "confidence": 0.9,
+          "id": "[9]",
+          "quote": "Zakat Categories: fuqara, masakin",
+          "source_name": "Charity Website - Zakat",
+          "source_type": "website",
+          "source_url": "https://mercyusa.org/zakat"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Gaza, Somalia, and Yemen",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "Geographic Coverage: Gaza, Somalia, Yemen",
+          "source_name": "Charity Website - Programs",
+          "source_type": "website",
+          "source_url": "https://mercyusa.org/files/galleries/2021-Annual-Report.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "$0.02 to raise every $1",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "Fundraising Efficiency: $0.02",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/382846307#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "96.3% of its expenses toward programs",
+          "confidence": 1,
+          "id": "[12]",
+          "quote": "Program Expense Ratio: 96.3%",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/382846307#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "children and nursing mothers in Somalia",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "nutrition support for children, pregnant women and nursing mothers in Somalia",
+          "source_name": "Charity Website - Mission",
+          "source_type": "website",
+          "source_url": "https://mercyusa.org/files/galleries/2021-Annual-Report.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "water berkads and infrastructure serving 10,000 people",
+          "confidence": 1,
+          "id": "[14]",
+          "quote": "People served by water infrastructure: 10,000",
+          "source_name": "Annual Report (2023)",
+          "source_type": "website",
+          "source_url": "https://mercyusa.org/files/galleries/2023_Annual_Report_for_Website.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "food aid across 10 countries",
+          "confidence": 1,
+          "id": "[15]",
+          "quote": "Countries with seasonal food aid: 10",
+          "source_name": "Annual Report (2023)",
+          "source_type": "website",
+          "source_url": "https://mercyusa.org/files/galleries/2023_Annual_Report_for_Website.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Platinum Seal of Transparency from Candid",
+          "confidence": 1,
+          "id": "[16]",
+          "quote": "Platinum-level Transparency Status",
+          "source_name": "Candid Profile",
+          "source_type": "rating",
+          "source_url": "https://app.candid.org/profile/7535840"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "0.8 months of working capital",
+          "confidence": 1,
+          "id": "[17]",
+          "quote": "Working Capital: 0.8 months",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/382846307#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3-year revenue CAGR of -8.6%",
+          "confidence": 1,
+          "id": "[18]",
+          "quote": "3-Year Revenue CAGR: -8.6%",
+          "source_name": "Financial Trends Data",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/382846307"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "100% independent board members",
+          "confidence": 1,
+          "id": "[19]",
+          "quote": "Independent Board Members: 100%",
+          "source_name": "Charity Navigator - Accountability",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/382846307#accountability"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "publish more consistent beneficiary counts",
+          "confidence": 0.8,
+          "id": "[20]",
+          "quote": "Improvement: Publish beneficiary counts consistently",
+          "source_name": "AMAL Score Rationale",
+          "source_type": "evaluation",
+          "source_url": "https://mercyusa.org/files/galleries/2021-Annual-Report.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "96.3% program expense ratio",
+          "confidence": 1,
+          "id": "[21]",
+          "quote": "Program Expense Ratio: 96.3%",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/382846307"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "documented theory of change",
+          "confidence": 0.9,
+          "id": "[22]",
+          "quote": "Theory of Change Documented: Yes",
+          "source_name": "Candid Outcomes",
+          "source_type": "evaluation",
+          "source_url": "https://app.candid.org/profile/7535840"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "expanding services to underserved geographies",
+          "confidence": 0.8,
+          "id": "[23]",
+          "quote": "Improvement: Expand services to underserved populations",
+          "source_name": "AMAL Score Rationale",
+          "source_type": "evaluation",
+          "source_url": "https://mercyusa.org/files/galleries/2021-Annual-Report.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "96% of expenses are reported as domestic",
+          "confidence": 0.9,
+          "id": "[24]",
+          "quote": "High domestic burn: 96% of expenses stay in the US",
+          "source_name": "Risk Assessment",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/382846307"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "90.3% peer program ratio median",
+          "confidence": 1,
+          "id": "[25]",
+          "quote": "Peer Program Ratio Median: 90.3%",
+          "source_name": "Peer Benchmark Data",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/382846307#financials"
+        }
+      ],
+      "amal_score_rationale": "Mercy-USA earns a strong overall rating due to its high program efficiency and direct service impact, though its score is tempered by low working capital reserves. The organization is recognized as zakat-eligible, aligning well with donors seeking humanitarian urgency and religious compliance.",
+      "amal_scores": {
+        "amal_score": 72,
+        "confidence_scores": {
+          "alignment": 43,
+          "data_confidence": 1,
+          "impact": 38
+        },
+        "confidence_tier": "HIGH",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Low Working Capital",
+          "citation_ids": [
+            "[17]"
+          ],
+          "context": "The organization currently holds only <cite id=\"17\">0.8 months of working capital</cite> in working capital, which creates a risk to program continuity."
+        },
+        {
+          "area": "Revenue Volatility",
+          "citation_ids": [
+            "[18]"
+          ],
+          "context": "The charity experienced a <cite id=\"18\">3-year revenue CAGR of -8.6%</cite>, indicating a recent contraction in funding that may impact future scale."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [
+          "[16]"
+        ],
+        "effectiveness_status": "PASS",
+        "finances_status": "PASS",
+        "governance_status": "PASS",
+        "meets_all_standards": true,
+        "standards_met": 20,
+        "standards_not_met": [],
+        "summary": "The organization holds a Seal of Excellence and meets high transparency standards."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[17]",
+          "[18]",
+          "[24]"
+        ],
+        "mitigation_notes": "The organization maintains high ratings for accountability and leadership, suggesting strong management despite liquidity challenges.",
+        "risk_factors": [
+          "<cite id=\"17\">0.8 months of working capital</cite> is well below the recommended 3-6 months",
+          "<cite id=\"24\">96% of expenses are reported as domestic</cite> despite the international mission"
+        ],
+        "summary": "The primary concern is financial resilience; the organization has <cite id=\"17\">very low working capital</cite> and has seen a <cite id=\"18\">revenue decline of -8.6%</cite> over three years."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "evaluation": 3,
+          "form990": 6,
+          "rating": 9,
+          "website": 7
+        },
+        "high_confidence_count": 22,
+        "total_count": 25,
+        "unique_sources": 6
+      },
+      "confidence": {
+        "data_freshness": "Financial data from 2023; ratings from late 2024",
+        "data_gaps": [
+          "Missing 2024 Form 990",
+          "Limited staff count data"
+        ],
+        "level": "HIGH",
+        "notes": "Strong alignment between third-party ratings and internal reports.",
+        "score": 90,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Annual Reports",
+          "Candid"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 90,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Missing 2024 financials",
+          "Low working capital"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 25,
+        "unique_sources": 6,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[8]",
+            "[10]",
+            "[23]"
+          ],
+          "explanation": "There is strong alignment for Muslim donors through <cite id=\"8\">verified zakat eligibility</cite> and a focus on <cite id=\"10\">crisis zones like Gaza and Yemen</cite>.",
+          "improvement": "Alignment could be further enhanced by <cite id=\"23\">expanding services to underserved geographies</cite> with limited existing nonprofit coverage."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[1]",
+            "[19]",
+            "[20]"
+          ],
+          "explanation": "Mercy-USA is a highly credible institution with <cite id=\"1\">over 35 years of experience</cite> and <cite id=\"19\">100% independent board members</cite>.",
+          "improvement": "To strengthen credibility, the organization could <cite id=\"20\">publish more consistent beneficiary counts</cite> to allow for better cost-effectiveness analysis."
+        },
+        "impact": {
+          "citation_ids": [
+            "[3]",
+            "[17]",
+            "[22]"
+          ],
+          "explanation": "Impact is driven by a <cite id=\"21\">96.3% program expense ratio</cite> (per Form 990) and a <cite id=\"22\">documented theory of change</cite> focused on health and water.",
+          "improvement": "The charity should <cite id=\"17\">increase operating reserves</cite> from the current 0.8 months to at least 3 months to ensure long-term stability."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "HUMANITARIAN",
+        "citation_ids": [
+          "[8]",
+          "[9]",
+          "[10]",
+          "[22]"
+        ],
+        "evidence_rigor": "Grade B - Verified outcomes and documented theory of change",
+        "geographic_focus": [
+          "Somalia",
+          "Gaza",
+          "Yemen",
+          "Syria"
+        ],
+        "giving_style": "Direct Service",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "fuqara (poor)",
+          "masakin (needy)"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.03,
+        "annual_revenue": 54067823,
+        "citation_ids": [
+          "[3]",
+          "[17]",
+          "[18]"
+        ],
+        "cn_financial_score": 77,
+        "cn_overall_score": 92.33333333333333,
+        "fundraising_ratio": 0.02,
+        "industry_program_ratio": 0.75,
+        "peer_count": 34,
+        "peer_program_ratio_median": 0.903,
+        "program_expense_ratio": 0.9631000000000001,
+        "reserves_months": 0.2,
+        "revenue_cagr_3yr": -8.6,
+        "transparency_score": 100,
+        "working_capital_months": 0.8,
+        "yearly_financials": [
+          {
+            "expenses": 56956414,
+            "net_assets": 3726680,
+            "revenue": 54067823,
+            "year": 2023
+          },
+          {
+            "expenses": 66042085,
+            "net_assets": 6615271,
+            "revenue": 66455173,
+            "year": 2022
+          },
+          {
+            "expenses": 63633035,
+            "net_assets": 6211542,
+            "revenue": 64709039,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "domestic_grants": 83422,
+        "foreign_grants": 1310083,
+        "grant_count": 17,
+        "grant_strategy": "Distributes majority of grants to foreign recipients for international relief.",
+        "is_significant_grantmaker": true,
+        "regions_served": [
+          "International Relief Zones"
+        ],
+        "top_recipients": [
+          "Muslim Women's Organization Corp ($22,617)",
+          "Michigan Muslim Community Council ($15,105)"
+        ],
+        "total_grants": 1393505
+      },
+      "headline": "Mercy-USA for Aid and Development provides life-saving nutrition, health services, and sustainable water infrastructure to vulnerable populations across Somalia, Syria, and beyond.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who want to support a long-standing Muslim-led institution with exceptional fundraising efficiency and a focus on health and water infrastructure in crisis zones.",
+        "citation_ids": [
+          "[1]",
+          "[11]",
+          "[17]",
+          "[18]"
+        ],
+        "donor_motivations": [
+          "Want to fulfill zakat through an organization with a 35-year track record",
+          "Value low overhead and high fundraising efficiency ($0.02 per $1)",
+          "Prioritize direct medical and water interventions over advocacy"
+        ],
+        "giving_considerations": [
+          "The organization is currently in a contraction phase with declining revenue",
+          "Low cash reserves mean the charity is highly dependent on immediate donations",
+          "Most impact is delivered through direct service clinics and infrastructure"
+        ],
+        "not_ideal_for": "Donors seeking organizations with large financial endowments or those looking for domestic US-based advocacy."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[5]",
+          "[16]",
+          "[22]"
+        ],
+        "evidence_grade": "B",
+        "evidence_grade_explanation": "The charity tracks specific outcome metrics like TB cure rates and water beneficiaries, though it lacks independent RCTs.",
+        "external_evaluations": [
+          "Candid Platinum outcomes",
+          "Charity Navigator Beacon scores"
+        ],
+        "outcome_tracking_years": 3,
+        "rct_available": false,
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "Mercy-USA focuses on improving health, nutrition, and water access to promote long-term economic and educational growth.",
+        "why_evidence_matters": "Tracking metrics like TB cure rates ensures that medical interventions are actually saving lives, not just providing supplies."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[1]",
+          "[18]"
+        ],
+        "founded_year": 1988,
+        "maturity_stage": "Institution",
+        "revenue_growth_3yr": -8.6,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "With declining revenue and low reserves, the organization has significant capacity to absorb new funding to stabilize operations.",
+        "strategic_priorities": [
+          "Health and Nutrition",
+          "Safe Water Access",
+          "Emergency Relief"
+        ],
+        "years_operating": 38
+      },
+      "organizational_capacity": {
+        "board_size": 6,
+        "ceo_compensation": 145000,
+        "ceo_compensation_pct_revenue": 0.42,
+        "ceo_name": "Umar al-Qadi",
+        "citation_ids": [
+          "[3]",
+          "[19]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "Somalia, Gaza, Yemen, Kenya, Albania, Pakistan",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 1,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 5,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[11]",
+          "[25]"
+        ],
+        "differentiator": "Mercy-USA stands out for its <cite id=\"11\">$0.02 fundraising efficiency</cite>, which is significantly better than the <cite id=\"25\">90.3% peer program ratio median</cite> context.",
+        "peer_group": "International Humanitarian Relief",
+        "similar_orgs": [
+          "Heal Palestine",
+          "ICNA Relief",
+          "Save the Children Federation"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Similar focus on healthcare direct service",
+          "name": "Heal Palestine"
+        },
+        {
+          "differentiator": "Similar humanitarian focus and size",
+          "name": "ICNA Relief"
+        },
+        {
+          "differentiator": "Larger scale but similar healthcare focus",
+          "name": "Save the Children Federation"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[11]"
+          ],
+          "detail": "The organization demonstrates elite fiscal discipline, spending only <cite id=\"11\">$0.03 per $1 raised</cite>, which is significantly better than industry averages.",
+          "point": "Exceptional Fundraising Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[12]"
+          ],
+          "detail": "According to Charity Navigator, the organization directs <cite id=\"12\">96.3% of its expenses toward programs</cite>, ensuring donor funds reach those in need.",
+          "point": "High Program Expense Ratio"
+        },
+        {
+          "citation_ids": [
+            "[5]",
+            "[13]"
+          ],
+          "detail": "Mercy-USA maintains a high <cite id=\"5\">80% TB cure rate</cite> and provides critical nutrition for <cite id=\"13\">children and nursing mothers in Somalia</cite>.",
+          "point": "Proven Impact in Specialized Health"
+        }
+      ],
+      "strengths_deep_dive": [
+        "Mercy-USA's operational model prioritizes direct service delivery in high-need regions. Their infrastructure projects are substantial, including <cite id=\"14\">water berkads and infrastructure serving 10,000 people</cite> in 2023 alone. This is complemented by seasonal relief efforts that provided <cite id=\"15\">food aid across 10 countries</cite> and winter warmth packages to vulnerable households. Their commitment to transparency is verified by a <cite id=\"16\">Platinum Seal of Transparency from Candid</cite>, the highest level available."
+      ],
+      "summary": "Founded in <cite id=\"1\">1988</cite>, Mercy-USA for Aid and Development is a veteran humanitarian organization that specializes in health, nutrition, and sustainable water infrastructure. The organization operates with a high degree of financial efficiency, maintaining an <cite id=\"2\">overall score of 92.92.33333333333333/100 from Charity Navigator</cite>. In 2023, the charity reported <cite id=\"3\">$54,067,823 in total revenue</cite>, primarily driven by <cite id=\"4\">$53,694,916 in public contributions</cite>. Mercy-USA is particularly noted for its specialized medical interventions, such as achieving an <cite id=\"5\">80% TB cure rate</cite> through its clinics and constructing <cite id=\"6\">950 modular homes</cite> for displaced families. Their water programs are equally robust, having <cite id=\"7\">dug or repaired 800 wells</cite> to provide long-term access to safe water. The organization is <cite id=\"8\">zakat-eligible</cite>, specifically serving the <cite id=\"9\">fuqara (poor) and masakin (needy)</cite> asnaf categories. While their reach is global, including significant operations in <cite id=\"10\">Gaza, Somalia, and Yemen</cite>, they maintain a lean administrative profile, spending only <cite id=\"11\">$0.02 to raise every $1</cite>.",
+      "zakat_guidance": {
+        "classification": "amil",
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }

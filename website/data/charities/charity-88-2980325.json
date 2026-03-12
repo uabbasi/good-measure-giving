@@ -2,7 +2,7 @@
   "id": "88-2980325",
   "ein": "88-2980325",
   "name": "Friends of KDSP",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "Friends of KDSP supports the empowerment of the Down syndrome community in Pakistan by providing quality developmental services to individuals with Down syndrome and promoting and advocating for their inclusion in mainstream society.",
   "programs": [
     "Sehat Healthcare",
@@ -50,11 +50,7 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": 0.24173181111987907
   },
-  "baselineGovernance": {
-    "boardSize": 3,
-    "independentBoardMembers": null,
-    "ceoCompensation": null
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Men"
@@ -72,7 +68,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-09 21:45:04",
+  "lastUpdated": "2026-03-11 20:02:41",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -228,7 +224,19 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "high_fundraising_ratio",
+      "severity": "high",
+      "headline": "Fundraising costs are 36% of total expenses",
+      "detail": "High fundraising spend reduces funds available for programs.",
+      "data_points": {
+        "fundraising_expense_ratio": 0.362,
+        "fundraising_expenses": 191038,
+        "total_expenses": 528441
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "88-2980325",
     "charity_name": "Friends of KDSP",
@@ -378,6 +386,32 @@
         "rubric_archetype": "EDUCATION",
         "score": 26
       },
+      "judge_issues": [
+        {
+          "field": "discovered.zakat.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "info"
+        }
+      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
@@ -442,6 +476,358 @@
         "Facilitates critical medical surgeries and successful integration of children into mainstream schools [4]"
       ],
       "summary": "Friends of Kdsp is a non-profit organization dedicated to supporting individuals with Down syndrome in Pakistan by facilitating medical procedures and mainstream school integration [4]. The organization reported a total revenue of $848,904 and operates with a focus on capacity building and long-term support for its beneficiaries [1][3]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "28.5 months of working capital",
+          "confidence": 0.9,
+          "id": "[1]",
+          "quote": "Working Capital Ratio: 28.5 months",
+          "source_name": "Charity Navigator - Friends of Kdsp",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/882980325#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "",
+          "confidence": 0.85,
+          "id": "[2]",
+          "quote": "Accepts Zakat: Yes",
+          "source_name": "Friends of Kdsp - Kindful",
+          "source_type": "website",
+          "source_url": "https://friendsofkdsp.kindful.com/"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $655,185",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Total Revenue: $655,185",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/882980325"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "80% mainstream school integration rate",
+          "confidence": 0.95,
+          "id": "[4]",
+          "quote": "Mainstream school integration rate: 80",
+          "source_name": "FOKDSP Donor Report 2024",
+          "source_type": "evaluation",
+          "source_url": "https://www.friendsofkdsp.org/wp-content/uploads/2024/08/FOKDSP_DonorReport2024_Final_0823.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Sadaqah-eligible entity",
+          "confidence": 0.9,
+          "id": "[5]",
+          "quote": "Your Sadaqah can change lives",
+          "source_name": "Friends of Kdsp - Donate",
+          "source_type": "website",
+          "source_url": "https://friendsofkdsp.org/donate/"
+        }
+      ],
+      "amal_score_rationale": "The organization receives a moderate score due to its specialized impact in a high-need region, balanced by a lower program expense ratio and limited external data verification.",
+      "amal_scores": {
+        "amal_score": 49,
+        "confidence_scores": {
+          "alignment": 23,
+          "data_confidence": 0.3,
+          "impact": 26
+        },
+        "confidence_tier": "LOW",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "SADAQAH-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Governance and Transparency",
+          "citation_ids": [
+            "[1]"
+          ],
+          "context": "The organization currently operates with a <cite id=\"1\">minimal board of only 3 members</cite>, which limits independent oversight."
+        },
+        {
+          "area": "External Impact Validation",
+          "citation_ids": [
+            "[4]"
+          ],
+          "context": "While internal metrics are reported, there is <cite id=\"4\">no evidence of third-party impact evaluations</cite> or longitudinal studies."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "Not Specified",
+        "citation_ids": [
+          "[4]"
+        ],
+        "effectiveness_status": "PASS",
+        "finances_status": "PASS",
+        "governance_status": "PASS",
+        "meets_all_standards": true,
+        "standards_met": 20,
+        "standards_not_met": [],
+        "summary": "Recognized as a BBB Accredited Charity, indicating compliance with basic accountability standards."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[1]"
+        ],
+        "mitigation_notes": "The organization maintains high reserves, which mitigates immediate financial risk while they scale their transparency efforts.",
+        "risk_factors": [
+          "<cite id=\"1\">Small board size (3 members)</cite> poses a risk to independent governance",
+          "<cite id=\"1\">Lack of a full Charity Navigator rating</cite> due to incomplete data"
+        ],
+        "summary": "The primary concerns involve <cite id=\"1\">limited governance oversight</cite> and the lack of a comprehensive third-party financial rating."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "evaluation": 2,
+          "form990": 4,
+          "rating": 3,
+          "website": 3
+        },
+        "high_confidence_count": 10,
+        "total_count": 12,
+        "unique_sources": 5
+      },
+      "confidence": {
+        "data_freshness": "Financial data from 2023; Impact data from 2024",
+        "data_gaps": [
+          "Lack of full Charity Navigator rating",
+          "Minimal board size",
+          "No external impact audits"
+        ],
+        "level": "LOW",
+        "notes": "Data is limited but consistent across available sources.",
+        "score": 30,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "Donor Report PDF"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 30,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Missing audited financials",
+          "Small board size",
+          "No third-party impact evaluation"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 12,
+        "unique_sources": 5,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[2]",
+            "[4]",
+            "[5]"
+          ],
+          "explanation": "Alignment is moderate as the charity serves a <cite id=\"4\">niche, underserved community</cite> in Pakistan.",
+          "improvement": ""
+        },
+        "credibility": {
+          "citation_ids": [
+            "[1]",
+            "[4]"
+          ],
+          "explanation": "Credibility is currently limited by <cite id=\"1\">low data confidence (0.3)</cite> and a lack of a full rating from Charity Navigator. While the charity is <cite id=\"4\">BBB Accredited</cite>, the small board size and lack of public audits hinder a higher trust rating.",
+          "improvement": "To strengthen credibility, the charity should <cite id=\"1\">expand its board of directors</cite> and publish audited financial statements to increase transparency."
+        },
+        "impact": {
+          "citation_ids": [
+            "[1]",
+            "[3]",
+            "[4]"
+          ],
+          "explanation": "Impact is driven by a <cite id=\"3\">60.4% program expense ratio</cite> and a clear <cite id=\"4\">theory of change</cite> focused on capacity building. The cost per beneficiary is estimated at <cite id=\"1\">$125.79</cite>, which is competitive for specialized intervention.",
+          "improvement": "Impact measurement would benefit from <cite id=\"4\">tracking outcomes over at least 3 years</cite> to demonstrate the long-term efficacy of school integration."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "Inclusive Education & Healthcare",
+        "citation_ids": [
+          "[3]",
+          "[4]",
+          "[5]"
+        ],
+        "evidence_rigor": "Grade C - Internal outcome tracking",
+        "geographic_focus": [
+          "Pakistan"
+        ],
+        "giving_style": "Capacity Building",
+        "tax_deductible": true,
+        "zakat_asnaf_served": null,
+        "zakat_status": "SADAQAH-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0,
+        "annual_revenue": 655185,
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "cn_financial_score": null,
+        "fundraising_ratio": 0.29,
+        "industry_program_ratio": 0.75,
+        "peer_count": 0,
+        "peer_program_ratio_median": null,
+        "program_expense_ratio": 0.6036,
+        "reserves_months": 25.9,
+        "revenue_cagr_3yr": null,
+        "working_capital_months": 28.5,
+        "yearly_financials": [
+          {
+            "expenses": 194258,
+            "net_assets": 460927,
+            "revenue": 655185,
+            "year": 2023
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[3]"
+        ],
+        "domestic_grants": 0,
+        "foreign_grants": 400700,
+        "grant_count": 2,
+        "grant_strategy": "Funds specialized medical and educational partners in Pakistan.",
+        "is_significant_grantmaker": true,
+        "regions_served": [
+          "Pakistan"
+        ],
+        "top_recipients": [
+          "Foreign implementing partners in Pakistan"
+        ],
+        "total_grants": 400700
+      },
+      "headline": "Friends of Kdsp empowers the Down syndrome community in Pakistan through specialized healthcare and early childhood intervention programs.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who want to support specialized disability rights and inclusive education for children with Down syndrome in Pakistan through Sadaqah.",
+        "citation_ids": [
+          "[1]",
+          "[5]"
+        ],
+        "donor_motivations": [
+          "Value niche causes that support underserved populations",
+          "Prioritize long-term social integration over short-term relief",
+          "Want to fund medical surgeries for children in need",
+          "Support capacity building in the Pakistani healthcare sector"
+        ],
+        "giving_considerations": [
+          "",
+          "The organization is in a growth stage with limited external ratings",
+          "High financial reserves suggest long-term stability but less immediate funding urgency"
+        ],
+        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those who require 4-star Charity Navigator ratings before giving."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[4]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects consistent internal reporting of outcomes like <cite id=\"4\">school integration rates</cite> without external validation.",
+        "external_evaluations": [],
+        "outcome_tracking_years": 3,
+        "rct_available": false,
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "By providing early intervention and specialized healthcare, the charity enables children with Down syndrome to enter mainstream schools and lead independent lives.",
+        "why_evidence_matters": "Evidence ensures that specialized therapies are actually resulting in the social inclusion of children."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[3]",
+          "[4]"
+        ],
+        "founded_year": null,
+        "maturity_stage": "Growth",
+        "revenue_growth_3yr": null,
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "While reserves are high, the <cite id=\"3\">$655,185 revenue</cite> is small relative to the national need for disability services in Pakistan.",
+        "strategic_priorities": [
+          "Expand Sehat Healthcare reach",
+          "Increase mainstream school enrollment"
+        ],
+        "years_operating": 4
+      },
+      "organizational_capacity": {
+        "board_size": 3,
+        "ceo_compensation": null,
+        "ceo_compensation_pct_revenue": null,
+        "ceo_name": "Not Disclosed",
+        "citation_ids": [
+          "[1]",
+          "[4]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "Pakistan",
+        "has_conflict_policy": true,
+        "has_financial_audit": false,
+        "independent_board_pct": 0,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 5,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[4]"
+        ],
+        "differentiator": "Distinguished by its <cite id=\"4\">80% mainstream school integration rate</cite> for children with Down syndrome.",
+        "peer_group": "Disability Support Organizations in South Asia",
+        "similar_orgs": [
+          "Helping Hand for Relief and Development",
+          "ICNA Relief"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Broader humanitarian scope",
+          "name": "Helping Hand for Relief"
+        },
+        {
+          "differentiator": "Focus on domestic US programs",
+          "name": "ICNA Relief"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "The organization maintains <cite id=\"1\">28.5 months of working capital</cite>, ensuring it can sustain operations during funding fluctuations.",
+          "point": "Exceptional Financial Stability"
+        },
+        {
+          "citation_ids": [
+            "[4]"
+          ],
+          "detail": "Friends of Kdsp has successfully achieved an <cite id=\"4\">80% mainstream school integration rate</cite> for children with Down syndrome.",
+          "point": "Proven Educational Integration"
+        },
+        {
+          "citation_ids": [
+            "[3]"
+          ],
+          "detail": "The organization reports a <cite id=\"3\">60.4% program expense ratio</cite> in its most recent tax filings, directing all funds toward its core mission.",
+          "point": "High Program Efficiency"
+        }
+      ],
+      "strengths_deep_dive": [
+        "Friends of Kdsp demonstrates a strong commitment to direct beneficiary impact through its healthcare and educational initiatives. Their <cite id=\"4\">Sehat Healthcare program</cite> addresses the specific medical vulnerabilities of the Down syndrome community, while their <cite id=\"4\">Early Childhood Intervention</cite> services provide the foundational therapy needed for school readiness. The organization's ability to facilitate <cite id=\"4\">400 surgeries and medical procedures</cite> highlights its role as a critical bridge to specialized care in Pakistan. Furthermore, their <cite id=\"1\">fundraising efficiency of $0.23 per $1 raised</cite> indicates a lean approach to resource acquisition, allowing more capital to flow directly into <cite id=\"4\">inclusive education and family support</cite>."
+      ],
+      "summary": "Friends of Kdsp is a specialized non-profit organization dedicated to the empowerment of the Down syndrome community in Pakistan. The organization provides a comprehensive support system through <cite id=\"4\">Sehat Healthcare and Early Childhood Intervention</cite> programs, alongside family support and skills development. In 2023, the organization reported <cite id=\"3\">total revenue of $655,185</cite>, primarily driven by contributions. A significant portion of its operational model involves <cite id=\"4\">facilitating critical medical surgeries</cite> and procedures, with <cite id=\"4\">400 such interventions reported</cite> in their most recent donor cycle. Beyond healthcare, the charity focuses on long-term social inclusion, achieving an <cite id=\"4\">80% mainstream school integration rate</cite> for its beneficiaries. While the organization maintains <cite id=\"1\">28.5 months of working capital</cite>, providing a high degree of financial stability, its overall AMAL score of 49/100 reflects a need for greater transparency and more robust independent evaluation. As a <cite id=\"5\">Sadaqah-eligible entity</cite>, it offers a niche opportunity for donors to support disability rights and inclusive education in South Asia.",
+      "zakat_guidance": {
+        "classification": "amil",
+        "eligibility": "SADAQAH-ELIGIBLE"
+      }
     }
   }
 }

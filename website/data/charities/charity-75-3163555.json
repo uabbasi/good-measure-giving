@@ -2,7 +2,7 @@
   "id": "75-3163555",
   "ein": "75-3163555",
   "name": "Muslim Community Network",
-  "tier": "baseline",
+  "tier": "rich",
   "mission": "We are dedicated to using civic education and leadership development to shape the public narrative about what it means to be Muslim in America.",
   "programs": [
     "MCN Impact Academy",
@@ -60,11 +60,7 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
   },
-  "baselineGovernance": {
-    "boardSize": 6,
-    "independentBoardMembers": null,
-    "ceoCompensation": 82006
-  },
+  "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
       "Youth",
@@ -88,8 +84,17 @@
     "employeesCount": null,
     "volunteersCount": null
   },
-  "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-03-09 21:45:50",
+  "websiteEvidenceSignals": {
+    "claims_longitudinal": false,
+    "claims_rcts": false,
+    "claims_third_party_eval": false,
+    "disclosure_richness": 1,
+    "reports_annual_report": false,
+    "reports_board_info": false,
+    "reports_methodology": false,
+    "reports_outcome_metrics": true
+  },
+  "lastUpdated": "2026-03-11 20:05:55",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -200,7 +205,7 @@
   "grantsData": null,
   "evaluationTrack": "STANDARD",
   "foundedYear": 2008,
-  "scoreSummary": "MCN shows strong impact and good alignment, with zakat compliance.",
+  "scoreSummary": "MCN shows good impact and good alignment, with zakat compliance.",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -226,25 +231,38 @@
       "evidence": "Moderate",
       "financial_health": "Moderate",
       "donor_fit": "Moderate",
-      "risk": "Strong"
+      "risk": "Moderate"
     },
     "recommendation_cue": "Good Match",
     "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "ceo_comp_excessive",
+      "severity": "medium",
+      "headline": "CEO compensation is 6.9% of revenue ($82,006 on $1,193,572)",
+      "detail": "For orgs with revenue <$5M, CEO pay above 5% of revenue warrants scrutiny.",
+      "data_points": {
+        "ceo_compensation": 82006,
+        "comp_ratio": 0.0687,
+        "threshold": 0.05,
+        "total_revenue": 1193572
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "75-3163555",
     "charity_name": "Muslim Community Network",
-    "amal_score": 64,
+    "amal_score": 59,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-26 09:54:55",
     "rubric_version": "5.2.0",
     "confidence_scores": {
       "alignment": 28,
       "data_confidence": 1,
-      "impact": 36
+      "impact": 31
     },
     "score_details": {
       "alignment": {
@@ -367,30 +385,52 @@
             "status": "partial"
           },
           {
-            "evidence": "Board governance: ADEQUATE (6 members)",
+            "evidence": "Board: 6 members, but For orgs with revenue <$5M, CEO pay above 5% of revenue warrants scrutiny. \u2014 oversight concern",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
             "possible": 10,
-            "scored": 10,
-            "status": "full"
+            "scored": 5,
+            "status": "partial"
           }
         ],
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 36/50",
+        "rationale": "Delivery: capacity building; Impact 31/50",
         "rubric_archetype": "COMMUNITY",
-        "score": 36
+        "score": 31
       },
+      "judge_issues": [
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.populations_served",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
+          "severity": "info"
+        }
+      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
+        "risk_summary": "1 risk(s) identified.",
+        "risks": [
+          {
+            "category": "operational",
+            "data_source": "Reconciliation",
+            "description": "CEO compensation is 6.9% of revenue ($82,006 on $1,193,572)",
+            "mitigation": null,
+            "severity": "medium"
+          }
+        ],
         "total_deduction": 0
       },
-      "score_summary": "MCN shows strong impact and good alignment, with zakat compliance.",
+      "score_summary": "MCN shows good impact and good alignment, with zakat compliance.",
       "zakat": {
         "asnaf_category": "amil",
         "bonus_points": 0,
@@ -408,40 +448,410 @@
           "source_url": "https://projects.propublica.org/nonprofits/organizations/753163555"
         },
         {
-          "claim": "The organization is Zakat-eligible.",
+          "claim": "The organization is Zakat-eligible and follows specific zakat policies and asnaf categories.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://mcnny.org/donate"
         },
         {
-          "claim": "MCN provides various donation options for supporters to fund its mission.",
+          "claim": "MCN provides various donation options and giving methods for supporters.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.mcnny.org/donate"
         },
         {
-          "claim": "MCN holds a 98.0/100 score with a 72.9% program expense ratio, 8.2 months of working capital, and a fundraising efficiency of $0.03 per $1 raised.",
+          "claim": "MCN holds a 98.0/100 score, with a 72.9% program expense ratio, 8.2 months of working capital, and fundraising efficiency of $0.03 per $1 raised.",
           "id": "[4]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/753163555#financials"
         }
       ],
-      "amal_score_rationale": "MCN earns a 64/100 score due to its high financial transparency and solid capacity-building impact, balanced by a medium alignment for general donors.",
+      "amal_score_rationale": "MCN demonstrates excellent financial health and transparency, though its overall score is moderated by its focus on long-term capacity building rather than immediate, high-urgency humanitarian intervention.",
       "areas_for_improvement": [
-        "program expense ratio of 72.9% is functional but has room for growth toward industry leaders",
-        "Limited external data regarding long-term cost-per-beneficiary metrics"
+        "Limited direct impact data regarding cost per beneficiary",
+        "Moderate alignment for donors seeking high-urgency humanitarian relief versus long-term civic capacity building"
       ],
       "dimension_explanations": {
-        "alignment": "The organization offers medium donor alignment, specifically targeting those interested in religious and cultural civic engagement [4]. MCN is Zakat-eligible, providing a clear track record for Muslim donors looking to fulfill religious obligations through community-based leadership initiatives [2][3].",
-        "impact": "MCN demonstrates high impact in capacity building, maintaining a 72.9% program expense ratio and a strong Charity Navigator score of 98.0/100 [1][4]. With $1,193,572 in total revenue and 8.2 months of working capital, the organization shows significant financial stability to support its leadership programs [1][4]."
+        "alignment": "The organization offers a medium fit for donors, balancing religious cultural urgency with long-term civic goals [4]. It provides clear pathways for Zakat-eligible giving, supporting specific asnaf categories through its community education initiatives [2][3].",
+        "impact": "MCN focuses on capacity building through its Youth Leadership Development and Civic Engagement programs [1]. While it maintains a strong program expense ratio of 72.9% and high financial health ratings, specific cost-per-beneficiary data is not currently available to fully quantify its direct effectiveness [4]."
       },
-      "headline": "MCN empowers Muslim Americans through civic education and leadership development to reshape the public narrative.",
+      "headline": "MCN empowers the American Muslim community through civic education and leadership development to reshape the public narrative.",
       "strengths": [
         "High financial accountability with a Charity Navigator score of 98.0/100",
         "Exceptional fundraising efficiency at $0.03 per $1 raised",
         "Strong liquidity with 8.2 months of working capital"
       ],
-      "summary": "MCN is a non-profit organization dedicated to shaping the public narrative of Muslim identity in America through youth leadership, community education, and civic engagement [1]. The organization is Zakat-eligible, accepting contributions to support its mission of fostering a more inclusive society [2]."
+      "summary": "MCN is a New York-based organization dedicated to shaping the public narrative of Muslims in America through youth leadership, community education, and civic engagement [1][4]. The organization is recognized as Zakat-eligible, allowing donors to fulfill their religious obligations through its community-focused programs [2]."
+    },
+    "rich_narrative": {
+      "all_citations": [
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $768,698",
+          "confidence": 1,
+          "id": "[1]",
+          "quote": "Total Revenue: $768,698",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/753163555"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "civic education and leadership development",
+          "confidence": 0.95,
+          "id": "[2]",
+          "quote": "dedicated to using civic education and leadership development",
+          "source_name": "MCN Website - Programs",
+          "source_type": "website",
+          "source_url": "https://mcnny.org/donate"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3-year revenue CAGR of 10.9%",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Revenue growth from 2021 to 2023",
+          "source_name": "Internal Financial Analysis",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/753163555"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "overall score of 98.0/100 from Charity Navigator",
+          "confidence": 1,
+          "id": "[4]",
+          "quote": "Overall Score 98/100",
+          "source_name": "Charity Navigator - MCN",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/753163555#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Zakat-eligible programs",
+          "confidence": 0.9,
+          "id": "[5]",
+          "quote": "MCN is a Zakat-eligible organization",
+          "source_name": "MCN Website - Zakat",
+          "source_type": "website",
+          "source_url": "https://mcnny.org/donate"
+        }
+      ],
+      "amal_score_rationale": "MCN demonstrates excellent financial health and transparency, though its overall score is moderated by its focus on long-term capacity building rather than immediate, high-urgency humanitarian intervention.",
+      "amal_scores": {
+        "amal_score": 59,
+        "confidence_scores": {
+          "alignment": 28,
+          "data_confidence": 1,
+          "impact": 31
+        },
+        "confidence_tier": "HIGH",
+        "impact_tier": "AVERAGE",
+        "wallet_tag": "ZAKAT-ELIGIBLE"
+      },
+      "areas_for_improvement": [
+        {
+          "area": "Impact Measurement Transparency",
+          "citation_ids": [
+            "[4]"
+          ],
+          "context": "While MCN tracks outcomes, there is <cite id=\"4\">limited public data regarding cost-per-beneficiary</cite>, making it difficult to assess comparative effectiveness."
+        },
+        {
+          "area": "Governance Oversight",
+          "citation_ids": [
+            "[1]"
+          ],
+          "context": "For an organization of this size, the <cite id=\"1\">CEO compensation of $82,006</cite> represents a significant portion of revenue, which may warrant closer board scrutiny."
+        }
+      ],
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "UNKNOWN",
+        "governance_status": "UNKNOWN",
+        "meets_all_standards": false,
+        "review_url": "https://give.org/charity-reviews/community-development-civic-organizations/inner-city-muslim-action-network-in-chicago-il-9999-52056",
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "BBB Wise Giving Alliance has not yet completed a full evaluation against all 20 standards."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[1]",
+          "[4]"
+        ],
+        "mitigation_notes": "The organization is actively tracking three outcome metrics via Candid to improve its evidence base.",
+        "risk_factors": [
+          "<cite id=\"4\">No beneficiary data available</cite> for cost-per-beneficiary scoring",
+          "<cite id=\"1\">CEO pay above 5% of revenue</cite> for an organization under $5M"
+        ],
+        "summary": "The primary limitation is the <cite id=\"4\">absence of rigorous third-party impact evaluations</cite> or RCT-level evidence for its capacity-building programs."
+      },
+      "citation_stats": {
+        "by_source_type": {
+          "form990": 5,
+          "rating": 6,
+          "website": 4
+        },
+        "high_confidence_count": 15,
+        "total_count": 15,
+        "unique_sources": 4
+      },
+      "confidence": {
+        "data_freshness": "Data current as of 2023 Tax Year and 2024 Ratings",
+        "data_gaps": [
+          "Beneficiary counts",
+          "External impact evaluation"
+        ],
+        "level": "HIGH",
+        "notes": "Strong financial data; impact data is self-reported.",
+        "score": 85,
+        "sources_used": [
+          "Form 990",
+          "Charity Navigator",
+          "MCN Website"
+        ]
+      },
+      "data_confidence": {
+        "confidence_score": 85,
+        "form_990_tax_year": 2023,
+        "known_gaps": [
+          "Missing specific beneficiary counts",
+          "No external impact evaluation"
+        ],
+        "ratings_last_updated": "2024-12",
+        "total_citations": 15,
+        "unique_sources": 4,
+        "website_last_crawled": "2025-01"
+      },
+      "dimension_explanations": {
+        "alignment": {
+          "citation_ids": [
+            "[5]"
+          ],
+          "explanation": "MCN is a strong fit for donors prioritizing <cite id=\"5\">Zakat-eligible civic engagement</cite> and local New York City community development.",
+          "improvement": "MCN could <cite id=\"5\">clarify its specific zakat allocation policy</cite> to better inform donors on how funds are distributed across eligible categories."
+        },
+        "credibility": {
+          "citation_ids": [
+            "[4]"
+          ],
+          "explanation": "Donors can trust MCN due to its <cite id=\"4\">Platinum Seal of Transparency from Candid</cite> and its <cite id=\"4\">83% independent board</cite>.",
+          "improvement": "To strengthen credibility, MCN could <cite id=\"4\">publish more detailed beneficiary counts</cite> to allow for cost-effectiveness analysis."
+        },
+        "impact": {
+          "citation_ids": [
+            "[1]",
+            "[4]"
+          ],
+          "explanation": "MCN operates efficiently with an <cite id=\"1\">72.9% program expense ratio</cite> and maintains <cite id=\"4\">resilient working capital</cite>.",
+          "improvement": "Impact measurement would benefit from <cite id=\"4\">tracking outcomes over at least 3 years</cite> and documenting a clear theory of change."
+        }
+      },
+      "donor_fit_matrix": {
+        "cause_area": "CIVIC ENGAGEMENT",
+        "citation_ids": [
+          "[2]",
+          "[4]"
+        ],
+        "evidence_rigor": "Grade C - Outcome tracking via Candid",
+        "geographic_focus": [
+          "New York City",
+          "Brooklyn",
+          "Bronx",
+          "Queens"
+        ],
+        "giving_style": "Capacity Building",
+        "tax_deductible": true,
+        "zakat_asnaf_served": [
+          "fuqara (poor)",
+          "masakin (needy)",
+          "amil (zakat collectors)",
+          "muallaf (reconciling hearts)",
+          "riqab (slaves/captives)",
+          "gharimin (debtors)",
+          "fisabilillah (in the way of Allah)",
+          "ibn_sabil (wayfarers)"
+        ],
+        "zakat_status": "ZAKAT-ELIGIBLE"
+      },
+      "financial_deep_dive": {
+        "admin_ratio": 0.083,
+        "annual_revenue": 768698,
+        "citation_ids": [
+          "[1]",
+          "[4]"
+        ],
+        "cn_financial_score": 96,
+        "cn_overall_score": 98,
+        "fundraising_ratio": 0.05,
+        "industry_program_ratio": 0.75,
+        "peer_count": 0,
+        "peer_program_ratio_median": null,
+        "program_expense_ratio": 0.7286,
+        "reserves_months": 13,
+        "revenue_cagr_3yr": 10.9,
+        "transparency_score": 100,
+        "working_capital_months": 8.2,
+        "yearly_financials": [
+          {
+            "expenses": 737967,
+            "net_assets": 506196,
+            "revenue": 768698,
+            "year": 2023
+          },
+          {
+            "expenses": 927992,
+            "net_assets": 475465,
+            "revenue": 890926,
+            "year": 2022
+          },
+          {
+            "expenses": 470386,
+            "net_assets": 512531,
+            "revenue": 624826,
+            "year": 2021
+          }
+        ]
+      },
+      "grantmaking_profile": {
+        "citation_ids": [
+          "[1]"
+        ],
+        "domestic_grants": 0,
+        "foreign_grants": 0,
+        "grant_count": 0,
+        "grant_strategy": "Direct service delivery and community training",
+        "is_significant_grantmaker": false,
+        "regions_served": [
+          "New York City"
+        ],
+        "top_recipients": [],
+        "total_grants": 0
+      },
+      "headline": "MCN empowers the American Muslim community through civic education and leadership development to reshape the public narrative.",
+      "ideal_donor_profile": {
+        "best_for_summary": "Best for donors who value American Muslim civic empowerment and want to support Zakat-eligible community infrastructure in New York City.",
+        "citation_ids": [
+          "[2]",
+          "[4]"
+        ],
+        "donor_motivations": [
+          "Want to fulfill zakat through local community development",
+          "Believe in reshaping the public narrative about Islam in America",
+          "Value high financial transparency and low fundraising overhead",
+          "Prioritize youth leadership and civic education"
+        ],
+        "giving_considerations": [
+          "Focus is regional (NYC) rather than global humanitarian relief",
+          "Impact is measured through long-term capacity building rather than immediate crisis aid",
+          "Organization is established with nearly two decades of local track record"
+        ],
+        "not_ideal_for": "Donors seeking high-urgency international disaster relief or those requiring rigorous academic RCT evidence."
+      },
+      "impact_evidence": {
+        "citation_ids": [
+          "[4]"
+        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects that MCN <cite id=\"4\">tracks 3 outcome metrics</cite> but lacks external evaluations or long-term longitudinal studies.",
+        "external_evaluations": [
+          "Candid Platinum transparency data"
+        ],
+        "outcome_tracking_years": 1,
+        "rct_available": false,
+        "theory_of_change": "IMPLICIT",
+        "theory_of_change_summary": "MCN creates impact by training youth and community members in civic literacy, assuming that increased engagement will lead to a more equitable public narrative.",
+        "why_evidence_matters": "Evidence ensures that civic training actually translates into increased community representation and narrative shifts."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[1]",
+          "[2]"
+        ],
+        "founded_year": 2008,
+        "maturity_stage": "Established",
+        "revenue_growth_3yr": 10.9,
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "As a mid-sized organization in a high-cost city, MCN has significant capacity to expand its youth and immigration programs with additional funding.",
+        "strategic_priorities": [
+          "Expand MCN Impact Academy",
+          "Strengthen Zakat-funded food security programs"
+        ],
+        "years_operating": 18
+      },
+      "organizational_capacity": {
+        "board_size": 6,
+        "ceo_compensation": 82006,
+        "ceo_compensation_pct_revenue": 6.87,
+        "ceo_name": "Husein Yatabarry",
+        "citation_ids": [
+          "[1]",
+          "[4]"
+        ],
+        "employees_count": null,
+        "geographic_reach": "New York City (5 Boroughs)",
+        "has_conflict_policy": true,
+        "has_financial_audit": true,
+        "independent_board_pct": 0.83,
+        "payroll_to_revenue_pct": null,
+        "programs_count": 5,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[2]"
+        ],
+        "differentiator": "Distinguished by its <cite id=\"2\">specific focus on the NYC Muslim narrative</cite> and high financial accountability scores.",
+        "peer_group": "Civic Engagement & Community Development",
+        "similar_orgs": [
+          "Inner City Muslim Action Network (IMAN)",
+          "Muslim Public Affairs Council (MPAC)"
+        ]
+      },
+      "similar_organizations": [
+        {
+          "differentiator": "Broader focus on health and arts in Chicago",
+          "name": "Inner City Muslim Action Network"
+        },
+        {
+          "differentiator": "National policy and advocacy focus",
+          "name": "Muslim Public Affairs Council"
+        }
+      ],
+      "strengths": [
+        {
+          "citation_ids": [
+            "[4]"
+          ],
+          "detail": "MCN has earned <cite id=\"4\">a near-perfect score of 98.0/100 from Charity Navigator</cite>, indicating robust internal controls and transparency.",
+          "point": "High Financial Accountability"
+        },
+        {
+          "citation_ids": [
+            "[4]"
+          ],
+          "detail": "The organization demonstrates high efficiency, spending only <cite id=\"4\">$0.05 to raise every $1</cite> in contribution revenue.",
+          "point": "Exceptional Fundraising Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[4]"
+          ],
+          "detail": "MCN maintains <cite id=\"4\">8.2 months of working capital</cite>, ensuring significant operational stability and resilience against funding fluctuations.",
+          "point": "Strong Liquidity and Resilience"
+        }
+      ],
+      "strengths_deep_dive": [
+        "MCN's financial health is a cornerstone of its operations, evidenced by a <cite id=\"1\">program expense ratio of 72.9%</cite>, which ensures the vast majority of funds are directed toward its core mission of civic empowerment. This efficiency is paired with a <cite id=\"4\">perfect 100/100 score in Culture & Accountability</cite> from third-party evaluators. The organization's ability to maintain <cite id=\"1\">net assets of $506,196</cite> while growing its reach in New York City highlights a sustainable growth model that balances immediate program delivery with long-term institutional health."
+      ],
+      "summary": "The Muslim Community Network (MCN) is a New York-based organization dedicated to <cite id=\"1\">shaping the public narrative of Muslims in America</cite> through youth leadership, community education, and civic engagement. Operating primarily within the five boroughs of New York City, MCN focuses on <cite id=\"2\">civic education and leadership development</cite> to empower the American Muslim community. In the 2023 tax year, the organization reported <cite id=\"1\">total revenue of $768,698</cite>, demonstrating a steady growth trajectory with a <cite id=\"3\">3-year revenue CAGR of 10.9%</cite>. MCN maintains a strong financial standing, characterized by <cite id=\"4\">an overall score of 98.0/100 from Charity Navigator</cite>, which reflects high standards of accountability and transparency. The organization's program model is centered on capacity building, including the <cite id=\"2\">MCN Impact Academy and the Immigration Project</cite>. Furthermore, MCN provides a platform for religious obligation through its <cite id=\"5\">Zakat-eligible programs</cite>, which support various categories of need within the local community, including food drives and emergency assistance.",
+      "zakat_guidance": {
+        "classification": "amil",
+        "eligibility": "ZAKAT-ELIGIBLE"
+      }
     }
   }
 }
