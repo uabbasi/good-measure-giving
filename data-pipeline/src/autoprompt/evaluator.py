@@ -63,8 +63,20 @@ class ModelEvalResult:
 class AutopromptEvaluator:
     """Generates narratives and evaluates quality across multiple models."""
 
-    def __init__(self, eval_eins: list[str]):
+    # Grade ranges by prompt type
+    GRADE_RANGES: dict[str, tuple[float, float]] = {
+        "baseline_narrative": (8.0, 10.0),   # Public-facing, anyone can read
+        "rich_narrative_v2": (8.0, 12.0),    # Engaged donors doing due diligence
+        "rich_strategic_narrative": (8.0, 12.0),
+    }
+
+    def __init__(
+        self,
+        eval_eins: list[str],
+        grade_range: Optional[tuple[float, float]] = None,
+    ):
         self._eval_eins = eval_eins
+        self._grade_range = grade_range
         self._charity_repo = CharityRepository()
         self._raw_repo = RawDataRepository()
         self._data_repo = CharityDataRepository()
@@ -109,7 +121,7 @@ class AutopromptEvaluator:
 
                 quality = None
                 if narrative is not None:
-                    quality = evaluate_quality(narrative)
+                    quality = evaluate_quality(narrative, grade_range=self._grade_range)
 
                 model_result.charities.append(
                     CharityNarrative(
@@ -299,8 +311,7 @@ class PairwiseEvaluator:
             wins = 0
             total = 0
 
-            # Compare on a subset of charities (max 5 to control cost)
-            eins = list(baseline_narratives[model].keys())[:5]
+            eins = list(baseline_narratives[model].keys())
 
             for ein in eins:
                 baseline = baseline_narratives[model].get(ein)

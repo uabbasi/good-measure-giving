@@ -44,6 +44,10 @@ MINI_EINS = [
     "20-3069841",  # Against Malaria Foundation (non-Muslim, GiveWell)
 ]
 
+# Pairwise eval set: 10 diverse charities for statistically meaningful comparisons
+# Uses first 10 from BENCHMARK_CHARITIES (mix of sizes, categories, data quality)
+PAIRWISE_EINS = [ein for _, ein in BENCHMARK_CHARITIES[:10]]
+
 RESULTS_DIR = Path(__file__).parent / "src" / "autoprompt" / "results"
 
 
@@ -157,15 +161,20 @@ class AutopromptRunner:
         else:
             self.eval_eins = [ein for _, ein in BENCHMARK_CHARITIES]
 
+        # Pairwise uses a larger set (10 charities) for statistical power
+        self.pairwise_eins = PAIRWISE_EINS
+
         # Components
-        self.evaluator = AutopromptEvaluator(self.eval_eins)
+        # Look up grade range for this prompt type
+        grade_range = AutopromptEvaluator.GRADE_RANGES.get(args.target_prompt)
+        self.evaluator = AutopromptEvaluator(self.eval_eins, grade_range=grade_range)
+        self.pairwise_evaluator = AutopromptEvaluator(self.pairwise_eins, grade_range=grade_range)
         self.optimizer = PromptOptimizer(
             optimizer_model=args.optimizer_model,
             target_prompt_name=args.target_prompt,
         )
         self.pairwise = PairwiseEvaluator(
             judge_model=args.pairwise_model,
-            eval_eins=self.eval_eins[:5],
         )
 
         # Results storage
@@ -217,8 +226,16 @@ class AutopromptRunner:
         for model, scores in baseline_scores.items():
             logger.info(f"  {model}: overall={scores.get('overall_score', 0):.1f}")
 
-        # Track baseline narratives for pairwise
-        baseline_narratives = self._extract_narratives(baseline_results)
+        # Generate baseline narratives on the PAIRWISE set (n=10 for statistical power)
+        logger.info(f"Generating pairwise baseline ({len(self.pairwise_eins)} charities)...")
+        pairwise_baseline_results = self.pairwise_evaluator.evaluate(
+            current_prompt, self.args.target_models
+        )
+        pairwise_baseline_cost = sum(r.total_cost_usd for r in pairwise_baseline_results.values())
+        self.total_cost += pairwise_baseline_cost
+        baseline_narratives = self._extract_narratives(pairwise_baseline_results)
+        logger.info(f"  Pairwise baseline cost: ${pairwise_baseline_cost:.4f}")
+
         best_confirmed_prompt = current_prompt
         best_confirmed_scores = dict(baseline_scores)
 
@@ -287,11 +304,12 @@ class AutopromptRunner:
             )
 
             # Pairwise comparison — compare current best against original baseline
+            # Uses PAIRWISE set (n=10) for statistical power, not the mini eval set
             pairwise_win_rate = None
             if iteration % self.args.pairwise_interval == 0:
-                logger.info("Running pairwise comparison on current best prompt...")
-                # Re-generate with the current best prompt (not the just-reverted candidate)
-                best_results = self.evaluator.evaluate(
+                logger.info(f"Running pairwise comparison ({len(self.pairwise_eins)} charities)...")
+                # Re-generate with the current best prompt on the pairwise set
+                best_results = self.pairwise_evaluator.evaluate(
                     best_prompt, self.args.target_models
                 )
                 best_cost = sum(r.total_cost_usd for r in best_results.values())

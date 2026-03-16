@@ -73,6 +73,7 @@ class QualityMetrics:
 def evaluate_quality(
     narrative: Optional[dict],
     input_sources: Optional[list[str]] = None,
+    grade_range: Optional[tuple[float, float]] = None,
 ) -> QualityMetrics:
     """
     Evaluate LLM output quality using rule-based metrics.
@@ -99,7 +100,7 @@ def evaluate_quality(
     citation = _check_citations(narrative, input_sources or [])
     specificity = _check_specificity(narrative)
     completeness = _check_completeness(narrative)
-    readability = _check_readability(narrative)
+    readability = _check_readability(narrative, grade_range=grade_range)
     human_voice = _check_human_voice(narrative)
 
     # Weighted overall score
@@ -483,8 +484,16 @@ def _count_syllables(word: str) -> int:
     return max(1, vowel_groups)
 
 
-def _check_readability(narrative: dict) -> ReadabilityResult:
-    """Check readability using Flesch-Kincaid grade level. Target: 8th grade."""
+def _check_readability(
+    narrative: dict,
+    grade_range: Optional[tuple[float, float]] = None,
+) -> ReadabilityResult:
+    """Check readability using Flesch-Kincaid grade level.
+
+    Args:
+        grade_range: (min, max) ideal grade range. Default (8, 10).
+                     Use (8, 12) for rich narratives targeting engaged donors.
+    """
     # Collect all narrative text
     text_parts = [
         narrative.get("headline", ""),
@@ -517,15 +526,14 @@ def _check_readability(narrative: dict) -> ReadabilityResult:
     # Flesch-Kincaid grade level
     grade_level = 0.39 * (num_words / num_sentences) + 11.8 * (num_syllables / num_words) - 15.59
 
-    # Score: 100 for grades 8-10 (ideal range), gentle falloff outside
-    # Below 8: penalize oversimplification (dropping nuance to game the metric)
-    # Above 10: penalize complexity, but not as aggressively as before
-    if 8.0 <= grade_level <= 10.0:
+    # Score: 100 within ideal grade range, gentle falloff outside
+    min_grade, max_grade = grade_range or (8.0, 10.0)
+    if min_grade <= grade_level <= max_grade:
         score = 100.0
-    elif grade_level < 8.0:
-        score = max(0, 100 - (8.0 - grade_level) * 12)
+    elif grade_level < min_grade:
+        score = max(0, 100 - (min_grade - grade_level) * 12)
     else:
-        score = max(0, 100 - (grade_level - 10.0) * 10)
+        score = max(0, 100 - (grade_level - max_grade) * 10)
 
     return ReadabilityResult(
         score=score,
