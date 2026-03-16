@@ -14,6 +14,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
+import { SHOW_AMAL_SCORE } from '../src/featureFlags';
 
 interface CharityPoint {
   id: string;
@@ -107,7 +108,7 @@ export const PillarScatterPlot: React.FC<PillarScatterPlotProps> = ({
                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-slate-900 text-white text-xs rounded-lg p-3 shadow-xl z-20 pointer-events-none">
                   <div className="font-bold mb-1 truncate">{charity.name}</div>
                   <div className="flex justify-between text-slate-300 mb-1">
-                    <span>Score: {charity.amalScore}</span>
+                    {SHOW_AMAL_SCORE && <span>Score: {charity.amalScore}</span>}
                     <span>{getWalletLabel(charity.walletTag)}</span>
                   </div>
                   <div className="text-slate-400 text-[10px] grid grid-cols-2 gap-x-2">

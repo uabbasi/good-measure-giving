@@ -1218,6 +1218,7 @@ export interface Bookmark {
   id: string;
   userId: string;
   charityEin: string;
+  charityName?: string | null; // For custom (non-system) charities
   notes: string | null;
   createdAt: string;
 }

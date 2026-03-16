@@ -6,6 +6,7 @@
 
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { SHOW_AMAL_SCORE } from '../../featureFlags';
 import { getCharityAddress, formatCauseArea, formatShortRevenue } from '../../utils/formatters';
 import {
   ArrowLeft,
@@ -813,7 +814,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
         ) : (
           <SectionCard isDark={isDark}>
             <SectionHeader icon={BarChart3} title="Methodology Details" isDark={isDark} />
-            <ScoreBreakdown
+            {SHOW_AMAL_SCORE && <ScoreBreakdown
               scoreDetails={amal.score_details}
               confidenceScores={scores}
               amalScore={amalScore ?? 0}
@@ -826,7 +827,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
               strengths={isSignedIn ? rich?.strengths : baseline?.strengths}
               areasForImprovement={areasForImprovement}
               theoryOfChangeSummary={rich?.impact_evidence?.theory_of_change_summary || charity.theoryOfChange}
-            />
+            />}
           </SectionCard>
         )
       )}

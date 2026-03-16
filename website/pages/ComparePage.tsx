@@ -18,6 +18,7 @@ import type { CharityProfile, ScoreComponentDetail, ImpactDetails, AlignmentDeta
 import { RecommendationCue } from '../src/components/RecommendationCue';
 import { SignalConstellation } from '../src/components/SignalConstellation';
 import { HarveyBall, ratioToHarveyLevel, levelToLabel } from '../src/components/ScoreBreakdown';
+import { SHOW_AMAL_SCORE } from '../src/featureFlags';
 
 // Category labels for human-readable display
 const CATEGORY_LABELS: Record<string, string> = {
@@ -644,21 +645,21 @@ export function ComparePage() {
             {/* Detailed Assessment Section */}
             <CollapsibleSection title="Detailed Assessment" isDark={isDark} defaultOpen>
               <div className="px-4">
-                <CompareRow
+                {SHOW_AMAL_SCORE && <CompareRow
                   label="GMG Score"
                   values={charities.map(c => <ScoreBadge score={c.amalEvaluation?.amal_score} isDark={isDark} />)}
                   isDark={isDark}
-                />
-                <CompareRow
+                />}
+                {SHOW_AMAL_SCORE && <CompareRow
                   label="Impact"
                   values={charities.map(c => <DimensionScore score={c.amalEvaluation?.confidence_scores?.impact} max={50} isDark={isDark} />)}
                   isDark={isDark}
-                />
-                <CompareRow
+                />}
+                {SHOW_AMAL_SCORE && <CompareRow
                   label="Alignment"
                   values={charities.map(c => <DimensionScore score={c.amalEvaluation?.confidence_scores?.alignment} max={50} isDark={isDark} />)}
                   isDark={isDark}
-                />
+                />}
               </div>
               <div className="px-4">
                 {(['impact', 'alignment'] as DimensionKey[]).map(dimension => {

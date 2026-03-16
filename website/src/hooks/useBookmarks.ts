@@ -28,6 +28,7 @@ function docToBookmark(docData: Record<string, unknown>, docId: string, userId: 
     id: docId,
     userId,
     charityEin: docData.charityEin as string,
+    charityName: (docData.charityName as string) || null,
     notes: (docData.notes as string) || null,
     createdAt: docData.createdAt instanceof Timestamp
       ? docData.createdAt.toDate().toISOString()
@@ -66,19 +67,20 @@ export function useBookmarks(): UseBookmarksResult {
 
   // Add bookmark mutation
   const addMutation = useMutation({
-    mutationFn: async ({ ein, notes }: { ein: string; notes?: string }) => {
+    mutationFn: async ({ ein, notes, charityName }: { ein: string; notes?: string; charityName?: string }) => {
       if (!db || !userId) throw new Error('Not authenticated');
 
       const docRef = doc(db, 'users', userId, 'bookmarks', ein);
-      const data = {
+      const data: Record<string, unknown> = {
         charityEin: ein,
         notes: notes || null,
         createdAt: Timestamp.now(),
       };
+      if (charityName) data.charityName = charityName;
       await setDoc(docRef, data);
-      return docToBookmark({ ...data, createdAt: data.createdAt }, ein, userId);
+      return docToBookmark({ ...data, createdAt: data.createdAt as Timestamp }, ein, userId);
     },
-    onMutate: async ({ ein, notes }) => {
+    onMutate: async ({ ein, notes, charityName }) => {
       await queryClient.cancelQueries({ queryKey: bookmarksQueryKey });
       const previous = queryClient.getQueryData<Bookmark[]>(bookmarksQueryKey);
 
@@ -86,6 +88,7 @@ export function useBookmarks(): UseBookmarksResult {
         id: ein,
         userId: userId!,
         charityEin: ein,
+        charityName: charityName || null,
         notes: notes || null,
         createdAt: new Date().toISOString(),
       };
@@ -165,8 +168,8 @@ export function useBookmarks(): UseBookmarksResult {
     return bookmarks.find(b => b.charityEin === ein);
   }, [bookmarks]);
 
-  const addBookmark = useCallback(async (ein: string, notes?: string) => {
-    await addMutation.mutateAsync({ ein, notes });
+  const addBookmark = useCallback(async (ein: string, notes?: string, charityName?: string) => {
+    await addMutation.mutateAsync({ ein, notes, charityName });
   }, [addMutation]);
 
   const removeBookmark = useCallback(async (ein: string) => {

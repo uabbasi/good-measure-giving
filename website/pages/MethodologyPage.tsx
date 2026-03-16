@@ -21,6 +21,7 @@ import { getEvidenceStageLabel } from '../src/utils/scoreConstants';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { MethodologyInsights } from '../components/MethodologyInsights';
 import { CauseAreaMatrix } from '../components/CauseAreaMatrix';
+import { SHOW_AMAL_SCORE } from '../src/featureFlags';
 
 // Get top performing charities for the showcase
 const getTopCharities = (charities: any[]) => {
@@ -501,6 +502,7 @@ export const MethodologyPage: React.FC = () => {
           </p>
 
           {/* Score Summary — aligned with scoreConstants.ts thresholds */}
+          {SHOW_AMAL_SCORE && (
           <div className={`grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 p-4 rounded-xl ${isDark ? 'bg-slate-800/50' : 'bg-slate-100'}`}>
             <div className="text-center">
               <div className={`text-2xl font-bold tabular-nums ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>{scoreBuckets.exceptional}</div>
@@ -519,6 +521,7 @@ export const MethodologyPage: React.FC = () => {
               <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>&lt;30 Emerging</div>
             </div>
           </div>
+          )}
 
           {/* Calibration Snapshot */}
           {calibrationReport && (

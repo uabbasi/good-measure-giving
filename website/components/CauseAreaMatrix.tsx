@@ -12,6 +12,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { ArrowLeft, Users } from 'lucide-react';
+import { SHOW_AMAL_SCORE } from '../src/featureFlags';
 
 interface CharityWithPillars {
   id: string;
@@ -372,7 +373,7 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) =
                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-slate-900 text-white text-xs rounded-lg p-3 shadow-xl z-30 pointer-events-none">
                       <div className="font-bold mb-1 truncate">{charity.name}</div>
                       <div className="flex justify-between text-slate-300">
-                        <span>Score: {charity.amalScore}</span>
+                        {SHOW_AMAL_SCORE && <span>Score: {charity.amalScore}</span>}
                         <span>{charity.walletTag?.includes('ZAKAT') ? 'Zakat' : 'Sadaqah'}</span>
                       </div>
                       {charity.totalRevenue && (
@@ -417,7 +418,7 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) =
                       <div className="text-slate-300 mb-2">{cause.count} charities evaluated</div>
                       <div className="text-slate-400 text-[10px]">
                         <div>Avg Score: {Math.round((cause.avgAlignment + cause.avgImpact))} / 100</div>
-                        <div>Top: {cause.topCharity?.name} ({cause.topCharity?.amalScore})</div>
+                        <div>Top: {cause.topCharity?.name}{SHOW_AMAL_SCORE && ` (${cause.topCharity?.amalScore})`}</div>
                       </div>
                       <div className="mt-2 text-emerald-400 text-[10px] font-medium">Click to explore →</div>
                       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full">

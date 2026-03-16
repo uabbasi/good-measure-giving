@@ -15,6 +15,7 @@ import { deriveUISignalsFromCharity, getEvidenceStageRank } from '../src/utils/s
 import { FeedbackButton } from '../src/components/FeedbackButton';
 import { useTour } from '../src/tours/useTour';
 import { browseTourSteps } from '../src/tours/browseTour';
+import { SHOW_AMAL_SCORE } from '../src/featureFlags';
 
 // Theme indices: soft-noor (light) = 4, warm-atmosphere (dark) = 2
 const LIGHT_THEME_INDEX = 4;

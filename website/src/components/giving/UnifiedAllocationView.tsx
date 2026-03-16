@@ -25,6 +25,7 @@ import {
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
+import { SHOW_AMAL_SCORE } from '../../featureFlags';
 import { useCharities } from '../../hooks/useCharities';
 import { getWalletType } from '../../utils/walletUtils';
 import type { GivingBucket, GivingHistoryEntry } from '../../../types';
@@ -265,7 +266,7 @@ function DraggableCharityRow({
       <td className={`${cell} pl-1`} colSpan={2}>
         <div className="flex items-center gap-2">
           <Link to={`/charity/${charity.ein}`} className={`hover:underline font-medium truncate ${isDark ? 'text-slate-200 hover:text-white' : 'text-slate-700 hover:text-slate-900'}`}>{charity.name}</Link>
-          <span className={`shrink-0 text-[10px] px-1.5 py-0.5 rounded-md font-bold border ${
+          {SHOW_AMAL_SCORE && <span className={`shrink-0 text-[10px] px-1.5 py-0.5 rounded-md font-bold border ${
             wt === 'zakat'
               ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600'
               : isDark
@@ -273,7 +274,7 @@ function DraggableCharityRow({
               : 'bg-slate-100 border-slate-200 text-slate-500'
           }`}>
             {charity.amalScore || '—'}
-          </span>
+          </span>}
         </div>
       </td>
       <td className={`${cell} text-right`}>
@@ -515,9 +516,9 @@ function GhostSuggestionRow({
       <td className={`${cell} pl-1 italic font-medium`} colSpan={2}>
         <div className="flex items-center gap-2">
           {charity.name}
-          <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-medium opacity-50 group-hover:opacity-80 ${isDark ? 'bg-slate-800 border border-slate-700' : 'bg-slate-100 border border-slate-200'}`}>
+          {SHOW_AMAL_SCORE && <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-medium opacity-50 group-hover:opacity-80 ${isDark ? 'bg-slate-800 border border-slate-700' : 'bg-slate-100 border border-slate-200'}`}>
             {charity.amalScore || '—'}
-          </span>
+          </span>}
         </div>
       </td>
       <td className={cell}></td>
@@ -576,6 +577,7 @@ export function UnifiedAllocationView({
   const [showCharitySearch, setShowCharitySearch] = useState(false);
   const [charitySearchQuery, setCharitySearchQuery] = useState('');
   const [recentlyAdded, setRecentlyAdded] = useState<Set<string>>(new Set());
+  const [customCategoryName, setCustomCategoryName] = useState('');
   const [zakatLens, setZakatLens] = useState(false);
   const [collapsedBuckets, setCollapsedBuckets] = useState<Set<string>>(new Set());
   const [bucketSearchQueries, setBucketSearchQueries] = useState<Map<string, string>>(new Map());
@@ -768,6 +770,14 @@ export function UnifiedAllocationView({
     triggerSave(newBuckets);
     // Expand the new category
     setCollapsedBuckets(prev => { const next = new Set(prev); next.delete(newId); return next; });
+  };
+
+  const addCustomCategory = (name: string) => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    const tagId = `custom-${trimmed.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+    add({ id: tagId, label: trimmed });
+    setCustomCategoryName('');
   };
 
   const autoCreateBucketsForCharity = (charity: { causeTags: string[] | null }) => {
@@ -1167,65 +1177,90 @@ export function UnifiedAllocationView({
                   .filter(c => c.ein && c.name.toLowerCase().includes(charitySearchQuery.toLowerCase()))
                   .slice(0, 12);
 
-                if (results.length === 0) {
-                  return (
-                    <div className={`px-4 py-3 text-sm ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-                      No matching charities found
+                const addCustomRow = (
+                  <div
+                    key="__custom__"
+                    className={`flex items-center justify-between px-3 py-2.5 border-t ${borderLight} ${isDark ? 'hover:bg-slate-700/50' : 'hover:bg-slate-50'} transition-colors`}
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Plus className={`w-3.5 h-3.5 shrink-0 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} />
+                      <span className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                        Add "<span className="font-medium">{charitySearchQuery}</span>" as custom charity
+                      </span>
                     </div>
-                  );
+                    <button
+                      onClick={async () => {
+                        const customId = `custom-${crypto.randomUUID()}`;
+                        if (onAddCharity) {
+                          await onAddCharity(customId, charitySearchQuery.trim(), '');
+                          setRecentlyAdded(prev => new Set(prev).add(customId));
+                        }
+                      }}
+                      className={`text-[11px] px-3 py-1.5 rounded-lg font-semibold shadow-sm ${isDark ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-emerald-500 text-white hover:bg-emerald-600'}`}
+                    >
+                      + Add
+                    </button>
+                  </div>
+                );
+
+                if (results.length === 0) {
+                  return addCustomRow;
                 }
 
-                return results.map((c, i) => {
-                  const alreadyAdded = bookmarkedEins.has(c.ein!) || recentlyAdded.has(c.ein!);
-                  return (
-                    <div
-                      key={c.ein}
-                      className={`flex items-center justify-between px-3 py-2.5 ${i !== results.length - 1 ? `border-b ${borderLight}` : ''} ${
-                        alreadyAdded
-                          ? isDark ? 'bg-emerald-500/5' : 'bg-emerald-50/50'
-                          : isDark ? 'hover:bg-slate-700/50' : 'hover:bg-slate-50'
-                      } transition-colors`}
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <span className={`text-sm font-medium truncate ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>{c.name}</span>
-                        <span className={`shrink-0 text-[10px] px-1.5 py-0.5 rounded-md font-semibold border ${
-                          isDark ? 'bg-slate-700 border-slate-600 text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-500'
-                        }`}>
-                          {(c as any).amalScore || '—'}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1 shrink-0 ml-2">
-                        {alreadyAdded ? (
-                          <span className={`inline-flex items-center gap-1 text-[11px] px-3 py-1.5 rounded-lg font-semibold ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
-                            <Check className="w-3.5 h-3.5" /> Added
-                          </span>
-                        ) : (
-                          <button
-                            onClick={async () => {
-                              if (onAddCharity) {
-                                const fullCharity = charities.find(ch => ch.ein === c.ein);
-                                const causeTags = fullCharity ? (fullCharity as any).causeTags || [] : [];
-                                const bucketId = autoCreateBucketsForCharity({ causeTags });
-                                await onAddCharity(c.ein!, c.name, bucketId);
-                                if (bucketId) {
-                                  setAssignments(prev => {
-                                    const next = new Map(prev);
-                                    next.set(c.ein!, bucketId);
-                                    return next;
-                                  });
+                return (<>
+                  {results.map((c, i) => {
+                    const alreadyAdded = bookmarkedEins.has(c.ein!) || recentlyAdded.has(c.ein!);
+                    return (
+                      <div
+                        key={c.ein}
+                        className={`flex items-center justify-between px-3 py-2.5 ${i !== results.length - 1 ? `border-b ${borderLight}` : ''} ${
+                          alreadyAdded
+                            ? isDark ? 'bg-emerald-500/5' : 'bg-emerald-50/50'
+                            : isDark ? 'hover:bg-slate-700/50' : 'hover:bg-slate-50'
+                        } transition-colors`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span className={`text-sm font-medium truncate ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>{c.name}</span>
+                          {SHOW_AMAL_SCORE && <span className={`shrink-0 text-[10px] px-1.5 py-0.5 rounded-md font-semibold border ${
+                            isDark ? 'bg-slate-700 border-slate-600 text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-500'
+                          }`}>
+                            {(c as any).amalScore || '—'}
+                          </span>}
+                        </div>
+                        <div className="flex items-center gap-1 shrink-0 ml-2">
+                          {alreadyAdded ? (
+                            <span className={`inline-flex items-center gap-1 text-[11px] px-3 py-1.5 rounded-lg font-semibold ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
+                              <Check className="w-3.5 h-3.5" /> Added
+                            </span>
+                          ) : (
+                            <button
+                              onClick={async () => {
+                                if (onAddCharity) {
+                                  const fullCharity = charities.find(ch => ch.ein === c.ein);
+                                  const causeTags = fullCharity ? (fullCharity as any).causeTags || [] : [];
+                                  const bucketId = autoCreateBucketsForCharity({ causeTags });
+                                  await onAddCharity(c.ein!, c.name, bucketId);
+                                  if (bucketId) {
+                                    setAssignments(prev => {
+                                      const next = new Map(prev);
+                                      next.set(c.ein!, bucketId);
+                                      return next;
+                                    });
+                                  }
+                                  setRecentlyAdded(prev => new Set(prev).add(c.ein!));
                                 }
-                                setRecentlyAdded(prev => new Set(prev).add(c.ein!));
-                              }
-                            }}
-                            className={`text-[11px] px-3 py-1.5 rounded-lg font-semibold shadow-sm ${isDark ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-emerald-500 text-white hover:bg-emerald-600'}`}
-                          >
-                            + Add
-                          </button>
-                        )}
+                              }}
+                              className={`text-[11px] px-3 py-1.5 rounded-lg font-semibold shadow-sm ${isDark ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-emerald-500 text-white hover:bg-emerald-600'}`}
+                            >
+                              + Add
+                            </button>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  );
-                });
+                    );
+                  })}
+                  {addCustomRow}
+                </>);
               })()}
             </div>
           )}
@@ -1240,6 +1275,35 @@ export function UnifiedAllocationView({
       {/* Category picker */}
       {showPicker && (
         <div className={`px-4 py-4 border-b ${border} ${isDark ? 'bg-slate-800/30' : 'bg-emerald-50/30'}`}>
+          {/* Custom category input */}
+          <div className="flex items-center gap-2 mb-3">
+            <input
+              type="text"
+              value={customCategoryName}
+              onChange={e => setCustomCategoryName(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') addCustomCategory(customCategoryName); }}
+              placeholder="Type a custom category name..."
+              className={`flex-1 text-sm px-3 py-2 rounded-lg border shadow-sm ${
+                isDark
+                  ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-500 focus:border-emerald-500'
+                  : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-emerald-400'
+              } focus:outline-none focus:ring-2 focus:ring-emerald-500/20`}
+            />
+            <button
+              onClick={() => addCustomCategory(customCategoryName)}
+              disabled={!customCategoryName.trim()}
+              className={`text-[11px] font-semibold px-3 py-2 rounded-lg transition-colors ${
+                customCategoryName.trim()
+                  ? isDark ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-emerald-600 text-white hover:bg-emerald-700'
+                  : isDark ? 'bg-slate-700 text-slate-500 cursor-not-allowed' : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+              }`}
+            >
+              Create
+            </button>
+          </div>
+          <div className={`text-[10px] font-bold uppercase tracking-wider mb-2 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+            Or pick from tags
+          </div>
           <div className="space-y-3">
             {Object.entries(TAGS).map(([group, tags]) => (
               <div key={group} className="flex flex-wrap items-start gap-2">
@@ -1465,11 +1529,11 @@ export function UnifiedAllocationView({
                           <div key={s.ein} className="flex items-center justify-between gap-2">
                             <div className="min-w-0 flex items-center gap-1.5">
                               <span className={`text-[12px] truncate ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>{s.name}</span>
-                              <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-semibold border ${
+                              {SHOW_AMAL_SCORE && <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-semibold border ${
                                 isDark ? 'bg-slate-800 border-slate-700 text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-500'
                               }`}>
                                 {s.amalScore || '—'}
-                              </span>
+                              </span>}
                             </div>
                             <button
                               onClick={() => onAddSuggestion(s.ein, s.name, b.id)}
@@ -2017,7 +2081,7 @@ export function UnifiedAllocationView({
                 <div className="flex items-center gap-3">
                   <GripVertical className="w-4 h-4 text-emerald-500" />
                   <span className="font-semibold">{activeCharity.name}</span>
-                  {activeCharity.amalScore && (
+                  {SHOW_AMAL_SCORE && activeCharity.amalScore && (
                     <span className={`text-[10px] px-2 py-0.5 rounded-md font-bold ${isDark ? 'bg-slate-700 text-slate-400' : 'bg-slate-100 text-slate-500'}`}>
                       {activeCharity.amalScore}
                     </span>

@@ -30,6 +30,7 @@ import { isRichTier, isBaselineTier, isHiddenTier } from '../src/utils/tierUtils
 import { useCommunityMember, CommunityGate, JoinCommunityPrompt } from '../src/auth';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { BookmarkButton } from '../src/components/BookmarkButton';
+import { SHOW_AMAL_SCORE } from '../src/featureFlags';
 
 // Layout simplified - hidden tier charities use legacy layout only
 
@@ -174,15 +175,17 @@ export const CharityDetailsPage: React.FC = () => {
         <div className={`rounded-xl shadow-sm p-5 ${isDark ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-slate-200'}`}>
           {/* Score + Rating Row */}
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className={`text-4xl font-bold tabular-nums ${isDark ? 'text-emerald-400' : 'text-emerald-700'}`}>{amal.amal_score}</div>
-              <div className="text-left">
-                <div className="text-xs text-slate-400 uppercase tracking-wider">GMG Score</div>
-                <span className={`inline-block mt-1 px-2 py-0.5 text-xs font-bold rounded border ${getRatingBadgeStyles(rating)}`}>
-                  {rating}
-                </span>
+            {SHOW_AMAL_SCORE && (
+              <div className="flex items-center gap-3">
+                <div className={`text-4xl font-bold tabular-nums ${isDark ? 'text-emerald-400' : 'text-emerald-700'}`}>{amal.amal_score}</div>
+                <div className="text-left">
+                  <div className="text-xs text-slate-400 uppercase tracking-wider">GMG Score</div>
+                  <span className={`inline-block mt-1 px-2 py-0.5 text-xs font-bold rounded border ${getRatingBadgeStyles(rating)}`}>
+                    {rating}
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
             {amal.wallet_routing && (
               <span className={`flex items-center gap-1 px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg border ${getWalletTagStyles(amal.wallet_routing.tag)}`}>
                 <Lock className="w-3 h-3" aria-hidden="true" />
@@ -192,7 +195,7 @@ export const CharityDetailsPage: React.FC = () => {
           </div>
 
           {/* Tier Scores */}
-          {tier1 && tier2 && (
+          {SHOW_AMAL_SCORE && tier1 && tier2 && (
             <div className={`flex gap-4 mb-4 pb-4 border-b ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
               <div className={`flex-1 text-center rounded-lg py-2 ${isDark ? 'bg-slate-800' : 'bg-slate-50'}`}>
                 <div className={`text-lg font-bold tabular-nums ${isDark ? 'text-white' : 'text-slate-900'}`}>{tier1.subtotal}<span className="text-slate-400 text-sm">/50</span></div>
@@ -755,6 +758,7 @@ interface DimensionScores {
 }
 
 const ScoreCard: React.FC<{ score: number, variant: ScoreVariant, toggle: () => void, dimensions?: DimensionScores }> = ({ score, variant, toggle, dimensions }) => (
+  SHOW_AMAL_SCORE ? (
   <button
     onClick={toggle}
     className="text-left w-full bg-slate-900 rounded-2xl p-8 text-center text-white shadow-xl relative overflow-hidden cursor-pointer group transition-transform hover:scale-[1.02]"
@@ -766,6 +770,7 @@ const ScoreCard: React.FC<{ score: number, variant: ScoreVariant, toggle: () => 
       Click to change style
     </div>
   </button>
+  ) : null
 );
 
 // Score Card with integrated Path to Exemplary
@@ -776,6 +781,7 @@ const ScoreCardWithPath: React.FC<{
   dimensions?: DimensionScores;
   improvementAreas?: string[];
 }> = ({ score, variant, toggle, dimensions, improvementAreas }) => (
+  SHOW_AMAL_SCORE ? (
   <div className="bg-slate-900 rounded-2xl shadow-xl relative overflow-hidden">
     <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
 
@@ -809,6 +815,7 @@ const ScoreCardWithPath: React.FC<{
       </div>
     )}
   </div>
+  ) : null
 );
 
 interface ImpactMatrixProps {

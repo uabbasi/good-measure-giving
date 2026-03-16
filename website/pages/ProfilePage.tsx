@@ -143,22 +143,35 @@ export function ProfilePage() {
 
   // Match bookmarks with charity data for the unified view
   const bookmarkedCharitiesForView = useMemo(() => {
-    if (!summaries || bookmarks.length === 0) return [];
+    if (bookmarks.length === 0) return [];
 
-    const charityMap = new Map(summaries.map(c => [c.ein, c]));
+    const charityMap = new Map((summaries || []).map(c => [c.ein, c]));
 
     return bookmarks
       .map(bookmark => {
         const charity = charityMap.get(bookmark.charityEin);
-        if (!charity) return null;
-        return {
-          ein: charity.ein,
-          name: charity.name,
-          amalScore: charity.amalScore || null,
-          walletTag: charity.walletTag || null,
-          causeTags: charity.causeTags || null,
-          notes: bookmark.notes,
-        };
+        if (charity) {
+          return {
+            ein: charity.ein,
+            name: charity.name,
+            amalScore: charity.amalScore || null,
+            walletTag: charity.walletTag || null,
+            causeTags: charity.causeTags || null,
+            notes: bookmark.notes,
+          };
+        }
+        // Custom charities (not in system) — use stored name
+        if (bookmark.charityEin.startsWith('custom-') && bookmark.charityName) {
+          return {
+            ein: bookmark.charityEin,
+            name: bookmark.charityName,
+            amalScore: null,
+            walletTag: null,
+            causeTags: null,
+            notes: bookmark.notes,
+          };
+        }
+        return null;
       })
       .filter((item): item is NonNullable<typeof item> => item !== null);
   }, [bookmarks, summaries]);
@@ -352,9 +365,10 @@ export function ProfilePage() {
                 setPrefillCharity(ein && name ? { ein, name } : null);
                 setShowDonationModal(true);
               }}
-              onAddCharity={async (ein, _name, bucketId) => {
-                // Bookmark the charity
-                await addBookmark(ein);
+              onAddCharity={async (ein, name, bucketId) => {
+                // Bookmark the charity (pass name for custom charities)
+                const isCustom = ein.startsWith('custom-');
+                await addBookmark(ein, undefined, isCustom ? name : undefined);
                 // Add the assignment to profile
                 const currentAssignments = profile?.charityBucketAssignments || [];
                 const nextAssignments = bucketId
