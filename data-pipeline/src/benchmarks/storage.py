@@ -89,6 +89,8 @@ class BenchmarkRun:
                 "avg_citation": round(sum(q.get("citation_score", 0) for q in quality_metrics) / n, 1),
                 "avg_specificity": round(sum(q.get("specificity_score", 0) for q in quality_metrics) / n, 1),
                 "avg_completeness": round(sum(q.get("completeness_score", 0) for q in quality_metrics) / n, 1),
+                "avg_readability": round(sum(q.get("readability_score", 0) for q in quality_metrics) / n, 1),
+                "avg_human_voice": round(sum(q.get("human_voice_score", 0) for q in quality_metrics) / n, 1),
                 "avg_overall": round(sum(q.get("overall_score", 0) for q in quality_metrics) / n, 1),
             }
 

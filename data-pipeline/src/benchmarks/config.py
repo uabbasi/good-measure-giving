@@ -8,8 +8,8 @@ across runs over time. Changes should be rare and documented.
 # =============================================================================
 # BENCHMARK CHARITIES
 # =============================================================================
-# 10 diverse charities selected for coverage across:
-# - Cause areas (humanitarian, education, health, advocacy, environment, etc.)
+# 20 diverse charities selected for coverage across:
+# - All 16 cause-area categories
 # - Organization size (large flagships to small niche orgs)
 # - Data quality (high CN ratings to sparse data)
 # - Muslim vs non-Muslim (for counterfactual scoring validation)
@@ -30,6 +30,18 @@ BENCHMARK_CHARITIES = [
     ("Green Muslims", "47-1986437"),                # Environment, niche
     ("Muhsen", "47-3187591"),                       # Disability services, small
     ("Link Outside", "83-1171525"),                 # Prison reentry, very niche
+
+    # Category coverage expansion (fill 9 missing categories)
+    ("ICNA Relief", "04-3810161"),                          # BASIC_NEEDS, 99% CN
+    ("CAIR Foundation", "77-0646756"),                      # ADVOCACY_CIVIC, 95% CN
+    ("HEART Women & Girls", "27-3625796"),                  # WOMENS_SERVICES, 92% CN
+    ("Islamic Society of Greater Houston", "23-7065716"),   # RELIGIOUS_CONGREGATION, large
+    ("Pillars Fund", "81-0983087"),                         # PHILANTHROPY_GRANTMAKING
+    ("Unity Productions Foundation", "77-0519274"),         # MEDIA_JOURNALISM
+    ("Al-Arqam Islamic School", "94-3311132"),              # EDUCATION_K12_RELIGIOUS, 71% CN
+    ("Muslim Legal Fund of America", "01-0548371"),         # CIVIL_RIGHTS_LEGAL
+    ("ISPU", "38-3633581"),                                 # RESEARCH_POLICY, 98% CN
+    ("Helping Hand for Relief and Development", "31-1628040"),  # HUMANITARIAN, 100% CN
 ]
 
 # Just the EINs for easy iteration

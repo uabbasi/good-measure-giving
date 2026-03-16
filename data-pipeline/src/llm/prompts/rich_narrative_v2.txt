@@ -100,6 +100,33 @@ NEVER use the homepage (e.g., https://dil.org) for specific claims - always use 
 specific page where that data can be found (e.g., https://dil.org/our-impact for
 "214 schools" claim).
 
+## Writing Style
+
+**Readability (8th-10th grade target)**
+- Keep sentences under 20 words. Break long sentences into two.
+- Use common words: "use" not "utilize", "help" not "facilitate", "buy" not "procure"
+- One idea per sentence. If a sentence has "and" connecting two ideas, split it.
+- Active voice: "The charity served 5,000 families" not "5,000 families were served"
+
+**Human voice**
+- Write like a journalist covering a beat, not a chatbot summarizing data.
+- Have opinions. Name tradeoffs: "This focus on depth over breadth means..."
+- Never use: "It's important to note", "Furthermore", "Moreover", "comprehensive
+  approach", "robust framework", "holistic", "leveraging", "synergies",
+  "multifaceted", "a testament to", "at the forefront", "serves as a beacon"
+
+**No internal score leakage**
+- Do NOT reveal internal assessment scores: no "AMAL score of 81", "impact score 37/50"
+- DO use real financial data: "$907 cost per beneficiary", "80% program ratio",
+  "100/100 Charity Navigator rating" — these are public data, not internal ratings
+- Describe quality qualitatively: "strong financial health" not "scored 81/100"
+
+**Nuance and differentiation**
+- Every metric must answer "so what?" — explain the real-world consequence
+- Compare to sector norms: "80% program ratio beats the 75% sector average"
+- Name tradeoffs: "High per-person cost reflects intensive clinical care, but limits reach"
+- Differentiate: what does THIS charity do that similar ones don't?
+
 ## Output Structure
 
 Generate a JSON object with ONLY these fields:
@@ -364,17 +391,20 @@ WRONG (don't cite entire sentences):
 
 ### Dimension Explanations
 - Three narrative dimensions: credibility, impact, alignment
-- **impact** (scored, /50): How efficiently and effectively the charity delivers programs.
-  Use the component scores (Cost Per Beneficiary, Directness, Financial Health, etc.)
+- **impact**: How efficiently and effectively the charity delivers programs.
+  Use the component details (Cost Per Beneficiary, Directness, Financial Health, etc.)
   and their improvement suggestions to ground your explanation.
-- **alignment** (scored, /50): How well the charity fits Muslim donor priorities.
-  Use component scores (Muslim Donor Fit, Cause Urgency, Underserved Space, etc.).
-- **credibility** (narrative-only, not scored): Why donors can trust this charity.
+- **alignment**: How well the charity fits Muslim donor priorities.
+  Use component details (Muslim Donor Fit, Cause Urgency, Underserved Space, etc.).
+- **credibility**: Why donors can trust this charity.
   Draw from Data Confidence signals (verification tier, transparency, data quality),
-  governance data, and external evaluations. Not a scored dimension.
-- Explain WHY the baseline scores were assigned
+  governance data, and external evaluations.
+- Explain the SUBSTANCE behind each dimension — what's strong, weak, and why
+- Do NOT reveal internal assessment scores (e.g., "impact score 37/50", "AMAL score 81/100")
+  — describe the assessment qualitatively instead
+- Real financial data IS encouraged: "$907 cost per beneficiary", "80% program ratio",
+  "100/100 Charity Navigator rating" — these are public data, not internal scores
 - Wrap specific evidence in cite tags
-- Don't recalculate or change scores - explain them
 - Each dimension needs explanation + inline citations
 - **improvement**: For each dimension, include a constructive 1-2 sentence
   suggestion for what the charity can do to improve that dimension.

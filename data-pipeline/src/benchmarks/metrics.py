@@ -22,6 +22,8 @@ class QualityMetrics:
     citation_score: float = 0.0
     specificity_score: float = 0.0
     completeness_score: float = 0.0
+    readability_score: float = 0.0
+    human_voice_score: float = 0.0
 
     # Overall weighted score
     overall_score: float = 0.0
@@ -30,6 +32,8 @@ class QualityMetrics:
     structural_issues: list[str] = None
     citation_issues: list[str] = None
     specificity_details: dict = None
+    readability_details: dict = None
+    human_voice_details: dict = None
 
     def __post_init__(self):
         if self.structural_issues is None:
@@ -38,6 +42,10 @@ class QualityMetrics:
             self.citation_issues = []
         if self.specificity_details is None:
             self.specificity_details = {}
+        if self.readability_details is None:
+            self.readability_details = {}
+        if self.human_voice_details is None:
+            self.human_voice_details = {}
 
     def to_dict(self) -> dict:
         """Convert to dict for JSON serialization."""
@@ -46,6 +54,8 @@ class QualityMetrics:
             "citation_score": round(self.citation_score, 1),
             "specificity_score": round(self.specificity_score, 1),
             "completeness_score": round(self.completeness_score, 1),
+            "readability_score": round(self.readability_score, 1),
+            "human_voice_score": round(self.human_voice_score, 1),
             "overall_score": round(self.overall_score, 1),
         }
 
@@ -55,6 +65,8 @@ class QualityMetrics:
         d["structural_issues"] = self.structural_issues
         d["citation_issues"] = self.citation_issues
         d["specificity_details"] = self.specificity_details
+        d["readability_details"] = self.readability_details
+        d["human_voice_details"] = self.human_voice_details
         return d
 
 
@@ -87,22 +99,32 @@ def evaluate_quality(
     citation = _check_citations(narrative, input_sources or [])
     specificity = _check_specificity(narrative)
     completeness = _check_completeness(narrative)
+    readability = _check_readability(narrative)
+    human_voice = _check_human_voice(narrative)
 
     # Weighted overall score
-    # Structural is most important (if JSON is broken, nothing works)
-    # Citation and specificity matter for quality
-    # Completeness is nice-to-have
-    overall = structural.score * 0.30 + citation.score * 0.30 + specificity.score * 0.25 + completeness.score * 0.15
+    overall = (
+        structural.score * 0.15
+        + citation.score * 0.20
+        + specificity.score * 0.25
+        + completeness.score * 0.10
+        + readability.score * 0.15
+        + human_voice.score * 0.15
+    )
 
     return QualityMetrics(
         structural_score=structural.score,
         citation_score=citation.score,
         specificity_score=specificity.score,
         completeness_score=completeness.score,
+        readability_score=readability.score,
+        human_voice_score=human_voice.score,
         overall_score=overall,
         structural_issues=structural.issues,
         citation_issues=citation.issues,
         specificity_details=specificity.details,
+        readability_details=readability.details,
+        human_voice_details=human_voice.details,
     )
 
 
@@ -425,6 +447,187 @@ def _check_completeness(narrative: dict) -> StructuralResult:
 
 
 # =============================================================================
+# READABILITY
+# =============================================================================
+
+
+@dataclass
+class ReadabilityResult:
+    score: float
+    details: dict
+
+
+def _count_syllables(word: str) -> int:
+    """Estimate syllable count using regex heuristic."""
+    word = word.lower().strip()
+    if not word:
+        return 0
+    if len(word) <= 3:
+        return 1
+
+    # Count vowel groups
+    vowel_groups = len(re.findall(r"[aeiouy]+", word))
+    if vowel_groups == 0:
+        return 1
+
+    # Subtract silent e at end
+    if word.endswith("e") and not word.endswith("le"):
+        vowel_groups -= 1
+
+    # Common suffixes that add syllables
+    if word.endswith(("tion", "sion")):
+        pass  # already counted
+    elif word.endswith("ed") and not word.endswith(("ted", "ded")):
+        vowel_groups -= 1
+
+    return max(1, vowel_groups)
+
+
+def _check_readability(narrative: dict) -> ReadabilityResult:
+    """Check readability using Flesch-Kincaid grade level. Target: 8th grade."""
+    # Collect all narrative text
+    text_parts = [
+        narrative.get("headline", ""),
+        narrative.get("summary", ""),
+        narrative.get("amal_score_rationale", ""),
+    ]
+    dim_exp = narrative.get("dimension_explanations", {})
+    if isinstance(dim_exp, dict):
+        for val in dim_exp.values():
+            text_parts.append(str(val) if val else "")
+    strengths = narrative.get("strengths", [])
+    if isinstance(strengths, list):
+        text_parts.extend(str(s) for s in strengths)
+
+    full_text = " ".join(str(t) for t in text_parts if t)
+
+    if not full_text.strip():
+        return ReadabilityResult(score=0, details={"grade_level": 0, "error": "no text"})
+
+    # Count sentences, words, syllables
+    sentences = re.split(r"[.!?]+", full_text)
+    sentences = [s.strip() for s in sentences if s.strip()]
+    num_sentences = max(1, len(sentences))
+
+    words = re.findall(r"\b[a-zA-Z]+\b", full_text)
+    num_words = max(1, len(words))
+
+    num_syllables = sum(_count_syllables(w) for w in words)
+
+    # Flesch-Kincaid grade level
+    grade_level = 0.39 * (num_words / num_sentences) + 11.8 * (num_syllables / num_words) - 15.59
+
+    # Score: 100 for grades 8-10 (ideal range), gentle falloff outside
+    # Below 8: penalize oversimplification (dropping nuance to game the metric)
+    # Above 10: penalize complexity, but not as aggressively as before
+    if 8.0 <= grade_level <= 10.0:
+        score = 100.0
+    elif grade_level < 8.0:
+        score = max(0, 100 - (8.0 - grade_level) * 12)
+    else:
+        score = max(0, 100 - (grade_level - 10.0) * 10)
+
+    return ReadabilityResult(
+        score=score,
+        details={
+            "grade_level": round(grade_level, 1),
+            "num_sentences": num_sentences,
+            "num_words": num_words,
+            "num_syllables": num_syllables,
+        },
+    )
+
+
+# =============================================================================
+# HUMAN VOICE (AI-ism detection)
+# =============================================================================
+
+
+@dataclass
+class HumanVoiceResult:
+    score: float
+    details: dict
+
+
+AI_PHRASES = [
+    r"it(?:'s| is) important to note",
+    r"it should be noted",
+    r"in conclusion",
+    r"\bfurthermore\b",
+    r"\bmoreover\b",
+    r"\bnotably\b",
+    r"\bsignificantly\b",
+    r"this underscores",
+    r"it is worth mentioning",
+    r"plays? a crucial role",
+    r"comprehensive approach",
+    r"holistic approach",
+    r"robust framework",
+    r"\bleveraging\b",
+    r"\bsynergies\b",
+    r"multifaceted approach",
+    r"a testament to",
+    r"deeply committed",
+    r"at the forefront",
+    r"serves as a beacon",
+]
+
+
+def _check_human_voice(narrative: dict) -> HumanVoiceResult:
+    """Detect AI-isms. Score penalized for each AI phrase found."""
+    # Collect all narrative text
+    text_parts = [
+        narrative.get("headline", ""),
+        narrative.get("summary", ""),
+        narrative.get("amal_score_rationale", ""),
+    ]
+    dim_exp = narrative.get("dimension_explanations", {})
+    if isinstance(dim_exp, dict):
+        for val in dim_exp.values():
+            text_parts.append(str(val) if val else "")
+    strengths = narrative.get("strengths", [])
+    if isinstance(strengths, list):
+        text_parts.extend(str(s) for s in strengths)
+
+    full_text = " ".join(str(t) for t in text_parts if t)
+
+    if not full_text.strip():
+        return HumanVoiceResult(score=0, details={"ai_phrases_found": 0, "phrases": []})
+
+    # Find AI phrases
+    found_phrases = []
+    for pattern in AI_PHRASES:
+        matches = re.findall(pattern, full_text, re.IGNORECASE)
+        if matches:
+            found_phrases.extend(matches)
+
+    # Detect INTERNAL score leakage — AMAL scores, dimension scores
+    # NOT financial data like "$907 cost" or "100/100 Charity Navigator rating"
+    score_leaks = re.findall(
+        r"(?:amal|impact|alignment|credibility|fit|trust|evidence|effectiveness)"
+        r"\s+score\s+(?:of\s+)?\d{1,3}"  # "impact score of 37"
+        r"|(?:score[ds]?\s+)?\d{1,3}\s*/\s*(?:50|25|33)\b"  # N/50, N/25, N/33 (dimension scores)
+        r"|\b(?:scored?|earns?|receives?)\s+(?:an?\s+)?\d{1,3}\s*/\s*100\b"  # "scored 81/100", "earns a 81/100"
+        r"|\bamal\s+score\b",  # any mention of "AMAL score"
+        full_text, re.IGNORECASE,
+    )
+
+    # Score: 100 - (ai_phrases * 12) - (score_leaks * 15), clamped to [0, 100]
+    penalty = len(found_phrases) * 12 + len(score_leaks) * 15
+    score = max(0, min(100, 100 - penalty))
+
+    return HumanVoiceResult(
+        score=score,
+        details={
+            "ai_phrases_found": len(found_phrases),
+            "phrases": found_phrases[:10],  # cap for readability
+            "score_leaks_found": len(score_leaks),
+            "score_leaks": score_leaks[:5],
+        },
+    )
+
+
+# =============================================================================
 # AGGREGATE METRICS
 # =============================================================================
 
@@ -442,6 +645,8 @@ def aggregate_quality_metrics(metrics_list: list[QualityMetrics]) -> dict:
         "avg_citation": round(sum(m.citation_score for m in metrics_list) / n, 1),
         "avg_specificity": round(sum(m.specificity_score for m in metrics_list) / n, 1),
         "avg_completeness": round(sum(m.completeness_score for m in metrics_list) / n, 1),
+        "avg_readability": round(sum(m.readability_score for m in metrics_list) / n, 1),
+        "avg_human_voice": round(sum(m.human_voice_score for m in metrics_list) / n, 1),
         "avg_overall": round(sum(m.overall_score for m in metrics_list) / n, 1),
         "min_overall": round(min(m.overall_score for m in metrics_list), 1),
         "max_overall": round(max(m.overall_score for m in metrics_list), 1),

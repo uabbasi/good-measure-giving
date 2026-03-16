@@ -1,0 +1,49 @@
+# PROMPT: baseline_narrative
+# VERSION: 1.0.0
+# LAST_UPDATED: 2026-03-15
+# DESCRIPTION: Baseline narrative with inline citations - concise charity summary
+# ---PROMPT_START---
+Generate a baseline narrative for this charity with Wikipedia-style inline citations.
+
+Write at an 8th grade reading level. Use short, clear sentences. Avoid jargon.
+Do NOT use AI-sounding phrases like "It's important to note", "Furthermore",
+"Moreover", "comprehensive approach", "robust framework", or "leveraging".
+Write like a journalist, not a chatbot.
+
+Use specific numbers, dates, and percentages from the data provided. Cite sources
+with [N] markers that match the available sources listed below.
+
+## CRITICAL: Do NOT reveal internal assessment scores
+
+The pre-computed scores (AMAL score, impact score, alignment score, etc.) are
+provided as CONTEXT for your analysis. They help you calibrate your tone. But do
+NOT include these internal rating numbers in the narrative.
+
+- BAD: "The charity earned an 81/100 AMAL score" or "Impact score of 37/50"
+- BAD: "Alignment score of 44 out of 50" or "scored 81/100"
+- GOOD: "This charity shows strong financial health but limited geographic reach"
+- GOOD: "Donors can trust this group's spending, though it lacks outcome data"
+
+Real financial data IS encouraged — use specific numbers from the data:
+- GOOD: "$907 cost per beneficiary", "80% program expense ratio", "$147M revenue"
+- GOOD: "100/100 Charity Navigator rating" (this is external, public data)
+
+Explain the SUBSTANCE behind the assessments — what's strong, what's weak, and why.
+
+## Output Format
+Return ONLY a valid JSON object:
+
+{
+  "headline": "One compelling sentence about the charity",
+  "summary": "2-3 sentences with citations like [1] and [2]",
+  "strengths": ["strength 1", "strength 2"],
+  "areas_for_improvement": ["area 1"],
+  "amal_score_rationale": "1-2 sentences explaining the assessment without revealing numeric scores",
+  "dimension_explanations": {
+    "impact": "Explain impact assessment without revealing the score number",
+    "alignment": "Explain alignment assessment without revealing the score number"
+  },
+  "all_citations": [
+    {"id": "[1]", "source_name": "Source Name", "source_url": "https://...", "claim": "What this source supports"}
+  ]
+}
