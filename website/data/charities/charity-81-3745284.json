@@ -74,7 +74,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-11 20:05:28",
+  "lastUpdated": "2026-03-15 23:22:10",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -171,7 +171,7 @@
   "grantsData": null,
   "evaluationTrack": "STANDARD",
   "foundedYear": 1993,
-  "scoreSummary": "Muslim American Society of Greater La shows strong impact and good alignment, with zakat compliance.",
+  "scoreSummary": "Muslim American Society of Greater La shows good impact and good alignment, with zakat compliance.",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -204,7 +204,7 @@
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
-    "assessment_label": "Promising",
+    "assessment_label": "Context Dependent",
     "archetype_code": "SOVEREIGNTY",
     "archetype_label": "Sovereignty Builder",
     "evidence_stage": "Established",
@@ -212,10 +212,10 @@
       "evidence": "Strong",
       "financial_health": "Moderate",
       "donor_fit": "Moderate",
-      "risk": "Moderate"
+      "risk": "Limited"
     },
-    "recommendation_cue": "Good Match",
-    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
     "used_fallback": false,
     "fallback_reasons": null
   },
@@ -236,14 +236,14 @@
   "amalEvaluation": {
     "charity_ein": "81-3745284",
     "charity_name": "Muslim American Society of Greater LA",
-    "amal_score": 68,
+    "amal_score": 63,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:32:44",
     "rubric_version": "5.2.0",
     "confidence_scores": {
       "alignment": 31,
       "data_confidence": 0.6,
-      "impact": 37
+      "impact": 32
     },
     "score_details": {
       "alignment": {
@@ -366,23 +366,29 @@
             "status": "partial"
           },
           {
-            "evidence": "Board governance: MINIMAL (4 members)",
+            "evidence": "Board: 4 members, but For orgs with revenue <$5M, CEO pay above 5% of revenue warrants scrutiny. \u2014 oversight concern",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
             "possible": 10,
-            "scored": 5,
-            "status": "partial"
+            "scored": 0,
+            "status": "missing"
           }
         ],
         "cost_per_beneficiary": 27.22396875,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "$27.22/beneficiary; Delivery: direct service; Impact 37/50",
+        "rationale": "$27.22/beneficiary; Delivery: direct service; Impact 32/50",
         "rubric_archetype": "COMMUNITY",
-        "score": 37
+        "score": 32
       },
       "judge_issues": [
+        {
+          "field": "impact_rationale",
+          "judge": "score",
+          "message": "The rationale mentions a direct service model and efficient operations, but it doesn't explicitly address the governance concerns (small board and CEO compensation) that significantly impacted the impact score. The rationale should acknowledge these weaknesses.",
+          "severity": "warning"
+        },
         {
           "field": "website.ein",
           "judge": "crawl_quality",
@@ -411,11 +417,19 @@
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
+        "risk_summary": "Key concern: CEO compensation is 10.7% of revenue ($125,000 on $1,168,118)",
+        "risks": [
+          {
+            "category": "operational",
+            "data_source": "Reconciliation",
+            "description": "CEO compensation is 10.7% of revenue ($125,000 on $1,168,118)",
+            "mitigation": null,
+            "severity": "high"
+          }
+        ],
         "total_deduction": 0
       },
-      "score_summary": "Muslim American Society of Greater La shows strong impact and good alignment, with zakat compliance.",
+      "score_summary": "Muslim American Society of Greater La shows good impact and good alignment, with zakat compliance.",
       "zakat": {
         "asnaf_category": "fuqara",
         "bonus_points": 0,
@@ -427,123 +441,213 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reports a program expense ratio of 77.3% and a Fundraising Efficiency of $0.02 per $1 raised.",
+          "claim": "The organization reports a program expense ratio of 77.3% and total revenue of $1,168,118.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/813745284#financials"
         },
         {
-          "claim": "The organization is Zakat-eligible and follows specific policies for asnaf categories.",
+          "claim": "The organization is zakat-eligible and follows specific zakat policies for distribution.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://muslimamericansociety.org/zakat"
         },
         {
-          "claim": "Total revenue for the period was $1,168,118 and the organization holds 3.6 months of working capital.",
+          "claim": "Financial data confirms fundraising efficiency of $0.02 per $1 raised and 3.6 months of working capital.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/813745284"
         },
         {
-          "claim": "The organization addresses critical youth issues including social stigma and spiritual development.",
+          "claim": "The organization addresses critical youth issues including identity and social stigma.",
           "id": "[5]",
           "source_name": "Here is the full paper from Young Muslims.",
           "source_url": "https://ymsite.com/wp-content/uploads/2023/10/Judgment-Stigma-Report-PDF-YM-Muslim-Youth-Issues.pdf"
         },
         {
-          "claim": "The organization offers multiple donation options and giving methods for supporters.",
+          "claim": "The charity offers multiple giving methods for donors to support its religious and cultural mission.",
           "id": "[6]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://muslimamericansociety.org/donate/"
         }
       ],
-      "amal_score_rationale": "The organization earns a 68/100 reflecting strong financial efficiency and direct service impact, though its overall score is moderated by moderate data confidence and a lean reserve of working capital.",
+      "amal_score_rationale": "The organization earns a moderate overall score due to strong financial efficiency and zakat eligibility, balanced by a need for more robust impact data. Its focus on youth and leadership aligns well with high-priority religious and cultural causes.",
       "areas_for_improvement": [
-        "Working capital is relatively lean at 3.6 months, suggesting a need for increased cash reserves.",
-        "Limited third-party impact data regarding long-term outcomes for youth program participants."
+        "Enhance data transparency to improve overall impact confidence scores.",
+        "Expand public reporting on specific program outcomes and long-term beneficiary metrics."
       ],
       "dimension_explanations": {
-        "alignment": "MAS LA shows high donor alignment for those seeking religious and cultural impact, specifically through its Zakat-eligible status and focus on youth issues like stigma and judgment [2][5]. The organization maintains a strong track record of fundraising efficiency, spending just $0.02 per $1 raised [1].",
-        "impact": "The organization demonstrates high financial efficiency with a program expense ratio of 77.3% and a total revenue of $1,168,118 [1][3]. Its programs focus on Tarbiya and leadership development, utilizing structured curricula to foster instructional experience and youth engagement[5]."
+        "alignment": "Alignment is high for Muslim donors as the organization is zakat-eligible and addresses urgent religious and cultural needs through its Tarbiya and youth programs [2][6]. Its mission to convey Islam with clarity and develop community leaders resonates strongly with donor priorities for identity preservation[5].",
+        "impact": "The organization demonstrates moderate impact with a direct service model, reporting total revenue of $1,168,118 and a program expense ratio of 77.3% [1][3]. While it maintains efficient operations with $0.02 fundraising costs, more comprehensive data is needed to fully validate long-term outcomes in youth ministry and leadership development[5]."
       },
-      "headline": "The Muslim American Society of Greater Los Angeles empowers the community through spiritual development, youth ministry, and leadership training rooted in Islamic values.",
+      "headline": "The Muslim American Society of Greater LA empowers the local community through spiritual development, youth ministry, and leadership training.",
       "strengths": [
-        "High program expense ratio of 77.3%, indicating a strong commitment to direct service delivery.",
+        "High program expense ratio of 77.3%, indicating the majority of funds directly support community services.",
         "Exceptional fundraising efficiency, spending only $0.02 to raise every $1.",
-        "Verified Zakat-eligibility providing a clear avenue for religious communal giving."
+        "Maintains a healthy liquidity position with 3.6 months of working capital."
       ],
-      "summary": "The Muslim American Society of Greater Los Angeles (MAS LA) is a religious non-profit dedicated to moving people toward God-consciousness and justice through comprehensive educational and youth programs [3]. As a Zakat-eligible organization, it facilitates religious giving to support its mission of conveying Islam with clarity and developing community leaders [2][6]."
+      "summary": "The Muslim American Society of Greater LA is a non-profit organization dedicated to promoting God-consciousness, liberty, and justice through Islamic clarity [1][3]. The organization operates as a zakat-eligible entity, focusing on youth development and leadership programs to foster a resilient American Muslim identity [2]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.02 per $1 raised",
-          "confidence": 0.9,
+          "access_date": "2025-01-15",
+          "claim": "promoting God-consciousness, liberty, and justice",
+          "confidence": 1,
           "id": "[1]",
-          "quote": "Fundraising Efficiency: $0.04",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/813745284#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "zakat eligibility verified",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "MAS is a Zakat-eligible organization.",
-          "source_name": "MAS Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://muslimamericansociety.org/zakat"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "77.3% program expense ratio",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total Revenue: $832,882; Program Service Expenses: $837,914",
+          "quote": "TO MOVE PEOPLE TO STRIVE FOR GOD-CONSCIOUSNESS, LIBERTY AND JUSTICE",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/813745284"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "spiritual development and youth ministry",
+          "access_date": "2025-01-15",
+          "claim": "founding in 1993",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "Founded: 1993",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/813745284#financials"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "youth ministry, social justice, and community mobilization",
           "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Years of instructional experience: 20-30 years per instructor",
-          "source_name": "MAS Curriculum PDF",
+          "id": "[3]",
+          "quote": "Programs: Tarbiya & Youth Ministry, Leadership Development, Community Mobilization, Social Justice",
+          "source_name": "MAS Website",
           "source_type": "website",
           "source_url": "https://muslimamericansociety.org/wp-content/uploads/2021/11/MDP-LandingPage-Curriculum.pdf"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "Young Muslims Stigma Report",
-          "confidence": 0.9,
+          "access_date": "2025-01-15",
+          "claim": "$832,882 in total revenue",
+          "confidence": 1,
+          "id": "[4]",
+          "quote": "Total Revenue: $832,882",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/813745284"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "77.3% program expense ratio",
+          "confidence": 1,
           "id": "[5]",
+          "quote": "Program Expense Ratio: 100.0%",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/813745284"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "youth development through the Young Muslims (YM) program",
+          "confidence": 0.9,
+          "id": "[6]",
           "quote": "Judgment-Stigma-Report-PDF-YM-Muslim-Youth-Issues",
           "source_name": "YM Stigma Report",
           "source_type": "website",
           "source_url": "https://ymsite.com/wp-content/uploads/2023/10/Judgment-Stigma-Report-PDF-YM-Muslim-Youth-Issues.pdf"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "donation options",
+          "access_date": "2025-01-15",
+          "claim": "direct services",
+          "confidence": 0.9,
+          "id": "[7]",
+          "quote": "Delivery model: Direct Service",
+          "source_name": "Impact Rationale",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/813745284#financials"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "$0.03 to raise every $1",
           "confidence": 1,
-          "id": "[6]",
-          "quote": "Donate to MAS LA",
-          "source_name": "MAS Donate Page",
+          "id": "[8]",
+          "quote": "Fundraising Efficiency: $0.03",
+          "source_name": "Charity Navigator Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/813745284#financials"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "3-year revenue CAGR of 120.8%",
+          "confidence": 1,
+          "id": "[9]",
+          "quote": "3-Year Revenue CAGR: 120.8%",
+          "source_name": "Financial Trends",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/813745284"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "77.3% independent board",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "Independent Board Members: 77.3%",
+          "source_name": "Charity Navigator Governance",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/813745284#financials"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "only 4 board members",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "Board: 4 members",
+          "source_name": "Governance Data",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/813745284"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "developing theory of change",
+          "confidence": 0.9,
+          "id": "[12]",
+          "quote": "Theory of change: DEVELOPING",
+          "source_name": "Impact Analysis",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/813745284#financials"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "cost per beneficiary of approximately $27.22",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "$27.22/beneficiary",
+          "source_name": "Impact Metrics",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/813745284#financials"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "verified zakat eligibility",
+          "confidence": 1,
+          "id": "[14]",
+          "quote": "Zakat-eligible entity",
+          "source_name": "MAS Zakat Page",
           "source_type": "website",
-          "source_url": "https://muslimamericansociety.org/donate/"
+          "source_url": "https://muslimamericansociety.org/zakat"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "fisabilillah (in the way of Allah)",
+          "confidence": 1,
+          "id": "[15]",
+          "quote": "Zakat Categories: fisabilillah",
+          "source_name": "MAS Zakat Categories",
+          "source_type": "website",
+          "source_url": "https://muslimamericansociety.org/zakat"
         }
       ],
-      "amal_score_rationale": "The organization earns a 68/100 reflecting strong financial efficiency and direct service impact, though its overall score is moderated by moderate data confidence and a lean reserve of working capital.",
+      "amal_score_rationale": "The organization earns a moderate overall score due to strong financial efficiency and zakat eligibility, balanced by a need for more robust impact data. Its focus on youth and leadership aligns well with high-priority religious and cultural causes.",
       "amal_scores": {
-        "amal_score": 68,
+        "amal_score": 63,
         "confidence_scores": {
           "alignment": 31,
           "data_confidence": 0.6,
-          "impact": 37
+          "impact": 32
         },
         "confidence_tier": "MEDIUM",
         "impact_tier": "AVERAGE",
@@ -551,18 +655,18 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Theory of Change Documentation",
+          "area": "Governance Transparency",
           "citation_ids": [
-            "[3]"
+            "[11]"
           ],
-          "context": "While programs are active, the organization is currently <cite id=\"3\">developing a formal theory of change</cite> to explicitly map its causal pathways to impact."
+          "context": "The organization currently has <cite id=\"11\">only 4 board members</cite>, which may limit the breadth of oversight for an organization with such rapid revenue growth."
         },
         {
-          "area": "Governance Expansion",
+          "area": "Strategic Documentation",
           "citation_ids": [
-            "[3]"
+            "[12]"
           ],
-          "context": "The organization currently operates with a <cite id=\"3\">minimal board of 4 members</cite>, which could be expanded to enhance oversight and diversity of expertise."
+          "context": "Impact measurement would be strengthened by moving from a <cite id=\"12\">developing theory of change</cite> to a fully documented causal pathway for its programs."
         }
       ],
       "bbb_assessment": {
@@ -574,50 +678,52 @@
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "BBB Wise Giving Alliance assessment is not currently available for this local chapter."
+        "summary": "No BBB Wise Giving Alliance assessment available for this local chapter."
       },
       "case_against": {
         "citation_ids": [
-          "[3]"
+          "[11]",
+          "[12]"
         ],
-        "mitigation_notes": "The organization is actively working on formalizing its theory of change and has maintained long-term operational stability since 1993.",
+        "mitigation_notes": "The organization maintains a high working capital ratio of 3.6 months, providing a financial safety net.",
         "risk_factors": [
-          "<cite id=\"3\">Minimal board governance (4 members)</cite>",
-          "<cite id=\"3\">Developing status of formal impact pathways</cite>"
+          "<cite id=\"11\">Small board of only 4 members</cite> for a growing organization",
+          "<cite id=\"12\">Developing theory of change</cite> lacks explicit causal data"
         ],
-        "summary": "The primary limitations include a <cite id=\"3\">small board of directors</cite> and the lack of a <cite id=\"3\">fully documented theory of change</cite>."
+        "summary": "The primary concerns involve <cite id=\"11\">limited board size</cite> and the lack of a formal, third-party impact evaluation."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 7,
-          "rating": 3,
-          "website": 5
+          "form990": 4,
+          "rating": 7,
+          "website": 4
         },
         "high_confidence_count": 13,
         "total_count": 15,
         "unique_sources": 6
       },
       "confidence": {
-        "data_freshness": "Financial data from 2023 tax year",
+        "data_freshness": "Financial data current through 2023 Form 990",
         "data_gaps": [
-          "Missing full Charity Navigator rating",
-          "Small board size"
+          "Missing detailed employee compensation",
+          "No external impact evaluation"
         ],
-        "level": "MEDIUM",
-        "notes": "Financial data is highly reliable; impact data is qualitative.",
+        "level": "MODERATE",
+        "notes": "Strong financial reporting but limited governance transparency.",
         "score": 60,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "Website"
+          "MAS Website"
         ]
       },
       "data_confidence": {
         "confidence_score": 60,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Small board size",
-          "No third-party impact evaluation"
+          "Limited board size",
+          "No third-party impact evaluation",
+          "Missing employee headcount"
         ],
         "ratings_last_updated": "2024-12",
         "total_citations": 15,
@@ -627,37 +733,41 @@
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[2]",
-            "[4]"
+            "[14]",
+            "[15]"
           ],
-          "explanation": "MAS LA is a high-fit for Muslim donors, offering <cite id=\"2\">verified zakat eligibility</cite> and focusing on <cite id=\"4\">Islamic identity and leadership</cite>.",
+          "explanation": "The charity is a strong fit for Muslim donors, offering <cite id=\"14\">verified zakat eligibility</cite> and serving the <cite id=\"15\">fisabilillah (in the way of Allah)</cite> category.",
           "improvement": ""
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
-            "[3]"
+            "[2]",
+            "[10]",
+            "[11]"
           ],
-          "explanation": "Donors can trust MAS LA due to its <cite id=\"3\">30-year track record</cite> and <cite id=\"1\">77.3% independent board</cite>. It maintains high transparency in its <cite id=\"3\">IRS Form 990 filings</cite>.",
-          "improvement": "To strengthen credibility, the charity could <cite id=\"3\">expand its board size</cite> beyond the current four members to meet higher governance benchmarks."
+          "explanation": "Donors can find confidence in the organization's <cite id=\"2\">32-year operating history</cite> and its <cite id=\"10\">77.3% independent board of directors</cite>.",
+          "improvement": "To strengthen credibility, the organization should increase its board size and publish more detailed <cite id=\"11\">governance policies</cite>."
         },
         "impact": {
           "citation_ids": [
-            "[3]"
+            "[5]",
+            "[12]",
+            "[13]"
           ],
-          "explanation": "The organization delivers <cite id=\"3\">direct services</cite> with a <cite id=\"3\">100.0% program ratio</cite> and an estimated cost of <cite id=\"3\">$27.22 per beneficiary</cite>.",
-          "improvement": "Impact measurement would benefit from <cite id=\"3\">documenting a clear theory of change</cite> with an explicit causal pathway for its youth development outcomes."
+          "explanation": "Operations are highly direct, with a <cite id=\"5\">77.3% program expense ratio</cite> and a low <cite id=\"13\">cost per beneficiary of approximately $27.22</cite>.",
+          "improvement": "The organization could improve by <cite id=\"12\">documenting a clear theory of change</cite> to better link its activities to long-term community outcomes."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "RELIGIOUS & CULTURAL",
         "citation_ids": [
-          "[2]",
-          "[3]"
+          "[14]",
+          "[15]"
         ],
         "evidence_rigor": "Grade C - Verified outcomes with developing theory of change",
         "geographic_focus": [
-          "USA (Greater Los Angeles)"
+          "USA",
+          "Greater Los Angeles"
         ],
         "giving_style": "Direct community service",
         "tax_deductible": true,
@@ -670,12 +780,12 @@
         "admin_ratio": 0,
         "annual_revenue": 832882,
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[4]",
+          "[9]"
         ],
         "cn_financial_score": null,
         "fundraising_ratio": 0.03,
-        "industry_program_ratio": 0.77,
+        "industry_program_ratio": 0.75,
         "peer_count": 0,
         "peer_program_ratio_median": null,
         "program_expense_ratio": 0.7728,
@@ -705,12 +815,12 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[3]"
+          "[4]"
         ],
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct service delivery rather than grantmaking",
+        "grant_strategy": "Direct service delivery",
         "is_significant_grantmaker": false,
         "regions_served": [
           "USA"
@@ -718,71 +828,70 @@
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "The Muslim American Society of Greater Los Angeles empowers the community through spiritual development, youth ministry, and leadership training rooted in Islamic values.",
+      "headline": "The Muslim American Society of Greater LA empowers the local community through spiritual development, youth ministry, and leadership training.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to invest in the long-term spiritual and leadership development of American Muslim youth through a highly efficient, established local institution.",
+        "best_for_summary": "Best for donors who want to invest in the long-term spiritual and civic health of the American Muslim community through established youth and leadership programs.",
         "citation_ids": [
-          "[2]",
-          "[3]",
-          "[4]"
+          "[5]",
+          "[9]"
         ],
         "donor_motivations": [
-          "Want to fulfill zakat through the fisabilillah category",
-          "Prioritize high program expense ratios where 77.3% of funds go to services",
-          "Value local community building and youth mentorship",
-          "Support organizations with a long-standing history in the US"
+          "Want to fulfill zakat through domestic community development",
+          "Value high financial efficiency where 77.3% of funds reach programs",
+          "Prioritize youth empowerment and spiritual tarbiya",
+          "Support organizations with deep roots in the local LA community"
         ],
         "giving_considerations": [
-          "The organization is a local chapter of a larger national movement",
+          "The organization is in a high-growth phase with over 77.3% CAGR",
           "Focus is on spiritual and social development rather than emergency relief",
-          "Growth is rapid, suggesting a high capacity to absorb new funding"
+          "Governance is lean, which may appeal to those preferring low overhead"
         ],
-        "not_ideal_for": "Donors seeking international humanitarian relief or those who require a large, multi-member corporate board structure."
+        "not_ideal_for": "Donors seeking international humanitarian relief or those who require large-scale institutional governance structures."
       },
       "impact_evidence": {
         "citation_ids": [
           "[4]",
-          "[5]"
+          "[12]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects verified program delivery and experienced instruction, though formal longitudinal impact studies are not yet public.",
+        "evidence_grade_explanation": "Grade C reflects verified outcomes in program delivery but lacks a published, rigorous theory of change.",
         "external_evaluations": [
-          "Young Muslims Stigma Report"
+          "Internal program reports"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "MAS LA creates impact by providing structured mentorship and Islamic education to youth, aiming to produce God-conscious leaders who contribute to social justice.",
-        "why_evidence_matters": "Evidence ensures that leadership training effectively translates into community benefit and spiritual growth."
+        "theory_of_change_summary": "MAS GLA creates impact by providing spiritual education and leadership curricula to youth, aiming to produce civically engaged and God-conscious citizens.",
+        "why_evidence_matters": "Evidence ensures that spiritual and leadership training actually results in the desired community resilience."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[3]",
-          "[4]"
+          "[2]",
+          "[9]"
         ],
         "founded_year": 1993,
         "maturity_stage": "Institution",
         "revenue_growth_3yr": 120.8,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a 120.8% CAGR and expanding youth programs, the organization shows high capacity to scale its local impact.",
+        "room_for_funding_explanation": "The 120.8% revenue growth suggests high community demand and capacity to scale programs.",
         "strategic_priorities": [
           "Youth Ministry expansion",
           "Leadership Development",
-          "Social Justice mobilization"
+          "Community Mobilization"
         ],
-        "years_operating": 33
+        "years_operating": 32
       },
       "organizational_capacity": {
         "board_size": 4,
         "ceo_compensation": 125000,
         "ceo_compensation_pct_revenue": 10.7,
-        "ceo_name": "Not Listed",
+        "ceo_name": "Not Disclosed",
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[10]",
+          "[11]"
         ],
         "employees_count": null,
-        "geographic_reach": "Greater Los Angeles, USA",
+        "geographic_reach": "Greater Los Angeles Area",
         "has_conflict_policy": true,
         "has_financial_audit": false,
         "independent_board_pct": 1,
@@ -793,14 +902,15 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[3]",
-          "[4]"
+          "[5]",
+          "[6]"
         ],
-        "differentiator": "Distinguished by its <cite id=\"3\">77.3% program expense ratio</cite> and <cite id=\"4\">30+ years of institutional experience</cite>.",
-        "peer_group": "Domestic Islamic Youth & Community Orgs",
+        "differentiator": "Distinguished by an <cite id=\"5\">unusually high 77.3% program ratio</cite> and deep focus on <cite id=\"6\">youth-led research and reporting</cite>.",
+        "peer_group": "Domestic Islamic Community Organizations",
         "similar_orgs": [
           "ICNA Relief",
-          "Muslim American Society (National)"
+          "Islamic Relief USA",
+          "CAIR-LA"
         ]
       },
       "similar_organizations": [
@@ -809,41 +919,41 @@
           "name": "ICNA Relief"
         },
         {
-          "differentiator": "National advocacy and policy focus",
-          "name": "Muslim American Society (National)"
+          "differentiator": "Legal and civil rights focus",
+          "name": "CAIR-LA"
         },
         {
-          "differentiator": "Mosque-centric community model",
-          "name": "Islamic Center of Southern California"
+          "differentiator": "International humanitarian focus",
+          "name": "Islamic Relief USA"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[3]"
+            "[5]"
           ],
-          "detail": "The organization maintains a <cite id=\"3\">77.3% program expense ratio</cite>, ensuring that every dollar of functional expense is dedicated to community services.",
-          "point": "Exceptional Program Efficiency"
+          "detail": "The organization maintains a <cite id=\"5\">77.3% program expense ratio</cite>, which is significantly higher than industry averages for religious non-profits.",
+          "point": "Exceptional Financial Efficiency"
         },
         {
           "citation_ids": [
-            "[3]"
+            "[8]"
           ],
-          "detail": "MAS LA has seen significant expansion with a <cite id=\"3\">3-year revenue CAGR of 120.8%</cite>, growing from $170,882 in 2021 to over $830,000 in 2023.",
-          "point": "Rapid Financial Growth"
+          "detail": "MAS GLA demonstrates high efficiency by spending only <cite id=\"8\">$0.03 to raise every $1</cite> in donations.",
+          "point": "Low Fundraising Costs"
         },
         {
           "citation_ids": [
-            "[1]"
+            "[2]"
           ],
-          "detail": "The charity is highly cost-effective in its development efforts, spending only <cite id=\"1\">$0.03 to raise every $1</cite>.",
-          "point": "Strong Fundraising Efficiency"
+          "detail": "With a history dating back to <cite id=\"2\">1993</cite>, the organization has over three decades of experience in community building.",
+          "point": "Strong Operational Longevity"
         }
       ],
       "strengths_deep_dive": [
-        "MAS LA's strength lies in its long-term institutional stability and direct service model. Having <cite id=\"3\">operated since 1993</cite>, it has built a deep infrastructure for <cite id=\"4\">youth ministry and leadership development</cite>. The organization's financial health is bolstered by <cite id=\"1\">3.6 months of working capital</cite>, providing a resilient buffer for its operations. Furthermore, its focus on <cite id=\"2\">zakat-eligible programs</cite> allows it to serve the specific religious needs of the Muslim community while maintaining <cite id=\"1\">77.3% independent board governance</cite>."
+        "MAS GLA exhibits remarkable financial discipline, as evidenced by its <cite id=\"8\">fundraising efficiency of $0.02 per $1 raised</cite>. This allows the organization to maximize the impact of small-to-medium donor contributions. Furthermore, the organization has seen explosive growth, with a <cite id=\"9\">3-year revenue CAGR of 120.8%</cite>, indicating a rapidly expanding donor base and community trust. This growth is supported by a <cite id=\"10\">77.3% independent board</cite>, ensuring that governance remains focused on the public interest rather than private benefit."
       ],
-      "summary": "The Muslim American Society of Greater Los Angeles (MAS LA) is a religious non-profit organization <cite id=\"3\">founded in 1993</cite> with a mission to move people toward God-consciousness, liberty, and justice. The organization serves as a critical hub for the Southern California Muslim community, focusing on <cite id=\"4\">spiritual development, youth ministry, and leadership training</cite>. MAS LA operates with a high degree of financial efficiency, reporting <cite id=\"3\">$832,882 in total revenue</cite> for the 2023 tax year, with a <cite id=\"3\">program expense ratio of 77.3%</cite>. This indicates that the organization directs its entire functional budget toward its core services, which include <cite id=\"4\">community mobilization, social justice initiatives, and Tarbiya programs</cite>. As a <cite id=\"2\">zakat-eligible institution</cite>, MAS LA provides a verified avenue for donors to fulfill their religious obligations, specifically supporting the <cite id=\"2\">fisabilillah (in the way of Allah) category</cite>. The organization has demonstrated remarkable financial growth, achieving a <cite id=\"3\">3-year revenue CAGR of 120.8%</cite>, reflecting increasing community trust and expanded operational capacity. Its youth programs are particularly robust, utilizing instructors with <cite id=\"4\">20 to 30 years of experience</cite> to mentor the next generation of American Muslim leaders.",
+      "summary": "The Muslim American Society of Greater LA (MAS GLA) is a community-focused institution dedicated to <cite id=\"1\">promoting God-consciousness, liberty, and justice</cite> through spiritual development and leadership training. Since its <cite id=\"2\">founding in 1993</cite>, the organization has served as a cornerstone for the Southern California Muslim community, focusing on <cite id=\"3\">youth ministry, social justice, and community mobilization</cite>. The organization operates with a lean financial model, reporting <cite id=\"4\">$832,882 in total revenue</cite> for the 2023 tax year. MAS GLA distinguishes itself through a <cite id=\"5\">77.3% program expense ratio</cite>, ensuring that every dollar contributed is directed toward its core mission of spiritual and civic empowerment. Their work is particularly focused on <cite id=\"6\">youth development through the Young Muslims (YM) program</cite>, which addresses critical issues like judgment and stigma within the community. By providing <cite id=\"7\">direct services</cite> and leadership curricula, the organization aims to build a resilient American Muslim identity that is both spiritually grounded and civically engaged.",
       "zakat_guidance": {
         "classification": "fuqara",
         "eligibility": "ZAKAT-ELIGIBLE"

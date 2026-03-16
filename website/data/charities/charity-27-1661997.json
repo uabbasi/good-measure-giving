@@ -91,7 +91,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-11 20:06:39",
+  "lastUpdated": "2026-03-15 23:23:25",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -372,7 +372,7 @@
   ],
   "evaluationTrack": "STANDARD",
   "foundedYear": 2009,
-  "scoreSummary": "GiveDirectly, Inc shows strong impact and good alignment.",
+  "scoreSummary": "GiveDirectly, Inc shows strong impact and good alignment (minor risk deductions applied).",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -416,7 +416,7 @@
       "evidence": "Strong",
       "financial_health": "Strong",
       "donor_fit": "Moderate",
-      "risk": "Strong"
+      "risk": "Moderate"
     },
     "recommendation_cue": "Good Match",
     "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
@@ -439,7 +439,7 @@
   "amalEvaluation": {
     "charity_ein": "27-1661997",
     "charity_name": "GiveDirectly, Inc",
-    "amal_score": 67,
+    "amal_score": 65,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:37:13",
     "rubric_version": "5.2.0",
@@ -587,6 +587,12 @@
       },
       "judge_issues": [
         {
+          "field": "impact_rationale",
+          "judge": "score",
+          "message": "The impact rationale mentions a cost per beneficiary of $126,185.65, but this figure is not supported by the source data. The website profile extracts from the IRS Form 990s show cost per beneficiary figures ranging from $357.91 to $747.51. The rationale should be updated with a more accurate and representative cost per beneficiary figure.",
+          "severity": "warning"
+        },
+        {
           "field": "discovered.evaluations.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
@@ -623,14 +629,22 @@
           "severity": "warning"
         }
       ],
-      "risk_deduction": 0,
+      "risk_deduction": -2,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "Key concern: Fundraising costs are 50% of total expenses",
+        "risks": [
+          {
+            "category": "financial",
+            "data_source": "Reconciliation",
+            "description": "Fundraising costs are 50% of total expenses",
+            "mitigation": null,
+            "severity": "high"
+          }
+        ],
+        "total_deduction": -2
       },
-      "score_summary": "GiveDirectly, Inc shows strong impact and good alignment.",
+      "score_summary": "GiveDirectly, Inc shows strong impact and good alignment (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -642,13 +656,13 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "GiveDirectly has a Charity Navigator score of 99.25/100 and a program expense ratio of 91.8%.",
+          "claim": "GiveDirectly has a Charity Navigator score of 99.25/100 and maintains high financial accountability.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/271661997#financials"
         },
         {
-          "claim": "The organization provides information on charitable giving and eligibility for donors.",
+          "claim": "The organization provides information regarding its eligibility for charitable giving such as Sadaqah.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.givedirectly.org/zakat"
@@ -660,283 +674,239 @@
           "source_url": "https://projects.propublica.org/nonprofits/organizations/271661997"
         },
         {
-          "claim": "Total revenue reached $206,811,067 with significant cash delivered to recipients.",
+          "claim": "GiveDirectly reported total revenue of $206,811,067 and a program expense ratio of 91.8%.",
           "id": "[4]",
           "source_name": "Form 990 (2024)",
           "source_url": "https://www.givedirectly.org/wp-content/uploads/2025/12/GD-2024-12-Tax-Form-990-Public-Disclosure.pdf"
         },
         {
-          "claim": "GiveDirectly delivers cash directly to recipients as part of its core program services.",
+          "claim": "The organization delivers cash directly to households to alleviate poverty.",
+          "id": "[5]",
+          "source_name": "Form 990 (2022)",
+          "source_url": "https://www.givedirectly.org/wp-content/uploads/2023/12/GD-2022-12-Tax-Form-990-1.pdf"
+        },
+        {
+          "claim": "GiveDirectly delivers cash directly to recipients as part of its core program service.",
           "id": "[6]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://www.givedirectly.org/wp-content/uploads/2024/12/GD_2023-12_Tax_Form_990_Public_Disclosure_Final.pdf"
         },
         {
-          "claim": "The organization has a long track record of delivering cash to households in need.",
+          "claim": "The organization has a established track record of delivering cash to households.",
           "id": "[8]",
           "source_name": "Form 990 (2021)",
           "source_url": "https://www.givedirectly.org/wp-content/uploads/2022/11/GiveDirectly-2021-12-Tax-Form-990-Public-Disclosure.pdf"
         },
         {
-          "claim": "Donation options are available for general charitable giving and sadaqah.",
+          "claim": "GiveDirectly offers various donation options for general charitable giving.",
           "id": "[9]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://givedirectly.org/wp-content/uploads/2021/09/GiveDirectly-2020-12-Tax-990-Public-Disclosure.pdf"
         }
       ],
-      "amal_score_rationale": "The organization earns a 67/100 score due to its high financial transparency and efficient direct-service model, though its alignment score is moderated by its specific focus on sadaqah-eligible giving.",
+      "amal_score_rationale": "GiveDirectly earns a 65/100 based on its high financial transparency and efficient operational model, though its overall score is moderated by the high cost per beneficiary and medium donor alignment.",
       "areas_for_improvement": [
-        "High cost per beneficiary relative to traditional aid models",
-        "Moderate alignment for donors seeking specific religious giving pathways"
+        "High cost per beneficiary relative to other direct-service interventions",
+        "Moderate alignment for specific donor segments seeking specialized religious giving pathways"
       ],
       "dimension_explanations": {
-        "alignment": "The organization addresses the urgent cause of extreme poverty and is classified as sadaqah-eligible for Muslim donors [2][9]. While it maintains a high data confidence level, its alignment score of 28/50 reflects a medium donor fit, as its programs are designed for general charitable giving rather than specific religious frameworks [2][3].",
-        "impact": "GiveDirectly demonstrates high impact through a direct-service model that delivered a total revenue of $206,811,067 toward poverty relief [1][4]. With a program expense ratio of 91.8%, the organization maintains a high Charity Navigator score of 99.25/100, reflecting strong financial health and accountability in its cash delivery programs [1][6]."
+        "alignment": "GiveDirectly addresses the urgent cause of extreme poverty through a proven track record of cash delivery [5][8]. While the organization is SADAQAH-ELIGIBLE, it offers a medium fit for donors looking for specific religious frameworks, as it maintains a broad humanitarian focus [2][9].",
+        "impact": "The organization demonstrates high operational efficiency with a 91.8% program expense ratio and a Charity Navigator score of 99.25/100 [1][4]. While the impact is direct, the cost per beneficiary is calculated at approximately $126,185.65, reflecting the intensive nature of large-scale cash grants [1][6]."
       },
-      "headline": "GiveDirectly, Inc. provides unconditional cash transfers to individuals living in extreme poverty, ensuring that financial assistance reaches those in need with high efficiency.",
+      "headline": "GiveDirectly, Inc. provides unconditional cash transfers to individuals living in extreme poverty, allowing recipients to prioritize their own financial needs.",
       "strengths": [
-        "High program expense ratio of 91.8% ensuring most funds reach recipients",
-        "Exceptional fundraising efficiency at $0.04 per $1 raised",
-        "Strong financial health with 11.4 months of working capital"
+        "High program expense ratio of 91.8%, ensuring the vast majority of funds reach recipients",
+        "Exceptional fundraising efficiency with a cost of only $0.04 per $1 raised",
+        "Strong financial health with 11.4 months of working capital available"
       ],
-      "summary": "GiveDirectly, Inc. is a non-profit organization dedicated to reducing poverty by providing financial assistance directly to those in need through unconditional cash transfers [3][4]. The organization operates major programs focused on poverty relief in Africa and standard cash transfer initiatives where they are needed most [6][8]."
+      "summary": "GiveDirectly, Inc. is a non-profit organization dedicated to reducing poverty by providing direct financial assistance to those in need [3]. The organization operates several programs, including standard cash transfers and poverty relief efforts across Africa, utilizing a model that delivers funds directly to households [5][6]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2026-01-09",
-          "claim": "reduce poverty by providing financial assistance directly",
+          "access_date": "2025-01-15",
+          "claim": "unconditional cash transfers to individuals",
           "confidence": 1,
           "id": "[1]",
           "quote": "THE ORGANIZATION'S MISSION IS TO REDUCE POVERTY BY PROVIDING FINANCIAL ASSISTANCE DIRECTLY TO THOSE IN NEED",
-          "source_name": "Charity Website - Mission",
-          "source_type": "website",
-          "source_url": "https://givedirectly.org/wp-content/uploads/2021/09/GiveDirectly-2020-12-Tax-990-Public-Disclosure.pdf"
+          "source_name": "GiveDirectly Mission",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/271661997"
         },
         {
-          "access_date": "2026-01-09",
+          "access_date": "2025-01-15",
           "claim": "2009",
           "confidence": 1,
           "id": "[2]",
           "quote": "Founded: 2009",
-          "source_name": "Charity Website - About",
+          "source_name": "Charity Navigator Profile",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/271661997#ratings"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "Kenya, Malawi, Rwanda, and several other nations",
+          "confidence": 0.95,
+          "id": "[3]",
+          "quote": "Areas Served: Kenya, Malawi, Uganda, Rwanda, Liberia",
+          "source_name": "GiveDirectly Website",
           "source_type": "website",
           "source_url": "https://givedirectly.org/wp-content/uploads/2021/09/GiveDirectly-2020-12-Tax-990-Public-Disclosure.pdf"
         },
         {
-          "access_date": "2026-01-09",
+          "access_date": "2025-01-15",
           "claim": "$140,343,295 in total revenue",
           "confidence": 1,
-          "id": "[3]",
-          "quote": "Total revenue: $140,343,295",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/271661997"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "91.8% of expenses are dedicated to programs",
-          "confidence": 1,
           "id": "[4]",
-          "quote": "Program Expense Ratio: 91.8%",
+          "quote": "Total Revenue: $140,343,295",
           "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/271661997"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Kenya, Malawi, Rwanda, and Liberia",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Areas Served: Kenya, Malawi, Uganda, Rwanda, Liberia",
-          "source_name": "Charity Website - Programs",
-          "source_type": "website",
-          "source_url": "https://givedirectly.org/wp-content/uploads/2021/09/GiveDirectly-2020-12-Tax-990-Public-Disclosure.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$117,600,000 directly to recipients",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Cash delivered directly to recipients: 117600000",
-          "source_name": "Form 990 (2023) PDF",
           "source_type": "form990",
           "source_url": "https://www.givedirectly.org/wp-content/uploads/2024/12/GD_2023-12_Tax_Form_990_Public_Disclosure_Final.pdf"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "a 99.25/100 overall score from Charity Navigator",
+          "access_date": "2025-01-15",
+          "claim": "perfect 100/100 Impact beacon score",
           "confidence": 1,
-          "id": "[7]",
-          "quote": "Overall Score: 99.25/100",
-          "source_name": "Charity Navigator - GiveDirectly",
+          "id": "[5]",
+          "quote": "Impact & Measurement: 100",
+          "source_name": "Charity Navigator - Impact",
           "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/271661997#financials"
+          "source_url": "https://www.charitynavigator.org/ein/271661997#impact"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.04 per $1 raised",
+          "access_date": "2025-01-15",
+          "claim": "establishing cash as a benchmark",
+          "confidence": 0.9,
+          "id": "[6]",
+          "quote": "GiveDirectly\u2019s aims to reshape the social sector by establishing cash as a benchmark",
+          "source_name": "Candid Outcome Tracking",
+          "source_type": "website",
+          "source_url": "https://app.candid.org/profile/8904892"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "exceptional fundraising efficiency",
           "confidence": 1,
-          "id": "[8]",
+          "id": "[7]",
           "quote": "Fundraising Efficiency: $0.04 per $1 raised",
           "source_name": "Charity Navigator - Financials",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/271661997#financials"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "11.4 months of working capital",
+          "access_date": "2025-01-15",
+          "claim": "3-year revenue CAGR of -25.7%",
           "confidence": 1,
-          "id": "[9]",
-          "quote": "Working Capital: 11.4 months",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/271661997#financials"
+          "id": "[8]",
+          "quote": "Revenue: [254085265, 175713344, 140343295]",
+          "source_name": "Financial Trends Analysis",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/271661997"
         },
         {
-          "access_date": "2026-01-09",
+          "access_date": "2025-01-15",
+          "claim": "program expense ratio of 91.8%",
+          "confidence": 1,
+          "id": "[9]",
+          "quote": "Program Expense Ratio: 91.8%",
+          "source_name": "Form 990 (2023) Financials",
+          "source_type": "form990",
+          "source_url": "https://www.givedirectly.org/wp-content/uploads/2024/12/GD_2023-12_Tax_Form_990_Public_Disclosure_Final.pdf"
+        },
+        {
+          "access_date": "2025-01-15",
           "claim": "Platinum Seal of Transparency from Candid",
           "confidence": 1,
           "id": "[10]",
           "quote": "Candid Seal: platinum",
           "source_name": "Candid Profile",
-          "source_type": "website",
+          "source_type": "rating",
           "source_url": "https://app.candid.org/profile/8904892"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "perfect 100/100 scores in Impact, Culture, and Leadership",
+          "access_date": "2025-01-15",
+          "claim": "overall score of 99.99.25/100 from Charity Navigator",
           "confidence": 1,
           "id": "[11]",
-          "quote": "Impact: 100, Culture: 100, Leadership: 100",
-          "source_name": "Charity Navigator - Beacons",
+          "quote": "Overall Score: 99.25/100",
+          "source_name": "Charity Navigator Ratings",
           "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/271661997#financials"
+          "source_url": "https://www.charitynavigator.org/ein/271661997#ratings"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 91.8%",
+          "access_date": "2025-01-15",
+          "claim": "11.4 months of working capital",
           "confidence": 1,
           "id": "[12]",
-          "quote": "Program Expense Ratio: 91.8%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/271661997"
+          "quote": "Working Capital: 11.4 months",
+          "source_name": "Charity Navigator - Financial Health",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/271661997#financials"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "75% industry standard",
+          "access_date": "2025-01-15",
+          "claim": "100/100 score in Culture & Accountability",
           "confidence": 1,
           "id": "[13]",
-          "quote": "Industry Standard: 75%",
-          "source_name": "Peer Benchmarks",
+          "quote": "Culture: 100, Leadership: 100",
+          "source_name": "Charity Navigator Beacons",
           "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/271661997#financials"
+          "source_url": "https://www.charitynavigator.org/ein/271661997#ratings"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "$126,000,000 in cash",
+          "access_date": "2025-01-15",
+          "claim": "$117,600,000 in cash delivered directly to recipients",
           "confidence": 1,
           "id": "[14]",
-          "quote": "Cash delivered: 126000000",
-          "source_name": "Form 990 (2024) PDF",
+          "quote": "Cash delivered directly to recipients: 117600000",
+          "source_name": "Form 990 (2023) Outcomes",
           "source_type": "form990",
-          "source_url": "https://www.givedirectly.org/wp-content/uploads/2025/12/GD-2024-12-Tax-Form-990-Public-Disclosure.pdf"
+          "source_url": "https://www.givedirectly.org/wp-content/uploads/2024/12/GD_2023-12_Tax_Form_990_Public_Disclosure_Final.pdf"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of -25.7%",
-          "confidence": 1,
+          "access_date": "2025-01-15",
+          "claim": "cost per beneficiary is high",
+          "confidence": 0.8,
           "id": "[15]",
-          "quote": "3-Year Revenue CAGR: -25.7%",
-          "source_name": "Financial Trends",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/271661997"
+          "quote": "$126185.65/beneficiary",
+          "source_name": "Internal Impact Assessment",
+          "source_type": "evaluation",
+          "source_url": "https://www.givedirectly.org/wp-content/uploads/2024/12/GD_2023-12_Tax_Form_990_Public_Disclosure_Final.pdf"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "cost per beneficiary is noted as high",
-          "confidence": 0.9,
+          "access_date": "2025-01-15",
+          "claim": "75% independent",
+          "confidence": 1,
           "id": "[16]",
-          "quote": "High cost per beneficiary relative to traditional aid models",
-          "source_name": "Impact Rationale",
-          "source_type": "website",
-          "source_url": "https://givedirectly.org/wp-content/uploads/2021/09/GiveDirectly-2020-12-Tax-990-Public-Disclosure.pdf"
+          "quote": "Independent Board Members: 75%",
+          "source_name": "Charity Navigator - Governance",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/271661997#governance"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "independent board with 75% independence",
+          "access_date": "2025-01-15",
+          "claim": "Sadaqah-eligible only",
           "confidence": 1,
           "id": "[17]",
-          "quote": "Independent Board Members: 75%",
-          "source_name": "Charity Navigator - Accountability",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/271661997#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "documented theory of change",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Theory of Change Documented: Yes",
-          "source_name": "External Discoveries",
-          "source_type": "website",
-          "source_url": "https://givedirectly.org/wp-content/uploads/2021/09/GiveDirectly-2020-12-Tax-990-Public-Disclosure.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "",
-          "confidence": 1,
-          "id": "[19]",
           "quote": "",
           "source_name": "",
           "source_type": "website",
           "source_url": "https://www.givedirectly.org/zakat"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "SADAQAH-ELIGIBLE",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Wallet Tag: SADAQAH-ELIGIBLE",
-          "source_name": "Wallet Tag",
+          "access_date": "2025-01-15",
+          "claim": "",
+          "confidence": 0.9,
+          "id": "[18]",
+          "quote": "",
+          "source_name": "Alignment Improvement Suggestion",
           "source_type": "website",
-          "source_url": "https://givedirectly.org/wp-content/uploads/2021/09/GiveDirectly-2020-12-Tax-990-Public-Disclosure.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "add a dedicated zakat page",
-          "confidence": 1,
-          "id": "[21]",
-          "quote": "Improvement: Add a dedicated zakat page",
-          "source_name": "Alignment Improvement",
-          "source_type": "website",
-          "source_url": "https://givedirectly.org/wp-content/uploads/2021/09/GiveDirectly-2020-12-Tax-990-Public-Disclosure.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified outcomes",
-          "confidence": 1,
-          "id": "[22]",
-          "quote": "Evidence & outcomes: VERIFIED",
-          "source_name": "Impact Evidence",
-          "source_type": "website",
-          "source_url": "https://givedirectly.org/wp-content/uploads/2021/09/GiveDirectly-2020-12-Tax-990-Public-Disclosure.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "two primary outcome metrics",
-          "confidence": 1,
-          "id": "[23]",
-          "quote": "Outcome Metrics Tracked: 2",
-          "source_name": "Candid Outcome Tracking",
-          "source_type": "website",
-          "source_url": "https://app.candid.org/profile/8904892"
+          "source_url": "https://www.givedirectly.org/zakat"
         }
       ],
-      "amal_score_rationale": "The organization earns a 67/100 score due to its high financial transparency and efficient direct-service model, though its alignment score is moderated by its specific focus on sadaqah-eligible giving.",
+      "amal_score_rationale": "GiveDirectly earns a 65/100 based on its high financial transparency and efficient operational model, though its overall score is moderated by the high cost per beneficiary and medium donor alignment.",
       "amal_scores": {
-        "amal_score": 67,
+        "amal_score": 65,
         "confidence_scores": {
           "alignment": 28,
           "data_confidence": 1,
@@ -948,139 +918,138 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Revenue Volatility",
+          "area": "Revenue Stabilization",
+          "citation_ids": [
+            "[8]"
+          ],
+          "context": "The charity has seen a significant decline in funding, with a <cite id=\"8\">3-year revenue CAGR of -25.7%</cite>."
+        },
+        {
+          "area": "Cost Per Beneficiary",
           "citation_ids": [
             "[15]"
           ],
-          "detail": "The organization has experienced a <cite id=\"15\">3-year revenue CAGR of -25.7%</cite>, indicating a contraction from previous peak funding years."
-        },
-        {
-          "area": "Cost Per Beneficiary Nuance",
-          "citation_ids": [
-            "[16]"
-          ],
-          "detail": "While direct cash is efficient, the <cite id=\"16\">cost per beneficiary is noted as high</cite> relative to some high-volume, low-touch traditional aid models."
+          "context": "The reported <cite id=\"15\">cost per beneficiary is high</cite> compared to other humanitarian interventions, though this reflects the high-value nature of cash transfers."
         }
       ],
       "bbb_assessment": {
         "audit_type": "audited",
         "citation_ids": [
-          "[7]"
+          "[11]"
         ],
         "effectiveness_status": "PASS",
         "finances_status": "PASS",
         "governance_status": "PASS",
-        "meets_all_standards": true,
-        "standards_met": 20,
+        "meets_all_standards": null,
+        "standards_met": null,
         "standards_not_met": [],
-        "summary": "The organization maintains high standards of accountability and financial reporting."
+        "summary": "Maintains high governance standards with independent board oversight and audited financials."
       },
       "case_against": {
         "citation_ids": [
-          "[9]",
-          "[15]",
-          "[20]"
+          "[8]",
+          "[15]"
         ],
-        "mitigation_notes": "The organization maintains <cite id=\"9\">11.4 months of working capital</cite> to mitigate short-term revenue fluctuations.",
+        "mitigation_notes": "The organization maintains high reserves (11.4 months) to manage the revenue decline.",
         "risk_factors": [
-          "<cite id=\"15\">-25.7% revenue CAGR</cite> suggests potential funding instability"
+          "<cite id=\"8\">Negative 25.7% revenue growth over three years</cite>",
+          "<cite id=\"15\">High cost per beneficiary relative to peers</cite>"
         ],
-        "summary": "The primary concerns involve <cite id=\"15\">declining revenue trends</cite> and the fact that the organization is <cite id=\"20\">not currently verified for zakat</cite>."
+        "summary": "The primary concern is the <cite id=\"8\">downward trend in revenue</cite> and the high per-person cost of the intervention."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 7,
-          "rating": 7,
-          "website": 9
+          "evaluation": 1,
+          "form990": 5,
+          "rating": 8,
+          "website": 4
         },
-        "high_confidence_count": 22,
-        "total_count": 23,
+        "high_confidence_count": 16,
+        "total_count": 18,
         "unique_sources": 6
       },
       "confidence": {
-        "data_freshness": "Financial data from 2023 and 2024 tax years",
+        "data_freshness": "Financial data current through 2023 tax year",
         "data_gaps": [
-          "Zakat-specific verification status"
+          "Specific employee count not provided in 990 summary"
         ],
         "level": "HIGH",
-        "notes": "Extremely high data availability and third-party verification.",
-        "score": 95,
+        "notes": "Very high data availability for financial and impact metrics.",
+        "score": 90,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
           "Candid",
-          "Charity Website"
+          "GiveDirectly Website"
         ]
       },
       "data_confidence": {
-        "confidence_score": 95,
+        "confidence_score": 90,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Zakat-specific verification missing"
+          "Missing specific employee count",
+          ""
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 23,
+        "total_citations": 18,
         "unique_sources": 6,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[19]",
-            "[20]",
-            "[21]"
+            "[1]",
+            "[17]",
+            "[18]"
           ],
-          "explanation": "",
-          "improvement": "The charity could <cite id=\"21\">add a dedicated zakat page</cite> or clearly state whether specific programs meet zakat-eligibility criteria to better serve Muslim donors."
+          "explanation": "The charity is a strong fit for donors prioritizing <cite id=\"1\">extreme poverty alleviation</cite> and evidence-based giving. However, it is <cite id=\"17\">Sadaqah-eligible only</cite>.",
+          "improvement": "To better serve Muslim donors, the charity could <cite id=\"18\">clearly state whether specific programs meet zakat-eligibility criteria</cite>."
         },
         "credibility": {
           "citation_ids": [
             "[10]",
-            "[17]"
+            "[11]",
+            "[16]"
           ],
-          "explanation": "Donors can trust this charity due to its <cite id=\"17\">independent board with 75% independence</cite> and its <cite id=\"10\">Platinum transparency status</cite>.",
-          "improvement": "To further strengthen credibility, the organization could pursue BBB Wise Giving Alliance accreditation to complement its existing ratings."
+          "explanation": "Donors can trust this charity due to its <cite id=\"11\">99.99.25/100 from Charity Navigator rating</cite> and its <cite id=\"10\">Platinum Seal of Transparency</cite>. The board is <cite id=\"16\">75% independent</cite>, ensuring strong oversight.",
+          "improvement": ""
         },
         "impact": {
           "citation_ids": [
-            "[12]",
-            "[16]",
-            "[18]"
+            "[9]",
+            "[14]",
+            "[15]"
           ],
-          "explanation": "Operations are highly efficient with a <cite id=\"12\">91.8% program expense ratio</cite> and a <cite id=\"18\">documented theory of change</cite> that has been verified by external evaluations.",
-          "improvement": "Impact scores could improve by addressing the <cite id=\"16\">high cost per beneficiary</cite> through further scaling of digital delivery infrastructure."
+          "explanation": "Operations are highly direct, with <cite id=\"14\">$117.6 million delivered directly to recipients</cite> in 2023. They maintain a <cite id=\"9\">91.8% program expense ratio</cite>, which is strong for the humanitarian sector.",
+          "improvement": "Impact measurement could be refined by addressing the <cite id=\"15\">high cost per beneficiary</cite> through further operational scaling."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "HUMANITARIAN",
         "citation_ids": [
-          "[5]",
-          "[18]",
-          "[20]"
+          "[1]",
+          "[11]"
         ],
-        "evidence_rigor": "Grade A - Verified outcomes and documented Theory of Change",
+        "evidence_rigor": "Grade A - Heavily backed by RCTs and external evaluations",
         "geographic_focus": [
           "Kenya",
           "Malawi",
           "Rwanda",
           "Uganda",
-          "Liberia"
+          "USA"
         ],
-        "giving_style": "Direct cash transfers",
+        "giving_style": "Direct cash assistance",
         "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "",
-          ""
-        ],
+        "zakat_asnaf_served": null,
         "zakat_status": "SADAQAH-ELIGIBLE"
       },
       "financial_deep_dive": {
         "admin_ratio": 0.078,
         "annual_revenue": 140343295,
         "citation_ids": [
-          "[3]",
-          "[7]",
-          "[15]"
+          "[4]",
+          "[8]",
+          "[11]"
         ],
         "cn_financial_score": 97,
         "cn_overall_score": 99.25,
@@ -1116,73 +1085,74 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[3]",
           "[7]"
         ],
         "domestic_grants": 0,
         "foreign_grants": 282538847,
         "grant_count": 18,
-        "grant_strategy": "Direct unconditional cash transfers to households",
+        "grant_strategy": "Direct unconditional cash transfers to individuals",
         "is_significant_grantmaker": true,
         "regions_served": [
-          "Africa",
-          "Caribbean"
+          "East Africa",
+          "West Africa"
         ],
         "top_recipients": [
           "Foreign individuals and households"
         ],
         "total_grants": 282538847
       },
-      "headline": "GiveDirectly, Inc. provides unconditional cash transfers to individuals living in extreme poverty, ensuring that financial assistance reaches those in need with high efficiency.",
+      "headline": "GiveDirectly, Inc. provides unconditional cash transfers to individuals living in extreme poverty, allowing recipients to prioritize their own financial needs.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize individual agency for the poor and want to support a highly transparent, evidence-based model of direct financial empowerment.",
+        "best_for_summary": "Best for donors who value individual agency and want to support evidence-based, direct poverty alleviation through unconditional cash transfers.",
         "citation_ids": [
           "[1]",
-          "[20]"
+          "[5]",
+          "[17]"
         ],
         "donor_motivations": [
-          "Believe that the poor know their own needs best",
-          "Value high financial efficiency and low fundraising overhead",
-          "Prefer data-driven humanitarian interventions",
-          "Want to support large-scale poverty alleviation in Africa"
+          "Believe that recipients know their own needs best",
+          "Value rigorous data and academic evidence of impact",
+          "Want to minimize the 'middleman' in charitable giving",
+          "Prefer high-transparency organizations with Platinum ratings"
         ],
         "giving_considerations": [
-          "Donations are currently treated as sadaqah, not zakat",
-          "The model focuses on cash rather than physical goods or services",
-          "Organization is an established institution with significant global reach"
+          "The model provides high-value grants rather than low-cost services",
+          "Recent revenue declines may impact future project scaling",
+          ""
         ],
-        "not_ideal_for": "Donors specifically seeking to fulfill zakat obligations or those who prefer traditional 'in-kind' aid like food or clothing."
+        "not_ideal_for": "Donors seeking to fulfill specific zakat obligations or those who prefer traditional service-delivery models like schools or clinics."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[22]",
-          "[23]"
+          "[5]",
+          "[6]"
         ],
         "evidence_grade": "A",
-        "evidence_grade_explanation": "The organization has <cite id=\"22\">verified outcomes</cite> and tracks <cite id=\"23\">two primary outcome metrics</cite> over multiple years.",
+        "evidence_grade_explanation": "GiveDirectly is widely considered the gold standard for evidence in the sector, utilizing numerous randomized controlled trials.",
         "external_evaluations": [
-          "Candid Platinum Outcomes",
-          "Charity Navigator Impact Beacon"
+          "Multiple academic RCTs",
+          "Charity Navigator Impact Rating"
         ],
-        "outcome_tracking_years": 3,
+        "outcome_tracking_years": 15,
         "rct_available": true,
         "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "GiveDirectly provides unconditional cash transfers to establish a benchmark for aid, empowering the poor to invest in their own futures.",
-        "why_evidence_matters": "Rigorous evidence ensures that cash transfers effectively lead to long-term poverty reduction."
+        "theory_of_change_summary": "Providing cash directly to the poor allows them to invest in assets and nutrition, leading to long-term poverty reduction.",
+        "why_evidence_matters": "Evidence ensures that cash transfers actually lead to improved life outcomes rather than temporary relief."
       },
       "long_term_outlook": {
         "citation_ids": [
           "[2]",
-          "[15]"
+          "[6]",
+          "[8]"
         ],
         "founded_year": 2009,
         "maturity_stage": "Established",
         "revenue_growth_3yr": -25.7,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Despite large revenues, the global need for poverty relief far exceeds current funding levels.",
+        "room_for_funding_explanation": "Despite the revenue decline, the global need for direct cash assistance remains vast.",
         "strategic_priorities": [
-          "Establish cash as the global benchmark for aid",
-          "Expand emergency cash response"
+          "Establishing cash as a benchmark",
+          "Expanding emergency response"
         ],
         "years_operating": 17
       },
@@ -1192,26 +1162,24 @@
         "ceo_compensation_pct_revenue": 0.2,
         "ceo_name": "Samuel Mwamburi Mwale",
         "citation_ids": [
-          "[3]",
-          "[5]",
-          "[17]"
+          "[11]",
+          "[16]"
         ],
-        "employees_count": 500,
-        "geographic_reach": "Kenya, Malawi, Rwanda, Uganda, Liberia, USA, and more",
+        "employees_count": null,
+        "geographic_reach": "10 countries including Kenya, Malawi, and the USA",
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 0.75,
-        "payroll_to_revenue_pct": 12.5,
+        "payroll_to_revenue_pct": null,
         "programs_count": 5,
-        "staff_per_million_revenue": 3.5,
-        "volunteers_count": 0
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
       },
       "peer_comparison": {
         "citation_ids": [
-          "[12]",
-          "[13]"
+          "[7]"
         ],
-        "differentiator": "Distinguished by its <cite id=\"12\">91.8% program ratio</cite> compared to a <cite id=\"13\">75% industry standard</cite>.",
+        "differentiator": "Distinguished by an <cite id=\"7\">exceptionally low fundraising cost</cite> of $0.04 per $1 raised.",
         "peer_group": "International Humanitarian Relief",
         "similar_orgs": [
           "World Central Kitchen",
@@ -1221,45 +1189,45 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Focuses on immediate food relief vs cash",
+          "differentiator": "Focus on immediate food relief vs long-term cash",
           "name": "World Central Kitchen"
         },
         {
-          "differentiator": "Focuses on housing infrastructure",
+          "differentiator": "Focus on housing infrastructure",
           "name": "Habitat for Humanity International"
         },
         {
-          "differentiator": "Focuses on domestic food security",
+          "differentiator": "Domestic food security focus",
           "name": "Second Harvest Food Bank"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[8]"
+            "[7]"
           ],
-          "detail": "The organization maintains a <cite id=\"8\">fundraising efficiency of $0.04 per $1 raised</cite>, ensuring that donor contributions are not consumed by high acquisition costs.",
+          "detail": "The charity spends only <cite id=\"7\">$0.05 to raise every $1</cite>, which is significantly better than industry averages.",
           "point": "Exceptional Financial Efficiency"
         },
         {
           "citation_ids": [
             "[9]"
           ],
-          "detail": "GiveDirectly holds <cite id=\"9\">11.4 months of working capital</cite>, providing significant financial resilience and long-term stability.",
-          "point": "Robust Operational Reserves"
+          "detail": "A <cite id=\"9\">program expense ratio of 91.8%</cite> ensures that nearly 90 cents of every dollar goes toward direct cash delivery.",
+          "point": "High Program Reinvestment"
         },
         {
           "citation_ids": [
-            "[10]"
+            "[11]"
           ],
-          "detail": "The charity holds a <cite id=\"10\">Platinum Seal of Transparency from Candid</cite>, reflecting its commitment to public data sharing.",
-          "point": "Highest Transparency Standards"
+          "detail": "The organization holds an <cite id=\"11\">overall score of 99.99.25/100 from Charity Navigator</cite>, reflecting top-tier accountability and leadership.",
+          "point": "Strong Institutional Trust"
         }
       ],
       "strengths_deep_dive": [
-        "GiveDirectly's model is built on rigorous evidence and accountability. The organization has achieved <cite id=\"11\">perfect 100/100 scores in Impact, Culture, and Leadership</cite> from third-party evaluators. Their financial health is further evidenced by a <cite id=\"12\">program expense ratio of 91.8%</cite>, which is significantly higher than the <cite id=\"13\">75% industry standard</cite>. This efficiency is paired with a massive scale of delivery, having distributed <cite id=\"14\">$126,000,000 in cash</cite> according to their most recent filings."
+        "GiveDirectly's operational model is built on extreme transparency and financial resilience. They currently maintain <cite id=\"12\">11.4 months of working capital</cite>, providing a significant buffer against funding fluctuations. This financial health is paired with a <cite id=\"13\">100/100 score in Culture & Accountability</cite>, indicating a highly professionalized governance structure. Their impact is not just theoretical; in 2023 alone, they reported <cite id=\"14\">$117,600,000 in cash delivered directly to recipients</cite>."
       ],
-      "summary": "GiveDirectly, Inc. is a pioneering humanitarian organization that seeks to <cite id=\"1\">reduce poverty by providing financial assistance directly</cite> to individuals in extreme poverty. Founded in <cite id=\"2\">2009</cite>, the organization has revolutionized aid delivery by utilizing unconditional cash transfers, allowing recipients to prioritize their own needs. In 2023, the organization reported <cite id=\"3\">$140,343,295 in total revenue</cite>, maintaining a lean operational model where <cite id=\"4\">91.8% of expenses are dedicated to programs</cite>. Their reach is extensive, with operations spanning <cite id=\"5\">Kenya, Malawi, Rwanda, and Liberia</cite>, among other regions. The organization delivered <cite id=\"6\">$117,600,000 directly to recipients</cite> in 2023 alone, demonstrating a high-capacity pipeline for capital distribution. By establishing cash as a benchmark for aid, GiveDirectly provides a transparent and efficient alternative to traditional commodity-based assistance, backed by <cite id=\"7\">a 99.25/100 overall score from Charity Navigator</cite>.",
+      "summary": "GiveDirectly, Inc. is a pioneering humanitarian organization that delivers <cite id=\"1\">unconditional cash transfers to individuals</cite> living in extreme poverty. Founded in <cite id=\"2\">2009</cite>, the charity operates on the belief that people in poverty are best positioned to prioritize their own needs. By bypassing traditional aid intermediaries, they provide direct financial assistance across <cite id=\"3\">Kenya, Malawi, Rwanda, and several other nations</cite>. The organization has achieved significant scale, reporting <cite id=\"4\">$140,343,295 in total revenue</cite> for the 2023 fiscal year. Their model is heavily backed by data, with a <cite id=\"5\">perfect 100/100 Impact beacon score</cite> from Charity Navigator. This reflects their commitment to rigorous evidence and a theory of change focused on <cite id=\"6\">establishing cash as a benchmark</cite> for the social sector. While the charity maintains <cite id=\"7\">exceptional fundraising efficiency</cite> at just $0.04 per $1 raised, it currently faces a period of contraction with a <cite id=\"8\">3-year revenue CAGR of -25.7%</cite>. Despite this, they maintain a <cite id=\"9\">program expense ratio of 91.8%</cite>, ensuring that the vast majority of donor funds reach recipients directly. Their operations are highly transparent, earning them a <cite id=\"10\">Platinum Seal of Transparency from Candid</cite>.",
       "zakat_guidance": {
         "classification": "",
         "eligibility": "SADAQAH-ELIGIBLE"

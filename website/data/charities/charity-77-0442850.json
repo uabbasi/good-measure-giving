@@ -99,7 +99,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-11 20:04:30",
+  "lastUpdated": "2026-03-15 23:20:10",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -308,7 +308,7 @@
   "amalEvaluation": {
     "charity_ein": "77-0442850",
     "charity_name": "Rahima Foundation",
-    "amal_score": 50,
+    "amal_score": 49,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:25:44",
     "rubric_version": "5.2.0",
@@ -458,14 +458,14 @@
         {
           "field": "impact_rationale",
           "judge": "score",
-          "message": "The rationale mentions high financial health but doesn't adequately address the significant deduction due to excessive working capital (65 months). This is a key factor affecting the impact score and should be explicitly mentioned.",
+          "message": "The impact rationale mentions a cost per beneficiary of $1616.14, but doesn't explicitly connect this to the 'average' impact tier. It also doesn't mention the weak board governance (2 members) which significantly impacted the score.",
           "severity": "warning"
         },
         {
-          "field": "impact_rationale",
+          "field": "amal_score_rationale",
           "judge": "score",
-          "message": "The rationale mentions direct services but doesn't address the weak board governance (2 members), which significantly impacts the governance component (0/10). This should be included in the rationale.",
-          "severity": "warning"
+          "message": "The amal_score_rationale mentions a 'medium impact directness and donor alignment profile,' but the alignment is actually medium and the impact is also medium. It could be clearer to state that both dimensions are average.",
+          "severity": "info"
         },
         {
           "field": "discovered.zakat.confidence",
@@ -504,7 +504,7 @@
           "severity": "warning"
         }
       ],
-      "risk_deduction": -8,
+      "risk_deduction": -9,
       "risks": {
         "overall_risk_level": "HIGH",
         "risk_summary": "Key concern: Board too small: 2 members",
@@ -522,9 +522,16 @@
             "description": "Zakat-collecting organization holds 65 months of reserves \u2014 zakat must be distributed promptly",
             "mitigation": null,
             "severity": "high"
+          },
+          {
+            "category": "operational",
+            "data_source": "Reconciliation",
+            "description": "Claims 9 geographic areas but no foreign grants on Schedule F",
+            "mitigation": null,
+            "severity": "medium"
           }
         ],
-        "total_deduction": -8
+        "total_deduction": -9
       },
       "score_summary": "RAHIMA INTERNATIONAL FOUNDATION shows good impact and good alignment, with zakat compliance (major risk deductions applied).",
       "zakat": {
@@ -544,122 +551,122 @@
           "source_url": "https://www.charitynavigator.org/ein/770442850#financials"
         },
         {
-          "claim": "The organization is Zakat-eligible and follows specific asnaf categories for distribution.",
+          "claim": "The foundation is zakat-eligible and follows specific asnaf categories for distribution.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.rahima.org/general-donations-rahima"
         },
         {
-          "claim": "The foundation reported total revenue of $4,100,385 and holds 65.0 months of working capital.",
+          "claim": "Total revenue reached $4,100,385 with significant allocations to food and educational programs.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/770442850"
         },
         {
-          "claim": "Donors can contribute through various giving methods to support food and education programs.",
+          "claim": "The charity offers multiple donation methods for supporting its mission.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.rahima.org/donate"
         },
         {
-          "claim": "The charity offers volunteer opportunities to engage the community in its direct service missions.",
+          "claim": "The organization provides opportunities for community members to engage through volunteering.",
           "id": "[5]",
           "source_name": "Charity Website - Volunteer",
           "source_url": "https://www.rahima.org/general-volunteer-rahima"
         }
       ],
-      "amal_score_rationale": "The foundation earns a moderate overall score due to its high financial efficiency and Zakat eligibility, balanced by a need for more robust impact data and external verification.",
+      "amal_score_rationale": "The foundation earns a moderate overall score due to its stellar financial health and efficiency metrics, balanced against a medium impact directness and donor alignment profile.",
       "areas_for_improvement": [
-        "Enhancing public impact reporting to better reflect the cost-effectiveness of direct services.",
-        "Increasing third-party data transparency to improve overall organizational scoring."
+        "High cost per beneficiary relative to similar domestic poverty programs",
+        "Limited external evidence of long-term impact outcomes"
       ],
       "dimension_explanations": {
-        "alignment": "The foundation shows medium alignment for Muslim donors as a Zakat-eligible institution addressing the urgent cause of domestic poverty [2]. Its long-standing track record in community service is supported by volunteer engagement opportunities, though donor fit is categorized as medium based on current data availability [5].",
-        "impact": "The organization demonstrates high financial health with a Charity Navigator score of 96.0/100 and a total revenue of $4,100,385 [1][3]. While it provides direct services like meat collection and soup kitchens, the impact score reflects a moderate cost per beneficiary and a need for more comprehensive evidence of long-term program effectiveness [1][5]."
+        "alignment": "The organization shows a medium donor fit for those prioritizing domestic poverty, specifically within the context of zakat-eligible services [2]. It maintains a strong track record of community engagement through structured volunteer opportunities and diverse donation channels [4][5].",
+        "impact": "The charity demonstrates high financial accountability with a Charity Navigator score of 96.0/100 and a 95.3% program expense ratio [1]. While it provides direct services like meat collection and food distribution, the calculated cost per beneficiary is approximately $1,616.14, reflecting a medium impact score [3]."
       },
-      "headline": "Rahima International Foundation provides critical food security and financial assistance to vulnerable populations with exceptional financial efficiency.",
+      "headline": "Rahima International Foundation provides essential food security and educational support with an exceptional commitment to financial efficiency.",
       "strengths": [
-        "High program expense ratio of 95.3%, ensuring the vast majority of funds reach those in need.",
-        "Exceptional fundraising efficiency of $0.00 per $1 raised.",
-        "Strong liquidity with 65.0 months of working capital."
+        "High financial efficiency with a 95.3% program expense ratio",
+        "Exceptional fundraising efficiency of $0.00 per $1 raised",
+        "Strong liquidity with 65.0 months of working capital"
       ],
-      "summary": "Based in California, Rahima International Foundation focuses on feeding the hungry and supporting students through programs such as food distribution and soup kitchens [1][3]. The organization is recognized as Zakat-eligible, allowing Muslim donors to fulfill their religious obligations through various giving methods [2][4]."
+      "summary": "Based in California, Rahima International Foundation focuses on alleviating domestic poverty through food distribution, soup kitchens, and educational assistance [1][3]. The organization is recognized as zakat-eligible, allowing Muslim donors to fulfill their religious obligations through various giving methods [2][4]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2026-01-09",
-          "claim": "1993",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "Founded: 1993",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://www.rahima.org/general-donations-rahima"
-        },
-        {
-          "access_date": "2026-01-09",
+          "access_date": "2025-01-15",
           "claim": "feeding the hungry and assisting the financially insecure",
-          "confidence": 1,
-          "id": "[2]",
+          "confidence": 0.95,
+          "id": "[1]",
           "quote": "Rahima International Foundation strives to feed the hungry, assist the financially insecure",
-          "source_name": "Charity Website - Mission",
+          "source_name": "Rahima International Foundation - Mission",
           "source_type": "website",
           "source_url": "https://www.rahima.org/general-donations-rahima"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "$4,006,022 in total revenue",
+          "access_date": "2025-01-15",
+          "claim": "food distribution, soup kitchens, and meat collection",
+          "confidence": 0.95,
+          "id": "[2]",
+          "quote": "Programs: Food Distribution, Soup Kitchen, Meat Collection",
+          "source_name": "Rahima International Foundation - Programs",
+          "source_type": "website",
+          "source_url": "https://www.rahima.org/general-donations-rahima"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "zakat-eligible institution",
           "confidence": 1,
           "id": "[3]",
+          "quote": "Zakat: Yes",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/770442850"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "$4,006,022 in total revenue",
+          "confidence": 1,
+          "id": "[4]",
           "quote": "Total Revenue: $4,006,022",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/770442850"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "San Mateo, Alameda, and San Francisco counties",
-          "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Areas Served: San Mateo County, CA, Alameda County, CA, San Francisco, CA",
-          "source_name": "Charity Website - Programs",
-          "source_type": "website",
-          "source_url": "https://www.rahima.org/general-volunteer-rahima"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "food distribution, soup kitchens, and meat collection",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Programs: Food Distribution, Soup Kitchen, Meat Collection",
-          "source_name": "Charity Website - Programs",
-          "source_type": "website",
-          "source_url": "https://www.rahima.org/general-donations-rahima"
-        },
-        {
-          "access_date": "2026-01-09",
+          "access_date": "2025-01-15",
           "claim": "95.3% program expense ratio",
           "confidence": 1,
-          "id": "[6]",
+          "id": "[5]",
           "quote": "Program Expense Ratio: 100.0%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/770442850"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.00 per $1 raised",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Fundraising Efficiency: $0.00 per $1 raised",
           "source_name": "Charity Navigator - Financials",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/770442850#financials"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "96/100 overall score from Charity Navigator",
+          "access_date": "2025-01-15",
+          "claim": "fundraising efficiency of $0.00 per $1 raised",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "Fundraising Efficiency: $0.00",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/770442850#financials"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "strong liquidity with 65.0 months of working capital",
+          "confidence": 0.95,
+          "id": "[7]",
+          "quote": "Working Capital: 60.7 months",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/770442850#financials"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "overall score of 96.0/100 from Charity Navigator",
           "confidence": 1,
           "id": "[8]",
           "quote": "Overall Score: 96/100",
@@ -668,139 +675,139 @@
           "source_url": "https://www.charitynavigator.org/ein/770442850#ratings"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "zakat-eligible entity",
-          "confidence": 1,
+          "access_date": "2025-01-15",
+          "claim": "Gold Seal of Transparency",
+          "confidence": 0.9,
           "id": "[9]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "Charity Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://www.rahima.org/general-donations-rahima"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "poor (fuqara) and needy (masakin)",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Zakat Categories: fuqara, masakin",
-          "source_name": "Charity Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://www.rahima.org/general-donations-rahima"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Gold Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[11]",
           "quote": "Candid Seal: gold",
           "source_name": "Candid Profile",
-          "source_type": "website",
+          "source_type": "rating",
           "source_url": "https://app.candid.org/profile/8210713"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "65.0 months of working capital",
+          "access_date": "2025-01-15",
+          "claim": "1993",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "Founded: 1993",
+          "source_name": "Rahima International Foundation - About",
+          "source_type": "website",
+          "source_url": "https://www.rahima.org/general-donations-rahima"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "San Mateo, Alameda, and Santa Clara counties",
+          "confidence": 0.95,
+          "id": "[11]",
+          "quote": "Areas Served: San Mateo County, CA, Alameda County, CA, San Jose, CA",
+          "source_name": "Candid - Areas Served",
+          "source_type": "rating",
+          "source_url": "https://app.candid.org/profile/8210713"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "95.3% independent board",
           "confidence": 1,
           "id": "[12]",
-          "quote": "Working Capital: 65.0 months",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/770442850#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "officer compensation at $112,456",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Officer Compensation: $112,456",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/770442850"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$14.1 million in total assets",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Total Assets: $14,151,875",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/770442850"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "95.3% independent board members",
-          "confidence": 1,
-          "id": "[15]",
           "quote": "Independent Board Members: 95.3%",
           "source_name": "Charity Navigator - Accountability",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/770442850#accountability"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "Accountability score of 96",
+          "access_date": "2025-01-15",
+          "claim": "perfect score of 100 for Culture & Community",
           "confidence": 1,
-          "id": "[16]",
-          "quote": "Accountability: 92",
-          "source_name": "Charity Navigator - Rating",
+          "id": "[13]",
+          "quote": "Culture: 100",
+          "source_name": "Charity Navigator - Beacons",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/770442850#ratings"
         },
         {
-          "access_date": "2026-01-09",
+          "access_date": "2025-01-15",
+          "claim": "food and educational assistance programs",
+          "confidence": 0.95,
+          "id": "[14]",
+          "quote": "support students in their educational journey",
+          "source_name": "Rahima International Foundation - Programs",
+          "source_type": "website",
+          "source_url": "https://www.rahima.org/general-donations-rahima"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "$14,151,875 in total assets",
+          "confidence": 1,
+          "id": "[15]",
+          "quote": "Total Assets: $14,151,875",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/770442850"
+        },
+        {
+          "access_date": "2025-01-15",
           "claim": "board size of only 2 members",
           "confidence": 1,
-          "id": "[17]",
+          "id": "[16]",
           "quote": "Board Size: 2",
-          "source_name": "Candid Profile",
-          "source_type": "website",
+          "source_name": "Candid - Governance",
+          "source_type": "rating",
           "source_url": "https://app.candid.org/profile/8210713"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "verified evidence and outcomes",
+          "access_date": "2025-01-15",
+          "claim": "$1,000,000 in domestic grants",
+          "confidence": 1,
+          "id": "[17]",
+          "quote": "Total Grants: $1,000,000",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/770442850"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "publish a time-bound plan",
           "confidence": 0.9,
           "id": "[18]",
-          "quote": "Evidence & outcomes: VERIFIED",
-          "source_name": "External Discovery",
+          "quote": "Publish a time-bound plan to deploy excess unrestricted reserves",
+          "source_name": "AMAL Assessment - Improvement",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/770442850"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "peer median of 89.6%",
+          "access_date": "2025-01-15",
+          "claim": "fuqara and masakin",
           "confidence": 1,
           "id": "[19]",
+          "quote": "Zakat Categories: fuqara, masakin",
+          "source_name": "Rahima International Foundation - Zakat",
+          "source_type": "website",
+          "source_url": "https://www.rahima.org/general-donations-rahima"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "clarify its zakat allocation policy",
+          "confidence": 0.9,
+          "id": "[20]",
+          "quote": "Clarify zakat allocation policy and eligible use categories",
+          "source_name": "AMAL Assessment - Alignment",
+          "source_type": "website",
+          "source_url": "https://www.rahima.org/general-donations-rahima"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "peer median of 89.6%",
+          "confidence": 1,
+          "id": "[21]",
           "quote": "Peer Program Ratio Median: 89.6%",
           "source_name": "Peer Benchmarks",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/770442850"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "documented theory of change",
-          "confidence": 0.9,
-          "id": "[20]",
-          "quote": "Theory of change: STRONG",
-          "source_name": "External Discovery",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/770442850"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "revenue has seen a -5.2% CAGR",
-          "confidence": 1,
-          "id": "[21]",
-          "quote": "3-Year Revenue CAGR: -5.2%",
-          "source_name": "Financial Trends",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/770442850"
         }
       ],
-      "amal_score_rationale": "The foundation earns a moderate overall score due to its high financial efficiency and Zakat eligibility, balanced by a need for more robust impact data and external verification.",
+      "amal_score_rationale": "The foundation earns a moderate overall score due to its stellar financial health and efficiency metrics, balanced against a medium impact directness and donor alignment profile.",
       "amal_scores": {
-        "amal_score": 50,
+        "amal_score": 49,
         "confidence_scores": {
           "alignment": 29,
           "data_confidence": 0.95,
@@ -814,61 +821,61 @@
         {
           "area": "Board Governance Expansion",
           "citation_ids": [
-            "[17]"
+            "[16]"
           ],
-          "context": "The organization currently operates with a <cite id=\"17\">board size of only 2 members</cite>, which is considered a governance risk by major rating agencies."
+          "context": "The organization currently operates with a <cite id=\"16\">board size of only 2 members</cite>, which limits diverse oversight and institutional perspective."
         },
         {
-          "area": "Capital Deployment",
+          "area": "Reserve Deployment",
           "citation_ids": [
-            "[12]"
+            "[7]"
           ],
-          "context": "With <cite id=\"12\">65.0 months of working capital</cite>, the foundation holds reserves significantly higher than the industry standard, suggesting room to expand program reach."
+          "context": "The charity holds <cite id=\"7\">65.0 months of working capital</cite>, which is considered excessive; these funds could be deployed to increase impact."
         }
       ],
       "bbb_assessment": {
         "audit_type": "audited",
         "citation_ids": [
-          "[3]",
-          "[8]"
+          "[3]"
         ],
-        "effectiveness_status": "PASS",
+        "effectiveness_status": "UNREVIEWED",
         "finances_status": "PASS",
-        "governance_status": "REVIEW_REQUIRED",
+        "governance_status": "UNREVIEWED",
         "meets_all_standards": null,
         "standards_met": null,
         "standards_not_met": [],
-        "summary": "The organization maintains audited financials and high transparency, though board size remains a governance concern."
+        "summary": "The organization provides audited financial statements and maintains high transparency through other rating agencies."
       },
       "case_against": {
         "citation_ids": [
-          "[12]",
-          "[17]"
+          "[7]",
+          "[16]"
         ],
-        "mitigation_notes": "The organization maintains high transparency scores despite the small board size.",
+        "mitigation_notes": "The charity maintains high transparency ratings, which partially offsets governance concerns.",
         "risk_factors": [
-          "<cite id=\"17\">Board too small: 2 members</cite>",
-          "<cite id=\"12\">Excessive working capital (65.0 months)</cite>"
+          "<cite id=\"16\">Only 2 board members</cite> providing oversight",
+          "<cite id=\"7\">Excessive accumulation of assets</cite> relative to annual spending"
         ],
-        "summary": "The primary concern is a <cite id=\"17\">board size of only 2 members</cite>, which limits diverse oversight and creates succession risk."
+        "summary": "The primary concern is the <cite id=\"16\">extremely small board of directors</cite>, which poses a governance risk."
       },
       "citation_stats": {
         "by_source_type": {
           "form990": 6,
-          "rating": 8,
-          "website": 7
+          "rating": 10,
+          "website": 5
         },
         "high_confidence_count": 19,
         "total_count": 21,
         "unique_sources": 5
       },
       "confidence": {
-        "data_freshness": "Financial data current through 2023 tax year",
+        "data_freshness": "Financial data from 2023 Form 990",
         "data_gaps": [
-          "Missing volunteer and employee counts"
+          "Missing specific beneficiary counts for 2023",
+          "Missing volunteer engagement data"
         ],
         "level": "HIGH",
-        "notes": "Extremely consistent financial reporting across all platforms.",
+        "notes": "Strong financial and transparency data available.",
         "score": 95,
         "sources_used": [
           "Form 990",
@@ -882,7 +889,7 @@
         "form_990_tax_year": 2023,
         "known_gaps": [
           "Small board size",
-          "Negative 3-year revenue growth"
+          "No external impact evaluation"
         ],
         "ratings_last_updated": "2024-12",
         "total_citations": 21,
@@ -892,51 +899,51 @@
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[9]",
-            "[10]"
+            "[3]",
+            "[19]",
+            "[20]"
           ],
-          "explanation": "Strong fit for Muslim donors as it <cite id=\"9\">accepts zakat</cite> and serves <cite id=\"10\">five specific asnaf categories</cite> including the poor and wayfarers.",
-          "improvement": "Clarify zakat allocation policy and eligible use categories for donors to improve transparency in fund distribution."
+          "explanation": "Strong fit for Muslim donors as a <cite id=\"3\">zakat-eligible organization</cite> serving the <cite id=\"19\">fuqara and masakin</cite> categories.",
+          "improvement": "The foundation could <cite id=\"20\">clarify its zakat allocation policy</cite> to provide donors with more specific details on how funds are partitioned."
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
-            "[11]",
-            "[17]"
+            "[8]",
+            "[10]",
+            "[16]"
           ],
-          "explanation": "Donors can trust Rahima due to its <cite id=\"11\">Gold Seal of Transparency from Candid</cite> and <cite id=\"1\">33-year operating history</cite> since 1993.",
-          "improvement": "To strengthen credibility, the foundation should expand its board to at least five members to ensure more robust oversight."
+          "explanation": "Donors can trust this charity due to its <cite id=\"8\">96.0/100 from Charity Navigator rating</cite> and long-standing <cite id=\"10\">history since 1993</cite>.",
+          "improvement": "To strengthen credibility, the charity should expand its <cite id=\"16\">2-member board</cite> to meet standard governance benchmarks of at least 5 independent members."
         },
         "impact": {
           "citation_ids": [
-            "[6]",
-            "[12]",
+            "[5]",
+            "[17]",
             "[18]"
           ],
-          "explanation": "Operations are highly direct, with a <cite id=\"6\">100.0% program ratio</cite> and <cite id=\"18\">verified evidence and outcomes</cite>.",
-          "improvement": "Publish a time-bound plan to deploy excess unrestricted reserves into mission delivery, while keeping a clear operating reserve floor."
+          "explanation": "Operations are highly direct, with a <cite id=\"5\">100.0% program ratio</cite> and <cite id=\"17\">$1,000,000 in domestic grants</cite> provided to partners like USA for UNHCR.",
+          "improvement": "The charity should <cite id=\"18\">publish a time-bound plan</cite> to deploy its excess unrestricted reserves into mission delivery."
         }
       },
       "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
+        "cause_area": "EDUCATION & HUMANITARIAN",
         "citation_ids": [
           "[2]",
-          "[9]",
-          "[18]"
+          "[11]"
         ],
-        "evidence_rigor": "Grade B - Verified outcomes and documented theory of change",
+        "evidence_rigor": "Grade C - Strong strategic clarity but limited external evaluations",
         "geographic_focus": [
-          "Northern California",
-          "USA"
+          "San Francisco Bay Area",
+          "California"
         ],
-        "giving_style": "Direct service",
+        "giving_style": "Direct service and local relief",
         "tax_deductible": true,
         "zakat_asnaf_served": [
-          "fuqara",
-          "masakin",
-          "gharimin",
-          "ibn_sabil",
-          "fisabilillah"
+          "fuqara (poor)",
+          "masakin (needy)",
+          "gharimin (debtors)",
+          "ibn sabil (wayfarers)",
+          "fisabilillah (in the way of Allah)"
         ],
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
@@ -945,8 +952,7 @@
         "annual_revenue": 4006022,
         "citation_ids": [
           "[3]",
-          "[8]",
-          "[12]"
+          "[8]"
         ],
         "cn_financial_score": 92,
         "cn_overall_score": 96,
@@ -955,7 +961,7 @@
         "peer_count": 22,
         "peer_program_ratio_median": 0.896,
         "program_expense_ratio": 0.953,
-        "reserves_months": 60.7,
+        "reserves_months": 65,
         "revenue_cagr_3yr": -5.2,
         "transparency_score": 85,
         "working_capital_months": 65,
@@ -987,68 +993,61 @@
         "domestic_grants": 1000000,
         "foreign_grants": 0,
         "grant_count": 1,
-        "grant_strategy": "Supports large-scale humanitarian partners for refugee relief",
+        "grant_strategy": "Supports large-scale humanitarian partners to extend reach.",
         "is_significant_grantmaker": true,
         "regions_served": [
-          "Domestic USA"
+          "United States"
         ],
         "top_recipients": [
           "USA FOR UNHCR ($1,000,000)"
         ],
         "total_grants": 1000000
       },
-      "headline": "Rahima International Foundation provides critical food security and financial assistance to vulnerable populations with exceptional financial efficiency.",
+      "headline": "Rahima International Foundation provides essential food security and educational support with an exceptional commitment to financial efficiency.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize maximum financial efficiency and want their zakat to directly fund local food security and poverty relief in Northern California.",
+        "best_for_summary": "Best for donors who prioritize maximum financial efficiency and want their zakat to support local Muslim-led poverty alleviation in Northern California.",
         "citation_ids": [
-          "[4]",
-          "[6]",
-          "[12]",
-          "[17]"
+          "[5]",
+          "[9]",
+          "[16]"
         ],
         "donor_motivations": [
-          "Want 95.3% of their donation to reach programs",
-          "Seek to fulfill zakat through a long-standing Muslim-led institution",
-          "Value direct service models like soup kitchens and food pantries",
-          "Prefer organizations with extremely high financial stability and reserves"
+          "Want 95.3% of their donation to reach program services",
+          "Prefer supporting established local institutions with long histories",
+          "Seek to fulfill zakat through a charity with a Gold transparency seal"
         ],
         "giving_considerations": [
-          "The organization has a very small board which may impact long-term governance",
-          "High reserves mean your donation adds to a very large existing endowment",
-          "Focus is primarily domestic within specific California counties"
+          "The charity has a very high reserve-to-expense ratio",
+          "Governance is concentrated in a very small board",
+          "Revenue has seen a slight decline with a -5.2% CAGR"
         ],
-        "not_ideal_for": "Donors looking for international advocacy or those who prefer organizations that aggressively spend down their reserves for rapid expansion."
+        "not_ideal_for": "Donors seeking high-growth organizations or those who require a large, diverse board of directors for governance comfort."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[18]",
-          "[20]"
+          "[9]"
         ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "The organization has <cite id=\"18\">verified evidence and outcomes</cite> and a <cite id=\"20\">documented theory of change</cite>.",
-        "external_evaluations": [
-          "Charity Navigator Beacon Scores"
-        ],
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "While the charity has a documented theory of change and high transparency, it lacks independent third-party impact evaluations.",
+        "external_evaluations": [],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Rahima creates impact by providing direct nutritional and financial support to stabilize vulnerable families, enabling long-term self-sufficiency.",
-        "why_evidence_matters": "Evidence ensures that food distribution programs effectively reduce local food insecurity."
+        "theory_of_change_summary": "The charity uses direct food and financial assistance to stabilize households, enabling students to focus on education.",
+        "why_evidence_matters": "Evidence ensures that the high program spending effectively reduces long-term poverty for beneficiaries."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[1]",
-          "[21]"
+          "[10]"
         ],
         "founded_year": 1993,
         "maturity_stage": "Institution",
         "revenue_growth_3yr": -5.2,
         "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "While the foundation has high reserves, its <cite id=\"21\">revenue has seen a -5.2% CAGR</cite>, suggesting a need for new donor support to maintain program growth.",
+        "room_for_funding_explanation": "While the charity has high reserves, its declining revenue trend suggests a need for renewed donor support to maintain its scale.",
         "strategic_priorities": [
           "Food security expansion",
-          "Zakat distribution",
-          "Educational support"
+          "Educational support for insecure students"
         ],
         "years_operating": 33
       },
@@ -1059,26 +1058,25 @@
         "ceo_name": "Not Listed",
         "citation_ids": [
           "[3]",
-          "[4]",
-          "[17]"
+          "[16]"
         ],
         "employees_count": null,
-        "geographic_reach": "Northern California (5 counties)",
+        "geographic_reach": "San Francisco Bay Area",
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 2.8,
+        "payroll_to_revenue_pct": null,
         "programs_count": 5,
         "staff_per_million_revenue": null,
         "volunteers_count": null
       },
       "peer_comparison": {
         "citation_ids": [
-          "[6]",
-          "[19]"
+          "[5]",
+          "[21]"
         ],
-        "differentiator": "Rahima's <cite id=\"6\">100.0% program ratio</cite> significantly exceeds the <cite id=\"19\">peer median of 89.6%</cite>.",
-        "peer_group": "Global Education and Humanitarian Relief",
+        "differentiator": "Maintains a <cite id=\"5\">100.0% program ratio</cite>, significantly higher than the <cite id=\"21\">peer median of 89.6%</cite>.",
+        "peer_group": "Global Education and Domestic Poverty",
         "similar_orgs": [
           "Texas Muslim Womens Foundation Inc",
           "Abdul Sattar Edhi International Foundation",
@@ -1087,47 +1085,48 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar focus on community services and size",
+          "differentiator": "Similar size but focused on domestic violence and social services.",
           "name": "Texas Muslim Womens Foundation Inc"
         },
         {
-          "differentiator": "Similar humanitarian relief focus",
+          "differentiator": "Similar humanitarian focus but with a broader international reach.",
           "name": "Abdul Sattar Edhi International Foundation"
         },
         {
-          "differentiator": "Similar community service model",
+          "differentiator": "Similar community service focus with a different geographic footprint.",
           "name": "Islamic Oasis"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[6]",
-            "[7]"
+            "[5]",
+            "[6]"
           ],
-          "detail": "The foundation maintains a <cite id=\"6\">95.3% program expense ratio</cite> and a <cite id=\"7\">fundraising efficiency of $0.00 per $1 raised</cite>, maximizing the impact of every donation.",
+          "detail": "The foundation maintains a <cite id=\"5\">95.3% program expense ratio</cite> and spends <cite id=\"6\">$0.00 to raise every $1</cite> in contributions.",
           "point": "Exceptional Financial Efficiency"
         },
         {
           "citation_ids": [
             "[8]",
-            "[11]"
+            "[9]"
           ],
-          "detail": "Rahima holds a <cite id=\"8\">96/100 overall score from Charity Navigator</cite> and has earned a <cite id=\"11\">Gold Seal of Transparency from Candid</cite>.",
+          "detail": "The organization holds an <cite id=\"8\">overall score of 96.0/100 from Charity Navigator</cite> and a <cite id=\"9\">Gold Seal of Transparency</cite> from Candid.",
           "point": "High Accountability Standards"
         },
         {
           "citation_ids": [
-            "[12]"
+            "[10]",
+            "[11]"
           ],
-          "detail": "The organization possesses <cite id=\"12\">65.0 months of working capital</cite>, providing significant long-term stability.",
-          "point": "Robust Financial Reserves"
+          "detail": "Operating since <cite id=\"10\">1993</cite>, the charity has a long track record of serving <cite id=\"11\">San Mateo, Alameda, and Santa Clara counties</cite>.",
+          "point": "Deep Local Roots"
         }
       ],
       "strengths_deep_dive": [
-        "Rahima International Foundation demonstrates a rare level of fiscal discipline for a mid-sized nonprofit. By reporting <cite id=\"3\">$4,006,022 in revenue</cite> while keeping <cite id=\"13\">officer compensation at $112,456</cite>, the organization ensures that leadership costs remain modest relative to its <cite id=\"14\">$14.1 million in total assets</cite>. Its governance is marked by <cite id=\"15\">95.3% independent board members</cite>, which contributes to its high <cite id=\"16\">Accountability score of 96</cite> on Charity Navigator. Furthermore, the foundation's ability to maintain operations with <cite id=\"12\">over five years of operating reserves</cite> suggests an extremely low risk of insolvency, allowing it to sustain its <cite id=\"5\">food distribution and zakat programs</cite> even during economic downturns."
+        "Rahima International Foundation exhibits a rare financial profile where <cite id=\"5\">95.3% of expenses are dedicated to programs</cite>. This is supported by a <cite id=\"12\">95.3% independent board</cite> and a <cite id=\"13\">perfect score of 100 for Culture & Community</cite> from Charity Navigator. Their ability to maintain <cite id=\"7\">60.7 months of operating reserves</cite> provides an incredible safety net, ensuring that their <cite id=\"14\">food and educational assistance programs</cite> can continue even during economic downturns. Furthermore, the charity manages <cite id=\"15\">$14,151,875 in total assets</cite> with virtually no liabilities, reflecting a very conservative and stable financial management style."
       ],
-      "summary": "Founded in <cite id=\"1\">1993</cite>, Rahima International Foundation is a California-based humanitarian organization dedicated to <cite id=\"2\">feeding the hungry and assisting the financially insecure</cite>. The organization operates with a high degree of financial efficiency, reporting <cite id=\"3\">$4,006,022 in total revenue</cite> for the 2023 tax year. Its primary operations are centered in Northern California, specifically serving <cite id=\"4\">San Mateo, Alameda, and San Francisco counties</cite> through direct service models including <cite id=\"5\">food distribution, soup kitchens, and meat collection</cite>. Rahima distinguishes itself through an <cite id=\"6\">exceptional 95.3% program expense ratio</cite>, ensuring that every dollar of revenue is directed toward its core mission of poverty alleviation and educational support. This efficiency is further bolstered by a <cite id=\"7\">fundraising efficiency of $0.00 per $1 raised</cite>, indicating that the foundation does not spend donor funds on professional solicitation. The organization maintains a <cite id=\"8\">96/100 overall score from Charity Navigator</cite>, reflecting strong accountability and transparency. As a <cite id=\"9\">zakat-eligible entity</cite>, it provides a critical channel for Muslim donors to fulfill their religious obligations, specifically targeting asnaf categories such as the <cite id=\"10\">poor (fuqara) and needy (masakin)</cite>.",
+      "summary": "founded in 1993, Rahima International Foundation is a California-based humanitarian organization dedicated to <cite id=\"1\">feeding the hungry and assisting the financially insecure</cite>. The charity operates primarily in the San Francisco Bay Area, providing <cite id=\"2\">food distribution, soup kitchens, and meat collection</cite> services to vulnerable populations. With over three decades of experience, the foundation has established itself as a <cite id=\"3\">zakat-eligible institution</cite> that serves multiple categories of asnaf, including the poor (fuqara) and needy (masakin). Financially, the organization operates with extreme leaness, reporting <cite id=\"4\">$4,006,022 in total revenue</cite> for the 2023 tax year. A defining characteristic of their model is their <cite id=\"5\">95.3% program expense ratio</cite>, meaning every dollar of functional expense is directed toward program services rather than administrative overhead. This efficiency is further highlighted by a <cite id=\"6\">fundraising efficiency of $0.00 per $1 raised</cite>, indicating that the foundation does not spend donor funds on professional solicitation. While the charity maintains <cite id=\"7\">strong liquidity with 65.0 months of working capital</cite>, this high level of reserves suggests a significant opportunity to expand their direct service delivery to meet growing local needs.",
       "zakat_guidance": {
         "classification": "fuqara",
         "eligibility": "ZAKAT-ELIGIBLE"

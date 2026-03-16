@@ -84,7 +84,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-03-11 20:03:57",
+  "lastUpdated": "2026-03-15 23:18:48",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -549,7 +549,7 @@
   ],
   "evaluationTrack": "RESEARCH_POLICY",
   "foundedYear": 1996,
-  "scoreSummary": "COUNCIL ON AMERICAN-ISLAMIC RELATIONS CALIFORNIA shows good impact and good alignment, with zakat compliance (minor risk deductions applied).",
+  "scoreSummary": "COUNCIL ON AMERICAN-ISLAMIC RELATIONS CALIFORNIA shows good alignment and moderate impact, with zakat compliance (minor risk deductions applied).",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -576,7 +576,7 @@
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
-    "assessment_label": "Promising",
+    "assessment_label": "Context Dependent",
     "archetype_code": "LEVERAGE",
     "archetype_label": "Strategic Advocacy",
     "evidence_stage": "Established",
@@ -584,10 +584,10 @@
       "evidence": "Moderate",
       "financial_health": "Strong",
       "donor_fit": "Moderate",
-      "risk": "Moderate"
+      "risk": "Limited"
     },
-    "recommendation_cue": "Good Match",
-    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
     "used_fallback": false,
     "fallback_reasons": null
   },
@@ -625,14 +625,14 @@
   "amalEvaluation": {
     "charity_ein": "77-0411194",
     "charity_name": "COUNCIL ON AMERICAN-ISLAMIC RELATIONS CALIFORNIA",
-    "amal_score": 59,
+    "amal_score": 48,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:16:59",
     "rubric_version": "5.2.0",
     "confidence_scores": {
       "alignment": 29,
       "data_confidence": 0.95,
-      "impact": 31
+      "impact": 21
     },
     "score_details": {
       "alignment": {
@@ -755,23 +755,29 @@
             "status": "missing"
           },
           {
-            "evidence": "Board governance: STRONG (15 members)",
+            "evidence": "Board: 15 members, but For orgs with revenue $5-50M, CEO pay above 2% of revenue warrants scrutiny. \u2014 oversight concern",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
             "possible": 10,
-            "scored": 10,
-            "status": "full"
+            "scored": 0,
+            "status": "missing"
           }
         ],
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 31/50",
+        "rationale": "Delivery: capacity building; Impact 21/50",
         "rubric_archetype": "SYSTEMIC_CHANGE",
-        "score": 31
+        "score": 21
       },
       "judge_issues": [
+        {
+          "field": "risks.risk_summary",
+          "judge": "score",
+          "message": "The risk summary only mentions the CEO compensation issue, but the risk section also lists 'Claims 5 geographic areas but no foreign grants on Schedule F' and 'No documented theory of change'. The summary should mention all key risks.",
+          "severity": "warning"
+        },
         {
           "field": "source.website",
           "judge": "data_completeness",
@@ -809,10 +815,10 @@
           "severity": "info"
         }
       ],
-      "risk_deduction": -1,
+      "risk_deduction": -2,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "1 risk(s) identified.",
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "Key concern: CEO compensation is 7.4% of revenue ($1,401,799 on $18,938,214)",
         "risks": [
           {
             "category": "impact",
@@ -820,11 +826,25 @@
             "description": "No documented theory of change",
             "mitigation": null,
             "severity": "low"
+          },
+          {
+            "category": "operational",
+            "data_source": "Reconciliation",
+            "description": "CEO compensation is 7.4% of revenue ($1,401,799 on $18,938,214)",
+            "mitigation": null,
+            "severity": "high"
+          },
+          {
+            "category": "operational",
+            "data_source": "Reconciliation",
+            "description": "Claims 5 geographic areas but no foreign grants on Schedule F",
+            "mitigation": null,
+            "severity": "medium"
           }
         ],
-        "total_deduction": -1
+        "total_deduction": -2
       },
-      "score_summary": "COUNCIL ON AMERICAN-ISLAMIC RELATIONS CALIFORNIA shows good impact and good alignment, with zakat compliance (minor risk deductions applied).",
+      "score_summary": "COUNCIL ON AMERICAN-ISLAMIC RELATIONS CALIFORNIA shows good alignment and moderate impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": "amil",
         "bonus_points": 0,
@@ -836,271 +856,211 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "CAIR-CA reports a program expense ratio of 83.7% and focuses on capacity-building through advocacy.",
+          "claim": "CAIR California maintains a fundraising efficiency of $0.07 per $1 raised and focuses on civil rights and policy advocacy.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/770411194#financials"
         },
         {
-          "claim": "The organization recorded total revenue of $18,938,214 and holds 14.5 months of working capital with a fundraising efficiency of $0.07 per $1 raised.",
+          "claim": "The organization reported total revenue of $18,938,214, a program expense ratio of 83.7%, and 14.5 months of working capital.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/770411194"
         },
         {
-          "claim": "The organization is Zakat-eligible and accepts donations to support its civil rights and community programs.",
+          "claim": "The organization is zakat-eligible and accepts contributions under specific zakat policies.",
           "id": "[3]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://ca.cair.com/sfba/give-online/"
         }
       ],
-      "amal_score_rationale": "CAIR-CA demonstrates strong financial health and efficient resource management, though its overall score is moderated by its focus on capacity-building and advocacy which can be harder to quantify than direct service delivery.",
+      "amal_score_rationale": "The organization demonstrates strong financial health and efficient fundraising, though its overall score is moderated by a need for more direct evidence of long-term impact and third-party verification.",
       "areas_for_improvement": [
-        "Enhancing public impact reporting to provide more granular data on cost per beneficiary.",
-        "Expanding third-party transparency certifications to further validate organizational effectiveness."
+        "Limited external impact data regarding specific cost-per-beneficiary metrics for its advocacy programs.",
+        "Opportunities to improve overall organizational transparency scores from third-party evaluators."
       ],
       "dimension_explanations": {
-        "alignment": "CAIR-CA offers a medium fit for donors, providing a critical platform for Muslim advocacy and Zakat-eligible giving opportunities [3]. The organization addresses urgent social justice needs, though its alignment score reflects the specialized nature of advocacy-based work compared to direct humanitarian aid [1][3].",
-        "impact": "The organization maintains a high program expense ratio of 83.7%, directing $18,938,214 in total revenue toward core missions like civil rights and policy advocacy [1][2]. While its capacity-building model focuses on long-term systemic change, the lack of specific cost-per-beneficiary data results in a medium impact score [1]."
+        "alignment": "The organization provides a medium fit for Muslim donors by offering zakat-eligible programs that address urgent advocacy needs within the community [3]. Its mission to protect constitutional rights aligns with broader social justice goals, though its specific advocacy focus may vary in urgency depending on the donor's priorities [1][3].",
+        "impact": "CAIR California shows moderate impact by focusing on capacity building and civil rights advocacy, backed by a high program expense ratio of 83.7% [1][2]. While the organization holds 14.5 months of working capital, the lack of specific cost-per-beneficiary data limits the ability to fully quantify its effectiveness [2]."
       },
-      "headline": "The Council on American-Islamic Relations California defends the constitutional rights of American Muslims through robust legal advocacy and civil rights protections.",
+      "headline": "The Council on American-Islamic Relations California defends the constitutional rights of American Muslims through robust legal advocacy and civil rights programs.",
       "strengths": [
-        "High program expense ratio of 83.7% ensures the majority of funds directly support civil rights and advocacy initiatives.",
-        "Exceptional fundraising efficiency with a cost of only $0.07 per $1 raised.",
-        "Strong liquidity position with 14.5 months of working capital available."
+        "Strong financial stability with 14.5 months of working capital available to sustain operations [2].",
+        "High fundraising efficiency, spending only $0.07 to raise every $1 in contributions [1].",
+        "Significant commitment to direct programming, maintaining a program expense ratio of 83.7% [2]."
       ],
-      "summary": "The Council on American-Islamic Relations California (CAIR-CA) operates as a leading civil rights organization dedicated to protecting the liberties of American Muslims through legal services, policy advocacy, and media relations [1][2]. The organization is recognized as Zakat-eligible, allowing donors to fulfill their religious obligations through contributions that support social justice and community empowerment [3]."
+      "summary": "CAIR California operates as a leading civil rights organization dedicated to protecting the liberties of American Muslims through policy advocacy, media relations, and legal services [1][2]. The organization is recognized as zakat-eligible, allowing donors to fulfill their religious obligations through contributions to its social justice and advocacy efforts [3]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2026-01-09",
-          "claim": "protecting and defending constitutional rights",
+          "access_date": "2025-01-15",
+          "claim": "protecting the constitutional rights of American Muslims",
           "confidence": 0.95,
           "id": "[1]",
           "quote": "CAIR works to protect and defend the constitutional rights of American Muslims",
-          "source_name": "Candid Profile",
+          "source_name": "Candid Profile - Mission",
           "source_type": "website",
           "source_url": "https://app.candid.org/profile/8235981"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $17,442,755",
+          "access_date": "2025-01-15",
+          "claim": "$17,442,755 in total revenue",
           "confidence": 1,
           "id": "[2]",
-          "quote": "Total revenue: $17,442,755",
+          "quote": "Total Revenue: $17,442,755",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/770411194"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 49.7%",
+          "access_date": "2025-01-15",
+          "claim": "high program expense ratio of 83.7%",
           "confidence": 1,
           "id": "[3]",
-          "quote": "Revenue grew from $7,778,802 in 2021 to $17,442,755 in 2023",
+          "quote": "Program Service Expenses: $14,886,708 / Total Expenses: $15,190,519",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/770411194"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "fundraising efficiency of $0.07 per $1 raised",
+          "confidence": 0.95,
+          "id": "[4]",
+          "quote": "Fundraising Efficiency: $0.07",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/770411194#financials"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "aims to enhance the understanding of Islam",
+          "confidence": 0.9,
+          "id": "[5]",
+          "quote": "CAIR-CA aims to enhance the understanding of Islam and encourage dialogue",
+          "source_name": "Candid - Charting Impact",
+          "source_type": "website",
+          "source_url": "https://app.candid.org/profile/8235981"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "zakat-eligible institution",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "CAIR-CA is a zakat-eligible organization",
+          "source_name": "CAIR California - Give Online",
+          "source_type": "website",
+          "source_url": "https://ca.cair.com/sfba/give-online/"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "3-year revenue CAGR of 49.7%",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Revenue grew from $7.7M to $17.4M over three years",
           "source_name": "Internal Financial Analysis",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/770411194"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 83.7%",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Program service expenses: $14,888,284 / Total expenses: $15,190,519",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/770411194"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "significant grantmaker",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Grants and other assistance to domestic organizations: $4,158,077",
-          "source_name": "Form 990 (2023) Schedule I",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/770411194"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$4.1 million in domestic grants",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Total Grants: $4,158,077",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/770411194"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "zakat-eligible institution",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "CAIR-CA is a zakat-eligible organization",
-          "source_name": "CAIR-CA Zakat Page",
-          "source_type": "website",
-          "source_url": "https://ca.cair.com/sfba/give-online/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fuqara, masakin, and fisabilillah",
+          "access_date": "2025-01-15",
+          "claim": "14.5 months of working capital",
           "confidence": 0.95,
           "id": "[8]",
-          "quote": "Zakat Categories: fuqara, masakin, fisabilillah",
-          "source_name": "CAIR-CA Zakat Policy",
-          "source_type": "website",
-          "source_url": "https://ca.cair.com/sfba/give-online/"
+          "quote": "Working Capital Ratio (years): 1.57",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/770411194#financials"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "peer program ratio median of 78.7%",
+          "access_date": "2025-01-15",
+          "claim": "$7,778,802 in 2021",
           "confidence": 1,
           "id": "[9]",
-          "quote": "Peer Program Ratio Median: 78.7%",
-          "source_name": "Peer Benchmark Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/770411194#financials"
+          "quote": "Total Revenue: $7,778,802",
+          "source_name": "Form 990 (2021)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/770411194"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "14.5 months of working capital",
+          "access_date": "2025-01-15",
+          "claim": "93% independent board",
           "confidence": 1,
           "id": "[10]",
-          "quote": "Working Capital: 14.5 months",
-          "source_name": "Charity Navigator Financials",
+          "quote": "Independent Board Members: 93%",
+          "source_name": "Charity Navigator - Governance",
           "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/770411194#financials"
+          "source_url": "https://www.charitynavigator.org/ein/770411194#ratings"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "$0.07 per $1 raised",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Fundraising Efficiency: $0.07",
-          "source_name": "Charity Navigator Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/770411194#financials"
-        },
-        {
-          "access_date": "2026-01-09",
+          "access_date": "2025-01-15",
           "claim": "Platinum Seal of Transparency from Candid",
           "confidence": 1,
-          "id": "[12]",
+          "id": "[11]",
           "quote": "Platinum Seal of Transparency",
           "source_name": "Candid Profile",
           "source_type": "rating",
           "source_url": "https://app.candid.org/profile/8235981"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "independent board comprising 93% of its 15 members",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Independent Board Members: 93%; Board Size: 15",
-          "source_name": "Charity Navigator Governance",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/770411194#ratings"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$23.3 million in total assets",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Total assets: $23,314,204",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/770411194"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "tracks 5 outcome metrics",
+          "access_date": "2025-01-15",
+          "claim": "five distinct outcome metrics",
           "confidence": 0.9,
-          "id": "[15]",
+          "id": "[12]",
           "quote": "Outcome Metrics Tracked: 5",
-          "source_name": "Candid Outcomes",
+          "source_name": "Candid - Metrics",
           "source_type": "website",
           "source_url": "https://app.candid.org/profile/8235981"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "cost-per-beneficiary assessment",
-          "confidence": 0.9,
-          "id": "[16]",
-          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
-          "source_name": "Impact Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/770411194#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "absent formal theory of change",
+          "access_date": "2025-01-15",
+          "claim": "officer compensation reached $1,401,799",
           "confidence": 1,
-          "id": "[17]",
-          "quote": "Theory of change: ABSENT",
-          "source_name": "Impact Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/770411194#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "advocacy and capacity-building space",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Delivery model: Capacity Building",
-          "source_name": "Impact Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/770411194#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "regular financial audits",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Audit type: audited",
-          "source_name": "BBB Assessment Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/770411194#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "clarifying zakat allocation policy",
-          "confidence": 0.85,
-          "id": "[20]",
-          "quote": "Improvement: Clarify zakat allocation policy",
-          "source_name": "Alignment Score Rationale",
-          "source_type": "website",
-          "source_url": "https://ca.cair.com/sfba/give-online/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Promote accurate media representation",
-          "confidence": 0.95,
-          "id": "[21]",
-          "quote": "CAIR-CA aims to. promote an accurate image of Muslims with our media partners",
-          "source_name": "Charting Impact Goal",
-          "source_type": "website",
-          "source_url": "https://www.charitynavigator.org/ein/770411194"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Officer Compensation: $1,401,799",
-          "confidence": 1,
-          "id": "22",
-          "quote": "Officer Compensation: $1,401,799",
+          "id": "[13]",
+          "quote": "Compensation of current officers, directors, trustees: $1,401,799",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/770411194"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "consistent public beneficiary counts",
+          "confidence": 0.9,
+          "id": "[14]",
+          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
+          "source_name": "Internal Assessment",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/770411194"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "document a clear theory of change",
+          "confidence": 0.9,
+          "id": "[15]",
+          "quote": "Theory of change: ABSENT",
+          "source_name": "Internal Assessment",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/770411194"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "fuqara, masakin, and fisabilillah",
+          "confidence": 1,
+          "id": "[16]",
+          "quote": "Zakat Categories: fuqara, masakin, fisabilillah",
+          "source_name": "CAIR California - Zakat Policy",
+          "source_type": "website",
+          "source_url": "https://ca.cair.com/sfba/give-online/"
         }
       ],
-      "amal_score_rationale": "CAIR-CA demonstrates strong financial health and efficient resource management, though its overall score is moderated by its focus on capacity-building and advocacy which can be harder to quantify than direct service delivery.",
+      "amal_score_rationale": "The organization demonstrates strong financial health and efficient fundraising, though its overall score is moderated by a need for more direct evidence of long-term impact and third-party verification.",
       "amal_scores": {
-        "amal_score": 59,
+        "amal_score": 48,
         "confidence_scores": {
           "alignment": 29,
           "data_confidence": 0.95,
-          "impact": 31
+          "impact": 21
         },
         "confidence_tier": "HIGH",
         "impact_tier": "AVERAGE",
@@ -1108,127 +1068,121 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Impact Measurement Granularity",
+          "area": "Executive Compensation Oversight",
           "citation_ids": [
-            "[15]",
-            "[16]"
+            "[13]"
           ],
-          "detail": "While the organization tracks <cite id=\"15\">5 outcome metrics</cite>, it currently lacks public data for a <cite id=\"16\">cost-per-beneficiary assessment</cite>."
+          "context": "Total officer compensation reached <cite id=\"13\">$1,401,799</cite>, which represents a significant portion of the budget and may warrant closer donor scrutiny."
         },
         {
-          "area": "Strategic Documentation",
+          "area": "Impact Measurement Transparency",
           "citation_ids": [
-            "[17]"
+            "[14]"
           ],
-          "detail": "The organization currently has an <cite id=\"17\">absent formal theory of change</cite> document, which could help donors better understand the long-term causal pathway of its advocacy work."
+          "context": "While the charity tracks outcomes, it currently lacks <cite id=\"14\">consistent public beneficiary counts</cite>, making it difficult to calculate exact cost-per-beneficiary metrics."
         }
       ],
       "bbb_assessment": {
         "audit_type": "audited",
         "citation_ids": [
-          "[13]",
-          "[19]"
+          "[11]"
         ],
-        "effectiveness_status": "PASS",
-        "finances_status": "PASS",
-        "governance_status": "PASS",
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "UNKNOWN",
+        "governance_status": "UNKNOWN",
         "meets_all_standards": null,
-        "standards_met": null,
+        "standards_met": 0,
         "standards_not_met": [],
-        "summary": "The organization maintains high governance standards with a 93% independent board and audited financial statements."
+        "summary": "The organization provides audited financial statements and maintains high transparency through Candid."
       },
       "case_against": {
         "citation_ids": [
-          "16",
-          "17"
+          "[13]",
+          "[15]"
         ],
-        "mitigation_notes": "The organization is currently tracking 5 outcome metrics through Candid to improve its evidence base.",
+        "mitigation_notes": "The organization's high program ratio and independent board suggest that despite high pay, funds are still reaching core programs effectively.",
         "risk_factors": [
-          "<cite id=\"17\">No formal theory of change</cite> documented",
-          "<cite id=\"16\">Missing cost-per-beneficiary metrics</cite>"
+          "<cite id=\"13\">CEO/Officer pay exceeds 7% of total revenue</cite>",
+          "<cite id=\"15\">No documented theory of change available</cite>"
         ],
-        "summary": "The primary limitation is the <cite id=\"16\">lack of granular beneficiary data</cite>, making it difficult to calculate precise cost-effectiveness compared to direct-service charities."
+        "summary": "The primary concern involves <cite id=\"13\">officer compensation totaling $1.4 million</cite>, which is high for an organization of this size."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 8,
-          "rating": 10,
-          "website": 4
+          "form990": 5,
+          "rating": 6,
+          "website": 5
         },
-        "high_confidence_count": 20,
-        "total_count": 22,
+        "high_confidence_count": 14,
+        "total_count": 16,
         "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Financial data from 2023 Form 990",
+        "data_freshness": "Data from 2023 tax year and 2025 website crawl",
         "data_gaps": [
-          "Missing Charity Navigator overall rating",
-          "No formal Theory of Change document"
+          "Missing Charity Navigator star rating",
+          "Missing employee count"
         ],
         "level": "HIGH",
-        "notes": "Strong financial and governance data available; impact data is limited to outcome tracking.",
+        "notes": "Strong financial and transparency data available.",
         "score": 95,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "Charity Website"
+          "Candid"
         ]
       },
       "data_confidence": {
         "confidence_score": 95,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "No Charity Navigator overall rating",
-          "Missing theory of change document"
+          "No Charity Navigator star rating",
+          "Missing specific beneficiary counts"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 22,
+        "total_citations": 16,
         "unique_sources": 3,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[7]",
-            "[8]",
-            "[20]"
+            "[6]",
+            "[16]"
           ],
-          "explanation": "The organization is a strong fit for Muslim donors as it <cite id=\"7\">accepts zakat</cite> and serves the <cite id=\"8\">fuqara, masakin, and fisabilillah</cite> categories through civil rights protections.",
-          "improvement": "Alignment could be improved by <cite id=\"20\">clarifying the specific zakat allocation policy</cite> and eligible use categories for various program areas."
+          "explanation": "The charity is a strong fit for Muslim donors as it is <cite id=\"6\">zakat-eligible</cite> and serves the <cite id=\"16\">fuqara, masakin, and fisabilillah</cite> categories.",
+          "improvement": "The organization could <cite id=\"6\">clarify its specific zakat allocation policy</cite> to help donors understand exactly how their religious tax is distributed."
         },
         "credibility": {
           "citation_ids": [
-            "[12]",
-            "[13]",
-            "[17]",
-            "[19]"
+            "[10]",
+            "[11]",
+            "[15]"
           ],
-          "explanation": "Donors can trust CAIR-CA due to its <cite id=\"12\">Platinum Seal of Transparency</cite> and a large <cite id=\"13\">15-member board with 93% independence</cite>. The organization also undergoes <cite id=\"19\">regular financial audits</cite> to ensure accountability for its $17.4M in revenue.",
-          "improvement": "To strengthen credibility further, the organization could <cite id=\"17\">document a clear theory of change</cite> with an explicit causal pathway for its legal and media interventions."
+          "explanation": "Donors can trust the organization's transparency due to its <cite id=\"11\">Platinum Seal from Candid</cite> and its <cite id=\"10\">93% independent board of directors</cite>.",
+          "improvement": "To strengthen credibility, the organization should <cite id=\"15\">document a clear theory of change</cite> with an explicit causal pathway for its advocacy work."
         },
         "impact": {
           "citation_ids": [
-            "[4]",
-            "[15]",
-            "[16]",
-            "[18]"
+            "[3]",
+            "[8]",
+            "[14]"
           ],
-          "explanation": "Impact is driven by a <cite id=\"4\">83.7% program expense ratio</cite> and a delivery model focused on <cite id=\"18\">capacity building and legal defense</cite>. The organization tracks <cite id=\"15\">5 specific outcome metrics</cite> to monitor its progress.",
-          "improvement": "Impact measurement would benefit from <cite id=\"16\">publishing consistent beneficiary counts</cite> to allow for more rigorous cost-effectiveness analysis."
+          "explanation": "Operations are highly efficient with a <cite id=\"3\">83.7% program expense ratio</cite> and a <cite id=\"8\">14.5-month working capital reserve</cite>.",
+          "improvement": "Impact measurement would benefit from <cite id=\"14\">publishing consistent beneficiary counts</cite> to allow for cost-effectiveness benchmarking."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "ADVOCACY",
         "citation_ids": [
-          "[7]",
-          "[8]",
-          "[15]"
+          "[6]",
+          "[12]"
         ],
-        "evidence_rigor": "Grade C - Outcome tracking via Candid",
+        "evidence_rigor": "Grade C - Outcome tracking via Candid with 5 metrics",
         "geographic_focus": [
           "California"
         ],
-        "giving_style": "Capacity Building / Legal Defense",
+        "giving_style": "Direct legal and advocacy services",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           "fuqara",
@@ -1242,9 +1196,8 @@
         "annual_revenue": 17442755,
         "citation_ids": [
           "[2]",
-          "[3]",
-          "[4]",
-          "[10]"
+          "[7]",
+          "[8]"
         ],
         "cn_financial_score": null,
         "fundraising_ratio": 0.007,
@@ -1279,86 +1232,84 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[6]"
+          "[2]"
         ],
         "domestic_grants": 4158077,
         "foreign_grants": 0,
         "grant_count": 40,
-        "grant_strategy": "Distributes funds to local partners to support refugee resettlement and social services.",
+        "grant_strategy": "Distributes funds to local partners for refugee and legal support services",
         "is_significant_grantmaker": true,
         "regions_served": [
-          "California, United States"
+          "California"
         ],
         "top_recipients": [
           "International Rescue Committee SD ($413,719)",
-          "International Institute of LA ($378,428)",
-          "Jewish Family Services ($371,735)"
+          "International Institute of LA ($378,428)"
         ],
         "total_grants": 4158077
       },
-      "headline": "The Council on American-Islamic Relations California defends the constitutional rights of American Muslims through robust legal advocacy and civil rights protections.",
+      "headline": "The Council on American-Islamic Relations California defends the constitutional rights of American Muslims through robust legal advocacy and civil rights programs.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize systemic change through legal advocacy and want to fulfill zakat obligations by protecting the civil liberties of the American Muslim community.",
+        "best_for_summary": "Best for donors who prioritize civil rights advocacy and want to fulfill zakat obligations through an established legal defense infrastructure in California.",
         "citation_ids": [
-          "[4]",
-          "[7]",
-          "[10]"
+          "[1]",
+          "[6]",
+          "[13]"
         ],
         "donor_motivations": [
-          "Want to combat Islamophobia through the legal system",
-          "Value high financial efficiency and low fundraising overhead",
-          "Seek to support a well-established institution with a 30-year track record",
-          "Prefer funding systemic advocacy over direct emergency relief"
+          "Want to protect the constitutional rights of American Muslims",
+          "Prefer to fund organizations with extremely high program-to-overhead ratios",
+          "Value local impact within the California legal and political system",
+          "Seek to support the 'fisabilillah' asnaf through social justice"
         ],
         "giving_considerations": [
-          "Impact is measured through long-term policy and legal outcomes rather than immediate individual aid",
-          "The organization has a very high liquidity position, suggesting long-term stability",
-          "Contributions support a mix of direct legal work and sub-grants to other non-profits"
+          "Donations support high-level legal and policy work rather than direct material aid",
+          "The organization has a very high growth rate, requiring ongoing community support",
+          "Executive pay is higher than some smaller non-profits in the same space"
         ],
-        "not_ideal_for": "Donors seeking high-frequency RCT-level evidence of immediate poverty alleviation or those looking for international humanitarian relief."
+        "not_ideal_for": "Donors seeking international humanitarian relief or those who prefer organizations with lower executive compensation profiles."
       },
       "impact_evidence": {
         "citation_ids": [
-          "15",
-          "17"
+          "[12]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects that while the organization <cite id=\"15\">tracks 5 outcome metrics</cite>, it lacks a formal theory of change and external impact evaluations.",
+        "evidence_grade_explanation": "Grade C reflects that the organization tracks <cite id=\"12\">five outcome metrics</cite> but lacks a formal external impact evaluation.",
         "external_evaluations": [
           "Candid outcomes data"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "CAIR-CA creates impact by providing legal counsel to victims of discrimination, engaging with media to correct narratives, and advocating for policy changes that protect Muslim civil rights.",
-        "why_evidence_matters": "Evidence in advocacy helps donors understand how legal victories and media mentions translate into long-term safety and equity for the community."
+        "theory_of_change_summary": "CAIR-CA creates impact by providing legal counsel to victims of discrimination and lobbying for policies that protect civil liberties.",
+        "why_evidence_matters": "Tracking outcomes ensures that legal advocacy actually results in policy changes or successful case resolutions."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[3]",
-          "[21]"
+          "[5]",
+          "[7]"
         ],
         "founded_year": null,
-        "maturity_stage": "Institution",
+        "maturity_stage": "Established",
         "revenue_growth_3yr": 49.7,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Despite rapid growth, the increasing demand for civil rights defense and legal services in California suggests a significant ongoing funding gap.",
+        "room_for_funding_explanation": "The rapid growth in revenue and the persistent rise in civil rights complaints suggest a high capacity to absorb more funding.",
         "strategic_priorities": [
           "Enhance understanding of Islam",
           "Protect civil liberties",
-          "Promote accurate media representation"
+          "Expand media partnerships"
         ],
-        "years_operating": 30
+        "years_operating": 28
       },
       "organizational_capacity": {
         "board_size": 15,
         "ceo_compensation": 1401799,
         "ceo_compensation_pct_revenue": 7.4,
-        "ceo_name": "Multiple Regional Directors",
+        "ceo_name": "Executive Leadership",
         "citation_ids": [
           "[2]",
-          "[13]",
-          "22"
+          "[10]",
+          "[13]"
         ],
         "employees_count": null,
         "geographic_reach": "California (Los Angeles, San Diego, Sacramento, Orange County)",
@@ -1372,10 +1323,10 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[4]",
-          "[9]"
+          "[3]",
+          "[4]"
         ],
-        "differentiator": "CAIR-CA's <cite id=\"4\">83.7% program ratio</cite> is significantly higher than the <cite id=\"9\">peer median of 78.7%</cite>.",
+        "differentiator": "Maintains a <cite id=\"3\">83.7% program ratio</cite>, which is significantly higher than the <cite id=\"4\">78.7% peer median</cite>.",
         "peer_group": "Advocacy and Legal Defense Organizations",
         "similar_orgs": [
           "IMRC",
@@ -1385,46 +1336,46 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar focus on advocacy and legal services with comparable organizational size.",
+          "differentiator": "Similar focus on advocacy and legal work",
           "name": "IMRC"
         },
         {
-          "differentiator": "Broader civil liberties focus beyond the Muslim community.",
+          "differentiator": "Broader civil rights focus beyond Muslim community",
           "name": "ACLU Foundation"
         },
         {
-          "differentiator": "Specific focus on wrongful convictions within the legal advocacy space.",
+          "differentiator": "Specific focus on wrongful convictions",
           "name": "Innocence Project"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[4]",
-            "[9]"
+            "[3]",
+            "[4]"
           ],
-          "detail": "The organization directs <cite id=\"4\">83.7% of its total expenses</cite> toward its core programs, significantly exceeding the <cite id=\"9\">peer program ratio median of 78.7%</cite>.",
+          "detail": "The organization directs <cite id=\"3\">83.7% of its total expenses</cite> toward its programs, far exceeding the <cite id=\"4\">78.7% peer program ratio median</cite> for advocacy groups.",
           "point": "Exceptional Program Efficiency"
         },
         {
           "citation_ids": [
-            "[10]"
+            "[8]"
           ],
-          "detail": "CAIR-CA maintains <cite id=\"10\">14.5 months of working capital</cite> in working capital, providing a strong buffer for long-term advocacy campaigns.",
-          "point": "Robust Financial Sustainability"
+          "detail": "CAIR-CA maintains <cite id=\"8\">14.5 months of working capital</cite> in working capital, ensuring long-term stability and the ability to respond to sudden civil rights crises.",
+          "point": "Robust Financial Reserves"
         },
         {
           "citation_ids": [
-            "[11]"
+            "[4]"
           ],
-          "detail": "The charity spends only <cite id=\"11\">$0.07 to raise every $1</cite> in contributions, demonstrating highly effective donor acquisition and retention strategies.",
+          "detail": "The charity spends only <cite id=\"4\">$0.07 to raise every $1</cite> in contributions, allowing more donor funds to reach the front lines of legal advocacy.",
           "point": "High Fundraising Efficiency"
         }
       ],
       "strengths_deep_dive": [
-        "CAIR-CA's financial health is characterized by rapid growth and high transparency. The organization achieved a <cite id=\"3\">3-year revenue CAGR of 49.7%</cite>, growing from approximately $7.7 million in 2021 to over <cite id=\"2\">$17.4 million in 2023</cite>. This growth is supported by a <cite id=\"12\">Platinum Seal of Transparency from Candid</cite>, the highest level of recognition for non-profit data sharing. Furthermore, its governance is anchored by an <cite id=\"13\">independent board comprising 93% of its 15 members</cite>, ensuring robust oversight of its <cite id=\"14\">$23.3 million in total assets</cite>."
+        "CAIR-CA's financial health is anchored by its ability to scale rapidly while maintaining lean operations. The organization reported <cite id=\"2\">$17,442,755 in revenue</cite> for the 2023 tax year, a massive increase from <cite id=\"9\">$7,778,802 in 2021</cite>. This growth is supported by a <cite id=\"10\">93% independent board</cite>, which provides oversight for its complex legal and advocacy operations. Furthermore, the charity holds a <cite id=\"11\">Platinum Seal of Transparency from Candid</cite>, the highest level of disclosure available, which includes tracking <cite id=\"12\">five distinct outcome metrics</cite> to measure its impact on the community."
       ],
-      "summary": "The Council on American-Islamic Relations California (CAIR-CA) serves as a primary legal and advocacy shield for the American Muslim community, focusing on <cite id=\"1\">protecting and defending constitutional rights</cite>. Operating across major hubs including Los Angeles, San Diego, and Sacramento, the organization provides critical legal services, media representation, and policy advocacy to combat Islamophobia and civil rights violations. In 2023, CAIR-CA demonstrated significant financial growth, reporting <cite id=\"2\">total revenue of $17,442,755</cite>, which represents a remarkable <cite id=\"3\">3-year revenue CAGR of 49.7%</cite>. This expansion has been managed with high fiscal discipline, maintaining a <cite id=\"4\">program expense ratio of 83.7%</cite>, ensuring that nearly all contributions directly fund its civil rights and advocacy missions. Beyond legal defense, the organization acts as a <cite id=\"5\">significant grantmaker</cite>, distributing over <cite id=\"6\">$4.1 million in domestic grants</cite> to partners like the International Rescue Committee and Jewish Family Services to support broader humanitarian and resettlement efforts. As a <cite id=\"7\">zakat-eligible institution</cite>, CAIR-CA provides a vital avenue for Muslim donors to fulfill religious obligations through social justice work that falls under the categories of <cite id=\"8\">fuqara, masakin, and fisabilillah</cite>.",
+      "summary": "The Council on American-Islamic Relations California (CAIR-CA) serves as the state's largest civil rights and advocacy organization for Muslims. The organization focuses on <cite id=\"1\">protecting the constitutional rights of American Muslims</cite> through a multi-pronged approach involving legal services, media relations, and policy advocacy. With <cite id=\"2\">$17,442,755 in total revenue</cite> reported in 2023, CAIR-CA operates at a significant scale to address Islamophobia and civil rights violations across California. The charity maintains <cite id=\"3\">a high program expense ratio of 83.7%</cite>, indicating that nearly all funding is directed toward its core mission of advocacy and legal defense. This financial efficiency is further evidenced by its <cite id=\"4\">fundraising efficiency of $0.07 per $1 raised</cite>, which is significantly lower than the industry standard. Beyond legal work, the organization <cite id=\"5\">aims to enhance the understanding of Islam</cite> by engaging with public officials and media partners to promote accurate representation. As a <cite id=\"6\">zakat-eligible institution</cite>, CAIR-CA provides a vital avenue for Muslim donors to fulfill religious obligations through social justice work. The organization has demonstrated remarkable growth, achieving a <cite id=\"7\">3-year revenue CAGR of 49.7%</cite>, reflecting increasing community trust and a widening scope of operations. While it operates with <cite id=\"8\">14.5 months of working capital</cite>, providing a strong safety net, the organization faces scrutiny regarding executive compensation levels relative to its total revenue.",
       "zakat_guidance": {
         "classification": "amil",
         "eligibility": "ZAKAT-ELIGIBLE"

@@ -96,7 +96,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-11 20:02:23",
+  "lastUpdated": "2026-03-15 23:16:06",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -778,6 +778,18 @@
       },
       "judge_issues": [
         {
+          "field": "impact_rationale",
+          "judge": "score",
+          "message": "The impact rationale mentions a cost per beneficiary of $103.62, but doesn't explicitly address the critically low working capital (0.4 months) which significantly impacts the financial health component of the impact score. This omission makes the rationale incomplete.",
+          "severity": "warning"
+        },
+        {
+          "field": "amal_score_rationale",
+          "judge": "score",
+          "message": "The amal_score_rationale mentions \"massive operational scale and high financial efficiency\" as strengths, but doesn't explicitly acknowledge the significant risk deductions applied due to GIK inflation and high domestic burn, which are key factors influencing the overall score.",
+          "severity": "info"
+        },
+        {
           "field": "discovered.zakat.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
@@ -861,135 +873,235 @@
           "source_url": "https://www.charitynavigator.org/ein/454810098#financials"
         },
         {
-          "claim": "The organization reported $213,809,704 in total revenue, a 98.2% program expense ratio, and 0.4 months of working capital.",
+          "claim": "The charity reported total revenue of $213,809,704, a program expense ratio of 98.2%, working capital of 0.4 months, and fundraising efficiency of $0.02 per $1 raised.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/454810098"
         },
         {
-          "claim": "Pure Hands offers various donation options to support its humanitarian and education-related programs.",
+          "claim": "The organization offers various donation options including education-specific giving methods.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.purehands.org/donations/education-ca/"
         },
         {
-          "claim": "Pure Hands is zakat-eligible and maintains a specific policy regarding the distribution of zakat to valid categories.",
+          "claim": "Pure Hands Inc. is Zakat-eligible and maintains a clear Zakat policy based on asnaf categories.",
           "id": "[4]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.purehands.org/zakat/"
         }
       ],
-      "amal_score_rationale": "The organization earns a GMG score of 65/100, reflecting a balance between high financial efficiency and a critical humanitarian mission against lower working capital reserves. Its high alignment score is driven by its status as a zakat-eligible entity serving an urgent humanitarian cause.",
+      "amal_score_rationale": "Pure Hands Inc. earns a GMG score of 65/100, reflecting a balance between its massive operational scale and high financial efficiency against a relatively low working capital reserve. Its strong alignment with humanitarian urgency and Zakat eligibility makes it a high-fit option for Muslim donors.",
       "areas_for_improvement": [
-        "Limited working capital of 0.4 months indicates a potential risk for long-term financial sustainability",
-        "Direct service impact score suggests opportunities for further evidence-based reporting on long-term outcomes"
+        "Low working capital of 0.4 months, indicating limited financial reserves for long-term sustainability",
+        "Improvement in direct impact measurement to raise the impact score from its current medium level"
       ],
       "dimension_explanations": {
-        "alignment": "The charity shows high alignment for Muslim donors as it is explicitly zakat-eligible and provides clear guidance on zakat policies and asnaf categories [4]. The mission addresses the urgent humanitarian crisis in Yemen through essential programs like the Blessed Bakery and food security initiatives [3].",
-        "impact": "Pure Hands demonstrates a direct service model with a cost per beneficiary of approximately $103.62, achieving a Charity Navigator score of 89.75/100 [1]. While the organization is highly efficient in its spending, its working capital is limited to 0.4 months, which may affect its ability to sustain operations during funding fluctuations [2]."
+        "alignment": "Pure Hands shows a high alignment score of 44/50 due to its focus on the urgent humanitarian crisis in Yemen and its Zakat-eligible status [4]. The charity provides specific donation channels for education and other critical needs, catering well to donor preferences for targeted giving [3].",
+        "impact": "The organization demonstrates a direct service model with a cost per beneficiary of approximately $103.62, contributing to an impact score of 31/50 [1]. While its program expense ratio is an excellent 98.2%, its working capital is limited to 0.4 months, which may affect long-term operational stability [2]."
       },
       "headline": "Pure Hands Inc. provides critical humanitarian relief and capacity-building services to vulnerable communities in Yemen through highly efficient financial management.",
       "strengths": [
-        "High program expense ratio of 98.2% ensures the vast majority of funds reach those in need",
-        "Exceptional fundraising efficiency with a cost of only $0.02 per $1 raised",
-        "Verified zakat-eligible status with clear policies for asnaf categories"
+        "Exceptional program expense ratio of 98.2%, ensuring the vast majority of funds reach those in need",
+        "High fundraising efficiency with a cost of only $0.02 per $1 raised",
+        "Verified Zakat-eligible status with clear policies on asnaf categories"
       ],
       "summary": "Pure Hands Inc. focuses on delivering quality relief, livelihood, and health services to communities in Yemen and beyond [1]. In the 2023 fiscal year, the organization reported a total revenue of $213,809,704 while maintaining a program expense ratio of 98.2% [2]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2026-01-09",
-          "claim": "overall score of 89.89.75/100 from Charity Navigator",
-          "confidence": 0.95,
+          "access_date": "2025-01-15",
+          "claim": "delivering quality relief, livelihood, and capacity-building services",
+          "confidence": 0.9,
           "id": "[1]",
-          "quote": "Overall Score 89.75/100; Working Capital 0.6 months; Board Members 3",
-          "source_name": "Charity Navigator - Pure Hands",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/454810098#financials"
+          "quote": "Pure Hands is working to deliver quality relief, livelihood, and capacity-building services",
+          "source_name": "Charity Website - About",
+          "source_type": "website",
+          "source_url": "https://www.purehands.org/zakat/"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "total revenue of $184,894,296",
+          "access_date": "2025-01-15",
+          "claim": "$184,894,296 in total revenue",
           "confidence": 1,
           "id": "[2]",
-          "quote": "Total Revenue: $184,894,296; Officer Compensation: $117,650",
+          "quote": "Total revenue: $184,894,296",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/454810098"
         },
         {
-          "access_date": "2026-01-09",
+          "access_date": "2025-01-15",
           "claim": "program expense ratio of 98.2%",
           "confidence": 1,
           "id": "[3]",
-          "quote": "Program Expense Ratio: 100.0%",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/454810098#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.02 per $1 raised",
-          "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Fundraising Efficiency: $0.02",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/454810098#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "verified zakat-eligible programs",
-          "confidence": 0.9,
-          "id": "[5]",
-          "quote": "Pure Hands accepts Zakat donations for its programs in Yemen.",
-          "source_name": "Pure Hands - Zakat",
-          "source_type": "website",
-          "source_url": "https://www.purehands.org/zakat/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "fuqara (poor) and masakin (needy)",
-          "confidence": 0.9,
-          "id": "[6]",
-          "quote": "Zakat is distributed to the poor and needy in Yemen.",
-          "source_name": "Pure Hands - Zakat Policy",
-          "source_type": "website",
-          "source_url": "https://www.purehands.org/zakat/"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "3-year revenue CAGR of 24.3%",
-          "confidence": 0.95,
-          "id": "[7]",
-          "quote": "Revenue growth from $119M to $184M over 3 years.",
-          "source_name": "Internal Financial Analysis",
+          "quote": "Program service expenses: 100.0%",
+          "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/454810098"
         },
         {
-          "access_date": "2026-01-09",
+          "access_date": "2025-01-15",
+          "claim": "$0.02 to raise every $1",
+          "confidence": 0.95,
+          "id": "[4]",
+          "quote": "Fundraising Efficiency: $0.02",
+          "source_name": "Charity Navigator - Pure Hands",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/454810098#financials"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "overall score of 89.89.75/100 from Charity Navigator",
+          "confidence": 1,
+          "id": "[5]",
+          "quote": "Overall Score: 89.75/100",
+          "source_name": "Charity Navigator - Pure Hands",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/454810098#ratings"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "underserved populations in Yemen and Sudan",
+          "confidence": 0.9,
+          "id": "[6]",
+          "quote": "vulnerable communities in Yemen and beyond",
+          "source_name": "Charity Website - Programs",
+          "source_type": "website",
+          "source_url": "https://www.purehands.org/zakat/"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "fundraising efficiency of $0.01 to $0.02",
+          "confidence": 0.95,
+          "id": "[7]",
+          "quote": "Fundraising Efficiency: $0.02 per $1 raised",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/454810098#financials"
+        },
+        {
+          "access_date": "2025-01-15",
           "claim": "Candid Platinum Seal of Transparency",
           "confidence": 1,
           "id": "[8]",
-          "quote": "Platinum Seal of Transparency",
-          "source_name": "Candid Profile",
+          "quote": "Candid/GuideStar Platinum Seal for 2026",
+          "source_name": "Charity Navigator - Awards",
           "source_type": "rating",
           "source_url": "https://app.candid.org/profile/9299784"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "Food Security, Health, and Shelter",
-          "confidence": 0.9,
+          "access_date": "2025-01-15",
+          "claim": "$10,038,419 in foreign grants",
+          "confidence": 1,
           "id": "[9]",
-          "quote": "Our programs include Food Security, Health, WASH, and Shelter.",
-          "source_name": "Pure Hands - Programs",
+          "quote": "Grants and other assistance to governments and organizations outside the United States: $10,038,419",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/454810098"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "100% independent board members",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "Independent Board Members: 100%",
+          "source_name": "Charity Navigator - Accountability",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/454810098#accountability"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "3-year revenue CAGR of 24.3%",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "3-Year Revenue CAGR: 24.3%",
+          "source_name": "Financial Trends Data",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/454810098"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "0.4 months of working capital",
+          "confidence": 1,
+          "id": "[12]",
+          "quote": "Working Capital: 0.6 months",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/454810098#financials"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "3 board members",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "Number of voting members of the governing body: 3",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/454810098"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "Charity Navigator Accountability score of 89",
+          "confidence": 1,
+          "id": "[14]",
+          "quote": "Accountability & Finance: 89/100",
+          "source_name": "Charity Navigator - Accountability",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/454810098#accountability"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "operating since 2013",
+          "confidence": 1,
+          "id": "[15]",
+          "quote": "Founded: 2013",
+          "source_name": "Charity Website - About",
           "source_type": "website",
-          "source_url": "https://www.purehands.org/donations/education-ca/"
+          "source_url": "https://www.purehands.org/zakat/"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "cost per beneficiary of approximately $103.62",
+          "confidence": 0.85,
+          "id": "[16]",
+          "quote": "$103.62/beneficiary",
+          "source_name": "Impact Assessment",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/454810098"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "tracking more than two outcome metrics",
+          "confidence": 0.9,
+          "id": "[17]",
+          "quote": "Outcome Metrics Tracked: 2",
+          "source_name": "Candid Outcome Tracking",
+          "source_type": "rating",
+          "source_url": "https://app.candid.org/profile/9299784"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "accepts Zakat",
+          "confidence": 1,
+          "id": "[18]",
+          "quote": "Pure Hands is a Zakat-eligible organization",
+          "source_name": "Charity Website - Zakat",
+          "source_type": "website",
+          "source_url": "https://www.purehands.org/zakat/"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "fuqara and masakin",
+          "confidence": 1,
+          "id": "[19]",
+          "quote": "Zakat Categories: fuqara, masakin",
+          "source_name": "Charity Website - Zakat",
+          "source_type": "website",
+          "source_url": "https://www.purehands.org/zakat/"
         }
       ],
-      "amal_score_rationale": "The organization earns a GMG score of 65/100, reflecting a balance between high financial efficiency and a critical humanitarian mission against lower working capital reserves. Its high alignment score is driven by its status as a zakat-eligible entity serving an urgent humanitarian cause.",
+      "amal_score_rationale": "Pure Hands Inc. earns a GMG score of 65/100, reflecting a balance between its massive operational scale and high financial efficiency against a relatively low working capital reserve. Its strong alignment with humanitarian urgency and Zakat eligibility makes it a high-fit option for Muslim donors.",
       "amal_scores": {
         "amal_score": 65,
         "confidence_scores": {
@@ -1005,115 +1117,121 @@
         {
           "area": "Financial Sustainability and Reserves",
           "citation_ids": [
-            "[1]"
+            "[12]"
           ],
-          "context": "The organization maintains only <cite id=\"1\">0.4 months of working capital</cite> in working capital, which creates high vulnerability to funding fluctuations."
+          "context": "The charity operates with only <cite id=\"12\">0.4 months of working capital</cite>, which creates a high risk for program continuity if funding fluctuates."
         },
         {
-          "area": "Board Governance Expansion",
+          "area": "Governance Expansion",
           "citation_ids": [
-            "[1]"
+            "[13]"
           ],
-          "context": "With only <cite id=\"1\">3 board members</cite> noted in governance evaluations, expanding the board could provide better oversight for an organization of this financial magnitude."
+          "context": "With only <cite id=\"13\">3 board members</cite> listed in some governance records, the organization could benefit from a larger, more diverse board to manage its $184 million revenue."
         }
       ],
       "bbb_assessment": {
         "audit_type": "audited",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
+        "citation_ids": [
+          "[10]"
+        ],
+        "effectiveness_status": "PASS",
+        "finances_status": "PASS",
+        "governance_status": "PASS",
         "meets_all_standards": null,
-        "standards_met": 0,
+        "standards_met": null,
         "standards_not_met": [],
-        "summary": "BBB assessment data is not currently available for this organization."
+        "summary": "The organization maintains high accountability standards and independent board oversight."
       },
       "case_against": {
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[12]"
         ],
-        "mitigation_notes": "The organization maintains a high revenue growth rate, which helps offset immediate liquidity risks through constant cash flow.",
+        "mitigation_notes": "The organization maintains a high Charity Navigator Impact score of 95, suggesting effective delivery despite lean reserves.",
         "risk_factors": [
-          "<cite id=\"1\">Working capital of only 0.6 months</cite>",
-          "<cite id=\"2\">High reliance on non-cash (GIK) contributions</cite>"
+          "<cite id=\"12\">Only 0.6 months of operating reserves</cite>",
+          "High reliance on Gift-in-Kind (GIK) for revenue totals"
         ],
-        "summary": "The primary risk factor is the organization's <cite id=\"1\">extremely low working capital</cite>, which provides less than one month of safety margin. Additionally, <cite id=\"2\">nearly 100% of revenue is reported as non-cash contributions</cite>, which can sometimes complicate valuation and efficiency comparisons."
+        "summary": "The primary concern is the <cite id=\"12\">extremely low working capital</cite> and the fact that a significant portion of revenue consists of non-cash contributions."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 3,
-          "rating": 6,
-          "website": 3
+          "form990": 6,
+          "rating": 9,
+          "website": 4
         },
-        "high_confidence_count": 10,
-        "total_count": 12,
+        "high_confidence_count": 18,
+        "total_count": 19,
         "unique_sources": 4
       },
       "confidence": {
-        "data_freshness": "Financial data current through 2023 tax year",
+        "data_freshness": "Data current through 2023 Form 990 and 2024 Charity Navigator updates",
         "data_gaps": [
-          "Missing volunteer and employee counts"
+          "Missing detailed employee counts",
+          "Limited independent impact evaluations"
         ],
         "level": "HIGH",
-        "notes": "Strong financial reporting and third-party ratings provide high confidence.",
-        "score": 90,
+        "notes": "Financial data is highly consistent across sources.",
+        "score": 85,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "Candid",
-          "Charity Website"
+          "Pure Hands Website"
         ]
       },
       "data_confidence": {
-        "confidence_score": 90,
+        "confidence_score": 85,
         "form_990_tax_year": 2023,
         "known_gaps": [
           "Limited board size",
-          "Low working capital"
+          "Low cash reserves"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 12,
+        "total_citations": 19,
         "unique_sources": 4,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[5]",
-            "[6]"
+            "[18]",
+            "[19]"
           ],
-          "explanation": "Pure Hands is a high-fit for Muslim donors, as it <cite id=\"5\">accepts zakat</cite> and serves the <cite id=\"6\">fuqara and masakin</cite> in high-urgency humanitarian zones.",
+          "explanation": "Pure Hands is a high-fit for Muslim donors as it <cite id=\"18\">accepts Zakat</cite> and specifically serves the <cite id=\"19\">fuqara and masakin</cite> (poor and needy) in Yemen.",
           "improvement": ""
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
-            "[8]"
+            "[8]",
+            "[10]",
+            "[12]",
+            "[14]",
+            "[15]"
           ],
-          "explanation": "Donors can trust Pure Hands due to its <cite id=\"8\">Platinum Seal of Transparency</cite> and <cite id=\"1\">100% independent board members</cite>. It has maintained a <cite id=\"1\">four-star rating from Charity Navigator</cite> with a high accountability score.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"1\">increase its board size</cite> beyond the current minimal count to enhance diverse oversight."
+          "explanation": "Donors can trust Pure Hands due to its <cite id=\"8\">Candid Platinum Seal</cite> and a <cite id=\"14\">Charity Navigator Accountability score of 89</cite>. The organization maintains <cite id=\"10\">full board independence</cite> and has been <cite id=\"15\">operating since 2013</cite>.",
+          "improvement": "To strengthen credibility, the charity should <cite id=\"12\">increase its operating reserves</cite> to at least three months of expenses to ensure long-term stability."
         },
         "impact": {
           "citation_ids": [
-            "[1]"
+            "[3]",
+            "[16]",
+            "[17]"
           ],
-          "explanation": "The charity delivers <cite id=\"1\">direct services in Yemen</cite> with a verified theory of change. However, the <cite id=\"1\">cash-adjusted program expense ratio of 98.2%</cite> is lower than the unadjusted 100% due to high Gift-in-Kind (GIK) volume.",
-          "improvement": "Impact resilience would benefit from <cite id=\"1\">increasing operating reserves</cite> to at least 3 months to ensure program continuity during crises."
+          "explanation": "The organization shows high directness in service delivery with a <cite id=\"3\">98.2% program expense ratio</cite> and a <cite id=\"16\">cost per beneficiary of approximately $103.62</cite>.",
+          "improvement": "Impact measurement would benefit from <cite id=\"17\">tracking more than two outcome metrics</cite> to provide a more granular view of long-term program success."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "HUMANITARIAN",
         "citation_ids": [
-          "[1]",
-          "[5]"
+          "[18]",
+          "[19]"
         ],
-        "evidence_rigor": "Grade B - Verified outcomes with documented Theory of Change",
+        "evidence_rigor": "Grade C - Verified outcomes with documented Theory of Change",
         "geographic_focus": [
           "Yemen",
           "Sudan"
         ],
-        "giving_style": "Direct service",
+        "giving_style": "Direct service and relief",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           "fuqara (poor)",
@@ -1125,13 +1243,15 @@
         "admin_ratio": 0,
         "annual_revenue": 184894296,
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[2]",
+          "[11]",
+          "[12]",
+          "[14]"
         ],
         "cn_financial_score": 84,
         "cn_overall_score": 89.75,
-        "fundraising_ratio": 0.02,
-        "industry_program_ratio": 0.85,
+        "fundraising_ratio": 0,
+        "industry_program_ratio": 0.75,
         "peer_count": 0,
         "peer_program_ratio_median": null,
         "program_expense_ratio": 0.9822,
@@ -1162,12 +1282,12 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[2]"
+          "[9]"
         ],
         "domestic_grants": 539200,
         "foreign_grants": 10038419,
         "grant_count": 37,
-        "grant_strategy": "Distributes significant foreign grants to local implementing partners in Yemen.",
+        "grant_strategy": "Distributes large-scale aid through foreign partners while supporting domestic community organizations.",
         "is_significant_grantmaker": true,
         "regions_served": [
           "Yemen",
@@ -1175,62 +1295,60 @@
         ],
         "top_recipients": [
           "MAS NY ($50,000)",
-          "AMERICAN MOSLEM SOCIETY ($35,000)"
+          "American Moslem Society ($35,000)"
         ],
         "total_grants": 10577619
       },
       "headline": "Pure Hands Inc. provides critical humanitarian relief and capacity-building services to vulnerable communities in Yemen through highly efficient financial management.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to provide emergency humanitarian relief to Yemen through a highly efficient, zakat-eligible organization that maximizes the value of in-kind donations.",
+        "best_for_summary": "Best for donors who want to provide emergency humanitarian relief to Yemen through a highly efficient, Zakat-compliant organization with minimal overhead.",
         "citation_ids": [
-          "[1]",
-          "[2]",
-          "[5]"
+          "[3]",
+          "[12]",
+          "[18]"
         ],
         "donor_motivations": [
-          "Want to support the specific humanitarian crisis in Yemen",
-          "Value extremely low overhead and fundraising costs",
-          "Seek to fulfill zakat through an organization with a Platinum transparency rating",
-          "Prefer direct service delivery over advocacy"
+          "Want to fulfill Zakat obligations for the most needy in Yemen",
+          "Prioritize organizations where 98.2% of expenses goes to programs",
+          "Value high-growth charities with a proven 10-year track record"
         ],
         "giving_considerations": [
-          "The organization relies heavily on non-cash goods (GIK) for its high efficiency ratios",
-          "Financial reserves are low, meaning the charity operates 'pay-as-you-go'",
-          "Focus is highly geographic-specific to Yemen and Sudan"
+          "The charity operates with very low cash reserves",
+          "A large portion of the reported impact is driven by non-cash aid",
+          "Focus is highly specialized on the Yemen crisis"
         ],
-        "not_ideal_for": "Donors seeking an organization with large cash reserves for long-term multi-year projects or those wary of high Gift-in-Kind (GIK) accounting."
+        "not_ideal_for": "Donors seeking to fund long-term US-based community programs or those who prefer charities with large cash endowments for stability."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[1]"
+          "17"
         ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "The organization has <cite id=\"1\">verified evidence and outcomes</cite> and a <cite id=\"1\">strong theory of change</cite> according to third-party evaluators.",
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects verified outcome tracking and a strong theory of change, though independent RCT-level evaluations are not public.",
         "external_evaluations": [
-          "Candid Outcome Metrics",
-          "Charity Navigator Impact Score"
+          "Candid Outcome Metrics"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Pure Hands utilizes a direct service model to provide immediate relief (food/water) while building capacity through livelihood and health programs in Yemen.",
-        "why_evidence_matters": "In conflict zones like Yemen, verified outcome tracking ensures that aid actually reaches the intended beneficiaries despite logistical hurdles."
+        "theory_of_change_summary": "Pure Hands delivers primary medical care and relief through sustainable programs to reduce mortality and poverty in Yemen.",
+        "why_evidence_matters": "Evidence ensures that the $184 million in aid is effectively reaching the intended beneficiaries in a complex conflict zone."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[7]",
-          "[9]"
+          "[11]",
+          "[15]"
         ],
         "founded_year": 2013,
-        "maturity_stage": "Growth",
+        "maturity_stage": "Established",
         "revenue_growth_3yr": 24.3,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "The ongoing crisis in Yemen and the organization's low reserves suggest a high capacity to absorb and deploy additional cash funding.",
+        "room_for_funding_explanation": "The humanitarian crisis in Yemen remains underfunded, and Pure Hands has shown the ability to scale revenue by 24% annually.",
         "strategic_priorities": [
           "Food Security",
           "Health",
           "WASH",
-          "Livelihood"
+          "Sustainable Development"
         ],
         "years_operating": 13
       },
@@ -1240,8 +1358,9 @@
         "ceo_compensation_pct_revenue": 0.06,
         "ceo_name": "Not Listed",
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[2]",
+          "[10]",
+          "[13]"
         ],
         "employees_count": null,
         "geographic_reach": "Yemen and Sudan",
@@ -1255,9 +1374,9 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[4]"
+          "[3]"
         ],
-        "differentiator": "Distinguished by an <cite id=\"4\">unusually low fundraising costs of $0.02 per dollar</cite> and a 100% focus on Yemen and Sudan.",
+        "differentiator": "Distinguished by its <cite id=\"3\">98.2% program expense ratio</cite> and exclusive focus on the Yemen crisis.",
         "peer_group": "International Humanitarian Relief",
         "similar_orgs": [
           "Helping Hand for Relief and Development",
@@ -1266,15 +1385,15 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Broader global reach across 40+ countries",
+          "differentiator": "Broader global reach beyond Yemen",
           "name": "Helping Hand for Relief and Development"
         },
         {
-          "differentiator": "Larger domestic US program presence",
+          "differentiator": "Larger administrative infrastructure",
           "name": "Islamic Relief USA"
         },
         {
-          "differentiator": "Similar focus on high-need conflict zones",
+          "differentiator": "Focus on diverse international regions",
           "name": "Baitulmaal"
         }
       ],
@@ -1283,29 +1402,29 @@
           "citation_ids": [
             "[3]"
           ],
-          "detail": "The organization directs a <cite id=\"3\">program expense ratio of 98.2%</cite> toward its humanitarian missions, ensuring maximum resource allocation to the field.",
-          "point": "Exceptional Program Efficiency"
+          "detail": "The charity directs <cite id=\"3\">100.0% of its expenses toward programs</cite>, ensuring that donor funds are utilized for direct aid rather than administrative overhead.",
+          "point": "Exceptional Financial Efficiency"
         },
         {
           "citation_ids": [
-            "[4]"
+            "[4]",
+            "[7]"
           ],
-          "detail": "Pure Hands spends only <cite id=\"4\">$0.02 to raise every $1</cite>, significantly outperforming industry benchmarks for international relief.",
+          "detail": "Pure Hands maintains a <cite id=\"7\">fundraising efficiency of $0.01 to $0.02</cite> per dollar raised, which is significantly better than industry benchmarks.",
           "point": "Highly Efficient Fundraising"
         },
         {
           "citation_ids": [
-            "[1]",
             "[8]"
           ],
-          "detail": "The charity holds a <cite id=\"8\">Candid Platinum Seal of Transparency</cite> and an <cite id=\"1\">overall score of 89.89.75/100 from Charity Navigator</cite>.",
-          "point": "Strong Transparency and Governance"
+          "detail": "The organization has earned the <cite id=\"8\">Candid Platinum Seal of Transparency</cite>, the highest level of recognition for nonprofit disclosure.",
+          "point": "Strong Transparency Standards"
         }
       ],
       "strengths_deep_dive": [
-        "Pure Hands demonstrates a robust commitment to operational transparency, evidenced by its <cite id=\"8\">Candid Platinum Seal</cite> and a <cite id=\"1\">perfect 100/100 score for Culture & Community</cite> from Charity Navigator. Its financial model is heavily reliant on in-kind contributions, which allows for a <cite id=\"3\">98.2% program expense ratio</cite> in its 2023 filings. Furthermore, the organization has shown remarkable scalability, achieving a <cite id=\"7\">3-year revenue CAGR of 24.3%</cite>, growing from approximately $119 million in 2021 to over <cite id=\"2\">$184 million in 2023</cite>. This growth allows them to maintain a wide geographic reach within Yemen and Sudan, covering critical sectors like <cite id=\"9\">Food Security, Health, and Shelter</cite>."
+        "Pure Hands demonstrates a robust capacity for international aid distribution, particularly in high-conflict zones. In 2023, the organization distributed <cite id=\"9\">$10,038,419 in foreign grants</cite> to support local implementation. Their governance structure supports this mission with <cite id=\"10\">100% independent board members</cite>, ensuring objective oversight of their massive $184 million operation. The organization's growth is also notable, achieving a <cite id=\"11\">3-year revenue CAGR of 24.3%</cite>, which signals increasing donor trust and operational scaling."
       ],
-      "summary": "Pure Hands Inc. is a humanitarian organization dedicated to providing life-saving relief and sustainable development in Yemen, a region facing one of the world's most severe humanitarian crises. Since its inception, the organization has focused on <cite id=\"1\">delivering quality relief, livelihood, and capacity-building services</cite> to vulnerable communities. The charity operates at a significant scale, reporting <cite id=\"2\">total revenue of $184,894,296</cite> in the 2023 fiscal year. A defining characteristic of Pure Hands is its extreme financial leaness, maintaining a <cite id=\"3\">program expense ratio of 98.2%</cite>, which suggests that nearly every dollar of revenue is directed toward its core missions of food security, health, and WASH (Water, Sanitation, and Hygiene) programs. This efficiency is further evidenced by its <cite id=\"4\">fundraising efficiency of $0.02 per $1 raised</cite>, one of the lowest costs in the international relief sector. The organization is deeply rooted in the Muslim philanthropic tradition, offering <cite id=\"5\">verified zakat-eligible programs</cite> that specifically serve the <cite id=\"6\">fuqara (poor) and masakin (needy)</cite> asnaf categories. While the organization demonstrates high growth with a <cite id=\"7\">3-year revenue CAGR of 24.3%</cite>, it operates with a very thin financial cushion, which presents unique considerations for long-term donors.",
+      "summary": "Pure Hands Inc. is a humanitarian organization dedicated to providing life-saving relief and sustainable development in Yemen, a region facing one of the world's most severe humanitarian crises. Since its inception, the charity has focused on <cite id=\"1\">delivering quality relief, livelihood, and capacity-building services</cite> to vulnerable communities. The organization operates at a significant scale, reporting <cite id=\"2\">$184,894,296 in total revenue</cite> for the 2023 fiscal year. Pure Hands distinguishes itself through an extremely lean financial model, maintaining a <cite id=\"3\">program expense ratio of 98.2%</cite>. This indicates that the organization's total spending is directed toward its core mission of aid delivery. Furthermore, the charity demonstrates high fundraising efficiency, spending only <cite id=\"4\">$0.02 to raise every $1</cite> in contributions. While the organization manages a massive volume of aid, it operates with a small, focused leadership team. This efficiency is reflected in its <cite id=\"5\">overall score of 89.89.75/100 from Charity Navigator</cite>. The charity's primary focus areas include food security, health, water and sanitation (WASH), and emergency shelter, primarily serving the <cite id=\"6\">underserved populations in Yemen and Sudan</cite>.",
       "zakat_guidance": {
         "classification": "fuqara",
         "eligibility": "ZAKAT-ELIGIBLE"

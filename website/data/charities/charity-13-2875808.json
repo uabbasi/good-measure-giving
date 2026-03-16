@@ -102,7 +102,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-11 20:06:12",
+  "lastUpdated": "2026-03-15 23:23:44",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -337,7 +337,7 @@
   ],
   "evaluationTrack": "RESEARCH_POLICY",
   "foundedYear": 1976,
-  "scoreSummary": "Human Rights Watch, Inc. shows good impact and good alignment (minor risk deductions applied).",
+  "scoreSummary": "Human Rights Watch, Inc. shows good alignment and moderate impact (significant risk deductions applied).",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -366,7 +366,7 @@
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
-    "assessment_label": "Promising",
+    "assessment_label": "Context Dependent",
     "archetype_code": "LEVERAGE",
     "archetype_label": "Strategic Advocacy",
     "evidence_stage": "Verified",
@@ -374,10 +374,10 @@
       "evidence": "Strong",
       "financial_health": "Moderate",
       "donor_fit": "Moderate",
-      "risk": "Moderate"
+      "risk": "Limited"
     },
-    "recommendation_cue": "Good Match",
-    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
     "used_fallback": false,
     "fallback_reasons": null
   },
@@ -418,14 +418,14 @@
   "amalEvaluation": {
     "charity_ein": "13-2875808",
     "charity_name": "Human Rights Watch, Inc.",
-    "amal_score": 55,
+    "amal_score": 43,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:37:12",
     "rubric_version": "5.2.0",
     "confidence_scores": {
       "alignment": 29,
       "data_confidence": 1,
-      "impact": 31
+      "impact": 21
     },
     "score_details": {
       "alignment": {
@@ -548,21 +548,21 @@
             "status": "full"
           },
           {
-            "evidence": "Board governance: STRONG (24 members)",
+            "evidence": "Board: 24 members, but For orgs with revenue >$50M, CEO pay above 1% of revenue warrants scrutiny. \u2014 oversight concern",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
             "possible": 10,
-            "scored": 10,
-            "status": "full"
+            "scored": 0,
+            "status": "missing"
           }
         ],
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 31/50",
+        "rationale": "Delivery: capacity building; Impact 21/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 31
+        "score": 21
       },
       "judge_issues": [
         {
@@ -596,7 +596,7 @@
           "severity": "warning"
         }
       ],
-      "risk_deduction": -5,
+      "risk_deduction": -7,
       "risks": {
         "overall_risk_level": "ELEVATED",
         "risk_summary": "Key concern: High domestic burn: 94% of expenses stay in the US despite international operations",
@@ -607,11 +607,25 @@
             "description": "High domestic burn: 94% of expenses stay in the US despite international operations",
             "mitigation": null,
             "severity": "high"
+          },
+          {
+            "category": "operational",
+            "data_source": "Reconciliation",
+            "description": "CEO compensation is 2.9% of revenue ($2,736,748 on $94,185,941)",
+            "mitigation": null,
+            "severity": "high"
+          },
+          {
+            "category": "financial",
+            "data_source": "Reconciliation",
+            "description": "Fundraising costs are 30% of total expenses",
+            "mitigation": null,
+            "severity": "medium"
           }
         ],
-        "total_deduction": -5
+        "total_deduction": -7
       },
-      "score_summary": "Human Rights Watch, Inc. shows good impact and good alignment (minor risk deductions applied).",
+      "score_summary": "Human Rights Watch, Inc. shows good alignment and moderate impact (significant risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -623,107 +637,117 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization works to build just economies based on respect for human rights.",
+          "claim": "Human Rights Watch works to build just economies and protect human rights.",
           "id": "[1]",
           "source_name": "Charity Website - About",
           "source_url": "https://www.hrw.org/about/people"
         },
         {
-          "claim": "The organization operates programs focused on refugees and migrants rights.",
+          "claim": "The organization manages programs related to refugee and migrant rights.",
           "id": "[2]",
-          "source_name": "document contentDownload the easy-to-read version of this report",
+          "source_name": "document contentDownload the easy-to-read version of this report (Canada)",
           "source_url": "https://www.hrw.org/sites/default/files/media_2024/11/English_Canada%20Immigration%20Detention%20people%20with%20disabilities%20ETR.pdf"
         },
         {
-          "claim": "The organization investigates human rights issues in conflict zones such as Gaza.",
+          "claim": "The organization investigates the rights of children with disabilities in conflict zones.",
           "id": "[3]",
-          "source_name": "document contentDownload the easy-to-read version of this report in English",
+          "source_name": "document contentDownload the easy-to-read version of this report (Gaza)",
+          "source_url": "https://www.hrw.org/sites/default/files/media_2024/09/Children%20with%20Disabilities%20in%20Gaza%20ETR.pdf"
+        },
+        {
+          "claim": "The organization conducts global human rights monitoring and reporting.",
+          "id": "[4]",
+          "source_name": "document contentDownload the easy-to-read version of this report (South Korea)",
+          "source_url": "https://www.hrw.org/sites/default/files/media_2025/08/southkorea0725%20ETR_0.pdf"
+        },
+        {
+          "claim": "Human Rights Watch develops policy recommendations to address state neglect and abuse.",
+          "id": "[5]",
+          "source_name": "document contentTo view the easy-to-read version of this report, click here",
+          "source_url": "https://www.hrw.org/sites/default/files/media_2023/12/HRW%20Abused%20by%20relatives%20ignored%20by%20the%20state_ETR%20ENG.pdf"
+        },
+        {
+          "claim": "The organization produces policy recommendations as part of its program outcomes.",
+          "id": "[6]",
+          "source_name": "document contentDownload the easy-to-read version of this report in English (Uruguay)",
           "source_url": "https://www.hrw.org/sites/default/files/media_2024/09/Uruguay%20ETR%20ENG.pdf"
         },
         {
-          "claim": "The organization develops policy recommendations to address state neglect and abuse.",
-          "id": "[5]",
-          "source_name": "document contentDownload the easy-to-read version of this report",
-          "source_url": "https://www.hrw.org/sites/default/files/media_2024/11/English_Canada%20Immigration%20Detention%20people%20with%20disabilities%20ETR.pdf"
-        },
-        {
-          "claim": "The organization produces policy recommendations as a primary output of its programs.",
-          "id": "[6]",
-          "source_name": "document contentDownload the easy-to-read version of this report",
-          "source_url": "https://www.hrw.org/sites/default/files/media_2024/11/English_Canada%20Immigration%20Detention%20people%20with%20disabilities%20ETR.pdf"
-        },
-        {
-          "claim": "The organization accepts various forms of charitable giving and sadaqah.",
+          "claim": "The organization accepts general charitable donations (sadaqah).",
           "id": "[7]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.hrw.org/donate"
         },
         {
-          "claim": "The organization engages volunteers through the Human Rights Watch Council.",
-          "id": "[8]",
-          "source_name": "Charity Website - Volunteer",
-          "source_url": "https://www.hrw.org/join-us/human-rights-watch-council"
-        },
-        {
-          "claim": "The organization has a 91.5/100 score, a 69.5% program expense ratio, and 25.4 months of working capital.",
+          "claim": "The charity has a score of 91.5/100 and holds 25.4 months of working capital.",
           "id": "[9]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/132875808#financials"
         },
         {
-          "claim": "Total revenue was $94,185,941 and fundraising efficiency was $0.23 per $1 raised.",
+          "claim": "Total revenue is $94,185,941 with a program expense ratio of 69.5% and fundraising efficiency of $0.23 per $1 raised.",
           "id": "[10]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/132875808"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its high financial transparency and global reputation, balanced against an advocacy-heavy model that lacks direct cost-per-beneficiary metrics.",
+      "amal_score_rationale": "The organization earns a moderate overall score due to its high financial transparency and cause urgency, balanced by an advocacy-heavy model that is less direct than traditional service charities.",
       "areas_for_improvement": [
-        "The program expense ratio of 69.5% is lower than some peer advocacy organizations, suggesting higher administrative overhead [9].",
-        "Impact measurement is primarily focused on capacity building and policy recommendations rather than direct service delivery [5][6]."
+        "program expense ratio of 69.5% is lower than some peer advocacy organizations",
+        "Impact measurement is primarily focused on capacity building rather than direct service delivery"
       ],
       "dimension_explanations": {
-        "alignment": "With an alignment score of 29/50, the organization offers a medium fit for Muslim donors seeking to support global justice through sadaqah [7]. Its work addresses urgent global causes such as the rights of children in conflict zones and environmental justice, though its broad advocacy mandate may differ from donors seeking specific religious or community-centric programming [3][8].",
-        "impact": "The organization demonstrates effectiveness through the publication of detailed investigative reports and the development of policy recommendations to protect marginalized groups [2][5]. While it maintains a total revenue of $94,185,941 to fund these efforts, the impact is categorized as capacity building rather than direct aid, which is reflected in its 31/50 impact score [9][10]."
+        "alignment": "Human Rights Watch is identified as sadaqah-eligible, offering a medium fit for Muslim donors interested in global justice and advocacy [7]. The organization addresses urgent causes such as the rights of children in conflict zones and migrants, though its broad secular mandate may differ from organizations with a specific religious focus [3][4].",
+        "impact": "The organization demonstrates effectiveness through the publication of detailed investigative reports and policy recommendations aimed at systemic change [5][6]. While it maintains a total revenue of $94,185,941 and a program expense ratio of 69.5%, its impact is categorized as capacity building because it focuses on advocacy and legal reform rather than direct aid [9][10]."
       },
-      "headline": "Human Rights Watch, Inc. advocates for global justice by building equitable economies and protecting the fundamental rights of vulnerable populations.",
+      "headline": "Human Rights Watch works to build just economies and protect vulnerable populations through global advocacy and rigorous investigation.",
       "strengths": [
-        "Maintains a high Charity Navigator score of 91.5/100, indicating strong accountability and transparency [9].",
-        "Exceptional financial stability with 25.4 months of working capital available to sustain operations [9].",
-        "Efficient fundraising operations, spending only $0.23 to raise every $1 in contributions [10]."
+        "Maintains a high Charity Navigator score of 91.5/100, indicating strong accountability and transparency",
+        "Exceptional financial stability with 25.4 months of working capital available",
+        "Efficient fundraising operations, spending only $0.23 to raise every $1"
       ],
-      "summary": "Human Rights Watch, Inc. is a global organization dedicated to building just economies based on respect for human rights through rigorous investigation and strategic advocacy [1]. The organization operates specialized programs focusing on Economic Justice and Rights, Environment and Human Rights, and the protection of Refugees and Migrants [2][10]."
+      "summary": "Human Rights Watch, Inc. is an international non-governmental organization dedicated to defending human rights and building just economies [1]. The organization focuses on critical issues including environmental rights, refugee protections, and economic justice to ensure global respect for human dignity [2][10]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "investigating and reporting on human rights abuses",
-          "confidence": 1,
+          "claim": "defending human rights and building just economies",
+          "confidence": 0.95,
           "id": "[1]",
           "quote": "Human Rights Watch investigates and reports on abuses happening in all corners of the world.",
-          "source_name": "Human Rights Watch - About",
+          "source_name": "Charity Website - About",
           "source_type": "website",
           "source_url": "https://www.hrw.org/about/people"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "children with disabilities in Gaza",
+          "claim": "detailed investigative reports",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "Report Publication: 1",
+          "source_name": "HRW Report - Canada",
+          "source_type": "website",
+          "source_url": "https://www.hrw.org/sites/default/files/media_2024/11/English_Canada%20Immigration%20Detention%20people%20with%20disabilities%20ETR.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "documenting the conditions of children with disabilities in Gaza",
           "confidence": 1,
           "id": "[3]",
           "quote": "Children with Disabilities in Gaza",
           "source_name": "HRW Report - Gaza",
-          "source_type": "evaluation",
+          "source_type": "website",
           "source_url": "https://www.hrw.org/sites/default/files/media_2024/09/Children%20with%20Disabilities%20in%20Gaza%20ETR.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "policy recommendations to prevent abuse",
+          "claim": "policy recommendations",
           "confidence": 0.9,
           "id": "[5]",
           "quote": "Policy Recommendations Developed",
           "source_name": "HRW Report - Policy",
-          "source_type": "evaluation",
+          "source_type": "website",
           "source_url": "https://www.hrw.org/sites/default/files/media_2023/12/HRW%20Abused%20by%20relatives%20ignored%20by%20the%20state_ETR%20ENG.pdf"
         },
         {
@@ -738,10 +762,10 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "$94,185,941 in total revenue",
+          "claim": "program expense ratio of 69.5%",
           "confidence": 1,
           "id": "[10]",
-          "quote": "Total revenue: $94,185,941",
+          "quote": "Total Revenue: $94,185,941",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/132875808"
@@ -751,19 +775,29 @@
           "claim": "all 20 BBB Wise Giving Alliance Standards",
           "confidence": 1,
           "id": "[11]",
-          "quote": "Meets All 20 Standards",
-          "source_name": "BBB Give.org Review",
+          "quote": "Meets All 20 Standards: Yes",
+          "source_name": "BBB Wise Giving Alliance",
           "source_type": "rating",
           "source_url": "https://give.org/charity-reviews/other-charitable-organizations/human-rights-watch-in-new-york-ny-9999-3452"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Platinum Seal of Transparency from Candid",
+          "confidence": 1,
+          "id": "[12]",
+          "quote": "Candid Seal: platinum",
+          "source_name": "Candid Profile",
+          "source_type": "rating",
+          "source_url": "https://app.candid.org/profile/6908410"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its high financial transparency and global reputation, balanced against an advocacy-heavy model that lacks direct cost-per-beneficiary metrics.",
+      "amal_score_rationale": "The organization earns a moderate overall score due to its high financial transparency and cause urgency, balanced by an advocacy-heavy model that is less direct than traditional service charities.",
       "amal_scores": {
-        "amal_score": 55,
+        "amal_score": 43,
         "confidence_scores": {
           "alignment": 29,
           "data_confidence": 1,
-          "impact": 31
+          "impact": 21
         },
         "confidence_tier": "HIGH",
         "impact_tier": "AVERAGE",
@@ -773,16 +807,17 @@
         {
           "area": "Program Expense Efficiency",
           "citation_ids": [
-            "[9]"
+            "[10]",
+            "[13]"
           ],
-          "context": "The current <cite id=\"9\">program expense ratio of 69.5%</cite> trails the industry standard of 75% and the <cite id=\"9\">peer median of 78.7%</cite>."
+          "context": "The <cite id=\"10\">program expense ratio of 69.5%</cite> is below the <cite id=\"13\">peer median of 78.7%</cite> for advocacy organizations."
         },
         {
-          "area": "Geographic Expenditure Imbalance",
+          "area": "High Domestic Spending",
           "citation_ids": [
-            "[10]"
+            "[14]"
           ],
-          "context": "Approximately <cite id=\"10\">69.5% of expenses are categorized as domestic (US-based)</cite> despite the organization's primary mission being international human rights monitoring."
+          "context": "Approximately <cite id=\"14\">69.5% of expenses are categorized as domestic</cite> despite the organization's global mission focus."
         }
       ],
       "bbb_assessment": {
@@ -804,99 +839,95 @@
           "[9]",
           "[10]"
         ],
-        "mitigation_notes": "The organization's massive reserve fund (25+ months) ensures stability during political or economic shifts.",
+        "mitigation_notes": "The organization maintains massive reserves to ensure advocacy continues during lean years.",
         "risk_factors": [
-          "<cite id=\"9\">Program expense ratio (69.5%) is below industry benchmarks</cite>",
-          "<cite id=\"10\">High domestic spending relative to international mission</cite>"
+          "<cite id=\"10\">program expense ratio of 69.5% is below the 75% industry standard</cite>",
+          "<cite id=\"9\">CEO compensation of $2.7M</cite> is significantly higher than sector averages"
         ],
-        "summary": "The primary concerns involve <cite id=\"9\">high administrative overhead</cite> and a lack of quantitative beneficiary data."
+        "summary": "The primary concerns involve <cite id=\"10\">lower program spending</cite> compared to peers and <cite id=\"9\">high executive pay</cite>."
       },
       "citation_stats": {
         "by_source_type": {
-          "evaluation": 2,
-          "form990": 6,
+          "form990": 4,
           "rating": 5,
-          "website": 2
+          "website": 8
         },
         "high_confidence_count": 15,
-        "total_count": 15,
-        "unique_sources": 5
+        "total_count": 17,
+        "unique_sources": 7
       },
       "confidence": {
-        "data_freshness": "2023 Form 990 and 2024 reports",
+        "data_freshness": "Data from 2023 Form 990 and 2024 reports",
         "data_gaps": [
-          "No direct service beneficiary counts"
+          "No direct beneficiary counts for cost-effectiveness"
         ],
         "level": "HIGH",
-        "notes": "Excellent financial and governance data availability.",
-        "score": 95,
+        "notes": "Very high transparency and third-party verification.",
+        "score": 91,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
           "BBB",
-          "HRW Website"
+          "HRW Reports"
         ]
       },
       "data_confidence": {
-        "confidence_score": 95,
+        "confidence_score": 91,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "No direct beneficiary counts for cost-effectiveness analysis"
+          "High domestic expense categorization",
+          "CEO pay scrutiny"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 5,
+        "total_citations": 17,
+        "unique_sources": 7,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[10]",
-            "[3]",
-            "[7]"
+            "[1]",
+            "[15]",
+            "[16]"
           ],
-          "explanation": "HRW is a <cite id=\"10\">Sadaqah-eligible advocacy group</cite> that serves underserved populations globally, including <cite id=\"3\">vulnerable communities in Gaza</cite>.",
-          "improvement": "To improve alignment for Muslim donors, the organization could <cite id=\"7\">clearly state its policy regarding Sadaqah Jariyah</cite> or dedicated humanitarian funds."
+          "explanation": "This is a <cite id=\"16\">SADAQAH-ELIGIBLE</cite> organization that serves <cite id=\"1\">underserved populations globally</cite> through advocacy.",
+          "improvement": "The charity could <cite id=\"15\">clearly state its position on zakat</cite> to better assist Muslim donors in their financial planning."
         },
         "credibility": {
           "citation_ids": [
             "[9]",
-            "[11]",
-            "[10]"
+            "[11]"
           ],
-          "explanation": "Donors can trust HRW due to its <cite id=\"11\">20/20 BBB standards compliance</cite>, <cite id=\"9\">91/100 accountability beacon</cite>, and <cite id=\"11\">Platinum transparency status</cite>.",
-          "improvement": "Credibility could be further enhanced by publishing more granular <cite id=\"10\">beneficiary impact data</cite> alongside their policy reports."
+          "explanation": "Donors can trust this organization due to its <cite id=\"9\">91.91.5/100 from Charity Navigator score</cite> and <cite id=\"11\">20/20 BBB standards met</cite>.",
+          "improvement": "To strengthen credibility, the organization could address <cite id=\"9\">CEO compensation</cite> which exceeds 1% of total revenue."
         },
         "impact": {
           "citation_ids": [
             "[1]",
-            "[9]"
+            "[10]",
+            "[15]"
           ],
-          "explanation": "HRW creates impact through <cite id=\"1\">investigation and exposure</cite>, though its <cite id=\"9\">69.5% program ratio</cite> indicates higher administrative costs than peers.",
-          "improvement": "The organization should <cite id=\"9\">deploy excess unrestricted reserves</cite> into mission delivery to reduce its 25.4-month capital surplus."
+          "explanation": "Operations show a <cite id=\"10\">69.5% program expense ratio</cite> with a focus on <cite id=\"1\">global advocacy and investigation</cite>.",
+          "improvement": "Impact measurement would benefit from <cite id=\"15\">publishing consistent beneficiary counts</cite> to allow for cost-effectiveness analysis."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "ADVOCACY",
         "citation_ids": [
           "[1]",
-          "[3]",
           "[10]"
         ],
-        "evidence_rigor": "Grade B - Strong Theory of Change and Documented Outcomes",
+        "evidence_rigor": "Grade C - Outcome tracking through Candid",
         "geographic_focus": [
           "Global",
           "Afghanistan",
           "Gaza",
           "South Korea"
         ],
-        "giving_style": "Strategic Advocacy",
+        "giving_style": "Systemic Change",
         "tax_deductible": true,
-        "zakat_asnaf_served": [
-          "",
-          ""
-        ],
-        "zakat_status": "SADAQAH-ELIGIBLE"
+        "zakat_asnaf_served": [],
+        "zakat_status": "SADAQAH-ONLY"
       },
       "financial_deep_dive": {
         "admin_ratio": 0.11,
@@ -907,7 +938,7 @@
         ],
         "cn_financial_score": 96,
         "cn_overall_score": 91.5,
-        "fundraising_ratio": 0.231,
+        "fundraising_ratio": 0.23,
         "industry_program_ratio": 0.75,
         "peer_count": 14,
         "peer_program_ratio_median": 0.787,
@@ -944,67 +975,67 @@
         "domestic_grants": 0,
         "foreign_grants": 6342589,
         "grant_count": 11,
-        "grant_strategy": "Funds international partners to facilitate global human rights monitoring.",
+        "grant_strategy": "Provides funding to international partners to support human rights monitoring.",
         "is_significant_grantmaker": true,
         "regions_served": [
-          "International"
+          "Global"
         ],
         "top_recipients": [
-          "11 Foreign Recipients ($6.3M)"
+          "11 Foreign Recipients"
         ],
         "total_grants": 6342589
       },
-      "headline": "Human Rights Watch, Inc. advocates for global justice by building equitable economies and protecting the fundamental rights of vulnerable populations.",
+      "headline": "Human Rights Watch works to build just economies and protect vulnerable populations through global advocacy and rigorous investigation.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who believe in systemic change through legal research, policy advocacy, and the global exposure of human rights violations.",
+        "best_for_summary": "Best for donors who prioritize systemic change through global advocacy and value an organization with extreme financial longevity.",
         "citation_ids": [
           "[1]",
-          "[9]",
-          "[10]"
+          "[9]"
         ],
         "donor_motivations": [
-          "Want to support high-level policy reform and international law",
-          "Value institutional stability and long-term research capacity",
-          "Prefer advocacy and 'bearing witness' over direct aid delivery",
-          "Trust established, large-scale global institutions"
+          "Want to support high-level human rights investigations",
+          "Value data-driven reporting and legal policy analysis",
+          "Prefer established institutions with a 50-year track record",
+          "Are comfortable with sadaqah-only giving for advocacy"
         ],
         "giving_considerations": [
-          "Donations support research and reporting rather than food or medicine",
-          "The organization holds significant financial reserves",
-          "Operations are primarily US-based despite global reporting focus"
+          "Donations support research and policy rather than direct aid",
+          "The organization has very high cash reserves",
+          "Executive compensation is higher than many other non-profits"
         ],
-        "not_ideal_for": "Donors seeking to fulfill Zakat obligations or those who prefer their funds to go directly to immediate humanitarian relief like food or shelter."
+        "not_ideal_for": ""
       },
       "impact_evidence": {
         "citation_ids": [
-          "[11]"
+          "[12]",
+          "[17]"
         ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B reflects a <cite id=\"11\">strong theory of change</cite> and <cite id=\"11\">12 tracked outcome metrics</cite>, though it lacks RCT-level service data.",
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects strong output tracking (reports, policy wins) but a lack of independent RCT-level impact data.",
         "external_evaluations": [
-          "Candid Outcome Metrics",
-          "BBB Wise Giving Alliance Review"
+          "Candid Platinum Outcomes",
+          "MacArthur Award for Creative & Effective Institutions"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "HRW uses a 'Describe, Expose, Change' model to document abuses and pressure decision-makers for reform.",
-        "why_evidence_matters": "Evidence in advocacy ensures that reporting leads to actual policy shifts and legal protections."
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "HRW uses a 'Investigate, Expose, Change' model to pressure governments and institutions into reform.",
+        "why_evidence_matters": "Evidence ensures that investigative reports actually lead to policy changes on the ground."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[10]",
-          "[1]"
+          "[1]",
+          "[10]"
         ],
-        "founded_year": null,
+        "founded_year": 1978,
         "maturity_stage": "Institution",
         "revenue_growth_3yr": 10.1,
         "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "While HRW has <cite id=\"9\">significant reserves</cite>, its <cite id=\"10\">10.1% revenue growth</cite> shows continued donor demand for global advocacy.",
+        "room_for_funding_explanation": "While HRW has large reserves, global human rights crises continue to expand.",
         "strategic_priorities": [
-          "Economic Justice",
           "Digital Investigations",
-          "Climate Rights"
+          "Economic Justice",
+          "Climate and Human Rights"
         ],
         "years_operating": 48
       },
@@ -1019,7 +1050,7 @@
           "[10]"
         ],
         "employees_count": 490,
-        "geographic_reach": "Global coverage including 90+ countries",
+        "geographic_reach": "Global coverage in over 40 countries",
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 1,
@@ -1030,11 +1061,11 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[1]",
-          "[11]"
+          "[9]",
+          "[12]"
         ],
-        "differentiator": "Distinguished by its <cite id=\"1\">massive global footprint</cite> and <cite id=\"11\">Platinum transparency rating</cite> compared to smaller advocacy groups.",
-        "peer_group": "Global Advocacy & Legal Research",
+        "differentiator": "Distinguished by <cite id=\"9\">25.4 months of working capital</cite> and a <cite id=\"12\">Platinum Candid Seal</cite>.",
+        "peer_group": "International Advocacy Organizations",
         "similar_orgs": [
           "ACLU Foundation",
           "Southern Poverty Law Center",
@@ -1043,15 +1074,15 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Focuses primarily on US domestic law",
+          "differentiator": "More focused on US domestic legal challenges",
           "name": "ACLU Foundation"
         },
         {
-          "differentiator": "Focuses on US civil rights and hate groups",
+          "differentiator": "Focuses specifically on hate groups and racial justice in the US",
           "name": "Southern Poverty Law Center"
         },
         {
-          "differentiator": "Smaller, niche focus on specific advocacy",
+          "differentiator": "Highly specialized niche advocacy",
           "name": "Institute for Understanding Anti-Palestinian Racism"
         }
       ],
@@ -1060,28 +1091,29 @@
           "citation_ids": [
             "[9]"
           ],
-          "detail": "The organization holds a <cite id=\"9\">91.5/100 rating from Charity Navigator</cite> and has achieved the <cite id=\"11\">Candid Platinum Seal of Transparency</cite>.",
-          "point": "Strong Institutional Transparency"
+          "detail": "The organization maintains <cite id=\"9\">25.4 months of working capital</cite>, providing a massive buffer for long-term advocacy projects.",
+          "point": "Exceptional Financial Stability"
+        },
+        {
+          "citation_ids": [
+            "[9]",
+            "[11]"
+          ],
+          "detail": "HRW holds a <cite id=\"9\">91.5/100 rating from Charity Navigator</cite> and meets <cite id=\"11\">all 20 BBB Wise Giving Alliance Standards</cite>.",
+          "point": "High Accountability Standards"
         },
         {
           "citation_ids": [
             "[9]"
           ],
-          "detail": "HRW maintains <cite id=\"9\">25.4 months of working capital</cite>, providing a significant buffer to sustain long-term global investigations.",
-          "point": "Exceptional Financial Stability"
-        },
-        {
-          "citation_ids": [
-            "[10]"
-          ],
-          "detail": "The charity demonstrates high efficiency in resource mobilization, spending only <cite id=\"10\">$0.23 to raise every $1</cite> in contributions.",
-          "point": "Efficient Fundraising Operations"
+          "detail": "The charity demonstrates strong fiscal discipline by <cite id=\"9\">spending only $0.23 to raise every $1</cite> in donations.",
+          "point": "Efficient Fundraising"
         }
       ],
       "strengths_deep_dive": [
-        "Human Rights Watch excels in organizational governance and accountability, meeting <cite id=\"11\">all 20 BBB Wise Giving Alliance Standards</cite>. This institutional strength is backed by a <cite id=\"10\">24-member board of directors</cite> and a <cite id=\"9\">100% independent board membership</cite> rate. Their capacity for global reach is evidenced by <cite id=\"10\">$6.3 million in foreign grants</cite> distributed to 11 recipients, facilitating localized human rights monitoring and legal analysis in complex environments."
+        "Human Rights Watch demonstrates a commitment to transparency by maintaining a <cite id=\"12\">Platinum Seal of Transparency from Candid</cite>. This level of disclosure is matched by their governance practices, which include a <cite id=\"9\">100% independent board of 24 members</cite>. Their impact is evidenced by the production of <cite id=\"2\">detailed investigative reports</cite> and <cite id=\"5\">policy recommendations</cite> that target systemic change. For example, their recent work includes <cite id=\"3\">documenting the conditions of children with disabilities in Gaza</cite> and <cite id=\"2\">immigration detention in Canada</cite>. This research-heavy approach allows them to influence international policy at the highest levels."
       ],
-      "summary": "Human Rights Watch, Inc. (HRW) is a global advocacy powerhouse dedicated to <cite id=\"1\">investigating and reporting on human rights abuses</cite> in all corners of the world. With a staff of approximately <cite id=\"1\">490 people representing over 70 nationalities</cite>, the organization leverages legal and policy analysis to protect vulnerable populations. In the 2023 fiscal year, HRW reported <cite id=\"10\">$94,185,941 in total revenue</cite>, primarily driven by <cite id=\"10\">$85.5 million in public contributions</cite>. The organization maintains a <cite id=\"9\">91.5/100 overall score from Charity Navigator</cite>, reflecting a high standard of institutional transparency. HRW's operational model focuses on <cite id=\"1\">investigation, exposure, and advocacy</cite> to pressure governments and corporations into reform. Recent efforts include documenting the impact of conflict on <cite id=\"3\">children with disabilities in Gaza</cite> and developing <cite id=\"5\">policy recommendations to prevent abuse</cite> of marginalized groups. While the organization is a leader in the advocacy space, it operates with a <cite id=\"9\">program expense ratio of 69.5%</cite>, which is lower than the <cite id=\"9\">peer program ratio median of 78.7%</cite> for similar advocacy groups.",
+      "summary": "Human Rights Watch (HRW) operates as a global investigative and advocacy powerhouse, dedicated to <cite id=\"1\">defending human rights and building just economies</cite> across the world. The organization employs a staff of <cite id=\"1\">roughly 490 people representing over 70 nationalities</cite>, including lawyers, journalists, and country experts. These teams work to <cite id=\"10\">investigate and report on abuses</cite> in dozens of countries, ranging from Afghanistan to Uruguay. HRW is distinguished by its <cite id=\"9\">91.5/100 overall score from Charity Navigator</cite>, which reflects a high standard of transparency. Financially, the organization is exceptionally stable, maintaining <cite id=\"9\">25.4 months of working capital</cite> to ensure its long-term advocacy can withstand political or economic shifts. While its <cite id=\"10\">program expense ratio of 69.5%</cite> is lower than some direct-service peers, this reflects the intensive research and legal analysis required for high-level policy influence. The organization successfully <cite id=\"9\">spends only $0.23 to raise every $1</cite>, demonstrating an efficient fundraising model that maximizes the resources available for its global missions.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"
