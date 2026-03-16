@@ -10,6 +10,7 @@ The optimizer builds a meta-prompt with:
 """
 
 import logging
+import re
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -35,16 +36,32 @@ class IterationFeedback:
 
 
 class PromptOptimizer:
-    """Proposes prompt modifications based on metric feedback."""
+    """Proposes prompt modifications based on metric feedback.
+
+    Supports freeze zones: sections of the prompt that cannot be modified.
+    Only mutable sections are sent to the optimizer LLM.
+    """
+
+    # Default mutable section headers (case-insensitive startswith match)
+    DEFAULT_MUTABLE_SECTIONS = [
+        "## Writing Style",
+        "## Writing Guidelines",
+        "### Summary Section",
+        "### Strengths",
+        "### Dimension Explanations",
+        "### Case Against",
+    ]
 
     def __init__(
         self,
         optimizer_model: str = "claude-sonnet-4-5",
         target_prompt_name: str = "rich_narrative_v2",
+        mutable_sections: Optional[list[str]] = None,
     ):
         self.client = LLMClient(model=optimizer_model)
         self.target_prompt_name = target_prompt_name
         self.history: list[IterationFeedback] = []
+        self.mutable_sections = mutable_sections or self.DEFAULT_MUTABLE_SECTIONS
 
     def propose(
         self,
@@ -55,17 +72,77 @@ class PromptOptimizer:
     ) -> str:
         """Propose a modified prompt based on metric feedback.
 
-        Args:
-            current_prompt: The current prompt text
-            baseline_scores: {model: {metric: score}} from baseline
-            current_scores: {model: {metric: score}} from current best
-            iteration: Current iteration number
-
-        Returns:
-            Modified prompt text
+        If freeze zones are active, only mutable sections are sent to the optimizer.
+        Frozen sections are stitched back in after modification.
         """
+        sections = self._split_sections(current_prompt)
+        has_sections = len(sections) > 1
+
+        # If the prompt has clear sections, use freeze zones
+        if has_sections and self._has_frozen_sections(sections):
+            return self._propose_with_freeze_zones(
+                current_prompt, sections, baseline_scores, current_scores, iteration
+            )
+
+        # Otherwise, send the full prompt (small prompts like baseline_narrative)
         meta_prompt = self._build_meta_prompt(
             current_prompt, baseline_scores, current_scores, iteration
+        )
+        response = self.client.generate(
+            prompt=meta_prompt,
+            system_prompt=self._system_prompt(),
+            temperature=0.4,
+            max_tokens=4000,
+        )
+        return self._extract_prompt(response.text, current_prompt)
+
+    def _propose_with_freeze_zones(
+        self,
+        full_prompt: str,
+        sections: list[tuple[str, str]],
+        baseline_scores: dict[str, dict[str, float]],
+        current_scores: dict[str, dict[str, float]],
+        iteration: int,
+    ) -> str:
+        """Optimize only mutable sections, preserve frozen ones."""
+        mutable = []
+        frozen_names = []
+        for header, content in sections:
+            if self._is_mutable(header):
+                mutable.append((header, content))
+            else:
+                frozen_names.append(header or "(preamble)")
+
+        if not mutable:
+            logger.warning("No mutable sections found, sending full prompt")
+            meta_prompt = self._build_meta_prompt(
+                full_prompt, baseline_scores, current_scores, iteration
+            )
+            response = self.client.generate(
+                prompt=meta_prompt,
+                system_prompt=self._system_prompt(),
+                temperature=0.4,
+                max_tokens=4000,
+            )
+            return self._extract_prompt(response.text, full_prompt)
+
+        # Build text of just the mutable sections
+        mutable_text = "\n\n".join(
+            f"{header}\n{content}" if header else content
+            for header, content in mutable
+        )
+
+        logger.info(
+            f"  Freeze zones: {len(frozen_names)} frozen, {len(mutable)} mutable "
+            f"({sum(len(c) for _, c in mutable)} chars)"
+        )
+
+        meta_prompt = self._build_meta_prompt(
+            mutable_text, baseline_scores, current_scores, iteration,
+            freeze_context=f"You are editing ONLY these sections of a larger prompt. "
+            f"{len(frozen_names)} other sections (citation format, JSON schema, data mapping, etc.) "
+            f"are FROZEN and will be preserved exactly as-is. Do NOT add instructions about "
+            f"JSON structure, citation format, or output schema — those are handled elsewhere.",
         )
 
         response = self.client.generate(
@@ -75,9 +152,83 @@ class PromptOptimizer:
             max_tokens=4000,
         )
 
-        # Extract the prompt from the response (between markers)
-        candidate = self._extract_prompt(response.text, current_prompt)
-        return candidate
+        modified_mutable = self._extract_prompt(response.text, mutable_text)
+
+        # Stitch back: replace mutable sections with modified versions
+        return self._stitch_sections(sections, modified_mutable)
+
+    def _split_sections(self, prompt: str) -> list[tuple[str, str]]:
+        """Split prompt into (header, content) tuples at ## boundaries."""
+        sections: list[tuple[str, str]] = []
+        lines = prompt.split("\n")
+        current_header = ""
+        current_lines: list[str] = []
+
+        for line in lines:
+            if re.match(r"^##\s", line):
+                # Save previous section
+                if current_lines or current_header:
+                    sections.append((current_header, "\n".join(current_lines).strip()))
+                current_header = line.strip()
+                current_lines = []
+            else:
+                current_lines.append(line)
+
+        # Save last section
+        if current_lines or current_header:
+            sections.append((current_header, "\n".join(current_lines).strip()))
+
+        return sections
+
+    def _is_mutable(self, header: str) -> bool:
+        """Check if a section header is in the mutable list."""
+        if not header:
+            return False
+        header_lower = header.lower()
+        return any(m.lower() in header_lower for m in self.mutable_sections)
+
+    def _has_frozen_sections(self, sections: list[tuple[str, str]]) -> bool:
+        """Check if there are any frozen (non-mutable) sections."""
+        mutable_count = sum(1 for h, _ in sections if self._is_mutable(h))
+        return mutable_count < len(sections) and mutable_count > 0
+
+    def _stitch_sections(
+        self, original_sections: list[tuple[str, str]], modified_mutable: str,
+    ) -> str:
+        """Replace mutable sections with modified content, keep frozen intact."""
+        # Parse modified mutable text back into sections
+        modified_sections = self._split_sections(modified_mutable)
+        modified_by_header: dict[str, str] = {}
+        for header, content in modified_sections:
+            if header:
+                modified_by_header[header.lower()] = content
+
+        # Also handle case where optimizer returns without headers
+        if not modified_by_header and modified_mutable.strip():
+            # Single block — apply to first mutable section
+            mutable_headers = [h for h, _ in original_sections if self._is_mutable(h)]
+            if mutable_headers:
+                modified_by_header[mutable_headers[0].lower()] = modified_mutable.strip()
+
+        # Reconstruct full prompt
+        result_parts = []
+        for header, content in original_sections:
+            if self._is_mutable(header) and header.lower() in modified_by_header:
+                result_parts.append(f"{header}\n{modified_by_header[header.lower()]}")
+            elif self._is_mutable(header):
+                # Mutable but optimizer didn't return this section — try fuzzy match
+                matched = False
+                for mod_h, mod_c in modified_by_header.items():
+                    if any(word in mod_h for word in header.lower().split()):
+                        result_parts.append(f"{header}\n{mod_c}")
+                        matched = True
+                        break
+                if not matched:
+                    result_parts.append(f"{header}\n{content}" if header else content)
+            else:
+                result_parts.append(f"{header}\n{content}" if header else content)
+
+        return "\n\n".join(result_parts)
 
     def record_iteration(self, feedback: IterationFeedback):
         """Record feedback from an iteration for history context."""
@@ -145,8 +296,12 @@ CRITICAL: Include the full prompt, not just the diff. The markers must appear ex
         baseline_scores: dict[str, dict[str, float]],
         current_scores: dict[str, dict[str, float]],
         iteration: int,
+        freeze_context: Optional[str] = None,
     ) -> str:
         parts = [f"## Iteration {iteration}\n"]
+
+        if freeze_context:
+            parts.append(f"## Context\n{freeze_context}\n")
 
         # Per-model score breakdown
         parts.append("## Current Scores by Model\n")
