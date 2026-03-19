@@ -34,7 +34,6 @@ import {
 } from 'lucide-react';
 import { CharityProfile } from '../../../types';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
-import { useAuth } from '../../auth/useAuth';
 import { SignInButton } from '../../auth/SignInButton';
 import { BookmarkButton } from '../BookmarkButton';
 import { trackCharityView, trackOutboundClick, trackDonateClick, trackTabClick, trackSimilarOrgClick, trackExternalLinkClick } from '../../utils/analytics';
@@ -57,6 +56,7 @@ import { CompareButton } from '../CompareButton';
 
 interface TabbedViewProps {
   charity: CharityProfile;
+  canViewRich: boolean;
 }
 
 interface NarrativeCitation {
@@ -254,9 +254,8 @@ const DataRow: React.FC<{
 
 // --- Main Component ---
 
-export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
+export const TabbedView: React.FC<TabbedViewProps> = ({ charity, canViewRich }) => {
   const { isDark } = useLandingTheme();
-  const { isSignedIn } = useAuth();
   const { charities: allCharities } = useCharities();
   const { addDonation, getPaymentSources } = useGivingHistory();
   const [showDonationModal, setShowDonationModal] = useState(false);
@@ -275,7 +274,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
   const idealDonorProfile = rich?.ideal_donor_profile;
 
   const rawCitations = (
-    isSignedIn
+    canViewRich
       ? (rich?.all_citations || baseline?.all_citations || [])
       : (baseline?.all_citations || [])
   ) as NarrativeCitation[];
@@ -351,9 +350,9 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
   const cashAdjProgramRatio = financials?.cashAdjustedProgramRatio != null
     ? financials.cashAdjustedProgramRatio * 100 : null;
 
-  const strengths = (isSignedIn ? (rich?.strengths || baseline?.strengths) : baseline?.strengths) || [];
-  const headline = isSignedIn ? (rich?.headline || baseline?.headline || '') : (baseline?.headline || '');
-  const aboutSummary = isSignedIn ? (rich?.summary || baseline?.summary || '') : (baseline?.summary || '');
+  const strengths = (canViewRich ? (rich?.strengths || baseline?.strengths) : baseline?.strengths) || [];
+  const headline = canViewRich ? (rich?.headline || baseline?.headline || '') : (baseline?.headline || '');
+  const aboutSummary = canViewRich ? (rich?.summary || baseline?.summary || '') : (baseline?.summary || '');
   const isZakatEligible = amal?.wallet_tag?.includes('ZAKAT');
   const uiSignals = charity.ui_signals_v1 || deriveUISignalsFromCharity(charity);
   const amalScore = amal?.amal_score ?? null;
@@ -361,7 +360,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
   const keyConcerns = charity.keyConcerns ?? [];
 
   const areasForImprovement = (
-    isSignedIn ? rich?.areas_for_improvement : baseline?.areas_for_improvement
+    canViewRich ? rich?.areas_for_improvement : baseline?.areas_for_improvement
   ) as Array<string | { area: string; context: string; citation_ids: string[] }> | undefined;
 
   // Key Concerns render helper (same as TerminalView)
@@ -425,7 +424,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
   const hasAwards = !!(charity.awards?.cnBeacons?.length || charity.awards?.candidSeal || charity.awards?.bbbStatus);
   const hasBaselineGov = !rich?.organizational_capacity && !!charity.baselineGovernance;
   const gatedCounts: Record<TabId, number> = useMemo(() => {
-    if (isSignedIn) return { overview: 0, giving: 0, impact: 0, financials: 0 };
+    if (canViewRich) return { overview: 0, giving: 0, impact: 0, financials: 0 };
     return {
       overview: (rich?.organizational_capacity ? 1 : 0) + (hasBaselineGov ? 1 : 0) + (rich?.long_term_outlook ? 1 : 0) + (hasAwards ? 1 : 0) + 1, // leadership/gov, outlook, awards, about
       giving: (idealDonorProfile ? 1 : 0) + (rich?.case_against ? 1 : 0) + (rich?.donor_fit_matrix ? 1 : 0) + (rich?.bbb_assessment ? 1 : 0)
@@ -433,7 +432,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
       impact: hasRich ? 1 : 0, // evidence deep dive
       financials: (rich?.financial_deep_dive ? 1 : 0) + (hasExpenseData ? 1 : 0) + 1, // 3-year financials, expense breakdown, financial details
     };
-  }, [isSignedIn, rich, hasRich, idealDonorProfile, hasAwards, hasBaselineGov, hasExpenseData]);
+  }, [canViewRich, rich, hasRich, idealDonorProfile, hasAwards, hasBaselineGov, hasExpenseData]);
 
   const tabs: { id: TabId; label: string; icon: React.ElementType }[] = [
     { id: 'overview', label: 'Overview', icon: BookOpen },
@@ -483,15 +482,15 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
           )}
           {aboutSummary && (
             <div className="relative">
-              <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'} ${!isSignedIn ? 'line-clamp-3' : ''}`}>
+              <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'} ${!canViewRich ? 'line-clamp-3' : ''}`}>
                 <SourceLinkedText text={aboutSummary} citations={citations} isDark={isDark} />
               </p>
-              {!isSignedIn && aboutSummary.length > 200 && (
+              {!canViewRich && aboutSummary.length > 200 && (
                 <div className={`absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t ${isDark ? 'from-slate-800' : 'from-white'}`} />
               )}
             </div>
           )}
-          {!isSignedIn && (
+          {!canViewRich && (
             <SignInButton
               variant="custom"
               className={`mt-3 pt-3 border-t text-sm flex items-center gap-2 w-full text-left cursor-pointer hover:opacity-80 transition-opacity ${
@@ -549,7 +548,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
 
       {/* Recognition & Awards */}
       {(charity.awards?.cnBeacons?.length || charity.awards?.candidSeal || charity.awards?.bbbStatus || charity.awards?.bbbReviewUrl) && (
-        isSignedIn ? (
+        canViewRich ? (
           <SectionCard isDark={isDark}>
             <SectionHeader icon={Award} title="Recognition & Awards" isDark={isDark} />
             <div className="space-y-2">
@@ -614,7 +613,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
 
       {/* Leadership & Governance */}
       {rich?.organizational_capacity && (
-        isSignedIn ? (
+        canViewRich ? (
           <SectionCard isDark={isDark}>
             <SectionHeader icon={Users} title="Leadership & Governance" isDark={isDark} />
             {rich.organizational_capacity.ceo_name && (
@@ -682,7 +681,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
 
       {/* Baseline Governance fallback */}
       {!rich?.organizational_capacity && charity.baselineGovernance && (
-        isSignedIn ? (
+        canViewRich ? (
           <SectionCard isDark={isDark}>
             <SectionHeader icon={Users} title="Governance" isDark={isDark} />
             <div className={`space-y-1.5 text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
@@ -713,7 +712,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
 
       {/* Long-Term Outlook */}
       {rich?.long_term_outlook && (
-        isSignedIn ? (
+        canViewRich ? (
           <SectionCard isDark={isDark}>
             <SectionHeader icon={TrendingUp} title="Long-Term Outlook" isDark={isDark} infoTip={GLOSSARY['Long-Term Outlook']} />
             <DataRow label="Years Operating" value={rich.long_term_outlook.years_operating} isDark={isDark} />
@@ -819,12 +818,12 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
               confidenceScores={scores}
               amalScore={amalScore ?? 0}
               citations={citations}
-              isSignedIn={isSignedIn}
+              isSignedIn={canViewRich}
               isDark={isDark}
               dimensionExplanations={rich?.dimension_explanations || baseline?.dimension_explanations}
-              amalScoreRationale={isSignedIn ? rich?.amal_score_rationale : undefined}
+              amalScoreRationale={canViewRich ? rich?.amal_score_rationale : undefined}
               scoreSummary={charity.scoreSummary}
-              strengths={isSignedIn ? rich?.strengths : baseline?.strengths}
+              strengths={canViewRich ? rich?.strengths : baseline?.strengths}
               areasForImprovement={areasForImprovement}
               theoryOfChangeSummary={rich?.impact_evidence?.theory_of_change_summary || charity.theoryOfChange}
             />}
@@ -834,11 +833,11 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
 
       {/* Evidence */}
       {(rich?.impact_evidence || charity.evidenceQuality || rich?.citation_stats) && (
-        isSignedIn || charity.evidenceQuality ? (
+        canViewRich || charity.evidenceQuality ? (
           <SectionCard isDark={isDark}>
             <SectionHeader icon={Shield} title="Evidence" isDark={isDark} infoTip={GLOSSARY['Impact Evidence']} />
             {/* Impact Evidence grade + details (signed-in with rich) */}
-            {rich?.impact_evidence && isSignedIn && (
+            {rich?.impact_evidence && canViewRich && (
               <>
                 {charity.evaluationTrack === 'NEW_ORG' && (
                   <div className={`mb-3 p-2 rounded text-xs ${
@@ -917,7 +916,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
             )}
             {/* Evidence quality checklist */}
             {charity.evidenceQuality && (
-              <div className={`${rich?.impact_evidence && isSignedIn ? `mt-4 pt-4 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}` : ''}`}>
+              <div className={`${rich?.impact_evidence && canViewRich ? `mt-4 pt-4 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}` : ''}`}>
                 <div className="space-y-2">
                   {[
                     { key: 'hasOutcomeMethodology', label: 'Outcome methodology documented' },
@@ -949,7 +948,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
               </div>
             )}
             {/* Citation stats (signed-in only) */}
-            {rich?.citation_stats && isSignedIn && (
+            {rich?.citation_stats && canViewRich && (
               <div className={`mt-4 pt-4 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
                 <div className={`space-y-1.5 text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                   <div className="flex justify-between">
@@ -1004,7 +1003,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
     <div className="space-y-5">
       {/* Best For */}
       {idealDonorProfile ? (
-        isSignedIn ? (
+        canViewRich ? (
           <SectionCard isDark={isDark}>
             <SectionHeader icon={Target} title="Best For" isDark={isDark} />
             <p className={`text-sm font-medium mb-3 ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
@@ -1051,16 +1050,16 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
         ) : (
           <ContentPreview title="Best For" description="which donors this charity fits best" teaser={idealDonorProfile?.best_for_summary} valueProps={['Donor motivations and giving style fit', 'Considerations before giving', 'Who this charity may not be ideal for']} />
         )
-      ) : !isSignedIn && (
+      ) : !canViewRich && (
         <ContentPreview title="Best For" description="which donors this charity fits best" valueProps={['Which donor profiles align with this charity', 'Giving style and motivation fit', 'Considerations before giving']} />
       )}
 
       {/* Balanced View — consolidated strengths, concerns, growth areas, context */}
       {(strengths.length > 0 || keyConcerns.length > 0 || (areasForImprovement && areasForImprovement.length > 0) || rich?.case_against) ? (
-        isSignedIn || !rich?.case_against ? (
+        canViewRich || !rich?.case_against ? (
           <SectionCard isDark={isDark}>
             <SectionHeader icon={Scale} title="Balanced View" isDark={isDark} infoTip={GLOSSARY['Things to Know']} />
-            {rich?.case_against?.summary && isSignedIn && (
+            {rich?.case_against?.summary && canViewRich && (
               <p className={`text-sm mb-4 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                 <SourceLinkedText text={rich.case_against.summary} citations={citations} isDark={isDark} />
               </p>
@@ -1114,7 +1113,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
                 </ul>
               </div>
             )}
-            {rich?.case_against?.risk_factors && rich.case_against.risk_factors.length > 0 && isSignedIn && (
+            {rich?.case_against?.risk_factors && rich.case_against.risk_factors.length > 0 && canViewRich && (
               <div className={`mt-4 pt-3 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
                 <div className={`text-xs font-semibold mb-2 flex items-center gap-1 ${isDark ? 'text-violet-400' : 'text-violet-600'}`}>
                   <Scale className="w-3 h-3" />
@@ -1130,7 +1129,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
                 </ul>
               </div>
             )}
-            {rich?.case_against?.mitigation_notes && isSignedIn && (
+            {rich?.case_against?.mitigation_notes && canViewRich && (
               <div className={`mt-3 pt-2 border-t text-xs ${isDark ? 'border-slate-700 text-slate-500' : 'border-slate-200 text-slate-500'}`}>
                 <span className="font-semibold">Mitigation:</span> {rich.case_against.mitigation_notes}
               </div>
@@ -1167,7 +1166,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
 
       {/* Donor Fit Matrix */}
       {rich?.donor_fit_matrix ? (
-        isSignedIn ? (
+        canViewRich ? (
           <SectionCard isDark={isDark}>
             <SectionHeader icon={Users} title="Donor Fit" isDark={isDark} infoTip={GLOSSARY['Donor Fit']} />
             <DataRow label="Cause Area" value={rich.donor_fit_matrix.cause_area ? formatCauseArea(rich.donor_fit_matrix.cause_area) : undefined} isDark={isDark} mono={false} />
@@ -1185,7 +1184,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
         ) : (
           <ContentPreview title="Donor Fit" description="donor fit and giving style analysis" valueProps={['Cause area and geographic focus', 'Giving style alignment', 'Evidence rigor assessment']} />
         )
-      ) : !isSignedIn && (
+      ) : !canViewRich && (
         <ContentPreview title="Donor Fit" description="donor fit and giving style analysis" valueProps={['Cause area and geographic focus', 'Giving style alignment', 'Evidence rigor assessment']} />
       )}
 
@@ -1221,7 +1220,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
 
       {/* BBB Wise Giving Assessment */}
       {rich?.bbb_assessment ? (
-        isSignedIn ? (
+        canViewRich ? (
           (rich.bbb_assessment.meets_all_standards ||
            (rich.bbb_assessment.standards_met && rich.bbb_assessment.standards_met > 0) ||
            (rich.bbb_assessment.standards_not_met && rich.bbb_assessment.standards_not_met.length > 0) ||
@@ -1304,7 +1303,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
         ) : (
           <ContentPreview title="BBB Assessment" description="BBB Wise Giving standards review" valueProps={['Meets all 20 BBB standards check', 'Governance, effectiveness & finance review', 'Audit type and standards not met']} />
         )
-      ) : !isSignedIn && (
+      ) : !canViewRich && (
         <ContentPreview title="BBB Assessment" description="BBB Wise Giving standards review" valueProps={['Meets all 20 BBB standards check', 'Governance, effectiveness & finance review', 'Audit type and standards not met']} />
       )}
 
@@ -1319,12 +1318,12 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
           )}
           {rich?.similar_organizations && rich.similar_organizations.length > 0 && (
             <div className="space-y-2">
-              {rich.similar_organizations.slice(0, isSignedIn ? 5 : 3).map((org, i) => {
+              {rich.similar_organizations.slice(0, canViewRich ? 5 : 3).map((org, i) => {
                 const orgName = typeof org === 'string' ? org : org.name;
                 const linkedId = findCharityId(orgName);
                 return (
                   <div key={i} className="text-sm">
-                    {isSignedIn && linkedId ? (
+                    {canViewRich && linkedId ? (
                       <Link
                         to={`/charity/${linkedId}`}
                         onClick={() => trackSimilarOrgClick(charity.id ?? charity.ein ?? '', linkedId!, orgName, i)}
@@ -1343,7 +1342,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
               })}
             </div>
           )}
-          {!isSignedIn && (
+          {!canViewRich && (
             <SignInButton
               variant="custom"
               className={`mt-3 pt-2 border-t text-xs flex items-center gap-1.5 w-full text-left cursor-pointer hover:opacity-80 transition-opacity ${
@@ -1396,7 +1395,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
         )}
 
         <div className="space-y-0">
-          {isSignedIn ? (
+          {canViewRich ? (
             <>
               {financials?.totalExpenses != null && (
                 <DataRow label="Total Expenses" value={formatCurrency(financials.totalExpenses)} isDark={isDark} />
@@ -1433,7 +1432,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
 
       {/* Expense Breakdown */}
       {hasExpenseData && (
-        isSignedIn ? (
+        canViewRich ? (
         <SectionCard isDark={isDark}>
           <SectionHeader icon={BarChart3} title="Expense Breakdown" isDark={isDark} />
           <div className={`h-3 rounded-full overflow-hidden flex mb-4 ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`}>
@@ -1495,7 +1494,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
 
       {/* Financial History (3-year) */}
       {rich?.financial_deep_dive?.yearly_financials && rich.financial_deep_dive.yearly_financials.length > 0 && (
-        isSignedIn ? (
+        canViewRich ? (
           <SectionCard isDark={isDark}>
             <SectionHeader icon={TrendingUp} title="Financial History" isDark={isDark} />
             <div className="space-y-2 text-sm">
@@ -1536,7 +1535,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
 
       {/* Grantmaking */}
       {rich?.grantmaking_profile && rich.grantmaking_profile.is_significant_grantmaker && (
-        isSignedIn ? (
+        canViewRich ? (
           <SectionCard isDark={isDark}>
             <SectionHeader icon={Landmark} title="Grantmaking" isDark={isDark} infoTip={GLOSSARY['Grantmaking']} />
             {rich.grantmaking_profile.total_grants && (
@@ -1704,7 +1703,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
 
             {/* Right: inline actions */}
             <div className="flex items-center gap-1 flex-shrink-0">
-              {isSignedIn ? (
+              {canViewRich ? (
                 <>
                   <button
                     data-tour="action-log-donation"
@@ -1796,7 +1795,7 @@ export const TabbedView: React.FC<TabbedViewProps> = ({ charity }) => {
           ═══════════════════════════════════════════════════════════════════════ */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6">
         {/* Sign-in banner for anonymous users */}
-        {!isSignedIn && (
+        {!canViewRich && (
           <div className={`mb-6 rounded-xl p-5 border-2 ${
             isDark
               ? 'bg-gradient-to-br from-emerald-900/30 to-slate-900 border-emerald-700/50'
