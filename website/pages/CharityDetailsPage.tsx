@@ -27,7 +27,9 @@ import { AssessmentCard, RatingIcon } from '../components/MetricCard';
 import { SourceAttribution } from '../src/components/SourceAttribution';
 import { TerminalView, TabbedView } from '../src/components/views';
 import { isRichTier, isBaselineTier, isHiddenTier } from '../src/utils/tierUtils';
-import { useCommunityMember, CommunityGate, JoinCommunityPrompt } from '../src/auth';
+import { useCommunityMember, CommunityGate, JoinCommunityPrompt, useAuth } from '../src/auth';
+import { useRichAccess } from '../src/hooks/useRichAccess';
+import { FreeViewBanner } from '../src/components/FreeViewBanner';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { BookmarkButton } from '../src/components/BookmarkButton';
 import { SHOW_AMAL_SCORE } from '../src/featureFlags';
@@ -69,6 +71,8 @@ export const CharityDetailsPage: React.FC = () => {
 
   // Check community membership for content gating (must be called unconditionally)
   const isCommunityMember = useCommunityMember();
+  const { canViewRich, viewsUsed, viewsRemaining, recordView } = useRichAccess();
+  const { isSignedIn } = useAuth();
 
   // Set page title with charity name
   useEffect(() => {
@@ -77,6 +81,13 @@ export const CharityDetailsPage: React.FC = () => {
     }
     return () => { document.title = 'Good Measure Giving | Muslim Charity Evaluator'; };
   }, [charity]);
+
+  // Record view for anonymous users (progressive reveal)
+  useEffect(() => {
+    if (id && !isSignedIn) {
+      recordView(id);
+    }
+  }, [id, isSignedIn, recordView]);
 
   // UX State - simplified to single layout for hidden tier charities
   const [visualVariant, setVisualVariant] = useState<ScoreVariant>('arch');
@@ -112,10 +123,17 @@ export const CharityDetailsPage: React.FC = () => {
 
   // Rich and baseline tiers use tabbed (default) or terminal view
   if (isRichTier(charity) || isBaselineTier(charity)) {
-    if (useTerminal) {
-      return <TerminalView charity={charity} />;
-    }
-    return <TabbedView charity={charity} />;
+    return (
+      <>
+        {!isSignedIn && <FreeViewBanner viewsUsed={viewsUsed} viewsRemaining={viewsRemaining} />}
+        {useTerminal
+          // @ts-expect-error canViewRich prop added in Task 5/6
+          ? <TerminalView charity={charity} canViewRich={canViewRich} />
+          // @ts-expect-error canViewRich prop added in Task 5/6
+          : <TabbedView charity={charity} canViewRich={canViewRich} />
+        }
+      </>
+    );
   }
 
   // Hidden tier indicator (accessible via direct URL)
