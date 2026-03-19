@@ -53,8 +53,21 @@ test.describe('Progressive reveal', () => {
     await expect(page).toHaveURL(/\/charity\//);
     const url = page.url();
 
+    // Wait for localStorage to be written by the useEffect + recordView
+    await page.waitForFunction(() => {
+      const stored = localStorage.getItem('gmg_viewed_charities');
+      return stored && JSON.parse(stored).length === 1;
+    }, { timeout: 5000 });
+
+    // Navigate away and back to the same charity
     await page.goto('/browse');
     await page.goto(url);
+
+    // Wait for page to settle
+    await page.waitForFunction(() => {
+      const stored = localStorage.getItem('gmg_viewed_charities');
+      return stored !== null;
+    }, { timeout: 5000 });
 
     const viewedCount = await page.evaluate(() => {
       const stored = localStorage.getItem('gmg_viewed_charities');
