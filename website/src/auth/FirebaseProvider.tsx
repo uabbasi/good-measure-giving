@@ -7,6 +7,7 @@ import { onAuthStateChanged, getRedirectResult, User } from 'firebase/auth';
 import { Firestore } from 'firebase/firestore';
 import { auth, db, isConfigured } from './firebase';
 import { trackSignInSuccess, trackSignInError } from '../utils/analytics';
+import { clearViewedEins } from '../hooks/useRichAccess';
 
 interface FirebaseAuthContextType {
   user: User | null;
@@ -71,6 +72,7 @@ export const FirebaseProvider: React.FC<Props> = ({ children }) => {
         const createdAt = new Date(firebaseUser.metadata.creationTime || 0).getTime();
         const isNewUser = Date.now() - createdAt < 60_000;
         trackSignInSuccess(provider, isNewUser ? 'signup' : 'login');
+        clearViewedEins();
         if (isNewUser) {
           window.dispatchEvent(new CustomEvent('gmg:welcome'));
         }
