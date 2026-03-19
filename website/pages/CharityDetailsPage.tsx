@@ -127,9 +127,7 @@ export const CharityDetailsPage: React.FC = () => {
       <>
         {!isSignedIn && <FreeViewBanner viewsUsed={viewsUsed} viewsRemaining={viewsRemaining} />}
         {useTerminal
-          // @ts-expect-error canViewRich prop added in Task 5/6
           ? <TerminalView charity={charity} canViewRich={canViewRich} />
-          // @ts-expect-error canViewRich prop added in Task 5/6
           : <TabbedView charity={charity} canViewRich={canViewRich} />
         }
       </>
