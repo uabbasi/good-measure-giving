@@ -132,6 +132,37 @@ interface ActivationNudge {
 
 **Design principle:** Respectful. Each nudge shows once. Dismissed = gone forever. Max 1 per page. Not shown if feature already set up.
 
+### 4. Landing Page Copy Updates
+
+**Concept:** The current landing page emphasizes research and evaluation but doesn't surface the giving plan / zakat planning angle. Since the activation features that define Champions are zakat target + giving buckets, the landing page should prime visitors for those tools — not just the content.
+
+**Current copy issues:**
+- Hero subtitle mentions "zakat eligibility" but not zakat planning
+- "What charities don't put on their homepage" lists research features only — no planning angle
+- Sign-in CTA lists "Donor fit analysis & giving plan tools" but it's the 4th bullet and vague
+- No mention of zakat target, giving buckets, or organizing your giving anywhere on the page
+
+**Changes:**
+
+**Hero subtitle (mobile + desktop):**
+- Current: "Real research on {count}+ Muslim charities — financials, impact data, and zakat eligibility. Not marketing. Not self-reported."
+- New: "Real research on {count}+ Muslim charities — financials, impact evidence, and zakat eligibility. Plan your giving with confidence."
+
+**"What charities don't put on their homepage" section — add a 4th item:**
+- Add: `{ icon: Target, title: 'Zakat & giving planning', desc: 'Set a zakat target, organize charities into giving buckets, and track your annual plan.' }`
+- This surfaces the planning tools to anonymous visitors and creates awareness before sign-in
+
+**Sign-in CTA bullet list (mobile):**
+- Current: `['Leadership profiles & CEO compensation', '3-year financial trends & audit results', 'Impact evidence grades with source citations', 'Donor fit analysis & giving plan tools']`
+- New: `['Full charity evaluations & leadership profiles', '3-year financial trends & audit results', 'Zakat target & giving plan tools', 'Organize charities into giving buckets']`
+- Moves planning tools up in prominence and makes them concrete
+
+**Desktop "Join Community" section subtitle:**
+- Current: "Unlock full evaluations — leadership profiles, financial history, impact evidence, and donor fit analysis. Free, always."
+- New: "Unlock full evaluations and giving plan tools — set a zakat target, organize charities into giving buckets, and track your annual plan. Free, always."
+
+**Files to modify:** `pages/LandingPage.tsx` — copy changes only, no structural changes. Add `Target` to lucide-react imports.
+
 ## Edge Cases
 
 | Scenario | Behavior |
@@ -160,6 +191,7 @@ interface ActivationNudge {
 | `src/components/views/TerminalView.tsx` | Replace `isSignedIn` with `canViewRich` from `useRichAccess()` |
 | `src/components/views/TabbedView.tsx` | Replace `isSignedIn` with `canViewRich` from `useRichAccess()` |
 | `pages/CharityDetailsPage.tsx` | Add `recordView(ein)` call, render `FreeViewBanner`, render `ActivationNudge` |
+| `pages/LandingPage.tsx` | Update hero subtitle, add 4th value prop, update sign-in CTA bullets, update desktop subtitle |
 | `src/auth/FirebaseProvider.tsx` | Clear `gmg_viewed_charities` localStorage on sign-in |
 | `App.tsx` | Replace `<WelcomeToast />` with `<WelcomeTour />` |
 
@@ -175,7 +207,7 @@ interface ActivationNudge {
 
 ## Non-Goals
 
-- No changes to the landing page or browse page
+- No structural changes to the landing page — copy updates only. No changes to the browse page
 - No email-based re-engagement or push notifications
 - No A/B testing infrastructure (measure before/after instead)
 - No server-side view counting (localStorage is sufficient for nudging)
