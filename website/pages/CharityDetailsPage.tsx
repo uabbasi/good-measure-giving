@@ -30,6 +30,8 @@ import { isRichTier, isBaselineTier, isHiddenTier } from '../src/utils/tierUtils
 import { useCommunityMember, CommunityGate, JoinCommunityPrompt, useAuth } from '../src/auth';
 import { useRichAccess } from '../src/hooks/useRichAccess';
 import { FreeViewBanner } from '../src/components/FreeViewBanner';
+import { useActivationNudge, incrementSignedInViews } from '../src/hooks/useActivationNudge';
+import { ActivationNudge } from '../src/components/ActivationNudge';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { BookmarkButton } from '../src/components/BookmarkButton';
 import { SHOW_AMAL_SCORE } from '../src/featureFlags';
@@ -73,6 +75,7 @@ export const CharityDetailsPage: React.FC = () => {
   const isCommunityMember = useCommunityMember();
   const { canViewRich, viewsUsed, viewsRemaining, recordView } = useRichAccess();
   const { isSignedIn } = useAuth();
+  const { activeNudge, dismiss: dismissNudge } = useActivationNudge();
 
   // Set page title with charity name
   useEffect(() => {
@@ -86,6 +89,9 @@ export const CharityDetailsPage: React.FC = () => {
   useEffect(() => {
     if (id && !isSignedIn) {
       recordView(id);
+    }
+    if (id && isSignedIn) {
+      incrementSignedInViews();
     }
   }, [id, isSignedIn, recordView]);
 
@@ -130,6 +136,7 @@ export const CharityDetailsPage: React.FC = () => {
           ? <TerminalView charity={charity} canViewRich={canViewRich} />
           : <TabbedView charity={charity} canViewRich={canViewRich} />
         }
+        {activeNudge && <ActivationNudge nudge={activeNudge} onDismiss={dismissNudge} />}
       </>
     );
   }
