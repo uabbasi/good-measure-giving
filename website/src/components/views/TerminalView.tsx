@@ -6,7 +6,7 @@
 
 import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { SHOW_AMAL_SCORE } from '../../featureFlags';
+
 import { getCharityAddress, formatCauseArea, formatShortRevenue } from '../../utils/formatters';
 import {
   ArrowLeft,
@@ -1096,7 +1096,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, canViewRich
               Methodology details
             </div>
             <div className="px-1.5 pb-1.5">
-              {SHOW_AMAL_SCORE && <ScoreBreakdown
+              <ScoreBreakdown
                 scoreDetails={amal.score_details}
                 confidenceScores={scores}
                 amalScore={amalScore ?? 0}
@@ -1112,7 +1112,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, canViewRich
                     Array<string | { area: string; context: string; citation_ids: string[] }> | undefined
                 }
                 theoryOfChangeSummary={rich?.impact_evidence?.theory_of_change_summary || charity.theoryOfChange}
-              />}
+              />
             </div>
           </div>
           )
@@ -2026,7 +2026,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, canViewRich
                 Methodology details
               </div>
               <div className="px-2 pb-2">
-                {SHOW_AMAL_SCORE && <ScoreBreakdown
+                <ScoreBreakdown
                   scoreDetails={amal.score_details}
                   confidenceScores={scores}
                   amalScore={amalScore ?? 0}
@@ -2042,7 +2042,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, canViewRich
                       Array<string | { area: string; context: string; citation_ids: string[] }> | undefined
                   }
                   theoryOfChangeSummary={rich?.impact_evidence?.theory_of_change_summary || charity.theoryOfChange}
-                />}
+                />
               </div>
             </div>
             )
