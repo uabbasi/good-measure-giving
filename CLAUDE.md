@@ -10,7 +10,7 @@ Charity evaluation website informed by evidence-based altruism and long-term thi
 - **Backend**: Python 3.13, DoltDB (MySQL-compatible, version-controlled)
 - **Frontend**: TypeScript 5.8, React 19, Vite 6
 - **LLM**: Gemini 3.0 Flash (primary) with fallback chain
-- **Auth**: Supabase (user auth only, not charity data)
+- **Auth**: Firebase (user auth only, not charity data)
 
 ## Commands
 ```bash

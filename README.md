@@ -43,8 +43,6 @@ cp website/.env.example website/.env.local
 Important notes:
 - Never commit `.env` or `.env.local`
 - `VITE_GA_MEASUREMENT_ID` is optional and public (not a secret)
-- Supabase anon and public keys are expected to be public client keys
-
 ## Data Sources and Usage Policy
 
 This project integrates data from third party sources such as Charity Navigator, Candid, ProPublica, BBB, CauseIQ, and official charity websites.
