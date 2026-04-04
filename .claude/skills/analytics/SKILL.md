@@ -138,7 +138,8 @@ Compare these three numbers to understand measurement coverage:
 3. GA4 sign_in_start → login intent
 4. GA4 sign_in_success → login completion
 5. Firestore user count → registered users
-6. Firestore feature adoption → active users
+6. Firestore bookmarks → converted users (bookmarked at least one charity)
+7. Firestore feature adoption → active users
 
 ### Content Performance Cross-Reference
 - CF RUM top_paths → most visited pages
@@ -211,7 +212,7 @@ Use mcp__analytics-mcp__run_report with:
 
 ## Funnel Analysis Pattern
 
-### Browse → Card Click → Charity View → Donate Funnel
+### Browse → Card Click → Charity View → Sign-in → Bookmark Funnel
 
 **Step 1: Count users who visited /browse**
 ```
@@ -234,12 +235,15 @@ metrics: ["eventCount"]
 dimension_filter: eventName = "charity_view"
 ```
 
-**Step 4: Count donate_click events**
+**Step 4: Count sign_in_success events (GA4)**
 ```
 dimensions: ["eventName"]
 metrics: ["eventCount"]
-dimension_filter: eventName = "donate_click"
+dimension_filter: eventName = "sign_in_success"
 ```
+
+**Step 5: Count bookmarks (Firestore)**
+Pull from `firestore_analytics.py` output: `bookmarks.unique_users` (users who bookmarked) and `bookmarks.total_bookmarks` (total bookmarks).
 
 Calculate drop-off rates between each step.
 
@@ -262,7 +266,7 @@ Run these queries and summarize:
 
 1. **Traffic Trends (Cloudflare):** Week-over-week RUM visits, geographic shifts
 2. **Search Analysis (GA4):** What are users searching for? Gaps in charity coverage?
-3. **Funnel Metrics:** CF RUM visits → GA4 sessions → card clicks → views → donates → signups
+3. **Funnel Metrics:** CF RUM visits → GA4 sessions → card clicks → views → sign-ins → bookmarks
 4. **Device Split (Cloudflare):** Browser breakdown, mobile vs desktop
 5. **Feature Adoption (Firestore):** Which features are growing/stagnant?
 
@@ -300,11 +304,11 @@ Use mcp__analytics-mcp__run_report with:
 - date_ranges: [{"start_date": "7daysAgo", "end_date": "yesterday"}]
 - dimensions: ["customEvent:flow_path"]
 - metrics: ["eventCount"]
-- dimension_filter: {"filter": {"field_name": "eventName", "string_filter": {"match_type": 1, "value": "donate_click"}}}
+- dimension_filter: {"filter": {"field_name": "eventName", "string_filter": {"match_type": 1, "value": "sign_in_success"}}}
 - limit: 20
 ```
 
-This shows what paths lead to donations.
+This shows what paths lead to sign-in (the gateway to bookmarking, which is tracked in Firestore).
 
 ---
 
