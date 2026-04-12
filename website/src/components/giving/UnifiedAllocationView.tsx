@@ -10,7 +10,8 @@
 
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, X, Check, GripVertical, ChevronDown, ArrowRight, Search } from 'lucide-react';
+import { Plus, X, Check, GripVertical, ChevronDown, ArrowRight, Search, Calculator } from 'lucide-react';
+import { ZakatEstimator } from './ZakatEstimator';
 import {
   DndContext,
   DragOverlay,
@@ -509,6 +510,7 @@ export function UnifiedAllocationView({
   const [onboardingDismissed, setOnboardingDismissed] = useState(false);
   const [target, setTarget] = useState(initialTarget?.toString() || '');
   const [saving, setSaving] = useState(false);
+  const [showEstimator, setShowEstimator] = useState(false);
   const [buckets, setBuckets] = useState<Array<{
     id: string; tagId: string; label: string; percent: number; color: string;
   }>>([]);
@@ -548,6 +550,12 @@ export function UnifiedAllocationView({
   }, []);
 
   const targetNum = parseInt(target) || 0;
+  const lastYearZakat = useMemo(() => {
+    const lastYear = new Date().getFullYear() - 1;
+    return donations
+      .filter(d => d.category === 'zakat' && d.zakatYear === lastYear)
+      .reduce((sum, d) => sum + d.amount, 0);
+  }, [donations]);
   const totalPct = roundPercent(buckets.reduce((s, b) => s + b.percent, 0));
   const isTotalBalanced = Math.abs(totalPct - 100) <= PERCENT_EPSILON;
   const isTotalUnder = totalPct < 100 - PERCENT_EPSILON;
@@ -906,6 +914,13 @@ export function UnifiedAllocationView({
                 className={`w-20 py-0.5 bg-transparent text-lg font-bold focus:outline-none ${isDark ? 'text-white placeholder-slate-600' : 'text-slate-900 placeholder-slate-300'}`}
               />
             </div>
+            <button
+              onClick={() => setShowEstimator(true)}
+              className={`p-1.5 rounded-lg transition-colors ${isDark ? 'text-slate-500 hover:text-emerald-400 hover:bg-slate-800' : 'text-slate-400 hover:text-emerald-600 hover:bg-slate-100'}`}
+              title="Calculate zakat"
+            >
+              <Calculator className="w-4 h-4" />
+            </button>
           </div>
           {targetNum > 0 && (
             <div className="flex items-center gap-3">
@@ -2143,6 +2158,15 @@ export function UnifiedAllocationView({
           </p>
         </div>
       )}
+      <ZakatEstimator
+        isOpen={showEstimator}
+        onClose={() => setShowEstimator(false)}
+        onUseAmount={(amount) => {
+          setTarget(String(amount));
+          triggerSave();
+        }}
+        lastYearZakat={lastYearZakat}
+      />
     </div>
   );
 }
