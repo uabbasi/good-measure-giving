@@ -11,7 +11,10 @@ test.describe('Navigation smoke tests', () => {
 
   test('landing page has community CTA section', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByText('Build your giving plan')).toBeVisible();
+    // Wait for the visible hero heading to render (desktop layout)
+    await expect(page.locator('h1:visible').first()).toBeVisible({ timeout: 10000 });
+    const body = await page.locator('body').textContent();
+    expect(body).toContain('Go deeper on the charities you care about');
   });
 
   test('browse page loads with charities', async ({ page }) => {

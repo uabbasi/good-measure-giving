@@ -12,13 +12,14 @@ const STORAGE_KEY = 'gmg-compare-charities';
 
 /** Set compare localStorage and navigate to /compare */
 async function setupCompare(page: import('@playwright/test').Page, eins: string[]) {
-  // First visit to set localStorage
-  await page.goto('/');
-  await page.evaluate(({ key, eins }) => {
+  // Use addInitScript to inject localStorage before React hydrates
+  // (WebKit can lose localStorage between cross-page navigations)
+  await page.addInitScript(({ key, eins }) => {
     localStorage.setItem(key, JSON.stringify(eins));
   }, { key: STORAGE_KEY, eins });
   await page.goto('/compare');
-  await page.waitForTimeout(3000);
+  // Wait for charity names to render
+  await page.waitForTimeout(5000);
 }
 
 test.describe('Compare page functional tests', () => {

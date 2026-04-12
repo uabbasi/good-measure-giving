@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 // CharityCard renders two links per charity (mobile + desktop), use :visible
 const CHARITY_CARD = 'a[href^="/charity/"]:visible';
 
-/** Switch browse page into power mode so Browse/Search tabs and cards are visible */
+/** Switch browse page into power mode so cards and search are visible */
 async function enterPowerMode(page: import('@playwright/test').Page) {
   await page.goto('/browse');
   await page.evaluate(() => localStorage.setItem('gmg-browse-style', 'power'));
@@ -12,7 +12,7 @@ async function enterPowerMode(page: import('@playwright/test').Page) {
 }
 
 test.describe('Browse page completeness', () => {
-  test('card count — at least 160 unique charity links in power mode', async ({ page }) => {
+  test('card count — at least 130 unique charity links in power mode', async ({ page }) => {
     await enterPowerMode(page);
 
     // Scroll to bottom to ensure all cards are rendered (in case of virtualization)
@@ -34,7 +34,6 @@ test.describe('Browse page completeness', () => {
     }
 
     const uniqueHrefs = new Set(allHrefs);
-    // 167 total - 31 hideFromCurated = 136 visible
     expect(uniqueHrefs.size).toBeGreaterThanOrEqual(130);
   });
 
@@ -102,9 +101,7 @@ test.describe('Browse page completeness', () => {
   test('search — "Islamic" returns results', async ({ page }) => {
     await enterPowerMode(page);
 
-    const searchTab = page.getByRole('button', { name: 'Search', exact: true });
-    await searchTab.click();
-
+    // Search input is always visible in power mode
     const searchInput = page.locator('input[type="text"]');
     await searchInput.fill('Islamic');
     await page.waitForTimeout(600);
@@ -115,9 +112,6 @@ test.describe('Browse page completeness', () => {
 
   test('search — nonsense query shows no matches', async ({ page }) => {
     await enterPowerMode(page);
-
-    const searchTab = page.getByRole('button', { name: 'Search', exact: true });
-    await searchTab.click();
 
     const searchInput = page.locator('input[type="text"]');
     await searchInput.fill('xyznonexistent');

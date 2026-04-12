@@ -38,8 +38,8 @@ test.describe('Dark mode', () => {
     await expect(page.locator(CHARITY_CARD).first()).toBeVisible({ timeout: 10000 });
 
     await page.locator(CHARITY_CARD).first().click();
-    // Rich tier charities render TerminalView (no h1 on desktop) — wait for tablist
-    await expect(page.locator('[role="tablist"]').first()).toBeVisible({ timeout: 10000 });
+    // TabbedView renders charity name in h1
+    await expect(page.locator('h1').first()).toBeVisible({ timeout: 10000 });
     await expect(page.locator('body')).toBeVisible();
   });
 

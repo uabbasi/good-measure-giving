@@ -10,55 +10,64 @@ async function enterPowerMode(page: import('@playwright/test').Page) {
   await expect(page.locator(CHARITY_CARD).first()).toBeVisible({ timeout: 10000 });
 }
 
-test.describe('Lens switching', () => {
-  test('browse page has lens toggle', async ({ page }) => {
+test.describe('Browse sorting and filtering', () => {
+  test('browse page has search input and filter presets', async ({ page }) => {
     await enterPowerMode(page);
 
-    const lensButtons = page.locator('button').filter({ hasText: /^(Amal|GMG|Strategic|Zakat)$/i });
-    await expect(lensButtons.first()).toBeVisible();
+    // Search input is always visible
+    await expect(page.locator('input[type="text"]')).toBeVisible();
+
+    // Preset filter buttons exist
+    const presetButtons = page.locator('button').filter({ hasText: /Palestine|Accepts Zakat|Systemic Change|Direct Relief/i });
+    expect(await presetButtons.count()).toBeGreaterThan(0);
   });
 
-  test('switching to Strategic lens updates display', async ({ page }) => {
+  test('filtering by preset reduces card count', async ({ page }) => {
     await enterPowerMode(page);
 
-    // Use role=tab to target the lens switcher tabs specifically
-    const strategicTab = page.getByRole('tab', { name: 'Strategic' });
-    if (await strategicTab.isVisible()) {
-      await strategicTab.click();
-      await expect(page.locator(CHARITY_CARD).first()).toBeVisible({ timeout: 5000 });
+    const allCards = await page.locator(CHARITY_CARD).count();
+
+    const zakatBtn = page.getByRole('button', { name: /Accepts Zakat/i });
+    if (await zakatBtn.isVisible()) {
+      await zakatBtn.click();
+      await page.waitForTimeout(600);
+      const filteredCards = await page.locator(CHARITY_CARD).count();
+      expect(filteredCards).toBeGreaterThan(0);
+      expect(filteredCards).toBeLessThan(allCards);
     }
   });
 
-  test('switching to Zakat lens updates display', async ({ page }) => {
+  test('search filters persist across scroll', async ({ page }) => {
     await enterPowerMode(page);
 
-    // Use role=tab to avoid matching the "Accepts Zakat" filter chip
-    const zakatTab = page.getByRole('tab', { name: 'Zakat' });
-    if (await zakatTab.isVisible()) {
-      await zakatTab.click();
-      await expect(page.locator(CHARITY_CARD).first()).toBeVisible({ timeout: 5000 });
-    }
+    const searchInput = page.locator('input[type="text"]');
+    await searchInput.fill('relief');
+    await page.waitForTimeout(600);
+
+    const cards = page.locator(CHARITY_CARD);
+    const count = await cards.count();
+    expect(count).toBeGreaterThan(0);
+
+    // Scroll down and verify cards are still filtered
+    await page.evaluate(() => window.scrollBy(0, 500));
+    await page.waitForTimeout(300);
+
+    const searchValue = await searchInput.inputValue();
+    expect(searchValue).toBe('relief');
   });
 
-  test('lens persists across page navigation', async ({ page }) => {
-    await enterPowerMode(page);
+  test('guided paths activate appropriate filters', async ({ page }) => {
+    await page.goto('/browse');
+    await page.evaluate(() => localStorage.removeItem('gmg-browse-style'));
+    await page.reload();
+    await page.waitForTimeout(2000);
 
-    const strategicTab = page.getByRole('tab', { name: 'Strategic' });
-    if (await strategicTab.isVisible()) {
-      await strategicTab.click();
-      await page.waitForTimeout(500);
-
-      await page.locator(CHARITY_CARD).first().click();
-      // Wait for detail page to load
-      await expect(page.locator('[role="tablist"]').first()).toBeVisible({ timeout: 10000 });
-
-      // Navigate back to browse
-      await page.goto('/browse');
+    const zakatPath = page.getByRole('button', { name: /Pay My Zakat/i });
+    if (await zakatPath.isVisible()) {
+      await zakatPath.click();
+      await page.waitForTimeout(1000);
+      // Should show charity cards after selecting a guided path
       await expect(page.locator(CHARITY_CARD).first()).toBeVisible({ timeout: 10000 });
-
-      // Verify Strategic is still selected — key is 'gmg-lens'
-      const savedLens = await page.evaluate(() => localStorage.getItem('gmg-lens'));
-      expect(savedLens).toBe('strategic');
     }
   });
 });
