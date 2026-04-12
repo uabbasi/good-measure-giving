@@ -13,6 +13,7 @@ import { SignInButton } from '../src/auth/SignInButton';
 import { useSearchParams } from 'react-router-dom';
 import { deriveUISignalsFromCharity, getEvidenceStageRank } from '../src/utils/scoreUtils';
 import { FeedbackButton } from '../src/components/FeedbackButton';
+import { TopPicks } from '../src/components/TopPicks';
 import { useTour } from '../src/tours/useTour';
 import { browseTourSteps } from '../src/tours/browseTour';
 import { SHOW_AMAL_SCORE } from '../src/featureFlags';
@@ -230,7 +231,7 @@ export const BrowsePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Load charities from exported JSON
-  const { charities: allCharities, loading, error } = useCharities();
+  const { charities: allCharities, summaries, loading, error } = useCharities();
 
   // Search and filter state
   const [searchQuery, setSearchQuery] = useState('');
@@ -1225,6 +1226,11 @@ export const BrowsePage: React.FC = () => {
               </select>
             </div>
           </div>
+        )}
+
+        {/* Top Picks - shown when browsing without active filters */}
+        {browseStyle !== 'guided' && activePresets.size === 0 && !searchQuery && !selectedIntentId && (
+          <TopPicks charities={summaries} />
         )}
 
         {/* Charity Grid */}
