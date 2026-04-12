@@ -902,7 +902,7 @@ export function UnifiedAllocationView({
                 onChange={e => setTarget(e.target.value.replace(/\D/g, ''))}
                 onBlur={handleBlur}
                 onKeyDown={handleKeyDown}
-                placeholder="10,000"
+                placeholder="e.g. 10,000"
                 className={`w-20 py-0.5 bg-transparent text-lg font-bold focus:outline-none ${isDark ? 'text-white placeholder-slate-600' : 'text-slate-900 placeholder-slate-300'}`}
               />
             </div>
@@ -2102,7 +2102,7 @@ export function UnifiedAllocationView({
           </p>
         </div>
       )}
-      {!targetNum && (
+      {!targetNum && bookmarkedCharities.length === 0 && (
         <div className={`px-6 py-12 text-center ${isDark ? 'bg-slate-800/20' : 'bg-slate-50/50'}`}>
           <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${isDark ? 'bg-slate-700' : 'bg-slate-100'}`}>
             <svg className={`w-6 h-6 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2112,6 +2112,34 @@ export function UnifiedAllocationView({
           <p className={`text-sm font-medium mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Set your zakat target</p>
           <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
             Enter your target amount above to start allocating
+          </p>
+        </div>
+      )}
+      {!targetNum && bookmarkedCharities.length > 0 && (
+        <div className={`px-6 py-8 ${isDark ? 'bg-slate-800/20' : 'bg-slate-50/50'}`}>
+          <p className={`text-sm font-medium mb-3 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+            Your saved charities ({bookmarkedCharities.length}):
+          </p>
+          <ul className="space-y-2 mb-4">
+            {bookmarkedCharities.map(c => (
+              <li key={c.ein} className={`flex items-center justify-between px-3 py-2 rounded-lg ${isDark ? 'bg-slate-700/50' : 'bg-white'} ${isDark ? 'border-slate-600' : 'border-slate-200'} border`}>
+                <Link to={`/charity/${c.ein.replace(/^(\d{2})(\d+)$/, '$1-$2')}`} className={`text-sm font-medium hover:underline ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
+                  {c.name}
+                </Link>
+                {onRemoveCharity && (
+                  <button
+                    onClick={() => void onRemoveCharity(c.ein)}
+                    className={`p-1 rounded-md hover:bg-red-100 ${isDark ? 'text-slate-500 hover:text-red-400 hover:bg-red-900/30' : 'text-slate-400 hover:text-red-500'} transition-colors`}
+                    title="Remove charity"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+          <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+            Set a zakat target above to start allocating funds.
           </p>
         </div>
       )}
