@@ -12,6 +12,8 @@ import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom';
 import { Plus, X, Check, GripVertical, ChevronDown, ArrowRight, Search, Calculator } from 'lucide-react';
 import { ZakatEstimator } from './ZakatEstimator';
+import { StarterPlan } from './StarterPlan';
+import type { CharitySummary } from '../../hooks/useCharities';
 import {
   DndContext,
   DragOverlay,
@@ -58,6 +60,8 @@ interface UnifiedAllocationViewProps {
   onAddCharity?: (charityEin: string, charityName: string, bucketId: string) => Promise<void>;
   onRemoveCharity?: (charityEin: string) => Promise<void>;
   onSetCharityTarget?: (ein: string, amount: number) => Promise<void>;
+  /** All charity summaries for Starter Plan suggestions */
+  allCharities?: CharitySummary[];
 }
 
 // Palette: muted jewel tones at consistent saturation/lightness for pastel harmony
@@ -494,6 +498,7 @@ export function UnifiedAllocationView({
   onAddCharity,
   onRemoveCharity,
   onSetCharityTarget,
+  allCharities,
 }: UnifiedAllocationViewProps) {
   const { isDark } = useLandingTheme();
   const { charities } = useCharities();
@@ -2106,7 +2111,16 @@ export function UnifiedAllocationView({
           </div>
         </div>
       )}
-      {targetNum > 0 && buckets.length === 0 && bookmarkedCharities.length > 0 && (
+      {targetNum > 0 && buckets.length === 0 && allCharities && allCharities.length > 0 && (
+        <div className={`px-4 py-4 border-t ${border}`}>
+          <StarterPlan
+            target={targetNum}
+            charities={allCharities}
+            onAccepted={() => window.location.reload()}
+          />
+        </div>
+      )}
+      {targetNum > 0 && buckets.length === 0 && (!allCharities || allCharities.length === 0) && bookmarkedCharities.length > 0 && (
         <div className={`px-6 py-12 text-center border-t ${border} ${isDark ? 'bg-slate-800/20' : 'bg-slate-50/50'}`}>
           <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${isDark ? 'bg-emerald-500/10' : 'bg-emerald-50'}`}>
             <Plus className={`w-6 h-6 ${isDark ? 'text-emerald-400' : 'text-emerald-500'}`} />

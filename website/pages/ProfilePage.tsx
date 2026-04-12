@@ -343,6 +343,7 @@ export function ProfilePage() {
               bookmarkedCharities={bookmarkedCharitiesForView}
               donations={donations}
               charityTargets={charityTargets}
+              allCharities={summaries}
               onSetCharityTarget={async (ein, amount) => {
                 if (amount > 0) {
                   await setCharityTarget(ein, amount);
