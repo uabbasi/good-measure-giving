@@ -10,7 +10,7 @@
 
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, X, Check, GripVertical, ChevronDown, ArrowRight, Search, Calculator } from 'lucide-react';
+import { Plus, X, Check, GripVertical, ChevronDown, ArrowRight, Search, Calculator, CalendarDays } from 'lucide-react';
 import { ZakatEstimator } from './ZakatEstimator';
 import { StarterPlan } from './StarterPlan';
 import type { CharitySummary } from '../../hooks/useCharities';
@@ -62,6 +62,10 @@ interface UnifiedAllocationViewProps {
   onSetCharityTarget?: (ein: string, amount: number) => Promise<void>;
   /** All charity summaries for Starter Plan suggestions */
   allCharities?: CharitySummary[];
+  /** Current zakat anniversary date (ISO string) */
+  zakatAnniversary?: string | null;
+  /** Save zakat anniversary */
+  onSaveAnniversary?: (date: string | null) => Promise<void>;
 }
 
 // Palette: muted jewel tones at consistent saturation/lightness for pastel harmony
@@ -481,6 +485,53 @@ function DroppableUncategorized({ children, isDark, isActive }: { children: Reac
   );
 }
 
+function ZakatAnniversaryPrompt({ isDark, onSave }: { isDark: boolean; onSave: (date: string | null) => Promise<void> }) {
+  const [date, setDate] = useState('');
+  const [dismissed, setDismissed] = useState(false);
+
+  if (dismissed) return null;
+
+  const handleSave = async () => {
+    if (date) {
+      await onSave(date);
+    }
+  };
+
+  return (
+    <div className={`flex items-center gap-3 px-4 py-2.5 border-b ${isDark ? 'bg-slate-800/30 border-slate-700' : 'bg-amber-50/50 border-amber-100'}`}>
+      <CalendarDays className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-amber-400' : 'text-amber-600'}`} />
+      <span className={`text-xs ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+        When is your zakat anniversary?
+      </span>
+      <input
+        type="date"
+        value={date}
+        onChange={e => setDate(e.target.value)}
+        className={`text-xs px-2 py-1 rounded border ${
+          isDark
+            ? 'bg-slate-800 border-slate-600 text-white'
+            : 'bg-white border-slate-300 text-slate-900'
+        } focus:outline-none focus:ring-1 focus:ring-emerald-500`}
+      />
+      {date && (
+        <button
+          onClick={handleSave}
+          className="text-xs font-medium px-2 py-1 rounded bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
+        >
+          Save
+        </button>
+      )}
+      <button
+        onClick={() => setDismissed(true)}
+        className={`ml-auto p-1 rounded ${isDark ? 'text-slate-500 hover:text-slate-400' : 'text-slate-400 hover:text-slate-500'}`}
+        title="Dismiss"
+      >
+        <X className="w-3.5 h-3.5" />
+      </button>
+    </div>
+  );
+}
+
 function fmt(n: number): string {
   if (n >= 1000) return `$${(n/1000).toFixed(n % 1000 === 0 ? 0 : 1)}k`;
   return `$${n}`;
@@ -499,6 +550,8 @@ export function UnifiedAllocationView({
   onRemoveCharity,
   onSetCharityTarget,
   allCharities,
+  zakatAnniversary,
+  onSaveAnniversary,
 }: UnifiedAllocationViewProps) {
   const { isDark } = useLandingTheme();
   const { charities } = useCharities();
@@ -1011,6 +1064,11 @@ export function UnifiedAllocationView({
           </button>
         </div>
       </div>
+
+      {/* Zakat anniversary prompt */}
+      {targetNum > 0 && !zakatAnniversary && onSaveAnniversary && (
+        <ZakatAnniversaryPrompt isDark={isDark} onSave={onSaveAnniversary} />
+      )}
 
       {/* Guided onboarding */}
       {showOnboarding && (

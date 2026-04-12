@@ -344,6 +344,10 @@ export function ProfilePage() {
               donations={donations}
               charityTargets={charityTargets}
               allCharities={summaries}
+              zakatAnniversary={profile?.zakatAnniversary}
+              onSaveAnniversary={async (date) => {
+                await updateProfile({ zakatAnniversary: date });
+              }}
               onSetCharityTarget={async (ein, amount) => {
                 if (amount > 0) {
                   await setCharityTarget(ein, amount);
