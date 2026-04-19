@@ -4,12 +4,18 @@
  * (or null when input is insufficient).
  */
 
+export interface JsonLdObject {
+  '@context': string;
+  '@type': string;
+  [key: string]: unknown;
+}
+
 export interface FaqPair {
   question: string;
   answer: string;
 }
 
-export function buildFaqPageSchema(pairs: FaqPair[]): object | null {
+export function buildFaqPageSchema(pairs: FaqPair[]): JsonLdObject | null {
   if (pairs.length === 0) return null;
   return {
     '@context': 'https://schema.org',
