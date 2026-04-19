@@ -8,6 +8,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { spawn, type ChildProcess } from 'child_process';
+import { FAQ_ITEMS } from '../src/data/faq';
+import { buildFaqPageSchema, buildArticleSchema, buildOrganizationSchema, buildBreadcrumbSchema } from './lib/schema';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -100,6 +102,9 @@ function buildStaticMeta(): PageMeta[] {
         'Common questions about charity evaluations, methodology, zakat compliance, and how to use Good Measure Giving.',
       canonical: `${SITE_URL}/faq`,
       ogType: 'website',
+      jsonLd: buildFaqPageSchema(
+        FAQ_ITEMS.map((item) => ({ question: item.q, answer: item.a }))
+      ) ?? undefined,
     },
     {
       route: '/about',
