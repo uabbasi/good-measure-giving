@@ -7,3 +7,4 @@ export { InKindHistoryTable } from './InKindHistoryTable';
 export { InKindSummaryCard } from './InKindSummaryCard';
 export { ItemPicker } from './ItemPicker';
 export { CategorySplit, DEFAULT_SPLIT_CATEGORIES } from './CategorySplit';
+export { ProgressDashboard } from './ProgressDashboard';

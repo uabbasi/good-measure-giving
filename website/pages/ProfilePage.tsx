@@ -22,6 +22,7 @@ import {
   InKindHistoryTable,
   InKindSummaryCard,
   CategorySplit,
+  ProgressDashboard,
 } from '../src/components/giving';
 import type { GivingHistoryEntry, CharitySummary } from '../types';
 import { useTour } from '../src/tours/useTour';
@@ -343,6 +344,11 @@ export function ProfilePage() {
         {/* Tab Content */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
+            {/* Progress Dashboard — read-only top-of-record summary. Hidden
+                while CategorySplit is the active gate (no buckets yet means
+                there are no assignments to summarize). */}
+            {!showCategorySplit && <ProgressDashboard />}
+
             {showCategorySplit && profile?.targetZakatAmount != null && (
               <CategorySplit
                 target={profile.targetZakatAmount}
