@@ -49,7 +49,7 @@ interface PageMeta {
   description: string;
   canonical: string;
   ogType: string;
-  jsonLd?: object;
+  jsonLd?: object | object[];
 }
 
 // ── Meta builders ──────────────────────────────────────────────────────
@@ -214,10 +214,13 @@ function injectMeta(html: string, meta: PageMeta): string {
   // Remove existing OG tags and re-inject
   html = html.replace(/<meta\s+property="og:[^"]*"\s+content="[^"]*"\s*\/?>\n?\s*/g, '');
 
-  // Inject JSON-LD if present
+  // Inject JSON-LD — support single object or array of schema blocks
   let jsonLdTag = '';
   if (meta.jsonLd) {
-    jsonLdTag = `\n    <script type="application/ld+json">${JSON.stringify(meta.jsonLd)}</script>`;
+    const blocks = Array.isArray(meta.jsonLd) ? meta.jsonLd : [meta.jsonLd];
+    jsonLdTag = blocks
+      .map((block) => `\n    <script type="application/ld+json">${JSON.stringify(block)}</script>`)
+      .join('');
   }
 
   // Insert all SEO tags before </head>
