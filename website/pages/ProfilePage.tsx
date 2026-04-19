@@ -1,6 +1,14 @@
 /**
- * ProfilePage - User profile with giving dashboard
- * Tabs: Overview | History
+ * ProfilePage - User profile with giving dashboard.
+ *
+ * Tab surface (M5): two tabs only.
+ *  - "Your Giving": ProgressDashboard + UnifiedAllocationView (the unified
+ *    record). Donation history is surfaced inline per-charity via
+ *    CharityRecordRow's expansion, so there is no standalone History tab.
+ *  - "In-Kind": unchanged.
+ *
+ * CSV export of giving history lives on the record's header (passed through
+ * as `onExportCSV` to `UnifiedAllocationView`).
  */
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -16,7 +24,6 @@ import { useGivingDashboard } from '../src/hooks/useGivingDashboard';
 import { SignInButton } from '../src/auth/SignInButton';
 import {
   AddDonationModal,
-  GivingHistoryTable,
   UnifiedAllocationView,
   AddInKindModal,
   InKindHistoryTable,
@@ -28,7 +35,7 @@ import type { GivingHistoryEntry, CharitySummary } from '../types';
 import { useTour } from '../src/tours/useTour';
 import { givingPlanTourSteps } from '../src/tours/givingPlanTour';
 
-type TabId = 'overview' | 'history' | 'in-kind';
+type TabId = 'giving' | 'in-kind';
 
 // Tab button component
 function TabButton({
@@ -78,7 +85,6 @@ export function ProfilePage() {
     isLoading: historyLoading,
     addDonation,
     updateDonation,
-    deleteDonation,
     getPaymentSources,
     exportCSV,
   } = useGivingHistory();
@@ -137,7 +143,7 @@ export function ProfilePage() {
   }, [givingTour.shouldShow, profileLoading, charitiesLoading]);
 
   // UI state
-  const [activeTab, setActiveTab] = useState<TabId>('overview');
+  const [activeTab, setActiveTab] = useState<TabId>('giving');
   const [showDonationModal, setShowDonationModal] = useState(false);
   const [editingDonation, setEditingDonation] = useState<GivingHistoryEntry | null>(null);
   const [prefillCharity, setPrefillCharity] = useState<{ ein: string; name: string } | null>(null);
@@ -198,12 +204,7 @@ export function ProfilePage() {
     }
   };
 
-  // Handle donation delete (confirmation handled inline in table)
-  const handleDeleteDonation = async (id: string) => {
-    await deleteDonation(id);
-  };
-
-  // Handle CSV export
+  // Handle CSV export — wired into the record's header action.
   const handleExport = (year?: number) => {
     const csv = exportCSV(year);
     const blob = new Blob([csv], { type: 'text/csv' });
@@ -312,26 +313,17 @@ export function ProfilePage() {
           </div>
         </div>
 
-        {/* Tab Navigation */}
+        {/* Tab Navigation (M5): one unified "Your Giving" tab covers the
+            former Overview + History surfaces. In-Kind stays separate. */}
         <div className={`flex gap-1 p-1 rounded-xl mb-6 ${isDark ? 'bg-slate-900' : 'bg-slate-100'}`}>
           <TabButton
-            id="overview"
-            label="Overview"
+            id="giving"
+            label="Your Giving"
             icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>}
-            isActive={activeTab === 'overview'}
-            onClick={() => setActiveTab('overview')}
+            isActive={activeTab === 'giving'}
+            onClick={() => setActiveTab('giving')}
             isDark={isDark}
           />
-          <span data-tour="giving-history-tab">
-            <TabButton
-              id="history"
-              label="History"
-              icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>}
-              isActive={activeTab === 'history'}
-              onClick={() => setActiveTab('history')}
-              isDark={isDark}
-            />
-          </span>
           <TabButton
             id="in-kind"
             label="In-Kind"
@@ -343,7 +335,7 @@ export function ProfilePage() {
         </div>
 
         {/* Tab Content */}
-        {activeTab === 'overview' && (
+        {activeTab === 'giving' && (
           <div className="space-y-6">
             {/* Progress Dashboard — read-only top-of-record summary. Hidden
                 while CategorySplit is the active gate (no buckets yet means
@@ -376,6 +368,7 @@ export function ProfilePage() {
               donations={donations}
               allCharities={summaries}
               zakatAnniversary={profile?.zakatAnniversary}
+              onExportCSV={() => handleExport()}
               onSaveAnniversary={async (date) => {
                 await updateProfile({ zakatAnniversary: date });
               }}
@@ -482,38 +475,6 @@ export function ProfilePage() {
                 </div>
               </div>
             )}
-          </div>
-        )}
-
-        {activeTab === 'history' && (
-          <div className={`rounded-xl border p-6 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                Giving History
-              </h2>
-              <button
-                onClick={() => {
-                  setEditingDonation(null);
-                  setShowDonationModal(true);
-                }}
-                className="flex items-center gap-2 px-3 py-1.5 bg-emerald-600 text-white text-sm rounded-lg hover:bg-emerald-700 transition-colors"
-              >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                Add
-              </button>
-            </div>
-
-            <GivingHistoryTable
-              donations={donations}
-              onEdit={(donation) => {
-                setEditingDonation(donation);
-                setShowDonationModal(true);
-              }}
-              onDelete={handleDeleteDonation}
-              onExport={handleExport}
-            />
           </div>
         )}
 

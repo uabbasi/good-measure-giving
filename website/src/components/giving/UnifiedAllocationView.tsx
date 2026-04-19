@@ -19,7 +19,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  CalendarDays, Calculator, Check, ChevronDown, Plus, Search, X,
+  CalendarDays, Calculator, Check, ChevronDown, Download, Plus, Search, X,
 } from 'lucide-react';
 import type { GivingBucket, GivingHistoryEntry } from '../../../types';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
@@ -30,6 +30,7 @@ import { getWalletType } from '../../utils/walletUtils';
 import { StarterPlan } from './StarterPlan';
 import { ZakatEstimator } from './ZakatEstimator';
 import { CharityRecordRow } from './CharityRecordRow';
+import type { CharityRecordHistoryEntry } from './CharityRecordRow';
 import type { CharitySummary } from '../../hooks/useCharities';
 import type { AssignmentStatus } from '../../utils/recordStatus';
 
@@ -79,6 +80,8 @@ interface UnifiedAllocationViewProps {
   allCharities?: CharitySummary[];
   zakatAnniversary?: string | null;
   onSaveAnniversary?: (date: string | null) => Promise<void>;
+  /** Optional CSV export trigger. Rendered next to the Add Charity / Category buttons when provided. */
+  onExportCSV?: () => void;
 }
 
 type LocalBucket = { id: string; tagId: string; label: string; color: string };
@@ -152,6 +155,7 @@ export function UnifiedAllocationView({
   allCharities,
   zakatAnniversary,
   onSaveAnniversary,
+  onExportCSV,
 }: UnifiedAllocationViewProps) {
   const { isDark } = useLandingTheme();
   const { charities } = useCharities();
@@ -225,6 +229,30 @@ export function UnifiedAllocationView({
     for (const a of initialAssignments) m.set(a.ein, (a.status as AssignmentStatus) || 'intended');
     return m;
   }, [initialAssignments]);
+
+  // History-per-charity — pre-sliced for row-level inline expansion. Sorted by
+  // date desc so the most recent entry shows first. No additional Firestore
+  // read — reuses the `donations` prop already passed in.
+  const charityHistoryMap = useMemo(() => {
+    const m = new Map<string, CharityRecordHistoryEntry[]>();
+    for (const d of donations) {
+      if (!d.charityEin) continue;
+      const entry: CharityRecordHistoryEntry = {
+        id: d.id,
+        date: d.date,
+        amount: d.amount,
+        category: d.category,
+        receiptReceived: d.receiptReceived,
+      };
+      const list = m.get(d.charityEin);
+      if (list) list.push(entry);
+      else m.set(d.charityEin, [entry]);
+    }
+    for (const list of m.values()) {
+      list.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    }
+    return m;
+  }, [donations]);
 
   const lastYearZakat = useMemo(() => {
     const ly = new Date().getFullYear() - 1;
@@ -426,7 +454,14 @@ export function UnifiedAllocationView({
 
   const renderRows = (rows: RowCharity[], desktop: boolean) =>
     rows.map((row, i) => (
-      <CharityRecordRow key={row.ein} charity={row} desktop={desktop} isEvenRow={i % 2 === 0} {...rowProps} />
+      <CharityRecordRow
+        key={row.ein}
+        charity={row}
+        desktop={desktop}
+        isEvenRow={i % 2 === 0}
+        history={charityHistoryMap.get(row.ein)}
+        {...rowProps}
+      />
     ));
 
   const renderBucket = (b: LocalBucket) => {
@@ -590,6 +625,22 @@ export function UnifiedAllocationView({
         <div className="flex w-full flex-wrap items-center gap-1.5 sm:w-auto sm:justify-end">
           {saving && (
             <span className={`text-[10px] px-2 py-1 rounded ${isDark ? 'text-emerald-400 bg-emerald-500/10' : 'text-emerald-600 bg-emerald-50'}`}>Saving...</span>
+          )}
+          {onExportCSV && donations.length > 0 && (
+            <button
+              data-testid="record-export-csv"
+              onClick={onExportCSV}
+              title="Export donation history as CSV"
+              className={`text-[11px] font-medium px-3 py-1.5 rounded-lg border flex items-center gap-1 ${
+                isDark
+                  ? 'text-slate-400 border-slate-700 hover:bg-slate-800 hover:text-slate-300'
+                  : 'text-slate-500 border-slate-200 hover:bg-slate-50 hover:text-slate-700'
+              }`}
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Export CSV</span>
+              <span className="sm:hidden">CSV</span>
+            </button>
           )}
           <button
             data-tour="giving-add-charity"

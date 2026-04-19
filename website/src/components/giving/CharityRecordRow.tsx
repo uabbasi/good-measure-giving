@@ -15,7 +15,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Check, X } from 'lucide-react';
+import { Check, ChevronRight, X } from 'lucide-react';
 import type { AssignmentStatus } from '../../utils/recordStatus';
 
 export interface CharityRecordRowData {
@@ -25,6 +25,15 @@ export interface CharityRecordRowData {
   status: AssignmentStatus;
   intended: number;
   given: number;
+}
+
+/** Lightweight projection of a GivingHistoryEntry used for the inline expansion. */
+export interface CharityRecordHistoryEntry {
+  id: string;
+  date: string;
+  amount: number;
+  category: 'zakat' | 'sadaqah' | 'other';
+  receiptReceived: boolean;
 }
 
 interface CharityRecordRowProps {
@@ -38,6 +47,8 @@ interface CharityRecordRowProps {
   desktop?: boolean;
   /** For zebra striping on desktop. */
   isEvenRow?: boolean;
+  /** Donation history entries for this charity (already filtered). */
+  history?: CharityRecordHistoryEntry[];
 }
 
 /** Currency format: compact $1.2k when >= $1000, else `$n`. */
@@ -84,14 +95,21 @@ export function CharityRecordRow({
   onRemove,
   desktop = false,
   isEvenRow = false,
+  history,
 }: CharityRecordRowProps) {
   const [localIntended, setLocalIntended] = useState<string>(
     charity.intended ? String(charity.intended) : '',
   );
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     setLocalIntended(charity.intended ? String(charity.intended) : '');
   }, [charity.intended]);
+
+  const hasHistory = !!history && history.length > 0;
+  const toggleExpanded = () => {
+    if (hasHistory) setExpanded(e => !e);
+  };
 
   const commit = () => {
     const n = parseInt(localIntended.replace(/\D/g, ''), 10) || 0;
@@ -181,6 +199,54 @@ export function CharityRecordRow({
     </div>
   );
 
+  // Inline donation-history list (rendered when expanded). Compact, read-only.
+  const historyList = hasHistory ? (
+    <ul
+      data-testid={`record-history-${charity.ein}`}
+      className={`mt-0.5 space-y-0.5 text-[11px] tabular-nums ${
+        isDark ? 'text-slate-400' : 'text-slate-600'
+      }`}
+    >
+      {history!.map(h => {
+        const dateStr = (() => {
+          const d = new Date(h.date);
+          return isNaN(d.getTime()) ? h.date : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+        })();
+        return (
+          <li
+            key={h.id}
+            className="flex items-center gap-2 justify-between"
+          >
+            <span className="flex items-center gap-2 min-w-0">
+              <span className={isDark ? 'text-slate-500' : 'text-slate-400'}>{dateStr}</span>
+              <span
+                className={`shrink-0 text-[9.5px] font-semibold uppercase tracking-wide px-1.5 py-[1px] rounded-md border ${
+                  h.category === 'zakat'
+                    ? (isDark ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' : 'text-emerald-700 border-emerald-200 bg-emerald-50')
+                    : h.category === 'sadaqah'
+                    ? (isDark ? 'text-blue-400 border-blue-500/30 bg-blue-500/10' : 'text-blue-700 border-blue-200 bg-blue-50')
+                    : (isDark ? 'text-slate-400 border-slate-600 bg-slate-700/40' : 'text-slate-500 border-slate-200 bg-slate-50')
+                }`}
+              >
+                {h.category}
+              </span>
+              <span
+                className={`shrink-0 text-[9.5px] font-medium px-1.5 py-[1px] rounded-md border ${
+                  h.receiptReceived
+                    ? (isDark ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' : 'text-emerald-700 border-emerald-200 bg-emerald-50')
+                    : (isDark ? 'text-slate-500 border-slate-700 bg-slate-800/60' : 'text-slate-500 border-slate-200 bg-slate-100')
+                }`}
+              >
+                {h.receiptReceived ? 'Receipt' : 'No receipt'}
+              </span>
+            </span>
+            <span className={isDark ? 'text-slate-200' : 'text-slate-700'}>{fmt(h.amount)}</span>
+          </li>
+        );
+      })}
+    </ul>
+  ) : null;
+
   // Status chip --------------------------------------------------------------
   const statusChip = (
     <span
@@ -201,67 +267,105 @@ export function CharityRecordRow({
         ? `${charity.bucketColor}12`
         : `${charity.bucketColor}08`
       : undefined;
+    const givenCell = charity.given > 0 ? (
+      <span className={isDark ? 'text-emerald-400 font-semibold' : 'text-emerald-700 font-semibold'}>
+        {fmt(charity.given)}
+      </span>
+    ) : (
+      <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</span>
+    );
     return (
-      <tr
-        data-testid={`record-row-${charity.ein}`}
-        className={`hidden sm:table-row border-b group transition-colors ${
-          isDark ? 'border-slate-800/50 hover:bg-slate-800/40' : 'border-slate-100 hover:bg-slate-50'
-        }`}
-        style={{
-          backgroundColor: rowBg,
-          borderBottomColor: charity.bucketColor ? `${charity.bucketColor}25` : undefined,
-        }}
-      >
-        <td
-          className="w-1 p-0"
+      <>
+        <tr
+          data-testid={`record-row-${charity.ein}`}
+          className={`hidden sm:table-row border-b group transition-colors ${
+            isDark ? 'border-slate-800/50 hover:bg-slate-800/40' : 'border-slate-100 hover:bg-slate-50'
+          }`}
           style={{
-            borderLeft: charity.bucketColor ? `4px solid ${charity.bucketColor}55` : undefined,
+            backgroundColor: rowBg,
+            borderBottomColor: charity.bucketColor ? `${charity.bucketColor}25` : undefined,
           }}
-        />
-        <td className="px-2.5 py-1.5">
-          <Link
-            to={`/charity/${charity.ein}`}
-            className={`text-[13px] font-medium hover:underline ${
-              isDark ? 'text-slate-200 hover:text-white' : 'text-slate-700 hover:text-slate-900'
-            }`}
-          >
-            {charity.name}
-          </Link>
-        </td>
-        <td className="px-2.5 py-1.5 text-right">{intendedInput}</td>
-        <td className="px-2.5 py-1.5 text-right text-[13px] tabular-nums">
-          {charity.given > 0 ? (
-            <span className={isDark ? 'text-emerald-400 font-semibold' : 'text-emerald-700 font-semibold'}>
-              {fmt(charity.given)}
-            </span>
-          ) : (
-            <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</span>
-          )}
-        </td>
-        <td className="px-2.5 py-1.5">{statusChip}</td>
-        <td className="px-2.5 py-1.5 text-right">
-          <div className="flex items-center justify-end gap-1.5">
-            {actionButton}
-            {onRemove && (
+        >
+          <td
+            className="w-1 p-0"
+            style={{
+              borderLeft: charity.bucketColor ? `4px solid ${charity.bucketColor}55` : undefined,
+            }}
+          />
+          <td className="px-2.5 py-1.5">
+            <Link
+              to={`/charity/${charity.ein}`}
+              className={`text-[13px] font-medium hover:underline ${
+                isDark ? 'text-slate-200 hover:text-white' : 'text-slate-700 hover:text-slate-900'
+              }`}
+            >
+              {charity.name}
+            </Link>
+          </td>
+          <td className="px-2.5 py-1.5 text-right">{intendedInput}</td>
+          <td className="px-2.5 py-1.5 text-right text-[13px] tabular-nums">
+            {hasHistory ? (
               <button
                 type="button"
-                onClick={() => onRemove(charity.ein)}
-                className={`p-1.5 rounded-md transition-colors opacity-40 hover:opacity-100 ${
-                  isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'
+                data-testid={`record-given-toggle-${charity.ein}`}
+                onClick={toggleExpanded}
+                aria-expanded={expanded}
+                aria-label={`Toggle donation history for ${charity.name}`}
+                className={`inline-flex items-center gap-0.5 rounded px-1 py-0.5 -mx-1 transition-colors ${
+                  isDark ? 'hover:bg-slate-700/60' : 'hover:bg-slate-100'
                 }`}
-                title={`Remove ${charity.name}`}
-                aria-label={`Remove ${charity.name}`}
               >
-                <X
-                  className={`w-3.5 h-3.5 ${
-                    isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'
+                {givenCell}
+                <ChevronRight
+                  className={`w-3 h-3 shrink-0 transition-transform ${expanded ? 'rotate-90' : ''} ${
+                    isDark ? 'text-slate-500' : 'text-slate-400'
                   }`}
                 />
               </button>
+            ) : (
+              givenCell
             )}
-          </div>
-        </td>
-      </tr>
+          </td>
+          <td className="px-2.5 py-1.5">{statusChip}</td>
+          <td className="px-2.5 py-1.5 text-right">
+            <div className="flex items-center justify-end gap-1.5">
+              {actionButton}
+              {onRemove && (
+                <button
+                  type="button"
+                  onClick={() => onRemove(charity.ein)}
+                  className={`p-1.5 rounded-md transition-colors opacity-40 hover:opacity-100 ${
+                    isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'
+                  }`}
+                  title={`Remove ${charity.name}`}
+                  aria-label={`Remove ${charity.name}`}
+                >
+                  <X
+                    className={`w-3.5 h-3.5 ${
+                      isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'
+                    }`}
+                  />
+                </button>
+              )}
+            </div>
+          </td>
+        </tr>
+        {hasHistory && expanded && (
+          <tr
+            className={`hidden sm:table-row ${
+              isDark ? 'bg-slate-900/50' : 'bg-slate-50/80'
+            }`}
+            style={{
+              borderBottomColor: charity.bucketColor ? `${charity.bucketColor}25` : undefined,
+            }}
+          >
+            <td className="w-1 p-0" />
+            <td colSpan={5} className="px-2.5 pt-1 pb-2">
+              {historyList}
+            </td>
+          </tr>
+        )}
+      </>
     );
   }
 
@@ -306,22 +410,56 @@ export function CharityRecordRow({
         </div>
       </div>
       <div className="mt-2 flex items-center justify-between gap-2">
-        <div className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-          Given{' '}
-          <span className={charity.given > 0 ? 'font-semibold text-emerald-500' : ''}>
-            {fmt(charity.given || 0)}
-          </span>
-          {charity.intended > 0 && (
-            <>
-              {' '}· of {fmt(charity.intended)}
-            </>
-          )}
-        </div>
+        {hasHistory ? (
+          <button
+            type="button"
+            data-testid={`record-given-toggle-${charity.ein}`}
+            onClick={toggleExpanded}
+            aria-expanded={expanded}
+            className={`flex items-center gap-1 text-[11px] rounded px-1 -mx-1 transition-colors ${
+              isDark ? 'text-slate-400 hover:bg-slate-700/60' : 'text-slate-500 hover:bg-slate-100'
+            }`}
+          >
+            <span>
+              Given{' '}
+              <span className={charity.given > 0 ? 'font-semibold text-emerald-500' : ''}>
+                {fmt(charity.given || 0)}
+              </span>
+              {charity.intended > 0 && (
+                <>
+                  {' '}· of {fmt(charity.intended)}
+                </>
+              )}
+            </span>
+            <ChevronRight
+              className={`w-3 h-3 shrink-0 transition-transform ${expanded ? 'rotate-90' : ''}`}
+            />
+          </button>
+        ) : (
+          <div className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+            Given{' '}
+            <span className={charity.given > 0 ? 'font-semibold text-emerald-500' : ''}>
+              {fmt(charity.given || 0)}
+            </span>
+            {charity.intended > 0 && (
+              <>
+                {' '}· of {fmt(charity.intended)}
+              </>
+            )}
+          </div>
+        )}
         <div className="flex items-center gap-2">
           {intendedInput}
           {actionButton}
         </div>
       </div>
+      {hasHistory && expanded && (
+        <div className="mt-2 pt-2 border-t border-dashed" style={{
+          borderTopColor: isDark ? 'rgb(51,65,85)' : 'rgb(226,232,240)',
+        }}>
+          {historyList}
+        </div>
+      )}
     </div>
   );
 }
