@@ -11,19 +11,8 @@ import { useEffect, useRef } from 'react';
 import { useBookmarkState, useProfileState } from '../contexts/UserFeaturesContext';
 import { useCharities } from '../hooks/useCharities';
 import { ALL_TAGS, pickBestTag } from '../constants/givingTags';
-import type { GivingBucket, CharityBucketAssignment } from '../../types';
-
-/** Build a fresh v2 assignment in the 'intended' state. */
-function makeIntendedAssignment(charityEin: string, bucketId: string): CharityBucketAssignment {
-  return {
-    charityEin,
-    bucketId,
-    status: 'intended',
-    intended: 0,
-    given: 0,
-    intendedAt: new Date().toISOString(),
-  };
-}
+import { makeIntendedAssignment } from '../utils/assignments';
+import type { GivingBucket } from '../../types';
 
 const BUCKET_COLORS = ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444', '#ec4899', '#06b6d4', '#84cc16'];
 

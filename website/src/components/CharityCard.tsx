@@ -11,6 +11,7 @@ import { formatShortRevenue } from '../utils/formatters';
 import { cleanNarrativeText } from '../utils/cleanNarrativeText';
 import { BookmarkButton } from './BookmarkButton';
 import { CompareButton } from './CompareButton';
+import { AddToGivingButton } from './AddToGivingButton';
 
 type PrimaryTag = {
   label: string;
@@ -333,6 +334,18 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
                 size="md"
               />
             </div>
+          </div>
+
+          {/* Add to giving action row (desktop) */}
+          <div
+            className="flex justify-end mb-2"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+          >
+            <AddToGivingButton
+              charityEin={charity.ein || charity.id || ''}
+              charityName={charity.name}
+              size="md"
+            />
           </div>
 
           {/* Slug subtitle */}

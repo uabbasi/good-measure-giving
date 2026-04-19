@@ -21,6 +21,7 @@ import {
   AddInKindModal,
   InKindHistoryTable,
   InKindSummaryCard,
+  CategorySplit,
 } from '../src/components/giving';
 import type { GivingHistoryEntry, CharitySummary } from '../types';
 import { useTour } from '../src/tours/useTour';
@@ -140,6 +141,16 @@ export function ProfilePage() {
   const [prefillCharity, setPrefillCharity] = useState<{ ein: string; name: string } | null>(null);
   const [showInKindModal, setShowInKindModal] = useState(false);
   const [editingInKindDonation, setEditingInKindDonation] = useState<InKindDonation | null>(null);
+  // Lets the user skip CategorySplit for this session and fall through to Starter Plan.
+  const [splitSkipped, setSplitSkipped] = useState(false);
+
+  // Show CategorySplit when the user has a target but no buckets yet and
+  // hasn't skipped it this session. Otherwise fall through to the existing
+  // UnifiedAllocationView + Starter Plan gap.
+  const showCategorySplit =
+    !!profile?.targetZakatAmount &&
+    (profile?.givingBuckets?.length ?? 0) === 0 &&
+    !splitSkipped;
 
   // Match bookmarks with charity data for the unified view
   const bookmarkedCharitiesForView = useMemo(() => {
@@ -332,6 +343,17 @@ export function ProfilePage() {
         {/* Tab Content */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
+            {showCategorySplit && profile?.targetZakatAmount != null && (
+              <CategorySplit
+                target={profile.targetZakatAmount}
+                onDone={() => {
+                  // Buckets are persisted via writeBatch; the profile hook
+                  // will refetch and advance the flow naturally.
+                }}
+                onSkip={() => setSplitSkipped(true)}
+              />
+            )}
+
             {/* Unified Allocation View - card-based allocation with charity assignments */}
             <UnifiedAllocationView
               initialBuckets={profile?.givingBuckets || []}
