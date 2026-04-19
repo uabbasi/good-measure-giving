@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildFaqPageSchema, buildBreadcrumbSchema } from './schema';
+import { buildFaqPageSchema, buildBreadcrumbSchema, buildArticleSchema } from './schema';
 
 describe('buildFaqPageSchema', () => {
   it('produces a valid FAQPage schema from Q&A pairs', () => {
@@ -58,5 +58,43 @@ describe('buildBreadcrumbSchema', () => {
 
   it('returns null when given an empty crumb list', () => {
     expect(buildBreadcrumbSchema([])).toBeNull();
+  });
+});
+
+describe('buildArticleSchema', () => {
+  it('produces a TechArticle with all fields', () => {
+    const result = buildArticleSchema({
+      type: 'TechArticle',
+      headline: 'How We Evaluate Charities',
+      description: 'Methodology for scoring Muslim charities on impact and alignment.',
+      url: 'https://goodmeasuregiving.org/methodology',
+      datePublished: '2026-02-01',
+      dateModified: '2026-04-19',
+      authorName: 'Good Measure Giving',
+    });
+
+    expect(result).toEqual({
+      '@context': 'https://schema.org',
+      '@type': 'TechArticle',
+      headline: 'How We Evaluate Charities',
+      description: 'Methodology for scoring Muslim charities on impact and alignment.',
+      url: 'https://goodmeasuregiving.org/methodology',
+      datePublished: '2026-02-01',
+      dateModified: '2026-04-19',
+      author: { '@type': 'Organization', name: 'Good Measure Giving' },
+      publisher: { '@type': 'Organization', name: 'Good Measure Giving' },
+    });
+  });
+
+  it('defaults to Article when type is omitted', () => {
+    const result = buildArticleSchema({
+      headline: 'Test',
+      description: 'Test description.',
+      url: 'https://goodmeasuregiving.org/test',
+      datePublished: '2026-04-19',
+      dateModified: '2026-04-19',
+      authorName: 'GMG',
+    });
+    expect(result['@type']).toBe('Article');
   });
 });

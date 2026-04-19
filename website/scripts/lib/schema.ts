@@ -49,3 +49,27 @@ export function buildBreadcrumbSchema(crumbs: Breadcrumb[]): JsonLdObject | null
     })),
   };
 }
+
+export interface ArticleInput {
+  type?: 'Article' | 'TechArticle';
+  headline: string;
+  description: string;
+  url: string;
+  datePublished: string;
+  dateModified: string;
+  authorName: string;
+}
+
+export function buildArticleSchema(input: ArticleInput): JsonLdObject {
+  return {
+    '@context': 'https://schema.org',
+    '@type': input.type ?? 'Article',
+    headline: input.headline,
+    description: input.description,
+    url: input.url,
+    datePublished: input.datePublished,
+    dateModified: input.dateModified,
+    author: { '@type': 'Organization', name: input.authorName },
+    publisher: { '@type': 'Organization', name: input.authorName },
+  };
+}
