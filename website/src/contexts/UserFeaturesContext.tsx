@@ -25,7 +25,7 @@ interface UserFeaturesContextType {
   bookmarksError: string | null;
   isBookmarked: (ein: string) => boolean;
   toggleBookmark: (ein: string) => Promise<void>;
-  addBookmark: (ein: string, notes?: string) => Promise<void>;
+  addBookmark: (ein: string, notes?: string, charityName?: string) => Promise<void>;
   removeBookmark: (ein: string) => Promise<void>;
   updateBookmarkNotes: (ein: string, notes: string | null) => Promise<void>;
   getBookmark: (ein: string) => Bookmark | undefined;

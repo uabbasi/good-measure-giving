@@ -1,38 +1,49 @@
 /**
- * UnifiedAllocationView - Smart Spreadsheet
+ * UnifiedAllocationView — the unified record (M4 rewrite).
  *
- * Design: Airtable-style inline editing
- * - Auto-save on blur/enter (no save button)
- * - All fields inline-editable
- * - Bidirectional % ↔ target editing
- * - Subtle hover states, clean typography
+ * Design shift from the old spreadsheet:
+ *  - Every charity has an intended amount, a given amount, and a status
+ *    (intended → sent → confirmed). Status is shown as a colored chip.
+ *  - No percent math, no drag-drop, no bucket sliders. Category membership
+ *    is just a visual grouping — `bucketId` on the assignment.
+ *  - Per-charity actions ("Log donation" / "Mark confirmed") mutate profile
+ *    state directly via parent callbacks; giving-history writes happen in
+ *    AddDonationModal with a writeBatch that also updates the assignment.
+ *
+ * Preserved: category grouping + collapsible, custom charity entry, zakat
+ * lens toggle, zakat anniversary prompt, mobile-card / desktop-table layouts,
+ * Starter Plan fallback. Per-row rendering lives in ./CharityRecordRow.tsx.
+ * Pure status transitions live in ../../utils/recordStatus.ts.
  */
 
-import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, X, Check, GripVertical, ChevronDown, ArrowRight, Search, Calculator, CalendarDays } from 'lucide-react';
-import { ZakatEstimator } from './ZakatEstimator';
-import { StarterPlan } from './StarterPlan';
-import type { CharitySummary } from '../../hooks/useCharities';
 import {
-  DndContext,
-  DragOverlay,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  type DragStartEvent,
-  type DragEndEvent,
-} from '@dnd-kit/core';
-import { useDraggable, useDroppable } from '@dnd-kit/core';
-import { CSS } from '@dnd-kit/utilities';
+  CalendarDays, Calculator, Check, ChevronDown, Plus, Search, X,
+} from 'lucide-react';
+import type { GivingBucket, GivingHistoryEntry } from '../../../types';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
 import { SHOW_AMAL_SCORE } from '../../featureFlags';
 import { useCharities } from '../../hooks/useCharities';
+import { ALL_TAGS, TAGS, pickBestTag } from '../../constants/givingTags';
 import { getWalletType } from '../../utils/walletUtils';
-import { TAGS, ALL_TAGS, pickBestTag } from '../../constants/givingTags';
-import type { GivingBucket, GivingHistoryEntry } from '../../../types';
+import { StarterPlan } from './StarterPlan';
+import { ZakatEstimator } from './ZakatEstimator';
+import { CharityRecordRow } from './CharityRecordRow';
+import type { CharitySummary } from '../../hooks/useCharities';
+import type { AssignmentStatus } from '../../utils/recordStatus';
+
+// --------------------------------------------------------------------------
+// Constants / types
+// --------------------------------------------------------------------------
+
+const COLORS = [
+  '#5ba88a', '#5b8fb8', '#8b7cb8', '#7a9e6e',
+  '#7aab7a', '#8a9eb8', '#a8849e', '#7ab5a8',
+];
+
+/** Soft-cap: charities after this index in a bucket collapse into "Saved for later". */
+const ACTIVE_CAP = 5;
 
 interface BookmarkedCharity {
   ein: string;
@@ -43,488 +54,78 @@ interface BookmarkedCharity {
   notes?: string | null;
 }
 
-interface CharityAssignment {
+/** v2 assignment fields surfaced to this component (subset of CharityBucketAssignment). */
+export interface UnifiedAssignmentInput {
   ein: string;
   bucketId: string;
+  status?: AssignmentStatus;
+  intended?: number;
+  given?: number;
 }
 
 interface UnifiedAllocationViewProps {
   initialBuckets?: GivingBucket[];
-  initialAssignments?: CharityAssignment[];
+  initialAssignments?: UnifiedAssignmentInput[];
   targetAmount?: number | null;
   bookmarkedCharities: BookmarkedCharity[];
   donations: GivingHistoryEntry[];
-  charityTargets?: Map<string, number>;
-  onSave: (buckets: GivingBucket[], targetAmount: number | null, assignments: CharityAssignment[]) => Promise<void>;
+  /** Save buckets + target (no more % splits). */
+  onSave: (buckets: GivingBucket[], targetAmount: number | null) => Promise<void>;
   onLogDonation: (charityEin?: string, charityName?: string) => void;
   onAddCharity?: (charityEin: string, charityName: string, bucketId: string) => Promise<void>;
   onRemoveCharity?: (charityEin: string) => Promise<void>;
-  onSetCharityTarget?: (ein: string, amount: number) => Promise<void>;
-  /** All charity summaries for Starter Plan suggestions */
+  onSetCharityIntended?: (ein: string, amount: number) => Promise<void>;
+  onMarkConfirmed?: (ein: string) => Promise<void>;
   allCharities?: CharitySummary[];
-  /** Current zakat anniversary date (ISO string) */
   zakatAnniversary?: string | null;
-  /** Save zakat anniversary */
   onSaveAnniversary?: (date: string | null) => Promise<void>;
 }
 
-// Palette: muted jewel tones at consistent saturation/lightness for pastel harmony
-// Hues spaced ~45° apart, saturation ~45-55%, lightness ~55-62%
-const COLORS = [
-  '#5ba88a', // sage green (brand-adjacent)
-  '#5b8fb8', // steel blue
-  '#8b7cb8', // soft violet
-  '#7a9e6e', // olive green
-  '#7aab7a', // moss green
-  '#8a9eb8', // slate blue
-  '#a8849e', // dusty mauve
-  '#7ab5a8', // seafoam
-];
-const PERCENT_DECIMALS = 2;
-const PERCENT_EPSILON = 0.01;
+type LocalBucket = { id: string; tagId: string; label: string; color: string };
+type RowCharity = {
+  ein: string; name: string; bucketColor?: string;
+  status: AssignmentStatus; intended: number; given: number;
+};
 
+// --------------------------------------------------------------------------
+// Helpers
+// --------------------------------------------------------------------------
 
-function clampPercent(value: number): number {
-  return Math.max(0, Math.min(100, value));
+function fmt(n: number): string {
+  if (n >= 1000) return `$${(n / 1000).toFixed(n % 1000 === 0 ? 0 : 1)}k`;
+  return `$${n}`;
+}
+function isZakatEligible(walletTag: string | null): boolean {
+  return getWalletType(walletTag) === 'zakat';
 }
 
-function roundPercent(value: number): number {
-  return Math.round(value * (10 ** PERCENT_DECIMALS)) / (10 ** PERCENT_DECIMALS);
-}
+// --------------------------------------------------------------------------
+// Sub-component: anniversary prompt
+// --------------------------------------------------------------------------
 
-function parsePercentInput(raw: string): number {
-  const sanitized = raw.replace(/[^0-9.]/g, '');
-  const [whole, ...fractionParts] = sanitized.split('.');
-  const normalized = fractionParts.length > 0 ? `${whole || '0'}.${fractionParts.join('')}` : whole;
-  const parsed = Number.parseFloat(normalized);
-  if (!Number.isFinite(parsed)) return 0;
-  return roundPercent(clampPercent(parsed));
-}
-
-function formatPercent(value: number): string {
-  const rounded = roundPercent(value);
-  if (Number.isInteger(rounded)) return rounded.toString();
-  return rounded.toFixed(PERCENT_DECIMALS).replace(/\.?0+$/, '');
-}
-
-// Draggable charity row
-function DraggableCharityRow({
-  charity,
-  bucketId,
-  bucketColor,
-  given,
-  target,
-  isDark,
-  onLogDonation,
-  onRemove,
-  onSetTarget,
-  onMoveCharity,
-  bucketOptions,
-  dimmed = false,
-  isEvenRow = false,
-}: {
-  charity: BookmarkedCharity;
-  bucketId: string | null;
-  bucketColor?: string;
-  given: number;
-  target?: number;
-  isDark: boolean;
-  onLogDonation: (ein: string, name: string) => void;
-  onRemove?: (ein: string) => void;
-  onSetTarget?: (ein: string, amount: number) => void;
-  onMoveCharity?: (ein: string, bucketId: string | null) => void;
-  bucketOptions?: Array<{ id: string; label: string }>;
-  dimmed?: boolean;
-  isEvenRow?: boolean;
-}) {
-  const [localTarget, setLocalTarget] = useState<string>(target ? String(target) : '');
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
-    id: charity.ein,
-    data: { charity, bucketId },
-  });
-
-  // Sync local state when prop changes
-  useEffect(() => {
-    setLocalTarget(target ? String(target) : '');
-  }, [target]);
-
-  const style = transform ? {
-    transform: CSS.Translate.toString(transform),
-    opacity: isDragging ? 0.4 : dimmed ? 0.4 : 1,
-  } : dimmed ? { opacity: 0.4 } : undefined;
-
-  const wt = getWalletType(charity.walletTag);
-  const cell = `px-2.5 py-1.5 text-[13px] ${isDark ? 'text-slate-300' : 'text-slate-700'}`;
-  const border = isDark ? 'border-slate-800/50' : 'border-slate-100';
-  const inputStyle = `bg-transparent border-0 focus:outline-none focus:ring-0 p-0 ${isDark ? 'text-slate-200 placeholder-slate-600' : 'text-slate-700 placeholder-slate-300'}`;
-
-  const handleTargetBlur = () => {
-    const num = parseInt(localTarget.replace(/\D/g, '')) || 0;
-    if (onSetTarget) {
-      onSetTarget(charity.ein, num);
-    }
-  };
-
-  const remaining = (target || 0) - given;
-
-  const handleTargetKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleTargetBlur();
-      const input = e.target as HTMLInputElement;
-      const allInputs = document.querySelectorAll<HTMLInputElement>('[data-charity-amount]');
-      const arr = Array.from(allInputs);
-      const idx = arr.indexOf(input);
-      if (idx >= 0 && idx < arr.length - 1) {
-        arr[idx + 1].focus();
-      } else {
-        input.blur();
-      }
-    }
-  };
-
-  const evenRowBg = isEvenRow && bucketColor
-    ? isDark ? `${bucketColor}18` : `${bucketColor}10`
-    : undefined;
-
-  return (
-    <tr
-      ref={setNodeRef}
-      style={{ ...style, backgroundColor: evenRowBg, borderBottomColor: bucketColor ? `${bucketColor}20` : undefined }}
-      className={`hidden sm:table-row border-b group transition-all ${isDragging ? 'z-50 shadow-lg' : ''} ${isDark ? 'hover:bg-slate-800/40' : 'hover:bg-slate-50'} ${dimmed ? 'pointer-events-auto' : ''}`}
-    >
-      <td className={`${cell} w-0 pr-0`} style={{ borderLeft: bucketColor ? `4px solid ${bucketColor}40` : undefined }}>
-        <button {...listeners} {...attributes} className={`cursor-grab active:cursor-grabbing p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity ${isDark ? 'hover:bg-slate-700' : 'hover:bg-slate-200'}`}>
-          <GripVertical className="w-3.5 h-3.5" />
-        </button>
-      </td>
-      <td className={`${cell} pl-1`} colSpan={2}>
-        <div className="flex items-center gap-2">
-          <Link to={`/charity/${charity.ein}`} className={`hover:underline font-medium truncate ${isDark ? 'text-slate-200 hover:text-white' : 'text-slate-700 hover:text-slate-900'}`}>{charity.name}</Link>
-          {SHOW_AMAL_SCORE && <span className={`shrink-0 text-[10px] px-1.5 py-0.5 rounded-md font-bold border ${
-            wt === 'zakat'
-              ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600'
-              : isDark
-              ? 'bg-slate-800 border-slate-700 text-slate-400'
-              : 'bg-slate-100 border-slate-200 text-slate-500'
-          }`}>
-            {charity.amalScore || '—'}
-          </span>}
-        </div>
-      </td>
-      <td className={`${cell} text-right`}>
-        <div className={`inline-flex items-center px-2 py-0.5 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'} hover:border-emerald-400 dark:hover:border-emerald-500/40 focus-within:border-emerald-500 transition-colors`}>
-          <span className={`text-[11px] mr-0.5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>$</span>
-          <input
-            type="text"
-            inputMode="numeric"
-            data-charity-amount
-            value={localTarget}
-            onChange={e => setLocalTarget(e.target.value.replace(/\D/g, ''))}
-            onBlur={handleTargetBlur}
-            onKeyDown={handleTargetKeyDown}
-            className={`w-24 text-right ${inputStyle} text-sm tabular-nums`}
-            placeholder="0"
-          />
-        </div>
-      </td>
-      <td className={`${cell} text-right tabular-nums`}>
-        <span className={given > 0 ? 'font-semibold text-emerald-600' : isDark ? 'text-slate-600' : 'text-slate-300'}>{given > 0 ? fmt(given) : '—'}</span>
-      </td>
-      <td className={`${cell} text-right tabular-nums`}>
-        {target && target > 0 ? (
-          remaining <= 0 ? (
-            <div className="flex items-center justify-end gap-1">
-              <Check className="w-3.5 h-3.5 text-emerald-500" />
-              <span className="text-emerald-500 font-medium text-[12px]">Done</span>
-            </div>
-          ) : (
-            <span className={`font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{fmt(remaining)} left</span>
-          )
-        ) : (
-          <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</span>
-        )}
-      </td>
-      <td className={`${cell} text-right`}>
-        <div className="flex items-center justify-end gap-1">
-          <button
-            onClick={() => onLogDonation(charity.ein, charity.name)}
-            className={`text-[11px] font-semibold px-2.5 py-1 rounded-md border transition-colors ${
-              isDark
-                ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20'
-                : 'text-emerald-600 border-emerald-200 bg-emerald-50 hover:bg-emerald-100'
-            }`}
-          >
-            + Log
-          </button>
-          {onRemove && (
-            <button
-              onClick={() => onRemove(charity.ein)}
-              className={`p-1.5 rounded-md transition-colors opacity-40 hover:opacity-100 ${isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'}`}
-              title="Remove from saved"
-            >
-              <X className={`w-3.5 h-3.5 ${isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'}`} />
-            </button>
-          )}
-        </div>
-      </td>
-    </tr>
-  );
-}
-
-function MobileCharityAllocationRow({
-  charity,
-  given,
-  target,
-  categoryTarget,
-  currentBucketId,
-  bucketOptions,
-  isDark,
-  onLogDonation,
-  onSetTarget,
-  onMoveCharity,
-  onRemove,
-}: {
-  charity: BookmarkedCharity;
-  given: number;
-  target?: number;
-  categoryTarget: number;
-  currentBucketId: string | null;
-  bucketOptions: Array<{ id: string; label: string }>;
-  isDark: boolean;
-  onLogDonation: (ein: string, name: string) => void;
-  onSetTarget?: (ein: string, amount: number) => void | Promise<void>;
-  onMoveCharity?: (ein: string, bucketId: string | null) => void;
-  onRemove?: (ein: string) => void | Promise<void>;
-}) {
-  const [localTarget, setLocalTarget] = useState<string>(target ? String(target) : '');
-  const inputStyle = `bg-transparent border-0 focus:outline-none focus:ring-0 p-0 ${isDark ? 'text-slate-200 placeholder-slate-600' : 'text-slate-700 placeholder-slate-300'}`;
-  const currentTarget = target || 0;
-  const shareOfCategory = categoryTarget > 0 ? roundPercent((currentTarget / categoryTarget) * 100) : 0;
-
-  useEffect(() => {
-    setLocalTarget(target ? String(target) : '');
-  }, [target]);
-
-  const commitTarget = () => {
-    if (!onSetTarget) return;
-    const amount = parseInt(localTarget.replace(/\D/g, '')) || 0;
-    void onSetTarget(charity.ein, amount);
-  };
-
-  const onTargetKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      (e.target as HTMLInputElement).blur();
-    }
-  };
-
-  const onBucketChange = (value: string) => {
-    if (!onMoveCharity) return;
-    const nextBucketId = value || null;
-    if (nextBucketId === currentBucketId) return;
-    onMoveCharity(charity.ein, nextBucketId);
-  };
-
-  return (
-    <div className={`rounded-md border px-2 py-1.5 ${isDark ? 'border-slate-700 bg-slate-800/40' : 'border-slate-200 bg-slate-50/60'}`}>
-      <div className="flex items-center justify-between gap-2">
-        <Link
-          to={`/charity/${charity.ein}`}
-          className={`min-w-0 truncate text-[12px] font-medium ${isDark ? 'text-slate-200 hover:text-white' : 'text-slate-700 hover:text-slate-900'} hover:underline`}
-        >
-          {charity.name}
-        </Link>
-        <div className="shrink-0 flex items-center gap-1">
-          <button
-            onClick={() => onLogDonation(charity.ein, charity.name)}
-            className={`text-[10px] font-semibold px-2 py-1 rounded-md border transition-colors ${
-              isDark
-                ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20'
-                : 'text-emerald-600 border-emerald-200 bg-emerald-50 hover:bg-emerald-100'
-            }`}
-          >
-            + Log
-          </button>
-          {onRemove && (
-            <button
-              onClick={() => void onRemove(charity.ein)}
-              className={`p-1 rounded-md transition-colors ${isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'}`}
-              aria-label={`Remove ${charity.name}`}
-            >
-              <X className={`w-3.5 h-3.5 ${isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'}`} />
-            </button>
-          )}
-        </div>
-      </div>
-      <div className="mt-1.5 flex items-center justify-between gap-2">
-        <span className={`text-[10px] ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-          {(() => {
-            const rem = (target || 0) - given;
-            const paidStr = `Paid ${fmt(given)}`;
-            const remStr = target && target > 0 ? (rem > 0 ? ` · ${fmt(rem)} left` : ' · Done') : '';
-            return categoryTarget > 0
-              ? `${paidStr}${remStr} · ${formatPercent(shareOfCategory)}% of category`
-              : `${paidStr}${remStr}`;
-          })()}
-        </span>
-        <div className={`inline-flex items-center px-2 py-1 rounded-md border ${isDark ? 'border-slate-700 bg-slate-900/60' : 'border-slate-200 bg-white'} hover:border-emerald-400 dark:hover:border-emerald-500/40 focus-within:border-emerald-500 transition-colors`}>
-          <span className={`text-[11px] mr-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>$</span>
-          <input
-            type="text"
-            inputMode="numeric"
-            value={localTarget}
-            onChange={e => setLocalTarget(e.target.value.replace(/\D/g, ''))}
-            onBlur={commitTarget}
-            onKeyDown={onTargetKeyDown}
-            className={`w-16 text-right ${inputStyle} text-[12px] font-semibold tabular-nums`}
-            placeholder="0"
-            aria-label={`Target for ${charity.name}`}
-          />
-        </div>
-      </div>
-      {onMoveCharity && bucketOptions.length > 0 && (
-        <div className="mt-1.5 flex items-center justify-between gap-2">
-          <span className={`text-[10px] ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Category</span>
-          <select
-            value={currentBucketId || ''}
-            onChange={e => onBucketChange(e.target.value)}
-            className={`max-w-[10rem] text-[11px] rounded-md border px-2 py-1 ${
-              isDark
-                ? 'bg-slate-900 border-slate-700 text-slate-300'
-                : 'bg-white border-slate-200 text-slate-700'
-            }`}
-            aria-label={`Category for ${charity.name}`}
-          >
-            <option value="">Needs category</option>
-            {bucketOptions.map(option => (
-              <option key={option.id} value={option.id}>{option.label}</option>
-            ))}
-          </select>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// Droppable category zone
-function DroppableCategory({ id, color, children, isDark }: { id: string; color: string; children: React.ReactNode; isDark: boolean }) {
-  const { isOver, setNodeRef } = useDroppable({ id });
-
-  return (
-    <tbody
-      ref={setNodeRef}
-      className={`transition-all ${isOver ? (isDark ? 'bg-emerald-500/10' : 'bg-emerald-50/80') : ''}`}
-      style={{
-        borderLeft: isOver ? `3px solid ${color}` : undefined,
-        boxShadow: isDark ? undefined : `inset 0 -2px 0 ${color}15`,
-      }}
-    >
-      {children}
-    </tbody>
-  );
-}
-
-// Ghost suggestion row - faint row for suggested charity
-function GhostSuggestionRow({
-  charity,
-  isDark,
-  onAdd,
-}: {
-  charity: { ein: string; name: string; amalScore: number | null };
-  isDark: boolean;
-  onAdd: () => void;
-}) {
-  const cell = `px-2.5 py-1 text-[13px]`;
-
-  return (
-    <tr
-      onClick={onAdd}
-      className={`hidden sm:table-row border-b border-dashed cursor-pointer transition-all group ${
-        isDark
-          ? 'border-slate-700/50 text-slate-600 hover:text-slate-300 hover:bg-emerald-500/5'
-          : 'border-slate-200 text-slate-400 hover:text-slate-600 hover:bg-emerald-50/50'
-      }`}
-    >
-      <td className={`${cell} w-0 pr-0`}>
-        <Plus className={`w-3.5 h-3.5 opacity-40 group-hover:opacity-100 ${isDark ? 'group-hover:text-emerald-400' : 'group-hover:text-emerald-500'}`} />
-      </td>
-      <td className={`${cell} pl-1 italic font-medium`} colSpan={2}>
-        <div className="flex items-center gap-2">
-          {charity.name}
-          {SHOW_AMAL_SCORE && <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-medium opacity-50 group-hover:opacity-80 ${isDark ? 'bg-slate-800 border border-slate-700' : 'bg-slate-100 border border-slate-200'}`}>
-            {charity.amalScore || '—'}
-          </span>}
-        </div>
-      </td>
-      <td className={cell}></td>
-      <td className={cell}></td>
-      <td className={cell}></td>
-      <td className={`${cell} text-right`}>
-        <span className={`text-[10px] font-semibold px-2 py-1 rounded-md opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity ${
-          isDark ? 'text-emerald-400 bg-emerald-500/10' : 'text-emerald-600 bg-emerald-50'
-        }`}>+ Add</span>
-      </td>
-    </tr>
-  );
-}
-
-// Droppable uncategorized zone
-function DroppableUncategorized({ children, isDark, isActive }: { children: React.ReactNode; isDark: boolean; isActive: boolean }) {
-  const { isOver, setNodeRef } = useDroppable({ id: 'uncategorized' });
-
-  return (
-    <div
-      ref={setNodeRef}
-      className={`border-t transition-colors ${
-        isOver
-          ? isDark ? 'border-amber-500/50 bg-amber-500/10' : 'border-amber-300 bg-amber-100/50'
-          : isDark ? 'border-amber-500/20' : 'border-amber-100'
-      } ${isActive && !isOver ? (isDark ? 'border-dashed' : 'border-dashed') : ''}`}
-    >
-      {children}
-    </div>
-  );
-}
-
-function ZakatAnniversaryPrompt({ isDark, onSave }: { isDark: boolean; onSave: (date: string | null) => Promise<void> }) {
+function ZakatAnniversaryPrompt({
+  isDark, onSave,
+}: { isDark: boolean; onSave: (date: string | null) => Promise<void> }) {
   const [date, setDate] = useState('');
   const [dismissed, setDismissed] = useState(false);
-
   if (dismissed) return null;
-
-  const handleSave = async () => {
-    if (date) {
-      await onSave(date);
-    }
-  };
-
   return (
     <div className={`flex items-center gap-3 px-4 py-2.5 border-b ${isDark ? 'bg-slate-800/30 border-slate-700' : 'bg-amber-50/50 border-amber-100'}`}>
       <CalendarDays className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-amber-400' : 'text-amber-600'}`} />
-      <span className={`text-xs ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-        When is your zakat anniversary?
-      </span>
+      <span className={`text-xs ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>When is your zakat anniversary?</span>
       <input
         type="date"
         value={date}
         onChange={e => setDate(e.target.value)}
-        className={`text-xs px-2 py-1 rounded border ${
-          isDark
-            ? 'bg-slate-800 border-slate-600 text-white'
-            : 'bg-white border-slate-300 text-slate-900'
-        } focus:outline-none focus:ring-1 focus:ring-emerald-500`}
+        className={`text-xs px-2 py-1 rounded border ${isDark ? 'bg-slate-800 border-slate-600 text-white' : 'bg-white border-slate-300 text-slate-900'} focus:outline-none focus:ring-1 focus:ring-emerald-500`}
       />
       {date && (
-        <button
-          onClick={handleSave}
-          className="text-xs font-medium px-2 py-1 rounded bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
-        >
-          Save
-        </button>
+        <button onClick={() => void onSave(date)} className="text-xs font-medium px-2 py-1 rounded bg-emerald-600 text-white hover:bg-emerald-700">Save</button>
       )}
       <button
         onClick={() => setDismissed(true)}
         className={`ml-auto p-1 rounded ${isDark ? 'text-slate-500 hover:text-slate-400' : 'text-slate-400 hover:text-slate-500'}`}
-        title="Dismiss"
+        aria-label="Dismiss zakat anniversary prompt"
       >
         <X className="w-3.5 h-3.5" />
       </button>
@@ -532,10 +133,9 @@ function ZakatAnniversaryPrompt({ isDark, onSave }: { isDark: boolean; onSave: (
   );
 }
 
-function fmt(n: number): string {
-  if (n >= 1000) return `$${(n/1000).toFixed(n % 1000 === 0 ? 0 : 1)}k`;
-  return `$${n}`;
-}
+// --------------------------------------------------------------------------
+// Main component
+// --------------------------------------------------------------------------
 
 export function UnifiedAllocationView({
   initialBuckets = [],
@@ -543,12 +143,12 @@ export function UnifiedAllocationView({
   targetAmount: initialTarget,
   bookmarkedCharities,
   donations,
-  charityTargets,
   onSave,
   onLogDonation,
   onAddCharity,
   onRemoveCharity,
-  onSetCharityTarget,
+  onSetCharityIntended,
+  onMarkConfirmed,
   allCharities,
   zakatAnniversary,
   onSaveAnniversary,
@@ -556,409 +156,377 @@ export function UnifiedAllocationView({
   const { isDark } = useLandingTheme();
   const { charities } = useCharities();
 
+  // Local state ------------------------------------------------------------
+  const [target, setTarget] = useState(initialTarget?.toString() || '');
+  const [saving, setSaving] = useState(false);
+  const [showEstimator, setShowEstimator] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
-  const [showSuggestions, setShowSuggestions] = useState(false);
   const [showCharitySearch, setShowCharitySearch] = useState(false);
   const [charitySearchQuery, setCharitySearchQuery] = useState('');
   const [recentlyAdded, setRecentlyAdded] = useState<Set<string>>(new Set());
   const [customCategoryName, setCustomCategoryName] = useState('');
   const [zakatLens, setZakatLens] = useState(false);
   const [collapsedBuckets, setCollapsedBuckets] = useState<Set<string>>(new Set());
-  const [bucketSearchQueries, setBucketSearchQueries] = useState<Map<string, string>>(new Map());
-  const [onboardingDismissed, setOnboardingDismissed] = useState(false);
-  const [target, setTarget] = useState(initialTarget?.toString() || '');
-  const [saving, setSaving] = useState(false);
-  const [showEstimator, setShowEstimator] = useState(false);
-  const [buckets, setBuckets] = useState<Array<{
-    id: string; tagId: string; label: string; percent: number; color: string;
-  }>>([]);
-  const [assignments, setAssignments] = useState<Map<string, string>>(new Map());
-  const [charityTargetDrafts, setCharityTargetDrafts] = useState<Map<string, number>>(new Map());
+  const [expandedSaved, setExpandedSaved] = useState<Set<string>>(new Set());
+  const [buckets, setBuckets] = useState<LocalBucket[]>([]);
   const targetInputRef = useRef<HTMLInputElement | null>(null);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasInitialized = useRef(false);
 
-  // Sync profile props once when we actually have saved data.
+  // Seed once from props ---------------------------------------------------
   useEffect(() => {
     if (hasInitialized.current) return;
-    const hasInitialData =
-      (initialTarget ?? 0) > 0 ||
-      initialBuckets.length > 0 ||
-      initialAssignments.length > 0;
-    if (!hasInitialData) return;
-
+    const hasData = (initialTarget ?? 0) > 0 || initialBuckets.length > 0 || initialAssignments.length > 0;
+    if (!hasData) return;
     setTarget(initialTarget && initialTarget > 0 ? initialTarget.toString() : '');
     setBuckets(initialBuckets.map((b, i) => {
       const tag = ALL_TAGS.find(t => t.id === b.tags?.[0]) || { id: b.tags?.[0] || '', label: b.name };
-      return { id: b.id, tagId: tag.id, label: tag.label, percent: b.percentage || 0, color: b.color || COLORS[i % COLORS.length] };
+      return { id: b.id, tagId: tag.id, label: b.name || tag.label, color: b.color || COLORS[i % COLORS.length] };
     }));
-
-    const map = new Map<string, string>();
-    initialAssignments.forEach(a => map.set(a.ein, a.bucketId));
-    setAssignments(map);
     hasInitialized.current = true;
   }, [initialTarget, initialBuckets, initialAssignments]);
 
-  useEffect(() => {
-    return () => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  const targetNum = parseInt(target) || 0;
-  const lastYearZakat = useMemo(() => {
-    const lastYear = new Date().getFullYear() - 1;
-    return donations
-      .filter(d => d.category === 'zakat' && d.zakatYear === lastYear)
-      .reduce((sum, d) => sum + d.amount, 0);
-  }, [donations]);
-  const totalPct = roundPercent(buckets.reduce((s, b) => s + b.percent, 0));
-  const isTotalBalanced = Math.abs(totalPct - 100) <= PERCENT_EPSILON;
-  const isTotalUnder = totalPct < 100 - PERCENT_EPSILON;
-  const isTotalOver = totalPct > 100 + PERCENT_EPSILON;
-  const totalPctLabel = formatPercent(totalPct);
-  const mobileBucketOptions = useMemo(
-    () => buckets.map(bucket => ({ id: bucket.id, label: bucket.label })),
-    [buckets]
-  );
-  const usedTags = new Set(buckets.map(b => b.tagId));
-
-  // Auto-save with debounce
-  const triggerSave = useCallback(async (newBuckets?: typeof buckets, newTarget?: number, newAssignments?: Map<string, string>) => {
+  useEffect(() => () => {
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-    const b = newBuckets || buckets;
-    const t = newTarget ?? targetNum;
-    const a = newAssignments || assignments;
-
-    saveTimeoutRef.current = setTimeout(async () => {
-      setSaving(true);
-      try {
-        const fb = b.map(bucket => ({ id: bucket.id, name: bucket.label, tags: [bucket.tagId], percentage: bucket.percent, color: bucket.color }));
-        const fa: CharityAssignment[] = []; a.forEach((bid, ein) => fa.push({ ein, bucketId: bid }));
-        await onSave(fb, t > 0 ? t : null, fa);
-      } finally { setSaving(false); }
-    }, 300);
-  }, [buckets, targetNum, assignments, onSave]);
-
-  const charityToBucket = useMemo(() => {
-    const result = new Map<string, string>();
-    for (const c of bookmarkedCharities) {
-      if (assignments.has(c.ein) && buckets.some(b => b.id === assignments.get(c.ein))) {
-        result.set(c.ein, assignments.get(c.ein)!);
-        continue;
-      }
-      for (const b of buckets) {
-        if ((c.causeTags || []).includes(b.tagId)) { result.set(c.ein, b.id); break; }
-      }
-    }
-    return result;
-  }, [bookmarkedCharities, buckets, assignments]);
-
-  const getCharityTarget = useCallback((ein: string): number => {
-    const draft = charityTargetDrafts.get(ein);
-    if (draft !== undefined) return draft;
-    return charityTargets?.get(ein) || 0;
-  }, [charityTargetDrafts, charityTargets]);
-
-  // Clear optimistic draft values once parent props reflect the same saved target.
-  useEffect(() => {
-    if (!charityTargets) return;
-    setCharityTargetDrafts(prev => {
-      if (prev.size === 0) return prev;
-      const next = new Map(prev);
-      let changed = false;
-      prev.forEach((draft, ein) => {
-        if ((charityTargets.get(ein) || 0) === draft) {
-          next.delete(ein);
-          changed = true;
-        }
-      });
-      return changed ? next : prev;
-    });
-  }, [charityTargets]);
-
-  const unassigned = useMemo(() => bookmarkedCharities.filter(c => !charityToBucket.has(c.ein)), [bookmarkedCharities, charityToBucket]);
-
-  const bucketGiven = useMemo(() => {
-    const g = new Map<string, number>();
-    buckets.forEach(b => {
-      let t = 0;
-      donations.forEach(d => { if (charityToBucket.get(d.charityEin || '') === b.id) t += d.amount; });
-      g.set(b.id, t);
-    });
-    return g;
-  }, [buckets, donations, charityToBucket]);
-
-  const totalGiven = Array.from(bucketGiven.values()).reduce((s, v) => s + v, 0);
-
-  // Zakat eligibility helper
-  const isZakatEligible = useCallback((walletTag: string | null) => {
-    return getWalletType(walletTag) === 'zakat';
   }, []);
 
-  const totalCharityTargets = useMemo(() => {
-    const eligible = zakatLens
-      ? bookmarkedCharities.filter(c => isZakatEligible(c.walletTag))
-      : bookmarkedCharities;
-    return eligible.reduce((sum, c) => sum + (getCharityTarget(c.ein) || 0), 0);
-  }, [bookmarkedCharities, getCharityTarget, zakatLens, isZakatEligible]);
-  const unallocatedAmount = targetNum - totalCharityTargets;
-  const hasTarget = targetNum > 0;
-  const hasSavedCharities = bookmarkedCharities.length > 0;
-  const hasLoggedDonation = donations.length > 0;
-  const showOnboarding =
-    !onboardingDismissed &&
-    (!hasTarget || !hasSavedCharities || !hasLoggedDonation);
+  const targetNum = parseInt(target, 10) || 0;
 
-  const onboardingStep = !hasTarget
-    ? 1
-    : !hasSavedCharities
-    ? 2
-    : !hasLoggedDonation
-    ? 3
-    : 0;
+  // Assignment maps --------------------------------------------------------
+  const charityToBucket = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const a of initialAssignments) m.set(a.ein, a.bucketId);
+    return m;
+  }, [initialAssignments]);
 
-  // Calculate zakat-only totals
-  const zakatStats = useMemo(() => {
-    let zakatGiven = 0;
-    const zakatBucketGiven = new Map<string, number>();
-    const bucketHasZakat = new Map<string, boolean>();
+  const charityIntendedMap = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const a of initialAssignments) m.set(a.ein, Number(a.intended) || 0);
+    return m;
+  }, [initialAssignments]);
 
-    // Check which charities are zakat-eligible and sum their donations
-    bookmarkedCharities.forEach(c => {
-      if (isZakatEligible(c.walletTag)) {
-        const bucketId = charityToBucket.get(c.ein);
-        if (bucketId) {
-          bucketHasZakat.set(bucketId, true);
-        }
-        const charityDonations = donations
-          .filter(d => d.charityEin === c.ein)
-          .reduce((sum, d) => sum + d.amount, 0);
-        zakatGiven += charityDonations;
-        if (bucketId) {
-          zakatBucketGiven.set(bucketId, (zakatBucketGiven.get(bucketId) || 0) + charityDonations);
-        }
-      }
-    });
+  const charityGivenMap = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const a of initialAssignments) {
+      if (typeof a.given === 'number') m.set(a.ein, a.given);
+    }
+    // Fallback to donation sums for any ein not already filled in.
+    const byEin = new Map<string, number>();
+    for (const d of donations) {
+      if (!d.charityEin) continue;
+      byEin.set(d.charityEin, (byEin.get(d.charityEin) ?? 0) + d.amount);
+    }
+    for (const [ein, total] of byEin) if (!m.has(ein)) m.set(ein, total);
+    return m;
+  }, [initialAssignments, donations]);
 
-    return { zakatGiven, zakatBucketGiven, bucketHasZakat };
-  }, [bookmarkedCharities, charityToBucket, donations, isZakatEligible]);
+  const charityStatusMap = useMemo(() => {
+    const m = new Map<string, AssignmentStatus>();
+    for (const a of initialAssignments) m.set(a.ein, (a.status as AssignmentStatus) || 'intended');
+    return m;
+  }, [initialAssignments]);
 
+  const lastYearZakat = useMemo(() => {
+    const ly = new Date().getFullYear() - 1;
+    return donations.filter(d => d.category === 'zakat' && d.zakatYear === ly).reduce((s, d) => s + d.amount, 0);
+  }, [donations]);
+
+  // Aggregates -------------------------------------------------------------
+  const visibleCharities = useMemo(
+    () => bookmarkedCharities.filter(c => !zakatLens || isZakatEligible(c.walletTag)),
+    [bookmarkedCharities, zakatLens],
+  );
+  const totalIntended = useMemo(
+    () => visibleCharities.reduce((s, c) => s + (charityIntendedMap.get(c.ein) || 0), 0),
+    [visibleCharities, charityIntendedMap],
+  );
+  const totalGiven = useMemo(
+    () => visibleCharities.reduce((s, c) => s + (charityGivenMap.get(c.ein) || 0), 0),
+    [visibleCharities, charityGivenMap],
+  );
+  const unallocated = targetNum - totalIntended;
+
+  // Tag counts for Category picker ---------------------------------------
   const tagCounts = useMemo(() => {
     const c = new Map<string, number>();
     charities
       .filter(ch => !zakatLens || isZakatEligible((ch as any).amalEvaluation?.wallet_tag))
       .forEach(ch => ((ch as any).causeTags || []).forEach((t: string) => c.set(t, (c.get(t) || 0) + 1)));
     return c;
-  }, [charities, zakatLens, isZakatEligible]);
+  }, [charities, zakatLens]);
+  const usedTags = new Set(buckets.map(b => b.tagId));
 
-  const add = (tag: { id: string; label: string }) => {
-    const newId = crypto.randomUUID();
-    const newBuckets = [...buckets, { id: newId, tagId: tag.id, label: tag.label, percent: 0, color: COLORS[buckets.length % COLORS.length] }];
-    setBuckets(newBuckets);
-    triggerSave(newBuckets);
-    // Expand the new category
-    setCollapsedBuckets(prev => { const next = new Set(prev); next.delete(newId); return next; });
+  // Save plumbing ----------------------------------------------------------
+  const triggerSave = useCallback((nextBuckets?: LocalBucket[], nextTarget?: number) => {
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    const b = nextBuckets ?? buckets;
+    const t = nextTarget ?? targetNum;
+    saveTimeoutRef.current = setTimeout(async () => {
+      setSaving(true);
+      try {
+        const fb = b.map(x => ({
+          id: x.id, name: x.label, tags: [x.tagId], percentage: 0, color: x.color,
+        }));
+        await onSave(fb, t > 0 ? t : null);
+      } finally { setSaving(false); }
+    }, 300);
+  }, [buckets, targetNum, onSave]);
+
+  // Bucket operations -----------------------------------------------------
+  const addBucket = (tag: { id: string; label: string }) => {
+    const id = crypto.randomUUID();
+    const next = [...buckets, { id, tagId: tag.id, label: tag.label, color: COLORS[buckets.length % COLORS.length] }];
+    setBuckets(next);
+    triggerSave(next);
+    setCollapsedBuckets(prev => { const n = new Set(prev); n.delete(id); return n; });
   };
-
   const addCustomCategory = (name: string) => {
     const trimmed = name.trim();
     if (!trimmed) return;
     const tagId = `custom-${trimmed.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
-    add({ id: tagId, label: trimmed });
+    addBucket({ id: tagId, label: trimmed });
     setCustomCategoryName('');
   };
+  const removeBucket = (id: string) => {
+    const next = buckets.filter(b => b.id !== id);
+    setBuckets(next);
+    triggerSave(next);
+  };
+  const setBucketLabel = (id: string, label: string) =>
+    setBuckets(prev => prev.map(b => (b.id === id ? { ...b, label } : b)));
+  const toggleCollapse = (id: string) =>
+    setCollapsedBuckets(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  const toggleSaved = (id: string) =>
+    setExpandedSaved(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
 
-  const autoCreateBucketsForCharity = (charity: { causeTags: string[] | null }) => {
-    const tags = charity.causeTags || [];
+  // Row action handlers ---------------------------------------------------
+  const handleSetIntended = useCallback((ein: string, amt: number) => {
+    if (onSetCharityIntended) void onSetCharityIntended(ein, Math.max(0, amt));
+  }, [onSetCharityIntended]);
+  const handleMarkConfirmed = useCallback((ein: string) => {
+    if (onMarkConfirmed) void onMarkConfirmed(ein);
+  }, [onMarkConfirmed]);
+  const handleRemove = useCallback((ein: string) => {
+    if (onRemoveCharity) void onRemoveCharity(ein);
+  }, [onRemoveCharity]);
 
-    // Check if charity already matches an existing bucket
-    const existingMatch = buckets.find(b => tags.includes(b.tagId));
-    if (existingMatch) return existingMatch.id;
+  const handleTargetBlur = () => triggerSave();
+  const handleTargetKey = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      (e.target as HTMLInputElement).blur();
+      triggerSave();
+    }
+  };
 
-    // Pick best tag: prefer geography > cause > population (geography is most intuitive)
-    const primaryTag = pickBestTag(tags);
-    if (!primaryTag) return '';
-
-    const tagDef = ALL_TAGS.find(t => t.id === primaryTag);
+  // Auto-pick a bucket for a newly-added charity.
+  const pickBucketForCharity = (causeTags: string[]): string => {
+    const existing = buckets.find(b => causeTags.includes(b.tagId));
+    if (existing) return existing.id;
+    const primary = pickBestTag(causeTags);
+    if (!primary) return '';
+    const tagDef = ALL_TAGS.find(t => t.id === primary);
     if (!tagDef) return '';
-
-    const newBucket = {
-      id: crypto.randomUUID(),
-      tagId: tagDef.id,
-      label: tagDef.label,
-      percent: 0,
+    const newBucket: LocalBucket = {
+      id: crypto.randomUUID(), tagId: tagDef.id, label: tagDef.label,
       color: COLORS[buckets.length % COLORS.length],
     };
-    const newBuckets = [...buckets, newBucket];
-    setBuckets(newBuckets);
-    triggerSave(newBuckets);
-
+    const next = [...buckets, newBucket];
+    setBuckets(next);
+    triggerSave(next);
     return newBucket.id;
   };
 
-  const remove = (id: string) => {
-    const newBuckets = buckets.filter(b => b.id !== id);
-    setBuckets(newBuckets);
-    triggerSave(newBuckets);
+  // Charities-per-bucket helpers -----------------------------------------
+  const charitiesForBucket = useCallback((bucketId: string | null, color?: string): RowCharity[] =>
+    bookmarkedCharities
+      .filter(c => (charityToBucket.get(c.ein) ?? null) === bucketId)
+      .filter(c => !zakatLens || isZakatEligible(c.walletTag))
+      .map(c => ({
+        ein: c.ein, name: c.name, bucketColor: color,
+        status: charityStatusMap.get(c.ein) || 'intended',
+        intended: charityIntendedMap.get(c.ein) || 0,
+        given: charityGivenMap.get(c.ein) || 0,
+      })),
+  [bookmarkedCharities, charityToBucket, charityStatusMap, charityIntendedMap, charityGivenMap, zakatLens]);
+
+  const unassignedCharities = useMemo(() => charitiesForBucket(null, undefined), [charitiesForBucket]);
+  const splitSoftCap = (rows: RowCharity[]) =>
+    rows.length <= ACTIVE_CAP ? { active: rows, saved: [] as RowCharity[] } :
+    { active: rows.slice(0, ACTIVE_CAP), saved: rows.slice(ACTIVE_CAP) };
+
+  // Shared row props (eliminate boilerplate in the category/unassigned render) --
+  const rowProps = {
+    isDark,
+    onSetIntended: handleSetIntended,
+    onLogDonation,
+    onMarkConfirmed: handleMarkConfirmed,
+    onRemove: onRemoveCharity ? handleRemove : undefined,
   };
 
-  const setPct = (id: string, v: number) => {
-    const newBuckets = buckets.map(b => b.id === id ? { ...b, percent: roundPercent(clampPercent(v)) } : b);
-    setBuckets(newBuckets);
+  // --------------------------------------------------------------------
+  // Small inline renderers to keep the main return scannable
+  // --------------------------------------------------------------------
+
+  const BucketHeader = ({ b, count }: { b: LocalBucket; count: number }) => {
+    const collapsed = collapsedBuckets.has(b.id);
+    return (
+      <div
+        className={`flex items-center justify-between gap-2 px-3 py-2 ${isDark ? 'bg-slate-800/60' : 'bg-slate-50'} border-b`}
+        style={{ borderLeft: `4px solid ${b.color}`, borderBottomColor: isDark ? undefined : `${b.color}25` }}
+      >
+        <button
+          type="button"
+          onClick={() => toggleCollapse(b.id)}
+          className="flex items-center gap-2 min-w-0 flex-1 text-left"
+          aria-expanded={!collapsed}
+        >
+          <ChevronDown className={`w-4 h-4 transition-transform ${collapsed ? '-rotate-90' : ''} ${isDark ? 'text-slate-400' : 'text-slate-500'}`} />
+          <div className="w-2.5 h-2.5 rounded-full" style={{ background: b.color }} />
+          <input
+            type="text"
+            value={b.label}
+            onChange={e => setBucketLabel(b.id, e.target.value)}
+            onBlur={handleTargetBlur}
+            onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
+            onClick={e => e.stopPropagation()}
+            className={`font-semibold text-sm truncate bg-transparent border-0 focus:outline-none p-0 max-w-[14rem] ${isDark ? 'text-slate-100' : 'text-slate-800'}`}
+            aria-label={`Rename ${b.label}`}
+          />
+          <span
+            className="text-[10px] px-2 py-0.5 rounded-full font-semibold border"
+            style={{ backgroundColor: `${b.color}15`, borderColor: `${b.color}30`, color: b.color }}
+          >
+            {count} {count === 1 ? 'charity' : 'charities'}
+          </span>
+        </button>
+        <button
+          type="button"
+          onClick={() => removeBucket(b.id)}
+          className={`p-1.5 rounded-md opacity-60 hover:opacity-100 ${isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'}`}
+          aria-label={`Remove ${b.label}`}
+        >
+          <X className={`w-3.5 h-3.5 ${isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'}`} />
+        </button>
+      </div>
+    );
   };
 
-  const setLabel = (id: string, newLabel: string) => {
-    setBuckets(prev => prev.map(b => b.id === id ? { ...b, label: newLabel } : b));
-  };
-
-  const handleSetCharityTarget = useCallback(async (ein: string, amount: number) => {
-    const normalized = Math.max(0, amount);
-    setCharityTargetDrafts(prev => {
-      const next = new Map(prev);
-      next.set(ein, normalized);
-      return next;
-    });
-
-    if (!onSetCharityTarget) return;
-    try {
-      await onSetCharityTarget(ein, normalized);
-    } catch {
-      // Revert optimistic value on failure.
-      setCharityTargetDrafts(prev => {
-        const next = new Map(prev);
-        next.delete(ein);
-        return next;
-      });
-    }
-  }, [onSetCharityTarget]);
-
-  const distributeRemainingEvenly = () => {
-    if (buckets.length === 0 || !isTotalUnder) return;
-    const remaining = 100 - totalPct;
-    const perBucket = remaining / buckets.length;
-    let newBuckets = buckets.map((bucket, i) => {
-      const increment = i === buckets.length - 1
-        ? remaining - (perBucket * (buckets.length - 1))
-        : perBucket;
-      return { ...bucket, percent: roundPercent(clampPercent(bucket.percent + increment)) };
-    });
-    const correctedTotal = roundPercent(newBuckets.reduce((sum, bucket) => sum + bucket.percent, 0));
-    const correction = roundPercent(100 - correctedTotal);
-    if (newBuckets.length > 0 && Math.abs(correction) > PERCENT_EPSILON) {
-      const last = newBuckets[newBuckets.length - 1];
-      newBuckets = [
-        ...newBuckets.slice(0, -1),
-        { ...last, percent: roundPercent(clampPercent(last.percent + correction)) },
-      ];
-    }
-    setBuckets(newBuckets);
-    triggerSave(newBuckets);
-  };
-
-  const move = (ein: string, bid: string | null) => {
-    const newAssignments = new Map(assignments);
-    bid ? newAssignments.set(ein, bid) : newAssignments.delete(ein);
-    setAssignments(newAssignments);
-    triggerSave(undefined, undefined, newAssignments);
-  };
-
-  const handleBlur = () => triggerSave();
-  const handleKeyDown = (e: React.KeyboardEvent) => { if (e.key === 'Enter') { (e.target as HTMLInputElement).blur(); triggerSave(); } };
-
-  const handleOnboardingAction = () => {
-    if (onboardingStep === 1) {
-      targetInputRef.current?.focus();
-      targetInputRef.current?.select();
-      return;
-    }
-
-    if (onboardingStep === 2) {
-      setShowCharitySearch(true);
-      setShowPicker(false);
-      return;
-    }
-
-    if (onboardingStep === 3) {
-      const first = bookmarkedCharities[0];
-      onLogDonation(first?.ein, first?.name);
-    }
-  };
-
-  // Add a suggested charity (bookmark + assign to bucket)
-  const onAddSuggestion = async (ein: string, name: string, bucketId: string) => {
-    if (onAddCharity) {
-      await onAddCharity(ein, name, bucketId);
-      // Also update local assignments
-      setAssignments(prev => {
-        const next = new Map(prev);
-        next.set(ein, bucketId);
-        return next;
-      });
-    }
-  };
-
-  // Toggle category collapse
-  const toggleCollapse = (bucketId: string) => {
-    setCollapsedBuckets(prev => {
-      const next = new Set(prev);
-      if (next.has(bucketId)) {
-        next.delete(bucketId);
-      } else {
-        next.add(bucketId);
-      }
-      return next;
-    });
-  };
-
-  // Drag and drop
-  const [activeCharity, setActiveCharity] = useState<BookmarkedCharity | null>(null);
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(KeyboardSensor)
+  const EmptyBucketRow = () => (
+    <div className="px-3 py-3 flex items-center gap-3">
+      <button
+        type="button"
+        onClick={() => { setShowCharitySearch(true); setCharitySearchQuery(''); }}
+        className={`inline-flex items-center gap-1 text-[11px] font-semibold px-3 py-1.5 rounded-lg border ${isDark ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20' : 'text-emerald-700 border-emerald-200 bg-emerald-50 hover:bg-emerald-100'}`}
+      >
+        <Plus className="w-3 h-3" /> Add charity
+      </button>
+      <span className={`text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>No charities in this category yet.</span>
+    </div>
   );
 
-  const handleDragStart = (event: DragStartEvent) => {
-    const charity = (event.active.data.current as any)?.charity as BookmarkedCharity;
-    if (charity) setActiveCharity(charity);
+  const renderRows = (rows: RowCharity[], desktop: boolean) =>
+    rows.map((row, i) => (
+      <CharityRecordRow key={row.ein} charity={row} desktop={desktop} isEvenRow={i % 2 === 0} {...rowProps} />
+    ));
+
+  const renderBucket = (b: LocalBucket) => {
+    const rows = charitiesForBucket(b.id, b.color);
+    const collapsed = collapsedBuckets.has(b.id);
+    const { active, saved } = splitSoftCap(rows);
+    const savedOpen = expandedSaved.has(b.id);
+    const savedToggleLabel = (open: boolean, n: number) => `${open ? '▾' : '▸'} Saved for later (${n})`;
+    return (
+      <div key={b.id} className={`rounded-lg border overflow-hidden ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
+        <BucketHeader b={b} count={rows.length} />
+        {!collapsed && (
+          <>
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className={`text-[10px] font-semibold uppercase tracking-wider ${isDark ? 'text-slate-500' : 'text-slate-400'} border-b ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
+                    <th className="w-1" />
+                    <th className="px-2.5 py-2 text-left">Charity</th>
+                    <th className="px-2.5 py-2 text-right w-28">Intended</th>
+                    <th className="px-2.5 py-2 text-right w-24">Given</th>
+                    <th className="px-2.5 py-2 text-left w-28">Status</th>
+                    <th className="px-2.5 py-2 text-right w-48">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.length === 0 ? (
+                    <tr><td colSpan={6}><EmptyBucketRow /></td></tr>
+                  ) : (
+                    <>
+                      {renderRows(active, true)}
+                      {saved.length > 0 && (
+                        <tr>
+                          <td colSpan={6}>
+                            <button
+                              type="button"
+                              onClick={() => toggleSaved(b.id)}
+                              className={`w-full text-left px-3 py-2 text-[11px] font-medium border-t ${isDark ? 'border-slate-800 text-slate-400 hover:bg-slate-800/40' : 'border-slate-100 text-slate-500 hover:bg-slate-50'}`}
+                              aria-expanded={savedOpen}
+                            >
+                              {savedToggleLabel(savedOpen, saved.length)}
+                            </button>
+                          </td>
+                        </tr>
+                      )}
+                      {saved.length > 0 && savedOpen && renderRows(saved, true)}
+                    </>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div className="sm:hidden p-2 space-y-2">
+              {rows.length === 0 && <EmptyBucketRow />}
+              {renderRows(active, false)}
+              {saved.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => toggleSaved(b.id)}
+                  className={`w-full text-left px-2 py-1.5 text-[11px] font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}
+                >
+                  {savedToggleLabel(savedOpen, saved.length)}
+                </button>
+              )}
+              {saved.length > 0 && savedOpen && renderRows(saved, false)}
+            </div>
+          </>
+        )}
+      </div>
+    );
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    setActiveCharity(null);
-    const { active, over } = event;
-    if (!over) return;
-
-    const charityEin = active.id as string;
-    const targetBucketId = over.id as string;
-
-    // "uncategorized" is a special drop zone
-    if (targetBucketId === 'uncategorized') {
-      move(charityEin, null);
-    } else if (buckets.some(b => b.id === targetBucketId)) {
-      move(charityEin, targetBucketId);
-    }
+  const renderUnassigned = () => {
+    if (unassignedCharities.length === 0) return null;
+    return (
+      <div className={`rounded-lg border overflow-hidden ${isDark ? 'border-amber-500/30' : 'border-amber-200'}`}>
+        <div className={`flex items-center gap-2 px-3 py-2 border-b ${isDark ? 'bg-amber-500/10 border-amber-500/20 text-amber-300' : 'bg-amber-50 border-amber-100 text-amber-700'}`}>
+          <div className="w-2 h-2 rounded-full bg-amber-500" />
+          <span className="text-[10px] font-bold tracking-wider">NEEDS CATEGORY ({unassignedCharities.length})</span>
+        </div>
+        <div className="hidden sm:block overflow-x-auto">
+          <table className="w-full"><tbody>{renderRows(unassignedCharities, true)}</tbody></table>
+        </div>
+        <div className="sm:hidden p-2 space-y-2">{renderRows(unassignedCharities, false)}</div>
+      </div>
+    );
   };
 
-  // Styles - Refined & elegant
-  const headerCell = `px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider ${isDark ? 'text-slate-500' : 'text-slate-400'}`;
-  const cell = `px-2.5 py-1.5 text-[13px] ${isDark ? 'text-slate-300' : 'text-slate-700'}`;
-  const rowHover = isDark ? 'hover:bg-slate-800/40' : 'hover:bg-slate-50';
-  const border = isDark ? 'border-slate-800' : 'border-slate-200';
-  const borderLight = isDark ? 'border-slate-800/50' : 'border-slate-100';
-  const inputStyle = `bg-transparent focus:outline-none focus:ring-1 focus:ring-emerald-500/50 rounded px-1.5 -mx-1 ${isDark ? 'text-white' : 'text-slate-900'}`;
-
+  // --------------------------------------------------------------------
+  // Render
+  // --------------------------------------------------------------------
   return (
-    <div className={`rounded-xl border overflow-hidden text-sm ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'} shadow-sm`}>
-      {/* Header bar - gradient accent */}
-      <div className={`flex flex-col gap-2 px-3 py-2.5 border-b sm:flex-row sm:items-center sm:justify-between ${border} ${isDark ? 'bg-gradient-to-r from-slate-800/50 to-slate-900' : 'bg-gradient-to-r from-slate-50 to-white'}`}>
+    <div className={`rounded-xl border overflow-hidden text-sm shadow-sm ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
+      {/* Header bar */}
+      <div className={`flex flex-col gap-2 px-3 py-2.5 border-b sm:flex-row sm:items-center sm:justify-between ${isDark ? 'border-slate-700 bg-gradient-to-r from-slate-800/50 to-slate-900' : 'border-slate-200 bg-gradient-to-r from-slate-50 to-white'}`}>
         <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-3">
           <div className="flex items-center gap-2">
             <div className={`flex items-center gap-1.5 px-2 py-1 rounded-md ${isDark ? 'bg-emerald-500/10' : 'bg-emerald-50'}`}>
               <span className={`text-[10px] font-bold tracking-wide ${isDark ? 'text-emerald-500' : 'text-emerald-600'}`}>ZAKAT</span>
             </div>
-            <div data-tour="giving-target" className={`flex items-center border ${isDark ? 'bg-slate-800/80 border-slate-700' : 'bg-white border-slate-200'} rounded-lg px-3 py-1.5 shadow-sm`}>
+            <div data-tour="giving-target" className={`flex items-center border rounded-lg px-3 py-1.5 shadow-sm ${isDark ? 'bg-slate-800/80 border-slate-700' : 'bg-white border-slate-200'}`}>
               <span className={`text-sm font-medium ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>$</span>
               <input
                 ref={targetInputRef}
@@ -966,57 +534,54 @@ export function UnifiedAllocationView({
                 inputMode="numeric"
                 value={target}
                 onChange={e => setTarget(e.target.value.replace(/\D/g, ''))}
-                onBlur={handleBlur}
-                onKeyDown={handleKeyDown}
+                onBlur={handleTargetBlur}
+                onKeyDown={handleTargetKey}
                 placeholder="e.g. 10,000"
                 className={`w-20 py-0.5 bg-transparent text-lg font-bold focus:outline-none ${isDark ? 'text-white placeholder-slate-600' : 'text-slate-900 placeholder-slate-300'}`}
+                aria-label="Annual zakat target"
               />
             </div>
             <button
               onClick={() => setShowEstimator(true)}
               className={`p-1.5 rounded-lg transition-colors ${isDark ? 'text-slate-500 hover:text-emerald-400 hover:bg-slate-800' : 'text-slate-400 hover:text-emerald-600 hover:bg-slate-100'}`}
-              title="Calculate zakat"
+              aria-label="Open zakat estimator"
             >
               <Calculator className="w-4 h-4" />
             </button>
           </div>
           {targetNum > 0 && (
-            <div className="flex items-center gap-3">
-              <div className={`h-2 w-28 rounded-full overflow-hidden ${isDark ? 'bg-slate-700' : 'bg-slate-200'} shadow-inner`}>
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className={`h-2 w-28 rounded-full overflow-hidden shadow-inner ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`}>
                 <div
                   className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all rounded-full"
-                  style={{ width: `${Math.min(100, Math.round((zakatLens ? zakatStats.zakatGiven : totalGiven)/targetNum*100))}%` }}
+                  style={{ width: `${Math.min(100, Math.round((totalGiven / targetNum) * 100))}%` }}
                 />
               </div>
               <span className={`text-xs font-medium tabular-nums ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                <span className="text-emerald-500 font-semibold">{fmt(zakatLens ? zakatStats.zakatGiven : totalGiven)}</span>
+                <span className="text-emerald-500 font-semibold">{fmt(totalGiven)}</span>
                 <span className="opacity-50 mx-1">/</span>
                 {fmt(targetNum)}
               </span>
-              {/* Zakat lens toggle */}
               <button
-                onClick={() => setZakatLens(!zakatLens)}
-                className={`ml-2 text-[11px] font-medium px-2.5 py-1 rounded-md border transition-all ${
+                onClick={() => setZakatLens(z => !z)}
+                aria-pressed={zakatLens}
+                className={`text-[11px] font-medium px-2.5 py-1 rounded-md border transition-all ${
                   zakatLens
-                    ? isDark ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' : 'bg-emerald-50 text-emerald-600 border-emerald-200'
-                    : isDark ? 'text-slate-500 border-slate-700 hover:text-slate-400 hover:bg-slate-800' : 'text-slate-400 border-slate-200 hover:text-slate-600 hover:bg-slate-50'
+                    ? (isDark ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' : 'bg-emerald-50 text-emerald-600 border-emerald-200')
+                    : (isDark ? 'text-slate-500 border-slate-700 hover:text-slate-400 hover:bg-slate-800' : 'text-slate-400 border-slate-200 hover:text-slate-600 hover:bg-slate-50')
                 }`}
               >
                 {zakatLens ? 'Showing zakat-eligible only' : 'Hide sadaqah'}
               </button>
-              {totalCharityTargets > 0 && (
-                <span className={`ml-2 text-[11px] font-medium px-2.5 py-1 rounded-md border ${
-                  unallocatedAmount === 0
-                    ? isDark ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' : 'text-emerald-600 border-emerald-200 bg-emerald-50'
-                    : unallocatedAmount < 0
-                    ? isDark ? 'text-blue-400 border-blue-500/30 bg-blue-500/10' : 'text-blue-500 border-blue-200 bg-blue-50'
-                    : isDark ? 'text-amber-400 border-amber-500/30 bg-amber-500/10' : 'text-amber-600 border-amber-200 bg-amber-50'
+              {totalIntended > 0 && (
+                <span className={`text-[11px] font-medium px-2.5 py-1 rounded-md border ${
+                  unallocated === 0
+                    ? (isDark ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' : 'text-emerald-600 border-emerald-200 bg-emerald-50')
+                    : unallocated < 0
+                    ? (isDark ? 'text-blue-400 border-blue-500/30 bg-blue-500/10' : 'text-blue-500 border-blue-200 bg-blue-50')
+                    : (isDark ? 'text-amber-400 border-amber-500/30 bg-amber-500/10' : 'text-amber-600 border-amber-200 bg-amber-50')
                 }`}>
-                  {unallocatedAmount === 0
-                    ? `${fmt(totalCharityTargets)} allocated${zakatLens ? ' (zakat)' : ''}`
-                    : unallocatedAmount < 0
-                    ? `${fmt(Math.abs(unallocatedAmount))} over${zakatLens ? ' (zakat)' : ''}`
-                    : `${fmt(unallocatedAmount)} to allocate${zakatLens ? ' (zakat)' : ''}`}
+                  {unallocated === 0 ? `${fmt(totalIntended)} planned` : unallocated < 0 ? `${fmt(Math.abs(unallocated))} over` : `${fmt(unallocated)} to plan`}
                 </span>
               )}
             </div>
@@ -1024,129 +589,40 @@ export function UnifiedAllocationView({
         </div>
         <div className="flex w-full flex-wrap items-center gap-1.5 sm:w-auto sm:justify-end">
           {saving && (
-            <span className={`text-[10px] px-2 py-1 rounded ${isDark ? 'text-emerald-400 bg-emerald-500/10' : 'text-emerald-600 bg-emerald-50'}`}>
-              Saving...
-            </span>
-          )}
-          {buckets.length > 0 && (
-            <button
-              onClick={() => setShowSuggestions(!showSuggestions)}
-              className={`text-[11px] font-medium px-3 py-1.5 rounded-lg border transition-all ${
-                showSuggestions
-                  ? isDark ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' : 'bg-blue-50 text-blue-600 border-blue-200'
-                  : isDark ? 'text-slate-400 border-slate-700 hover:bg-slate-800 hover:text-slate-300' : 'text-slate-500 border-slate-200 hover:bg-slate-50 hover:text-slate-700'
-              }`}
-            >
-              {showSuggestions ? 'Hide' : 'Show'} suggestions
-            </button>
+            <span className={`text-[10px] px-2 py-1 rounded ${isDark ? 'text-emerald-400 bg-emerald-500/10' : 'text-emerald-600 bg-emerald-50'}`}>Saving...</span>
           )}
           <button
             data-tour="giving-add-charity"
-            onClick={() => { setShowCharitySearch(!showCharitySearch); setCharitySearchQuery(''); setRecentlyAdded(new Set()); }}
-            className={`text-[11px] font-semibold px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1 ${
+            onClick={() => { setShowCharitySearch(s => !s); setCharitySearchQuery(''); setRecentlyAdded(new Set()); }}
+            className={`text-[11px] font-semibold px-3 py-1.5 rounded-lg border flex items-center gap-1 ${
               showCharitySearch
-                ? isDark ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' : 'bg-blue-50 text-blue-600 border-blue-200'
-                : isDark ? 'bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-500' : 'bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700'
+                ? (isDark ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' : 'bg-blue-50 text-blue-600 border-blue-200')
+                : (isDark ? 'bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-500' : 'bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700')
             }`}
           >
-            <Plus className="w-3.5 h-3.5" />Add Charity
+            <Plus className="w-3.5 h-3.5" /> Add Charity
           </button>
           <button
             data-tour="giving-add-category"
-            onClick={() => setShowPicker(!showPicker)}
-            className={`text-[11px] font-medium px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1 ${
+            onClick={() => setShowPicker(s => !s)}
+            className={`text-[11px] font-medium px-3 py-1.5 rounded-lg border flex items-center gap-1 ${
               showPicker
-                ? isDark ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' : 'bg-emerald-50 text-emerald-600 border-emerald-200'
-                : isDark ? 'text-slate-400 border-slate-700 hover:bg-slate-800 hover:text-slate-300' : 'text-slate-500 border-slate-200 hover:bg-slate-50 hover:text-slate-700'
+                ? (isDark ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' : 'bg-emerald-50 text-emerald-600 border-emerald-200')
+                : (isDark ? 'text-slate-400 border-slate-700 hover:bg-slate-800 hover:text-slate-300' : 'text-slate-500 border-slate-200 hover:bg-slate-50 hover:text-slate-700')
             }`}
           >
-            <Plus className="w-3.5 h-3.5" />Category
+            <Plus className="w-3.5 h-3.5" /> Category
           </button>
         </div>
       </div>
 
-      {/* Zakat anniversary prompt */}
       {targetNum > 0 && !zakatAnniversary && onSaveAnniversary && (
         <ZakatAnniversaryPrompt isDark={isDark} onSave={onSaveAnniversary} />
       )}
 
-      {/* Guided onboarding */}
-      {showOnboarding && (
-        <div className={`px-4 py-3 border-b ${border} ${isDark ? 'bg-emerald-500/5' : 'bg-emerald-50/60'}`}>
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className={`text-xs font-semibold uppercase tracking-wide ${isDark ? 'text-emerald-400' : 'text-emerald-700'}`}>
-                Getting Started
-              </p>
-              <p className={`text-sm mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                Step {onboardingStep} of 3: {
-                  onboardingStep === 1 ? 'Set your annual zakat target' :
-                  onboardingStep === 2 ? 'Save charities to build your plan' :
-                  'Log your first donation'
-                }
-              </p>
-              {onboardingStep === 2 && (
-                <p className={`text-xs mt-1 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-                  Use the <span className="font-semibold">Add Charity</span> button above, or browse charities and tap the heart icon
-                </p>
-              )}
-            </div>
-            <button
-              onClick={() => setOnboardingDismissed(true)}
-              className={`text-xs font-medium px-2 py-1 rounded border transition-colors ${
-                isDark
-                  ? 'text-slate-400 border-slate-700 hover:bg-slate-800 hover:text-slate-300'
-                  : 'text-slate-500 border-slate-200 hover:bg-white hover:text-slate-700'
-              }`}
-            >
-              Dismiss
-            </button>
-          </div>
-
-          <div className="mt-3 flex items-center gap-2">
-            {[1, 2, 3].map(step => {
-              const complete = step === 1 ? hasTarget : step === 2 ? hasSavedCharities : hasLoggedDonation;
-              const active = step === onboardingStep;
-              return (
-                <div
-                  key={step}
-                  className={`h-1.5 rounded-full transition-all ${complete ? 'bg-emerald-500' : active ? 'bg-emerald-300' : isDark ? 'bg-slate-700' : 'bg-slate-200'}`}
-                  style={{ width: active ? 52 : 28 }}
-                />
-              );
-            })}
-
-            <button
-              onClick={handleOnboardingAction}
-              className={`ml-2 inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg shadow-sm transition-colors ${
-                isDark
-                  ? 'bg-emerald-600 text-white hover:bg-emerald-500'
-                  : 'bg-emerald-600 text-white hover:bg-emerald-700'
-              }`}
-            >
-              Continue
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-            {onboardingStep === 2 && (
-              <Link
-                to="/browse"
-                className={`ml-2 inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors ${
-                  isDark
-                    ? 'text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10'
-                    : 'text-emerald-600 border-emerald-200 hover:bg-emerald-50'
-                }`}
-              >
-                Browse Charities
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            )}
-          </div>
-        </div>
-      )}
-
       {/* Charity search */}
       {showCharitySearch && (
-        <div className={`px-4 py-4 border-b ${border} ${isDark ? 'bg-slate-800/30' : 'bg-blue-50/30'}`}>
+        <div className={`px-4 py-4 border-b ${isDark ? 'border-slate-700 bg-slate-800/30' : 'border-slate-200 bg-blue-50/30'}`}>
           <div className="flex items-center gap-2 mb-3">
             <div className="relative flex-1">
               <input
@@ -1155,119 +631,31 @@ export function UnifiedAllocationView({
                 onChange={e => setCharitySearchQuery(e.target.value)}
                 placeholder="Search charities to add..."
                 autoFocus
-                className={`w-full pl-9 pr-3 py-2 text-sm rounded-lg border shadow-sm ${
-                  isDark
-                    ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-500 focus:border-blue-500'
-                    : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-blue-400'
-                } focus:outline-none focus:ring-2 focus:ring-blue-500/20`}
+                className={`w-full pl-9 pr-3 py-2 text-sm rounded-lg border shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${isDark ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-500 focus:border-blue-500' : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-blue-400'}`}
+                aria-label="Search charities"
               />
-              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+              <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} />
             </div>
             <button
               onClick={() => { setShowCharitySearch(false); setCharitySearchQuery(''); setRecentlyAdded(new Set()); }}
-              className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-slate-700 text-slate-400' : 'hover:bg-slate-200 text-slate-500'}`}
+              className={`p-2 rounded-lg ${isDark ? 'hover:bg-slate-700 text-slate-400' : 'hover:bg-slate-200 text-slate-500'}`}
+              aria-label="Close charity search"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
-          {charitySearchQuery.length >= 2 && (
-            <div className={`max-h-64 overflow-y-auto rounded-lg border shadow-sm ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-white'}`}>
-              {(() => {
-                const bookmarkedEins = new Set(bookmarkedCharities.map(c => c.ein));
-                const results = charities
-                  .filter(c => c.ein && c.name.toLowerCase().includes(charitySearchQuery.toLowerCase()))
-                  .slice(0, 12);
-
-                const addCustomRow = (
-                  <div
-                    key="__custom__"
-                    className={`flex items-center justify-between px-3 py-2.5 border-t ${borderLight} ${isDark ? 'hover:bg-slate-700/50' : 'hover:bg-slate-50'} transition-colors`}
-                  >
-                    <div className="flex items-center gap-2 min-w-0">
-                      <Plus className={`w-3.5 h-3.5 shrink-0 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} />
-                      <span className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                        Add "<span className="font-medium">{charitySearchQuery}</span>" as custom charity
-                      </span>
-                    </div>
-                    <button
-                      onClick={async () => {
-                        const customId = `custom-${crypto.randomUUID()}`;
-                        if (onAddCharity) {
-                          await onAddCharity(customId, charitySearchQuery.trim(), '');
-                          setRecentlyAdded(prev => new Set(prev).add(customId));
-                        }
-                      }}
-                      className={`text-[11px] px-3 py-1.5 rounded-lg font-semibold shadow-sm ${isDark ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-emerald-500 text-white hover:bg-emerald-600'}`}
-                    >
-                      + Add
-                    </button>
-                  </div>
-                );
-
-                if (results.length === 0) {
-                  return addCustomRow;
-                }
-
-                return (<>
-                  {results.map((c, i) => {
-                    const alreadyAdded = bookmarkedEins.has(c.ein!) || recentlyAdded.has(c.ein!);
-                    return (
-                      <div
-                        key={c.ein}
-                        className={`flex items-center justify-between px-3 py-2.5 ${i !== results.length - 1 ? `border-b ${borderLight}` : ''} ${
-                          alreadyAdded
-                            ? isDark ? 'bg-emerald-500/5' : 'bg-emerald-50/50'
-                            : isDark ? 'hover:bg-slate-700/50' : 'hover:bg-slate-50'
-                        } transition-colors`}
-                      >
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <span className={`text-sm font-medium truncate ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>{c.name}</span>
-                          {SHOW_AMAL_SCORE && <span className={`shrink-0 text-[10px] px-1.5 py-0.5 rounded-md font-semibold border ${
-                            isDark ? 'bg-slate-700 border-slate-600 text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-500'
-                          }`}>
-                            {(c as any).amalScore || '—'}
-                          </span>}
-                        </div>
-                        <div className="flex items-center gap-1 shrink-0 ml-2">
-                          {alreadyAdded ? (
-                            <span className={`inline-flex items-center gap-1 text-[11px] px-3 py-1.5 rounded-lg font-semibold ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
-                              <Check className="w-3.5 h-3.5" /> Added
-                            </span>
-                          ) : (
-                            <button
-                              onClick={async () => {
-                                if (onAddCharity) {
-                                  const fullCharity = charities.find(ch => ch.ein === c.ein);
-                                  const causeTags = fullCharity ? (fullCharity as any).causeTags || [] : [];
-                                  const bucketId = autoCreateBucketsForCharity({ causeTags });
-                                  await onAddCharity(c.ein!, c.name, bucketId);
-                                  if (bucketId) {
-                                    setAssignments(prev => {
-                                      const next = new Map(prev);
-                                      next.set(c.ein!, bucketId);
-                                      return next;
-                                    });
-                                  }
-                                  setRecentlyAdded(prev => new Set(prev).add(c.ein!));
-                                }
-                              }}
-                              className={`text-[11px] px-3 py-1.5 rounded-lg font-semibold shadow-sm ${isDark ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-emerald-500 text-white hover:bg-emerald-600'}`}
-                            >
-                              + Add
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                  {addCustomRow}
-                </>);
-              })()}
-            </div>
-          )}
-          {charitySearchQuery.length < 2 && (
+          {charitySearchQuery.length >= 2 ? (
+            <SearchResults
+              isDark={isDark}
+              query={charitySearchQuery}
+              charities={charities}
+              bookmarkedEins={new Set(bookmarkedCharities.map(c => c.ein))}
+              recentlyAdded={recentlyAdded}
+              setRecentlyAdded={setRecentlyAdded}
+              onAddCharity={onAddCharity}
+              pickBucketForCharity={pickBucketForCharity}
+            />
+          ) : (
             <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
               Type at least 2 characters to search. You can add multiple charities.
             </p>
@@ -1277,8 +665,7 @@ export function UnifiedAllocationView({
 
       {/* Category picker */}
       {showPicker && (
-        <div className={`px-4 py-4 border-b ${border} ${isDark ? 'bg-slate-800/30' : 'bg-emerald-50/30'}`}>
-          {/* Custom category input */}
+        <div className={`px-4 py-4 border-b ${isDark ? 'border-slate-700 bg-slate-800/30' : 'border-slate-200 bg-emerald-50/30'}`}>
           <div className="flex items-center gap-2 mb-3">
             <input
               type="text"
@@ -1286,19 +673,16 @@ export function UnifiedAllocationView({
               onChange={e => setCustomCategoryName(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') addCustomCategory(customCategoryName); }}
               placeholder="Type a custom category name..."
-              className={`flex-1 text-sm px-3 py-2 rounded-lg border shadow-sm ${
-                isDark
-                  ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-500 focus:border-emerald-500'
-                  : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-emerald-400'
-              } focus:outline-none focus:ring-2 focus:ring-emerald-500/20`}
+              className={`flex-1 text-sm px-3 py-2 rounded-lg border shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 ${isDark ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-500 focus:border-emerald-500' : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-emerald-400'}`}
+              aria-label="Custom category name"
             />
             <button
               onClick={() => addCustomCategory(customCategoryName)}
               disabled={!customCategoryName.trim()}
-              className={`text-[11px] font-semibold px-3 py-2 rounded-lg transition-colors ${
+              className={`text-[11px] font-semibold px-3 py-2 rounded-lg ${
                 customCategoryName.trim()
-                  ? isDark ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-emerald-600 text-white hover:bg-emerald-700'
-                  : isDark ? 'bg-slate-700 text-slate-500 cursor-not-allowed' : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                  ? (isDark ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-emerald-600 text-white hover:bg-emerald-700')
+                  : (isDark ? 'bg-slate-700 text-slate-500 cursor-not-allowed' : 'bg-slate-200 text-slate-400 cursor-not-allowed')
               }`}
             >
               Create
@@ -1310,9 +694,7 @@ export function UnifiedAllocationView({
           <div className="space-y-3">
             {Object.entries(TAGS).map(([group, tags]) => (
               <div key={group} className="flex flex-wrap items-start gap-2">
-                <span className={`text-[10px] font-bold uppercase tracking-wider w-24 pt-1.5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-                  {group}
-                </span>
+                <span className={`text-[10px] font-bold uppercase tracking-wider w-24 pt-1.5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>{group}</span>
                 <div className="flex-1 flex flex-wrap gap-1.5">
                   {tags.map(tag => {
                     const used = usedTags.has(tag.id);
@@ -1320,26 +702,18 @@ export function UnifiedAllocationView({
                     return (
                       <button
                         key={tag.id}
-                        onClick={() => !used && cnt > 0 && add(tag)}
+                        onClick={() => !used && cnt > 0 && addBucket(tag)}
                         disabled={used || cnt === 0}
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border transition-all ${
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border ${
                           used
-                            ? isDark
-                              ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
-                              : 'bg-emerald-50 border-emerald-200 text-emerald-600'
+                            ? (isDark ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400' : 'bg-emerald-50 border-emerald-200 text-emerald-600')
                             : cnt === 0
-                            ? isDark
-                              ? 'border-slate-800 text-slate-700 cursor-not-allowed'
-                              : 'border-slate-100 text-slate-300 cursor-not-allowed'
-                            : isDark
-                            ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:border-slate-600 hover:text-white'
-                            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:text-slate-800 shadow-sm'
+                            ? (isDark ? 'border-slate-800 text-slate-700 cursor-not-allowed' : 'border-slate-100 text-slate-300 cursor-not-allowed')
+                            : (isDark ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-800 shadow-sm')
                         }`}
                       >
                         {tag.label}
-                        {cnt > 0 && !used && (
-                          <span className={`tabular-nums ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>{cnt}</span>
-                        )}
+                        {cnt > 0 && !used && <span className={`tabular-nums ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>{cnt}</span>}
                         {used && <Check className="w-3 h-3" />}
                       </button>
                     );
@@ -1351,857 +725,30 @@ export function UnifiedAllocationView({
         </div>
       )}
 
-      {/* Table with drag-and-drop */}
-      {targetNum > 0 && (
-        <>
-        <div className="sm:hidden px-2.5 py-2 space-y-2">
-          {buckets.map(b => {
-            const amt = Math.round(targetNum * b.percent / 100);
-            const gvn = bucketGiven.get(b.id) || 0;
-            const pct = amt > 0 ? Math.min(100, Math.round(gvn / amt * 100)) : 0;
-            const chars = bookmarkedCharities.filter(c => charityToBucket.get(c.ein) === b.id);
-            const mBucketEligible = zakatLens ? chars.filter(c => isZakatEligible(c.walletTag)) : chars;
-            const mBucketCharityTargets = mBucketEligible.reduce((sum, c) => sum + (getCharityTarget(c.ein) || 0), 0);
-            const mBucketUnallocated = amt - mBucketCharityTargets;
-            const visibleChars = zakatLens
-              ? chars.filter(c => isZakatEligible(c.walletTag))
-              : chars;
-            const displayCount = visibleChars.length;
-            const bookmarkedEins = new Set(bookmarkedCharities.map(c => c.ein));
-            const bucketQuery = (bucketSearchQueries.get(b.id) || '').toLowerCase();
-            const matchingCharities = charities
-              .filter(c => {
-                const tags = (c as any).causeTags || [];
-                return c.ein && tags.includes(b.tagId) && !bookmarkedEins.has(c.ein);
-              })
-              .sort((a, c) => ((c as any).amalEvaluation?.amal_score || 0) - ((a as any).amalEvaluation?.amal_score || 0));
-            const suggestions = (bucketQuery
-              ? matchingCharities.filter(c => c.name.toLowerCase().includes(bucketQuery)).slice(0, 10)
-              : matchingCharities.slice(0, 3)
-            ).map(c => ({ ein: c.ein!, name: c.name, amalScore: (c as any).amalEvaluation?.amal_score as number | null || null }));
-            const bucketHasZakatCharities = zakatStats.bucketHasZakat.get(b.id) || false;
-            const categoryDimmed = zakatLens && !bucketHasZakatCharities;
-
-            return (
-              <div
-                key={b.id}
-                className={`rounded-lg border p-2.5 ${isDark ? 'border-slate-700' : 'border-slate-200'} ${categoryDimmed ? 'opacity-50' : ''}`}
-                style={{
-                  borderLeft: `4px solid ${b.color}`,
-                  background: isDark
-                    ? `linear-gradient(180deg, ${b.color}15 0%, transparent 40%)`
-                    : `linear-gradient(180deg, ${b.color}0c 0%, white 40%)`,
-                }}
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2.5 h-2.5 rounded-full" style={{ background: b.color }} />
-                      <input
-                        type="text"
-                        value={b.label}
-                        onChange={e => setLabel(b.id, e.target.value)}
-                        onBlur={handleBlur}
-                        onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
-                        className={`font-semibold text-sm truncate bg-transparent border-0 focus:outline-none focus:ring-0 p-0 max-w-[10rem] ${isDark ? 'text-slate-100' : 'text-slate-900'}`}
-                      />
-                    </div>
-                    <div className={`mt-1 text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-                      {displayCount} {displayCount === 1 ? 'charity' : 'charities'} • Paid {fmt(gvn)} • {pct}%
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => remove(b.id)}
-                    className={`p-1 -m-1 rounded-md transition-colors ${isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'}`}
-                    aria-label={`Remove ${b.label}`}
-                  >
-                    <X className={`w-3.5 h-3.5 ${isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'}`} />
-                  </button>
-                </div>
-
-                <div className="mt-2 grid grid-cols-2 gap-2">
-                  <div>
-                    <label className={`block text-[10px] font-semibold uppercase tracking-wide mb-1 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>%</label>
-                    <div className={`inline-flex w-full items-center justify-end px-2 py-1 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'} hover:border-emerald-400 dark:hover:border-emerald-500/40 focus-within:border-emerald-500/50 transition-colors`}>
-                      <input
-                        type="text"
-                        inputMode="decimal"
-                        value={b.percent || ''}
-                        onChange={e => setPct(b.id, parsePercentInput(e.target.value))}
-                        onBlur={handleBlur}
-                        onKeyDown={handleKeyDown}
-                        className={`w-12 text-right ${inputStyle} font-semibold tabular-nums`}
-                        placeholder="0"
-                      />
-                      <span className={`text-[11px] ml-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>%</span>
-                    </div>
-                  </div>
-                  <div>
-                    <label className={`block text-[10px] font-semibold uppercase tracking-wide mb-1 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Amount</label>
-                    <p className={`text-right text-sm font-semibold tabular-nums pt-1 ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
-                      {amt > 0 ? fmt(amt) : '—'}
-                    </p>
-                    {amt > 0 && mBucketUnallocated > 0 && chars.length > 0 && (
-                      <p className="text-right text-[10px] font-medium text-slate-400">{fmt(mBucketUnallocated)} to allocate</p>
-                    )}
-                    {amt > 0 && mBucketUnallocated < 0 && chars.length > 0 && (
-                      <p className="text-right text-[10px] font-medium text-blue-400">{fmt(Math.abs(mBucketUnallocated))} over</p>
-                    )}
-                  </div>
-                </div>
-
-                <div className={`mt-2 h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`}>
-                  <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(pct, 100)}%`, background: `linear-gradient(90deg, ${b.color}, ${b.color}cc)` }} />
-                </div>
-
-                <div className={`mt-2.5 pt-2 border-t ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
-                  <div className={`text-[10px] font-semibold uppercase tracking-wide ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-                    Charities
-                  </div>
-                  {visibleChars.length > 0 ? (
-                    <div className="mt-1.5 space-y-1.5">
-                      {visibleChars.map(c => {
-                        const cGiven = donations
-                          .filter(d => d.charityEin === c.ein)
-                          .reduce((sum, d) => sum + d.amount, 0);
-                        return (
-                          <MobileCharityAllocationRow
-                            key={c.ein}
-                            charity={c}
-                            given={cGiven}
-                            target={getCharityTarget(c.ein)}
-                            categoryTarget={amt}
-                            currentBucketId={b.id}
-                            bucketOptions={mobileBucketOptions}
-                            isDark={isDark}
-                            onLogDonation={onLogDonation}
-                            onSetTarget={handleSetCharityTarget}
-                            onMoveCharity={move}
-                            onRemove={onRemoveCharity}
-                          />
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <div className={`mt-2 flex items-center gap-2`}>
-                      <button
-                        onClick={() => { setShowCharitySearch(true); setCharitySearchQuery(''); }}
-                        className={`inline-flex items-center gap-1 text-[11px] font-semibold px-3 py-1.5 rounded-lg border transition-colors ${
-                          isDark
-                            ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20'
-                            : 'text-emerald-600 border-emerald-200 bg-emerald-50 hover:bg-emerald-100'
-                        }`}
-                      >
-                        <Plus className="w-3 h-3" />
-                        Add charity
-                      </button>
-                      {matchingCharities.length > 0 && !showSuggestions && (
-                        <button
-                          onClick={() => setShowSuggestions(true)}
-                          className={`text-[11px] font-medium ${isDark ? 'text-slate-400 hover:text-slate-300' : 'text-slate-500 hover:text-slate-700'}`}
-                        >
-                          or show {matchingCharities.length} suggestions
-                        </button>
-                      )}
-                    </div>
-                  )}
-                  {showSuggestions && matchingCharities.length > 0 && (
-                    <div className={`mt-2.5 pt-2 border-t ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
-                      <div className={`text-[10px] font-semibold uppercase tracking-wide mb-1.5 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-                        Suggestions
-                      </div>
-                      {matchingCharities.length > 3 && (
-                        <div className={`flex items-center gap-1.5 mb-2 px-2 py-1.5 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'}`}>
-                          <Search className={`w-3 h-3 shrink-0 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} />
-                          <input
-                            type="text"
-                            value={bucketSearchQueries.get(b.id) || ''}
-                            onChange={e => setBucketSearchQueries(prev => { const next = new Map(prev); next.set(b.id, e.target.value); return next; })}
-                            placeholder={`Search ${matchingCharities.length} charities...`}
-                            className={`w-full text-[11px] bg-transparent focus:outline-none ${isDark ? 'text-slate-300 placeholder:text-slate-600' : 'text-slate-700 placeholder:text-slate-400'}`}
-                          />
-                          {bucketQuery && (
-                            <button onClick={() => setBucketSearchQueries(prev => { const next = new Map(prev); next.delete(b.id); return next; })}>
-                              <X className={`w-3 h-3 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} />
-                            </button>
-                          )}
-                        </div>
-                      )}
-                      <div className="space-y-1.5">
-                        {suggestions.map(s => (
-                          <div key={s.ein} className="flex items-center justify-between gap-2">
-                            <div className="min-w-0 flex items-center gap-1.5">
-                              <span className={`text-[12px] truncate ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>{s.name}</span>
-                              {SHOW_AMAL_SCORE && <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-semibold border ${
-                                isDark ? 'bg-slate-800 border-slate-700 text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-500'
-                              }`}>
-                                {s.amalScore || '—'}
-                              </span>}
-                            </div>
-                            <button
-                              onClick={() => onAddSuggestion(s.ein, s.name, b.id)}
-                              className={`shrink-0 text-[10px] px-2 py-1 rounded-md font-semibold border transition-colors ${
-                                isDark
-                                  ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20'
-                                  : 'text-emerald-600 border-emerald-200 bg-emerald-50 hover:bg-emerald-100'
-                              }`}
-                            >
-                              + Add
-                            </button>
-                          </div>
-                        ))}
-                        {bucketQuery && suggestions.length === 0 && (
-                          <div className={`text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>No matches</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-
-          {buckets.length > 0 && (
-            <div className={`rounded-lg border px-3 py-2.5 ${isDark ? 'bg-slate-800/60 border-slate-700' : 'bg-slate-100/80 border-slate-200'}`}>
-              <div className="flex items-center justify-between">
-                <span className={`font-semibold ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>Total</span>
-                <span className={`font-bold tabular-nums px-2 py-0.5 rounded ${
-                  isTotalBalanced
-                    ? isDark ? 'text-emerald-400 bg-emerald-500/10' : 'text-emerald-600 bg-emerald-50'
-                    : isTotalOver
-                    ? isDark ? 'text-amber-400 bg-amber-500/10' : 'text-amber-600 bg-amber-50'
-                    : isDark ? 'text-red-400 bg-red-500/10' : 'text-red-600 bg-red-50'
-                }`}>
-                  {totalPctLabel}%
-                </span>
-              </div>
-              <div className={`mt-1 text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Amount {fmt(Math.round(targetNum * totalPct / 100))} • Paid {fmt(totalGiven)}
-              </div>
-            </div>
-          )}
-
-          {!isTotalBalanced && buckets.length > 0 && (
-            <div className={`rounded-lg border px-3 py-2.5 ${isDark ? 'border-red-500/20 bg-red-500/5' : 'border-red-100 bg-red-50/50'}`}>
-              <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${isTotalUnder ? 'bg-red-500' : 'bg-amber-500'} animate-pulse`} />
-                <span className={`text-xs font-medium ${isDark ? 'text-red-400' : 'text-red-600'}`}>
-                  {isTotalUnder
-                    ? `${formatPercent(100 - totalPct)}% unallocated (${fmt(Math.round(targetNum * (100 - totalPct) / 100))})`
-                    : `${formatPercent(totalPct - 100)}% over-allocated`
-                  }
-                </span>
-              </div>
-              {isTotalUnder && (
-                <div className="mt-2 flex flex-wrap items-center gap-2">
-                  <button
-                    onClick={distributeRemainingEvenly}
-                    className={`text-[11px] px-2.5 py-1.5 rounded-lg font-semibold border transition-colors ${
-                      isDark
-                        ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
-                        : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm'
-                    }`}
-                  >
-                    Distribute evenly
-                  </button>
-                  <button
-                    onClick={() => setShowPicker(true)}
-                    className={`text-[11px] px-2.5 py-1.5 rounded-lg font-semibold shadow-sm transition-colors ${
-                      isDark
-                        ? 'bg-emerald-600 text-white hover:bg-emerald-500'
-                        : 'bg-emerald-500 text-white hover:bg-emerald-600'
-                    }`}
-                  >
-                    + Category
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-        <div className="hidden sm:block overflow-x-auto">
-          <div className="min-w-full sm:min-w-[780px]">
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragStart={handleDragStart}
-              onDragEnd={handleDragEnd}
-            >
-          <table className="w-full">
-            <thead>
-              <tr className={`border-b-2 ${border} ${isDark ? 'bg-slate-800/50' : 'bg-slate-50'}`}>
-                <th className={`${headerCell} w-6 hidden sm:table-cell`}></th>
-                <th className={`${headerCell} text-left`}>Category</th>
-                <th className={`${headerCell} text-right w-20`}>%</th>
-                <th className={`${headerCell} text-right w-24`}>Target</th>
-                <th className={`${headerCell} text-right w-20 hidden sm:table-cell`}>Paid</th>
-                <th className={`${headerCell} text-right w-24 hidden sm:table-cell`}>Left</th>
-                <th className={`${headerCell} w-8 hidden sm:table-cell`}></th>
-              </tr>
-            </thead>
-            {buckets.map(b => {
-              const amt = Math.round(targetNum * b.percent / 100);
-              const gvn = bucketGiven.get(b.id) || 0;
-              const pct = amt > 0 ? Math.min(100, Math.round(gvn / amt * 100)) : 0;
-              const chars = bookmarkedCharities.filter(c => charityToBucket.get(c.ein) === b.id);
-              const bucketEligible = zakatLens ? chars.filter(c => isZakatEligible(c.walletTag)) : chars;
-              const bucketCharityTargets = bucketEligible.reduce((sum, c) => sum + (getCharityTarget(c.ein) || 0), 0);
-              const bucketUnallocated = amt - bucketCharityTargets;
-                // Count for display - filters by zakat eligibility when lens is active
-              const displayCount = zakatLens
-                ? chars.filter(c => isZakatEligible(c.walletTag)).length
-                : chars.length;
-
-              // Get suggested charities for this category (matching tag, not bookmarked)
-              const bookmarkedEins = new Set(bookmarkedCharities.map(c => c.ein));
-              const bucketQuery = (bucketSearchQueries.get(b.id) || '').toLowerCase();
-              const matchingCharities = charities
-                .filter(c => {
-                  const tags = (c as any).causeTags || [];
-                  return c.ein && tags.includes(b.tagId) && !bookmarkedEins.has(c.ein);
-                })
-                .sort((a, b) => ((b as any).amalEvaluation?.amal_score || 0) - ((a as any).amalEvaluation?.amal_score || 0));
-              const suggestions = (bucketQuery
-                ? matchingCharities.filter(c => c.name.toLowerCase().includes(bucketQuery)).slice(0, 10)
-                : matchingCharities.slice(0, 3)
-              ).map(c => ({ ein: c.ein!, name: c.name, amalScore: (c as any).amalEvaluation?.amal_score as number | null || null }));
-
-              // Check if bucket has any zakat-eligible charities
-              const bucketHasZakatCharities = zakatStats.bucketHasZakat.get(b.id) || false;
-              const categoryDimmed = zakatLens && !bucketHasZakatCharities;
-
-              const isCollapsed = collapsedBuckets.has(b.id);
-
-              return (
-                <DroppableCategory key={b.id} id={b.id} color={b.color} isDark={isDark}>
-                  <tr
-                    className={`border-b ${borderLight} ${rowHover} group transition-all ${categoryDimmed ? 'opacity-40' : ''}`}
-                    style={{
-                      background: isDark
-                        ? `linear-gradient(90deg, ${b.color}40 0%, ${b.color}20 100%)`
-                        : `linear-gradient(90deg, ${b.color}30 0%, ${b.color}18 100%)`,
-                      borderLeft: `4px solid ${b.color}`,
-                      borderTop: `2px solid ${b.color}50`,
-                    }}
-                  >
-                    <td
-                      className={`${cell} hidden sm:table-cell ${chars.length > 0 ? 'cursor-pointer' : ''}`}
-                      onClick={() => chars.length > 0 && toggleCollapse(b.id)}
-                    >
-                      {chars.length > 0 && (
-                        <ChevronDown
-                          className={`w-4 h-4 transition-transform ${isCollapsed ? '-rotate-90' : ''} ${isDark ? 'text-slate-500' : 'text-slate-400'}`}
-                        />
-                      )}
-                    </td>
-                    <td
-                      className={`${cell} select-none`}
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <div className="w-3 h-3 rounded-md shadow-sm" style={{ background: b.color }} />
-                          <input
-                            type="text"
-                            value={b.label}
-                            onChange={e => setLabel(b.id, e.target.value)}
-                            onBlur={handleBlur}
-                            onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
-                            onClick={e => e.stopPropagation()}
-                            className={`font-semibold truncate bg-transparent border-0 focus:outline-none focus:ring-0 p-0 max-w-[12rem] ${isDark ? 'text-white' : 'text-slate-900'}`}
-                          />
-                          {displayCount > 0 && (
-                            <span
-                              className="text-[10px] px-2 py-0.5 rounded-full font-semibold border"
-                              style={{
-                                backgroundColor: `${b.color}15`,
-                                borderColor: `${b.color}30`,
-                                color: b.color,
-                              }}
-                            >
-                              {displayCount} {displayCount === 1 ? 'charity' : 'charities'}
-                            </span>
-                          )}
-                        </div>
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            remove(b.id);
-                          }}
-                          className={`sm:hidden p-1 -m-1 rounded-md transition-colors ${isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'}`}
-                          aria-label={`Remove ${b.label}`}
-                        >
-                          <X className={`w-3.5 h-3.5 ${isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'}`} />
-                        </button>
-                      </div>
-                      <div className={`sm:hidden mt-1 text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-                        Paid {fmt(gvn)} • {pct}%
-                      </div>
-                    </td>
-                    <td className={`${cell} text-right`}>
-                      <div className={`inline-flex items-center px-2 py-0.5 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'} hover:border-emerald-400 dark:hover:border-emerald-500/40 focus-within:border-emerald-500/50 transition-colors`}>
-                        <input
-                          type="text"
-                          inputMode="decimal"
-                          value={b.percent || ''}
-                          onChange={e => setPct(b.id, parsePercentInput(e.target.value))}
-                          onBlur={handleBlur}
-                          onKeyDown={handleKeyDown}
-                          className={`w-12 text-right ${inputStyle} font-semibold tabular-nums`}
-                          placeholder="0"
-                        />
-                        <span className={`text-[11px] ml-0.5 font-medium ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>%</span>
-                      </div>
-                    </td>
-                    <td className={`${cell} text-right`}></td>
-                    <td className={`${cell} hidden sm:table-cell`}></td>
-                    <td className={`${cell} hidden sm:table-cell`}></td>
-                    <td className={`${cell} hidden sm:table-cell`}>
-                      <button onClick={() => remove(b.id)} className={`p-1.5 -m-1 rounded-lg transition-all opacity-40 hover:opacity-100 ${isDark ? 'hover:bg-red-500/10' : 'hover:bg-red-50'}`}>
-                        <X className={`w-3.5 h-3.5 ${isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'}`} />
-                      </button>
-                    </td>
-                  </tr>
-                  {/* Empty category hint - show add charity CTA */}
-                  {!isCollapsed && chars.length === 0 && (
-                    <tr className={`hidden sm:table-row border-b ${borderLight}`}>
-                      <td colSpan={7} className="px-3 py-2">
-                        <div className="flex items-center gap-3">
-                          <button
-                            onClick={() => { setShowCharitySearch(true); setCharitySearchQuery(''); }}
-                            className={`inline-flex items-center gap-1 text-[11px] font-semibold px-3 py-1.5 rounded-lg border transition-colors ${
-                              isDark
-                                ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20'
-                                : 'text-emerald-600 border-emerald-200 bg-emerald-50 hover:bg-emerald-100'
-                            }`}
-                          >
-                            <Plus className="w-3 h-3" />
-                            Add charity
-                          </button>
-                          {matchingCharities.length > 0 && !showSuggestions && (
-                            <button
-                              onClick={() => setShowSuggestions(true)}
-                              className={`text-[11px] font-medium ${isDark ? 'text-slate-400 hover:text-slate-300' : 'text-slate-500 hover:text-slate-700'}`}
-                            >
-                              or show {matchingCharities.length} suggestions
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                  {/* Child rows - draggable charities (collapsible) */}
-                  {!isCollapsed && chars.map((c, ci) => {
-                    const cGvn = donations.filter(d => d.charityEin === c.ein).reduce((s, d) => s + d.amount, 0);
-                    const charityIsZakat = isZakatEligible(c.walletTag);
-                    return (
-                      <DraggableCharityRow
-                        key={c.ein}
-                        charity={c}
-                        bucketId={b.id}
-                        bucketColor={b.color}
-                        given={cGvn}
-                        target={getCharityTarget(c.ein)}
-                        isDark={isDark}
-                        onLogDonation={onLogDonation}
-                        onRemove={onRemoveCharity}
-                        onSetTarget={handleSetCharityTarget}
-                        onMoveCharity={move}
-                        bucketOptions={mobileBucketOptions}
-                        dimmed={zakatLens && !charityIsZakat}
-                        isEvenRow={ci % 2 === 0}
-                      />
-                    );
-                  })}
-                  {/* Ghost suggestion rows - only when toggled on and not collapsed */}
-                  {!isCollapsed && showSuggestions && matchingCharities.length > 0 && (
-                    <>
-                      {matchingCharities.length > 3 && (
-                        <tr className={`hidden sm:table-row border-b border-dashed ${isDark ? 'border-slate-700/50' : 'border-slate-200'}`}>
-                          <td className="px-3 py-1.5" colSpan={7}>
-                            <div className={`flex items-center gap-1.5 px-2 py-1 rounded-md border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'}`}>
-                              <Search className={`w-3 h-3 shrink-0 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} />
-                              <input
-                                type="text"
-                                value={bucketSearchQueries.get(b.id) || ''}
-                                onChange={e => setBucketSearchQueries(prev => { const next = new Map(prev); next.set(b.id, e.target.value); return next; })}
-                                placeholder={`Search ${matchingCharities.length} charities...`}
-                                className={`w-full text-[11px] bg-transparent focus:outline-none ${isDark ? 'text-slate-300 placeholder:text-slate-600' : 'text-slate-700 placeholder:text-slate-400'}`}
-                              />
-                              {bucketQuery && (
-                                <button onClick={() => setBucketSearchQueries(prev => { const next = new Map(prev); next.delete(b.id); return next; })}>
-                                  <X className={`w-3 h-3 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} />
-                                </button>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      )}
-                      {suggestions.map(s => (
-                        <GhostSuggestionRow
-                          key={s.ein}
-                          charity={s}
-                          isDark={isDark}
-                          onAdd={() => onAddSuggestion(s.ein, s.name, b.id)}
-                        />
-                      ))}
-                      {bucketQuery && suggestions.length === 0 && (
-                        <tr className={`hidden sm:table-row border-b border-dashed ${isDark ? 'border-slate-700/50' : 'border-slate-200'}`}>
-                          <td className={`px-3 py-2 text-[11px] italic ${isDark ? 'text-slate-500' : 'text-slate-400'}`} colSpan={7}>No matches</td>
-                        </tr>
-                      )}
-                    </>
-                  )}
-                  {/* Category subtotal row - actuals */}
-                  {chars.length > 0 && (
-                    <tr
-                      className={`hidden sm:table-row border-b ${borderLight}`}
-                      style={{
-                        background: isDark
-                          ? `linear-gradient(90deg, ${b.color}40 0%, ${b.color}20 100%)`
-                          : `linear-gradient(90deg, ${b.color}30 0%, ${b.color}18 100%)`,
-                        borderLeft: `4px solid ${b.color}`,
-                      }}
-                    >
-                      <td className={`${cell}`}></td>
-                      <td className={`${cell} text-right`} colSpan={2}>
-                        <span className={`text-[11px] font-semibold uppercase tracking-wide ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-                          Subtotal
-                        </span>
-                      </td>
-                      <td className={`${cell} text-right tabular-nums`}>
-                        <span className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>{fmt(bucketCharityTargets)}</span>
-                        {amt > 0 && bucketUnallocated > 0 && (
-                          <div className={`text-[10px] font-medium ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>{fmt(bucketUnallocated)} unassigned</div>
-                        )}
-                        {amt > 0 && bucketUnallocated < 0 && (
-                          <div className="text-[10px] font-medium text-blue-400">{fmt(Math.abs(bucketUnallocated))} over</div>
-                        )}
-                      </td>
-                      <td className={`${cell} text-right tabular-nums`}>
-                        <span className={gvn > 0 ? `font-semibold ${isDark ? 'text-emerald-400' : 'text-emerald-600'}` : isDark ? 'text-slate-600' : 'text-slate-300'}>{fmt(gvn)}</span>
-                      </td>
-                      <td className={`${cell} text-right tabular-nums`}>
-                        {bucketCharityTargets > 0 ? (
-                          bucketCharityTargets - gvn <= 0 ? (
-                            <div className="flex items-center justify-end gap-1">
-                              <Check className="w-3.5 h-3.5 text-emerald-500" />
-                              <span className="text-emerald-500 font-medium text-[11px]">Done</span>
-                            </div>
-                          ) : (
-                            <span className={`font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{fmt(bucketCharityTargets - gvn)}</span>
-                          )
-                        ) : (
-                          <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</span>
-                        )}
-                      </td>
-                      <td className={cell}></td>
-                    </tr>
-                  )}
-                </DroppableCategory>
-              );
-            })}
-            {/* Total row */}
-            {buckets.length > 0 && (
-              <tbody>
-                <tr className={`border-t-2 ${border} ${isDark ? 'bg-slate-700/80' : 'bg-slate-200/80'}`}>
-                  <td className={`${cell} hidden sm:table-cell`}></td>
-                  <td className={`${cell} font-bold text-base`}>Total</td>
-                  <td className={`${cell} text-right`}>
-                    <span className={`font-bold text-base tabular-nums px-2.5 py-1 rounded-lg ${
-                      isTotalBalanced
-                        ? isDark ? 'text-emerald-400 bg-emerald-500/10' : 'text-emerald-600 bg-emerald-50'
-                        : isTotalOver
-                        ? isDark ? 'text-amber-400 bg-amber-500/10' : 'text-amber-600 bg-amber-50'
-                        : isDark ? 'text-red-400 bg-red-500/10' : 'text-red-600 bg-red-50'
-                    }`}>
-                      {totalPctLabel}%
-                    </span>
-                  </td>
-                  <td className={`${cell} text-right font-bold text-base tabular-nums`}>
-                    <div>{fmt(totalCharityTargets)}</div>
-                    {unallocatedAmount > 0 && (
-                      <div className="text-[10px] font-medium text-slate-400">{fmt(unallocatedAmount)} to allocate</div>
-                    )}
-                    {unallocatedAmount < 0 && (
-                      <div className="text-[10px] font-medium text-blue-400">{fmt(Math.abs(unallocatedAmount))} over</div>
-                    )}
-                  </td>
-                  <td className={`${cell} text-right font-bold text-base tabular-nums hidden sm:table-cell`}>
-                    <span className="text-emerald-600">{fmt(totalGiven)}</span>
-                  </td>
-                  <td className={`${cell} text-right font-bold text-base tabular-nums hidden sm:table-cell`}>
-                    {(() => {
-                      const totalTarget = Math.round(targetNum * totalPct / 100);
-                      const totalRemaining = totalTarget - totalGiven;
-                      return totalRemaining > 0 ? (
-                        <span className={`font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{fmt(totalRemaining)} left</span>
-                      ) : totalTarget > 0 ? (
-                        <div className="flex items-center justify-end gap-1">
-                          <Check className="w-4 h-4 text-emerald-500" />
-                        </div>
-                      ) : null;
-                    })()}
-                  </td>
-                  <td className={`${cell} hidden sm:table-cell`}></td>
-                </tr>
-                {/* Warning row when not at 100% */}
-                {!isTotalBalanced && (
-                  <tr className={`hidden sm:table-row border-t ${isDark ? 'border-red-500/20 bg-red-500/5' : 'border-red-100 bg-red-50/50'}`}>
-                    <td colSpan={7} className="px-3 py-2">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${isTotalUnder ? 'bg-red-500' : 'bg-amber-500'} animate-pulse`} />
-                          <span className={`text-xs font-medium ${isDark ? 'text-red-400' : 'text-red-600'}`}>
-                            {isTotalUnder
-                              ? `${formatPercent(100 - totalPct)}% unallocated (${fmt(Math.round(targetNum * (100 - totalPct) / 100))})`
-                              : `${formatPercent(totalPct - 100)}% over-allocated`
-                            }
-                          </span>
-                        </div>
-                        {isTotalUnder && (
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={distributeRemainingEvenly}
-                              className={`text-[11px] px-3 py-1.5 rounded-lg font-semibold border transition-colors ${
-                                isDark
-                                  ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
-                                  : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm'
-                              }`}
-                            >
-                              Distribute evenly
-                            </button>
-                            <button
-                              onClick={() => setShowPicker(true)}
-                              className={`text-[11px] px-3 py-1.5 rounded-lg font-semibold shadow-sm transition-colors ${
-                                isDark
-                                  ? 'bg-emerald-600 text-white hover:bg-emerald-500'
-                                  : 'bg-emerald-500 text-white hover:bg-emerald-600'
-                              }`}
-                            >
-                              + Add category
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {!isTotalBalanced && (
-                  <tr className={`sm:hidden border-t ${isDark ? 'border-red-500/20 bg-red-500/5' : 'border-red-100 bg-red-50/50'}`}>
-                    <td colSpan={3} className="px-2.5 py-2">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${isTotalUnder ? 'bg-red-500' : 'bg-amber-500'} animate-pulse`} />
-                        <span className={`text-xs font-medium ${isDark ? 'text-red-400' : 'text-red-600'}`}>
-                          {isTotalUnder
-                            ? `${formatPercent(100 - totalPct)}% unallocated (${fmt(Math.round(targetNum * (100 - totalPct) / 100))})`
-                            : `${formatPercent(totalPct - 100)}% over-allocated`
-                          }
-                        </span>
-                      </div>
-                      {isTotalUnder && (
-                        <div className="mt-2 flex flex-wrap items-center gap-2">
-                          <button
-                            onClick={distributeRemainingEvenly}
-                            className={`text-[11px] px-2.5 py-1.5 rounded-lg font-semibold border transition-colors ${
-                              isDark
-                                ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
-                                : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm'
-                            }`}
-                          >
-                            Distribute evenly
-                          </button>
-                          <button
-                            onClick={() => setShowPicker(true)}
-                            className={`text-[11px] px-2.5 py-1.5 rounded-lg font-semibold shadow-sm transition-colors ${
-                              isDark
-                                ? 'bg-emerald-600 text-white hover:bg-emerald-500'
-                                : 'bg-emerald-500 text-white hover:bg-emerald-600'
-                            }`}
-                          >
-                            + Category
-                          </button>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            )}
-          </table>
-
-          {/* Uncategorized - droppable zone inside DndContext */}
-          {(unassigned.length > 0 || activeCharity) && (
-            <div className="hidden sm:block">
-            <DroppableUncategorized isDark={isDark} isActive={!!activeCharity}>
-              <div className={`px-3 py-2 flex items-center gap-2 border-t ${isDark ? 'bg-amber-500/5 border-amber-500/20' : 'bg-amber-50/70 border-amber-200/50'}`}>
-                <div className="w-2.5 h-2.5 rounded-md bg-amber-500" />
-                <span className={`text-[10px] font-bold tracking-wider ${isDark ? 'text-amber-400' : 'text-amber-600'}`}>
-                  {unassigned.length > 0 ? 'NEEDS CATEGORY' : 'DROP TO UNASSIGN'}
-                </span>
-                {unassigned.length > 0 && (
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold border ${
-                    isDark ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' : 'bg-amber-100 border-amber-200 text-amber-700'
-                  }`}>
-                    {unassigned.length}
-                  </span>
-                )}
-              </div>
-              {unassigned.length > 0 && (
-                <table className="w-full">
-                  <tbody>
-                    {unassigned.map(c => {
-                      const cGvn = donations.filter(d => d.charityEin === c.ein).reduce((s, d) => s + d.amount, 0);
-                      const charityIsZakat = isZakatEligible(c.walletTag);
-                      return (
-                        <DraggableCharityRow
-                          key={c.ein}
-                          charity={c}
-                          bucketId={null}
-                          given={cGvn}
-                          target={getCharityTarget(c.ein)}
-                          isDark={isDark}
-                          onLogDonation={onLogDonation}
-                          onRemove={onRemoveCharity}
-                          onSetTarget={handleSetCharityTarget}
-                          onMoveCharity={move}
-                          bucketOptions={mobileBucketOptions}
-                          dimmed={zakatLens && !charityIsZakat}
-                        />
-                      );
-                    })}
-                  </tbody>
-                </table>
-              )}
-            </DroppableUncategorized>
-            </div>
-          )}
-
-          {/* Drag overlay - shows what's being dragged */}
-          <DragOverlay>
-            {activeCharity && (
-              <div className={`px-4 py-3 rounded-xl shadow-2xl ${isDark ? 'bg-slate-800 text-white' : 'bg-white text-slate-900'} border-2 ${isDark ? 'border-emerald-500/50' : 'border-emerald-400'} ring-4 ring-emerald-500/20`}>
-                <div className="flex items-center gap-3">
-                  <GripVertical className="w-4 h-4 text-emerald-500" />
-                  <span className="font-semibold">{activeCharity.name}</span>
-                  {SHOW_AMAL_SCORE && activeCharity.amalScore && (
-                    <span className={`text-[10px] px-2 py-0.5 rounded-md font-bold ${isDark ? 'bg-slate-700 text-slate-400' : 'bg-slate-100 text-slate-500'}`}>
-                      {activeCharity.amalScore}
-                    </span>
-                  )}
-                </div>
-              </div>
-            )}
-          </DragOverlay>
-            </DndContext>
-          </div>
-        </div>
-        </>
-      )}
-
-      {targetNum > 0 && unassigned.length > 0 && (
-        <div className={`sm:hidden px-3 pb-3`}>
-          <div className={`rounded-lg border px-3 py-2.5 ${isDark ? 'border-amber-500/30 bg-amber-500/5' : 'border-amber-100 bg-amber-50/50'}`}>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-amber-500" />
-              <span className={`text-xs font-semibold ${isDark ? 'text-amber-400' : 'text-amber-700'}`}>
-                Needs Category ({unassigned.length})
-              </span>
-            </div>
-            <div className="mt-2 space-y-1.5">
-              {unassigned.map(c => {
-                const cGiven = donations.filter(d => d.charityEin === c.ein).reduce((sum, d) => sum + d.amount, 0);
-                return (
-                  <MobileCharityAllocationRow
-                    key={c.ein}
-                    charity={c}
-                    given={cGiven}
-                    target={getCharityTarget(c.ein)}
-                    categoryTarget={0}
-                    currentBucketId={null}
-                    bucketOptions={mobileBucketOptions}
-                    isDark={isDark}
-                    onLogDonation={onLogDonation}
-                    onSetTarget={handleSetCharityTarget}
-                    onMoveCharity={move}
-                    onRemove={onRemoveCharity}
-                  />
-                );
-              })}
-            </div>
-          </div>
+      {/* Body: categories + unassigned */}
+      {targetNum > 0 && buckets.length > 0 && (
+        <div className="p-3 space-y-3">
+          {buckets.map(renderBucket)}
+          {renderUnassigned()}
         </div>
       )}
 
-      {/* Empty states */}
-      {targetNum > 0 && buckets.length === 0 && bookmarkedCharities.length === 0 && (
-        <div className={`px-6 py-12 text-center border-t ${border} ${isDark ? 'bg-slate-800/20' : 'bg-slate-50/50'}`}>
-          <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${isDark ? 'bg-emerald-500/10' : 'bg-emerald-50'}`}>
-            <Plus className={`w-6 h-6 ${isDark ? 'text-emerald-400' : 'text-emerald-500'}`} />
-          </div>
-          <p className={`text-sm font-medium mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Add charities to your plan</p>
-          <p className={`text-xs mb-4 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-            Search for charities above or browse our evaluations to find the right fit.
-          </p>
-          <div className="flex items-center justify-center gap-3">
-            <button
-              onClick={() => { setShowCharitySearch(true); setCharitySearchQuery(''); }}
-              className={`inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-lg transition-colors ${
-                isDark
-                  ? 'bg-emerald-600 text-white hover:bg-emerald-500'
-                  : 'bg-emerald-600 text-white hover:bg-emerald-700'
-              }`}
-            >
-              <Search className="w-4 h-4" />
-              Search Charities
-            </button>
-            <Link
-              to="/browse"
-              className={`inline-flex items-center gap-1 text-sm font-semibold px-4 py-2 rounded-lg border transition-colors ${
-                isDark
-                  ? 'text-slate-300 border-slate-700 hover:bg-slate-800'
-                  : 'text-slate-700 border-slate-200 hover:bg-slate-50'
-              }`}
-            >
-              Browse All
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      )}
+      {/* Fallback: StarterPlan when user has target but no buckets */}
       {targetNum > 0 && buckets.length === 0 && allCharities && allCharities.length > 0 && (
-        <div className={`px-4 py-4 border-t ${border}`}>
-          <StarterPlan
-            target={targetNum}
-            charities={allCharities}
-            onAccepted={() => window.location.reload()}
-          />
+        <div className={`px-4 py-4 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
+          <StarterPlan target={targetNum} charities={allCharities} onAccepted={() => window.location.reload()} />
         </div>
       )}
-      {targetNum > 0 && buckets.length === 0 && (!allCharities || allCharities.length === 0) && bookmarkedCharities.length > 0 && (
-        <div className={`px-6 py-12 text-center border-t ${border} ${isDark ? 'bg-slate-800/20' : 'bg-slate-50/50'}`}>
-          <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${isDark ? 'bg-emerald-500/10' : 'bg-emerald-50'}`}>
-            <Plus className={`w-6 h-6 ${isDark ? 'text-emerald-400' : 'text-emerald-500'}`} />
-          </div>
-          <p className={`text-sm font-medium mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>No categories yet</p>
-          <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-            Add a charity via <span className="font-semibold text-emerald-600">+ Charity</span> to auto-create categories, or use <span className="font-semibold text-emerald-600">+ Category</span> to add manually
-          </p>
-        </div>
-      )}
+
+      {/* Empty state: no target, no bookmarks */}
       {!targetNum && bookmarkedCharities.length === 0 && (
         <div className={`px-6 py-12 text-center ${isDark ? 'bg-slate-800/20' : 'bg-slate-50/50'}`}>
-          <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${isDark ? 'bg-slate-700' : 'bg-slate-100'}`}>
-            <svg className={`w-6 h-6 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
           <p className={`text-sm font-medium mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Set your zakat target</p>
-          <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-            Enter your target amount above to start allocating
-          </p>
+          <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Enter your target amount above to start planning.</p>
         </div>
       )}
+
+      {/* Empty state: no target, have bookmarks */}
       {!targetNum && bookmarkedCharities.length > 0 && (
         <div className={`px-6 py-8 ${isDark ? 'bg-slate-800/20' : 'bg-slate-50/50'}`}>
           <p className={`text-sm font-medium mb-3 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
@@ -2209,15 +756,18 @@ export function UnifiedAllocationView({
           </p>
           <ul className="space-y-2 mb-4">
             {bookmarkedCharities.map(c => (
-              <li key={c.ein} className={`flex items-center justify-between px-3 py-2 rounded-lg ${isDark ? 'bg-slate-700/50' : 'bg-white'} ${isDark ? 'border-slate-600' : 'border-slate-200'} border`}>
-                <Link to={`/charity/${c.ein.replace(/^(\d{2})(\d+)$/, '$1-$2')}`} className={`text-sm font-medium hover:underline ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
+              <li key={c.ein} className={`flex items-center justify-between px-3 py-2 rounded-lg border ${isDark ? 'bg-slate-700/50 border-slate-600' : 'bg-white border-slate-200'}`}>
+                <Link
+                  to={`/charity/${c.ein.replace(/^(\d{2})(\d+)$/, '$1-$2')}`}
+                  className={`text-sm font-medium hover:underline ${isDark ? 'text-slate-200' : 'text-slate-800'}`}
+                >
                   {c.name}
                 </Link>
                 {onRemoveCharity && (
                   <button
                     onClick={() => void onRemoveCharity(c.ein)}
-                    className={`p-1 rounded-md hover:bg-red-100 ${isDark ? 'text-slate-500 hover:text-red-400 hover:bg-red-900/30' : 'text-slate-400 hover:text-red-500'} transition-colors`}
-                    title="Remove charity"
+                    className={`p-1 rounded-md ${isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'}`}
+                    aria-label={`Remove ${c.name}`}
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -2225,20 +775,106 @@ export function UnifiedAllocationView({
               </li>
             ))}
           </ul>
-          <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-            Set a zakat target above to start allocating funds.
-          </p>
+          <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Set a zakat target above to start planning.</p>
         </div>
       )}
+
       <ZakatEstimator
         isOpen={showEstimator}
         onClose={() => setShowEstimator(false)}
-        onUseAmount={(amount) => {
-          setTarget(String(amount));
-          triggerSave();
-        }}
+        onUseAmount={(amount) => { setTarget(String(amount)); triggerSave(); }}
         lastYearZakat={lastYearZakat}
       />
+    </div>
+  );
+}
+
+// --------------------------------------------------------------------------
+// Search results sub-component (extracted to keep the main function lean)
+// --------------------------------------------------------------------------
+
+function SearchResults({
+  isDark, query, charities, bookmarkedEins, recentlyAdded, setRecentlyAdded,
+  onAddCharity, pickBucketForCharity,
+}: {
+  isDark: boolean;
+  query: string;
+  charities: any[];
+  bookmarkedEins: Set<string>;
+  recentlyAdded: Set<string>;
+  setRecentlyAdded: React.Dispatch<React.SetStateAction<Set<string>>>;
+  onAddCharity?: (ein: string, name: string, bucketId: string) => Promise<void>;
+  pickBucketForCharity: (causeTags: string[]) => string;
+}) {
+  const results = charities
+    .filter((c: any) => c.ein && c.name.toLowerCase().includes(query.toLowerCase()))
+    .slice(0, 12);
+
+  const addCustomRow = (
+    <div
+      className={`flex items-center justify-between px-3 py-2.5 ${results.length > 0 ? `border-t ${isDark ? 'border-slate-800' : 'border-slate-100'}` : ''} ${isDark ? 'hover:bg-slate-700/50' : 'hover:bg-slate-50'}`}
+    >
+      <div className="flex items-center gap-2 min-w-0">
+        <Plus className={`w-3.5 h-3.5 shrink-0 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} />
+        <span className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+          Add "<span className="font-medium">{query}</span>" as custom charity
+        </span>
+      </div>
+      <button
+        onClick={async () => {
+          if (!onAddCharity) return;
+          const customId = `custom-${crypto.randomUUID()}`;
+          await onAddCharity(customId, query.trim(), '');
+          setRecentlyAdded(prev => new Set(prev).add(customId));
+        }}
+        className={`text-[11px] px-3 py-1.5 rounded-lg font-semibold shadow-sm ${isDark ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-emerald-500 text-white hover:bg-emerald-600'}`}
+      >
+        + Add
+      </button>
+    </div>
+  );
+
+  return (
+    <div className={`max-h-64 overflow-y-auto rounded-lg border shadow-sm ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-white'}`}>
+      {results.map((c: any, i: number) => {
+        const alreadyAdded = bookmarkedEins.has(c.ein) || recentlyAdded.has(c.ein);
+        return (
+          <div
+            key={c.ein}
+            className={`flex items-center justify-between px-3 py-2.5 ${i !== results.length - 1 ? `border-b ${isDark ? 'border-slate-800' : 'border-slate-100'}` : ''} ${alreadyAdded ? (isDark ? 'bg-emerald-500/5' : 'bg-emerald-50/50') : (isDark ? 'hover:bg-slate-700/50' : 'hover:bg-slate-50')}`}
+          >
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span className={`text-sm font-medium truncate ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>{c.name}</span>
+              {SHOW_AMAL_SCORE && (
+                <span className={`shrink-0 text-[10px] px-1.5 py-0.5 rounded-md font-semibold border ${isDark ? 'bg-slate-700 border-slate-600 text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-500'}`}>
+                  {(c as any).amalScore || '—'}
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-1 shrink-0 ml-2">
+              {alreadyAdded ? (
+                <span className={`inline-flex items-center gap-1 text-[11px] px-3 py-1.5 rounded-lg font-semibold ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
+                  <Check className="w-3.5 h-3.5" /> Added
+                </span>
+              ) : (
+                <button
+                  onClick={async () => {
+                    if (!onAddCharity) return;
+                    const causeTags = (c as any).causeTags || [];
+                    const bucketId = pickBucketForCharity(causeTags);
+                    await onAddCharity(c.ein, c.name, bucketId);
+                    setRecentlyAdded(prev => new Set(prev).add(c.ein));
+                  }}
+                  className={`text-[11px] px-3 py-1.5 rounded-lg font-semibold shadow-sm ${isDark ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-emerald-500 text-white hover:bg-emerald-600'}`}
+                >
+                  + Add
+                </button>
+              )}
+            </div>
+          </div>
+        );
+      })}
+      {addCustomRow}
     </div>
   );
 }

@@ -8,8 +8,13 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { AnimatePresence, m } from 'motion/react';
+import { writeBatch, doc, collection, Timestamp } from 'firebase/firestore';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
-import type { GivingHistoryEntry } from '../../../types';
+import { db } from '../../auth/firebase';
+import { useAuth } from '../../auth/useAuth';
+import { useProfileState } from '../../contexts/UserFeaturesContext';
+import { applyDonation } from '../../utils/recordStatus';
+import type { GivingHistoryEntry, CharityBucketAssignment } from '../../../types';
 import type { DonationInput } from '../../hooks/useGivingHistory';
 
 // --------------- Zod schema ---------------
@@ -89,6 +94,8 @@ export function AddDonationModal({
   prefillCharity,
 }: AddDonationModalProps) {
   const { isDark } = useLandingTheme();
+  const { uid } = useAuth();
+  const { profile, updateProfile } = useProfileState();
   const [isSaving, setIsSaving] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -124,9 +131,10 @@ export function AddDonationModal({
     setIsSaving(true);
 
     try {
+      const ein = values.charityEin?.trim() || null;
       const donation: DonationInput = {
         charityName: values.charityName.trim(),
-        charityEin: values.charityEin?.trim() || null,
+        charityEin: ein,
         amount: values.amount,
         date: values.date,
         category: values.category,
@@ -140,7 +148,22 @@ export function AddDonationModal({
         notes: values.notes?.trim() || null,
       };
 
-      await onSave(donation);
+      // Batch-update path: new donation (not edit) + ein matches an existing
+      // assignment in the profile + we have Firestore + user. Write donation
+      // and assignment-status patch in one atomic batch.
+      const matchingAssignment =
+        !existingDonation && ein && profile
+          ? (profile.charityBucketAssignments || []).find(a => a.charityEin === ein)
+          : undefined;
+
+      if (matchingAssignment && db && uid && profile) {
+        await batchWriteDonationAndAssignment({
+          uid, donation, matching: matchingAssignment, profile,
+          updateProfile,
+        });
+      } else {
+        await onSave(donation);
+      }
       onClose();
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : 'Failed to save donation');
@@ -426,4 +449,81 @@ export function AddDonationModal({
     )}
     </AnimatePresence>
   );
+}
+
+/**
+ * Write the donation to `giving_history` AND patch the matching v2
+ * assignment in the user profile in a single atomic `writeBatch`.
+ *
+ * Falls back to sensible defaults if any piece is missing; the caller
+ * should only invoke this when it already validated `uid` + profile
+ * + matching assignment.
+ */
+async function batchWriteDonationAndAssignment({
+  uid, donation, matching, profile, updateProfile,
+}: {
+  uid: string;
+  donation: DonationInput;
+  matching: CharityBucketAssignment;
+  profile: NonNullable<ReturnType<typeof useProfileState>['profile']>;
+  updateProfile: ReturnType<typeof useProfileState>['updateProfile'];
+}): Promise<void> {
+  if (!db) throw new Error('Firestore not initialized');
+  const nowIso = new Date().toISOString();
+  const next = applyDonation(
+    {
+      status: matching.status,
+      given: matching.given,
+      intendedAt: matching.intendedAt,
+      sentAt: matching.sentAt,
+      confirmedAt: matching.confirmedAt,
+    },
+    {
+      amount: Number(donation.amount) || 0,
+      receiptReceived: !!donation.receiptReceived,
+      createdAt: nowIso,
+    },
+  );
+
+  const nextAssignments = (profile.charityBucketAssignments || []).map(a =>
+    a.charityEin === matching.charityEin
+      ? {
+          ...a,
+          status: next.status,
+          given: next.given,
+          intendedAt: next.intendedAt,
+          sentAt: next.sentAt,
+          confirmedAt: next.confirmedAt,
+        }
+      : a,
+  );
+
+  const batch = writeBatch(db);
+  const userRef = doc(db, 'users', uid);
+  const historyRef = doc(collection(db, 'users', uid, 'giving_history'));
+  batch.set(historyRef, {
+    charityEin: donation.charityEin ?? null,
+    charityName: donation.charityName,
+    amount: donation.amount,
+    date: donation.date,
+    category: donation.category,
+    zakatYear: donation.zakatYear ?? null,
+    paymentSource: donation.paymentSource ?? null,
+    receiptReceived: donation.receiptReceived ?? false,
+    taxDeductible: donation.taxDeductible ?? true,
+    matchEligible: donation.matchEligible ?? false,
+    matchStatus: donation.matchStatus ?? null,
+    matchAmount: donation.matchAmount ?? null,
+    notes: donation.notes ?? null,
+    createdAt: Timestamp.now(),
+  });
+  batch.update(userRef, {
+    charityBucketAssignments: nextAssignments,
+    updatedAt: Timestamp.now(),
+  });
+  await batch.commit();
+
+  // Refresh the profile cache so the UI reflects the new assignment state
+  // immediately. (updateProfile triggers a re-fetch + cache write.)
+  await updateProfile({ charityBucketAssignments: nextAssignments });
 }

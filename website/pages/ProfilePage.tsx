@@ -94,9 +94,10 @@ export function ProfilePage() {
     exportCSV: exportInKindCSV,
   } = useInKindDonations();
 
-  // Charity targets hook
+  // Charity targets hook — legacy per-charity target collection (v1). Phase 1B
+  // moves the source of truth onto `CharityBucketAssignment.intended`, but a
+  // few downstream reports still rely on this collection, so we mirror writes.
   const {
-    targets: charityTargets,
     setTarget: setCharityTarget,
     removeTarget: removeCharityTarget,
   } = useCharityTargets();
@@ -360,52 +361,57 @@ export function ProfilePage() {
               />
             )}
 
-            {/* Unified Allocation View - card-based allocation with charity assignments */}
+            {/* Unified Record (M4): intended / given / status per charity. */}
             <UnifiedAllocationView
               initialBuckets={profile?.givingBuckets || []}
               initialAssignments={profile?.charityBucketAssignments?.map(a => ({
                 ein: a.charityEin,
                 bucketId: a.bucketId,
+                status: a.status,
+                intended: a.intended,
+                given: a.given,
               })) || []}
               targetAmount={profile?.targetZakatAmount ?? null}
               bookmarkedCharities={bookmarkedCharitiesForView}
               donations={donations}
-              charityTargets={charityTargets}
               allCharities={summaries}
               zakatAnniversary={profile?.zakatAnniversary}
               onSaveAnniversary={async (date) => {
                 await updateProfile({ zakatAnniversary: date });
               }}
-              onSetCharityTarget={async (ein, amount) => {
-                if (amount > 0) {
-                  await setCharityTarget(ein, amount);
-                } else {
-                  await removeCharityTarget(ein);
-                }
-              }}
-              onSave={async (buckets, amount, assignments) => {
-                // Preserve v2 fields (status/intended/given/timestamps) for existing
-                // assignments; default-fill new ones. Full rewrite lives in M4.
-                const existing = new Map(
-                  (profile?.charityBucketAssignments || []).map(a => [a.charityEin, a]),
+              onSetCharityIntended={async (ein, amount) => {
+                // Persist the intended amount on the matching assignment.
+                // Keep the legacy charityTargets write in lockstep for now — it
+                // powers a few reports that haven't migrated yet (M5 cleanup).
+                const current = profile?.charityBucketAssignments || [];
+                const next = current.map(a =>
+                  a.charityEin === ein ? { ...a, intended: Math.max(0, amount) } : a,
                 );
+                await updateProfile({ charityBucketAssignments: next });
+                if (amount > 0) await setCharityTarget(ein, amount);
+                else await removeCharityTarget(ein);
+              }}
+              onMarkConfirmed={async (ein) => {
                 const nowIso = new Date().toISOString();
+                const current = profile?.charityBucketAssignments || [];
+                const next = current.map(a =>
+                  a.charityEin === ein
+                    ? {
+                        ...a,
+                        status: 'confirmed' as const,
+                        sentAt: a.sentAt ?? nowIso,
+                        confirmedAt: a.confirmedAt ?? nowIso,
+                      }
+                    : a,
+                );
+                await updateProfile({ charityBucketAssignments: next });
+              }}
+              onSave={async (buckets, amount) => {
+                // Buckets + target only. Assignments are mutated by targeted
+                // handlers above (and by AddDonationModal's batch-write path).
                 await updateProfile({
                   givingBuckets: buckets,
                   targetZakatAmount: amount,
-                  charityBucketAssignments: assignments.map(a => {
-                    const prev = existing.get(a.ein);
-                    return prev
-                      ? { ...prev, bucketId: a.bucketId }
-                      : {
-                          charityEin: a.ein,
-                          bucketId: a.bucketId,
-                          status: 'intended' as const,
-                          intended: 0,
-                          given: 0,
-                          intendedAt: nowIso,
-                        };
-                  }),
                 });
               }}
               onLogDonation={(ein, name) => {
@@ -414,10 +420,8 @@ export function ProfilePage() {
                 setShowDonationModal(true);
               }}
               onAddCharity={async (ein, name, bucketId) => {
-                // Bookmark the charity (pass name for custom charities)
                 const isCustom = ein.startsWith('custom-');
                 await addBookmark(ein, undefined, isCustom ? name : undefined);
-                // Add the assignment to profile with v2 shape
                 const currentAssignments = profile?.charityBucketAssignments || [];
                 const existing = currentAssignments.find(a => a.charityEin === ein);
                 const nowIso = new Date().toISOString();
@@ -442,7 +446,6 @@ export function ProfilePage() {
               }}
               onRemoveCharity={async (ein) => {
                 await removeBookmark(ein);
-                // Also remove from assignments
                 const currentAssignments = profile?.charityBucketAssignments || [];
                 await updateProfile({
                   charityBucketAssignments: currentAssignments.filter(a => a.charityEin !== ein),
