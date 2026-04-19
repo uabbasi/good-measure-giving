@@ -356,13 +356,28 @@ export function ProfilePage() {
                 }
               }}
               onSave={async (buckets, amount, assignments) => {
+                // Preserve v2 fields (status/intended/given/timestamps) for existing
+                // assignments; default-fill new ones. Full rewrite lives in M4.
+                const existing = new Map(
+                  (profile?.charityBucketAssignments || []).map(a => [a.charityEin, a]),
+                );
+                const nowIso = new Date().toISOString();
                 await updateProfile({
                   givingBuckets: buckets,
                   targetZakatAmount: amount,
-                  charityBucketAssignments: assignments.map(a => ({
-                    charityEin: a.ein,
-                    bucketId: a.bucketId,
-                  })),
+                  charityBucketAssignments: assignments.map(a => {
+                    const prev = existing.get(a.ein);
+                    return prev
+                      ? { ...prev, bucketId: a.bucketId }
+                      : {
+                          charityEin: a.ein,
+                          bucketId: a.bucketId,
+                          status: 'intended' as const,
+                          intended: 0,
+                          given: 0,
+                          intendedAt: nowIso,
+                        };
+                  }),
                 });
               }}
               onLogDonation={(ein, name) => {
@@ -374,12 +389,23 @@ export function ProfilePage() {
                 // Bookmark the charity (pass name for custom charities)
                 const isCustom = ein.startsWith('custom-');
                 await addBookmark(ein, undefined, isCustom ? name : undefined);
-                // Add the assignment to profile
+                // Add the assignment to profile with v2 shape
                 const currentAssignments = profile?.charityBucketAssignments || [];
+                const existing = currentAssignments.find(a => a.charityEin === ein);
+                const nowIso = new Date().toISOString();
                 const nextAssignments = bucketId
                   ? [
                       ...currentAssignments.filter(a => a.charityEin !== ein),
-                      { charityEin: ein, bucketId },
+                      existing
+                        ? { ...existing, bucketId }
+                        : {
+                            charityEin: ein,
+                            bucketId,
+                            status: 'intended' as const,
+                            intended: 0,
+                            given: 0,
+                            intendedAt: nowIso,
+                          },
                     ]
                   : currentAssignments.filter(a => a.charityEin !== ein);
                 await updateProfile({

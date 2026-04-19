@@ -11,7 +11,19 @@ import { useEffect, useRef } from 'react';
 import { useBookmarkState, useProfileState } from '../contexts/UserFeaturesContext';
 import { useCharities } from '../hooks/useCharities';
 import { ALL_TAGS, pickBestTag } from '../constants/givingTags';
-import type { GivingBucket } from '../../types';
+import type { GivingBucket, CharityBucketAssignment } from '../../types';
+
+/** Build a fresh v2 assignment in the 'intended' state. */
+function makeIntendedAssignment(charityEin: string, bucketId: string): CharityBucketAssignment {
+  return {
+    charityEin,
+    bucketId,
+    status: 'intended',
+    intended: 0,
+    given: 0,
+    intendedAt: new Date().toISOString(),
+  };
+}
 
 const BUCKET_COLORS = ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444', '#ec4899', '#06b6d4', '#84cc16'];
 
@@ -67,7 +79,7 @@ export function BookmarkAutoCategorize() {
         ...(newBucket ? { givingBuckets: [...currentBuckets, newBucket] } : {}),
         charityBucketAssignments: [
           ...currentAssignments,
-          { charityEin, bucketId },
+          makeIntendedAssignment(charityEin, bucketId),
         ],
       });
     };
@@ -112,7 +124,7 @@ export function BookmarkAutoCategorize() {
       if (newBucket) {
         bucketsAccum = [...bucketsAccum, newBucket];
       }
-      newAssignments.push({ charityEin: bookmark.charityEin, bucketId });
+      newAssignments.push(makeIntendedAssignment(bookmark.charityEin, bucketId));
       changed = true;
     }
 

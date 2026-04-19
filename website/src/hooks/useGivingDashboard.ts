@@ -63,6 +63,8 @@ interface UseGivingDashboardResult {
   getBucketProgress: (bucketId: string) => BucketProgress | undefined;
   getCharityProgress: (ein: string) => CharityProgress | undefined;
   getCharityBucket: (ein: string) => GivingBucket | undefined;
+  /** Full v2 assignment (with status/intended/given/timestamps) for a charity */
+  getCharityAssignment: (ein: string) => CharityBucketAssignment | undefined;
 }
 
 // Normalize tag for matching (lowercase, handle common variations)
@@ -132,6 +134,15 @@ export function useGivingDashboard(
     const map = new Map<string, string>();
     for (const assignment of assignments) {
       map.set(assignment.charityEin, assignment.bucketId);
+    }
+    return map;
+  }, [assignments]);
+
+  // Build map of charity EIN -> full v2 assignment (status/intended/given/timestamps)
+  const charityToAssignment = useMemo(() => {
+    const map = new Map<string, CharityBucketAssignment>();
+    for (const assignment of assignments) {
+      map.set(assignment.charityEin, assignment);
     }
     return map;
   }, [assignments]);
@@ -308,6 +319,13 @@ export function useGivingDashboard(
     };
   }, [getCharityBucketId, bucketMap]);
 
+  // Utility: get the full v2 assignment for a charity (if explicitly assigned)
+  const getCharityAssignment = useMemo(() => {
+    return (ein: string): CharityBucketAssignment | undefined => {
+      return charityToAssignment.get(ein);
+    };
+  }, [charityToAssignment]);
+
   return {
     isLoading,
     targetZakatAmount,
@@ -320,5 +338,6 @@ export function useGivingDashboard(
     getBucketProgress,
     getCharityProgress: getCharityProgressUtil,
     getCharityBucket,
+    getCharityAssignment,
   };
 }

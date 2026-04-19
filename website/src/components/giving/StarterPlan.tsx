@@ -7,7 +7,7 @@ import { generateStarterPlan, DEFAULT_CATEGORIES, type StarterGroup } from '../.
 import { db } from '../../auth/firebase';
 import { useAuth } from '../../auth/useAuth';
 import type { CharitySummary } from '../../hooks/useCharities';
-import type { GivingBucket } from '../../../types';
+import type { GivingBucket, CharityBucketAssignment } from '../../../types';
 
 interface StarterPlanProps {
   target: number;
@@ -51,13 +51,21 @@ export function StarterPlan({ target, charities, bookmarkedEins, onAccepted }: S
           color: g.category.color,
         }));
 
-      // Create charity bucket assignments
-      const assignments: { charityEin: string; bucketId: string }[] = [];
+      // Create charity bucket assignments (v2 shape: status/intended/given/timestamps)
+      const nowIso = now.toDate().toISOString();
+      const assignments: CharityBucketAssignment[] = [];
       for (const group of groups) {
         const bucket = buckets.find(b => b.name === group.category.name);
         if (!bucket) continue;
         for (const alloc of group.allocations) {
-          assignments.push({ charityEin: alloc.ein, bucketId: bucket.id });
+          assignments.push({
+            charityEin: alloc.ein,
+            bucketId: bucket.id,
+            status: 'intended',
+            intended: alloc.amount,
+            given: 0,
+            intendedAt: nowIso,
+          });
         }
       }
 

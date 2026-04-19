@@ -33,7 +33,40 @@ interface ProfileUpdates {
   charityBucketAssignments: CharityBucketAssignment[];
 }
 
-function docToProfile(data: Record<string, unknown>, id: string): UserProfile {
+/**
+ * Default-fill legacy assignment docs so the extended v2 shape is always present.
+ * Tolerates pre-Milestone-1 docs that only have { charityEin, bucketId }.
+ * Exported for unit tests.
+ */
+export function normalizeAssignment(
+  raw: Partial<CharityBucketAssignment> & { charityEin: string; bucketId: string },
+  fallbackIntendedAt: string,
+): CharityBucketAssignment {
+  const status = (raw.status as CharityBucketAssignment['status']) || 'intended';
+  return {
+    charityEin: raw.charityEin,
+    bucketId: raw.bucketId,
+    status,
+    intended: typeof raw.intended === 'number' ? raw.intended : 0,
+    given: typeof raw.given === 'number' ? raw.given : 0,
+    intendedAt: raw.intendedAt || fallbackIntendedAt,
+    sentAt: raw.sentAt,
+    confirmedAt: raw.confirmedAt,
+  };
+}
+
+export function docToProfile(data: Record<string, unknown>, id: string): UserProfile {
+  const createdAt = data.createdAt instanceof Timestamp
+    ? data.createdAt.toDate().toISOString()
+    : (data.createdAt as string) || new Date().toISOString();
+  const updatedAt = data.updatedAt instanceof Timestamp
+    ? data.updatedAt.toDate().toISOString()
+    : (data.updatedAt as string) || new Date().toISOString();
+
+  const rawAssignments = (data.charityBucketAssignments as Array<
+    Partial<CharityBucketAssignment> & { charityEin: string; bucketId: string }
+  >) || [];
+
   return {
     id,
     givingPriorities: (data.givingPriorities as GivingPriorities) || {},
@@ -42,13 +75,9 @@ function docToProfile(data: Record<string, unknown>, id: string): UserProfile {
     zakatAnniversary: (data.zakatAnniversary as string) || null,
     targetZakatAmount: data.targetZakatAmount != null ? Number(data.targetZakatAmount) : null,
     givingBuckets: (data.givingBuckets as GivingBucket[]) || [],
-    charityBucketAssignments: (data.charityBucketAssignments as CharityBucketAssignment[]) || [],
-    createdAt: data.createdAt instanceof Timestamp
-      ? data.createdAt.toDate().toISOString()
-      : (data.createdAt as string) || new Date().toISOString(),
-    updatedAt: data.updatedAt instanceof Timestamp
-      ? data.updatedAt.toDate().toISOString()
-      : (data.updatedAt as string) || new Date().toISOString(),
+    charityBucketAssignments: rawAssignments.map(a => normalizeAssignment(a, createdAt)),
+    createdAt,
+    updatedAt,
   };
 }
 

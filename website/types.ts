@@ -1196,6 +1196,16 @@ export interface GivingBucket {
 export interface CharityBucketAssignment {
   charityEin: string;
   bucketId: string;
+  // Status of this assignment in the donor's giving plan
+  //  - 'intended':  added to the plan, no donation logged
+  //  - 'sent':      at least one donation logged, receipt not yet received
+  //  - 'confirmed': donation confirmed (receipt received or explicit mark)
+  status: 'intended' | 'sent' | 'confirmed';
+  intended: number;         // Dollar amount the donor plans to give
+  given: number;            // Dollar amount actually given (sum from giving_history for this charity/year)
+  intendedAt: string;       // ISO timestamp — when first added
+  sentAt?: string;          // Set when status moves to 'sent'
+  confirmedAt?: string;     // Set when status moves to 'confirmed'
 }
 
 // User profile stored in Firestore
