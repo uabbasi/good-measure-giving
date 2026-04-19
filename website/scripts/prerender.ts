@@ -8,6 +8,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { spawn, type ChildProcess } from 'child_process';
+import { FAQ_ITEMS } from '../src/data/faq';
+import { buildFaqPageSchema, buildArticleSchema, buildOrganizationSchema, buildBreadcrumbSchema } from './lib/schema';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,13 +45,32 @@ interface CharityDetail {
   };
 }
 
+interface PromptSummary {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  status?: 'active' | 'planned';
+}
+
+interface PromptsIndex {
+  prompts: PromptSummary[];
+}
+
+const PROMPT_CATEGORY_LABELS: Record<string, string> = {
+  quality_validation: 'Validate Charity Data Quality',
+  data_extraction: 'Extract Charity Data',
+  narrative_generation: 'Generate Charity Narratives',
+  category_calibration: 'Calibrate Charity Categories',
+};
+
 interface PageMeta {
   route: string;
   title: string;
   description: string;
   canonical: string;
   ogType: string;
-  jsonLd?: object;
+  jsonLd?: object | object[];
 }
 
 // ── Meta builders ──────────────────────────────────────────────────────
@@ -92,6 +113,22 @@ function buildStaticMeta(): PageMeta[] {
         'How Good Measure Giving evaluates charities using a 100-point scoring framework covering impact, alignment, and data confidence.',
       canonical: `${SITE_URL}/methodology`,
       ogType: 'article',
+      jsonLd: [
+        buildArticleSchema({
+          type: 'TechArticle',
+          headline: 'How Good Measure Giving Evaluates Charities',
+          description:
+            'Our 100-point scoring framework covering impact, alignment, and data confidence.',
+          url: `${SITE_URL}/methodology`,
+          datePublished: '2026-02-01',
+          dateModified: new Date().toISOString().split('T')[0],
+          authorName: 'Good Measure Giving',
+        }),
+        buildBreadcrumbSchema([
+          { name: 'Home', url: `${SITE_URL}/` },
+          { name: 'Methodology', url: `${SITE_URL}/methodology` },
+        ]) as object,
+      ],
     },
     {
       route: '/faq',
@@ -100,6 +137,9 @@ function buildStaticMeta(): PageMeta[] {
         'Common questions about charity evaluations, methodology, zakat compliance, and how to use Good Measure Giving.',
       canonical: `${SITE_URL}/faq`,
       ogType: 'website',
+      jsonLd: buildFaqPageSchema(
+        FAQ_ITEMS.map((item) => ({ question: item.q, answer: item.a }))
+      ) ?? undefined,
     },
     {
       route: '/about',
@@ -108,6 +148,14 @@ function buildStaticMeta(): PageMeta[] {
         'Independent charity evaluator focused on Muslim charities, built on evidence-based research and long-term thinking.',
       canonical: `${SITE_URL}/about`,
       ogType: 'website',
+      jsonLd: buildOrganizationSchema({
+        name: 'Good Measure Giving',
+        url: SITE_URL,
+        description:
+          'Independent charity evaluator focused on Muslim charities, built on evidence-based research and long-term thinking.',
+        foundingDate: '2025-12-01',
+        sameAs: [],
+      }),
     },
   ];
 }
@@ -176,6 +224,39 @@ function buildCharityMeta(detail: CharityDetail): PageMeta {
   };
 }
 
+function buildPromptMeta(prompt: PromptSummary): PageMeta {
+  const categoryLabel = PROMPT_CATEGORY_LABELS[prompt.category] ?? 'Evaluate Charities';
+  const title = `${prompt.name}: How We ${categoryLabel} | AI Transparency | GMG`;
+  const description = truncate(
+    `${prompt.description} — part of Good Measure Giving's open AI methodology for Muslim charity evaluation.`,
+    160
+  );
+
+  return {
+    route: `/prompts/${prompt.id}`,
+    title,
+    description,
+    canonical: `${SITE_URL}/prompts/${prompt.id}`,
+    ogType: 'article',
+    jsonLd: [
+      buildArticleSchema({
+        type: 'TechArticle',
+        headline: prompt.name,
+        description: prompt.description,
+        url: `${SITE_URL}/prompts/${prompt.id}`,
+        datePublished: '2026-02-01',
+        dateModified: new Date().toISOString().split('T')[0],
+        authorName: 'Good Measure Giving',
+      }),
+      buildBreadcrumbSchema([
+        { name: 'Home', url: `${SITE_URL}/` },
+        { name: 'AI Transparency', url: `${SITE_URL}/prompts` },
+        { name: prompt.name, url: `${SITE_URL}/prompts/${prompt.id}` },
+      ]) as object,
+    ],
+  };
+}
+
 // ── HTML injection ─────────────────────────────────────────────────────
 
 function injectMeta(html: string, meta: PageMeta): string {
@@ -214,10 +295,18 @@ function injectMeta(html: string, meta: PageMeta): string {
   // Remove existing OG tags and re-inject
   html = html.replace(/<meta\s+property="og:[^"]*"\s+content="[^"]*"\s*\/?>\n?\s*/g, '');
 
-  // Inject JSON-LD if present
+  // Inject JSON-LD — support single object or array of schema blocks.
+  // Escape `</` to prevent any string value containing "</script>" from
+  // terminating the injected tag. Standard pattern used by Next.js/Gatsby.
   let jsonLdTag = '';
   if (meta.jsonLd) {
-    jsonLdTag = `\n    <script type="application/ld+json">${JSON.stringify(meta.jsonLd)}</script>`;
+    const blocks = Array.isArray(meta.jsonLd) ? meta.jsonLd : [meta.jsonLd];
+    jsonLdTag = blocks
+      .map((block) => {
+        const payload = JSON.stringify(block).replace(/<\//g, '\\u003c/');
+        return `\n    <script type="application/ld+json">${payload}</script>`;
+      })
+      .join('');
   }
 
   // Insert all SEO tags before </head>
@@ -333,7 +422,20 @@ async function prerenderPages() {
     }
   }
 
-  console.log(`Prerender: ${metas.length} pages (${metas.length - charities.length} static + ${charities.length} charities)`);
+  // Load prompt index — only active prompts get indexed; planned prompts
+  // render as stubs on the SPA side and would look thin to crawlers.
+  const PROMPTS_INDEX_PATH = path.join(__dirname, '../public/data/prompts/index.json');
+  let prompts: PromptSummary[] = [];
+  if (fs.existsSync(PROMPTS_INDEX_PATH)) {
+    const promptsIndex: PromptsIndex = JSON.parse(fs.readFileSync(PROMPTS_INDEX_PATH, 'utf-8'));
+    prompts = (promptsIndex.prompts || []).filter((p) => p.status !== 'planned');
+  }
+
+  for (const prompt of prompts) {
+    metas.push(buildPromptMeta(prompt));
+  }
+
+  console.log(`Prerender: ${metas.length} pages (${metas.length - charities.length - prompts.length} static + ${charities.length} charities + ${prompts.length} prompts)`);
 
   const prerenderMode = resolvePrerenderMode();
   if (prerenderMode.mode === 'static') {
