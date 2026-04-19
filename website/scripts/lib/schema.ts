@@ -73,3 +73,26 @@ export function buildArticleSchema(input: ArticleInput): JsonLdObject {
     publisher: { '@type': 'Organization', name: input.authorName },
   };
 }
+
+export interface OrganizationInput {
+  name: string;
+  url: string;
+  description: string;
+  foundingDate: string;
+  sameAs: string[];
+}
+
+export function buildOrganizationSchema(input: OrganizationInput): JsonLdObject {
+  const base: JsonLdObject = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: input.name,
+    url: input.url,
+    description: input.description,
+    foundingDate: input.foundingDate,
+  };
+  if (input.sameAs.length > 0) {
+    base.sameAs = input.sameAs;
+  }
+  return base;
+}

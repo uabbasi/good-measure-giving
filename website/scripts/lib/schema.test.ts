@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildFaqPageSchema, buildBreadcrumbSchema, buildArticleSchema } from './schema';
+import { buildFaqPageSchema, buildBreadcrumbSchema, buildArticleSchema, buildOrganizationSchema } from './schema';
 
 describe('buildFaqPageSchema', () => {
   it('produces a valid FAQPage schema from Q&A pairs', () => {
@@ -96,5 +96,38 @@ describe('buildArticleSchema', () => {
       authorName: 'GMG',
     });
     expect(result['@type']).toBe('Article');
+  });
+});
+
+describe('buildOrganizationSchema', () => {
+  it('produces an Organization schema with sameAs links', () => {
+    const result = buildOrganizationSchema({
+      name: 'Good Measure Giving',
+      url: 'https://goodmeasuregiving.org',
+      description: 'Independent charity evaluator for Muslim charities.',
+      foundingDate: '2025-12-01',
+      sameAs: ['https://twitter.com/goodmeasure', 'https://github.com/goodmeasure'],
+    });
+
+    expect(result).toEqual({
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'Good Measure Giving',
+      url: 'https://goodmeasuregiving.org',
+      description: 'Independent charity evaluator for Muslim charities.',
+      foundingDate: '2025-12-01',
+      sameAs: ['https://twitter.com/goodmeasure', 'https://github.com/goodmeasure'],
+    });
+  });
+
+  it('omits sameAs when empty', () => {
+    const result = buildOrganizationSchema({
+      name: 'GMG',
+      url: 'https://goodmeasuregiving.org',
+      description: 'desc',
+      foundingDate: '2025-12-01',
+      sameAs: [],
+    });
+    expect('sameAs' in result).toBe(false);
   });
 });
