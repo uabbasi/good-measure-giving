@@ -45,6 +45,25 @@ interface CharityDetail {
   };
 }
 
+interface PromptSummary {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  status?: 'active' | 'planned';
+}
+
+interface PromptsIndex {
+  prompts: PromptSummary[];
+}
+
+const PROMPT_CATEGORY_LABELS: Record<string, string> = {
+  quality_validation: 'Validate Charity Data Quality',
+  data_extraction: 'Extract Charity Data',
+  narrative_generation: 'Generate Charity Narratives',
+  category_calibration: 'Calibrate Charity Categories',
+};
+
 interface PageMeta {
   route: string;
   title: string;
@@ -202,6 +221,39 @@ function buildCharityMeta(detail: CharityDetail): PageMeta {
     canonical: `${SITE_URL}/charity/${detail.ein}`,
     ogType: 'article',
     jsonLd,
+  };
+}
+
+function buildPromptMeta(prompt: PromptSummary): PageMeta {
+  const categoryLabel = PROMPT_CATEGORY_LABELS[prompt.category] ?? 'Evaluate Charities';
+  const title = `${prompt.name}: How We ${categoryLabel} | AI Transparency | GMG`;
+  const description = truncate(
+    `${prompt.description} — part of Good Measure Giving's open AI methodology for Muslim charity evaluation.`,
+    160
+  );
+
+  return {
+    route: `/prompts/${prompt.id}`,
+    title,
+    description,
+    canonical: `${SITE_URL}/prompts/${prompt.id}`,
+    ogType: 'article',
+    jsonLd: [
+      buildArticleSchema({
+        type: 'TechArticle',
+        headline: prompt.name,
+        description: prompt.description,
+        url: `${SITE_URL}/prompts/${prompt.id}`,
+        datePublished: '2026-02-01',
+        dateModified: new Date().toISOString().split('T')[0],
+        authorName: 'Good Measure Giving',
+      }),
+      buildBreadcrumbSchema([
+        { name: 'Home', url: `${SITE_URL}/` },
+        { name: 'AI Transparency', url: `${SITE_URL}/prompts` },
+        { name: prompt.name, url: `${SITE_URL}/prompts/${prompt.id}` },
+      ]) as object,
+    ],
   };
 }
 
@@ -365,7 +417,19 @@ async function prerenderPages() {
     }
   }
 
-  console.log(`Prerender: ${metas.length} pages (${metas.length - charities.length} static + ${charities.length} charities)`);
+  // Load prompt index
+  const PROMPTS_INDEX_PATH = path.join(__dirname, '../public/data/prompts/index.json');
+  let prompts: PromptSummary[] = [];
+  if (fs.existsSync(PROMPTS_INDEX_PATH)) {
+    const promptsIndex: PromptsIndex = JSON.parse(fs.readFileSync(PROMPTS_INDEX_PATH, 'utf-8'));
+    prompts = promptsIndex.prompts || [];
+  }
+
+  for (const prompt of prompts) {
+    metas.push(buildPromptMeta(prompt));
+  }
+
+  console.log(`Prerender: ${metas.length} pages (${metas.length - charities.length - prompts.length} static + ${charities.length} charities + ${prompts.length} prompts)`);
 
   const prerenderMode = resolvePrerenderMode();
   if (prerenderMode.mode === 'static') {
