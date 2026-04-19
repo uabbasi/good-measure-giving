@@ -61,6 +61,7 @@ export default defineConfig(({ mode }) => {
         environment: 'jsdom',
         globals: true,
         setupFiles: [],
+        exclude: ['node_modules', 'dist', 'tests/e2e/**'],
       },
     };
 });
