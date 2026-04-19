@@ -129,6 +129,14 @@ function buildStaticMeta(): PageMeta[] {
         'Independent charity evaluator focused on Muslim charities, built on evidence-based research and long-term thinking.',
       canonical: `${SITE_URL}/about`,
       ogType: 'website',
+      jsonLd: buildOrganizationSchema({
+        name: 'Good Measure Giving',
+        url: SITE_URL,
+        description:
+          'Independent charity evaluator focused on Muslim charities, built on evidence-based research and long-term thinking.',
+        foundingDate: '2025-12-01',
+        sameAs: [],
+      }),
     },
   ];
 }
