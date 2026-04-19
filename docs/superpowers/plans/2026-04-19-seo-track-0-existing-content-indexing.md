@@ -193,7 +193,7 @@ export interface Breadcrumb {
   url: string;
 }
 
-export function buildBreadcrumbSchema(crumbs: Breadcrumb[]): object | null {
+export function buildBreadcrumbSchema(crumbs: Breadcrumb[]): JsonLdObject | null {
   if (crumbs.length === 0) return null;
   return {
     '@context': 'https://schema.org',
@@ -294,7 +294,7 @@ export interface ArticleInput {
   authorName: string;
 }
 
-export function buildArticleSchema(input: ArticleInput): object {
+export function buildArticleSchema(input: ArticleInput): JsonLdObject {
   return {
     '@context': 'https://schema.org',
     '@type': input.type ?? 'Article',
@@ -388,8 +388,8 @@ export interface OrganizationInput {
   sameAs: string[];
 }
 
-export function buildOrganizationSchema(input: OrganizationInput): object {
-  const base: Record<string, unknown> = {
+export function buildOrganizationSchema(input: OrganizationInput): JsonLdObject {
+  const base: JsonLdObject = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: input.name,
