@@ -21,6 +21,7 @@ interface CharitySummary {
 
 interface PromptSummary {
   id: string;
+  status?: 'active' | 'planned';
 }
 
 function generateSitemap() {
@@ -56,11 +57,11 @@ function generateSitemap() {
   </url>`);
   }
 
-  // Prompt pages
+  // Prompt pages — only active prompts are indexed (planned ones are stubs).
   let prompts: PromptSummary[] = [];
   if (fs.existsSync(PROMPTS_INDEX)) {
     const promptsData = JSON.parse(fs.readFileSync(PROMPTS_INDEX, 'utf-8'));
-    prompts = promptsData.prompts || [];
+    prompts = (promptsData.prompts || []).filter((p: PromptSummary) => p.status !== 'planned');
   }
   for (const prompt of prompts) {
     urls.push(`  <url>

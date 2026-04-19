@@ -295,12 +295,17 @@ function injectMeta(html: string, meta: PageMeta): string {
   // Remove existing OG tags and re-inject
   html = html.replace(/<meta\s+property="og:[^"]*"\s+content="[^"]*"\s*\/?>\n?\s*/g, '');
 
-  // Inject JSON-LD — support single object or array of schema blocks
+  // Inject JSON-LD — support single object or array of schema blocks.
+  // Escape `</` to prevent any string value containing "</script>" from
+  // terminating the injected tag. Standard pattern used by Next.js/Gatsby.
   let jsonLdTag = '';
   if (meta.jsonLd) {
     const blocks = Array.isArray(meta.jsonLd) ? meta.jsonLd : [meta.jsonLd];
     jsonLdTag = blocks
-      .map((block) => `\n    <script type="application/ld+json">${JSON.stringify(block)}</script>`)
+      .map((block) => {
+        const payload = JSON.stringify(block).replace(/<\//g, '\\u003c/');
+        return `\n    <script type="application/ld+json">${payload}</script>`;
+      })
       .join('');
   }
 
@@ -417,12 +422,13 @@ async function prerenderPages() {
     }
   }
 
-  // Load prompt index
+  // Load prompt index — only active prompts get indexed; planned prompts
+  // render as stubs on the SPA side and would look thin to crawlers.
   const PROMPTS_INDEX_PATH = path.join(__dirname, '../public/data/prompts/index.json');
   let prompts: PromptSummary[] = [];
   if (fs.existsSync(PROMPTS_INDEX_PATH)) {
     const promptsIndex: PromptsIndex = JSON.parse(fs.readFileSync(PROMPTS_INDEX_PATH, 'utf-8'));
-    prompts = promptsIndex.prompts || [];
+    prompts = (promptsIndex.prompts || []).filter((p) => p.status !== 'planned');
   }
 
   for (const prompt of prompts) {
