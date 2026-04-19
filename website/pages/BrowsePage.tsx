@@ -1191,12 +1191,23 @@ export const BrowsePage: React.FC = () => {
         </nav>
         )}
 
-        {/* Sort + Results Summary */}
+        {/* Top Picks - primary discovery surface when browsing without active filters */}
+        {activePresets.size === 0 && !searchQuery && !selectedIntentId && (
+          <TopPicks charities={summaries} />
+        )}
+
+        {/* Sort + Results Summary — sits just above the flat grid so it reads as that section's header */}
         {sortedCharities.length > 0 && (
-          <div className={`flex items-center justify-between mb-3 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+          <div className={`flex items-center justify-between mb-3 pt-4 ${
+            activePresets.size === 0 && !searchQuery && !selectedIntentId
+              ? `border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`
+              : ''
+          } ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
             <div className="flex items-center gap-2">
-              <span className="text-sm">
-                {sortedCharities.length} {sortedCharities.length === 1 ? 'charity' : 'charities'}
+              <span className={`text-sm font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                {activePresets.size === 0 && !searchQuery && !selectedIntentId
+                  ? `Browse all ${sortedCharities.length}`
+                  : `${sortedCharities.length} ${sortedCharities.length === 1 ? 'charity' : 'charities'}`}
               </span>
               {selectedIntentId && (
                 <span className={`text-[11px] px-2 py-0.5 rounded-full ${
@@ -1226,11 +1237,6 @@ export const BrowsePage: React.FC = () => {
               </select>
             </div>
           </div>
-        )}
-
-        {/* Top Picks - shown when browsing without active filters */}
-        {browseStyle !== 'guided' && activePresets.size === 0 && !searchQuery && !selectedIntentId && (
-          <TopPicks charities={summaries} />
         )}
 
         {/* Charity Grid */}

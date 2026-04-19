@@ -73,7 +73,7 @@ export const CharityDetailsPage: React.FC = () => {
 
   // Check community membership for content gating (must be called unconditionally)
   const isCommunityMember = useCommunityMember();
-  const { canViewRich, viewsUsed, viewsRemaining, recordView } = useRichAccess();
+  const { canViewRich, viewsUsed, viewsRemaining, recordView } = useRichAccess(id);
   const { isSignedIn } = useAuth();
   const { activeNudge, dismiss: dismissNudge } = useActivationNudge();
 
@@ -131,7 +131,7 @@ export const CharityDetailsPage: React.FC = () => {
   if (isRichTier(charity) || isBaselineTier(charity)) {
     return (
       <>
-        {!isSignedIn && <FreeViewBanner viewsUsed={viewsUsed} viewsRemaining={viewsRemaining} />}
+        {!isSignedIn && <FreeViewBanner viewsUsed={viewsUsed} viewsRemaining={viewsRemaining} canViewRich={canViewRich} />}
         {useTerminal
           ? <TerminalView charity={charity} canViewRich={canViewRich} />
           : <TabbedView charity={charity} canViewRich={canViewRich} />

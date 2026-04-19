@@ -22,6 +22,28 @@ test.describe('Progressive reveal', () => {
     await expect(banner).toBeVisible({ timeout: 5000 });
   });
 
+  test('third unique view is NOT gated (regression: off-by-one)', async ({ page }) => {
+    await page.goto('/browse');
+    await page.evaluate(() => {
+      localStorage.setItem('gmg_viewed_charities', JSON.stringify([
+        'fake-ein-001', 'fake-ein-002',
+      ]));
+      localStorage.setItem('gmg-browse-style', 'power');
+    });
+    await page.reload();
+
+    const firstCard = page.locator('a[href^="/charity/"]:visible').first();
+    await expect(firstCard).toBeVisible({ timeout: 10000 });
+    await firstCard.click();
+    await expect(page).toHaveURL(/\/charity\//);
+
+    // 3rd unique view — must stay ungated
+    const exhaustedBanner = page.getByText(/used your free evaluations/i);
+    await expect(exhaustedBanner).not.toBeVisible();
+    const softBanner = page.getByText(/free full evaluations/i);
+    await expect(softBanner).toBeVisible({ timeout: 5000 });
+  });
+
   test('shows gated content after 3 unique charity views', async ({ page }) => {
     await page.goto('/browse');
     await page.evaluate(() => {

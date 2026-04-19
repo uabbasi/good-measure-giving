@@ -13,11 +13,15 @@ import { useLandingTheme } from '../../contexts/LandingThemeContext';
 interface FreeViewBannerProps {
   viewsUsed: number;
   viewsRemaining: number;
+  canViewRich: boolean;
 }
 
-export const FreeViewBanner: React.FC<FreeViewBannerProps> = ({ viewsUsed, viewsRemaining }) => {
+export const FreeViewBanner: React.FC<FreeViewBannerProps> = ({ viewsUsed, viewsRemaining, canViewRich }) => {
   const { isDark } = useLandingTheme();
-  const isExhausted = viewsRemaining <= 0;
+  // Exhausted = the current charity is gated. A revisit on the 3rd/4th EIN keeps the soft banner even though viewsRemaining is 0.
+  const isExhausted = !canViewRich;
+  // When content is viewable but counter is maxed (e.g. viewing the 3rd unique charity), show "3 of 3" not "4 of 3".
+  const displayedUsed = Math.min(viewsUsed, 3);
 
   if (isExhausted) {
     return (
@@ -51,7 +55,7 @@ export const FreeViewBanner: React.FC<FreeViewBannerProps> = ({ viewsUsed, views
       <span className={`text-sm ${isDark ? 'text-blue-300/80' : 'text-blue-700'}`}>
         You're viewing{' '}
         <strong className={isDark ? 'text-blue-200' : 'text-blue-900'}>
-          {viewsUsed} of 3
+          {displayedUsed} of 3
         </strong>{' '}
         free full evaluations
       </span>
