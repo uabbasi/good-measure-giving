@@ -205,12 +205,18 @@ function buildCharityMeta(detail: CharityDetail): PageMeta {
   }
 
   if (score != null) {
-    jsonLd.aggregateRating = {
-      '@type': 'AggregateRating',
-      ratingValue: score,
-      bestRating: 100,
-      worstRating: 0,
-      ratingCount: 1,
+    // Single editorial rating from one named evaluator — that's a Review, not
+    // an AggregateRating. AggregateRating with ratingCount:1 gets flagged or
+    // suppressed by Google as a bad-shape markup.
+    jsonLd.review = {
+      '@type': 'Review',
+      author: { '@type': 'Organization', name: 'Good Measure Giving' },
+      reviewRating: {
+        '@type': 'Rating',
+        ratingValue: score,
+        bestRating: 100,
+        worstRating: 0,
+      },
     };
   }
 
