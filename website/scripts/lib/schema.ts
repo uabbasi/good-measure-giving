@@ -30,3 +30,22 @@ export function buildFaqPageSchema(pairs: FaqPair[]): JsonLdObject | null {
     })),
   };
 }
+
+export interface Breadcrumb {
+  name: string;
+  url: string;
+}
+
+export function buildBreadcrumbSchema(crumbs: Breadcrumb[]): JsonLdObject | null {
+  if (crumbs.length === 0) return null;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: crumbs.map((c, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: c.name,
+      item: c.url,
+    })),
+  };
+}
