@@ -94,6 +94,22 @@ function buildStaticMeta(): PageMeta[] {
         'How Good Measure Giving evaluates charities using a 100-point scoring framework covering impact, alignment, and data confidence.',
       canonical: `${SITE_URL}/methodology`,
       ogType: 'article',
+      jsonLd: [
+        buildArticleSchema({
+          type: 'TechArticle',
+          headline: 'How Good Measure Giving Evaluates Charities',
+          description:
+            'Our 100-point scoring framework covering impact, alignment, and data confidence.',
+          url: `${SITE_URL}/methodology`,
+          datePublished: '2026-02-01',
+          dateModified: new Date().toISOString().split('T')[0],
+          authorName: 'Good Measure Giving',
+        }),
+        buildBreadcrumbSchema([
+          { name: 'Home', url: `${SITE_URL}/` },
+          { name: 'Methodology', url: `${SITE_URL}/methodology` },
+        ]) as object,
+      ],
     },
     {
       route: '/faq',
