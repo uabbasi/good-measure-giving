@@ -78,6 +78,7 @@ interface PageMeta {
   canonical: string;
   ogType: string;
   jsonLd?: object | object[];
+  noindex?: boolean;
 }
 
 // ── Meta builders ──────────────────────────────────────────────────────
@@ -163,6 +164,30 @@ function buildStaticMeta(): PageMeta[] {
         foundingDate: '2025-12-01',
         sameAs: [],
       }),
+    },
+    {
+      route: '/profile',
+      title: 'Profile | Good Measure Giving',
+      description: 'Your Good Measure Giving profile.',
+      canonical: `${SITE_URL}/profile`,
+      ogType: 'website',
+      noindex: true,
+    },
+    {
+      route: '/compare',
+      title: 'Compare Charities | Good Measure Giving',
+      description: 'Compare charities side by side on Good Measure Giving.',
+      canonical: `${SITE_URL}/compare`,
+      ogType: 'website',
+      noindex: true,
+    },
+    {
+      route: '/bookmarks',
+      title: 'Bookmarks | Good Measure Giving',
+      description: 'Your bookmarked charities.',
+      canonical: `${SITE_URL}/bookmarks`,
+      ogType: 'website',
+      noindex: true,
     },
   ];
 }
@@ -327,6 +352,18 @@ function injectMeta(html: string, meta: PageMeta): string {
     );
   } else {
     html = html.replace('</title>', `</title>\n    <link rel="canonical" href="${meta.canonical}" />`);
+  }
+
+  // Robots directive — emit noindex,nofollow when flagged; otherwise default (index,follow implicit)
+  if (meta.noindex) {
+    if (html.includes('name="robots"')) {
+      html = html.replace(
+        /<meta\s+name="robots"\s+content="[^"]*"\s*\/?>/,
+        '<meta name="robots" content="noindex,nofollow" />'
+      );
+    } else {
+      html = html.replace('</title>', '</title>\n    <meta name="robots" content="noindex,nofollow" />');
+    }
   }
 
   // Replace OG tags
