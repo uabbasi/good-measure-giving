@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { classifyZakatStatus, buildCharityTitle, buildCharityDescription } from './charity-seo';
+import { classifyZakatStatus, buildCharityTitle, buildCharityDescription, buildCharityFaqPairs } from './charity-seo';
 
 describe('classifyZakatStatus', () => {
   it('returns ZAKAT_ELIGIBLE for any wallet_tag containing ZAKAT-ELIGIBLE', () => {
@@ -101,5 +101,51 @@ describe('buildCharityDescription', () => {
     });
     expect(desc.length).toBeLessThanOrEqual(160);
     expect(desc.endsWith('\u2026')).toBe(true);
+  });
+});
+
+describe('buildCharityFaqPairs', () => {
+  it('generates 3 Q&A pairs from charity data', () => {
+    const pairs = buildCharityFaqPairs({
+      name: 'Islamic Relief',
+      score: 78,
+      zakatStatus: 'ZAKAT_ELIGIBLE',
+      mission: 'Global humanitarian aid.',
+      city: 'Burbank',
+      state: 'CA',
+    });
+    expect(pairs).toHaveLength(3);
+    expect(pairs[0].question).toBe('Is Islamic Relief zakat eligible?');
+    expect(pairs[0].answer).toContain('Zakat Eligible');
+    expect(pairs[1].question).toBe("What is Islamic Relief's impact rating?");
+    expect(pairs[1].answer).toContain('78');
+    expect(pairs[2].question).toContain('Where is Islamic Relief based');
+    expect(pairs[2].answer).toContain('Burbank');
+  });
+
+  it('handles SADAQAH_ONLY in the zakat Q&A answer', () => {
+    const pairs = buildCharityFaqPairs({
+      name: 'Doctors Without Borders',
+      score: 72,
+      zakatStatus: 'SADAQAH_ONLY',
+      mission: 'Medical aid.',
+      city: 'New York',
+      state: 'NY',
+    });
+    expect(pairs[0].answer).toContain('sadaqah');
+    expect(pairs[0].answer).not.toContain('Zakat Eligible');
+  });
+
+  it('omits location parts gracefully when city/state missing', () => {
+    const pairs = buildCharityFaqPairs({
+      name: 'Test',
+      score: 50,
+      zakatStatus: 'UNCLEAR',
+      mission: 'Test mission.',
+      city: null,
+      state: null,
+    });
+    expect(pairs[2].answer).not.toContain('null');
+    expect(pairs[2].answer).toContain('Test mission');
   });
 });
