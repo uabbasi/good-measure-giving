@@ -239,13 +239,34 @@ function buildCharityMeta(detail: CharityDetail): PageMeta {
     };
   }
 
+  const faqPairs = buildCharityFaqPairs({
+    name,
+    score: isNewOrg ? null : (score ?? null),
+    zakatStatus,
+    mission: detail.mission ?? '',
+    city: detail.location?.city ?? null,
+    state: detail.location?.state ?? null,
+  });
+
+  const breadcrumbs = buildBreadcrumbSchema([
+    { name: 'Home', url: `${SITE_URL}/` },
+    { name: 'Browse Charities', url: `${SITE_URL}/browse` },
+    { name, url: `${SITE_URL}/charity/${detail.ein}` },
+  ]);
+
+  const faqPageJsonLd = buildFaqPageSchema(faqPairs);
+
+  const schemaBlocks: object[] = [jsonLd];
+  if (faqPageJsonLd) schemaBlocks.push(faqPageJsonLd);
+  if (breadcrumbs) schemaBlocks.push(breadcrumbs);
+
   return {
     route: `/charity/${detail.ein}`,
     title,
     description,
     canonical: `${SITE_URL}/charity/${detail.ein}`,
     ogType: 'article',
-    jsonLd,
+    jsonLd: schemaBlocks,
   };
 }
 
