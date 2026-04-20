@@ -146,4 +146,24 @@ test.describe('SEO schema injection (Track 0)', () => {
     const xml = fs.readFileSync(path.join(DIST_DIR, 'sitemap.xml'), 'utf-8');
     expect(xml).toMatch(/\/guides\//);
   });
+
+  test('/zakat-calculator hub has CollectionPage and BreadcrumbList schemas', () => {
+    const html = fs.readFileSync(path.join(DIST_DIR, 'zakat-calculator', 'index.html'), 'utf-8');
+    const types = topLevelTypes(extractJsonLdBlocks(html));
+    expect(types).toContain('CollectionPage');
+    expect(types).toContain('BreadcrumbList');
+  });
+
+  test('/zakat-calculator/cash-savings has WebApplication, FAQPage, and BreadcrumbList schemas', () => {
+    const html = fs.readFileSync(path.join(DIST_DIR, 'zakat-calculator', 'cash-savings', 'index.html'), 'utf-8');
+    const types = topLevelTypes(extractJsonLdBlocks(html));
+    expect(types).toContain('WebApplication');
+    expect(types).toContain('FAQPage');
+    expect(types).toContain('BreadcrumbList');
+  });
+
+  test('sitemap includes /zakat-calculator URLs', () => {
+    const xml = fs.readFileSync(path.join(DIST_DIR, 'sitemap.xml'), 'utf-8');
+    expect(xml).toMatch(/\/zakat-calculator/);
+  });
 });
