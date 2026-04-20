@@ -10,6 +10,13 @@ import { fileURLToPath } from 'url';
 import { spawn, type ChildProcess } from 'child_process';
 import { FAQ_ITEMS } from '../src/data/faq';
 import { buildFaqPageSchema, buildArticleSchema, buildOrganizationSchema, buildBreadcrumbSchema } from './lib/schema';
+import {
+  classifyZakatStatus,
+  buildCharityTitle,
+  buildCharityDescription,
+  buildCharityFaqPairs,
+  type ZakatStatus,
+} from './lib/charity-seo';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -172,13 +179,25 @@ function buildCharityMeta(detail: CharityDetail): PageMeta {
     detail.mission ||
     '';
 
-  const scorePart = isNewOrg ? 'Too early to rate numerically' : score != null ? `${score}/100` : 'Evaluated';
-  const walletPart = walletTag ? ` ${walletTag[0].toUpperCase() + walletTag.slice(1)}.` : '';
-  const headlinePart = headline ? ` ${headline}` : '';
-  const raw = `${name}: ${scorePart}.${walletPart}${headlinePart}`;
-  const description = truncate(raw, 160);
+  const zakatStatus: ZakatStatus = isNewOrg
+    ? 'NEW_ORG'
+    : classifyZakatStatus({
+        walletTag: amal?.wallet_tag ?? null,
+        zakatClassification: (detail as unknown as { zakat_classification?: string }).zakat_classification ?? null,
+      });
 
-  const title = `${name} | Good Measure Giving`;
+  const title = buildCharityTitle({
+    name,
+    score: isNewOrg ? null : (score ?? null),
+    zakatStatus,
+  });
+
+  const description = buildCharityDescription({
+    name,
+    score: isNewOrg ? null : (score ?? null),
+    zakatStatus,
+    missionFragment: headline || detail.mission || '',
+  });
 
   const jsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
