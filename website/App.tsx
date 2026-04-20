@@ -24,6 +24,8 @@ const CausesIndexPage = lazy(() => import('./pages/CausesIndexPage').then(m => (
 const CausePage = lazy(() => import('./pages/CausePage').then(m => ({ default: m.CausePage })));
 const GuidesIndexPage = lazy(() => import('./pages/GuidesIndexPage').then(m => ({ default: m.GuidesIndexPage })));
 const GuidePage = lazy(() => import('./pages/GuidePage').then(m => ({ default: m.GuidePage })));
+const ZakatCalculatorHubPage = lazy(() => import('./pages/ZakatCalculatorHubPage').then(m => ({ default: m.ZakatCalculatorHubPage })));
+const ZakatCalculatorAssetPage = lazy(() => import('./pages/ZakatCalculatorAssetPage').then(m => ({ default: m.ZakatCalculatorAssetPage })));
 import { CompareBar } from './src/components/CompareBar';
 import { MobileBottomNav } from './src/components/MobileBottomNav';
 import { WelcomeTour } from './src/components/WelcomeTour';
@@ -84,6 +86,8 @@ const AppContent: React.FC = () => {
             <Route path="/causes/:slug" element={<CausePage />} />
             <Route path="/guides" element={<GuidesIndexPage />} />
             <Route path="/guides/:slug" element={<GuidePage />} />
+            <Route path="/zakat-calculator" element={<ZakatCalculatorHubPage />} />
+            <Route path="/zakat-calculator/:asset" element={<ZakatCalculatorAssetPage />} />
 
             {/* Catch-all: 404 */}
             <Route path="*" element={<NotFoundPage />} />
