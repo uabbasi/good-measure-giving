@@ -21,7 +21,7 @@ interface FeaturedCharityData extends CharityProfile {
 export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
   "name": "International Aid Charity",
   "ein": "46-3973114",
-  "headline": "International Aid Charity provides high-impact humanitarian relief and social support to marginalized communities through efficient financial management.",
+  "headline": "International Aid Charity provides essential humanitarian relief and social support to marginalized communities through highly efficient financial management.",
   "amalEvaluation": {
     "amal_score": 91,
     "confidence_scores": {
@@ -221,5 +221,5 @@ export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = {
       }
     }
   },
-  "impactHighlight": "International Aid Charity provides high-impact humanitarian relief and social support to marginalized communities through efficient financial management."
+  "impactHighlight": "International Aid Charity provides essential humanitarian relief and social support to marginalized communities through highly efficient financial management."
 };
