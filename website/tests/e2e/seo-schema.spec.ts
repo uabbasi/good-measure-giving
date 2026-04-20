@@ -66,4 +66,44 @@ test.describe('SEO schema injection (Track 0)', () => {
     const xml = fs.readFileSync(path.join(DIST_DIR, 'sitemap.xml'), 'utf-8');
     expect(xml).toMatch(/\/prompts\//);
   });
+
+  test('a charity page has NonprofitOrganization, FAQPage, and BreadcrumbList schemas', () => {
+    const charityDir = path.join(DIST_DIR, 'charity');
+    const dirs = fs.readdirSync(charityDir, { withFileTypes: true })
+      .filter((e) => e.isDirectory())
+      .map((e) => e.name);
+    expect(dirs.length).toBeGreaterThan(0);
+
+    const sample = dirs[0];
+    const html = fs.readFileSync(path.join(charityDir, sample, 'index.html'), 'utf-8');
+    const types = topLevelTypes(extractJsonLdBlocks(html));
+    expect(types).toContain('NonprofitOrganization');
+    expect(types).toContain('FAQPage');
+    expect(types).toContain('BreadcrumbList');
+  });
+
+  test('charity page title uses new template (either Zakat Eligible question or Review suffix)', () => {
+    const charityDir = path.join(DIST_DIR, 'charity');
+    const dirs = fs.readdirSync(charityDir, { withFileTypes: true })
+      .filter((e) => e.isDirectory())
+      .map((e) => e.name);
+
+    let anyMatches = false;
+    for (const d of dirs) {
+      const html = fs.readFileSync(path.join(charityDir, d, 'index.html'), 'utf-8');
+      const titleMatch = html.match(/<title>([^<]+)<\/title>/);
+      if (titleMatch && /Is .+ Zakat Eligible\?|\bReview:/.test(titleMatch[1])) {
+        anyMatches = true;
+        break;
+      }
+    }
+    expect(anyMatches).toBe(true);
+  });
+
+  test('/profile, /compare, /bookmarks have noindex meta', () => {
+    for (const route of ['profile', 'compare', 'bookmarks']) {
+      const html = fs.readFileSync(path.join(DIST_DIR, route, 'index.html'), 'utf-8');
+      expect(html).toMatch(/name="robots"[^>]*noindex/);
+    }
+  });
 });
