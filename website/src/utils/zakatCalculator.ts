@@ -1,7 +1,18 @@
 import type { ZakatAssets, ZakatLiabilities } from '../../types';
 
-/** Approximate nisab in USD — 85g gold at ~$82/g (April 2026). */
-export const NISAB_USD = 6_970;
+/**
+ * Fallback nisab in USD — 85g gold valued as of April 20, 2026
+ * (gold spot ~$4,790/oz → $13,097 per 85g, rounded down conservatively).
+ *
+ * The public zakat calculator pages refresh nisab live via useNisab()
+ * from gold-api.com. This constant is the last-resort fallback used when
+ * (a) the API is unreachable, (b) the response is malformed, or
+ * (c) the ZakatEstimator modal renders before a live value is fetched.
+ *
+ * When updating: bump to current 85g-of-gold value in USD, rounded down
+ * slightly for conservatism (better to under-estimate nisab than over-).
+ */
+export const NISAB_USD = 13_000;
 
 export const ZAKAT_RATE = 0.025;
 

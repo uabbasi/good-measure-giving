@@ -69,9 +69,10 @@ describe('calculateZakat', () => {
   });
 
   it('rounds zakat amount to nearest dollar', () => {
-    // 10_001 * 0.025 = 250.025 → should round to 250
-    const result = calculateZakat({ cash: 10_001 });
-    expect(result.zakatAmount).toBe(250);
+    // 50_001 * 0.025 = 1250.025 → should round to 1250
+    // (Chosen well above any plausible nisab so the rounding logic is exercised.)
+    const result = calculateZakat({ cash: 50_001 });
+    expect(result.zakatAmount).toBe(1250);
   });
 
   it('treats missing liabilities as zero', () => {
