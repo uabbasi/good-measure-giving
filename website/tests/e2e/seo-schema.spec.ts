@@ -106,4 +106,24 @@ test.describe('SEO schema injection (Track 0)', () => {
       expect(html).toMatch(/name="robots"[^>]*noindex/);
     }
   });
+
+  test('/causes index has CollectionPage and BreadcrumbList schemas', () => {
+    const html = fs.readFileSync(path.join(DIST_DIR, 'causes', 'index.html'), 'utf-8');
+    const types = topLevelTypes(extractJsonLdBlocks(html));
+    expect(types).toContain('CollectionPage');
+    expect(types).toContain('BreadcrumbList');
+  });
+
+  test('/causes/humanitarian has CollectionPage, FAQPage, and BreadcrumbList schemas', () => {
+    const html = fs.readFileSync(path.join(DIST_DIR, 'causes', 'humanitarian', 'index.html'), 'utf-8');
+    const types = topLevelTypes(extractJsonLdBlocks(html));
+    expect(types).toContain('CollectionPage');
+    expect(types).toContain('FAQPage');
+    expect(types).toContain('BreadcrumbList');
+  });
+
+  test('sitemap includes /causes URLs', () => {
+    const xml = fs.readFileSync(path.join(DIST_DIR, 'sitemap.xml'), 'utf-8');
+    expect(xml).toMatch(/\/causes\//);
+  });
 });
