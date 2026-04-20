@@ -13,6 +13,7 @@ const __dirname = path.dirname(__filename);
 const DIST_DIR = path.join(__dirname, '../dist');
 const CHARITIES_JSON = path.join(__dirname, '../data/charities/charities.json');
 const PROMPTS_INDEX = path.join(__dirname, '../public/data/prompts/index.json');
+const CAUSES_JSON = path.join(__dirname, '../data/causes/causes.json');
 const SITE_URL = 'https://goodmeasuregiving.org';
 
 interface CharitySummary {
@@ -22,6 +23,10 @@ interface CharitySummary {
 interface PromptSummary {
   id: string;
   status?: 'active' | 'planned';
+}
+
+interface CauseEntry {
+  slug: string;
 }
 
 function generateSitemap() {
@@ -72,6 +77,29 @@ function generateSitemap() {
   </url>`);
   }
 
+  // Cause hub pages
+  let causes: CauseEntry[] = [];
+  if (fs.existsSync(CAUSES_JSON)) {
+    const causesData = JSON.parse(fs.readFileSync(CAUSES_JSON, 'utf-8'));
+    causes = causesData.causes || [];
+  }
+  if (causes.length > 0) {
+    urls.push(`  <url>
+    <loc>${SITE_URL}/causes</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>`);
+    for (const cause of causes) {
+      urls.push(`  <url>
+    <loc>${SITE_URL}/causes/${cause.slug}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>`);
+    }
+  }
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.join('\n')}
@@ -79,7 +107,8 @@ ${urls.join('\n')}
 `;
 
   fs.writeFileSync(path.join(DIST_DIR, 'sitemap.xml'), xml, 'utf-8');
-  console.log(`Sitemap: ${urls.length} URLs (${staticPages.length} static + ${charities.length} charities + ${prompts.length} prompts)`);
+  const causeCount = causes.length > 0 ? causes.length + 1 : 0;
+  console.log(`Sitemap: ${urls.length} URLs (${staticPages.length} static + ${charities.length} charities + ${prompts.length} prompts + ${causeCount} causes)`);
 }
 
 generateSitemap();

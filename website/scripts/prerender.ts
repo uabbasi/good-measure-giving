@@ -17,6 +17,7 @@ import {
   buildCharityFaqPairs,
   type ZakatStatus,
 } from './lib/charity-seo';
+import { filterCharitiesByCategory, type HubCharity } from './lib/cause-seo';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,6 +36,7 @@ interface CharitySummary {
   name: string;
   amal_score: number | null;
   wallet_tag: string | null;
+  primaryCategory?: string | null;
 }
 
 interface CharityDetail {
@@ -62,6 +64,18 @@ interface PromptSummary {
 
 interface PromptsIndex {
   prompts: PromptSummary[];
+}
+
+interface CauseEntry {
+  slug: string;
+  category: string;
+  displayName: string;
+  intro: string;
+  faq: Array<{ q: string; a: string }>;
+}
+
+interface CausesIndex {
+  causes: CauseEntry[];
 }
 
 const PROMPT_CATEGORY_LABELS: Record<string, string> = {
@@ -328,6 +342,78 @@ function buildPromptMeta(prompt: PromptSummary): PageMeta {
   };
 }
 
+function buildCausesIndexMeta(causes: CauseEntry[]): PageMeta {
+  return {
+    route: '/causes',
+    title: 'Browse Charities by Cause | Good Measure Giving',
+    description: `Explore ${causes.length} cause areas in the Muslim charity ecosystem. Humanitarian relief, masjids, civil rights, medical programs, education, and more — each evaluated on impact, alignment, and transparency.`,
+    canonical: `${SITE_URL}/causes`,
+    ogType: 'website',
+    jsonLd: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        name: 'Causes',
+        url: `${SITE_URL}/causes`,
+        description: 'Cause-area hubs covering the Muslim charity ecosystem.',
+      },
+      buildBreadcrumbSchema([
+        { name: 'Home', url: `${SITE_URL}/` },
+        { name: 'Causes', url: `${SITE_URL}/causes` },
+      ]) as object,
+    ],
+  };
+}
+
+function buildCauseMeta(cause: CauseEntry, allCharities: HubCharity[]): PageMeta {
+  const charities = filterCharitiesByCategory(allCharities, cause.category);
+  const title = `Best Muslim ${cause.displayName} Charities | Good Measure Giving`;
+  const description = truncate(
+    `${cause.intro} ${charities.length} evaluated charities.`,
+    160
+  );
+
+  const collectionPage = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `Best Muslim ${cause.displayName} Charities`,
+    url: `${SITE_URL}/causes/${cause.slug}`,
+    description: cause.intro,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: charities.length,
+      itemListElement: charities.map((c, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: `${SITE_URL}/charity/${c.ein}`,
+        name: c.name,
+      })),
+    },
+  };
+
+  const faqPairs = cause.faq.map((item) => ({ question: item.q, answer: item.a }));
+  const faqPage = buildFaqPageSchema(faqPairs);
+
+  const breadcrumbs = buildBreadcrumbSchema([
+    { name: 'Home', url: `${SITE_URL}/` },
+    { name: 'Causes', url: `${SITE_URL}/causes` },
+    { name: cause.displayName, url: `${SITE_URL}/causes/${cause.slug}` },
+  ]);
+
+  const schemaBlocks: object[] = [collectionPage];
+  if (faqPage) schemaBlocks.push(faqPage);
+  if (breadcrumbs) schemaBlocks.push(breadcrumbs);
+
+  return {
+    route: `/causes/${cause.slug}`,
+    title,
+    description,
+    canonical: `${SITE_URL}/causes/${cause.slug}`,
+    ogType: 'website',
+    jsonLd: schemaBlocks,
+  };
+}
+
 // ── HTML injection ─────────────────────────────────────────────────────
 
 function injectMeta(html: string, meta: PageMeta): string {
@@ -518,7 +604,32 @@ async function prerenderPages() {
     metas.push(buildPromptMeta(prompt));
   }
 
-  console.log(`Prerender: ${metas.length} pages (${metas.length - charities.length - prompts.length} static + ${charities.length} charities + ${prompts.length} prompts)`);
+  // Load cause-area hubs
+  const CAUSES_PATH = path.join(__dirname, '../data/causes/causes.json');
+  let causes: CauseEntry[] = [];
+  if (fs.existsSync(CAUSES_PATH)) {
+    const causesIndex: CausesIndex = JSON.parse(fs.readFileSync(CAUSES_PATH, 'utf-8'));
+    causes = causesIndex.causes || [];
+  }
+
+  // Build HubCharity pool for cause filtering (reads primaryCategory from charity summary)
+  const hubPool: HubCharity[] = charities.map((c) => ({
+    ein: c.ein,
+    name: c.name,
+    primaryCategory: c.primaryCategory ?? null,
+    amalScore: c.amal_score ?? null,
+    walletTag: c.wallet_tag ?? null,
+  }));
+
+  if (causes.length > 0) {
+    metas.push(buildCausesIndexMeta(causes));
+    for (const cause of causes) {
+      metas.push(buildCauseMeta(cause, hubPool));
+    }
+  }
+
+  const causeCount = causes.length > 0 ? causes.length + 1 : 0;
+  console.log(`Prerender: ${metas.length} pages (${metas.length - charities.length - prompts.length - causeCount} static + ${charities.length} charities + ${prompts.length} prompts + ${causeCount} causes)`);
 
   const prerenderMode = resolvePrerenderMode();
   if (prerenderMode.mode === 'static') {
