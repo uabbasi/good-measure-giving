@@ -126,4 +126,24 @@ test.describe('SEO schema injection (Track 0)', () => {
     const xml = fs.readFileSync(path.join(DIST_DIR, 'sitemap.xml'), 'utf-8');
     expect(xml).toMatch(/\/causes\//);
   });
+
+  test('/guides index has CollectionPage and BreadcrumbList schemas', () => {
+    const html = fs.readFileSync(path.join(DIST_DIR, 'guides', 'index.html'), 'utf-8');
+    const types = topLevelTypes(extractJsonLdBlocks(html));
+    expect(types).toContain('CollectionPage');
+    expect(types).toContain('BreadcrumbList');
+  });
+
+  test('/guides/what-makes-a-charity-zakat-eligible has Article, FAQPage, and BreadcrumbList schemas', () => {
+    const html = fs.readFileSync(path.join(DIST_DIR, 'guides', 'what-makes-a-charity-zakat-eligible', 'index.html'), 'utf-8');
+    const types = topLevelTypes(extractJsonLdBlocks(html));
+    expect(types).toContain('Article');
+    expect(types).toContain('FAQPage');
+    expect(types).toContain('BreadcrumbList');
+  });
+
+  test('sitemap includes /guides URLs', () => {
+    const xml = fs.readFileSync(path.join(DIST_DIR, 'sitemap.xml'), 'utf-8');
+    expect(xml).toMatch(/\/guides\//);
+  });
 });
