@@ -37,6 +37,7 @@ import { BookmarkButton } from '../src/components/BookmarkButton';
 import { SHOW_AMAL_SCORE } from '../src/featureFlags';
 import { SimilarCharities } from '../src/components/SimilarCharities';
 import { classifyZakatStatus } from '../scripts/lib/charity-seo';
+import { categoryToSlug } from '../scripts/lib/cause-seo';
 
 // Layout simplified - hidden tier charities use legacy layout only
 
@@ -725,6 +726,16 @@ export const CharityDetailsPage: React.FC = () => {
             })}
             limit={4}
           />
+        )}
+        {charity?.primaryCategory && categoryToSlug(charity.primaryCategory) && (
+          <div className="mt-6">
+            <Link
+              to={`/causes/${categoryToSlug(charity.primaryCategory)}`}
+              className="inline-flex items-center text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+            >
+              Browse more charities in this cause →
+            </Link>
+          </div>
         )}
 
         {/* Join Community CTA - show to non-members */}
