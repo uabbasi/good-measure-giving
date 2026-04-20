@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { classifyZakatStatus, buildCharityTitle, buildCharityDescription, buildCharityFaqPairs } from './charity-seo';
+import { classifyZakatStatus, buildCharityTitle, buildCharityDescription, buildCharityFaqPairs, selectSimilarCharities } from './charity-seo';
 
 describe('classifyZakatStatus', () => {
   it('returns ZAKAT_ELIGIBLE for any wallet_tag containing ZAKAT-ELIGIBLE', () => {
@@ -147,5 +147,60 @@ describe('buildCharityFaqPairs', () => {
     });
     expect(pairs[2].answer).not.toContain('null');
     expect(pairs[2].answer).toContain('Test mission');
+  });
+});
+
+describe('selectSimilarCharities', () => {
+  const pool = [
+    { ein: '1', name: 'A', category: 'Humanitarian', amalScore: 80, zakatStatus: 'ZAKAT_ELIGIBLE' as const },
+    { ein: '2', name: 'B', category: 'Humanitarian', amalScore: 90, zakatStatus: 'ZAKAT_ELIGIBLE' as const },
+    { ein: '3', name: 'C', category: 'Humanitarian', amalScore: 70, zakatStatus: 'SADAQAH_ONLY' as const },
+    { ein: '4', name: 'D', category: 'Education', amalScore: 85, zakatStatus: 'ZAKAT_ELIGIBLE' as const },
+    { ein: '5', name: 'E', category: 'Humanitarian', amalScore: 75, zakatStatus: 'ZAKAT_ELIGIBLE' as const },
+    { ein: '6', name: 'F', category: 'Humanitarian', amalScore: 95, zakatStatus: 'ZAKAT_ELIGIBLE' as const },
+  ];
+
+  it('returns up to 5 charities from the same category and same zakat tier, sorted by score desc', () => {
+    const result = selectSimilarCharities({
+      currentEin: '1',
+      category: 'Humanitarian',
+      zakatStatus: 'ZAKAT_ELIGIBLE',
+      pool,
+      limit: 5,
+    });
+    expect(result.map(c => c.ein)).toEqual(['6', '2', '5']);
+  });
+
+  it('excludes the current charity', () => {
+    const result = selectSimilarCharities({
+      currentEin: '6',
+      category: 'Humanitarian',
+      zakatStatus: 'ZAKAT_ELIGIBLE',
+      pool,
+      limit: 5,
+    });
+    expect(result.map(c => c.ein)).not.toContain('6');
+  });
+
+  it('respects the limit', () => {
+    const result = selectSimilarCharities({
+      currentEin: '1',
+      category: 'Humanitarian',
+      zakatStatus: 'ZAKAT_ELIGIBLE',
+      pool,
+      limit: 2,
+    });
+    expect(result).toHaveLength(2);
+  });
+
+  it('returns empty array when no same-category same-tier charities exist', () => {
+    const result = selectSimilarCharities({
+      currentEin: '1',
+      category: 'NonexistentCategory',
+      zakatStatus: 'ZAKAT_ELIGIBLE',
+      pool,
+      limit: 5,
+    });
+    expect(result).toEqual([]);
   });
 });

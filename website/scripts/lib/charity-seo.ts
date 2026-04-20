@@ -120,3 +120,28 @@ export function buildCharityFaqPairs(input: CharityFaqInput): FaqPair[] {
     { question: locationQ, answer: locationA },
   ];
 }
+
+export interface SimilarCharityCandidate {
+  ein: string;
+  name: string;
+  category: string;
+  amalScore: number | null;
+  zakatStatus: ZakatStatus;
+}
+
+export interface SimilarSelectorInput {
+  currentEin: string;
+  category: string;
+  zakatStatus: ZakatStatus;
+  pool: SimilarCharityCandidate[];
+  limit: number;
+}
+
+export function selectSimilarCharities(input: SimilarSelectorInput): SimilarCharityCandidate[] {
+  return input.pool
+    .filter((c) => c.ein !== input.currentEin)
+    .filter((c) => c.category === input.category)
+    .filter((c) => c.zakatStatus === input.zakatStatus)
+    .sort((a, b) => (b.amalScore ?? 0) - (a.amalScore ?? 0))
+    .slice(0, input.limit);
+}
