@@ -22,6 +22,8 @@ const ComparePage = lazy(() => import('./pages/ComparePage').then(m => ({ defaul
 const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ default: m.ProfilePage })));
 const CausesIndexPage = lazy(() => import('./pages/CausesIndexPage').then(m => ({ default: m.CausesIndexPage })));
 const CausePage = lazy(() => import('./pages/CausePage').then(m => ({ default: m.CausePage })));
+const GuidesIndexPage = lazy(() => import('./pages/GuidesIndexPage').then(m => ({ default: m.GuidesIndexPage })));
+const GuidePage = lazy(() => import('./pages/GuidePage').then(m => ({ default: m.GuidePage })));
 import { CompareBar } from './src/components/CompareBar';
 import { MobileBottomNav } from './src/components/MobileBottomNav';
 import { WelcomeTour } from './src/components/WelcomeTour';
@@ -80,6 +82,8 @@ const AppContent: React.FC = () => {
             <Route path="/prompts/:promptId" element={<PromptDetailPage />} />
             <Route path="/causes" element={<CausesIndexPage />} />
             <Route path="/causes/:slug" element={<CausePage />} />
+            <Route path="/guides" element={<GuidesIndexPage />} />
+            <Route path="/guides/:slug" element={<GuidePage />} />
 
             {/* Catch-all: 404 */}
             <Route path="*" element={<NotFoundPage />} />
