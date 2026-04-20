@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
-import { calculateZakat, NISAB_USD } from '../src/utils/zakatCalculator';
+import { calculateZakat } from '../src/utils/zakatCalculator';
+import { useNisab } from '../src/utils/nisabPrice';
 import { isValidAssetSlug, KNOWN_ASSET_SLUGS } from '../scripts/lib/calculator-seo';
 import type { ZakatAssets } from '../types';
 
@@ -40,6 +41,7 @@ export const ZakatCalculatorAssetPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [assetAmount, setAssetAmount] = useState('');
   const [liabilities, setLiabilities] = useState('');
+  const nisab = useNisab();
 
   useEffect(() => {
     fetch('/data/zakat-calculator/assets.json')
@@ -85,7 +87,7 @@ export const ZakatCalculatorAssetPage: React.FC = () => {
   const amountNum = parseFloat(assetAmount) || 0;
   const liabilitiesNum = parseFloat(liabilities) || 0;
   const assets: ZakatAssets = { [asset.zakatAssetKey]: amountNum };
-  const estimate = calculateZakat(assets, { other: liabilitiesNum });
+  const estimate = calculateZakat(assets, { other: liabilitiesNum }, nisab);
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
@@ -130,7 +132,7 @@ export const ZakatCalculatorAssetPage: React.FC = () => {
 
           <div className="p-4 rounded bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
             <div className="text-sm text-slate-600 dark:text-slate-400 mb-1">Nisab threshold (2026)</div>
-            <div className="text-lg font-semibold mb-3">${NISAB_USD.toLocaleString()}</div>
+            <div className="text-lg font-semibold mb-3">${nisab.toLocaleString()}</div>
 
             <div className="text-sm text-slate-600 dark:text-slate-400 mb-1">Net zakatable wealth</div>
             <div className="text-lg font-semibold mb-3">${estimate.netZakatable.toLocaleString()}</div>
