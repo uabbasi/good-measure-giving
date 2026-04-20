@@ -19,6 +19,7 @@ import {
 } from './lib/charity-seo';
 import { filterCharitiesByCategory, type HubCharity } from './lib/cause-seo';
 import type { Guide, GuideSummary, GuidesIndex } from './lib/guide-seo';
+import { KNOWN_ASSET_SLUGS } from './lib/calculator-seo';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -482,6 +483,106 @@ function buildGuideMeta(guide: Guide): PageMeta {
   };
 }
 
+interface CalculatorAssetSection {
+  heading: string;
+  paragraphs: string[];
+}
+
+interface CalculatorAssetFaq {
+  q: string;
+  a: string;
+}
+
+interface CalculatorAsset {
+  slug: string;
+  displayName: string;
+  metaTitle: string;
+  metaDescription: string;
+  heroAnswer: string;
+  zakatAssetKey: string;
+  inputLabel: string;
+  inputHelp: string;
+  sections: CalculatorAssetSection[];
+  faq: CalculatorAssetFaq[];
+}
+
+interface CalculatorData {
+  hub: {
+    metaTitle: string;
+    metaDescription: string;
+    heroText: string;
+  };
+  assets: CalculatorAsset[];
+}
+
+function buildCalculatorHubMeta(data: CalculatorData): PageMeta {
+  return {
+    route: '/zakat-calculator',
+    title: data.hub.metaTitle,
+    description: truncate(data.hub.metaDescription, 160),
+    canonical: `${SITE_URL}/zakat-calculator`,
+    ogType: 'website',
+    jsonLd: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        name: 'Zakat Calculator',
+        url: `${SITE_URL}/zakat-calculator`,
+        description: data.hub.heroText,
+        mainEntity: {
+          '@type': 'ItemList',
+          numberOfItems: KNOWN_ASSET_SLUGS.length,
+          itemListElement: KNOWN_ASSET_SLUGS.map((slug, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            url: `${SITE_URL}/zakat-calculator/${slug}`,
+            name: `Zakat on ${slug.replace(/-/g, ' ')}`,
+          })),
+        },
+      },
+      buildBreadcrumbSchema([
+        { name: 'Home', url: `${SITE_URL}/` },
+        { name: 'Zakat Calculator', url: `${SITE_URL}/zakat-calculator` },
+      ]) as object,
+    ],
+  };
+}
+
+function buildCalculatorAssetMeta(asset: CalculatorAsset): PageMeta {
+  const webApp = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: `Zakat on ${asset.displayName} Calculator`,
+    url: `${SITE_URL}/zakat-calculator/${asset.slug}`,
+    description: asset.metaDescription,
+    applicationCategory: 'FinanceApplication',
+    operatingSystem: 'Any (web)',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  };
+
+  const faqPairs = asset.faq.map((item) => ({ question: item.q, answer: item.a }));
+  const faqPage = buildFaqPageSchema(faqPairs);
+
+  const breadcrumbs = buildBreadcrumbSchema([
+    { name: 'Home', url: `${SITE_URL}/` },
+    { name: 'Zakat Calculator', url: `${SITE_URL}/zakat-calculator` },
+    { name: asset.displayName, url: `${SITE_URL}/zakat-calculator/${asset.slug}` },
+  ]);
+
+  const schemaBlocks: object[] = [webApp];
+  if (faqPage) schemaBlocks.push(faqPage);
+  if (breadcrumbs) schemaBlocks.push(breadcrumbs);
+
+  return {
+    route: `/zakat-calculator/${asset.slug}`,
+    title: asset.metaTitle,
+    description: truncate(asset.metaDescription, 160),
+    canonical: `${SITE_URL}/zakat-calculator/${asset.slug}`,
+    ogType: 'website',
+    jsonLd: schemaBlocks,
+  };
+}
+
 // ── HTML injection ─────────────────────────────────────────────────────
 
 function injectMeta(html: string, meta: PageMeta): string {
@@ -722,9 +823,24 @@ async function prerenderPages() {
     }
   }
 
+  // Load zakat calculator data
+  const CALCULATOR_PATH = path.join(__dirname, '../data/zakat-calculator/assets.json');
+  let calculatorData: CalculatorData | null = null;
+  if (fs.existsSync(CALCULATOR_PATH)) {
+    calculatorData = JSON.parse(fs.readFileSync(CALCULATOR_PATH, 'utf-8'));
+  }
+
+  if (calculatorData) {
+    metas.push(buildCalculatorHubMeta(calculatorData));
+    for (const asset of calculatorData.assets) {
+      metas.push(buildCalculatorAssetMeta(asset));
+    }
+  }
+
   const causeCount = causes.length > 0 ? causes.length + 1 : 0;
   const guideCount = guideSummaries.length > 0 ? guideSummaries.length + 1 : 0;
-  console.log(`Prerender: ${metas.length} pages (${metas.length - charities.length - prompts.length - causeCount - guideCount} static + ${charities.length} charities + ${prompts.length} prompts + ${causeCount} causes + ${guideCount} guides)`);
+  const calculatorCount = calculatorData ? 1 + calculatorData.assets.length : 0;
+  console.log(`Prerender: ${metas.length} pages (${metas.length - charities.length - prompts.length - causeCount - guideCount - calculatorCount} static + ${charities.length} charities + ${prompts.length} prompts + ${causeCount} causes + ${guideCount} guides + ${calculatorCount} calculator)`);
 
   const prerenderMode = resolvePrerenderMode();
   if (prerenderMode.mode === 'static') {

@@ -15,6 +15,7 @@ const CHARITIES_JSON = path.join(__dirname, '../data/charities/charities.json');
 const PROMPTS_INDEX = path.join(__dirname, '../public/data/prompts/index.json');
 const CAUSES_JSON = path.join(__dirname, '../data/causes/causes.json');
 const GUIDES_INDEX = path.join(__dirname, '../data/guides/guides.json');
+const CALCULATOR_JSON = path.join(__dirname, '../data/zakat-calculator/assets.json');
 const SITE_URL = 'https://goodmeasuregiving.org';
 
 interface CharitySummary {
@@ -32,6 +33,14 @@ interface CauseEntry {
 
 interface GuideSummary {
   slug: string;
+}
+
+interface CalculatorAsset {
+  slug: string;
+}
+
+interface CalculatorData {
+  assets: CalculatorAsset[];
 }
 
 function generateSitemap() {
@@ -128,6 +137,27 @@ function generateSitemap() {
     }
   }
 
+  // Zakat calculator pages
+  let calculatorAssets: CalculatorAsset[] = [];
+  if (fs.existsSync(CALCULATOR_JSON)) {
+    const d: CalculatorData = JSON.parse(fs.readFileSync(CALCULATOR_JSON, 'utf-8'));
+    calculatorAssets = d.assets || [];
+  }
+  urls.push(`  <url>
+    <loc>${SITE_URL}/zakat-calculator</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>`);
+  for (const asset of calculatorAssets) {
+    urls.push(`  <url>
+    <loc>${SITE_URL}/zakat-calculator/${asset.slug}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>`);
+  }
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.join('\n')}
@@ -137,7 +167,8 @@ ${urls.join('\n')}
   fs.writeFileSync(path.join(DIST_DIR, 'sitemap.xml'), xml, 'utf-8');
   const causeCount = causes.length > 0 ? causes.length + 1 : 0;
   const guideCount = guides.length > 0 ? guides.length + 1 : 0;
-  console.log(`Sitemap: ${urls.length} URLs (${staticPages.length} static + ${charities.length} charities + ${prompts.length} prompts + ${causeCount} causes + ${guideCount} guides)`);
+  const calculatorCount = 1 + calculatorAssets.length;
+  console.log(`Sitemap: ${urls.length} URLs (${staticPages.length} static + ${charities.length} charities + ${prompts.length} prompts + ${causeCount} causes + ${guideCount} guides + ${calculatorCount} calculator)`);
 }
 
 generateSitemap();
