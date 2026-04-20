@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { classifyZakatStatus, buildCharityTitle } from './charity-seo';
+import { classifyZakatStatus, buildCharityTitle, buildCharityDescription } from './charity-seo';
 
 describe('classifyZakatStatus', () => {
   it('returns ZAKAT_ELIGIBLE for any wallet_tag containing ZAKAT-ELIGIBLE', () => {
@@ -63,5 +63,43 @@ describe('buildCharityTitle', () => {
       score: null,
       zakatStatus: 'UNCLEAR',
     })).toBe('Unknown Charity Review: Evaluated | GMG');
+  });
+});
+
+describe('buildCharityDescription', () => {
+  it('leads with zakat-eligibility sentence for ZAKAT_ELIGIBLE', () => {
+    const desc = buildCharityDescription({
+      name: 'Islamic Relief',
+      score: 78,
+      zakatStatus: 'ZAKAT_ELIGIBLE',
+      missionFragment: 'Global humanitarian aid organization.',
+    });
+    expect(desc).toContain('Zakat Eligible');
+    expect(desc).toContain('78/100');
+    expect(desc).toContain('Global humanitarian');
+    expect(desc.length).toBeLessThanOrEqual(160);
+  });
+
+  it('leads with sadaqah-only sentence for SADAQAH_ONLY', () => {
+    const desc = buildCharityDescription({
+      name: 'Doctors Without Borders',
+      score: 72,
+      zakatStatus: 'SADAQAH_ONLY',
+      missionFragment: 'Medical humanitarian organization.',
+    });
+    expect(desc).toContain('sadaqah');
+    expect(desc.length).toBeLessThanOrEqual(160);
+  });
+
+  it('truncates long mission fragments at 160 chars with ellipsis', () => {
+    const longMission = 'X'.repeat(400);
+    const desc = buildCharityDescription({
+      name: 'Test',
+      score: 50,
+      zakatStatus: 'UNCLEAR',
+      missionFragment: longMission,
+    });
+    expect(desc.length).toBeLessThanOrEqual(160);
+    expect(desc.endsWith('\u2026')).toBe(true);
   });
 });
