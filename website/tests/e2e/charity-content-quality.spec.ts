@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 
 const RICH_CHARITIES = [
-  { ein: '01-0548371', name: 'Muslim Legal Fund of America' },
-  { ein: '04-2535767', name: 'Union of Concerned Scientists' },
-  { ein: '04-3810161', name: 'ICNA Relief' },
+  { ein: '01-0548371', name: 'Muslim Legal Fund of America', muslimFacing: true },
+  { ein: '04-2535767', name: 'Union of Concerned Scientists', muslimFacing: false },
+  { ein: '04-3810161', name: 'ICNA Relief', muslimFacing: true },
 ];
 
 const BASELINE_CHARITIES = [
@@ -53,11 +53,16 @@ test.describe('Charity content quality', () => {
       await page.waitForTimeout(3000);
 
       const bodyText = await page.locator('body').textContent();
-      // Rich charities should have wallet tags; baseline charities may only have cause/archetype badges
+      // Rich Muslim-facing charities should carry Zakat/Sadaqah wallet tags.
+      // Rich non-Muslim charities (e.g., UCS) are negative canaries — the Muslim-wallet
+      // pipeline must NOT tag them. Baseline charities may only have cause/archetype badges.
       if (charity.tier === 'rich') {
-        expect(bodyText).toMatch(/Zakat|Sadaqah/i);
+        if (charity.muslimFacing) {
+          expect(bodyText).toMatch(/Zakat|Sadaqah/i);
+        } else {
+          expect(bodyText).not.toMatch(/Zakat|Sadaqah/i);
+        }
       } else {
-        // Baseline charities should have some kind of classification badge or content
         expect(bodyText!.length).toBeGreaterThan(200);
       }
     });
