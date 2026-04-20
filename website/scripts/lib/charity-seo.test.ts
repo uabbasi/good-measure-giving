@@ -74,7 +74,7 @@ describe('buildCharityDescription', () => {
       zakatStatus: 'ZAKAT_ELIGIBLE',
       missionFragment: 'Global humanitarian aid organization.',
     });
-    expect(desc).toContain('Zakat Eligible');
+    expect(desc).toContain('publicly claims to accept zakat');
     expect(desc).toContain('78/100');
     expect(desc).toContain('Global humanitarian');
     expect(desc.length).toBeLessThanOrEqual(160);
@@ -115,9 +115,9 @@ describe('buildCharityFaqPairs', () => {
       state: 'CA',
     });
     expect(pairs).toHaveLength(3);
-    expect(pairs[0].question).toBe('Is Islamic Relief zakat eligible?');
-    expect(pairs[0].answer).toContain('Zakat Eligible');
-    expect(pairs[1].question).toBe("What is Islamic Relief's impact rating?");
+    expect(pairs[0].question).toBe('Does Islamic Relief accept zakat?');
+    expect(pairs[0].answer).toContain('publicly claims to accept zakat');
+    expect(pairs[1].question).toBe("What is Islamic Relief's Good Measure Giving score?");
     expect(pairs[1].answer).toContain('78');
     expect(pairs[2].question).toContain('Where is Islamic Relief based');
     expect(pairs[2].answer).toContain('Burbank');
@@ -132,8 +132,8 @@ describe('buildCharityFaqPairs', () => {
       city: 'New York',
       state: 'NY',
     });
-    expect(pairs[0].answer).toContain('sadaqah');
-    expect(pairs[0].answer).not.toContain('Zakat Eligible');
+    expect(pairs[0].answer).toContain('Sadaqah-Eligible');
+    expect(pairs[0].answer).toContain('does not publicly claim');
   });
 
   it('omits location parts gracefully when city/state missing', () => {

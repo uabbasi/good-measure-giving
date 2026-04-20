@@ -55,10 +55,10 @@ export function buildCharityDescription(input: CharityDescriptionInput): string 
   let lead: string;
   switch (input.zakatStatus) {
     case 'ZAKAT_ELIGIBLE':
-      lead = `${input.name} is classified as Zakat Eligible by Good Measure Giving.`;
+      lead = `${input.name} publicly claims to accept zakat.`;
       break;
     case 'SADAQAH_ONLY':
-      lead = `${input.name} is sadaqah-eligible but not zakat-eligible per Good Measure Giving.`;
+      lead = `${input.name} does not publicly claim zakat acceptance (sadaqah-eligible).`;
       break;
     case 'NEW_ORG':
       lead = `${input.name} is an early-stage Muslim charity, too new to rate numerically.`;
@@ -66,7 +66,7 @@ export function buildCharityDescription(input: CharityDescriptionInput): string 
     default:
       lead = `${input.name} evaluated by Good Measure Giving.`;
   }
-  const scorePart = input.score != null ? ` Rated ${input.score}/100 on impact and transparency.` : '';
+  const scorePart = input.score != null ? ` Good Measure Giving score: ${input.score}/100 (Impact + Alignment).` : '';
   const raw = `${lead}${scorePart} ${input.missionFragment}`.trim();
   return truncate(raw, 160);
 }
@@ -81,26 +81,26 @@ export interface CharityFaqInput {
 }
 
 export function buildCharityFaqPairs(input: CharityFaqInput): FaqPair[] {
-  const zakatQ = `Is ${input.name} zakat eligible?`;
+  const zakatQ = `Does ${input.name} accept zakat?`;
   let zakatA: string;
   switch (input.zakatStatus) {
     case 'ZAKAT_ELIGIBLE':
-      zakatA = `Yes — ${input.name} is classified as Zakat Eligible by Good Measure Giving based on its programs and beneficiary alignment with the 8 zakat categories.`;
+      zakatA = `${input.name} publicly claims to accept zakat donations (via a dedicated zakat page, calculator, or fund). Good Measure Giving passes this designation along but does not render a fiqh verdict — the determination of whether their programs meet zakat-eligibility criteria is yours, guided by your scholar.`;
       break;
     case 'SADAQAH_ONLY':
-      zakatA = `No — ${input.name} is sadaqah-eligible but does not meet the criteria for zakat eligibility in Good Measure Giving's evaluation.`;
+      zakatA = `${input.name} does not publicly claim to accept zakat, so Good Measure Giving tags it Sadaqah-Eligible. That doesn't necessarily mean your scholar would disagree — it means the organization itself hasn't stated a zakat position. Sadaqah is always appropriate for any charitable purpose.`;
       break;
     case 'NEW_ORG':
-      zakatA = `${input.name} is an early-stage organization; zakat eligibility has not yet been determined.`;
+      zakatA = `${input.name} is an early-stage organization. Good Measure Giving has not yet assessed a zakat-acceptance claim. Check their website directly for the most current zakat policy.`;
       break;
     default:
-      zakatA = `${input.name}'s zakat eligibility is currently unclear in Good Measure Giving's evaluation.`;
+      zakatA = `${input.name}'s zakat-acceptance stance is unclear in public sources. Good Measure Giving surfaces the charity's own claim when stated; when it's not clearly stated, we flag it as unclear rather than guess.`;
   }
 
-  const ratingQ = `What is ${input.name}'s impact rating?`;
+  const ratingQ = `What is ${input.name}'s Good Measure Giving score?`;
   const ratingA = input.score != null
-    ? `Good Measure Giving rates ${input.name} ${input.score}/100 on impact, alignment, and financial transparency.`
-    : `${input.name} is evaluated by Good Measure Giving but does not yet have a numeric rating.`;
+    ? `Good Measure Giving scores ${input.name} ${input.score}/100. The score combines Impact (how effectively the charity is set up to deliver results — cost efficiency, evidence practices, financial health, governance) and Alignment (fit for Muslim donors — cause urgency, donor fit, funding gap, track record), with up to 10 points deducted for red flags.`
+    : `${input.name} is evaluated by Good Measure Giving but does not yet have a numeric score.`;
 
   const locationQ = `Where is ${input.name} based and what do they do?`;
   const locationParts: string[] = [];
