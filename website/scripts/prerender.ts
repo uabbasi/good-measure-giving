@@ -10,6 +10,13 @@ import { fileURLToPath } from 'url';
 import { spawn, type ChildProcess } from 'child_process';
 import { FAQ_ITEMS } from '../src/data/faq';
 import { buildFaqPageSchema, buildArticleSchema, buildOrganizationSchema, buildBreadcrumbSchema } from './lib/schema';
+import {
+  classifyZakatStatus,
+  buildCharityTitle,
+  buildCharityDescription,
+  buildCharityFaqPairs,
+  type ZakatStatus,
+} from './lib/charity-seo';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -71,6 +78,7 @@ interface PageMeta {
   canonical: string;
   ogType: string;
   jsonLd?: object | object[];
+  noindex?: boolean;
 }
 
 // ── Meta builders ──────────────────────────────────────────────────────
@@ -157,6 +165,30 @@ function buildStaticMeta(): PageMeta[] {
         sameAs: [],
       }),
     },
+    {
+      route: '/profile',
+      title: 'Profile | Good Measure Giving',
+      description: 'Your Good Measure Giving profile.',
+      canonical: `${SITE_URL}/profile`,
+      ogType: 'website',
+      noindex: true,
+    },
+    {
+      route: '/compare',
+      title: 'Compare Charities | Good Measure Giving',
+      description: 'Compare charities side by side on Good Measure Giving.',
+      canonical: `${SITE_URL}/compare`,
+      ogType: 'website',
+      noindex: true,
+    },
+    {
+      route: '/bookmarks',
+      title: 'Bookmarks | Good Measure Giving',
+      description: 'Your bookmarked charities.',
+      canonical: `${SITE_URL}/bookmarks`,
+      ogType: 'website',
+      noindex: true,
+    },
   ];
 }
 
@@ -172,13 +204,25 @@ function buildCharityMeta(detail: CharityDetail): PageMeta {
     detail.mission ||
     '';
 
-  const scorePart = isNewOrg ? 'Too early to rate numerically' : score != null ? `${score}/100` : 'Evaluated';
-  const walletPart = walletTag ? ` ${walletTag[0].toUpperCase() + walletTag.slice(1)}.` : '';
-  const headlinePart = headline ? ` ${headline}` : '';
-  const raw = `${name}: ${scorePart}.${walletPart}${headlinePart}`;
-  const description = truncate(raw, 160);
+  const zakatStatus: ZakatStatus = isNewOrg
+    ? 'NEW_ORG'
+    : classifyZakatStatus({
+        walletTag: amal?.wallet_tag ?? null,
+        zakatClassification: (detail as unknown as { zakat_classification?: string }).zakat_classification ?? null,
+      });
 
-  const title = `${name} | Good Measure Giving`;
+  const title = buildCharityTitle({
+    name,
+    score: isNewOrg ? null : (score ?? null),
+    zakatStatus,
+  });
+
+  const description = buildCharityDescription({
+    name,
+    score: isNewOrg ? null : (score ?? null),
+    zakatStatus,
+    missionFragment: headline || detail.mission || '',
+  });
 
   const jsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
@@ -220,13 +264,34 @@ function buildCharityMeta(detail: CharityDetail): PageMeta {
     };
   }
 
+  const faqPairs = buildCharityFaqPairs({
+    name,
+    score: isNewOrg ? null : (score ?? null),
+    zakatStatus,
+    mission: detail.mission ?? '',
+    city: detail.location?.city ?? null,
+    state: detail.location?.state ?? null,
+  });
+
+  const breadcrumbs = buildBreadcrumbSchema([
+    { name: 'Home', url: `${SITE_URL}/` },
+    { name: 'Browse Charities', url: `${SITE_URL}/browse` },
+    { name, url: `${SITE_URL}/charity/${detail.ein}` },
+  ]);
+
+  const faqPageJsonLd = buildFaqPageSchema(faqPairs);
+
+  const schemaBlocks: object[] = [jsonLd];
+  if (faqPageJsonLd) schemaBlocks.push(faqPageJsonLd);
+  if (breadcrumbs) schemaBlocks.push(breadcrumbs);
+
   return {
     route: `/charity/${detail.ein}`,
     title,
     description,
     canonical: `${SITE_URL}/charity/${detail.ein}`,
     ogType: 'article',
-    jsonLd,
+    jsonLd: schemaBlocks,
   };
 }
 
@@ -287,6 +352,18 @@ function injectMeta(html: string, meta: PageMeta): string {
     );
   } else {
     html = html.replace('</title>', `</title>\n    <link rel="canonical" href="${meta.canonical}" />`);
+  }
+
+  // Robots directive — emit noindex,nofollow when flagged; otherwise default (index,follow implicit)
+  if (meta.noindex) {
+    if (html.includes('name="robots"')) {
+      html = html.replace(
+        /<meta\s+name="robots"\s+content="[^"]*"\s*\/?>/,
+        '<meta name="robots" content="noindex,nofollow" />'
+      );
+    } else {
+      html = html.replace('</title>', '</title>\n    <meta name="robots" content="noindex,nofollow" />');
+    }
   }
 
   // Replace OG tags

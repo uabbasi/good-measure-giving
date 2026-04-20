@@ -35,6 +35,8 @@ import { ActivationNudge } from '../src/components/ActivationNudge';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { BookmarkButton } from '../src/components/BookmarkButton';
 import { SHOW_AMAL_SCORE } from '../src/featureFlags';
+import { SimilarCharities } from '../src/components/SimilarCharities';
+import { classifyZakatStatus } from '../scripts/lib/charity-seo';
 
 // Layout simplified - hidden tier charities use legacy layout only
 
@@ -711,6 +713,19 @@ export const CharityDetailsPage: React.FC = () => {
       {/* CONTENT AREA */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
         {renderLegacyLayout()}
+
+        {/* Similar charities — visible to all users and crawlers */}
+        {charity && (
+          <SimilarCharities
+            currentEin={charity.ein}
+            category={charity.primaryCategory ?? charity.category ?? ''}
+            zakatStatus={classifyZakatStatus({
+              walletTag: charity.amalEvaluation?.wallet_tag ?? null,
+              zakatClassification: charity.amalEvaluation?.zakat_classification ?? null,
+            })}
+            limit={4}
+          />
+        )}
 
         {/* Join Community CTA - show to non-members */}
         {!isCommunityMember && (
