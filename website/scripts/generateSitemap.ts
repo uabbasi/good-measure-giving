@@ -14,6 +14,7 @@ const DIST_DIR = path.join(__dirname, '../dist');
 const CHARITIES_JSON = path.join(__dirname, '../data/charities/charities.json');
 const PROMPTS_INDEX = path.join(__dirname, '../public/data/prompts/index.json');
 const CAUSES_JSON = path.join(__dirname, '../data/causes/causes.json');
+const GUIDES_INDEX = path.join(__dirname, '../data/guides/guides.json');
 const SITE_URL = 'https://goodmeasuregiving.org';
 
 interface CharitySummary {
@@ -26,6 +27,10 @@ interface PromptSummary {
 }
 
 interface CauseEntry {
+  slug: string;
+}
+
+interface GuideSummary {
   slug: string;
 }
 
@@ -100,6 +105,29 @@ function generateSitemap() {
     }
   }
 
+  // Guide pages
+  let guides: GuideSummary[] = [];
+  if (fs.existsSync(GUIDES_INDEX)) {
+    const guidesData = JSON.parse(fs.readFileSync(GUIDES_INDEX, 'utf-8'));
+    guides = guidesData.guides || [];
+  }
+  if (guides.length > 0) {
+    urls.push(`  <url>
+    <loc>${SITE_URL}/guides</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`);
+    for (const g of guides) {
+      urls.push(`  <url>
+    <loc>${SITE_URL}/guides/${g.slug}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`);
+    }
+  }
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.join('\n')}
@@ -108,7 +136,8 @@ ${urls.join('\n')}
 
   fs.writeFileSync(path.join(DIST_DIR, 'sitemap.xml'), xml, 'utf-8');
   const causeCount = causes.length > 0 ? causes.length + 1 : 0;
-  console.log(`Sitemap: ${urls.length} URLs (${staticPages.length} static + ${charities.length} charities + ${prompts.length} prompts + ${causeCount} causes)`);
+  const guideCount = guides.length > 0 ? guides.length + 1 : 0;
+  console.log(`Sitemap: ${urls.length} URLs (${staticPages.length} static + ${charities.length} charities + ${prompts.length} prompts + ${causeCount} causes + ${guideCount} guides)`);
 }
 
 generateSitemap();

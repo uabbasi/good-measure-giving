@@ -18,6 +18,7 @@ import {
   type ZakatStatus,
 } from './lib/charity-seo';
 import { filterCharitiesByCategory, type HubCharity } from './lib/cause-seo';
+import type { Guide, GuideSummary, GuidesIndex } from './lib/guide-seo';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -414,6 +415,73 @@ function buildCauseMeta(cause: CauseEntry, allCharities: HubCharity[]): PageMeta
   };
 }
 
+function buildGuidesIndexMeta(guides: GuideSummary[]): PageMeta {
+  return {
+    route: '/guides',
+    title: 'Guides | Good Measure Giving',
+    description: 'Evergreen guides to evaluating Muslim charities, planning zakat, and thinking about impact.',
+    canonical: `${SITE_URL}/guides`,
+    ogType: 'website',
+    jsonLd: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        name: 'Guides',
+        url: `${SITE_URL}/guides`,
+        description: 'Evergreen guides to evaluating Muslim charities and planning zakat.',
+        mainEntity: {
+          '@type': 'ItemList',
+          numberOfItems: guides.length,
+          itemListElement: guides.map((g, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            url: `${SITE_URL}/guides/${g.slug}`,
+            name: g.title,
+          })),
+        },
+      },
+      buildBreadcrumbSchema([
+        { name: 'Home', url: `${SITE_URL}/` },
+        { name: 'Guides', url: `${SITE_URL}/guides` },
+      ]) as object,
+    ],
+  };
+}
+
+function buildGuideMeta(guide: Guide): PageMeta {
+  const faqPairs = guide.faq.map((item) => ({ question: item.q, answer: item.a }));
+  const faqPage = buildFaqPageSchema(faqPairs);
+
+  const article = buildArticleSchema({
+    type: 'Article',
+    headline: guide.title,
+    description: guide.metaDescription,
+    url: `${SITE_URL}/guides/${guide.slug}`,
+    datePublished: guide.publishedOn,
+    dateModified: guide.updatedOn,
+    authorName: 'Good Measure Giving',
+  });
+
+  const breadcrumbs = buildBreadcrumbSchema([
+    { name: 'Home', url: `${SITE_URL}/` },
+    { name: 'Guides', url: `${SITE_URL}/guides` },
+    { name: guide.title, url: `${SITE_URL}/guides/${guide.slug}` },
+  ]);
+
+  const schemaBlocks: object[] = [article];
+  if (faqPage) schemaBlocks.push(faqPage);
+  if (breadcrumbs) schemaBlocks.push(breadcrumbs);
+
+  return {
+    route: `/guides/${guide.slug}`,
+    title: guide.metaTitle,
+    description: truncate(guide.metaDescription, 160),
+    canonical: `${SITE_URL}/guides/${guide.slug}`,
+    ogType: 'article',
+    jsonLd: schemaBlocks,
+  };
+}
+
 // ── HTML injection ─────────────────────────────────────────────────────
 
 function injectMeta(html: string, meta: PageMeta): string {
@@ -628,8 +696,35 @@ async function prerenderPages() {
     }
   }
 
+  // Load guides
+  const GUIDES_DIR = path.join(__dirname, '../data/guides');
+  const GUIDES_INDEX_PATH = path.join(GUIDES_DIR, 'guides.json');
+  let guideSummaries: GuideSummary[] = [];
+  const guides: Guide[] = [];
+  if (fs.existsSync(GUIDES_INDEX_PATH)) {
+    const index: GuidesIndex = JSON.parse(fs.readFileSync(GUIDES_INDEX_PATH, 'utf-8'));
+    guideSummaries = index.guides || [];
+    for (const summary of guideSummaries) {
+      const guidePath = path.join(GUIDES_DIR, `${summary.slug}.json`);
+      if (fs.existsSync(guidePath)) {
+        const guide: Guide = JSON.parse(fs.readFileSync(guidePath, 'utf-8'));
+        guides.push(guide);
+      } else {
+        console.warn(`  Warning: guide index lists ${summary.slug} but file is missing`);
+      }
+    }
+  }
+
+  if (guideSummaries.length > 0) {
+    metas.push(buildGuidesIndexMeta(guideSummaries));
+    for (const guide of guides) {
+      metas.push(buildGuideMeta(guide));
+    }
+  }
+
   const causeCount = causes.length > 0 ? causes.length + 1 : 0;
-  console.log(`Prerender: ${metas.length} pages (${metas.length - charities.length - prompts.length - causeCount} static + ${charities.length} charities + ${prompts.length} prompts + ${causeCount} causes)`);
+  const guideCount = guideSummaries.length > 0 ? guideSummaries.length + 1 : 0;
+  console.log(`Prerender: ${metas.length} pages (${metas.length - charities.length - prompts.length - causeCount - guideCount} static + ${charities.length} charities + ${prompts.length} prompts + ${causeCount} causes + ${guideCount} guides)`);
 
   const prerenderMode = resolvePrerenderMode();
   if (prerenderMode.mode === 'static') {
