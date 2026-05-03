@@ -29,6 +29,7 @@ const ZakatCalculatorAssetPage = lazy(() => import('./pages/ZakatCalculatorAsset
 import { CompareBar } from './src/components/CompareBar';
 import { MobileBottomNav } from './src/components/MobileBottomNav';
 import { WelcomeTour } from './src/components/WelcomeTour';
+import { IntroPresentation } from './src/components/IntroPresentation';
 import { BookmarkToast } from './src/components/BookmarkToast';
 import { BookmarkAutoCategorize } from './src/components/BookmarkAutoCategorize';
 import { NamePromptModal } from './src/auth';
@@ -98,6 +99,7 @@ const AppContent: React.FC = () => {
       <CompareBar />
       {!isLandingPage && <MobileBottomNav />}
       <WelcomeTour />
+      <IntroPresentation />
       <BookmarkToast />
       <BookmarkAutoCategorize />
       <NamePromptModal />
