@@ -74,6 +74,22 @@ export const GuidePage: React.FC = () => {
           </section>
         ))}
 
+        {guide.featuredCharities && guide.featuredCharities.length > 0 && (
+          <section className="mb-10">
+            <h2 className="text-2xl font-semibold mb-4">Charities featured in this guide</h2>
+            <ul className="grid gap-4 sm:grid-cols-2">
+              {guide.featuredCharities.map((fc) => (
+                <li key={fc.ein} className="p-4 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                  <Link to={`/charity/${fc.ein}`} className="font-semibold text-emerald-700 dark:text-emerald-400 hover:underline">
+                    {fc.name}
+                  </Link>
+                  <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{fc.blurb}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         {guide.callouts && guide.callouts.length > 0 && (
           <div className="mb-10">
             {guide.callouts.map((c, i) => (

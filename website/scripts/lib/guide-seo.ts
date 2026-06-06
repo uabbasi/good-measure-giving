@@ -20,6 +20,7 @@ export interface GuideFaqItem {
 
 export interface GuideFeaturedCharity {
   ein: string;
+  name: string;
   blurb: string;
 }
 
