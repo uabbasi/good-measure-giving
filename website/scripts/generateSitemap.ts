@@ -11,7 +11,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const DIST_DIR = path.join(__dirname, '../dist');
-const CHARITIES_JSON = path.join(__dirname, '../data/charities/charities.json');
+// Full charity index, rebuilt from detail files by convertData.ts at prebuild.
+// (NOT data/charities/charities.json — that was a stale pilot-era subset.)
+const CHARITIES_JSON = path.join(__dirname, '../data/charities.json');
 const PROMPTS_INDEX = path.join(__dirname, '../public/data/prompts/index.json');
 const CAUSES_JSON = path.join(__dirname, '../data/causes/causes.json');
 const GUIDES_INDEX = path.join(__dirname, '../data/guides/guides.json');
@@ -20,6 +22,7 @@ const SITE_URL = 'https://goodmeasuregiving.org';
 
 interface CharitySummary {
   ein: string;
+  hideFromCurated?: boolean;
 }
 
 interface PromptSummary {
@@ -64,9 +67,11 @@ function generateSitemap() {
   </url>`
   );
 
-  // Charity pages
+  // Charity pages — curated only; hidden charities stay out of the index
   const charityData = JSON.parse(fs.readFileSync(CHARITIES_JSON, 'utf-8'));
-  const charities: CharitySummary[] = charityData.charities || [];
+  const charities: CharitySummary[] = (charityData.charities || []).filter(
+    (c: CharitySummary) => !c.hideFromCurated
+  );
   for (const charity of charities) {
     urls.push(`  <url>
     <loc>${SITE_URL}/charity/${charity.ein}</loc>

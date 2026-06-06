@@ -26,7 +26,9 @@ const __dirname = path.dirname(__filename);
 
 const DIST_DIR = path.join(__dirname, '../dist');
 const DATA_DIR = path.join(__dirname, '../data/charities');
-const CHARITIES_JSON = path.join(DATA_DIR, 'charities.json');
+// Full charity index, rebuilt from detail files by convertData.ts at prebuild.
+// (NOT data/charities/charities.json — that was a stale pilot-era subset.)
+const CHARITIES_JSON = path.join(__dirname, '../data/charities.json');
 const SITE_URL = 'https://goodmeasuregiving.org';
 const PREVIEW_PORT = 4174;
 const CONCURRENCY = 4;
@@ -39,6 +41,7 @@ interface CharitySummary {
   amal_score: number | null;
   wallet_tag: string | null;
   primaryCategory?: string | null;
+  hideFromCurated?: boolean;
 }
 
 interface CharityDetail {
@@ -733,9 +736,11 @@ function resolvePrerenderMode(): { mode: 'browser' | 'static'; reason: string } 
 }
 
 async function prerenderPages() {
-  // Load charity data
+  // Load charity data — curated only; hidden charities get no static page
   const charitiesIndex = JSON.parse(fs.readFileSync(CHARITIES_JSON, 'utf-8'));
-  const charities: CharitySummary[] = charitiesIndex.charities || [];
+  const charities: CharitySummary[] = (charitiesIndex.charities || []).filter(
+    (c: CharitySummary) => !c.hideFromCurated
+  );
 
   // Build meta for all pages
   const metas: PageMeta[] = [...buildStaticMeta()];
