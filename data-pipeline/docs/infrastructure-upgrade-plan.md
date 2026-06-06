@@ -1,5 +1,25 @@
 # Infrastructure Upgrades: Three Phases
 
+> **DECISION (2026-05-31): Plan largely shelved. Do not treat as active backlog.**
+>
+> | Phase | Verdict | Rationale |
+> |-------|---------|-----------|
+> | **Phase 1 — Crawl4AI** | ❌ **DROPPED** | Speculative ~30% token saving, unproven; current requests+BS4+Playwright crawl works. Not worth the rewrite. |
+> | **Phase 2 — Dagster** | ❌ **DROPPED** | Large rewrite of a working ~1400-line `streaming_runner.py` for marginal observability gain. No. |
+> | **Phase 3 — LiteLLM Router** | ⏸️ **DEFERRED (trigger-based)** | Its only unique value is cross-thread rate-limit governance + key rotation. We are **not** hitting 429 storms or cost surprises today, so it doesn't earn the rewrite of the pipeline's most central file. Revisit *only if* real rate-limit/cost pain shows up. |
+> | **Budget guardrail** | ✅ **ACCEPTED (cheap win)** | A pre-call cost check in `LLMClient.generate()` (~20 lines, no Router dependency) that hard-stops a run when it exceeds a `--budget` cap. The one piece worth doing. See below. |
+>
+> The original three-phase plan text is retained below for reference only.
+>
+> ## ✅ Accepted: standalone budget guardrail (no Router)
+>
+> - Add a `--budget <usd>` flag to `streaming_runner.py`.
+> - Thread-safe running-cost accumulator (cost already available via `completion_cost` in `LLMResponse`).
+> - In `LLMClient.generate()`, **before** each call: if accumulated cost ≥ budget, raise `BudgetExceededError` (fail fast).
+> - Do **not** use LiteLLM success_callback for this — it swallows exceptions raised in callbacks (confirmed in the Phase 3 notes below).
+
+---
+
 Implementation order: Phase 3 (LiteLLM Router) → Phase 1 (Crawl4AI) → Phase 2 (Dagster)
 
 No Docker. All three phases run as in-process Python libraries.
