@@ -27,6 +27,9 @@ from typing import Any, Dict, List, Optional, Tuple
 import litellm
 from litellm import completion, completion_cost
 
+from .budget_tracker import add_cost as _budget_add_cost
+from .budget_tracker import check_budget as _budget_check
+
 # Suppress verbose LiteLLM logging
 litellm.set_verbose = False
 litellm.suppress_debug_info = True
@@ -518,8 +521,11 @@ class LLMClient:
         prompt_hash = self._compute_prompt_hash(prompt, system_prompt)
 
         for model_name in models_to_try:
+            # Budget guardrail: hard-stop BEFORE spending. Checked per attempt
+            # (not via LiteLLM callbacks, which swallow raised exceptions).
+            _budget_check()
             try:
-                return self._generate_with_model(
+                response = self._generate_with_model(
                     model_name=model_name,
                     prompt=prompt,
                     system_prompt=system_prompt,
@@ -531,6 +537,8 @@ class LLMClient:
                     prompt_hash=prompt_hash,
                     retry_on_error=retry_on_error,
                 )
+                _budget_add_cost(response.cost_usd)
+                return response
             except Exception as e:
                 last_error = e
 

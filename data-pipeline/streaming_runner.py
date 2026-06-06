@@ -51,6 +51,7 @@ from src.db import (
     RawDataRepository,
 )
 from src.db.dolt_client import dolt
+from src.llm.budget_tracker import get_limit, get_spent, set_budget
 from src.llm.llm_client import LLMClient
 from src.scorers.v2_scorers import AmalScorerV2
 from src.utils.charity_loader import load_charities_from_file, normalize_website_url
@@ -1509,8 +1510,22 @@ def main():
         metavar="N",
         help="Commit to DoltDB every N completed charities (default: 0 = only at end)",
     )
+    parser.add_argument(
+        "--budget",
+        type=float,
+        default=None,
+        metavar="USD",
+        help="Hard cap on LLM spend for this run; calls fail fast once reached (default: no cap)",
+    )
 
     args = parser.parse_args()
+
+    # Budget guardrail: enforced pre-call in LLMClient.generate()
+    if args.budget is not None:
+        if args.budget <= 0:
+            print(f"Error: --budget must be positive, got {args.budget}")
+            sys.exit(1)
+        set_budget(args.budget)
 
     # Check environment
     required_vars = ["GOOGLE_API_KEY"]
@@ -1883,6 +1898,8 @@ def main():
     print(f"  ✓ Completed: {success_count}")
     print(f"  ✗ Failed: {len(results) - success_count}")
     print(f"Time: {elapsed:.1f}s ({elapsed / len(results):.1f}s per charity)")
+    if get_limit() is not None:
+        print(f"Budget: ${get_spent():.4f} spent of ${get_limit():.2f} cap")
 
     # Score distribution
     scores = [r.get("amal_score") for r in results if r.get("amal_score")]
