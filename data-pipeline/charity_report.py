@@ -710,23 +710,25 @@ def build_report(d: dict, archetypes: dict, per_source: dict | None = None) -> s
     return "\n".join(md) + "\n"
 
 
-def render_pdf(md_path: Path, pdf_path: Path) -> bool:
-    binary = os.environ.get("MAKE_PDF_BIN") or str(MAKE_PDF_DEFAULT)
-    if not os.access(binary, os.X_OK):
-        print(f"  (make-pdf binary not found at {binary}; markdown only)")
+BROWSE_DEFAULT = Path.home() / ".claude" / "skills" / "gstack" / "browse" / "dist" / "browse"
+
+
+def render_pdf_designed(html: str, pdf_path: Path) -> bool:
+    """Render the designed HTML report to PDF via the browse daemon's
+    Chromium print pipeline (the same engine make-pdf uses, our design)."""
+    browse = os.environ.get("BROWSE_BIN") or str(BROWSE_DEFAULT)
+    if not os.access(browse, os.X_OK):
+        print(f"  (browse binary not found at {browse}; markdown/HTML only)")
         return False
-    # The make-pdf daemon restricts output paths to cwd or /tmp — render
-    # there, then move to the requested location.
-    tmp_out = Path("/tmp") / pdf_path.name
-    result = subprocess.run(
-        [binary, "generate", str(md_path), str(tmp_out), "--cover", "--author", "Good Measure Giving", "--no-confidential", "--quiet"],
-        capture_output=True,
-        text=True,
-    )
-    if result.returncode != 0:
-        print(f"  PDF render failed (exit {result.returncode}): {result.stderr.strip()[:200]}")
-        return False
-    tmp_out.replace(pdf_path)
+    tmp_html = Path("/tmp") / (pdf_path.stem + ".html")
+    tmp_pdf = Path("/tmp") / pdf_path.name
+    tmp_html.write_text(html)
+    for cmd in ([browse, "goto", f"file://{tmp_html}"], [browse, "pdf", str(tmp_pdf)]):
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"  PDF render failed ({' '.join(cmd[1:2])}): {(result.stderr or result.stdout).strip()[:200]}")
+            return False
+    tmp_pdf.replace(pdf_path)
     return True
 
 
@@ -749,8 +751,13 @@ def main():
     print(f"Report: {md_path}")
 
     if args.pdf:
+        from charity_report_html import build_html  # local import: avoids cycle
+
+        html = build_html(d, archetypes, per_source)
+        html_path = md_path.with_suffix(".html")
+        html_path.write_text(html)
         pdf_path = md_path.with_suffix(".pdf")
-        if render_pdf(md_path, pdf_path):
+        if render_pdf_designed(html, pdf_path):
             print(f"PDF:    {pdf_path}")
 
 
