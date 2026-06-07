@@ -554,7 +554,15 @@ def corrections_section() -> list[str]:
 def build_report(d: dict, archetypes: dict, per_source: dict | None = None) -> str:
     name = d.get("name", "Unknown")
     ein = d.get("ein", "")
-    wallet = d.get("walletTag", "")
+    # The detail export rarely carries walletTag; derive from the zakat
+    # assessment (charity_claims_zakat) with zakatEligible as fallback.
+    _zakat_claim = ((d.get("amalEvaluation") or {}).get("score_details") or {}).get("zakat") or {}
+    _claims = _zakat_claim.get("charity_claims_zakat")
+    if _claims is None:
+        _claims = d.get("zakatEligible")
+    wallet = d.get("walletTag") or (
+        "ZAKAT-ELIGIBLE" if _claims else ("SADAQAH-ELIGIBLE" if _claims is False else "")
+    )
     last_updated = (d.get("lastUpdated") or "")[:10]
     amal = d.get("amalEvaluation") or {}
     sd = amal.get("score_details") or {}
@@ -713,22 +721,53 @@ def build_report(d: dict, archetypes: dict, per_source: dict | None = None) -> s
 BROWSE_DEFAULT = Path.home() / ".claude" / "skills" / "gstack" / "browse" / "dist" / "browse"
 
 
+PDF_FOOTER_TEMPLATE = (
+    '<div style="width:100%; font-family:Helvetica,Arial,sans-serif; font-size:7px; '
+    'color:#8a8f98; letter-spacing:1px; padding:0 22mm; display:flex; justify-content:space-between;">'
+    "<span>GOOD MEASURE GIVING &middot; GOODMEASUREGIVING.ORG</span>"
+    '<span>PAGE <span class="pageNumber"></span> OF <span class="totalPages"></span></span></div>'
+)
+
+
 def render_pdf_designed(html: str, pdf_path: Path) -> bool:
     """Render the designed HTML report to PDF via the browse daemon's
-    Chromium print pipeline (the same engine make-pdf uses, our design)."""
+    Chromium print pipeline, using Page.printToPDF directly so we get
+    native page numbers painted into the page margin (a position:fixed
+    footer would collide with body text at page breaks)."""
+    import base64
+
     browse = os.environ.get("BROWSE_BIN") or str(BROWSE_DEFAULT)
     if not os.access(browse, os.X_OK):
         print(f"  (browse binary not found at {browse}; markdown/HTML only)")
         return False
     tmp_html = Path("/tmp") / (pdf_path.stem + ".html")
-    tmp_pdf = Path("/tmp") / pdf_path.name
     tmp_html.write_text(html)
-    for cmd in ([browse, "goto", f"file://{tmp_html}"], [browse, "pdf", str(tmp_pdf)]):
-        result = subprocess.run(cmd, capture_output=True, text=True)
-        if result.returncode != 0:
-            print(f"  PDF render failed ({' '.join(cmd[1:2])}): {(result.stderr or result.stdout).strip()[:200]}")
-            return False
-    tmp_pdf.replace(pdf_path)
+
+    nav = subprocess.run([browse, "goto", f"file://{tmp_html}"], capture_output=True, text=True)
+    if nav.returncode != 0:
+        print(f"  PDF render failed (goto): {(nav.stderr or nav.stdout).strip()[:200]}")
+        return False
+
+    params = json.dumps(
+        {
+            "printBackground": True,
+            "preferCSSPageSize": True,
+            "displayHeaderFooter": True,
+            "headerTemplate": "<span></span>",
+            "footerTemplate": PDF_FOOTER_TEMPLATE,
+        }
+    )
+    result = subprocess.run([browse, "cdp", "Page.printToPDF", params], capture_output=True, text=True)
+    if result.returncode != 0:
+        print(f"  PDF render failed (printToPDF): {(result.stderr or result.stdout).strip()[:200]}")
+        return False
+    out = result.stdout
+    try:
+        payload = json.loads(out[out.index("{") : out.rindex("}") + 1])
+        pdf_path.write_bytes(base64.b64decode(payload["data"]))
+    except (ValueError, KeyError) as e:
+        print(f"  PDF render failed (decode): {e}")
+        return False
     return True
 
 

@@ -148,7 +148,15 @@ def _scorecard_table(components: list[dict]) -> str:
 def build_html(d: dict, archetypes: dict, per_source: dict | None = None) -> str:
     name = d.get("name", "Unknown")
     ein = d.get("ein", "")
-    wallet = d.get("walletTag", "")
+    # The detail export rarely carries walletTag; derive from the zakat
+    # assessment (charity_claims_zakat) with zakatEligible as fallback.
+    _zakat_claim = ((d.get("amalEvaluation") or {}).get("score_details") or {}).get("zakat") or {}
+    _claims = _zakat_claim.get("charity_claims_zakat")
+    if _claims is None:
+        _claims = d.get("zakatEligible")
+    wallet = d.get("walletTag") or (
+        "ZAKAT-ELIGIBLE" if _claims else ("SADAQAH-ELIGIBLE" if _claims is False else "")
+    )
     last_updated = (d.get("lastUpdated") or "")[:10]
     amal = d.get("amalEvaluation") or {}
     sd = amal.get("score_details") or {}

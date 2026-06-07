@@ -6,6 +6,8 @@
 
 *For reference, Charity Navigator rates you 100/100 — that is CN's own score, separate from the GMG Score above; the two measure different things and will not match.*
 
+**Wallet tag:** ZAKAT-ELIGIBLE — this records whether your organization publicly states it accepts zakat; it is not a religious ruling by us.
+
 ## Why you're receiving this
 
 Good Measure Giving (goodmeasuregiving.org) is a charity-evaluation platform for Muslim donors. Your organization is evaluated from public data, and donors use the resulting score to decide where to give. This report shows you exactly what donors see: where every data point came from, the full scoring rubric, and — most usefully — the specific gaps between your current score and the points available to you. Every gap below is closable with information you control.
