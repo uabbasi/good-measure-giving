@@ -29,13 +29,9 @@ body {
 }
 .sans { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
 
-.footer {
-  position: fixed; bottom: -16mm; left: 0; right: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 6.5pt; color: #8a8f98; letter-spacing: 0.12em; text-transform: uppercase;
-  display: flex; justify-content: space-between;
-  border-top: 0.5pt solid #d9dce1; padding-top: 5pt;
-}
+/* No running footer: Chromium's print pipeline clips position:fixed
+   elements at the page content box, colliding with body text at page
+   breaks. Attribution lives on the cover and in the closing disclaimer. */
 
 /* ── Cover ─────────────────────────────────────────────── */
 .cover { display: flex; flex-direction: column; height: 215mm; break-after: page; }
@@ -176,10 +172,6 @@ def build_html(d: dict, archetypes: dict, per_source: dict | None = None) -> str
     a = parts.append
 
     a(f"<!DOCTYPE html><html><head><meta charset='utf-8'><style>{CSS}</style></head><body>")
-    a(
-        f"<div class='footer'><span>GOOD MEASURE GIVING · goodmeasuregiving.org</span>"
-        f"<span>Score report · {esc(name)} · {esc(today)}</span></div>"
-    )
 
     # ── Cover page ──────────────────────────────────────────────────────
     a("<div class='cover'>")
@@ -484,7 +476,8 @@ def build_html(d: dict, archetypes: dict, per_source: dict | None = None) -> str
     )
 
     a(
-        "<p class='disclaimer'>This report is informational, generated from public data as of the date above. Scores change "
+        f"<p class='disclaimer'>Good Measure Giving · goodmeasuregiving.org · Score report for {esc(name)} · {esc(today)}<br>"
+        "This report is informational, generated from public data as of the date above. Scores change "
         "as data changes. The ZAKAT-ELIGIBLE tag records a verifiable public claim by your organization, not a fiqh ruling — "
         "zakat eligibility judgments belong to donors and the scholars they consult. Methodology: goodmeasuregiving.org/methodology.</p>"
     )
