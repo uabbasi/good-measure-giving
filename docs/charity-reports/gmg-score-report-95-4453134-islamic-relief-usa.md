@@ -31,15 +31,15 @@ Every figure in this report traces to a public source. The table below lists eac
 | Operating reserves (months) | 18 | Calculated from Form 990 | 2026-03-09 |
 
 **Source links** (one per source — the table above stays readable):
-- Candid: https://app.candid.org/profile/8460202
-- Charity Navigator: https://www.charitynavigator.org/ein/954453134#financials
-- Charity Navigator: https://www.charitynavigator.org/ein/954453134#ratings
-- Charity Website: https://irusa.org/zakat
-- Charity Website: https://irusa.org/wp-content/uploads/2025/10/2025-Zakat-Catalog-Book-IRUSA-Web-1.pdf
-- ProPublica Form 990: https://projects.propublica.org/nonprofits/organizations/954453134
+- Candid: [app.candid.org/profile/8460202](https://app.candid.org/profile/8460202)
+- Charity Navigator: [www.charitynavigator.org/ein/95445313…](https://www.charitynavigator.org/ein/954453134#financials)
+- Charity Navigator: [www.charitynavigator.org/ein/95445313…](https://www.charitynavigator.org/ein/954453134#ratings)
+- Charity Website: [irusa.org/zakat](https://irusa.org/zakat)
+- Charity Website: [irusa.org/wp-content/uploads/2025/10/…](https://irusa.org/wp-content/uploads/2025/10/2025-Zakat-Catalog-Book-IRUSA-Web-1.pdf)
+- ProPublica Form 990: [projects.propublica.org/nonprofits/or…](https://projects.propublica.org/nonprofits/organizations/954453134)
 
 **Zakat claim — the evidence we recorded:**
-> Dedicated zakat page found at https://irusa.org/zakat (Source: https://irusa.org/zakat)
+> Dedicated zakat page found at irusa.org/zakat (Source: irusa.org/zakat)
 
 **External evaluations and recognitions we found:** Charity Navigator 4-Star ranking; BBB Wise Giving Alliance Standards for Charity Accountability; GuideStar Gold Seal of Transparency
 

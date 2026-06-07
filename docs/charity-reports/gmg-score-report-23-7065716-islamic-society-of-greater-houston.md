@@ -22,13 +22,13 @@ Every figure in this report traces to a public source. The table below lists eac
 | Transparency score | 50 | Candid Bronze Seal | 2026-03-09 |
 
 **Source links** (one per source — the table above stays readable):
-- Candid: https://app.candid.org/profile/7145445
-- Charity Website: https://isgh.org/assistance/
-- Charity Website: https://isgh.org/wp-content/uploads/2022/09/2022-ISGH-Annual-Report-Final-093022.pdf
-- ProPublica Form 990: https://projects.propublica.org/nonprofits/organizations/237065716
+- Candid: [app.candid.org/profile/7145445](https://app.candid.org/profile/7145445)
+- Charity Website: [isgh.org/assistance](https://isgh.org/assistance/)
+- Charity Website: [isgh.org/wp-content/uploads/2022/09/2…](https://isgh.org/wp-content/uploads/2022/09/2022-ISGH-Annual-Report-Final-093022.pdf)
+- ProPublica Form 990: [projects.propublica.org/nonprofits/or…](https://projects.propublica.org/nonprofits/organizations/237065716)
 
 **Zakat claim — the evidence we recorded:**
-> In 2024, ISGH was among the largest providers of financial assistance in our community with over $4.9M in Zakat and Sadaqah distributions. Additionally, their website offers 'Zakat-Ul-Maal' as a specific online giving option, and they have a formal 'ISGH Assistance Application' for evaluating Zakat requests. (Source: https://isgh.org/assistance/)
+> In 2024, ISGH was among the largest providers of financial assistance in our community with over $4.9M in Zakat and Sadaqah distributions. Additionally, their website offers 'Zakat-Ul-Maal' as a specific online giving option, and they have a formal 'ISGH Assistance Application' for evaluating Zakat requests. (Source: isgh.org/assistance)
 
 **External evaluations and recognitions we found:** ISNA 2018 Green Masjid Award (Islamic Society of North America (ISNA)); Houston Mayor's Proud Partner Award (Houston Mayor's Office)
 

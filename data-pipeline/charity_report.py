@@ -29,6 +29,7 @@ or the default install path); otherwise the markdown is the deliverable.
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 from datetime import date
@@ -167,13 +168,32 @@ def fmt_pts(scored, possible) -> str:
     return f"{scored}/{possible}"
 
 
+_URL_RE = re.compile(r"https?://([^\s)\"',;]+)")
+
+
+def strip_urls(text: str) -> str:
+    """Replace bare URLs with a short schemeless form (host/path, truncated).
+
+    Bare URLs in flowing text trigger a placeholder-restore bug in the PDF
+    renderer's typographic pass (leaking SMARTYPANTS_PRESERVED_n tokens) —
+    and they're noise anyway. Full URLs live only in the Source links list,
+    as explicit markdown links.
+    """
+
+    def _short(m: re.Match) -> str:
+        rest = m.group(1).rstrip("/.")
+        return rest if len(rest) <= 40 else rest[:37] + "…"
+
+    return _URL_RE.sub(_short, text or "")
+
+
 def components_table(components: list[dict]) -> list[str]:
     lines = [
         "| Component | Your score | Status | What we saw |",
         "|---|---|---|---|",
     ]
     for c in components:
-        evidence = (c.get("evidence") or "").replace("|", "/")
+        evidence = strip_urls((c.get("evidence") or "").replace("|", "/"))
         status = STATUS_LABELS.get(c.get("status", ""), c.get("status", ""))
         lines.append(f"| {c['name']} | {fmt_pts(c['scored'], c['possible'])} | {status} | {evidence} |")
     return lines
@@ -354,19 +374,21 @@ def sources_section(d: dict) -> list[str]:
         lines.append("")
         lines.append("**Source links** (one per source — the table above stays readable):")
         for url, src_name in sorted(source_links.items(), key=lambda kv: kv[1]):
-            lines.append(f"- {src_name}: {url}")
+            display = strip_urls(url)
+            lines.append(f"- {src_name}: [{display}]({url})")
 
-    # Zakat claim evidence: quote what we actually read.
+    # Zakat claim evidence: quote what we actually read (URLs shortened —
+    # the full link is in the Source links list above).
     zce = d.get("zakatClaimEvidence") or []
     if zce:
         lines.append("")
         lines.append("**Zakat claim — the evidence we recorded:**")
         for quote in zce[:3]:
-            lines.append(f"> {quote}")
+            lines.append(f"> {strip_urls(quote)}")
     evals = (d.get("evidenceQuality") or {}).get("evaluationSources") or []
     if evals:
         lines.append("")
-        lines.append("**External evaluations and recognitions we found:** " + "; ".join(evals))
+        lines.append("**External evaluations and recognitions we found:** " + strip_urls("; ".join(evals)))
 
     lines.append("")
     lines.append("### Order of precedence when sources disagree")
@@ -660,7 +682,7 @@ def build_report(d: dict, archetypes: dict, per_source: dict | None = None) -> s
         md.append("## What's working in your favor")
         md.append("")
         for s in strengths:
-            md.append(f"- {s}")
+            md.append(f"- {strip_urls(s)}")
 
     areas = narrative.get("areas_for_improvement") or []
     if areas:
@@ -668,7 +690,7 @@ def build_report(d: dict, archetypes: dict, per_source: dict | None = None) -> s
         md.append("## From our analysts")
         md.append("")
         for a in areas:
-            md.append(f"- {a}")
+            md.append(f"- {strip_urls(a)}")
 
     md.append("")
     md.append("## Correcting or updating our data")
