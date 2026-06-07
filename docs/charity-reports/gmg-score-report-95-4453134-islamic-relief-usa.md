@@ -2,7 +2,9 @@
 
 **EIN:** 95-4453134 · **Report date:** 2026-06-07 · **Data as of:** 2026-03-15
 
-**Your GMG Score: 100/100** · Impact 37/50 · Alignment 44/50 · Risk deduction −0
+**Your GMG Score: 81/100** · Impact 37/50 · Alignment 44/50 · Risk deduction −0
+
+*For reference, Charity Navigator rates you 100/100 — that is CN's own score, separate from the GMG Score above; the two measure different things and will not match.*
 
 ## Why you're receiving this
 
@@ -14,19 +16,27 @@ Every figure in this report traces to a public source. The table below lists eac
 
 | Data point | Value we read | Source | Retrieved |
 |---|---|---|---|
-| Administrative expenses | 3461594 | [Charity Navigator](https://www.charitynavigator.org/ein/954453134#financials) | 2026-03-09 |
-| Candid transparency seal | platinum | [Candid](https://app.candid.org/profile/8460202) | 2026-03-09 |
-| Charity Navigator score | 100 | [Charity Navigator](https://www.charitynavigator.org/ein/954453134#ratings) | 2026-03-09 |
-| Zakat acceptance claim | Yes | [Charity Website](https://irusa.org/zakat) | 2026-03-04 |
-| Founded year | 1993 | [Charity Website](https://irusa.org/wp-content/uploads/2025/10/2025-Zakat-Catalog-Book-IRUSA-Web-1.pdf) | 2026-03-04 |
-| Fundraising expenses | 27387518 | [Charity Navigator](https://www.charitynavigator.org/ein/954453134#financials) | 2026-03-09 |
-| Audited financials | Yes | [Charity Website](https://irusa.org/wp-content/uploads/2025/10/2025-Zakat-Catalog-Book-IRUSA-Web-1.pdf) | 2026-03-04 |
-| NTEE classification | Q123 | [ProPublica Form 990](https://projects.propublica.org/nonprofits/organizations/954453134) | 2026-03-09 |
-| Program expense ratio | 0.80 | [Charity Navigator](https://www.charitynavigator.org/ein/954453134#financials) | 2026-03-09 |
-| Program expenses | 124179919 | [Charity Navigator](https://www.charitynavigator.org/ein/954453134#financials) | 2026-03-09 |
-| Total revenue | 165235589 | [Form 990 (2023)](https://projects.propublica.org/nonprofits/organizations/954453134) | 2026-03-09 |
-| Transparency score | 100 | [Candid Platinum Seal](https://app.candid.org/profile/8460202) | 2026-03-09 |
-| Operating reserves (months) | 18 | [Calculated from Form 990](https://projects.propublica.org/nonprofits/organizations/954453134) | 2026-03-09 |
+| Administrative expenses | 3461594 | Charity Navigator | 2026-03-09 |
+| Candid transparency seal | platinum | Candid | 2026-03-09 |
+| Charity Navigator score | 100 | Charity Navigator | 2026-03-09 |
+| Zakat acceptance claim | Yes | Charity Website | 2026-03-04 |
+| Founded year | 1993 | Charity Website | 2026-03-04 |
+| Fundraising expenses | 27387518 | Charity Navigator | 2026-03-09 |
+| Audited financials | Yes | Charity Website | 2026-03-04 |
+| NTEE classification | Q123 | ProPublica Form 990 | 2026-03-09 |
+| Program expense ratio | 0.80 | Charity Navigator | 2026-03-09 |
+| Program expenses | 124179919 | Charity Navigator | 2026-03-09 |
+| Total revenue | 165235589 | Form 990 (2023) | 2026-03-09 |
+| Transparency score | 100 | Candid Platinum Seal | 2026-03-09 |
+| Operating reserves (months) | 18 | Calculated from Form 990 | 2026-03-09 |
+
+**Source links** (one per source — the table above stays readable):
+- Candid: https://app.candid.org/profile/8460202
+- Charity Navigator: https://www.charitynavigator.org/ein/954453134#financials
+- Charity Navigator: https://www.charitynavigator.org/ein/954453134#ratings
+- Charity Website: https://irusa.org/zakat
+- Charity Website: https://irusa.org/wp-content/uploads/2025/10/2025-Zakat-Catalog-Book-IRUSA-Web-1.pdf
+- ProPublica Form 990: https://projects.propublica.org/nonprofits/organizations/954453134
 
 **Zakat claim — the evidence we recorded:**
 > Dedicated zakat page found at https://irusa.org/zakat (Source: https://irusa.org/zakat)

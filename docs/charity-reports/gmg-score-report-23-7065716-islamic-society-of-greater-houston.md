@@ -14,12 +14,18 @@ Every figure in this report traces to a public source. The table below lists eac
 
 | Data point | Value we read | Source | Retrieved |
 |---|---|---|---|
-| Candid transparency seal | bronze | [Candid](https://app.candid.org/profile/7145445) | 2026-03-09 |
-| Zakat acceptance claim | Yes | [Charity Website](https://isgh.org/assistance/) | 2026-03-07 |
-| Founded year | 1969 | [Charity Website](https://isgh.org/wp-content/uploads/2022/09/2022-ISGH-Annual-Report-Final-093022.pdf) | 2026-03-07 |
-| Audited financials | No | [Charity Website](https://isgh.org/wp-content/uploads/2022/09/2022-ISGH-Annual-Report-Final-093022.pdf) | 2026-03-07 |
-| NTEE classification | X40 | [ProPublica Form 990](https://projects.propublica.org/nonprofits/organizations/237065716) | 2026-03-09 |
-| Transparency score | 50 | [Candid Bronze Seal](https://app.candid.org/profile/7145445) | 2026-03-09 |
+| Candid transparency seal | bronze | Candid | 2026-03-09 |
+| Zakat acceptance claim | Yes | Charity Website | 2026-03-07 |
+| Founded year | 1969 | Charity Website | 2026-03-07 |
+| Audited financials | No | Charity Website | 2026-03-07 |
+| NTEE classification | X40 | ProPublica Form 990 | 2026-03-09 |
+| Transparency score | 50 | Candid Bronze Seal | 2026-03-09 |
+
+**Source links** (one per source — the table above stays readable):
+- Candid: https://app.candid.org/profile/7145445
+- Charity Website: https://isgh.org/assistance/
+- Charity Website: https://isgh.org/wp-content/uploads/2022/09/2022-ISGH-Annual-Report-Final-093022.pdf
+- ProPublica Form 990: https://projects.propublica.org/nonprofits/organizations/237065716
 
 **Zakat claim — the evidence we recorded:**
 > In 2024, ISGH was among the largest providers of financial assistance in our community with over $4.9M in Zakat and Sadaqah distributions. Additionally, their website offers 'Zakat-Ul-Maal' as a specific online giving option, and they have a formal 'ISGH Assistance Application' for evaluating Zakat requests. (Source: https://isgh.org/assistance/)

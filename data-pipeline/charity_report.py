@@ -327,6 +327,7 @@ def sources_section(d: dict) -> list[str]:
     )
     lines.append("")
     sa = d.get("sourceAttribution") or {}
+    source_links: dict[str, str] = {}  # url -> display name (deduped by URL, listed once below)
     if sa:
         lines.append("| Data point | Value we read | Source | Retrieved |")
         lines.append("|---|---|---|---|")
@@ -341,12 +342,19 @@ def sources_section(d: dict) -> list[str]:
             elif isinstance(value, float):
                 value = f"{value:,.2f}"
             src_name = entry.get("source_name", "—")
-            src_url = entry.get("source_url")
-            src = f"[{src_name}]({src_url})" if src_url else src_name
+            url = entry.get("source_url")
+            if url and url not in source_links:
+                source_links[url] = src_name
             ts = (entry.get("timestamp") or "")[:10]
-            lines.append(f"| {label} | {value if value is not None else '—'} | {src} | {ts} |")
+            lines.append(f"| {label} | {value if value is not None else '—'} | {src_name} | {ts} |")
     else:
         lines.append("*(No per-field source attribution was exported for this organization — flag this with us.)*")
+
+    if source_links:
+        lines.append("")
+        lines.append("**Source links** (one per source — the table above stays readable):")
+        for url, src_name in sorted(source_links.items(), key=lambda kv: kv[1]):
+            lines.append(f"- {src_name}: {url}")
 
     # Zakat claim evidence: quote what we actually read.
     zce = d.get("zakatClaimEvidence") or []
@@ -527,13 +535,20 @@ def build_report(d: dict, archetypes: dict, per_source: dict | None = None) -> s
     wallet = d.get("walletTag", "")
     last_updated = (d.get("lastUpdated") or "")[:10]
     amal = d.get("amalEvaluation") or {}
-    overall = d.get("overallScore") or (d.get("scores") or {}).get("overall") or amal.get("amal_score")
     sd = amal.get("score_details") or {}
     impact = sd.get("impact") or {}
     alignment = sd.get("alignment") or {}
     risks = sd.get("risks") or {}
     dc = sd.get("data_confidence") or {}
     narrative = amal.get("baseline_narrative") or {}
+
+    # The GMG Score is amal_score = impact + alignment − risk deduction.
+    # NOTE: the export's top-level overallScore / scores.overall is Charity
+    # Navigator's rating, NOT ours — never headline it as the GMG Score.
+    overall = amal.get("amal_score")
+    if overall is None and isinstance(impact.get("score"), int) and isinstance(alignment.get("score"), int):
+        overall = impact["score"] + alignment["score"] - abs(risks.get("total_deduction") or 0)
+    cn_overall = (d.get("scores") or {}).get("overall")
 
     md: list[str] = []
     md.append(f"# Good Measure Giving Score Report: {name}")
@@ -545,6 +560,12 @@ def build_report(d: dict, archetypes: dict, per_source: dict | None = None) -> s
         f"**Your GMG Score: {overall if overall is not None else '—'}/100** · "
         f"Impact {impact.get('score', '—')}/50 · Alignment {alignment.get('score', '—')}/50 · Risk deduction −{deduction}"
     )
+    if cn_overall is not None:
+        md.append("")
+        md.append(
+            f"*For reference, Charity Navigator rates you {cn_overall}/100 — that is CN's own score, separate "
+            "from the GMG Score above; the two measure different things and will not match.*"
+        )
     if wallet:
         md.append("")
         md.append(f"**Wallet tag:** {wallet} — this records whether your organization publicly states it accepts zakat; it is not a religious ruling by us.")
