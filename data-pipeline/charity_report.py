@@ -2,13 +2,20 @@
 """
 Generate a charity-facing score report (markdown, optionally PDF).
 
-Audience: the charity itself — organizations that want to be featured on
-Good Measure Giving and understand how to improve their scores. Tone is
-constructive and concrete: here is your scorecard, here is exactly where
-points are available, here is how to update the data we read.
+Audience: charity leadership — organizations that want to be featured on
+Good Measure Giving and understand how to improve their scores. The report
+commits to three things:
+
+1. Citations — every data point names its source, with URL and retrieval date.
+2. Rubric transparency — the full scoring rubric, including the archetype
+   weights applied to this specific organization.
+3. Gap analysis — concrete steps to close each gap, including exactly where
+   our pipeline will read the evidence.
 
 Data source: the website export (website/data/charities/charity-{ein}.json),
-so the report always matches what donors currently see on the site.
+so the report always matches what donors currently see on the site. Rubric
+weights are read live from config/rubric_archetypes.yaml so the report can
+never drift from the implementation.
 
 Usage:
     uv run python charity_report.py --ein 95-4453134
@@ -27,12 +34,60 @@ import sys
 from datetime import date
 from pathlib import Path
 
+import yaml
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CHARITY_DATA_DIR = REPO_ROOT / "website" / "data" / "charities"
+ARCHETYPES_YAML = Path(__file__).resolve().parent / "config" / "rubric_archetypes.yaml"
 DEFAULT_OUT_DIR = REPO_ROOT / "docs" / "charity-reports"
 MAKE_PDF_DEFAULT = Path.home() / ".claude" / "skills" / "gstack" / "make-pdf" / "dist" / "pdf"
 
 STATUS_LABELS = {"full": "Strong", "partial": "Partial", "missing": "Missing data"}
+
+# Friendly labels for sourceAttribution field keys.
+FIELD_LABELS = {
+    "total_revenue": "Total revenue",
+    "program_expenses": "Program expenses",
+    "admin_expenses": "Administrative expenses",
+    "fundraising_expenses": "Fundraising expenses",
+    "program_expense_ratio": "Program expense ratio",
+    "working_capital_months": "Operating reserves (months)",
+    "founded_year": "Founded year",
+    "ntee_code": "NTEE classification",
+    "charity_navigator_score": "Charity Navigator score",
+    "candid_seal": "Candid transparency seal",
+    "transparency_score": "Transparency score",
+    "has_audited_financials": "Audited financials",
+    "claims_zakat_eligible": "Zakat acceptance claim",
+}
+
+# Which public source feeds each scored component — tells the charity
+# exactly where our pipeline will read the evidence for a fix.
+COMPONENT_READ_FROM = {
+    "Cost Per Beneficiary": "Beneficiary counts on your website / annual report",
+    "Financial Health": "IRS Form 990 (reserves) + a published reserve policy",
+    "Program Ratio": "IRS Form 990 expense allocation",
+    "Evidence & Outcomes": "Outcome reports / external evaluations on your website",
+    "Theory of Change": "Program pages on your website",
+    "Governance": "Form 990 board roster / Candid profile",
+    "Directness": "Program descriptions on your website",
+    "Muslim Donor Fit": "Zakat page and policy on your website",
+    "Cause Urgency": "Mission and program pages on your website",
+    "Underserved Space": "Program + geography descriptions on your website",
+    "Track Record": "Founding date in filings / your website",
+    "Funding Gap": "IRS Form 990 revenue",
+}
+
+# Yaml weight keys → display component names (must match scorer output).
+ARCHETYPE_KEY_LABELS = {
+    "cost_per_beneficiary": "Cost Per Beneficiary",
+    "directness": "Directness",
+    "financial_health": "Financial Health",
+    "program_ratio": "Program Ratio",
+    "evidence_outcomes": "Evidence & Outcomes",
+    "theory_of_change": "Theory of Change",
+    "governance": "Governance",
+}
 
 DATA_CONFIDENCE_ACTIONS = {
     "verification": "Submit for a Charity Navigator evaluation and keep your Candid (GuideStar) profile current — third-party verification is half of the data-confidence signal.",
@@ -49,6 +104,13 @@ def load_charity(ein: str) -> dict:
         return json.load(f)
 
 
+def load_archetypes() -> dict:
+    if not ARCHETYPES_YAML.exists():
+        return {}
+    with open(ARCHETYPES_YAML) as f:
+        return (yaml.safe_load(f) or {}).get("archetypes", {})
+
+
 def fmt_pts(scored, possible) -> str:
     return f"{scored}/{possible}"
 
@@ -62,6 +124,126 @@ def components_table(components: list[dict]) -> list[str]:
         evidence = (c.get("evidence") or "").replace("|", "/")
         status = STATUS_LABELS.get(c.get("status", ""), c.get("status", ""))
         lines.append(f"| {c['name']} | {fmt_pts(c['scored'], c['possible'])} | {status} | {evidence} |")
+    return lines
+
+
+def sources_section(d: dict) -> list[str]:
+    """Every data point we used, with its source, URL, and retrieval date."""
+    lines = []
+    lines.append(
+        "Every figure in this report traces to a public source. The table below lists each data point, "
+        "where we read it, and when. If anything here is wrong or stale, the correction process at the "
+        "end of this report exists exactly for that."
+    )
+    lines.append("")
+    sa = d.get("sourceAttribution") or {}
+    if sa:
+        lines.append("| Data point | Value we read | Source | Retrieved |")
+        lines.append("|---|---|---|---|")
+        for key in sorted(sa.keys()):
+            entry = sa[key] or {}
+            if not isinstance(entry, dict):
+                continue
+            label = FIELD_LABELS.get(key, key.replace("_", " ").capitalize())
+            value = entry.get("value")
+            if isinstance(value, bool):
+                value = "Yes" if value else "No"
+            elif isinstance(value, float):
+                value = f"{value:,.2f}"
+            src_name = entry.get("source_name", "—")
+            src_url = entry.get("source_url")
+            src = f"[{src_name}]({src_url})" if src_url else src_name
+            ts = (entry.get("timestamp") or "")[:10]
+            lines.append(f"| {label} | {value if value is not None else '—'} | {src} | {ts} |")
+    else:
+        lines.append("*(No per-field source attribution was exported for this organization — flag this with us.)*")
+
+    # Zakat claim evidence: quote what we actually read.
+    zce = d.get("zakatClaimEvidence") or []
+    if zce:
+        lines.append("")
+        lines.append("**Zakat claim — the evidence we recorded:**")
+        for quote in zce[:3]:
+            lines.append(f"> {quote}")
+    evals = (d.get("evidenceQuality") or {}).get("evaluationSources") or []
+    if evals:
+        lines.append("")
+        lines.append("**External evaluations and recognitions we found:** " + "; ".join(evals))
+    return lines
+
+
+def rubric_section(d: dict, archetypes: dict) -> list[str]:
+    """The full scoring rubric, with the archetype weights applied to this org."""
+    sd = (d.get("amalEvaluation") or {}).get("score_details") or {}
+    impact = sd.get("impact") or {}
+    archetype_name = impact.get("rubric_archetype") or "UNKNOWN"
+    archetype = archetypes.get(archetype_name) or {}
+    weights = archetype.get("weights") or {}
+    scored_by_name = {c["name"]: c for c in impact.get("components", [])}
+
+    lines = []
+    lines.append(
+        "We publish the rubric in full so nothing about your score is a black box. "
+        "Rubric version 5.0.0; the same rules apply to every organization in our database."
+    )
+
+    lines.append("")
+    lines.append(f"### Impact — 50 points, weighted for your archetype: {archetype_name.replace('_', ' ').title()}")
+    lines.append("")
+    if archetype.get("description"):
+        lines.append(
+            f"*{archetype['description']}.* Impact weights vary by archetype so that, for example, "
+            "an advocacy organization is not graded on meals served. Your weights:"
+        )
+        lines.append("")
+    if weights:
+        lines.append("| Component | Weight (max points) | You scored |")
+        lines.append("|---|---|---|")
+        for key, weight in weights.items():
+            name = ARCHETYPE_KEY_LABELS.get(key, key.replace("_", " ").title())
+            got = scored_by_name.get(name, {}).get("scored", "—")
+            lines.append(f"| {name} | {weight} | {got} |")
+        lines.append("")
+        lines.append("Governance carries a 10-point floor in every archetype.")
+    else:
+        lines.append("*(Archetype weights unavailable — see goodmeasuregiving.org/methodology.)*")
+
+    lines.append("")
+    lines.append("### Alignment — 50 points, fixed weights for all organizations")
+    lines.append("")
+    lines.append("| Component | Max | How points are earned |")
+    lines.append("|---|---|---|")
+    lines.append(
+        "| Muslim Donor Fit | 19 | Layered: explicit zakat program +4 (or accepts zakat +2), Muslim-focused organization +2, "
+        "Islamic identity +1, serving a named asnaf category +5, operating in Muslim-majority regions +3, humanitarian service +4. Capped at 19. |"
+    )
+    lines.append("| Cause Urgency | 13 | Fixed points by cause area (humanitarian relief highest), from your detected primary category. |")
+    lines.append("| Underserved Space | 7 | Serving populations or geographies with limited nonprofit coverage. |")
+    lines.append("| Track Record | 6 | Years of operation, smoothly interpolated. |")
+    lines.append("| Funding Gap | 5 | Smaller organizations with greater funding gaps score higher. |")
+
+    lines.append("")
+    lines.append("### Risk — deductions up to −10")
+    lines.append("")
+    lines.append("| Trigger | Deduction | Source we check |")
+    lines.append("|---|---|---|")
+    lines.append("| Program expense ratio below 50% | −5 | IRS Form 990 |")
+    lines.append("| Board smaller than 3 members | −5 | Form 990 / Candid |")
+    lines.append("| Operating reserves under 1 month | −2 | Form 990 |")
+    lines.append("")
+    lines.append(
+        "Deductions are size-adjusted: emerging organizations (<$1M revenue) are not penalized for *missing* "
+        "data, while established organizations (>$10M) receive full deductions. Operating in conflict zones is never penalized."
+    )
+
+    lines.append("")
+    lines.append("### Data Confidence — 0 to 1, displayed beside the score")
+    lines.append("")
+    lines.append(
+        "Verification 50% (third-party evaluation by Charity Navigator/Candid), transparency 35% "
+        "(Candid seal level, audited financials), data quality 15% (consistency across sources). "
+        "This is not part of the 100-point score — it tells donors how much verified information sits beneath it."
+    )
     return lines
 
 
@@ -117,7 +299,25 @@ def data_confidence_section(dc: dict) -> list[str]:
     return lines
 
 
-def build_report(d: dict) -> str:
+def corrections_section() -> list[str]:
+    return [
+        "Corrections follow a defined process, not an inbox black hole:",
+        "",
+        "1. **Tell us what's wrong** — contact us via goodmeasuregiving.org with the data point, "
+        "what it should be, and where the correct value is published.",
+        "2. **We triage into one of three lanes.** *We misread a source* → we correct the pipeline and re-crawl. "
+        "*The data isn't public yet* → you publish it (the Sources table above shows where we read each field), "
+        "then we re-run. *You dispute the methodology* → it's logged in our public issue tracker and considered "
+        "for the next rubric version.",
+        "3. **Your evaluation is re-run end-to-end** — not hand-edited. Scores only ever come from the pipeline.",
+        "4. **Every change is version-controlled.** Our database keeps a full audit history of every value, "
+        "every score, and every re-run — we can show you exactly what changed and when.",
+        "",
+        "Re-evaluations are typically completed within two weeks of a verified correction.",
+    ]
+
+
+def build_report(d: dict, archetypes: dict) -> str:
     name = d.get("name", "Unknown")
     ein = d.get("ein", "")
     wallet = d.get("walletTag", "")
@@ -150,22 +350,21 @@ def build_report(d: dict) -> str:
     md.append("")
     md.append(
         "Good Measure Giving (goodmeasuregiving.org) is a charity-evaluation platform for Muslim donors. "
-        "Your organization is evaluated from public data — your website, IRS Form 990 filings, Charity Navigator, "
-        "and Candid — and donors use the resulting score to decide where to give. This report shows you exactly "
-        "what donors see, how each component of your score was earned, and where points are available. "
-        "Every improvement below is something within your control."
+        "Your organization is evaluated from public data, and donors use the resulting score to decide where "
+        "to give. This report shows you exactly what donors see: where every data point came from, the full "
+        "scoring rubric, and — most usefully — the specific gaps between your current score and the points "
+        "available to you. Every gap below is closable with information you control."
     )
 
     md.append("")
-    md.append("## How the score works")
+    md.append("## Where our data comes from")
     md.append("")
-    md.append(
-        "- **Impact (50 points)** — program effectiveness, weighted by what kind of organization you are. "
-        "We don't grade an advocacy organization on meals served.\n"
-        "- **Alignment (50 points)** — fit for Muslim donors: zakat clarity, cause urgency, underserved space, track record, funding gap.\n"
-        "- **Risk (up to −10)** — deductions for governance red flags (low program spending, very small board, low reserves).\n"
-        "- **Data Confidence (0–1, shown beside the score)** — how much verified information sits beneath the evaluation."
-    )
+    md.extend(sources_section(d))
+
+    md.append("")
+    md.append("## The scoring rubric, in full")
+    md.append("")
+    md.extend(rubric_section(d, archetypes))
 
     if impact.get("components"):
         md.append("")
@@ -180,21 +379,23 @@ def build_report(d: dict) -> str:
 
     improvements = collect_improvements(sd)
     md.append("")
-    md.append("## Where you can gain points")
+    md.append("## Gaps to close")
     md.append("")
     if improvements:
         total_avail = sum(i["value"] for i in improvements)
         md.append(
-            f"We identified **up to {total_avail} points** of headroom, listed by potential gain. "
-            "These reflect what our pipeline could verify from public sources — if you already do these "
-            "things but don't publish them, publishing is the fix."
+            f"We identified **up to {total_avail} points** of headroom, ranked by potential gain. "
+            "The last column tells you exactly where our pipeline reads the evidence — if you already do these "
+            "things but don't publish them there, publishing is the entire fix."
         )
         md.append("")
-        md.append("| Priority | Component | Currently | Potential gain | What to do |")
-        md.append("|---|---|---|---|---|")
+        md.append("| Priority | Component | Currently | Potential gain | What to do | Where we'll read it |")
+        md.append("|---|---|---|---|---|---|")
         for rank, item in enumerate(improvements, 1):
+            read_from = COMPONENT_READ_FROM.get(item["name"], "Your website / IRS filings")
             md.append(
-                f"| {rank} | {item['name']} ({item['section']}) | {fmt_pts(item['scored'], item['possible'])} | +{item['value']} | {item['suggestion']} |"
+                f"| {rank} | {item['name']} ({item['section']}) | {fmt_pts(item['scored'], item['possible'])} "
+                f"| +{item['value']} | {item['suggestion']} | {read_from} |"
             )
     else:
         md.append("Your component scores are at or near their maximums — we found no concrete point opportunities. Keep your public data current so it stays that way.")
@@ -204,7 +405,7 @@ def build_report(d: dict) -> str:
     md.append("")
     risk_list = risks.get("risks") or []
     if risk_list:
-        md.append(f"Current deduction: **−{abs(risks.get('total_deduction') or 0)}** (risk level: {risks.get('overall_risk_level', '')}).")
+        md.append(f"Current deduction: **−{deduction}** (risk level: {risks.get('overall_risk_level', '')}).")
         md.append("")
         for r in risk_list:
             if isinstance(r, dict):
@@ -216,7 +417,7 @@ def build_report(d: dict) -> str:
             else:
                 md.append(f"- {r}")
     else:
-        md.append("No risk deductions — no governance red flags were identified. ")
+        md.append("No risk deductions — no governance red flags were identified.")
 
     md.append("")
     md.append("## Data confidence")
@@ -240,17 +441,9 @@ def build_report(d: dict) -> str:
             md.append(f"- {a}")
 
     md.append("")
-    md.append("## How to update what we see")
+    md.append("## Correcting or updating our data")
     md.append("")
-    md.append(
-        "Our pipeline re-reads public sources on a recurring basis. To make improvements visible:\n\n"
-        "1. **Your website** — publish your zakat policy (if you accept zakat), program outcomes, beneficiary "
-        "counts, board composition, and annual reports where a crawler can find them.\n"
-        "2. **Candid (GuideStar)** — keep your profile current; Gold/Platinum seals feed the transparency signal directly.\n"
-        "3. **Charity Navigator** — an up-to-date evaluation feeds the verification signal.\n"
-        "4. **IRS Form 990** — file on time; we read program ratios, reserves, and governance data from it.\n\n"
-        "Once you've made changes, contact us at goodmeasuregiving.org and we'll re-run your evaluation."
-    )
+    md.extend(corrections_section())
 
     md.append("")
     md.append("---")
@@ -293,7 +486,8 @@ def main():
     args = parser.parse_args()
 
     d = load_charity(args.ein)
-    report = build_report(d)
+    archetypes = load_archetypes()
+    report = build_report(d, archetypes)
 
     args.out.mkdir(parents=True, exist_ok=True)
     slug = (d.get("name") or args.ein).lower().replace(" ", "-").replace(",", "").replace(".", "")[:50]

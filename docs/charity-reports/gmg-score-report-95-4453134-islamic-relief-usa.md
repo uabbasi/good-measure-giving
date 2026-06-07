@@ -6,14 +6,76 @@
 
 ## Why you're receiving this
 
-Good Measure Giving (goodmeasuregiving.org) is a charity-evaluation platform for Muslim donors. Your organization is evaluated from public data — your website, IRS Form 990 filings, Charity Navigator, and Candid — and donors use the resulting score to decide where to give. This report shows you exactly what donors see, how each component of your score was earned, and where points are available. Every improvement below is something within your control.
+Good Measure Giving (goodmeasuregiving.org) is a charity-evaluation platform for Muslim donors. Your organization is evaluated from public data, and donors use the resulting score to decide where to give. This report shows you exactly what donors see: where every data point came from, the full scoring rubric, and — most usefully — the specific gaps between your current score and the points available to you. Every gap below is closable with information you control.
 
-## How the score works
+## Where our data comes from
 
-- **Impact (50 points)** — program effectiveness, weighted by what kind of organization you are. We don't grade an advocacy organization on meals served.
-- **Alignment (50 points)** — fit for Muslim donors: zakat clarity, cause urgency, underserved space, track record, funding gap.
-- **Risk (up to −10)** — deductions for governance red flags (low program spending, very small board, low reserves).
-- **Data Confidence (0–1, shown beside the score)** — how much verified information sits beneath the evaluation.
+Every figure in this report traces to a public source. The table below lists each data point, where we read it, and when. If anything here is wrong or stale, the correction process at the end of this report exists exactly for that.
+
+| Data point | Value we read | Source | Retrieved |
+|---|---|---|---|
+| Administrative expenses | 3461594 | [Charity Navigator](https://www.charitynavigator.org/ein/954453134#financials) | 2026-03-09 |
+| Candid transparency seal | platinum | [Candid](https://app.candid.org/profile/8460202) | 2026-03-09 |
+| Charity Navigator score | 100 | [Charity Navigator](https://www.charitynavigator.org/ein/954453134#ratings) | 2026-03-09 |
+| Zakat acceptance claim | Yes | [Charity Website](https://irusa.org/zakat) | 2026-03-04 |
+| Founded year | 1993 | [Charity Website](https://irusa.org/wp-content/uploads/2025/10/2025-Zakat-Catalog-Book-IRUSA-Web-1.pdf) | 2026-03-04 |
+| Fundraising expenses | 27387518 | [Charity Navigator](https://www.charitynavigator.org/ein/954453134#financials) | 2026-03-09 |
+| Audited financials | Yes | [Charity Website](https://irusa.org/wp-content/uploads/2025/10/2025-Zakat-Catalog-Book-IRUSA-Web-1.pdf) | 2026-03-04 |
+| NTEE classification | Q123 | [ProPublica Form 990](https://projects.propublica.org/nonprofits/organizations/954453134) | 2026-03-09 |
+| Program expense ratio | 0.80 | [Charity Navigator](https://www.charitynavigator.org/ein/954453134#financials) | 2026-03-09 |
+| Program expenses | 124179919 | [Charity Navigator](https://www.charitynavigator.org/ein/954453134#financials) | 2026-03-09 |
+| Total revenue | 165235589 | [Form 990 (2023)](https://projects.propublica.org/nonprofits/organizations/954453134) | 2026-03-09 |
+| Transparency score | 100 | [Candid Platinum Seal](https://app.candid.org/profile/8460202) | 2026-03-09 |
+| Operating reserves (months) | 18 | [Calculated from Form 990](https://projects.propublica.org/nonprofits/organizations/954453134) | 2026-03-09 |
+
+**Zakat claim — the evidence we recorded:**
+> Dedicated zakat page found at https://irusa.org/zakat (Source: https://irusa.org/zakat)
+
+**External evaluations and recognitions we found:** Charity Navigator 4-Star ranking; BBB Wise Giving Alliance Standards for Charity Accountability; GuideStar Gold Seal of Transparency
+
+## The scoring rubric, in full
+
+We publish the rubric in full so nothing about your score is a black box. Rubric version 5.0.0; the same rules apply to every organization in our database.
+
+### Impact — 50 points, weighted for your archetype: Direct Service
+
+*Organizations delivering direct humanitarian aid, medical services, or basic needs.* Impact weights vary by archetype so that, for example, an advocacy organization is not graded on meals served. Your weights:
+
+| Component | Weight (max points) | You scored |
+|---|---|---|
+| Cost Per Beneficiary | 13 | 4 |
+| Directness | 5 | 5 |
+| Financial Health | 7 | 4 |
+| Program Ratio | 5 | 4 |
+| Evidence & Outcomes | 5 | 5 |
+| Theory of Change | 5 | 5 |
+| Governance | 10 | 10 |
+
+Governance carries a 10-point floor in every archetype.
+
+### Alignment — 50 points, fixed weights for all organizations
+
+| Component | Max | How points are earned |
+|---|---|---|
+| Muslim Donor Fit | 19 | Layered: explicit zakat program +4 (or accepts zakat +2), Muslim-focused organization +2, Islamic identity +1, serving a named asnaf category +5, operating in Muslim-majority regions +3, humanitarian service +4. Capped at 19. |
+| Cause Urgency | 13 | Fixed points by cause area (humanitarian relief highest), from your detected primary category. |
+| Underserved Space | 7 | Serving populations or geographies with limited nonprofit coverage. |
+| Track Record | 6 | Years of operation, smoothly interpolated. |
+| Funding Gap | 5 | Smaller organizations with greater funding gaps score higher. |
+
+### Risk — deductions up to −10
+
+| Trigger | Deduction | Source we check |
+|---|---|---|
+| Program expense ratio below 50% | −5 | IRS Form 990 |
+| Board smaller than 3 members | −5 | Form 990 / Candid |
+| Operating reserves under 1 month | −2 | Form 990 |
+
+Deductions are size-adjusted: emerging organizations (<$1M revenue) are not penalized for *missing* data, while established organizations (>$10M) receive full deductions. Operating in conflict zones is never penalized.
+
+### Data Confidence — 0 to 1, displayed beside the score
+
+Verification 50% (third-party evaluation by Charity Navigator/Candid), transparency 35% (Candid seal level, audited financials), data quality 15% (consistency across sources). This is not part of the 100-point score — it tells donors how much verified information sits beneath it.
 
 ## Your Impact scorecard
 
@@ -37,19 +99,19 @@ Good Measure Giving (goodmeasuregiving.org) is a charity-evaluation platform for
 | Track Record | 6/6 | Strong | Founded 1993 (33 years — 6/6) |
 | Funding Gap | 3/5 | Strong | Revenue: $147.2M (3/5 funding gap) |
 
-## Where you can gain points
+## Gaps to close
 
-We identified **up to 12 points** of headroom, listed by potential gain. These reflect what our pipeline could verify from public sources — if you already do these things but don't publish them, publishing is the fix.
+We identified **up to 12 points** of headroom, ranked by potential gain. The last column tells you exactly where our pipeline reads the evidence — if you already do these things but don't publish them there, publishing is the entire fix.
 
-| Priority | Component | Currently | Potential gain | What to do |
-|---|---|---|---|---|
-| 1 | Cost Per Beneficiary (Impact) | 4/13 | +6 | Publish beneficiary counts consistently so cost-effectiveness can be assessed. |
-| 2 | Financial Health (Impact) | 4/7 | +3 | If reserves are above policy target, document why and publish triggers for planned deployment. |
-| 3 | Underserved Space (Alignment) | 3/7 | +3 | Expand services to underserved populations or geographies with limited nonprofit coverage. |
+| Priority | Component | Currently | Potential gain | What to do | Where we'll read it |
+|---|---|---|---|---|---|
+| 1 | Cost Per Beneficiary (Impact) | 4/13 | +6 | Publish beneficiary counts consistently so cost-effectiveness can be assessed. | Beneficiary counts on your website / annual report |
+| 2 | Financial Health (Impact) | 4/7 | +3 | If reserves are above policy target, document why and publish triggers for planned deployment. | IRS Form 990 (reserves) + a published reserve policy |
+| 3 | Underserved Space (Alignment) | 3/7 | +3 | Expand services to underserved populations or geographies with limited nonprofit coverage. | Program + geography descriptions on your website |
 
 ## Risk deductions
 
-No risk deductions — no governance red flags were identified. 
+No risk deductions — no governance red flags were identified.
 
 ## Data confidence
 
@@ -74,16 +136,16 @@ All three signals are at their maximum — donors see your evaluation as fully v
 - Enhancing the directness of impact reporting to further increase the impact score from 37/50
 - Optimizing fundraising efficiency beyond the current rate of $0.19 per $1 raised
 
-## How to update what we see
+## Correcting or updating our data
 
-Our pipeline re-reads public sources on a recurring basis. To make improvements visible:
+Corrections follow a defined process, not an inbox black hole:
 
-1. **Your website** — publish your zakat policy (if you accept zakat), program outcomes, beneficiary counts, board composition, and annual reports where a crawler can find them.
-2. **Candid (GuideStar)** — keep your profile current; Gold/Platinum seals feed the transparency signal directly.
-3. **Charity Navigator** — an up-to-date evaluation feeds the verification signal.
-4. **IRS Form 990** — file on time; we read program ratios, reserves, and governance data from it.
+1. **Tell us what's wrong** — contact us via goodmeasuregiving.org with the data point, what it should be, and where the correct value is published.
+2. **We triage into one of three lanes.** *We misread a source* → we correct the pipeline and re-crawl. *The data isn't public yet* → you publish it (the Sources table above shows where we read each field), then we re-run. *You dispute the methodology* → it's logged in our public issue tracker and considered for the next rubric version.
+3. **Your evaluation is re-run end-to-end** — not hand-edited. Scores only ever come from the pipeline.
+4. **Every change is version-controlled.** Our database keeps a full audit history of every value, every score, and every re-run — we can show you exactly what changed and when.
 
-Once you've made changes, contact us at goodmeasuregiving.org and we'll re-run your evaluation.
+Re-evaluations are typically completed within two weeks of a verified correction.
 
 ---
 
