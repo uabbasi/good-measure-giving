@@ -1,0 +1,142 @@
+# Guide 8: Who Receives Zakat? The 8 Categories (Asnaf)
+
+*Proposed for goodmeasuregiving.org/guides/who-receives-zakat-the-8-categories — held unpublished pending this review.*
+
+**Reading time:** 10 min · **Drafted:** 2026-06-06
+
+
+## TL;DR (shown at top of page)
+
+> Zakat is not general charity — the Qur'an names exactly eight categories who may receive it (Surah At-Tawbah 9:60): the poor, the needy, zakat administrators, those whose hearts are to be reconciled, those in bondage, the debt-ridden, in the cause of Allah, and the stranded traveler. The first two cover most zakat in practice and enjoy the broadest agreement; the categories' modern applications — refugees, trafficking victims, medical debt, advocacy — are where contemporary scholarship does its real work, and where it disagrees.
+
+
+## Why categories, not causes
+
+Most charitable instruments are defined by cause — feed the hungry, cure the sick. Zakat is defined by recipient. The verse is exhaustive and exclusive: 'Indeed, charitable offerings are only to be given to...' — and classical scholarship across the schools reads that 'only' (innama) strictly. Money that doesn't reach someone in the eight categories may be excellent sadaqah, but it doesn't discharge zakat in the majority view.
+
+This is why a charity's zakat policy matters as much as its mission. The question is never just 'is this good work?' but 'does this work transfer wealth to people in these categories?' — and the answer can differ program by program inside the same organization.
+
+
+## 1–2. The poor and the needy (al-fuqara, al-masakin)
+
+The first two categories — those whose means fall short of their needs — are where the overwhelming majority of zakat flows, and where scholarly agreement is broadest. Direct poverty relief, food security, shelter, orphan support, and emergency disaster relief for the destitute all map cleanly here.
+
+Scholars distinguish the two categories — the schools differ on which describes the more severe poverty — but the distinction rarely changes practice: both are eligible, and proximity of need governs priority. The operative tests are real: means below sufficiency — measured against nisab or against actual needs, depending on the school — and actual transfer of benefit to the person. A program serving 'underserved communities' in the abstract is a weaker zakat claim than one that means-tests its beneficiaries.
+
+Worth noting: orphanhood by itself is not one of the eight categories. Orphans receive zakat as fuqara or masakin — because they are poor, which most are — not because they are orphans. Well-run orphan programs are effectively poverty programs, which is why they sit comfortably in zakat for most scholars.
+
+
+## 3–4. The administrators and the reconciled hearts (al-amilin, al-muallafatu qulubuhum)
+
+Zakat administrators — those who collect, manage, and distribute it — may be paid from zakat itself. This is the category under which zakat organizations take operational costs from zakat funds, with classical guardrails: compensation proportional to actual administration, and — in the Shafi'i school — a cap of one-eighth (12.5%) of collections, a limit the other schools did not adopt. Whether private charities qualify as amilin at all (classically the category presumed appointment by an authority) is itself a contemporary scholarly question, and several major fatwa bodies prefer that relief organizations take nothing from zakat funds. A charity that takes administration from zakat should be able to tell you its practice and its ceiling; the better ones publish both.
+
+'Those whose hearts are to be reconciled' — new Muslims needing support, and those being drawn toward the community — is the most historically debated category. The Hanafi and Maliki schools held it lapsed once Islam was established — the need having ceased, following Umar ibn al-Khattab's practice; the Shafi'i and Hanbali schools, and most contemporary scholarship, maintain it remains active, with applications including new-Muslim support programs. It's a small category in practice, but a live one.
+
+Both categories carry a practical lesson for donors: zakat eligibility can attach to the machinery of zakat itself, within limits. Ask organizations how they fund their overhead — the answer tells you whether your full intended amount reaches the end recipient.
+
+
+## 5–6. Those in bondage and those in debt (fi al-riqab, al-gharimin)
+
+'Freeing those in bondage' classically meant emancipating slaves. With slavery's formal abolition, contemporary scholars apply the category's principle to bondage-like conditions: victims of human trafficking, people trapped in exploitative or coerced labor, captives and hostages whose release can be secured. It is a narrow category demanding real diligence — but where it genuinely applies, it addresses some of the most severe suffering zakat can reach.
+
+The debt-ridden — those carrying debts they cannot repay — are a category with immediate modern resonance: crushing medical debt, disaster losses, the aftermath of job loss. Classical conditions apply: the debt must be for permissible purposes, not extravagance, and the debtor genuinely unable to pay. Debt-relief programs that buy down or pay off qualifying debts are among the clearest modern implementations of an asnaf category outside basic poverty relief.
+
+
+## 7–8. In the cause of Allah and the wayfarer (fi sabilillah, ibn al-sabil)
+
+Fi sabilillah — 'in the cause of Allah' — is the most contested category in contemporary fiqh. The classical referent was defense of the Muslim community; the restrictive modern view keeps it close to that. Expansive readings extend it to Islamic education, da'wah, media, and institutions serving Muslims broadly — and some extend it to advocacy and civil-rights work defending vulnerable Muslim communities. The disagreement is genuine and unresolved; any organization claiming zakat under this category for indirect work should name the scholarly basis it relies on, and donors who follow restrictive positions should check before giving.
+
+The wayfarer — the traveler cut off from their resources — reads narrow but applies wide today: refugees and the displaced are people severed from homes, assets, and support networks, and many contemporary scholars treat refugee relief as a strong fit for this category alongside the first two. Stranded migrants and students cut off from funding abroad are also classical-style applications.
+
+Between them, these two categories explain most of the variation in how charities describe their zakat eligibility — and most of the cases where our data shows a zakat claim that your own school might read differently.
+
+
+## How Good Measure Giving handles asnaf claims
+
+Charity pages on this site surface which asnaf each organization says its zakat-funded work serves. That phrasing is deliberate: the claims are the charity's own, drawn from its public materials. We verify that the claim exists and is specific enough to mean something; we do not rule on whether the program satisfies the category as your school defines it.
+
+Used well, the asnaf data turns a vague question — 'is this charity zakat-eligible?' — into checkable ones. Which categories does it claim? Do its actual programs plausibly serve them? Does it claim only the agreed categories, or does its case rest on the disputed ones? An organization claiming fuqara and masakin with means-tested relief programs is a short conversation with your scholar. One resting its eligibility entirely on an expansive fi sabilillah reading is a longer conversation — have it before you give.
+
+
+## Callout boxes (highlighted on page)
+
+
+**Not a fatwa** — This guide summarizes the categories and flags where the schools differ — it does not resolve those differences, and it cannot rule on your zakat. For binding guidance, consult a scholar you trust, especially where a charity's eligibility rests on the disputed categories.
+
+
+## Featured charity cards (linked on page)
+
+- **Zakat Foundation of America** (EIN 36-4476244): Direct relief and development built around zakat distribution — the organization describes its zakat work as serving the fuqara and masakin categories, where scholarly agreement is broadest.
+
+- **BASMAH** (EIN 82-1670588): Relief and long-term support for vulnerable populations including Rohingya refugees — displaced populations are what many contemporary scholars treat as a strong application of the wayfarer category.
+
+- **Islamic Relief USA** (EIN 95-4453134): Large-scale humanitarian aid and poverty alleviation, domestic and international, with a published zakat policy describing the categories its zakat programs serve.
+
+
+## Frequently Asked Questions
+
+
+**Q: Does my zakat have to reach all eight categories?**
+
+No. The majority position is that zakat may go entirely to one category — even one person — though the Shafi'i school classically required distribution across the categories present in one's locality — a position later Shafi'i fatwa relaxed. The eight define who is eligible, not a checklist to complete.
+
+
+**Q: Can zakat go to non-Muslims?**
+
+The majority of schools restrict zakat to Muslim recipients, with the reconciliation-of-hearts category as the classical exception, and some contemporary scholars extend eligibility further. Sadaqah, by contrast, may go to anyone in need by broad agreement. Ask your scholar if this affects your giving.
+
+
+**Q: Can I give zakat to my own relatives?**
+
+Yes — and scholars note added merit when zakat also upholds kinship — except those you're already obligated to support: parents, grandparents, and children. A husband cannot give zakat to his wife by broad agreement; whether a wife may give to a poor husband is disputed, with several schools permitting it. An eligible sibling, cousin, aunt, or uncle can receive your zakat.
+
+
+**Q: Is mosque construction zakat-eligible?**
+
+It's disputed, and the majority classical position is no — a building is not a recipient in the eight categories. Some contemporary scholars allow it under an expansive fi sabilillah reading. Most mosques fund construction from sadaqah and waqf precisely because of this dispute.
+
+
+**Q: Are orphans automatically zakat-eligible?**
+
+Orphanhood itself isn't one of the eight categories — but most orphans qualify as poor or needy, which is why orphan sponsorship sits comfortably within zakat for most scholars. The substantive test is the child's need, which well-run programs apply.
+
+
+**Q: Can a charity take its operating costs from my zakat?**
+
+Within limits, yes — zakat administrators are themselves one of the eight categories. The Shafi'i school capped the administrative share at one-eighth of collections, a figure some modern regulators adopt; several contemporary fatwa bodies prefer organizations take nothing from zakat at all. Practices vary: some charities take administration from zakat, others cover it entirely from separate funds. Good organizations disclose which they do.
+
+
+## Sources & further reading (as shown on page)
+
+
+*Preceded on the page by: “This guide presents broadly held positions in Sunni fiqh and names the schools where they differ. The references below are where we drew them from. None of this is a fatwa.”*
+
+- **Fiqh al-Zakah, Volume II: Zakah Distribution**, Yusuf al-Qaradawi (trans. Monzer Kahf) — https://www.iiibf.org/books/english/fiqhalzakah_vol2.pdf
+  The standard modern reference on the eight categories; source for the amilin compensation discussion and the muallafa analysis.
+
+- **The Eight Kinds of People Who Receive Zakat**, Zakat Foundation of America — https://www.zakat.org/the-eight-kinds-of-people-who-receive-zakat
+  Institutional explainer of the categories from Surah At-Tawbah 9:60.
+
+- **Ruling on spending zakat to build a mosque (Fatwa 21805)**, IslamQA.info (Shaykh Ibn Baz) — https://islamqa.info/en/answers/21805
+  The restrictive position on fi sabilillah — 'the opinion of the majority' of classical scholarship — and the majority no on mosque construction.
+
+- **Zakat Eligibility of Islamic Organizations**, Dr. Hatem al-Haj (AMJA), via MuslimMatters — https://muslimmatters.org/2021/07/20/zakat-eligibility-of-islamic-organizations/
+  The expansive contemporary position on fi sabilillah, with the bodies that endorse it; also the narrow exception for mosque construction.
+
+- **Is Zakat for 'Those Whose Hearts Are Attracted' Still Applicable?**, SeekersGuidance — https://seekersguidance.org/answers/zakat/is-zakat-for-those-whose-hearts-are-attracted-to-the-faith-still-applicable/
+  The Hanafi/Maliki lapse position versus the majority view that the category remains active.
+
+- **Refugee Zakat Fund — FAQs**, UNHCR — https://zakat.unhcr.org/en/faq
+  Fatwas from 16+ institutions (incl. the International Islamic Fiqh Academy and Al-Azhar) authorizing zakat for refugees under the wayfarer and other categories — with 100% distribution and no overhead deduction.
+
+- **Is it permissible to sponsor an orphan using zakat money? (Fatwa 66116)**, IslamQA.info (Shaykh Ibn Uthaymin) — https://islamqa.info/en/answers/66116
+  Orphan eligibility flows from poverty, not orphanhood.
+
+- **Is There a Specific Way to Distribute Zakat?**, SeekersGuidance (Shafi'i fiqh) — https://seekersguidance.org/answers/shafii-fiqh/is-there-a-specific-way-to-distribute-zakat/
+  The Shafi'i requirement to cover the categories present locally, versus the majority permission to give to one.
+
+- **Al-Gharimin as the Asnaf for Zakat (Irsyad al-Fatwa 131)**, Mufti of Federal Territory, Malaysia — https://www.muftiwp.gov.my/en/artikel/irsyad-fatwa/irsyad-fatwa-umum-cat/1234-irsyad-al-fatwa-series-131-al-gharimin-as-the-asnaf-for-zakat
+  Conditions for the debt-ridden category.
+
+- **Giving Zakah to non-Muslims (Fatwa 87316)**, Islamweb (Qatar Ministry of Awqaf) — https://www.islamweb.net/en/fatwa/87316/
+  The majority restriction of zakat to Muslim recipients, with the muallafa exception.

@@ -1,0 +1,124 @@
+# Guide 2: How to Evaluate a Muslim Charity
+
+*Proposed for goodmeasuregiving.org/guides/how-to-evaluate-a-muslim-charity — held unpublished pending this review.*
+
+**Reading time:** 10 min · **Drafted:** 2026-06-06
+
+
+## TL;DR (shown at top of page)
+
+> Evaluating a charity well means asking five questions in order: what does it actually do, can it show the money goes where it says, is there evidence the work helps, is it governed responsibly, and — for Muslim donors — does it fit your zakat or sadaqah intent? No single number answers all five. Financial ratios are the most overrated signal; verified evidence of impact is the most underrated one.
+
+
+## Start with the work, not the numbers
+
+The first question is embarrassingly simple and routinely skipped: what does this charity actually do? Not its mission statement — its programs. A strong charity can tell you concretely who it serves, what it provides, and what changes as a result. If the website describes inspiration but not operations, that's not automatically disqualifying, but it means every other signal you check has to work harder.
+
+Look for a clear theory of change: we do X, so that Y happens, for people in situation Z. A food bank's chain is short and easy to verify. A civil-rights organization's chain is longer — litigation and advocacy take years and the wins are diffuse — but it should still be articulable. Be suspicious of charities whose described activities could not plausibly produce their claimed outcomes, and equally of charities that claim credit for outcomes far downstream of anything they do.
+
+This is also where you should check scope honestly. A small community organization running one shelter is not worse than an international NGO because it's smaller; it's answering a different need. Judge each against what it's trying to be, not against the largest brand in the sector.
+
+
+## Read the financials — but read them right
+
+Most US charities file a public Form 990 — the full form once gross receipts reach $200,000 or assets reach $500,000, shorter versions (990-EZ, 990-N) below that. Mosques and churches are exempt from filing entirely, so a missing 990 is not a red flag for a religious congregation. ProPublica's Nonprofit Explorer has the filings free. Three things are worth your time: where revenue comes from, what fraction goes to programs, and whether the organization holds reasonable reserves.
+
+The program-expense ratio — program spending divided by total spending — is the most quoted and most misused number in charity evaluation. Healthy ranges are typically 65–85%, but the right reading is as a screen, not a score. A charity at 60% is worth a closer look, not an automatic rejection: new organizations invest in capacity, and 990 expense allocation is partly an accounting choice. Conversely, a 95% ratio can signal under-investment in the staff, systems, and evaluation that make programs effective — or creative accounting. The 'overhead is waste' instinct has been disowned by virtually every serious evaluator, including the watchdogs that once promoted it.
+
+Reserves tell you about resilience. An organization with less than a few months of operating expenses on hand is fragile; one sitting on many years of unspent donations should explain why. And revenue concentration matters: a charity dependent on one donor, one government contract, or one annual fundraiser carries risk that the program ratio won't show you.
+
+
+## Look for evidence, not anecdotes
+
+Every charity has moving stories. The evaluation question is whether there is evidence the work helps beyond the stories. The hierarchy runs roughly: independent evaluation of outcomes (rare, gold standard), internal outcome measurement honestly reported (good), consistent output reporting — meals served, cases taken, students enrolled (acceptable, especially for direct services), and testimonials alone (weak).
+
+Calibrate your expectations by cause area. Direct-service work — food, shelter, medical care — has short causal chains where output data is reasonably persuasive on its own. Advocacy, civil rights, research, and education have long causal chains where rigorous outcome evidence may not exist for anyone in the field; there, look instead for track record, concrete wins, and whether credible institutions engage with the organization's work.
+
+Transparency is itself a signal. A charity that publishes annual reports, names its leadership, reports failures alongside wins, and answers questions is showing you how it will behave with your money. One that publishes only marketing is not necessarily dishonest — but you are being asked to trust rather than verify, and you should weigh that.
+
+
+## Governance: the unglamorous layer that predicts scandals
+
+Most charity failures are governance failures. The basics are checkable from the 990 and the website: an independent board of reasonable size (very small boards — three or four people, especially family members — concentrate power), a real conflict-of-interest policy, audited financials above a few million in revenue, and leadership compensation that is defensible for the organization's size and sector.
+
+Red flags worth treating seriously: related-party transactions (the charity pays a board member's company), a founder who is simultaneously CEO, board chair, and treasurer, repeated late or amended 990 filings, and high unexplained turnover in leadership. None of these proves wrongdoing; each raises the burden on the other signals.
+
+For Muslim organizations specifically, add one more: how the charity handles amanah — the trust placed in it. Organizations that treat donor funds as a sacred trust tend to show it structurally, in zakat-fund segregation, in clear policies about what zakat may and may not pay for, and in willingness to answer fiqh questions about their practices directly.
+
+
+## The zakat dimension
+
+If you're giving zakat rather than general sadaqah, two extra questions apply. First: does the charity's work actually reach people in the eight asnaf — the Qur'anic categories of zakat recipients (Surah At-Tawbah 9:60)? Direct poverty relief, refugee assistance, and debt relief map cleanly. Mosque construction, da'wah, media, and advocacy are areas of genuine scholarly disagreement. Our guide on zakat eligibility covers the categories and the disputes in detail.
+
+Second: how does the charity handle zakat operationally? Better signals include a segregated zakat fund, a published zakat policy explaining which programs zakat supports, a named scholarly board or fatwa supporting their model, and clarity about whether administrative costs are taken from zakat (a portion is permitted under the amilin category by many scholars — the Shafi'i school capped it at one-eighth of collections — but whether private charities qualify as amilin is itself debated, and practice and disclosure vary widely).
+
+Verify endorsements yourself. 'Scholar-approved' claims are among the least reliable statements in the sector — names get listed without ongoing involvement, and endorsements of one program get stretched across an organization. If a charity names a scholar or fatwa, the charity should be able to point you to it. Good Measure Giving flags whether a charity publicly claims to accept zakat; we don't issue fiqh verdicts, and neither should a marketing page.
+
+
+## How Good Measure Giving fits into this
+
+Our GMG Score does a structured version of the above so you don't have to start from a blank 990. Impact (50 points) weighs program effectiveness with weights that vary by organizational archetype — we don't grade a civil-rights litigator on meals served. Alignment (50 points) captures fit for Muslim donors: cause urgency, underserved spaces, track record, and funding gaps. Risk (up to −10) deducts for the governance red flags above. A separate Data Confidence signal (0 to 1) tells you how much verified information sits underneath the score — a high score on thin data is marked as exactly that.
+
+Use the score as a starting shortlist, then apply the questions in this guide to the two or three organizations you're choosing between. The score compresses public data; it cannot know your community, your fiqh positions, or which cause keeps you up at night. The final allocation is judgment — yours — and that is how it should work.
+
+One honest limitation: our data is strongest where charities are transparent. An excellent organization that publishes little will score lower on data confidence than a mediocre one with a polished communications team. When you know an organization personally — you've volunteered there, your community runs it — your firsthand knowledge can legitimately outweigh our remote evaluation.
+
+
+## Callout boxes (highlighted on page)
+
+
+**The overhead myth** — Spending on staff, systems, and evaluation is not waste — it is what makes programs work. The major evaluators (GuideStar, Charity Navigator, BBB Wise Giving Alliance) jointly repudiated overhead-ratio-as-quality-measure in an open letter to donors. Use program ratios as a screen for extremes, not a ranking.
+
+
+**What this guide is not** — This is an evaluation framework, not a fiqh ruling. Where zakat questions arise — which causes qualify, whether administrative costs may come from zakat — scholars differ, and we note it rather than resolve it. Consult a scholar you trust for binding guidance on your own zakat.
+
+
+## Frequently Asked Questions
+
+
+**Q: Is there a minimum program-expense ratio I should require?**
+
+Treat roughly 65% as a screen-for-a-closer-look threshold rather than a cutoff. Ask why it's low — a startup building capacity and an organization paying inflated salaries both sit below 65% for very different reasons. Ratios identify questions, not answers.
+
+
+**Q: Are small community charities worse than large international ones?**
+
+No — they're different instruments. Large organizations offer scale and reporting infrastructure; small ones offer local knowledge, low overhead on real estate you can visit, and accountability you can see. Evaluate each against its own claims. Many donors sensibly split between both.
+
+
+**Q: How is Good Measure Giving different from Charity Navigator?**
+
+General evaluators rate financial health and transparency for all US charities. We add the dimensions they don't cover: whether the charity publicly claims zakat eligibility, alignment with causes urgent to Muslim communities, and impact weighting that doesn't penalize advocacy and religious organizations for not being food banks.
+
+
+**Q: What if a charity is too new to have track record or financials?**
+
+New organizations deserve funding too — someone has to take the first risk. But fund them on the strength of the team and the plan, knowingly, with sadaqah rather than zakat if eligibility is uncertain, and at amounts you'd be comfortable losing. Re-evaluate after their first 990.
+
+
+**Q: How often should I re-evaluate a charity I give to regularly?**
+
+A light annual check is enough for most donors: skim the newest 990, confirm leadership hasn't churned, and look at what the charity says it accomplished. Watch for step changes — rapid revenue growth, founder departure, mission drift — which warrant a fuller look.
+
+
+**Q: A charity says scholars endorse it. Is that enough for zakat?**
+
+Ask which scholar, endorsing what, and when — then check. Genuine endorsements are usually specific and documented (a named fatwa or scholarly board). Vague 'scholar-approved' badges are marketing until shown otherwise. Your own scholar's guidance on your zakat outranks any charity's self-description.
+
+
+## Sources & further reading (as shown on page)
+
+
+*Preceded on the page by: “This guide presents broadly held positions in Sunni fiqh and names the schools where they differ. The references below are where we drew them from. None of this is a fatwa.”*
+
+- **Nonprofit Explorer**, ProPublica — https://projects.propublica.org/nonprofits/
+  Free access to Form 990 filings for US nonprofits.
+
+- **Annual filing and forms for exempt organizations**, IRS — https://www.irs.gov/charities-non-profits/annual-filing-and-forms
+  Which organizations file the full 990, 990-EZ, or 990-N — and which are exempt from filing.
+
+- **The Overhead Myth: an open letter to the donors of America (2013)**, GuideStar, Charity Navigator & BBB Wise Giving Alliance
+  The major evaluators' joint repudiation of overhead ratio as a measure of charity quality.
+
+- **Zakat Eligibility of Islamic Organizations**, Dr. Hatem al-Haj (AMJA), via MuslimMatters — https://muslimmatters.org/2021/07/20/zakat-eligibility-of-islamic-organizations/
+  The contemporary debate on how organizations may handle zakat, including administrative costs.
