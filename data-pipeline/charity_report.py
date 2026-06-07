@@ -95,6 +95,58 @@ DATA_CONFIDENCE_ACTIONS = {
     "data_quality": "Publish consistent program descriptions, beneficiary counts, and financial detail across your website and IRS filings so sources corroborate each other.",
 }
 
+# Order of precedence when sources disagree. Mirrors the documented rules in
+# src/parsers/charity_metrics_aggregator.py — update both together.
+PRECEDENCE_RULES = [
+    ("Financial data (revenue, expenses, assets)", "IRS Form 990 (ProPublica) → Charity Navigator"),
+    ("Third-party ratings", "Charity Navigator only"),
+    ("Programs & mission", "Candid → your website → Charity Navigator"),
+    ("Transparency signals", "Candid → Charity Navigator"),
+    ("Cause classification", "Candid → Charity Navigator → IRS NTEE → your website"),
+    ("Location", "IRS Form 990 → Charity Navigator → Candid"),
+    ("CEO compensation", "Charity Navigator → IRS Form 990 aggregate"),
+    ("Zakat acceptance", "Your website only — explicit evidence required (a zakat page, fund, or policy); inferred claims are rejected"),
+]
+
+# Per-source storage layout in raw_scraped_data.parsed_json.
+SOURCE_WRAPPERS = {
+    "propublica": "propublica_990",
+    "charity_navigator": "cn_profile",
+    "candid": "candid_profile",
+    "website": "website_profile",
+    "form990_grants": "grants_profile",
+}
+SOURCE_DISPLAY = {
+    "propublica": "IRS 990 (ProPublica)",
+    "charity_navigator": "Charity Navigator",
+    "candid": "Candid",
+    "website": "Your website",
+    "form990_grants": "Form 990 grants",
+}
+SOURCE_ORDER = ["propublica", "charity_navigator", "candid", "website", "form990_grants"]
+
+# Canonical fields for the all-values-by-source matrix: label, format,
+# and the key under which each source reports it.
+COMPARABLE_FIELDS = [
+    ("Tax / fiscal year", "int", {"propublica": "tax_year", "charity_navigator": "fiscal_year", "form990_grants": "tax_year"}),
+    ("Total revenue", "money", {"propublica": "total_revenue", "charity_navigator": "total_revenue", "form990_grants": "total_revenue"}),
+    ("Total expenses", "money", {"propublica": "total_expenses", "charity_navigator": "total_expenses", "form990_grants": "total_expenses"}),
+    ("Program expenses", "money", {"propublica": "program_expenses", "charity_navigator": "program_expenses", "form990_grants": "program_expenses"}),
+    ("Admin expenses", "money", {"propublica": "admin_expenses", "charity_navigator": "admin_expenses"}),
+    ("Fundraising expenses", "money", {"propublica": "fundraising_expenses", "charity_navigator": "fundraising_expenses"}),
+    ("Net assets", "money", {"propublica": "net_assets", "charity_navigator": "net_assets"}),
+    ("Total assets", "money", {"propublica": "total_assets", "charity_navigator": "total_assets"}),
+    ("Program expense ratio", "ratio", {"charity_navigator": "program_expense_ratio"}),
+    ("Board size", "int", {"candid": "board_size", "charity_navigator": "board_size"}),
+    ("CEO name", "str", {"candid": "ceo_name", "charity_navigator": "ceo_name"}),
+    ("IRS ruling year", "int", {"propublica": "irs_ruling_year", "charity_navigator": "irs_ruling_year", "candid": "irs_ruling_year"}),
+    ("Founded year (self-reported)", "int", {"website": "founded_year"}),
+    ("NTEE code", "str", {"propublica": "ntee_code", "candid": "ntee_code"}),
+    ("Candid seal", "str", {"candid": "candid_seal"}),
+    ("Financial audit", "bool", {"charity_navigator": "has_financial_audit"}),
+    ("Accepts zakat (explicit evidence)", "bool", {"website": "accepts_zakat"}),
+]
+
 
 def load_charity(ein: str) -> dict:
     path = CHARITY_DATA_DIR / f"charity-{ein}.json"
@@ -124,6 +176,144 @@ def components_table(components: list[dict]) -> list[str]:
         evidence = (c.get("evidence") or "").replace("|", "/")
         status = STATUS_LABELS.get(c.get("status", ""), c.get("status", ""))
         lines.append(f"| {c['name']} | {fmt_pts(c['scored'], c['possible'])} | {status} | {evidence} |")
+    return lines
+
+
+def fetch_source_values(ein: str) -> dict | None:
+    """Per-source parsed values from DoltDB (raw_scraped_data).
+
+    Returns {source: {field: value}} for the wrapped profile of each source,
+    or None when the database isn't reachable (the report then carries a
+    note instead of the matrix).
+    """
+    try:
+        from src.db.client import execute_query  # noqa: PLC0415 — optional dependency on a running DoltDB
+
+        rows = execute_query(
+            "SELECT source, parsed_json FROM raw_scraped_data WHERE charity_ein=%s AND success=TRUE",
+            (ein,),
+            fetch="all",
+        )
+    except Exception as e:  # DB down, driver missing, etc. — degrade gracefully
+        print(f"  (source matrix skipped — DoltDB not reachable: {type(e).__name__})")
+        return None
+
+    per_source: dict[str, dict] = {}
+    for row in rows or []:
+        source = row["source"]
+        wrapper = SOURCE_WRAPPERS.get(source)
+        if not wrapper:
+            continue
+        pj = row["parsed_json"]
+        if isinstance(pj, str):
+            pj = json.loads(pj)
+        inner = (pj or {}).get(wrapper) or {}
+        if inner:
+            per_source[source] = inner
+    return per_source
+
+
+def fmt_value(value, kind: str) -> str:
+    if value is None:
+        return "—"
+    if kind == "money":
+        try:
+            return f"${float(value):,.0f}"
+        except (TypeError, ValueError):
+            return str(value)
+    if kind == "ratio":
+        try:
+            return f"{float(value):.0%}"
+        except (TypeError, ValueError):
+            return str(value)
+    if kind == "bool":
+        return "Yes" if value else "No"
+    return str(value)
+
+
+def _values_conflict(values: list, kind: str) -> bool:
+    """≥2 non-null values that genuinely differ (with rounding tolerance)."""
+    present = [v for v in values if v is not None]
+    if len(present) < 2:
+        return False
+    if kind in ("money", "ratio"):
+        try:
+            nums = [float(v) for v in present]
+            lo, hi = min(nums), max(nums)
+            return hi - lo > max(abs(hi), 1) * 0.005  # >0.5% apart
+        except (TypeError, ValueError):
+            pass
+    norm = {str(v).strip().lower() for v in present}
+    return len(norm) > 1
+
+
+def source_matrix_section(d: dict, per_source: dict | None) -> list[str]:
+    """All values from all sources, conflicts flagged, precedence shown."""
+    lines = []
+    lines.append(
+        "We read multiple sources, and they don't always agree — different fiscal years, stale profiles, "
+        "or genuine errors. Rather than hide that, the matrix below shows every value from every source. "
+        "Conflicts are marked ⚠; the order-of-precedence table above determines which value we use."
+    )
+    lines.append("")
+    if not per_source:
+        lines.append(
+            "*(Source-level detail was unavailable when this report was generated — the pipeline database "
+            "was not reachable. The Sources table above still cites the winning source per field.)*"
+        )
+        return lines
+
+    sources_present = [s for s in SOURCE_ORDER if s in per_source]
+    sa = d.get("sourceAttribution") or {}
+
+    header = "| Field | " + " | ".join(SOURCE_DISPLAY[s] for s in sources_present) + " | |"
+    lines.append(header)
+    lines.append("|" + "---|" * (len(sources_present) + 2))
+    conflicts = []
+    for label, kind, keys in COMPARABLE_FIELDS:
+        raw_values = [per_source.get(s, {}).get(keys.get(s)) if keys.get(s) else None for s in sources_present]
+        if all(v is None for v in raw_values):
+            continue
+        conflict = _values_conflict([v for s, v in zip(sources_present, raw_values) if keys.get(s)], kind)
+        flag = "⚠" if conflict else ""
+        if conflict:
+            conflicts.append((label, kind, dict(zip(sources_present, raw_values))))
+        cells = " | ".join(fmt_value(v, kind) if keys.get(s) else "·" for s, v in zip(sources_present, raw_values))
+        lines.append(f"| {label} | {cells} | {flag} |")
+    lines.append("")
+    lines.append("*— = source has no value · · = source doesn't report this field*")
+
+    if conflicts:
+        lines.append("")
+        lines.append("### Conflicts and how we resolved them")
+        lines.append("")
+        for label, kind, by_source in conflicts:
+            parts = [f"{SOURCE_DISPLAY[s]}: {fmt_value(v, kind)}" for s, v in by_source.items() if v is not None]
+            # What did we actually use? Look up the exported winner where mappable.
+            sa_key = {
+                "Total revenue": "total_revenue",
+                "Program expenses": "program_expenses",
+                "Admin expenses": "admin_expenses",
+                "Fundraising expenses": "fundraising_expenses",
+                "Program expense ratio": "program_expense_ratio",
+                "Founded year (self-reported)": "founded_year",
+                "NTEE code": "ntee_code",
+                "Candid seal": "candid_seal",
+            }.get(label)
+            used = ""
+            if sa_key and isinstance(sa.get(sa_key), dict):
+                entry = sa[sa_key]
+                used = f" → **we use {fmt_value(entry.get('value'), kind)}** (from {entry.get('source_name', '?')}, per precedence)"
+            lines.append(f"- **{label}** ⚠ {'; '.join(parts)}{used}")
+        lines.append("")
+        lines.append(
+            "Financial figures that differ across sources usually reflect different filing years (see the "
+            "Tax / fiscal year row) rather than errors — each source updates on its own schedule. Where a "
+            "conflict is not a fiscal-year artifact, the correction process at the end of this report applies."
+        )
+    else:
+        lines.append("")
+        lines.append("No conflicting values across sources for the fields above.")
     return lines
 
 
@@ -169,6 +359,20 @@ def sources_section(d: dict) -> list[str]:
     if evals:
         lines.append("")
         lines.append("**External evaluations and recognitions we found:** " + "; ".join(evals))
+
+    lines.append("")
+    lines.append("### Order of precedence when sources disagree")
+    lines.append("")
+    lines.append("| Data domain | Precedence (first wins) |")
+    lines.append("|---|---|")
+    for domain, order in PRECEDENCE_RULES:
+        lines.append(f"| {domain} | {order} |")
+    lines.append("")
+    lines.append(
+        "Fields known to be unreliable when read by automated extraction (zakat claims, beneficiary counts, "
+        "external evaluations, scholarly endorsements) additionally require corroborating evidence before "
+        "they affect any score — an uncorroborated claim is treated as absent, never guessed."
+    )
     return lines
 
 
@@ -317,7 +521,7 @@ def corrections_section() -> list[str]:
     ]
 
 
-def build_report(d: dict, archetypes: dict) -> str:
+def build_report(d: dict, archetypes: dict, per_source: dict | None = None) -> str:
     name = d.get("name", "Unknown")
     ein = d.get("ein", "")
     wallet = d.get("walletTag", "")
@@ -360,6 +564,11 @@ def build_report(d: dict, archetypes: dict) -> str:
     md.append("## Where our data comes from")
     md.append("")
     md.extend(sources_section(d))
+
+    md.append("")
+    md.append("## All values, all sources — including where they disagree")
+    md.append("")
+    md.extend(source_matrix_section(d, per_source))
 
     md.append("")
     md.append("## The scoring rubric, in full")
@@ -487,7 +696,8 @@ def main():
 
     d = load_charity(args.ein)
     archetypes = load_archetypes()
-    report = build_report(d, archetypes)
+    per_source = fetch_source_values(args.ein)
+    report = build_report(d, archetypes, per_source)
 
     args.out.mkdir(parents=True, exist_ok=True)
     slug = (d.get("name") or args.ein).lower().replace(" ", "-").replace(",", "").replace(".", "")[:50]

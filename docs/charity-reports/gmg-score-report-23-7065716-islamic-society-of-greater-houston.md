@@ -26,6 +26,38 @@ Every figure in this report traces to a public source. The table below lists eac
 
 **External evaluations and recognitions we found:** ISNA 2018 Green Masjid Award (Islamic Society of North America (ISNA)); Houston Mayor's Proud Partner Award (Houston Mayor's Office)
 
+### Order of precedence when sources disagree
+
+| Data domain | Precedence (first wins) |
+|---|---|
+| Financial data (revenue, expenses, assets) | IRS Form 990 (ProPublica) → Charity Navigator |
+| Third-party ratings | Charity Navigator only |
+| Programs & mission | Candid → your website → Charity Navigator |
+| Transparency signals | Candid → Charity Navigator |
+| Cause classification | Candid → Charity Navigator → IRS NTEE → your website |
+| Location | IRS Form 990 → Charity Navigator → Candid |
+| CEO compensation | Charity Navigator → IRS Form 990 aggregate |
+| Zakat acceptance | Your website only — explicit evidence required (a zakat page, fund, or policy); inferred claims are rejected |
+
+Fields known to be unreliable when read by automated extraction (zakat claims, beneficiary counts, external evaluations, scholarly endorsements) additionally require corroborating evidence before they affect any score — an uncorroborated claim is treated as absent, never guessed.
+
+## All values, all sources — including where they disagree
+
+We read multiple sources, and they don't always agree — different fiscal years, stale profiles, or genuine errors. Rather than hide that, the matrix below shows every value from every source. Conflicts are marked ⚠; the order-of-precedence table above determines which value we use.
+
+| Field | IRS 990 (ProPublica) | Charity Navigator | Candid | Your website | Form 990 grants | |
+|---|---|---|---|---|---|---|
+| Board size | · | — | 2 | · | · |  |
+| IRS ruling year | 2015 | — | 2015 | · | · |  |
+| Founded year (self-reported) | · | · | · | 1969 | · |  |
+| NTEE code | X40 | · | X40 | · | · |  |
+| Candid seal | · | · | bronze | · | · |  |
+| Accepts zakat (explicit evidence) | · | · | · | Yes | · |  |
+
+*— = source has no value · · = source doesn't report this field*
+
+No conflicting values across sources for the fields above.
+
 ## The scoring rubric, in full
 
 We publish the rubric in full so nothing about your score is a black box. Rubric version 5.0.0; the same rules apply to every organization in our database.
