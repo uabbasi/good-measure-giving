@@ -78,7 +78,7 @@ All schools agree administrators can receive from zakat, but differ on details.
 - Includes all involved in zakat collection/distribution
 - Compensation proportional to effort
 
-**Modern Application**: The 12.5% (1/8th) administrative cap is a modern derivation, not a classical ruling. It's based on administrators being one of eight categories.
+**Modern Application**: The 12.5% (1/8th) administrative cap is a classical Shafi'i position (from al-Shafi'i's equal-division doctrine), rejected by the majority of schools — not a modern derivation and not a majority ruling (verified in Qaradawi's Fiqh al-Zakah, Vol. II). Modern use: Indonesia's BAZNAS operationalizes 1/8; the fatwas behind UNHCR's Refugee Zakat Fund require zero deduction.
 
 ### 3. Al-Mu'allafatu Qulubuhum (Those Whose Hearts Are Reconciled)
 

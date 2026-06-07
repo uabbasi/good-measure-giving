@@ -113,7 +113,7 @@ Those appointed by legitimate Islamic authority to collect, manage, account for,
 
 **Classical view**: Administrators receive a fair wage for their work, not a percentage of zakat.
 
-**Modern interpretation**: Many scholars suggest **12.5% (1/8th)** as maximum administrative allocation, based on the principle that administrators are one of eight categories.
+**The 1/8 cap**: al-Shafi'i capped worker compensation at **12.5% (1/8th)** of proceeds, based on his doctrine of equal division among the eight categories; the majority of schools rejected this limitation (Qaradawi, Fiqh al-Zakah, Vol. II, 'Amount of worker compensation'). Some modern regulators adopt the 1/8 figure; several contemporary fatwa bodies prefer zero deduction from zakat by relief organizations.
 
 ### Modern Applications
 

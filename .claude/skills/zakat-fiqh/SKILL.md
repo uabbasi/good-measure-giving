@@ -72,7 +72,7 @@ This verse establishes the **eight exclusive categories (asnaf)** who may receiv
 
 **Modern applications**: Staff of zakat organizations, administrative costs of legitimate zakat collection
 
-**Limit**: Most scholars cap administrative costs at 12.5% (1/8th) of zakat collected.
+**Limit**: The Shafi'i school capped administrative compensation at 12.5% (1/8th) of zakat collected — a classical minority position the other schools did not adopt (verified in Qaradawi's Fiqh al-Zakah, Vol. II). Some modern regulators (e.g., Indonesia's BAZNAS) operationalize the 1/8 figure; several contemporary fatwa bodies (e.g., the fatwas governing UNHCR's Refugee Zakat Fund) prefer organizations deduct nothing from zakat.
 
 ### 4. Al-Muallafatu Qulubuhum (Those Whose Hearts Are to Be Reconciled)
 
