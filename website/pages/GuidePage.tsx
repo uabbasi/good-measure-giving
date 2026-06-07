@@ -113,6 +113,30 @@ export const GuidePage: React.FC = () => {
           </dl>
         </section>
 
+        {guide.sources && guide.sources.length > 0 && (
+          <section className="mb-10">
+            <h2 className="text-2xl font-semibold mb-4">Sources &amp; further reading</h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+              This guide presents broadly held positions in Sunni fiqh and names the schools where they differ. The references below are where we drew them from — read each position in its own words. None of this is a fatwa.
+            </p>
+            <ul className="space-y-3">
+              {guide.sources.map((s, i) => (
+                <li key={i} className="text-sm text-slate-700 dark:text-slate-300">
+                  {s.url ? (
+                    <a href={s.url} target="_blank" rel="noopener noreferrer" className="font-medium text-emerald-700 dark:text-emerald-400 hover:underline">
+                      {s.title}
+                    </a>
+                  ) : (
+                    <span className="font-medium">{s.title}</span>
+                  )}
+                  <span className="text-slate-500 dark:text-slate-400"> — {s.publisher}</span>
+                  {s.note && <div className="text-slate-500 dark:text-slate-400 mt-0.5">{s.note}</div>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         {guide.relatedCauses && guide.relatedCauses.length > 0 && (
           <section className="mb-10">
             <h2 className="text-2xl font-semibold mb-4">Related Cause Areas</h2>

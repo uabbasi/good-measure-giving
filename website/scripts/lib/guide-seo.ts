@@ -24,6 +24,13 @@ export interface GuideFeaturedCharity {
   blurb: string;
 }
 
+export interface GuideSource {
+  title: string;
+  publisher: string;
+  url?: string;
+  note?: string;
+}
+
 export interface Guide {
   slug: string;
   title: string;
@@ -37,6 +44,7 @@ export interface Guide {
   callouts?: GuideCallout[];
   featuredCharities?: GuideFeaturedCharity[];
   faq: GuideFaqItem[];
+  sources?: GuideSource[];
   relatedGuides?: string[];
   relatedCauses?: string[];
 }
