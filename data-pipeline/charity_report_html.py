@@ -4,7 +4,7 @@ Designed HTML renderer for the charity score report.
 
 Produces a print-quality document (letter size) rendered to PDF via the
 browse daemon's Chromium print pipeline. Design system: emerald brand on
-slate ink, a conic-gradient score donut, pillar stat cards, hairline
+report-grade: serif body, cover page with typographic score, hairline
 tables with tabular numerals, and amber conflict highlighting.
 
 Consumed by charity_report.py (--pdf); not run directly.
@@ -20,114 +20,106 @@ def esc(v) -> str:
 
 
 CSS = """
-@page { size: letter; margin: 16mm 14mm 18mm 14mm; }
+@page { size: letter; margin: 24mm 22mm 26mm 22mm; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 body {
-  font-family: -apple-system, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 9.5pt; line-height: 1.5; color: #1e293b;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 9.5pt; line-height: 1.62; color: #1a1a1a;
 }
+.sans { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
 .footer {
-  position: fixed; bottom: -12mm; left: 0; right: 0;
-  font-size: 7pt; color: #94a3b8; letter-spacing: 0.04em;
+  position: fixed; bottom: -16mm; left: 0; right: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 6.5pt; color: #8a8f98; letter-spacing: 0.12em; text-transform: uppercase;
   display: flex; justify-content: space-between;
-  border-top: 0.5pt solid #e2e8f0; padding-top: 4pt;
+  border-top: 0.5pt solid #d9dce1; padding-top: 5pt;
 }
-.brandbar {
-  display: flex; align-items: baseline; justify-content: space-between;
-  border-bottom: 2pt solid #047857; padding-bottom: 6pt; margin-bottom: 14pt;
-}
-.wordmark { font-size: 10pt; font-weight: 700; letter-spacing: 0.18em; color: #047857; }
-.doclabel { font-size: 7.5pt; letter-spacing: 0.14em; color: #64748b; text-transform: uppercase; }
-h1 { font-size: 20pt; font-weight: 700; letter-spacing: -0.02em; color: #0f172a; margin: 2pt 0 4pt; }
-.meta { font-size: 8.5pt; color: #64748b; margin-bottom: 14pt; }
-.meta b { color: #334155; font-weight: 600; }
 
-.hero {
-  display: flex; gap: 16pt; align-items: center;
-  background: #f8fafc; border: 0.5pt solid #e2e8f0; border-radius: 8pt;
-  padding: 12pt 14pt; margin-bottom: 6pt; break-inside: avoid;
+/* ── Cover ─────────────────────────────────────────────── */
+.cover { display: flex; flex-direction: column; height: 215mm; break-after: page; }
+.cover .wordmark {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 9pt; font-weight: 700; letter-spacing: 0.28em; color: #14532d;
+  border-bottom: 1pt solid #14532d; padding-bottom: 8pt;
 }
-.donut {
-  width: 76pt; height: 76pt; border-radius: 50%; flex: none;
-  display: flex; align-items: center; justify-content: center;
+.cover .doctype {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin-top: 64pt; font-size: 8pt; letter-spacing: 0.24em; text-transform: uppercase; color: #6b7280;
 }
-.donut .inner {
-  width: 56pt; height: 56pt; border-radius: 50%; background: #fff;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  box-shadow: 0 0 0 0.5pt #e2e8f0 inset;
+.cover h1 { font-size: 30pt; font-weight: 400; letter-spacing: -0.01em; line-height: 1.15; margin: 10pt 0 0; color: #111; }
+.cover .scoreline { margin-top: 36pt; }
+.cover .bignum { font-size: 58pt; line-height: 1; color: #14532d; font-weight: 400; }
+.cover .bignum small { font-size: 14pt; color: #6b7280; }
+.cover .breakdown { font-size: 10pt; color: #374151; margin-top: 8pt; }
+.cover .scalebar { margin-top: 14pt; width: 320pt; height: 3pt; background: #e5e7eb; position: relative; }
+.cover .scalebar .fill { position: absolute; left: 0; top: 0; bottom: 0; background: #14532d; }
+.cover .meta { margin-top: auto; font-size: 9pt; color: #4b5563; line-height: 1.8; }
+.cover .meta b { color: #111; font-weight: 600; }
+.cover .conf {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin-top: 14pt; font-size: 7pt; letter-spacing: 0.18em; text-transform: uppercase; color: #9ca3af;
 }
-.donut .num { font-size: 17pt; font-weight: 800; color: #047857; line-height: 1; letter-spacing: -0.02em; }
-.donut .of { font-size: 6.5pt; color: #94a3b8; letter-spacing: 0.08em; margin-top: 1pt; }
-.pillars { display: flex; gap: 8pt; flex: 1; }
-.pillar {
-  flex: 1; background: #fff; border: 0.5pt solid #e2e8f0; border-radius: 6pt;
-  padding: 8pt 10pt;
-}
-.pillar .label { font-size: 6.5pt; letter-spacing: 0.12em; text-transform: uppercase; color: #64748b; }
-.pillar .val { font-size: 14pt; font-weight: 700; color: #0f172a; font-variant-numeric: tabular-nums; }
-.pillar .val small { font-size: 8pt; font-weight: 500; color: #94a3b8; }
-.chips { margin: 8pt 0 0; }
-.chip {
-  display: inline-block; font-size: 7.5pt; font-weight: 600; letter-spacing: 0.06em;
-  padding: 2pt 7pt; border-radius: 99pt; margin-right: 6pt;
-}
-.chip.green { background: #ecfdf5; color: #047857; border: 0.5pt solid #a7f3d0; }
-.chip.slate { background: #f1f5f9; color: #475569; border: 0.5pt solid #e2e8f0; }
-.cnref { font-size: 8pt; color: #94a3b8; margin-top: 6pt; font-style: italic; }
 
+/* ── Headings & text ───────────────────────────────────── */
 h2 {
-  font-size: 9pt; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
-  color: #047857; margin: 18pt 0 7pt; padding-bottom: 3pt;
-  border-bottom: 0.5pt solid #e2e8f0; break-after: avoid;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 8.5pt; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+  color: #111; margin: 22pt 0 9pt; padding-bottom: 4pt;
+  border-bottom: 0.75pt solid #14532d; break-after: avoid;
 }
-h2 .n { color: #a7f3d0; margin-right: 6pt; font-variant-numeric: tabular-nums; }
-h3 { font-size: 9.5pt; font-weight: 700; color: #0f172a; margin: 10pt 0 4pt; break-after: avoid; }
-p { margin: 0 0 6pt; }
-p.lede { font-size: 10pt; color: #334155; }
-.muted { color: #64748b; font-size: 8.5pt; }
+h2 .n { color: #14532d; margin-right: 10pt; }
+h3 { font-size: 10.5pt; font-weight: 700; color: #111; margin: 13pt 0 5pt; break-after: avoid; }
+p { margin: 0 0 7pt; }
+p.lede { font-size: 10.5pt; line-height: 1.7; color: #1f2937; }
+.muted { color: #6b7280; font-size: 8.5pt; }
 
-table { width: 100%; border-collapse: collapse; margin: 6pt 0 8pt; font-size: 8.5pt; }
+/* ── Tables: annual-report style ───────────────────────── */
+table { width: 100%; border-collapse: collapse; margin: 7pt 0 10pt; font-size: 8.5pt; }
 th {
-  text-align: left; font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
-  color: #64748b; font-weight: 600; padding: 3pt 6pt; border-bottom: 1pt solid #cbd5e1;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-align: left; font-size: 6.5pt; letter-spacing: 0.14em; text-transform: uppercase;
+  color: #6b7280; font-weight: 600; padding: 0 7pt 4pt 0;
+  border-bottom: 1pt solid #111;
 }
-td { padding: 4pt 6pt; border-bottom: 0.5pt solid #e8edf3; vertical-align: top; }
+td { padding: 4.5pt 7pt 4.5pt 0; border-bottom: 0.25pt solid #d9dce1; vertical-align: top; }
 tr { break-inside: avoid; }
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 td.center, th.center { text-align: center; }
-tr.conflict td { background: #fffbeb; }
-.warn { color: #b45309; font-weight: 700; }
-.gain { color: #047857; font-weight: 700; font-variant-numeric: tabular-nums; }
-.rank {
-  display: inline-flex; width: 12pt; height: 12pt; border-radius: 50%;
-  background: #047857; color: #fff; font-size: 7pt; font-weight: 700;
-  align-items: center; justify-content: center;
-}
-.status-full { color: #047857; font-weight: 600; }
-.status-partial { color: #b45309; font-weight: 600; }
-.status-missing { color: #be123c; font-weight: 600; }
+tr.conflict td { color: #7c2d12; }
+.warn { color: #92400e; font-weight: 700; }
+.gain { color: #14532d; font-weight: 700; font-variant-numeric: tabular-nums; }
+.rank { font-variant-numeric: tabular-nums; color: #6b7280; }
+.status-full { color: #14532d; }
+.status-partial { color: #92400e; }
+.status-missing { color: #991b1b; font-style: italic; }
 
+/* ── Notes & quotes ────────────────────────────────────── */
 .callout {
-  border-left: 3pt solid #047857; background: #f8fafc; border-radius: 0 6pt 6pt 0;
-  padding: 7pt 10pt; margin: 8pt 0; font-size: 8.5pt; break-inside: avoid;
+  border-left: 1.5pt solid #14532d; padding: 4pt 0 4pt 12pt; margin: 10pt 0;
+  font-size: 9pt; break-inside: avoid;
 }
-.callout.amber { border-left-color: #d97706; background: #fffbeb; }
-.callout b.label { display: block; font-size: 7pt; letter-spacing: 0.12em; text-transform: uppercase; color: #64748b; margin-bottom: 2pt; }
+.callout.amber { border-left-color: #92400e; }
+.callout b.label {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  display: block; font-size: 6.5pt; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #6b7280; margin-bottom: 3pt;
+}
 blockquote {
-  border-left: 2pt solid #cbd5e1; padding: 2pt 0 2pt 10pt; margin: 6pt 0;
-  color: #475569; font-style: italic; font-size: 8.5pt;
+  border-left: 0.75pt solid #9ca3af; padding: 1pt 0 1pt 12pt; margin: 7pt 0;
+  color: #374151; font-style: italic; font-size: 9pt;
 }
-ul { margin: 4pt 0 8pt 14pt; }
-li { margin-bottom: 3pt; }
-ol { margin: 4pt 0 8pt 16pt; }
-ol li { margin-bottom: 4pt; }
-.links { font-size: 8pt; color: #64748b; }
-.links a { color: #047857; text-decoration: none; }
+ul { margin: 4pt 0 9pt 14pt; }
+li { margin-bottom: 3.5pt; }
+ol { margin: 4pt 0 9pt 17pt; }
+ol li { margin-bottom: 4.5pt; }
+.links { font-size: 8pt; color: #6b7280; }
+.links a { color: #14532d; text-decoration: none; }
 .pagebreak { break-before: page; }
 .disclaimer {
-  margin-top: 16pt; padding-top: 8pt; border-top: 0.5pt solid #e2e8f0;
-  font-size: 7.5pt; color: #94a3b8; font-style: italic;
+  margin-top: 20pt; padding-top: 9pt; border-top: 0.25pt solid #d9dce1;
+  font-size: 7.5pt; color: #8a8f98; font-style: italic; line-height: 1.6;
 }
 """
 
@@ -189,46 +181,40 @@ def build_html(d: dict, archetypes: dict, per_source: dict | None = None) -> str
         f"<span>Score report · {esc(name)} · {esc(today)}</span></div>"
     )
 
-    # ── Hero ────────────────────────────────────────────────────────────
-    a("<div class='brandbar'><span class='wordmark'>GOOD MEASURE GIVING</span><span class='doclabel'>Charity Score Report</span></div>")
+    # ── Cover page ──────────────────────────────────────────────────────
+    a("<div class='cover'>")
+    a("<div class='wordmark'>GOOD MEASURE GIVING</div>")
+    a("<div class='doctype'>Charity Score Report · 2026</div>")
     a(f"<h1>{esc(name)}</h1>")
-    a(f"<div class='meta'><b>EIN</b> {esc(ein)} &nbsp;·&nbsp; <b>Report date</b> {esc(today)} &nbsp;·&nbsp; <b>Data as of</b> {esc(last_updated or 'latest run')}</div>")
-
-    a("<div class='hero'>")
+    a("<div class='scoreline'>")
+    a(f"<div class='bignum'>{esc(overall if overall is not None else '—')}<small> / 100 GMG Score</small></div>")
     a(
-        f"<div class='donut' style='background: conic-gradient(#047857 {pct}%, #e2e8f0 {pct}% 100%);'>"
-        f"<div class='inner'><div class='num'>{esc(overall if overall is not None else '—')}</div><div class='of'>GMG / 100</div></div></div>"
+        f"<div class='breakdown'>Impact {esc(impact.get('score', '—'))} of 50 &nbsp;·&nbsp; "
+        f"Alignment {esc(alignment.get('score', '—'))} of 50 &nbsp;·&nbsp; Risk deduction −{esc(deduction)}"
+        + (f" &nbsp;·&nbsp; Data confidence {esc(dc['badge'])}" if dc.get("badge") else "")
+        + "</div>"
     )
-    a("<div style='flex:1'>")
-    a("<div class='pillars'>")
-    a(f"<div class='pillar'><div class='label'>Impact</div><div class='val'>{esc(impact.get('score', '—'))}<small> / 50</small></div></div>")
-    a(f"<div class='pillar'><div class='label'>Alignment</div><div class='val'>{esc(alignment.get('score', '—'))}<small> / 50</small></div></div>")
-    a(f"<div class='pillar'><div class='label'>Risk deduction</div><div class='val'>−{esc(deduction)}<small> / −10</small></div></div>")
-    a("</div>")
-    a("<div class='chips'>")
-    if dc.get("badge"):
-        a(f"<span class='chip green'>DATA CONFIDENCE: {esc(dc['badge'])}</span>")
-    if wallet:
-        a(f"<span class='chip slate'>{esc(wallet)}</span>")
-    a("</div>")
+    a(f"<div class='scalebar'><div class='fill' style='width:{pct}%'></div></div>")
     if cn_overall is not None:
         a(
-            f"<div class='cnref'>For reference, Charity Navigator rates you {esc(cn_overall)}/100 — CN's own score, "
-            "separate from the GMG Score; the two measure different things and will not match.</div>"
+            f"<p class='muted' style='margin-top:10pt'>For reference, Charity Navigator rates this organization "
+            f"{esc(cn_overall)}/100 — a separate score measuring different things; the two will not match.</p>"
         )
-    a("</div></div>")
+    a("</div>")
+    a("<div class='meta'>")
+    a(f"<b>EIN</b> {esc(ein)}<br><b>Report date</b> {esc(today)}<br><b>Data as of</b> {esc(last_updated or 'latest run')}")
+    if wallet:
+        a(f"<br><b>Wallet tag</b> {esc(wallet)} <span class='muted'>(records a public claim to accept zakat; not a religious ruling by us)</span>")
+    a("</div>")
+    a(f"<div class='conf'>Prepared for the leadership of {esc(name)} · Good Measure Giving · goodmeasuregiving.org</div>")
+    a("</div>")
 
     a(
-        "<p class='lede' style='margin-top:10pt'>Good Measure Giving is a charity-evaluation platform for Muslim donors. "
+        "<p class='lede'>Good Measure Giving is a charity-evaluation platform for Muslim donors. "
         "This report shows exactly what donors see: where every data point came from, the full scoring rubric, and the "
         "specific gaps between your current score and the points available to you. Every gap is closable with "
         "information you control.</p>"
     )
-    if wallet:
-        a(
-            "<p class='muted'>The wallet tag records whether your organization publicly states it accepts zakat; "
-            "it is not a religious ruling by us.</p>"
-        )
 
     # ── 01 Gaps to close (lead with the most useful section) ───────────
     improvements = cr.collect_improvements(sd)
