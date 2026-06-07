@@ -21,8 +21,9 @@ process, end-to-end re-runs (never hand-edited scores), and a full audit trail.
 - Channel: the contact path on goodmeasuregiving.org.
 - Required from the charity: EIN, the specific data point, what it should be,
   and a public URL where the correct value is verifiable.
-- Acknowledge receipt; target re-evaluation within two weeks of a verified
-  correction (the SLA stated in the score report).
+- Acknowledge receipt. Re-evaluations run periodically; a verified correction
+  is reflected in the next evaluation cycle (the same language the score
+  report uses — no fixed turnaround is promised).
 
 ## The three lanes
 

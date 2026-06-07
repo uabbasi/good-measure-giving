@@ -185,7 +185,7 @@ Corrections follow a defined process, not an inbox black hole:
 3. **Your evaluation is re-run end-to-end** — not hand-edited. Scores only ever come from the pipeline.
 4. **Every change is version-controlled.** Our database keeps a full audit history of every value, every score, and every re-run — we can show you exactly what changed and when.
 
-Re-evaluations are typically completed within two weeks of a verified correction.
+Re-evaluations run periodically; verified corrections are reflected in the next evaluation cycle.
 
 ---
 

@@ -473,7 +473,7 @@ def build_html(d: dict, archetypes: dict, per_source: dict | None = None) -> str
     a("<li><b>Your evaluation is re-run end-to-end</b> — never hand-edited. Scores only ever come from the pipeline.</li>")
     a("<li><b>Every change is version-controlled</b> — we can show you exactly what changed and when.</li>")
     a("</ol>")
-    a("<p>Re-evaluations are typically completed within two weeks of a verified correction.</p></div>")
+    a("<p>Re-evaluations run periodically; verified corrections are reflected in the next evaluation cycle.</p></div>")
 
     a("<div class='callout amber'><b class='label'>How to update what we see</b>")
     a(

@@ -547,7 +547,7 @@ def corrections_section() -> list[str]:
         "4. **Every change is version-controlled.** Our database keeps a full audit history of every value, "
         "every score, and every re-run — we can show you exactly what changed and when.",
         "",
-        "Re-evaluations are typically completed within two weeks of a verified correction.",
+        "Re-evaluations run periodically; verified corrections are reflected in the next evaluation cycle.",
     ]
 
 
