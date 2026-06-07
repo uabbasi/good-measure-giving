@@ -33,6 +33,60 @@ Every figure in this report traces to a public source. The table below lists eac
 
 **External evaluations and recognitions we found:** Charity Navigator 4-Star ranking; BBB Wise Giving Alliance Standards for Charity Accountability; GuideStar Gold Seal of Transparency
 
+### Order of precedence when sources disagree
+
+| Data domain | Precedence (first wins) |
+|---|---|
+| Financial data (revenue, expenses, assets) | IRS Form 990 (ProPublica) → Charity Navigator |
+| Third-party ratings | Charity Navigator only |
+| Programs & mission | Candid → your website → Charity Navigator |
+| Transparency signals | Candid → Charity Navigator |
+| Cause classification | Candid → Charity Navigator → IRS NTEE → your website |
+| Location | IRS Form 990 → Charity Navigator → Candid |
+| CEO compensation | Charity Navigator → IRS Form 990 aggregate |
+| Zakat acceptance | Your website only — explicit evidence required (a zakat page, fund, or policy); inferred claims are rejected |
+
+Fields known to be unreliable when read by automated extraction (zakat claims, beneficiary counts, external evaluations, scholarly endorsements) additionally require corroborating evidence before they affect any score — an uncorroborated claim is treated as absent, never guessed.
+
+## All values, all sources — including where they disagree
+
+We read multiple sources, and they don't always agree — different fiscal years, stale profiles, or genuine errors. Rather than hide that, the matrix below shows every value from every source. Conflicts are marked ⚠; the order-of-precedence table above determines which value we use.
+
+| Field | IRS 990 (ProPublica) | Charity Navigator | Candid | Your website | Form 990 grants | |
+|---|---|---|---|---|---|---|
+| Tax / fiscal year | 2023 | 2024 | · | · | 2024 | ⚠ |
+| Total revenue | $165,235,589 | $147,232,658 | · | · | $147,232,658 | ⚠ |
+| Total expenses | $148,599,193 | $155,029,031 | · | · | $155,029,031 | ⚠ |
+| Program expenses | — | $124,179,919 | · | · | — |  |
+| Admin expenses | — | $3,461,594 | · | · | · |  |
+| Fundraising expenses | — | $27,387,518 | · | · | · |  |
+| Net assets | $223,301,734 | $49,166,942 | · | · | · | ⚠ |
+| Total assets | $228,581,851 | $59,395,245 | · | · | · | ⚠ |
+| Program expense ratio | · | 80% | · | · | · |  |
+| Board size | · | 6 | 5 | · | · | ⚠ |
+| CEO name | · | Anwar Khan | Ahmed Shehata | · | · | ⚠ |
+| IRS ruling year | 1994 | 1994 | 1994 | · | · |  |
+| Founded year (self-reported) | · | · | · | 1993 | · |  |
+| NTEE code | Q123 | · | W12 | · | · | ⚠ |
+| Candid seal | · | · | platinum | · | · |  |
+| Financial audit | · | Yes | · | · | · |  |
+| Accepts zakat (explicit evidence) | · | · | · | Yes | · |  |
+
+*— = source has no value · · = source doesn't report this field*
+
+### Conflicts and how we resolved them
+
+- **Tax / fiscal year** ⚠ IRS 990 (ProPublica): 2023; Charity Navigator: 2024; Form 990 grants: 2024
+- **Total revenue** ⚠ IRS 990 (ProPublica): $165,235,589; Charity Navigator: $147,232,658; Form 990 grants: $147,232,658 → **we use $165,235,589** (from Form 990 (2023), per precedence)
+- **Total expenses** ⚠ IRS 990 (ProPublica): $148,599,193; Charity Navigator: $155,029,031; Form 990 grants: $155,029,031
+- **Net assets** ⚠ IRS 990 (ProPublica): $223,301,734; Charity Navigator: $49,166,942
+- **Total assets** ⚠ IRS 990 (ProPublica): $228,581,851; Charity Navigator: $59,395,245
+- **Board size** ⚠ Charity Navigator: 6; Candid: 5
+- **CEO name** ⚠ Charity Navigator: Anwar Khan; Candid: Ahmed Shehata
+- **NTEE code** ⚠ IRS 990 (ProPublica): Q123; Candid: W12 → **we use Q123** (from ProPublica Form 990, per precedence)
+
+Financial figures that differ across sources usually reflect different filing years (see the Tax / fiscal year row) rather than errors — each source updates on its own schedule. Where a conflict is not a fiscal-year artifact, the correction process at the end of this report applies.
+
 ## The scoring rubric, in full
 
 We publish the rubric in full so nothing about your score is a black box. Rubric version 5.0.0; the same rules apply to every organization in our database.
