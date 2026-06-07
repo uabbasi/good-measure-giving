@@ -36,6 +36,7 @@ interface CauseEntry {
 
 interface GuideSummary {
   slug: string;
+  status?: 'published' | 'pending-review';
 }
 
 interface CalculatorAsset {
@@ -123,7 +124,8 @@ function generateSitemap() {
   let guides: GuideSummary[] = [];
   if (fs.existsSync(GUIDES_INDEX)) {
     const guidesData = JSON.parse(fs.readFileSync(GUIDES_INDEX, 'utf-8'));
-    guides = guidesData.guides || [];
+    // pending-review guides stay out of the sitemap until they clear review
+    guides = (guidesData.guides || []).filter((g: GuideSummary) => g.status !== 'pending-review');
   }
   if (guides.length > 0) {
     urls.push(`  <url>

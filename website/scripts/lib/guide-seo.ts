@@ -55,6 +55,12 @@ export interface GuideSummary {
   description: string;
   publishedOn: string;
   readingTimeMinutes: number;
+  /**
+   * Publication gate. 'pending-review' guides exist in data/guides/ but are
+   * excluded from the public index copy, the sitemap, and prerender until
+   * they clear religious/editorial review. Absent = published.
+   */
+  status?: 'published' | 'pending-review';
 }
 
 export interface GuidesIndex {

@@ -809,7 +809,8 @@ async function prerenderPages() {
   const guides: Guide[] = [];
   if (fs.existsSync(GUIDES_INDEX_PATH)) {
     const index: GuidesIndex = JSON.parse(fs.readFileSync(GUIDES_INDEX_PATH, 'utf-8'));
-    guideSummaries = index.guides || [];
+    // pending-review guides get no static page until they clear review
+    guideSummaries = (index.guides || []).filter((g) => g.status !== 'pending-review');
     for (const summary of guideSummaries) {
       const guidePath = path.join(GUIDES_DIR, `${summary.slug}.json`);
       if (fs.existsSync(guidePath)) {
