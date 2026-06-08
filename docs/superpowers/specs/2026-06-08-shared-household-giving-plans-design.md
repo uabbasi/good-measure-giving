@@ -4,6 +4,22 @@
 **Status:** Approved, ready for implementation plan
 **Author:** brainstormed with Usman
 
+## Demand evidence (office-hours, 2026-06-08)
+
+This is the founder's own behavior, externalized: he and his family **sit together,
+explore the site, find charities, and decide their giving as a group** — a recurring
+family ritual he wants to do more of. That is the strongest starting signal (build
+what you already do, watched working in your own home).
+
+**Implication for the build — lead with the ritual, not the plumbing.** The hook is
+the *synchronous, sit-together exploration + decide-as-a-family* experience and the
+invite that brings family into it. The multi-editor / last-write-wins machinery is
+**support** (it makes kids-on-their-own-phones-during-the-session work), not the
+headline. Build the explore-and-decide-together surface and the invite first; the
+conflict engine is infrastructure behind it. Caveat from the diagnostic: demand
+beyond the founder's own family is still unproven — dogfood with his family on the
+shipped product is the validation loop.
+
 ## Context
 
 The onboarding funnel converts during Ramadan and goes dormant after: 22 registered
