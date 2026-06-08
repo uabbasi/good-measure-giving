@@ -206,13 +206,16 @@ def analyze_giving(giving_history: list) -> dict:
 def analyze_issues(issues: list) -> dict:
     """Analyze reported issues."""
     by_type = defaultdict(int)
+    by_status = defaultdict(int)
     for issue in issues:
-        issue_type = issue.get("type", "unknown")
+        issue_type = issue.get("issueType") or issue.get("type") or "unknown"
         by_type[issue_type] += 1
+        by_status[issue.get("status") or "open"] += 1
 
     return {
         "total_issues": len(issues),
         "by_type": dict(by_type),
+        "by_status": dict(by_status),
     }
 
 
