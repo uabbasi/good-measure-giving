@@ -400,6 +400,20 @@ export function trackInviteCreated(planId: string): void {
   });
 }
 
+/**
+ * Track shared-plan public preview view (join landing page)
+ */
+export function trackPlanPreview(planId: string): void {
+  safeGtag('event', 'plan_preview_view', { plan_id: planId });
+}
+
+/**
+ * Track a member joining a shared plan
+ */
+export function trackPlanJoined(planId: string): void {
+  safeGtag('event', 'plan_joined', { plan_id: planId });
+}
+
 // ============================================================================
 // Enhanced Analytics - Scroll Depth & Section Visibility
 // ============================================================================
