@@ -391,6 +391,15 @@ export function trackShare(
   });
 }
 
+/**
+ * Track shared-plan invite link creation
+ */
+export function trackInviteCreated(planId: string): void {
+  safeGtag('event', 'invite_created', {
+    plan_id: planId,
+  });
+}
+
 // ============================================================================
 // Enhanced Analytics - Scroll Depth & Section Visibility
 // ============================================================================
