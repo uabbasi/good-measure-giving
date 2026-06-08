@@ -11,5 +11,38 @@ service cloud.firestore {
       allow create: if true;
       allow read, update, delete: if false;
     }
+
+    match /shared_plans/{planId} {
+      function isMember() {
+        return request.auth != null &&
+          exists(/databases/$(database)/documents/shared_plans/$(planId)/members/$(request.auth.uid));
+      }
+      function isOwner() {
+        return request.auth != null && resource.data.ownerId == request.auth.uid;
+      }
+      // Money-free doc, unguessable id → public read enables the pre-signup preview.
+      allow read: if true;
+      // Creator sets themselves as owner.
+      allow create: if request.auth != null && request.resource.data.ownerId == request.auth.uid;
+      // Members may edit plan content; only the owner may change owner-only fields.
+      allow update: if isMember() &&
+        (isOwner() ||
+          (request.resource.data.ownerId == resource.data.ownerId &&
+           request.resource.data.inviteToken == resource.data.inviteToken &&
+           request.resource.data.name == resource.data.name));
+      allow delete: if isOwner();
+
+      match /members/{uid} {
+        // Join: create only your own member doc, and only with a token matching the plan.
+        allow create: if request.auth != null && request.auth.uid == uid &&
+          request.resource.data.token ==
+            get(/databases/$(database)/documents/shared_plans/$(planId)).data.inviteToken;
+        allow read: if true; // member list shown in preview is non-sensitive (names only)
+        // Leave (self) or owner removes a member.
+        allow delete: if request.auth != null && (request.auth.uid == uid ||
+          get(/databases/$(database)/documents/shared_plans/$(planId)).data.ownerId == request.auth.uid);
+      }
+      // (phase 2) history ring buffer rules omitted — thin sync writes no history.
+    }
   }
 }
