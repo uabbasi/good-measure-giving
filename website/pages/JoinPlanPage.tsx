@@ -22,7 +22,7 @@ export const JoinPlanPage: React.FC = () => {
 
   // Public read of the money-free plan for the preview.
   useEffect(() => {
-    if (!db || !planId) return;
+    if (!db || !planId) { setState('notfound'); return; }
     (async () => {
       try {
         const snap = await getDoc(doc(db, 'shared_plans', planId));
