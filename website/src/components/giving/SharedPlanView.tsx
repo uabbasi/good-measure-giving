@@ -14,6 +14,7 @@ import { useCharities } from '../../hooks/useCharities';
 import { weightsToPercents, computeYourShare } from '../../lib/sharedPlanLogic';
 import type { PlanItem } from '../../types/sharedPlan';
 import { InviteFamilyPanel } from './InviteFamilyPanel';
+import { AssignCause } from './AssignCause';
 
 const ITEM_CAP = 100;
 
@@ -31,6 +32,12 @@ export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
     return m;
   }, [charities]);
 
+  const nameByUid = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const mem of members) m.set(mem.uid, mem.displayName);
+    return m;
+  }, [members]);
+
   if (isLoading || !plan) {
     return <div className="p-6 text-slate-500 dark:text-slate-400">Loading plan…</div>;
   }
@@ -42,6 +49,9 @@ export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
 
   const setWeight = (item: PlanItem, weight: number) =>
     void upsertItem({ ...item, weight }); // hook re-stamps updatedAt/updatedBy
+
+  const setAssignee = (item: PlanItem, assigneeUid: string | null) =>
+    void upsertItem({ ...item, assigneeUid }); // hook re-stamps updatedAt/updatedBy
 
   const addCharity = (ein: string) => {
     if (atCap) return;
@@ -94,6 +104,7 @@ export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
               <th className="font-medium py-2">What we support</th>
               <th className="font-medium py-2">Share</th>
               <th className="font-medium py-2">Weight</th>
+              <th className="font-medium py-2">Assigned to</th>
               {personalTarget != null && <th className="font-medium py-2">Your share</th>}
               <th aria-label="actions" />
             </tr>
@@ -113,6 +124,21 @@ export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
                     aria-label={`Weight for ${rowLabel(item)}`}
                     className="w-20 px-2 py-1 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
                   />
+                </td>
+                <td className="py-2">
+                  <div className="flex items-center gap-2">
+                    <AssignCause
+                      members={members}
+                      value={item.assigneeUid}
+                      onChange={uid => setAssignee(item, uid)}
+                      aria-label={`Assign a member to ${rowLabel(item)}`}
+                    />
+                    {item.assigneeUid != null && (
+                      <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
+                        {nameByUid.get(item.assigneeUid) ?? 'Someone'} is researching this
+                      </span>
+                    )}
+                  </div>
                 </td>
                 {personalTarget != null && (
                   <td className="py-2 text-slate-700 dark:text-slate-200">

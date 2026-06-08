@@ -95,6 +95,16 @@ export const GivingSession: React.FC<{ planId: string; onExit?: () => void }> = 
           >
             Browse charities
           </Link>
+          <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm dark:border-emerald-900/50 dark:bg-emerald-900/20">
+            <p className="font-medium text-emerald-800 dark:text-emerald-200">
+              Give everyone a cause
+            </p>
+            <p className="mt-1 text-emerald-700 dark:text-emerald-300">
+              Turn this into a teaching moment: in the next step you can assign each
+              charity to a family member — even the kids — so they can research it and
+              bring back what they learn.
+            </p>
+          </div>
         </div>
       )}
 
