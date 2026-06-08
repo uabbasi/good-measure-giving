@@ -33,6 +33,7 @@ import {
 } from '../src/components/giving';
 import { PlanSwitcher } from '../src/components/giving/PlanSwitcher';
 import { SharedPlanView } from '../src/components/giving/SharedPlanView';
+import { GivingSession } from '../src/components/giving/GivingSession';
 import type { GivingHistoryEntry, CharitySummary } from '../types';
 import { useTour } from '../src/tours/useTour';
 import { givingPlanTourSteps } from '../src/tours/givingPlanTour';
@@ -147,6 +148,7 @@ export function ProfilePage() {
   // UI state
   const [activeTab, setActiveTab] = useState<TabId>('giving');
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [inSession, setInSession] = useState(false);
   const [showDonationModal, setShowDonationModal] = useState(false);
   const [editingDonation, setEditingDonation] = useState<GivingHistoryEntry | null>(null);
   const [prefillCharity, setPrefillCharity] = useState<{ ein: string; name: string } | null>(null);
@@ -342,7 +344,19 @@ export function ProfilePage() {
           <div className="space-y-6">
             <PlanSwitcher selected={selectedPlan} onSelect={setSelectedPlan} />
             {selectedPlan !== null ? (
-              <SharedPlanView planId={selectedPlan} />
+              inSession ? (
+                <GivingSession planId={selectedPlan} onExit={() => setInSession(false)} />
+              ) : (
+                <div className="space-y-4">
+                  <button
+                    onClick={() => setInSession(true)}
+                    className="px-4 py-2 rounded bg-emerald-600 text-white text-sm font-medium"
+                  >
+                    Start giving session
+                  </button>
+                  <SharedPlanView planId={selectedPlan} />
+                </div>
+              )
             ) : (
               <>
             {/* Progress Dashboard — read-only top-of-record summary. Hidden
