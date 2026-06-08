@@ -382,12 +382,12 @@ const SlideCTA: React.FC<{ onStart: () => void }> = ({ onStart }) => (
 // Component
 // ─────────────────────────────────────────────────────────────────────────────
 
+// Trimmed from 5 story slides to 3 (~17s + CTA): the full sequence was
+// overwhelming as a gate in front of the site. Hook → the score → zakat.
 const SLIDES: Slide[] = [
-  { duration: 5500, render: () => <SlideHook /> },
-  { duration: 7000, render: () => <SlideProblem /> },
-  { duration: 7500, render: () => <SlideBrowse /> },
-  { duration: 8000, render: () => <SlideScore /> },
-  { duration: 7000, render: () => <SlideZakat /> },
+  { duration: 5000, render: () => <SlideHook /> },
+  { duration: 6500, render: () => <SlideScore /> },
+  { duration: 6000, render: () => <SlideZakat /> },
   // CTA holds until user acts; not auto-advanced
 ];
 
@@ -399,15 +399,56 @@ export const IntroPresentation: React.FC = () => {
   const startTimeRef = useRef<number>(0);
   const elapsedRef = useRef<number>(0);
 
-  // First-visit detection
+  // First-visit detection. "First visit" means genuinely new: no intro flag
+  // AND no evidence of prior use — a signed-in Firebase session or any
+  // user-action key below. Returning users never see the intro, even if they
+  // predate this feature. Ambient caches (e.g. gmg_nisab_usd_v1, set on
+  // first paint) deliberately do NOT count as prior use.
   useEffect(() => {
+    const PRIOR_USE_KEYS = [
+      'gmg_welcome_tour_shown',
+      'gmg_viewed_charities',
+      'gmg_dismissed_nudges',
+      'gmg_signed_in_views',
+      'gmg_softcap_nudge_dismissed',
+      'gmg-compare-charities',
+      'gmg-browse-style',
+      'beta-banner-dismissed',
+    ];
+    // A key only counts if it holds a meaningful value: some hooks persist
+    // their empty default on mount (useCompare writes '[]'), which must not
+    // mark a brand-new visitor as returning.
+    const hasMeaningfulValue = (k: string): boolean => {
+      const v = localStorage.getItem(k);
+      if (!v) return false;
+      try {
+        const parsed = JSON.parse(v);
+        if (Array.isArray(parsed)) return parsed.length > 0;
+        if (parsed && typeof parsed === 'object') return Object.keys(parsed).length > 0;
+        if (typeof parsed === 'number') return parsed > 0;
+        return Boolean(parsed);
+      } catch {
+        return true; // non-JSON strings ('true', 'power', ...) are user actions
+      }
+    };
     let shouldShow = false;
     try {
-      shouldShow = !localStorage.getItem(STORAGE_KEY);
+      const returningUser = Object.keys(localStorage).some(
+        (k) => k.startsWith('firebase:authUser') || (PRIOR_USE_KEYS.includes(k) && hasMeaningfulValue(k))
+      );
+      shouldShow = !localStorage.getItem(STORAGE_KEY) && !returningUser;
+      if (returningUser && !localStorage.getItem(STORAGE_KEY)) {
+        localStorage.setItem(STORAGE_KEY, '1'); // don't re-evaluate next time
+      }
     } catch {
       shouldShow = false; // fail closed if storage is blocked
     }
-    if (!shouldShow) return;
+    if (!shouldShow) {
+      // Defensive: prerendered HTML once shipped with a baked-in body scroll
+      // lock; clear any stale lock when no intro will own the body.
+      document.body.style.removeProperty('overflow');
+      return;
+    }
     // small delay so the landing page paints first
     const t = window.setTimeout(() => setIsOpen(true), 350);
     return () => window.clearTimeout(t);
@@ -417,6 +458,9 @@ export const IntroPresentation: React.FC = () => {
     setIsOpen(false);
     try {
       localStorage.setItem(STORAGE_KEY, '1');
+      // Tell same-session onboarding (WelcomeTour) to hold off — one
+      // first-visit experience per session is plenty.
+      sessionStorage.setItem('gmg_intro_shown_this_session', '1');
     } catch {
       // ignore
     }
@@ -479,12 +523,15 @@ export const IntroPresentation: React.FC = () => {
     return () => window.removeEventListener('keydown', onKey);
   }, [isOpen, index, dismiss, goNext, startBrowsing]);
 
-  // Lock body scroll while open
+  // Lock body scroll while open. Restore to '' (not the captured previous
+  // value): prerendered HTML once baked a stale `overflow: hidden` into the
+  // body, and restoring that snapshot re-locked scrolling forever.
   useEffect(() => {
     if (!isOpen) return;
-    const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = prev; };
+    return () => {
+      document.body.style.removeProperty('overflow');
+    };
   }, [isOpen]);
 
   if (!isOpen) return null;

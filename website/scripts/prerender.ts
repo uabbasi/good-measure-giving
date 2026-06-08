@@ -893,6 +893,17 @@ async function prerenderPages() {
         console.warn(`  Warning: timeout on ${meta.route}, using base HTML`);
       }
 
+      // Sanitize the snapshot: first-visit UI (intro presentation) must never
+      // leak into prerendered HTML — it once baked <body style="overflow:
+      // hidden"> plus the intro overlay into every page, breaking scroll for
+      // all visitors and polluting what crawlers index.
+      await page
+        .evaluate(() => {
+          document.body.style.removeProperty('overflow');
+          document.querySelector('[aria-label="Introduction to Good Measure Giving"]')?.remove();
+        })
+        .catch(() => undefined);
+
       let html = await page.content();
       html = injectMeta(html, meta);
 
@@ -908,9 +919,21 @@ async function prerenderPages() {
       }
     }
 
-    // Create worker pages
+    // Create worker pages. Seed the intro-seen flag before any document runs
+    // so the first-visit intro never opens during prerender (belt to the
+    // snapshot sanitizer's suspenders).
     const pages = await Promise.all(
-      Array.from({ length: CONCURRENCY }, () => activeBrowser.newPage())
+      Array.from({ length: CONCURRENCY }, async () => {
+        const page = await activeBrowser.newPage();
+        await page.evaluateOnNewDocument(() => {
+          try {
+            localStorage.setItem('gmg_intro_seen_v1', '1');
+          } catch {
+            // storage unavailable — sanitizer still strips any leak
+          }
+        });
+        return page;
+      })
     );
 
     // Process queue

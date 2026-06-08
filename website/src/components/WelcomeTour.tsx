@@ -54,8 +54,12 @@ export const WelcomeTour: React.FC = () => {
     const handleWelcome = () => {
       try {
         if (localStorage.getItem(STORAGE_KEY)) return;
+        // One first-visit experience per session: if the intro presentation
+        // already ran, defer the tour to a future sign-in (the localStorage
+        // flag is NOT set, so it still fires next session).
+        if (sessionStorage.getItem('gmg_intro_shown_this_session')) return;
       } catch {
-        // If localStorage unavailable, show anyway
+        // If storage unavailable, show anyway
       }
       setIsOpen(true);
     };
