@@ -18,27 +18,22 @@
 >    with the simplest correct write (whole-doc `setDoc` merge, owner-and-members edit).
 >    **Defer per-row LWW + the `history` ring buffer** until real concurrent editing shows
 >    up (evidence says it won't soon). Task 2 rules stay, minus the `history` rules.
-> 4. **Cathedral additions accepted into the first build (new tasks, author during
->    execution):**
->    - **A. Giving-session flow** — a guided gather → explore → decide → **recap** arc that
->      wraps the together-view. This is the spine; without it this is a form, not a ritual.
->    - **B. Session recap artifact** — a shareable "Family Giving Plan {year}" summary at the
->      end. Reuse the `charity_report_html.py` HTML→Chromium-print pipeline pattern. It's the
->      delight payoff AND the growth loop (the screenshot is the next invite).
->    - **C. Kids/teaching mode** — assign a member (child) a cause to research and bring back;
->      surfaces in the session flow.
+> 4. **Cathedral additions accepted into the first build — now authored as Tasks 11-13
+>    (below):** Task 11 giving-session flow (gather → explore → decide → recap spine),
+>    Task 12 session recap artifact (shareable summary = the next invite), Task 13
+>    kids/teaching mode (assign a member a cause).
 >
-> **Deferred to phase 2 (write to TODOS, do NOT build now):** per-row LWW + history;
+> **Deferred to phase 2 (in TODOS.md, do NOT build now):** per-row LWW + history;
 > explore-together group-discovery surface (#2, lean on existing /browse); intention/niyyah
 > notes (#5); Ramadan-timed session CTA (#6); combined household dollar rollups; owner transfer.
 >
-> Recommended next: run **/plan-eng-review** to rebuild the task list around this shape
-> (it will re-sequence Tasks 1-10 and spec out additions A/B/C with TDD steps). The tasks
-> below remain the reference for the baseline mechanics.
+> **Execution order:** Tasks 1, 2, 4, 5, 6, 7, 8 (baseline, thin sync) → 11, 12, 13
+> (cathedral) → 9, 10 (e2e + verify). Task 3 is now thin-sync. Build with
+> `superpowers:subagent-driven-development`.
 
 **Goal:** Ship a shared, multi-editor household giving plan that holds proportions (not dollars), joinable by an invite link, as the product's first growth loop.
 
-**Architecture:** A new Firestore tree `shared_plans/{planId}` (money-free: charities/categories + weights + assignees) with a `members` subcollection. The plan doc has an unguessable auto-id and is **publicly readable** (no sensitive data) so an invited person sees a read-only preview before signing up; an `inviteToken` gates only the join-write. Per-row last-write-wins via a transaction that patches one `items[]` element by id, bumps a `revision`, and appends a bounded `history`. Each member applies the shared weights to their **own** private zakat target client-side ("your share") — dollars never enter the shared doc. A plan switcher on the profile keeps the existing personal plan untouched.
+**Architecture:** A new Firestore tree `shared_plans/{planId}` (money-free: charities/categories + weights + assignees) with a `members` subcollection. The plan doc has an unguessable auto-id and is **publicly readable** (no sensitive data) so an invited person sees a read-only preview before signing up; an `inviteToken` gates only the join-write. Writes are **thin sync** (whole `items` array, read-modify-write → `setDoc` merge, bump `revision`) — per-row last-write-wins + history are deferred to phase 2. Each member applies the shared weights to their **own** private zakat target client-side ("your share") — dollars never enter the shared doc. A plan switcher on the profile keeps the existing personal plan untouched.
 
 **Tech Stack:** React 19, TypeScript 5.8, Firebase Firestore (web SDK), TanStack Query, React Router 6, Vitest (unit, `vi.mock` firestore), Playwright (e2e). Spec: `docs/superpowers/specs/2026-06-08-shared-household-giving-plans-design.md`.
 
@@ -316,11 +311,7 @@ service cloud.firestore {
         allow delete: if request.auth != null && (request.auth.uid == uid ||
           get(/databases/$(database)/documents/shared_plans/$(planId)).data.ownerId == request.auth.uid);
       }
-
-      match /history/{entryId} {
-        allow read: if isMember();
-        allow write: if isMember();
-      }
+      // (phase 2) history ring buffer rules omitted — thin sync writes no history.
     }
   }
 }
@@ -341,45 +332,38 @@ git commit -m "feat(shared-plan): firestore rules — public read, token-gated j
 
 ---
 
-## Task 3: `useSharedPlan` hook (load + per-row LWW writes)
+## Task 3: `useSharedPlan` hook (load + thin-sync writes)
 
 **Files:**
 - Create: `website/src/hooks/useSharedPlan.ts`
 - Test: `website/src/hooks/useSharedPlan.test.ts`
 
-The hook loads `shared_plans/{planId}` + its `members`, and exposes mutations. `upsertItem` runs a Firestore **transaction**: re-read the plan, `mergeItem` the single incoming item (per-row LWW), bump `revision`, write a `history` entry, prune history to 20. This keeps "different rows never collide" honest even though items share one document.
+> **CEO reshape — thin sync, not per-row LWW.** The hook loads `shared_plans/{planId}` + its `members` and exposes mutations that write the whole `items` array (read-modify-write → `setDoc` merge → bump `revision`). No transaction, no `history`, no `mergeItem`/`applyItemTransaction`. Concurrent multi-device editing is rare (one person does the giving), so per-row LWW + history are deferred to phase 2 (TODOS). The pure helper `replaceOrAppendItem` is the only unit-tested logic. Task 1's `mergeItem`/`pruneHistory` exports stay in `sharedPlanLogic.ts` unused — they are phase-2 scaffolding; do not wire them in.
 
-- [ ] **Step 1: Write the failing test (transaction merge)**
+- [ ] **Step 1: Write the failing test (replace-or-append, thin sync)**
 
 ```typescript
 // website/src/hooks/useSharedPlan.test.ts
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { applyItemTransaction } from './useSharedPlan';
-import type { SharedPlan, PlanItem } from '../types/sharedPlan';
+import { describe, it, expect } from 'vitest';
+import { replaceOrAppendItem } from './useSharedPlan';
+import type { PlanItem } from '../types/sharedPlan';
 
-const basePlan = (items: PlanItem[]): SharedPlan => ({
-  id: 'p1', name: 'Khan Family', ownerId: 'u1', createdAt: 1, updatedAt: 1,
-  revision: 3, inviteToken: 'tok', items,
-});
 const item = (over: Partial<PlanItem> = {}): PlanItem => ({
   id: 'a', kind: 'charity', ref: '95-4453134', weight: 1, assigneeUid: null,
   updatedAt: 100, updatedBy: 'u1', ...over,
 });
 
-describe('applyItemTransaction', () => {
-  it('merges the incoming item, bumps revision, appends history', () => {
-    const current = basePlan([item({ id: 'a', weight: 1, updatedAt: 100 })]);
-    const result = applyItemTransaction(current, item({ id: 'a', weight: 4, updatedAt: 200 }), 'u2');
-    expect(result.plan.items.find(i => i.id === 'a')!.weight).toBe(4);
-    expect(result.plan.revision).toBe(4);
-    expect(result.historyEntry.itemId).toBe('a');
-    expect(result.historyEntry.after!.weight).toBe(4);
-    expect(result.historyEntry.before!.weight).toBe(1);
+describe('replaceOrAppendItem', () => {
+  it('appends a new item by id', () => {
+    expect(replaceOrAppendItem([], item({ id: 'x' })).map(i => i.id)).toEqual(['x']);
   });
-  it('adds a new row without touching others', () => {
-    const current = basePlan([item({ id: 'a' })]);
-    const result = applyItemTransaction(current, item({ id: 'b', weight: 2 }), 'u2');
-    expect(result.plan.items.map(i => i.id).sort()).toEqual(['a', 'b']);
+  it('overwrites an existing item by id (last write wins, whole-item)', () => {
+    const out = replaceOrAppendItem([item({ id: 'a', weight: 1 })], item({ id: 'a', weight: 5 }));
+    expect(out.find(i => i.id === 'a')!.weight).toBe(5);
+  });
+  it('leaves other rows untouched', () => {
+    const out = replaceOrAppendItem([item({ id: 'a' }), item({ id: 'b', weight: 2 })], item({ id: 'a', weight: 7 }));
+    expect(out.find(i => i.id === 'b')!.weight).toBe(2);
   });
 });
 ```
@@ -387,7 +371,7 @@ describe('applyItemTransaction', () => {
 - [ ] **Step 2: Run the test, verify it fails**
 
 Run: `cd website && npx vitest run src/hooks/useSharedPlan.test.ts`
-Expected: FAIL — `applyItemTransaction` not exported.
+Expected: FAIL — `replaceOrAppendItem` not exported.
 
 - [ ] **Step 3: Implement the hook (export the pure transaction core for testing)**
 
@@ -396,26 +380,19 @@ Expected: FAIL — `applyItemTransaction` not exported.
 import { useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  doc, collection, getDoc, getDocs, setDoc, deleteDoc, runTransaction, Timestamp,
+  doc, collection, getDoc, getDocs, setDoc, deleteDoc, Timestamp,
 } from 'firebase/firestore';
 import { useFirebaseData } from '../auth/FirebaseProvider';
-import { mergeItem } from '../lib/sharedPlanLogic';
-import type { SharedPlan, PlanItem, PlanMember, PlanHistoryEntry } from '../types/sharedPlan';
+import type { SharedPlan, PlanItem, PlanMember } from '../types/sharedPlan';
 
-/** Pure core of the item-upsert transaction (unit-tested). */
-export function applyItemTransaction(
-  current: SharedPlan,
-  incoming: PlanItem,
-  actorUid: string,
-): { plan: SharedPlan; historyEntry: PlanHistoryEntry } {
-  const before = current.items.find(i => i.id === incoming.id) ?? null;
-  const items = mergeItem(current.items, incoming);
-  const after = items.find(i => i.id === incoming.id) ?? null;
-  const revision = current.revision + 1;
-  return {
-    plan: { ...current, items, revision, updatedAt: Date.now() },
-    historyEntry: { revision, itemId: incoming.id, before, after, updatedBy: actorUid, at: Date.now() },
-  };
+/** Replace an item by id, or append if absent. Whole-item last-write-wins
+ *  (thin sync — no per-row timestamp compare; the saver's value wins). */
+export function replaceOrAppendItem(items: PlanItem[], incoming: PlanItem): PlanItem[] {
+  const idx = items.findIndex(i => i.id === incoming.id);
+  if (idx === -1) return [...items, incoming];
+  const next = items.slice();
+  next[idx] = incoming;
+  return next;
 }
 
 export function useSharedPlan(planId: string | null) {
@@ -437,19 +414,17 @@ export function useSharedPlan(planId: string | null) {
     },
   });
 
+  // Thin sync: read-modify-write the whole items array, no transaction/history.
   const upsertItem = useMutation({
     mutationFn: async (incoming: PlanItem) => {
       if (!db || !planId || !userId) throw new Error('Not authenticated');
-      await runTransaction(db, async (tx) => {
-        const ref = doc(db, 'shared_plans', planId);
-        const snap = await tx.get(ref);
-        if (!snap.exists()) throw new Error('Plan not found');
-        const current = { id: snap.id, ...(snap.data() as Omit<SharedPlan, 'id'>) };
-        const stamped = { ...incoming, updatedAt: Date.now(), updatedBy: userId };
-        const { plan, historyEntry } = applyItemTransaction(current, stamped, userId);
-        tx.set(ref, { items: plan.items, revision: plan.revision, updatedAt: Timestamp.now() }, { merge: true });
-        tx.set(doc(collection(db, 'shared_plans', planId, 'history')), historyEntry);
-      });
+      const ref = doc(db, 'shared_plans', planId);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) throw new Error('Plan not found');
+      const current = snap.data() as Omit<SharedPlan, 'id'>;
+      const stamped = { ...incoming, updatedAt: Date.now(), updatedBy: userId };
+      const items = replaceOrAppendItem(current.items, stamped);
+      await setDoc(ref, { items, revision: (current.revision ?? 0) + 1, updatedAt: Timestamp.now() }, { merge: true });
     },
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
   });
@@ -457,14 +432,12 @@ export function useSharedPlan(planId: string | null) {
   const removeItem = useMutation({
     mutationFn: async (itemId: string) => {
       if (!db || !planId || !userId) throw new Error('Not authenticated');
-      await runTransaction(db, async (tx) => {
-        const ref = doc(db, 'shared_plans', planId);
-        const snap = await tx.get(ref);
-        if (!snap.exists()) return;
-        const current = { id: snap.id, ...(snap.data() as Omit<SharedPlan, 'id'>) };
-        const items = current.items.filter(i => i.id !== itemId);
-        tx.set(ref, { items, revision: current.revision + 1, updatedAt: Timestamp.now() }, { merge: true });
-      });
+      const ref = doc(db, 'shared_plans', planId);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) return;
+      const current = snap.data() as Omit<SharedPlan, 'id'>;
+      const items = current.items.filter(i => i.id !== itemId);
+      await setDoc(ref, { items, revision: (current.revision ?? 0) + 1, updatedAt: Timestamp.now() }, { merge: true });
     },
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
   });
@@ -1065,6 +1038,211 @@ Run `cd website && npm run build && npx vite preview --port 4173`, then in a bro
 ```bash
 git add -A
 git commit -m "fix(shared-plan): address manual verification findings"
+```
+
+---
+
+# Cathedral additions — "Family Giving Night" (accepted by CEO review)
+
+These three turn the shared plan from a form into the ritual. Build them on top of
+Tasks 1–9 (thin sync). They are net-new UX; follow existing component patterns
+(`website/src/components/giving/*`, `pages/ProfilePage.tsx`). Pure logic gets TDD;
+UI gets a concrete component + integration point.
+
+## Task 11: Giving-session flow (the ritual spine)
+
+A guided arc that wraps the shared-plan view: **gather → explore → decide → recap**.
+Not a new data model — a stateful wrapper over `SharedPlanView` that gives the session
+a beginning and an end.
+
+**Files:**
+- Create: `website/src/components/giving/GivingSession.tsx` — session state machine + chrome.
+- Create: `website/src/lib/givingSession.ts` — pure session-step logic.
+- Test: `website/src/lib/givingSession.test.ts`
+- Modify: `website/pages/ProfilePage.tsx` — "Start giving session" entry on a shared plan.
+
+- [ ] **Step 1: Write the failing test for the step machine**
+
+```typescript
+// website/src/lib/givingSession.test.ts
+import { describe, it, expect } from 'vitest';
+import { SESSION_STEPS, nextStep, prevStep, isLastStep } from './givingSession';
+
+describe('giving session steps', () => {
+  it('orders gather → explore → decide → recap', () => {
+    expect(SESSION_STEPS).toEqual(['gather', 'explore', 'decide', 'recap']);
+  });
+  it('advances and stops at recap', () => {
+    expect(nextStep('gather')).toBe('explore');
+    expect(nextStep('recap')).toBe('recap');
+    expect(isLastStep('recap')).toBe(true);
+  });
+  it('goes back and stops at gather', () => {
+    expect(prevStep('explore')).toBe('gather');
+    expect(prevStep('gather')).toBe('gather');
+  });
+});
+```
+
+- [ ] **Step 2: Run, verify fail**
+
+Run: `cd website && npx vitest run src/lib/givingSession.test.ts`
+Expected: FAIL — module not found.
+
+- [ ] **Step 3: Implement the step logic**
+
+```typescript
+// website/src/lib/givingSession.ts
+export const SESSION_STEPS = ['gather', 'explore', 'decide', 'recap'] as const;
+export type SessionStep = (typeof SESSION_STEPS)[number];
+
+export function nextStep(s: SessionStep): SessionStep {
+  const i = SESSION_STEPS.indexOf(s);
+  return SESSION_STEPS[Math.min(i + 1, SESSION_STEPS.length - 1)];
+}
+export function prevStep(s: SessionStep): SessionStep {
+  const i = SESSION_STEPS.indexOf(s);
+  return SESSION_STEPS[Math.max(i - 1, 0)];
+}
+export function isLastStep(s: SessionStep): boolean {
+  return s === SESSION_STEPS[SESSION_STEPS.length - 1];
+}
+```
+
+- [ ] **Step 4: Run, verify pass**
+
+Run: `cd website && npx vitest run src/lib/givingSession.test.ts`
+Expected: PASS.
+
+- [ ] **Step 5: Build `GivingSession.tsx`**
+
+A component that holds `const [step, setStep] = useState<SessionStep>('gather')` and renders per step:
+- **gather** — "Gather the family" intro + the `InviteFamilyPanel` (Task 6) so people join before you start.
+- **explore** — a heading + a link/embed to `/browse` (reuse, do not rebuild discovery — that's deferred #2) so the family looks at charities together; "Add to our plan" routes selections into `upsertItem`.
+- **decide** — the `SharedPlanView` (Task 5) proportional editor.
+- **recap** — render `SessionRecap` (Task 12).
+Bottom bar: Back / Next driven by `prevStep`/`nextStep`; on the last step show "Finish".
+
+- [ ] **Step 6: Wire entry on ProfilePage**
+
+When a shared plan is selected (Task 8 switcher), show a primary "Start giving session" button that mounts `<GivingSession planId={selectedPlan} />` in place of the plain `SharedPlanView`. The plain view remains the non-session way to edit.
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add website/src/lib/givingSession.ts website/src/lib/givingSession.test.ts website/src/components/giving/GivingSession.tsx website/pages/ProfilePage.tsx
+git commit -m "feat(shared-plan): giving-session flow (gather/explore/decide/recap)"
+```
+
+## Task 12: Session recap artifact (delight + growth loop)
+
+The end-of-session summary: "The {name} is supporting N charities across M causes this {year}."
+Reuses the proportional data; renders a clean shareable card with a share button. The
+screenshot/link is the next invite.
+
+**Files:**
+- Create: `website/src/components/giving/SessionRecap.tsx`
+- Create: `website/src/lib/recapSummary.ts` — pure summary stats.
+- Test: `website/src/lib/recapSummary.test.ts`
+
+- [ ] **Step 1: Failing test for the summary stats**
+
+```typescript
+// website/src/lib/recapSummary.test.ts
+import { describe, it, expect } from 'vitest';
+import { summarize } from './recapSummary';
+import type { PlanItem } from '../types/sharedPlan';
+
+const item = (over: Partial<PlanItem>): PlanItem => ({
+  id: '1', kind: 'charity', ref: '95-4453134', weight: 1, assigneeUid: null,
+  updatedAt: 0, updatedBy: 'u', ...over,
+});
+
+describe('summarize', () => {
+  it('counts charities and distinct causes (categories)', () => {
+    const s = summarize([
+      item({ id: '1', kind: 'charity', ref: 'A' }),
+      item({ id: '2', kind: 'charity', ref: 'B' }),
+      item({ id: '3', kind: 'category', ref: 'humanitarian' }),
+    ]);
+    expect(s.charityCount).toBe(2);
+    expect(s.causeCount).toBe(1);
+  });
+  it('handles an empty plan', () => {
+    expect(summarize([])).toEqual({ charityCount: 0, causeCount: 0 });
+  });
+});
+```
+
+- [ ] **Step 2: Run, verify fail**
+
+Run: `cd website && npx vitest run src/lib/recapSummary.test.ts`
+Expected: FAIL — module not found.
+
+- [ ] **Step 3: Implement**
+
+```typescript
+// website/src/lib/recapSummary.ts
+import type { PlanItem } from '../types/sharedPlan';
+
+export interface RecapSummary { charityCount: number; causeCount: number; }
+
+export function summarize(items: PlanItem[]): RecapSummary {
+  return {
+    charityCount: items.filter(i => i.kind === 'charity').length,
+    causeCount: new Set(items.filter(i => i.kind === 'category').map(i => i.ref)).size,
+  };
+}
+```
+
+- [ ] **Step 4: Run, verify pass**
+
+Run: `cd website && npx vitest run src/lib/recapSummary.test.ts`
+Expected: PASS.
+
+- [ ] **Step 5: Build `SessionRecap.tsx`**
+
+Render a card: headline "The {plan.name} is supporting {charityCount} charities across
+{causeCount} causes this {new Date().getFullYear()}" + the proportional list (names + %)
++ a **Share** button reusing the existing `ShareButton` (`website/src/components/ShareButton.tsx`)
+pointed at the plan's join link (`/plan/join/{planId}/{inviteToken}`). This makes the recap
+the invite. No dollars in the recap (money-free, like everything shared).
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add website/src/lib/recapSummary.ts website/src/lib/recapSummary.test.ts website/src/components/giving/SessionRecap.tsx
+git commit -m "feat(shared-plan): session recap artifact + share-as-invite"
+```
+
+## Task 13: Kids/teaching mode (assign a member a cause)
+
+Lets the owner assign a member (e.g. a child) a cause to research and bring back. Reuses
+the existing `assigneeUid` field on `PlanItem` — no schema change. Surfaces in the session's
+explore/decide steps.
+
+**Files:**
+- Create: `website/src/components/giving/AssignCause.tsx`
+- Modify: `website/src/components/giving/SharedPlanView.tsx` — assignee picker per row.
+
+- [ ] **Step 1: Implement the assignee control**
+
+In `SharedPlanView`'s row (Task 5), add a small select bound to `item.assigneeUid` populated
+from `members` (Task 3). Changing it calls `upsertItem({ ...item, assigneeUid })`. Render the
+assignee's `displayName` as a chip ("Yusuf is researching this"). `AssignCause.tsx` is the
+reusable picker.
+
+- [ ] **Step 2: Surface in the session**
+
+In `GivingSession` (Task 11) explore step, add "Give everyone a cause" affordance that opens
+`AssignCause` per unassigned item, so the teaching ritual has a home.
+
+- [ ] **Step 3: Typecheck + commit**
+
+Run: `cd website && npx tsc --noEmit 2>&1 | grep -E "AssignCause|SharedPlanView" || echo clean`
+```bash
+git add website/src/components/giving/AssignCause.tsx website/src/components/giving/SharedPlanView.tsx
+git commit -m "feat(shared-plan): kids/teaching mode — assign a member a cause"
 ```
 
 ---
