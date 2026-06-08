@@ -31,6 +31,8 @@ import {
   CategorySplit,
   ProgressDashboard,
 } from '../src/components/giving';
+import { PlanSwitcher } from '../src/components/giving/PlanSwitcher';
+import { SharedPlanView } from '../src/components/giving/SharedPlanView';
 import type { GivingHistoryEntry, CharitySummary } from '../types';
 import { useTour } from '../src/tours/useTour';
 import { givingPlanTourSteps } from '../src/tours/givingPlanTour';
@@ -144,6 +146,7 @@ export function ProfilePage() {
 
   // UI state
   const [activeTab, setActiveTab] = useState<TabId>('giving');
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [showDonationModal, setShowDonationModal] = useState(false);
   const [editingDonation, setEditingDonation] = useState<GivingHistoryEntry | null>(null);
   const [prefillCharity, setPrefillCharity] = useState<{ ein: string; name: string } | null>(null);
@@ -337,6 +340,11 @@ export function ProfilePage() {
         {/* Tab Content */}
         {activeTab === 'giving' && (
           <div className="space-y-6">
+            <PlanSwitcher selected={selectedPlan} onSelect={setSelectedPlan} />
+            {selectedPlan !== null ? (
+              <SharedPlanView planId={selectedPlan} />
+            ) : (
+              <>
             {/* Progress Dashboard — read-only top-of-record summary. Hidden
                 while CategorySplit is the active gate (no buckets yet means
                 there are no assignments to summarize). */}
@@ -474,6 +482,8 @@ export function ProfilePage() {
                   </p>
                 </div>
               </div>
+            )}
+              </>
             )}
           </div>
         )}
