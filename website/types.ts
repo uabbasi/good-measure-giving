@@ -1219,6 +1219,8 @@ export interface UserProfile {
   // New flexible allocation system
   givingBuckets: GivingBucket[];
   charityBucketAssignments: CharityBucketAssignment[];
+  /** Ids of shared household plans this user belongs to. */
+  sharedPlanIds?: string[];
   createdAt: string;
   updatedAt: string;
 }
