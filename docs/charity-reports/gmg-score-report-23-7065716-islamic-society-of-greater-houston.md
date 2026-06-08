@@ -127,8 +127,8 @@ Verification 50% (third-party evaluation by Charity Navigator/Candid), transpare
 | Component | Your score | Status | What we saw |
 |---|---|---|---|
 | Muslim Donor Fit | 10/19 | Partial | Accepts zakat (+2); Muslim-focused organization (+2); Islamic identity (+1); Asnaf: fi_sabilillah (+5) |
-| Cause Urgency | 4/13 | Strong | Cause area: Religious Cultural (4/13) |
-| Underserved Space | 0/7 | Partial | Well-covered space with mainstream reach |
+| Cause Urgency | 4/13 | Low | Cause area: Religious Cultural (4/13) |
+| Underserved Space | 0/7 | Low | Well-covered space with mainstream reach |
 | Track Record | 6/6 | Strong | Founded 1969 (57 years — 6/6) |
 | Funding Gap | 3/5 | Partial | Revenue: unknown (moderate gap assumed) |
 

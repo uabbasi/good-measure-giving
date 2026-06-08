@@ -43,7 +43,7 @@ ARCHETYPES_YAML = Path(__file__).resolve().parent / "config" / "rubric_archetype
 DEFAULT_OUT_DIR = REPO_ROOT / "docs" / "charity-reports"
 MAKE_PDF_DEFAULT = Path.home() / ".claude" / "skills" / "gstack" / "make-pdf" / "dist" / "pdf"
 
-STATUS_LABELS = {"full": "Strong", "partial": "Partial", "missing": "Missing data"}
+STATUS_LABELS = {"full": "Strong", "partial": "Partial", "low": "Low", "missing": "Missing data"}
 
 # Friendly labels for sourceAttribution field keys.
 FIELD_LABELS = {
@@ -187,6 +187,17 @@ def strip_urls(text: str) -> str:
     return _URL_RE.sub(_short, text or "")
 
 
+def display_status(c: dict) -> str:
+    """Display label from the score ratio. The scorer's own status field
+    means 'evaluation completeness' (full/partial/missing data), which
+    misreads as quality — 0/13 with status=full is not 'Strong'."""
+    if c.get("status") == "missing":
+        return "missing"
+    possible = c.get("possible") or 0
+    frac = (c.get("scored") or 0) / possible if possible else 0
+    return "full" if frac >= 0.75 else ("partial" if frac >= 0.4 else "low")
+
+
 def components_table(components: list[dict]) -> list[str]:
     lines = [
         "| Component | Your score | Status | What we saw |",
@@ -194,7 +205,7 @@ def components_table(components: list[dict]) -> list[str]:
     ]
     for c in components:
         evidence = strip_urls((c.get("evidence") or "").replace("|", "/"))
-        status = STATUS_LABELS.get(c.get("status", ""), c.get("status", ""))
+        status = STATUS_LABELS.get(display_status(c), "")
         lines.append(f"| {c['name']} | {fmt_pts(c['scored'], c['possible'])} | {status} | {evidence} |")
     return lines
 

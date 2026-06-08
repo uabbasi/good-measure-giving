@@ -89,6 +89,7 @@ tr.conflict td { color: #7c2d12; }
 .rank { font-variant-numeric: tabular-nums; color: #6b7280; }
 .status-full { color: #14532d; }
 .status-partial { color: #92400e; }
+.status-low { color: #991b1b; }
 .status-missing { color: #991b1b; font-style: italic; }
 
 /* ── Notes & quotes ────────────────────────────────────── */
@@ -120,7 +121,8 @@ ol li { margin-bottom: 4.5pt; }
 """
 
 
-def _status_cell(status: str) -> str:
+def _status_cell(c: dict) -> str:
+    status = cr.display_status(c)
     label = cr.STATUS_LABELS.get(status, status)
     return f'<span class="status-{esc(status)}">{esc(label)}</span>'
 
@@ -132,7 +134,7 @@ def _components_rows(components: list[dict]) -> str:
         rows.append(
             f"<tr><td><b>{esc(c['name'])}</b></td>"
             f"<td class='num'>{esc(c['scored'])}/{esc(c['possible'])}</td>"
-            f"<td>{_status_cell(c.get('status', ''))}</td>"
+            f"<td>{_status_cell(c)}</td>"
             f"<td class='muted'>{esc(evidence)}</td></tr>"
         )
     return "".join(rows)

@@ -1,10 +1,10 @@
-# Good Measure Giving Score Report: Islamic Relief USA
+# Good Measure Giving Score Report: Bloom Charity Nfp
 
-**EIN:** 95-4453134 · **Report date:** 2026-06-07 · **Data as of:** 2026-03-15
+**EIN:** 82-2995347 · **Report date:** 2026-06-07 · **Data as of:** 2026-03-15
 
-**Your GMG Score: 81/100** · Impact 37/50 · Alignment 44/50 · Risk deduction −0
+**Your GMG Score: 76/100** · Impact 29/50 · Alignment 47/50 · Risk deduction −0
 
-*For reference, Charity Navigator rates you 100/100 — that is CN's own score, separate from the GMG Score above; the two measure different things and will not match.*
+*For reference, Charity Navigator rates you 89.5/100 — that is CN's own score, separate from the GMG Score above; the two measure different things and will not match.*
 
 **Wallet tag:** ZAKAT-ELIGIBLE — this records whether your organization publicly states it accepts zakat; it is not a religious ruling by us.
 
@@ -18,32 +18,33 @@ Every figure in this report traces to a public source. The table below lists eac
 
 | Data point | Value we read | Source | Retrieved |
 |---|---|---|---|
-| Administrative expenses | 3461594 | Charity Navigator | 2026-03-09 |
+| Administrative expenses | 2203 | Charity Navigator | 2026-03-09 |
+| Beneficiaries served annually | 1500000 | Charity Website | 2026-03-07 |
 | Candid transparency seal | platinum | Candid | 2026-03-09 |
-| Charity Navigator score | 100 | Charity Navigator | 2026-03-09 |
-| Zakat acceptance claim | Yes | Charity Website | 2026-03-04 |
-| Founded year | 1993 | Charity Website | 2026-03-04 |
-| Fundraising expenses | 27387518 | Charity Navigator | 2026-03-09 |
-| Audited financials | Yes | Charity Website | 2026-03-04 |
-| NTEE classification | Q123 | ProPublica Form 990 | 2026-03-09 |
-| Program expense ratio | 0.80 | Charity Navigator | 2026-03-09 |
-| Program expenses | 124179919 | Charity Navigator | 2026-03-09 |
-| Total revenue | 165235589 | Form 990 (2023) | 2026-03-09 |
+| Charity Navigator score | 89.50 | Charity Navigator | 2026-03-09 |
+| Zakat acceptance claim | Yes | Charity Website | 2026-03-07 |
+| Founded year | 2017 | Charity Website | 2026-03-07 |
+| Fundraising expenses | 5506 | Charity Navigator | 2026-03-09 |
+| Audited financials | No | Charity Website | 2026-03-07 |
+| NTEE classification | O12 | ProPublica Form 990 | 2026-03-09 |
+| Program expense ratio | 0.99 | Charity Navigator | 2026-03-09 |
+| Program expenses | 571183 | Charity Navigator | 2026-03-09 |
+| Total revenue | 158297 | Form 990 (2023) | 2026-03-09 |
 | Transparency score | 100 | Candid Platinum Seal | 2026-03-09 |
-| Operating reserves (months) | 18 | Calculated from Form 990 | 2026-03-09 |
+| Operating reserves (months) | 21.30 | Calculated from Form 990 | 2026-03-09 |
 
 **Source links** (one per source — the table above stays readable):
-- Candid: [app.candid.org/profile/8460202](https://app.candid.org/profile/8460202)
-- Charity Navigator: [www.charitynavigator.org/ein/95445313…](https://www.charitynavigator.org/ein/954453134#financials)
-- Charity Navigator: [www.charitynavigator.org/ein/95445313…](https://www.charitynavigator.org/ein/954453134#ratings)
-- Charity Website: [irusa.org/zakat](https://irusa.org/zakat)
-- Charity Website: [irusa.org/wp-content/uploads/2025/10/…](https://irusa.org/wp-content/uploads/2025/10/2025-Zakat-Catalog-Book-IRUSA-Web-1.pdf)
-- ProPublica Form 990: [projects.propublica.org/nonprofits/or…](https://projects.propublica.org/nonprofits/organizations/954453134)
+- Candid: [app.candid.org/profile/9658274](https://app.candid.org/profile/9658274)
+- Charity Navigator: [www.charitynavigator.org/ein/82299534…](https://www.charitynavigator.org/ein/822995347#financials)
+- Charity Navigator: [www.charitynavigator.org/ein/82299534…](https://www.charitynavigator.org/ein/822995347#ratings)
+- Charity Website: [bloomcharity.org/wp-content/uploads/s…](https://bloomcharity.org/wp-content/uploads/sites/917/2025/03/2021-Annual-Report.pdf)
+- Charity Website: [bloomcharity.org/donate](https://bloomcharity.org/donate)
+- ProPublica Form 990: [projects.propublica.org/nonprofits/or…](https://projects.propublica.org/nonprofits/organizations/822995347)
 
 **Zakat claim — the evidence we recorded:**
-> Dedicated zakat page found at irusa.org/zakat (Source: irusa.org/zakat)
+> Dedicated zakat page found at bloomcharity.org/donate (Source: bloomcharity.org/donate)
 
-**External evaluations and recognitions we found:** Charity Navigator 4-Star ranking; BBB Wise Giving Alliance Standards for Charity Accountability; GuideStar Gold Seal of Transparency
+**External evaluations and recognitions we found:** Grant (The Giant Steps Foundation)
 
 ### Order of precedence when sources disagree
 
@@ -67,21 +68,21 @@ We read multiple sources, and they don't always agree — different fiscal years
 | Field | IRS 990 (ProPublica) | Charity Navigator | Candid | Your website | Form 990 grants | |
 |---|---|---|---|---|---|---|
 | Tax / fiscal year | 2023 | 2024 | · | · | 2024 | ⚠ |
-| Total revenue | $165,235,589 | $147,232,658 | · | · | $147,232,658 | ⚠ |
-| Total expenses | $148,599,193 | $155,029,031 | · | · | $155,029,031 | ⚠ |
-| Program expenses | — | $124,179,919 | · | · | — |  |
-| Admin expenses | — | $3,461,594 | · | · | · |  |
-| Fundraising expenses | — | $27,387,518 | · | · | · |  |
-| Net assets | $223,301,734 | $49,166,942 | · | · | · | ⚠ |
-| Total assets | $228,581,851 | $59,395,245 | · | · | · | ⚠ |
-| Program expense ratio | · | 80% | · | · | · |  |
-| Board size | · | 6 | 5 | · | · | ⚠ |
-| CEO name | · | Anwar Khan | Ahmed Shehata | · | · | ⚠ |
-| IRS ruling year | 1994 | 1994 | 1994 | · | · |  |
-| Founded year (self-reported) | · | · | · | 1993 | · |  |
-| NTEE code | Q123 | · | W12 | · | · | ⚠ |
+| Total revenue | $158,297 | $551,810 | · | · | $551,810 | ⚠ |
+| Total expenses | $99,381 | $578,892 | · | · | $578,892 | ⚠ |
+| Program expenses | — | $571,183 | · | · | — |  |
+| Admin expenses | — | $2,203 | · | · | · |  |
+| Fundraising expenses | — | $5,506 | · | · | · |  |
+| Net assets | — | $115,456 | · | · | · |  |
+| Total assets | $176,519 | $115,456 | · | · | · | ⚠ |
+| Program expense ratio | · | 99% | · | · | · |  |
+| Board size | · | — | 1 | · | · |  |
+| CEO name | · | Amina M Shams | — | · | · |  |
+| IRS ruling year | 2017 | 2017 | 2017 | · | · |  |
+| Founded year (self-reported) | · | · | · | 2017 | · |  |
+| NTEE code | O12 | · | R28 | · | · | ⚠ |
 | Candid seal | · | · | platinum | · | · |  |
-| Financial audit | · | Yes | · | · | · |  |
+| Financial audit | · | No | · | · | · |  |
 | Accepts zakat (explicit evidence) | · | · | · | Yes | · |  |
 
 *— = source has no value · · = source doesn't report this field*
@@ -89,13 +90,10 @@ We read multiple sources, and they don't always agree — different fiscal years
 ### Conflicts and how we resolved them
 
 - **Tax / fiscal year** ⚠ IRS 990 (ProPublica): 2023; Charity Navigator: 2024; Form 990 grants: 2024
-- **Total revenue** ⚠ IRS 990 (ProPublica): $165,235,589; Charity Navigator: $147,232,658; Form 990 grants: $147,232,658 → **we use $165,235,589** (from Form 990 (2023), per precedence)
-- **Total expenses** ⚠ IRS 990 (ProPublica): $148,599,193; Charity Navigator: $155,029,031; Form 990 grants: $155,029,031
-- **Net assets** ⚠ IRS 990 (ProPublica): $223,301,734; Charity Navigator: $49,166,942
-- **Total assets** ⚠ IRS 990 (ProPublica): $228,581,851; Charity Navigator: $59,395,245
-- **Board size** ⚠ Charity Navigator: 6; Candid: 5
-- **CEO name** ⚠ Charity Navigator: Anwar Khan; Candid: Ahmed Shehata
-- **NTEE code** ⚠ IRS 990 (ProPublica): Q123; Candid: W12 → **we use Q123** (from ProPublica Form 990, per precedence)
+- **Total revenue** ⚠ IRS 990 (ProPublica): $158,297; Charity Navigator: $551,810; Form 990 grants: $551,810 → **we use $158,297** (from Form 990 (2023), per precedence)
+- **Total expenses** ⚠ IRS 990 (ProPublica): $99,381; Charity Navigator: $578,892; Form 990 grants: $578,892
+- **Total assets** ⚠ IRS 990 (ProPublica): $176,519; Charity Navigator: $115,456
+- **NTEE code** ⚠ IRS 990 (ProPublica): O12; Candid: R28 → **we use O12** (from ProPublica Form 990, per precedence)
 
 Financial figures that differ across sources usually reflect different filing years (see the Tax / fiscal year row) rather than errors — each source updates on its own schedule. Where a conflict is not a fiscal-year artifact, the correction process at the end of this report applies.
 
@@ -109,13 +107,13 @@ We publish the rubric in full so nothing about your score is a black box. Rubric
 
 | Component | Weight (max points) | You scored |
 |---|---|---|
-| Cost Per Beneficiary | 13 | 4 |
+| Cost Per Beneficiary | 13 | 0 |
 | Directness | 5 | 5 |
-| Financial Health | 7 | 4 |
-| Program Ratio | 5 | 4 |
-| Evidence & Outcomes | 5 | 5 |
+| Financial Health | 7 | 5 |
+| Program Ratio | 5 | 5 |
+| Evidence & Outcomes | 5 | 4 |
 | Theory of Change | 5 | 5 |
-| Governance | 10 | 10 |
+| Governance | 10 | 5 |
 
 Governance carries a 10-point floor in every archetype.
 
@@ -147,37 +145,37 @@ Verification 50% (third-party evaluation by Charity Navigator/Candid), transpare
 
 | Component | Your score | Status | What we saw |
 |---|---|---|---|
-| Cost Per Beneficiary | 4/13 | Missing data | No beneficiary data available for cost-per-beneficiary scoring; good program ratio (≥75%) suggests reasonable delivery |
+| Cost Per Beneficiary | 0/13 | Low | A cost below $1/beneficiary usually means beneficiary counts are inflated or double-counted. — beneficiary count likely inflated |
 | Directness | 5/5 | Strong | Delivery model: Direct Service |
-| Financial Health | 4/7 | Partial | Working capital: 18.0 months (HIGH) |
-| Program Ratio | 4/5 | Strong | Program expense ratio: 80% |
-| Evidence & Outcomes | 5/5 | Strong | Evidence & outcomes: VERIFIED |
-| Theory of Change | 5/5 | Strong | Theory of change: STRONG |
-| Governance | 10/10 | Strong | Board governance: ADEQUATE (5 members) |
+| Financial Health | 5/7 | Partial | Working capital: 21.3 months (HIGH) |
+| Program Ratio | 5/5 | Strong | Program expense ratio: 99% |
+| Evidence & Outcomes | 4/5 | Strong | Evidence & outcomes: TRACKED |
+| Theory of Change | 5/5 | Strong | Theory of change: CLEAR |
+| Governance | 5/10 | Partial | Board governance: MINIMAL (3 members) |
 
 ## Your Alignment scorecard
 
 | Component | Your score | Status | What we saw |
 |---|---|---|---|
-| Muslim Donor Fit | 19/19 | Strong | Explicit zakat program (+4); Muslim-focused organization (+2); Islamic identity (+1); Asnaf: fuqara (+5); Operates in Muslim-majority regions (+3); Strong humanitarian service (+4) |
+| Muslim Donor Fit | 18/19 | Strong | Explicit zakat program (+4); Muslim-focused organization (+2); Asnaf: fuqara (+5); Operates in Muslim-majority regions (+3); Strong humanitarian service (+4) |
 | Cause Urgency | 13/13 | Strong | Cause area: Humanitarian (13/13) |
-| Underserved Space | 3/7 | Partial | Serves underserved populations (+3) |
-| Track Record | 6/6 | Strong | Founded 1993 (33 years — 6/6) |
-| Funding Gap | 3/5 | Partial | Revenue: $147.2M (3/5 funding gap) |
+| Underserved Space | 7/7 | Strong | Niche cause: UNKNOWN (+4); Serves underserved populations (+3) |
+| Track Record | 4/6 | Partial | Founded 2017 (9 years — 4/6) |
+| Funding Gap | 5/5 | Strong | Revenue: $551,810 (5/5 funding gap) |
 
 ## Gaps to close
 
-We identified **up to 12 points** of headroom, ranked by potential gain. The last column tells you exactly where our pipeline reads the evidence — if you already do these things but don't publish them there, publishing is the entire fix.
+We identified **up to 2 points** of headroom, ranked by potential gain. The last column tells you exactly where our pipeline reads the evidence — if you already do these things but don't publish them there, publishing is the entire fix.
 
 | Priority | Component | Currently | Potential gain | What to do | Where we'll read it |
 |---|---|---|---|---|---|
-| 1 | Cost Per Beneficiary (Impact) | 4/13 | +6 | Publish beneficiary counts consistently so cost-effectiveness can be assessed. | Beneficiary counts on your website / annual report |
-| 2 | Financial Health (Impact) | 4/7 | +3 | If reserves are above policy target, document why and publish triggers for planned deployment. | IRS Form 990 (reserves) + a published reserve policy |
-| 3 | Underserved Space (Alignment) | 3/7 | +3 | Expand services to underserved populations or geographies with limited nonprofit coverage. | Program + geography descriptions on your website |
+| 1 | Financial Health (Impact) | 5/7 | +2 | If reserves are above policy target, document why and publish triggers for planned deployment. | IRS Form 990 (reserves) + a published reserve policy |
 
 ## Risk deductions
 
-No risk deductions — no governance red flags were identified.
+Current deduction: **−0** (risk level: LOW).
+
+- **Impact, medium severity**: Cost per beneficiary is $0.39 — implausibly low (source: Reconciliation)
 
 ## Data confidence
 
@@ -185,22 +183,23 @@ Your data-confidence badge is **HIGH**. This sits outside the score itself — i
 
 | Signal | Level | Value |
 |---|---|---|
-| Verification (50%) | HIGH | 1.00 |
+| Verification (50%) | MODERATE | 0.70 |
 | Transparency (35%) | PLATINUM | 1.00 |
 | Data quality (15%) | HIGH | 1.00 |
 
-All three signals are at their maximum — donors see your evaluation as fully verified.
+**To raise it:**
+- Submit for a Charity Navigator evaluation and keep your Candid (GuideStar) profile current — third-party verification is half of the data-confidence signal.
 
 ## What's working in your favor
 
-- Maintains a perfect Charity Navigator score of 100.0/100, reflecting exceptional accountability and transparency
-- High operational efficiency with 80.3% of total revenue directed toward program expenses
-- Strong financial stability with 18.0 months of working capital available
+- Exceptional program expense ratio of 98.7%, ensuring nearly all funds directly support children [1].
+- Highly efficient fundraising operations, spending only $0.01 to raise every $1 [1].
+- Strong liquidity with 21.3 months of working capital available to sustain operations [1].
 
 ## From our analysts
 
-- Enhancing the directness of impact reporting to further increase the impact score from 37/50
-- Optimizing fundraising efficiency beyond the current rate of $0.19 per $1 raised
+- Enhancing third-party impact measurement to further validate long-term developmental outcomes.
+- Expanding geographic reach beyond current primary project sites to serve more children in crisis.
 
 ## Correcting or updating our data
 
