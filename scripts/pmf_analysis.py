@@ -19,10 +19,10 @@ import json
 import os
 import subprocess
 import sys
-import urllib.request
 import urllib.error
+import urllib.request
 from collections import defaultdict
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 
 PROJECT_ID = "good-measure-giving"
 DATABASE = "(default)"
@@ -43,8 +43,8 @@ GA4_SCOPES = ["https://www.googleapis.com/auth/analytics.readonly"]
 def get_ga4_token() -> str | None:
     """Get an OAuth2 token for GA4 using service account credentials."""
     try:
-        from google.oauth2 import service_account
         import google.auth.transport.requests
+        from google.oauth2 import service_account
 
         creds = service_account.Credentials.from_service_account_file(
             GA4_CREDENTIALS_PATH, scopes=GA4_SCOPES,

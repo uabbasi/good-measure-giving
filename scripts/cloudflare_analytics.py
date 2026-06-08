@@ -15,8 +15,8 @@ Environment variables:
 import json
 import os
 import sys
-import urllib.request
 import urllib.error
+import urllib.request
 from datetime import datetime, timedelta, timezone
 
 GRAPHQL_URL = "https://api.cloudflare.com/client/v4/graphql"
