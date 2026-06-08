@@ -21,28 +21,26 @@ test('intro presentation shows on first visit and skip dismisses it', async ({ p
 
   await page.keyboard.press('ArrowRight');
   await page.waitForTimeout(1500);
-  await page.screenshot({ path: '/tmp/intro_slide2.png' });
+  await page.screenshot({ path: '/tmp/intro_slide2_score.png' });
 
   await page.keyboard.press('ArrowRight');
   await page.waitForTimeout(1500);
-  await page.screenshot({ path: '/tmp/intro_slide3_browse.png' });
+  await page.screenshot({ path: '/tmp/intro_slide3_zakat.png' });
 
   await page.keyboard.press('ArrowRight');
   await page.waitForTimeout(1500);
-  await page.screenshot({ path: '/tmp/intro_slide4_score.png' });
-
-  await page.keyboard.press('ArrowRight');
-  await page.waitForTimeout(1500);
-  await page.screenshot({ path: '/tmp/intro_slide5_zakat.png' });
-
-  await page.keyboard.press('ArrowRight');
-  await page.waitForTimeout(1500);
-  await page.screenshot({ path: '/tmp/intro_slide6_cta.png' });
+  await page.screenshot({ path: '/tmp/intro_slide4_cta.png' });
 
   // Skip dismisses
   await page.getByRole('button', { name: 'Skip intro' }).click();
   await page.waitForTimeout(500);
   await expect(dialog).toBeHidden();
+
+  // Regression guard: dismissing the intro must release the body scroll lock
+  // (prerendered HTML once baked `overflow: hidden` into the body, and the
+  // intro's restore-previous-value cleanup re-applied it forever).
+  const bodyOverflow = await page.evaluate(() => document.body.style.overflow);
+  expect(bodyOverflow).not.toBe('hidden');
 
   // Reload — should NOT show again (localStorage flag set)
   await page.reload();
