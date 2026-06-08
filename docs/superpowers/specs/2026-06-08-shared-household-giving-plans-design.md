@@ -211,8 +211,17 @@ without a collection-group query on every load:
 
 ## Phasing
 
-- **Phase 1 (this spec):** shared proportional plan; per-row LWW + history; owner/editor
-  roles; invite link + revoke; unauthenticated read-only preview; plan switcher;
-  proportional shared-plan view with private per-member "your share."
-- **Phase 2 (noted, not built):** combined household *dollar* rollups for the spouse
-  full-transparency case; Ramadan-timed family planning prompt; owner transfer.
+> **CEO review reshape (2026-06-08):** north star is **"Family Giving Night."** Phase 1
+> is **ritual-first on thin sync**, NOT plumbing-first. Per-row LWW + history are deferred
+> (concurrent editing is rare per the demand evidence).
+
+- **Phase 1 (first build):** shared proportional plan (money-free); owner/editor roles;
+  invite link + revoke; unauthenticated read-only preview; plan switcher; proportional
+  together-view with private per-member "your share" — **on thin sync (whole-doc merge
+  write, not per-row LWW).** Plus the three accepted cathedral additions:
+  - **Giving-session flow** — guided gather → explore → decide → recap arc (the ritual spine).
+  - **Session recap artifact** — shareable "Family Giving Plan {year}" summary (delight + growth loop).
+  - **Kids/teaching mode** — assign a member a cause to research and present in the session.
+- **Phase 2 (deferred — TODOS):** per-row LWW + history ring buffer; explore-together
+  group-discovery surface; intention/niyyah notes per charity; Ramadan-timed session CTA;
+  combined household *dollar* rollups (spouse full-transparency); owner transfer.

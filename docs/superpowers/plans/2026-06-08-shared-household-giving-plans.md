@@ -2,6 +2,40 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+> ## ⚑ CEO REVIEW RESHAPE (2026-06-08) — READ FIRST, OVERRIDES TASK ORDER BELOW
+>
+> Office-hours validated the demand as the founder's own **family giving ritual** (sit
+> together, explore, decide), and that **one person does all the giving** — so async
+> co-editing is rare. CEO review therefore **reshaped this plan from plumbing-first to
+> ritual-first**, north star: **"Family Giving Night."** The task list below was written
+> plumbing-first; build in this order/scope instead:
+>
+> **First build (ritual-first, thin sync):**
+> 1. Tasks 1, 4, 5, 8 — types, list/create, the shared-plan **together-view** (proportional,
+>    money-free, your-share), and the plan switcher. **Keep.**
+> 2. Task 6 (invite) + Task 7 (public preview + join) — the growth loop. **Keep.**
+> 3. **Thin sync, NOT per-row LWW.** Replace Task 3's transaction/`applyItemTransaction`
+>    with the simplest correct write (whole-doc `setDoc` merge, owner-and-members edit).
+>    **Defer per-row LWW + the `history` ring buffer** until real concurrent editing shows
+>    up (evidence says it won't soon). Task 2 rules stay, minus the `history` rules.
+> 4. **Cathedral additions accepted into the first build (new tasks, author during
+>    execution):**
+>    - **A. Giving-session flow** — a guided gather → explore → decide → **recap** arc that
+>      wraps the together-view. This is the spine; without it this is a form, not a ritual.
+>    - **B. Session recap artifact** — a shareable "Family Giving Plan {year}" summary at the
+>      end. Reuse the `charity_report_html.py` HTML→Chromium-print pipeline pattern. It's the
+>      delight payoff AND the growth loop (the screenshot is the next invite).
+>    - **C. Kids/teaching mode** — assign a member (child) a cause to research and bring back;
+>      surfaces in the session flow.
+>
+> **Deferred to phase 2 (write to TODOS, do NOT build now):** per-row LWW + history;
+> explore-together group-discovery surface (#2, lean on existing /browse); intention/niyyah
+> notes (#5); Ramadan-timed session CTA (#6); combined household dollar rollups; owner transfer.
+>
+> Recommended next: run **/plan-eng-review** to rebuild the task list around this shape
+> (it will re-sequence Tasks 1-10 and spec out additions A/B/C with TDD steps). The tasks
+> below remain the reference for the baseline mechanics.
+
 **Goal:** Ship a shared, multi-editor household giving plan that holds proportions (not dollars), joinable by an invite link, as the product's first growth loop.
 
 **Architecture:** A new Firestore tree `shared_plans/{planId}` (money-free: charities/categories + weights + assignees) with a `members` subcollection. The plan doc has an unguessable auto-id and is **publicly readable** (no sensitive data) so an invited person sees a read-only preview before signing up; an `inviteToken` gates only the join-write. Per-row last-write-wins via a transaction that patches one `items[]` element by id, bumps a `revision`, and appends a bounded `history`. Each member applies the shared weights to their **own** private zakat target client-side ("your share") — dollars never enter the shared doc. A plan switcher on the profile keeps the existing personal plan untouched.
