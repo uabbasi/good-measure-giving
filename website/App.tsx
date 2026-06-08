@@ -15,6 +15,7 @@ const CharityDetailsPage = lazy(() => import('./pages/CharityDetailsPage').then(
 const MethodologyPage = lazy(() => import('./pages/MethodologyPage').then(m => ({ default: m.MethodologyPage })));
 const FAQPage = lazy(() => import('./pages/FAQPage').then(m => ({ default: m.FAQPage })));
 const AboutPage = lazy(() => import('./pages/AboutPage').then(m => ({ default: m.AboutPage })));
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage').then(m => ({ default: m.PrivacyPage })));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then(m => ({ default: m.NotFoundPage })));
 const PromptsPage = lazy(() => import('./pages/PromptsPage').then(m => ({ default: m.PromptsPage })));
 const PromptDetailPage = lazy(() => import('./pages/PromptDetailPage').then(m => ({ default: m.PromptDetailPage })));
@@ -78,6 +79,7 @@ const AppContent: React.FC = () => {
             <Route path="/methodology" element={<MethodologyPage />} />
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/bookmarks" element={<Navigate to="/profile" replace />} />
             <Route path="/compare" element={<ComparePage />} />
             <Route path="/profile" element={<ProfilePage />} />

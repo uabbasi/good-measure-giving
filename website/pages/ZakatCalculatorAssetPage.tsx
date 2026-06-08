@@ -106,8 +106,9 @@ export const ZakatCalculatorAssetPage: React.FC = () => {
         <section className="mb-10 p-6 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Calculate</h2>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">{asset.inputLabel}</label>
+            <label htmlFor="asset-amount-input" className="block text-sm font-medium mb-1">{asset.inputLabel}</label>
             <input
+              id="asset-amount-input"
               type="number"
               inputMode="decimal"
               value={assetAmount}
@@ -118,8 +119,9 @@ export const ZakatCalculatorAssetPage: React.FC = () => {
             <p className="text-xs text-slate-500 mt-1">{asset.inputHelp}</p>
           </div>
           <div className="mb-6">
-            <label className="block text-sm font-medium mb-1">Short-term liabilities (USD, optional)</label>
+            <label htmlFor="liabilities-input" className="block text-sm font-medium mb-1">Short-term liabilities (USD, optional)</label>
             <input
+              id="liabilities-input"
               type="number"
               inputMode="decimal"
               value={liabilities}
