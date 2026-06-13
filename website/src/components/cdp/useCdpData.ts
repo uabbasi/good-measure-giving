@@ -28,6 +28,12 @@ export interface CdpData {
   keyConcerns: KeyConcern[];
   financials: CharityFinancials | undefined;
   revenue: number | undefined;
+  hasExpenseData: boolean;
+  programRatio: number;
+  adminRatio: number;
+  fundRatio: number;
+  hasSignificantNoncash: boolean;
+  cashAdjProgramRatio: number | null;
   headline: string;
   aboutSummary: string;
   citations: CitationLike[];
@@ -47,6 +53,19 @@ export function buildCdpData(charity: CharityProfile, canViewRich: boolean): Cdp
   ) as CitationLike[];
   const citations = resolveCitationUrls(rawCitations, charity);
 
+  const totalExpenses = financials?.totalExpenses ?? 0;
+  const hasExpenseData = totalExpenses > 0;
+  const rawProgramRatio = hasExpenseData && financials?.programExpenses
+    ? ((financials.programExpenses / totalExpenses) * 100) : 0;
+  const programRatio = Math.min(rawProgramRatio, 100);
+  const adminRatio = hasExpenseData && financials?.adminExpenses
+    ? ((financials.adminExpenses / totalExpenses) * 100) : 0;
+  const fundRatio = hasExpenseData && financials?.fundraisingExpenses
+    ? ((financials.fundraisingExpenses / totalExpenses) * 100) : 0;
+  const hasSignificantNoncash = (financials?.noncashRatio ?? 0) >= 0.25;
+  const cashAdjProgramRatio = financials?.cashAdjustedProgramRatio != null
+    ? financials.cashAdjustedProgramRatio * 100 : null;
+
   return {
     charity,
     canViewRich,
@@ -63,6 +82,12 @@ export function buildCdpData(charity: CharityProfile, canViewRich: boolean): Cdp
     keyConcerns: charity.keyConcerns ?? [],
     financials,
     revenue: financials?.totalRevenue || charity.rawData?.total_revenue,
+    hasExpenseData,
+    programRatio,
+    adminRatio,
+    fundRatio,
+    hasSignificantNoncash,
+    cashAdjProgramRatio,
     headline: canViewRich
       ? (rich?.headline || baseline?.headline || '')
       : (baseline?.headline || ''),
