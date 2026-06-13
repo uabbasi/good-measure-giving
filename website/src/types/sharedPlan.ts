@@ -6,6 +6,13 @@ export interface PlanItem {
   assigneeUid: string | null;       // member covering this item, or null
   updatedAt: number;                // epoch ms
   updatedBy: string;                // uid
+  notes?: Record<string, { text: string; at: number }>; // per-member niyyah, keyed by uid
+}
+
+export interface ShortlistCandidate {
+  ref: string;        // EIN of a charity being considered (not yet committed)
+  addedBy: string;    // uid
+  addedAt: number;    // epoch ms
 }
 
 export interface SharedPlan {
@@ -17,6 +24,7 @@ export interface SharedPlan {
   revision: number;
   inviteToken: string;
   items: PlanItem[];
+  shortlist?: ShortlistCandidate[];
 }
 
 export interface PlanMember {
