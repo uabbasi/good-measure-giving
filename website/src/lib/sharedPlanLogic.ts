@@ -18,17 +18,6 @@ export function addCharityItem(items: PlanItem[], ein: string, actorUid: string)
   ];
 }
 
-/**
- * Remove a charity (by EIN) from an items array. Returns the same array
- * reference when the charity isn't present (so callers can skip the write).
- * Counterpart of {@link addCharityItem} for the sync toggle's "remove from
- * both" path.
- */
-export function removeCharityItem(items: PlanItem[], ein: string): PlanItem[] {
-  if (!items.some(i => i.kind === 'charity' && i.ref === ein)) return items;
-  return items.filter(i => !(i.kind === 'charity' && i.ref === ein));
-}
-
 /** Per-row last-write-wins merge of one item into an items array. */
 export function mergeItem(items: PlanItem[], incoming: PlanItem): PlanItem[] {
   const idx = items.findIndex(i => i.id === incoming.id);

@@ -28,12 +28,6 @@ const BUCKET_COLORS = [
 interface UseAddToGivingResult {
   /** Atomic add-to-plan. No-op if not signed in or already in plan. */
   addToGiving: (ein: string, charityName?: string) => Promise<void>;
-  /**
-   * Remove a charity's assignment from the plan (the sync toggle's "off" path).
-   * Clears its intended amount; donation history (a separate subcollection) is
-   * untouched. No-op if not signed in or not in plan. Buckets are left intact.
-   */
-  removeFromGiving: (ein: string) => Promise<void>;
   /** True when this ein already has an assignment in the current profile. */
   isInPlan: (ein: string) => boolean;
   /** True while a write is in flight. */
@@ -126,29 +120,5 @@ export function useAddToGiving(): UseAddToGivingResult {
     [uid, profile, saving, isInPlan, causeTagsByEin],
   );
 
-  const removeFromGiving = useCallback(
-    async (ein: string): Promise<void> => {
-      if (!db || !uid || !profile || saving) return;
-      if (!isInPlan(ein)) return; // idempotent
-
-      setSaving(true);
-      try {
-        const currentAssignments = profile.charityBucketAssignments || [];
-        const nextAssignments = currentAssignments.filter(a => a.charityEin !== ein);
-
-        const batch = writeBatch(db);
-        const userRef = doc(db, 'users', uid);
-        batch.update(userRef, {
-          charityBucketAssignments: nextAssignments,
-          updatedAt: Timestamp.now(),
-        });
-        await batch.commit();
-      } finally {
-        setSaving(false);
-      }
-    },
-    [uid, profile, saving, isInPlan],
-  );
-
-  return { addToGiving, removeFromGiving, isInPlan, saving };
+  return { addToGiving, isInPlan, saving };
 }

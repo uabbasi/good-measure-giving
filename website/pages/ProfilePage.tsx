@@ -82,8 +82,9 @@ export function ProfilePage() {
   const { bookmarks, isLoading: bookmarksLoading, addBookmark, removeBookmark } = useBookmarkState();
   const { profile, isLoading: profileLoading, updateProfile } = useProfileState();
   const { summaries, loading: charitiesLoading } = useCharities();
-  // Family sync: mirror personal-plan adds/removes onto every shared plan.
-  const { hasPlans, addCharityToAllPlans, removeCharityFromAllPlans } = useSharedPlans();
+  // Family sync (add-side only): adding a charity here also adds it to every
+  // shared plan. Removal stays explicit per plan — see onRemoveCharity.
+  const { hasPlans, addCharityToAllPlans } = useSharedPlans();
 
   // Giving hooks
   const {
@@ -461,20 +462,20 @@ export function ProfilePage() {
                 await updateProfile({
                   charityBucketAssignments: nextAssignments,
                 });
-                // Keep family plan(s) in sync. bucketId present = add/keep;
-                // bucketId null is this handler's "remove" path (see above).
-                if (hasPlans) {
-                  if (bucketId) await addCharityToAllPlans(ein);
-                  else await removeCharityFromAllPlans(ein);
-                }
+                // Add-side sync only: mirror the add into the family plan(s).
+                // (bucketId null is this handler's "remove" path; removal is not
+                // mirrored — the charity stays in the shared plan until removed there.)
+                if (hasPlans && bucketId) await addCharityToAllPlans(ein);
               }}
               onRemoveCharity={async (ein) => {
+                // Removes from the personal plan only. The shared/family plan is
+                // edited explicitly in the family plan view (its own ✕), so nothing
+                // disappears from the shared plan as a side effect of this.
                 await removeBookmark(ein);
                 const currentAssignments = profile?.charityBucketAssignments || [];
                 await updateProfile({
                   charityBucketAssignments: currentAssignments.filter(a => a.charityEin !== ein),
                 });
-                if (hasPlans) await removeCharityFromAllPlans(ein);
               }}
             />
 

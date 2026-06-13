@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { doc, getDoc, setDoc, collection, Timestamp } from 'firebase/firestore';
 import { useFirebaseData, useFirebaseAuth } from '../auth/FirebaseProvider';
-import { newInviteToken, addCharityItem, removeCharityItem } from '../lib/sharedPlanLogic';
+import { newInviteToken, addCharityItem } from '../lib/sharedPlanLogic';
 import type { SharedPlan, PlanItem } from '../types/sharedPlan';
 
 export function useSharedPlans() {
@@ -67,23 +67,12 @@ export function useSharedPlans() {
     return true;
   };
 
-  // Bridge: add/remove a charity (by EIN) on one shared plan (dedupes, bumps revision).
-  const addCharityToPlan = useMutation({
-    mutationFn: ({ planId, ein }: { planId: string; ein: string }) =>
-      writePlanItems(planId, items => addCharityItem(items, ein, userId!)),
-  });
-  const removeCharityFromPlan = useMutation({
-    mutationFn: ({ planId, ein }: { planId: string; ein: string }) =>
-      writePlanItems(planId, items => removeCharityItem(items, ein)),
-  });
-
-  // Sync helpers: mirror a personal-plan add/remove across EVERY shared plan the
-  // user belongs to (keeps the family plan(s) in lockstep with the personal plan).
+  // Add-side sync: when a charity is added to the personal plan, mirror it into
+  // EVERY shared plan the user belongs to (dedupes, bumps revision). Removal is
+  // NOT mirrored — it stays explicit and scoped to the plan you're editing, so a
+  // charity never disappears from the shared plan as a side effect.
   const addCharityToAllPlans = async (ein: string) => {
     for (const p of plans) await writePlanItems(p.id, items => addCharityItem(items, ein, userId!));
-  };
-  const removeCharityFromAllPlans = async (ein: string) => {
-    for (const p of plans) await writePlanItems(p.id, items => removeCharityItem(items, ein));
   };
 
   return {
@@ -91,9 +80,6 @@ export function useSharedPlans() {
     isLoading,
     hasPlans: plans.length > 0,
     createPlan: (n: string) => createPlan.mutateAsync(n),
-    addCharityToPlan: (planId: string, ein: string) => addCharityToPlan.mutateAsync({ planId, ein }),
-    removeCharityFromPlan: (planId: string, ein: string) => removeCharityFromPlan.mutateAsync({ planId, ein }),
     addCharityToAllPlans,
-    removeCharityFromAllPlans,
   };
 }

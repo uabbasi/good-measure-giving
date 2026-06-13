@@ -1,9 +1,10 @@
 /**
- * AddToGivingButton — the unified personal+family sync toggle.
+ * AddToGivingButton — add-only, with add-side family sync.
  *
- * Covers the sync semantics:
- *  - no family plan: add-only, "in plan" is a disabled confirmation (legacy)
- *  - family plan present: adding writes to BOTH; clicking again removes from BOTH
+ * Covers:
+ *  - no family plan: adds to the personal plan only
+ *  - family plan present: adding also mirrors into the family plan(s)
+ *  - never destructive: once in the plan it's a disabled confirmation (no remove)
  */
 
 import React from 'react';
@@ -29,25 +30,21 @@ vi.mock('../contexts/UserFeaturesContext', () => ({
 vi.mock('./giving/ZakatEstimator', () => ({ ZakatEstimator: () => null }));
 
 const addToGiving = vi.fn(async () => {});
-const removeFromGiving = vi.fn(async () => {});
 let inPlan = false;
 vi.mock('../hooks/useAddToGiving', () => ({
   useAddToGiving: () => ({
     addToGiving,
-    removeFromGiving,
     isInPlan: () => inPlan,
     saving: false,
   }),
 }));
 
 const addCharityToAllPlans = vi.fn(async () => {});
-const removeCharityFromAllPlans = vi.fn(async () => {});
 let hasPlans = false;
 vi.mock('../hooks/useSharedPlans', () => ({
   useSharedPlans: () => ({
     hasPlans,
     addCharityToAllPlans,
-    removeCharityFromAllPlans,
   }),
 }));
 
@@ -58,12 +55,10 @@ beforeEach(() => {
   inPlan = false;
   hasPlans = false;
   addToGiving.mockClear();
-  removeFromGiving.mockClear();
   addCharityToAllPlans.mockClear();
-  removeCharityFromAllPlans.mockClear();
 });
 
-describe('AddToGivingButton sync toggle', () => {
+describe('AddToGivingButton (add-only + family sync)', () => {
   it('no family plan: adds to personal only', async () => {
     render(<AddToGivingButton charityEin="13-5660870" charityName="Acme" />);
     fireEvent.click(screen.getByRole('button'));
@@ -71,7 +66,7 @@ describe('AddToGivingButton sync toggle', () => {
     expect(addCharityToAllPlans).not.toHaveBeenCalled();
   });
 
-  it('family plan present: adding writes to both personal and family', async () => {
+  it('family plan present: adding also mirrors into the family plan(s)', async () => {
     hasPlans = true;
     render(<AddToGivingButton charityEin="13-5660870" charityName="Acme" />);
     fireEvent.click(screen.getByRole('button'));
@@ -79,18 +74,14 @@ describe('AddToGivingButton sync toggle', () => {
     await waitFor(() => expect(addCharityToAllPlans).toHaveBeenCalledWith('13-5660870'));
   });
 
-  it('family plan present + in plan: clicking removes from both', async () => {
+  it('in plan: button is a disabled confirmation — never removes (with a family plan)', () => {
     hasPlans = true;
     inPlan = true;
     render(<AddToGivingButton charityEin="13-5660870" charityName="Acme" />);
-    const btn = screen.getByRole('button') as HTMLButtonElement;
-    expect(btn.disabled).toBe(false);
-    fireEvent.click(btn);
-    await waitFor(() => expect(removeFromGiving).toHaveBeenCalledWith('13-5660870'));
-    await waitFor(() => expect(removeCharityFromAllPlans).toHaveBeenCalledWith('13-5660870'));
+    expect((screen.getByRole('button') as HTMLButtonElement).disabled).toBe(true);
   });
 
-  it('no family plan + in plan: confirmation is disabled (no removal)', () => {
+  it('in plan: button is a disabled confirmation — never removes (no family plan)', () => {
     inPlan = true;
     render(<AddToGivingButton charityEin="13-5660870" charityName="Acme" />);
     expect((screen.getByRole('button') as HTMLButtonElement).disabled).toBe(true);

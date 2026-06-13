@@ -6,13 +6,13 @@
  *  - signed out              → "Sign in to add" (opens sign-in hint, like BookmarkButton)
  *  - signed in, not in plan  → "Add to giving"
  *  - signed in, no target    → "Add to giving" (opens ZakatEstimator first, then adds)
- *  - already in plan         → "In your giving ✓"
+ *  - already in plan         → "In your giving ✓" (confirmation, not a remove action)
  *
- * Family sync: when the user has a shared/family plan, this is a TOGGLE that
- * keeps the personal plan and the family plan(s) in lockstep — adding writes the
- * charity to both, and clicking again removes it from both (clearing its intended
- * amount; donation history is kept). With no family plan it stays add-only and
- * the "in plan" state is a non-interactive confirmation (legacy behavior).
+ * Add-only by design: the button never deletes. When the user has a shared/family
+ * plan, adding here ALSO adds the charity to the family plan(s) — so building the
+ * shared plan stays effortless. Removing is always explicit and scoped to where you
+ * see the list: the personal plan's ✕ (your plan) or the family plan view's ✕
+ * (the shared plan). Nothing vanishes from a one-click on a browse card.
  *
  * Soft-cap guardrail: after an add that brings the intended count to ≥6, we
  * show a one-time dismissible inline banner nudging the user to narrow down.
@@ -61,8 +61,8 @@ export function AddToGivingButton({ charityEin, charityName, size = 'md', classN
   const { isDark } = useLandingTheme();
   const { isSignedIn } = useAuth();
   const { profile, updateProfile } = useProfileState();
-  const { addToGiving, removeFromGiving, isInPlan, saving } = useAddToGiving();
-  const { hasPlans, addCharityToAllPlans, removeCharityFromAllPlans } = useSharedPlans();
+  const { addToGiving, isInPlan, saving } = useAddToGiving();
+  const { hasPlans, addCharityToAllPlans } = useSharedPlans();
 
   const inPlan = isInPlan(charityEin);
   const needsTarget = isSignedIn && !profile?.targetZakatAmount;
@@ -96,12 +96,6 @@ export function AddToGivingButton({ charityEin, charityName, size = 'md', classN
     }
   }, [profile, addToGiving, charityEin, charityName, hasPlans, addCharityToAllPlans]);
 
-  // Sync toggle "off": remove from the personal plan AND every family plan.
-  const doRemove = useCallback(async () => {
-    await removeFromGiving(charityEin);
-    if (hasPlans) await removeCharityFromAllPlans(charityEin);
-  }, [removeFromGiving, charityEin, hasPlans, removeCharityFromAllPlans]);
-
   const handleClick = useCallback(
     async (e: React.MouseEvent) => {
       e.preventDefault();
@@ -113,14 +107,8 @@ export function AddToGivingButton({ charityEin, charityName, size = 'md', classN
         return;
       }
 
-      if (saving) return;
-
-      if (inPlan) {
-        // Toggle off — only when a family plan makes this a sync toggle.
-        // Without one, the "in plan" state stays a confirmation (legacy).
-        if (hasPlans) await doRemove();
-        return;
-      }
+      // Add-only: once in the plan, the button is a confirmation, never a remove.
+      if (inPlan || saving) return;
 
       if (needsTarget) {
         pendingAddRef.current = true;
@@ -130,7 +118,7 @@ export function AddToGivingButton({ charityEin, charityName, size = 'md', classN
 
       await doAdd();
     },
-    [isSignedIn, inPlan, saving, needsTarget, hasPlans, doAdd, doRemove],
+    [isSignedIn, inPlan, saving, needsTarget, doAdd],
   );
 
   const onEstimatorUse = useCallback(
@@ -147,9 +135,6 @@ export function AddToGivingButton({ charityEin, charityName, size = 'md', classN
 
   const padding = size === 'sm' ? 'px-2 py-1 text-[11px]' : 'px-2.5 py-1.5 text-xs';
   const iconSize = size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5';
-
-  // When a family plan exists, the "in plan" chip is an interactive toggle-off.
-  const removable = inPlan && hasPlans;
 
   const label = !isSignedIn
     ? 'Sign in to add'
@@ -173,11 +158,10 @@ export function AddToGivingButton({ charityEin, charityName, size = 'md', classN
       <button
         type="button"
         onClick={handleClick}
-        disabled={saving || (inPlan && !hasPlans)}
-        aria-label={removable ? 'In your giving — click to remove' : label}
+        disabled={saving || inPlan}
+        aria-label={label}
         aria-pressed={inPlan}
-        title={removable ? 'In your plan and family plan — click to remove from both' : undefined}
-        className={`${baseBtn} ${padding} ${inPlan && !hasPlans ? doneCls : activeCls}`}
+        className={`${baseBtn} ${padding} ${inPlan ? doneCls : activeCls}`}
       >
         {inPlan ? (
           <Check className={iconSize} aria-hidden="true" />
