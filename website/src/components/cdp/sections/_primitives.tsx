@@ -31,6 +31,13 @@ export const getTheoryOfChangeCitations = (
   return ranked.slice(0, limit).map(r => r.citation);
 };
 
+// Extracts a "(Source: https://...)" policy URL from zakat claim evidence text
+// (verbatim from TabbedView's extractZakatPolicyUrl).
+export const extractZakatPolicyUrl = (evidence: string): string | undefined => {
+  const match = evidence.match(/\(Source:\s*(https?:\/\/[^\s)]+)\)/);
+  return match?.[1];
+};
+
 export const formatCurrency = (value: number | null | undefined): string => {
   if (value == null) return 'N/A';
   if (value >= 1_000_000_000) return `$${(value / 1_000_000_000).toFixed(1)}B`;

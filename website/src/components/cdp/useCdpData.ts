@@ -6,6 +6,7 @@ import type {
   RichNarrative,
   UISignalsV1,
   CharityFinancials,
+  KeyConcern,
 } from '../../../types';
 import { resolveCitationUrls, type CitationLike } from '../../utils/citationUrls';
 import { deriveUISignalsFromCharity } from '../../utils/scoreUtils';
@@ -23,6 +24,9 @@ export interface CdpData {
   alignment: number | undefined;
   riskDeduction: number | undefined;
   signals: UISignalsV1;
+  uiSignals: UISignalsV1;
+  isZakatEligible: boolean;
+  keyConcerns: KeyConcern[];
   financials: CharityFinancials | undefined;
   revenue: number | undefined;
   headline: string;
@@ -56,6 +60,9 @@ export function buildCdpData(charity: CharityProfile, canViewRich: boolean): Cdp
     alignment: scores?.alignment,
     riskDeduction: amal?.score_details?.risk_deduction,
     signals: deriveUISignalsFromCharity(charity),
+    uiSignals: charity.ui_signals_v1 || deriveUISignalsFromCharity(charity),
+    isZakatEligible: !!amal?.wallet_tag?.includes('ZAKAT'),
+    keyConcerns: charity.keyConcerns ?? [],
     financials,
     revenue: financials?.totalRevenue || charity.rawData?.total_revenue,
     headline: canViewRich
