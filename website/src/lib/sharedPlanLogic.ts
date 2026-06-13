@@ -18,16 +18,27 @@ export function addCharityItem(items: PlanItem[], ein: string, actorUid: string)
   ];
 }
 
-/** Per-row last-write-wins merge of one item into an items array. */
-export function mergeItem(items: PlanItem[], incoming: PlanItem): PlanItem[] {
+/**
+ * Per-row last-write-wins upsert of one item into an items array. The incoming
+ * value wins only if its updatedAt >= the stored item's (a stale write loses).
+ * The stored item's `notes` map is always preserved — weight/assignee edits must
+ * never clobber another member's niyyah note (notes are owned by setMemberNote).
+ */
+export function applyItemLWW(items: PlanItem[], incoming: PlanItem): PlanItem[] {
   const idx = items.findIndex(i => i.id === incoming.id);
   if (idx === -1) return [...items, incoming];
-  if (incoming.updatedAt >= items[idx].updatedAt) {
+  const stored = items[idx];
+  if (incoming.updatedAt >= stored.updatedAt) {
     const next = items.slice();
-    next[idx] = incoming;
+    next[idx] = { ...incoming, notes: stored.notes };
     return next;
   }
   return items;
+}
+
+/** Remove an item by id (idempotent). */
+export function removeItemById(items: PlanItem[], id: string): PlanItem[] {
+  return items.filter(i => i.id !== id);
 }
 
 /** Normalize item weights to percentages (0-100). */
@@ -54,7 +65,3 @@ export function newInviteToken(): string {
   return btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-/** Keep only the newest `max` history entries (input ordered oldest→newest). */
-export function pruneHistory(entries: PlanHistoryEntry[], max: number): PlanHistoryEntry[] {
-  return entries.length <= max ? entries : entries.slice(entries.length - max);
-}

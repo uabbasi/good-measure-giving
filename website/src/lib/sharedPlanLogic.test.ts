@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { mergeItem, weightsToPercents, computeYourShare, newInviteToken, pruneHistory, addCharityItem } from './sharedPlanLogic';
-import type { PlanItem, PlanHistoryEntry } from '../types/sharedPlan';
+import { weightsToPercents, computeYourShare, newInviteToken, addCharityItem, applyItemLWW, removeItemById } from './sharedPlanLogic';
+import type { PlanItem } from '../types/sharedPlan';
 
 const item = (over: Partial<PlanItem> = {}): PlanItem => ({
   id: 'a', kind: 'charity', ref: '95-4453134', weight: 1, assigneeUid: null,
@@ -26,22 +26,39 @@ describe('addCharityItem', () => {
   });
 });
 
-describe('mergeItem', () => {
-  it('adds a new item when id absent', () => {
-    const out = mergeItem([], item({ id: 'x' }));
-    expect(out.map(i => i.id)).toEqual(['x']);
+describe('applyItemLWW', () => {
+  it('appends when the id is absent', () => {
+    const out = applyItemLWW([], item({ id: 'x', updatedAt: 5 }));
+    expect(out).toHaveLength(1);
+    expect(out[0].id).toBe('x');
   });
-  it('overwrites same id when incoming is newer (LWW)', () => {
-    const out = mergeItem([item({ id: 'a', weight: 1, updatedAt: 100 })], item({ id: 'a', weight: 5, updatedAt: 200 }));
-    expect(out.find(i => i.id === 'a')!.weight).toBe(5);
+  it('newer updatedAt overwrites the stored item', () => {
+    const items = [item({ id: 'a', weight: 1, updatedAt: 100 })];
+    const out = applyItemLWW(items, item({ id: 'a', weight: 9, updatedAt: 200 }));
+    expect(out[0].weight).toBe(9);
   });
-  it('keeps existing when incoming is older (stale write loses)', () => {
-    const out = mergeItem([item({ id: 'a', weight: 9, updatedAt: 300 })], item({ id: 'a', weight: 5, updatedAt: 200 }));
-    expect(out.find(i => i.id === 'a')!.weight).toBe(9);
+  it('stale updatedAt loses (stored item kept)', () => {
+    const items = [item({ id: 'a', weight: 1, updatedAt: 200 })];
+    const out = applyItemLWW(items, item({ id: 'a', weight: 9, updatedAt: 100 }));
+    expect(out[0].weight).toBe(1);
   });
-  it('leaves other rows untouched', () => {
-    const out = mergeItem([item({ id: 'a' }), item({ id: 'b', weight: 2 })], item({ id: 'a', weight: 7, updatedAt: 500 }));
-    expect(out.find(i => i.id === 'b')!.weight).toBe(2);
+  it('preserves the stored notes map when a weight edit lands', () => {
+    const stored = item({ id: 'a', weight: 1, updatedAt: 100, notes: { u1: { text: 'mine', at: 1 } } });
+    const incoming = item({ id: 'a', weight: 9, updatedAt: 200, notes: undefined });
+    const out = applyItemLWW([stored], incoming);
+    expect(out[0].weight).toBe(9);
+    expect(out[0].notes).toEqual({ u1: { text: 'mine', at: 1 } });
+  });
+});
+
+describe('removeItemById', () => {
+  it('removes the item with the id', () => {
+    const items = [item({ id: 'a' }), item({ id: 'b' })];
+    expect(removeItemById(items, 'a').map(i => i.id)).toEqual(['b']);
+  });
+  it('is idempotent when the id is absent', () => {
+    const items = [item({ id: 'a' })];
+    expect(removeItemById(items, 'zzz')).toEqual(items);
   });
 });
 
@@ -75,16 +92,5 @@ describe('newInviteToken', () => {
   });
   it('produces distinct tokens', () => {
     expect(newInviteToken()).not.toBe(newInviteToken());
-  });
-});
-
-describe('pruneHistory', () => {
-  it('keeps only the newest N entries', () => {
-    const entries: PlanHistoryEntry[] = Array.from({ length: 25 }, (_, i) => ({
-      revision: i, itemId: 'a', before: null, after: null, updatedBy: 'u', at: i,
-    }));
-    const kept = pruneHistory(entries, 20);
-    expect(kept).toHaveLength(20);
-    expect(kept[0].revision).toBe(5);
   });
 });
