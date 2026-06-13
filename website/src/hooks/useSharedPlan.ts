@@ -5,7 +5,7 @@ import {
 } from 'firebase/firestore';
 import { useFirebaseData } from '../auth/FirebaseProvider';
 import type { SharedPlan, PlanItem, PlanMember, PlanHistoryEntry } from '../types/sharedPlan';
-import { applyItemLWW, removeItemById, HISTORY_MAX, historyIdToPrune } from '../lib/sharedPlanLogic';
+import { applyItemLWW, removeItemById, setMemberNote, HISTORY_MAX, historyIdToPrune } from '../lib/sharedPlanLogic';
 
 export function useSharedPlan(planId: string | null) {
   const { db, userId } = useFirebaseData();
@@ -80,6 +80,20 @@ export function useSharedPlan(planId: string | null) {
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
   });
 
+  const setMyNote = useMutation({
+    mutationFn: ({ itemId, text }: { itemId: string; text: string }) =>
+      commit((current) => {
+        const idx = current.items.findIndex(i => i.id === itemId);
+        if (idx === -1) throw new Error('Item not found');
+        const before = current.items[idx];
+        const after = { ...setMemberNote(before, userId!, text), updatedAt: Date.now(), updatedBy: userId! };
+        const items = current.items.slice();
+        items[idx] = after;
+        return { fields: { items }, history: { itemId, before, after } };
+      }),
+    onSettled: () => qc.invalidateQueries({ queryKey: key }),
+  });
+
   const join = useMutation({
     mutationFn: async ({ token, displayName }: { token: string; displayName: string }) => {
       if (!db || !planId || !userId) throw new Error('Not authenticated');
@@ -132,6 +146,7 @@ export function useSharedPlan(planId: string | null) {
     isOwner,
     upsertItem: (i: PlanItem) => upsertItem.mutateAsync(i),
     removeItem: (id: string) => removeItem.mutateAsync(id),
+    setMyNote: (itemId: string, text: string) => setMyNote.mutateAsync({ itemId, text }),
     join: (token: string, displayName: string) => join.mutateAsync({ token, displayName }),
     removeMember: (uid: string) => removeMember.mutateAsync(uid),
     rename: (n: string) => rename.mutateAsync(n),
