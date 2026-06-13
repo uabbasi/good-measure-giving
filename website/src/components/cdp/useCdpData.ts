@@ -25,6 +25,7 @@ export interface CdpData {
   financials: CharityFinancials | undefined;
   revenue: number | undefined | null;
   headline: string;
+  aboutSummary: string;
   citations: CitationLike[];
 }
 
@@ -57,6 +58,9 @@ export function buildCdpData(charity: CharityProfile, canViewRich: boolean): Cdp
     headline: canViewRich
       ? (rich?.headline ?? baseline?.headline ?? '')
       : (baseline?.headline ?? ''),
+    aboutSummary: canViewRich
+      ? (rich?.summary ?? baseline?.summary ?? '')
+      : (baseline?.summary ?? ''),
     citations: resolveCitationUrls(rawCitations, charity),
   };
 }
