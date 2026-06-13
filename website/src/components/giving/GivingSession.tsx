@@ -19,6 +19,7 @@ import { useSharedPlan } from '../../hooks/useSharedPlan';
 import { InviteFamilyPanel } from './InviteFamilyPanel';
 import { SharedPlanView } from './SharedPlanView';
 import { SessionRecap } from './SessionRecap';
+import { ShortlistPanel } from './ShortlistPanel';
 
 const STEP_LABELS: Record<SessionStep, string> = {
   gather: 'Gather',
@@ -105,6 +106,7 @@ export const GivingSession: React.FC<{ planId: string; onExit?: () => void }> = 
               bring back what they learn.
             </p>
           </div>
+          <ShortlistPanel planId={planId} />
         </div>
       )}
 

@@ -21,7 +21,7 @@ import { CharitySearchAdd } from './CharitySearchAdd';
 const ITEM_CAP = 100;
 
 export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
-  const { plan, members, isLoading, isOwner, upsertItem, removeItem, setMyNote } = useSharedPlan(planId);
+  const { plan, members, isLoading, isOwner, upsertItem, removeItem, setMyNote, promoteToPlan } = useSharedPlan(planId);
   const { profile } = useProfile();
   const { charities } = useCharities();
   const { userId } = useFirebaseData();
@@ -82,6 +82,26 @@ export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
           {members.length} member{members.length === 1 ? '' : 's'}
         </span>
       </div>
+
+      {/* Still considering — promote shortlist candidates into the plan */}
+      {(plan.shortlist?.length ?? 0) > 0 && (
+        <div className="rounded-lg border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50/60 dark:bg-emerald-900/10 p-3 space-y-2">
+          <p className="text-sm font-medium text-emerald-800 dark:text-emerald-200">Still considering</p>
+          <ul className="space-y-1">
+            {plan.shortlist!.map(c => (
+              <li key={c.ref} className="flex items-center justify-between text-sm">
+                <span className="text-slate-800 dark:text-slate-200">{nameByEin.get(c.ref) ?? c.ref}</span>
+                <button
+                  onClick={() => void promoteToPlan(c.ref)}
+                  className="px-2 py-1 rounded bg-emerald-600 text-white text-xs font-medium"
+                >
+                  Add to plan
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Add charity — above the table */}
       <CharitySearchAdd
