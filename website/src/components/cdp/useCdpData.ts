@@ -32,13 +32,13 @@ export interface CdpData {
 export function buildCdpData(charity: CharityProfile, canViewRich: boolean): CdpData {
   const amal = charity.amalEvaluation;
   const baseline = amal?.baseline_narrative;
-  const rich = canViewRich ? amal?.rich_narrative : undefined;
+  const rich = amal?.rich_narrative;
   const scores = amal?.confidence_scores;
   const financials = charity.financials ?? charity.rawData?.financials;
   const rawCitations = (
     canViewRich
-      ? (rich?.all_citations ?? baseline?.all_citations ?? [])
-      : (baseline?.all_citations ?? [])
+      ? (rich?.all_citations || baseline?.all_citations || [])
+      : (baseline?.all_citations || [])
   ) as CitationLike[];
 
   return {
@@ -54,13 +54,13 @@ export function buildCdpData(charity: CharityProfile, canViewRich: boolean): Cdp
     riskDeduction: amal?.score_details?.risk_deduction,
     signals: deriveUISignalsFromCharity(charity),
     financials,
-    revenue: financials?.totalRevenue ?? charity.rawData?.total_revenue,
+    revenue: financials?.totalRevenue || charity.rawData?.total_revenue,
     headline: canViewRich
-      ? (rich?.headline ?? baseline?.headline ?? '')
-      : (baseline?.headline ?? ''),
+      ? (rich?.headline || baseline?.headline || '')
+      : (baseline?.headline || ''),
     aboutSummary: canViewRich
-      ? (rich?.summary ?? baseline?.summary ?? '')
-      : (baseline?.summary ?? ''),
+      ? (rich?.summary || baseline?.summary || '')
+      : (baseline?.summary || ''),
     citations: resolveCitationUrls(rawCitations, charity),
   };
 }

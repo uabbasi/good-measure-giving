@@ -27,7 +27,21 @@ describe('buildCdpData', () => {
   it('falls back to baseline narrative when canViewRich is false', () => {
     const d = buildCdpData(base, false);
     expect(d.headline).toBe('h');
-    expect(d.rich).toBeUndefined();
+  });
+
+  it('keeps rich ungated but uses baseline headline when canViewRich is false', () => {
+    const withRich = {
+      ...base,
+      amalEvaluation: {
+        ...base.amalEvaluation,
+        rich_narrative: { headline: 'rich-h', all_citations: [] },
+      },
+    } as unknown as CharityProfile;
+    const d = buildCdpData(withRich, false);
+    // rich stays exposed (point-of-use gating mirrors TabbedView)...
+    expect(d.rich).toBeDefined();
+    // ...but headline resolves to the baseline value because canViewRich is false.
+    expect(d.headline).toBe('h');
   });
 
   it('uses rich narrative when canViewRich is true and rich_narrative is present', () => {
