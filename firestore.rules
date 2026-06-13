@@ -42,7 +42,12 @@ service cloud.firestore {
         allow delete: if request.auth != null && (request.auth.uid == uid ||
           get(/databases/$(database)/documents/shared_plans/$(planId)).data.ownerId == request.auth.uid);
       }
-      // (phase 2) history ring buffer rules omitted — thin sync writes no history.
+      match /history/{rev} {
+        allow read:   if isMember();   // edit history is members-only (may contain note text)
+        allow create: if isMember();   // appended by the edit transaction
+        allow delete: if isMember();   // ring-buffer prune
+        allow update: if false;        // entries are immutable
+      }
     }
   }
 }
