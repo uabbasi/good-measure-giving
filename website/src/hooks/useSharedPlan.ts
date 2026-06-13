@@ -1,20 +1,11 @@
 import { useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  doc, collection, getDoc, getDocs, setDoc, deleteDoc, Timestamp,
+  doc, collection, getDoc, getDocs, setDoc, deleteDoc, runTransaction, Timestamp,
 } from 'firebase/firestore';
 import { useFirebaseData } from '../auth/FirebaseProvider';
-import type { SharedPlan, PlanItem, PlanMember } from '../types/sharedPlan';
-
-/** Replace an item by id, or append if absent. Whole-item last-write-wins
- *  (thin sync — no per-row timestamp compare; the saver's value wins). */
-export function replaceOrAppendItem(items: PlanItem[], incoming: PlanItem): PlanItem[] {
-  const idx = items.findIndex(i => i.id === incoming.id);
-  if (idx === -1) return [...items, incoming];
-  const next = items.slice();
-  next[idx] = incoming;
-  return next;
-}
+import type { SharedPlan, PlanItem, PlanMember, PlanHistoryEntry } from '../types/sharedPlan';
+import { applyItemLWW, removeItemById, HISTORY_MAX, historyIdToPrune } from '../lib/sharedPlanLogic';
 
 export function useSharedPlan(planId: string | null) {
   const { db, userId } = useFirebaseData();
@@ -35,31 +26,57 @@ export function useSharedPlan(planId: string | null) {
     },
   });
 
-  // Thin sync: read-modify-write the whole items array, no transaction/history.
-  const upsertItem = useMutation({
-    mutationFn: async (incoming: PlanItem) => {
-      if (!db || !planId || !userId) throw new Error('Not authenticated');
-      const ref = doc(db, 'shared_plans', planId);
-      const snap = await getDoc(ref);
+  // One transactional write: re-read the plan, apply a change, bump revision,
+  // append a revision-keyed history entry, then best-effort prune the ring buffer.
+  // `build` returns the field patch to write and (optionally) the item history.
+  const commit = async (
+    build: (current: Omit<SharedPlan, 'id'>) => {
+      fields: Partial<Pick<SharedPlan, 'items' | 'shortlist'>>;
+      history?: { itemId: string; before: PlanItem | null; after: PlanItem | null };
+    },
+  ): Promise<void> => {
+    if (!db || !planId || !userId) throw new Error('Not authenticated');
+    const ref = doc(db, 'shared_plans', planId);
+    const revision = await runTransaction(db, async (tx) => {
+      const snap = await tx.get(ref);
       if (!snap.exists()) throw new Error('Plan not found');
       const current = snap.data() as Omit<SharedPlan, 'id'>;
-      const stamped = { ...incoming, updatedAt: Date.now(), updatedBy: userId };
-      const items = replaceOrAppendItem(current.items, stamped);
-      await setDoc(ref, { items, revision: (current.revision ?? 0) + 1, updatedAt: Timestamp.now() }, { merge: true });
-    },
+      const { fields, history } = build(current);
+      const rev = (current.revision ?? 0) + 1;
+      tx.set(ref, { ...fields, revision: rev, updatedAt: Timestamp.now() }, { merge: true });
+      if (history) {
+        const entry: PlanHistoryEntry = {
+          revision: rev, itemId: history.itemId, before: history.before,
+          after: history.after, updatedBy: userId, at: Date.now(),
+        };
+        tx.set(doc(db, 'shared_plans', planId, 'history', String(rev)), entry);
+      }
+      return rev;
+    });
+    const pruneId = historyIdToPrune(revision, HISTORY_MAX);
+    if (pruneId) {
+      try { await deleteDoc(doc(db, 'shared_plans', planId, 'history', pruneId)); } catch { /* best-effort */ }
+    }
+  };
+
+  const upsertItem = useMutation({
+    mutationFn: (incoming: PlanItem) =>
+      commit((current) => {
+        const stamped = { ...incoming, updatedAt: Date.now(), updatedBy: userId! };
+        const before = current.items.find(i => i.id === incoming.id) ?? null;
+        const items = applyItemLWW(current.items, stamped);
+        const after = items.find(i => i.id === incoming.id) ?? null;
+        return { fields: { items }, history: { itemId: incoming.id, before, after } };
+      }),
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
   });
 
   const removeItem = useMutation({
-    mutationFn: async (itemId: string) => {
-      if (!db || !planId || !userId) throw new Error('Not authenticated');
-      const ref = doc(db, 'shared_plans', planId);
-      const snap = await getDoc(ref);
-      if (!snap.exists()) return;
-      const current = snap.data() as Omit<SharedPlan, 'id'>;
-      const items = current.items.filter(i => i.id !== itemId);
-      await setDoc(ref, { items, revision: (current.revision ?? 0) + 1, updatedAt: Timestamp.now() }, { merge: true });
-    },
+    mutationFn: (itemId: string) =>
+      commit((current) => {
+        const before = current.items.find(i => i.id === itemId) ?? null;
+        return { fields: { items: removeItemById(current.items, itemId) }, history: { itemId, before, after: null } };
+      }),
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
   });
 
