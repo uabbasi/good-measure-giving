@@ -66,7 +66,11 @@ export function useSharedPlan(planId: string | null) {
         const before = current.items.find(i => i.id === incoming.id) ?? null;
         const items = applyItemLWW(current.items, stamped);
         const after = items.find(i => i.id === incoming.id) ?? null;
-        return { fields: { items }, history: { itemId: incoming.id, before, after } };
+        // applyItemLWW returns the SAME item reference when the write is stale
+        // (LWW lost). Don't record a no-op history entry falsely attributed to
+        // the losing member; only log when something actually changed.
+        const history = before !== after ? { itemId: incoming.id, before, after } : undefined;
+        return { fields: { items }, history };
       }),
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
   });
@@ -114,12 +118,14 @@ export function useSharedPlan(planId: string | null) {
   const promoteToPlan = useMutation({
     mutationFn: (ref: string) =>
       commit((current) => {
+        const before = current.items.find(i => i.kind === 'charity' && i.ref === ref) ?? null;
         const next = promoteCandidate(current.items, current.shortlist ?? [], ref, userId!);
-        const added = next.items.find(i => i.kind === 'charity' && i.ref === ref) ?? null;
-        return {
-          fields: { items: next.items, shortlist: next.shortlist },
-          history: { itemId: added?.id ?? ref, before: null, after: added },
-        };
+        const after = next.items.find(i => i.kind === 'charity' && i.ref === ref) ?? null;
+        // Only an item history entry when a NEW item was actually added — if the
+        // charity was already committed (raced promote), promote just drops the
+        // candidate from the shortlist (no item change → no phantom "added").
+        const history = !before && after ? { itemId: after.id, before: null, after } : undefined;
+        return { fields: { items: next.items, shortlist: next.shortlist }, history };
       }),
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
   });
