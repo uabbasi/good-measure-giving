@@ -18,7 +18,10 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "emulators": "firebase emulators:start --only auth,firestore --project=good-measure-giving --config=../firebase.json",
+    "dev:emulator": "VITE_USE_FIREBASE_EMULATOR=true vite",
+    "test:e2e:shared": "firebase emulators:exec --only auth,firestore --project=good-measure-giving --config=../firebase.json 'npx playwright test --config=playwright.shared.config.ts'"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
