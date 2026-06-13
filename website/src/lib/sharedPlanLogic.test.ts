@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { weightsToPercents, computeYourShare, newInviteToken, addCharityItem, applyItemLWW, removeItemById } from './sharedPlanLogic';
+import { weightsToPercents, computeYourShare, newInviteToken, addCharityItem, applyItemLWW, removeItemById, HISTORY_MAX, historyIdToPrune } from './sharedPlanLogic';
 import type { PlanItem } from '../types/sharedPlan';
 
 const item = (over: Partial<PlanItem> = {}): PlanItem => ({
@@ -82,6 +82,20 @@ describe('computeYourShare', () => {
   });
   it('returns null map when target is null', () => {
     expect(computeYourShare([item({ id: 'a', weight: 1 })], null)).toEqual({});
+  });
+});
+
+describe('historyIdToPrune', () => {
+  it('returns null while the buffer is not yet full', () => {
+    expect(historyIdToPrune(1, 20)).toBeNull();
+    expect(historyIdToPrune(20, 20)).toBeNull();
+  });
+  it('returns the revision id to delete once full', () => {
+    expect(historyIdToPrune(21, 20)).toBe('1');
+    expect(historyIdToPrune(25, 20)).toBe('5');
+  });
+  it('HISTORY_MAX is 20', () => {
+    expect(HISTORY_MAX).toBe(20);
   });
 });
 

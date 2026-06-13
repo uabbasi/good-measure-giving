@@ -65,3 +65,17 @@ export function newInviteToken(): string {
   return btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
+/** Ring-buffer size for the per-plan edit history subcollection. */
+export const HISTORY_MAX = 20;
+
+/**
+ * History docs are keyed by the monotonic `revision`. After writing revision R,
+ * the entry to delete to keep the last `max` is `R - max` — but only once it
+ * exists (revisions start at 1). Returns the doc id string, or null if nothing
+ * to prune yet.
+ */
+export function historyIdToPrune(revision: number, max: number): string | null {
+  const target = revision - max;
+  return target >= 1 ? String(target) : null;
+}
+
