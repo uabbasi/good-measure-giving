@@ -3,4 +3,3 @@
  */
 
 export { TerminalView } from './TerminalView';
-export { TabbedView } from './TabbedView';

@@ -9,7 +9,7 @@ interface RecommendationCueProps {
   compact?: boolean;
 }
 
-const DISPLAY_LABELS: Record<UISignalsV1['recommendation_cue'], string> = {
+export const DISPLAY_LABELS: Record<UISignalsV1['recommendation_cue'], string> = {
   'Strong Match': 'Maximum Alignment',
   'Good Match': 'Strong Alignment',
   'Mixed Signals': 'Mixed Signals',
