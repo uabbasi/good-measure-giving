@@ -24,7 +24,6 @@ export interface CdpData {
   alignment: number | undefined;
   riskDeduction: number | undefined;
   signals: UISignalsV1;
-  uiSignals: UISignalsV1;
   isZakatEligible: boolean;
   keyConcerns: KeyConcern[];
   financials: CharityFinancials | undefined;
@@ -60,7 +59,6 @@ export function buildCdpData(charity: CharityProfile, canViewRich: boolean): Cdp
     alignment: scores?.alignment,
     riskDeduction: amal?.score_details?.risk_deduction,
     signals: deriveUISignalsFromCharity(charity),
-    uiSignals: charity.ui_signals_v1 || deriveUISignalsFromCharity(charity),
     isZakatEligible: !!amal?.wallet_tag?.includes('ZAKAT'),
     keyConcerns: charity.keyConcerns ?? [],
     financials,

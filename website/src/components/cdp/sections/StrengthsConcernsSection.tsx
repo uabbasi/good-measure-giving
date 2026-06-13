@@ -20,7 +20,7 @@ import { SectionCard, SectionHeader } from './_primitives';
 
 export const StrengthsConcernsSection: React.FC<{ data: CdpData }> = ({ data }) => {
   const { isDark } = useLandingTheme();
-  const { charity, canViewRich, amal, baseline, rich, citations, keyConcerns, uiSignals } = data;
+  const { charity, canViewRich, amal, baseline, rich, citations, keyConcerns, signals } = data;
 
   const strengths = (canViewRich ? (rich?.strengths || baseline?.strengths) : baseline?.strengths) || [];
   const areasForImprovement = (
@@ -167,10 +167,10 @@ export const StrengthsConcernsSection: React.FC<{ data: CdpData }> = ({ data }) 
               <span className="font-semibold">Mitigation:</span> {rich.case_against.mitigation_notes}
             </div>
           )}
-          {!rich?.case_against && uiSignals?.signal_states && (
+          {!rich?.case_against && signals?.signal_states && (
             <div className={`mt-4 pt-3 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
               <div className="flex flex-wrap gap-2 mb-2">
-                {(Object.entries(uiSignals.signal_states) as [string, string][]).map(([key, state]) => {
+                {(Object.entries(signals.signal_states) as [string, string][]).map(([key, state]) => {
                   const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
                   const pillClasses = state === 'Strong'
                     ? (isDark ? 'bg-emerald-900/40 text-emerald-400 border-emerald-700' : 'bg-emerald-50 text-emerald-700 border-emerald-300')
@@ -184,9 +184,9 @@ export const StrengthsConcernsSection: React.FC<{ data: CdpData }> = ({ data }) 
                   );
                 })}
               </div>
-              {uiSignals?.recommendation_rationale && (
+              {signals?.recommendation_rationale && (
                 <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                  {uiSignals.recommendation_rationale}
+                  {signals.recommendation_rationale}
                 </p>
               )}
             </div>
