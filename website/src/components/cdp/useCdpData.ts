@@ -23,7 +23,7 @@ export interface CdpData {
   riskDeduction: number | undefined;
   signals: UISignalsV1;
   financials: CharityFinancials | undefined;
-  revenue: number | undefined | null;
+  revenue: number | undefined;
   headline: string;
   aboutSummary: string;
   citations: CitationLike[];

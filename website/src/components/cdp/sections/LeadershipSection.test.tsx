@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { render, screen } from '@testing-library/react';
 import { LeadershipSection } from './LeadershipSection';
 import { buildCdpData } from '../useCdpData';
 
@@ -22,16 +21,20 @@ const charity = {
 
 describe('LeadershipSection', () => {
   it('renders a #leadership section anchor', () => {
-    const { container } = render(
-      <MemoryRouter><LeadershipSection data={buildCdpData(charity, true)} /></MemoryRouter>
-    );
+    const { container } = render(<LeadershipSection data={buildCdpData(charity, true)} />);
     expect(container.querySelector('#leadership')).toBeTruthy();
   });
 
   it('renders the CEO name when rich data is available', () => {
-    const { getByText } = render(
-      <MemoryRouter><LeadershipSection data={buildCdpData(charity, true)} /></MemoryRouter>
-    );
-    expect(getByText('Jane Doe')).toBeTruthy();
+    render(<LeadershipSection data={buildCdpData(charity, true)} />);
+    expect(screen.getByText('Jane Doe')).toBeTruthy();
+  });
+
+  it('shows ContentPreview gate for leadership when canViewRich is false', () => {
+    render(<LeadershipSection data={buildCdpData(charity, false)} />);
+    // ContentPreview renders its title prop instead of the authed leadership card.
+    expect(screen.getByText('Leadership & Governance')).toBeTruthy();
+    // Rich-only value (CEO name) must NOT leak to anonymous viewers.
+    expect(screen.queryByText('Jane Doe')).toBeNull();
   });
 });

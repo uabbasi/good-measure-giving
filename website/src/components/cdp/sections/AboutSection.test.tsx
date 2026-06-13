@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
 import { AboutSection } from './AboutSection';
 import { buildCdpData } from '../useCdpData';
 
@@ -17,16 +16,12 @@ const charity = {
 
 describe('AboutSection', () => {
   it('renders a #about section anchor', () => {
-    const { container } = render(
-      <MemoryRouter><AboutSection data={buildCdpData(charity, true)} /></MemoryRouter>
-    );
+    const { container } = render(<AboutSection data={buildCdpData(charity, true)} />);
     expect(container.querySelector('#about')).toBeTruthy();
   });
 
   it('renders the headline and summary text', () => {
-    const { getByText } = render(
-      <MemoryRouter><AboutSection data={buildCdpData(charity, true)} /></MemoryRouter>
-    );
+    const { getByText } = render(<AboutSection data={buildCdpData(charity, true)} />);
     expect(getByText('A headline')).toBeTruthy();
     expect(getByText('A summary.')).toBeTruthy();
   });
