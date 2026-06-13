@@ -53,6 +53,7 @@ describe('MobileScoreBar', () => {
   it('omits the score number when amalScore is null but still shows the cue', () => {
     render(<MobileScoreBar data={makeData(null)} sections={sections} />);
     expect(screen.queryByText('/100')).toBeNull();
-    expect(screen.getByText('Good Match')).toBeTruthy();
+    // cue is rendered via the shared DISPLAY_LABELS mapping (matches VerdictHero/RecommendationCue)
+    expect(screen.getByText('Strong Alignment')).toBeTruthy();
   });
 });

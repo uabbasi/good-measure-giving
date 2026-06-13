@@ -13,6 +13,7 @@ import { useLandingTheme } from '../../../contexts/LandingThemeContext';
 import type { CdpData } from './useCdpData';
 import type { SectionDef } from './sections.config';
 import { scrollToSection } from './scrollToSection';
+import { DISPLAY_LABELS } from '../RecommendationCue';
 
 interface MobileScoreBarProps {
   data: CdpData;
@@ -23,7 +24,7 @@ export const MobileScoreBar: React.FC<MobileScoreBarProps> = ({ data, sections }
   const { isDark } = useLandingTheme();
   const [open, setOpen] = useState(false);
 
-  const cue = data.signals.recommendation_cue;
+  const cue = DISPLAY_LABELS[data.signals.recommendation_cue];
   const hasScore = data.amalScore != null;
 
   const handleSelect = (id: string) => {
