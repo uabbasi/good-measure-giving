@@ -29,4 +29,18 @@ describe('buildCdpData', () => {
     expect(d.headline).toBe('h');
     expect(d.rich).toBeUndefined();
   });
+
+  it('uses rich narrative when canViewRich is true and rich_narrative is present', () => {
+    const withRich = {
+      ...base,
+      amalEvaluation: {
+        ...base.amalEvaluation,
+        rich_narrative: { headline: 'rich-h', all_citations: [] },
+      },
+    } as unknown as CharityProfile;
+    const d = buildCdpData(withRich, true);
+    expect(d.rich).toBeDefined();
+    expect(d.hasRich).toBe(true);
+    expect(d.headline).toBe('rich-h');
+  });
 });
