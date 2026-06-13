@@ -33,6 +33,7 @@ import {
 } from '../src/components/giving';
 import { PlanSwitcher } from '../src/components/giving/PlanSwitcher';
 import { SharedPlanView } from '../src/components/giving/SharedPlanView';
+import { useSharedPlans } from '../src/hooks/useSharedPlans';
 import { GivingSession } from '../src/components/giving/GivingSession';
 import type { GivingHistoryEntry, CharitySummary } from '../types';
 import { useTour } from '../src/tours/useTour';
@@ -81,6 +82,8 @@ export function ProfilePage() {
   const { bookmarks, isLoading: bookmarksLoading, addBookmark, removeBookmark } = useBookmarkState();
   const { profile, isLoading: profileLoading, updateProfile } = useProfileState();
   const { summaries, loading: charitiesLoading } = useCharities();
+  // Family sync: mirror personal-plan adds/removes onto every shared plan.
+  const { hasPlans, addCharityToAllPlans, removeCharityFromAllPlans } = useSharedPlans();
 
   // Giving hooks
   const {
@@ -458,6 +461,12 @@ export function ProfilePage() {
                 await updateProfile({
                   charityBucketAssignments: nextAssignments,
                 });
+                // Keep family plan(s) in sync. bucketId present = add/keep;
+                // bucketId null is this handler's "remove" path (see above).
+                if (hasPlans) {
+                  if (bucketId) await addCharityToAllPlans(ein);
+                  else await removeCharityFromAllPlans(ein);
+                }
               }}
               onRemoveCharity={async (ein) => {
                 await removeBookmark(ein);
@@ -465,6 +474,7 @@ export function ProfilePage() {
                 await updateProfile({
                   charityBucketAssignments: currentAssignments.filter(a => a.charityEin !== ein),
                 });
+                if (hasPlans) await removeCharityFromAllPlans(ein);
               }}
             />
 

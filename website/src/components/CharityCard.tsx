@@ -12,7 +12,6 @@ import { cleanNarrativeText } from '../utils/cleanNarrativeText';
 import { BookmarkButton } from './BookmarkButton';
 import { CompareButton } from './CompareButton';
 import { AddToGivingButton } from './AddToGivingButton';
-import { AddToFamilyPlanButton } from './giving/AddToFamilyPlanButton';
 
 type PrimaryTag = {
   label: string;
@@ -339,14 +338,9 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
 
           {/* Add to giving action row (desktop) */}
           <div
-            className="flex justify-end items-center gap-2 mb-2"
+            className="flex justify-end mb-2"
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
           >
-            <AddToFamilyPlanButton
-              charityEin={charity.ein || charity.id || ''}
-              charityName={charity.name}
-              size="md"
-            />
             <AddToGivingButton
               charityEin={charity.ein || charity.id || ''}
               charityName={charity.name}

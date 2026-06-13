@@ -6,7 +6,13 @@
  *  - signed out              → "Sign in to add" (opens sign-in hint, like BookmarkButton)
  *  - signed in, not in plan  → "Add to giving"
  *  - signed in, no target    → "Add to giving" (opens ZakatEstimator first, then adds)
- *  - already in plan         → "In your giving ✓" (disabled)
+ *  - already in plan         → "In your giving ✓"
+ *
+ * Family sync: when the user has a shared/family plan, this is a TOGGLE that
+ * keeps the personal plan and the family plan(s) in lockstep — adding writes the
+ * charity to both, and clicking again removes it from both (clearing its intended
+ * amount; donation history is kept). With no family plan it stays add-only and
+ * the "in plan" state is a non-interactive confirmation (legacy behavior).
  *
  * Soft-cap guardrail: after an add that brings the intended count to ≥6, we
  * show a one-time dismissible inline banner nudging the user to narrow down.
@@ -19,6 +25,7 @@ import { useAuth } from '../auth/useAuth';
 import { useProfileState } from '../contexts/UserFeaturesContext';
 import { useLandingTheme } from '../../contexts/LandingThemeContext';
 import { useAddToGiving } from '../hooks/useAddToGiving';
+import { useSharedPlans } from '../hooks/useSharedPlans';
 import { ZakatEstimator } from './giving/ZakatEstimator';
 
 const SOFTCAP_KEY = 'gmg_softcap_nudge_dismissed';
@@ -54,7 +61,8 @@ export function AddToGivingButton({ charityEin, charityName, size = 'md', classN
   const { isDark } = useLandingTheme();
   const { isSignedIn } = useAuth();
   const { profile, updateProfile } = useProfileState();
-  const { addToGiving, isInPlan, saving } = useAddToGiving();
+  const { addToGiving, removeFromGiving, isInPlan, saving } = useAddToGiving();
+  const { hasPlans, addCharityToAllPlans, removeCharityFromAllPlans } = useSharedPlans();
 
   const inPlan = isInPlan(charityEin);
   const needsTarget = isSignedIn && !profile?.targetZakatAmount;
@@ -71,6 +79,8 @@ export function AddToGivingButton({ charityEin, charityName, size = 'md', classN
       a => a.status === 'intended',
     ).length;
     await addToGiving(charityEin, charityName);
+    // Keep the family plan(s) in sync — add to both.
+    if (hasPlans) await addCharityToAllPlans(charityEin);
     // Dispatch the same toast event bookmark uses, so BookmarkToast confirms.
     if (typeof window !== 'undefined') {
       window.dispatchEvent(
@@ -84,7 +94,13 @@ export function AddToGivingButton({ charityEin, charityName, size = 'md', classN
     if (intendedCountBefore + 1 >= SOFTCAP_THRESHOLD && !readSoftcapDismissed()) {
       setShowSoftCap(true);
     }
-  }, [profile, addToGiving, charityEin, charityName]);
+  }, [profile, addToGiving, charityEin, charityName, hasPlans, addCharityToAllPlans]);
+
+  // Sync toggle "off": remove from the personal plan AND every family plan.
+  const doRemove = useCallback(async () => {
+    await removeFromGiving(charityEin);
+    if (hasPlans) await removeCharityFromAllPlans(charityEin);
+  }, [removeFromGiving, charityEin, hasPlans, removeCharityFromAllPlans]);
 
   const handleClick = useCallback(
     async (e: React.MouseEvent) => {
@@ -97,7 +113,14 @@ export function AddToGivingButton({ charityEin, charityName, size = 'md', classN
         return;
       }
 
-      if (inPlan || saving) return;
+      if (saving) return;
+
+      if (inPlan) {
+        // Toggle off — only when a family plan makes this a sync toggle.
+        // Without one, the "in plan" state stays a confirmation (legacy).
+        if (hasPlans) await doRemove();
+        return;
+      }
 
       if (needsTarget) {
         pendingAddRef.current = true;
@@ -107,7 +130,7 @@ export function AddToGivingButton({ charityEin, charityName, size = 'md', classN
 
       await doAdd();
     },
-    [isSignedIn, inPlan, saving, needsTarget, doAdd],
+    [isSignedIn, inPlan, saving, needsTarget, hasPlans, doAdd, doRemove],
   );
 
   const onEstimatorUse = useCallback(
@@ -124,6 +147,9 @@ export function AddToGivingButton({ charityEin, charityName, size = 'md', classN
 
   const padding = size === 'sm' ? 'px-2 py-1 text-[11px]' : 'px-2.5 py-1.5 text-xs';
   const iconSize = size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5';
+
+  // When a family plan exists, the "in plan" chip is an interactive toggle-off.
+  const removable = inPlan && hasPlans;
 
   const label = !isSignedIn
     ? 'Sign in to add'
@@ -147,10 +173,11 @@ export function AddToGivingButton({ charityEin, charityName, size = 'md', classN
       <button
         type="button"
         onClick={handleClick}
-        disabled={saving || inPlan}
-        aria-label={label}
+        disabled={saving || (inPlan && !hasPlans)}
+        aria-label={removable ? 'In your giving — click to remove' : label}
         aria-pressed={inPlan}
-        className={`${baseBtn} ${padding} ${inPlan ? doneCls : activeCls}`}
+        title={removable ? 'In your plan and family plan — click to remove from both' : undefined}
+        className={`${baseBtn} ${padding} ${inPlan && !hasPlans ? doneCls : activeCls}`}
       >
         {inPlan ? (
           <Check className={iconSize} aria-hidden="true" />

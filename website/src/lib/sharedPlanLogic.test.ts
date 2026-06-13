@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { mergeItem, weightsToPercents, computeYourShare, newInviteToken, pruneHistory, addCharityItem } from './sharedPlanLogic';
+import { mergeItem, weightsToPercents, computeYourShare, newInviteToken, pruneHistory, addCharityItem, removeCharityItem } from './sharedPlanLogic';
 import type { PlanItem, PlanHistoryEntry } from '../types/sharedPlan';
 
 const item = (over: Partial<PlanItem> = {}): PlanItem => ({
@@ -23,6 +23,24 @@ describe('addCharityItem', () => {
     const out = addCharityItem(items, '36-4476244', 'u1');
     expect(out).toHaveLength(2);
     expect(out.map(i => i.ref).sort()).toEqual(['36-4476244', '95-4453134']);
+  });
+});
+
+describe('removeCharityItem', () => {
+  it('removes the charity by EIN', () => {
+    const items = [item({ id: 'a', ref: '95-4453134' }), item({ id: 'b', ref: '36-4476244' })];
+    const out = removeCharityItem(items, '95-4453134');
+    expect(out.map(i => i.ref)).toEqual(['36-4476244']);
+  });
+  it('no-ops (same array ref) when the charity is absent', () => {
+    const items = [item({ id: 'a', ref: '95-4453134' })];
+    const out = removeCharityItem(items, '00-0000000');
+    expect(out).toBe(items);
+  });
+  it('leaves a non-charity item with the same ref untouched', () => {
+    const items = [item({ id: 'c', kind: 'category', ref: 'water' })];
+    const out = removeCharityItem(items, 'water');
+    expect(out).toBe(items);
   });
 });
 

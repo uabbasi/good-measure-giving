@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { doc, getDoc, setDoc, collection, Timestamp } from 'firebase/firestore';
 import { useFirebaseData, useFirebaseAuth } from '../auth/FirebaseProvider';
-import { newInviteToken, addCharityItem } from '../lib/sharedPlanLogic';
+import { newInviteToken, addCharityItem, removeCharityItem } from '../lib/sharedPlanLogic';
 import type { SharedPlan, PlanItem } from '../types/sharedPlan';
 
 export function useSharedPlans() {
@@ -49,30 +49,51 @@ export function useSharedPlans() {
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
   });
 
-  // Bridge: add a charity (by EIN) to an existing shared plan. Thin-sync
-  // read-modify-write of the whole items array (dedupes by EIN, bumps revision).
+  // Thin-sync read-modify-write of one shared plan's whole items array.
+  // `mutate(items)` returns the next array, or the same reference to skip the write.
+  const writePlanItems = async (planId: string, mutate: (items: PlanItem[]) => PlanItem[]) => {
+    if (!db || !userId) throw new Error('Not authenticated');
+    const ref = doc(db, 'shared_plans', planId);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) throw new Error('Plan not found');
+    const items: PlanItem[] = (snap.data().items as PlanItem[]) || [];
+    const next = mutate(items);
+    if (next === items) return false; // no change — skip the write
+    await setDoc(
+      ref,
+      { items: next, revision: ((snap.data().revision as number) || 0) + 1, updatedAt: Date.now() },
+      { merge: true },
+    );
+    return true;
+  };
+
+  // Bridge: add/remove a charity (by EIN) on one shared plan (dedupes, bumps revision).
   const addCharityToPlan = useMutation({
-    mutationFn: async ({ planId, ein }: { planId: string; ein: string }): Promise<'added' | 'exists'> => {
-      if (!db || !userId) throw new Error('Not authenticated');
-      const ref = doc(db, 'shared_plans', planId);
-      const snap = await getDoc(ref);
-      if (!snap.exists()) throw new Error('Plan not found');
-      const items: PlanItem[] = (snap.data().items as PlanItem[]) || [];
-      const next = addCharityItem(items, ein, userId);
-      if (next === items) return 'exists'; // already present — skip the write
-      await setDoc(
-        ref,
-        { items: next, revision: ((snap.data().revision as number) || 0) + 1, updatedAt: Date.now() },
-        { merge: true },
-      );
-      return 'added';
-    },
+    mutationFn: ({ planId, ein }: { planId: string; ein: string }) =>
+      writePlanItems(planId, items => addCharityItem(items, ein, userId!)),
   });
+  const removeCharityFromPlan = useMutation({
+    mutationFn: ({ planId, ein }: { planId: string; ein: string }) =>
+      writePlanItems(planId, items => removeCharityItem(items, ein)),
+  });
+
+  // Sync helpers: mirror a personal-plan add/remove across EVERY shared plan the
+  // user belongs to (keeps the family plan(s) in lockstep with the personal plan).
+  const addCharityToAllPlans = async (ein: string) => {
+    for (const p of plans) await writePlanItems(p.id, items => addCharityItem(items, ein, userId!));
+  };
+  const removeCharityFromAllPlans = async (ein: string) => {
+    for (const p of plans) await writePlanItems(p.id, items => removeCharityItem(items, ein));
+  };
 
   return {
     plans,
     isLoading,
+    hasPlans: plans.length > 0,
     createPlan: (n: string) => createPlan.mutateAsync(n),
     addCharityToPlan: (planId: string, ein: string) => addCharityToPlan.mutateAsync({ planId, ein }),
+    removeCharityFromPlan: (planId: string, ein: string) => removeCharityFromPlan.mutateAsync({ planId, ein }),
+    addCharityToAllPlans,
+    removeCharityFromAllPlans,
   };
 }
