@@ -9,6 +9,7 @@ import type {
 } from '../../../types';
 import { resolveCitationUrls, type CitationLike } from '../../utils/citationUrls';
 import { deriveUISignalsFromCharity } from '../../utils/scoreUtils';
+import { getTheoryOfChangeCitations, type TocCitation } from './sections/_primitives';
 
 export interface CdpData {
   charity: CharityProfile;
@@ -27,6 +28,7 @@ export interface CdpData {
   headline: string;
   aboutSummary: string;
   citations: CitationLike[];
+  theoryOfChangeCitations: TocCitation[];
 }
 
 export function buildCdpData(charity: CharityProfile, canViewRich: boolean): CdpData {
@@ -40,6 +42,7 @@ export function buildCdpData(charity: CharityProfile, canViewRich: boolean): Cdp
       ? (rich?.all_citations || baseline?.all_citations || [])
       : (baseline?.all_citations || [])
   ) as CitationLike[];
+  const citations = resolveCitationUrls(rawCitations, charity);
 
   return {
     charity,
@@ -61,7 +64,8 @@ export function buildCdpData(charity: CharityProfile, canViewRich: boolean): Cdp
     aboutSummary: canViewRich
       ? (rich?.summary || baseline?.summary || '')
       : (baseline?.summary || ''),
-    citations: resolveCitationUrls(rawCitations, charity),
+    citations,
+    theoryOfChangeCitations: getTheoryOfChangeCitations(citations as TocCitation[]),
   };
 }
 

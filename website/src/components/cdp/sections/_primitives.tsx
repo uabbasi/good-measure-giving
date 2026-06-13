@@ -4,8 +4,32 @@
  */
 import React from 'react';
 import { InfoTip } from '../../InfoTip';
+import type { CitationLike } from '../../../utils/citationUrls';
 
 // --- Utility functions (verbatim from TabbedView) ---
+
+export type TocCitation = CitationLike & { id?: string };
+
+// Ranks citations by relevance to "theory of change" and returns the top matches
+// (verbatim from TabbedView's getTheoryOfChangeCitations).
+export const getTheoryOfChangeCitations = (
+  citations: TocCitation[],
+  limit = 2,
+): TocCitation[] => {
+  if (!citations || citations.length === 0) return [];
+  const tocPattern = /(theory of change|our model|logic model|impact framework|impact report|evaluation and learning)/i;
+  const ranked = citations
+    .filter(c => !!c.source_url)
+    .map(c => {
+      const haystack = `${c.claim || ''} ${c.source_name || ''} ${c.source_url || ''}`;
+      return { citation: c, score: tocPattern.test(haystack) ? 2 : 0 };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  const matched = ranked.filter(r => r.score > 0).slice(0, limit).map(r => r.citation);
+  if (matched.length > 0) return matched;
+  return ranked.slice(0, limit).map(r => r.citation);
+};
 
 export const formatCurrency = (value: number | null | undefined): string => {
   if (value == null) return 'N/A';
