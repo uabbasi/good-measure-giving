@@ -25,7 +25,8 @@ import { CharityProfile, AmalEvaluation, RatingColor } from '../types';
 import { ScoreVisualizer, ScoreVariant } from '../components/ScoreVisualizer';
 import { AssessmentCard, RatingIcon } from '../components/MetricCard';
 import { SourceAttribution } from '../src/components/SourceAttribution';
-import { TerminalView, TabbedView } from '../src/components/views';
+import { TerminalView } from '../src/components/views';
+import { SinglePageView } from '../src/components/cdp/SinglePageView';
 import { isRichTier, isBaselineTier, isHiddenTier } from '../src/utils/tierUtils';
 import { useCommunityMember, CommunityGate, JoinCommunityPrompt, useAuth } from '../src/auth';
 import { useRichAccess } from '../src/hooks/useRichAccess';
@@ -130,14 +131,14 @@ export const CharityDetailsPage: React.FC = () => {
     );
   }
 
-  // Rich and baseline tiers use tabbed (default) or terminal view
+  // Rich and baseline tiers use single-page (default) or terminal view
   if (isRichTier(charity) || isBaselineTier(charity)) {
     return (
       <>
         {!isSignedIn && <FreeViewBanner viewsUsed={viewsUsed} viewsRemaining={viewsRemaining} canViewRich={canViewRich} />}
         {useTerminal
           ? <TerminalView charity={charity} canViewRich={canViewRich} />
-          : <TabbedView charity={charity} canViewRich={canViewRich} />
+          : <SinglePageView charity={charity} canViewRich={canViewRich} />
         }
         {activeNudge && <ActivationNudge nudge={activeNudge} onDismiss={dismissNudge} />}
       </>
