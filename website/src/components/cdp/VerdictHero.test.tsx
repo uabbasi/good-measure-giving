@@ -28,5 +28,8 @@ describe('VerdictHero', () => {
     const c = make({ amal: { amal_score: null } });
     render(<VerdictHero data={buildCdpData(c, true)} />);
     expect(screen.queryByText('82')).toBeNull();
+    // With a null score the org is treated as new/pre-990, so the fallback
+    // assessment label ('Limited Basis') renders in place of the number.
+    expect(screen.getByText('Limited Basis')).toBeTruthy();
   });
 });

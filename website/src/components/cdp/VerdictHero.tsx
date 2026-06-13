@@ -15,6 +15,7 @@ import { SignalConstellation } from '../SignalConstellation';
 import {
   getEvidenceStageClasses,
   getEvidenceStageLabel,
+  getGivingTagClasses,
   getScoreColorClass,
   getScoreBarColorClass,
 } from '../../utils/scoreConstants';
@@ -109,7 +110,9 @@ export const VerdictHero: React.FC<VerdictHeroProps> = ({ data }) => {
         <div className="mt-4 space-y-2.5">
           {impact != null && <ScoreBar label="Impact" value={impact} max={50} isDark={isDark} />}
           {alignment != null && <ScoreBar label="Alignment" value={alignment} max={50} isDark={isDark} />}
-          <ScoreBar label="Risk deduction" value={riskValue} max={RISK_MAX} penalty isDark={isDark} />
+          {riskValue > 0 && (
+            <ScoreBar label="Risk deduction" value={riskValue} max={RISK_MAX} penalty isDark={isDark} />
+          )}
         </div>
       )}
 
@@ -130,9 +133,7 @@ export const VerdictHero: React.FC<VerdictHeroProps> = ({ data }) => {
           {signals.archetype_label}
         </span>
         {isZakatEligible && (
-          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold ${
-            isDark ? 'bg-emerald-900/40 text-emerald-400' : 'bg-emerald-100 text-emerald-700'
-          }`}>
+          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded border text-[11px] font-semibold ${getGivingTagClasses('zakat', isDark)}`}>
             <Shield className="w-3 h-3" />
             Accepts Zakat
           </span>
