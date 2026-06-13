@@ -53,6 +53,19 @@ describe('TrustAwardsSection', () => {
     expect(screen.getByText(/meets all BBB standards/i)).toBeTruthy();
   });
 
+  it('renders nothing when signed-in user has no awards and no BBB data', () => {
+    const bare = {
+      ...charity,
+      awards: undefined,
+      amalEvaluation: {
+        ...charity.amalEvaluation,
+        rich_narrative: { ...charity.amalEvaluation.rich_narrative, bbb_assessment: undefined },
+      },
+    } as any;
+    const { container } = render(<TrustAwardsSection data={buildCdpData(bare, true)} />);
+    expect(container.querySelector('#trust-awards')).toBeNull();
+  });
+
   it('shows ContentPreview gates and hides rich detail when anonymous', () => {
     const { container } = render(<TrustAwardsSection data={buildCdpData(charity, false)} />);
     expect(container.querySelector('#trust-awards')).toBeTruthy();
