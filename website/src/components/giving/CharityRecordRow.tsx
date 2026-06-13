@@ -17,6 +17,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Check, ChevronRight, X } from 'lucide-react';
 import type { AssignmentStatus } from '../../utils/recordStatus';
+import { AddToFamilyPlanButton } from './AddToFamilyPlanButton';
 
 export interface CharityRecordRowData {
   ein: string;
@@ -329,6 +330,7 @@ export function CharityRecordRow({
           <td className="px-2.5 py-1.5">{statusChip}</td>
           <td className="px-2.5 py-1.5 text-right">
             <div className="flex items-center justify-end gap-1.5">
+              <AddToFamilyPlanButton charityEin={charity.ein} charityName={charity.name} size="sm" />
               {actionButton}
               {onRemove && (
                 <button
@@ -449,6 +451,7 @@ export function CharityRecordRow({
           </div>
         )}
         <div className="flex items-center gap-2">
+          <AddToFamilyPlanButton charityEin={charity.ein} charityName={charity.name} size="sm" />
           {intendedInput}
           {actionButton}
         </div>

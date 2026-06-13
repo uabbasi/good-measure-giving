@@ -1,5 +1,23 @@
 import type { PlanItem, PlanHistoryEntry } from '../types/sharedPlan';
 
+/**
+ * Add a charity (by EIN) to an items array at weight 1, or no-op if a charity
+ * with that EIN is already in the plan. Used by the "Add to family plan" bridge.
+ * Returns the same array reference when the charity is already present (so callers
+ * can skip the write).
+ */
+export function addCharityItem(items: PlanItem[], ein: string, actorUid: string): PlanItem[] {
+  if (items.some(i => i.kind === 'charity' && i.ref === ein)) return items;
+  const id =
+    typeof crypto !== 'undefined' && 'randomUUID' in crypto
+      ? crypto.randomUUID()
+      : `${ein}-${items.length}`;
+  return [
+    ...items,
+    { id, kind: 'charity', ref: ein, weight: 1, assigneeUid: null, updatedAt: Date.now(), updatedBy: actorUid },
+  ];
+}
+
 /** Per-row last-write-wins merge of one item into an items array. */
 export function mergeItem(items: PlanItem[], incoming: PlanItem): PlanItem[] {
   const idx = items.findIndex(i => i.id === incoming.id);

@@ -1,10 +1,29 @@
 import { describe, it, expect } from 'vitest';
-import { mergeItem, weightsToPercents, computeYourShare, newInviteToken, pruneHistory } from './sharedPlanLogic';
+import { mergeItem, weightsToPercents, computeYourShare, newInviteToken, pruneHistory, addCharityItem } from './sharedPlanLogic';
 import type { PlanItem, PlanHistoryEntry } from '../types/sharedPlan';
 
 const item = (over: Partial<PlanItem> = {}): PlanItem => ({
   id: 'a', kind: 'charity', ref: '95-4453134', weight: 1, assigneeUid: null,
   updatedAt: 100, updatedBy: 'u1', ...over,
+});
+
+describe('addCharityItem', () => {
+  it('appends a new charity at weight 1', () => {
+    const out = addCharityItem([], '95-4453134', 'u1');
+    expect(out).toHaveLength(1);
+    expect(out[0]).toMatchObject({ kind: 'charity', ref: '95-4453134', weight: 1, assigneeUid: null, updatedBy: 'u1' });
+  });
+  it('no-ops (same array ref) when the charity is already present', () => {
+    const items = [item({ id: 'a', ref: '95-4453134' })];
+    const out = addCharityItem(items, '95-4453134', 'u2');
+    expect(out).toBe(items); // unchanged reference → caller skips the write
+  });
+  it('adds a different charity alongside existing ones', () => {
+    const items = [item({ id: 'a', ref: '95-4453134' })];
+    const out = addCharityItem(items, '36-4476244', 'u1');
+    expect(out).toHaveLength(2);
+    expect(out.map(i => i.ref).sort()).toEqual(['36-4476244', '95-4453134']);
+  });
 });
 
 describe('mergeItem', () => {

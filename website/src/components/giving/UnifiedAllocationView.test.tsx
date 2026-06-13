@@ -32,6 +32,11 @@ vi.mock('./ZakatEstimator', () => ({
   ZakatEstimator: () => null,
 }));
 
+// No family plans → the per-row "Add to family plan" bridge renders nothing.
+vi.mock('../../hooks/useSharedPlans', () => ({
+  useSharedPlans: () => ({ plans: [], isLoading: false, createPlan: vi.fn(), addCharityToPlan: vi.fn() }),
+}));
+
 import { UnifiedAllocationView } from './UnifiedAllocationView';
 
 function renderView(props: Partial<Parameters<typeof UnifiedAllocationView>[0]>) {
