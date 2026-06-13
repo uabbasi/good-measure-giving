@@ -4,8 +4,8 @@ import {
   doc, collection, getDoc, getDocs, setDoc, deleteDoc, runTransaction, Timestamp,
 } from 'firebase/firestore';
 import { useFirebaseData } from '../auth/FirebaseProvider';
-import type { SharedPlan, PlanItem, PlanMember, PlanHistoryEntry } from '../types/sharedPlan';
-import { applyItemLWW, removeItemById, setMemberNote, HISTORY_MAX, historyIdToPrune } from '../lib/sharedPlanLogic';
+import type { SharedPlan, PlanItem, PlanMember, PlanHistoryEntry, ShortlistCandidate } from '../types/sharedPlan';
+import { applyItemLWW, removeItemById, setMemberNote, addShortlistCandidate, removeShortlistCandidate, promoteCandidate, HISTORY_MAX, historyIdToPrune } from '../lib/sharedPlanLogic';
 
 export function useSharedPlan(planId: string | null) {
   const { db, userId } = useFirebaseData();
@@ -94,6 +94,36 @@ export function useSharedPlan(planId: string | null) {
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
   });
 
+  const addToShortlist = useMutation({
+    mutationFn: (ref: string) =>
+      commit((current) => ({
+        fields: { shortlist: addShortlistCandidate(current.shortlist ?? [], ref, userId!) },
+        // shortlist changes are not item edits → no history entry
+      })),
+    onSettled: () => qc.invalidateQueries({ queryKey: key }),
+  });
+
+  const removeFromShortlist = useMutation({
+    mutationFn: (ref: string) =>
+      commit((current) => ({
+        fields: { shortlist: removeShortlistCandidate(current.shortlist ?? [], ref) },
+      })),
+    onSettled: () => qc.invalidateQueries({ queryKey: key }),
+  });
+
+  const promoteToPlan = useMutation({
+    mutationFn: (ref: string) =>
+      commit((current) => {
+        const next = promoteCandidate(current.items, current.shortlist ?? [], ref, userId!);
+        const added = next.items.find(i => i.kind === 'charity' && i.ref === ref) ?? null;
+        return {
+          fields: { items: next.items, shortlist: next.shortlist },
+          history: { itemId: added?.id ?? ref, before: null, after: added },
+        };
+      }),
+    onSettled: () => qc.invalidateQueries({ queryKey: key }),
+  });
+
   const join = useMutation({
     mutationFn: async ({ token, displayName }: { token: string; displayName: string }) => {
       if (!db || !planId || !userId) throw new Error('Not authenticated');
@@ -147,6 +177,9 @@ export function useSharedPlan(planId: string | null) {
     upsertItem: (i: PlanItem) => upsertItem.mutateAsync(i),
     removeItem: (id: string) => removeItem.mutateAsync(id),
     setMyNote: (itemId: string, text: string) => setMyNote.mutateAsync({ itemId, text }),
+    addToShortlist: (ref: string) => addToShortlist.mutateAsync(ref),
+    removeFromShortlist: (ref: string) => removeFromShortlist.mutateAsync(ref),
+    promoteToPlan: (ref: string) => promoteToPlan.mutateAsync(ref),
     join: (token: string, displayName: string) => join.mutateAsync({ token, displayName }),
     removeMember: (uid: string) => removeMember.mutateAsync(uid),
     rename: (n: string) => rename.mutateAsync(n),
