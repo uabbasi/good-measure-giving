@@ -28,4 +28,13 @@ describe('WhyThisScoreSection', () => {
     render(<WhyThisScoreSection data={buildCdpData(newOrg, true)} />);
     expect(screen.getByText(/too early to rate numerically/i)).toBeTruthy();
   });
+
+  it('renders nothing when score_details is absent', () => {
+    const noScore = {
+      ...baseCharity,
+      amalEvaluation: { ...baseCharity.amalEvaluation, score_details: undefined },
+    } as any;
+    const { container } = render(<WhyThisScoreSection data={buildCdpData(noScore, true)} />);
+    expect(container.querySelector('#why-this-score')).toBeNull();
+  });
 });
