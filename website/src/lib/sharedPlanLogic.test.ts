@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { weightsToPercents, computeYourShare, newInviteToken, addCharityItem, applyItemLWW, removeItemById, HISTORY_MAX, historyIdToPrune, setMemberNote } from './sharedPlanLogic';
-import type { PlanItem } from '../types/sharedPlan';
+import { weightsToPercents, computeYourShare, newInviteToken, addCharityItem, applyItemLWW, removeItemById, HISTORY_MAX, historyIdToPrune, setMemberNote, addShortlistCandidate, removeShortlistCandidate, promoteCandidate } from './sharedPlanLogic';
+import type { PlanItem, ShortlistCandidate } from '../types/sharedPlan';
 
 const item = (over: Partial<PlanItem> = {}): PlanItem => ({
   id: 'a', kind: 'charity', ref: '95-4453134', weight: 1, assigneeUid: null,
@@ -106,6 +106,41 @@ describe('newInviteToken', () => {
   });
   it('produces distinct tokens', () => {
     expect(newInviteToken()).not.toBe(newInviteToken());
+  });
+});
+
+const cand = (ref: string, addedBy = 'u1'): ShortlistCandidate => ({ ref, addedBy, addedAt: 1 });
+
+describe('addShortlistCandidate', () => {
+  it('appends a new candidate', () => {
+    const out = addShortlistCandidate([], '11-1', 'u1');
+    expect(out).toHaveLength(1);
+    expect(out[0]).toMatchObject({ ref: '11-1', addedBy: 'u1' });
+  });
+  it('dedupes by ref (same array ref returned)', () => {
+    const list = [cand('11-1')];
+    expect(addShortlistCandidate(list, '11-1', 'u2')).toBe(list);
+  });
+});
+
+describe('removeShortlistCandidate', () => {
+  it('removes by ref', () => {
+    expect(removeShortlistCandidate([cand('11-1'), cand('22-2')], '11-1').map(c => c.ref)).toEqual(['22-2']);
+  });
+});
+
+describe('promoteCandidate', () => {
+  it('moves a candidate from shortlist into items at weight 1', () => {
+    const out = promoteCandidate([], [cand('11-1')], '11-1', 'u1');
+    expect(out.shortlist).toHaveLength(0);
+    expect(out.items).toHaveLength(1);
+    expect(out.items[0]).toMatchObject({ kind: 'charity', ref: '11-1', weight: 1 });
+  });
+  it('does not duplicate an already-present charity, still drops the candidate', () => {
+    const existing = [item({ id: 'a', kind: 'charity', ref: '11-1' })];
+    const out = promoteCandidate(existing, [cand('11-1')], '11-1', 'u1');
+    expect(out.items).toHaveLength(1);
+    expect(out.shortlist).toHaveLength(0);
   });
 });
 

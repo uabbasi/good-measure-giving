@@ -1,4 +1,4 @@
-import type { PlanItem, PlanHistoryEntry } from '../types/sharedPlan';
+import type { PlanItem, PlanHistoryEntry, ShortlistCandidate } from '../types/sharedPlan';
 
 /**
  * Add a charity (by EIN) to an items array at weight 1, or no-op if a charity
@@ -90,5 +90,29 @@ export function setMemberNote(item: PlanItem, uid: string, text: string): PlanIt
   if (trimmed === '') delete notes[uid];
   else notes[uid] = { text: trimmed, at: Date.now() };
   return { ...item, notes };
+}
+
+/** Add a charity ref to the shortlist, deduped by ref (same array ref if present). */
+export function addShortlistCandidate(list: ShortlistCandidate[], ref: string, uid: string): ShortlistCandidate[] {
+  if (list.some(c => c.ref === ref)) return list;
+  return [...list, { ref, addedBy: uid, addedAt: Date.now() }];
+}
+
+/** Remove a charity ref from the shortlist. */
+export function removeShortlistCandidate(list: ShortlistCandidate[], ref: string): ShortlistCandidate[] {
+  return list.filter(c => c.ref !== ref);
+}
+
+/**
+ * Promote a shortlist candidate into the committed plan: drop it from the
+ * shortlist and append a weight-1 charity item (deduped via addCharityItem).
+ */
+export function promoteCandidate(
+  items: PlanItem[], shortlist: ShortlistCandidate[], ref: string, uid: string,
+): { items: PlanItem[]; shortlist: ShortlistCandidate[] } {
+  return {
+    items: addCharityItem(items, ref, uid),
+    shortlist: removeShortlistCandidate(shortlist, ref),
+  };
 }
 
