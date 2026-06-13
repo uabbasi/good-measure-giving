@@ -19,6 +19,13 @@ const IGNORED = [
   /sourcemap/i,
   /Download the React DevTools/i,
   /\[vite\]/i,
+  // Transient Firestore emulator cold-start warning: a transaction can race the
+  // emulator connection on the very first write and log a "Could not reach
+  // backend / Connection failed N times" that the client immediately recovers
+  // from (the writes succeed — asserted by the functional steps below). Benign
+  // infrastructure noise, not an app error.
+  /Could not reach Cloud Firestore backend/i,
+  /Connection failed \d+ times/i,
 ];
 
 function attachConsoleGuard(page: Page, sink: string[]) {
@@ -119,4 +126,45 @@ test('two family members: create plan → invite → preview → join', async ({
 
   await a.context.close();
   await b.context.close();
+});
+
+test('explore-together: shortlist a charity in the session, then promote it into the plan', async ({
+  browser,
+}) => {
+  const errors: string[] = [];
+  const stamp = Date.now();
+
+  const a = await newUserContext(browser, errors);
+  await signIn(a.page, `host-${stamp}@test.local`);
+
+  // Create a shared plan (lands on the shared-plan view with it selected).
+  await a.page.goto('/profile');
+  const createBtn = a.page.getByRole('button', { name: '+ Shared plan' });
+  await expect(createBtn).toBeVisible({ timeout: 30_000 });
+  a.page.once('dialog', (d) => d.accept('Night Family'));
+  await createBtn.click();
+  await expect(a.page.getByRole('heading', { name: 'Night Family' })).toBeVisible({ timeout: 20_000 });
+
+  // Start the giving session (opens on the Gather step), then advance to Explore.
+  await a.page.getByRole('button', { name: /start giving session/i }).click();
+  await expect(a.page.getByRole('heading', { name: /gather the family/i })).toBeVisible({ timeout: 20_000 });
+  await a.page.getByRole('button', { name: /^next$/i }).click(); // gather → explore
+  await expect(a.page.getByRole('heading', { name: /explore together/i })).toBeVisible({ timeout: 15_000 });
+
+  // Shortlist a charity via the explore-together panel (writes the shortlist field).
+  const suggest = a.page.getByPlaceholder(/suggest a charity to consider/i);
+  await expect(suggest).toBeVisible({ timeout: 15_000 });
+  await suggest.fill('Islamic');
+  await a.page.locator('button', { hasText: /Islamic/i }).first().click();
+  await expect(a.page.getByText(/suggested by/i)).toBeVisible({ timeout: 15_000 });
+
+  // Advance to Decide → the shortlist shows under "Still considering"; promote it.
+  await a.page.getByRole('button', { name: /^next$/i }).click(); // explore → decide
+  await expect(a.page.getByText(/still considering/i)).toBeVisible({ timeout: 15_000 });
+  await a.page.getByRole('button', { name: /add to plan/i }).first().click();
+  // After promotion the candidate leaves the shortlist (section disappears).
+  await expect(a.page.getByText(/still considering/i)).toHaveCount(0, { timeout: 15_000 });
+
+  expect(errors, `Console/page errors:\n${errors.join('\n')}`).toEqual([]);
+  await a.context.close();
 });
