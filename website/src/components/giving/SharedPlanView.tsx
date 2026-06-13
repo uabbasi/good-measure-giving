@@ -7,10 +7,11 @@
  * Adding/editing/removing items goes through the thin-sync `useSharedPlan` hook.
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useSharedPlan } from '../../hooks/useSharedPlan';
 import { useProfile } from '../../hooks/useProfile';
 import { useCharities } from '../../hooks/useCharities';
+import { useFirebaseData } from '../../auth/FirebaseProvider';
 import { weightsToPercents, computeYourShare } from '../../lib/sharedPlanLogic';
 import type { PlanItem } from '../../types/sharedPlan';
 import { InviteFamilyPanel } from './InviteFamilyPanel';
@@ -19,9 +20,10 @@ import { AssignCause } from './AssignCause';
 const ITEM_CAP = 100;
 
 export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
-  const { plan, members, isLoading, isOwner, upsertItem, removeItem } = useSharedPlan(planId);
+  const { plan, members, isLoading, isOwner, upsertItem, removeItem, setMyNote } = useSharedPlan(planId);
   const { profile } = useProfile();
   const { charities } = useCharities();
+  const { userId } = useFirebaseData();
 
   // Personal target lives only on the signer's own profile — never on the shared doc.
   const personalTarget = (profile?.targetZakatAmount as number | null) ?? null;
@@ -112,7 +114,15 @@ export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
           <tbody>
             {items.map(item => (
               <tr key={item.id} className="border-t border-slate-200 dark:border-slate-700">
-                <td className="py-2 text-slate-900 dark:text-slate-100">{rowLabel(item)}</td>
+                <td className="py-2 text-slate-900 dark:text-slate-100 align-top">
+                  <div>{rowLabel(item)}</div>
+                  <NoteCell
+                    item={item}
+                    members={members}
+                    myUid={userId}
+                    onSave={(text) => void setMyNote(item.id, text)}
+                  />
+                </td>
                 <td className="py-2 text-slate-600 dark:text-slate-300">{percents[item.id]}%</td>
                 <td className="py-2">
                   <input
@@ -167,6 +177,46 @@ export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
       )}
 
       <InviteFamilyPanel planId={planId} canManage={isOwner()} />
+    </div>
+  );
+};
+
+const NoteCell: React.FC<{
+  item: PlanItem;
+  members: { uid: string; displayName: string }[];
+  myUid: string | null;
+  onSave: (text: string) => void;
+}> = ({ item, members, myUid, onSave }) => {
+  const nameByUid = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const mem of members) m.set(mem.uid, mem.displayName);
+    return m;
+  }, [members]);
+  const notes = item.notes ?? {};
+  const mine = myUid ? notes[myUid]?.text ?? '' : '';
+  const [draft, setDraft] = useState(mine);
+  useEffect(() => { setDraft(mine); }, [mine]);
+
+  const others = Object.entries(notes).filter(([uid]) => uid !== myUid);
+
+  return (
+    <div className="mt-1 space-y-1">
+      {others.map(([uid, n]) => (
+        <p key={uid} className="text-xs text-slate-500 dark:text-slate-400">
+          <span className="font-medium">{nameByUid.get(uid) ?? 'Someone'}:</span> {n.text}
+        </p>
+      ))}
+      {myUid && (
+        <input
+          type="text"
+          value={draft}
+          onChange={e => setDraft(e.target.value)}
+          onBlur={() => { if (draft !== mine) onSave(draft); }}
+          placeholder="Your reason for giving here…"
+          aria-label={`Your reason for ${item.ref}`}
+          className="w-full max-w-xs px-2 py-1 text-xs rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+        />
+      )}
     </div>
   );
 };
