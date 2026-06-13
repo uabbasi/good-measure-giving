@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { weightsToPercents, computeYourShare, newInviteToken, addCharityItem, applyItemLWW, removeItemById, HISTORY_MAX, historyIdToPrune } from './sharedPlanLogic';
+import { weightsToPercents, computeYourShare, newInviteToken, addCharityItem, applyItemLWW, removeItemById, HISTORY_MAX, historyIdToPrune, setMemberNote } from './sharedPlanLogic';
 import type { PlanItem } from '../types/sharedPlan';
 
 const item = (over: Partial<PlanItem> = {}): PlanItem => ({
@@ -106,5 +106,25 @@ describe('newInviteToken', () => {
   });
   it('produces distinct tokens', () => {
     expect(newInviteToken()).not.toBe(newInviteToken());
+  });
+});
+
+describe('setMemberNote', () => {
+  it('sets the calling member key, preserving other members notes', () => {
+    const base = item({ id: 'a', notes: { u1: { text: 'one', at: 1 } } });
+    const out = setMemberNote(base, 'u2', 'two');
+    expect(out.notes?.u1).toEqual({ text: 'one', at: 1 });
+    expect(out.notes?.u2?.text).toBe('two');
+    expect(typeof out.notes?.u2?.at).toBe('number');
+  });
+  it('trims and clears the key when text is empty', () => {
+    const base = item({ id: 'a', notes: { u1: { text: 'one', at: 1 }, u2: { text: 'two', at: 2 } } });
+    const out = setMemberNote(base, 'u2', '   ');
+    expect(out.notes?.u2).toBeUndefined();
+    expect(out.notes?.u1).toEqual({ text: 'one', at: 1 });
+  });
+  it('works when the item has no notes yet', () => {
+    const out = setMemberNote(item({ id: 'a', notes: undefined }), 'u1', 'hi');
+    expect(out.notes).toEqual({ u1: { text: 'hi', at: expect.any(Number) } });
   });
 });

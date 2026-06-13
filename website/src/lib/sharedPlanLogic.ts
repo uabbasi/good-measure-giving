@@ -79,3 +79,16 @@ export function historyIdToPrune(revision: number, max: number): string | null {
   return target >= 1 ? String(target) : null;
 }
 
+/**
+ * Merge one member's niyyah note onto an item, preserving every other member's
+ * note. Empty/whitespace text deletes the caller's note. Pure — apply it to a
+ * freshly re-read item inside the write transaction.
+ */
+export function setMemberNote(item: PlanItem, uid: string, text: string): PlanItem {
+  const trimmed = text.trim();
+  const notes = { ...(item.notes ?? {}) };
+  if (trimmed === '') delete notes[uid];
+  else notes[uid] = { text: trimmed, at: Date.now() };
+  return { ...item, notes };
+}
+
