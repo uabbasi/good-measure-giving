@@ -60,7 +60,13 @@ export function DevQuickLogin() {
     setBusy(u.id);
     setError(null);
     try {
-      await t.signUp(u.email, u.password); // create-or-signin
+      // Sign in first so repeat logins (the common case) make no failing network
+      // call; only create the user the first time it doesn't exist yet.
+      try {
+        await t.signIn(u.email, u.password);
+      } catch {
+        await t.signUp(u.email, u.password);
+      }
       if (auth?.currentUser && !auth.currentUser.displayName) {
         await updateProfile(auth.currentUser, { displayName: u.displayName });
       }
