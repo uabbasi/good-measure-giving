@@ -28,6 +28,7 @@ const GuidePage = lazy(() => import('./pages/GuidePage').then(m => ({ default: m
 const ZakatCalculatorHubPage = lazy(() => import('./pages/ZakatCalculatorHubPage').then(m => ({ default: m.ZakatCalculatorHubPage })));
 const ZakatCalculatorAssetPage = lazy(() => import('./pages/ZakatCalculatorAssetPage').then(m => ({ default: m.ZakatCalculatorAssetPage })));
 const JoinPlanPage = lazy(() => import('./pages/JoinPlanPage').then(m => ({ default: m.JoinPlanPage })));
+const GmgBrowse = lazy(() => import('./src/components/gmg/GmgBrowse').then(m => ({ default: m.GmgBrowse })));
 import { CompareBar } from './src/components/CompareBar';
 import { MobileBottomNav } from './src/components/MobileBottomNav';
 import { WelcomeTour } from './src/components/WelcomeTour';
@@ -58,7 +59,7 @@ const AppContent: React.FC = () => {
   const isLandingPage = location.pathname === '/';
   // Design-motif preview renders full-bleed with its own chrome (no app Navbar/Footer/overlays).
   const isGmgPreview =
-    location.pathname.startsWith('/charity/') &&
+    (location.pathname.startsWith('/charity/') || location.pathname === '/browse') &&
     new URLSearchParams(location.search).get('design') === 'gmg';
 
   // T049: Track page views on route changes
@@ -80,7 +81,7 @@ const AppContent: React.FC = () => {
         <Suspense fallback={null}>
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/browse" element={<BrowsePage />} />
+            <Route path="/browse" element={isGmgPreview ? <GmgBrowse isDark={isDark} /> : <BrowsePage />} />
             <Route path="/charity/:id" element={<CharityDetailsPage />} />
             <Route path="/methodology" element={<MethodologyPage />} />
             <Route path="/faq" element={<FAQPage />} />

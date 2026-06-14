@@ -2,7 +2,7 @@
 // Reachable via /charity/:id?design=gmg. Renders real charity data in the
 // sage-on-bone, Harvey-ball design from the claude.ai handoff.
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   gmgPalette,
@@ -24,23 +24,9 @@ import {
   Stacked,
   Bismillah,
   Figure,
-  GmgLogo,
 } from './primitives';
-
-// Mobile breakpoint via matchMedia (inline-styled component, so no CSS media queries).
-const useIsMobile = (query = '(max-width: 768px)'): boolean => {
-  const [match, setMatch] = useState(
-    typeof window !== 'undefined' ? window.matchMedia(query).matches : false,
-  );
-  useEffect(() => {
-    const mql = window.matchMedia(query);
-    const on = () => setMatch(mql.matches);
-    on();
-    mql.addEventListener('change', on);
-    return () => mql.removeEventListener('change', on);
-  }, [query]);
-  return match;
-};
+import { GmgNav, TypeSwitcher } from './chrome';
+import { useIsMobile } from './useIsMobile';
 import { adaptCharity, GmgDimension } from './charityAdapter';
 
 const usd = (n: number | null): string =>
@@ -183,35 +169,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
   return (
     <div style={{ background: p.bg, color: p.fg, fontFamily: FONT_TEXT, minHeight: '100vh', ...fontVars }}>
       {/* Motif nav — self-contained (app chrome is suppressed for this view) */}
-      <header
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: isMobile ? 12 : 20,
-          flexWrap: 'wrap',
-          padding: `12px ${padX}px`,
-          background: p.bg,
-          borderBottom: sectionBorder,
-        }}
-      >
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-          <GmgLogo p={p} size={isMobile ? 26 : 30} />
-          <Tag tone="warn" p={p}>Beta</Tag>
-        </Link>
-        {!isMobile && (
-          <nav style={{ display: 'flex', gap: 4, fontSize: 13, color: p.sub, marginLeft: 8 }}>
-            {[['Browse', '/browse'], ['Methodology', '/methodology'], ['About', '/about']].map(([label, to]) => (
-              <Link key={label} to={to} style={{ padding: '6px 12px', borderRadius: 6, color: p.sub, textDecoration: 'none' }}>
-                {label}
-              </Link>
-            ))}
-          </nav>
-        )}
-        <span style={{ flex: 1 }} />
-        <Link to="/profile" style={{ padding: '7px 14px', borderRadius: 99, border: `1px solid ${p.rule}`, background: 'transparent', color: p.fg, fontSize: 12, textDecoration: 'none' }}>
-          Sign in
-        </Link>
-      </header>
+      <GmgNav p={p} isMobile={isMobile} />
 
       {/* Utility row — research metadata + live type switcher */}
       <div
@@ -232,25 +190,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
         {c.rubricVersion && <span>RUBRIC v{c.rubricVersion}</span>}
         {c.evaluatedOn && <span>· EVALUATED {c.evaluatedOn}</span>}
         <span style={{ flex: 1 }} />
-        <span style={{ color: p.sub2 }}>TYPEFACE</span>
-        {(Object.keys(FONT_THEMES) as FontVariant[]).map((v) => (
-          <Link
-            key={v}
-            to={`/charity/${c.ein}?design=gmg&type=${v}`}
-            style={{
-              padding: '2px 8px',
-              borderRadius: 99,
-              textDecoration: 'none',
-              fontSize: 10,
-              letterSpacing: '0.04em',
-              border: `1px solid ${v === variant ? p.chip : p.rule}`,
-              background: v === variant ? p.chip : 'transparent',
-              color: v === variant ? p.chipFg : p.sub,
-            }}
-          >
-            {FONT_THEMES[v].label}
-          </Link>
-        ))}
+        <TypeSwitcher p={p} variant={variant} basePath={`/charity/${c.ein}`} />
       </div>
 
       <Bismillah p={p} />

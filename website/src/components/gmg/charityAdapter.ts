@@ -4,6 +4,21 @@
 
 import { Rating, ratingFromDimension, ratingFromCriterion } from './rating';
 
+export interface GmgRow {
+  ein: string;
+  name: string;
+  cause: string;
+  region: string;
+  wallet: string;
+  walletIsZakat: boolean;
+  impact: Rating;
+  alignment: Rating;
+  amalScore: number;
+  risk: string;
+  verification: string;
+  programPct: number | null;
+}
+
 const stripTags = (s: unknown): string =>
   typeof s === 'string'
     ? s
@@ -136,6 +151,34 @@ export interface GmgCharity {
 
   awards: { cn: string | null; candid: string | null; bbb: string | null };
 }
+
+// Lightweight per-row projection for the index table.
+export const adaptRow = (c: any): GmgRow => {
+  const ae = c?.amalEvaluation ?? {};
+  const cs = ae?.confidence_scores ?? {};
+  const sd = ae?.score_details ?? {};
+  const fin = c?.financials ?? {};
+  const sig = c?.ui_signals_v1 ?? {};
+  const dc = num(cs?.data_confidence);
+  const pr = numOrNull(fin?.programExpenseRatio ?? c?.rawData?.program_expense_ratio);
+  return {
+    ein: c?.ein ?? '',
+    name: c?.name ?? 'Charity',
+    cause: c?.category ?? c?.primaryCategory ?? '—',
+    region:
+      (Array.isArray(c?.geographicCoverage) && c.geographicCoverage[0]) ||
+      c?.targeting?.primary_region ||
+      'Multi',
+    wallet: walletLabel(ae?.wallet_tag),
+    walletIsZakat: (ae?.wallet_tag ?? '').toUpperCase().includes('ZAKAT'),
+    impact: ratingFromDimension(num(cs?.impact), 50),
+    alignment: ratingFromDimension(num(cs?.alignment), 50),
+    amalScore: num(ae?.amal_score),
+    risk: sd?.risks?.overall_risk_level ?? 'LOW',
+    verification: sig?.evidence_stage ?? (dc >= 0.7 ? 'Verified' : dc >= 0.4 ? 'Building' : 'Early'),
+    programPct: pr == null ? null : Math.round(pr <= 1 ? pr * 100 : pr),
+  };
+};
 
 export const adaptCharity = (c: any): GmgCharity => {
   const ae = c?.amalEvaluation ?? {};
