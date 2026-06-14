@@ -84,7 +84,7 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
       <section style={{ padding: isMobile ? `56px ${padX}px 48px` : `96px ${padX}px 80px`, textAlign: 'center' }}>
         <div style={{ ...center }}>
           <div style={{ fontFamily: FONT_MONO, fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: p.accent2, marginBottom: 22 }}>
-            Independent · always free · for Muslim donors
+            Independent research · for Muslim donors
           </div>
           <h1 style={{ fontFamily: FONT_DISPLAY, fontWeight: 400, fontSize: isMobile ? 46 : 78, lineHeight: 1.02, letterSpacing: ft.displayTracking, margin: 0, maxWidth: 840, marginInline: 'auto' }}>
             Give with <em style={{ color: p.accent }}>confidence.</em>
@@ -156,11 +156,10 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
       <section style={{ padding: isMobile ? `56px ${padX}px` : `80px ${padX}px`, textAlign: 'center' }}>
         <div style={{ ...center, maxWidth: 680 }}>
           <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: isMobile ? 30 : 40, lineHeight: 1.1, letterSpacing: ft.displayTracking, margin: 0 }}>
-            Free, always. And no charity ever pays to be here.
+            Independent — and no charity ever pays to be here.
           </h2>
           <p style={{ fontSize: 15.5, lineHeight: 1.6, color: p.sub, margin: '16px auto 28px', maxWidth: 520 }}>
-            We're independent. Our only goal is to help you give well — to {count}+ charities,
-            researched in the open.
+            Our only goal is to help you give well — to {count}+ charities, researched in the open.
           </p>
           <Link
             to="/browse?design=gmg"
@@ -172,7 +171,7 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
       </section>
 
       <footer style={{ padding: `18px ${padX}px`, borderTop: `1px solid ${p.rule}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, color: p.sub2, fontSize: 10.5, fontFamily: FONT_MONO, letterSpacing: '0.06em' }}>
-        <span>GOOD MEASURE GIVING · ©2026 · INDEPENDENT &amp; FREE</span>
+        <span>GOOD MEASURE GIVING · ©2026 · INDEPENDENT RESEARCH</span>
         <span style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
           <TypeSwitcher p={p} variant={variant} basePath="/" />
         </span>
