@@ -27,6 +27,7 @@ import { AssessmentCard, RatingIcon } from '../components/MetricCard';
 import { SourceAttribution } from '../src/components/SourceAttribution';
 import { TerminalView } from '../src/components/views';
 import { SinglePageView } from '../src/components/cdp/SinglePageView';
+import { GmgCharityDetail } from '../src/components/gmg/GmgCharityDetail';
 import { isRichTier, isBaselineTier, isHiddenTier } from '../src/utils/tierUtils';
 import { useCommunityMember, CommunityGate, JoinCommunityPrompt, useAuth } from '../src/auth';
 import { useRichAccess } from '../src/hooks/useRichAccess';
@@ -74,6 +75,10 @@ export const CharityDetailsPage: React.FC = () => {
   // View preference: ?view=terminal for terminal view, default is tabbed
   // Read directly from window.location to avoid useSearchParams re-render issues
   const useTerminal = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('view') === 'terminal';
+
+  // Design-motif preview: ?design=gmg renders the new sage-on-bone / Harvey-ball
+  // charity detail alongside the live page (no gating, any tier) for evaluation.
+  const useGmgDesign = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('design') === 'gmg';
 
   // Check community membership for content gating (must be called unconditionally)
   const isCommunityMember = useCommunityMember();
@@ -129,6 +134,11 @@ export const CharityDetailsPage: React.FC = () => {
         </div>
       </div>
     );
+  }
+
+  // Design-motif preview takes precedence over tier/gating logic.
+  if (useGmgDesign) {
+    return <GmgCharityDetail charity={charity} isDark={isDark} />;
   }
 
   // Rich and baseline tiers use single-page (default) or terminal view

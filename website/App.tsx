@@ -56,6 +56,10 @@ const AppContent: React.FC = () => {
   const location = useLocation();
   const { isDark } = useLandingTheme();
   const isLandingPage = location.pathname === '/';
+  // Design-motif preview renders full-bleed with its own chrome (no app Navbar/Footer/overlays).
+  const isGmgPreview =
+    location.pathname.startsWith('/charity/') &&
+    new URLSearchParams(location.search).get('design') === 'gmg';
 
   // T049: Track page views on route changes
   useEffect(() => {
@@ -63,7 +67,7 @@ const AppContent: React.FC = () => {
   }, [location.pathname]);
 
   return (
-    <div className={`${isLandingPage ? 'h-[100dvh] lg:h-auto lg:min-h-screen overflow-hidden lg:overflow-visible' : 'min-h-screen'} flex flex-col font-sans transition-colors duration-300 ${isDark ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
+    <div className={isGmgPreview ? 'min-h-screen flex flex-col' : `${isLandingPage ? 'h-[100dvh] lg:h-auto lg:min-h-screen overflow-hidden lg:overflow-visible' : 'min-h-screen'} flex flex-col font-sans transition-colors duration-300 ${isDark ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
       {/* Skip to main content link for keyboard users */}
       <a
         href="#main"
@@ -71,7 +75,7 @@ const AppContent: React.FC = () => {
       >
         Skip to main content
       </a>
-      <Navbar />
+      {!isGmgPreview && <Navbar />}
       <main id="main" className={`flex-grow ${isLandingPage ? 'min-h-0 overflow-hidden lg:min-h-0 lg:overflow-visible' : ''}`}>
         <Suspense fallback={null}>
           <Routes>
@@ -100,11 +104,11 @@ const AppContent: React.FC = () => {
           </Routes>
         </Suspense>
       </main>
-      {isLandingPage ? <div className="hidden lg:block"><Footer /></div> : <Footer />}
-      <CompareBar />
-      {!isLandingPage && <MobileBottomNav />}
-      <WelcomeTour />
-      <IntroPresentation />
+      {!isGmgPreview && (isLandingPage ? <div className="hidden lg:block"><Footer /></div> : <Footer />)}
+      {!isGmgPreview && <CompareBar />}
+      {!isGmgPreview && !isLandingPage && <MobileBottomNav />}
+      {!isGmgPreview && <WelcomeTour />}
+      {!isGmgPreview && <IntroPresentation />}
       <BookmarkToast />
       <BookmarkAutoCategorize />
       <NamePromptModal />
