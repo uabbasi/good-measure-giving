@@ -35,6 +35,7 @@ import { IntroPresentation } from './src/components/IntroPresentation';
 import { BookmarkToast } from './src/components/BookmarkToast';
 import { BookmarkAutoCategorize } from './src/components/BookmarkAutoCategorize';
 import { NamePromptModal } from './src/auth';
+import { DevQuickLogin } from './src/auth/DevQuickLogin';
 import { ScrollToTop } from './components/ScrollToTop';
 import { trackPageView } from './src/utils/analytics';
 
@@ -118,6 +119,7 @@ const App: React.FC = () => {
         <ThemeProvider>
           <LandingThemeProvider>
             <UserFeaturesProvider>
+              {import.meta.env.DEV && <DevQuickLogin />}
               <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                 <ScrollToTop />
                 <AppContent />
