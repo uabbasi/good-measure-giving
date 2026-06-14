@@ -50,6 +50,14 @@ interface CalculatorData {
 function generateSitemap() {
   const today = new Date().toISOString().split('T')[0];
 
+  // Emit trailing-slash URLs to match what the host serves with 200. The
+  // no-slash form 307-redirects to the slash form, so no-slash sitemap entries
+  // were reported by Google as "Page with redirect" and never indexed.
+  const loc = (p: string) => {
+    const u = `${SITE_URL}${p}`;
+    return u.endsWith('/') ? u : `${u}/`;
+  };
+
   const staticPages = [
     { path: '/', priority: '1.0', changefreq: 'weekly' },
     { path: '/browse', priority: '0.9', changefreq: 'weekly' },
@@ -61,7 +69,7 @@ function generateSitemap() {
 
   const urls = staticPages.map(
     (p) => `  <url>
-    <loc>${SITE_URL}${p.path}</loc>
+    <loc>${loc(p.path)}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${p.changefreq}</changefreq>
     <priority>${p.priority}</priority>
@@ -75,7 +83,7 @@ function generateSitemap() {
   );
   for (const charity of charities) {
     urls.push(`  <url>
-    <loc>${SITE_URL}/charity/${charity.ein}</loc>
+    <loc>${loc(`/charity/${charity.ein}`)}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -90,7 +98,7 @@ function generateSitemap() {
   }
   for (const prompt of prompts) {
     urls.push(`  <url>
-    <loc>${SITE_URL}/prompts/${prompt.id}</loc>
+    <loc>${loc(`/prompts/${prompt.id}`)}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -105,14 +113,14 @@ function generateSitemap() {
   }
   if (causes.length > 0) {
     urls.push(`  <url>
-    <loc>${SITE_URL}/causes</loc>
+    <loc>${loc('/causes')}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>`);
     for (const cause of causes) {
       urls.push(`  <url>
-    <loc>${SITE_URL}/causes/${cause.slug}</loc>
+    <loc>${loc(`/causes/${cause.slug}`)}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -129,14 +137,14 @@ function generateSitemap() {
   }
   if (guides.length > 0) {
     urls.push(`  <url>
-    <loc>${SITE_URL}/guides</loc>
+    <loc>${loc('/guides')}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>`);
     for (const g of guides) {
       urls.push(`  <url>
-    <loc>${SITE_URL}/guides/${g.slug}</loc>
+    <loc>${loc(`/guides/${g.slug}`)}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -151,14 +159,14 @@ function generateSitemap() {
     calculatorAssets = d.assets || [];
   }
   urls.push(`  <url>
-    <loc>${SITE_URL}/zakat-calculator</loc>
+    <loc>${loc('/zakat-calculator')}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>`);
   for (const asset of calculatorAssets) {
     urls.push(`  <url>
-    <loc>${SITE_URL}/zakat-calculator/${asset.slug}</loc>
+    <loc>${loc(`/zakat-calculator/${asset.slug}`)}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

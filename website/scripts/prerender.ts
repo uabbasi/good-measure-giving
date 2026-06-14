@@ -602,14 +602,21 @@ function injectMeta(html: string, meta: PageMeta): string {
     html = html.replace('</title>', `</title>\n    <meta name="description" content="${escapeHtml(meta.description)}" />`);
   }
 
+  // Normalize to trailing-slash form. The host (Cloudflare Pages) serves
+  // prerendered pages at the slash URL with 200 and 307-redirects the no-slash
+  // URL to it. Emitting no-slash canonicals made Google report "Page with
+  // redirect" (sitemap URL redirects) and reject the canonical (it points at a
+  // redirect), so nothing but the homepage got indexed.
+  const canonicalUrl = meta.canonical.endsWith('/') ? meta.canonical : `${meta.canonical}/`;
+
   // Replace canonical
   if (html.includes('rel="canonical"')) {
     html = html.replace(
       /<link\s+rel="canonical"\s+href="[^"]*"\s*\/?>/,
-      `<link rel="canonical" href="${meta.canonical}" />`
+      `<link rel="canonical" href="${canonicalUrl}" />`
     );
   } else {
-    html = html.replace('</title>', `</title>\n    <link rel="canonical" href="${meta.canonical}" />`);
+    html = html.replace('</title>', `</title>\n    <link rel="canonical" href="${canonicalUrl}" />`);
   }
 
   // Robots directive — emit noindex,nofollow when flagged; otherwise default (index,follow implicit)
@@ -629,7 +636,7 @@ function injectMeta(html: string, meta: PageMeta): string {
     `<meta property="og:title" content="${escapeHtml(meta.title)}" />`,
     `<meta property="og:description" content="${escapeHtml(meta.description)}" />`,
     `<meta property="og:type" content="${meta.ogType}" />`,
-    `<meta property="og:url" content="${meta.canonical}" />`,
+    `<meta property="og:url" content="${canonicalUrl}" />`,
     `<meta property="og:site_name" content="Good Measure Giving" />`,
   ].join('\n    ');
 
