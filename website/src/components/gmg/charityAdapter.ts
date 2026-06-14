@@ -57,8 +57,10 @@ export interface GmgDimension {
   flag?: string;
 }
 
-const buildDimension = (raw: any, max = 50): GmgDimension => {
-  const score = num(raw?.score);
+// `overallScore` comes from confidence_scores (authoritative, present on every
+// record, and what the index uses); criteria come from score_details.components.
+const buildDimension = (raw: any, overallScore: unknown, max = 50): GmgDimension => {
+  const score = overallScore != null ? num(overallScore) : num(raw?.score);
   const components: any[] = Array.isArray(raw?.components) ? raw.components : [];
   const criteria: GmgCriterion[] = components.map((c) => ({
     name: c?.name ?? 'Criterion',
@@ -223,8 +225,8 @@ export const adaptCharity = (c: any): GmgCharity => {
     evaluatedOn: (ae?.evaluation_date ?? '').slice(0, 10),
     riskLevel: sd?.risks?.overall_risk_level ?? 'LOW',
 
-    impact: buildDimension(sd?.impact, 50),
-    alignment: buildDimension(sd?.alignment, 50),
+    impact: buildDimension(sd?.impact, cs?.impact, 50),
+    alignment: buildDimension(sd?.alignment, cs?.alignment, 50),
 
     costPerBeneficiary: numOrNull(
       sd?.impact?.cost_per_beneficiary ?? rn?.financial_deep_dive?.cost_per_beneficiary,

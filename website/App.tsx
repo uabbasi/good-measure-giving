@@ -29,6 +29,7 @@ const ZakatCalculatorHubPage = lazy(() => import('./pages/ZakatCalculatorHubPage
 const ZakatCalculatorAssetPage = lazy(() => import('./pages/ZakatCalculatorAssetPage').then(m => ({ default: m.ZakatCalculatorAssetPage })));
 const JoinPlanPage = lazy(() => import('./pages/JoinPlanPage').then(m => ({ default: m.JoinPlanPage })));
 const GmgBrowse = lazy(() => import('./src/components/gmg/GmgBrowse').then(m => ({ default: m.GmgBrowse })));
+const GmgLanding = lazy(() => import('./src/components/gmg/GmgLanding').then(m => ({ default: m.GmgLanding })));
 import { CompareBar } from './src/components/CompareBar';
 import { MobileBottomNav } from './src/components/MobileBottomNav';
 import { WelcomeTour } from './src/components/WelcomeTour';
@@ -59,7 +60,9 @@ const AppContent: React.FC = () => {
   const isLandingPage = location.pathname === '/';
   // Design-motif preview renders full-bleed with its own chrome (no app Navbar/Footer/overlays).
   const isGmgPreview =
-    (location.pathname.startsWith('/charity/') || location.pathname === '/browse') &&
+    (location.pathname.startsWith('/charity/') ||
+      location.pathname === '/browse' ||
+      location.pathname === '/') &&
     new URLSearchParams(location.search).get('design') === 'gmg';
 
   // T049: Track page views on route changes
@@ -80,7 +83,7 @@ const AppContent: React.FC = () => {
       <main id="main" className={`flex-grow ${isLandingPage ? 'min-h-0 overflow-hidden lg:min-h-0 lg:overflow-visible' : ''}`}>
         <Suspense fallback={null}>
           <Routes>
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={isGmgPreview ? <GmgLanding isDark={isDark} /> : <LandingPage />} />
             <Route path="/browse" element={isGmgPreview ? <GmgBrowse isDark={isDark} /> : <BrowsePage />} />
             <Route path="/charity/:id" element={<CharityDetailsPage />} />
             <Route path="/methodology" element={<MethodologyPage />} />
