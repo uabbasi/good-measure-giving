@@ -6,7 +6,7 @@ let mockEnabled = false;
 vi.mock('./devLoginEnabled', () => ({ devLoginEnabled: () => mockEnabled }));
 vi.mock('./useAuth', () => ({ useAuth: () => ({ isSignedIn: false, isLoaded: true, email: null, uid: null }) }));
 vi.mock('./firebase', () => ({ auth: { currentUser: null } }));
-vi.mock('./devSeed', () => ({ seedActiveDonor: vi.fn() }));
+vi.mock('./devSeed', () => ({ seedTestUser: vi.fn() }));
 
 afterEach(() => { mockEnabled = false; });
 
@@ -21,5 +21,6 @@ describe('DevQuickLogin', () => {
     const { getByText } = render(<DevQuickLogin />);
     expect(getByText(/Fresh User/)).toBeTruthy();
     expect(getByText(/Active Donor/)).toBeTruthy();
+    expect(getByText(/Zakat Donor/)).toBeTruthy();
   });
 });

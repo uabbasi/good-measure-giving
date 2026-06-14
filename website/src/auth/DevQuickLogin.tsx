@@ -12,7 +12,7 @@ import { updateProfile } from 'firebase/auth';
 import { devLoginEnabled } from './devLoginEnabled';
 import { useAuth } from './useAuth';
 import { auth } from './firebase';
-import { seedActiveDonor } from './devSeed';
+import { seedTestUser, type SeededPersona } from './devSeed';
 import { DEV_TEST_USERS, type DevTestUser } from './devTestUsers';
 
 const COLLAPSED_KEY = 'gmg_devlogin_collapsed';
@@ -64,7 +64,7 @@ export function DevQuickLogin() {
       if (auth?.currentUser && !auth.currentUser.displayName) {
         await updateProfile(auth.currentUser, { displayName: u.displayName });
       }
-      if (u.seed && auth?.currentUser) await seedActiveDonor(auth.currentUser.uid);
+      if (u.seed && auth?.currentUser) await seedTestUser(auth.currentUser.uid, u.id as SeededPersona);
     } catch (e) {
       setError(String((e as Error)?.message ?? e));
     } finally {
