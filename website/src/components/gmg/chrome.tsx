@@ -31,6 +31,7 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
       <nav style={{ display: 'flex', gap: 4, fontSize: 13, marginLeft: 8 }}>
         {[
           ['Browse', '/browse?design=gmg'],
+          ['Compare', '/compare?design=gmg'],
           ['Methodology', '/methodology'],
           ['About', '/about'],
         ].map(([label, to]) => (

@@ -30,6 +30,7 @@ const ZakatCalculatorAssetPage = lazy(() => import('./pages/ZakatCalculatorAsset
 const JoinPlanPage = lazy(() => import('./pages/JoinPlanPage').then(m => ({ default: m.JoinPlanPage })));
 const GmgBrowse = lazy(() => import('./src/components/gmg/GmgBrowse').then(m => ({ default: m.GmgBrowse })));
 const GmgLanding = lazy(() => import('./src/components/gmg/GmgLanding').then(m => ({ default: m.GmgLanding })));
+const GmgCompare = lazy(() => import('./src/components/gmg/GmgCompare').then(m => ({ default: m.GmgCompare })));
 import { CompareBar } from './src/components/CompareBar';
 import { MobileBottomNav } from './src/components/MobileBottomNav';
 import { WelcomeTour } from './src/components/WelcomeTour';
@@ -62,6 +63,7 @@ const AppContent: React.FC = () => {
   const isGmgPreview =
     (location.pathname.startsWith('/charity/') ||
       location.pathname === '/browse' ||
+      location.pathname === '/compare' ||
       location.pathname === '/') &&
     new URLSearchParams(location.search).get('design') === 'gmg';
 
@@ -91,7 +93,7 @@ const AppContent: React.FC = () => {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/bookmarks" element={<Navigate to="/profile" replace />} />
-            <Route path="/compare" element={<ComparePage />} />
+            <Route path="/compare" element={isGmgPreview ? <GmgCompare isDark={isDark} /> : <ComparePage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/prompts" element={<PromptsPage />} />
             <Route path="/prompts/:promptId" element={<PromptDetailPage />} />

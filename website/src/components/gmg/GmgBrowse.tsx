@@ -43,6 +43,17 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const [query, setQuery] = useState('');
   const [wallet, setWallet] = useState<'all' | 'zakat' | 'sadaqah'>('all');
   const [sortBy, setSortBy] = useState<SortKey>('score');
+  // Compare selection (up to 4).
+  const [selected, setSelected] = useState<string[]>([]);
+  const MAX_COMPARE = 4;
+  const toggleSelect = (ein: string) =>
+    setSelected((prev) =>
+      prev.includes(ein)
+        ? prev.filter((e) => e !== ein)
+        : prev.length < MAX_COMPARE
+          ? [...prev, ein]
+          : prev,
+    );
 
   const allRows: GmgRow[] = useMemo(
     () => (charities || []).map(adaptRow).filter((r) => r.ein),
@@ -229,9 +240,13 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               to={`/charity/${row.ein}?design=gmg`}
               style={{ textDecoration: 'none', color: 'inherit', border: sectionBorder, borderRadius: 8, padding: 14, background: p.bg2, display: 'block' }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
-                <span style={{ fontFamily: FONT_MONO, fontSize: 10, color: p.sub2 }}>
-                  {String(i + 1).padStart(2, '0')}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
+                <span
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleSelect(row.ein); }}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: FONT_MONO, fontSize: 10, color: selected.includes(row.ein) ? p.accent : p.sub2, cursor: 'pointer' }}
+                >
+                  <span style={{ width: 15, height: 15, borderRadius: 4, border: `1px solid ${selected.includes(row.ein) ? p.accent : p.rule2}`, background: selected.includes(row.ein) ? p.accent : 'transparent', display: 'inline-block' }} />
+                  {String(i + 1).padStart(2, '0')} · Compare
                 </span>
                 <Tag tone={row.walletIsZakat ? 'accent' : 'muted'} p={p}>{row.wallet}</Tag>
               </div>
@@ -278,6 +293,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   textAlign: 'left',
                 }}
               >
+                <th style={{ padding: '10px 6px', width: 28 }} />
                 <th style={{ padding: '10px 6px', width: 36 }}>№</th>
                 <th style={{ padding: '10px 6px' }}>Charity / EIN</th>
                 <th style={{ padding: '10px 6px', width: 150 }}>Cause</th>
@@ -299,8 +315,17 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   onClick={() => {
                     window.location.href = `/charity/${row.ein}?design=gmg`;
                   }}
-                  style={{ borderBottom: sectionBorder, background: i % 2 === 0 ? 'transparent' : p.bg2, cursor: 'pointer' }}
+                  style={{ borderBottom: sectionBorder, background: selected.includes(row.ein) ? p.bg3 : i % 2 === 0 ? 'transparent' : p.bg2, cursor: 'pointer' }}
                 >
+                  <td style={{ padding: '8px 6px' }} onClick={(e) => e.stopPropagation()}>
+                    <input
+                      type="checkbox"
+                      checked={selected.includes(row.ein)}
+                      onChange={() => toggleSelect(row.ein)}
+                      aria-label={`Select ${row.name} to compare`}
+                      style={{ accentColor: p.accent, cursor: 'pointer' }}
+                    />
+                  </td>
                   <td style={{ padding: '8px 6px', fontFamily: FONT_MONO, fontSize: 10.5, color: p.sub2 }}>
                     {String(i + 1).padStart(2, '0')}
                   </td>
@@ -336,6 +361,27 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             Showing {rows.length} of {allRows.length}
           </div>
         </section>
+      )}
+
+      {/* Sticky compare bar */}
+      {selected.length > 0 && (
+        <div style={{ position: 'fixed', left: 0, right: 0, bottom: 0, zIndex: 50, display: 'flex', justifyContent: 'center', padding: 16, pointerEvents: 'none' }}>
+          <div style={{ pointerEvents: 'auto', display: 'flex', alignItems: 'center', gap: 14, padding: '10px 14px 10px 18px', borderRadius: 99, background: p.chip, color: p.chipFg, boxShadow: '0 8px 28px rgba(0,0,0,0.28)' }}>
+            <span style={{ fontFamily: FONT_MONO, fontSize: 11, letterSpacing: '0.06em' }}>
+              {selected.length} selected{selected.length >= MAX_COMPARE ? ' · max' : ''}
+            </span>
+            <button onClick={() => setSelected([])} style={{ background: 'transparent', border: 'none', color: p.chipFg, opacity: 0.7, fontSize: 11, cursor: 'pointer', fontFamily: FONT_MONO }}>
+              Clear
+            </button>
+            {selected.length >= 2 ? (
+              <Link to={`/compare?design=gmg&eins=${selected.join(',')}`} style={{ padding: '7px 16px', borderRadius: 99, background: p.bg, color: p.fg, fontSize: 12, fontWeight: 500, textDecoration: 'none' }}>
+                Compare {selected.length} →
+              </Link>
+            ) : (
+              <span style={{ padding: '7px 16px', borderRadius: 99, background: p.bg, color: p.sub2, fontSize: 12 }}>Pick 2+ to compare</span>
+            )}
+          </div>
+        </div>
       )}
     </>,
   );
