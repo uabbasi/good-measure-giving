@@ -1,17 +1,81 @@
 // Shared GMG motif chrome — nav header + live typeface switcher — used by every
 // motif surface (charity detail, index, …).
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../auth/firebase';
+import { useAuth } from '../../auth';
 import { GmgPalette } from './tokens';
 import { FONT_THEMES, type FontVariant } from './tokens';
 import { GmgLogo, Tag } from './primitives';
+import { GmgSignIn } from './GmgSignIn';
 
 export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: string }> = ({
   p,
   isMobile,
   active,
-}) => (
+}) => {
+  const { isSignedIn, firstName } = useAuth();
+  const [signInOpen, setSignInOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const pill: React.CSSProperties = {
+    padding: '7px 14px',
+    borderRadius: 99,
+    border: `1px solid ${p.rule}`,
+    background: 'transparent',
+    color: p.fg,
+    fontSize: 12,
+    fontFamily: 'inherit',
+    textDecoration: 'none',
+    cursor: 'pointer',
+  };
+
+  const account = isSignedIn ? (
+    <div style={{ position: 'relative' }}>
+      <button type="button" style={pill} onClick={() => setMenuOpen((v) => !v)}>
+        {firstName || 'Account'} ▾
+      </button>
+      {menuOpen && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 'calc(100% + 6px)',
+            right: 0,
+            minWidth: 150,
+            background: p.bg,
+            border: `1px solid ${p.rule2}`,
+            borderRadius: 10,
+            boxShadow: '0 12px 30px rgba(0,0,0,0.25)',
+            overflow: 'hidden',
+            zIndex: 50,
+          }}
+        >
+          <Link
+            to="/profile"
+            onClick={() => setMenuOpen(false)}
+            style={{ display: 'block', padding: '10px 14px', fontSize: 13, color: p.fg, textDecoration: 'none' }}
+          >
+            Your giving
+          </Link>
+          <button
+            type="button"
+            onClick={() => { setMenuOpen(false); if (auth) signOut(auth); }}
+            style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, color: p.sub, background: 'none', border: 'none', borderTop: `1px solid ${p.rule}`, cursor: 'pointer' }}
+          >
+            Sign out
+          </button>
+        </div>
+      )}
+    </div>
+  ) : (
+    <button type="button" style={pill} onClick={() => setSignInOpen(true)}>
+      Sign in
+    </button>
+  );
+
+  return (
   <header
     style={{
       display: 'flex',
@@ -52,22 +116,11 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
       </nav>
     )}
     <span style={{ flex: 1 }} />
-    <Link
-      to="/profile"
-      style={{
-        padding: '7px 14px',
-        borderRadius: 99,
-        border: `1px solid ${p.rule}`,
-        background: 'transparent',
-        color: p.fg,
-        fontSize: 12,
-        textDecoration: 'none',
-      }}
-    >
-      Sign in
-    </Link>
+    {account}
+    <GmgSignIn p={p} open={signInOpen} onClose={() => setSignInOpen(false)} />
   </header>
-);
+  );
+};
 
 // Live typeface switcher — links preserve the current surface (basePath).
 export const TypeSwitcher: React.FC<{ p: GmgPalette; variant: FontVariant; basePath: string }> = ({
