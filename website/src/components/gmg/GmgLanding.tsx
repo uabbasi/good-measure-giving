@@ -84,7 +84,7 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
       <section style={{ padding: isMobile ? `56px ${padX}px 48px` : `96px ${padX}px 80px`, textAlign: 'center' }}>
         <div style={{ ...center }}>
           <div style={{ fontFamily: FONT_MONO, fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: p.accent2, marginBottom: 22 }}>
-            Independent research · {count} charities rigorously vetted · for Muslim donors
+            Independent research · 150+ charities rigorously vetted · for Muslim donors
           </div>
           <h1 style={{ fontFamily: FONT_DISPLAY, fontWeight: 400, fontSize: isMobile ? 46 : 78, lineHeight: 1.02, letterSpacing: ft.displayTracking, margin: 0, maxWidth: 840, marginInline: 'auto' }}>
             Give with <em style={{ color: p.accent }}>confidence.</em>
