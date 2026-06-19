@@ -717,6 +717,21 @@ function writePrerenderedFromBaseHtml(metas: PageMeta[]): number {
   return written;
 }
 
+function writeRedirects(metas: PageMeta[]): number {
+  // Cloudflare Pages auto-redirects the no-slash URL to its trailing-slash form
+  // with a 307 (temporary), which leaves the no-slash URL "indexable" and made
+  // Google report redirect issues. Emit an explicit 308 (permanent) per route so
+  // search engines consolidate to the canonical slash URL. _redirects rules take
+  // precedence over the automatic behavior. Exact-match rules (not a /* splat)
+  // avoid the loop that would occur from re-matching the already-slashed target.
+  const routes = Array.from(
+    new Set(metas.map((m) => m.route).filter((route) => route !== '/' && !route.endsWith('/')))
+  );
+  const rules = routes.map((route) => `${route} ${route}/ 308`);
+  fs.writeFileSync(path.join(DIST_DIR, '_redirects'), rules.join('\n') + '\n', 'utf-8');
+  return rules.length;
+}
+
 function resolvePrerenderMode(): { mode: 'browser' | 'static'; reason: string } {
   const explicitMode = (process.env.PRERENDER_MODE || '').trim().toLowerCase();
   if (explicitMode === 'browser') {
@@ -854,6 +869,9 @@ async function prerenderPages() {
   const guideCount = guideSummaries.length > 0 ? guideSummaries.length + 1 : 0;
   const calculatorCount = calculatorData ? 1 + calculatorData.assets.length : 0;
   console.log(`Prerender: ${metas.length} pages (${metas.length - charities.length - prompts.length - causeCount - guideCount - calculatorCount} static + ${charities.length} charities + ${prompts.length} prompts + ${causeCount} causes + ${guideCount} guides + ${calculatorCount} calculator)`);
+
+  const redirectCount = writeRedirects(metas);
+  console.log(`Wrote ${redirectCount} trailing-slash 308 redirects to dist/_redirects`);
 
   const prerenderMode = resolvePrerenderMode();
   if (prerenderMode.mode === 'static') {
