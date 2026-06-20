@@ -1,8 +1,8 @@
 // Shared GMG motif chrome — nav header + live typeface switcher — used by every
 // motif surface (charity detail, index, …).
 
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../auth/firebase';
 import { useAuth } from '../../auth';
@@ -27,6 +27,29 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
   const { isSignedIn, firstName } = useAuth();
   const [signInOpen, setSignInOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
+
+  // Dismiss the account dropdown on outside-click, Escape, or route change.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMenuOpen(false);
+    };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
 
   const pill: React.CSSProperties = {
     padding: '7px 14px',
@@ -41,8 +64,14 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
   };
 
   const account = isSignedIn ? (
-    <div style={{ position: 'relative' }}>
-      <button type="button" style={pill} onClick={() => setMenuOpen((v) => !v)}>
+    <div style={{ position: 'relative' }} ref={menuRef}>
+      <button
+        type="button"
+        style={pill}
+        onClick={() => setMenuOpen((v) => !v)}
+        aria-haspopup="menu"
+        aria-expanded={menuOpen}
+      >
         {firstName || 'Account'} ▾
       </button>
       {menuOpen && (
@@ -69,7 +98,7 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
           </Link>
           <button
             type="button"
-            onClick={() => { setMenuOpen(false); if (auth) signOut(auth); }}
+            onClick={() => { setMenuOpen(false); if (auth) signOut(auth).catch(() => {}); }}
             style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, color: p.sub, background: 'none', border: 'none', borderTop: `1px solid ${p.rule}`, cursor: 'pointer' }}
           >
             Sign out

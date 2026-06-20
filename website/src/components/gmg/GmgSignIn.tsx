@@ -71,16 +71,48 @@ export const GmgSignIn: React.FC<{
     setIsNewAccount(false);
   }, [onClose]);
 
-  // Close on Escape; focus first control on open.
+  // Dialog behaviors: Escape to close, Tab focus-trap, body-scroll lock, and
+  // restore focus to the trigger on close.
   useEffect(() => {
     if (!open) return;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const focusables = (): HTMLElement[] =>
+      Array.from(
+        modalRef.current?.querySelectorAll<HTMLElement>(
+          'button, [href], input, [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      ).filter((el) => !el.hasAttribute('disabled'));
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close();
+      if (e.key === 'Escape') {
+        close();
+        return;
+      }
+      if (e.key === 'Tab') {
+        const items = focusables();
+        if (!items.length) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
+
     document.addEventListener('keydown', onKey);
-    const first = modalRef.current?.querySelector<HTMLElement>('button, input');
-    first?.focus();
-    return () => document.removeEventListener('keydown', onKey);
+    focusables()[0]?.focus();
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+      previouslyFocused?.focus?.();
+    };
   }, [open, close]);
 
   const signInWithGoogle = async () => {
@@ -196,6 +228,7 @@ export const GmgSignIn: React.FC<{
 
   const errorBox = error ? (
     <div
+      role="alert"
       style={{
         borderRadius: 12,
         border: `1px solid ${p.neg}`,
@@ -307,10 +340,10 @@ export const GmgSignIn: React.FC<{
               </h3>
               <form onSubmit={handleEmailSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {isNewAccount && (
-                  <input type="text" placeholder="Your name" value={fullName} onChange={(e) => setFullName(e.target.value)} style={inputStyle} autoComplete="name" />
+                  <input type="text" aria-label="Your name" placeholder="Your name" value={fullName} onChange={(e) => setFullName(e.target.value)} style={inputStyle} autoComplete="name" />
                 )}
-                <input type="email" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)} style={inputStyle} required autoComplete="email" autoFocus />
-                <input type="password" placeholder={isNewAccount ? 'Create a password (6+ characters)' : 'Password'} value={password} onChange={(e) => setPassword(e.target.value)} style={inputStyle} required minLength={6} autoComplete={isNewAccount ? 'new-password' : 'current-password'} />
+                <input type="email" aria-label="Email address" aria-invalid={!!error} placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)} style={inputStyle} required autoComplete="email" autoFocus />
+                <input type="password" aria-label="Password" aria-invalid={!!error} placeholder={isNewAccount ? 'Create a password (6+ characters)' : 'Password'} value={password} onChange={(e) => setPassword(e.target.value)} style={inputStyle} required minLength={6} autoComplete={isNewAccount ? 'new-password' : 'current-password'} />
                 <button
                   type="submit"
                   disabled={isSubmitting}

@@ -3,9 +3,11 @@
 // stacked cards on mobile, fed by the real charity list.
 
 import React, { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCharities } from '../../hooks/useCharities';
 import {
+  GmgPalette,
+  FontTheme,
   gmgPalette,
   FONT_DISPLAY,
   FONT_TEXT,
@@ -14,7 +16,7 @@ import {
   resolveFontVariant,
   type FontVariant,
 } from './tokens';
-import { Rating, ratingColor, riskTone } from './rating';
+import { Rating, ratingColor } from './rating';
 import { HarveyBall, Tag, Kicker, Figure } from './primitives';
 import { GmgNav, TypeSwitcher } from './chrome';
 import { useIsMobile } from './useIsMobile';
@@ -22,10 +24,132 @@ import { adaptRow, GmgRow } from './charityAdapter';
 
 const RANK: Record<Rating, number> = { Strong: 5, Good: 4, Moderate: 3, Fair: 2, Weak: 1 };
 type SortKey = 'score' | 'impact' | 'alignment' | 'name';
+type WalletFilter = 'all' | 'zakat' | 'sadaqah';
+
+// Module-scope leaf/section components — defining these inside the parent's
+// render body gives them a new identity each render, which remounts the search
+// input (dropping focus on every keystroke). Kept out here so they're stable.
+
+const RatingCell: React.FC<{ rating: Rating; p: GmgPalette }> = ({ rating, p }) => (
+  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+    <HarveyBall rating={rating} p={p} size={14} />
+    <span style={{ fontSize: 11.5, color: ratingColor(rating, p) }}>{rating}</span>
+  </span>
+);
+
+const FilterPills: React.FC<{
+  p: GmgPalette;
+  padX: number;
+  query: string;
+  setQuery: (v: string) => void;
+  wallet: WalletFilter;
+  setWallet: (v: WalletFilter) => void;
+  sortBy: SortKey;
+  setSortBy: (v: SortKey) => void;
+  total: number;
+  zakatCount: number;
+}> = ({ p, padX, query, setQuery, wallet, setWallet, sortBy, setSortBy, total, zakatCount }) => {
+  const sectionBorder = `1px solid ${p.rule}`;
+  const inputStyle: React.CSSProperties = {
+    flex: '1 1 240px',
+    minWidth: 0,
+    padding: '8px 12px',
+    borderRadius: 99,
+    border: sectionBorder,
+    background: p.bg,
+    color: p.fg,
+    fontFamily: FONT_TEXT,
+    fontSize: 13,
+    outline: 'none',
+  };
+  const pill = (active: boolean): React.CSSProperties => ({
+    padding: '3px 9px',
+    borderRadius: 99,
+    cursor: 'pointer',
+    fontFamily: FONT_MONO,
+    fontSize: 9.5,
+    letterSpacing: '0.06em',
+    textTransform: 'uppercase',
+    border: `1px solid ${active ? p.chip : p.rule}`,
+    background: active ? p.chip : 'transparent',
+    color: active ? p.chipFg : p.sub,
+  });
+  return (
+    <section
+      style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: 10,
+        alignItems: 'center',
+        padding: `10px ${padX}px`,
+        background: p.bg2,
+        borderBottom: sectionBorder,
+        fontSize: 12,
+      }}
+    >
+      <label htmlFor="gmg-browse-search" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>
+        Search charities
+      </label>
+      <input
+        id="gmg-browse-search"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search charities, EINs, causes…"
+        style={inputStyle}
+      />
+      <span style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+        <Kicker p={p}>Wallet</Kicker>
+        {(
+          [
+            ['all', `All ${total}`],
+            ['zakat', `Zakat ${zakatCount}`],
+            ['sadaqah', `Sadaqah ${total - zakatCount}`],
+          ] as [WalletFilter, string][]
+        ).map(([key, label]) => (
+          <button key={key} onClick={() => setWallet(key)} style={pill(wallet === key)}>
+            {label}
+          </button>
+        ))}
+      </span>
+      <span style={{ flex: 1 }} />
+      <span style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+        <Kicker p={p}>Sort</Kicker>
+        {(
+          [
+            ['score', 'GMG ↓'],
+            ['impact', 'Impact ↓'],
+            ['alignment', 'Alignment ↓'],
+            ['name', 'Name'],
+          ] as [SortKey, string][]
+        ).map(([key, label]) => (
+          <button key={key} onClick={() => setSortBy(key)} style={pill(sortBy === key)}>
+            {label}
+          </button>
+        ))}
+      </span>
+    </section>
+  );
+};
+
+const SubHeader: React.FC<{ p: GmgPalette; padX: number; isMobile: boolean; ft: FontTheme; count: number }> = ({
+  p,
+  padX,
+  isMobile,
+  ft,
+  count,
+}) => (
+  <section style={{ padding: `20px ${padX}px 14px`, borderBottom: `1px solid ${p.rule}` }}>
+    <Kicker p={p}>The Index · {count} charities</Kicker>
+    <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: isMobile ? 34 : 46, margin: '4px 0 0', lineHeight: 1, letterSpacing: ft.displayTracking }}>
+      Every charity, <em style={{ color: p.accent }}>weighed.</em>
+    </h1>
+  </section>
+);
 
 export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const p = gmgPalette(isDark);
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
   const padX = isMobile ? 16 : 24;
   const { charities, loading } = useCharities();
 
@@ -41,7 +165,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   };
 
   const [query, setQuery] = useState('');
-  const [wallet, setWallet] = useState<'all' | 'zakat' | 'sadaqah'>('all');
+  const [wallet, setWallet] = useState<WalletFilter>('all');
   const [sortBy, setSortBy] = useState<SortKey>('score');
   // Compare selection (up to 4).
   const [selected, setSelected] = useState<string[]>([]);
@@ -59,7 +183,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
     () => (charities || []).map(adaptRow).filter((r) => r.ein),
     [charities],
   );
-  const zakatCount = allRows.filter((r) => r.walletIsZakat).length;
+  const zakatCount = useMemo(() => allRows.filter((r) => r.walletIsZakat).length, [allRows]);
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -80,117 +204,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   }, [allRows, query, wallet, sortBy]);
 
   const sectionBorder = `1px solid ${p.rule}`;
-
-  const RatingCell: React.FC<{ rating: Rating }> = ({ rating }) => (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-      <HarveyBall rating={rating} p={p} size={14} />
-      <span style={{ fontSize: 11.5, color: ratingColor(rating, p) }}>{rating}</span>
-    </span>
-  );
-
-  const inputStyle: React.CSSProperties = {
-    flex: '1 1 240px',
-    minWidth: 0,
-    padding: '8px 12px',
-    borderRadius: 99,
-    border: sectionBorder,
-    background: p.bg,
-    color: p.fg,
-    fontFamily: FONT_TEXT,
-    fontSize: 13,
-    outline: 'none',
-  };
-
-  const FilterPills: React.FC = () => (
-    <section
-      style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: 10,
-        alignItems: 'center',
-        padding: `10px ${padX}px`,
-        background: p.bg2,
-        borderBottom: sectionBorder,
-        fontSize: 12,
-      }}
-    >
-      <input
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search charities, EINs, causes…"
-        style={inputStyle}
-      />
-      <span style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-        <Kicker p={p}>Wallet</Kicker>
-        {(
-          [
-            ['all', `All ${allRows.length}`],
-            ['zakat', `Zakat ${zakatCount}`],
-            ['sadaqah', `Sadaqah ${allRows.length - zakatCount}`],
-          ] as [typeof wallet, string][]
-        ).map(([key, label]) => (
-          <button
-            key={key}
-            onClick={() => setWallet(key)}
-            style={{
-              padding: '3px 9px',
-              borderRadius: 99,
-              cursor: 'pointer',
-              fontFamily: FONT_MONO,
-              fontSize: 9.5,
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-              border: `1px solid ${wallet === key ? p.chip : p.rule}`,
-              background: wallet === key ? p.chip : 'transparent',
-              color: wallet === key ? p.chipFg : p.sub,
-            }}
-          >
-            {label}
-          </button>
-        ))}
-      </span>
-      <span style={{ flex: 1 }} />
-      <span style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-        <Kicker p={p}>Sort</Kicker>
-        {(
-          [
-            ['score', 'GMG ↓'],
-            ['impact', 'Impact ↓'],
-            ['alignment', 'Alignment ↓'],
-            ['name', 'Name'],
-          ] as [SortKey, string][]
-        ).map(([key, label]) => (
-          <button
-            key={key}
-            onClick={() => setSortBy(key)}
-            style={{
-              padding: '3px 9px',
-              borderRadius: 99,
-              cursor: 'pointer',
-              fontFamily: FONT_MONO,
-              fontSize: 9.5,
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-              border: `1px solid ${sortBy === key ? p.chip : p.rule}`,
-              background: sortBy === key ? p.chip : 'transparent',
-              color: sortBy === key ? p.chipFg : p.sub,
-            }}
-          >
-            {label}
-          </button>
-        ))}
-      </span>
-    </section>
-  );
-
-  const SubHeader: React.FC = () => (
-    <section style={{ padding: `20px ${padX}px 14px`, borderBottom: sectionBorder }}>
-      <Kicker p={p}>The Index · {allRows.length} charities</Kicker>
-      <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: isMobile ? 34 : 46, margin: '4px 0 0', lineHeight: 1, letterSpacing: ft.displayTracking }}>
-        Every charity, <em style={{ color: p.accent }}>weighed.</em>
-      </h1>
-    </section>
-  );
+  const hrefFor = (ein: string) => `/charity/${ein}?design=gmg`;
 
   const shell = (children: React.ReactNode) => (
     <div style={{ background: p.bg, color: p.fg, fontFamily: FONT_TEXT, minHeight: '100vh', ...fontVars }}>
@@ -228,53 +242,71 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
 
   return shell(
     <>
-      <SubHeader />
-      <FilterPills />
+      <SubHeader p={p} padX={padX} isMobile={isMobile} ft={ft} count={allRows.length} />
+      <FilterPills
+        p={p}
+        padX={padX}
+        query={query}
+        setQuery={setQuery}
+        wallet={wallet}
+        setWallet={setWallet}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+        total={allRows.length}
+        zakatCount={zakatCount}
+      />
 
       {isMobile ? (
-        /* Mobile: stacked cards */
+        /* Mobile: stacked cards. Container tap navigates (mouse); the name is a
+           real Link (keyboard/SPA); the compare control is a real checkbox. */
         <section style={{ padding: `12px ${padX}px 28px`, display: 'grid', gap: 10 }}>
           {rows.map((row, i) => (
-            <Link
+            <div
               key={row.ein}
-              to={`/charity/${row.ein}?design=gmg`}
-              style={{ textDecoration: 'none', color: 'inherit', border: sectionBorder, borderRadius: 8, padding: 14, background: p.bg2, display: 'block' }}
+              onClick={() => navigate(hrefFor(row.ein))}
+              style={{ border: sectionBorder, borderRadius: 8, padding: 14, background: p.bg2, cursor: 'pointer' }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
-                <span
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleSelect(row.ein); }}
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: FONT_MONO, fontSize: 10, color: selected.includes(row.ein) ? p.accent : p.sub2, cursor: 'pointer' }}
+                <button
+                  type="button"
+                  role="checkbox"
+                  aria-checked={selected.includes(row.ein)}
+                  aria-label={`Select ${row.name} to compare`}
+                  onClick={(e) => { e.stopPropagation(); toggleSelect(row.ein); }}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: FONT_MONO, fontSize: 10, color: selected.includes(row.ein) ? p.accent : p.sub2, cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
                 >
                   <span style={{ width: 15, height: 15, borderRadius: 4, border: `1px solid ${selected.includes(row.ein) ? p.accent : p.rule2}`, background: selected.includes(row.ein) ? p.accent : 'transparent', display: 'inline-block' }} />
                   {String(i + 1).padStart(2, '0')} · Compare
-                </span>
+                </button>
                 <Tag tone={row.walletIsZakat ? 'accent' : 'muted'} p={p}>{row.wallet}</Tag>
               </div>
-              <div style={{ fontFamily: FONT_DISPLAY, fontSize: 22, lineHeight: 1.1, marginTop: 4, letterSpacing: ft.displayTracking }}>
-                {row.name}
-              </div>
+              <Link
+                to={hrefFor(row.ein)}
+                onClick={(e) => e.stopPropagation()}
+                style={{ display: 'block', textDecoration: 'none', color: 'inherit' }}
+              >
+                <div style={{ fontFamily: FONT_DISPLAY, fontSize: 22, lineHeight: 1.1, marginTop: 4, letterSpacing: ft.displayTracking }}>
+                  {row.name}
+                </div>
+              </Link>
               <div style={{ fontFamily: FONT_MONO, fontSize: 10, color: p.sub2, marginTop: 2 }}>
                 {row.cause} · {row.region} · EIN {row.ein}
               </div>
               <div style={{ display: 'flex', gap: 18, marginTop: 10, alignItems: 'center', flexWrap: 'wrap' }}>
                 <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                   <Kicker p={p}>Impact</Kicker>
-                  <RatingCell rating={row.impact} />
+                  <RatingCell rating={row.impact} p={p} />
                 </span>
                 <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                   <Kicker p={p}>Alignment</Kicker>
-                  <RatingCell rating={row.alignment} />
+                  <RatingCell rating={row.alignment} p={p} />
                 </span>
                 <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                   <Kicker p={p}>GMG</Kicker>
-                  <Figure size={16} color={p.accent}>{row.amalScore}</Figure>
-                </span>
-                <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <Kicker p={p}>Risk</Kicker>
-                  <span style={{ fontSize: 11.5, color: p[riskTone(row.risk)] as string }}>{row.risk}</span>
+                  <Figure size={16} color={p.accent}>{row.amalScore || '—'}</Figure>
                 </span>
               </div>
-            </Link>
+            </div>
           ))}
         </section>
       ) : (
@@ -302,7 +334,6 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                 <th style={{ padding: '10px 6px', width: 110 }}>Impact</th>
                 <th style={{ padding: '10px 6px', width: 110 }}>Alignment</th>
                 <th style={{ padding: '10px 6px', width: 64 }}>GMG</th>
-                <th style={{ padding: '10px 6px', width: 64 }}>Risk</th>
                 <th style={{ padding: '10px 6px', width: 90 }}>Verif.</th>
                 <th style={{ padding: '10px 6px', width: 52 }}>Prog.%</th>
                 <th style={{ padding: '10px 6px', width: 24 }} />
@@ -312,9 +343,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               {rows.map((row, i) => (
                 <tr
                   key={row.ein}
-                  onClick={() => {
-                    window.location.href = `/charity/${row.ein}?design=gmg`;
-                  }}
+                  onClick={() => navigate(hrefFor(row.ein))}
                   style={{ borderBottom: sectionBorder, background: selected.includes(row.ein) ? p.bg3 : i % 2 === 0 ? 'transparent' : p.bg2, cursor: 'pointer' }}
                 >
                   <td style={{ padding: '8px 6px' }} onClick={(e) => e.stopPropagation()}>
@@ -330,9 +359,15 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                     {String(i + 1).padStart(2, '0')}
                   </td>
                   <td style={{ padding: '8px 6px' }}>
-                    <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: p.fg, lineHeight: 1.1, letterSpacing: ft.displayTracking }}>
-                      {row.name}
-                    </div>
+                    <Link
+                      to={hrefFor(row.ein)}
+                      onClick={(e) => e.stopPropagation()}
+                      style={{ textDecoration: 'none', color: 'inherit' }}
+                    >
+                      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: p.fg, lineHeight: 1.1, letterSpacing: ft.displayTracking }}>
+                        {row.name}
+                      </div>
+                    </Link>
                     <div style={{ fontFamily: FONT_MONO, fontSize: 9.5, color: p.sub2 }}>EIN {row.ein}</div>
                   </td>
                   <td style={{ padding: '8px 6px', color: p.sub }}>{row.cause}</td>
@@ -340,13 +375,10 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   <td style={{ padding: '8px 6px' }}>
                     <Tag tone={row.walletIsZakat ? 'accent' : 'muted'} p={p}>{row.wallet}</Tag>
                   </td>
-                  <td style={{ padding: '8px 6px' }}><RatingCell rating={row.impact} /></td>
-                  <td style={{ padding: '8px 6px' }}><RatingCell rating={row.alignment} /></td>
+                  <td style={{ padding: '8px 6px' }}><RatingCell rating={row.impact} p={p} /></td>
+                  <td style={{ padding: '8px 6px' }}><RatingCell rating={row.alignment} p={p} /></td>
                   <td style={{ padding: '8px 6px' }}>
-                    <Figure size={16} color={p.accent}>{row.amalScore}</Figure>
-                  </td>
-                  <td style={{ padding: '8px 6px', fontFamily: FONT_MONO, fontSize: 11, color: p[riskTone(row.risk)] as string }}>
-                    {row.risk}
+                    <Figure size={16} color={p.accent}>{row.amalScore || '—'}</Figure>
                   </td>
                   <td style={{ padding: '8px 6px', fontFamily: FONT_MONO, fontSize: 10.5, color: p.sub }}>{row.verification}</td>
                   <td style={{ padding: '8px 6px', fontFamily: FONT_MONO, fontSize: 11, color: p.fg }}>

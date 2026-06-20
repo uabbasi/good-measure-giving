@@ -4,7 +4,7 @@
 // narrow screens so the comparison stays intact.
 
 import React, { useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useQueries } from '@tanstack/react-query';
 import { useCharities } from '../../hooks/useCharities';
 import {
@@ -30,10 +30,9 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const isMobile = useIsMobile();
   const padX = isMobile ? 16 : 24;
   const { charities, loading: indexLoading } = useCharities();
+  const location = useLocation();
 
-  const variant: FontVariant = resolveFontVariant(
-    typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('type') : null,
-  );
+  const variant: FontVariant = resolveFontVariant(new URLSearchParams(location.search).get('type'));
   const ft = FONT_THEMES[variant];
   const fontVars = {
     ['--gmg-display' as any]: ft.display,
@@ -44,10 +43,11 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const sectionBorder = `1px solid ${p.rule}`;
 
   const requestedEins = useMemo(() => {
-    if (typeof window === 'undefined') return [];
-    const raw = new URLSearchParams(window.location.search).get('eins');
-    return raw ? raw.split(',').map((s) => s.trim()).filter(Boolean).slice(0, 4) : [];
-  }, []);
+    const raw = new URLSearchParams(location.search).get('eins');
+    if (!raw) return [];
+    // Dedupe so ?eins=a,a,b doesn't render duplicate columns / collide React keys.
+    return Array.from(new Set(raw.split(',').map((s) => s.trim()).filter(Boolean))).slice(0, 4);
+  }, [location.search]);
 
   // Resolve the ≤4 target EINs: explicit ?eins=, else top 4 by GMG score from the index.
   const targetEins: string[] = useMemo(() => {

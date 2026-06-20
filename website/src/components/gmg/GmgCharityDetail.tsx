@@ -230,7 +230,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
                 Standard view
               </Link>
               <Link
-                to="/compare"
+                to={`/compare?design=gmg&eins=${c.ein}`}
                 style={{ padding: '10px 16px', borderRadius: 99, background: 'transparent', border: `1px solid ${p.rule}`, color: p.fg, fontSize: 12, textDecoration: 'none' }}
               >
                 Compare
@@ -429,27 +429,40 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
             <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, margin: 0, letterSpacing: '-0.02em' }}>Financials</h3>
             <Kicker p={p}>{c.fiscalYear ? `FY${c.fiscalYear} · IRS 990` : 'IRS 990'}</Kicker>
           </div>
-          {c.programRatioPct != null && (
-            <div style={{ marginBottom: 12 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: p.sub2, marginBottom: 4 }}>
-                <span>Expense allocation</span>
-                <span>{usd(c.totalRevenue)} revenue</span>
+          {c.programRatioPct != null && (() => {
+            // Derive the split from the real filed expense figures when available
+            // (so the bar matches the dollar amounts shown below it); fall back to
+            // the program ratio alone otherwise. Remainder math prevents >100%.
+            const prog = c.programExpenses ?? 0;
+            const admin = c.adminExpenses ?? 0;
+            const fund = c.fundraisingExpenses ?? 0;
+            const denom = prog + admin + fund;
+            const hasBreakdown = denom > 0;
+            const progPct = hasBreakdown ? Math.round((prog / denom) * 100) : c.programRatioPct;
+            const adminPct = hasBreakdown ? Math.round((admin / denom) * 100) : Math.max(0, 100 - c.programRatioPct);
+            const fundPct = Math.max(0, 100 - progPct - adminPct);
+            return (
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: p.sub2, marginBottom: 4 }}>
+                  <span>Expense allocation</span>
+                  <span>{usd(c.totalRevenue)} revenue</span>
+                </div>
+                <Stacked
+                  h={10}
+                  segs={[
+                    { pct: progPct, color: p.accent },
+                    { pct: adminPct, color: p.accent2 },
+                    { pct: fundPct, color: p.warn },
+                  ]}
+                />
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 8, fontSize: 11 }}>
+                  <span><span style={{ color: p.accent }}>■</span> Programs {progPct}%</span>
+                  <span><span style={{ color: p.accent2 }}>■</span> Admin {adminPct}%</span>
+                  <span><span style={{ color: p.warn }}>■</span> Fundraising {fundPct}%</span>
+                </div>
               </div>
-              <Stacked
-                h={10}
-                segs={[
-                  { pct: c.programRatioPct, color: p.accent },
-                  { pct: Math.max(0, 100 - c.programRatioPct - 8), color: p.accent2 },
-                  { pct: 8, color: p.warn },
-                ]}
-              />
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 8, fontSize: 11 }}>
-                <span><span style={{ color: p.accent }}>■</span> Programs {c.programRatioPct}%</span>
-                <span><span style={{ color: p.accent2 }}>■</span> Admin {Math.max(0, 100 - c.programRatioPct - 8)}%</span>
-                <span><span style={{ color: p.warn }}>■</span> Fundraising ~8%</span>
-              </div>
-            </div>
-          )}
+            );
+          })()}
           <div style={{ borderTop: sectionBorder, marginTop: 10, paddingTop: 8, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 4, fontSize: 11.5 }}>
             {([
               ['Total revenue', usdFull(c.totalRevenue)],

@@ -7,11 +7,15 @@ import { GmgPalette, FONT_DISPLAY, FONT_MONO, FONT_ARABIC } from './tokens';
 import { Rating, RATING_SCALE, ratingColor } from './rating';
 
 // Harvey ball — sector-filled rating dot (Strong=full … Weak=empty).
-export const HarveyBall: React.FC<{ rating: Rating; size?: number; p: GmgPalette }> = ({
+export const HarveyBall = React.memo(function HarveyBall({
   rating,
   size = 14,
   p,
-}) => {
+}: {
+  rating: Rating;
+  size?: number;
+  p: GmgPalette;
+}) {
   const fill = RATING_SCALE[rating].fill;
   const color = ratingColor(rating, p);
   const r = size / 2;
@@ -37,7 +41,7 @@ export const HarveyBall: React.FC<{ rating: Rating; size?: number; p: GmgPalette
       {fill > 0 && <path d={sectorPath(fill)} fill={color} />}
     </svg>
   );
-};
+});
 
 // Rating word + ball.
 export const RatingLabel: React.FC<{ rating: Rating; p: GmgPalette; size?: number }> = ({
@@ -91,11 +95,15 @@ type TagTone =
   | 'caution'
   | 'neg';
 
-export const Tag: React.FC<{ children: React.ReactNode; tone?: TagTone; p: GmgPalette }> = ({
+export const Tag = React.memo(function Tag({
   children,
   tone = 'default',
   p,
-}) => {
+}: {
+  children: React.ReactNode;
+  tone?: TagTone;
+  p: GmgPalette;
+}) {
   const styles: Record<TagTone, { bg: string; fg: string; border: string }> = {
     default: { bg: 'transparent', fg: p.sub, border: p.rule },
     solid: { bg: p.chip, fg: p.chipFg, border: p.chip },
@@ -129,21 +137,29 @@ export const Tag: React.FC<{ children: React.ReactNode; tone?: TagTone; p: GmgPa
       {children}
     </span>
   );
-};
+});
 
-export const Kicker: React.FC<{ children: React.ReactNode; p: GmgPalette }> = ({ children, p }) => (
-  <span
-    style={{
-      fontFamily: FONT_MONO,
-      fontSize: 10,
-      letterSpacing: '0.18em',
-      textTransform: 'uppercase',
-      color: p.sub,
-    }}
-  >
-    {children}
-  </span>
-);
+export const Kicker = React.memo(function Kicker({
+  children,
+  p,
+}: {
+  children: React.ReactNode;
+  p: GmgPalette;
+}) {
+  return (
+    <span
+      style={{
+        fontFamily: FONT_MONO,
+        fontSize: 10,
+        letterSpacing: '0.18em',
+        textTransform: 'uppercase',
+        color: p.sub,
+      }}
+    >
+      {children}
+    </span>
+  );
+});
 
 export const Bar: React.FC<{
   value: number;
@@ -214,22 +230,29 @@ export const GmgLogo: React.FC<{ p: GmgPalette; size?: number }> = ({ p, size = 
 );
 
 // Display-serif numeral used for stat values / score figures.
-export const Figure: React.FC<{
+export const Figure = React.memo(function Figure({
+  children,
+  size = 24,
+  color,
+  italic,
+}: {
   children: React.ReactNode;
   size?: number;
   color: string;
   italic?: boolean;
-}> = ({ children, size = 24, color, italic }) => (
-  <span
-    style={{
-      fontFamily: FONT_DISPLAY,
-      fontStyle: italic ? 'italic' : 'normal',
-      fontSize: size,
-      lineHeight: 1,
-      color,
-      letterSpacing: '-0.02em',
-    }}
-  >
-    {children}
-  </span>
-);
+}) {
+  return (
+    <span
+      style={{
+        fontFamily: FONT_DISPLAY,
+        fontStyle: italic ? 'italic' : 'normal',
+        fontSize: size,
+        lineHeight: 1,
+        color,
+        letterSpacing: '-0.02em',
+      }}
+    >
+      {children}
+    </span>
+  );
+});

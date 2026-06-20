@@ -14,7 +14,6 @@ export interface GmgRow {
   impact: Rating;
   alignment: Rating;
   amalScore: number;
-  risk: string;
   verification: string;
   programPct: number | null;
 }
@@ -158,10 +157,11 @@ export interface GmgCharity {
 export const adaptRow = (c: any): GmgRow => {
   const ae = c?.amalEvaluation ?? {};
   const cs = ae?.confidence_scores ?? {};
-  const sd = ae?.score_details ?? {};
   const fin = c?.financials ?? {};
   const sig = c?.ui_signals_v1 ?? {};
-  const dc = num(cs?.data_confidence);
+  // The index summary carries dataConfidence (camelCase); full files use
+  // data_confidence (snake). Accept either so Verif. isn't stuck on "Early".
+  const dc = num(cs?.dataConfidence ?? cs?.data_confidence);
   const pr = numOrNull(fin?.programExpenseRatio ?? c?.rawData?.program_expense_ratio);
   return {
     ein: c?.ein ?? '',
@@ -176,7 +176,6 @@ export const adaptRow = (c: any): GmgRow => {
     impact: ratingFromDimension(num(cs?.impact), 50),
     alignment: ratingFromDimension(num(cs?.alignment), 50),
     amalScore: num(ae?.amal_score),
-    risk: sd?.risks?.overall_risk_level ?? 'LOW',
     verification: sig?.evidence_stage ?? (dc >= 0.7 ? 'Verified' : dc >= 0.4 ? 'Building' : 'Early'),
     programPct: pr == null ? null : Math.round(pr <= 1 ? pr * 100 : pr),
   };
