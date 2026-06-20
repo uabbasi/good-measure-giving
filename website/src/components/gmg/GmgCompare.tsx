@@ -8,6 +8,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useQueries } from '@tanstack/react-query';
 import { useCharities } from '../../hooks/useCharities';
 import {
+  GmgPalette,
   gmgPalette,
   FONT_DISPLAY,
   FONT_TEXT,
@@ -24,6 +25,63 @@ import { adaptCharity, GmgCharity } from './charityAdapter';
 
 const usd = (n: number | null): string =>
   n == null ? '—' : `$${Math.round(n).toLocaleString()}`;
+
+// Module-scope table pieces — kept out of the render body so they retain a
+// stable identity across renders (no remount of the table as queries resolve).
+
+const RatingMini: React.FC<{ rating?: Rating; p: GmgPalette }> = ({ rating, p }) =>
+  rating ? (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+      <HarveyBall rating={rating} p={p} size={13} />
+      <span style={{ fontSize: 11.5, color: ratingColor(rating, p) }}>{rating}</span>
+    </span>
+  ) : (
+    <span style={{ color: p.sub2 }}>—</span>
+  );
+
+const Row: React.FC<{
+  label: string;
+  kicker?: string;
+  render: (s: GmgCharity, i: number) => React.ReactNode;
+  subjects: GmgCharity[];
+  p: GmgPalette;
+  labelW: number;
+  colW: number;
+  sectionBorder: string;
+}> = ({ label, kicker, render, subjects, p, labelW, colW, sectionBorder }) => (
+  <tr style={{ borderBottom: sectionBorder }}>
+    <td style={{ padding: '10px 14px', verticalAlign: 'top', width: labelW, minWidth: labelW, position: 'sticky', left: 0, background: p.bg, zIndex: 1 }}>
+      <div style={{ fontSize: 12.5, color: p.fg }}>{label}</div>
+      {kicker && (
+        <div style={{ fontFamily: FONT_MONO, fontSize: 9, color: p.sub2, letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: 2 }}>
+          {kicker}
+        </div>
+      )}
+    </td>
+    {subjects.map((s, i) => (
+      <td key={s.ein} style={{ padding: '10px 14px', verticalAlign: 'top', borderLeft: sectionBorder, minWidth: colW }}>
+        {render(s, i)}
+      </td>
+    ))}
+  </tr>
+);
+
+const SectionRow: React.FC<{
+  title: string;
+  color: string;
+  subjects: GmgCharity[];
+  p: GmgPalette;
+  sectionBorder: string;
+}> = ({ title, color, subjects, p, sectionBorder }) => (
+  <tr style={{ background: p.bg2, borderBottom: sectionBorder }}>
+    <td style={{ padding: '10px 14px', position: 'sticky', left: 0, background: p.bg2, zIndex: 1 }}>
+      <Figure size={18} color={color} italic>{title}</Figure>
+    </td>
+    <td colSpan={subjects.length} style={{ padding: '10px 14px', borderLeft: sectionBorder, fontFamily: FONT_MONO, fontSize: 9.5, color: p.sub2, letterSpacing: '0.1em' }}>
+      CRITERION BY CRITERION
+    </td>
+  </tr>
+);
 
 export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const p = gmgPalette(isDark);
@@ -106,49 +164,9 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
 
   const labelW = isMobile ? 150 : 200;
   const colW = isMobile ? 180 : 220;
-
-  const RatingMini: React.FC<{ rating?: Rating }> = ({ rating }) =>
-    rating ? (
-      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-        <HarveyBall rating={rating} p={p} size={13} />
-        <span style={{ fontSize: 11.5, color: ratingColor(rating, p) }}>{rating}</span>
-      </span>
-    ) : (
-      <span style={{ color: p.sub2 }}>—</span>
-    );
-
-  const Row: React.FC<{ label: string; kicker?: string; render: (s: GmgCharity, i: number) => React.ReactNode }> = ({
-    label,
-    kicker,
-    render,
-  }) => (
-    <tr style={{ borderBottom: sectionBorder }}>
-      <td style={{ padding: '10px 14px', verticalAlign: 'top', width: labelW, minWidth: labelW, position: 'sticky', left: 0, background: p.bg, zIndex: 1 }}>
-        <div style={{ fontSize: 12.5, color: p.fg }}>{label}</div>
-        {kicker && (
-          <div style={{ fontFamily: FONT_MONO, fontSize: 9, color: p.sub2, letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: 2 }}>
-            {kicker}
-          </div>
-        )}
-      </td>
-      {subjects.map((s, i) => (
-        <td key={s.ein} style={{ padding: '10px 14px', verticalAlign: 'top', borderLeft: sectionBorder, minWidth: colW }}>
-          {render(s, i)}
-        </td>
-      ))}
-    </tr>
-  );
-
-  const SectionRow: React.FC<{ title: string; color: string }> = ({ title, color }) => (
-    <tr style={{ background: p.bg2, borderBottom: sectionBorder }}>
-      <td style={{ padding: '10px 14px', position: 'sticky', left: 0, background: p.bg2, zIndex: 1 }}>
-        <Figure size={18} color={color} italic>{title}</Figure>
-      </td>
-      <td colSpan={subjects.length} style={{ padding: '10px 14px', borderLeft: sectionBorder, fontFamily: FONT_MONO, fontSize: 9.5, color: p.sub2, letterSpacing: '0.1em' }}>
-        CRITERION BY CRITERION
-      </td>
-    </tr>
-  );
+  // Shared props for the module-scope table pieces, bundled to keep call sites terse.
+  const rowProps = { subjects, p, labelW, colW, sectionBorder };
+  const sectionProps = { subjects, p, sectionBorder };
 
   const shell = (children: React.ReactNode) => (
     <div style={{ background: p.bg, color: p.fg, fontFamily: FONT_TEXT, minHeight: '100vh', ...fontVars }}>
@@ -226,11 +244,11 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   <div style={{ display: 'flex', gap: 14, marginTop: 10 }}>
                     <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                       <Kicker p={p}>Impact</Kicker>
-                      <RatingMini rating={s.impact.overall} />
+                      <RatingMini rating={s.impact.overall} p={p} />
                     </span>
                     <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                       <Kicker p={p}>Align.</Kicker>
-                      <RatingMini rating={s.alignment.overall} />
+                      <RatingMini rating={s.alignment.overall} p={p} />
                     </span>
                   </div>
                 </th>
@@ -238,27 +256,27 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             </tr>
           </thead>
           <tbody>
-            <Row label="GMG score" render={(s) => <Figure size={18} color={p.accent}>{s.amalScore}</Figure>} />
-            <Row label="Wallet" render={(s) => <Tag tone={s.wallet.toLowerCase().includes('zakat') ? 'accent' : 'muted'} p={p}>{s.wallet}</Tag>} />
-            <Row label="Cause · region" render={(s) => <span style={{ color: p.sub }}>{s.category} · {s.region}</span>} />
-            <Row label="Founded" render={(s) => <span style={{ color: p.sub }}>{s.founded ?? '—'}{s.trackRecordYears ? ` · ${s.trackRecordYears} yrs` : ''}</span>} />
-            <Row label="Risk" render={(s) => <span style={{ color: p[riskTone(s.riskLevel)] as string, fontWeight: 500 }}>{s.riskLevel}</span>} />
-            <Row label="Program efficiency" kicker="% to programs" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{s.programRatioPct != null ? `${s.programRatioPct}%` : '—'}</span>} />
-            <Row label="Reserves" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{s.reserveMonths != null ? `${s.reserveMonths} mo` : '—'}</span>} />
-            <Row label="Cost / beneficiary" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{usd(s.costPerBeneficiary)}</span>} />
+            <Row {...rowProps} label="GMG score" render={(s) => <Figure size={18} color={p.accent}>{s.amalScore}</Figure>} />
+            <Row {...rowProps} label="Wallet" render={(s) => <Tag tone={s.wallet.toLowerCase().includes('zakat') ? 'accent' : 'muted'} p={p}>{s.wallet}</Tag>} />
+            <Row {...rowProps} label="Cause · region" render={(s) => <span style={{ color: p.sub }}>{s.category} · {s.region}</span>} />
+            <Row {...rowProps} label="Founded" render={(s) => <span style={{ color: p.sub }}>{s.founded ?? '—'}{s.trackRecordYears ? ` · ${s.trackRecordYears} yrs` : ''}</span>} />
+            <Row {...rowProps} label="Risk" render={(s) => <span style={{ color: p[riskTone(s.riskLevel)] as string, fontWeight: 500 }}>{s.riskLevel}</span>} />
+            <Row {...rowProps} label="Program efficiency" kicker="% to programs" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{s.programRatioPct != null ? `${s.programRatioPct}%` : '—'}</span>} />
+            <Row {...rowProps} label="Reserves" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{s.reserveMonths != null ? `${s.reserveMonths} mo` : '—'}</span>} />
+            <Row {...rowProps} label="Cost / beneficiary" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{usd(s.costPerBeneficiary)}</span>} />
 
-            <SectionRow title="Impact" color={p.accent} />
-            {impactC.names.map((name, idx) => (
-              <Row key={`i-${name}`} label={name} render={(_, i) => <RatingMini rating={impactC.maps[i].get(name)} />} />
+            <SectionRow {...sectionProps} title="Impact" color={p.accent} />
+            {impactC.names.map((name) => (
+              <Row {...rowProps} key={`i-${name}`} label={name} render={(_, i) => <RatingMini rating={impactC.maps[i].get(name)} p={p} />} />
             ))}
 
-            <SectionRow title="Alignment" color={p.accent2} />
+            <SectionRow {...sectionProps} title="Alignment" color={p.accent2} />
             {alignC.names.map((name) => (
-              <Row key={`a-${name}`} label={name} render={(_, i) => <RatingMini rating={alignC.maps[i].get(name)} />} />
+              <Row {...rowProps} key={`a-${name}`} label={name} render={(_, i) => <RatingMini rating={alignC.maps[i].get(name)} p={p} />} />
             ))}
 
-            <Row label="Best for" render={(s) => <span style={{ color: p.sub, fontFamily: FONT_DISPLAY, fontStyle: 'italic', fontSize: 13, lineHeight: 1.4 }}>{s.bestForSummary || '—'}</span>} />
-            <Row label="" render={(s) => (
+            <Row {...rowProps} label="Best for" render={(s) => <span style={{ color: p.sub, fontFamily: FONT_DISPLAY, fontStyle: 'italic', fontSize: 13, lineHeight: 1.4 }}>{s.bestForSummary || '—'}</span>} />
+            <Row {...rowProps} label="" render={(s) => (
               <Link to={`/charity/${s.ein}?design=gmg`} style={{ fontSize: 12, color: p.accent, textDecoration: 'none' }}>Open evaluation →</Link>
             )} />
           </tbody>

@@ -5,6 +5,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
+  GmgPalette,
   gmgPalette,
   FONT_DISPLAY,
   FONT_TEXT,
@@ -42,6 +43,105 @@ const usd = (n: number | null): string =>
 const usdFull = (n: number | null): string =>
   n == null ? '—' : new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
 
+// Module-scope cards — kept out of the render body so they keep a stable
+// identity across renders (p + sectionBorder come in as props).
+
+const DimensionCard: React.FC<{
+  label: string;
+  blurb: string;
+  dim: GmgDimension;
+  p: GmgPalette;
+  sectionBorder: string;
+}> = ({ label, blurb, dim, p, sectionBorder }) => (
+  <div
+    style={{
+      border: sectionBorder,
+      borderRadius: 6,
+      padding: 14,
+      background: p.bg2,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 6,
+    }}
+  >
+    <Kicker p={p}>{label}</Kicker>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 4 }}>
+      <HarveyBall rating={dim.overall} p={p} size={36} />
+      <div>
+        <Figure size={28} color={p.fg} italic>
+          {dim.overall}
+        </Figure>
+        <div style={{ fontFamily: FONT_MONO, fontSize: 10, color: p.sub2, marginTop: 2 }}>
+          {dim.score} / {dim.max}
+        </div>
+      </div>
+    </div>
+    <div style={{ fontSize: 11, color: p.sub2, lineHeight: 1.4 }}>{blurb}</div>
+  </div>
+);
+
+const DimensionDetail: React.FC<{
+  title: string;
+  dim: GmgDimension;
+  color: string;
+  p: GmgPalette;
+  sectionBorder: string;
+}> = ({ title, dim, color, p, sectionBorder }) => (
+  <div style={{ border: sectionBorder, borderRadius: 6, padding: 16, background: p.bg }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+      <Figure size={26} color={color} italic>
+        {title}
+      </Figure>
+      <RatingLabel rating={dim.overall} p={p} size={14} />
+    </div>
+    <div style={{ borderTop: sectionBorder, marginTop: 8 }}>
+      {dim.criteria.map((cr) => (
+        <div
+          key={cr.name}
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '20px 1fr auto',
+            gap: 12,
+            padding: '10px 0',
+            borderBottom: sectionBorder,
+            alignItems: 'start',
+          }}
+        >
+          <HarveyBall rating={cr.rating} p={p} size={14} />
+          <div>
+            <div style={{ fontSize: 13, color: p.fg, fontWeight: 500 }}>
+              {cr.name}
+              <span style={{ fontFamily: FONT_MONO, fontSize: 10, color: p.sub2, marginLeft: 8 }}>
+                {cr.scored}/{cr.possible}
+              </span>
+            </div>
+            <div style={{ fontSize: 11, color: p.sub, marginTop: 2, lineHeight: 1.45 }}>{cr.note}</div>
+          </div>
+          <span style={{ fontSize: 11.5, color: ratingColor(cr.rating, p), fontWeight: 500 }}>
+            {cr.rating}
+          </span>
+        </div>
+      ))}
+    </div>
+    {dim.flag && (
+      <div
+        style={{
+          marginTop: 12,
+          padding: '10px 12px',
+          background: p.cautionBg,
+          borderRadius: 4,
+          fontSize: 11.5,
+          color: p.caution,
+          lineHeight: 1.5,
+        }}
+      >
+        <span style={{ marginRight: 6 }}>↗</span>
+        {dim.flag}
+      </div>
+    )}
+  </div>
+);
+
 export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
   charity,
   isDark,
@@ -63,98 +163,6 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
     ['--gmg-mono' as any]: ft.mono,
     ['--gmg-arabic' as any]: ft.arabic,
   };
-
-  const DimensionCard: React.FC<{ label: string; blurb: string; dim: GmgDimension }> = ({
-    label,
-    blurb,
-    dim,
-  }) => (
-    <div
-      style={{
-        border: sectionBorder,
-        borderRadius: 6,
-        padding: 14,
-        background: p.bg2,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 6,
-      }}
-    >
-      <Kicker p={p}>{label}</Kicker>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 4 }}>
-        <HarveyBall rating={dim.overall} p={p} size={36} />
-        <div>
-          <Figure size={28} color={p.fg} italic>
-            {dim.overall}
-          </Figure>
-          <div style={{ fontFamily: FONT_MONO, fontSize: 10, color: p.sub2, marginTop: 2 }}>
-            {dim.score} / {dim.max}
-          </div>
-        </div>
-      </div>
-      <div style={{ fontSize: 11, color: p.sub2, lineHeight: 1.4 }}>{blurb}</div>
-    </div>
-  );
-
-  const DimensionDetail: React.FC<{ title: string; dim: GmgDimension; color: string }> = ({
-    title,
-    dim,
-    color,
-  }) => (
-    <div style={{ border: sectionBorder, borderRadius: 6, padding: 16, background: p.bg }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-        <Figure size={26} color={color} italic>
-          {title}
-        </Figure>
-        <RatingLabel rating={dim.overall} p={p} size={14} />
-      </div>
-      <div style={{ borderTop: sectionBorder, marginTop: 8 }}>
-        {dim.criteria.map((cr) => (
-          <div
-            key={cr.name}
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '20px 1fr auto',
-              gap: 12,
-              padding: '10px 0',
-              borderBottom: sectionBorder,
-              alignItems: 'start',
-            }}
-          >
-            <HarveyBall rating={cr.rating} p={p} size={14} />
-            <div>
-              <div style={{ fontSize: 13, color: p.fg, fontWeight: 500 }}>
-                {cr.name}
-                <span style={{ fontFamily: FONT_MONO, fontSize: 10, color: p.sub2, marginLeft: 8 }}>
-                  {cr.scored}/{cr.possible}
-                </span>
-              </div>
-              <div style={{ fontSize: 11, color: p.sub, marginTop: 2, lineHeight: 1.45 }}>{cr.note}</div>
-            </div>
-            <span style={{ fontSize: 11.5, color: ratingColor(cr.rating, p), fontWeight: 500 }}>
-              {cr.rating}
-            </span>
-          </div>
-        ))}
-      </div>
-      {dim.flag && (
-        <div
-          style={{
-            marginTop: 12,
-            padding: '10px 12px',
-            background: p.cautionBg,
-            borderRadius: 4,
-            fontSize: 11.5,
-            color: p.caution,
-            lineHeight: 1.5,
-          }}
-        >
-          <span style={{ marginRight: 6 }}>↗</span>
-          {dim.flag}
-        </div>
-      )}
-    </div>
-  );
 
   const statCells: [string, string, string][] = [
     ['GMG Score', `${c.amalScore}`, 'of 100'],
@@ -240,8 +248,8 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
 
           {/* Rating cards */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, flex: isMobile ? '1 1 100%' : '0 1 400px', minWidth: isMobile ? 0 : 320 }}>
-            <DimensionCard label="Impact" blurb="Indicators of effective programs" dim={c.impact} />
-            <DimensionCard label="Alignment" blurb="Fit with Muslim donor priorities" dim={c.alignment} />
+            <DimensionCard label="Impact" blurb="Indicators of effective programs" dim={c.impact} p={p} sectionBorder={sectionBorder} />
+            <DimensionCard label="Alignment" blurb="Fit with Muslim donor priorities" dim={c.alignment} p={p} sectionBorder={sectionBorder} />
             <div
               style={{
                 gridColumn: '1 / span 2',
@@ -346,8 +354,8 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
           </div>
         )}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 14 }}>
-          <DimensionDetail title="Impact" dim={c.impact} color={p.accent} />
-          <DimensionDetail title="Alignment" dim={c.alignment} color={p.accent2} />
+          <DimensionDetail title="Impact" dim={c.impact} color={p.accent} p={p} sectionBorder={sectionBorder} />
+          <DimensionDetail title="Alignment" dim={c.alignment} color={p.accent2} p={p} sectionBorder={sectionBorder} />
         </div>
       </section>
 
