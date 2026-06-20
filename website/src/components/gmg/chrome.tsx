@@ -6,10 +6,18 @@ import { Link } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../auth/firebase';
 import { useAuth } from '../../auth';
-import { GmgPalette } from './tokens';
-import { FONT_THEMES, type FontVariant } from './tokens';
+import {
+  GmgPalette,
+  gmgPalette,
+  FONT_DISPLAY,
+  FONT_TEXT,
+  FONT_THEMES,
+  resolveFontVariant,
+  type FontVariant,
+} from './tokens';
 import { GmgLogo, Tag } from './primitives';
 import { GmgSignIn } from './GmgSignIn';
+import { useIsMobile } from './useIsMobile';
 
 export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: string }> = ({
   p,
@@ -53,7 +61,7 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
           }}
         >
           <Link
-            to="/profile"
+            to="/profile?design=gmg"
             onClick={() => setMenuOpen(false)}
             style={{ display: 'block', padding: '10px 14px', fontSize: 13, color: p.fg, textDecoration: 'none' }}
           >
@@ -87,7 +95,7 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
       borderBottom: `1px solid ${p.rule}`,
     }}
   >
-    <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+    <Link to="/?design=gmg" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
       <GmgLogo p={p} size={isMobile ? 26 : 30} />
       <Tag tone="warn" p={p}>Beta</Tag>
     </Link>
@@ -119,6 +127,63 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
     {account}
     <GmgSignIn p={p} open={signInOpen} onClose={() => setSignInOpen(false)} />
   </header>
+  );
+};
+
+// Motif chrome wrapper for legacy authenticated surfaces (Profile, plan invites)
+// that don't render their own motif header. Suppresses the app Navbar/Footer
+// upstream and frames the page in the motif background + GmgNav so the handoff
+// from a motif page into the signed-in app no longer switches design languages.
+// The page body stays as-is — deep theming is a later phase.
+export const GmgChromeFrame: React.FC<{
+  isDark: boolean;
+  requireAuth?: boolean;
+  children: React.ReactNode;
+}> = ({ isDark, requireAuth, children }) => {
+  const p = gmgPalette(isDark);
+  const isMobile = useIsMobile();
+  const { isSignedIn, isLoaded } = useAuth();
+  const [gateSignInOpen, setGateSignInOpen] = useState(false);
+  const variant = resolveFontVariant(
+    typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('type') : null,
+  );
+  const ft = FONT_THEMES[variant];
+  const fontVars = {
+    ['--gmg-display' as any]: ft.display,
+    ['--gmg-text' as any]: ft.text,
+    ['--gmg-mono' as any]: ft.mono,
+    ['--gmg-arabic' as any]: ft.arabic,
+  };
+
+  // Auth-required surfaces (the giving plan) show a motif sign-in gate rather than
+  // the legacy signed-out body — keeping the off-brand "free" CTA out of the motif.
+  // Public surfaces (plan invites) pass no requireAuth and render straight through.
+  const gated = requireAuth && isLoaded && !isSignedIn;
+
+  return (
+    <div style={{ background: p.bg, minHeight: '100vh', fontFamily: FONT_TEXT, ...fontVars }}>
+      <GmgNav p={p} isMobile={isMobile} />
+      {gated ? (
+        <section style={{ maxWidth: 540, margin: '0 auto', padding: isMobile ? '64px 20px' : '104px 24px', textAlign: 'center' }}>
+          <h1 style={{ fontFamily: FONT_DISPLAY, fontWeight: 400, fontSize: isMobile ? 34 : 46, lineHeight: 1.05, letterSpacing: ft.displayTracking, margin: 0 }}>
+            Your <em style={{ color: p.accent }}>giving plan.</em>
+          </h1>
+          <p style={{ fontSize: 16, lineHeight: 1.6, color: p.sub, margin: '18px auto 28px', maxWidth: 420 }}>
+            Sign in to set your giving goals, track your zakat, and follow your progress across every device.
+          </p>
+          <button
+            type="button"
+            onClick={() => setGateSignInOpen(true)}
+            style={{ padding: '13px 26px', borderRadius: 99, border: 'none', background: p.accent, color: p.bg, fontSize: 15, fontWeight: 500, cursor: 'pointer' }}
+          >
+            Sign in
+          </button>
+          <GmgSignIn p={p} open={gateSignInOpen} onClose={() => setGateSignInOpen(false)} context="your giving plan" />
+        </section>
+      ) : (
+        children
+      )}
+    </div>
   );
 };
 

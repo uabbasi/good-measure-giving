@@ -31,6 +31,7 @@ const JoinPlanPage = lazy(() => import('./pages/JoinPlanPage').then(m => ({ defa
 const GmgBrowse = lazy(() => import('./src/components/gmg/GmgBrowse').then(m => ({ default: m.GmgBrowse })));
 const GmgLanding = lazy(() => import('./src/components/gmg/GmgLanding').then(m => ({ default: m.GmgLanding })));
 const GmgCompare = lazy(() => import('./src/components/gmg/GmgCompare').then(m => ({ default: m.GmgCompare })));
+import { GmgChromeFrame } from './src/components/gmg/chrome';
 import { CompareBar } from './src/components/CompareBar';
 import { MobileBottomNav } from './src/components/MobileBottomNav';
 import { WelcomeTour } from './src/components/WelcomeTour';
@@ -59,13 +60,20 @@ const AppContent: React.FC = () => {
   const location = useLocation();
   const { isDark } = useLandingTheme();
   const isLandingPage = location.pathname === '/';
-  // Design-motif preview renders full-bleed with its own chrome (no app Navbar/Footer/overlays).
-  const isGmgPreview =
+  // Design-motif preview. Two flavors, both suppress the app Navbar/Footer/overlays:
+  //  - full-bleed: motif pages that render their own GmgNav (landing, browse, …)
+  //  - auth-chrome: legacy signed-in pages wrapped in motif chrome (profile, invites)
+  const isMotif = new URLSearchParams(location.search).get('design') === 'gmg';
+  const isGmgFullBleed =
+    isMotif &&
     (location.pathname.startsWith('/charity/') ||
       location.pathname === '/browse' ||
       location.pathname === '/compare' ||
-      location.pathname === '/') &&
-    new URLSearchParams(location.search).get('design') === 'gmg';
+      location.pathname === '/');
+  const isGmgAuthChrome =
+    isMotif &&
+    (location.pathname === '/profile' || location.pathname.startsWith('/plan/join'));
+  const isGmgPreview = isGmgFullBleed || isGmgAuthChrome;
 
   // T049: Track page views on route changes
   useEffect(() => {
@@ -85,16 +93,16 @@ const AppContent: React.FC = () => {
       <main id="main" className={`flex-grow ${isLandingPage ? 'min-h-0 overflow-hidden lg:min-h-0 lg:overflow-visible' : ''}`}>
         <Suspense fallback={null}>
           <Routes>
-            <Route path="/" element={isGmgPreview ? <GmgLanding isDark={isDark} /> : <LandingPage />} />
-            <Route path="/browse" element={isGmgPreview ? <GmgBrowse isDark={isDark} /> : <BrowsePage />} />
+            <Route path="/" element={isGmgFullBleed ? <GmgLanding isDark={isDark} /> : <LandingPage />} />
+            <Route path="/browse" element={isGmgFullBleed ? <GmgBrowse isDark={isDark} /> : <BrowsePage />} />
             <Route path="/charity/:id" element={<CharityDetailsPage />} />
             <Route path="/methodology" element={<MethodologyPage />} />
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/bookmarks" element={<Navigate to="/profile" replace />} />
-            <Route path="/compare" element={isGmgPreview ? <GmgCompare isDark={isDark} /> : <ComparePage />} />
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/compare" element={isGmgFullBleed ? <GmgCompare isDark={isDark} /> : <ComparePage />} />
+            <Route path="/profile" element={isGmgAuthChrome ? <GmgChromeFrame isDark={isDark} requireAuth><ProfilePage /></GmgChromeFrame> : <ProfilePage />} />
             <Route path="/prompts" element={<PromptsPage />} />
             <Route path="/prompts/:promptId" element={<PromptDetailPage />} />
             <Route path="/causes" element={<CausesIndexPage />} />
@@ -103,7 +111,7 @@ const AppContent: React.FC = () => {
             <Route path="/guides/:slug" element={<GuidePage />} />
             <Route path="/zakat-calculator" element={<ZakatCalculatorHubPage />} />
             <Route path="/zakat-calculator/:asset" element={<ZakatCalculatorAssetPage />} />
-            <Route path="/plan/join/:planId/:token" element={<JoinPlanPage />} />
+            <Route path="/plan/join/:planId/:token" element={isGmgAuthChrome ? <GmgChromeFrame isDark={isDark}><JoinPlanPage /></GmgChromeFrame> : <JoinPlanPage />} />
 
             {/* Catch-all: 404 */}
             <Route path="*" element={<NotFoundPage />} />
