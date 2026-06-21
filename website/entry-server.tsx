@@ -12,13 +12,24 @@ export function render(url: string, seed: SeedEntry[]): Promise<string> {
 
   return new Promise<string>((resolve, reject) => {
     const chunks: Buffer[] = [];
+    let settled = false;
+    let errored = false;
+    let timer: ReturnType<typeof setTimeout>;
+
+    const settle = (fn: () => void) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      fn();
+    };
+
     const writable = new Writable({
       write(chunk, _enc, cb) { chunks.push(Buffer.from(chunk)); cb(); },
-      final(cb) { cb(); },
     });
-    writable.on('finish', () => resolve(Buffer.concat(chunks).toString('utf8')));
+    writable.on('finish', () => {
+      if (!errored) settle(() => resolve(Buffer.concat(chunks).toString('utf8')));
+    });
 
-    let didError = false;
     const { pipe, abort } = renderToPipeableStream(
       <AppProviders queryClient={queryClient}>
         <StaticRouter location={url}>
@@ -27,9 +38,10 @@ export function render(url: string, seed: SeedEntry[]): Promise<string> {
       </AppProviders>,
       {
         onAllReady() { pipe(writable); },
-        onError(err) { didError = true; reject(err); },
+        onError(err) { errored = true; settle(() => reject(err)); },
       }
     );
-    setTimeout(() => { if (!didError) abort(); }, 15000);
+
+    timer = setTimeout(() => settle(() => { abort(); reject(new Error(`SSR render timeout for ${url}`)); }), 15000);
   });
 }
