@@ -12,28 +12,8 @@ import {
   CheckCircle2,
   Clock
 } from 'lucide-react';
-
-interface Prompt {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  status: 'active' | 'planned';
-}
-
-interface PromptCategory {
-  id: string;
-  name: string;
-  description: string;
-}
-
-interface PromptsIndex {
-  prompts: Prompt[];
-  categories: PromptCategory[];
-  total_count: number;
-  active_count: number;
-  planned_count: number;
-}
+import { usePromptsIndex } from '../src/hooks/usePrompts';
+import type { Prompt, PromptCategory } from '../src/hooks/usePrompts';
 
 const categoryIcons: Record<string, typeof ShieldCheck> = {
   quality_validation: ShieldCheck,
@@ -71,22 +51,13 @@ const categoryColors: Record<string, { bg: string; bgDark: string; text: string;
 
 export const PromptsPage: React.FC = () => {
   const { isDark } = useLandingTheme();
-  const [data, setData] = useState<PromptsIndex | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data, loading } = usePromptsIndex();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   useEffect(() => {
     document.title = 'AI Transparency | Good Measure Giving';
     return () => { document.title = 'Good Measure Giving | Muslim Charity Evaluator'; };
-  }, []);
-
-  useEffect(() => {
-    fetch('/data/prompts/index.json')
-      .then(res => res.json())
-      .then(setData)
-      .catch(console.error)
-      .finally(() => setLoading(false));
   }, []);
 
   const filteredPrompts = useMemo(() => {

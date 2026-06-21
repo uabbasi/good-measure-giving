@@ -35,7 +35,8 @@ const config = useEmulator
     };
 
 const isConfigured = !!(config.apiKey && config.projectId);
-const app = isConfigured ? initializeApp(config) : null;
+const canInit = typeof window !== 'undefined' && isConfigured;
+const app = canInit ? initializeApp(config) : null;
 export const auth = app ? getAuth(app) : null;
 export const db = app ? getFirestore(app) : null;
 export { isConfigured };

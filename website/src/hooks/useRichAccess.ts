@@ -14,6 +14,7 @@ const FREE_VIEW_LIMIT = 3;
 
 function getViewedEins(): string[] {
   try {
+    if (typeof localStorage === 'undefined') return [];
     const stored = localStorage.getItem(STORAGE_KEY);
     return stored ? JSON.parse(stored) : [];
   } catch {

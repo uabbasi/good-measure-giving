@@ -31,7 +31,6 @@ const JoinPlanPage = lazy(() => import('./pages/JoinPlanPage').then(m => ({ defa
 const GmgBrowse = lazy(() => import('./src/components/gmg/GmgBrowse').then(m => ({ default: m.GmgBrowse })));
 const GmgLanding = lazy(() => import('./src/components/gmg/GmgLanding').then(m => ({ default: m.GmgLanding })));
 const GmgCompare = lazy(() => import('./src/components/gmg/GmgCompare').then(m => ({ default: m.GmgCompare })));
-import { GmgChromeFrame } from './src/components/gmg/chrome';
 import { CompareBar } from './src/components/CompareBar';
 import { MobileBottomNav } from './src/components/MobileBottomNav';
 import { WelcomeTour } from './src/components/WelcomeTour';
@@ -39,24 +38,43 @@ import { IntroPresentation } from './src/components/IntroPresentation';
 import { BookmarkToast } from './src/components/BookmarkToast';
 import { BookmarkAutoCategorize } from './src/components/BookmarkAutoCategorize';
 import { NamePromptModal } from './src/auth';
+import { ClientOnly } from './src/components/ClientOnly';
+import { GmgChromeFrame } from './src/components/gmg/chrome';
 import { DevQuickLogin } from './src/auth/DevQuickLogin';
 import { ScrollToTop } from './components/ScrollToTop';
 import { trackPageView } from './src/utils/analytics';
 
 
 // TanStack Query client — staleTime: Infinity because charity data is static JSON
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: Infinity,
-      refetchOnWindowFocus: false,
+export function createAppQueryClient(): QueryClient {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: Infinity,
+        refetchOnWindowFocus: false,
+      },
     },
-  },
-});
+  });
+}
+
+export const AppProviders: React.FC<{ queryClient: QueryClient; children: React.ReactNode }> = ({
+  queryClient,
+  children,
+}) => (
+  <QueryClientProvider client={queryClient}>
+    <LazyMotion features={domAnimation} strict>
+      <ThemeProvider>
+        <LandingThemeProvider>
+          <UserFeaturesProvider>{children}</UserFeaturesProvider>
+        </LandingThemeProvider>
+      </ThemeProvider>
+    </LazyMotion>
+  </QueryClientProvider>
+);
 
 // T009-T011: Removed ThirdBucket theme switching - single Amal theme only
 
-const AppContent: React.FC = () => {
+export const AppContent: React.FC = () => {
   const location = useLocation();
   const { isDark } = useLandingTheme();
   const isLandingPage = location.pathname === '/';
@@ -119,35 +137,30 @@ const AppContent: React.FC = () => {
         </Suspense>
       </main>
       {!isGmgPreview && (isLandingPage ? <div className="hidden lg:block"><Footer /></div> : <Footer />)}
-      {!isGmgPreview && <CompareBar />}
-      {!isGmgPreview && !isLandingPage && <MobileBottomNav />}
-      {!isGmgPreview && <WelcomeTour />}
-      {!isGmgPreview && <IntroPresentation />}
-      <BookmarkToast />
-      <BookmarkAutoCategorize />
-      <NamePromptModal />
+      <ClientOnly>
+        {!isGmgPreview && <CompareBar />}
+        {!isGmgPreview && !isLandingPage && <MobileBottomNav />}
+        {!isGmgPreview && <WelcomeTour />}
+        {!isGmgPreview && <IntroPresentation />}
+        <BookmarkToast />
+        <BookmarkAutoCategorize />
+        <NamePromptModal />
+      </ClientOnly>
     </div>
   );
 };
 
 const App: React.FC = () => {
+  const [queryClient] = React.useState(createAppQueryClient);
   return (
-    <QueryClientProvider client={queryClient}>
-      <LazyMotion features={domAnimation} strict>
-        <ThemeProvider>
-          <LandingThemeProvider>
-            <UserFeaturesProvider>
-              {import.meta.env.DEV && <DevQuickLogin />}
-              <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-                <ScrollToTop />
-                <AppContent />
-              </Router>
-            </UserFeaturesProvider>
-          </LandingThemeProvider>
-        </ThemeProvider>
-      </LazyMotion>
+    <AppProviders queryClient={queryClient}>
+      {import.meta.env.DEV && <DevQuickLogin />}
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <ScrollToTop />
+        <AppContent />
+      </Router>
       <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    </AppProviders>
   );
 };
 

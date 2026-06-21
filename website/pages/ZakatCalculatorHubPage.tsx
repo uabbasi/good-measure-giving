@@ -1,18 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { KNOWN_ASSET_SLUGS } from '../scripts/lib/calculator-seo';
-
-interface AssetSummary {
-  slug: string;
-  displayName: string;
-  heroAnswer: string;
-}
-
-interface CalculatorData {
-  hub: { metaTitle: string; metaDescription: string; heroText: string };
-  assets: AssetSummary[];
-}
+import { useCalculatorData } from '../src/hooks/useCalculatorData';
 
 const SLUG_TO_LABEL: Record<string, string> = {
   'cash-savings': 'Cash & Savings',
@@ -26,17 +16,10 @@ const SLUG_TO_LABEL: Record<string, string> = {
 
 export const ZakatCalculatorHubPage: React.FC = () => {
   const { isDark } = useLandingTheme();
-  const [data, setData] = useState<CalculatorData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data, loading } = useCalculatorData();
 
   useEffect(() => {
     document.title = 'Zakat Calculator 2026 | Good Measure Giving';
-    fetch('/data/zakat-calculator/assets.json')
-      .then((r) => r.json())
-      .then((d: CalculatorData) => setData(d))
-      .catch(() => setData(null))
-      .finally(() => setLoading(false));
-
     return () => { document.title = 'Good Measure Giving | Muslim Charity Evaluator'; };
   }, []);
 
