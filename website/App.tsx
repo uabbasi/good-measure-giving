@@ -35,6 +35,7 @@ import { IntroPresentation } from './src/components/IntroPresentation';
 import { BookmarkToast } from './src/components/BookmarkToast';
 import { BookmarkAutoCategorize } from './src/components/BookmarkAutoCategorize';
 import { NamePromptModal } from './src/auth';
+import { ClientOnly } from './src/components/ClientOnly';
 import { DevQuickLogin } from './src/auth/DevQuickLogin';
 import { ScrollToTop } from './components/ScrollToTop';
 import { trackPageView } from './src/utils/analytics';
@@ -118,13 +119,15 @@ export const AppContent: React.FC = () => {
         </Suspense>
       </main>
       {isLandingPage ? <div className="hidden lg:block"><Footer /></div> : <Footer />}
-      <CompareBar />
-      {!isLandingPage && <MobileBottomNav />}
-      <WelcomeTour />
-      <IntroPresentation />
-      <BookmarkToast />
-      <BookmarkAutoCategorize />
-      <NamePromptModal />
+      <ClientOnly>
+        <CompareBar />
+        {!isLandingPage && <MobileBottomNav />}
+        <WelcomeTour />
+        <IntroPresentation />
+        <BookmarkToast />
+        <BookmarkAutoCategorize />
+        <NamePromptModal />
+      </ClientOnly>
     </div>
   );
 };
