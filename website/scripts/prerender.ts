@@ -462,6 +462,40 @@ function buildCauseMeta(cause: CauseEntry, allCharities: HubCharity[]): PageMeta
   };
 }
 
+function buildPromptsHubMeta(prompts: PromptSummary[]): PageMeta {
+  return {
+    route: '/prompts',
+    title: 'AI Prompts & Transparency | Good Measure Giving',
+    description:
+      'Full transparency into the AI prompts behind our charity evaluations — see exactly how we use AI to assess impact, validate data quality, and generate narratives.',
+    canonical: `${SITE_URL}/prompts`,
+    ogType: 'website',
+    jsonLd: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        name: 'Our AI Prompts',
+        url: `${SITE_URL}/prompts`,
+        description: 'Full transparency into how Good Measure Giving uses AI for Muslim charity evaluation.',
+        mainEntity: {
+          '@type': 'ItemList',
+          numberOfItems: prompts.length,
+          itemListElement: prompts.map((p, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            url: `${SITE_URL}/prompts/${p.id}`,
+            name: p.name,
+          })),
+        },
+      },
+      buildBreadcrumbSchema([
+        { name: 'Home', url: `${SITE_URL}/` },
+        { name: 'AI Prompts', url: `${SITE_URL}/prompts` },
+      ]) as object,
+    ],
+  };
+}
+
 function buildGuidesIndexMeta(guides: GuideSummary[]): PageMeta {
   return {
     route: '/guides',
@@ -770,6 +804,9 @@ async function prerenderPages() {
     promptsIndexObj = promptsIndex;
   }
 
+  if (prompts.length > 0) {
+    metas.push(buildPromptsHubMeta(prompts));
+  }
   for (const prompt of prompts) {
     metas.push(buildPromptMeta(prompt));
   }
@@ -857,7 +894,8 @@ async function prerenderPages() {
   const causeCount = causes.length > 0 ? causes.length + 1 : 0;
   const guideCount = guideSummaries.length > 0 ? guideSummaries.length + 1 : 0;
   const calculatorCount = calculatorData ? 1 + calculatorData.assets.length : 0;
-  console.log(`Prerender: ${metas.length} pages (${metas.length - charities.length - prompts.length - causeCount - guideCount - calculatorCount} static + ${charities.length} charities + ${prompts.length} prompts + ${causeCount} causes + ${guideCount} guides + ${calculatorCount} calculator)`);
+  const promptCount = prompts.length > 0 ? prompts.length + 1 : 0; // +1 for hub
+  console.log(`Prerender: ${metas.length} pages (${metas.length - charities.length - promptCount - causeCount - guideCount - calculatorCount} static + ${charities.length} charities + ${promptCount} prompts + ${causeCount} causes + ${guideCount} guides + ${calculatorCount} calculator)`);
 
   const redirectCount = writeRedirects(metas);
   console.log(`Wrote ${redirectCount} trailing-slash 308 redirects to dist/_redirects`);
