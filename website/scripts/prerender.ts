@@ -1,13 +1,12 @@
 /**
  * Prerender Script
- * Uses Puppeteer to render SPA pages and inject SEO meta/OG/JSON-LD tags.
+ * Uses SSR (via dist-server/entry-server.js) to render SPA pages and inject SEO meta/OG/JSON-LD tags.
  * Writes prerendered HTML to dist/ for search engine crawlers.
  */
 
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import { spawn, type ChildProcess } from 'child_process';
 import { FAQ_ITEMS } from '../src/data/faq';
 import { buildFaqPageSchema, buildArticleSchema, buildOrganizationSchema, buildBreadcrumbSchema } from './lib/schema';
 import {
@@ -30,10 +29,10 @@ const DATA_DIR = path.join(__dirname, '../data/charities');
 // (NOT data/charities/charities.json — that was a stale pilot-era subset.)
 const CHARITIES_JSON = path.join(__dirname, '../data/charities.json');
 const SITE_URL = 'https://goodmeasuregiving.org';
-const PREVIEW_PORT = 4174;
-const CONCURRENCY = 4;
 
 // ── Types ──────────────────────────────────────────────────────────────
+
+export type SeedEntry = { queryKey: unknown[]; data: unknown };
 
 interface CharitySummary {
   ein: string;
@@ -100,11 +99,50 @@ interface PageMeta {
   noindex?: boolean;
 }
 
+// ── SSR route classification ───────────────────────────────────────────
+
+export const SSR_ROUTE_PREFIXES = ['/charity/', '/guides/', '/causes/', '/zakat-calculator/', '/prompts/'];
+export const SSR_EXACT_ROUTES = new Set(['/guides', '/causes', '/zakat-calculator', '/prompts', '/methodology', '/about', '/faq']);
+
+export function isSsrRoute(route: string): boolean {
+  if (SSR_EXACT_ROUTES.has(route)) return true;
+  return SSR_ROUTE_PREFIXES.some((p) => route.startsWith(p));
+}
+
+function seedFor(route: string, ctx: {
+  charityDetails: Map<string, unknown>;
+  guidesIndex: unknown;
+  guideBySlug: Map<string, unknown>;
+  calculatorData: unknown;
+  promptsIndex: unknown;
+  promptById: Map<string, unknown>;
+}): SeedEntry[] {
+  if (route.startsWith('/charity/')) {
+    const ein = route.slice('/charity/'.length);
+    const d = ctx.charityDetails.get(ein);
+    return d ? [{ queryKey: ['charity', ein], data: d }] : [];
+  }
+  if (route === '/guides') return ctx.guidesIndex ? [{ queryKey: ['guides'], data: ctx.guidesIndex }] : [];
+  if (route.startsWith('/guides/')) {
+    const slug = route.slice('/guides/'.length);
+    const g = ctx.guideBySlug.get(slug);
+    return g ? [{ queryKey: ['guide', slug], data: g }] : [];
+  }
+  if (route.startsWith('/zakat-calculator')) return ctx.calculatorData ? [{ queryKey: ['calculator-data'], data: ctx.calculatorData }] : [];
+  if (route === '/prompts') return ctx.promptsIndex ? [{ queryKey: ['prompts'], data: ctx.promptsIndex }] : [];
+  if (route.startsWith('/prompts/')) {
+    const id = route.slice('/prompts/'.length);
+    const p = ctx.promptById.get(id);
+    return p ? [{ queryKey: ['prompt', id], data: p }] : [];
+  }
+  return [];
+}
+
 // ── Meta builders ──────────────────────────────────────────────────────
 
 function truncate(text: string, maxLen: number): string {
   if (text.length <= maxLen) return text;
-  return text.slice(0, maxLen - 1) + '\u2026';
+  return text.slice(0, maxLen - 1) + '…';
 }
 
 function escapeHtml(text: string): string {
@@ -663,59 +701,7 @@ function injectMeta(html: string, meta: PageMeta): string {
   return html;
 }
 
-// ── Prerender orchestration ────────────────────────────────────────────
-
-async function startPreviewServer(): Promise<ChildProcess> {
-  const server = spawn('npx', ['vite', 'preview', '--port', String(PREVIEW_PORT)], {
-    cwd: path.join(__dirname, '..'),
-    stdio: 'pipe',
-  });
-
-  // Wait for server to be ready
-  await new Promise<void>((resolve, reject) => {
-    const timeout = setTimeout(() => reject(new Error('Preview server timeout')), 15000);
-
-    server.stdout?.on('data', (data: Buffer) => {
-      if (data.toString().includes('Local:') || data.toString().includes(String(PREVIEW_PORT))) {
-        clearTimeout(timeout);
-        resolve();
-      }
-    });
-
-    server.stderr?.on('data', (data: Buffer) => {
-      const msg = data.toString();
-      // Vite sometimes prints port info to stderr
-      if (msg.includes(String(PREVIEW_PORT))) {
-        clearTimeout(timeout);
-        resolve();
-      }
-    });
-
-    server.on('error', (err) => {
-      clearTimeout(timeout);
-      reject(err);
-    });
-  });
-
-  return server;
-}
-
-function writePrerenderedFromBaseHtml(metas: PageMeta[]): number {
-  const baseHtmlPath = path.join(DIST_DIR, 'index.html');
-  const baseHtml = fs.readFileSync(baseHtmlPath, 'utf-8');
-  let written = 0;
-
-  for (const meta of metas) {
-    const html = injectMeta(baseHtml, meta);
-    const outDir = path.join(DIST_DIR, meta.route === '/' ? '' : meta.route);
-    fs.mkdirSync(outDir, { recursive: true });
-    const outFile = meta.route === '/' ? path.join(DIST_DIR, 'index.html') : path.join(outDir, 'index.html');
-    fs.writeFileSync(outFile, html, 'utf-8');
-    written++;
-  }
-
-  return written;
-}
+// ── Redirect writer ────────────────────────────────────────────────────
 
 function writeRedirects(metas: PageMeta[]): number {
   // Cloudflare Pages auto-redirects the no-slash URL to its trailing-slash form
@@ -732,30 +718,7 @@ function writeRedirects(metas: PageMeta[]): number {
   return rules.length;
 }
 
-function resolvePrerenderMode(): { mode: 'browser' | 'static'; reason: string } {
-  const explicitMode = (process.env.PRERENDER_MODE || '').trim().toLowerCase();
-  if (explicitMode === 'browser') {
-    return { mode: 'browser', reason: 'PRERENDER_MODE=browser' };
-  }
-  if (explicitMode === 'static' || explicitMode === 'fallback' || explicitMode === 'none') {
-    return { mode: 'static', reason: `PRERENDER_MODE=${explicitMode}` };
-  }
-
-  const isCloudflarePages =
-    process.env.CF_PAGES === '1' ||
-    !!process.env.CF_PAGES_BRANCH ||
-    !!process.env.CF_PAGES_URL;
-  const isCi = process.env.CI === '1' || process.env.CI === 'true';
-
-  if (isCloudflarePages) {
-    return { mode: 'static', reason: 'Cloudflare Pages environment detected' };
-  }
-  if (isCi) {
-    return { mode: 'static', reason: 'CI environment detected' };
-  }
-
-  return { mode: 'browser', reason: 'default local build behavior' };
-}
+// ── Prerender orchestration ────────────────────────────────────────────
 
 async function prerenderPages() {
   // Load charity data — curated only; hidden charities get no static page
@@ -767,10 +730,14 @@ async function prerenderPages() {
   // Build meta for all pages
   const metas: PageMeta[] = [...buildStaticMeta()];
 
+  // Populate charity detail map for SSR seed
+  const charityDetails = new Map<string, unknown>();
+
   for (const charity of charities) {
     const detailPath = path.join(DATA_DIR, `charity-${charity.ein}.json`);
     if (fs.existsSync(detailPath)) {
       const detail: CharityDetail = JSON.parse(fs.readFileSync(detailPath, 'utf-8'));
+      charityDetails.set(detail.ein, detail);
       metas.push(buildCharityMeta(detail));
     } else {
       // Minimal meta from index data
@@ -791,13 +758,25 @@ async function prerenderPages() {
   // render as stubs on the SPA side and would look thin to crawlers.
   const PROMPTS_INDEX_PATH = path.join(__dirname, '../public/data/prompts/index.json');
   let prompts: PromptSummary[] = [];
+  let promptsIndexObj: unknown = null;
   if (fs.existsSync(PROMPTS_INDEX_PATH)) {
     const promptsIndex: PromptsIndex = JSON.parse(fs.readFileSync(PROMPTS_INDEX_PATH, 'utf-8'));
     prompts = (promptsIndex.prompts || []).filter((p) => p.status !== 'planned');
+    promptsIndexObj = promptsIndex;
   }
 
   for (const prompt of prompts) {
     metas.push(buildPromptMeta(prompt));
+  }
+
+  // Load full prompt JSONs for SSR seed
+  const promptById = new Map<string, unknown>();
+  const PROMPTS_DATA_DIR = path.join(__dirname, '../public/data/prompts');
+  for (const prompt of prompts) {
+    const promptPath = path.join(PROMPTS_DATA_DIR, `${prompt.id}.json`);
+    if (fs.existsSync(promptPath)) {
+      promptById.set(prompt.id, JSON.parse(fs.readFileSync(promptPath, 'utf-8')));
+    }
   }
 
   // Load cause-area hubs
@@ -829,8 +808,12 @@ async function prerenderPages() {
   const GUIDES_INDEX_PATH = path.join(GUIDES_DIR, 'guides.json');
   let guideSummaries: GuideSummary[] = [];
   const guides: Guide[] = [];
+  let guidesIndexObj: unknown = null;
+  const guideBySlug = new Map<string, unknown>();
+
   if (fs.existsSync(GUIDES_INDEX_PATH)) {
     const index: GuidesIndex = JSON.parse(fs.readFileSync(GUIDES_INDEX_PATH, 'utf-8'));
+    guidesIndexObj = index;
     // pending-review guides get no static page until they clear review
     guideSummaries = (index.guides || []).filter((g) => g.status !== 'pending-review');
     for (const summary of guideSummaries) {
@@ -838,6 +821,7 @@ async function prerenderPages() {
       if (fs.existsSync(guidePath)) {
         const guide: Guide = JSON.parse(fs.readFileSync(guidePath, 'utf-8'));
         guides.push(guide);
+        guideBySlug.set(guide.slug, guide);
       } else {
         console.warn(`  Warning: guide index lists ${summary.slug} but file is missing`);
       }
@@ -873,112 +857,43 @@ async function prerenderPages() {
   const redirectCount = writeRedirects(metas);
   console.log(`Wrote ${redirectCount} trailing-slash 308 redirects to dist/_redirects`);
 
-  const prerenderMode = resolvePrerenderMode();
-  if (prerenderMode.mode === 'static') {
-    console.log(`Using fallback prerender (no headless browser): ${prerenderMode.reason}.`);
-    const written = writePrerenderedFromBaseHtml(metas);
-    console.log(`Prerender complete: ${written} pages written to dist/`);
-    return;
-  }
+  // SSR rendering loop
+  const { render } = await import(path.join(DIST_DIR, '../dist-server/entry-server.js'));
+  const baseHtml = fs.readFileSync(path.join(DIST_DIR, 'index.html'), 'utf-8');
 
-  // Dynamic import for puppeteer (ESM)
-  const puppeteer = await import('puppeteer');
-  let browser: Awaited<ReturnType<typeof puppeteer.default.launch>> | null = null;
-  let server: ChildProcess | null = null;
-  try {
-    try {
-      browser = await puppeteer.default.launch({
-        headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      });
-    } catch (launchError) {
-      console.warn('Headless browser unavailable; using fallback prerender:', launchError);
-      const written = writePrerenderedFromBaseHtml(metas);
-      console.log(`Prerender complete: ${written} pages written to dist/`);
-      return;
-    }
+  const ctx = {
+    charityDetails,
+    guidesIndex: guidesIndexObj,
+    guideBySlug,
+    calculatorData,
+    promptsIndex: prompts.length > 0 ? promptsIndexObj : null,
+    promptById,
+  };
 
-    // Start preview server
-    console.log('Starting preview server...');
-    server = await startPreviewServer();
-
-    // At this point browser is guaranteed non-null (launch failure returns above)
-    const activeBrowser = browser!;
-
-    // Process pages with concurrency limit
-    let completed = 0;
-    const queue = [...metas];
-
-    async function processPage(page: Awaited<ReturnType<typeof activeBrowser.newPage>>, meta: PageMeta) {
-      const url = `http://localhost:${PREVIEW_PORT}${meta.route}`;
+  let written = 0;
+  for (const meta of metas) {
+    let html = injectMeta(baseHtml, meta);
+    if (isSsrRoute(meta.route)) {
       try {
-        await page.goto(url, { waitUntil: 'networkidle0', timeout: 15000 });
-      } catch {
-        // Fallback: just use the base HTML with meta injection
-        console.warn(`  Warning: timeout on ${meta.route}, using base HTML`);
-      }
-
-      // Sanitize the snapshot: first-visit UI (intro presentation) must never
-      // leak into prerendered HTML — it once baked <body style="overflow:
-      // hidden"> plus the intro overlay into every page, breaking scroll for
-      // all visitors and polluting what crawlers index.
-      await page
-        .evaluate(() => {
-          document.body.style.removeProperty('overflow');
-          document.querySelector('[aria-label="Introduction to Good Measure Giving"]')?.remove();
-        })
-        .catch(() => undefined);
-
-      let html = await page.content();
-      html = injectMeta(html, meta);
-
-      // Write to dist
-      const outDir = path.join(DIST_DIR, meta.route === '/' ? '' : meta.route);
-      fs.mkdirSync(outDir, { recursive: true });
-      const outFile = meta.route === '/' ? path.join(DIST_DIR, 'index.html') : path.join(outDir, 'index.html');
-      fs.writeFileSync(outFile, html, 'utf-8');
-
-      completed++;
-      if (completed % 20 === 0 || completed === metas.length) {
-        console.log(`  ${completed}/${metas.length} pages rendered`);
+        const body = await render(meta.route, seedFor(meta.route, ctx));
+        html = html.replace('<div id="root"></div>', `<div id="root">${body}</div>`);
+      } catch (err) {
+        console.warn(`  SSR failed for ${meta.route}; writing meta-only shell:`, (err as Error).message);
       }
     }
-
-    // Create worker pages. Seed the intro-seen flag before any document runs
-    // so the first-visit intro never opens during prerender (belt to the
-    // snapshot sanitizer's suspenders).
-    const pages = await Promise.all(
-      Array.from({ length: CONCURRENCY }, async () => {
-        const page = await activeBrowser.newPage();
-        await page.evaluateOnNewDocument(() => {
-          try {
-            localStorage.setItem('gmg_intro_seen_v1', '1');
-          } catch {
-            // storage unavailable — sanitizer still strips any leak
-          }
-        });
-        return page;
-      })
-    );
-
-    // Process queue
-    async function worker(page: Awaited<ReturnType<typeof activeBrowser.newPage>>) {
-      while (queue.length > 0) {
-        const meta = queue.shift()!;
-        await processPage(page, meta);
-      }
-    }
-
-    await Promise.all(pages.map((page) => worker(page)));
-
-    console.log(`Prerender complete: ${completed} pages written to dist/`);
-  } finally {
-    if (server) server.kill();
-    if (browser) await browser.close().catch(() => undefined);
+    const outDir = path.join(DIST_DIR, meta.route === '/' ? '' : meta.route);
+    fs.mkdirSync(outDir, { recursive: true });
+    const outFile = meta.route === '/' ? path.join(DIST_DIR, 'index.html') : path.join(outDir, 'index.html');
+    fs.writeFileSync(outFile, html, 'utf-8');
+    written++;
   }
+  console.log(`Prerender complete: ${written} pages written to dist/`);
 }
 
-prerenderPages().catch((err) => {
-  console.error('Prerender failed:', err);
-  process.exit(1);
-});
+// Only run when executed directly (not when imported by tests)
+if (process.env.VITEST == null) {
+  prerenderPages().catch((err) => {
+    console.error('Prerender failed:', err);
+    process.exit(1);
+  });
+}
