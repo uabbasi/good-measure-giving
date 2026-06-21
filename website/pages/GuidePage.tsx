@@ -1,36 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
-import type { Guide } from '../scripts/lib/guide-seo';
+import { useGuide } from '../src/hooks/useGuides';
 
 export const GuidePage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const { isDark } = useLandingTheme();
-  const [guide, setGuide] = useState<Guide | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
+  const { guide, loading, notFound } = useGuide(slug || '');
 
   useEffect(() => {
-    if (!slug) return;
-    fetch(`/data/guides/${slug}.json`)
-      .then((r) => {
-        if (!r.ok) {
-          setNotFound(true);
-          return null;
-        }
-        return r.json();
-      })
-      .then((data: Guide | null) => {
-        if (data) {
-          setGuide(data);
-          document.title = data.metaTitle;
-        }
-      })
-      .catch(() => setNotFound(true))
-      .finally(() => setLoading(false));
-
+    if (guide) document.title = guide.metaTitle;
     return () => { document.title = 'Good Measure Giving | Muslim Charity Evaluator'; };
-  }, [slug]);
+  }, [guide]);
 
   if (notFound) return <Navigate to="/guides" replace />;
 

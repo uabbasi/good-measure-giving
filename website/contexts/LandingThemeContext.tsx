@@ -24,6 +24,7 @@ export const LandingThemeProvider: React.FC<{ children: ReactNode }> = ({ childr
 
   // Persist to localStorage and sync browser-level color scheme
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     localStorage.setItem(STORAGE_KEY, isDark ? 'dark' : 'light');
     document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
     const meta = document.querySelector('meta[name="theme-color"]');

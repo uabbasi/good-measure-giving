@@ -27,6 +27,7 @@ interface CachedNisab {
 }
 
 function readCache(): CachedNisab | null {
+  if (typeof window === 'undefined') return null;
   try {
     const raw = localStorage.getItem(CACHE_KEY);
     if (!raw) return null;
@@ -40,6 +41,7 @@ function readCache(): CachedNisab | null {
 }
 
 function writeCache(value: number): void {
+  if (typeof window === 'undefined') return;
   try {
     const payload: CachedNisab = { value, fetchedAt: Date.now() };
     localStorage.setItem(CACHE_KEY, JSON.stringify(payload));

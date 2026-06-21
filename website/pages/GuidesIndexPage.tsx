@@ -1,21 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
-import type { GuidesIndex, GuideSummary } from '../scripts/lib/guide-seo';
+import { useGuides } from '../src/hooks/useGuides';
 
 export const GuidesIndexPage: React.FC = () => {
   const { isDark } = useLandingTheme();
-  const [guides, setGuides] = useState<GuideSummary[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { guides, loading } = useGuides();
 
   useEffect(() => {
     document.title = 'Guides | Good Measure Giving';
-    fetch('/data/guides/guides.json')
-      .then((r) => r.json())
-      .then((data: GuidesIndex) => setGuides(data.guides || []))
-      .catch(() => setGuides([]))
-      .finally(() => setLoading(false));
-
     return () => { document.title = 'Good Measure Giving | Muslim Charity Evaluator'; };
   }, []);
 

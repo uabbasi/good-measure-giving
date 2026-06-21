@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import {
@@ -12,23 +12,7 @@ import {
   ChevronRight,
   Info
 } from 'lucide-react';
-
-interface Annotation {
-  section: string;
-  lines: string;
-  explanation: string;
-}
-
-interface PromptDetail {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  status: 'active' | 'planned';
-  source_file: string;
-  content: string;
-  annotations: Annotation[];
-}
+import { usePromptDetail } from '../src/hooks/usePrompts';
 
 const categoryLabels: Record<string, string> = {
   quality_validation: 'Quality Validation',
@@ -40,24 +24,9 @@ const categoryLabels: Record<string, string> = {
 export const PromptDetailPage: React.FC = () => {
   const { isDark } = useLandingTheme();
   const { promptId } = useParams<{ promptId: string }>();
-  const [prompt, setPrompt] = useState<PromptDetail | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { prompt, loading, error } = usePromptDetail(promptId || '');
   const [copied, setCopied] = useState(false);
   const [expandedAnnotations, setExpandedAnnotations] = useState<Set<number>>(new Set([0]));
-
-  useEffect(() => {
-    if (!promptId) return;
-
-    fetch(`/data/prompts/${promptId}.json`)
-      .then(res => {
-        if (!res.ok) throw new Error('Prompt not found');
-        return res.json();
-      })
-      .then(setPrompt)
-      .catch(err => setError(err.message))
-      .finally(() => setLoading(false));
-  }, [promptId]);
 
   const copyToClipboard = async () => {
     if (!prompt) return;

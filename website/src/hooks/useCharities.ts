@@ -70,7 +70,7 @@ export interface CharitySummary {
   ui_signals_v1?: UISignalsV1 | null;
 }
 
-interface CharitiesIndex {
+export interface CharitiesIndex {
   charities: CharitySummary[];
 }
 
@@ -159,6 +159,14 @@ function summaryToProfile(summary: CharitySummary): CharityProfile {
   } as CharityProfile;
 }
 
+/** Pure transform: convert raw charities.json data into the hook's return shape. */
+export function buildCharitiesIndex(data: CharitiesIndex): { summaries: CharitySummary[]; charities: CharityProfile[] } {
+  return {
+    summaries: data.charities,
+    charities: data.charities.map(summaryToProfile),
+  };
+}
+
 // Fetch function shared by the query
 async function fetchCharitiesIndex(): Promise<{ summaries: CharitySummary[]; charities: CharityProfile[] }> {
   const response = await fetch('/data/charities.json');
@@ -166,10 +174,7 @@ async function fetchCharitiesIndex(): Promise<{ summaries: CharitySummary[]; cha
     throw new Error(`Failed to load charities: ${response.status}`);
   }
   const data: CharitiesIndex = await response.json();
-  return {
-    summaries: data.charities,
-    charities: data.charities.map(summaryToProfile),
-  };
+  return buildCharitiesIndex(data);
 }
 
 /**
