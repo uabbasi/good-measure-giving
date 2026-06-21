@@ -4,52 +4,16 @@ import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { calculateZakat } from '../src/utils/zakatCalculator';
 import { useNisab } from '../src/utils/nisabPrice';
 import { isValidAssetSlug, KNOWN_ASSET_SLUGS } from '../scripts/lib/calculator-seo';
+import { useCalculatorData } from '../src/hooks/useCalculatorData';
 import type { ZakatAssets } from '../types';
-
-interface AssetSection {
-  heading: string;
-  paragraphs: string[];
-}
-
-interface AssetFaq {
-  q: string;
-  a: string;
-}
-
-interface AssetEntry {
-  slug: string;
-  displayName: string;
-  metaTitle: string;
-  metaDescription: string;
-  heroAnswer: string;
-  zakatAssetKey: keyof ZakatAssets;
-  inputLabel: string;
-  inputHelp: string;
-  sections: AssetSection[];
-  faq: AssetFaq[];
-}
-
-interface CalculatorData {
-  hub: { metaTitle: string; metaDescription: string; heroText: string };
-  assets: AssetEntry[];
-}
 
 export const ZakatCalculatorAssetPage: React.FC = () => {
   const { asset: assetSlug } = useParams<{ asset: string }>();
   const { isDark } = useLandingTheme();
-  const [data, setData] = useState<CalculatorData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data, loading } = useCalculatorData();
   const [assetAmount, setAssetAmount] = useState('');
   const [liabilities, setLiabilities] = useState('');
   const nisab = useNisab();
-
-  useEffect(() => {
-    fetch('/data/zakat-calculator/assets.json')
-      .then((r) => r.json())
-      .then((d: CalculatorData) => setData(d))
-      .catch(() => setData(null))
-      .finally(() => setLoading(false));
-  }, []);
 
   const asset = data?.assets.find((a) => a.slug === assetSlug);
 
