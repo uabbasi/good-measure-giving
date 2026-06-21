@@ -19,6 +19,7 @@ import {
 import { filterCharitiesByCategory, type HubCharity } from './lib/cause-seo';
 import type { Guide, GuideSummary, GuidesIndex } from './lib/guide-seo';
 import { KNOWN_ASSET_SLUGS } from './lib/calculator-seo';
+import { buildCharitiesIndex } from '../src/hooks/useCharities';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -116,11 +117,15 @@ function seedFor(route: string, ctx: {
   calculatorData: unknown;
   promptsIndex: unknown;
   promptById: Map<string, unknown>;
+  charitiesIndexResult: unknown;
 }): SeedEntry[] {
   if (route.startsWith('/charity/')) {
     const ein = route.slice('/charity/'.length);
     const d = ctx.charityDetails.get(ein);
     return d ? [{ queryKey: ['charity', ein], data: d }] : [];
+  }
+  if (route === '/causes' || route.startsWith('/causes/')) {
+    return ctx.charitiesIndexResult ? [{ queryKey: ['charities'], data: ctx.charitiesIndexResult }] : [];
   }
   if (route === '/guides') return ctx.guidesIndex ? [{ queryKey: ['guides'], data: ctx.guidesIndex }] : [];
   if (route.startsWith('/guides/')) {
@@ -861,6 +866,8 @@ async function prerenderPages() {
   const { render } = await import(path.join(DIST_DIR, '../dist-server/entry-server.js'));
   const baseHtml = fs.readFileSync(path.join(DIST_DIR, 'index.html'), 'utf-8');
 
+  const charitiesIndexResult = buildCharitiesIndex(charitiesIndex);
+
   const ctx = {
     charityDetails,
     guidesIndex: guidesIndexObj,
@@ -868,6 +875,7 @@ async function prerenderPages() {
     calculatorData,
     promptsIndex: prompts.length > 0 ? promptsIndexObj : null,
     promptById,
+    charitiesIndexResult,
   };
 
   let written = 0;
