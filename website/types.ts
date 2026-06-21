@@ -694,6 +694,15 @@ export interface DataConfidenceDetails {
   data_quality_value?: number;
 }
 
+/** A finding emitted by a quality judge during evaluation (e.g. low-confidence
+ * discovery, hallucination-prone field). Surfaced in score_details.judge_issues. */
+export interface JudgeIssue {
+  field: string;
+  judge: string;
+  message: string;
+  severity: string;
+}
+
 export interface ScoreDetails {
   // 2-dimension framework (credibility feeds Impact + DataConfidence)
   credibility?: CredibilityDetails;
@@ -708,6 +717,7 @@ export interface ScoreDetails {
   // Shared
   risks: RiskDetails;
   zakat?: ZakatDetails;
+  judge_issues?: JudgeIssue[];
   risk_deduction: number;
   score_summary?: string;
 }

@@ -735,17 +735,24 @@ export const getCharityById = (id: string) => CHARITIES.find(c => c.ein === id |
  * NOTE: This is intentionally in a separate file from charities.ts to ensure
  * the large CHARITIES array (4+ MB) is not pulled into the main bundle.
  */
-import type { CharityProfile, AmalDimensionScore, ScoreDetails } from '../../types';
+import type { ScoreDetails } from '../../types';
 
-// Extended type for landing page with pillar scores as objects
-interface FeaturedCharityData extends CharityProfile {
-  amalEvaluation?: CharityProfile['amalEvaluation'] & {
-    trust?: AmalDimensionScore;
-    evidence?: AmalDimensionScore;
-    effectiveness?: AmalDimensionScore;
-    fit?: AmalDimensionScore;
+// Minimal shape the landing-page sample audit actually emits and consumes — a
+// curated subset, deliberately NOT a full CharityProfile.
+interface FeaturedCharityData {
+  name: string;
+  ein: string;
+  headline: string;
+  amalEvaluation: {
+    amal_score: number;
+    confidence_scores: { impact: number; alignment: number; dataConfidence: number };
+    trust: { score: number };
+    evidence: { score: number };
+    effectiveness: { score: number };
+    fit: { score: number };
     score_details?: ScoreDetails;
   };
+  impactHighlight: string;
 }
 
 export const TOP_CHARITY_FOR_LANDING: FeaturedCharityData | null = ${JSON.stringify(topCharityData, null, 2)};

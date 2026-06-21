@@ -729,7 +729,7 @@ export const CharityDetailsPage: React.FC = () => {
         {/* Similar charities — visible to all users and crawlers */}
         {charity && (
           <SimilarCharities
-            currentEin={charity.ein}
+            currentEin={charity.ein ?? ''}
             category={charity.primaryCategory ?? charity.category ?? ''}
             zakatStatus={classifyZakatStatus({
               walletTag: charity.amalEvaluation?.wallet_tag ?? null,
