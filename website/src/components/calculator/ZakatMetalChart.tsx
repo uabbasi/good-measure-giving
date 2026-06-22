@@ -10,10 +10,13 @@ interface ZakatMetalChartProps {
   nisabNote?: string;
 }
 
-export const ZakatMetalChart: React.FC<ZakatMetalChartProps> = ({ title, rows, nisabNote }) => (
+export const ZakatMetalChart: React.FC<ZakatMetalChartProps> = ({ title, rows, nisabNote }) => {
+  const headingId = `zakat-chart-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+
+  return (
   <div className="mb-8">
-    <h3 className="text-lg font-semibold mb-3">{title}</h3>
-    <table className="w-full text-sm border-collapse">
+    <h3 id={headingId} className="text-lg font-semibold mb-3">{title}</h3>
+    <table aria-labelledby={headingId} className="w-full text-sm border-collapse">
       <thead>
         <tr className="text-left border-b border-slate-300 dark:border-slate-700">
           <th scope="col" className="py-2 pr-4 font-medium">Weight</th>
@@ -38,4 +41,5 @@ export const ZakatMetalChart: React.FC<ZakatMetalChartProps> = ({ title, rows, n
     </table>
     {nisabNote && <p className="mt-2 text-xs text-slate-500">{nisabNote}</p>}
   </div>
-);
+  );
+};
