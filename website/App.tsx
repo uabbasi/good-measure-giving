@@ -44,6 +44,7 @@ import { GmgChromeFrame } from './src/components/gmg/chrome';
 import { DevQuickLogin } from './src/auth/DevQuickLogin';
 import { ScrollToTop } from './components/ScrollToTop';
 import { trackPageView } from './src/utils/analytics';
+import { isMotifDesign } from './src/utils/designMode';
 
 
 // TanStack Query client — staleTime: Infinity because charity data is static JSON
@@ -79,10 +80,12 @@ export const AppContent: React.FC = () => {
   const location = useLocation();
   const { isDark } = useLandingTheme();
   const isLandingPage = location.pathname === '/';
-  // Design-motif preview. Two flavors, both suppress the app Navbar/Footer/overlays:
+  // GMG "Modern" motif is the default design for everyone. `?design=legacy` is an
+  // escape hatch to the old design. Two motif flavors, both suppress the app
+  // Navbar/Footer/overlays:
   //  - full-bleed: motif pages that render their own GmgNav (landing, browse, …)
   //  - auth-chrome: legacy signed-in pages wrapped in motif chrome (profile, invites)
-  const isMotif = new URLSearchParams(location.search).get('design') === 'gmg';
+  const isMotif = isMotifDesign(location.search);
   const isGmgFullBleed =
     isMotif &&
     (location.pathname.startsWith('/charity/') ||

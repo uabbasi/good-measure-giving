@@ -1,5 +1,5 @@
 // Good Measure Giving — "Modern" motif Index / Browse (proof surface #2).
-// Reachable via /browse?design=gmg. Dense Harvey-ball table on desktop,
+// Reachable via /browse. Dense Harvey-ball table on desktop,
 // stacked cards on mobile, fed by the real charity list.
 
 import React, { useMemo, useState } from 'react';
@@ -204,7 +204,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   }, [allRows, query, wallet, sortBy]);
 
   const sectionBorder = `1px solid ${p.rule}`;
-  const hrefFor = (ein: string) => `/charity/${ein}?design=gmg`;
+  const hrefFor = (ein: string) => `/charity/${ein}`;
 
   const shell = (children: React.ReactNode) => (
     <div style={{ background: p.bg, color: p.fg, fontFamily: FONT_TEXT, minHeight: '100vh', ...fontVars }}>
@@ -406,7 +406,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               Clear
             </button>
             {selected.length >= 2 ? (
-              <Link to={`/compare?design=gmg&eins=${selected.join(',')}`} style={{ padding: '7px 16px', borderRadius: 99, background: p.bg, color: p.fg, fontSize: 12, fontWeight: 500, textDecoration: 'none' }}>
+              <Link to={`/compare?eins=${selected.join(',')}`} style={{ padding: '7px 16px', borderRadius: 99, background: p.bg, color: p.fg, fontSize: 12, fontWeight: 500, textDecoration: 'none' }}>
                 Compare {selected.length} →
               </Link>
             ) : (

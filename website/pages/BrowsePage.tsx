@@ -283,6 +283,12 @@ export const BrowsePage: React.FC = () => {
   // Sync filter state to URL params
   useEffect(() => {
     const params = new URLSearchParams();
+    // Preserve the design escape hatch (?design=legacy) so this filter-sync
+    // effect doesn't strip it and bounce the page back to the motif index.
+    const design = searchParams.get('design');
+    if (design) {
+      params.set('design', design);
+    }
     if (activePresets.size > 0) {
       params.set('presets', Array.from(activePresets).join(','));
     }
@@ -297,7 +303,7 @@ export const BrowsePage: React.FC = () => {
     if (newSearch !== currentSearch) {
       setSearchParams(params, { replace: true });
     }
-  }, [activePresets, browseStyle, selectedIntentId, setSearchParams]);
+  }, [activePresets, browseStyle, selectedIntentId, searchParams, setSearchParams]);
 
   // Get public charities (rich + baseline tiers, excludes hidden)
   const publicCharities = useMemo(() =>

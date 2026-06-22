@@ -1,5 +1,5 @@
 // Good Measure Giving — "Modern" motif Compare (proof surface #4).
-// Reachable via /compare?design=gmg&eins=a,b,c (falls back to the top 4).
+// Reachable via /compare?eins=a,b,c (falls back to the top 4).
 // Charities side-by-side across every criterion. Horizontally scrollable on
 // narrow screens so the comparison stays intact.
 
@@ -209,7 +209,7 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
         <p style={{ color: p.sub, marginTop: 12 }}>
           Pick two or more charities from the index to compare them side by side.
         </p>
-        <Link to="/browse?design=gmg" style={{ display: 'inline-block', marginTop: 16, padding: '11px 20px', borderRadius: 99, background: p.chip, color: p.chipFg, fontSize: 13, textDecoration: 'none' }}>
+        <Link to="/browse" style={{ display: 'inline-block', marginTop: 16, padding: '11px 20px', borderRadius: 99, background: p.chip, color: p.chipFg, fontSize: 13, textDecoration: 'none' }}>
           Browse the index →
         </Link>
       </section>,
@@ -234,7 +234,7 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               </th>
               {subjects.map((s) => (
                 <th key={s.ein} style={{ padding: '14px', textAlign: 'left', verticalAlign: 'top', borderLeft: sectionBorder, minWidth: colW }}>
-                  <Link to={`/charity/${s.ein}?design=gmg`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <Link to={`/charity/${s.ein}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                     <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, lineHeight: 1.05, letterSpacing: ft.displayTracking }}>{s.name}</div>
                   </Link>
                   <div style={{ display: 'flex', gap: 4, marginTop: 6, flexWrap: 'wrap' }}>
@@ -277,7 +277,7 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
 
             <Row {...rowProps} label="Best for" render={(s) => <span style={{ color: p.sub, fontFamily: FONT_DISPLAY, fontStyle: 'italic', fontSize: 13, lineHeight: 1.4 }}>{s.bestForSummary || '—'}</span>} />
             <Row {...rowProps} label="" render={(s) => (
-              <Link to={`/charity/${s.ein}?design=gmg`} style={{ fontSize: 12, color: p.accent, textDecoration: 'none' }}>Open evaluation →</Link>
+              <Link to={`/charity/${s.ein}`} style={{ fontSize: 12, color: p.accent, textDecoration: 'none' }}>Open evaluation →</Link>
             )} />
           </tbody>
         </table>
