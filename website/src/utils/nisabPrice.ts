@@ -10,7 +10,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { NISAB_USD } from './zakatCalculator';
+import { NISAB_USD, SILVER_USD_PER_GRAM } from './zakatCalculator';
 
 const GRAMS_PER_TROY_OUNCE = 31.1034768;
 const NISAB_GRAMS_OF_GOLD = 85;
@@ -21,17 +21,22 @@ const CACHE_TTL_MS = 6 * 60 * 60 * 1000; // 6 hours
 const MIN_PLAUSIBLE_NISAB = 3_000;
 const MAX_PLAUSIBLE_NISAB = 20_000;
 
-interface CachedNisab {
+const SILVER_CACHE_KEY = 'gmg_silver_per_gram_v1';
+// Sanity bounds — silver has run ≈ $0.8-1.1/g lately; bound generously.
+const MIN_PLAUSIBLE_SILVER = 0.3;
+const MAX_PLAUSIBLE_SILVER = 5.0;
+
+interface CachedValue {
   value: number;
   fetchedAt: number;
 }
 
-function readCache(): CachedNisab | null {
+function readCache(key: string): CachedValue | null {
   if (typeof window === 'undefined') return null;
   try {
-    const raw = localStorage.getItem(CACHE_KEY);
+    const raw = localStorage.getItem(key);
     if (!raw) return null;
-    const parsed = JSON.parse(raw) as CachedNisab;
+    const parsed = JSON.parse(raw) as CachedValue;
     if (typeof parsed.value !== 'number' || typeof parsed.fetchedAt !== 'number') return null;
     if (Date.now() - parsed.fetchedAt > CACHE_TTL_MS) return null;
     return parsed;
@@ -40,11 +45,11 @@ function readCache(): CachedNisab | null {
   }
 }
 
-function writeCache(value: number): void {
+function writeCache(key: string, value: number): void {
   if (typeof window === 'undefined') return;
   try {
-    const payload: CachedNisab = { value, fetchedAt: Date.now() };
-    localStorage.setItem(CACHE_KEY, JSON.stringify(payload));
+    const payload: CachedValue = { value, fetchedAt: Date.now() };
+    localStorage.setItem(key, JSON.stringify(payload));
   } catch {
     // localStorage full or blocked — fail silently
   }
@@ -79,22 +84,74 @@ async function fetchLiveNisab(): Promise<number | null> {
  */
 export function useNisab(): number {
   const [nisab, setNisab] = useState<number>(() => {
-    const cached = readCache();
+    const cached = readCache(CACHE_KEY);
     return cached?.value ?? NISAB_USD;
   });
 
   useEffect(() => {
-    const cached = readCache();
+    const cached = readCache(CACHE_KEY);
     if (cached) return; // fresh cache — skip fetch
 
     let cancelled = false;
     fetchLiveNisab().then((live) => {
       if (cancelled || live == null) return;
-      writeCache(live);
+      writeCache(CACHE_KEY, live);
       setNisab(live);
     });
     return () => { cancelled = true; };
   }, []);
 
   return nisab;
+}
+
+export function isPlausibleSilverPrice(pricePerGram: number): boolean {
+  return (
+    Number.isFinite(pricePerGram) &&
+    pricePerGram >= MIN_PLAUSIBLE_SILVER &&
+    pricePerGram <= MAX_PLAUSIBLE_SILVER
+  );
+}
+
+export function computeSilverPricePerGramFromOunce(pricePerOunce: number): number {
+  return pricePerOunce / GRAMS_PER_TROY_OUNCE;
+}
+
+async function fetchLiveSilverPerGram(): Promise<number | null> {
+  try {
+    const res = await fetch('https://api.gold-api.com/price/XAG');
+    if (!res.ok) return null;
+    const data = (await res.json()) as { price?: number };
+    if (typeof data.price !== 'number') return null;
+    const perGram = computeSilverPricePerGramFromOunce(data.price);
+    return isPlausibleSilverPrice(perGram) ? perGram : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * React hook returning the current silver price in USD per gram.
+ * Mirrors useNisab(): returns the fallback immediately (and on the server),
+ * then updates to the live value once the API resolves (if plausible).
+ */
+export function useSilverPricePerGram(): number {
+  const [price, setPrice] = useState<number>(() => {
+    const cached = readCache(SILVER_CACHE_KEY);
+    return cached?.value ?? SILVER_USD_PER_GRAM;
+  });
+
+  useEffect(() => {
+    const cached = readCache(SILVER_CACHE_KEY);
+    if (cached) return; // fresh cache — skip fetch
+
+    let cancelled = false;
+    fetchLiveSilverPerGram().then((live) => {
+      if (cancelled || live == null) return;
+      writeCache(SILVER_CACHE_KEY, live);
+      setPrice(live);
+    });
+    return () => { cancelled = true; };
+  }, []);
+
+  return price;
 }

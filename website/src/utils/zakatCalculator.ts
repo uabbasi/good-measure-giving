@@ -14,6 +14,16 @@ import type { ZakatAssets, ZakatLiabilities } from '../../types';
  */
 export const NISAB_USD = 13_000;
 
+/**
+ * Fallback silver price in USD per gram — consistent with the NISAB_USD epoch
+ * (gold ~$4,790/oz; at a ~90:1 gold:silver ratio, silver ≈ $1.70/g).
+ *
+ * Used as the last-resort fallback and the server-render value for the
+ * gold & silver zakat chart, which refreshes live via useSilverPricePerGram()
+ * from gold-api.com (XAG). When updating: bump to current silver spot per gram.
+ */
+export const SILVER_USD_PER_GRAM = 1.7;
+
 export const ZAKAT_RATE = 0.025;
 
 export interface ZakatEstimate {
