@@ -103,7 +103,7 @@ interface PageMeta {
 // ── SSR route classification ───────────────────────────────────────────
 
 export const SSR_ROUTE_PREFIXES = ['/charity/', '/guides/', '/causes/', '/zakat-calculator/', '/prompts/'];
-export const SSR_EXACT_ROUTES = new Set(['/guides', '/causes', '/zakat-calculator', '/prompts', '/methodology', '/about', '/faq']);
+export const SSR_EXACT_ROUTES = new Set(['/', '/browse', '/guides', '/causes', '/zakat-calculator', '/prompts', '/methodology', '/about', '/faq']);
 
 export function isSsrRoute(route: string): boolean {
   if (SSR_EXACT_ROUTES.has(route)) return true;
@@ -119,6 +119,10 @@ function seedFor(route: string, ctx: {
   promptById: Map<string, unknown>;
   charitiesIndexResult: unknown;
 }): SeedEntry[] {
+  // Home and Browse both render the charity index via useCharities(['charities']).
+  if (route === '/' || route === '/browse') {
+    return ctx.charitiesIndexResult ? [{ queryKey: ['charities'], data: ctx.charitiesIndexResult }] : [];
+  }
   if (route.startsWith('/charity/')) {
     const ein = route.slice('/charity/'.length);
     const d = ctx.charityDetails.get(ein);
@@ -708,13 +712,15 @@ function injectMeta(html: string, meta: PageMeta): string {
     }
   }
 
-  // Replace OG tags
+  // Replace OG tags. Keep og:image — the strip below removes the default one
+  // from index.html, and dropping it leaves every page with no social-share card.
   const ogTags = [
     `<meta property="og:title" content="${escapeHtml(meta.title)}" />`,
     `<meta property="og:description" content="${escapeHtml(meta.description)}" />`,
     `<meta property="og:type" content="${meta.ogType}" />`,
     `<meta property="og:url" content="${canonicalUrl}" />`,
     `<meta property="og:site_name" content="Good Measure Giving" />`,
+    `<meta property="og:image" content="${SITE_URL}/og-share.png" />`,
   ].join('\n    ');
 
   // Remove existing OG tags and re-inject
