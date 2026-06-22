@@ -90,7 +90,7 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
           }}
         >
           <Link
-            to="/profile?design=gmg"
+            to="/profile"
             onClick={() => setMenuOpen(false)}
             style={{ display: 'block', padding: '10px 14px', fontSize: 13, color: p.fg, textDecoration: 'none' }}
           >
@@ -124,15 +124,15 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
       borderBottom: `1px solid ${p.rule}`,
     }}
   >
-    <Link to="/?design=gmg" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+    <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
       <GmgLogo p={p} size={isMobile ? 26 : 30} />
       <Tag tone="warn" p={p}>Beta</Tag>
     </Link>
     {!isMobile && (
       <nav style={{ display: 'flex', gap: 4, fontSize: 13, marginLeft: 8 }}>
         {[
-          ['Browse', '/browse?design=gmg'],
-          ['Compare', '/compare?design=gmg'],
+          ['Browse', '/browse'],
+          ['Compare', '/compare'],
           ['Methodology', '/methodology'],
           ['About', '/about'],
         ].map(([label, to]) => (
@@ -227,7 +227,7 @@ export const TypeSwitcher: React.FC<{ p: GmgPalette; variant: FontVariant; baseP
     {(Object.keys(FONT_THEMES) as FontVariant[]).map((v) => (
       <Link
         key={v}
-        to={`${basePath}?design=gmg&type=${v}`}
+        to={`${basePath}?type=${v}`}
         style={{
           padding: '2px 8px',
           borderRadius: 99,

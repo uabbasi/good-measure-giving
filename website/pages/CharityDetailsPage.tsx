@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import {
   ShieldCheck,
   Target,
@@ -29,6 +29,7 @@ import { TerminalView } from '../src/components/views';
 import { SinglePageView } from '../src/components/cdp/SinglePageView';
 import { GmgCharityDetail } from '../src/components/gmg/GmgCharityDetail';
 import { isRichTier, isBaselineTier, isHiddenTier } from '../src/utils/tierUtils';
+import { isMotifDesign } from '../src/utils/designMode';
 import { useCommunityMember, CommunityGate, JoinCommunityPrompt, useAuth } from '../src/auth';
 import { useRichAccess } from '../src/hooks/useRichAccess';
 import { FreeViewBanner } from '../src/components/FreeViewBanner';
@@ -68,6 +69,7 @@ const formatWalletTag = (tag: string): string => {
 
 export const CharityDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
   // Load charity from exported JSON files
   const { charity, loading, error } = useCharity(id || '');
   const { isDark } = useLandingTheme();
@@ -76,9 +78,10 @@ export const CharityDetailsPage: React.FC = () => {
   // Read directly from window.location to avoid useSearchParams re-render issues
   const useTerminal = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('view') === 'terminal';
 
-  // Design-motif preview: ?design=gmg renders the new sage-on-bone / Harvey-ball
-  // charity detail alongside the live page (no gating, any tier) for evaluation.
-  const useGmgDesign = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('design') === 'gmg';
+  // The sage-on-bone / Harvey-ball motif detail is the default for every tier.
+  // `?design=legacy` falls back to the old layout. Read via useLocation so this
+  // resolves correctly during build-time SSR (where window is undefined).
+  const useGmgDesign = isMotifDesign(location.search);
 
   // Check community membership for content gating (must be called unconditionally)
   const isCommunityMember = useCommunityMember();

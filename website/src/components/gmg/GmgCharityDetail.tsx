@@ -1,5 +1,5 @@
 // Good Measure Giving — "Modern" motif charity detail (proof surface).
-// Reachable via /charity/:id?design=gmg. Renders real charity data in the
+// Reachable via /charity/:id. Renders real charity data in the
 // sage-on-bone, Harvey-ball design from the claude.ai handoff.
 
 import React from 'react';
@@ -238,7 +238,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
                 Standard view
               </Link>
               <Link
-                to={`/compare?design=gmg&eins=${c.ein}`}
+                to={`/compare?eins=${c.ein}`}
                 style={{ padding: '10px 16px', borderRadius: 99, background: 'transparent', border: `1px solid ${p.rule}`, color: p.fg, fontSize: 12, textDecoration: 'none' }}
               >
                 Compare

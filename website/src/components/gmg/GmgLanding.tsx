@@ -1,4 +1,4 @@
-// Good Measure Giving — "Modern" motif Landing (/?design=gmg).
+// Good Measure Giving — "Modern" motif Landing (/).
 // Calm, plain-language front door for everyday donors. The dense, data-rich
 // treatment lives on the index + detail pages; this page reassures and invites.
 
@@ -96,7 +96,7 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginTop: 32 }}>
             <Link
-              to="/browse?design=gmg"
+              to="/browse"
               style={{ padding: '13px 24px', borderRadius: 99, background: p.accent, color: p.bg, fontSize: 15, fontWeight: 500, textDecoration: 'none' }}
             >
               Browse charities
@@ -144,7 +144,7 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               <span style={{ fontSize: 13.5, color: ratingColor(featuredOverall, p), fontWeight: 500 }}>{featuredOverall} overall</span>
             </div>
             <div style={{ marginTop: 22 }}>
-              <Link to={`/charity/${featured.ein}?design=gmg`} style={{ fontSize: 15, color: p.accent, textDecoration: 'none', fontWeight: 500 }}>
+              <Link to={`/charity/${featured.ein}`} style={{ fontSize: 15, color: p.accent, textDecoration: 'none', fontWeight: 500 }}>
                 Read the review →
               </Link>
             </div>
@@ -162,7 +162,7 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             Our only goal is to help you give well — to {count}+ charities, researched in the open.
           </p>
           <Link
-            to="/browse?design=gmg"
+            to="/browse"
             style={{ display: 'inline-block', padding: '14px 28px', borderRadius: 99, background: p.chip, color: p.chipFg, fontSize: 15, fontWeight: 500, textDecoration: 'none' }}
           >
             Browse all {count} charities →
