@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { computeNisabFromGoldPricePerOunce, isPlausibleNisab } from './nisabPrice';
 import {
+  computeNisabFromGoldPricePerOunce,
+  isPlausibleNisab,
   computeSilverPricePerGramFromOunce,
   isPlausibleSilverPrice,
 } from './nisabPrice';
