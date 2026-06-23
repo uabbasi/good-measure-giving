@@ -12,9 +12,13 @@ export type NuxKey = 'browse-tip' | 'details-tip' | 'giving-plan-tip';
 export function useNuxState(key: NuxKey) {
   const { isSignedIn } = useAuth();
   const storageKey = `gmg-nux-${key}`;
-  const [dismissed, setDismissed] = useState(
-    () => localStorage.getItem(storageKey) === '1'
-  );
+  const [dismissed, setDismissed] = useState(() => {
+    // Guard SSR: Node 22+ exposes a bare, unbacked `localStorage` global (no
+    // `window`), so reading it during server render throws. Match the
+    // codebase's window-guard convention (see BetaBanner, useCompare).
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem(storageKey) === '1';
+  });
 
   const shouldShow = isSignedIn && !dismissed;
 
