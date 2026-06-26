@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { computeNisabFromGoldPricePerOunce, isPlausibleNisab } from './nisabPrice';
+import {
+  computeNisabFromGoldPricePerOunce,
+  isPlausibleNisab,
+  computeSilverPricePerGramFromOunce,
+  isPlausibleSilverPrice,
+} from './nisabPrice';
 
 describe('computeNisabFromGoldPricePerOunce', () => {
   it('computes 85g nisab from gold price per troy ounce', () => {
@@ -33,5 +38,37 @@ describe('isPlausibleNisab', () => {
   it('rejects non-finite values', () => {
     expect(isPlausibleNisab(NaN)).toBe(false);
     expect(isPlausibleNisab(Infinity)).toBe(false);
+  });
+});
+
+describe('computeSilverPricePerGramFromOunce', () => {
+  it('converts a per-troy-ounce price to per-gram', () => {
+    // $31.10/oz silver → $1.00/g (31.10/31.1034768 ≈ 1.0)
+    expect(computeSilverPricePerGramFromOunce(31.1034768)).toBeCloseTo(1.0, 4);
+  });
+
+  it('scales linearly with price', () => {
+    const low = computeSilverPricePerGramFromOunce(30);
+    const high = computeSilverPricePerGramFromOunce(60);
+    expect(high).toBeCloseTo(low * 2, 6);
+  });
+});
+
+describe('isPlausibleSilverPrice', () => {
+  it('accepts values in the $0.3-$5.0/g sanity range', () => {
+    expect(isPlausibleSilverPrice(0.9)).toBe(true);
+    expect(isPlausibleSilverPrice(1.7)).toBe(true);
+    expect(isPlausibleSilverPrice(3.0)).toBe(true);
+  });
+
+  it('rejects implausibly low or high values', () => {
+    expect(isPlausibleSilverPrice(0.05)).toBe(false);
+    expect(isPlausibleSilverPrice(50)).toBe(false);
+    expect(isPlausibleSilverPrice(0)).toBe(false);
+  });
+
+  it('rejects non-finite values', () => {
+    expect(isPlausibleSilverPrice(NaN)).toBe(false);
+    expect(isPlausibleSilverPrice(Infinity)).toBe(false);
   });
 });

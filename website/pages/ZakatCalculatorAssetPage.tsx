@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { calculateZakat } from '../src/utils/zakatCalculator';
-import { useNisab } from '../src/utils/nisabPrice';
+import { useNisab, useSilverPricePerGram } from '../src/utils/nisabPrice';
+import { buildChartRows, GOLD_WEIGHTS, SILVER_WEIGHTS } from '../src/utils/zakatChart';
+import { ZakatMetalChart } from '../src/components/calculator/ZakatMetalChart';
 import { isValidAssetSlug, KNOWN_ASSET_SLUGS } from '../scripts/lib/calculator-seo';
 import { useCalculatorData } from '../src/hooks/useCalculatorData';
 import type { ZakatAssets } from '../types';
@@ -14,6 +16,7 @@ export const ZakatCalculatorAssetPage: React.FC = () => {
   const [assetAmount, setAssetAmount] = useState('');
   const [liabilities, setLiabilities] = useState('');
   const nisab = useNisab();
+  const silverPerGram = useSilverPricePerGram();
 
   const asset = data?.assets.find((a) => a.slug === assetSlug);
 
@@ -126,6 +129,31 @@ export const ZakatCalculatorAssetPage: React.FC = () => {
             </div>
           )}
         </section>
+
+        {asset.slug === 'gold-silver' && (
+          <section className="mb-10" aria-labelledby="gold-silver-chart-heading">
+            <h2 id="gold-silver-chart-heading" className="text-2xl font-semibold mb-4">
+              Gold &amp; Silver Zakat Chart (2026)
+            </h2>
+            <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+              Prices update live based on current spot; refresh for the latest.
+            </p>
+            <ZakatMetalChart
+              title="Gold"
+              rows={buildChartRows(nisab / 85, GOLD_WEIGHTS)}
+              nisabNote="85 g of gold is the nisab threshold for gold."
+            />
+            <ZakatMetalChart
+              title="Silver"
+              rows={buildChartRows(silverPerGram, SILVER_WEIGHTS)}
+              nisabNote="595 g of silver is the nisab threshold (some scholars cite ~612 g)."
+            />
+            <p className="mt-2 text-xs text-slate-500">
+              Jewelry worn for personal use may be exempt under the majority Maliki, Shafi'i, and Hanbali view;
+              the Hanafi school holds all gold and silver zakatable. Follow the ruling of the school you adhere to.
+            </p>
+          </section>
+        )}
 
         {asset.sections.map((section, i) => (
           <section key={i} className="mb-10">
