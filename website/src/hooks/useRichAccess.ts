@@ -14,7 +14,10 @@ const FREE_VIEW_LIMIT = 3;
 
 function getViewedEins(): string[] {
   try {
-    if (typeof localStorage === 'undefined') return [];
+    // Guard on `window`, not `localStorage`: Node 22+ exposes a bare, unbacked
+    // `localStorage` global (no `window`), so `typeof localStorage` no longer
+    // detects SSR. Matches the convention in useNuxState/BetaBanner/useCompare.
+    if (typeof window === 'undefined') return [];
     const stored = localStorage.getItem(STORAGE_KEY);
     return stored ? JSON.parse(stored) : [];
   } catch {
