@@ -25,8 +25,8 @@ function extractJsonLdBlocks(html: string): unknown[] {
 
 function topLevelTypes(blocks: unknown[]): string[] {
   return blocks
-    .filter((b): b is { '@type': string } => typeof b === 'object' && b !== null && '@type' in b)
-    .map((b) => b['@type']);
+    .filter((b): b is { '@type': string | string[] } => typeof b === 'object' && b !== null && '@type' in b)
+    .flatMap((b) => (Array.isArray(b['@type']) ? b['@type'] : [b['@type']]));
 }
 
 test.describe('SEO schema injection (Track 0)', () => {
@@ -78,6 +78,7 @@ test.describe('SEO schema injection (Track 0)', () => {
     const html = fs.readFileSync(path.join(charityDir, sample, 'index.html'), 'utf-8');
     const types = topLevelTypes(extractJsonLdBlocks(html));
     expect(types).toContain('NonprofitOrganization');
+    expect(types).toContain('Organization');
     expect(types).toContain('FAQPage');
     expect(types).toContain('BreadcrumbList');
   });
