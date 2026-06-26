@@ -292,7 +292,11 @@ function buildCharityMeta(detail: CharityDetail): PageMeta {
 
   const jsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
-    '@type': 'NonprofitOrganization',
+    // Dual type: NonprofitOrganization keeps the accurate semantic (every
+    // entity here is a nonprofit), while Organization is the literal type
+    // Google's review-snippet validator accepts — a NonprofitOrganization-only
+    // node makes the nested review fail with "Invalid object type for field".
+    '@type': ['NonprofitOrganization', 'Organization'],
     name,
     description: truncate(detail.mission || headline || name, 250),
     taxID: detail.ein,
