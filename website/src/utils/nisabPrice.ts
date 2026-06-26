@@ -22,7 +22,7 @@ const MIN_PLAUSIBLE_NISAB = 3_000;
 const MAX_PLAUSIBLE_NISAB = 20_000;
 
 const SILVER_CACHE_KEY = 'gmg_silver_per_gram_v1';
-// Sanity bounds — silver has run ≈ $0.8-1.1/g lately; bound generously.
+// Sanity bounds — silver has run ≈ $1.5-2.0/g lately; bound generously.
 const MIN_PLAUSIBLE_SILVER = 0.3;
 const MAX_PLAUSIBLE_SILVER = 5.0;
 
