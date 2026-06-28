@@ -111,7 +111,7 @@ interface PageMeta {
 // ── SSR route classification ───────────────────────────────────────────
 
 export const SSR_ROUTE_PREFIXES = ['/charity/', '/guides/', '/causes/', '/zakat-calculator/', '/prompts/'];
-export const SSR_EXACT_ROUTES = new Set(['/', '/browse', '/guides', '/causes', '/best-muslim-charities-in-usa', '/zakat-calculator', '/prompts', '/methodology', '/about', '/faq']);
+export const SSR_EXACT_ROUTES = new Set(['/', '/browse', '/guides', '/causes', '/best-muslim-charities-in-usa', '/zakat-calculator', '/prompts', '/methodology', '/link-to-us', '/about', '/faq']);
 
 export function isSsrRoute(route: string): boolean {
   if (SSR_EXACT_ROUTES.has(route)) return true;
@@ -212,6 +212,28 @@ function buildStaticMeta(): PageMeta[] {
         buildBreadcrumbSchema([
           { name: 'Home', url: `${SITE_URL}/` },
           { name: 'Methodology', url: `${SITE_URL}/methodology` },
+        ]) as object,
+      ],
+    },
+    {
+      route: '/link-to-us',
+      title: 'Link to Us | Good Measure Giving',
+      description:
+        'Link to your independent Good Measure Giving evaluation. Copy-paste a trust badge or text link, and download our brand assets.',
+      canonical: `${SITE_URL}/link-to-us`,
+      ogType: 'website',
+      jsonLd: [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: 'Link to Us',
+          url: `${SITE_URL}/link-to-us`,
+          description:
+            'Embeddable trust badge and backlinks for charities rated by Good Measure Giving.',
+        },
+        buildBreadcrumbSchema([
+          { name: 'Home', url: `${SITE_URL}/` },
+          { name: 'Link to Us', url: `${SITE_URL}/link-to-us` },
         ]) as object,
       ],
     },

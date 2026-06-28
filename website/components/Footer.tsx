@@ -33,6 +33,9 @@ export const Footer: React.FC = () => {
             <Link to="/methodology" className={`hover:text-emerald-600 transition-colors ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               Our Process
             </Link>
+            <Link to="/link-to-us" className={`hover:text-emerald-600 transition-colors ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+              Link to Us
+            </Link>
             <Link to="/faq" className={`hover:text-emerald-600 transition-colors ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               FAQ
             </Link>
