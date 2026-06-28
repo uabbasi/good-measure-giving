@@ -17,6 +17,7 @@ import {
 } from './tokens';
 import { GmgLogo, Tag } from './primitives';
 import { GmgSignIn } from './GmgSignIn';
+import { GmgVersionStrip } from './GmgVersionStrip';
 import { useIsMobile } from './useIsMobile';
 
 export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: string }> = ({
@@ -113,6 +114,9 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
   );
 
   return (
+  <>
+  {/* Site-wide editorial version strip — sits directly above the nav, non-sticky. */}
+  <GmgVersionStrip p={p} isMobile={isMobile} />
   <header
     style={{
       display: 'flex',
@@ -156,6 +160,7 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
     {account}
     <GmgSignIn p={p} open={signInOpen} onClose={() => setSignInOpen(false)} />
   </header>
+  </>
   );
 };
 

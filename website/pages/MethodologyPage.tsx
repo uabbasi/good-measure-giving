@@ -25,6 +25,7 @@ import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { MethodologyInsights } from '../components/MethodologyInsights';
 import { CauseAreaMatrix } from '../components/CauseAreaMatrix';
 import { SHOW_AMAL_SCORE } from '../src/featureFlags';
+import { RUBRIC_VERSION } from '../src/config/siteVersion';
 
 // Get top performing charities for the showcase
 const getTopCharities = (charities: any[]) => {
@@ -41,10 +42,9 @@ const CUE_DISPLAY_LABELS: Record<string, string> = {
   'Limited Match': 'Needs Verification',
 };
 
-// Citability stamps. RUBRIC_VERSION is the source of truth in
-// data-pipeline/src/scorers/v2_scorers.py; bump this string when the rubric's
-// major/minor/patch version changes there.
-const RUBRIC_VERSION = '5.2.0';
+// Citability stamps. RUBRIC_VERSION is centralized in src/config/siteVersion.ts
+// (mirrored from data-pipeline/src/scorers/v2_scorers.py); both this page and the
+// site-wide version strip import it so they can't drift.
 const METHODOLOGY_LAST_UPDATED = 'June 2026';
 const METHODOLOGY_URL = 'https://goodmeasuregiving.org/methodology/';
 const CITATION_TEXT = `Good Measure Giving. (2026). How We Evaluate Charities — Methodology (Rubric v${RUBRIC_VERSION}). Retrieved from ${METHODOLOGY_URL}`;

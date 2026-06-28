@@ -111,7 +111,7 @@ interface PageMeta {
 // ── SSR route classification ───────────────────────────────────────────
 
 export const SSR_ROUTE_PREFIXES = ['/charity/', '/guides/', '/causes/', '/zakat-calculator/', '/prompts/'];
-export const SSR_EXACT_ROUTES = new Set(['/', '/browse', '/guides', '/causes', '/best-muslim-charities-in-usa', '/zakat-calculator', '/prompts', '/methodology', '/link-to-us', '/about', '/faq']);
+export const SSR_EXACT_ROUTES = new Set(['/', '/browse', '/guides', '/causes', '/best-muslim-charities-in-usa', '/zakat-calculator', '/prompts', '/methodology', '/link-to-us', '/about', '/faq', '/changelog']);
 
 export function isSsrRoute(route: string): boolean {
   if (SSR_EXACT_ROUTES.has(route)) return true;
@@ -128,7 +128,8 @@ function seedFor(route: string, ctx: {
   charitiesIndexResult: unknown;
 }): SeedEntry[] {
   // Home and Browse both render the charity index via useCharities(['charities']).
-  if (route === '/' || route === '/browse') {
+  // Changelog also seeds it so the version strip renders real counts server-side.
+  if (route === '/' || route === '/browse' || route === '/changelog') {
     return ctx.charitiesIndexResult ? [{ queryKey: ['charities'], data: ctx.charitiesIndexResult }] : [];
   }
   if (route.startsWith('/charity/')) {
@@ -234,6 +235,28 @@ function buildStaticMeta(): PageMeta[] {
         buildBreadcrumbSchema([
           { name: 'Home', url: `${SITE_URL}/` },
           { name: 'Link to Us', url: `${SITE_URL}/link-to-us` },
+        ]) as object,
+      ],
+    },
+    {
+      route: '/changelog',
+      title: 'Changelog | Good Measure Giving',
+      description:
+        'What’s changed on Good Measure Giving — a running, reverse-chronological log of methodology updates, new charity coverage, and product releases for our continuously-updated index.',
+      canonical: `${SITE_URL}/changelog`,
+      ogType: 'website',
+      jsonLd: [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: 'Changelog',
+          url: `${SITE_URL}/changelog`,
+          description:
+            'A running record of methodology updates, new charity coverage, and product releases on Good Measure Giving.',
+        },
+        buildBreadcrumbSchema([
+          { name: 'Home', url: `${SITE_URL}/` },
+          { name: 'Changelog', url: `${SITE_URL}/changelog` },
         ]) as object,
       ],
     },

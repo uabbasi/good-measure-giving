@@ -14,6 +14,7 @@ const BrowsePage = lazy(() => import('./pages/BrowsePage').then(m => ({ default:
 const CharityDetailsPage = lazy(() => import('./pages/CharityDetailsPage').then(m => ({ default: m.CharityDetailsPage })));
 const MethodologyPage = lazy(() => import('./pages/MethodologyPage').then(m => ({ default: m.MethodologyPage })));
 const LinkToUsPage = lazy(() => import('./pages/LinkToUsPage').then(m => ({ default: m.LinkToUsPage })));
+const ChangelogPage = lazy(() => import('./pages/ChangelogPage').then(m => ({ default: m.ChangelogPage })));
 const FAQPage = lazy(() => import('./pages/FAQPage').then(m => ({ default: m.FAQPage })));
 const AboutPage = lazy(() => import('./pages/AboutPage').then(m => ({ default: m.AboutPage })));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage').then(m => ({ default: m.PrivacyPage })));
@@ -96,7 +97,10 @@ export const AppContent: React.FC = () => {
   const isGmgAuthChrome =
     isMotif &&
     (location.pathname === '/profile' || location.pathname.startsWith('/plan/join'));
-  const isGmgPreview = isGmgFullBleed || isGmgAuthChrome;
+  // Changelog is a motif-only page (no legacy variant); it renders its own GmgNav,
+  // so suppress the legacy chrome regardless of the design param.
+  const isGmgMotifOnly = location.pathname === '/changelog';
+  const isGmgPreview = isGmgFullBleed || isGmgAuthChrome || isGmgMotifOnly;
 
   // T049: Track page views on route changes
   useEffect(() => {
@@ -121,6 +125,7 @@ export const AppContent: React.FC = () => {
             <Route path="/charity/:id" element={<CharityDetailsPage />} />
             <Route path="/methodology" element={<MethodologyPage />} />
             <Route path="/link-to-us" element={<LinkToUsPage />} />
+            <Route path="/changelog" element={<ChangelogPage isDark={isDark} />} />
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
