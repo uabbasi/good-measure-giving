@@ -2,7 +2,7 @@
   "id": "92-1198452",
   "ein": "92-1198452",
   "name": "The Intercept",
-  "tier": "rich",
+  "tier": "baseline",
   "mission": "At The Intercept, we investigate powerful individuals and institutions to expose corruption and injustice. We see journalism as an instrument of civic a...",
   "programs": [
     "Investigative Journalism",
@@ -20,7 +20,7 @@
     "zip": "10018-5501"
   },
   "slug": "usa media watchdog",
-  "isMuslimCharity": true,
+  "isMuslimCharity": false,
   "zakatEligible": null,
   "status": "generated",
   "scores": {
@@ -54,7 +54,11 @@
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
   },
-  "baselineGovernance": null,
+  "baselineGovernance": {
+    "boardSize": 4,
+    "independentBoardMembers": null,
+    "ceoCompensation": 311880
+  },
   "targeting": {
     "populationsServed": [
       "Men"
@@ -82,7 +86,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-03-15 23:23:49",
+  "lastUpdated": "2026-06-27 19:00:52",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -168,8 +172,6 @@
     "neglectedness": "HIGH"
   },
   "causeTags": [
-    "faith-based",
-    "muslim-led",
     "syria",
     "systemic-change",
     "usa"
@@ -192,7 +194,7 @@
   ],
   "evaluationTrack": "RESEARCH_POLICY",
   "foundedYear": 2014,
-  "scoreSummary": "The Intercept Media Inc shows moderate impact and moderate alignment.",
+  "scoreSummary": "The Intercept Media Inc shows good impact and limited alignment.",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -225,61 +227,37 @@
       "evidence": "Moderate",
       "financial_health": "Moderate",
       "donor_fit": "Limited",
-      "risk": "Limited"
+      "risk": "Moderate"
     },
     "recommendation_cue": "Mixed Signals",
     "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": [
-    {
-      "type": "ceo_comp_excessive",
-      "severity": "high",
-      "headline": "CEO compensation is 5.6% of revenue ($311,880 on $5,597,043)",
-      "detail": "For orgs with revenue $5-50M, CEO pay above 2% of revenue warrants scrutiny.",
-      "data_points": {
-        "ceo_compensation": 311880,
-        "comp_ratio": 0.0557,
-        "threshold": 0.02,
-        "total_revenue": 5597043
-      }
-    },
-    {
-      "type": "revenue_expense_mismatch",
-      "severity": "medium",
-      "headline": "Expenses are 1.7x revenue ($9,519,616 vs $5,597,043)",
-      "detail": "Spending significantly exceeding revenue is unsustainable without reserves drawdown.",
-      "data_points": {
-        "expense_to_revenue_ratio": 1.7,
-        "total_expenses": 9519616,
-        "total_revenue": 5597043
-      }
-    }
-  ],
+  "keyConcerns": null,
   "amalEvaluation": {
     "charity_ein": "92-1198452",
     "charity_name": "The Intercept",
-    "amal_score": 42,
+    "amal_score": 49,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:43:12",
     "rubric_version": "5.2.0",
     "confidence_scores": {
-      "alignment": 21,
+      "alignment": 19,
       "data_confidence": 0.95,
-      "impact": 21
+      "impact": 30
     },
     "score_details": {
       "alignment": {
         "cause_urgency_label": "ADVOCACY",
         "components": [
           {
-            "evidence": "Muslim-focused organization (+2)",
+            "evidence": "No Muslim donor alignment signals",
             "improvement_suggestion": "Add a dedicated zakat page or clearly state whether donations are zakat-eligible.",
             "improvement_value": 8,
             "name": "Muslim Donor Fit",
             "possible": 19,
-            "scored": 2,
+            "scored": 0,
             "status": "partial"
           },
           {
@@ -320,8 +298,8 @@
           }
         ],
         "muslim_donor_fit_level": "LOW",
-        "rationale": "Alignment 21/50: LOW Muslim donor fit, advocacy cause area",
-        "score": 21
+        "rationale": "Alignment 19/50: LOW Muslim donor fit, advocacy cause area",
+        "score": 19
       },
       "data_confidence": {
         "badge": "HIGH",
@@ -354,12 +332,12 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 8.3 months, but Spending significantly exceeding revenue is unsustainable without reserves drawdown. \u2014 unsustainable",
-            "improvement_suggestion": "Build reserves toward your board-approved target range (often 3-12 months), adjusted for revenue volatility and obligations.",
-            "improvement_value": 4,
+            "evidence": "Working capital: 8.3 months (RESILIENT)",
+            "improvement_suggestion": null,
+            "improvement_value": 0,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 3,
+            "scored": 7,
             "status": "full"
           },
           {
@@ -390,71 +368,30 @@
             "status": "partial"
           },
           {
-            "evidence": "Board: 4 members, but For orgs with revenue $5-50M, CEO pay above 2% of revenue warrants scrutiny. \u2014 oversight concern",
+            "evidence": "Board governance: MINIMAL (4 members)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
             "possible": 10,
-            "scored": 0,
-            "status": "missing"
+            "scored": 5,
+            "status": "partial"
           }
         ],
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 21/50",
+        "rationale": "Delivery: capacity building; Impact 30/50",
         "rubric_archetype": "MULTIPLIER",
-        "score": 21
+        "score": 30
       },
-      "judge_issues": [
-        {
-          "field": "charity_navigator.expense_ratio",
-          "judge": "crawl_quality",
-          "message": "Expenses ($9,519,616) exceed revenue ($5,597,043) by 70% - may be drawing down reserves",
-          "severity": "warning"
-        },
-        {
-          "field": "multi_source.revenue_divergence",
-          "judge": "crawl_quality",
-          "message": "Revenue diverges >50% across sources ($5,597,043 - $18,961,623)",
-          "severity": "warning"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.populations_served",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
-          "severity": "info"
-        }
-      ],
       "risk_deduction": 0,
       "risks": {
         "overall_risk_level": "LOW",
-        "risk_summary": "Key concern: CEO compensation is 5.6% of revenue ($311,880 on $5,597,043)",
-        "risks": [
-          {
-            "category": "operational",
-            "data_source": "Reconciliation",
-            "description": "CEO compensation is 5.6% of revenue ($311,880 on $5,597,043)",
-            "mitigation": null,
-            "severity": "high"
-          },
-          {
-            "category": "financial",
-            "data_source": "Reconciliation",
-            "description": "Expenses are 1.7x revenue ($9,519,616 vs $5,597,043)",
-            "mitigation": null,
-            "severity": "medium"
-          }
-        ],
+        "risk_summary": "No significant risks identified.",
+        "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "The Intercept Media Inc shows moderate impact and moderate alignment.",
+      "score_summary": "The Intercept Media Inc shows good impact and limited alignment.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -466,517 +403,40 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization maintains a program expense ratio of 71.7%, 8.3 months of working capital, and a fundraising efficiency of $0.26 per $1 raised.",
+          "claim": "The Intercept Media Inc. focuses on investigative journalism and maintains specific financial efficiency metrics.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/921198452#financials"
         },
         {
-          "claim": "The Intercept Media Inc. reported total revenue of $5,597,043 and focuses on investigative journalism and documentary filmmaking.",
+          "claim": "The organization reported total revenue of $5,597,043, a program expense ratio of 71.7%, 8.3 months of working capital, and fundraising efficiency of $0.26 per $1 raised.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/921198452"
         },
         {
-          "claim": "The organization describes its mission as using journalism as an instrument of civic activism and provides options for general charitable giving.",
+          "claim": "The organization accepts general charitable donations (sadaqah) to support its mission of adversarial journalism.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://theintercept.com/about/"
         }
       ],
-      "amal_score_rationale": "The organization receives a moderate score due to its solid financial health and operational efficiency, though it lacks the high-impact direct service or specific donor alignment typically sought by this audience.",
+      "amal_score_rationale": "The organization demonstrates solid financial management and operational efficiency, though its specific focus on advocacy and secular journalism results in a moderate alignment for faith-based donors.",
       "areas_for_improvement": [
-        "Limited direct evidence of measurable social impact metrics beyond content production",
-        "Low alignment with traditional donor priorities in the Muslim community"
+        "Limited alignment with traditional Muslim donor priorities and religious giving frameworks",
+        "Dependency on advocacy-based funding models which may impact long-term stability"
       ],
       "dimension_explanations": {
-        "alignment": "Alignment is rated at 21/50, as the organization focuses on advocacy and systemic accountability rather than direct humanitarian aid [2]. While it offers a platform for sadaqah-eligible giving, its mission has a low specific fit for donors prioritizing traditional religious or community-based causes [3].",
-        "impact": "The Intercept demonstrates a moderate impact score of 21/50, reflecting its role in capacity building through investigative journalism and podcasts [2]. While it maintains a healthy program expense ratio of 71.7%, the direct social outcomes of investigative reporting are often harder to quantify than direct-service charities [1]."
+        "alignment": "Alignment is rated as medium because the mission focuses on general civic advocacy rather than specific community-based or religious services [1]. While the organization is sadaqah-eligible, its primary focus on investigative journalism represents a low donor fit for those seeking traditional humanitarian or faith-centered outcomes [3].",
+        "impact": "The organization shows moderate impact by focusing on capacity building within the media landscape, allocating a 71.7% program expense ratio toward its investigative missions [1][2]. With 8.3 months of working capital, the charity maintains a stable financial foundation to continue its documentary and reporting programs without immediate fiscal distress [2]."
       },
       "headline": "The Intercept Media Inc. serves as a critical watchdog, utilizing investigative journalism to expose corruption and institutional injustice.",
       "strengths": [
-        "Maintains a program expense ratio of 71.7%, ensuring the majority of funds support journalism and filmmaking [1]",
-        "Strong liquidity with 8.3 months of working capital available to sustain operations [1]",
-        "Efficient fundraising operations, spending only $0.26 to raise every $1 [1]"
+        "Maintains a program expense ratio of 71.7%, ensuring the majority of funds support journalism",
+        "Strong liquidity with 8.3 months of working capital available",
+        "Efficient fundraising operations spending only $0.26 per $1 raised"
       ],
-      "summary": "The Intercept Media Inc. is a non-profit news organization dedicated to holding powerful individuals and institutions accountable through adversarial journalism and documentary filmmaking [1][3]. In the most recent fiscal period, the organization reported a total revenue of $5,597,043 to support its mission of civic activism through reporting [2]."
-    },
-    "rich_narrative": {
-      "all_citations": [
-        {
-          "access_date": "2026-03-15",
-          "claim": "adversarial journalism and documentary filmmaking",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "The Intercept Media Inc. is a non-profit news organization dedicated to holding powerful individuals and institutions accountable through adversarial journalism and documentary filmmaking.",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/921198452#financials"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "2014",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Founded: 2014",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://theintercept.com/about/"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "instrument of civic action",
-          "confidence": 0.9,
-          "id": "[3]",
-          "quote": "We see journalism as an instrument of civic action.",
-          "source_name": "Candid Profile",
-          "source_type": "website",
-          "source_url": "https://app.candid.org/profile/10188995"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "total revenue of $18,961,623",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Total Revenue: $18,961,623",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/921198452"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "$18.7 million in public contributions",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Contributions: $18,747,165",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/921198452"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "Syria, Iran, and Mexico",
-          "confidence": 0.9,
-          "id": "[6]",
-          "quote": "Geographic Coverage: USA, Syria, Iran, Mexico, Ecuador",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://theintercept.com/about/"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "Platinum Seal of Transparency from Candid",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Candid Seal: platinum",
-          "source_name": "Candid",
-          "source_type": "website",
-          "source_url": "https://app.candid.org/profile/10188995"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "expenses significantly exceeded revenue",
-          "confidence": 0.95,
-          "id": "[8]",
-          "quote": "Spending significantly exceeding revenue is unsustainable without reserves drawdown.",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/921198452"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "8.3 months of working capital",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Working Capital: 8.3 months",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/921198452#financials"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "$280,000 in domestic grants",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Total Grants: $280,000; Top Domestic Recipients: DROP SITE NEWS INC",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/921198452"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "$0.08 to raise every $1",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Fundraising Efficiency: $0.26 per $1 raised",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/921198452"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "program expense ratio of 71.7%",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Program Expense Ratio: 71.7%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/921198452"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "tracks only one formal outcome metric",
-          "confidence": 0.9,
-          "id": "[13]",
-          "quote": "Outcome Metrics Tracked: 1",
-          "source_name": "Candid",
-          "source_type": "website",
-          "source_url": "https://app.candid.org/profile/10188995"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "increase its board size",
-          "confidence": 0.9,
-          "id": "[14]",
-          "quote": "Board: 4 members",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/921198452"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "National Magazine Award",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Awards: Platinum Seal, National Magazine Award (Columns and Commentary)",
-          "source_name": "Charity Website",
-          "source_type": "website",
-          "source_url": "https://theintercept.com/about/"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "SADAQAH-ELIGIBLE",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Wallet Tag: SADAQAH-ELIGIBLE",
-          "source_name": "Charity Profile",
-          "source_type": "website",
-          "source_url": "https://theintercept.com/about/"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "explicitly clarifying its stance on sadaqah-funded projects",
-          "confidence": 0.8,
-          "id": "[17]",
-          "quote": "",
-          "source_name": "Charity Profile",
-          "source_type": "website",
-          "source_url": "https://theintercept.com/about/"
-        }
-      ],
-      "amal_score_rationale": "The organization receives a moderate score due to its solid financial health and operational efficiency, though it lacks the high-impact direct service or specific donor alignment typically sought by this audience.",
-      "amal_scores": {
-        "amal_score": 42,
-        "confidence_scores": {
-          "alignment": 21,
-          "data_confidence": 0.95,
-          "impact": 21
-        },
-        "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
-      },
-      "areas_for_improvement": [
-        {
-          "area": "Financial Sustainability",
-          "citation_ids": [
-            "[8]"
-          ],
-          "context": "The organization is currently <cite id=\"8\">spending significantly more than it earns</cite>, which may deplete reserves if not addressed."
-        },
-        {
-          "area": "Impact Measurement",
-          "citation_ids": [
-            "[13]"
-          ],
-          "context": "While journalism is impactful, the organization currently <cite id=\"13\">tracks only one formal outcome metric</cite> via Candid."
-        }
-      ],
-      "bbb_assessment": {
-        "audit_type": "audited",
-        "citation_ids": [
-          "[7]"
-        ],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
-        "meets_all_standards": null,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "The organization provides audited financial statements and maintains high transparency via Candid."
-      },
-      "case_against": {
-        "citation_ids": [
-          "[8]",
-          "[14]"
-        ],
-        "mitigation_notes": "The organization holds 8.3 months of working capital to bridge funding gaps.",
-        "risk_factors": [
-          "<cite id=\"8\">Operating deficit in the most recent fiscal year</cite>",
-          "<cite id=\"14\">Small board size of only 4 members</cite>"
-        ],
-        "summary": "The primary concern is financial volatility, as <cite id=\"8\">spending significantly exceeds annual revenue</cite>."
-      },
-      "citation_stats": {
-        "by_source_type": {
-          "form990": 8,
-          "rating": 2,
-          "website": 7
-        },
-        "high_confidence_count": 15,
-        "total_count": 17,
-        "unique_sources": 3
-      },
-      "confidence": {
-        "data_freshness": "Financial data from 2023 tax year",
-        "data_gaps": [
-          "Missing 3-year revenue growth data"
-        ],
-        "level": "HIGH",
-        "notes": "High transparency and recent financial filings provide strong data confidence.",
-        "score": 95,
-        "sources_used": [
-          "Form 990",
-          "Charity Navigator",
-          "Candid"
-        ]
-      },
-      "data_confidence": {
-        "confidence_score": 95,
-        "form_990_tax_year": 2023,
-        "known_gaps": [
-          "Missing multi-year revenue CAGR",
-          "Limited beneficiary impact metrics"
-        ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 17,
-        "unique_sources": 3,
-        "website_last_crawled": "2025-01"
-      },
-      "dimension_explanations": {
-        "alignment": {
-          "citation_ids": [
-            "[16]",
-            "[17]"
-          ],
-          "explanation": "As a <cite id=\"16\">SADAQAH-ELIGIBLE</cite> advocacy organization, it aligns with donors interested in systemic justice and institutional accountability.",
-          "improvement": "The organization could improve alignment for faith-motivated donors by <cite id=\"17\">explicitly clarifying its stance on sadaqah-funded projects</cite>."
-        },
-        "credibility": {
-          "citation_ids": [
-            "[7]",
-            "[4]",
-            "[14]"
-          ],
-          "explanation": "Donors can verify operations through a <cite id=\"7\">Platinum Seal from Candid</cite> and detailed <cite id=\"4\">Form 990 filings</cite>.",
-          "improvement": "To strengthen credibility, the organization could <cite id=\"14\">increase its board size</cite> from the current four members to improve independent oversight."
-        },
-        "impact": {
-          "citation_ids": [
-            "[12]",
-            "[15]",
-            "[13]"
-          ],
-          "explanation": "The organization maintains a <cite id=\"12\">71.7% program expense ratio</cite> and has produced award-winning work, including a <cite id=\"15\">National Magazine Award</cite>.",
-          "improvement": "The Intercept should <cite id=\"13\">publish consistent beneficiary counts</cite> or reach metrics to allow for a better assessment of cost-per-impact."
-        }
-      },
-      "donor_fit_matrix": {
-        "cause_area": "ADVOCACY & JOURNALISM",
-        "citation_ids": [
-          "[16]",
-          "[13]"
-        ],
-        "evidence_rigor": "Grade C - Measured outcomes with developing theory of change",
-        "geographic_focus": [
-          "United States",
-          "International"
-        ],
-        "giving_style": "Civic Action",
-        "tax_deductible": true,
-        "zakat_asnaf_served": null,
-        "zakat_status": "SADAQAH-ELIGIBLE"
-      },
-      "financial_deep_dive": {
-        "admin_ratio": 0.327,
-        "annual_revenue": 18961623,
-        "citation_ids": [
-          "[4]",
-          "[11]",
-          "[9]"
-        ],
-        "cn_financial_score": null,
-        "fundraising_ratio": 0.08,
-        "industry_program_ratio": 0.75,
-        "peer_count": 0,
-        "peer_program_ratio_median": null,
-        "program_expense_ratio": 0.7167,
-        "reserves_months": 4.4,
-        "revenue_cagr_3yr": null,
-        "transparency_score": 100,
-        "working_capital_months": 8.3,
-        "yearly_financials": [
-          {
-            "expenses": 11189635,
-            "net_assets": 7771988,
-            "revenue": 18961623,
-            "year": 2023
-          }
-        ]
-      },
-      "grantmaking_profile": {
-        "citation_ids": [
-          "[10]"
-        ],
-        "domestic_grants": 280000,
-        "foreign_grants": 0,
-        "grant_count": 1,
-        "grant_strategy": "Supports partner news organizations and investigative projects.",
-        "is_significant_grantmaker": true,
-        "regions_served": [
-          "United States"
-        ],
-        "top_recipients": [
-          "DROP SITE NEWS INC ($280,000)"
-        ],
-        "total_grants": 280000
-      },
-      "headline": "The Intercept Media Inc. serves as a critical watchdog, utilizing investigative journalism to expose corruption and institutional injustice.",
-      "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value investigative journalism as a tool for social justice and want to support adversarial reporting on institutional corruption.",
-        "citation_ids": [
-          "[3]",
-          "[8]",
-          "[16]"
-        ],
-        "donor_motivations": [
-          "Want to fund deep-dive investigations into government and corporate overreach",
-          "Value transparency and high-quality documentary filmmaking",
-          "Care about civil liberties and whistleblower protection",
-          "Prefer supporting established media institutions with a national profile"
-        ],
-        "giving_considerations": [
-          "Donations support advocacy and journalism rather than direct social services",
-          "The organization is currently navigating a period of financial deficit",
-          "Impact is measured through policy influence and public awareness rather than individual beneficiary counts"
-        ],
-        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those who prefer funding direct humanitarian aid like food or medical supplies."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[13]",
-          "[15]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects that outcomes are measured internally, but there is no external evaluation of social impact.",
-        "external_evaluations": [
-          "National Magazine Award"
-        ],
-        "outcome_tracking_years": 1,
-        "rct_available": false,
-        "theory_of_change": "DEVELOPING",
-        "theory_of_change_summary": "The Intercept uses investigative reporting to inform the public and spark civic action, leading to institutional accountability.",
-        "why_evidence_matters": "Evidence in journalism helps donors understand how specific stories lead to policy changes or legal reforms."
-      },
-      "long_term_outlook": {
-        "citation_ids": [
-          "[2]",
-          "[3]"
-        ],
-        "founded_year": 2014,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": null,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Current spending exceeds revenue, indicating a high need for sustainable donor support.",
-        "strategic_priorities": [
-          "Investigative Journalism",
-          "Documentary Filmmaking",
-          "Whistleblower Support"
-        ],
-        "years_operating": 12
-      },
-      "organizational_capacity": {
-        "board_size": 4,
-        "ceo_compensation": 311880,
-        "ceo_compensation_pct_revenue": 5.57,
-        "ceo_name": "Annie Chabel",
-        "citation_ids": [
-          "[1]",
-          "[14]",
-          "[6]"
-        ],
-        "employees_count": null,
-        "geographic_reach": "USA, Syria, Iran, Mexico, Ecuador",
-        "has_conflict_policy": true,
-        "has_financial_audit": true,
-        "independent_board_pct": 0.75,
-        "payroll_to_revenue_pct": 10.4,
-        "programs_count": 4,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
-      },
-      "peer_comparison": {
-        "citation_ids": [
-          "[15]"
-        ],
-        "differentiator": "Distinguished by its <cite id=\"15\">National Magazine Award</cite> and focus on adversarial reporting.",
-        "peer_group": "Investigative Journalism Nonprofits",
-        "similar_orgs": [
-          "ProPublica",
-          "Center for Investigative Reporting"
-        ]
-      },
-      "similar_organizations": [
-        {
-          "differentiator": "Larger scale and more diverse revenue streams",
-          "name": "ProPublica"
-        },
-        {
-          "differentiator": "Recipient of Intercept grant funding",
-          "name": "Drop Site News Inc"
-        }
-      ],
-      "strengths": [
-        {
-          "citation_ids": [
-            "[7]"
-          ],
-          "detail": "The organization has earned the <cite id=\"7\">Platinum Seal of Transparency from Candid</cite>, the highest level of disclosure available for nonprofits.",
-          "point": "High Transparency Standards"
-        },
-        {
-          "citation_ids": [
-            "[11]"
-          ],
-          "detail": "The Intercept demonstrates strong operational efficiency, spending only <cite id=\"11\">$0.08 to raise every $1</cite> in charitable contributions.",
-          "point": "Efficient Fundraising"
-        },
-        {
-          "citation_ids": [
-            "[12]"
-          ],
-          "detail": "A significant portion of resources is dedicated to core activities, with a <cite id=\"12\">program expense ratio of 71.7%</cite> according to recent filings.",
-          "point": "Substantial Program Investment"
-        }
-      ],
-      "strengths_deep_dive": [
-        "The Intercept's operational model prioritizes direct investment in its investigative mission. By maintaining a <cite id=\"11\">fundraising efficiency of $0.26 per $1 raised</cite>, the organization ensures that the vast majority of donor funds are not consumed by administrative solicitation. This lean approach is bolstered by a <cite id=\"9\">working capital reserve of 8.3 months</cite>, which provides a buffer for long-term investigative projects that may take years to yield results. Furthermore, the organization has demonstrated a commitment to the broader journalism ecosystem by <cite id=\"10\">distributing $280,000 to Drop Site News Inc.</cite>, showing a capacity for institutional support beyond its own newsroom."
-      ],
-      "summary": "The Intercept Media Inc. operates as a non-profit newsroom dedicated to <cite id=\"1\">adversarial journalism and documentary filmmaking</cite>. Founded in <cite id=\"2\">2014</cite>, the organization focuses on investigating powerful institutions to expose corruption and injustice. The Intercept views its reporting as an <cite id=\"3\">instrument of civic action</cite>, moving beyond traditional news coverage to drive social change. In 2023, the organization reported <cite id=\"4\">total revenue of $18,961,623</cite>, primarily driven by <cite id=\"5\">$18.7 million in public contributions</cite>. While its primary operations are based in the United States, its investigative reach extends to international contexts including <cite id=\"6\">Syria, Iran, and Mexico</cite>. The organization maintains a <cite id=\"7\">Platinum Seal of Transparency from Candid</cite>, indicating a high level of disclosure regarding its mission and operations. However, the organization faces financial sustainability challenges, as its <cite id=\"8\">expenses significantly exceeded revenue</cite> in the most recent fiscal year. Despite these pressures, it maintains <cite id=\"9\">8.3 months of working capital</cite> to sustain its investigative teams. The Intercept also engages in strategic grantmaking, recently providing <cite id=\"10\">$280,000 in domestic grants</cite> to support partner journalism initiatives.",
-      "zakat_guidance": {
-        "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
-      }
+      "summary": "The Intercept Media Inc. is a non-profit news organization dedicated to holding powerful individuals and institutions accountable through adversarial journalism [1]. In the most recent fiscal period, the organization reported a total revenue of $5,597,043 to support its core programs in investigative reporting, podcasting, and documentary filmmaking [2]."
     }
   }
 }
