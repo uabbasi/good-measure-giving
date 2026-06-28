@@ -61,6 +61,7 @@ function generateSitemap() {
   const staticPages = [
     { path: '/', priority: '1.0', changefreq: 'weekly' },
     { path: '/browse', priority: '0.9', changefreq: 'weekly' },
+    { path: '/best-muslim-charities-in-usa', priority: '0.9', changefreq: 'weekly' },
     { path: '/methodology', priority: '0.7', changefreq: 'monthly' },
     { path: '/about', priority: '0.6', changefreq: 'monthly' },
     { path: '/faq', priority: '0.6', changefreq: 'monthly' },

@@ -44,15 +44,26 @@ export interface HubCharity {
   primaryCategory: string | null;
   amalScore: number | null;
   walletTag: string | null;
+  /** Cross-cutting flag: org self-identifies / is classified as a Muslim charity. */
+  isMuslimCharity?: boolean;
+  /** Hidden from curated listings (still reachable by direct URL). */
+  hideFromCurated?: boolean | null;
+}
+
+/**
+ * Shared sort comparator: amalScore descending, nulls last, name ascending as tiebreak.
+ * Used by both the cause hubs and the Muslim-charities hub so ranking is consistent.
+ */
+export function byAmalScoreDesc(a: HubCharity, b: HubCharity): number {
+  if (a.amalScore == null && b.amalScore == null) return a.name.localeCompare(b.name);
+  if (a.amalScore == null) return 1;
+  if (b.amalScore == null) return -1;
+  if (b.amalScore !== a.amalScore) return b.amalScore - a.amalScore;
+  return a.name.localeCompare(b.name);
 }
 
 export function filterCharitiesByCategory(pool: HubCharity[], category: string): HubCharity[] {
   return pool
     .filter((c) => c.primaryCategory === category)
-    .sort((a, b) => {
-      if (a.amalScore == null && b.amalScore == null) return 0;
-      if (a.amalScore == null) return 1;
-      if (b.amalScore == null) return -1;
-      return b.amalScore - a.amalScore;
-    });
+    .sort(byAmalScoreDesc);
 }

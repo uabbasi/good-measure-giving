@@ -27,6 +27,9 @@ export const Footer: React.FC = () => {
             <Link to="/browse" className={`hover:text-emerald-600 transition-colors ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               Browse Charities
             </Link>
+            <Link to="/best-muslim-charities-in-usa" className={`hover:text-emerald-600 transition-colors ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+              Best Muslim Charities
+            </Link>
             <Link to="/methodology" className={`hover:text-emerald-600 transition-colors ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               Our Process
             </Link>

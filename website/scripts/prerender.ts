@@ -17,6 +17,7 @@ import {
   type ZakatStatus,
 } from './lib/charity-seo';
 import { filterCharitiesByCategory, type HubCharity } from './lib/cause-seo';
+import { filterMuslimCharities } from './lib/muslim-hub';
 import type { Guide, GuideSummary, GuidesIndex } from './lib/guide-seo';
 import { KNOWN_ASSET_SLUGS } from './lib/calculator-seo';
 import { buildCharitiesIndex } from '../src/hooks/useCharities';
@@ -38,10 +39,17 @@ export type SeedEntry = { queryKey: unknown[]; data: unknown };
 interface CharitySummary {
   ein: string;
   name: string;
-  amal_score: number | null;
-  wallet_tag: string | null;
+  amalScore: number | null;
+  walletTag: string | null;
   primaryCategory?: string | null;
+  isMuslimCharity?: boolean;
   hideFromCurated?: boolean;
+}
+
+interface MuslimHubCopy {
+  intro: string;
+  introSecondary: string;
+  faq: Array<{ q: string; a: string }>;
 }
 
 interface CharityDetail {
@@ -103,7 +111,7 @@ interface PageMeta {
 // ── SSR route classification ───────────────────────────────────────────
 
 export const SSR_ROUTE_PREFIXES = ['/charity/', '/guides/', '/causes/', '/zakat-calculator/', '/prompts/'];
-export const SSR_EXACT_ROUTES = new Set(['/', '/browse', '/guides', '/causes', '/zakat-calculator', '/prompts', '/methodology', '/about', '/faq']);
+export const SSR_EXACT_ROUTES = new Set(['/', '/browse', '/guides', '/causes', '/best-muslim-charities-in-usa', '/zakat-calculator', '/prompts', '/methodology', '/about', '/faq']);
 
 export function isSsrRoute(route: string): boolean {
   if (SSR_EXACT_ROUTES.has(route)) return true;
@@ -129,6 +137,9 @@ function seedFor(route: string, ctx: {
     return d ? [{ queryKey: ['charity', ein], data: d }] : [];
   }
   if (route === '/causes' || route.startsWith('/causes/')) {
+    return ctx.charitiesIndexResult ? [{ queryKey: ['charities'], data: ctx.charitiesIndexResult }] : [];
+  }
+  if (route === '/best-muslim-charities-in-usa') {
     return ctx.charitiesIndexResult ? [{ queryKey: ['charities'], data: ctx.charitiesIndexResult }] : [];
   }
   if (route === '/guides') return ctx.guidesIndex ? [{ queryKey: ['guides'], data: ctx.guidesIndex }] : [];
@@ -470,6 +481,60 @@ function buildCauseMeta(cause: CauseEntry, allCharities: HubCharity[]): PageMeta
   };
 }
 
+function buildMuslimHubMeta(allCharities: HubCharity[], copy: MuslimHubCopy): PageMeta {
+  const all = filterMuslimCharities(allCharities);
+  const ranked = all.filter((c) => c.amalScore != null);
+  // ItemList honestly reflects only what the page surfaces at the top — the
+  // visible top-20 ranked charities, not the full pool.
+  const topRanked = ranked.slice(0, 20);
+  const year = new Date().getFullYear();
+
+  const title = `Best Muslim Charities in the USA (${year}): ${ranked.length} Independently Rated | Good Measure Giving`;
+  const description = truncate(
+    `${ranked.length} Muslim charities in the USA, independently evaluated by Good Measure Giving and ranked by GMG score. ${copy.intro}`,
+    160
+  );
+
+  const collectionPage = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `Best Muslim Charities in the USA (${year})`,
+    url: `${SITE_URL}/best-muslim-charities-in-usa`,
+    description: copy.intro,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: topRanked.length,
+      itemListElement: topRanked.map((c, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: `${SITE_URL}/charity/${c.ein}`,
+        name: c.name,
+      })),
+    },
+  };
+
+  const faqPairs = copy.faq.map((item) => ({ question: item.q, answer: item.a }));
+  const faqPage = buildFaqPageSchema(faqPairs);
+
+  const breadcrumbs = buildBreadcrumbSchema([
+    { name: 'Home', url: `${SITE_URL}/` },
+    { name: 'Best Muslim Charities', url: `${SITE_URL}/best-muslim-charities-in-usa` },
+  ]);
+
+  const schemaBlocks: object[] = [collectionPage];
+  if (faqPage) schemaBlocks.push(faqPage);
+  if (breadcrumbs) schemaBlocks.push(breadcrumbs);
+
+  return {
+    route: '/best-muslim-charities-in-usa',
+    title,
+    description,
+    canonical: `${SITE_URL}/best-muslim-charities-in-usa`,
+    ogType: 'website',
+    jsonLd: schemaBlocks,
+  };
+}
+
 function buildPromptsHubMeta(prompts: PromptSummary[]): PageMeta {
   return {
     route: '/prompts',
@@ -794,7 +859,7 @@ async function prerenderPages() {
         route: `/charity/${charity.ein}`,
         title: `${charity.name} | Good Measure Giving`,
         description: truncate(
-          `${charity.name}: ${charity.amal_score ?? 'N/A'}/100. ${(charity.wallet_tag || '').replace(/-/g, ' ').toLowerCase()}`,
+          `${charity.name}: ${charity.amalScore ?? 'N/A'}/100. ${(charity.walletTag || '').replace(/-/g, ' ').toLowerCase()}`,
           160
         ),
         canonical: `${SITE_URL}/charity/${charity.ein}`,
@@ -844,8 +909,10 @@ async function prerenderPages() {
     ein: c.ein,
     name: c.name,
     primaryCategory: c.primaryCategory ?? null,
-    amalScore: c.amal_score ?? null,
-    walletTag: c.wallet_tag ?? null,
+    amalScore: c.amalScore ?? null,
+    walletTag: c.walletTag ?? null,
+    isMuslimCharity: c.isMuslimCharity,
+    hideFromCurated: c.hideFromCurated,
   }));
 
   if (causes.length > 0) {
@@ -853,6 +920,13 @@ async function prerenderPages() {
     for (const cause of causes) {
       metas.push(buildCauseMeta(cause, hubPool));
     }
+  }
+
+  // Best Muslim charities hub (cross-cutting isMuslimCharity filter)
+  const MUSLIM_HUB_PATH = path.join(__dirname, '../data/best-muslim-charities.json');
+  if (fs.existsSync(MUSLIM_HUB_PATH)) {
+    const muslimHubCopy: MuslimHubCopy = JSON.parse(fs.readFileSync(MUSLIM_HUB_PATH, 'utf-8'));
+    metas.push(buildMuslimHubMeta(hubPool, muslimHubCopy));
   }
 
   // Load guides

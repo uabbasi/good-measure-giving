@@ -23,6 +23,7 @@ const ComparePage = lazy(() => import('./pages/ComparePage').then(m => ({ defaul
 const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ default: m.ProfilePage })));
 const CausesIndexPage = lazy(() => import('./pages/CausesIndexPage').then(m => ({ default: m.CausesIndexPage })));
 const CausePage = lazy(() => import('./pages/CausePage').then(m => ({ default: m.CausePage })));
+const BestMuslimCharitiesPage = lazy(() => import('./pages/BestMuslimCharitiesPage').then(m => ({ default: m.BestMuslimCharitiesPage })));
 const GuidesIndexPage = lazy(() => import('./pages/GuidesIndexPage').then(m => ({ default: m.GuidesIndexPage })));
 const GuidePage = lazy(() => import('./pages/GuidePage').then(m => ({ default: m.GuidePage })));
 const ZakatCalculatorHubPage = lazy(() => import('./pages/ZakatCalculatorHubPage').then(m => ({ default: m.ZakatCalculatorHubPage })));
@@ -125,6 +126,7 @@ export const AppContent: React.FC = () => {
             <Route path="/prompts/:promptId" element={<PromptDetailPage />} />
             <Route path="/causes" element={<CausesIndexPage />} />
             <Route path="/causes/:slug" element={<CausePage />} />
+            <Route path="/best-muslim-charities-in-usa" element={<BestMuslimCharitiesPage />} />
             <Route path="/guides" element={<GuidesIndexPage />} />
             <Route path="/guides/:slug" element={<GuidePage />} />
             <Route path="/zakat-calculator" element={<ZakatCalculatorHubPage />} />

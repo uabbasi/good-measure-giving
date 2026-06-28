@@ -30,8 +30,13 @@ export const CausesIndexPage: React.FC = () => {
         </nav>
 
         <h1 className="text-4xl font-semibold mb-4">Browse Charities by Cause</h1>
-        <p className="text-lg leading-relaxed text-slate-700 dark:text-slate-300 mb-10">
+        <p className="text-lg leading-relaxed text-slate-700 dark:text-slate-300 mb-4">
           Explore {CAUSES.length} cause areas in the Muslim charity ecosystem, each evaluated by Good Measure Giving on impact, alignment, and financial transparency.
+        </p>
+        <p className="mb-10">
+          <Link to="/best-muslim-charities-in-usa" className="text-emerald-700 dark:text-emerald-400 font-medium hover:underline">
+            See the best Muslim charities in the USA, ranked by GMG score →
+          </Link>
         </p>
 
         <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
