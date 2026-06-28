@@ -46,7 +46,6 @@ from src.utils.phase_cache_helper import check_phase_cache, update_phase_cache
 ISLAMIC_IDENTITY_KEYWORDS = {
     # Primary religious terms
     "islamic",
-    "muslim",
     "masjid",
     "mosque",
     "quran",
@@ -63,12 +62,9 @@ ISLAMIC_IDENTITY_KEYWORDS = {
     "haram",
     "fiqh",
     "fatwa",
-    # Islamic giving terms
-    "zakat",
-    "zakaat",
-    "zakaah",
-    "sadaqah",
-    "sadaqa",
+    # Islamic-specific giving terms (zakat/sadaqah deliberately excluded — see
+    # ISLAMIC_NAME_ONLY_KEYWORDS; they denote beneficiaries/services in a mission,
+    # not organizational identity, and were the main false-positive source).
     "lillah",
     "waqf",
     "fidya",
@@ -122,6 +118,21 @@ ISLAMIC_IDENTITY_KEYWORDS = {
     "maulana",
     "mawlana",
     "muallim",
+}
+
+# Terms that indicate Islamic identity ONLY when they appear in the org NAME,
+# not the mission. In a name ("Zakat Foundation", "Muslim Legal Fund") they are
+# identity signals; in a mission they usually denote who the org serves or what
+# giving it accepts ("serves Muslim refugees", "we collect zakat") — which a
+# secular org (e.g. IRC, ACLU) can also say. Matching these name-only removes
+# that false-positive class while preserving genuine Islamic-named orgs.
+ISLAMIC_NAME_ONLY_KEYWORDS = {
+    "muslim",
+    "zakat",
+    "zakaat",
+    "zakaah",
+    "sadaqah",
+    "sadaqa",
 }
 
 # Organization name patterns that indicate Islamic identity
@@ -648,6 +659,11 @@ def has_islamic_identity(name: str, mission: str | None, website_profile: dict |
     if any(kw in text for kw in ISLAMIC_IDENTITY_KEYWORDS):
         return True
 
+    # 1b. Name-only identity terms: muslim/zakat/sadaqah signal identity in an
+    # org NAME but only beneficiaries/services in a mission, so match name only.
+    if any(kw in name_lower for kw in ISLAMIC_NAME_ONLY_KEYWORDS):
+        return True
+
     # 2. Check organization name patterns (handles acronyms like ICNA, HHRD)
     if any(pattern in name_lower for pattern in ISLAMIC_ORG_PATTERNS):
         return True
@@ -698,6 +714,11 @@ def _collect_islamic_identity_signals(
     matched_keywords = [kw for kw in ISLAMIC_IDENTITY_KEYWORDS if kw in text]
     if matched_keywords:
         signals["name_mission_keywords"] = matched_keywords
+
+    # 1b. Name-only identity terms (muslim/zakat/sadaqah in the name)
+    matched_name_only = [kw for kw in ISLAMIC_NAME_ONLY_KEYWORDS if kw in name_lower]
+    if matched_name_only:
+        signals["name_keywords"] = matched_name_only
 
     # 2. Org name patterns
     matched_patterns = [p.strip() for p in ISLAMIC_ORG_PATTERNS if p in name_lower]
@@ -752,6 +773,36 @@ def compute_muslim_charity_fit(has_identity: bool, serves_muslims: bool) -> str:
         return "low"
 
 
+# Human-verified Muslim-org classification overrides (authoritative source of
+# truth for the curated charity set). The tightened keyword heuristic above is
+# the fallback for EINs not listed in the override file (e.g. new charities).
+_MUSLIM_ORG_OVERRIDES: dict[str, bool] | None = None
+MUSLIM_ORG_OVERRIDES_PATH = Path(__file__).parent / "data" / "muslim_org_overrides.yaml"
+
+
+def _load_muslim_org_overrides() -> dict[str, bool]:
+    """Load and cache the EIN→bool override map. Missing file → empty map."""
+    global _MUSLIM_ORG_OVERRIDES
+    if _MUSLIM_ORG_OVERRIDES is None:
+        try:
+            import yaml
+
+            with open(MUSLIM_ORG_OVERRIDES_PATH) as f:
+                raw = yaml.safe_load(f) or {}
+            _MUSLIM_ORG_OVERRIDES = {str(k).strip(): bool(v) for k, v in raw.items()}
+        except FileNotFoundError:
+            _MUSLIM_ORG_OVERRIDES = {}
+    return _MUSLIM_ORG_OVERRIDES
+
+
+def muslim_org_override(ein: str | None) -> bool | None:
+    """Return the human-verified Muslim-org classification for an EIN, or None
+    if the EIN is not in the override file (caller falls back to the heuristic)."""
+    if not ein:
+        return None
+    return _load_muslim_org_overrides().get(str(ein).strip())
+
+
 def detect_conflict_zone(geographic_coverage: list[str] | None) -> bool:
     """Check if >50% of geographic coverage is in active conflict zones.
 
@@ -787,6 +838,7 @@ def detect_cause_tags(
     zakat_categories: list[str] | None,
     name: str | None,
     website_profile: dict | None = None,
+    is_muslim_identity: bool | None = None,
 ) -> list[str]:
     """Detect non-MECE cause tags based on keywords.
 
@@ -858,8 +910,15 @@ def detect_cause_tags(
     if detect_conflict_zone(geographic_coverage):
         tags.add("conflict-zone")
 
-    # Add identity tags based on Islamic classification (now uses website signals)
-    if has_islamic_identity(name or "", mission, website_profile):
+    # Add identity tags based on Islamic classification. Prefer the resolved
+    # identity passed by the caller (which has applied the human-verified
+    # override); fall back to the heuristic only when not provided.
+    identity = (
+        is_muslim_identity
+        if is_muslim_identity is not None
+        else has_islamic_identity(name or "", mission, website_profile)
+    )
+    if identity:
         tags.add("muslim-led")
         tags.add("faith-based")
 
@@ -1503,6 +1562,16 @@ def synthesize_charity(
     if metrics.zakat_claim_detected and not identity:
         synthesized.has_islamic_identity = True
         synthesized.muslim_charity_fit = compute_muslim_charity_fit(True, serves_muslims)
+
+    # Human-verified override is the final authority on Muslim-org classification.
+    # It wins over BOTH the keyword heuristic and the zakat-corroboration upgrade
+    # above (a secular org with a zakat fund — e.g. IRC — must stay non-Muslim).
+    override = muslim_org_override(ein)
+    if override is not None:
+        identity = override
+        synthesized.has_islamic_identity = override
+        synthesized.muslim_charity_fit = compute_muslim_charity_fit(override, serves_muslims)
+
     synthesized.has_annual_report = metrics.annual_report_published
     synthesized.has_audited_financials = metrics.has_financial_audit
     synthesized.candid_seal = metrics.candid_seal
@@ -1680,6 +1749,7 @@ def synthesize_charity(
         zakat_categories=zakat_categories,
         name=name,
         website_profile=website_profile,
+        is_muslim_identity=synthesized.has_islamic_identity,
     )
     if cause_tags:
         synthesized.cause_tags = cause_tags

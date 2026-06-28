@@ -17,7 +17,9 @@ from synthesize import (
     compute_muslim_charity_fit,
     compute_transparency_score,
     extract_financials,
+    muslim_org_override,
     ISLAMIC_IDENTITY_KEYWORDS,
+    ISLAMIC_NAME_ONLY_KEYWORDS,
     MUSLIM_REGION_KEYWORDS,
 )
 
@@ -41,9 +43,27 @@ class TestHasIslamicIdentity:
         """Charity with 'Zakat' in name should be detected."""
         assert has_islamic_identity("Zakat Foundation of America", None) is True
 
-    def test_islamic_giving_in_mission(self):
-        """Islamic giving terms in mission should be detected."""
-        assert has_islamic_identity("Local Charity", "We collect zakat and sadaqah") is True
+    def test_giving_terms_in_mission_not_identity(self):
+        """Zakat/sadaqah in the MISSION of a secular-named org is NOT identity.
+
+        These denote giving accepted / beneficiaries, not org identity — a
+        secular org (e.g. IRC) can have a zakat fund. They count only in the org
+        NAME (see test_zakat_in_name), via ISLAMIC_NAME_ONLY_KEYWORDS.
+        """
+        assert has_islamic_identity("Local Charity", "We collect zakat and sadaqah") is False
+
+    def test_serving_muslims_in_mission_not_identity(self):
+        """Serving/mentioning Muslims in the mission is NOT Islamic identity."""
+        assert (
+            has_islamic_identity(
+                "International Rescue Committee", "We help Muslim refugees worldwide"
+            )
+            is False
+        )
+
+    def test_muslim_in_name_is_identity(self):
+        """'Muslim' in the org NAME is an identity signal."""
+        assert has_islamic_identity("Muslim Legal Fund of America", "legal defense") is True
 
     def test_religious_event_in_mission(self):
         """Religious events in mission should be detected."""
@@ -66,6 +86,32 @@ class TestHasIslamicIdentity:
         """Detection should be case-insensitive."""
         assert has_islamic_identity("ISLAMIC RELIEF", "ZAKAT DISTRIBUTION") is True
         assert has_islamic_identity("islamic relief", "zakat distribution") is True
+
+    def test_name_only_keywords_not_in_main_set(self):
+        """The ambiguous terms live only in the name-only set, not the main set."""
+        for kw in ("muslim", "zakat", "sadaqah"):
+            assert kw not in ISLAMIC_IDENTITY_KEYWORDS
+            assert kw in ISLAMIC_NAME_ONLY_KEYWORDS
+
+
+class TestMuslimOrgOverride:
+    """Test the human-verified override (authoritative source of truth)."""
+
+    def test_known_secular_org_forced_false(self):
+        """IRC is in the override as false (serves Muslims but secular)."""
+        assert muslim_org_override("13-5660870") is False
+
+    def test_known_islamic_org_true(self):
+        """Islamic Relief USA is in the override as true."""
+        assert muslim_org_override("95-4453134") is True
+
+    def test_unknown_ein_returns_none(self):
+        """An EIN not in the override falls back to the heuristic (None)."""
+        assert muslim_org_override("00-0000000") is None
+
+    def test_blank_ein_returns_none(self):
+        assert muslim_org_override(None) is None
+        assert muslim_org_override("") is None
 
 
 class TestServesMuslimPopulations:
@@ -261,8 +307,9 @@ class TestKeywordCoverage:
         """Verify Islamic identity keywords are defined."""
         assert len(ISLAMIC_IDENTITY_KEYWORDS) >= 15
         assert 'islamic' in ISLAMIC_IDENTITY_KEYWORDS
-        assert 'zakat' in ISLAMIC_IDENTITY_KEYWORDS
         assert 'ramadan' in ISLAMIC_IDENTITY_KEYWORDS
+        # 'zakat'/'muslim' moved to the name-only set (mission mentions are not identity)
+        assert 'zakat' in ISLAMIC_NAME_ONLY_KEYWORDS
 
     def test_muslim_region_keywords_exist(self):
         """Verify Muslim region keywords are defined."""
