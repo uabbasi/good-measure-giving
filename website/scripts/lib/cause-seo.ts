@@ -67,3 +67,13 @@ export function filterCharitiesByCategory(pool: HubCharity[], category: string):
     .filter((c) => c.primaryCategory === category)
     .sort(byAmalScoreDesc);
 }
+
+/**
+ * Predicate: a charity that belongs on a curated "Best Muslim ..." listing —
+ * classified as a Muslim org and not hidden from curation. The cause hubs and
+ * the Muslim-charities hub both gate on this so secular orgs that merely share a
+ * cause category (e.g. IRC under HUMANITARIAN) don't appear under a Muslim title.
+ */
+export function isCuratedMuslimCharity(c: HubCharity): boolean {
+  return c.isMuslimCharity === true && !c.hideFromCurated;
+}

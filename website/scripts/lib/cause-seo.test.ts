@@ -4,6 +4,7 @@ import {
   slugToCategory,
   CAUSE_SLUGS,
   filterCharitiesByCategory,
+  isCuratedMuslimCharity,
   type HubCharity,
 } from './cause-seo';
 
@@ -65,5 +66,31 @@ describe('filterCharitiesByCategory', () => {
   it('skips charities with null primaryCategory', () => {
     const result = filterCharitiesByCategory(pool, 'HUMANITARIAN');
     expect(result.map(c => c.ein)).not.toContain('5');
+  });
+});
+
+describe('isCuratedMuslimCharity', () => {
+  const base: HubCharity = { ein: '1', name: 'X', primaryCategory: 'HUMANITARIAN', amalScore: 80, walletTag: null };
+
+  it('true only when isMuslimCharity and not hidden', () => {
+    expect(isCuratedMuslimCharity({ ...base, isMuslimCharity: true })).toBe(true);
+  });
+
+  it('false for non-Muslim orgs', () => {
+    expect(isCuratedMuslimCharity({ ...base, isMuslimCharity: false })).toBe(false);
+    expect(isCuratedMuslimCharity(base)).toBe(false); // flag absent
+  });
+
+  it('false when hidden from curation', () => {
+    expect(isCuratedMuslimCharity({ ...base, isMuslimCharity: true, hideFromCurated: true })).toBe(false);
+  });
+
+  it('excludes secular orgs from a cause listing when composed with category filter', () => {
+    const mixed: HubCharity[] = [
+      { ein: 'm', name: 'Muslim Aid', primaryCategory: 'HUMANITARIAN', amalScore: 70, walletTag: null, isMuslimCharity: true },
+      { ein: 'irc', name: 'IRC', primaryCategory: 'HUMANITARIAN', amalScore: 90, walletTag: null, isMuslimCharity: false },
+    ];
+    const result = filterCharitiesByCategory(mixed.filter(isCuratedMuslimCharity), 'HUMANITARIAN');
+    expect(result.map(c => c.ein)).toEqual(['m']);
   });
 });

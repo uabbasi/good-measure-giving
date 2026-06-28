@@ -16,7 +16,7 @@ import {
   buildCharityFaqPairs,
   type ZakatStatus,
 } from './lib/charity-seo';
-import { filterCharitiesByCategory, type HubCharity } from './lib/cause-seo';
+import { filterCharitiesByCategory, isCuratedMuslimCharity, type HubCharity } from './lib/cause-seo';
 import { filterMuslimCharities } from './lib/muslim-hub';
 import type { Guide, GuideSummary, GuidesIndex } from './lib/guide-seo';
 import { KNOWN_ASSET_SLUGS } from './lib/calculator-seo';
@@ -433,7 +433,9 @@ function buildCausesIndexMeta(causes: CauseEntry[]): PageMeta {
 }
 
 function buildCauseMeta(cause: CauseEntry, allCharities: HubCharity[]): PageMeta {
-  const charities = filterCharitiesByCategory(allCharities, cause.category);
+  // "Best Muslim {Cause} Charities" — gate on Muslim-org membership so secular
+  // orgs sharing the category don't appear in the page's ItemList/count.
+  const charities = filterCharitiesByCategory(allCharities.filter(isCuratedMuslimCharity), cause.category);
   const title = `Best Muslim ${cause.displayName} Charities | Good Measure Giving`;
   const description = truncate(
     `${cause.intro} ${charities.length} evaluated charities.`,

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { useCharities } from '../src/hooks/useCharities';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
-import { slugToCategory, filterCharitiesByCategory, type HubCharity } from '../scripts/lib/cause-seo';
+import { slugToCategory, filterCharitiesByCategory, isCuratedMuslimCharity, type HubCharity } from '../scripts/lib/cause-seo';
 import causesData from '../data/causes/causes.json';
 
 interface CauseData {
@@ -42,9 +42,13 @@ export const CausePage: React.FC = () => {
     primaryCategory: c.primaryCategory ?? null,
     amalScore: c.amalScore ?? null,
     walletTag: c.walletTag ?? null,
+    isMuslimCharity: c.isMuslimCharity,
+    hideFromCurated: c.hideFromCurated,
   }));
 
-  const charities = filterCharitiesByCategory(pool, category);
+  // These pages are titled "Best Muslim {Cause} Charities" — list only Muslim
+  // orgs, not every charity that happens to share the cause category.
+  const charities = filterCharitiesByCategory(pool.filter(isCuratedMuslimCharity), category);
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>

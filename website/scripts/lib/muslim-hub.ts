@@ -4,7 +4,7 @@
  * and ranks by GMG score.
  */
 
-import { byAmalScoreDesc, type HubCharity } from './cause-seo';
+import { byAmalScoreDesc, isCuratedMuslimCharity, type HubCharity } from './cause-seo';
 
 export { byAmalScoreDesc };
 export type { HubCharity };
@@ -14,7 +14,5 @@ export type { HubCharity };
  * sorted by GMG score descending (nulls last, name tiebreak).
  */
 export function filterMuslimCharities(pool: HubCharity[]): HubCharity[] {
-  return pool
-    .filter((c) => c.isMuslimCharity === true && !c.hideFromCurated)
-    .sort(byAmalScoreDesc);
+  return pool.filter(isCuratedMuslimCharity).sort(byAmalScoreDesc);
 }
