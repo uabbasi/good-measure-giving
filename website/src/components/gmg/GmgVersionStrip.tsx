@@ -1,8 +1,9 @@
 // Good Measure Giving — site-wide "version strip".
-// A thin, non-sticky editorial status bar that sits directly above GmgNav on
-// every motif surface. Frames GMG as a continuously-updated, versioned index:
-// the left cluster is auto-computed from the loaded charity data, the right
-// cluster links to the changelog and the raw open data.
+// A thin, non-sticky editorial masthead that sits directly above GmgNav on every
+// motif surface. Frames GMG as a periodical: an issue/edition dateline + the
+// scope of the index + the rubric version, with a single link to the changelog
+// (the "back issues" record). Counts/dates are auto-computed from the loaded
+// charity index.
 
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -11,38 +12,40 @@ import { useCharities } from '../../hooks/useCharities';
 import { RUBRIC_VERSION } from '../../config/siteVersion';
 import { computeVersionStripStats } from './versionStripData';
 
-const DOT = '·'; // ·
+const DOT = '·';
+const BAR = '|';
 
 export const GmgVersionStrip: React.FC<{ p: GmgPalette; isMobile: boolean }> = ({ p, isMobile }) => {
   const { summaries } = useCharities();
   const stats = useMemo(() => computeVersionStripStats(summaries), [summaries]);
 
-  // Counts/dates derive from the charity index. When it isn't loaded yet (SSR of
-  // a route without the seeded index, or pre-hydration), show placeholders for
-  // the data-derived values and let them hydrate; the static labels + links and
-  // the rubric version (a constant) are always present in the static HTML.
+  // When the index isn't loaded yet (SSR of an unseeded route, or pre-hydration)
+  // fall back to a minimal masthead; the full dateline hydrates client-side.
   const hasData = summaries.length > 0;
-  const ratedTxt = hasData ? String(stats.ratedCount) : '—';
-  const zakatTxt = hasData ? String(stats.zakatCount) : '—';
-  const releaseTxt = stats.release ?? '—';
-  const updatedTxt = stats.updated ?? '—';
+  const issueLabel = stats.issueNo != null ? `ISSUE ${String(stats.issueNo).padStart(2, '0')}` : null;
+  const edition = stats.edition ? stats.edition.toUpperCase() : null;
+  const hijri = stats.hijriYear != null ? `${stats.hijriYear} AH` : null;
+  const dateline = [hijri, edition].filter(Boolean).join(' / '); // "1447 AH / JUNE 2026"
 
-  // Mobile keeps only the essentials; desktop carries the full release line.
-  const leftSegments = isMobile
-    ? ['GMG INDEX', `${ratedTxt} rated`, `v${RUBRIC_VERSION}`]
-    : [
-        'GMG INDEX',
-        `RELEASE ${releaseTxt}`,
-        `${ratedTxt} rated`,
-        `${zakatTxt} zakat-eligible`,
-        `Rubric v${RUBRIC_VERSION}`,
-        `updated ${updatedTxt}`,
-      ];
+  // Grouped like a masthead: edition · scope · version, separated by faint bars.
+  const editionGroup = [issueLabel, dateline || null].filter(Boolean).join(` ${DOT} `);
+  const scopeGroup = hasData
+    ? `${stats.ratedCount} CHARITIES ${DOT} IMPACT + ALIGNMENT`
+    : 'IMPACT + ALIGNMENT';
+  const versionGroup =
+    hasData && stats.updated
+      ? `RUBRIC v${RUBRIC_VERSION} ${DOT} UPDATED ${stats.updated}`
+      : `RUBRIC v${RUBRIC_VERSION}`;
+
+  const desktopGroups = [editionGroup, scopeGroup, versionGroup].filter(Boolean);
+  const mobileLine = [issueLabel ?? 'GOOD MEASURE GIVING', edition, hasData ? `${stats.ratedCount} CHARITIES` : null]
+    .filter(Boolean)
+    .join(` ${DOT} `);
 
   const linkStyle: React.CSSProperties = {
     color: p.sub,
     textDecoration: 'none',
-    letterSpacing: '0.06em',
+    letterSpacing: '0.1em',
     whiteSpace: 'nowrap',
   };
 
@@ -54,7 +57,7 @@ export const GmgVersionStrip: React.FC<{ p: GmgPalette; isMobile: boolean }> = (
         color: p.sub2,
         fontFamily: FONT_MONO,
         fontSize: 10.5,
-        letterSpacing: '0.06em',
+        letterSpacing: '0.08em',
         lineHeight: 1.2,
       }}
     >
@@ -68,19 +71,18 @@ export const GmgVersionStrip: React.FC<{ p: GmgPalette; isMobile: boolean }> = (
         }}
       >
         <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-          {leftSegments.join(` ${DOT} `)}
+          {isMobile
+            ? mobileLine
+            : desktopGroups.map((g, i) => (
+                <React.Fragment key={g}>
+                  {i > 0 && <span style={{ margin: '0 12px', color: p.rule2 }}>{BAR}</span>}
+                  {g}
+                </React.Fragment>
+              ))}
         </span>
-        <span style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-          <Link to="/changelog" style={linkStyle}>
-            CHANGELOG
-          </Link>
-          <span aria-hidden="true" style={{ color: p.rule2 }}>
-            {DOT}
-          </span>
-          <a href="/data/charities.json" style={linkStyle}>
-            OPEN DATA {'↓'}
-          </a>
-        </span>
+        <Link to="/changelog" style={linkStyle}>
+          BACK ISSUES
+        </Link>
       </div>
     </div>
   );

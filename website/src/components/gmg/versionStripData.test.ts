@@ -29,14 +29,18 @@ describe('computeVersionStripStats', () => {
     expect(stats.zakatCount).toBe(2);
   });
 
-  it('derives updated date and YYYY.MM release from the max lastUpdated', () => {
+  it('derives the updated date, issue number, and edition from the max lastUpdated', () => {
     const stats = computeVersionStripStats([
       c({ lastUpdated: '2026-06-27 19:16:58' }),
       c({ lastUpdated: '2026-05-01 12:00:00' }),
       c({ lastUpdated: '2026-06-10 08:30:00' }),
     ]);
     expect(stats.updated).toBe('2026-06-27');
-    expect(stats.release).toBe('2026.06');
+    // Issue 1 = Feb 2026 epoch; June 2026 is issue 5.
+    expect(stats.issueNo).toBe(5);
+    expect(stats.edition).toBe('June 2026');
+    // Hijri year resolves via Intl (Umm al-Qura) where ICU is available.
+    expect(stats.hijriYear === null || stats.hijriYear >= 1447).toBe(true);
   });
 
   it('returns zero counts and null dates for empty / missing input', () => {
@@ -44,17 +48,21 @@ describe('computeVersionStripStats', () => {
       ratedCount: 0,
       zakatCount: 0,
       updated: null,
-      release: null,
+      issueNo: null,
+      edition: null,
+      hijriYear: null,
     });
     expect(computeVersionStripStats(null)).toEqual({
       ratedCount: 0,
       zakatCount: 0,
       updated: null,
-      release: null,
+      issueNo: null,
+      edition: null,
+      hijriYear: null,
     });
   });
 
-  it('matches the live data shape (124 rated / 95 zakat / 2026.06)', () => {
+  it('matches the live data shape (124 charities / 95 zakat / June 2026)', () => {
     // Mirrors the production index at build time: a couple hidden + unrated rows
     // plus a single newest timestamp.
     const list: VersionStripCharity[] = [];
@@ -65,6 +73,7 @@ describe('computeVersionStripStats', () => {
     expect(stats.ratedCount).toBe(124);
     expect(stats.zakatCount).toBe(95);
     expect(stats.updated).toBe('2026-06-27');
-    expect(stats.release).toBe('2026.06');
+    expect(stats.issueNo).toBe(5);
+    expect(stats.edition).toBe('June 2026');
   });
 });

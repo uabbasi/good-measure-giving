@@ -1,5 +1,5 @@
 // Pure helpers for the site-wide version strip. Kept JSX-free so the count /
-// date math is unit-testable in isolation from the React component.
+// date / edition math is unit-testable in isolation from the React component.
 
 // Minimal shape the strip needs from each charity summary. A subset of
 // CharitySummary (useCharities) so this can be fed the loaded index directly.
@@ -17,12 +17,41 @@ export interface VersionStripStats {
   zakatCount: number;
   /** Max `lastUpdated` across charities, formatted YYYY-MM-DD (null if none). */
   updated: string | null;
-  /** YYYY.MM release stamp derived from the same max date (null if none). */
-  release: string | null;
+  /** Sequential issue number — masthead framing (null if no date). */
+  issueNo: number | null;
+  /** Edition label from the max date, e.g. "June 2026" (null if none). */
+  edition: string | null;
+  /** Hijri (Umm al-Qura) year for the edition date, e.g. 1447 (null if none). */
+  hijriYear: number | null;
+}
+
+const MONTHS = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+// Issue 1 = the launch month. Edition dates count forward from here so the
+// masthead reads like a periodical (ISSUE 05 · June 2026).
+const EPOCH_YEAR = 2026;
+const EPOCH_MONTH = 2; // February 2026
+
+function hijriYearFor(year: number, month: number, day: number): number | null {
+  try {
+    const dt = new Date(Date.UTC(year, month - 1, day));
+    const parts = new Intl.DateTimeFormat('en-US-u-ca-islamic-umalqura', {
+      year: 'numeric',
+      timeZone: 'UTC',
+    }).formatToParts(dt);
+    const y = parts.find((part) => part.type === 'year')?.value;
+    const n = y ? parseInt(y, 10) : NaN;
+    return Number.isFinite(n) ? n : null;
+  } catch {
+    return null;
+  }
 }
 
 /**
- * Derive the strip's left-cluster numbers from the loaded charity index.
+ * Derive the strip's masthead numbers from the loaded charity index.
  * Returns null counts/dates only when no data is available (e.g. during SSR of a
  * route where the index wasn't seeded) — the component renders placeholders then
  * and the real numbers hydrate client-side.
@@ -46,8 +75,18 @@ export function computeVersionStripStats(
   }
 
   const updated = maxDate ? maxDate.slice(0, 10) : null;
-  // RELEASE 'YYYY.MM' from the same max date (e.g. 2026-06-27 -> 2026.06).
-  const release = updated ? `${updated.slice(0, 4)}.${updated.slice(5, 7)}` : null;
 
-  return { ratedCount, zakatCount, updated, release };
+  let issueNo: number | null = null;
+  let edition: string | null = null;
+  let hijriYear: number | null = null;
+  if (updated) {
+    const year = Number(updated.slice(0, 4));
+    const month = Number(updated.slice(5, 7));
+    const day = Number(updated.slice(8, 10));
+    issueNo = Math.max(1, (year - EPOCH_YEAR) * 12 + (month - EPOCH_MONTH) + 1);
+    edition = `${MONTHS[month - 1]} ${year}`;
+    hijriYear = hijriYearFor(year, month, day);
+  }
+
+  return { ratedCount, zakatCount, updated, issueNo, edition, hijriYear };
 }
