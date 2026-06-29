@@ -11,6 +11,8 @@ export interface VersionStripCharity {
 }
 
 export interface VersionStripStats {
+  /** Every charity tracked in the index (the public catalog/coverage count). */
+  totalCount: number;
   /** Charities with a published GMG score that aren't hidden from curation. */
   ratedCount: number;
   /** Charities the wallet routing marks zakat-eligible. */
@@ -54,6 +56,7 @@ export function computeVersionStripStats(
 ): VersionStripStats {
   const list = charities ?? [];
 
+  const totalCount = list.length;
   let ratedCount = 0;
   let zakatCount = 0;
   let maxDate: string | null = null;
@@ -79,5 +82,5 @@ export function computeVersionStripStats(
     hijriYear = hijriYearFor(year, month, day);
   }
 
-  return { ratedCount, zakatCount, updated, edition, hijriYear };
+  return { totalCount, ratedCount, zakatCount, updated, edition, hijriYear };
 }

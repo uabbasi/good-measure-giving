@@ -43,6 +43,7 @@ describe('computeVersionStripStats', () => {
 
   it('returns zero counts and null dates for empty / missing input', () => {
     expect(computeVersionStripStats([])).toEqual({
+      totalCount: 0,
       ratedCount: 0,
       zakatCount: 0,
       updated: null,
@@ -50,6 +51,7 @@ describe('computeVersionStripStats', () => {
       hijriYear: null,
     });
     expect(computeVersionStripStats(null)).toEqual({
+      totalCount: 0,
       ratedCount: 0,
       zakatCount: 0,
       updated: null,
@@ -66,6 +68,7 @@ describe('computeVersionStripStats', () => {
     for (let i = 0; i < 95; i++) list[i].walletTag = 'ZAKAT-ELIGIBLE';
     list.push(c({ amalScore: null, lastUpdated: '2026-06-27 19:16:58' })); // newest but unrated
     const stats = computeVersionStripStats(list);
+    expect(stats.totalCount).toBe(125); // 124 rated + 1 newest-but-unrated row
     expect(stats.ratedCount).toBe(124);
     expect(stats.zakatCount).toBe(95);
     expect(stats.updated).toBe('2026-06-27');
