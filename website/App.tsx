@@ -84,6 +84,11 @@ export const AppProviders: React.FC<{ queryClient: QueryClient; children: React.
 const MOTIF_CONTENT_ROUTES = new Set<string>([
   '/changelog',
   '/about',
+  '/privacy',
+  '/faq',
+  '/causes',
+  '/guides',
+  '/zakat-calculator',
 ]);
 
 export const AppContent: React.FC = () => {
@@ -132,20 +137,20 @@ export const AppContent: React.FC = () => {
             <Route path="/methodology" element={<MethodologyPage />} />
             <Route path="/link-to-us" element={<LinkToUsPage />} />
             <Route path="/changelog" element={<ChangelogPage isDark={isDark} />} />
-            <Route path="/faq" element={<FAQPage />} />
+            <Route path="/faq" element={<FAQPage isDark={isDark} />} />
             <Route path="/about" element={<AboutPage isDark={isDark} />} />
-            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/privacy" element={<PrivacyPage isDark={isDark} />} />
             <Route path="/bookmarks" element={<Navigate to="/profile" replace />} />
             <Route path="/compare" element={isGmgFullBleed ? <GmgCompare isDark={isDark} /> : <ComparePage />} />
             <Route path="/profile" element={isGmgAuthChrome ? <GmgChromeFrame isDark={isDark} requireAuth><ProfilePage /></GmgChromeFrame> : <ProfilePage />} />
             <Route path="/prompts" element={<PromptsPage />} />
             <Route path="/prompts/:promptId" element={<PromptDetailPage />} />
-            <Route path="/causes" element={<CausesIndexPage />} />
+            <Route path="/causes" element={<CausesIndexPage isDark={isDark} />} />
             <Route path="/causes/:slug" element={<CausePage />} />
             <Route path="/best-muslim-charities-in-usa" element={<BestMuslimCharitiesPage />} />
-            <Route path="/guides" element={<GuidesIndexPage />} />
+            <Route path="/guides" element={<GuidesIndexPage isDark={isDark} />} />
             <Route path="/guides/:slug" element={<GuidePage />} />
-            <Route path="/zakat-calculator" element={<ZakatCalculatorHubPage />} />
+            <Route path="/zakat-calculator" element={<ZakatCalculatorHubPage isDark={isDark} />} />
             <Route path="/zakat-calculator/:asset" element={<ZakatCalculatorAssetPage />} />
             <Route path="/plan/join/:planId/:token" element={isGmgAuthChrome ? <GmgChromeFrame isDark={isDark}><JoinPlanPage /></GmgChromeFrame> : <JoinPlanPage />} />
 

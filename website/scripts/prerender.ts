@@ -111,7 +111,7 @@ interface PageMeta {
 // ── SSR route classification ───────────────────────────────────────────
 
 export const SSR_ROUTE_PREFIXES = ['/charity/', '/guides/', '/causes/', '/zakat-calculator/', '/prompts/'];
-export const SSR_EXACT_ROUTES = new Set(['/', '/browse', '/guides', '/causes', '/best-muslim-charities-in-usa', '/zakat-calculator', '/prompts', '/methodology', '/link-to-us', '/about', '/faq', '/changelog']);
+export const SSR_EXACT_ROUTES = new Set(['/', '/browse', '/guides', '/causes', '/best-muslim-charities-in-usa', '/zakat-calculator', '/prompts', '/methodology', '/link-to-us', '/about', '/faq', '/privacy', '/changelog']);
 
 export function isSsrRoute(route: string): boolean {
   if (SSR_EXACT_ROUTES.has(route)) return true;
@@ -127,10 +127,13 @@ function seedFor(route: string, ctx: {
   promptById: Map<string, unknown>;
   charitiesIndexResult: unknown;
 }): SeedEntry[] {
-  // Home and Browse both render the charity index via useCharities(['charities']).
-  // Changelog also seeds it so the version strip renders real counts server-side.
+  // The motif chrome's version strip reads the charity index via useCharities(['charities']),
+  // so every motif content page seeds it to render real counts ("124 CHARITIES …") server-side.
+  const masthead: SeedEntry[] = ctx.charitiesIndexResult
+    ? [{ queryKey: ['charities'], data: ctx.charitiesIndexResult }]
+    : [];
   if (route === '/' || route === '/browse' || route === '/changelog') {
-    return ctx.charitiesIndexResult ? [{ queryKey: ['charities'], data: ctx.charitiesIndexResult }] : [];
+    return masthead;
   }
   if (route.startsWith('/charity/')) {
     const ein = route.slice('/charity/'.length);
@@ -138,16 +141,25 @@ function seedFor(route: string, ctx: {
     return d ? [{ queryKey: ['charity', ein], data: d }] : [];
   }
   if (route === '/causes' || route.startsWith('/causes/')) {
-    return ctx.charitiesIndexResult ? [{ queryKey: ['charities'], data: ctx.charitiesIndexResult }] : [];
+    return masthead;
   }
   if (route === '/best-muslim-charities-in-usa') {
-    return ctx.charitiesIndexResult ? [{ queryKey: ['charities'], data: ctx.charitiesIndexResult }] : [];
+    return masthead;
   }
-  if (route === '/guides') return ctx.guidesIndex ? [{ queryKey: ['guides'], data: ctx.guidesIndex }] : [];
+  // Motif content pages whose only server data is the masthead.
+  if (route === '/about' || route === '/faq' || route === '/privacy') {
+    return masthead;
+  }
+  if (route === '/guides') {
+    return [...masthead, ...(ctx.guidesIndex ? [{ queryKey: ['guides'], data: ctx.guidesIndex }] : [])];
+  }
   if (route.startsWith('/guides/')) {
     const slug = route.slice('/guides/'.length);
     const g = ctx.guideBySlug.get(slug);
     return g ? [{ queryKey: ['guide', slug], data: g }] : [];
+  }
+  if (route === '/zakat-calculator') {
+    return [...masthead, ...(ctx.calculatorData ? [{ queryKey: ['calculator-data'], data: ctx.calculatorData }] : [])];
   }
   if (route.startsWith('/zakat-calculator')) return ctx.calculatorData ? [{ queryKey: ['calculator-data'], data: ctx.calculatorData }] : [];
   if (route === '/prompts') return ctx.promptsIndex ? [{ queryKey: ['prompts'], data: ctx.promptsIndex }] : [];
@@ -286,6 +298,28 @@ function buildStaticMeta(): PageMeta[] {
         foundingDate: '2025-12-01',
         sameAs: [],
       }),
+    },
+    {
+      route: '/privacy',
+      title: 'Privacy Policy | Good Measure Giving',
+      description:
+        'How Good Measure Giving collects, uses, and protects your personal data when you use our charity evaluations and tools.',
+      canonical: `${SITE_URL}/privacy`,
+      ogType: 'website',
+      jsonLd: [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: 'Privacy Policy',
+          url: `${SITE_URL}/privacy`,
+          description:
+            'How Good Measure Giving collects, uses, and protects your personal data.',
+        },
+        buildBreadcrumbSchema([
+          { name: 'Home', url: `${SITE_URL}/` },
+          { name: 'Privacy', url: `${SITE_URL}/privacy` },
+        ]) as object,
+      ],
     },
     {
       route: '/profile',

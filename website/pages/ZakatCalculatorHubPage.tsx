@@ -1,70 +1,97 @@
+// Good Measure Giving — "Modern" motif Zakat Calculator hub (/zakat-calculator).
+// Motif-only (no legacy variant): renders its own GmgNav + footer via the content kit.
+
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useLandingTheme } from '../contexts/LandingThemeContext';
+import {
+  GmgContentFrame,
+  Breadcrumb,
+  ContentHero,
+  Em,
+  P,
+  CardGrid,
+  LinkCard,
+  type ContentCtx,
+} from '../src/components/gmg/content';
+import { Tag } from '../src/components/gmg/primitives';
 import { KNOWN_ASSET_SLUGS } from '../scripts/lib/calculator-seo';
 import { useCalculatorData } from '../src/hooks/useCalculatorData';
 
 const SLUG_TO_LABEL: Record<string, string> = {
   'cash-savings': 'Cash & Savings',
   'gold-silver': 'Gold & Silver',
-  'stocks': 'Stocks & Investments',
+  stocks: 'Stocks & Investments',
   '401k-retirement': '401(k) & Retirement',
-  'crypto': 'Cryptocurrency',
+  crypto: 'Cryptocurrency',
   'business-assets': 'Business Assets',
   'real-estate': 'Real Estate',
 };
 
-export const ZakatCalculatorHubPage: React.FC = () => {
-  const { isDark } = useLandingTheme();
+export const ZakatCalculatorHubPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const { data, loading } = useCalculatorData();
 
   useEffect(() => {
     document.title = 'Zakat Calculator 2026 | Good Measure Giving';
-    return () => { document.title = 'Good Measure Giving | Muslim Charity Evaluator'; };
+    return () => {
+      document.title = 'Good Measure Giving | Muslim Charity Evaluator';
+    };
   }, []);
 
   const availableSlugs = new Set((data?.assets || []).map((a) => a.slug));
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <nav aria-label="Breadcrumb" className="mb-6 text-sm text-slate-500">
-          <Link to="/" className="hover:underline">Home</Link>
-          <span className="mx-2">/</span>
-          <span>Zakat Calculator</span>
-        </nav>
+    <GmgContentFrame isDark={isDark} maxWidth={760}>
+      {(ctx: ContentCtx) => {
+        const { p } = ctx;
+        return (
+          <>
+            <Breadcrumb p={p} trail={[{ label: 'Home', to: '/' }, { label: 'Zakat Calculator' }]} />
 
-        <h1 className="text-4xl font-semibold mb-4">Zakat Calculator 2026</h1>
-        <p className="text-lg leading-relaxed text-slate-700 dark:text-slate-300 mb-10">
-          {data?.hub.heroText ?? 'Calculate the zakat owed on your assets. Start with the asset type most relevant to you.'}
-        </p>
+            <ContentHero
+              ctx={ctx}
+              kicker="Zakat Calculator"
+              title={
+                <>
+                  Zakat Calculator <Em p={p}>2026.</Em>
+                </>
+              }
+              lead={
+                data?.hub.heroText ??
+                'Calculate the zakat owed on your assets. Start with the asset type most relevant to you.'
+              }
+            />
 
-        {loading ? (
-          <div className="text-slate-500">Loading…</div>
-        ) : (
-          <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {KNOWN_ASSET_SLUGS.map((slug) => {
-              const available = availableSlugs.has(slug);
-              const label = SLUG_TO_LABEL[slug] ?? slug.replace(/-/g, ' ');
-              return (
-                <li key={slug}>
-                  <Link
-                    to={`/zakat-calculator/${slug}`}
-                    className={`block p-5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors ${available ? '' : 'opacity-60'}`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <h2 className="text-xl font-semibold">Zakat on {label}</h2>
-                      {!available && (
-                        <span className="text-xs uppercase tracking-wide text-slate-500">Coming soon</span>
-                      )}
-                    </div>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </div>
-    </div>
+            {loading ? (
+              <P p={p} muted>
+                Loading…
+              </P>
+            ) : (
+              <CardGrid min={260}>
+                {KNOWN_ASSET_SLUGS.map((slug) => {
+                  const available = availableSlugs.has(slug);
+                  const label = SLUG_TO_LABEL[slug] ?? slug.replace(/-/g, ' ');
+                  return (
+                    <LinkCard
+                      key={slug}
+                      p={p}
+                      to={`/zakat-calculator/${slug}`}
+                      title={`Zakat on ${label}`}
+                      meta={
+                        available ? undefined : (
+                          <Tag p={p} tone="muted">
+                            Coming soon
+                          </Tag>
+                        )
+                      }
+                    />
+                  );
+                })}
+              </CardGrid>
+            )}
+          </>
+        );
+      }}
+    </GmgContentFrame>
   );
 };
+
+export default ZakatCalculatorHubPage;
