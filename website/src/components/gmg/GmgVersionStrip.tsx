@@ -14,6 +14,16 @@ import { computeVersionStripStats } from './versionStripData';
 
 const DOT = '·';
 const BAR = '|';
+const ABBR = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+// 'YYYY-MM-DD' -> 'JUN 27' (the edition year is already shown in the dateline).
+function formatUpdatedShort(updated: string | null): string | null {
+  if (!updated) return null;
+  const m = Number(updated.slice(5, 7));
+  const d = Number(updated.slice(8, 10));
+  if (!m || !d) return null;
+  return `${ABBR[m - 1]} ${d}`;
+}
 
 export const GmgVersionStrip: React.FC<{ p: GmgPalette; isMobile: boolean }> = ({ p, isMobile }) => {
   const { summaries } = useCharities();
@@ -22,23 +32,19 @@ export const GmgVersionStrip: React.FC<{ p: GmgPalette; isMobile: boolean }> = (
   // When the index isn't loaded yet (SSR of an unseeded route, or pre-hydration)
   // fall back to a minimal masthead; the full dateline hydrates client-side.
   const hasData = summaries.length > 0;
-  const issueLabel = stats.issueNo != null ? `ISSUE ${String(stats.issueNo).padStart(2, '0')}` : null;
-  const edition = stats.edition ? stats.edition.toUpperCase() : null;
-  const hijri = stats.hijriYear != null ? `${stats.hijriYear} AH` : null;
-  const dateline = [hijri, edition].filter(Boolean).join(' / '); // "1447 AH / JUNE 2026"
+  const edition = stats.edition ? stats.edition.toUpperCase() : null; // "JUNE 2026"
+  const hijri = stats.hijriYear != null ? `${stats.hijriYear} AH` : null; // "1448 AH"
+  const updatedShort = formatUpdatedShort(stats.updated); // "JUN 27"
 
-  // Grouped like a masthead: edition · scope · version, separated by faint bars.
-  const editionGroup = [issueLabel, dateline || null].filter(Boolean).join(` ${DOT} `);
+  // Grouped like a masthead: edition dateline · scope · version, separated by bars.
+  const editionGroup = [edition, hijri].filter(Boolean).join(` ${DOT} `); // "JUNE 2026 · 1448 AH"
   const scopeGroup = hasData
-    ? `${stats.ratedCount} CHARITIES ${DOT} IMPACT + ALIGNMENT`
-    : 'IMPACT + ALIGNMENT';
-  const versionGroup =
-    hasData && stats.updated
-      ? `RUBRIC v${RUBRIC_VERSION} ${DOT} UPDATED ${stats.updated}`
-      : `RUBRIC v${RUBRIC_VERSION}`;
+    ? `${stats.ratedCount} CHARITIES INDEPENDENTLY RATED`
+    : 'INDEPENDENTLY RATED';
+  const versionGroup = `METHODOLOGY v${RUBRIC_VERSION}${updatedShort ? ` ${DOT} UPDATED ${updatedShort}` : ''}`;
 
   const desktopGroups = [editionGroup, scopeGroup, versionGroup].filter(Boolean);
-  const mobileLine = [issueLabel ?? 'GOOD MEASURE GIVING', edition, hasData ? `${stats.ratedCount} CHARITIES` : null]
+  const mobileLine = [edition, hasData ? `${stats.ratedCount} RATED` : null, `v${RUBRIC_VERSION}`]
     .filter(Boolean)
     .join(` ${DOT} `);
 
@@ -81,7 +87,7 @@ export const GmgVersionStrip: React.FC<{ p: GmgPalette; isMobile: boolean }> = (
               ))}
         </span>
         <Link to="/changelog" style={linkStyle}>
-          BACK ISSUES
+          CHANGELOG
         </Link>
       </div>
     </div>

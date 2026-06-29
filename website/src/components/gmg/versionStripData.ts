@@ -17,8 +17,6 @@ export interface VersionStripStats {
   zakatCount: number;
   /** Max `lastUpdated` across charities, formatted YYYY-MM-DD (null if none). */
   updated: string | null;
-  /** Sequential issue number — masthead framing (null if no date). */
-  issueNo: number | null;
   /** Edition label from the max date, e.g. "June 2026" (null if none). */
   edition: string | null;
   /** Hijri (Umm al-Qura) year for the edition date, e.g. 1447 (null if none). */
@@ -29,11 +27,6 @@ const MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December',
 ];
-
-// Issue 1 = the launch month. Edition dates count forward from here so the
-// masthead reads like a periodical (ISSUE 05 · June 2026).
-const EPOCH_YEAR = 2026;
-const EPOCH_MONTH = 2; // February 2026
 
 function hijriYearFor(year: number, month: number, day: number): number | null {
   try {
@@ -76,17 +69,15 @@ export function computeVersionStripStats(
 
   const updated = maxDate ? maxDate.slice(0, 10) : null;
 
-  let issueNo: number | null = null;
   let edition: string | null = null;
   let hijriYear: number | null = null;
   if (updated) {
     const year = Number(updated.slice(0, 4));
     const month = Number(updated.slice(5, 7));
     const day = Number(updated.slice(8, 10));
-    issueNo = Math.max(1, (year - EPOCH_YEAR) * 12 + (month - EPOCH_MONTH) + 1);
     edition = `${MONTHS[month - 1]} ${year}`;
     hijriYear = hijriYearFor(year, month, day);
   }
 
-  return { ratedCount, zakatCount, updated, issueNo, edition, hijriYear };
+  return { ratedCount, zakatCount, updated, edition, hijriYear };
 }
