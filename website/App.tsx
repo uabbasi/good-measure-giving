@@ -78,6 +78,14 @@ export const AppProviders: React.FC<{ queryClient: QueryClient; children: React.
 
 // T009-T011: Removed ThirdBucket theme switching - single Amal theme only
 
+// Content/SEO pages converted to the Modern motif (motif-only, no legacy variant).
+// Each renders its own GmgNav + footer via the content kit; add a route here as it
+// is converted so the app's legacy Navbar/Footer is suppressed for it.
+const MOTIF_CONTENT_ROUTES = new Set<string>([
+  '/changelog',
+  '/about',
+]);
+
 export const AppContent: React.FC = () => {
   const location = useLocation();
   const { isDark } = useLandingTheme();
@@ -97,9 +105,7 @@ export const AppContent: React.FC = () => {
   const isGmgAuthChrome =
     isMotif &&
     (location.pathname === '/profile' || location.pathname.startsWith('/plan/join'));
-  // Changelog is a motif-only page (no legacy variant); it renders its own GmgNav,
-  // so suppress the legacy chrome regardless of the design param.
-  const isGmgMotifOnly = location.pathname === '/changelog';
+  const isGmgMotifOnly = MOTIF_CONTENT_ROUTES.has(location.pathname);
   const isGmgPreview = isGmgFullBleed || isGmgAuthChrome || isGmgMotifOnly;
 
   // T049: Track page views on route changes
@@ -127,7 +133,7 @@ export const AppContent: React.FC = () => {
             <Route path="/link-to-us" element={<LinkToUsPage />} />
             <Route path="/changelog" element={<ChangelogPage isDark={isDark} />} />
             <Route path="/faq" element={<FAQPage />} />
-            <Route path="/about" element={<AboutPage />} />
+            <Route path="/about" element={<AboutPage isDark={isDark} />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/bookmarks" element={<Navigate to="/profile" replace />} />
             <Route path="/compare" element={isGmgFullBleed ? <GmgCompare isDark={isDark} /> : <ComparePage />} />
