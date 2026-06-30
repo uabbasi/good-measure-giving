@@ -159,7 +159,7 @@ interface Col {
 }
 const COLS: Col[] = [
   { key: 'cause', label: 'Cause', width: 150 },
-  { key: 'overall', label: 'GMG', tip: 'Overall GMG rating — Impact + Alignment minus Risk, shown as a band rather than a precise score. Default sort. Blank = not scored yet.', width: 80 },
+  { key: 'overall', label: 'GMG', tip: 'Overall GMG rating — Impact + Alignment minus Risk, shown as a band rather than a precise score. Default sort. Blank = not scored yet.', width: 72, align: 'center' },
   { key: 'finances', label: 'Finances', tip: 'Financial health — reserves, program spending and stability. Strong = healthiest.', width: 120 },
   { key: 'risk', label: 'Risk', tip: 'Risk — governance, transparency and red-flag checks. Strong = lowest risk.', width: 120 },
   { key: 'donorFit', label: 'Donor fit', tip: 'Fit for Muslim donors — cause alignment and zakat signals. Strong = best fit.', width: 120 },
@@ -461,7 +461,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   <td style={{ padding: '8px 6px' }}>
                     <Tag tone={row.walletIsZakat ? 'accent' : 'muted'} p={p}>{row.wallet}</Tag>
                   </td>
-                  <td style={{ padding: '8px 6px' }}>
+                  <td style={{ padding: '8px 6px', textAlign: 'center' }}>
                     {row.overall ? (
                       <HarveyBall rating={row.overall} p={p} size={22} />
                     ) : (
