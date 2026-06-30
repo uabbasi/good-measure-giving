@@ -26,7 +26,6 @@ import { adaptRow, GmgRow } from './charityAdapter';
 
 const RANK: Record<Rating, number> = { Strong: 5, Good: 4, Moderate: 3, Fair: 2, Weak: 1 };
 type SortKey = 'name' | 'cause' | 'overall' | 'finances' | 'risk' | 'donorFit' | 'size';
-const rRank = (r: Rating | null): number => (r ? RANK[r] : 0);
 type SortDir = 'asc' | 'desc';
 type WalletFilter = 'all' | 'zakat' | 'sadaqah';
 
@@ -160,7 +159,7 @@ interface Col {
 }
 const COLS: Col[] = [
   { key: 'cause', label: 'Cause', width: 150 },
-  { key: 'overall', label: 'GMG', tip: 'Overall GMG rating — Impact + Alignment minus Risk, shown as a band rather than a precise score. Sort to rank by it. Blank = not scored yet.', width: 120 },
+  { key: 'overall', label: 'GMG', tip: 'Overall GMG rating — Impact + Alignment minus Risk, shown as a band rather than a precise score. Default sort. Blank = not scored yet.', width: 80 },
   { key: 'finances', label: 'Finances', tip: 'Financial health — reserves, program spending and stability. Strong = healthiest.', width: 120 },
   { key: 'risk', label: 'Risk', tip: 'Risk — governance, transparency and red-flag checks. Strong = lowest risk.', width: 120 },
   { key: 'donorFit', label: 'Donor fit', tip: 'Fit for Muslim donors — cause alignment and zakat signals. Strong = best fit.', width: 120 },
@@ -209,9 +208,10 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
 
   const [query, setQuery] = useState('');
   const [wallet, setWallet] = useState<WalletFilter>('all');
-  // Neutral default: alphabetical. No implied leaderboard.
-  const [sortBy, setSortBy] = useState<SortKey>('name');
-  const [sortDir, setSortDir] = useState<SortDir>('asc');
+  // Default: by overall GMG band (best first). It's a band, not a numeric rank,
+  // and unscored charities fall to the bottom rather than getting a fake score.
+  const [sortBy, setSortBy] = useState<SortKey>('overall');
+  const [sortDir, setSortDir] = useState<SortDir>('desc');
   const onSort = (k: SortKey) => {
     if (k === sortBy) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
     else {
@@ -257,7 +257,9 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
           v = (a.cause || '').localeCompare(b.cause || '');
           break;
         case 'overall':
-          v = rRank(a.overall) - rRank(b.overall);
+          // Order by the underlying score (best-first) so within-band ordering is
+          // sensible; the cell still shows only the band ball, never the number.
+          v = a.amalScore - b.amalScore;
           break;
         case 'finances':
           v = RANK[a.financialHealth] - RANK[b.financialHealth];
@@ -272,8 +274,10 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
           v = (a.revenue ?? -1) - (b.revenue ?? -1);
           break;
       }
+      v = v * dir;
+      // Stable A–Z tiebreak within a band (never inverted by sort direction).
       if (v === 0 && sortBy !== 'name') v = a.name.localeCompare(b.name);
-      return v * dir;
+      return v;
     });
   }, [allRows, query, wallet, sortBy, sortDir]);
 
@@ -368,7 +372,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                 {row.overall && (
                   <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <Kicker p={p}>GMG</Kicker>
-                    <RatingCell rating={row.overall} p={p} />
+                    <HarveyBall rating={row.overall} p={p} size={20} />
                   </span>
                 )}
                 <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -459,7 +463,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   </td>
                   <td style={{ padding: '8px 6px' }}>
                     {row.overall ? (
-                      <RatingCell rating={row.overall} p={p} />
+                      <HarveyBall rating={row.overall} p={p} size={22} />
                     ) : (
                       <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: p.sub2 }}>—</span>
                     )}
