@@ -18,6 +18,7 @@ import {
 import { Rating, ratingColor } from './rating';
 import { HarveyBall, Bismillah } from './primitives';
 import { GmgNav } from './chrome';
+import { GmgFooter } from './content';
 import { useIsMobile } from './useIsMobile';
 import { adaptCharity } from './charityAdapter';
 
@@ -170,9 +171,7 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
         </div>
       </section>
 
-      <footer style={{ padding: `18px ${padX}px`, borderTop: `1px solid ${p.rule}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, color: p.sub2, fontSize: 10.5, fontFamily: FONT_MONO, letterSpacing: '0.06em' }}>
-        <span>GOOD MEASURE GIVING · ©2026 · INDEPENDENT RESEARCH</span>
-      </footer>
+      <GmgFooter p={p} isMobile={isMobile} />
     </div>
   );
 };

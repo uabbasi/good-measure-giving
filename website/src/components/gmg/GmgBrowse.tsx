@@ -21,6 +21,7 @@ import {
 import { Rating, ratingColor } from './rating';
 import { HarveyBall, Tag, Kicker } from './primitives';
 import { GmgNav } from './chrome';
+import { GmgFooter } from './content';
 import { useIsMobile } from './useIsMobile';
 import { adaptRow, GmgRow } from './charityAdapter';
 
@@ -288,6 +289,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
     <div style={{ background: p.bg, color: p.fg, fontFamily: FONT_TEXT, minHeight: '100vh', ...fontVars }}>
       <GmgNav p={p} isMobile={isMobile} active="Browse" />
       {children}
+      <GmgFooter p={p} isMobile={isMobile} />
     </div>
   );
 

@@ -20,6 +20,7 @@ import {
 import { Rating, ratingColor } from './rating';
 import { HarveyBall, Tag, Kicker, Figure } from './primitives';
 import { GmgNav } from './chrome';
+import { GmgFooter } from './content';
 import { useIsMobile } from './useIsMobile';
 import { adaptCharity, GmgCharity } from './charityAdapter';
 
@@ -181,6 +182,7 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
     <div style={{ background: p.bg, color: p.fg, fontFamily: FONT_TEXT, minHeight: '100vh', ...fontVars }}>
       <GmgNav p={p} isMobile={isMobile} active="Compare" />
       {children}
+      <GmgFooter p={p} isMobile={isMobile} />
     </div>
   );
 

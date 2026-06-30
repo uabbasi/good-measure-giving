@@ -12,6 +12,7 @@ import { SHOW_AMAL_SCORE } from '../src/featureFlags';
 import { RUBRIC_VERSION } from '../src/config/siteVersion';
 import {
   GmgContentFrame,
+  Breadcrumb,
   ContentHero,
   Em,
   Section,
@@ -52,8 +53,8 @@ const Card: React.FC<{ p: GmgPalette; children: React.ReactNode; style?: React.C
   <div style={{ background: p.card, border: `1px solid ${p.rule}`, borderRadius: 12, padding: 22, ...style }}>{children}</div>
 );
 
-const Grid: React.FC<{ isMobile: boolean; cols?: number; children: React.ReactNode }> = ({ isMobile, cols = 2, children }) => (
-  <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : `repeat(${cols}, 1fr)`, gap: 14 }}>
+const Grid: React.FC<{ isMobile: boolean; cols?: number; align?: React.CSSProperties['alignItems']; children: React.ReactNode }> = ({ isMobile, cols = 2, align, children }) => (
+  <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : `repeat(${cols}, 1fr)`, gap: 14, alignItems: align }}>
     {children}
   </div>
 );
@@ -170,6 +171,8 @@ export const MethodologyPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
         const { p, isMobile } = ctx;
         return (
           <>
+            <Breadcrumb p={p} trail={[{ label: 'Home', to: '/' }, { label: 'Methodology' }]} />
+
             <ContentHero
               ctx={ctx}
               kicker="Methodology"
@@ -252,7 +255,9 @@ export const MethodologyPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               </Callout>
 
               <div style={{ marginTop: 18 }}>
-                <Grid isMobile={isMobile}>
+                {/* align=start so the shorter Alignment card doesn't stretch to
+                    match Impact's extra callouts, which left a tall empty column. */}
+                <Grid isMobile={isMobile} align="start">
                   {/* Impact */}
                   <Card p={p} style={{ padding: 0, overflow: 'hidden' }}>
                     <div style={{ padding: '16px 22px', background: p.bg2, borderBottom: `1px solid ${p.rule}` }}>
@@ -314,12 +319,12 @@ export const MethodologyPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                     </div>
                   </Card>
 
-                  {/* Alignment */}
+                  {/* Alignment — header styled symmetrically with Impact (sage, not green-tinted). */}
                   <Card p={p} style={{ padding: 0, overflow: 'hidden' }}>
-                    <div style={{ padding: '16px 22px', background: p.posBg, borderBottom: `1px solid ${p.pos}` }}>
+                    <div style={{ padding: '16px 22px', background: p.bg2, borderBottom: `1px solid ${p.rule}` }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                         <span style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: p.fg }}>Alignment</span>
-                        <span style={{ fontFamily: FONT_MONO, fontSize: 12, color: p.pos }}>50 pts</span>
+                        <span style={{ fontFamily: FONT_MONO, fontSize: 12, color: p.accent2 }}>50 pts</span>
                       </div>
                       <p style={{ fontSize: 13, color: p.sub, margin: '4px 0 0' }}>Is this the right charity for Muslim donors?</p>
                     </div>

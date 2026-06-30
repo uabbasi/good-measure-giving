@@ -4,6 +4,7 @@
 import React from 'react';
 import {
   GmgContentFrame,
+  Breadcrumb,
   ContentHero,
   Em,
   Section,
@@ -57,6 +58,8 @@ export const AboutPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
         const { p } = ctx;
         return (
           <>
+            <Breadcrumb p={p} trail={[{ label: 'Home', to: '/' }, { label: 'About' }]} />
+
             <ContentHero
               ctx={ctx}
               kicker="About"

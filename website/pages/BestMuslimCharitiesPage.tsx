@@ -32,7 +32,8 @@ const TOP_N = 20;
 
 const isZakatEligible = (c: HubCharity) => c.walletTag === 'ZAKAT-ELIGIBLE';
 
-// Zakat-eligible pill — sage "positive" semantic palette.
+// "Accepts Zakat" pill — sage "positive" semantic palette. Label matches the
+// site-wide walletLabel wording used on browse/compare/detail.
 const ZakatPill: React.FC<{ p: GmgPalette }> = ({ p }) => (
   <span
     style={{
@@ -47,7 +48,7 @@ const ZakatPill: React.FC<{ p: GmgPalette }> = ({ p }) => (
       color: p.pos,
     }}
   >
-    Zakat-eligible
+    Accepts Zakat
   </span>
 );
 
@@ -176,7 +177,7 @@ export const BestMuslimCharitiesPage: React.FC<{ isDark: boolean }> = ({ isDark 
                           p={p}
                           to={`/charity/${c.ein}`}
                           title={`${TOP_N + i + 1}. ${c.name}`}
-                          meta={isZakatEligible(c) ? `Zakat-eligible · ${c.amalScore}/100` : `${c.amalScore}/100`}
+                          meta={isZakatEligible(c) ? `Accepts Zakat · ${c.amalScore}/100` : `${c.amalScore}/100`}
                         />
                       ))}
                     </CardGrid>
@@ -196,7 +197,7 @@ export const BestMuslimCharitiesPage: React.FC<{ isDark: boolean }> = ({ isDark 
                           p={p}
                           to={`/charity/${c.ein}`}
                           title={c.name}
-                          meta={isZakatEligible(c) ? 'Zakat-eligible' : undefined}
+                          meta={isZakatEligible(c) ? 'Accepts Zakat' : undefined}
                         />
                       ))}
                     </CardGrid>

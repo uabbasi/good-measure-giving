@@ -27,18 +27,25 @@ import {
   Figure,
 } from './primitives';
 import { GmgNav } from './chrome';
+import { GmgFooter } from './content';
 import { useIsMobile } from './useIsMobile';
 import { adaptCharity, GmgDimension } from './charityAdapter';
 
-const usd = (n: number | null): string =>
-  n == null
-    ? '—'
-    : new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        notation: Math.abs(n) >= 1_000_000 ? 'compact' : 'standard',
-        maximumFractionDigits: 1,
-      }).format(n);
+const usd = (n: number | null): string => {
+  if (n == null) return '—';
+  const compact = Math.abs(n) >= 1_000_000;
+  // For currency, leaving maximumFractionDigits at 1 forces the default
+  // minimumFractionDigits (2) down to 1, so whole-dollar figures render as
+  // "$851,150.0". Pin the minimum to 0 and only allow a decimal for the
+  // compact "$1.5M" form.
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    notation: compact ? 'compact' : 'standard',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: compact ? 1 : 0,
+  }).format(n);
+};
 
 const usdFull = (n: number | null): string =>
   n == null ? '—' : new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
@@ -531,6 +538,8 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
         <span>GOOD MEASURE GIVING · {c.ein && `EIN ${c.ein}`} {c.rubricVersion && `· RUBRIC v${c.rubricVersion}`}</span>
         <span>HARVEY-BALL MOTIF · PREVIEW</span>
       </footer>
+
+      <GmgFooter p={p} isMobile={isMobile} />
     </div>
   );
 };

@@ -10,6 +10,7 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
+import { gmgPalette } from '../src/components/gmg/tokens';
 import { TrendingUp, Minus } from 'lucide-react';
 
 interface CharityWithPillars {
@@ -55,6 +56,9 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 export const MethodologyInsights: React.FC<MethodologyInsightsProps> = ({ charities }) => {
   const { isDark } = useLandingTheme();
+  // Motif palette so the highlighted callouts/badges use the sage tokens instead
+  // of the off-motif bright emerald/blue Tailwind set.
+  const p = gmgPalette(isDark);
 
   // Calculate insights
   const insights = useMemo(() => {
@@ -137,17 +141,17 @@ export const MethodologyInsights: React.FC<MethodologyInsightsProps> = ({ charit
 
         <div className="space-y-3">
           {/* #1: The biggest differentiator */}
-          <div className={`p-4 rounded-xl ${isDark ? 'bg-emerald-900/20 border border-emerald-800/30' : 'bg-emerald-50 border border-emerald-200'}`}>
+          <div className="p-4 rounded-xl" style={{ background: p.bg2, border: `1px solid ${p.rule2}` }}>
             <div className="flex items-start gap-3">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${isDark ? 'bg-emerald-600' : 'bg-emerald-500'} text-white font-bold`}>
+              <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold" style={{ background: p.accent, color: p.bg }}>
                 #1
               </div>
               <div>
-                <h4 className={`font-bold mb-1 ${isDark ? 'text-emerald-300' : 'text-emerald-800'}`}>
+                <h4 className="font-bold mb-1" style={{ color: p.fg }}>
                   {biggestDiff[0] === 'impact' && "They're more effective with your donation"}
                   {biggestDiff[0] === 'alignment' && "They serve neglected communities and align with your values"}
                 </h4>
-                <p className={`text-sm ${isDark ? 'text-emerald-200/70' : 'text-emerald-700'}`}>
+                <p className="text-sm" style={{ color: p.sub }}>
                   {biggestDiff[0] === 'impact' && `Our top ${insights.exceptionalCount} charities score ${biggestDiff[1]} points higher on Impact. They deliver more per dollar, with stronger evidence and room to absorb additional funding.`}
                   {biggestDiff[0] === 'alignment' && `Our top ${insights.exceptionalCount} charities score ${biggestDiff[1]} points higher on Alignment. They work in urgent, underserved spaces where your donation makes more difference.`}
                 </p>
@@ -156,17 +160,17 @@ export const MethodologyInsights: React.FC<MethodologyInsightsProps> = ({ charit
           </div>
 
           {/* #2: The other pillar */}
-          <div className={`p-4 rounded-xl ${isDark ? 'bg-emerald-900/20 border border-emerald-800/30' : 'bg-emerald-50 border border-emerald-200'}`}>
+          <div className="p-4 rounded-xl" style={{ background: p.bg2, border: `1px solid ${p.rule2}` }}>
             <div className="flex items-start gap-3">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${isDark ? 'bg-emerald-600' : 'bg-emerald-500'} text-white font-bold`}>
+              <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold" style={{ background: p.accent, color: p.bg }}>
                 #2
               </div>
               <div>
-                <h4 className={`font-bold mb-1 ${isDark ? 'text-emerald-300' : 'text-emerald-800'}`}>
+                <h4 className="font-bold mb-1" style={{ color: p.fg }}>
                   {biggestDiff[0] === 'impact' && "They align with Muslim donor priorities"}
                   {biggestDiff[0] === 'alignment' && "They deliver more impact per dollar"}
                 </h4>
-                <p className={`text-sm ${isDark ? 'text-emerald-200/70' : 'text-emerald-700'}`}>
+                <p className="text-sm" style={{ color: p.sub }}>
                   {biggestDiff[0] === 'impact'
                     ? `+${pillarDiffs.alignment} points higher on Alignment \u2014 mission fit, cause urgency, and funding gap.`
                     : `+${pillarDiffs.impact} points higher on Impact \u2014 cost efficiency, evidence quality, and financial health.`
@@ -177,16 +181,16 @@ export const MethodologyInsights: React.FC<MethodologyInsightsProps> = ({ charit
           </div>
 
           {/* #3: Fewer red flags */}
-          <div className={`p-4 rounded-xl ${isDark ? 'bg-emerald-900/20 border border-emerald-800/30' : 'bg-emerald-50 border border-emerald-200'}`}>
+          <div className="p-4 rounded-xl" style={{ background: p.bg2, border: `1px solid ${p.rule2}` }}>
             <div className="flex items-start gap-3">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${isDark ? 'bg-emerald-600' : 'bg-emerald-500'} text-white font-bold`}>
+              <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold" style={{ background: p.accent, color: p.bg }}>
                 #3
               </div>
               <div>
-                <h4 className={`font-bold mb-1 ${isDark ? 'text-emerald-300' : 'text-emerald-800'}`}>
+                <h4 className="font-bold mb-1" style={{ color: p.fg }}>
                   They avoid red flags
                 </h4>
-                <p className={`text-sm ${isDark ? 'text-emerald-200/70' : 'text-emerald-700'}`}>
+                <p className="text-sm" style={{ color: p.sub }}>
                   Top charities lose few or zero points to risk deductions {'\u2014'} healthy reserves, adequate board oversight, and documented outcomes.
                 </p>
               </div>
@@ -227,13 +231,16 @@ export const MethodologyInsights: React.FC<MethodologyInsightsProps> = ({ charit
                   {cause.topCharity}
                 </div>
               </div>
-              <div className={`ml-3 px-2 py-1 rounded text-sm font-bold ${
-                cause.topScore >= 80
-                  ? isDark ? 'bg-emerald-900/50 text-emerald-400' : 'bg-emerald-100 text-emerald-700'
-                  : cause.topScore >= 70
-                  ? isDark ? 'bg-blue-900/50 text-blue-400' : 'bg-blue-100 text-blue-700'
-                  : isDark ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-600'
-              }`}>
+              <div
+                className="ml-3 px-2 py-1 rounded text-sm font-bold"
+                style={
+                  cause.topScore >= 80
+                    ? { background: p.posBg, color: p.pos }
+                    : cause.topScore >= 70
+                    ? { background: p.bg3, color: p.accent2 }
+                    : { background: p.bg3, color: p.sub }
+                }
+              >
                 {cause.topScore}
               </div>
             </Link>
