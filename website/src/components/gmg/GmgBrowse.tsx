@@ -1,6 +1,8 @@
-// Good Measure Giving — "Modern" motif Index / Browse (proof surface #2).
-// Reachable via /browse. Dense Harvey-ball table on desktop,
-// stacked cards on mobile, fed by the real charity list.
+// Good Measure Giving — "Modern" motif Index / Browse (/browse).
+// A scan of qualitative signals (Harvey balls) + facts rather than a single-score
+// leaderboard: charity, cause, wallet, financial health, risk, donor fit, size.
+// Sortable by any column; neutral A–Z default. Dense table on desktop, stacked
+// cards on mobile. The numeric GMG score lives on each charity's page, not here.
 
 import React, { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -17,18 +19,33 @@ import {
   type FontVariant,
 } from './tokens';
 import { Rating, ratingColor } from './rating';
-import { HarveyBall, Tag, Kicker, Figure } from './primitives';
+import { HarveyBall, Tag, Kicker } from './primitives';
 import { GmgNav, TypeSwitcher } from './chrome';
 import { useIsMobile } from './useIsMobile';
 import { adaptRow, GmgRow } from './charityAdapter';
 
 const RANK: Record<Rating, number> = { Strong: 5, Good: 4, Moderate: 3, Fair: 2, Weak: 1 };
-type SortKey = 'score' | 'impact' | 'alignment' | 'name';
+type SortKey = 'name' | 'cause' | 'finances' | 'risk' | 'donorFit' | 'size';
+type SortDir = 'asc' | 'desc';
 type WalletFilter = 'all' | 'zakat' | 'sadaqah';
 
-// Module-scope leaf/section components — defining these inside the parent's
-// render body gives them a new identity each render, which remounts the search
-// input (dropping focus on every keystroke). Kept out here so they're stable.
+const ascByDefault = (k: SortKey): boolean => k === 'name' || k === 'cause';
+
+// Annual revenue → compact money ($85K / $3.0M / $1.5B).
+const fmtMoney = (n: number | null): string => {
+  if (n == null) return '—';
+  if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
+  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
+  if (n >= 1e3) return `$${Math.round(n / 1e3)}K`;
+  return `$${Math.round(n)}`;
+};
+
+const titleCaseCause = (s: string): string =>
+  s.replace(/[_&]+/g, ' ').replace(/\s+/g, ' ').trim().replace(/\b\w/g, (m) => m.toUpperCase());
+
+// Module-scope leaf components — defining these inside the parent's render body
+// gives them a new identity each render, which remounts the search input (dropping
+// focus on every keystroke). Kept out here so they're stable.
 
 const RatingCell: React.FC<{ rating: Rating; p: GmgPalette }> = ({ rating, p }) => (
   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
@@ -44,11 +61,9 @@ const FilterPills: React.FC<{
   setQuery: (v: string) => void;
   wallet: WalletFilter;
   setWallet: (v: WalletFilter) => void;
-  sortBy: SortKey;
-  setSortBy: (v: SortKey) => void;
   total: number;
   zakatCount: number;
-}> = ({ p, padX, query, setQuery, wallet, setWallet, sortBy, setSortBy, total, zakatCount }) => {
+}> = ({ p, padX, query, setQuery, wallet, setWallet, total, zakatCount }) => {
   const sectionBorder = `1px solid ${p.rule}`;
   const inputStyle: React.CSSProperties = {
     flex: '1 1 240px',
@@ -112,20 +127,8 @@ const FilterPills: React.FC<{
         ))}
       </span>
       <span style={{ flex: 1 }} />
-      <span style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-        <Kicker p={p}>Sort</Kicker>
-        {(
-          [
-            ['score', 'GMG ↓'],
-            ['impact', 'Impact ↓'],
-            ['alignment', 'Alignment ↓'],
-            ['name', 'Name'],
-          ] as [SortKey, string][]
-        ).map(([key, label]) => (
-          <button key={key} onClick={() => setSortBy(key)} style={pill(sortBy === key)}>
-            {label}
-          </button>
-        ))}
+      <span style={{ fontFamily: FONT_MONO, fontSize: 9.5, letterSpacing: '0.06em', color: p.sub2, textTransform: 'uppercase' }}>
+        Click a column to sort
       </span>
     </section>
   );
@@ -145,6 +148,44 @@ const SubHeader: React.FC<{ p: GmgPalette; padX: number; isMobile: boolean; ft: 
     </h1>
   </section>
 );
+
+// Sortable column descriptor. `tip` becomes a native hover tooltip on the header.
+interface Col {
+  key: SortKey;
+  label: string;
+  tip?: string;
+  width?: number;
+  align?: 'left' | 'right';
+}
+const COLS: Col[] = [
+  { key: 'cause', label: 'Cause', width: 150 },
+  { key: 'finances', label: 'Finances', tip: 'Financial health — reserves, program spending and stability. Strong = healthiest.', width: 120 },
+  { key: 'risk', label: 'Risk', tip: 'Risk — governance, transparency and red-flag checks. Strong = lowest risk.', width: 120 },
+  { key: 'donorFit', label: 'Donor fit', tip: 'Fit for Muslim donors — cause alignment and zakat signals. Strong = best fit.', width: 120 },
+  { key: 'size', label: 'Size', tip: 'Annual revenue from the latest filing.', width: 76, align: 'right' },
+];
+
+const SortableTh: React.FC<{
+  col: Col;
+  p: GmgPalette;
+  sortBy: SortKey;
+  sortDir: SortDir;
+  onSort: (k: SortKey) => void;
+}> = ({ col, p, sortBy, sortDir, onSort }) => {
+  const active = sortBy === col.key;
+  return (
+    <th
+      style={{ padding: '10px 6px', width: col.width, textAlign: col.align ?? 'left', cursor: 'pointer', userSelect: 'none', color: active ? p.fg : undefined }}
+      title={col.tip}
+      onClick={() => onSort(col.key)}
+      aria-sort={active ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
+    >
+      {col.label}
+      {col.tip && <span style={{ color: p.sub2, marginLeft: 3 }}>ⓘ</span>}
+      <span style={{ marginLeft: 4, color: active ? p.accent : 'transparent' }}>{sortDir === 'asc' ? '▲' : '▼'}</span>
+    </th>
+  );
+};
 
 export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const p = gmgPalette(isDark);
@@ -166,7 +207,17 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
 
   const [query, setQuery] = useState('');
   const [wallet, setWallet] = useState<WalletFilter>('all');
-  const [sortBy, setSortBy] = useState<SortKey>('score');
+  // Neutral default: alphabetical. No implied leaderboard.
+  const [sortBy, setSortBy] = useState<SortKey>('name');
+  const [sortDir, setSortDir] = useState<SortDir>('asc');
+  const onSort = (k: SortKey) => {
+    if (k === sortBy) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    else {
+      setSortBy(k);
+      setSortDir(ascByDefault(k) ? 'asc' : 'desc');
+    }
+  };
+
   // Compare selection (up to 4).
   const [selected, setSelected] = useState<string[]>([]);
   const MAX_COMPARE = 4;
@@ -187,21 +238,39 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
-    let r = allRows.filter((row) => {
+    const r = allRows.filter((row) => {
       if (wallet === 'zakat' && !row.walletIsZakat) return false;
       if (wallet === 'sadaqah' && row.walletIsZakat) return false;
       if (q && !(`${row.name} ${row.ein} ${row.cause}`.toLowerCase().includes(q))) return false;
       return true;
     });
-    r = [...r].sort((a, b) => {
-      if (sortBy === 'name') return a.name.localeCompare(b.name);
-      if (sortBy === 'impact') return RANK[b.impact] - RANK[a.impact] || b.amalScore - a.amalScore;
-      if (sortBy === 'alignment')
-        return RANK[b.alignment] - RANK[a.alignment] || b.amalScore - a.amalScore;
-      return b.amalScore - a.amalScore;
+    const dir = sortDir === 'asc' ? 1 : -1;
+    return [...r].sort((a, b) => {
+      let v = 0;
+      switch (sortBy) {
+        case 'name':
+          v = a.name.localeCompare(b.name);
+          break;
+        case 'cause':
+          v = (a.cause || '').localeCompare(b.cause || '');
+          break;
+        case 'finances':
+          v = RANK[a.financialHealth] - RANK[b.financialHealth];
+          break;
+        case 'risk':
+          v = RANK[a.risk] - RANK[b.risk];
+          break;
+        case 'donorFit':
+          v = RANK[a.donorFit] - RANK[b.donorFit];
+          break;
+        case 'size':
+          v = (a.revenue ?? -1) - (b.revenue ?? -1);
+          break;
+      }
+      if (v === 0 && sortBy !== 'name') v = a.name.localeCompare(b.name);
+      return v * dir;
     });
-    return r;
-  }, [allRows, query, wallet, sortBy]);
+  }, [allRows, query, wallet, sortBy, sortDir]);
 
   const sectionBorder = `1px solid ${p.rule}`;
   const hrefFor = (ein: string) => `/charity/${ein}`;
@@ -250,17 +319,15 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
         setQuery={setQuery}
         wallet={wallet}
         setWallet={setWallet}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
         total={allRows.length}
         zakatCount={zakatCount}
       />
 
       {isMobile ? (
-        /* Mobile: stacked cards. Container tap navigates (mouse); the name is a
-           real Link (keyboard/SPA); the compare control is a real checkbox. */
+        /* Mobile: stacked cards. Container tap navigates; name is a real Link;
+           compare control is a real checkbox. */
         <section style={{ padding: `12px ${padX}px 28px`, display: 'grid', gap: 10 }}>
-          {rows.map((row, i) => (
+          {rows.map((row) => (
             <div
               key={row.ein}
               onClick={() => navigate(hrefFor(row.ein))}
@@ -276,7 +343,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: FONT_MONO, fontSize: 10, color: selected.includes(row.ein) ? p.accent : p.sub2, cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
                 >
                   <span style={{ width: 15, height: 15, borderRadius: 4, border: `1px solid ${selected.includes(row.ein) ? p.accent : p.rule2}`, background: selected.includes(row.ein) ? p.accent : 'transparent', display: 'inline-block' }} />
-                  {String(i + 1).padStart(2, '0')} · Compare
+                  Compare
                 </button>
                 <Tag tone={row.walletIsZakat ? 'accent' : 'muted'} p={p}>{row.wallet}</Tag>
               </div>
@@ -290,27 +357,27 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                 </div>
               </Link>
               <div style={{ fontFamily: FONT_MONO, fontSize: 10, color: p.sub2, marginTop: 2 }}>
-                {row.cause} · {row.region} · EIN {row.ein}
+                {titleCaseCause(row.cause)} · {fmtMoney(row.revenue)} · EIN {row.ein}
               </div>
               <div style={{ display: 'flex', gap: 18, marginTop: 10, alignItems: 'center', flexWrap: 'wrap' }}>
                 <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <Kicker p={p}>Impact</Kicker>
-                  <RatingCell rating={row.impact} p={p} />
+                  <Kicker p={p}>Finances</Kicker>
+                  <RatingCell rating={row.financialHealth} p={p} />
                 </span>
                 <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <Kicker p={p}>Alignment</Kicker>
-                  <RatingCell rating={row.alignment} p={p} />
+                  <Kicker p={p}>Risk</Kicker>
+                  <RatingCell rating={row.risk} p={p} />
                 </span>
                 <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <Kicker p={p}>GMG</Kicker>
-                  <Figure size={16} color={p.accent}>{row.amalScore || '—'}</Figure>
+                  <Kicker p={p}>Donor fit</Kicker>
+                  <RatingCell rating={row.donorFit} p={p} />
                 </span>
               </div>
             </div>
           ))}
         </section>
       ) : (
-        /* Desktop: dense table */
+        /* Desktop: dense, sortable table */
         <section style={{ padding: `0 ${padX}px 28px` }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5 }}>
             <thead>
@@ -326,16 +393,24 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                 }}
               >
                 <th style={{ padding: '10px 6px', width: 28 }} />
-                <th style={{ padding: '10px 6px', width: 36 }}>№</th>
-                <th style={{ padding: '10px 6px' }}>Charity / EIN</th>
-                <th style={{ padding: '10px 6px', width: 150 }}>Cause</th>
-                <th style={{ padding: '10px 6px', width: 110 }}>Region</th>
-                <th style={{ padding: '10px 6px', width: 80 }}>Wallet</th>
-                <th style={{ padding: '10px 6px', width: 110 }}>Impact</th>
-                <th style={{ padding: '10px 6px', width: 110 }}>Alignment</th>
-                <th style={{ padding: '10px 6px', width: 64 }}>GMG</th>
-                <th style={{ padding: '10px 6px', width: 90 }}>Verif.</th>
-                <th style={{ padding: '10px 6px', width: 52 }}>Prog.%</th>
+                <th
+                  style={{ padding: '10px 6px', cursor: 'pointer', userSelect: 'none', color: sortBy === 'name' ? p.fg : undefined }}
+                  onClick={() => onSort('name')}
+                  aria-sort={sortBy === 'name' ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
+                >
+                  Charity / EIN
+                  <span style={{ marginLeft: 4, color: sortBy === 'name' ? p.accent : 'transparent' }}>
+                    {sortDir === 'asc' ? '▲' : '▼'}
+                  </span>
+                </th>
+                {/* Cause then Wallet (wallet is filter-only, not sortable) */}
+                <SortableTh col={COLS[0]} p={p} sortBy={sortBy} sortDir={sortDir} onSort={onSort} />
+                <th style={{ padding: '10px 6px', width: 90 }} title="Zakat-eligible (the charity publicly accepts zakat) or Sadaqah.">
+                  Wallet<span style={{ color: p.sub2, marginLeft: 3 }}>ⓘ</span>
+                </th>
+                {COLS.slice(1).map((col) => (
+                  <SortableTh key={col.key} col={col} p={p} sortBy={sortBy} sortDir={sortDir} onSort={onSort} />
+                ))}
                 <th style={{ padding: '10px 6px', width: 24 }} />
               </tr>
             </thead>
@@ -355,9 +430,6 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                       style={{ accentColor: p.accent, cursor: 'pointer' }}
                     />
                   </td>
-                  <td style={{ padding: '8px 6px', fontFamily: FONT_MONO, fontSize: 10.5, color: p.sub2 }}>
-                    {String(i + 1).padStart(2, '0')}
-                  </td>
                   <td style={{ padding: '8px 6px' }}>
                     <Link
                       to={hrefFor(row.ein)}
@@ -370,19 +442,15 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                     </Link>
                     <div style={{ fontFamily: FONT_MONO, fontSize: 9.5, color: p.sub2 }}>EIN {row.ein}</div>
                   </td>
-                  <td style={{ padding: '8px 6px', color: p.sub }}>{row.cause}</td>
-                  <td style={{ padding: '8px 6px', color: p.sub }}>{row.region}</td>
+                  <td style={{ padding: '8px 6px', color: p.sub }}>{titleCaseCause(row.cause)}</td>
                   <td style={{ padding: '8px 6px' }}>
                     <Tag tone={row.walletIsZakat ? 'accent' : 'muted'} p={p}>{row.wallet}</Tag>
                   </td>
-                  <td style={{ padding: '8px 6px' }}><RatingCell rating={row.impact} p={p} /></td>
-                  <td style={{ padding: '8px 6px' }}><RatingCell rating={row.alignment} p={p} /></td>
-                  <td style={{ padding: '8px 6px' }}>
-                    <Figure size={16} color={p.accent}>{row.amalScore || '—'}</Figure>
-                  </td>
-                  <td style={{ padding: '8px 6px', fontFamily: FONT_MONO, fontSize: 10.5, color: p.sub }}>{row.verification}</td>
-                  <td style={{ padding: '8px 6px', fontFamily: FONT_MONO, fontSize: 11, color: p.fg }}>
-                    {row.programPct != null ? row.programPct : '—'}
+                  <td style={{ padding: '8px 6px' }}><RatingCell rating={row.financialHealth} p={p} /></td>
+                  <td style={{ padding: '8px 6px' }}><RatingCell rating={row.risk} p={p} /></td>
+                  <td style={{ padding: '8px 6px' }}><RatingCell rating={row.donorFit} p={p} /></td>
+                  <td style={{ padding: '8px 6px', textAlign: 'right', fontFamily: FONT_MONO, fontSize: 11.5, color: p.fg }}>
+                    {fmtMoney(row.revenue)}
                   </td>
                   <td style={{ padding: '8px 6px', color: p.sub2, fontSize: 14 }}>›</td>
                 </tr>

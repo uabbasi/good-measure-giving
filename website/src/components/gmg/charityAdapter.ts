@@ -16,6 +16,12 @@ export interface GmgRow {
   amalScore: number;
   verification: string;
   programPct: number | null;
+  // Qualitative signal ratings (ui_signals_v1.signal_states), shown as Harvey
+  // balls on the index. All point the same way: Strong = good.
+  financialHealth: Rating;
+  risk: Rating; // Strong = low risk / strong risk-management
+  donorFit: Rating;
+  revenue: number | null; // annual revenue — the "Size" column
 }
 
 const stripTags = (s: unknown): string =>
@@ -93,6 +99,21 @@ const walletLabel = (tag: string | undefined): string => {
   return 'Sadaqah';
 };
 
+// ui_signals_v1.signal_states use a 3-level scale (Strong/Moderate/Limited);
+// map onto the 5-level Harvey scale as full / half / empty.
+const signalToRating = (s: unknown): Rating => {
+  switch (String(s || '').toLowerCase()) {
+    case 'strong':
+      return 'Strong';
+    case 'moderate':
+      return 'Moderate';
+    case 'limited':
+      return 'Weak';
+    default:
+      return 'Moderate';
+  }
+};
+
 export interface GmgCharity {
   name: string;
   ein: string;
@@ -163,6 +184,7 @@ export const adaptRow = (c: any): GmgRow => {
   // data_confidence (snake). Accept either so Verif. isn't stuck on "Early".
   const dc = num(cs?.dataConfidence ?? cs?.data_confidence);
   const pr = numOrNull(fin?.programExpenseRatio ?? c?.rawData?.program_expense_ratio);
+  const states = sig?.signal_states ?? {};
   return {
     ein: c?.ein ?? '',
     name: c?.name ?? 'Charity',
@@ -178,6 +200,10 @@ export const adaptRow = (c: any): GmgRow => {
     amalScore: num(ae?.amal_score),
     verification: sig?.evidence_stage ?? (dc >= 0.7 ? 'Verified' : dc >= 0.4 ? 'Building' : 'Early'),
     programPct: pr == null ? null : Math.round(pr <= 1 ? pr * 100 : pr),
+    financialHealth: signalToRating(states?.financial_health),
+    risk: signalToRating(states?.risk),
+    donorFit: signalToRating(states?.donor_fit),
+    revenue: numOrNull(c?.totalRevenue ?? fin?.totalRevenue),
   };
 };
 
