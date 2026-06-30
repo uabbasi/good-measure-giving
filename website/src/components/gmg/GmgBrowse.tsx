@@ -25,7 +25,8 @@ import { useIsMobile } from './useIsMobile';
 import { adaptRow, GmgRow } from './charityAdapter';
 
 const RANK: Record<Rating, number> = { Strong: 5, Good: 4, Moderate: 3, Fair: 2, Weak: 1 };
-type SortKey = 'name' | 'cause' | 'finances' | 'risk' | 'donorFit' | 'size';
+type SortKey = 'name' | 'cause' | 'overall' | 'finances' | 'risk' | 'donorFit' | 'size';
+const rRank = (r: Rating | null): number => (r ? RANK[r] : 0);
 type SortDir = 'asc' | 'desc';
 type WalletFilter = 'all' | 'zakat' | 'sadaqah';
 
@@ -159,6 +160,7 @@ interface Col {
 }
 const COLS: Col[] = [
   { key: 'cause', label: 'Cause', width: 150 },
+  { key: 'overall', label: 'GMG', tip: 'Overall GMG rating — Impact + Alignment minus Risk, shown as a band rather than a precise score. Sort to rank by it. Blank = not scored yet.', width: 120 },
   { key: 'finances', label: 'Finances', tip: 'Financial health — reserves, program spending and stability. Strong = healthiest.', width: 120 },
   { key: 'risk', label: 'Risk', tip: 'Risk — governance, transparency and red-flag checks. Strong = lowest risk.', width: 120 },
   { key: 'donorFit', label: 'Donor fit', tip: 'Fit for Muslim donors — cause alignment and zakat signals. Strong = best fit.', width: 120 },
@@ -253,6 +255,9 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
           break;
         case 'cause':
           v = (a.cause || '').localeCompare(b.cause || '');
+          break;
+        case 'overall':
+          v = rRank(a.overall) - rRank(b.overall);
           break;
         case 'finances':
           v = RANK[a.financialHealth] - RANK[b.financialHealth];
@@ -360,6 +365,12 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                 {titleCaseCause(row.cause)} · {fmtMoney(row.revenue)} · EIN {row.ein}
               </div>
               <div style={{ display: 'flex', gap: 18, marginTop: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+                {row.overall && (
+                  <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <Kicker p={p}>GMG</Kicker>
+                    <RatingCell rating={row.overall} p={p} />
+                  </span>
+                )}
                 <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                   <Kicker p={p}>Finances</Kicker>
                   <RatingCell rating={row.financialHealth} p={p} />
@@ -445,6 +456,13 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   <td style={{ padding: '8px 6px', color: p.sub }}>{titleCaseCause(row.cause)}</td>
                   <td style={{ padding: '8px 6px' }}>
                     <Tag tone={row.walletIsZakat ? 'accent' : 'muted'} p={p}>{row.wallet}</Tag>
+                  </td>
+                  <td style={{ padding: '8px 6px' }}>
+                    {row.overall ? (
+                      <RatingCell rating={row.overall} p={p} />
+                    ) : (
+                      <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: p.sub2 }}>—</span>
+                    )}
                   </td>
                   <td style={{ padding: '8px 6px' }}><RatingCell rating={row.financialHealth} p={p} /></td>
                   <td style={{ padding: '8px 6px' }}><RatingCell rating={row.risk} p={p} /></td>

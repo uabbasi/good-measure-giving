@@ -39,6 +39,18 @@ export const ratingFromDimension = (score: number, max = 50): Rating =>
 export const ratingFromCriterion = (scored: number, possible: number): Rating =>
   ratingFromFraction(possible > 0 ? scored / possible : 0);
 
+// The overall GMG score (0–100) as a Harvey band. Thresholds are tuned to the
+// real score distribution (which clusters ~40–70), so the bands are meaningful
+// and well-spread rather than bunched: Strong ~11% · Good ~19% · Moderate ~43% ·
+// Fair ~23% · Weak ~5%. Shown as a band, not a precise rank.
+export const ratingFromGmgScore = (score: number): Rating => {
+  if (score >= 78) return 'Strong';
+  if (score >= 67) return 'Good';
+  if (score >= 54) return 'Moderate';
+  if (score >= 42) return 'Fair';
+  return 'Weak';
+};
+
 export const ratingColor = (rating: Rating, p: GmgPalette): string => {
   const tone = RATING_SCALE[rating].tone;
   return p[tone] as string;

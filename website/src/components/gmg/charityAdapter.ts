@@ -2,7 +2,7 @@
 // "Modern" detail page renders. Tolerant of missing data — every field has a
 // sensible fallback so the proof surface renders for any charity/tier.
 
-import { Rating, ratingFromDimension, ratingFromCriterion } from './rating';
+import { Rating, ratingFromDimension, ratingFromCriterion, ratingFromGmgScore } from './rating';
 
 export interface GmgRow {
   ein: string;
@@ -14,6 +14,8 @@ export interface GmgRow {
   impact: Rating;
   alignment: Rating;
   amalScore: number;
+  /** Overall GMG score as a Harvey band — null when the charity isn't scored yet. */
+  overall: Rating | null;
   verification: string;
   programPct: number | null;
   // Qualitative signal ratings (ui_signals_v1.signal_states), shown as Harvey
@@ -185,6 +187,7 @@ export const adaptRow = (c: any): GmgRow => {
   const dc = num(cs?.dataConfidence ?? cs?.data_confidence);
   const pr = numOrNull(fin?.programExpenseRatio ?? c?.rawData?.program_expense_ratio);
   const states = sig?.signal_states ?? {};
+  const scoreVal = numOrNull(ae?.amal_score);
   return {
     ein: c?.ein ?? '',
     name: c?.name ?? 'Charity',
@@ -198,6 +201,7 @@ export const adaptRow = (c: any): GmgRow => {
     impact: ratingFromDimension(num(cs?.impact), 50),
     alignment: ratingFromDimension(num(cs?.alignment), 50),
     amalScore: num(ae?.amal_score),
+    overall: scoreVal == null ? null : ratingFromGmgScore(scoreVal),
     verification: sig?.evidence_stage ?? (dc >= 0.7 ? 'Verified' : dc >= 0.4 ? 'Building' : 'Early'),
     programPct: pr == null ? null : Math.round(pr <= 1 ? pr * 100 : pr),
     financialHealth: signalToRating(states?.financial_health),
