@@ -1,11 +1,25 @@
+// Good Measure Giving — "Modern" motif Guide article page (/guides/:slug).
+// Motif-only (no legacy variant): renders its own GmgNav + footer via the content kit.
+
 import React, { useEffect } from 'react';
-import { useParams, Link, Navigate } from 'react-router-dom';
-import { useLandingTheme } from '../contexts/LandingThemeContext';
+import { useParams, Navigate, Link } from 'react-router-dom';
+import {
+  GmgContentFrame,
+  Breadcrumb,
+  ContentHero,
+  Section,
+  P,
+  Callout,
+  CardGrid,
+  LinkCard,
+  FaqList,
+  type ContentCtx,
+} from '../src/components/gmg/content';
+import { FONT_MONO } from '../src/components/gmg/tokens';
 import { useGuide } from '../src/hooks/useGuides';
 
-export const GuidePage: React.FC = () => {
+export const GuidePage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const { slug } = useParams<{ slug: string }>();
-  const { isDark } = useLandingTheme();
   const { guide, loading, notFound } = useGuide(slug || '');
 
   useEffect(() => {
@@ -15,124 +29,130 @@ export const GuidePage: React.FC = () => {
 
   if (notFound) return <Navigate to="/guides" replace />;
 
-  if (loading || !guide) {
-    return (
-      <div className={`min-h-screen flex items-center justify-center ${isDark ? 'bg-slate-950' : 'bg-slate-50'}`}>
-        <div className={isDark ? 'text-slate-400' : 'text-slate-600'}>Loading guide…</div>
-      </div>
-    );
-  }
-
   return (
-    <article className={`min-h-screen ${isDark ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <nav aria-label="Breadcrumb" className="mb-6 text-sm text-slate-500">
-          <Link to="/" className="hover:underline">Home</Link>
-          <span className="mx-2">/</span>
-          <Link to="/guides" className="hover:underline">Guides</Link>
-          <span className="mx-2">/</span>
-          <span>{guide.title}</span>
-        </nav>
+    <GmgContentFrame isDark={isDark} maxWidth={760}>
+      {(ctx: ContentCtx) => {
+        const { p } = ctx;
 
-        <header className="mb-10">
-          <h1 className="text-4xl font-semibold mb-3">{guide.title}</h1>
-          <div className="text-sm text-slate-500">
-            {guide.readingTimeMinutes} min read · Updated {new Date(guide.updatedOn).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-          </div>
-        </header>
+        if (loading || !guide) {
+          return <P p={p} muted>Loading guide…</P>;
+        }
 
-        <div className="mb-10 p-4 rounded-lg bg-slate-100 dark:bg-slate-800/50 border-l-4 border-emerald-500">
-          <div className="text-xs uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400 mb-1">TL;DR</div>
-          <p className="text-slate-800 dark:text-slate-200">{guide.tldr}</p>
-        </div>
+        const updated = new Date(guide.updatedOn).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        });
 
-        {guide.sections.map((section, i) => (
-          <section key={i} className="mb-10">
-            <h2 className="text-2xl font-semibold mb-4">{section.heading}</h2>
-            {section.paragraphs.map((p, j) => (
-              <p key={j} className="mb-4 leading-relaxed text-slate-700 dark:text-slate-300">{p}</p>
+        return (
+          <>
+            <Breadcrumb
+              p={p}
+              trail={[{ label: 'Home', to: '/' }, { label: 'Guides', to: '/guides' }, { label: guide.title }]}
+            />
+
+            <ContentHero
+              ctx={ctx}
+              kicker={`${guide.readingTimeMinutes} min read · Updated ${updated}`}
+              title={guide.title}
+            />
+
+            <Callout p={p} tone="info" title="TL;DR">
+              {guide.tldr}
+            </Callout>
+
+            {guide.sections.map((section, i) => (
+              <Section key={i} ctx={ctx} title={section.heading} first={i === 0}>
+                {section.paragraphs.map((para, j) => (
+                  <P key={j} p={p}>{para}</P>
+                ))}
+              </Section>
             ))}
-          </section>
-        ))}
 
-        {guide.featuredCharities && guide.featuredCharities.length > 0 && (
-          <section className="mb-10">
-            <h2 className="text-2xl font-semibold mb-4">Charities featured in this guide</h2>
-            <ul className="grid gap-4 sm:grid-cols-2">
-              {guide.featuredCharities.map((fc) => (
-                <li key={fc.ein} className="p-4 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
-                  <Link to={`/charity/${fc.ein}`} className="font-semibold text-emerald-700 dark:text-emerald-400 hover:underline">
-                    {fc.name}
-                  </Link>
-                  <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{fc.blurb}</p>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
+            {guide.featuredCharities && guide.featuredCharities.length > 0 && (
+              <Section ctx={ctx} title="Charities featured in this guide">
+                <CardGrid min={260}>
+                  {guide.featuredCharities.map((fc) => (
+                    <LinkCard key={fc.ein} p={p} to={`/charity/${fc.ein}`} title={fc.name} desc={fc.blurb} />
+                  ))}
+                </CardGrid>
+              </Section>
+            )}
 
-        {guide.callouts && guide.callouts.length > 0 && (
-          <div className="mb-10">
-            {guide.callouts.map((c, i) => (
-              <div key={i} className="p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 mb-4">
-                <div className="text-xs uppercase tracking-wide font-semibold text-amber-700 dark:text-amber-400 mb-1">{c.label}</div>
-                <p className="text-amber-900 dark:text-amber-100">{c.text}</p>
-              </div>
-            ))}
-          </div>
-        )}
+            {guide.callouts && guide.callouts.length > 0 && (
+              <Section ctx={ctx}>
+                {guide.callouts.map((c, i) => (
+                  <Callout key={i} p={p} tone="caution" title={c.label}>
+                    {c.text}
+                  </Callout>
+                ))}
+              </Section>
+            )}
 
-        <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Frequently Asked Questions</h2>
-          <dl>
-            {guide.faq.map((item, i) => (
-              <div key={i} className="mb-6">
-                <dt className="font-semibold text-slate-900 dark:text-slate-100">{item.q}</dt>
-                <dd className="mt-1 text-slate-700 dark:text-slate-300">{item.a}</dd>
-              </div>
-            ))}
-          </dl>
-        </section>
+            <Section ctx={ctx} title="Frequently asked questions">
+              <FaqList p={p} items={guide.faq.map((f) => ({ q: f.q, a: f.a }))} />
+            </Section>
 
-        {guide.sources && guide.sources.length > 0 && (
-          <section className="mb-10">
-            <h2 className="text-2xl font-semibold mb-4">Sources &amp; further reading</h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
-              This guide presents broadly held positions in Sunni fiqh and names the schools where they differ. The references below are where we drew them from — read each position in its own words. None of this is a fatwa.
-            </p>
-            <ul className="space-y-3">
-              {guide.sources.map((s, i) => (
-                <li key={i} className="text-sm text-slate-700 dark:text-slate-300">
-                  {s.url ? (
-                    <a href={s.url} target="_blank" rel="noopener noreferrer" className="font-medium text-emerald-700 dark:text-emerald-400 hover:underline">
-                      {s.title}
-                    </a>
-                  ) : (
-                    <span className="font-medium">{s.title}</span>
-                  )}
-                  <span className="text-slate-500 dark:text-slate-400"> — {s.publisher}</span>
-                  {s.note && <div className="text-slate-500 dark:text-slate-400 mt-0.5">{s.note}</div>}
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
+            {guide.sources && guide.sources.length > 0 && (
+              <Section ctx={ctx} title="Sources & further reading">
+                <P p={p} muted>
+                  This guide presents broadly held positions in Sunni fiqh and names the schools where they differ. The
+                  references below are where we drew them from — read each position in its own words. None of this is a
+                  fatwa.
+                </P>
+                <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {guide.sources.map((s, i) => (
+                    <li key={i} style={{ fontSize: 15, lineHeight: 1.6, color: p.fg }}>
+                      {s.url ? (
+                        <a
+                          href={s.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ color: p.accent, fontWeight: 500, textDecoration: 'none' }}
+                        >
+                          {s.title}
+                        </a>
+                      ) : (
+                        <span style={{ fontWeight: 500 }}>{s.title}</span>
+                      )}
+                      <span style={{ color: p.sub }}> — {s.publisher}</span>
+                      {s.note && <div style={{ color: p.sub2, fontSize: 13.5, marginTop: 2 }}>{s.note}</div>}
+                    </li>
+                  ))}
+                </ul>
+              </Section>
+            )}
 
-        {guide.relatedCauses && guide.relatedCauses.length > 0 && (
-          <section className="mb-10">
-            <h2 className="text-2xl font-semibold mb-4">Related Cause Areas</h2>
-            <ul className="flex flex-wrap gap-2">
-              {guide.relatedCauses.map((slug) => (
-                <li key={slug}>
-                  <Link to={`/causes/${slug}`} className="inline-block px-3 py-1 text-sm rounded-full border border-slate-300 dark:border-slate-700 hover:border-slate-500">
-                    {slug.replace(/-/g, ' ')}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-      </div>
-    </article>
+            {guide.relatedCauses && guide.relatedCauses.length > 0 && (
+              <Section ctx={ctx} title="Related cause areas">
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {guide.relatedCauses.map((rc) => (
+                    <Link
+                      key={rc}
+                      to={`/causes/${rc}`}
+                      style={{
+                        display: 'inline-block',
+                        padding: '6px 14px',
+                        borderRadius: 99,
+                        border: `1px solid ${p.rule2}`,
+                        background: p.bg2,
+                        color: p.sub,
+                        fontSize: 13.5,
+                        textDecoration: 'none',
+                        textTransform: 'capitalize',
+                        fontFamily: FONT_MONO,
+                        letterSpacing: '0.02em',
+                      }}
+                    >
+                      {rc.replace(/-/g, ' ')}
+                    </Link>
+                  ))}
+                </div>
+              </Section>
+            )}
+          </>
+        );
+      }}
+    </GmgContentFrame>
   );
 };

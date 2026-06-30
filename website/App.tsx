@@ -88,8 +88,14 @@ const MOTIF_CONTENT_ROUTES = new Set<string>([
   '/faq',
   '/causes',
   '/guides',
+  '/prompts',
+  '/link-to-us',
   '/zakat-calculator',
 ]);
+
+// Dynamic detail routes converted to the motif. MOTIF_CONTENT_ROUTES is matched by
+// exact pathname, so these prefixes catch /causes/:slug, /guides/:slug, /prompts/:id.
+const MOTIF_CONTENT_PREFIXES = ['/causes/', '/guides/', '/prompts/'];
 
 export const AppContent: React.FC = () => {
   const location = useLocation();
@@ -110,7 +116,9 @@ export const AppContent: React.FC = () => {
   const isGmgAuthChrome =
     isMotif &&
     (location.pathname === '/profile' || location.pathname.startsWith('/plan/join'));
-  const isGmgMotifOnly = MOTIF_CONTENT_ROUTES.has(location.pathname);
+  const isGmgMotifOnly =
+    MOTIF_CONTENT_ROUTES.has(location.pathname) ||
+    MOTIF_CONTENT_PREFIXES.some((pre) => location.pathname.startsWith(pre));
   const isGmgPreview = isGmgFullBleed || isGmgAuthChrome || isGmgMotifOnly;
 
   // T049: Track page views on route changes
@@ -135,7 +143,7 @@ export const AppContent: React.FC = () => {
             <Route path="/browse" element={isGmgFullBleed ? <GmgBrowse isDark={isDark} /> : <BrowsePage />} />
             <Route path="/charity/:id" element={<CharityDetailsPage />} />
             <Route path="/methodology" element={<MethodologyPage />} />
-            <Route path="/link-to-us" element={<LinkToUsPage />} />
+            <Route path="/link-to-us" element={<LinkToUsPage isDark={isDark} />} />
             <Route path="/changelog" element={<ChangelogPage isDark={isDark} />} />
             <Route path="/faq" element={<FAQPage isDark={isDark} />} />
             <Route path="/about" element={<AboutPage isDark={isDark} />} />
@@ -143,13 +151,13 @@ export const AppContent: React.FC = () => {
             <Route path="/bookmarks" element={<Navigate to="/profile" replace />} />
             <Route path="/compare" element={isGmgFullBleed ? <GmgCompare isDark={isDark} /> : <ComparePage />} />
             <Route path="/profile" element={isGmgAuthChrome ? <GmgChromeFrame isDark={isDark} requireAuth><ProfilePage /></GmgChromeFrame> : <ProfilePage />} />
-            <Route path="/prompts" element={<PromptsPage />} />
-            <Route path="/prompts/:promptId" element={<PromptDetailPage />} />
+            <Route path="/prompts" element={<PromptsPage isDark={isDark} />} />
+            <Route path="/prompts/:promptId" element={<PromptDetailPage isDark={isDark} />} />
             <Route path="/causes" element={<CausesIndexPage isDark={isDark} />} />
-            <Route path="/causes/:slug" element={<CausePage />} />
+            <Route path="/causes/:slug" element={<CausePage isDark={isDark} />} />
             <Route path="/best-muslim-charities-in-usa" element={<BestMuslimCharitiesPage />} />
             <Route path="/guides" element={<GuidesIndexPage isDark={isDark} />} />
-            <Route path="/guides/:slug" element={<GuidePage />} />
+            <Route path="/guides/:slug" element={<GuidePage isDark={isDark} />} />
             <Route path="/zakat-calculator" element={<ZakatCalculatorHubPage isDark={isDark} />} />
             <Route path="/zakat-calculator/:asset" element={<ZakatCalculatorAssetPage />} />
             <Route path="/plan/join/:planId/:token" element={isGmgAuthChrome ? <GmgChromeFrame isDark={isDark}><JoinPlanPage /></GmgChromeFrame> : <JoinPlanPage />} />

@@ -147,7 +147,7 @@ function seedFor(route: string, ctx: {
     return masthead;
   }
   // Motif content pages whose only server data is the masthead.
-  if (route === '/about' || route === '/faq' || route === '/privacy') {
+  if (route === '/about' || route === '/faq' || route === '/privacy' || route === '/link-to-us') {
     return masthead;
   }
   if (route === '/guides') {
@@ -156,17 +156,17 @@ function seedFor(route: string, ctx: {
   if (route.startsWith('/guides/')) {
     const slug = route.slice('/guides/'.length);
     const g = ctx.guideBySlug.get(slug);
-    return g ? [{ queryKey: ['guide', slug], data: g }] : [];
+    return [...masthead, ...(g ? [{ queryKey: ['guide', slug], data: g }] : [])];
   }
   if (route === '/zakat-calculator') {
     return [...masthead, ...(ctx.calculatorData ? [{ queryKey: ['calculator-data'], data: ctx.calculatorData }] : [])];
   }
   if (route.startsWith('/zakat-calculator')) return ctx.calculatorData ? [{ queryKey: ['calculator-data'], data: ctx.calculatorData }] : [];
-  if (route === '/prompts') return ctx.promptsIndex ? [{ queryKey: ['prompts'], data: ctx.promptsIndex }] : [];
+  if (route === '/prompts') return [...masthead, ...(ctx.promptsIndex ? [{ queryKey: ['prompts'], data: ctx.promptsIndex }] : [])];
   if (route.startsWith('/prompts/')) {
     const id = route.slice('/prompts/'.length);
     const p = ctx.promptById.get(id);
-    return p ? [{ queryKey: ['prompt', id], data: p }] : [];
+    return [...masthead, ...(p ? [{ queryKey: ['prompt', id], data: p }] : [])];
   }
   return [];
 }

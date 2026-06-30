@@ -1,17 +1,18 @@
+// Good Measure Giving — "Modern" motif AI prompt detail (/prompts/:promptId).
+// Motif-only (no legacy variant): renders its own GmgNav + footer via the content kit.
+
 import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { useLandingTheme } from '../contexts/LandingThemeContext';
+import { useParams, Navigate } from 'react-router-dom';
 import {
-  ArrowLeft,
-  Copy,
-  Check,
-  CheckCircle2,
-  Clock,
-  FileCode2,
-  ChevronDown,
-  ChevronRight,
-  Info
-} from 'lucide-react';
+  GmgContentFrame,
+  Breadcrumb,
+  ContentHero,
+  Section,
+  P,
+  type ContentCtx,
+} from '../src/components/gmg/content';
+import { FONT_MONO } from '../src/components/gmg/tokens';
+import type { GmgPalette } from '../src/components/gmg/tokens';
 import { usePromptDetail } from '../src/hooks/usePrompts';
 
 const categoryLabels: Record<string, string> = {
@@ -21,8 +22,25 @@ const categoryLabels: Record<string, string> = {
   category_calibration: 'Category Calibration',
 };
 
-export const PromptDetailPage: React.FC = () => {
-  const { isDark } = useLandingTheme();
+// Mono badge used for category + status metadata.
+const Badge: React.FC<{ p: GmgPalette; children: React.ReactNode }> = ({ p, children }) => (
+  <span
+    style={{
+      fontFamily: FONT_MONO,
+      fontSize: 11,
+      letterSpacing: '0.04em',
+      padding: '4px 10px',
+      borderRadius: 99,
+      border: `1px solid ${p.rule2}`,
+      background: p.bg2,
+      color: p.sub,
+    }}
+  >
+    {children}
+  </span>
+);
+
+export const PromptDetailPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const { promptId } = useParams<{ promptId: string }>();
   const { prompt, loading, error } = usePromptDetail(promptId || '');
   const [copied, setCopied] = useState(false);
@@ -40,246 +58,161 @@ export const PromptDetailPage: React.FC = () => {
   };
 
   const toggleAnnotation = (index: number) => {
-    setExpandedAnnotations(prev => {
+    setExpandedAnnotations((prev) => {
       const next = new Set(prev);
-      if (next.has(index)) {
-        next.delete(index);
-      } else {
-        next.add(index);
-      }
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
       return next;
     });
   };
 
-  if (loading) {
-    return (
-      <div className={`min-h-screen flex items-center justify-center ${isDark ? 'bg-slate-950' : 'bg-slate-50'}`}>
-        <div className={isDark ? 'text-slate-400' : 'text-slate-600'}>Loading prompt...</div>
-      </div>
-    );
-  }
-
-  if (error || !prompt) {
-    return (
-      <div className={`min-h-screen ${isDark ? 'bg-slate-950' : 'bg-slate-50'}`}>
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <Link
-            to="/prompts"
-            className={`inline-flex items-center gap-2 mb-8 ${isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'}`}
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to all prompts
-          </Link>
-          <div className={`rounded-xl p-8 text-center ${isDark ? 'bg-slate-900' : 'bg-white border border-slate-200'}`}>
-            <h1 className={`text-2xl font-bold mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              Prompt Not Found
-            </h1>
-            <p className={isDark ? 'text-slate-400' : 'text-slate-600'}>
-              The prompt you're looking for doesn't exist or may have been removed.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (error) return <Navigate to="/prompts" replace />;
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-slate-950' : 'bg-slate-50'}`}>
-      {/* Header */}
-      <div className={`border-b ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <Link
-            to="/prompts"
-            className={`inline-flex items-center gap-2 mb-4 text-sm ${isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'}`}
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to all prompts
-          </Link>
+    <GmgContentFrame isDark={isDark} maxWidth={860}>
+      {(ctx: ContentCtx) => {
+        const { p } = ctx;
 
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${isDark ? 'bg-emerald-900/30' : 'bg-emerald-100'}`}>
-                  <FileCode2 className={`w-5 h-5 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
+        if (loading || !prompt) return <P p={p} muted>Loading prompt…</P>;
+
+        return (
+          <>
+            <Breadcrumb
+              p={p}
+              trail={[
+                { label: 'Home', to: '/' },
+                { label: 'AI Transparency', to: '/prompts' },
+                { label: prompt.name },
+              ]}
+            />
+
+            <ContentHero ctx={ctx} kicker="AI Prompt" title={prompt.name} lead={prompt.description} />
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+              <Badge p={p}>{categoryLabels[prompt.category] || prompt.category}</Badge>
+              <Badge p={p}>{prompt.status === 'active' ? 'Active' : 'Planned'}</Badge>
+              <button
+                type="button"
+                onClick={copyToClipboard}
+                style={{
+                  marginLeft: 'auto',
+                  padding: '8px 16px',
+                  borderRadius: 99,
+                  border: `1px solid ${copied ? p.accent : p.rule2}`,
+                  background: copied ? p.accent : 'transparent',
+                  color: copied ? p.bg : p.sub,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                  fontFamily: FONT_MONO,
+                }}
+              >
+                {copied ? 'Copied' : 'Copy prompt'}
+              </button>
+            </div>
+
+            <Section ctx={ctx} title="Prompt content" first>
+              <div
+                style={{
+                  borderRadius: 12,
+                  border: `1px solid ${p.rule}`,
+                  background: p.bg2,
+                  overflow: 'hidden',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '10px 16px',
+                    borderBottom: `1px solid ${p.rule}`,
+                    fontFamily: FONT_MONO,
+                    fontSize: 11,
+                    color: p.sub2,
+                  }}
+                >
+                  <span style={{ letterSpacing: '0.08em', textTransform: 'uppercase' }}>Prompt</span>
+                  <span>{prompt.source_file}</span>
                 </div>
-                <h1 className={`text-2xl font-bold font-merriweather ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                  {prompt.name}
-                </h1>
+                <pre
+                  style={{
+                    margin: 0,
+                    padding: 16,
+                    maxHeight: 600,
+                    overflow: 'auto',
+                    fontFamily: FONT_MONO,
+                    fontSize: 13,
+                    lineHeight: 1.6,
+                    color: p.fg,
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word',
+                  }}
+                >
+                  <code>{prompt.content}</code>
+                </pre>
               </div>
-              <p className={`text-sm mb-3 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                {prompt.description}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <span className={`px-2 py-1 rounded text-xs font-medium ${
-                  isDark ? 'bg-slate-800 text-slate-300' : 'bg-slate-100 text-slate-700'
-                }`}>
-                  {categoryLabels[prompt.category] || prompt.category}
-                </span>
-                {prompt.status === 'active' ? (
-                  <span className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${
-                    isDark ? 'bg-emerald-900/30 text-emerald-400' : 'bg-emerald-100 text-emerald-700'
-                  }`}>
-                    <CheckCircle2 className="w-3 h-3" />
-                    Active
-                  </span>
-                ) : (
-                  <span className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${
-                    isDark ? 'bg-amber-900/30 text-amber-400' : 'bg-amber-100 text-amber-700'
-                  }`}>
-                    <Clock className="w-3 h-3" />
-                    Planned
-                  </span>
-                )}
-              </div>
-            </div>
+            </Section>
 
-            <button
-              onClick={copyToClipboard}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                copied
-                  ? isDark
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-emerald-600 text-white'
-                  : isDark
-                    ? 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-              }`}
-            >
-              {copied ? (
-                <>
-                  <Check className="w-4 h-4" />
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <Copy className="w-4 h-4" />
-                  Copy Prompt
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main Content - Prompt */}
-          <div className="lg:col-span-2">
-            <div className={`rounded-xl border overflow-hidden ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-              <div className={`px-4 py-3 border-b flex items-center justify-between ${isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-200'}`}>
-                <span className={`text-sm font-medium ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                  Prompt Content
-                </span>
-                <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-                  {prompt.source_file}
-                </span>
-              </div>
-              <pre className={`p-4 text-sm overflow-x-auto max-h-[600px] overflow-y-auto ${
-                isDark ? 'text-slate-300' : 'text-slate-800'
-              }`}>
-                <code className="whitespace-pre-wrap break-words font-mono">
-                  {prompt.content}
-                </code>
-              </pre>
-            </div>
-          </div>
-
-          {/* Sidebar - Annotations */}
-          <div className="lg:col-span-1">
-            <div className={`rounded-xl border sticky top-4 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-              <div className={`px-4 py-3 border-b ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-                <h2 className={`text-sm font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                  Annotations
-                </h2>
-                <p className={`text-xs mt-1 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-                  Human-readable explanations of key sections
-                </p>
-              </div>
-
+            <Section ctx={ctx} title="Annotations">
               {prompt.annotations.length === 0 ? (
-                <div className={`p-4 text-sm ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-                  No annotations available for this prompt.
-                </div>
+                <P p={p} muted>No annotations available for this prompt.</P>
               ) : (
-                <div className="divide-y divide-slate-800">
-                  {prompt.annotations.map((annotation, index) => (
-                    <div key={index} className="p-4">
-                      <button
-                        onClick={() => toggleAnnotation(index)}
-                        className="w-full flex items-start gap-2 text-left"
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {prompt.annotations.map((annotation, index) => {
+                    const open = expandedAnnotations.has(index);
+                    return (
+                      <div
+                        key={index}
+                        style={{ border: `1px solid ${p.rule}`, borderRadius: 12, background: p.card, overflow: 'hidden' }}
                       >
-                        <span className={`mt-0.5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-                          {expandedAnnotations.has(index) ? (
-                            <ChevronDown className="w-4 h-4" />
-                          ) : (
-                            <ChevronRight className="w-4 h-4" />
-                          )}
-                        </span>
-                        <div className="flex-grow">
-                          <h3 className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                            {annotation.section}
-                          </h3>
+                        <button
+                          type="button"
+                          onClick={() => toggleAnnotation(index)}
+                          style={{
+                            width: '100%',
+                            display: 'flex',
+                            alignItems: 'baseline',
+                            gap: 10,
+                            padding: '14px 16px',
+                            background: 'transparent',
+                            border: 'none',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            color: p.fg,
+                          }}
+                        >
+                          <span style={{ fontFamily: FONT_MONO, fontSize: 12, color: p.accent2 }}>
+                            {open ? '−' : '+'}
+                          </span>
+                          <span style={{ flexGrow: 1, fontSize: 15, fontWeight: 600 }}>{annotation.section}</span>
                           {annotation.lines && (
-                            <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                            <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: p.sub2 }}>
                               Lines {annotation.lines}
                             </span>
                           )}
-                        </div>
-                      </button>
-
-                      {expandedAnnotations.has(index) && (
-                        <div className={`mt-3 ml-6 p-3 rounded-lg text-sm ${
-                          isDark ? 'bg-slate-800 text-slate-300' : 'bg-slate-50 text-slate-700'
-                        }`}>
-                          <Info className={`w-4 h-4 mb-2 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
-                          {annotation.explanation}
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                        </button>
+                        {open && (
+                          <div
+                            style={{
+                              padding: '0 16px 16px 38px',
+                              fontSize: 14,
+                              lineHeight: 1.65,
+                              color: p.sub,
+                            }}
+                          >
+                            {annotation.explanation}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
-            </div>
-          </div>
-        </div>
-
-        {/* Related Prompts - Could be added later */}
-        <div className={`mt-12 pt-8 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className={`text-lg font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              About This Prompt
-            </h2>
-          </div>
-          <div className={`rounded-xl p-6 ${isDark ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-slate-200'}`}>
-            <div className="grid sm:grid-cols-2 gap-6">
-              <div>
-                <h3 className={`text-xs font-bold uppercase tracking-wider mb-2 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-                  Category
-                </h3>
-                <p className={isDark ? 'text-white' : 'text-slate-900'}>
-                  {categoryLabels[prompt.category] || prompt.category}
-                </p>
-              </div>
-              <div>
-                <h3 className={`text-xs font-bold uppercase tracking-wider mb-2 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-                  Status
-                </h3>
-                <p className={isDark ? 'text-white' : 'text-slate-900'}>
-                  {prompt.status === 'active' ? 'Active - Used in production' : 'Planned - Not yet implemented'}
-                </p>
-              </div>
-              <div className="sm:col-span-2">
-                <h3 className={`text-xs font-bold uppercase tracking-wider mb-2 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-                  Source File
-                </h3>
-                <code className={`text-sm ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
-                  {prompt.source_file}
-                </code>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            </Section>
+          </>
+        );
+      }}
+    </GmgContentFrame>
   );
 };

@@ -56,7 +56,7 @@ test('PromptsPage renders seeded prompts index synchronously (SSR)', () => {
     <QueryClientProvider client={qc}>
       <LandingThemeProvider>
         <MemoryRouter>
-          <PromptsPage />
+          <PromptsPage isDark={false} />
         </MemoryRouter>
       </LandingThemeProvider>
     </QueryClientProvider>
@@ -73,7 +73,7 @@ test('PromptDetailPage renders seeded prompt synchronously (SSR)', () => {
       <LandingThemeProvider>
         <MemoryRouter initialEntries={['/prompts/baseline-v3']}>
           <Routes>
-            <Route path="/prompts/:promptId" element={<PromptDetailPage />} />
+            <Route path="/prompts/:promptId" element={<PromptDetailPage isDark={false} />} />
           </Routes>
         </MemoryRouter>
       </LandingThemeProvider>
