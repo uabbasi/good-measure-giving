@@ -17,7 +17,7 @@ import {
   resolveFontVariant,
   type FontVariant,
 } from './tokens';
-import { Rating, ratingColor, riskTone } from './rating';
+import { Rating, ratingColor } from './rating';
 import { HarveyBall, Tag, Kicker, Figure } from './primitives';
 import { GmgNav, TypeSwitcher } from './chrome';
 import { useIsMobile } from './useIsMobile';
@@ -25,6 +25,15 @@ import { adaptCharity, GmgCharity } from './charityAdapter';
 
 const usd = (n: number | null): string =>
   n == null ? '—' : `$${Math.round(n).toLocaleString()}`;
+
+// Compact annual revenue ($851K / $3.0M / $1.5B) — matches the /browse Size column.
+const fmtSize = (n: number | null): string => {
+  if (n == null) return '—';
+  if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
+  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
+  if (n >= 1e3) return `$${Math.round(n / 1e3)}K`;
+  return `$${Math.round(n)}`;
+};
 
 // Module-scope table pieces — kept out of the render body so they retain a
 // stable identity across renders (no remount of the table as queries resolve).
@@ -241,26 +250,19 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                     <Tag tone={s.wallet.toLowerCase().includes('zakat') ? 'accent' : 'muted'} p={p}>{s.wallet}</Tag>
                     {s.category && <Tag p={p}>{s.category}</Tag>}
                   </div>
-                  <div style={{ display: 'flex', gap: 14, marginTop: 10 }}>
-                    <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                      <Kicker p={p}>Impact</Kicker>
-                      <RatingMini rating={s.impact.overall} p={p} />
-                    </span>
-                    <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                      <Kicker p={p}>Align.</Kicker>
-                      <RatingMini rating={s.alignment.overall} p={p} />
-                    </span>
-                  </div>
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            <Row {...rowProps} label="GMG score" render={(s) => <Figure size={18} color={p.accent}>{s.amalScore}</Figure>} />
+            <Row {...rowProps} label="GMG rating" render={(s) => <RatingMini rating={s.overall ?? undefined} p={p} />} />
+            <Row {...rowProps} label="Finances" render={(s) => <RatingMini rating={s.financialHealth} p={p} />} />
+            <Row {...rowProps} label="Risk" render={(s) => <RatingMini rating={s.risk} p={p} />} />
+            <Row {...rowProps} label="Donor fit" render={(s) => <RatingMini rating={s.donorFit} p={p} />} />
+            <Row {...rowProps} label="Size" kicker="annual revenue" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{fmtSize(s.totalRevenue)}</span>} />
             <Row {...rowProps} label="Wallet" render={(s) => <Tag tone={s.wallet.toLowerCase().includes('zakat') ? 'accent' : 'muted'} p={p}>{s.wallet}</Tag>} />
-            <Row {...rowProps} label="Cause · region" render={(s) => <span style={{ color: p.sub }}>{s.category} · {s.region}</span>} />
+            <Row {...rowProps} label="Cause" render={(s) => <span style={{ color: p.sub }}>{s.category}</span>} />
             <Row {...rowProps} label="Founded" render={(s) => <span style={{ color: p.sub }}>{s.founded ?? '—'}{s.trackRecordYears ? ` · ${s.trackRecordYears} yrs` : ''}</span>} />
-            <Row {...rowProps} label="Risk" render={(s) => <span style={{ color: p[riskTone(s.riskLevel)] as string, fontWeight: 500 }}>{s.riskLevel}</span>} />
             <Row {...rowProps} label="Program efficiency" kicker="% to programs" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{s.programRatioPct != null ? `${s.programRatioPct}%` : '—'}</span>} />
             <Row {...rowProps} label="Reserves" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{s.reserveMonths != null ? `${s.reserveMonths} mo` : '—'}</span>} />
             <Row {...rowProps} label="Cost / beneficiary" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{usd(s.costPerBeneficiary)}</span>} />

@@ -163,6 +163,12 @@ export interface GmgCharity {
   programs: string[];
   populations: string[];
   geography: string[];
+  // Browse-consistent signal ratings (Harvey balls). `overall` is the GMG band
+  // (null when unscored); the rest come from ui_signals_v1.signal_states.
+  overall: Rating | null;
+  financialHealth: Rating;
+  risk: Rating;
+  donorFit: Rating;
   assessmentLabel: string | null;
   archetypeLabel: string | null;
   evidenceStage: string | null;
@@ -305,6 +311,13 @@ export const adaptCharity = (c: any): GmgCharity => {
       .map(titleCase)
       .slice(0, 6),
     geography: (Array.isArray(c?.geographicCoverage) ? c.geographicCoverage : []).slice(0, 6),
+    overall: (() => {
+      const sv = numOrNull(ae?.amal_score);
+      return sv == null ? null : ratingFromGmgScore(sv);
+    })(),
+    financialHealth: signalToRating(sig?.signal_states?.financial_health),
+    risk: signalToRating(sig?.signal_states?.risk),
+    donorFit: signalToRating(sig?.signal_states?.donor_fit),
     assessmentLabel: sig?.assessment_label ?? null,
     archetypeLabel: sig?.archetype_label ?? null,
     evidenceStage: sig?.evidence_stage ?? null,
