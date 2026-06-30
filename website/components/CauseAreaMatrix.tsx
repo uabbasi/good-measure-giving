@@ -6,13 +6,18 @@
  *
  * X-axis: Alignment (0-50)
  * Y-axis: Impact (0-50)
+ *
+ * Colors are the GMG "Modern" motif palette (sage-on-bone) so the chart sits in
+ * the motif methodology page rather than clashing with it. Layout stays Tailwind;
+ * colors are inline + palette-driven (gmgPalette) for both light and dark.
  */
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
-import { ArrowLeft, Users } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { SHOW_AMAL_SCORE } from '../src/featureFlags';
+import { gmgPalette } from '../src/components/gmg/tokens';
 
 interface CharityWithPillars {
   id: string;
@@ -64,19 +69,21 @@ const CATEGORY_LABELS: Record<string, string> = {
   'OTHER': 'Other',
 };
 
-// Colors for consolidated cause areas
+// Motif-harmonious category colors — muted, earthy tones that read as distinct
+// without the neon clash. Applied inline (not Tailwind bg-* classes).
 const CAUSE_COLORS: Record<string, string> = {
-  'HUMANITARIAN': 'bg-rose-500',
-  'HEALTH': 'bg-pink-500',
-  'EDUCATION': 'bg-amber-500',
-  'MOSQUES_RELIGIOUS': 'bg-purple-500',
-  'CIVIL_RIGHTS_ADVOCACY': 'bg-blue-500',
-  'SOCIAL_SERVICES': 'bg-teal-500',
-  'OTHER': 'bg-slate-500',
+  'HUMANITARIAN': '#c47a6a',          // clay
+  'HEALTH': '#c58fa6',                // dusty rose
+  'EDUCATION': '#cdb35e',             // muted gold
+  'MOSQUES_RELIGIOUS': '#8fa178',     // sage / olive
+  'CIVIL_RIGHTS_ADVOCACY': '#7f9bb0', // dusty blue
+  'SOCIAL_SERVICES': '#9fce8f',       // soft green
+  'OTHER': '#9a9486',                 // warm gray
 };
 
 export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) => {
   const { isDark } = useLandingTheme();
+  const p = gmgPalette(isDark);
   const [selectedCause, setSelectedCause] = useState<string | null>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
@@ -121,7 +128,7 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) =
       .map(([category, data]) => ({
         category,
         label: CATEGORY_LABELS[category] || category,
-        color: CAUSE_COLORS[category] || 'bg-slate-500',
+        color: CAUSE_COLORS[category] || CAUSE_COLORS.OTHER,
         count: data.charities.length,
         charities: data.charities.sort((a, b) => b.amalScore - a.amalScore),
         avgImpact: data.avgImpact / data.charities.length,
@@ -253,10 +260,8 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) =
     return ((val - charityBounds.minY) / range) * 100;
   };
 
-  const getWalletColor = (tag?: string) => {
-    if (tag?.includes('ZAKAT')) return 'bg-emerald-500';
-    return 'bg-slate-400';
-  };
+  // Zakat dot = sage accent; Sadaqah = muted. Inline hex (motif palette).
+  const getWalletColor = (tag?: string) => (tag?.includes('ZAKAT') ? p.accent : p.sub2);
 
   // Handle cause selection with animation
   const handleCauseClick = (category: string, x: number, y: number) => {
@@ -277,36 +282,37 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) =
     setIsAnimating(false);
   };
 
+  const labelMicro: React.CSSProperties = { color: p.sub2 };
+
   return (
-    <div className={`rounded-2xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+    <div className="rounded-2xl border" style={{ background: p.card, borderColor: p.rule }}>
       {/* Header */}
-      <div className={`px-6 py-4 border-b ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+      <div className="px-6 py-4 border-b" style={{ borderColor: p.rule }}>
         {selectedCause ? (
           <div className="flex items-center gap-3">
             <button
               onClick={handleBack}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                isDark ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
-              }`}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+              style={{ background: p.bg2, color: p.sub }}
             >
               <ArrowLeft className="w-4 h-4" />
               Back
             </button>
             <div>
-              <h3 className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <h3 className="font-bold" style={{ color: p.fg }}>
                 {selectedCauseData?.label}
               </h3>
-              <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+              <p className="text-xs" style={labelMicro}>
                 {selectedCauseData?.count} charities • sized by budget
               </p>
             </div>
           </div>
         ) : (
           <div>
-            <h3 className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            <h3 className="font-bold" style={{ color: p.fg }}>
               Charities by Cause Area
             </h3>
-            <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+            <p className="text-xs" style={labelMicro}>
               Click a bubble to see all charities in that cause
             </p>
           </div>
@@ -317,15 +323,18 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) =
       <div className="p-6 pl-24">
         <div className="relative aspect-square max-w-lg mx-auto">
           {/* Background Grid */}
-          <div className={`absolute inset-0 rounded-lg ${isDark ? 'border border-slate-700 bg-slate-800' : 'border border-slate-200 bg-slate-50'}`}>
+          <div className="absolute inset-0 rounded-lg border" style={{ borderColor: p.rule2, background: p.bg2 }}>
             {/* Corner gradient hint for "best" area */}
-            <div className={`absolute top-0 right-0 w-1/3 h-1/3 rounded-tr-lg ${isDark ? 'bg-gradient-to-bl from-emerald-900/20 to-transparent' : 'bg-gradient-to-bl from-emerald-100/50 to-transparent'}`}></div>
+            <div
+              className="absolute top-0 right-0 w-1/3 h-1/3 rounded-tr-lg"
+              style={{ background: `linear-gradient(to bottom left, ${p.accent}22, transparent)` }}
+            ></div>
 
             {/* Direction indicators */}
-            <div className={`absolute top-2 right-2 text-[9px] font-medium text-right ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
+            <div className="absolute top-2 right-2 text-[9px] font-medium text-right" style={{ color: p.accent }}>
               Best →
             </div>
-            <div className={`absolute bottom-2 left-2 text-[9px] font-medium ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+            <div className="absolute bottom-2 left-2 text-[9px] font-medium" style={{ color: p.sub2 }}>
               ← Lower scores
             </div>
           </div>
@@ -360,29 +369,34 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) =
                   onMouseLeave={() => setHoveredItem(null)}
                 >
                   <div
-                    className={`rounded-full border-2 border-white shadow-md transition-transform duration-200 ${getWalletColor(charity.walletTag)} ${isHovered ? 'scale-125 ring-4 ring-slate-900/10' : 'hover:scale-110'}`}
+                    className={`rounded-full shadow-md transition-transform duration-200 ${isHovered ? 'scale-125' : 'hover:scale-110'}`}
                     style={{
                       width: dotSize,
                       height: dotSize,
+                      background: getWalletColor(charity.walletTag),
+                      border: `2px solid ${p.bg}`,
                       opacity: isAnimating ? 0 : 1,
                       transform: isAnimating ? 'scale(0)' : 'scale(1)',
                       transition: isAnimating ? 'none' : `opacity 300ms ${index * 20}ms, transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 20}ms`,
                     }}
                   />
                   {isHovered && (
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-slate-900 text-white text-xs rounded-lg p-3 shadow-xl z-30 pointer-events-none">
+                    <div
+                      className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 text-xs rounded-lg p-3 shadow-xl z-30 pointer-events-none"
+                      style={{ background: p.bg, color: p.fg, border: `1px solid ${p.rule2}` }}
+                    >
                       <div className="font-bold mb-1 truncate">{charity.name}</div>
-                      <div className="flex justify-between text-slate-300">
+                      <div className="flex justify-between" style={{ color: p.sub }}>
                         {SHOW_AMAL_SCORE && <span>Score: {charity.amalScore}</span>}
                         <span>{charity.walletTag?.includes('ZAKAT') ? 'Zakat' : 'Sadaqah'}</span>
                       </div>
                       {charity.totalRevenue && (
-                        <div className="text-slate-400 text-[10px] mt-1">
+                        <div className="text-[10px] mt-1" style={{ color: p.sub2 }}>
                           ${(charity.totalRevenue / 1000000).toFixed(1)}M budget
                         </div>
                       )}
                       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full">
-                        <div className="border-8 border-transparent border-t-slate-900"></div>
+                        <div className="border-8 border-transparent" style={{ borderTopColor: p.bg }}></div>
                       </div>
                     </div>
                   )}
@@ -407,22 +421,25 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) =
                   onMouseLeave={() => setHoveredItem(null)}
                 >
                   <div
-                    className={`rounded-full border-3 border-white shadow-lg transition-all duration-200 flex items-center justify-center ${cause.color} ${isHovered ? 'scale-110 ring-4 ring-slate-900/20' : 'hover:scale-105'}`}
-                    style={{ width: size, height: size }}
+                    className={`rounded-full shadow-lg transition-all duration-200 flex items-center justify-center ${isHovered ? 'scale-110' : 'hover:scale-105'}`}
+                    style={{ width: size, height: size, background: cause.color, border: `3px solid ${p.bg}` }}
                   >
-                    <span className="text-white text-xs font-bold">{cause.count}</span>
+                    <span className="text-xs font-bold" style={{ color: '#ffffff' }}>{cause.count}</span>
                   </div>
                   {isHovered && (
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 bg-slate-900 text-white text-xs rounded-lg p-3 shadow-xl z-30 pointer-events-none">
+                    <div
+                      className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 text-xs rounded-lg p-3 shadow-xl z-30 pointer-events-none"
+                      style={{ background: p.bg, color: p.fg, border: `1px solid ${p.rule2}` }}
+                    >
                       <div className="font-bold mb-1">{cause.label}</div>
-                      <div className="text-slate-300 mb-2">{cause.count} charities evaluated</div>
-                      <div className="text-slate-400 text-[10px]">
+                      <div className="mb-2" style={{ color: p.sub }}>{cause.count} charities evaluated</div>
+                      <div className="text-[10px]" style={{ color: p.sub2 }}>
                         <div>Avg Score: {Math.round((cause.avgAlignment + cause.avgImpact))} / 100</div>
                         <div>Top: {cause.topCharity?.name}{SHOW_AMAL_SCORE && ` (${cause.topCharity?.amalScore})`}</div>
                       </div>
-                      <div className="mt-2 text-emerald-400 text-[10px] font-medium">Click to explore →</div>
+                      <div className="mt-2 text-[10px] font-medium" style={{ color: p.accent }}>Click to explore →</div>
                       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full">
-                        <div className="border-8 border-transparent border-t-slate-900"></div>
+                        <div className="border-8 border-transparent" style={{ borderTopColor: p.bg }}></div>
                       </div>
                     </div>
                   )}
@@ -432,40 +449,40 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) =
           )}
 
           {/* Axis Labels */}
-          <div className={`absolute -bottom-8 left-1/2 -translate-x-1/2 text-center ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+          <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-center" style={{ color: p.sub }}>
             <div className="text-[10px] font-bold uppercase tracking-wider">Alignment →</div>
-            <div className={`text-[8px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Donor Fit</div>
+            <div className="text-[8px]" style={{ color: p.sub2 }}>Donor Fit</div>
           </div>
-          <div className={`absolute -left-[4.5rem] top-1/2 -translate-y-1/2 -rotate-90 text-center whitespace-nowrap ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+          <div className="absolute -left-[4.5rem] top-1/2 -translate-y-1/2 -rotate-90 text-center whitespace-nowrap" style={{ color: p.sub }}>
             <div className="text-[10px] font-bold uppercase tracking-wider">Impact →</div>
-            <div className={`text-[8px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Effectiveness</div>
+            <div className="text-[8px]" style={{ color: p.sub2 }}>Effectiveness</div>
           </div>
         </div>
       </div>
 
       {/* Legend */}
-      <div className={`px-6 pb-6`}>
+      <div className="px-6 pb-6">
         {selectedCause ? (
-          <div className={`flex flex-wrap justify-center gap-4 pt-4 border-t ${isDark ? 'border-slate-700' : 'border-slate-100'}`}>
+          <div className="flex flex-wrap justify-center gap-4 pt-4 border-t" style={{ borderColor: p.rule }}>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-              <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Accepts Zakat</span>
+              <div className="w-3 h-3 rounded-full" style={{ background: p.accent }}></div>
+              <span className="text-xs" style={{ color: p.sub }}>Accepts Zakat</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-slate-400"></div>
-              <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Sadaqah</span>
+              <div className="w-3 h-3 rounded-full" style={{ background: p.sub2 }}></div>
+              <span className="text-xs" style={{ color: p.sub }}>Sadaqah</span>
             </div>
-            <div className={`flex items-center gap-2 text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+            <div className="flex items-center gap-2 text-xs" style={{ color: p.sub2 }}>
               <div className="flex items-center gap-1">
-                <div className="w-2 h-2 rounded-full bg-slate-300 border border-slate-400"></div>
+                <div className="w-2 h-2 rounded-full" style={{ background: p.sub2, border: `1px solid ${p.rule2}` }}></div>
                 <span className="text-[8px]">→</span>
-                <div className="w-4 h-4 rounded-full bg-slate-300 border border-slate-400"></div>
+                <div className="w-4 h-4 rounded-full" style={{ background: p.sub2, border: `1px solid ${p.rule2}` }}></div>
               </div>
               <span>Size = budget</span>
             </div>
           </div>
         ) : (
-          <div className={`flex flex-wrap justify-center gap-3 pt-4 border-t ${isDark ? 'border-slate-700' : 'border-slate-100'}`}>
+          <div className="flex flex-wrap justify-center gap-3 pt-4 border-t" style={{ borderColor: p.rule }}>
             {causeAggregates.slice(0, 6).map(cause => (
               <button
                 key={cause.category}
@@ -476,8 +493,8 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) =
                 }}
                 className="flex items-center gap-1.5 group"
               >
-                <div className={`w-2.5 h-2.5 rounded-full ${cause.color}`}></div>
-                <span className={`text-[10px] group-hover:underline ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                <div className="w-2.5 h-2.5 rounded-full" style={{ background: cause.color }}></div>
+                <span className="text-[10px] group-hover:underline" style={{ color: p.sub }}>
                   {cause.label}
                 </span>
               </button>
