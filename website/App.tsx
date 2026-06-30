@@ -102,7 +102,12 @@ const MOTIF_CONTENT_PREFIXES = ['/causes/', '/guides/', '/prompts/', '/zakat-cal
 export const AppContent: React.FC = () => {
   const location = useLocation();
   const { isDark } = useLandingTheme();
-  const isLandingPage = location.pathname === '/';
+  // Canonical URLs carry a trailing slash (e.g. /browse/, /about/). The design-mode
+  // checks below match exact paths, so normalize the trailing slash first —
+  // otherwise a RELOADED canonical URL fails the exact match and falls through to
+  // the legacy design, even though SSR and in-app navigation resolved the motif.
+  const path = location.pathname.length > 1 ? location.pathname.replace(/\/+$/, '') : location.pathname;
+  const isLandingPage = path === '/';
   // GMG "Modern" motif is the default design for everyone. `?design=legacy` is an
   // escape hatch to the old design. Two motif flavors, both suppress the app
   // Navbar/Footer/overlays:
@@ -111,16 +116,16 @@ export const AppContent: React.FC = () => {
   const isMotif = isMotifDesign(location.search);
   const isGmgFullBleed =
     isMotif &&
-    (location.pathname.startsWith('/charity/') ||
-      location.pathname === '/browse' ||
-      location.pathname === '/compare' ||
-      location.pathname === '/');
+    (path.startsWith('/charity/') ||
+      path === '/browse' ||
+      path === '/compare' ||
+      path === '/');
   const isGmgAuthChrome =
     isMotif &&
-    (location.pathname === '/profile' || location.pathname.startsWith('/plan/join'));
+    (path === '/profile' || path.startsWith('/plan/join'));
   const isGmgMotifOnly =
-    MOTIF_CONTENT_ROUTES.has(location.pathname) ||
-    MOTIF_CONTENT_PREFIXES.some((pre) => location.pathname.startsWith(pre));
+    MOTIF_CONTENT_ROUTES.has(path) ||
+    MOTIF_CONTENT_PREFIXES.some((pre) => path.startsWith(pre));
   const isGmgPreview = isGmgFullBleed || isGmgAuthChrome || isGmgMotifOnly;
 
   // T049: Track page views on route changes
