@@ -147,7 +147,7 @@ function seedFor(route: string, ctx: {
     return masthead;
   }
   // Motif content pages whose only server data is the masthead.
-  if (route === '/about' || route === '/faq' || route === '/privacy' || route === '/link-to-us') {
+  if (route === '/about' || route === '/faq' || route === '/privacy' || route === '/link-to-us' || route === '/methodology') {
     return masthead;
   }
   if (route === '/guides') {

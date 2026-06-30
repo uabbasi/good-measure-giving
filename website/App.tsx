@@ -83,6 +83,7 @@ export const AppProviders: React.FC<{ queryClient: QueryClient; children: React.
 // is converted so the app's legacy Navbar/Footer is suppressed for it.
 const MOTIF_CONTENT_ROUTES = new Set<string>([
   '/changelog',
+  '/methodology',
   '/about',
   '/privacy',
   '/faq',
@@ -143,7 +144,7 @@ export const AppContent: React.FC = () => {
             <Route path="/" element={isGmgFullBleed ? <GmgLanding isDark={isDark} /> : <LandingPage />} />
             <Route path="/browse" element={isGmgFullBleed ? <GmgBrowse isDark={isDark} /> : <BrowsePage />} />
             <Route path="/charity/:id" element={<CharityDetailsPage />} />
-            <Route path="/methodology" element={<MethodologyPage />} />
+            <Route path="/methodology" element={<MethodologyPage isDark={isDark} />} />
             <Route path="/link-to-us" element={<LinkToUsPage isDark={isDark} />} />
             <Route path="/changelog" element={<ChangelogPage isDark={isDark} />} />
             <Route path="/faq" element={<FAQPage isDark={isDark} />} />
