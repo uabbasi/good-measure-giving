@@ -90,6 +90,7 @@ const MOTIF_CONTENT_ROUTES = new Set<string>([
   '/guides',
   '/prompts',
   '/link-to-us',
+  '/best-muslim-charities-in-usa',
   '/zakat-calculator',
 ]);
 
@@ -155,7 +156,7 @@ export const AppContent: React.FC = () => {
             <Route path="/prompts/:promptId" element={<PromptDetailPage isDark={isDark} />} />
             <Route path="/causes" element={<CausesIndexPage isDark={isDark} />} />
             <Route path="/causes/:slug" element={<CausePage isDark={isDark} />} />
-            <Route path="/best-muslim-charities-in-usa" element={<BestMuslimCharitiesPage />} />
+            <Route path="/best-muslim-charities-in-usa" element={<BestMuslimCharitiesPage isDark={isDark} />} />
             <Route path="/guides" element={<GuidesIndexPage isDark={isDark} />} />
             <Route path="/guides/:slug" element={<GuidePage isDark={isDark} />} />
             <Route path="/zakat-calculator" element={<ZakatCalculatorHubPage isDark={isDark} />} />
