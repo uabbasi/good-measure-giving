@@ -20,6 +20,27 @@ import { GmgSignIn } from './GmgSignIn';
 import { GmgVersionStrip } from './GmgVersionStrip';
 import { useIsMobile } from './useIsMobile';
 
+// Concise desktop nav row. `active` (passed per surface) highlights the match.
+const NAV_LINKS: [string, string][] = [
+  ['Browse', '/browse'],
+  ['Causes', '/causes'],
+  ['Guides', '/guides'],
+  ['Methodology', '/methodology'],
+  ['About', '/about'],
+];
+
+// The mobile drawer carries the fuller set.
+const MOBILE_LINKS: [string, string][] = [
+  ['Browse charities', '/browse'],
+  ['Causes', '/causes'],
+  ['Guides', '/guides'],
+  ['Zakat calculator', '/zakat-calculator'],
+  ['Best Muslim charities', '/best-muslim-charities-in-usa'],
+  ['Methodology', '/methodology'],
+  ['About', '/about'],
+  ['FAQ', '/faq'],
+];
+
 export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: string }> = ({
   p,
   isMobile,
@@ -28,6 +49,7 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
   const { isSignedIn, firstName } = useAuth();
   const [signInOpen, setSignInOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
@@ -50,6 +72,7 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
 
   useEffect(() => {
     setMenuOpen(false);
+    setMobileMenuOpen(false);
   }, [location.pathname]);
 
   const pill: React.CSSProperties = {
@@ -134,12 +157,7 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
     </Link>
     {!isMobile && (
       <nav style={{ display: 'flex', gap: 4, fontSize: 13, marginLeft: 8 }}>
-        {[
-          ['Browse', '/browse'],
-          ['Compare', '/compare'],
-          ['Methodology', '/methodology'],
-          ['About', '/about'],
-        ].map(([label, to]) => (
+        {NAV_LINKS.map(([label, to]) => (
           <Link
             key={label}
             to={to}
@@ -157,9 +175,34 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
       </nav>
     )}
     <span style={{ flex: 1 }} />
+    {isMobile && (
+      <button
+        type="button"
+        aria-label="Menu"
+        aria-expanded={mobileMenuOpen}
+        onClick={() => setMobileMenuOpen((v) => !v)}
+        style={{ ...pill, padding: '6px 11px', fontSize: 16, lineHeight: 1 }}
+      >
+        {mobileMenuOpen ? '✕' : '☰'}
+      </button>
+    )}
     {account}
     <GmgSignIn p={p} open={signInOpen} onClose={() => setSignInOpen(false)} />
   </header>
+  {isMobile && mobileMenuOpen && (
+    <nav style={{ display: 'flex', flexDirection: 'column', background: p.bg, borderBottom: `1px solid ${p.rule}` }}>
+      {MOBILE_LINKS.map(([label, to]) => (
+        <Link
+          key={to}
+          to={to}
+          onClick={() => setMobileMenuOpen(false)}
+          style={{ padding: '13px 16px', color: p.fg, textDecoration: 'none', fontSize: 15, borderTop: `1px solid ${p.rule}` }}
+        >
+          {label}
+        </Link>
+      ))}
+    </nav>
+  )}
   </>
   );
 };
