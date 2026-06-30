@@ -322,6 +322,63 @@ export const FaqList: React.FC<{ p: GmgPalette; items: { q: string; a: React.Rea
   </dl>
 );
 
+// Labeled numeric input — motif-styled form field for the calculators.
+// Renders in the initial HTML (no loading gate) so crawlers see the form.
+export const NumberField: React.FC<{
+  p: GmgPalette;
+  id: string;
+  label: React.ReactNode;
+  value: string;
+  onChange: (v: string) => void;
+  help?: React.ReactNode;
+  placeholder?: string;
+}> = ({ p, id, label, value, onChange, help, placeholder = '0' }) => (
+  <div style={{ marginBottom: 16 }}>
+    <label htmlFor={id} style={{ display: 'block', fontSize: 13.5, fontWeight: 600, color: p.fg, marginBottom: 6 }}>
+      {label}
+    </label>
+    <input
+      id={id}
+      type="number"
+      inputMode="decimal"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
+      style={{
+        width: '100%',
+        padding: '10px 12px',
+        background: p.bg,
+        border: `1px solid ${p.rule}`,
+        color: p.fg,
+        borderRadius: 10,
+        fontSize: 15,
+        fontFamily: FONT_TEXT,
+        boxSizing: 'border-box',
+      }}
+    />
+    {help && <p style={{ fontSize: 12, color: p.sub2, margin: '6px 0 0' }}>{help}</p>}
+  </div>
+);
+
+// Highlighted result box — labeled rows + a prominent computed figure (positive tone).
+export const ResultCard: React.FC<{
+  p: GmgPalette;
+  rows?: { label: React.ReactNode; value: React.ReactNode }[];
+  resultLabel: React.ReactNode;
+  result: React.ReactNode;
+}> = ({ p, rows, resultLabel, result }) => (
+  <div style={{ background: p.posBg, border: `1px solid ${p.pos}`, borderRadius: 12, padding: '16px 18px' }}>
+    {rows?.map((r, i) => (
+      <React.Fragment key={i}>
+        <div style={{ fontSize: 13, color: p.sub, marginBottom: 2 }}>{r.label}</div>
+        <div style={{ fontSize: 17, fontWeight: 600, color: p.fg, marginBottom: 12 }}>{r.value}</div>
+      </React.Fragment>
+    ))}
+    <div style={{ fontSize: 13, color: p.sub, marginBottom: 2 }}>{resultLabel}</div>
+    <div style={{ fontFamily: FONT_DISPLAY, fontSize: 30, lineHeight: 1.1, color: p.accent }}>{result}</div>
+  </div>
+);
+
 // Primary pill CTA (Router Link).
 export const CtaLink: React.FC<{ p: GmgPalette; to: string; children: React.ReactNode }> = ({ p, to, children }) => (
   <Link

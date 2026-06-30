@@ -161,7 +161,7 @@ function seedFor(route: string, ctx: {
   if (route === '/zakat-calculator') {
     return [...masthead, ...(ctx.calculatorData ? [{ queryKey: ['calculator-data'], data: ctx.calculatorData }] : [])];
   }
-  if (route.startsWith('/zakat-calculator')) return ctx.calculatorData ? [{ queryKey: ['calculator-data'], data: ctx.calculatorData }] : [];
+  if (route.startsWith('/zakat-calculator')) return [...masthead, ...(ctx.calculatorData ? [{ queryKey: ['calculator-data'], data: ctx.calculatorData }] : [])];
   if (route === '/prompts') return [...masthead, ...(ctx.promptsIndex ? [{ queryKey: ['prompts'], data: ctx.promptsIndex }] : [])];
   if (route.startsWith('/prompts/')) {
     const id = route.slice('/prompts/'.length);

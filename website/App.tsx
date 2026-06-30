@@ -97,7 +97,7 @@ const MOTIF_CONTENT_ROUTES = new Set<string>([
 
 // Dynamic detail routes converted to the motif. MOTIF_CONTENT_ROUTES is matched by
 // exact pathname, so these prefixes catch /causes/:slug, /guides/:slug, /prompts/:id.
-const MOTIF_CONTENT_PREFIXES = ['/causes/', '/guides/', '/prompts/'];
+const MOTIF_CONTENT_PREFIXES = ['/causes/', '/guides/', '/prompts/', '/zakat-calculator/'];
 
 export const AppContent: React.FC = () => {
   const location = useLocation();
@@ -161,7 +161,7 @@ export const AppContent: React.FC = () => {
             <Route path="/guides" element={<GuidesIndexPage isDark={isDark} />} />
             <Route path="/guides/:slug" element={<GuidePage isDark={isDark} />} />
             <Route path="/zakat-calculator" element={<ZakatCalculatorHubPage isDark={isDark} />} />
-            <Route path="/zakat-calculator/:asset" element={<ZakatCalculatorAssetPage />} />
+            <Route path="/zakat-calculator/:asset" element={<ZakatCalculatorAssetPage isDark={isDark} />} />
             <Route path="/plan/join/:planId/:token" element={isGmgAuthChrome ? <GmgChromeFrame isDark={isDark}><JoinPlanPage /></GmgChromeFrame> : <JoinPlanPage />} />
 
             {/* Catch-all: 404 */}

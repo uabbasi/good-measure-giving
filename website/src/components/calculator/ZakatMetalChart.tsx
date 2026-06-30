@@ -1,45 +1,51 @@
 import React from 'react';
 import type { ChartRow } from '../../utils/zakatChart';
+import { FONT_DISPLAY, FONT_MONO, type GmgPalette } from '../gmg/tokens';
 
 const fmt = (n: number, decimals = 0): string =>
   n.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 
 interface ZakatMetalChartProps {
+  p: GmgPalette;
   title: string;
   rows: ChartRow[];
   nisabNote?: string;
 }
 
-export const ZakatMetalChart: React.FC<ZakatMetalChartProps> = ({ title, rows, nisabNote }) => {
+// Presentational metal-weight table, motif-styled (palette-driven, inline).
+export const ZakatMetalChart: React.FC<ZakatMetalChartProps> = ({ p, title, rows, nisabNote }) => {
   const headingId = `zakat-chart-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+  const cell: React.CSSProperties = { padding: '8px 0', fontSize: 14, color: p.fg };
 
   return (
-  <div className="mb-8">
-    <h3 id={headingId} className="text-lg font-semibold mb-3">{title}</h3>
-    <table aria-labelledby={headingId} className="w-full text-sm border-collapse">
-      <thead>
-        <tr className="text-left border-b border-slate-300 dark:border-slate-700">
-          <th scope="col" className="py-2 pr-4 font-medium">Weight</th>
-          <th scope="col" className="py-2 pr-4 font-medium text-right">Market value</th>
-          <th scope="col" className="py-2 font-medium text-right">Zakat due (2.5%)</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row) => (
-          <tr
-            key={row.label}
-            className={`border-b border-slate-100 dark:border-slate-800 ${
-              row.isNisab ? 'bg-emerald-50 dark:bg-emerald-900/20 font-semibold' : ''
-            }`}
-          >
-            <td className="py-2 pr-4">{row.label}</td>
-            <td className="py-2 pr-4 text-right">${fmt(row.value)}</td>
-            <td className="py-2 text-right">${fmt(row.zakat, 2)}</td>
+    <div style={{ marginBottom: 28 }}>
+      <h3 id={headingId} style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: p.fg, margin: '0 0 12px' }}>{title}</h3>
+      <table aria-labelledby={headingId} style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <thead>
+          <tr style={{ borderBottom: `1px solid ${p.rule2}`, textAlign: 'left' }}>
+            <th scope="col" style={{ ...cell, fontWeight: 600, color: p.sub }}>Weight</th>
+            <th scope="col" style={{ ...cell, fontWeight: 600, color: p.sub, textAlign: 'right' }}>Market value</th>
+            <th scope="col" style={{ ...cell, fontWeight: 600, color: p.sub, textAlign: 'right' }}>Zakat due (2.5%)</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
-    {nisabNote && <p className="mt-2 text-xs text-slate-500">{nisabNote}</p>}
-  </div>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr
+              key={row.label}
+              style={{
+                borderBottom: `1px solid ${p.rule}`,
+                background: row.isNisab ? p.posBg : 'transparent',
+                fontWeight: row.isNisab ? 600 : 400,
+              }}
+            >
+              <td style={{ ...cell, paddingLeft: row.isNisab ? 8 : 0 }}>{row.label}</td>
+              <td style={{ ...cell, textAlign: 'right', fontFamily: FONT_MONO }}>${fmt(row.value)}</td>
+              <td style={{ ...cell, textAlign: 'right', fontFamily: FONT_MONO, paddingRight: row.isNisab ? 8 : 0 }}>${fmt(row.zakat, 2)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {nisabNote && <p style={{ fontSize: 12, color: p.sub2, margin: '8px 0 0' }}>{nisabNote}</p>}
+    </div>
   );
 };

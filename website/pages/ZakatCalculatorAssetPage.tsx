@@ -1,17 +1,33 @@
+// Good Measure Giving — "Modern" motif Zakat Calculator asset page
+// (/zakat-calculator/:asset). Motif-only: renders its own GmgNav + footer via the
+// content kit. Calculation logic + hooks are unchanged from the legacy version.
+
 import React, { useEffect, useState } from 'react';
-import { useParams, Link, Navigate } from 'react-router-dom';
-import { useLandingTheme } from '../contexts/LandingThemeContext';
+import { useParams, Navigate, Link } from 'react-router-dom';
 import { calculateZakat } from '../src/utils/zakatCalculator';
 import { useNisab, useSilverPricePerGram } from '../src/utils/nisabPrice';
 import { buildChartRows, GOLD_WEIGHTS, SILVER_WEIGHTS } from '../src/utils/zakatChart';
 import { ZakatMetalChart } from '../src/components/calculator/ZakatMetalChart';
 import { isValidAssetSlug, KNOWN_ASSET_SLUGS } from '../scripts/lib/calculator-seo';
 import { useCalculatorData } from '../src/hooks/useCalculatorData';
+import {
+  GmgContentFrame,
+  Breadcrumb,
+  ContentHero,
+  Em,
+  Section,
+  P,
+  NumberField,
+  ResultCard,
+  CtaLink,
+  FaqList,
+  type ContentCtx,
+} from '../src/components/gmg/content';
+import { FONT_MONO } from '../src/components/gmg/tokens';
 import type { ZakatAssets } from '../types';
 
-export const ZakatCalculatorAssetPage: React.FC = () => {
+export const ZakatCalculatorAssetPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const { asset: assetSlug } = useParams<{ asset: string }>();
-  const { isDark } = useLandingTheme();
   const { data, loading } = useCalculatorData();
   const [assetAmount, setAssetAmount] = useState('');
   const [liabilities, setLiabilities] = useState('');
@@ -31,23 +47,29 @@ export const ZakatCalculatorAssetPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className={`min-h-screen flex items-center justify-center ${isDark ? 'bg-slate-950' : 'bg-slate-50'}`}>
-        <div className={isDark ? 'text-slate-400' : 'text-slate-600'}>Loading calculator…</div>
-      </div>
+      <GmgContentFrame isDark={isDark} active="Zakat calculator" maxWidth={760}>
+        {({ p }: ContentCtx) => <P p={p} muted>Loading calculator…</P>}
+      </GmgContentFrame>
     );
   }
 
   if (!asset) {
     return (
-      <div className={`min-h-screen ${isDark ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
-        <div className="max-w-2xl mx-auto px-4 py-16 text-center">
-          <h1 className="text-3xl font-semibold mb-4">This calculator is coming soon</h1>
-          <p className="text-slate-600 dark:text-slate-400 mb-6">
-            The {assetSlug.replace(/-/g, ' ')} calculator is on our roadmap. In the meantime, the cash-savings calculator covers the simplest zakat case.
-          </p>
-          <Link to="/zakat-calculator" className="text-emerald-600 hover:underline">← Back to all calculators</Link>
-        </div>
-      </div>
+      <GmgContentFrame isDark={isDark} active="Zakat calculator" maxWidth={760}>
+        {(ctx: ContentCtx) => {
+          const { p } = ctx;
+          return (
+            <>
+              <ContentHero ctx={ctx} kicker="Zakat Calculator" title="This calculator is coming soon" />
+              <P p={p} muted>
+                The {assetSlug.replace(/-/g, ' ')} calculator is on our roadmap. In the meantime, the cash-savings
+                calculator covers the simplest zakat case.
+              </P>
+              <CtaLink p={p} to="/zakat-calculator">← Back to all calculators</CtaLink>
+            </>
+          );
+        }}
+      </GmgContentFrame>
     );
   }
 
@@ -57,138 +79,144 @@ export const ZakatCalculatorAssetPage: React.FC = () => {
   const estimate = calculateZakat(assets, { other: liabilitiesNum }, nisab);
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <nav aria-label="Breadcrumb" className="mb-6 text-sm text-slate-500">
-          <Link to="/" className="hover:underline">Home</Link>
-          <span className="mx-2">/</span>
-          <Link to="/zakat-calculator" className="hover:underline">Zakat Calculator</Link>
-          <span className="mx-2">/</span>
-          <span>{asset.displayName}</span>
-        </nav>
-
-        <h1 className="text-4xl font-semibold mb-3">Zakat on {asset.displayName}</h1>
-        <p className="text-lg text-slate-700 dark:text-slate-300 mb-8">{asset.heroAnswer}</p>
-
-        <section className="mb-10 p-6 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Calculate</h2>
-          <div className="mb-4">
-            <label htmlFor="asset-amount-input" className="block text-sm font-medium mb-1">{asset.inputLabel}</label>
-            <input
-              id="asset-amount-input"
-              type="number"
-              inputMode="decimal"
-              value={assetAmount}
-              onChange={(e) => setAssetAmount(e.target.value)}
-              placeholder="0"
-              className="w-full px-3 py-2 rounded border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+    <GmgContentFrame isDark={isDark} active="Zakat calculator" maxWidth={760}>
+      {(ctx: ContentCtx) => {
+        const { p } = ctx;
+        const displayName = asset.displayName;
+        return (
+          <>
+            <Breadcrumb
+              p={p}
+              trail={[
+                { label: 'Home', to: '/' },
+                { label: 'Zakat Calculator', to: '/zakat-calculator' },
+                { label: displayName },
+              ]}
             />
-            <p className="text-xs text-slate-500 mt-1">{asset.inputHelp}</p>
-          </div>
-          <div className="mb-6">
-            <label htmlFor="liabilities-input" className="block text-sm font-medium mb-1">Short-term liabilities (USD, optional)</label>
-            <input
-              id="liabilities-input"
-              type="number"
-              inputMode="decimal"
-              value={liabilities}
-              onChange={(e) => setLiabilities(e.target.value)}
-              placeholder="0"
-              className="w-full px-3 py-2 rounded border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+
+            <ContentHero
+              ctx={ctx}
+              kicker="Zakat Calculator"
+              title={<>Zakat on <Em p={p}>{displayName}</Em></>}
+              lead={asset.heroAnswer}
             />
-            <p className="text-xs text-slate-500 mt-1">Credit cards, personal loans, or other debts due within the lunar year.</p>
-          </div>
 
-          <div className="p-4 rounded bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-            <div className="text-sm text-slate-600 dark:text-slate-400 mb-1">Nisab threshold (2026)</div>
-            <div className="text-lg font-semibold mb-3">${nisab.toLocaleString()}</div>
+            <Section ctx={ctx} title="Calculate" first>
+              <NumberField
+                p={p}
+                id="asset-amount-input"
+                label={asset.inputLabel}
+                value={assetAmount}
+                onChange={setAssetAmount}
+                help={asset.inputHelp}
+              />
+              <NumberField
+                p={p}
+                id="liabilities-input"
+                label="Short-term liabilities (USD, optional)"
+                value={liabilities}
+                onChange={setLiabilities}
+                help="Credit cards, personal loans, or other debts due within the lunar year."
+              />
 
-            <div className="text-sm text-slate-600 dark:text-slate-400 mb-1">Net zakatable wealth</div>
-            <div className="text-lg font-semibold mb-3">${estimate.netZakatable.toLocaleString()}</div>
-
-            <div className="text-sm text-slate-600 dark:text-slate-400 mb-1">Zakat owed (2.5%)</div>
-            <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">
-              {estimate.isAboveNisab ? `$${estimate.zakatAmount.toLocaleString()}` : 'Below nisab — no zakat owed'}
-            </div>
-          </div>
-
-          {estimate.isAboveNisab && estimate.zakatAmount > 0 && (
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                to="/browse?zakat=eligible"
-                className="inline-flex items-center px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold hover:bg-emerald-700"
-              >
-                See zakat-eligible charities →
-              </Link>
-              <Link
-                to="/profile"
-                className="inline-flex items-center px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm font-semibold hover:border-slate-500"
-              >
-                Save this plan
-              </Link>
-            </div>
-          )}
-        </section>
-
-        {asset.slug === 'gold-silver' && (
-          <section className="mb-10" aria-labelledby="gold-silver-chart-heading">
-            <h2 id="gold-silver-chart-heading" className="text-2xl font-semibold mb-4">
-              Gold &amp; Silver Zakat Chart (2026)
-            </h2>
-            <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
-              Prices update live based on current spot; refresh for the latest.
-            </p>
-            <ZakatMetalChart
-              title="Gold"
-              rows={buildChartRows(nisab / 85, GOLD_WEIGHTS)}
-              nisabNote="85 g of gold is the nisab threshold for gold."
-            />
-            <ZakatMetalChart
-              title="Silver"
-              rows={buildChartRows(silverPerGram, SILVER_WEIGHTS)}
-              nisabNote="595 g of silver is the nisab threshold (some scholars cite ~612 g)."
-            />
-            <p className="mt-2 text-xs text-slate-500">
-              Jewelry worn for personal use may be exempt under the majority Maliki, Shafi'i, and Hanbali view;
-              the Hanafi school holds all gold and silver zakatable. Follow the ruling of the school you adhere to.
-            </p>
-          </section>
-        )}
-
-        {asset.sections.map((section, i) => (
-          <section key={i} className="mb-10">
-            <h2 className="text-2xl font-semibold mb-4">{section.heading}</h2>
-            {section.paragraphs.map((p, j) => (
-              <p key={j} className="mb-4 leading-relaxed text-slate-700 dark:text-slate-300">{p}</p>
-            ))}
-          </section>
-        ))}
-
-        <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Frequently Asked Questions</h2>
-          <dl>
-            {asset.faq.map((item, i) => (
-              <div key={i} className="mb-6">
-                <dt className="font-semibold text-slate-900 dark:text-slate-100">{item.q}</dt>
-                <dd className="mt-1 text-slate-700 dark:text-slate-300">{item.a}</dd>
+              <div style={{ marginTop: 8 }}>
+                <ResultCard
+                  p={p}
+                  rows={[
+                    { label: 'Nisab threshold (2026)', value: `$${nisab.toLocaleString()}` },
+                    { label: 'Net zakatable wealth', value: `$${estimate.netZakatable.toLocaleString()}` },
+                  ]}
+                  resultLabel="Zakat owed (2.5%)"
+                  result={estimate.isAboveNisab ? `$${estimate.zakatAmount.toLocaleString()}` : 'Below nisab — no zakat owed'}
+                />
               </div>
-            ))}
-          </dl>
-        </section>
 
-        <section>
-          <h2 className="text-2xl font-semibold mb-4">Other calculators</h2>
-          <ul className="flex flex-wrap gap-2">
-            {KNOWN_ASSET_SLUGS.filter((s) => s !== asset.slug).map((s) => (
-              <li key={s}>
-                <Link to={`/zakat-calculator/${s}`} className="inline-block px-3 py-1 text-sm rounded-full border border-slate-300 dark:border-slate-700 hover:border-slate-500">
-                  {s.replace(/-/g, ' ')}
-                </Link>
-              </li>
+              {estimate.isAboveNisab && estimate.zakatAmount > 0 && (
+                <div style={{ marginTop: 20, display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+                  <CtaLink p={p} to="/browse?zakat=eligible">See zakat-eligible charities →</CtaLink>
+                  <Link
+                    to="/profile"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      padding: '12px 22px',
+                      borderRadius: 99,
+                      border: `1px solid ${p.rule2}`,
+                      background: 'transparent',
+                      color: p.fg,
+                      fontSize: 15,
+                      fontWeight: 500,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    Save this plan
+                  </Link>
+                </div>
+              )}
+            </Section>
+
+            {asset.slug === 'gold-silver' && (
+              <Section ctx={ctx} title="Gold & Silver Zakat Chart (2026)">
+                <P p={p} muted>Prices update live based on current spot; refresh for the latest.</P>
+                <ZakatMetalChart
+                  p={p}
+                  title="Gold"
+                  rows={buildChartRows(nisab / 85, GOLD_WEIGHTS)}
+                  nisabNote="85 g of gold is the nisab threshold for gold."
+                />
+                <ZakatMetalChart
+                  p={p}
+                  title="Silver"
+                  rows={buildChartRows(silverPerGram, SILVER_WEIGHTS)}
+                  nisabNote="595 g of silver is the nisab threshold (some scholars cite ~612 g)."
+                />
+                <p style={{ fontSize: 12, color: p.sub2, margin: '4px 0 0' }}>
+                  Jewelry worn for personal use may be exempt under the majority Maliki, Shafi'i, and Hanbali view; the
+                  Hanafi school holds all gold and silver zakatable. Follow the ruling of the school you adhere to.
+                </p>
+              </Section>
+            )}
+
+            {asset.sections.map((section, i) => (
+              <Section key={i} ctx={ctx} title={section.heading}>
+                {section.paragraphs.map((para, j) => (
+                  <P key={j} p={p}>{para}</P>
+                ))}
+              </Section>
             ))}
-          </ul>
-        </section>
-      </div>
-    </div>
+
+            <Section ctx={ctx} title="Frequently Asked Questions">
+              <FaqList p={p} items={asset.faq.map((f) => ({ q: f.q, a: f.a }))} />
+            </Section>
+
+            <Section ctx={ctx} title="Other calculators">
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {KNOWN_ASSET_SLUGS.filter((s) => s !== asset.slug).map((s) => (
+                  <Link
+                    key={s}
+                    to={`/zakat-calculator/${s}`}
+                    style={{
+                      display: 'inline-block',
+                      padding: '6px 14px',
+                      borderRadius: 99,
+                      border: `1px solid ${p.rule2}`,
+                      background: p.bg2,
+                      color: p.sub,
+                      fontSize: 13.5,
+                      textDecoration: 'none',
+                      textTransform: 'capitalize',
+                      fontFamily: FONT_MONO,
+                      letterSpacing: '0.02em',
+                    }}
+                  >
+                    {s.replace(/-/g, ' ')}
+                  </Link>
+                ))}
+              </div>
+            </Section>
+          </>
+        );
+      }}
+    </GmgContentFrame>
   );
 };
