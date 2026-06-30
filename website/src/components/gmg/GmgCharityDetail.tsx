@@ -26,7 +26,7 @@ import {
   Bismillah,
   Figure,
 } from './primitives';
-import { GmgNav, TypeSwitcher } from './chrome';
+import { GmgNav } from './chrome';
 import { useIsMobile } from './useIsMobile';
 import { adaptCharity, GmgDimension } from './charityAdapter';
 
@@ -197,8 +197,6 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
       >
         {c.rubricVersion && <span>RUBRIC v{c.rubricVersion}</span>}
         {c.evaluatedOn && <span>· EVALUATED {c.evaluatedOn}</span>}
-        <span style={{ flex: 1 }} />
-        <TypeSwitcher p={p} variant={variant} basePath={`/charity/${c.ein}`} />
       </div>
 
       <Bismillah p={p} />

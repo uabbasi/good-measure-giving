@@ -20,7 +20,7 @@ import {
 } from './tokens';
 import { Rating, ratingColor } from './rating';
 import { HarveyBall, Tag, Kicker } from './primitives';
-import { GmgNav, TypeSwitcher } from './chrome';
+import { GmgNav } from './chrome';
 import { useIsMobile } from './useIsMobile';
 import { adaptRow, GmgRow } from './charityAdapter';
 
@@ -287,25 +287,6 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const shell = (children: React.ReactNode) => (
     <div style={{ background: p.bg, color: p.fg, fontFamily: FONT_TEXT, minHeight: '100vh', ...fontVars }}>
       <GmgNav p={p} isMobile={isMobile} active="Browse" />
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 14,
-          flexWrap: 'wrap',
-          padding: `6px ${padX}px`,
-          background: p.bg2,
-          borderBottom: sectionBorder,
-          color: p.sub,
-          fontFamily: FONT_MONO,
-          fontSize: 10.5,
-          letterSpacing: '0.06em',
-        }}
-      >
-        <span>GOOD MEASURE GIVING · THE INDEX</span>
-        <span style={{ flex: 1 }} />
-        <TypeSwitcher p={p} variant={variant} basePath="/browse" />
-      </div>
       {children}
     </div>
   );

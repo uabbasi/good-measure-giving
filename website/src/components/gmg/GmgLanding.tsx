@@ -17,7 +17,7 @@ import {
 } from './tokens';
 import { Rating, ratingColor } from './rating';
 import { HarveyBall, Bismillah } from './primitives';
-import { GmgNav, TypeSwitcher } from './chrome';
+import { GmgNav } from './chrome';
 import { useIsMobile } from './useIsMobile';
 import { adaptCharity } from './charityAdapter';
 
@@ -172,9 +172,6 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
 
       <footer style={{ padding: `18px ${padX}px`, borderTop: `1px solid ${p.rule}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, color: p.sub2, fontSize: 10.5, fontFamily: FONT_MONO, letterSpacing: '0.06em' }}>
         <span>GOOD MEASURE GIVING · ©2026 · INDEPENDENT RESEARCH</span>
-        <span style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-          <TypeSwitcher p={p} variant={variant} basePath="/" />
-        </span>
       </footer>
     </div>
   );
