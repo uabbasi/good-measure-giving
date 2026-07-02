@@ -160,7 +160,7 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                 Impact against donor fit, across every cause area we cover — tap a bubble to explore the charities inside it.
               </p>
             </div>
-            <CauseAreaMatrix charities={insightsData} />
+            <CauseAreaMatrix charities={insightsData} hideHeader />
           </div>
         </section>
       )}

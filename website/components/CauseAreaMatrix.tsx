@@ -35,6 +35,8 @@ interface CharityWithPillars {
 
 interface CauseAreaMatrixProps {
   charities: CharityWithPillars[];
+  /** Hide the built-in title/subtitle when the surrounding surface already titles it. */
+  hideHeader?: boolean;
 }
 
 // Map granular categories to consolidated groups (6-7 major cause areas)
@@ -81,7 +83,7 @@ const CAUSE_COLORS: Record<string, string> = {
   'OTHER': '#9a9486',                 // warm gray
 };
 
-export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) => {
+export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities, hideHeader }) => {
   const { isDark } = useLandingTheme();
   const p = gmgPalette(isDark);
   const [selectedCause, setSelectedCause] = useState<string | null>(null);
@@ -285,9 +287,11 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) =
   const labelMicro: React.CSSProperties = { color: p.sub2 };
 
   return (
-    <div className="rounded-2xl border" style={{ background: p.card, borderColor: p.rule }}>
-      {/* Header */}
-      <div className="px-6 py-4 border-b" style={{ borderColor: p.rule }}>
+    <div>
+      {/* Header — suppressed when the host surface provides its own (e.g. home);
+          the drill-down Back control always shows. */}
+      {(selectedCause || !hideHeader) && (
+      <div className="py-4 border-b" style={{ borderColor: p.rule }}>
         {selectedCause ? (
           <div className="flex items-center gap-3">
             <button
@@ -318,18 +322,13 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities }) =
           </div>
         )}
       </div>
+      )}
 
       {/* Matrix */}
-      <div className="p-6 pl-24">
+      <div className="py-6 pl-20 pr-2">
         <div className="relative aspect-square max-w-lg mx-auto">
           {/* Background Grid */}
-          <div className="absolute inset-0 rounded-lg border" style={{ borderColor: p.rule2, background: p.bg2 }}>
-            {/* Corner gradient hint for "best" area */}
-            <div
-              className="absolute top-0 right-0 w-1/3 h-1/3 rounded-tr-lg"
-              style={{ background: `linear-gradient(to bottom left, ${p.accent}22, transparent)` }}
-            ></div>
-
+          <div className="absolute inset-0 rounded-lg border" style={{ borderColor: p.rule, background: 'transparent' }}>
             {/* Direction indicators */}
             <div className="absolute top-2 right-2 text-[9px] font-medium text-right" style={{ color: p.accent }}>
               Best →
