@@ -8,6 +8,7 @@ Provides comparative context for rich narratives by:
 4. Extracting 3-year filing trends from ProPublica data
 """
 
+import json
 import logging
 import re
 import statistics
@@ -501,8 +502,9 @@ def extract_filing_trends(filing_history: list[dict]) -> FilingTrends:
             revenue_cagr_3yr=None,
         )
 
-    # Sort by tax year descending
-    sorted_filings = sorted(filing_history, key=lambda f: f.get("tax_year", 0), reverse=True)
+    # Sort by tax year descending (ignore records with no usable year)
+    dated = [f for f in filing_history if f.get("tax_year") is not None]
+    sorted_filings = sorted(dated, key=lambda f: f["tax_year"], reverse=True)
 
     # Take up to 3 most recent years
     recent = sorted_filings[:3]
@@ -510,7 +512,7 @@ def extract_filing_trends(filing_history: list[dict]) -> FilingTrends:
     # Reverse to chronological order (oldest first)
     recent.reverse()
 
-    years = [f.get("tax_year") for f in recent]
+    years = [f["tax_year"] for f in recent]
     revenue = [f.get("total_revenue") for f in recent]
     expenses = [f.get("total_expenses") for f in recent]
     net_assets = [f.get("net_assets") for f in recent]
@@ -554,5 +556,56 @@ def get_filing_history(ein: str) -> list[dict]:
 
     parsed = result.get("parsed_json") or {}
     propublica = parsed.get("propublica_990") or {}
+    history = list(propublica.get("filing_history", []))
 
-    return propublica.get("filing_history", [])
+    # The parsed filing_history lags ~1 year behind ProPublica's org-level
+    # current-year figure (`revenue_amount` / `tax_period`) — which is also the
+    # figure the stat strip shows. Building trends/CAGR from filing_history alone
+    # yields a stale window that can narrate a "growth" story the newest year
+    # contradicts (e.g. revenue that actually declined). Inject the org-level
+    # current year as the newest point so trends reconcile with the stat strip. See #8.
+    current = _propublica_current_year_point(result.get("raw_content"))
+    if current:
+        latest_filed = max((f.get("tax_year") or 0) for f in history) if history else 0
+        if current["tax_year"] > latest_filed:
+            history = [current, *history]
+
+    return history
+
+
+def _propublica_current_year_point(raw_content) -> Optional[dict]:
+    """Extract ProPublica's org-level current-year revenue as a filing record.
+
+    ProPublica exposes an org-level ``revenue_amount`` for the most recent tax
+    period, ~1 year ahead of the itemized ``filings_with_data`` the parser keeps.
+    Only revenue is available at the org level (no expenses/net-assets), which is
+    sufficient for the revenue trend and CAGR endpoints.
+    """
+    if not raw_content:
+        return None
+    if isinstance(raw_content, str):
+        try:
+            data = json.loads(raw_content)
+        except (ValueError, TypeError):
+            return None
+    elif isinstance(raw_content, dict):
+        data = raw_content
+    else:
+        return None
+
+    org = (data or {}).get("organization") or {}
+    revenue = org.get("revenue_amount")
+    period = org.get("tax_period")
+    if not revenue or revenue <= 0 or not period:
+        return None
+    try:
+        year = int(str(period)[:4])
+    except (ValueError, TypeError):
+        return None
+
+    return {
+        "tax_year": year,
+        "total_revenue": revenue,
+        "total_expenses": None,
+        "net_assets": None,
+    }
