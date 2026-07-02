@@ -43,7 +43,7 @@ from src.db.dolt_client import dolt
 from src.db.client import execute_query
 from src.llm.llm_client import LLMClient, LLMTask
 from src.parsers.charity_metrics_aggregator import CharityMetrics, CharityMetricsAggregator
-from src.scorers.v2_scorers import RUBRIC_VERSION, AmalScorerV2
+from src.scorers.v2_scorers import RUBRIC_VERSION, AmalScorerV2, impact_tier_from_amal_score
 from src.services.citation_service import CitationService
 from src.utils.deep_link_resolver import upgrade_source_url
 from src.utils.phase_cache_helper import check_phase_cache, update_phase_cache
@@ -1252,7 +1252,7 @@ def evaluate_charity(
         amal_score=scores.amal_score,
         wallet_tag=scores.wallet_tag,
         confidence_tier=scores.data_confidence.badge,
-        impact_tier="AVERAGE",  # Simplified — detail in score_details
+        impact_tier=impact_tier_from_amal_score(scores.amal_score),  # [#8] was hardcoded "AVERAGE"
         zakat_classification=scores.zakat_bonus.asnaf_category if scores.zakat_bonus else None,
         confidence_scores={
             "impact": scores.impact.score,

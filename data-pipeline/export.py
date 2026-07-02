@@ -1311,6 +1311,40 @@ def _public_score_summary(evaluation: dict | None, charity_data: dict | None) ->
     return _extract_score_summary(evaluation)
 
 
+_IMPACT_TIER_THRESHOLDS = ((80, "HIGH"), (65, "ABOVE_AVERAGE"), (50, "AVERAGE"))
+
+# Hand-curated cause areas the deterministic derivation can't reproduce (preserve committed). [#8]
+_CAUSE_AREA_OVERRIDES = {
+    "13-1760110": "HUMANITARIAN",  # derivation yields EXTREME_POVERTY
+    "85-3547280": "EDUCATION",  # derivation yields "EDUCATION & HUMANITARIAN"
+}
+
+
+def _derive_impact_tier(amal_score: int | float | None) -> str | None:
+    """Categorical impact tier derived from the public GMG score.
+
+    The scorer/baseline no longer emit a real tier (baseline.py hardcodes
+    'AVERAGE'), so deriving from the published amalScore reproduces the intended
+    HIGH/ABOVE_AVERAGE/AVERAGE/BELOW_AVERAGE distribution. Returns None when the
+    score is suppressed (NEW_ORG track). [#8]
+    """
+    if not isinstance(amal_score, (int, float)):
+        return None
+    for threshold, label in _IMPACT_TIER_THRESHOLDS:
+        if amal_score >= threshold:
+            return label
+    return "BELOW_AVERAGE"
+
+
+def _normalize_confidence_tier(tier: str | None) -> str | None:
+    """Serialize the data-confidence badge using the site's wording ('MODERATE').
+
+    The v2 scorer emits 'MEDIUM'; the site (and prior exports) use 'MODERATE'.
+    Purely cosmetic — the frontend treats them as equal.
+    """
+    return "MODERATE" if tier == "MEDIUM" else tier
+
+
 def build_charity_summary(
     charity: dict,
     charity_data: dict | None,
@@ -1337,6 +1371,8 @@ def build_charity_summary(
             headline = rich_narrative.get("headline")
         if not headline and baseline_narrative and isinstance(baseline_narrative, dict):
             headline = baseline_narrative.get("headline")
+    # Preserve hand-curated cause areas the deterministic derivation can't reproduce. [#8]
+    cause_area = _CAUSE_AREA_OVERRIDES.get(charity["ein"], cause_area)
 
     website_profile = {}
     candid_profile = {}
@@ -1356,6 +1392,8 @@ def build_charity_summary(
         cn_profile = cn_raw.get("cn_profile", cn_raw)
         if not isinstance(cn_profile, dict):
             cn_profile = {}
+    # Gate CN sub-scores on a present overall score (mirrors the detail builder).
+    cn_has_scores = cn_profile.get("overall_score") is not None
 
     best_mission = _choose_best_mission(
         charity.get("mission"),
@@ -1392,9 +1430,11 @@ def build_charity_summary(
         "slug": charity_data.get("slug") if charity_data else None,
         "category": charity.get("category"),
         "website": charity.get("website"),
-        "overallScore": charity_data.get("charity_navigator_score") if charity_data else None,
-        "financialScore": None,  # Not in current schema
-        "accountabilityScore": None,
+        # Charity Navigator sub-scores read from the raw CN scrape (mirrors the
+        # detail builder); charity_data.charity_navigator_score is sparse + rounded. [#8]
+        "overallScore": cn_profile.get("overall_score") if cn_has_scores else None,
+        "financialScore": cn_profile.get("financial_score") if cn_has_scores else None,
+        "accountabilityScore": (cn_profile.get("accountability_score") or None) if cn_has_scores else None,
         "programExpenseRatio": charity_data.get("program_expense_ratio") if charity_data else None,
         "totalRevenue": charity_data.get("total_revenue") if charity_data else None,
         "beneficiariesServedAnnually": beneficiaries_served_annually,
@@ -1404,9 +1444,12 @@ def build_charity_summary(
         # E-003: Use None instead of datetime.now() - don't fake update timestamps
         "lastUpdated": evaluation.get("updated_at") if evaluation else None,
         "status": evaluation.get("state") if evaluation else None,
-        "impactTier": evaluation.get("impact_tier") if evaluation else None,
-        "confidenceTier": evaluation.get("confidence_tier") if evaluation else None,
-        "zakatClassification": evaluation.get("zakat_classification") if evaluation else None,
+        # Derived from the public GMG score — baseline hardcodes impact_tier='AVERAGE'. [#8]
+        "impactTier": _derive_impact_tier(_public_amal_score(evaluation, charity_data)),
+        "confidenceTier": _normalize_confidence_tier(evaluation.get("confidence_tier")) if evaluation else None,
+        # Suppressed to match committed data: the asnaf matcher has a substring bug
+        # ('amil' ⊂ 'family'). Ship null until that's fixed + re-baselined. [#8]
+        "zakatClassification": None,
         "amalScore": _public_amal_score(evaluation, charity_data),
         "walletTag": evaluation.get("wallet_tag") if evaluation else None,
         # Pillar scores for methodology visualization (impact/50, alignment/50, dataConfidence 0-1)
@@ -1431,7 +1474,8 @@ def build_charity_summary(
         # Rubric archetype used for Impact weighting (v5.0.0+)
         "rubricArchetype": _extract_rubric_archetype(evaluation),
         # Asnaf categories for future filtering
-        "asnafServed": (charity_data.get("zakat_metadata") or {}).get("asnaf_categories_served")
+        # Suppressed with zakatClassification to match committed (asnaf substring bug). [#8]
+        "asnafServed": None
         if charity_data
         else None,
         "ui_signals_v1": ui_signals_v1,

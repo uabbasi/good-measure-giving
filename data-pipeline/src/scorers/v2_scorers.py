@@ -18,6 +18,7 @@ CRITICAL: All calculations are deterministic Python functions.
 LLM must NEVER do math or guess data.
 """
 
+import re
 from typing import Optional
 
 from src.llm.schemas.baseline import (
@@ -98,6 +99,24 @@ def determine_revenue_tier(revenue: Optional[float]) -> str:
 # =============================================================================
 # Smooth Scoring Helper
 # =============================================================================
+
+
+IMPACT_TIER_THRESHOLDS = ((80, "HIGH"), (65, "ABOVE_AVERAGE"), (50, "AVERAGE"))
+
+
+def impact_tier_from_amal_score(amal_score: Optional[float]) -> Optional[str]:
+    """Categorical impact tier from the composite GMG (amal) score.
+
+    Canonical source for the tier thresholds, shared by baseline (the persisted
+    Evaluation) and export (the published `impactTier` field). Returns None when
+    the score is None (e.g. NEW_ORG track). [#8]
+    """
+    if not isinstance(amal_score, (int, float)):
+        return None
+    for threshold, label in IMPACT_TIER_THRESHOLDS:
+        if amal_score >= threshold:
+            return label
+    return "BELOW_AVERAGE"
 
 
 def interpolate_score(value: float, knots: list) -> float:
@@ -2034,7 +2053,9 @@ class ZakatScorer:
 
         for category, patterns in self.ASNAF_PATTERNS.items():
             for pattern in patterns:
-                if pattern in text:
+                # Word-boundary match: a bare substring test matched 'amil' inside
+                # 'family' (and similar), mislabeling asnaf categories. [#8]
+                if re.search(rf"\b{re.escape(pattern)}\b", text):
                     return category
         return None
 
