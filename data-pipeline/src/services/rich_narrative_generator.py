@@ -47,6 +47,84 @@ from .reconciliation_engine import ReconciliationEngine
 logger = logging.getLogger(__name__)
 
 
+def revenue_trajectory_guidance(
+    years: Optional[list],
+    revenue: Optional[list],
+    cagr: Optional[float],
+) -> list[str]:
+    """Trajectory-aware prompt guidance for the revenue-growth narrative.
+
+    Part 1 reconciles the trend to the current year; this keeps the LLM from
+    narrating stale, one-off, or small-base movements as durable "growth". It
+    inspects the (current-year-reconciled) trend and tailors the growth-language
+    constraint accordingly. See #8.
+    """
+    pairs = [
+        (y, r)
+        for y, r in zip(years or [], revenue or [])
+        if y is not None and r and r > 0
+    ]
+    lines = ["\n## REVENUE GROWTH / CAGR CONSTRAINT (CRITICAL)"]
+
+    if len(pairs) < 2:
+        lines += [
+            "⚠️ Insufficient multi-year revenue data.",
+            "DO NOT mention CAGR, revenue growth rates, or multi-year growth trends.",
+            "You may cite single-year revenue figures only.",
+        ]
+        return lines
+
+    first_y, first_r = pairs[0]
+    prev_y, prev_r = pairs[-2]
+    last_y, last_r = pairs[-1]
+    yoy = (last_r - prev_r) / prev_r * 100 if prev_r else 0.0
+    peak_y, peak_r = max(pairs, key=lambda p: p[1])
+    non_peak = [r for (y, r) in pairs if y != peak_y]
+    is_spike = bool(non_peak) and peak_y not in (first_y, last_y) and peak_r > 2.5 * max(non_peak)
+
+    if last_r < prev_r * 0.97:
+        # Most recent year declined — do not narrate as growth.
+        lines.append(
+            f"⚠️ Revenue DECLINED {abs(yoy):.0f}% in the most recent year "
+            f"(FY{prev_y} ${prev_r:,.0f} → FY{last_y} ${last_r:,.0f})."
+        )
+        lines.append("Do NOT describe the organization as growing, scaling, or expanding.")
+        lines.append("State the most recent decline factually.")
+        if cagr and cagr > 0:
+            lines.append(
+                f"Any multi-year CAGR ({cagr}%) PREDATES this decline — "
+                "do NOT present it as current growth."
+            )
+    elif is_spike:
+        # One-time spike inside the window.
+        lines.append(
+            f"⚠️ Revenue includes a one-time spike (FY{peak_y}: ${peak_r:,.0f}) "
+            "far above the surrounding years."
+        )
+        lines.append("Do NOT characterize this as sustained growth or cite the CAGR as a growth rate.")
+        lines.append("Describe the spike as an exceptional/one-time year; report figures factually.")
+    elif first_r < 500_000 and cagr and cagr > 50:
+        # Real growth, but from a very small base — early-stage, not a durable trend.
+        lines.append(
+            f"✓ Revenue grew from a small base (FY{first_y} ${first_r:,.0f} → FY{last_y} ${last_r:,.0f})."
+        )
+        lines.append("Describe this as EARLY-STAGE growth, not an established trend.")
+        lines.append(
+            f"Do NOT lead with the raw CAGR ({cagr}%); if mentioned, frame it as "
+            "early-stage and inherently volatile."
+        )
+    elif cagr and cagr > 0:
+        # Steady, credible growth.
+        lines.append(f"✓ Revenue shows multi-year growth (3-Year CAGR {cagr}%).")
+        lines.append(
+            f"You may cite ~{cagr}% CAGR. Keep growth claims proportional to the figures above."
+        )
+    else:
+        lines.append("Revenue is roughly flat. Do NOT emphasize growth; describe stability factually.")
+
+    return lines
+
+
 class RichNarrativeGenerator:
     """Generates rich narratives with citation support."""
 
@@ -761,7 +839,6 @@ class RichNarrativeGenerator:
                     lines.append(f"- {org['name']}: {org['differentiator']}")
 
             # Filing Trends
-            has_cagr = False
             if investment_memo_data.get("filing_trends"):
                 t = investment_memo_data["filing_trends"]
                 lines.append("\n### 3-Year Financial Trends")
@@ -771,21 +848,17 @@ class RichNarrativeGenerator:
                 lines.append(f"- Net Assets: {t.get('net_assets')}")
                 if t.get("revenue_cagr_3yr"):
                     lines.append(f"- 3-Year Revenue CAGR: {t['revenue_cagr_3yr']}%")
-                    has_cagr = True
 
-            # Add explicit CAGR constraint
-            lines.append("\n## REVENUE GROWTH/CAGR CONSTRAINT (CRITICAL)")
-            if has_cagr:
-                cagr_val = investment_memo_data["filing_trends"]["revenue_cagr_3yr"]
-                lines.append(f"✓ 3-Year Revenue CAGR is available: {cagr_val}%")
-                lines.append(f"Use EXACTLY {cagr_val}% when mentioning revenue growth or CAGR.\n")
-            else:
-                lines.append("⚠️ 3-Year Revenue CAGR is NOT available in source data.")
-                lines.append("DO NOT mention:")
-                lines.append("- 3-year revenue CAGR or compound annual growth rate")
-                lines.append("- Revenue growth percentages")
-                lines.append("- Multi-year growth trends")
-                lines.append("\nYou may only mention single-year revenue figures if provided.\n")
+            # Revenue-growth framing — trajectory-aware so stale/one-off/small-base
+            # movements aren't narrated as durable growth (see #8).
+            _trends = investment_memo_data.get("filing_trends") or {}
+            lines.extend(
+                revenue_trajectory_guidance(
+                    _trends.get("years"),
+                    _trends.get("revenue"),
+                    _trends.get("revenue_cagr_3yr"),
+                )
+            )
 
             # Add OTHER MANDATORY FIELDS constraint
             lines.append("\n## OTHER MANDATORY FIELDS (USE EXACTLY OR NOT AT ALL)")
