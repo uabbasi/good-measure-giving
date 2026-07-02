@@ -172,7 +172,6 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
   };
 
   const statCells: [string, string, string][] = [
-    ['GMG Score', `${c.amalScore}`, 'of 100'],
     ['Cost / benef.', c.costPerBeneficiary != null ? usdFull(c.costPerBeneficiary) : '—', c.costPerBeneficiary != null ? 'per person' : 'not reported'],
     ['Program ratio', c.programRatioPct != null ? `${c.programRatioPct}%` : '—', 'of expense'],
     ['Reserves', c.reserveMonths != null ? `${c.reserveMonths} mo` : '—', 'working capital'],
@@ -269,10 +268,16 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
                 fontSize: 11,
               }}
             >
-              <span style={{ color: p.sub }}>
-                <Kicker p={p}>GMG Score</Kicker>{' '}
-                <Figure size={16} color={p.fg} italic>{c.amalScore}</Figure>
-                <span style={{ color: p.sub2 }}> / 100</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: p.sub }}>
+                <Kicker p={p}>GMG</Kicker>
+                {c.overall ? (
+                  <>
+                    <HarveyBall rating={c.overall} p={p} size={14} />
+                    <span style={{ color: ratingColor(c.overall, p), fontWeight: 500 }}>{c.overall}</span>
+                  </>
+                ) : (
+                  <span style={{ color: p.sub2 }}>—</span>
+                )}
               </span>
               {c.recommendationCue && (
                 <span style={{ color: p.sub }}>
@@ -293,7 +298,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
           <div key={l} style={{ padding: '12px 14px', borderRight: i < statCells.length - 1 ? sectionBorder : 'none', borderTop: i >= 7 ? sectionBorder : 'none' }}>
             <Kicker p={p}>{l}</Kicker>
             <div style={{ marginTop: 4 }}>
-              <Figure size={24} color={l === 'Risk' ? (p[riskTone(c.riskLevel)] as string) : l === 'GMG Score' ? p.accent : p.fg}>{v}</Figure>
+              <Figure size={24} color={l === 'Risk' ? (p[riskTone(c.riskLevel)] as string) : p.fg}>{v}</Figure>
             </div>
             <div style={{ fontSize: 10.5, color: p.sub2, marginTop: 2 }}>{sub}</div>
           </div>

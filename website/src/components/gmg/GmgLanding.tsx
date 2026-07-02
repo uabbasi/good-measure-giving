@@ -21,6 +21,7 @@ import { GmgNav } from './chrome';
 import { GmgFooter } from './content';
 import { useIsMobile } from './useIsMobile';
 import { adaptCharity } from './charityAdapter';
+import { CauseAreaMatrix } from '../../../components/CauseAreaMatrix';
 
 const RANK: Record<Rating, number> = { Strong: 5, Good: 4, Moderate: 3, Fair: 2, Weak: 1 };
 const ratingFromAvg = (avg: number): Rating =>
@@ -30,7 +31,7 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const p = gmgPalette(isDark);
   const isMobile = useIsMobile();
   const padX = isMobile ? 20 : 24;
-  const { charities } = useCharities();
+  const { charities, summaries } = useCharities();
 
   const variant: FontVariant = resolveFontVariant(
     typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('type') : null,
@@ -55,6 +56,23 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const featuredOverall: Rating | null = featured
     ? ratingFromAvg((RANK[featured.impact.overall] + RANK[featured.alignment.overall]) / 2)
     : null;
+
+  // Data for the interactive cause-area map (needs pillar scores).
+  const insightsData = useMemo(
+    () =>
+      (summaries || [])
+        .filter((s: any) => s.pillarScores && s.amalScore != null)
+        .map((s: any) => ({
+          id: s.id,
+          name: s.name,
+          amalScore: s.amalScore as number,
+          walletTag: s.walletTag || '',
+          pillarScores: s.pillarScores,
+          category: s.primaryCategory || 'OTHER',
+          totalRevenue: s.totalRevenue,
+        })),
+    [summaries],
+  );
 
   const center: React.CSSProperties = { maxWidth: 980, margin: '0 auto' };
 
@@ -126,6 +144,26 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
           ))}
         </div>
       </section>
+
+      {/* Interactive cause-area map — the whole field at a glance */}
+      {insightsData.length > 0 && (
+        <section style={{ padding: isMobile ? `44px ${padX}px` : `72px ${padX}px`, borderTop: `1px solid ${p.rule}` }}>
+          <div style={{ ...center, maxWidth: 920 }}>
+            <div style={{ textAlign: 'center', marginBottom: isMobile ? 24 : 34 }}>
+              <div style={{ fontFamily: FONT_MONO, fontSize: 10.5, letterSpacing: '0.18em', textTransform: 'uppercase', color: p.accent2, marginBottom: 14 }}>
+                The whole field
+              </div>
+              <h2 style={{ fontFamily: FONT_DISPLAY, fontWeight: 400, fontSize: isMobile ? 30 : 44, lineHeight: 1.06, letterSpacing: ft.displayTracking, margin: 0 }}>
+                Every cause, <em style={{ color: p.accent }}>weighed.</em>
+              </h2>
+              <p style={{ fontSize: isMobile ? 15 : 17, lineHeight: 1.6, color: p.sub, margin: '16px auto 0', maxWidth: 520 }}>
+                Impact against donor fit, across every cause area we cover — tap a bubble to explore the charities inside it.
+              </p>
+            </div>
+            <CauseAreaMatrix charities={insightsData} />
+          </div>
+        </section>
+      )}
 
       {/* One calm, human featured example */}
       {featured && featuredOverall && (
