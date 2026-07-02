@@ -328,13 +328,15 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities, hid
       <div className="py-6 pl-20 pr-2">
         <div className="relative aspect-square max-w-lg mx-auto">
           {/* Background Grid */}
-          <div className="absolute inset-0 rounded-lg border" style={{ borderColor: p.rule, background: 'transparent' }}>
-            {/* Direction indicators */}
-            <div className="absolute top-2 right-2 text-[9px] font-medium text-right" style={{ color: p.accent }}>
+          <div className="absolute inset-0">
+            {/* Faint center guides — structure the coordinate plane without a box */}
+            <div className="absolute left-0 right-0 top-1/2" style={{ borderTop: `1px dashed ${p.rule2}`, opacity: 0.55 }} />
+            <div className="absolute top-0 bottom-0 left-1/2" style={{ borderLeft: `1px dashed ${p.rule2}`, opacity: 0.55 }} />
+            {/* Axes — L-shaped: impact (left) + alignment (bottom), open on top/right */}
+            <div className="absolute inset-0" style={{ borderLeft: `1.5px solid ${p.rule2}`, borderBottom: `1.5px solid ${p.rule2}` }} />
+            {/* Aspirational corner hint */}
+            <div className="absolute top-0 right-0 text-[9px] font-medium tracking-wide" style={{ color: p.accent }}>
               Best →
-            </div>
-            <div className="absolute bottom-2 left-2 text-[9px] font-medium" style={{ color: p.sub2 }}>
-              ← Lower scores
             </div>
           </div>
 
