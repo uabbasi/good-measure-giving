@@ -9,8 +9,6 @@ import { UserFeaturesProvider } from './src/contexts/UserFeaturesContext';
 import { Navbar } from './components/Navbar';
 // BetaBanner moved inline to Navbar as a subtle pill
 import { Footer } from './components/Footer';
-const LandingPage = lazy(() => import('./pages/LandingPage').then(m => ({ default: m.LandingPage })));
-const BrowsePage = lazy(() => import('./pages/BrowsePage').then(m => ({ default: m.BrowsePage })));
 const CharityDetailsPage = lazy(() => import('./pages/CharityDetailsPage').then(m => ({ default: m.CharityDetailsPage })));
 const MethodologyPage = lazy(() => import('./pages/MethodologyPage').then(m => ({ default: m.MethodologyPage })));
 const LinkToUsPage = lazy(() => import('./pages/LinkToUsPage').then(m => ({ default: m.LinkToUsPage })));
@@ -21,7 +19,6 @@ const PrivacyPage = lazy(() => import('./pages/PrivacyPage').then(m => ({ defaul
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then(m => ({ default: m.NotFoundPage })));
 const PromptsPage = lazy(() => import('./pages/PromptsPage').then(m => ({ default: m.PromptsPage })));
 const PromptDetailPage = lazy(() => import('./pages/PromptDetailPage').then(m => ({ default: m.PromptDetailPage })));
-const ComparePage = lazy(() => import('./pages/ComparePage').then(m => ({ default: m.ComparePage })));
 const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ default: m.ProfilePage })));
 const CausesIndexPage = lazy(() => import('./pages/CausesIndexPage').then(m => ({ default: m.CausesIndexPage })));
 const CausePage = lazy(() => import('./pages/CausePage').then(m => ({ default: m.CausePage })));
@@ -46,7 +43,6 @@ import { GmgChromeFrame } from './src/components/gmg/chrome';
 import { DevQuickLogin } from './src/auth/DevQuickLogin';
 import { ScrollToTop } from './components/ScrollToTop';
 import { trackPageView } from './src/utils/analytics';
-import { isMotifDesign } from './src/utils/designMode';
 
 
 // TanStack Query client — staleTime: Infinity because charity data is static JSON
@@ -108,21 +104,18 @@ export const AppContent: React.FC = () => {
   // the legacy design, even though SSR and in-app navigation resolved the motif.
   const path = location.pathname.length > 1 ? location.pathname.replace(/\/+$/, '') : location.pathname;
   const isLandingPage = path === '/';
-  // GMG "Modern" motif is the default design for everyone. `?design=legacy` is an
-  // escape hatch to the old design. Two motif flavors, both suppress the app
+  // GMG "Modern" motif is the only design. Two motif flavors, both suppress the app
   // Navbar/Footer/overlays:
   //  - full-bleed: motif pages that render their own GmgNav (landing, browse, …)
-  //  - auth-chrome: legacy signed-in pages wrapped in motif chrome (profile, invites)
-  const isMotif = isMotifDesign(location.search);
+  //  - auth-chrome: signed-in pages wrapped in motif chrome (profile, invites)
+  // The legacy design escape hatch has been retired; rollback lives in git history.
   const isGmgFullBleed =
-    isMotif &&
-    (path.startsWith('/charity/') ||
-      path === '/browse' ||
-      path === '/compare' ||
-      path === '/');
+    path.startsWith('/charity/') ||
+    path === '/browse' ||
+    path === '/compare' ||
+    path === '/';
   const isGmgAuthChrome =
-    isMotif &&
-    (path === '/profile' || path.startsWith('/plan/join'));
+    path === '/profile' || path.startsWith('/plan/join');
   const isGmgMotifOnly =
     MOTIF_CONTENT_ROUTES.has(path) ||
     MOTIF_CONTENT_PREFIXES.some((pre) => path.startsWith(pre));
@@ -146,8 +139,8 @@ export const AppContent: React.FC = () => {
       <main id="main" className={`flex-grow ${isLandingPage ? 'min-h-0 overflow-hidden lg:min-h-0 lg:overflow-visible' : ''}`}>
         <Suspense fallback={null}>
           <Routes>
-            <Route path="/" element={isGmgFullBleed ? <GmgLanding isDark={isDark} /> : <LandingPage />} />
-            <Route path="/browse" element={isGmgFullBleed ? <GmgBrowse isDark={isDark} /> : <BrowsePage />} />
+            <Route path="/" element={<GmgLanding isDark={isDark} />} />
+            <Route path="/browse" element={<GmgBrowse isDark={isDark} />} />
             <Route path="/charity/:id" element={<CharityDetailsPage />} />
             <Route path="/methodology" element={<MethodologyPage isDark={isDark} />} />
             <Route path="/link-to-us" element={<LinkToUsPage isDark={isDark} />} />
@@ -156,8 +149,8 @@ export const AppContent: React.FC = () => {
             <Route path="/about" element={<AboutPage isDark={isDark} />} />
             <Route path="/privacy" element={<PrivacyPage isDark={isDark} />} />
             <Route path="/bookmarks" element={<Navigate to="/profile" replace />} />
-            <Route path="/compare" element={isGmgFullBleed ? <GmgCompare isDark={isDark} /> : <ComparePage />} />
-            <Route path="/profile" element={isGmgAuthChrome ? <GmgChromeFrame isDark={isDark} requireAuth><ProfilePage /></GmgChromeFrame> : <ProfilePage />} />
+            <Route path="/compare" element={<GmgCompare isDark={isDark} />} />
+            <Route path="/profile" element={<GmgChromeFrame isDark={isDark} requireAuth><ProfilePage /></GmgChromeFrame>} />
             <Route path="/prompts" element={<PromptsPage isDark={isDark} />} />
             <Route path="/prompts/:promptId" element={<PromptDetailPage isDark={isDark} />} />
             <Route path="/causes" element={<CausesIndexPage isDark={isDark} />} />
@@ -167,7 +160,7 @@ export const AppContent: React.FC = () => {
             <Route path="/guides/:slug" element={<GuidePage isDark={isDark} />} />
             <Route path="/zakat-calculator" element={<ZakatCalculatorHubPage isDark={isDark} />} />
             <Route path="/zakat-calculator/:asset" element={<ZakatCalculatorAssetPage isDark={isDark} />} />
-            <Route path="/plan/join/:planId/:token" element={isGmgAuthChrome ? <GmgChromeFrame isDark={isDark}><JoinPlanPage /></GmgChromeFrame> : <JoinPlanPage />} />
+            <Route path="/plan/join/:planId/:token" element={<GmgChromeFrame isDark={isDark}><JoinPlanPage /></GmgChromeFrame>} />
 
             {/* Catch-all: 404 */}
             <Route path="*" element={<NotFoundPage />} />
