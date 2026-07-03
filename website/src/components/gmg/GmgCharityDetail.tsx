@@ -2,9 +2,15 @@
 // Reachable via /charity/:id. Renders real charity data in the
 // sage-on-bone, Harvey-ball design from the claude.ai handoff.
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { charityPath } from '../../lib/paths';
+import { useCharities } from '../../hooks/useCharities';
+import {
+  selectSimilarCharities,
+  classifyZakatStatus,
+  type SimilarCharityCandidate,
+} from '../../../scripts/lib/charity-seo';
 import {
   GmgPalette,
   gmgPalette,
@@ -157,6 +163,31 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
   const p = gmgPalette(isDark);
   const c = adaptCharity(charity);
   const isMobile = useIsMobile();
+  const { summaries } = useCharities();
+
+  // Select up to 5 same-category/same-zakatStatus charities, sorted by score.
+  // Uses the canonical selector from scripts/lib/charity-seo so logic is shared
+  // with the SSG prerender and the SimilarCharities component.
+  const similarCharities = useMemo((): SimilarCharityCandidate[] => {
+    if (!summaries || summaries.length === 0) return [];
+    const currentEin = charity?.ein ?? '';
+    const category = charity?.primaryCategory ?? charity?.category ?? '';
+    const zakatStatus = classifyZakatStatus({
+      walletTag: charity?.amalEvaluation?.wallet_tag ?? null,
+      zakatClassification: charity?.amalEvaluation?.zakat_classification ?? null,
+    });
+    const pool: SimilarCharityCandidate[] = summaries.map((s) => ({
+      ein: s.ein,
+      name: s.name,
+      category: s.primaryCategory ?? s.category ?? '',
+      amalScore: s.amalScore ?? null,
+      zakatStatus: classifyZakatStatus({
+        walletTag: s.walletTag ?? null,
+        zakatClassification: s.zakatClassification ?? null,
+      }),
+    }));
+    return selectSimilarCharities({ currentEin, category, zakatStatus, pool, limit: 5 });
+  }, [summaries, charity]);
   const padX = isMobile ? 16 : 24;
 
   const variant: FontVariant = resolveFontVariant(
@@ -539,6 +570,60 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
           </div>
         </div>
       </section>
+
+      {/* Similar charities — ungated, SSR-crawlable: links render for every visitor
+          including Googlebot so the prerendered HTML carries real /charity/<ein>/ hrefs. */}
+      {similarCharities.length >= 2 && (
+        <section
+          aria-labelledby="gmg-similar-heading"
+          style={{ padding: `20px ${padX}px`, borderBottom: sectionBorder }}
+        >
+          <Kicker p={p}>Similar charities</Kicker>
+          <h2
+            id="gmg-similar-heading"
+            style={{ fontFamily: FONT_DISPLAY, fontSize: 22, margin: '6px 0 12px', letterSpacing: '-0.02em', color: p.fg }}
+          >
+            Also evaluated
+          </h2>
+          <ul
+            style={{
+              listStyle: 'none',
+              margin: 0,
+              padding: 0,
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+              gap: 8,
+            }}
+          >
+            {similarCharities.map((sc) => (
+              <li key={sc.ein}>
+                <Link
+                  to={charityPath(sc.ein)}
+                  style={{
+                    display: 'block',
+                    padding: '10px 12px',
+                    borderRadius: 6,
+                    border: sectionBorder,
+                    background: p.bg2,
+                    color: p.fg,
+                    textDecoration: 'none',
+                    fontSize: 13,
+                    fontWeight: 500,
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {sc.name}
+                  {sc.amalScore != null && (
+                    <div style={{ fontFamily: FONT_MONO, fontSize: 10.5, color: p.sub2, marginTop: 4 }}>
+                      {sc.amalScore}/100
+                    </div>
+                  )}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <footer style={{ padding: `14px ${padX}px`, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, color: p.sub2, fontSize: 10.5, fontFamily: FONT_MONO, letterSpacing: '0.06em' }}>
         <span>GOOD MEASURE GIVING · {c.ein && `EIN ${c.ein}`} {c.rubricVersion && `· RUBRIC v${c.rubricVersion}`}</span>

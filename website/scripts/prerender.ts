@@ -138,7 +138,10 @@ function seedFor(route: string, ctx: {
   if (route.startsWith('/charity/')) {
     const ein = route.slice('/charity/'.length);
     const d = ctx.charityDetails.get(ein);
-    return d ? [{ queryKey: ['charity', ein], data: d }] : [];
+    // Seed the charities index alongside the detail so useCharities() (used by
+    // the similar-charities block) returns data during SSR — without it the hook
+    // returns an empty array and no links appear in the prerendered HTML.
+    return d ? [...masthead, { queryKey: ['charity', ein], data: d }] : masthead;
   }
   if (route === '/causes' || route.startsWith('/causes/')) {
     return masthead;
