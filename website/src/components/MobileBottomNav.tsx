@@ -6,6 +6,7 @@
 
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { paths, isPath } from '../lib/paths';
 import { Search, Heart, MoreHorizontal, X, BookOpen, HelpCircle, Info } from 'lucide-react';
 import { useLandingTheme } from '../../contexts/LandingThemeContext';
 import { useAuth } from '../auth/useAuth';
@@ -19,7 +20,7 @@ export function MobileBottomNav() {
   const location = useLocation();
   const [moreOpen, setMoreOpen] = useState(false);
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => isPath(location.pathname, path);
 
   const activeColor = 'text-emerald-500';
   const inactiveColor = isDark ? 'text-slate-400' : 'text-slate-500';
@@ -94,7 +95,7 @@ export function MobileBottomNav() {
         <div className="h-14 grid grid-cols-3">
           {/* Browse */}
           <Link
-            to="/browse"
+            to={paths.browse}
             className={`flex flex-col items-center justify-center gap-0.5 ${isActive('/browse') ? activeColor : inactiveColor}`}
           >
             <Search className="w-5 h-5" />

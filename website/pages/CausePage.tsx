@@ -3,6 +3,7 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
+import { charityPath, paths } from '../src/lib/paths';
 import { useCharities } from '../src/hooks/useCharities';
 import {
   GmgContentFrame,
@@ -71,7 +72,7 @@ export const CausePage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
           <>
             <Breadcrumb
               p={p}
-              trail={[{ label: 'Home', to: '/' }, { label: 'Causes', to: '/causes' }, { label: cause.displayName }]}
+              trail={[{ label: 'Home', to: '/' }, { label: 'Causes', to: paths.causes }, { label: cause.displayName }]}
             />
 
             <ContentHero
@@ -92,7 +93,7 @@ export const CausePage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                     <LinkCard
                       key={c.ein}
                       p={p}
-                      to={`/charity/${c.ein}`}
+                      to={charityPath(c.ein)}
                       title={c.name}
                       meta={c.amalScore != null ? `${c.amalScore}/100` : undefined}
                     />

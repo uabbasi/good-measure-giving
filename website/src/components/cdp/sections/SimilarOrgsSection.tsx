@@ -8,6 +8,7 @@
  */
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { charityPath } from '../../../lib/paths';
 import { Users, ExternalLink, Lock } from 'lucide-react';
 import { useLandingTheme } from '../../../../contexts/LandingThemeContext';
 import { useCharities } from '../../../hooks/useCharities';
@@ -58,7 +59,7 @@ export const SimilarOrgsSection: React.FC<{ data: CdpData }> = ({ data }) => {
                 <div key={i} className="text-sm">
                   {canViewRich && linkedId ? (
                     <Link
-                      to={`/charity/${linkedId}`}
+                      to={charityPath(linkedId)}
                       onClick={() => trackSimilarOrgClick(charity.id ?? charity.ein ?? '', linkedId!, orgName, i)}
                       className={`flex items-center gap-1.5 ${
                         isDark ? 'text-emerald-400 hover:text-emerald-300' : 'text-emerald-600 hover:text-emerald-700'

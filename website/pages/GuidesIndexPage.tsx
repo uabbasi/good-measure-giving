@@ -2,6 +2,7 @@
 // Motif-only (no legacy variant): renders its own GmgNav + footer via the content kit.
 
 import React, { useEffect } from 'react';
+import { guidePath } from '../src/lib/paths';
 import {
   GmgContentFrame,
   Breadcrumb,
@@ -57,7 +58,7 @@ export const GuidesIndexPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   <LinkCard
                     key={g.slug}
                     p={p}
-                    to={`/guides/${g.slug}`}
+                    to={guidePath(g.slug)}
                     title={g.title}
                     desc={g.description}
                     meta={`${g.readingTimeMinutes} min read`}

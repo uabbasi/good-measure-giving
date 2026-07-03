@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { charityPath } from '../lib/paths';
 import { ArrowRight, Lock, Info, Heart, ShieldCheck } from 'lucide-react';
 import { CharityProfile } from '../../types';
 import { useLandingTheme } from '../../contexts/LandingThemeContext';
@@ -241,7 +242,7 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
     <>
       {/* Mobile: Compact Horizontal Layout */}
       <Link
-        to={`/charity/${charity.id}`}
+        to={charityPath(charity.id ?? '')}
         onClick={() => trackCharityCardClick(
           charity.id || charity.ein || '',
           charity.name,
@@ -307,7 +308,7 @@ export const CharityCard: React.FC<CharityCardProps> = ({ charity, featured = fa
 
       {/* Desktop: Vertical Card Layout */}
       <Link
-        to={`/charity/${charity.id}`}
+        to={charityPath(charity.id ?? '')}
         onClick={() => trackCharityCardClick(
           charity.id || charity.ein || '',
           charity.name,

@@ -3,6 +3,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { paths } from '../src/lib/paths';
 import { useCharities } from '../src/hooks/useCharities';
 import { useCalibrationReport } from '../src/hooks/useCalibrationReport';
 import { getEvidenceStageLabel } from '../src/utils/scoreConstants';
@@ -734,7 +735,7 @@ export const MethodologyPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   We publish core prompts and prompt annotations — from data extraction to narrative generation to
                   quality validation. See how we instruct models and where we continue expanding prompt-level
                   transparency.{' '}
-                  <Link to="/prompts" style={{ color: p.accent, fontWeight: 500, textDecoration: 'none' }}>
+                  <Link to={paths.prompts} style={{ color: p.accent, fontWeight: 500, textDecoration: 'none' }}>
                     View all prompts →
                   </Link>
                 </Callout>
@@ -877,7 +878,7 @@ export const MethodologyPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                 <p style={{ fontSize: 16, lineHeight: 1.6, color: p.sub, maxWidth: 480, margin: '0 auto 24px' }}>
                   Browse our directory of evaluated charities and find organizations that match your giving goals.
                 </p>
-                <CtaLink p={p} to="/browse">Browse Charities →</CtaLink>
+                <CtaLink p={p} to="/browse/">Browse Charities →</CtaLink>
               </Card>
             </Section>
           </>

@@ -10,6 +10,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { charityPath } from '../src/lib/paths';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { SHOW_AMAL_SCORE } from '../src/featureFlags';
 
@@ -32,7 +33,7 @@ interface ImpactMatrixProps {
 
 export const ImpactMatrix: React.FC<ImpactMatrixProps> = ({
   charities,
-  linkToCharityPage = (charity) => `/charity/${charity.id}`,
+  linkToCharityPage = (charity) => charityPath(charity.id),
   showLegend = true,
   height = 'aspect-square',
 }) => {

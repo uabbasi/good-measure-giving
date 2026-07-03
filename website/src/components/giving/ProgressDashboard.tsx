@@ -13,6 +13,7 @@
 import { useMemo } from 'react';
 import { m } from 'motion/react';
 import { Link } from 'react-router-dom';
+import { charityPath } from '../../lib/paths';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
 import { useProfileState } from '../../contexts/UserFeaturesContext';
 import { useCharities } from '../../hooks/useCharities';
@@ -229,7 +230,7 @@ export function ProgressDashboard({ onRequestSetTarget }: ProgressDashboardProps
                 <span>
                   Next up:{' '}
                   <Link
-                    to={`/charity/${einToSlug(nextUp.charityEin)}`}
+                    to={charityPath(einToSlug(nextUp.charityEin))}
                     className={`font-medium underline-offset-2 hover:underline ${
                       isDark ? 'text-emerald-400 hover:text-emerald-300' : 'text-emerald-600 hover:text-emerald-700'
                     }`}

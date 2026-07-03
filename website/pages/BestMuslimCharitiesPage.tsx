@@ -3,6 +3,7 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { charityPath } from '../src/lib/paths';
 import { useCharities } from '../src/hooks/useCharities';
 import {
   GmgContentFrame,
@@ -56,7 +57,7 @@ const ZakatPill: React.FC<{ p: GmgPalette }> = ({ p }) => (
 const RankedRow: React.FC<{ p: GmgPalette; rank: number; c: HubCharity }> = ({ p, rank, c }) => (
   <li>
     <Link
-      to={`/charity/${c.ein}`}
+      to={charityPath(c.ein)}
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -175,7 +176,7 @@ export const BestMuslimCharitiesPage: React.FC<{ isDark: boolean }> = ({ isDark 
                         <LinkCard
                           key={c.ein}
                           p={p}
-                          to={`/charity/${c.ein}`}
+                          to={charityPath(c.ein)}
                           title={`${TOP_N + i + 1}. ${c.name}`}
                           meta={isZakatEligible(c) ? `Accepts Zakat · ${c.amalScore}/100` : `${c.amalScore}/100`}
                         />
@@ -195,7 +196,7 @@ export const BestMuslimCharitiesPage: React.FC<{ isDark: boolean }> = ({ isDark 
                         <LinkCard
                           key={c.ein}
                           p={p}
-                          to={`/charity/${c.ein}`}
+                          to={charityPath(c.ein)}
                           title={c.name}
                           meta={isZakatEligible(c) ? 'Accepts Zakat' : undefined}
                         />
@@ -205,7 +206,7 @@ export const BestMuslimCharitiesPage: React.FC<{ isDark: boolean }> = ({ isDark 
                 )}
 
                 <Section ctx={ctx}>
-                  <ALink p={p} to="/browse">
+                  <ALink p={p} to="/browse/">
                     Browse all evaluated charities →
                   </ALink>
                 </Section>

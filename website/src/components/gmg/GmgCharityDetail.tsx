@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { charityPath } from '../../lib/paths';
 import {
   GmgPalette,
   gmgPalette,
@@ -236,13 +237,13 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
                 </a>
               )}
               <Link
-                to={`/charity/${c.ein}`}
+                to={charityPath(c.ein)}
                 style={{ padding: '10px 16px', borderRadius: 99, background: 'transparent', border: `1px solid ${p.rule}`, color: p.fg, fontSize: 12, textDecoration: 'none' }}
               >
                 Standard view
               </Link>
               <Link
-                to={`/compare?eins=${c.ein}`}
+                to={`/compare/?eins=${c.ein}`}
                 style={{ padding: '10px 16px', borderRadius: 99, background: 'transparent', border: `1px solid ${p.rule}`, color: p.fg, fontSize: 12, textDecoration: 'none' }}
               >
                 Compare

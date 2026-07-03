@@ -98,7 +98,7 @@ export function CompareBar() {
               Clear
             </button>
             <Link
-              to="/compare"
+              to="/compare/"
               className={`
                 inline-flex flex-1 items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors sm:flex-none
                 ${compareCount >= 2

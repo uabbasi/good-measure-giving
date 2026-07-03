@@ -3,6 +3,7 @@
 
 import React, { useEffect } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
+import { charityPath, causePath, paths } from '../src/lib/paths';
 import {
   GmgContentFrame,
   Breadcrumb,
@@ -48,7 +49,7 @@ export const GuidePage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
           <>
             <Breadcrumb
               p={p}
-              trail={[{ label: 'Home', to: '/' }, { label: 'Guides', to: '/guides' }, { label: guide.title }]}
+              trail={[{ label: 'Home', to: '/' }, { label: 'Guides', to: paths.guides }, { label: guide.title }]}
             />
 
             <ContentHero
@@ -73,7 +74,7 @@ export const GuidePage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               <Section ctx={ctx} title="Charities featured in this guide">
                 <CardGrid min={260}>
                   {guide.featuredCharities.map((fc) => (
-                    <LinkCard key={fc.ein} p={p} to={`/charity/${fc.ein}`} title={fc.name} desc={fc.blurb} />
+                    <LinkCard key={fc.ein} p={p} to={charityPath(fc.ein)} title={fc.name} desc={fc.blurb} />
                   ))}
                 </CardGrid>
               </Section>
@@ -129,7 +130,7 @@ export const GuidePage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   {guide.relatedCauses.map((rc) => (
                     <Link
                       key={rc}
-                      to={`/causes/${rc}`}
+                      to={causePath(rc)}
                       style={{
                         display: 'inline-block',
                         padding: '6px 14px',

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { charityPath } from '../lib/paths';
 import { useCharities } from '../hooks/useCharities';
 import {
   selectSimilarCharities,
@@ -65,7 +66,7 @@ export const SimilarCharities: React.FC<SimilarCharitiesProps> = ({
         {similar.map((c) => (
           <li key={c.ein}>
             <Link
-              to={`/charity/${c.ein}`}
+              to={charityPath(c.ein)}
               className="block p-4 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors"
             >
               <div className="font-medium text-slate-900 dark:text-slate-100">{c.name}</div>

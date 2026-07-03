@@ -3,6 +3,7 @@
 
 import React, { useState } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
+import { paths } from '../src/lib/paths';
 import {
   GmgContentFrame,
   Breadcrumb,
@@ -81,7 +82,7 @@ export const PromptDetailPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               p={p}
               trail={[
                 { label: 'Home', to: '/' },
-                { label: 'AI Transparency', to: '/prompts' },
+                { label: 'AI Transparency', to: paths.prompts },
                 { label: prompt.name },
               ]}
             />

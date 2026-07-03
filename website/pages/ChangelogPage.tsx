@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { paths } from '../src/lib/paths';
 import {
   gmgPalette,
   FONT_DISPLAY,
@@ -147,7 +148,7 @@ export const ChangelogPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
         </ol>
 
         <div style={{ marginTop: 48, fontSize: 14, color: p.sub }}>
-          <Link to="/methodology" style={{ color: p.accent, textDecoration: 'none' }}>
+          <Link to={paths.methodology} style={{ color: p.accent, textDecoration: 'none' }}>
             Read the methodology →
           </Link>
         </div>

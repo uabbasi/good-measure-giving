@@ -9,6 +9,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { charityPath } from '../src/lib/paths';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { SHOW_AMAL_SCORE } from '../src/featureFlags';
 
@@ -140,7 +141,7 @@ export const CategoryBubbleChart: React.FC<CategoryBubbleChartProps> = ({
                 return (
                   <Link
                     key={charity.id}
-                    to={`/charity/${charity.id}`}
+                    to={charityPath(charity.id)}
                     className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10"
                     style={{
                       top: `${y}%`,

@@ -15,6 +15,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { charityPath } from '../../lib/paths';
 import { Check, ChevronRight, X } from 'lucide-react';
 import type { AssignmentStatus } from '../../utils/recordStatus';
 
@@ -294,7 +295,7 @@ export function CharityRecordRow({
           />
           <td className="px-2.5 py-1.5">
             <Link
-              to={`/charity/${charity.ein}`}
+              to={charityPath(charity.ein)}
               className={`text-[13px] font-medium hover:underline ${
                 isDark ? 'text-slate-200 hover:text-white' : 'text-slate-700 hover:text-slate-900'
               }`}
@@ -382,7 +383,7 @@ export function CharityRecordRow({
     >
       <div className="flex items-center justify-between gap-2">
         <Link
-          to={`/charity/${charity.ein}`}
+          to={charityPath(charity.ein)}
           className={`min-w-0 truncate text-[13px] font-medium ${
             isDark ? 'text-slate-200 hover:text-white' : 'text-slate-700 hover:text-slate-900'
           } hover:underline`}

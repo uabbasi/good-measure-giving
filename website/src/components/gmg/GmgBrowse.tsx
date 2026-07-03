@@ -24,6 +24,7 @@ import { GmgNav } from './chrome';
 import { GmgFooter } from './content';
 import { useIsMobile } from './useIsMobile';
 import { adaptRow, GmgRow } from './charityAdapter';
+import { charityPath } from '../../lib/paths';
 
 const RANK: Record<Rating, number> = { Strong: 5, Good: 4, Moderate: 3, Fair: 2, Weak: 1 };
 type SortKey = 'name' | 'cause' | 'overall' | 'finances' | 'risk' | 'donorFit' | 'size';
@@ -283,7 +284,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   }, [allRows, query, wallet, sortBy, sortDir]);
 
   const sectionBorder = `1px solid ${p.rule}`;
-  const hrefFor = (ein: string) => `/charity/${ein}`;
+  const hrefFor = charityPath;
 
   const shell = (children: React.ReactNode) => (
     <div style={{ background: p.bg, color: p.fg, fontFamily: FONT_TEXT, minHeight: '100vh', ...fontVars }}>
@@ -479,7 +480,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               Clear
             </button>
             {selected.length >= 2 ? (
-              <Link to={`/compare?eins=${selected.join(',')}`} style={{ padding: '7px 16px', borderRadius: 99, background: p.bg, color: p.fg, fontSize: 12, fontWeight: 500, textDecoration: 'none' }}>
+              <Link to={`/compare/?eins=${selected.join(',')}`} style={{ padding: '7px 16px', borderRadius: 99, background: p.bg, color: p.fg, fontSize: 12, fontWeight: 500, textDecoration: 'none' }}>
                 Compare {selected.length} →
               </Link>
             ) : (

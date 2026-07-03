@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { charityPath } from '../lib/paths';
 import { ArrowUpRight } from 'lucide-react';
 import { m } from 'motion/react';
 import { useLandingTheme } from '../../contexts/LandingThemeContext';
@@ -56,7 +57,7 @@ export function TopPicks({ charities, bookmarkedEins }: TopPicksProps) {
 function PickTile({ group, isDark, delay }: { group: TopPickGroup; isDark: boolean; delay: number }) {
   const charity = group.picks[0];
   if (!charity) return null;
-  const href = `/charity/${charity.ein.replace(/^(\d{2})(\d+)$/, '$1-$2')}`;
+  const href = charityPath(charity.ein.replace(/^(\d{2})(\d+)$/, '$1-$2'));
 
   return (
     <m.div

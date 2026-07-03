@@ -4,6 +4,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { charityPath } from '../../lib/paths';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
 import type { GivingHistoryEntry } from '../../../types';
 
@@ -228,7 +229,7 @@ export function GivingHistoryTable({
                   <td className={`py-3 px-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     {donation.charityEin ? (
                       <Link
-                        to={`/charity/${donation.charityEin}`}
+                        to={charityPath(donation.charityEin)}
                         className="hover:underline text-emerald-600"
                       >
                         {donation.charityName}

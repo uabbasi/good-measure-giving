@@ -4,6 +4,7 @@
 // FAQPage JSON-LD emitted by the prerenderer (built from the same FAQ_ITEMS).
 
 import React from 'react';
+import { paths } from '../src/lib/paths';
 import {
   GmgContentFrame,
   Breadcrumb,
@@ -71,7 +72,7 @@ export const FAQPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             <Section ctx={ctx} title="Still have questions?">
               <P p={p}>
                 We're here to help. Reach out at{' '}
-                <ALink p={p} to="/about">
+                <ALink p={p} to={paths.about}>
                   about us
                 </ALink>{' '}
                 or email{' '}

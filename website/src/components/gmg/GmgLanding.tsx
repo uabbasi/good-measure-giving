@@ -4,6 +4,7 @@
 
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { charityPath, paths } from '../../lib/paths';
 import { Coins, HeartHandshake, Moon } from 'lucide-react';
 import { useCharities } from '../../hooks/useCharities';
 import {
@@ -115,13 +116,13 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginTop: 32 }}>
             <Link
-              to="/browse"
+              to="/browse/"
               style={{ padding: '13px 24px', borderRadius: 99, background: p.accent, color: p.bg, fontSize: 15, fontWeight: 500, textDecoration: 'none' }}
             >
               Browse charities
             </Link>
             <Link
-              to="/methodology"
+              to={paths.methodology}
               style={{ padding: '13px 22px', borderRadius: 99, background: 'transparent', border: `1px solid ${p.rule2}`, color: p.fg, fontSize: 15, textDecoration: 'none' }}
             >
               How it works
@@ -183,7 +184,7 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               <span style={{ fontSize: 13.5, color: ratingColor(featuredOverall, p), fontWeight: 500 }}>{featuredOverall} overall</span>
             </div>
             <div style={{ marginTop: 22 }}>
-              <Link to={`/charity/${featured.ein}`} style={{ fontSize: 15, color: p.accent, textDecoration: 'none', fontWeight: 500 }}>
+              <Link to={charityPath(featured.ein)} style={{ fontSize: 15, color: p.accent, textDecoration: 'none', fontWeight: 500 }}>
                 Read the review →
               </Link>
             </div>
@@ -201,7 +202,7 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             Our only goal is to help you give well — to {count}+ charities, researched in the open.
           </p>
           <Link
-            to="/browse"
+            to="/browse/"
             style={{ display: 'inline-block', padding: '14px 28px', borderRadius: 99, background: p.chip, color: p.chipFg, fontSize: 15, fontWeight: 500, textDecoration: 'none' }}
           >
             Browse all {count} charities →

@@ -7,13 +7,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { X, CheckCircle, ArrowRight } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
+import { paths, isPath } from '../lib/paths';
 
 const SESSION_KEY = 'gmg-welcome-shown';
 
 export const WelcomeToast: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const location = useLocation();
-  const isOnBrowse = location.pathname === '/browse';
+  const isOnBrowse = isPath(location.pathname, paths.browse);
 
   const dismiss = useCallback(() => setVisible(false), []);
 
@@ -50,7 +51,7 @@ export const WelcomeToast: React.FC = () => {
           <p className="text-xs text-slate-500 mt-0.5">Explore any charity for the full evaluation.</p>
           {!isOnBrowse && (
             <Link
-              to="/browse"
+              to={paths.browse}
               onClick={dismiss}
               className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 hover:text-emerald-700 mt-1.5 transition-colors"
             >

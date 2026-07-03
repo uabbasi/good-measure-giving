@@ -18,6 +18,7 @@ import {
 } from './tokens';
 import { GmgNav } from './chrome';
 import { GmgLogo } from './primitives';
+import { paths } from '../../lib/paths';
 import { useIsMobile } from './useIsMobile';
 
 // Resolve the motif font CSS vars (mirrors ChangelogPage / GmgChromeFrame).
@@ -407,28 +408,28 @@ export const GmgFooter: React.FC<{ p: GmgPalette; isMobile: boolean }> = ({ p, i
     {
       heading: 'Evaluate',
       links: [
-        { label: 'Browse charities', to: '/browse' },
-        { label: 'Best Muslim charities', to: '/best-muslim-charities-in-usa' },
-        { label: 'Causes', to: '/causes' },
-        { label: 'Compare', to: '/compare' },
+        { label: 'Browse charities', to: paths.browse },
+        { label: 'Best Muslim charities', to: '/best-muslim-charities-in-usa/' },
+        { label: 'Causes', to: paths.causes },
+        { label: 'Compare', to: paths.compare },
       ],
     },
     {
       heading: 'Learn',
       links: [
-        { label: 'Methodology', to: '/methodology' },
-        { label: 'Guides', to: '/guides' },
-        { label: 'Zakat calculator', to: '/zakat-calculator' },
-        { label: 'FAQ', to: '/faq' },
+        { label: 'Methodology', to: paths.methodology },
+        { label: 'Guides', to: paths.guides },
+        { label: 'Zakat calculator', to: paths.zakatCalculator },
+        { label: 'FAQ', to: paths.faq },
       ],
     },
     {
       heading: 'About',
       links: [
-        { label: 'About', to: '/about' },
-        { label: 'AI transparency', to: '/prompts' },
-        { label: 'Link to us', to: '/link-to-us' },
-        { label: 'Changelog', to: '/changelog' },
+        { label: 'About', to: paths.about },
+        { label: 'AI transparency', to: paths.prompts },
+        { label: 'Link to us', to: '/link-to-us/' },
+        { label: 'Changelog', to: '/changelog/' },
       ],
     },
   ];

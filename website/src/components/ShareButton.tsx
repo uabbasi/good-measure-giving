@@ -72,7 +72,7 @@ export const ShareButton: React.FC<ShareButtonProps> = ({
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : 'https://goodmeasuregiving.org'}/charity/${charityId}`;
+  const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : 'https://goodmeasuregiving.org'}/charity/${charityId}/`;
   const shareText = `Check out ${charityName} on Good Measure`;
 
   // Close menu on outside click

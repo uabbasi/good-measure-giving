@@ -2,6 +2,7 @@
 // Motif-only (no legacy variant): renders its own GmgNav + footer via the content kit.
 
 import React, { useEffect } from 'react';
+import { zakatCalculatorPath } from '../src/lib/paths';
 import {
   GmgContentFrame,
   Breadcrumb,
@@ -73,7 +74,7 @@ export const ZakatCalculatorHubPage: React.FC<{ isDark: boolean }> = ({ isDark }
                     <LinkCard
                       key={slug}
                       p={p}
-                      to={`/zakat-calculator/${slug}`}
+                      to={zakatCalculatorPath(slug)}
                       title={`Zakat on ${label}`}
                       meta={
                         available ? undefined : (

@@ -25,7 +25,7 @@ export const NotFoundPage: React.FC = () => {
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
-            to="/browse"
+            to="/browse/"
             className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full font-medium transition-colors"
           >
             <Search className="w-4 h-4" />

@@ -91,7 +91,7 @@ export const GivingSession: React.FC<{ planId: string; onExit?: () => void }> = 
             </p>
           </div>
           <Link
-            to="/browse"
+            to="/browse/"
             className="inline-block px-4 py-2 rounded bg-emerald-600 text-white text-sm font-medium"
           >
             Browse charities

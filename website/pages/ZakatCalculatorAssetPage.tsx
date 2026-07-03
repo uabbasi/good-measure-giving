@@ -4,6 +4,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
+import { zakatCalculatorPath, paths } from '../src/lib/paths';
 import { calculateZakat } from '../src/utils/zakatCalculator';
 import { useNisab, useSilverPricePerGram } from '../src/utils/nisabPrice';
 import { buildChartRows, GOLD_WEIGHTS, SILVER_WEIGHTS } from '../src/utils/zakatChart';
@@ -65,7 +66,7 @@ export const ZakatCalculatorAssetPage: React.FC<{ isDark: boolean }> = ({ isDark
                 The {assetSlug.replace(/-/g, ' ')} calculator is on our roadmap. In the meantime, the cash-savings
                 calculator covers the simplest zakat case.
               </P>
-              <CtaLink p={p} to="/zakat-calculator">← Back to all calculators</CtaLink>
+              <CtaLink p={p} to={paths.zakatCalculator}>← Back to all calculators</CtaLink>
             </>
           );
         }}
@@ -89,7 +90,7 @@ export const ZakatCalculatorAssetPage: React.FC<{ isDark: boolean }> = ({ isDark
               p={p}
               trail={[
                 { label: 'Home', to: '/' },
-                { label: 'Zakat Calculator', to: '/zakat-calculator' },
+                { label: 'Zakat Calculator', to: paths.zakatCalculator },
                 { label: displayName },
               ]}
             />
@@ -133,7 +134,7 @@ export const ZakatCalculatorAssetPage: React.FC<{ isDark: boolean }> = ({ isDark
 
               {estimate.isAboveNisab && estimate.zakatAmount > 0 && (
                 <div style={{ marginTop: 20, display: 'flex', flexWrap: 'wrap', gap: 12 }}>
-                  <CtaLink p={p} to="/browse?zakat=eligible">See zakat-eligible charities →</CtaLink>
+                  <CtaLink p={p} to="/browse/?zakat=eligible">See zakat-eligible charities →</CtaLink>
                   <Link
                     to="/profile"
                     style={{
@@ -194,7 +195,7 @@ export const ZakatCalculatorAssetPage: React.FC<{ isDark: boolean }> = ({ isDark
                 {KNOWN_ASSET_SLUGS.filter((s) => s !== asset.slug).map((s) => (
                   <Link
                     key={s}
-                    to={`/zakat-calculator/${s}`}
+                    to={zakatCalculatorPath(s)}
                     style={{
                       display: 'inline-block',
                       padding: '6px 14px',

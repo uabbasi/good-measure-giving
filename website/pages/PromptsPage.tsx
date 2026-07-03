@@ -2,6 +2,7 @@
 // Motif-only (no legacy variant): renders its own GmgNav + footer via the content kit.
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { promptPath } from '../src/lib/paths';
 import {
   GmgContentFrame,
   Breadcrumb,
@@ -169,7 +170,7 @@ export const PromptsPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                       <LinkCard
                         key={prompt.id}
                         p={p}
-                        to={`/prompts/${prompt.id}`}
+                        to={promptPath(prompt.id)}
                         title={prompt.name}
                         desc={prompt.description}
                         meta={prompt.status === 'active' ? 'Active' : 'Planned'}

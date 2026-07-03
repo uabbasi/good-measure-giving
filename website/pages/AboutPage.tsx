@@ -2,6 +2,7 @@
 // Motif-only (no legacy variant): renders its own GmgNav + footer via the content kit.
 
 import React from 'react';
+import { paths } from '../src/lib/paths';
 import {
   GmgContentFrame,
   Breadcrumb,
@@ -98,7 +99,7 @@ export const AboutPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               </CardGrid>
               <P p={p} muted>
                 Each dimension contributes up to 50 points to the GMG Score (0–100).{' '}
-                <ALink p={p} to="/methodology">
+                <ALink p={p} to={paths.methodology}>
                   See full methodology →
                 </ALink>
               </P>
@@ -121,7 +122,7 @@ export const AboutPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             <Section ctx={ctx} title="AI-assisted, human-guided">
               <Callout p={p} tone="neutral">
                 We use AI to synthesize large volumes of public data into structured evaluations. Core prompts, scoring
-                rubrics, and decision rules are published on our <ALink p={p} to="/prompts">AI transparency page</ALink>.
+                rubrics, and decision rules are published on our <ALink p={p} to={paths.prompts}>AI transparency page</ALink>.
                 The pipeline is deterministic: same data in, same scores out. AI writes the narratives; the methodology,
                 weights, and data sources are human-designed.
               </Callout>
@@ -133,7 +134,7 @@ export const AboutPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
 
             <Section ctx={ctx}>
               <div style={{ textAlign: 'center', paddingTop: 8 }}>
-                <CtaLink p={p} to="/browse">
+                <CtaLink p={p} to="/browse/">
                   Browse evaluated charities →
                 </CtaLink>
               </div>

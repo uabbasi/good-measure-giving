@@ -7,6 +7,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { X, Heart, ArrowRight } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
+import { isPath } from '../lib/paths';
 
 interface BookmarkAddedDetail {
   charityEin: string;
@@ -18,7 +19,7 @@ export const BookmarkToast: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [charityName, setCharityName] = useState('');
   const location = useLocation();
-  const isOnProfile = location.pathname === '/profile';
+  const isOnProfile = isPath(location.pathname, '/profile');
 
   const dismiss = useCallback(() => setVisible(false), []);
 

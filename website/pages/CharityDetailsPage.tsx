@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
+import { causePath } from '../src/lib/paths';
 import {
   ShieldCheck,
   Target,
@@ -130,7 +131,7 @@ export const CharityDetailsPage: React.FC = () => {
         <div className={`rounded-2xl shadow-sm p-10 text-center max-w-md ${isDark ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-slate-200'}`}>
           <h1 className={`text-2xl font-bold font-merriweather mb-3 ${isDark ? 'text-white' : 'text-slate-900'}`}>Charity not found</h1>
           <p className={`mb-6 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>The charity you're looking for isn't in our directory.</p>
-          <Link to="/browse" className={`inline-flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-bold transition-colors ${isDark ? 'bg-slate-700 text-white hover:bg-slate-600' : 'bg-slate-900 text-white hover:bg-slate-800'}`}>
+          <Link to="/browse/" className={`inline-flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-bold transition-colors ${isDark ? 'bg-slate-700 text-white hover:bg-slate-600' : 'bg-slate-900 text-white hover:bg-slate-800'}`}>
             <ArrowLeft className="w-4 h-4" aria-hidden="true" />
             Back to Directory
           </Link>
@@ -640,7 +641,7 @@ export const CharityDetailsPage: React.FC = () => {
       {/* HEADER */}
       <div className={`border-b pt-8 pb-12 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link to="/browse" className={`inline-flex items-center text-sm text-slate-500 transition-colors mb-6 font-medium ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>
+          <Link to="/browse/" className={`inline-flex items-center text-sm text-slate-500 transition-colors mb-6 font-medium ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>
             <ArrowLeft className="w-4 h-4 mr-2" aria-hidden="true" />
             Back to Directory
           </Link>
@@ -744,7 +745,7 @@ export const CharityDetailsPage: React.FC = () => {
         {charity?.primaryCategory && categoryToSlug(charity.primaryCategory) && (
           <div className="mt-6">
             <Link
-              to={`/causes/${categoryToSlug(charity.primaryCategory)}`}
+              to={causePath(categoryToSlug(charity.primaryCategory) ?? '')}
               className="inline-flex items-center text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
             >
               Browse more charities in this cause →

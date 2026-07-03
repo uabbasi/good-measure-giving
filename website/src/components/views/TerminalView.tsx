@@ -6,6 +6,7 @@
 
 import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { charityPath } from '../../lib/paths';
 
 import { getCharityAddress, formatCauseArea, formatShortRevenue } from '../../utils/formatters';
 import {
@@ -465,7 +466,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, canViewRich
         }`}>
           <div className="px-4 py-3 flex items-center">
             <Link
-              to="/browse"
+              to="/browse/"
               aria-label="Back to browse"
               className={`p-2 -ml-2 rounded-lg ${
                 isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
@@ -783,7 +784,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, canViewRich
         <div className="px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link
-              to="/browse"
+              to="/browse/"
               aria-label="Back to browse"
               className={`inline-flex items-center gap-1 text-sm ${
                 isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
@@ -2793,7 +2794,7 @@ export const TerminalView: React.FC<TerminalViewProps> = ({ charity, canViewRich
                       <div key={i} className="text-xs">
                         {isSignedIn && linkedId ? (
                           <Link
-                            to={`/charity/${linkedId}`}
+                            to={charityPath(linkedId)}
                             onClick={() => trackSimilarOrgClick(charity.id ?? charity.ein ?? '', linkedId!, orgName, i)}
                             className={`flex items-center gap-1 ${
                               isDark ? 'text-emerald-400 hover:text-emerald-300' : 'text-emerald-600 hover:text-emerald-700'

@@ -7,6 +7,7 @@
 
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { charityPath, paths } from '../src/lib/paths';
 import { Scale, ArrowRight, CheckCircle, Search, Heart, Shield, Eye, Sparkles, Lock, Target } from 'lucide-react';
 import { SignInButton } from '../src/auth/SignInButton';
 import { useAuth } from '../src/auth/useAuth';
@@ -61,7 +62,7 @@ export const LandingPage: React.FC = () => {
             Real research on {count}+ Muslim charities — financials, impact evidence, and zakat eligibility. Plan your giving with confidence.
           </p>
           <Link
-            to="/browse"
+            to="/browse/"
             onClick={() => trackHeroCTA('browse_charities_primary', '/browse')}
             className={`inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-bold text-base group transition-all duration-300 shadow-lg ${theme.btnPrimary}`}
           >
@@ -140,7 +141,7 @@ export const LandingPage: React.FC = () => {
               )}
 
               <Link
-                to={`/charity/${featuredCharity?.ein}`}
+                to={charityPath(featuredCharity?.ein ?? '')}
                 onClick={() => trackHeroCTA('view_featured_evaluation', `/charity/${featuredCharity?.ein}`)}
                 className="w-full flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white rounded-xl text-sm font-bold hover:from-emerald-500 hover:to-emerald-400 transition-all shadow-lg shadow-emerald-500/25"
               >
@@ -199,7 +200,7 @@ export const LandingPage: React.FC = () => {
       {/* Browse all footer CTA */}
       <section className={`py-6 px-5 text-center ${dk ? 'bg-slate-900 border-t border-slate-800' : 'bg-slate-50 border-t border-slate-100'}`}>
         <Link
-          to="/browse"
+          to="/browse/"
           onClick={() => trackHeroCTA('browse_all_charities', '/browse')}
           className={`text-sm font-medium transition-colors ${dk ? 'text-slate-400 hover:text-emerald-400' : 'text-slate-500 hover:text-emerald-600'}`}
         >
@@ -242,7 +243,7 @@ export const LandingPage: React.FC = () => {
           </p>
           <div className="flex flex-col items-center gap-4 mb-8">
             <Link
-              to="/browse"
+              to="/browse/"
               onClick={() => trackHeroCTA('browse_charities_primary', '/browse')}
               className={`px-10 py-5 min-h-[56px] rounded-full font-bold text-xl flex items-center justify-center gap-3 group transition-all duration-300 shadow-lg ${theme.btnPrimary}`}
             >
@@ -251,7 +252,7 @@ export const LandingPage: React.FC = () => {
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
             </Link>
             <Link
-              to="/methodology"
+              to={paths.methodology}
               onClick={() => trackHeroCTA('methodology', '/methodology')}
               className={`text-sm font-medium transition-colors ${dk ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-slate-900'}`}
             >
@@ -337,7 +338,7 @@ export const LandingPage: React.FC = () => {
                 )}
 
                 <Link
-                  to={`/charity/${featuredCharity?.ein}`}
+                  to={charityPath(featuredCharity?.ein ?? '')}
                   onClick={() => trackHeroCTA('view_featured_evaluation', `/charity/${featuredCharity?.ein}`)}
                   className="w-full flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white rounded-xl text-base font-bold hover:from-emerald-500 hover:to-emerald-400 transition-all shadow-lg shadow-emerald-500/25"
                 >
@@ -345,7 +346,7 @@ export const LandingPage: React.FC = () => {
                   <ArrowRight className="w-5 h-5" aria-hidden="true" />
                 </Link>
                 <Link
-                  to="/browse"
+                  to="/browse/"
                   onClick={() => trackHeroCTA('browse_all_charities', '/browse')}
                   className={`block text-center text-sm mt-2 transition-colors ${dk ? 'text-slate-400 hover:text-emerald-400' : 'text-slate-500 hover:text-emerald-600'}`}
                 >

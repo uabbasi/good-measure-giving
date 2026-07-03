@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { charityPath } from '../src/lib/paths';
 import { ArrowLeft, X, ExternalLink, Lock, ChevronDown, ChevronUp, Award, AlertCircle, TrendingUp } from 'lucide-react';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { useCompareState } from '../src/contexts/UserFeaturesContext';
@@ -520,7 +521,7 @@ export function ComparePage() {
             You need at least 2 charities to compare. Browse charities and click "Compare" to add them.
           </p>
           <Link
-            to="/browse"
+            to="/browse/"
             className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors"
           >
             Browse Charities
@@ -542,7 +543,7 @@ export function ComparePage() {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <Link
-              to="/browse"
+              to="/browse/"
               aria-label="Back to browse"
               className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-slate-800 text-slate-400' : 'hover:bg-slate-100 text-slate-600'}`}
             >
@@ -588,7 +589,7 @@ export function ComparePage() {
                     <X className="w-3 h-3" aria-hidden="true" />
                   </button>
                   <Link
-                    to={`/charity/${charity.ein}`}
+                    to={charityPath(charity.ein ?? '')}
                     className={`block font-semibold text-sm hover:underline ${isDark ? 'text-white' : 'text-slate-900'}`}
                   >
                     {charity.name}
@@ -956,7 +957,7 @@ export function ComparePage() {
               {charities.map(charity => (
                 <div key={charity.ein}>
                   <Link
-                    to={`/charity/${charity.ein}`}
+                    to={charityPath(charity.ein ?? '')}
                     className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-medium hover:bg-emerald-700 transition-colors"
                   >
                     Full Evaluation

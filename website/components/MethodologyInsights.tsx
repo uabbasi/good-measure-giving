@@ -9,6 +9,7 @@
 
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { charityPath } from '../src/lib/paths';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { gmgPalette } from '../src/components/gmg/tokens';
 import { TrendingUp, Minus } from 'lucide-react';
@@ -216,7 +217,7 @@ export const MethodologyInsights: React.FC<MethodologyInsightsProps> = ({ charit
           {insights.causeStats.slice(0, 8).map((cause) => (
             <Link
               key={cause.category}
-              to={`/charity/${cause.topCharityId}`}
+              to={charityPath(cause.topCharityId)}
               className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
                 isDark
                   ? 'bg-slate-800 hover:bg-slate-700'

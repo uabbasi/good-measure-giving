@@ -16,29 +16,30 @@ import {
   type FontVariant,
 } from './tokens';
 import { GmgLogo, Tag } from './primitives';
+import { paths } from '../../lib/paths';
 import { GmgSignIn } from './GmgSignIn';
 import { GmgVersionStrip } from './GmgVersionStrip';
 import { useIsMobile } from './useIsMobile';
 
 // Concise desktop nav row. `active` (passed per surface) highlights the match.
 const NAV_LINKS: [string, string][] = [
-  ['Browse', '/browse'],
-  ['Causes', '/causes'],
-  ['Guides', '/guides'],
-  ['Methodology', '/methodology'],
-  ['About', '/about'],
+  ['Browse', paths.browse],
+  ['Causes', paths.causes],
+  ['Guides', paths.guides],
+  ['Methodology', paths.methodology],
+  ['About', paths.about],
 ];
 
 // The mobile drawer carries the fuller set.
 const MOBILE_LINKS: [string, string][] = [
-  ['Browse charities', '/browse'],
-  ['Causes', '/causes'],
-  ['Guides', '/guides'],
-  ['Zakat calculator', '/zakat-calculator'],
-  ['Best Muslim charities', '/best-muslim-charities-in-usa'],
-  ['Methodology', '/methodology'],
-  ['About', '/about'],
-  ['FAQ', '/faq'],
+  ['Browse charities', paths.browse],
+  ['Causes', paths.causes],
+  ['Guides', paths.guides],
+  ['Zakat calculator', paths.zakatCalculator],
+  ['Best Muslim charities', '/best-muslim-charities-in-usa/'],
+  ['Methodology', paths.methodology],
+  ['About', paths.about],
+  ['FAQ', paths.faq],
 ];
 
 export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: string }> = ({

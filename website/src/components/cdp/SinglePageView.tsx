@@ -84,7 +84,7 @@ export const SinglePageView: React.FC<SinglePageViewProps> = ({ charity, canView
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3">
           {/* Back link */}
           <Link
-            to="/browse"
+            to="/browse/"
             aria-label="Back to browse"
             className={`inline-flex items-center gap-1 text-xs mb-1.5 ${
               isDark ? 'text-slate-500 hover:text-white' : 'text-slate-400 hover:text-slate-900'

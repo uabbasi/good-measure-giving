@@ -4,6 +4,7 @@
 // and must NOT be altered here — only the surrounding page chrome is restyled.
 
 import React, { useState } from 'react';
+import { charityPath, paths } from '../src/lib/paths';
 import {
   GmgContentFrame,
   ContentHero,
@@ -147,7 +148,7 @@ export const LinkToUsPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               <P p={p} muted>
                 Paste this badge onto your site. It shows your GMG score and links back to your full evaluation. Here's
                 how it looks for{' '}
-                <ALink p={p} to={`/charity/${EXAMPLE_CHARITY.ein}`}>
+                <ALink p={p} to={charityPath(EXAMPLE_CHARITY.ein)}>
                   {EXAMPLE_CHARITY.name}
                 </ALink>
                 :
@@ -240,7 +241,7 @@ export const LinkToUsPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             <Section ctx={ctx}>
               <div style={{ textAlign: 'center', paddingTop: 8 }}>
                 <P p={p} muted>Read how we score charities, or get in touch and we'll help you set up the badge.</P>
-                <CtaLink p={p} to="/methodology">
+                <CtaLink p={p} to={paths.methodology}>
                   See our methodology →
                 </CtaLink>
               </div>

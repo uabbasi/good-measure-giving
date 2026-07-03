@@ -18,6 +18,7 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { charityPath } from '../../lib/paths';
 import {
   CalendarDays, Calculator, Check, ChevronDown, Download, Plus, Search, X,
 } from 'lucide-react';
@@ -809,7 +810,7 @@ export function UnifiedAllocationView({
             {bookmarkedCharities.map(c => (
               <li key={c.ein} className={`flex items-center justify-between px-3 py-2 rounded-lg border ${isDark ? 'bg-slate-700/50 border-slate-600' : 'bg-white border-slate-200'}`}>
                 <Link
-                  to={`/charity/${c.ein.replace(/^(\d{2})(\d+)$/, '$1-$2')}`}
+                  to={charityPath(c.ein.replace(/^(\d{2})(\d+)$/, '$1-$2'))}
                   className={`text-sm font-medium hover:underline ${isDark ? 'text-slate-200' : 'text-slate-800'}`}
                 >
                   {c.name}

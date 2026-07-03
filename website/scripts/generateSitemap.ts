@@ -23,6 +23,7 @@ const SITE_URL = 'https://goodmeasuregiving.org';
 interface CharitySummary {
   ein: string;
   hideFromCurated?: boolean;
+  lastUpdated?: string;
 }
 
 interface PromptSummary {
@@ -37,6 +38,7 @@ interface CauseEntry {
 interface GuideSummary {
   slug: string;
   status?: 'published' | 'pending-review';
+  publishedOn?: string;
 }
 
 interface CalculatorAsset {
@@ -48,7 +50,24 @@ interface CalculatorData {
 }
 
 function generateSitemap() {
-  const today = new Date().toISOString().split('T')[0];
+  // Normalize "2026-03-15 23:14:16" / ISO strings to a bare YYYY-MM-DD.
+  const datePart = (s?: string): string => (s ? s.split(' ')[0].split('T')[0] : '');
+
+  // Charity pages — curated only; hidden charities stay out of the index.
+  const charityData = JSON.parse(fs.readFileSync(CHARITIES_JSON, 'utf-8'));
+  const charities: CharitySummary[] = (charityData.charities || []).filter(
+    (c: CharitySummary) => !c.hideFromCurated
+  );
+
+  // Site-wide freshness = the newest charity evaluation date. Stable across
+  // rebuilds (only advances when the underlying data actually changes), so
+  // Google can trust <lastmod> instead of seeing every URL "change" every deploy.
+  const fallbackDate = new Date().toISOString().split('T')[0];
+  const dataDate =
+    charities.reduce((max, c) => {
+      const d = datePart(c.lastUpdated);
+      return d > max ? d : max;
+    }, '') || fallbackDate;
 
   // Emit trailing-slash URLs to match what the host serves with 200. The
   // no-slash form 307-redirects to the slash form, so no-slash sitemap entries
@@ -73,21 +92,17 @@ function generateSitemap() {
   const urls = staticPages.map(
     (p) => `  <url>
     <loc>${loc(p.path)}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${dataDate}</lastmod>
     <changefreq>${p.changefreq}</changefreq>
     <priority>${p.priority}</priority>
   </url>`
   );
 
-  // Charity pages — curated only; hidden charities stay out of the index
-  const charityData = JSON.parse(fs.readFileSync(CHARITIES_JSON, 'utf-8'));
-  const charities: CharitySummary[] = (charityData.charities || []).filter(
-    (c: CharitySummary) => !c.hideFromCurated
-  );
+  // Charity pages
   for (const charity of charities) {
     urls.push(`  <url>
     <loc>${loc(`/charity/${charity.ein}`)}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${datePart(charity.lastUpdated) || dataDate}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>`);
@@ -102,7 +117,7 @@ function generateSitemap() {
   for (const prompt of prompts) {
     urls.push(`  <url>
     <loc>${loc(`/prompts/${prompt.id}`)}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${dataDate}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>`);
@@ -117,14 +132,14 @@ function generateSitemap() {
   if (causes.length > 0) {
     urls.push(`  <url>
     <loc>${loc('/causes')}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${dataDate}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>`);
     for (const cause of causes) {
       urls.push(`  <url>
     <loc>${loc(`/causes/${cause.slug}`)}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${dataDate}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>`);
@@ -141,14 +156,14 @@ function generateSitemap() {
   if (guides.length > 0) {
     urls.push(`  <url>
     <loc>${loc('/guides')}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${dataDate}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>`);
     for (const g of guides) {
       urls.push(`  <url>
     <loc>${loc(`/guides/${g.slug}`)}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${datePart(g.publishedOn) || dataDate}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>`);
@@ -163,14 +178,14 @@ function generateSitemap() {
   }
   urls.push(`  <url>
     <loc>${loc('/zakat-calculator')}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${dataDate}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>`);
   for (const asset of calculatorAssets) {
     urls.push(`  <url>
     <loc>${loc(`/zakat-calculator/${asset.slug}`)}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${dataDate}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>`);

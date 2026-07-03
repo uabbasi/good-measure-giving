@@ -2,6 +2,7 @@
 // Motif-only (no legacy variant): renders its own GmgNav + footer via the content kit.
 
 import React, { useEffect } from 'react';
+import { causePath } from '../src/lib/paths';
 import {
   GmgContentFrame,
   Breadcrumb,
@@ -52,7 +53,7 @@ export const CausesIndexPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             />
 
             <P p={p}>
-              <ALink p={p} to="/best-muslim-charities-in-usa">
+              <ALink p={p} to="/best-muslim-charities-in-usa/">
                 See the best Muslim charities in the USA, ranked by GMG score →
               </ALink>
             </P>
@@ -60,7 +61,7 @@ export const CausesIndexPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             <div style={{ marginTop: 28 }}>
               <CardGrid min={260}>
                 {CAUSES.map((c) => (
-                  <LinkCard key={c.slug} p={p} to={`/causes/${c.slug}`} title={c.displayName} desc={c.intro} />
+                  <LinkCard key={c.slug} p={p} to={causePath(c.slug)} title={c.displayName} desc={c.intro} />
                 ))}
               </CardGrid>
             </div>
