@@ -1,4 +1,4 @@
-// Good Measure Giving — "Modern" motif charity detail (proof surface).
+// Good Measure Giving — "Modern" motif charity detail.
 // Reachable via /charity/:id. Renders real charity data in the
 // sage-on-bone, Harvey-ball design from the claude.ai handoff.
 
@@ -627,7 +627,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
 
       <footer style={{ padding: `14px ${padX}px`, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, color: p.sub2, fontSize: 10.5, fontFamily: FONT_MONO, letterSpacing: '0.06em' }}>
         <span>GOOD MEASURE GIVING · {c.ein && `EIN ${c.ein}`} {c.rubricVersion && `· RUBRIC v${c.rubricVersion}`}</span>
-        <span>HARVEY-BALL MOTIF · PREVIEW</span>
+        <span>HARVEY-BALL MOTIF</span>
       </footer>
 
       <GmgFooter p={p} isMobile={isMobile} />
