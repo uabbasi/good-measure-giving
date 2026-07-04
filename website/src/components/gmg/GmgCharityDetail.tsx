@@ -583,7 +583,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
             id="gmg-similar-heading"
             style={{ fontFamily: FONT_DISPLAY, fontSize: 22, margin: '6px 0 12px', letterSpacing: '-0.02em', color: p.fg }}
           >
-            Also evaluated
+            Similar charities
           </h2>
           <ul
             style={{
