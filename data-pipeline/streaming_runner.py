@@ -47,6 +47,7 @@ from src.db import (
     CharityDataRepository,
     CharityRepository,
     EvaluationRepository,
+    ExportExclusionRepository,
     PhaseCacheRepository,
     RawDataRepository,
 )
@@ -1397,6 +1398,9 @@ def process_charity_full(
                 judge_score = existing_eval.get("judge_score") if existing_eval else None
 
             if judge_threshold > 0 and (judge_score is None or judge_score < judge_threshold):
+                ExportExclusionRepository().record(
+                    ein, judge_score, f"judge_score {judge_score} < threshold {judge_threshold}"
+                )
                 result["phases"]["export"] = {
                     "success": True,
                     "skipped": True,
@@ -1493,6 +1497,11 @@ def main():
         "--judge-threshold", type=int, default=80, help="Min judge score to export (default: 80, 0=export all)"
     )
     parser.add_argument("--skip-export", action="store_true", help="Skip export phase")
+    parser.add_argument(
+        "--prune",
+        action="store_true",
+        help="Prune stale charity detail files after the comprehensive rebuild (default: off)",
+    )
     # Smart caching options (ON by default)
     parser.add_argument("--force-all", action="store_true", help="Ignore cache, rerun all phases")
     parser.add_argument(
@@ -1770,7 +1779,10 @@ def main():
 
     # Rebuild exports from all currently exportable charities.
     # This keeps dataset additive/non-regressive across partial reruns.
-    if not args.skip_export:
+    # Guard: a run where nothing succeeded must not touch the published dataset.
+    if not args.skip_export and success_count == 0:
+        print("⚠ Skipping comprehensive export rebuild: zero charities succeeded this run")
+    if not args.skip_export and success_count > 0:
         all_charities = charity_repo.get_all()
         exportable_eins: list[str] = []
         for charity in all_charities:
@@ -1863,14 +1875,15 @@ def main():
                 indent=2,
                 default=str,
             )
-        kept_eins = {summary.get("ein") for summary in merged_summaries if summary.get("ein")}
-        removed_details = prune_charity_detail_files(WEBSITE_DATA_DIR, kept_eins)
         print(
             f"✓ Updated charities.json: {len(merged_summaries)} charities "
             f"(eligible={len(set(exportable_eins))}, rebuilt={len(summaries)}, failed={len(rebuild_failures)})"
         )
-        if removed_details:
-            print(f"✓ Pruned {removed_details} stale charity detail files")
+        if args.prune:
+            kept_eins = {summary.get("ein") for summary in merged_summaries if summary.get("ein")}
+            removed_details = prune_charity_detail_files(WEBSITE_DATA_DIR, kept_eins)
+            if removed_details:
+                print(f"✓ Pruned {removed_details} stale charity detail files")
 
         # Sync data/ → public/data/ for Vite dev server
         convert_script = Path(__file__).parent.parent / "website" / "scripts" / "convertData.ts"
