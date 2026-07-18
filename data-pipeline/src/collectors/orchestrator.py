@@ -154,6 +154,18 @@ def is_optional_website_failure(candidates: List[str]) -> bool:
     return False
 
 
+# H12: sources frozen out of the default crawl. Existing DB rows are kept as-is;
+# re-enable per-run with crawl.py --sources bbb.
+FROZEN_SOURCES = {"bbb"}
+
+
+def resolve_skip_sources(
+    skip_sources: Optional[List[str]], include_sources: Optional[List[str]] = None
+) -> Set[str]:
+    """Effective skip set: explicit skips + frozen sources not explicitly included."""
+    return set(skip_sources or []) | (FROZEN_SOURCES - set(include_sources or []))
+
+
 class DataCollectionOrchestrator:
     """
     Orchestrate data collection from all 6 sources.
@@ -176,6 +188,7 @@ class DataCollectionOrchestrator:
         logger: Optional[PipelineLogger] = None,
         max_pdf_downloads: int = 0,
         skip_sources: Optional[List[str]] = None,
+        include_sources: Optional[List[str]] = None,
     ):
         """
         Initialize orchestrator.
@@ -186,9 +199,11 @@ class DataCollectionOrchestrator:
             logger: Logger instance
             max_pdf_downloads: Max PDFs to download per charity (default 0 = disabled)
             skip_sources: List of source names to skip (e.g., ['causeiq', 'website'])
+            include_sources: Frozen sources to re-enable for this run (e.g. ['bbb'])
         """
         self.logger = logger or PipelineLogger(name="orchestrator")
-        self.skip_sources = set(skip_sources or [])
+        self.skip_sources = resolve_skip_sources(skip_sources, include_sources)
+        self.frozen_sources = FROZEN_SOURCES - set(include_sources or [])
 
         # H5: CAPTCHA/anti-bot blocked sites collected for the run-end report
         self.blocked_sites: List[Dict[str, Any]] = []
@@ -633,7 +648,8 @@ class DataCollectionOrchestrator:
         for source_name, fetch_func in sources:
             # Skip if source is in skip list
             if source_name in self.skip_sources:
-                self.logger.info(f"Skipping {source_name} (--skip flag)")
+                label = "frozen" if source_name in self.frozen_sources else "--skip flag"
+                self.logger.info(f"Skipping {source_name} ({label})")
                 report["sources_skipped"] = report.get("sources_skipped", [])
                 report["sources_skipped"].append(source_name)
                 continue
@@ -950,7 +966,8 @@ class DataCollectionOrchestrator:
             # Skip if source is in skip list
             if source_name in self.skip_sources:
                 if self.logger:
-                    self.logger.info(f"Skipping {source_name} (--skip flag)")
+                    label = "frozen" if source_name in self.frozen_sources else "--skip flag"
+                    self.logger.info(f"Skipping {source_name} ({label})")
                 report["sources_skipped"] = report.get("sources_skipped", [])
                 report["sources_skipped"].append(source_name)
                 continue
