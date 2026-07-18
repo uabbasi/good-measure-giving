@@ -44,11 +44,9 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 # Google Gemini models
 MODEL_GEMINI_31_PRO = "gemini-3.1-pro-preview"
-MODEL_GEMINI_3_PRO = "gemini-3-pro-preview"
 MODEL_GEMINI_3_FLASH = "gemini-3-flash-preview"
 MODEL_GEMINI_25_PRO = "gemini-2.5-pro"
 MODEL_GEMINI_25_FLASH = "gemini-2.5-flash"
-MODEL_GEMINI_20_FLASH = "gemini-2.0-flash"
 MODEL_GEMINI_25_FLASH_LITE = "gemini-2.5-flash-lite"
 
 # Anthropic Claude models
@@ -69,18 +67,6 @@ MODEL_REGISTRY: Dict[str, Dict[str, Any]] = {
     # Google Gemini
     MODEL_GEMINI_31_PRO: {
         "litellm_name": "gemini/gemini-3.1-pro-preview",
-        "provider": "google",
-        "cost_per_1m_input": 2.00,  # ≤200k tokens
-        "cost_per_1m_input_large": 4.00,  # >200k tokens
-        "cost_per_1m_input_cached": 0.20,  # ≤200k cached
-        "cost_per_1m_input_cached_large": 0.40,  # >200k cached
-        "cost_per_1m_output": 12.00,  # ≤200k tokens
-        "cost_per_1m_output_large": 18.00,  # >200k tokens
-        "context_window": 1_000_000,
-        "supports_json_mode": True,
-    },
-    MODEL_GEMINI_3_PRO: {
-        "litellm_name": "gemini/gemini-3-pro-preview",
         "provider": "google",
         "cost_per_1m_input": 2.00,  # ≤200k tokens
         "cost_per_1m_input_large": 4.00,  # >200k tokens
@@ -118,15 +104,6 @@ MODEL_REGISTRY: Dict[str, Dict[str, Any]] = {
         "cost_per_1m_input": 0.15,
         "cost_per_1m_input_cached": 0.015,
         "cost_per_1m_output": 0.60,
-        "context_window": 1_000_000,
-        "supports_json_mode": True,
-    },
-    MODEL_GEMINI_20_FLASH: {
-        "litellm_name": "gemini/gemini-2.0-flash",
-        "provider": "google",
-        "cost_per_1m_input": 0.10,
-        "cost_per_1m_input_cached": 0.025,
-        "cost_per_1m_output": 0.40,
         "context_window": 1_000_000,
         "supports_json_mode": True,
     },
@@ -229,33 +206,33 @@ TASK_MODELS: Dict[LLMTask, Tuple[str, List[str]]] = {
     # Standard pipeline - Flash is best value per LLM-as-Judge evaluation
     LLMTask.NARRATIVE_GENERATION: (
         MODEL_GEMINI_3_FLASH,  # Best quality/cost ratio
-        [MODEL_GEMINI_3_PRO],
+        [MODEL_GEMINI_31_PRO, MODEL_GEMINI_25_FLASH],  # stable non-preview last
     ),
     LLMTask.WEBSITE_EXTRACTION: (
         MODEL_GEMINI_3_FLASH,  # Default: best field coverage; hallucinations handled post-extraction
-        [MODEL_GEMINI_3_PRO],
+        [MODEL_GEMINI_31_PRO, MODEL_GEMINI_25_FLASH],  # stable non-preview last
     ),
     LLMTask.PDF_EXTRACTION: (
         MODEL_GEMINI_3_FLASH,  # Fast, cost-effective extraction
-        [MODEL_GEMINI_3_PRO],
+        [MODEL_GEMINI_31_PRO],
     ),
     # Premium tier for top 5-10 charities - still use Flash (proven quality)
-    LLMTask.PREMIUM_NARRATIVE: (MODEL_GEMINI_3_FLASH, [MODEL_GEMINI_31_PRO, MODEL_GEMINI_3_PRO]),
-    LLMTask.PREMIUM_PDF_EXTRACTION: (MODEL_GEMINI_3_FLASH, [MODEL_GEMINI_3_PRO]),
+    LLMTask.PREMIUM_NARRATIVE: (MODEL_GEMINI_3_FLASH, [MODEL_GEMINI_31_PRO]),
+    LLMTask.PREMIUM_PDF_EXTRACTION: (MODEL_GEMINI_3_FLASH, [MODEL_GEMINI_31_PRO]),
     # Evaluation scoring - LLM-as-judge
     LLMTask.EVALUATION_SCORING: (
         MODEL_GEMINI_3_FLASH,  # Fast judge for benchmarking
-        [MODEL_GEMINI_3_PRO],
+        [MODEL_GEMINI_31_PRO],
     ),
     # Rich strategic narrative - GPT-5.2: 2x depth + 2x citations vs Flash per A/B test
     LLMTask.RICH_STRATEGIC_NARRATIVE: (
         MODEL_GPT52,  # Best quality (97.8 overall), 2x content depth, ~$0.06/charity
         [MODEL_CLAUDE_SONNET_45, MODEL_GEMINI_3_FLASH],
     ),
-    # Post-export validation - use cheapest model
+    # Post-export validation - use cheapest live model
     LLMTask.LLM_JUDGE: (
-        MODEL_GEMINI_20_FLASH,  # Cost-effective (~$0.0005/charity)
-        [MODEL_GEMINI_3_FLASH],
+        MODEL_GEMINI_25_FLASH_LITE,  # Cost-effective (~$0.0005/charity)
+        [MODEL_GEMINI_25_FLASH, MODEL_GEMINI_3_FLASH],
     ),
 }
 
@@ -274,7 +251,7 @@ class ModelTier(Enum):
 
 
 TIER_MODELS: Dict[ModelTier, List[str]] = {
-    ModelTier.BEST: [MODEL_GEMINI_31_PRO, MODEL_GEMINI_3_PRO, MODEL_GEMINI_3_FLASH],
+    ModelTier.BEST: [MODEL_GEMINI_31_PRO, MODEL_GEMINI_3_FLASH],
     ModelTier.BACKUP: [MODEL_GEMINI_3_FLASH, MODEL_GPT4O_MINI],
     ModelTier.CHEAPEST: [MODEL_GEMINI_3_FLASH, MODEL_GPT4O_MINI],
 }
@@ -422,7 +399,7 @@ class LLMClient:
             # Default to Gemini 3 Flash (fast, cost-effective)
             self.model_name = MODEL_GEMINI_3_FLASH
             self.model_config = MODEL_REGISTRY[MODEL_GEMINI_3_FLASH]
-            self.fallback_models = [MODEL_GEMINI_3_PRO]
+            self.fallback_models = [MODEL_GEMINI_31_PRO]
 
         if self.logger:
             fallback_str = f" (fallbacks: {self.fallback_models})" if self.fallback_models else ""

@@ -102,7 +102,7 @@ class TestJudgeConfig:
         config = JudgeConfig()
         assert config.sample_rate == 0.1
         assert config.verify_all_citations is True
-        assert config.judge_model == "gemini-2.0-flash"
+        assert config.judge_model == "gemini-2.5-flash-lite"
         assert config.cache_dir is not None
 
     def test_enabled_judges(self):

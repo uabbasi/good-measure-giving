@@ -5,7 +5,7 @@ Two judge categories:
 - **LLM judges**: Use LLM for semantic validation (citation/factual/score/zakat/narrative/cross-lens)
 
 Defines sampling rates, thresholds, model selection, and caching settings.
-Uses cost-effective defaults (Gemini 2.0 Flash at ~$0.0005/charity for LLM judges).
+Uses cost-effective defaults (Gemini 2.5 Flash-Lite at ~$0.0005/charity for LLM judges).
 """
 
 from dataclasses import dataclass
@@ -48,8 +48,8 @@ class JudgeConfig:
     warning_threshold: int = 3  # Warnings to flag
 
     # Model selection (cost-effective)
-    judge_model: str = "gemini-2.0-flash"  # Cheapest option
-    fallback_model: str = "gemini-3-flash"  # Already in pipeline
+    judge_model: str = "gemini-2.5-flash-lite"  # Cheapest live Gemini
+    fallback_model: str = "gemini-3-flash-preview"  # Already in pipeline
 
     # Caching
     cache_dir: Optional[Path] = None

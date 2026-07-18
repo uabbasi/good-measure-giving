@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup
 from pydantic import BaseModel
 
 from ..validators.llm_responses import PAGE_TYPE_SCHEMAS
-from .llm_client import MODEL_GEMINI_31_PRO, MODEL_GEMINI_3_PRO, MODEL_GPT52, LLMClient, LLMTask
+from .llm_client import MODEL_GEMINI_31_PRO, MODEL_GPT52, LLMClient, LLMTask
 
 
 def _is_empty(val: Any) -> bool:
@@ -95,7 +95,7 @@ class WebsiteExtractor:
         self.verifier_fallback_models = (
             list(verifier_fallback_models)
             if verifier_fallback_models is not None
-            else [MODEL_GEMINI_3_PRO, MODEL_GPT52]
+            else [MODEL_GEMINI_31_PRO, MODEL_GPT52]
         )
 
         # Load page-specific prompts from YAML (T051)
