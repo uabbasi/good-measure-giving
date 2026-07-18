@@ -1221,26 +1221,69 @@ def _is_beneficiary_count_plausible(beneficiaries: Any, charity_data: dict | Non
     return True
 
 
+# Source paths that name dollar figures / cumulative totals, not annual headcounts. [C4]
+_SUSPECT_BENEFICIARY_SOURCE_PATH_RE = re.compile(r"(_usd|_dollars|cumulative|_to_date|total_since|_20\d\d)")
+_MAX_PLAUSIBLE_DOLLARS_PER_BENEFICIARY = 10_000.0
+
+
+def _beneficiary_source_path_is_suspect(source_attribution: Any) -> bool:
+    """True when the citation's source_path is semantically not an annual count."""
+    if not isinstance(source_attribution, dict):
+        return False
+    meta = source_attribution.get("beneficiaries_served_annually")
+    if not isinstance(meta, dict):
+        return False
+    source_path = meta.get("source_path")
+    return isinstance(source_path, str) and bool(_SUSPECT_BENEFICIARY_SOURCE_PATH_RE.search(source_path))
+
+
+def _beneficiary_cost_exceeds_upper_bound(beneficiaries: Any, charity_data: dict | None) -> bool:
+    """True when program spend implies > $10k per claimed beneficiary (no category exemptions)."""
+    if not isinstance(beneficiaries, (int, float)) or beneficiaries <= 0:
+        return False
+    if not isinstance(charity_data, dict):
+        return False
+    expenses = charity_data.get("program_expenses") or charity_data.get("total_expenses")
+    if not isinstance(expenses, (int, float)) or expenses <= 0:
+        return False
+    return expenses / beneficiaries > _MAX_PLAUSIBLE_DOLLARS_PER_BENEFICIARY
+
+
 def _derive_beneficiary_confidence(beneficiaries: Any, source_attribution: Any, charity_data: dict | None) -> str | None:
     """Classify beneficiary trust state for frontend messaging.
 
+    Gate on the ORIGINAL source_attribution (never post-URL-normalization).
     States:
-      - verified: cited and plausibility checks pass
-      - needs_review: cited but plausibility checks fail
-      - uncorroborated: uncited but plausibility checks pass
-      - implausible: uncited and plausibility checks fail
+      - cited: canonical citation + every plausibility check passes (publishable)
+      - needs_review: cited but a semantic/plausibility check failed (suppressed)
+      - unverified: no canonical citation (suppressed)
     """
     if not isinstance(beneficiaries, (int, float)) or beneficiaries <= 0:
         return None
-    has_citation = _has_cited_beneficiary_source(source_attribution)
-    is_plausible = _is_beneficiary_count_plausible(beneficiaries, charity_data)
-    if has_citation and is_plausible:
-        return "verified"
-    if has_citation and not is_plausible:
+    if not _has_cited_beneficiary_source(source_attribution):
+        return "unverified"
+    if _beneficiary_source_path_is_suspect(source_attribution):
         return "needs_review"
-    if is_plausible:
-        return "uncorroborated"
-    return "implausible"
+    if not _is_beneficiary_count_plausible(beneficiaries, charity_data):
+        return "needs_review"
+    if _beneficiary_cost_exceeds_upper_bound(beneficiaries, charity_data):
+        return "needs_review"
+    return "cited"
+
+
+def _public_beneficiary_fields(charity_data: dict | None) -> tuple[int | float | None, str | None, bool]:
+    """Gate beneficiary counts for publication (shared by index and detail builders).
+
+    Returns (public_count, confidence, excluded_from_scoring): counts that are
+    not 'cited' are emitted as null; the confidence string is always emitted so
+    the frontend can explain the suppression. [C4]
+    """
+    beneficiaries = charity_data.get("beneficiaries_served_annually") if charity_data else None
+    source_attribution = charity_data.get("source_attribution") if charity_data else None
+    confidence = _derive_beneficiary_confidence(beneficiaries, source_attribution, charity_data)
+    public_count = beneficiaries if confidence == "cited" else None
+    excluded = confidence in {"needs_review", "unverified"}
+    return public_count, confidence, excluded
 
 
 def _extract_pillar_scores(evaluation: dict | None) -> dict[str, int | float] | None:
@@ -1403,21 +1446,8 @@ def build_charity_summary(
         cn_profile.get("mission"),
     )
 
-    normalized_source_attribution = (
-        _normalize_source_attribution_urls(charity_data.get("source_attribution"), charity.get("website"))
-        if charity_data
-        else None
-    )
-    beneficiaries_served_annually = charity_data.get("beneficiaries_served_annually") if charity_data else None
-    beneficiaries_confidence = _derive_beneficiary_confidence(
-        beneficiaries_served_annually,
-        normalized_source_attribution,
-        charity_data,
-    )
-    beneficiaries_excluded_from_scoring = bool(
-        isinstance(beneficiaries_served_annually, (int, float))
-        and beneficiaries_served_annually > 0
-        and beneficiaries_confidence in {"needs_review", "implausible"}
+    beneficiaries_served_annually, beneficiaries_confidence, beneficiaries_excluded_from_scoring = (
+        _public_beneficiary_fields(charity_data)
     )
 
     return {
@@ -1547,16 +1577,8 @@ def build_charity_detail(
         if charity_data
         else None
     )
-    beneficiaries_served_annually = charity_data.get("beneficiaries_served_annually") if charity_data else None
-    beneficiaries_confidence = _derive_beneficiary_confidence(
-        beneficiaries_served_annually,
-        normalized_source_attribution,
-        charity_data,
-    )
-    beneficiaries_excluded_from_scoring = bool(
-        isinstance(beneficiaries_served_annually, (int, float))
-        and beneficiaries_served_annually > 0
-        and beneficiaries_confidence in {"needs_review", "implausible"}
+    beneficiaries_served_annually, beneficiaries_confidence, beneficiaries_excluded_from_scoring = (
+        _public_beneficiary_fields(charity_data)
     )
 
     detail = {
