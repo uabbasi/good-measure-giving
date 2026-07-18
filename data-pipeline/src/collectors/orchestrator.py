@@ -742,16 +742,17 @@ class DataCollectionOrchestrator:
                     else:
                         report["sources_failed"]["website"] = error
                         self.logger.log_data_source_fetch(0, ein, "website", success=False, error=error)
-                        # Store failed attempt in DB to track captcha blocking
+                        # Store failed attempt in DB to track captcha blocking.
+                        # upsert(success=False) already increments retry_count and
+                        # records last_failure_reason (Task 1) — no explicit
+                        # increment_retry_count here or retry_count advances twice.
                         self._store_failed_crawl(ein, "website", error or "Unknown error")
-                        self.raw_data_repo.increment_retry_count(ein, "website", error or "Unknown error")
                         self._record_blocked_site(ein, website_url, error)
                 except Exception as e:
                     report["sources_failed"]["website"] = str(e)
                     self.logger.error("Website fetch failed", exception=e, ein=ein)
-                    # Store failed attempt in DB
+                    # Store failed attempt in DB (upsert increments retry_count once)
                     self._store_failed_crawl(ein, "website", str(e))
-                    self.raw_data_repo.increment_retry_count(ein, "website", str(e))
                     self._record_blocked_site(ein, website_url, str(e))
             else:
                 report["sources_skipped"] = report.get("sources_skipped", [])

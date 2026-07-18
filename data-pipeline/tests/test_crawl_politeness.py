@@ -1,6 +1,13 @@
 """H5: crawl politeness + terminal failure classification (pure-function tests)."""
 
-from src.collectors.orchestrator import classify_failure, is_optional_website_failure
+import threading
+from unittest.mock import MagicMock
+
+from src.collectors.orchestrator import (
+    DataCollectionOrchestrator,
+    classify_failure,
+    is_optional_website_failure,
+)
 from src.collectors.web_collector import WebsiteCollector
 from src.constants import PER_DOMAIN_CONCURRENCY, TERMINAL_FAILURE_TTL_DAYS
 
@@ -54,3 +61,54 @@ class TestPerDomainSemaphores:
 
 def test_terminal_ttl_is_180_days():
     assert TERMINAL_FAILURE_TTL_DAYS == 180
+
+
+class TestSingleRetryIncrementPerWebsiteFailure:
+    """H5 follow-up: exactly ONE retry-count-advancing DB write per website failure.
+
+    On the fetch path, _store_failed_crawl -> upsert(success=False) already
+    increments retry_count (Task 1 semantics), so that path must NOT also call
+    increment_retry_count — otherwise website backs off twice as fast as every
+    other source.
+    """
+
+    def _make_orchestrator(self):
+        orch = DataCollectionOrchestrator.__new__(DataCollectionOrchestrator)
+        orch.logger = MagicMock()
+        # Skip every non-website source so only the website block runs
+        orch.skip_sources = {"propublica", "charity_navigator", "candid", "form990_grants", "bbb"}
+        orch.blocked_sites = []
+        orch._blocked_sites_lock = threading.Lock()
+        orch.raw_data_repo = MagicMock()
+        # No prior row: not fresh, no backoff skip
+        orch.raw_data_repo.get_by_source.return_value = None
+        orch.charity_repo = MagicMock()
+        orch.website = MagicMock()
+        orch._get_or_create_charity = lambda ein, name=None, website=None: ein
+        return orch
+
+    @staticmethod
+    def _retry_advancing_writes(repo) -> int:
+        """Count DB writes that advance retry_count: failure upserts + explicit increments."""
+        failure_upserts = sum(
+            1 for c in repo.upsert.call_args_list if c.kwargs.get("success") is False
+        )
+        return failure_upserts + repo.increment_retry_count.call_count
+
+    def test_fetch_path_failure_advances_retry_count_once(self):
+        orch = self._make_orchestrator()
+        orch.website.collect_multi_page.return_value = (
+            False,
+            None,
+            "CAPTCHA_BLOCKED: challenge page (HTTP 200)",
+        )
+        success, report = orch.fetch_charity_data("12-3456789", website_url="https://example.org")
+        assert success is False
+        assert self._retry_advancing_writes(orch.raw_data_repo) == 1
+
+    def test_fetch_path_exception_advances_retry_count_once(self):
+        orch = self._make_orchestrator()
+        orch.website.collect_multi_page.side_effect = RuntimeError("boom")
+        success, report = orch.fetch_charity_data("12-3456789", website_url="https://example.org")
+        assert success is False
+        assert self._retry_advancing_writes(orch.raw_data_repo) == 1
