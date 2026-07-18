@@ -65,10 +65,11 @@ from src.utils.phase_cache_helper import (
 )
 from src.utils.phase_fingerprint import get_ttl_days
 
-# Streaming runs write all phase tables plus the run cache.
+# Streaming runs write every phase's tables (phase_cache rides along via
+# the per-phase lists) plus Phase-7 export-exclusion audit rows.
 STREAMING_RUN_TABLES = tables_for_phases(
-    "crawl", "extract", "discover", "synthesize", "baseline", "rich", "judge"
-) + ("phase_cache",)
+    "crawl", "extract", "discover", "synthesize", "baseline", "rich", "judge", "export"
+)
 
 # Discovery services - use Gemini's search grounding feature
 DISCOVERY_ENABLED = True

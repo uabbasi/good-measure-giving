@@ -38,7 +38,7 @@ from src.db import (
     ExportExclusionRepository,
     RawDataRepository,
 )
-from src.db.dolt_client import dolt
+from src.db.dolt_client import dolt, tables_for_phases
 from src.judges.base_judge import JudgeConfig
 from src.judges.export_quality_judge import ExportQualityJudge
 from src.judges.schemas.verdict import Severity
@@ -2327,6 +2327,12 @@ def main():
             print(f"  ⛔ Excluded {ein}: {reason}")
         if excluded:
             print(f"  Publish gate: {len(excluded)} excluded, {len(eins)} remain (see export_exclusions table)")
+            # Commit the audit rows now so the provenance stamp below sees a
+            # clean working set (real source_commit instead of NULL).
+            dolt.commit(
+                f"Export: record {len(excluded)} gate exclusions",
+                tables=tables_for_phases("export"),
+            )
         if not eins:
             print("No charities pass the judge gate; nothing to export")
             return

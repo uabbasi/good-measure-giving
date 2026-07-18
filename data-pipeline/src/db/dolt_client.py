@@ -26,15 +26,17 @@ VALID_TABLES = frozenset({
 
 # Which tables each pipeline phase writes — the explicit DOLT_ADD list.
 # Keep in sync with the phase scripts; commit() warns when a modified
-# table was left unstaged (i.e., this map has a gap).
+# table was left unstaged (i.e., this map has a gap). Phases that track
+# their own run cache (update_phase_cache) include phase_cache so the
+# standalone scripts leave a clean tree behind.
 PHASE_TABLES: dict[str, tuple[str, ...]] = {
-    "crawl": ("raw_scraped_data", "charities"),
-    "extract": ("raw_scraped_data",),
+    "crawl": ("raw_scraped_data", "charities", "phase_cache"),
+    "extract": ("raw_scraped_data", "phase_cache"),
     "discover": ("raw_scraped_data", "agent_discoveries", "charities"),
-    "synthesize": ("charity_data", "citations"),
-    "baseline": ("evaluations", "judge_verdicts"),
-    "rich": ("evaluations", "citations"),
-    "judge": ("evaluations", "judge_verdicts"),
+    "synthesize": ("charity_data", "citations", "phase_cache"),
+    "baseline": ("evaluations", "judge_verdicts", "phase_cache"),
+    "rich": ("evaluations", "citations", "phase_cache"),
+    "judge": ("evaluations", "judge_verdicts", "phase_cache"),
     "export": ("export_exclusions",),
 }
 
@@ -155,14 +157,20 @@ class DoltVersionControl:
                 return None  # No changes to commit
 
             if tables is not None:
+                # Stage only tables that actually changed: DOLT_ADD errors on
+                # tables that don't exist yet (e.g. lazily created
+                # export_exclusions), and unmodified tables need no staging.
+                modified = {row["table_name"] for row in status}
                 for table in tables:
                     _validate_table_name(table)
+                    if table not in modified:
+                        continue
                     cursor.execute("CALL DOLT_ADD(%s)", (table,))
-                # Guard: surface writes the phase map missed.
+                # Guard: surface writes outside this phase's add-list.
                 cursor.execute("SELECT table_name FROM dolt_status WHERE staged = 0")
                 unstaged = sorted({row["table_name"] for row in cursor.fetchall()})
                 if unstaged:
-                    print(f"⚠ dolt.commit: modified but NOT staged (PHASE_TABLES gap?): {unstaged}")
+                    print(f"⚠ dolt.commit: modified but not staged (not in this phase's add-list): {unstaged}")
                 cursor.execute("SELECT COUNT(*) AS n FROM dolt_status WHERE staged = 1")
                 staged_row = cursor.fetchone()
                 if not (staged_row and staged_row["n"]):
