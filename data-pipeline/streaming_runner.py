@@ -51,7 +51,7 @@ from src.db import (
     PhaseCacheRepository,
     RawDataRepository,
 )
-from src.db.dolt_client import dolt
+from src.db.dolt_client import dolt, tables_for_phases
 from src.llm.budget_tracker import BudgetExceededError, check_budget, get_limit, get_spent, set_budget
 from src.llm.llm_client import LLMClient
 from src.scorers.v2_scorers import AmalScorerV2
@@ -64,6 +64,11 @@ from src.utils.phase_cache_helper import (
     update_phase_cache,
 )
 from src.utils.phase_fingerprint import get_ttl_days
+
+# Streaming runs write all phase tables plus the run cache.
+STREAMING_RUN_TABLES = tables_for_phases(
+    "crawl", "extract", "discover", "synthesize", "baseline", "rich", "judge"
+) + ("phase_cache",)
 
 # Discovery services - use Gemini's search grounding feature
 DISCOVERY_ENABLED = True
@@ -1751,7 +1756,8 @@ def main():
                     commit_hash = dolt.commit(
                         f"Checkpoint {checkpoint_count + 1}: "
                         f"{completed} ok, {failed} failed, "
-                        f"{len(charities) - len(results)} remaining"
+                        f"{len(charities) - len(results)} remaining",
+                        tables=STREAMING_RUN_TABLES,
                     )
                     if commit_hash:
                         checkpoint_count += 1
@@ -1786,7 +1792,8 @@ def main():
         checkpoint_note = f" ({checkpoint_count} checkpoints)" if checkpoint_count > 0 else ""
         commit_hash = dolt.commit(
             f"Streaming run: {success_count}/{len(results)} charities. "
-            f"Cost: ${total_cost:.2f} (${avg_cost:.4f}/charity){checkpoint_note}"
+            f"Cost: ${total_cost:.2f} (${avg_cost:.4f}/charity){checkpoint_note}",
+            tables=STREAMING_RUN_TABLES,
         )
         if commit_hash:
             print(f"\n✓ Committed to DoltDB: {commit_hash[:8]}")
@@ -1911,8 +1918,7 @@ def main():
             if ein in existing_by_ein
         ]
 
-        log_entries = dolt.log(1)
-        source_commit = log_entries[0].hash if log_entries else None
+        source_commit = dolt.head_commit_if_clean()
         with open(charities_file, "w") as f:
             json.dump(
                 {"source_commit": source_commit, "charities": merged_summaries},

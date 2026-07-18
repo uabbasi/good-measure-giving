@@ -113,7 +113,7 @@ def run_rich_quality_check(ein: str, eval_repo: EvaluationRepository) -> tuple[b
 if __name__ == "__main__":
     import argparse
 
-    from src.db.dolt_client import dolt
+    from src.db.dolt_client import dolt, tables_for_phases
     from src.utils.charity_loader import load_pilot_eins
 
     parser = argparse.ArgumentParser(description="Generate rich narrative for a charity")
@@ -174,7 +174,10 @@ if __name__ == "__main__":
 
     # Commit to DoltDB
     if success_count > 0:
-        commit_hash = dolt.commit(f"Rich: {success_count} charities enriched")
+        commit_hash = dolt.commit(
+            f"Rich: {success_count} charities enriched",
+            tables=tables_for_phases("rich"),
+        )
         if commit_hash:
             print(f"\n✓ Committed to DoltDB: {commit_hash[:8]}")
 

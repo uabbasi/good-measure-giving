@@ -31,7 +31,7 @@ load_dotenv(Path(__file__).parent.parent / ".env")
 sys.path.insert(0, str(Path(__file__).parent))
 
 from src.db import CharityData, CharityDataRepository, CharityRepository, PhaseCacheRepository, RawDataRepository
-from src.db.dolt_client import dolt
+from src.db.dolt_client import dolt, tables_for_phases
 from src.llm.category_classifier import get_category_info, get_charity_category
 from src.llm.llm_client import LLMClient, LLMTask
 from src.parsers.charity_metrics_aggregator import CharityMetricsAggregator
@@ -2146,7 +2146,10 @@ def main():
 
     # Commit changes to DoltDB
     if success_count > 0:
-        commit_hash = dolt.commit(f"Synthesize: {success_count} charities, {total_fields} fields computed")
+        commit_hash = dolt.commit(
+            f"Synthesize: {success_count} charities, {total_fields} fields computed",
+            tables=tables_for_phases("synthesize"),
+        )
         if commit_hash:
             print(f"\n✓ Committed to DoltDB: {commit_hash[:8]}")
 

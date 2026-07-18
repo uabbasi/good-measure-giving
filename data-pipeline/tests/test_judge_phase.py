@@ -83,7 +83,7 @@ class TestMainPersistenceAndExitCode:
         monkeypatch.setattr(judge_phase, "check_phase_cache", lambda *a, **kw: (True, "forced"))
         monkeypatch.setattr(judge_phase, "update_phase_cache", lambda *a, **kw: [])
         monkeypatch.setattr(judge_phase, "judge_charity", lambda ein, *repos: dict(judge_result))
-        monkeypatch.setattr("src.db.dolt_client.dolt.commit", lambda msg: None)
+        monkeypatch.setattr("src.db.dolt_client.dolt.commit", lambda msg, **kw: None)
 
     def test_main_exits_nonzero_when_any_ein_fails(self, monkeypatch):
         persisted = []

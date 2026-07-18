@@ -25,7 +25,7 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).parent))
 
 from src.db import EvaluationRepository
-from src.db.dolt_client import dolt
+from src.db.dolt_client import dolt, tables_for_phases
 from src.services.rich_strategic_narrative_generator import RichStrategicNarrativeGenerator
 
 
@@ -165,7 +165,8 @@ def main():
     # Commit to DoltDB
     if success_count > 0:
         commit_hash = dolt.commit(
-            f"Rich strategic: {success_count} charities, ${total_cost:.4f} LLM cost"
+            f"Rich strategic: {success_count} charities, ${total_cost:.4f} LLM cost",
+            tables=tables_for_phases("rich"),
         )
         if commit_hash:
             print(f"\n✓ Committed to DoltDB: {commit_hash[:8]}")

@@ -2379,9 +2379,9 @@ def main():
             failed_charities.append((ein, error))
             print(f"[{i}/{len(eins)}] ✗ {ein}: {error}")
 
-    # Capture source commit for provenance
-    log_entries = dolt.log(1)
-    source_commit = log_entries[0].hash if log_entries else None
+    # Provenance: stamp HEAD only if the working set is clean; a dirty
+    # working set matches no single Dolt commit, so stamp NULL instead.
+    source_commit = dolt.head_commit_if_clean()
 
     # Write charities.json summary file
     charities_file = output_dir / "charities.json"

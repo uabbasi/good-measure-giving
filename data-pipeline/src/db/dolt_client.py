@@ -9,6 +9,7 @@ Replaces the PostgreSQL audit_log table with native Dolt history.
 
 import os
 import re
+from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import datetime
 from functools import lru_cache
@@ -20,8 +21,38 @@ from .client import execute_query, get_cursor
 VALID_TABLES = frozenset({
     "charities", "raw_scraped_data", "charity_data", "evaluations",
     "pdf_documents", "agent_discoveries", "citations", "phase_cache",
-    "judge_verdicts",
+    "judge_verdicts", "export_exclusions",
 })
+
+# Which tables each pipeline phase writes — the explicit DOLT_ADD list.
+# Keep in sync with the phase scripts; commit() warns when a modified
+# table was left unstaged (i.e., this map has a gap).
+PHASE_TABLES: dict[str, tuple[str, ...]] = {
+    "crawl": ("raw_scraped_data", "charities"),
+    "extract": ("raw_scraped_data",),
+    "discover": ("raw_scraped_data", "agent_discoveries", "charities"),
+    "synthesize": ("charity_data", "citations"),
+    "baseline": ("evaluations", "judge_verdicts"),
+    "rich": ("evaluations", "citations"),
+    "judge": ("evaluations", "judge_verdicts"),
+    "export": ("export_exclusions",),
+}
+
+
+def tables_for_phases(*phases: str) -> tuple[str, ...]:
+    """Explicit DOLT_ADD list for one or more pipeline phases.
+
+    Dedupes while preserving first-seen order. Raises ValueError on an
+    unknown phase name so a typo can't silently stage nothing.
+    """
+    seen: list[str] = []
+    for phase in phases:
+        if phase not in PHASE_TABLES:
+            raise ValueError(f"Unknown pipeline phase: {phase!r}. Known: {sorted(PHASE_TABLES)}")
+        for table in PHASE_TABLES[phase]:
+            if table not in seen:
+                seen.append(table)
+    return tuple(seen)
 
 # Pattern for valid Dolt refs: commit hashes, branch names, HEAD~N, tags
 _VALID_REF_PATTERN = re.compile(r"^[a-zA-Z0-9_][a-zA-Z0-9_.~^/-]*$")
@@ -95,40 +126,55 @@ class DoltVersionControl:
         self.author = author or os.environ.get("DOLT_AUTHOR", "pipeline")
         self.email = email or os.environ.get("DOLT_EMAIL", "pipeline@zakaat.local")
 
-    def commit(self, message: str, add_all: bool = True) -> str | None:
-        """Commit all changes.
+    def commit(
+        self,
+        message: str,
+        tables: Sequence[str] | None = None,
+        add_all: bool = True,
+    ) -> str | None:
+        """Commit changes.
 
         Args:
             message: Commit message
-            add_all: If True, automatically add all changes (default: True)
+            tables: Explicit tables to stage (use tables_for_phases(...)).
+                Preferred for all pipeline phases — avoids sweeping
+                unrelated dirty tables into a phase commit.
+            add_all: Legacy behavior when tables is None: stage everything
+                ('-A'). Kept for manual snapshots only.
 
         Returns:
             Commit hash if changes were committed, None if no changes
 
         Example:
-            hash = dolt.commit("Crawl: 25 charities updated")
+            hash = dolt.commit("Crawl: 25 charities", tables=tables_for_phases("crawl"))
         """
         with get_cursor() as cursor:
-            # Check if there are changes to commit
             cursor.execute("SELECT * FROM dolt_status")
             status = cursor.fetchall()
-
             if not status:
                 return None  # No changes to commit
 
-            # Add all changes if requested
-            if add_all:
+            if tables is not None:
+                for table in tables:
+                    _validate_table_name(table)
+                    cursor.execute("CALL DOLT_ADD(%s)", (table,))
+                # Guard: surface writes the phase map missed.
+                cursor.execute("SELECT table_name FROM dolt_status WHERE staged = 0")
+                unstaged = sorted({row["table_name"] for row in cursor.fetchall()})
+                if unstaged:
+                    print(f"⚠ dolt.commit: modified but NOT staged (PHASE_TABLES gap?): {unstaged}")
+                cursor.execute("SELECT COUNT(*) AS n FROM dolt_status WHERE staged = 1")
+                staged_row = cursor.fetchone()
+                if not (staged_row and staged_row["n"]):
+                    return None  # Nothing staged for these tables
+            elif add_all:
                 cursor.execute("CALL DOLT_ADD('-A')")
 
-            # Commit and get the hash from the result
-            # DOLT_COMMIT returns a table with the commit hash
             cursor.execute(
                 "CALL DOLT_COMMIT('--author', %s, '-m', %s)",
                 (f"{self.author} <{self.email}>", message),
             )
             result = cursor.fetchone()
-
-            # Result is a dict with 'hash' key
             return result["hash"] if result else None
 
     def log(self, limit: int = 10) -> list[Commit]:
@@ -314,6 +360,22 @@ class DoltVersionControl:
             fetch="one",
         )
         return row["branch"] if row else "main"
+
+    def head_commit_if_clean(self) -> str | None:
+        """HEAD commit hash, or None if the working set is dirty.
+
+        Used to stamp export provenance (source_commit). A dirty working
+        set means the export corresponds to no single Dolt commit, so we
+        stamp NULL rather than lie.
+        """
+        row = execute_query("SELECT COUNT(*) AS n FROM dolt_status", fetch="one")
+        if row and row["n"]:
+            dirty = execute_query("SELECT DISTINCT table_name FROM dolt_status") or []
+            tables = sorted({r["table_name"] for r in dirty})
+            print(f"⚠ dolt working set dirty ({tables}); stamping source_commit=NULL")
+            return None
+        row = execute_query("SELECT HASHOF(active_branch()) AS commit_hash", fetch="one")
+        return row["commit_hash"] if row else None
 
     def branches(self) -> list[str]:
         """List all branches.

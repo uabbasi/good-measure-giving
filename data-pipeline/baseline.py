@@ -39,7 +39,7 @@ from src.db import (
     PhaseCacheRepository,
     RawDataRepository,
 )
-from src.db.dolt_client import dolt
+from src.db.dolt_client import dolt, tables_for_phases
 from src.db.client import execute_query
 from src.llm.llm_client import LLMClient, LLMTask
 from src.llm.prompt_loader import PromptInfo, load_prompt
@@ -1402,7 +1402,8 @@ def main():
     # Commit changes to DoltDB
     if success_count > 0:
         commit_hash = dolt.commit(
-            f"Baseline [rubric {RUBRIC_VERSION}]: {success_count} charities scored and narratives generated"
+            f"Baseline [rubric {RUBRIC_VERSION}]: {success_count} charities scored and narratives generated",
+            tables=tables_for_phases("baseline"),
         )
         if commit_hash:
             print(f"\n✓ Committed to DoltDB: {commit_hash[:8]}")

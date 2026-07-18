@@ -209,7 +209,7 @@ def main(argv: list[str] | None = None) -> int:
     """
     import argparse
 
-    from src.db.dolt_client import dolt
+    from src.db.dolt_client import dolt, tables_for_phases
     from src.utils.charity_loader import load_pilot_eins
 
     parser = argparse.ArgumentParser(description="Run all judges on a charity")
@@ -270,7 +270,10 @@ def main(argv: list[str] | None = None) -> int:
 
     # Commit to DoltDB
     if success_count > 0:
-        commit_hash = dolt.commit(f"Judge: {success_count} charities validated")
+        commit_hash = dolt.commit(
+            f"Judge: {success_count} charities validated",
+            tables=tables_for_phases("judge"),
+        )
         if commit_hash:
             print(f"\n✓ Committed to DoltDB: {commit_hash[:8]}")
 

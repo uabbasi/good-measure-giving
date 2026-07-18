@@ -33,7 +33,7 @@ sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 from src.collectors.orchestrator import DataCollectionOrchestrator
 from src.db import PhaseCacheRepository
-from src.db.dolt_client import dolt
+from src.db.dolt_client import dolt, tables_for_phases
 from src.utils.charity_loader import load_charities_from_file
 from src.utils.ein_utils import validate_and_format
 from src.utils.logger import PipelineLogger
@@ -353,7 +353,10 @@ def main():
 
     # Commit changes to DoltDB
     if success_count > 0:
-        commit_hash = dolt.commit(f"Crawl: {success_count} charities fetched, {total_sources} sources")
+        commit_hash = dolt.commit(
+            f"Crawl: {success_count} charities fetched, {total_sources} sources",
+            tables=tables_for_phases("crawl"),
+        )
         if commit_hash:
             print(f"\n✓ Committed to DoltDB: {commit_hash[:8]}")
 
