@@ -78,6 +78,15 @@ class TestGeminiSearchBudget:
         cost = client._calculate_cost(1_000_000, 1_000_000)
         assert cost == pytest.approx(registry_entry["cost_per_1m_input"] + registry_entry["cost_per_1m_output"])
 
+    def test_gemini_25_flash_cost_uses_ga_rates(self):
+        """The discovery services' default model must be priced at GA rates (0.30/2.50 per 1M),
+        matching litellm's cost map — not the stale 0.15/0.60 preview pricing."""
+        from src.agents.gemini_search import GeminiSearchClient
+
+        client = GeminiSearchClient(model="gemini-2.5-flash", api_key="test-key")
+        cost = client._calculate_cost(1_000_000, 1_000_000)
+        assert cost == pytest.approx(0.30 + 2.50)
+
 
 # Discovery service wrappers: (module, class, search-calling method)
 _DISCOVERY_SERVICES = [

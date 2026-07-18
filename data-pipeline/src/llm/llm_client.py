@@ -101,9 +101,10 @@ MODEL_REGISTRY: Dict[str, Dict[str, Any]] = {
     MODEL_GEMINI_25_FLASH: {
         "litellm_name": "gemini/gemini-2.5-flash",
         "provider": "google",
-        "cost_per_1m_input": 0.15,
-        "cost_per_1m_input_cached": 0.015,
-        "cost_per_1m_output": 0.60,
+        # GA pricing (post-2025-07), verified vs litellm cost map 2026-07-18
+        "cost_per_1m_input": 0.30,
+        "cost_per_1m_input_cached": 0.03,
+        "cost_per_1m_output": 2.50,
         "context_window": 1_000_000,
         "supports_json_mode": True,
     },
