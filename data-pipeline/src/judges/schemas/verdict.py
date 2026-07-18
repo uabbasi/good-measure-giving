@@ -139,32 +139,27 @@ class CharityValidationResult:
 
     @property
     def deduplicated_issues(self) -> tuple[list[ValidationIssue], list[ValidationIssue]]:
-        """Get errors and warnings after deduplicating by issue_key.
+        """Get errors and warnings after deduplication.
 
-        Issues sharing the same issue_key are deduplicated — only the
-        highest-severity instance counts. Issues without an issue_key
-        pass through unchanged.
+        Issues sharing an explicit issue_key dedupe across judges (highest
+        severity wins). Issues WITHOUT an issue_key dedupe on
+        (judge_name, message): verbatim-duplicate emissions from a single
+        judge (LLM repeats, per-lens copy-paste) count once.
 
         Returns:
             (errors, warnings) tuple with deduplicated issues.
         """
         severity_order = {Severity.ERROR: 0, Severity.WARNING: 1, Severity.INFO: 2}
-
-        keyed: dict[str, ValidationIssue] = {}
-        unkeyed: list[ValidationIssue] = []
-
+        keyed: dict[Any, ValidationIssue] = {}
         for verdict in self.verdicts:
             for issue in verdict.issues:
-                if issue.issue_key:
-                    existing = keyed.get(issue.issue_key)
-                    if existing is None or severity_order.get(issue.severity, 99) < severity_order.get(
-                        existing.severity, 99
-                    ):
-                        keyed[issue.issue_key] = issue
-                else:
-                    unkeyed.append(issue)
-
-        all_issues = list(keyed.values()) + unkeyed
+                key: Any = issue.issue_key or ("__auto__", verdict.judge_name, issue.message)
+                existing = keyed.get(key)
+                if existing is None or severity_order.get(issue.severity, 99) < severity_order.get(
+                    existing.severity, 99
+                ):
+                    keyed[key] = issue
+        all_issues = list(keyed.values())
         errors = [i for i in all_issues if i.severity == Severity.ERROR]
         warnings = [i for i in all_issues if i.severity == Severity.WARNING]
         return errors, warnings

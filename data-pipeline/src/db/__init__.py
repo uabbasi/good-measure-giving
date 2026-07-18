@@ -19,6 +19,7 @@ from .repository import (
     CitationRepository,
     Evaluation,
     EvaluationRepository,
+    ExportExclusionRepository,
     PhaseCache,
     PhaseCacheRepository,
     RawDataRepository,
@@ -49,6 +50,7 @@ __all__ = [
     "CharityRepository",
     "CitationRepository",
     "EvaluationRepository",
+    "ExportExclusionRepository",
     "PhaseCacheRepository",
     "RawDataRepository",
 ]

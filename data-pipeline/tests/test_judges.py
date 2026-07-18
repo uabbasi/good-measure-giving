@@ -22,6 +22,11 @@ from src.judges.schemas.verdict import (
     ValidationIssue,
 )
 from src.judges.factual_judge import FactualJudge
+from src.judges.citation_judge import CitationJudge
+from src.judges.cross_lens_judge import CrossLensJudge
+from src.judges.narrative_quality_judge import NarrativeQualityJudge
+from src.judges.score_judge import ScoreJudge
+from src.judges.zakat_judge import ZakatJudge
 from src.judges.url_verifier import FetchResult, URLCache, URLVerifier
 from src.judges.orchestrator import BatchResult, JudgeOrchestrator
 
@@ -102,7 +107,7 @@ class TestJudgeConfig:
         config = JudgeConfig()
         assert config.sample_rate == 0.1
         assert config.verify_all_citations is True
-        assert config.judge_model == "gemini-2.0-flash"
+        assert config.judge_model == "gemini-2.5-flash-lite"
         assert config.cache_dir is not None
 
     def test_enabled_judges(self):
@@ -551,3 +556,89 @@ class TestFactualJudgeQuickChecks:
         error_issues = [i for i in issues if i.severity == Severity.ERROR]
         assert len(error_issues) == 1
         assert "program_expense_ratio" in error_issues[0].field
+
+
+# =============================================================================
+# Structured Output Wiring (C3)
+# =============================================================================
+
+
+class TestJudgeStructuredOutput:
+    """All 6 LLM judges must pass json_mode=True alongside their json_schema.
+
+    llm_client only sets response_format when json_mode is True — a schema
+    without json_mode was silently ignored.
+    """
+
+    CASES = [
+        ("factual", FactualJudge, lambda j: j._verify_claims_with_llm({}, {})),
+        ("score", ScoreJudge, lambda j: j._verify_rationales_with_llm({}, {})),
+        ("zakat", ZakatJudge, lambda j: j._verify_zakat_with_llm({}, {})),
+        ("citation", CitationJudge, lambda j: j._verify_claims_with_llm({}, [], {}, {})),
+        (
+            "narrative_quality",
+            NarrativeQualityJudge,
+            lambda j: j._verify_quality_with_llm({}, {"baseline": {"summary": "x"}}),
+        ),
+        (
+            "cross_lens",
+            CrossLensJudge,
+            lambda j: j._verify_consistency_with_llm(
+                {"name": "T", "ein": "1"},
+                {"baseline": {"summary": "x"}, "strategic": {"summary": "y"}},
+                {"baseline": 80, "strategic": 70},
+            ),
+        ),
+    ]
+
+    @staticmethod
+    def _fake_client(captured):
+        class FakeResponse:
+            text = "{}"  # every judge result model has fully-defaulted fields
+            cost_usd = 0.0
+
+        class FakeClient:
+            def generate(self, **kwargs):
+                captured.update(kwargs)
+                return FakeResponse()
+
+        return FakeClient()
+
+    @pytest.mark.parametrize("name,judge_cls,invoke", CASES, ids=[c[0] for c in CASES])
+    def test_judges_request_structured_output(self, monkeypatch, name, judge_cls, invoke):
+        captured = {}
+        judge = judge_cls(JudgeConfig(sample_rate=1.0))
+        monkeypatch.setattr(judge, "get_llm_client", lambda: self._fake_client(captured))
+
+        result = invoke(judge)
+
+        assert result is not None, f"{name}: verify returned None (exception/parse path)"
+        assert captured.get("json_mode") is True, f"{name}: json_mode not passed"
+        assert captured.get("json_schema"), f"{name}: json_schema not passed"
+
+
+class TestCrossLensLensCoverage:
+    """Locks the contract: cross_lens must run when strategic+zakat lenses exist."""
+
+    def test_cross_lens_runs_with_strategic_and_zakat(self, monkeypatch):
+        judge = CrossLensJudge(JudgeConfig())
+        monkeypatch.setattr(judge, "_verify_consistency_with_llm", lambda *a, **kw: None)
+
+        output = {
+            "ein": "13-5660870",
+            "name": "Test Charity",
+            "evaluation": {
+                "amal_score": 82,
+                "baseline_narrative": {"summary": "Solid."},
+                "strategic_narrative": {"summary": "Strong leverage."},
+                "strategic_score": 71,
+                "zakat_narrative": {"summary": "Zakat-appropriate."},
+                "zakat_score": 76,
+                "wallet_tag": "ZAKAT-ELIGIBLE",
+            },
+        }
+
+        verdict = judge.validate(output, {})
+
+        assert verdict.skipped is False
+        assert set(verdict.metadata["lenses_compared"]) == {"baseline", "strategic", "zakat"}

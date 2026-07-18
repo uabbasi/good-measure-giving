@@ -31,22 +31,32 @@ load_dotenv(Path(__file__).parent.parent / ".env")
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Sibling root module (data-pipeline is sys.path-bootstrapped above). No cycle:
+# judge_phase never imports export.
+from judge_phase import compute_judge_content_hash
 from src.db import (
     CharityDataRepository,
     CharityRepository,
     EvaluationRepository,
+    ExportExclusionRepository,
     RawDataRepository,
 )
-from src.db.dolt_client import dolt
+from src.db.dolt_client import dolt, tables_for_phases
 from src.judges.base_judge import JudgeConfig
 from src.judges.export_quality_judge import ExportQualityJudge
 from src.judges.schemas.verdict import Severity
+from src.llm.prompt_loader import load_prompt
+from src.utils.cause_area import derive_cause_area
+from src.utils.display_name import to_display_name
 
 # Output directory
 WEBSITE_DATA_DIR = Path(__file__).parent.parent / "website" / "data"
 WEBSITE_PUBLIC_DATA_DIR = Path(__file__).parent.parent / "website" / "public" / "data"
+# Internal pipeline artifacts (gitignored, NEVER under website/data which ships whole).
+REPORTS_DIR = Path(__file__).parent / "reports"
 PILOT_CHARITIES_FILE = Path(__file__).parent / "pilot_charities.txt"
 UI_SIGNALS_CONFIG_FILE = Path(__file__).parent / "config" / "ui_signals.yaml"
+CURATION_OVERRIDES_FILE = Path(__file__).parent / "config" / "curation_overrides.yaml"
 
 # Beacons to exclude (not really awards)
 # - "Profile Managed" = just means nonprofit manages their CN profile
@@ -73,6 +83,42 @@ def _compute_config_hash(cfg: dict[str, Any]) -> str:
     """Compute deterministic config hash for auditability."""
     canonical = json.dumps(cfg, sort_keys=True, separators=(",", ":"))
     return f"sha256:{hashlib.sha256(canonical.encode('utf-8')).hexdigest()}"
+
+
+def load_curation_overrides() -> dict[str, Any]:
+    """Load the hand-curation overlay (names, cause areas, beneficiary suppressions).
+
+    Missing file => empty overlay so export still runs. [contract #1]
+    """
+    if not CURATION_OVERRIDES_FILE.exists():
+        return {"names": {}, "cause_areas": {}, "beneficiaries_suppress": []}
+    with open(CURATION_OVERRIDES_FILE) as f:
+        raw = yaml.safe_load(f) or {}
+    return {
+        "names": raw.get("names") or {},
+        "cause_areas": raw.get("cause_areas") or {},
+        "beneficiaries_suppress": list(raw.get("beneficiaries_suppress") or []),
+    }
+
+
+_CURATION_OVERRIDES = load_curation_overrides()
+
+
+def _apply_curation_override(ein: str, field: str, generated: Any, overrides: dict) -> Any:
+    """Override wins; log when it merely duplicates the generated value (prunable later)."""
+    if ein not in overrides:
+        return generated
+    override = overrides[ein]
+    if override == generated:
+        print(f"  [curation] override redundant for {ein}.{field}: {override!r}")
+    return override
+
+
+def _display_name_for(charity: dict) -> str:
+    """Single source of the exported display name (index/detail/amalEvaluation agree)."""
+    ein = charity["ein"]
+    raw = charity.get("name") or ein
+    return _apply_curation_override(ein, "name", to_display_name(raw), _CURATION_OVERRIDES["names"])
 
 
 def _mirror_export_to_public_data(output_dir: Path) -> None:
@@ -1103,6 +1149,29 @@ def _normalize_score_details_zakat_sources(
     return normalized
 
 
+_STALE_ASNAF_VALUES = {"amil", "muallaf"}
+
+
+def _sanitize_stale_asnaf(amal_evaluation: dict[str, Any]) -> None:
+    """Null stale pre-fix asnaf labels at the export boundary (DB untouched).
+
+    The asnaf matcher's substring bug ('amil' ⊂ 'family'; loose 'muallaf' hits)
+    mislabeled charities before the word-boundary fix in v2_scorers; correct
+    re-classification lands with the v5.3.0 run. Until then never publish them.
+    """
+    score_details = amal_evaluation.get("score_details")
+    if isinstance(score_details, dict):
+        zakat = score_details.get("zakat")
+        if isinstance(zakat, dict) and str(zakat.get("asnaf_category") or "").lower() in _STALE_ASNAF_VALUES:
+            zakat["asnaf_category"] = None  # safe: zakat block is a copy from _normalize_score_details_zakat_sources
+    rich = amal_evaluation.get("rich_narrative")
+    if isinstance(rich, dict):
+        guidance = rich.get("zakat_guidance")
+        if isinstance(guidance, dict) and str(guidance.get("classification") or "").lower() in _STALE_ASNAF_VALUES:
+            # copy-on-write: never mutate the evaluation dict the summary builder also reads
+            amal_evaluation["rich_narrative"] = {**rich, "zakat_guidance": {**guidance, "classification": None}}
+
+
 def _is_truncated_text(value: str | None) -> bool:
     """Detect text that is likely UI-truncated."""
     return isinstance(value, str) and value.rstrip().endswith("...")
@@ -1221,26 +1290,96 @@ def _is_beneficiary_count_plausible(beneficiaries: Any, charity_data: dict | Non
     return True
 
 
+# Source paths that name dollar figures / cumulative totals, not annual headcounts. [C4]
+# Year tokens match after "_" or "." (e.g. "metrics.2021_refugee_families_served_gaza").
+_SUSPECT_BENEFICIARY_SOURCE_PATH_RE = re.compile(r"(_usd|_dollars|cumulative|_to_date|total_since|[._]20\d\d)")
+_MAX_PLAUSIBLE_DOLLARS_PER_BENEFICIARY = 10_000.0
+
+
+def _beneficiary_source_path_is_suspect(source_attribution: Any) -> bool:
+    """True when the citation's source_path is semantically not an annual count."""
+    if not isinstance(source_attribution, dict):
+        return False
+    meta = source_attribution.get("beneficiaries_served_annually")
+    if not isinstance(meta, dict):
+        return False
+    source_path = meta.get("source_path")
+    return isinstance(source_path, str) and bool(_SUSPECT_BENEFICIARY_SOURCE_PATH_RE.search(source_path))
+
+
+def _beneficiary_semantics_verified(source_attribution: Any) -> bool:
+    """True only when synthesize's semantics verifier stamped verified=True.
+
+    The stamp lives at source_attribution['beneficiaries_served_annually']['semantics'].
+    Missing/legacy attribution, a missing 'semantics' key, or verified != True all
+    return False so the gate fails closed (count suppressed until re-verified).
+    """
+    if not isinstance(source_attribution, dict):
+        return False
+    meta = source_attribution.get("beneficiaries_served_annually")
+    if not isinstance(meta, dict):
+        return False
+    semantics = meta.get("semantics")
+    if not isinstance(semantics, dict):
+        return False
+    return semantics.get("verified") is True
+
+
+def _beneficiary_cost_exceeds_upper_bound(beneficiaries: Any, charity_data: dict | None) -> bool:
+    """True when program spend implies > $10k per claimed beneficiary (no category exemptions)."""
+    if not isinstance(beneficiaries, (int, float)) or beneficiaries <= 0:
+        return False
+    if not isinstance(charity_data, dict):
+        return False
+    expenses = charity_data.get("program_expenses") or charity_data.get("total_expenses")
+    if not isinstance(expenses, (int, float)) or expenses <= 0:
+        return False
+    return expenses / beneficiaries > _MAX_PLAUSIBLE_DOLLARS_PER_BENEFICIARY
+
+
 def _derive_beneficiary_confidence(beneficiaries: Any, source_attribution: Any, charity_data: dict | None) -> str | None:
     """Classify beneficiary trust state for frontend messaging.
 
+    Gate on the ORIGINAL source_attribution (never post-URL-normalization).
     States:
-      - verified: cited and plausibility checks pass
-      - needs_review: cited but plausibility checks fail
-      - uncorroborated: uncited but plausibility checks pass
-      - implausible: uncited and plausibility checks fail
+      - cited: canonical citation + every plausibility check passes + LLM
+        semantics verified the count is annual people served (publishable)
+      - needs_review: cited but a semantic/plausibility/semantics check failed (suppressed)
+      - unverified: no canonical citation (suppressed)
     """
     if not isinstance(beneficiaries, (int, float)) or beneficiaries <= 0:
         return None
-    has_citation = _has_cited_beneficiary_source(source_attribution)
-    is_plausible = _is_beneficiary_count_plausible(beneficiaries, charity_data)
-    if has_citation and is_plausible:
-        return "verified"
-    if has_citation and not is_plausible:
+    if not _has_cited_beneficiary_source(source_attribution):
+        return "unverified"
+    if _beneficiary_source_path_is_suspect(source_attribution):
         return "needs_review"
-    if is_plausible:
-        return "uncorroborated"
-    return "implausible"
+    if not _is_beneficiary_count_plausible(beneficiaries, charity_data):
+        return "needs_review"
+    if _beneficiary_cost_exceeds_upper_bound(beneficiaries, charity_data):
+        return "needs_review"
+    # Metric-semantics gate (synthesize-time LLM verifier): publication of a count
+    # is structurally impossible unless semantics.verified is True. Missing/legacy
+    # attribution without a semantics stamp fails closed.
+    if not _beneficiary_semantics_verified(source_attribution):
+        return "needs_review"
+    return "cited"
+
+
+def _public_beneficiary_fields(ein: str, charity_data: dict | None) -> tuple[int | float | None, str | None, bool]:
+    """Gate beneficiary counts for publication (shared by index and detail builders).
+
+    Returns (public_count, confidence, excluded_from_scoring): counts that are
+    not 'cited' are emitted as null; the confidence string is always emitted so
+    the frontend can explain the suppression. The curation overlay can force-null
+    any EIN's count (Phase 3 review backlog) without changing its confidence. [C4]
+    """
+    beneficiaries = charity_data.get("beneficiaries_served_annually") if charity_data else None
+    source_attribution = charity_data.get("source_attribution") if charity_data else None
+    confidence = _derive_beneficiary_confidence(beneficiaries, source_attribution, charity_data)
+    suppressed = ein in _CURATION_OVERRIDES["beneficiaries_suppress"]
+    public_count = beneficiaries if (confidence == "cited" and not suppressed) else None
+    excluded = confidence in {"needs_review", "unverified"}
+    return public_count, confidence, excluded
 
 
 def _extract_pillar_scores(evaluation: dict | None) -> dict[str, int | float] | None:
@@ -1313,12 +1452,6 @@ def _public_score_summary(evaluation: dict | None, charity_data: dict | None) ->
 
 _IMPACT_TIER_THRESHOLDS = ((80, "HIGH"), (65, "ABOVE_AVERAGE"), (50, "AVERAGE"))
 
-# Hand-curated cause areas the deterministic derivation can't reproduce (preserve committed). [#8]
-_CAUSE_AREA_OVERRIDES = {
-    "13-1760110": "HUMANITARIAN",  # derivation yields EXTREME_POVERTY
-    "85-3547280": "EDUCATION",  # derivation yields "EDUCATION & HUMANITARIAN"
-}
-
 
 def _derive_impact_tier(amal_score: int | float | None) -> str | None:
     """Categorical impact tier derived from the public GMG score.
@@ -1358,8 +1491,9 @@ def build_charity_summary(
     # E-002: Use shared tier determination logic
     tier = _determine_tier(evaluation, charity_data)
 
-    # Extract causeArea from rich_narrative (if available)
-    cause_area = None
+    # causeArea: deterministic derivation from primary_category; the narrative's
+    # cause_area is used only as the EXTREME_POVERTY refinement signal. [contract #3]
+    detected_cause_area = None
     headline = None
     if evaluation:
         rich_narrative = evaluation.get("rich_narrative")
@@ -1367,12 +1501,17 @@ def build_charity_summary(
         if rich_narrative and isinstance(rich_narrative, dict):
             donor_fit = rich_narrative.get("donor_fit_matrix")
             if donor_fit and isinstance(donor_fit, dict):
-                cause_area = donor_fit.get("cause_area")
+                detected_cause_area = donor_fit.get("cause_area")
             headline = rich_narrative.get("headline")
         if not headline and baseline_narrative and isinstance(baseline_narrative, dict):
             headline = baseline_narrative.get("headline")
-    # Preserve hand-curated cause areas the deterministic derivation can't reproduce. [#8]
-    cause_area = _CAUSE_AREA_OVERRIDES.get(charity["ein"], cause_area)
+    cause_area = derive_cause_area(
+        charity_data.get("primary_category") if charity_data else None,
+        detected_cause_area,
+    )
+    cause_area = _apply_curation_override(
+        charity["ein"], "causeArea", cause_area, _CURATION_OVERRIDES["cause_areas"]
+    )
 
     website_profile = {}
     candid_profile = {}
@@ -1403,27 +1542,14 @@ def build_charity_summary(
         cn_profile.get("mission"),
     )
 
-    normalized_source_attribution = (
-        _normalize_source_attribution_urls(charity_data.get("source_attribution"), charity.get("website"))
-        if charity_data
-        else None
-    )
-    beneficiaries_served_annually = charity_data.get("beneficiaries_served_annually") if charity_data else None
-    beneficiaries_confidence = _derive_beneficiary_confidence(
-        beneficiaries_served_annually,
-        normalized_source_attribution,
-        charity_data,
-    )
-    beneficiaries_excluded_from_scoring = bool(
-        isinstance(beneficiaries_served_annually, (int, float))
-        and beneficiaries_served_annually > 0
-        and beneficiaries_confidence in {"needs_review", "implausible"}
+    beneficiaries_served_annually, beneficiaries_confidence, beneficiaries_excluded_from_scoring = (
+        _public_beneficiary_fields(charity["ein"], charity_data)
     )
 
     return {
         "id": charity["ein"],
         "ein": charity["ein"],
-        "name": charity.get("name") or charity["ein"],
+        "name": _display_name_for(charity),
         "tier": tier,
         "mission": best_mission,
         "headline": headline,  # Fallback description from baseline/rich narrative
@@ -1547,22 +1673,14 @@ def build_charity_detail(
         if charity_data
         else None
     )
-    beneficiaries_served_annually = charity_data.get("beneficiaries_served_annually") if charity_data else None
-    beneficiaries_confidence = _derive_beneficiary_confidence(
-        beneficiaries_served_annually,
-        normalized_source_attribution,
-        charity_data,
-    )
-    beneficiaries_excluded_from_scoring = bool(
-        isinstance(beneficiaries_served_annually, (int, float))
-        and beneficiaries_served_annually > 0
-        and beneficiaries_confidence in {"needs_review", "implausible"}
+    beneficiaries_served_annually, beneficiaries_confidence, beneficiaries_excluded_from_scoring = (
+        _public_beneficiary_fields(charity["ein"], charity_data)
     )
 
     detail = {
         "id": charity["ein"],
         "ein": charity["ein"],
-        "name": charity.get("name") or charity["ein"],
+        "name": _display_name_for(charity),
         "tier": tier,
         "mission": best_mission,
         "programs": programs,
@@ -1696,9 +1814,11 @@ def build_charity_detail(
         # P0: Working capital months (balance sheet derived)
         # P0: Beneficiaries served annually (self-reported)
         "beneficiariesServedAnnually": beneficiaries_served_annually,
+        # Provenance ships only when the count itself is published; a gated/suppressed
+        # count must not leak its failed source dict. [C4 / Task 8 handoff]
         "beneficiariesSource": (
             normalized_source_attribution.get("beneficiaries_served_annually")
-            if isinstance(normalized_source_attribution, dict)
+            if beneficiaries_served_annually is not None and isinstance(normalized_source_attribution, dict)
             else None
         ),
         "beneficiariesConfidence": beneficiaries_confidence,
@@ -1730,7 +1850,7 @@ def build_charity_detail(
     if evaluation:
         detail["amalEvaluation"] = {
             "charity_ein": charity["ein"],
-            "charity_name": charity.get("name"),
+            "charity_name": _display_name_for(charity),
             "amal_score": _public_amal_score(evaluation, charity_data),
             "wallet_tag": evaluation.get("wallet_tag"),
             "evaluation_date": evaluation.get("evaluated_at"),
@@ -1744,6 +1864,9 @@ def build_charity_detail(
         # Include rich_narrative whenever it exists in the database
         if evaluation.get("rich_narrative"):
             detail["amalEvaluation"]["rich_narrative"] = evaluation.get("rich_narrative")
+
+        # Null stale amil/muallaf asnaf labels at the export boundary (DB untouched). [Cycle D]
+        _sanitize_stale_asnaf(detail["amalEvaluation"])
 
         # Strategic/Zakat lens evaluations removed from export (pipeline still calculates them)
         # Frontend shows AMAL-only scoring framework
@@ -1849,95 +1972,6 @@ class PilotCharityFlags:
 # =============================================================================
 # PROMPT EXPORT
 # =============================================================================
-
-# The baseline prompt template (from baseline.py lines 324-412)
-# This is extracted here to avoid importing the full baseline module
-BASELINE_PROMPT_TEMPLATE = """Generate a baseline narrative for this charity with Wikipedia-style inline citations.
-
-## Charity Information
-- Name: {charity_name}
-- EIN: {ein}
-- Mission: {mission}
-- Programs: {programs}
-
-## Financial Data
-- Total Revenue: {revenue}
-- Program Expense Ratio: {ratio}
-- Charity Navigator Score: {cn_score}
-- Working Capital: {working_capital}
-- Fundraising Efficiency: {fundraising_efficiency}
-
-## MANDATORY VALUES (USE EXACTLY AS PROVIDED - DO NOT CALCULATE OR INVENT)
-When mentioning these metrics in the narrative, you MUST use the EXACT values below.
-Do NOT round differently, do NOT calculate your own values, do NOT invent numbers.
-
-- Program Expense Ratio: {ratio} (use this exact percentage everywhere)
-- Total Revenue: {revenue} (use this exact amount everywhere)
-- Working Capital: {working_capital} (use this exact value everywhere)
-- Fundraising Efficiency: {fundraising_efficiency} (use this exact value everywhere)
-
-If a value is "N/A", do NOT mention that metric in the narrative at all.
-
-## ZAKAT ELIGIBILITY CONSTRAINT (CRITICAL)
-Wallet Tag: {wallet_tag}
-{zakat_constraint_text}
-
-## REVENUE GROWTH CONSTRAINT (CRITICAL)
-Do NOT mention 3-year revenue CAGR, compound annual growth rate, or multi-year revenue growth percentages.
-This data is not provided in the baseline context. Only mention single-year revenue if available.
-
-## Pre-computed Scores (for context only - explain in plain English)
-- GMG Score: {amal_score}/100
-- Wallet Tag: {wallet_tag}
-- Impact: {impact_score}/50 (Directness: {impact_directness}, Cost per beneficiary: {impact_cpb})
-- Alignment: {alignment_score}/50 (Donor fit: {alignment_fit}, Cause urgency: {alignment_urgency})
-- Data Confidence: {data_confidence} ({data_confidence_badge})
-
-## SCORE/RATIONALE CONSISTENCY (CRITICAL)
-Your dimension_explanations MUST be consistent with the scores above:
-- If a score is LOW (0-15): Explain what's MISSING or CONCERNING (e.g., "Limited data available", "No third-party verification")
-- If a score is MEDIUM (16-33): Balanced explanation of strengths and gaps
-- If a score is HIGH (34+): Can highlight strengths
-
-DO NOT invent positive data to justify low scores:
-- If Impact is low, do NOT claim the organization "demonstrates effectiveness"
-- If Alignment is low, do NOT claim strong Muslim donor fit
-- Only mention ratings/scores that are explicitly provided in the source data above
-
-## Available Sources for Citations (EXACTLY {num_sources} sources)
-{sources_list}
-
-## Citation Rules (CRITICAL - follow exactly)
-1. You have EXACTLY {num_sources} sources available, numbered [1] through [{num_sources}]
-2. ONLY use citation numbers that exist in the list above - do NOT use [N] where N > {num_sources}
-3. For EVERY [N] citation you use in text, you MUST include a matching entry in all_citations
-4. Format: [N] where N is the source number (e.g., [1], [2])
-5. Example: "The charity maintains strong financial accountability [1]."
-
-## Output Format
-Return ONLY a valid JSON object (no markdown code blocks):
-
-{
-  "headline": "One compelling sentence about the charity",
-  "summary": "2-3 sentences with citations like [1] and [2]",
-  "strengths": ["strength 1", "strength 2"],
-  "areas_for_improvement": ["area 1"],
-  "amal_score_rationale": "1-2 sentences explaining the overall score",
-  "dimension_explanations": {
-    "impact": "Plain English with citations about program effectiveness, financial health, and evidence quality",
-    "alignment": "Plain English with citations about donor fit, cause urgency, and track record"
-  },
-  "all_citations": [
-    {
-      "id": "[1]",
-      "source_name": "Source name from list above",
-      "source_url": "URL from source list (or null if not available)",
-      "claim": "The specific claim this citation supports"
-    }
-  ]
-}
-
-Generate the narrative JSON:"""
 
 
 def export_prompts(output_dir: Path) -> dict[str, Any]:
@@ -2047,9 +2081,12 @@ def export_prompts(output_dir: Path) -> dict[str, Any]:
             )
             exported_count += 1
 
-    # Export baseline narrative prompt (inline template)
+    # Export baseline narrative prompt (canonical versioned file — H4)
     if "baseline_narrative" in annotations:
         meta = annotations["baseline_narrative"]
+        baseline_info = load_prompt("baseline_narrative", check_version=False)
+        # Un-double the .format() escape braces for public display
+        baseline_content = baseline_info.content.replace("{{", "{").replace("}}", "}")
         prompt_data = {
             "id": "baseline_narrative",
             "name": meta["name"],
@@ -2057,7 +2094,9 @@ def export_prompts(output_dir: Path) -> dict[str, Any]:
             "description": meta["description"],
             "status": meta["status"],
             "source_file": meta["source_file"],
-            "content": BASELINE_PROMPT_TEMPLATE,
+            "version": baseline_info.version,
+            "placeholder_note": "Values in {braces} are placeholders filled per-charity at generation time.",
+            "content": baseline_content,
             "annotations": meta.get("annotations", []),
         }
         with open(prompts_dir / "baseline_narrative.json", "w") as f:
@@ -2220,11 +2259,124 @@ def load_pilot_charities(file_path: str) -> dict[str, PilotCharityFlags]:
     return charities
 
 
-def main():
+def build_arg_parser() -> argparse.ArgumentParser:
+    """CLI surface for export runs (module-level for testability)."""
     parser = argparse.ArgumentParser(description="Export charity data to website JSON")
-    parser.add_argument("--ein", type=str, help="Single charity EIN to export")
+    scope = parser.add_mutually_exclusive_group()
+    scope.add_argument("--ein", type=str, help="Single charity EIN to export")
+    scope.add_argument(
+        "--prune",
+        action="store_true",
+        help="Remove stale charity detail files not in this export set (incompatible with --ein)",
+    )
     parser.add_argument("--charities", type=str, help="Path to charities file")
     parser.add_argument("--output", type=str, help="Output directory (default: ../website/data)")
+    parser.add_argument(
+        "--no-judge-gate",
+        action="store_true",
+        help="Escape hatch: publish regardless of judge errors / content-hash freshness",
+    )
+    return parser
+
+
+def exclusion_reason(error_count: int | None, stale: bool = False) -> str:
+    """Audit-table reason string for a judge-gate exclusion (single dialect for all writers).
+
+    Option A: publication is gated on deduped judge ERRORS, not judge_score.
+    Precedence mirrors the gate: missing counts (fail closed) → errors → stale.
+    """
+    if error_count is None:
+        return "judge counts missing (fails closed)"
+    if error_count > 0:
+        return f"judge errors: {error_count} (publication blocked)"
+    return "judge verdict stale (content changed since judged)"
+
+
+def partition_by_judge_gate(
+    eins: list[str], eval_repo: EvaluationRepository
+) -> tuple[list[str], list[tuple[str, int | None, int | None, bool]]]:
+    """Split EINs into (exportable, excluded).
+
+    Publication gate = deduped judge_error_count == 0 AND fresh judge_content_hash.
+    NULL error_count fails closed (legacy rows predate the counts and are stale).
+    Warnings never gate. Excluded entries are (ein, judge_score, error_count, stale).
+    """
+    kept: list[str] = []
+    excluded: list[tuple[str, int | None, int | None, bool]] = []
+    for ein in eins:
+        evaluation = eval_repo.get(ein)
+        judge_score = evaluation.get("judge_score") if evaluation else None
+        error_count = evaluation.get("judge_error_count") if evaluation else None
+        if error_count is None:
+            excluded.append((ein, judge_score, None, False))
+            continue
+        if error_count > 0:
+            excluded.append((ein, judge_score, error_count, False))
+            continue
+        stored_hash = evaluation.get("judge_content_hash")
+        if stored_hash is None or stored_hash != compute_judge_content_hash(evaluation):
+            excluded.append((ein, judge_score, error_count, True))
+            continue
+        kept.append(ein)
+    return kept, excluded
+
+
+def build_editorial_queue(charity_repo: CharityRepository, eval_repo: EvaluationRepository) -> list[dict]:
+    """Editorial work list: every evaluated charity with fresh deduped counts.
+
+    Warnings never gate publication — this artifact is where they surface. A
+    charity is listed only when its counts are present AND its content hash is
+    fresh (stale counts don't describe current content). Sorted by deduped
+    warning count desc, ties broken by EIN for determinism.
+    """
+    queue: list[dict] = []
+    for charity in charity_repo.get_all():
+        ein = charity.get("ein")
+        if not ein:
+            continue
+        evaluation = eval_repo.get(ein)
+        if not evaluation:
+            continue
+        error_count = evaluation.get("judge_error_count")
+        warning_count = evaluation.get("judge_warning_count")
+        if error_count is None or warning_count is None:
+            continue
+        stored_hash = evaluation.get("judge_content_hash")
+        if stored_hash is None or stored_hash != compute_judge_content_hash(evaluation):
+            continue
+        queue.append(
+            {
+                "ein": ein,
+                "name": charity.get("name") or ein,
+                "judge_warning_count": warning_count,
+                "judge_error_count": error_count,
+                "judge_score": evaluation.get("judge_score"),
+                "judged_at": evaluation.get("updated_at"),
+            }
+        )
+    queue.sort(key=lambda row: (-row["judge_warning_count"], row["ein"]))
+    return queue
+
+
+def write_editorial_queue(queue: list[dict], reports_dir: Path = REPORTS_DIR) -> Path:
+    """Write the editorial queue to reports/editorial-queue.json and print a one-line summary."""
+    reports_dir.mkdir(parents=True, exist_ok=True)
+    path = reports_dir / "editorial-queue.json"
+    with open(path, "w") as f:
+        json.dump(queue, f, indent=2, default=str)
+    if queue:
+        top = queue[0]
+        print(
+            f"  editorial queue: {len(queue)} charities, "
+            f"top: {top['name']} ({top['judge_warning_count']} warnings)"
+        )
+    else:
+        print("  editorial queue: 0 charities (no fresh judged counts)")
+    return path
+
+
+def main():
+    parser = build_arg_parser()
     args = parser.parse_args()
 
     # Output directory
@@ -2261,6 +2413,27 @@ def main():
     eval_repo = EvaluationRepository()
     ui_signals_config = _load_ui_signals_config()
     config_hash = _compute_config_hash(ui_signals_config)
+
+    # Publish gate (Option A): a charity ships only if its deduped judge_error_count
+    # == 0 AND its content hash is fresh. Warnings never gate. NULL fails closed.
+    if not args.no_judge_gate:
+        exclusion_repo = ExportExclusionRepository()
+        eins, excluded = partition_by_judge_gate(eins, eval_repo)
+        for ein, judge_score, error_count, stale in excluded:
+            reason = exclusion_reason(error_count, stale=stale)
+            exclusion_repo.record(ein, judge_score, reason)
+            print(f"  ⛔ Excluded {ein}: {reason}")
+        if excluded:
+            print(f"  Publish gate: {len(excluded)} excluded, {len(eins)} remain (see export_exclusions table)")
+            # Commit the audit rows now so the provenance stamp below sees a
+            # clean working set (real source_commit instead of NULL).
+            dolt.commit(
+                f"Export: record {len(excluded)} gate exclusions",
+                tables=tables_for_phases("export"),
+            )
+        if not eins:
+            print("No charities pass the judge gate; nothing to export")
+            return
 
     print(f"\n{'=' * 60}")
     print(f"EXPORT: {len(eins)} CHARITIES")
@@ -2310,9 +2483,9 @@ def main():
             failed_charities.append((ein, error))
             print(f"[{i}/{len(eins)}] ✗ {ein}: {error}")
 
-    # Capture source commit for provenance
-    log_entries = dolt.log(1)
-    source_commit = log_entries[0].hash if log_entries else None
+    # Provenance: stamp HEAD only if the working set is clean; a dirty
+    # working set matches no single Dolt commit, so stamp NULL instead.
+    source_commit = dolt.head_commit_if_clean()
 
     # Write charities.json summary file
     charities_file = output_dir / "charities.json"
@@ -2324,10 +2497,11 @@ def main():
             default=str,
         )
 
-    kept_eins = {summary.get("ein") for summary in summaries if summary.get("ein")}
-    removed_details = prune_charity_detail_files(output_dir, kept_eins)
-    if removed_details:
-        print(f"  Pruned {removed_details} stale charity detail files")
+    if args.prune:
+        kept_eins = {summary.get("ein") for summary in summaries if summary.get("ein")}
+        removed_details = prune_charity_detail_files(output_dir, kept_eins)
+        if removed_details:
+            print(f"  Pruned {removed_details} stale charity detail files")
 
     # Write calibration report
     calibration_report = _build_calibration_report(
@@ -2339,6 +2513,10 @@ def main():
     calibration_file = output_dir / "calibration-report.json"
     with open(calibration_file, "w") as f:
         json.dump(calibration_report, f, indent=2, default=str)
+
+    # Editorial queue: warnings never gate publication — they surface here for
+    # human review (internal artifact under data-pipeline/reports/, gitignored).
+    write_editorial_queue(build_editorial_queue(charity_repo, eval_repo))
 
     # Export prompts for transparency page
     print("\n  Exporting prompts...")

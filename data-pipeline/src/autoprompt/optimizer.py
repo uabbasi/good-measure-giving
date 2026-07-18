@@ -54,7 +54,7 @@ class PromptOptimizer:
 
     def __init__(
         self,
-        optimizer_model: str = "claude-sonnet-4-5",
+        optimizer_model: str = "gemini-3-flash-preview",
         target_prompt_name: str = "rich_narrative_v2",
         mutable_sections: Optional[list[str]] = None,
     ):

@@ -10,6 +10,7 @@ on secondary pages (about, contact, donate, etc.).
 
 import asyncio
 import json
+import random
 import re
 import threading
 import time
@@ -30,6 +31,7 @@ try:
 except ImportError:
     HAS_CURL_CFFI = False
 
+from ..constants import CRAWL_JITTER_RANGE_SECONDS, PER_DOMAIN_CONCURRENCY
 from ..extractors.deterministic import DeterministicExtractor
 from ..extractors.page_classifier import PageClassifier
 from ..extractors.structured_data import StructuredDataExtractor
@@ -984,6 +986,19 @@ class WebsiteCollector(BaseCollector):
 
         return results
 
+    @staticmethod
+    def _per_domain_semaphores(limit: int = PER_DOMAIN_CONCURRENCY):
+        """Return a getter mapping URL -> per-domain asyncio.Semaphore (politeness, H5)."""
+        sems: Dict[str, asyncio.Semaphore] = {}
+
+        def get_sem(url: str) -> asyncio.Semaphore:
+            domain = urlparse(url).netloc.lower()
+            if domain not in sems:
+                sems[domain] = asyncio.Semaphore(limit)
+            return sems[domain]
+
+        return get_sem
+
     async def _fetch_url_async(
         self,
         client: httpx.AsyncClient,
@@ -1011,6 +1026,12 @@ class WebsiteCollector(BaseCollector):
                             self.logger.debug(f"Ignoring cached challenge page for {url}; refetching")
                     else:
                         return url, True, cached["html"], cached["final_url"], None
+
+                # Politeness (H5): robots.txt + jitter between same-domain requests
+                allowed = await asyncio.to_thread(self.robots_checker.can_fetch, url)
+                if not allowed:
+                    return url, False, None, None, "robots.txt disallowed"
+                await asyncio.sleep(random.uniform(*CRAWL_JITTER_RANGE_SECONDS))
 
                 response = await client.get(
                     url,
@@ -1149,13 +1170,14 @@ class WebsiteCollector(BaseCollector):
 
         Args:
             urls: List of URLs to crawl
-            max_concurrent: Maximum concurrent requests (default 10)
+            max_concurrent: Maximum concurrent requests (default 10); superseded by
+                per-domain limits (H5) — kept for call-site compatibility only.
             timeout_total: Total timeout for all requests
 
         Returns:
             Dict mapping URL -> (success, html, final_url, error)
         """
-        semaphore = asyncio.Semaphore(max_concurrent)
+        get_sem = self._per_domain_semaphores()
         results: Dict[str, Tuple[bool, Optional[str], Optional[str], Optional[str]]] = {}
 
         async with httpx.AsyncClient(
@@ -1163,7 +1185,7 @@ class WebsiteCollector(BaseCollector):
             follow_redirects=True,
             timeout=httpx.Timeout(15.0, connect=10.0),
         ) as client:
-            tasks = [self._fetch_url_async(client, url, semaphore) for url in urls]
+            tasks = [self._fetch_url_async(client, url, get_sem(url)) for url in urls]
 
             # Use asyncio.wait_for for overall timeout
             try:
@@ -1203,17 +1225,18 @@ class WebsiteCollector(BaseCollector):
         Returns:
             List of PageScore objects with content boosts applied
         """
-        semaphore = asyncio.Semaphore(max_concurrent)
+        get_sem = self._per_domain_semaphores()
         results: List[Any] = []
 
         async def fetch_and_score(page_score: Any) -> Any:
-            async with semaphore:
+            async with get_sem(str(page_score.url)):
                 try:
                     # Check cache first
                     cached = self.cache.get_cached_html(str(page_score.url))
                     if cached:
                         html = cached["html"]
                     else:
+                        await asyncio.sleep(random.uniform(*CRAWL_JITTER_RANGE_SECONDS))
                         async with httpx.AsyncClient(
                             headers=self.headers,
                             follow_redirects=True,
@@ -1659,18 +1682,25 @@ class WebsiteCollector(BaseCollector):
             "geographic_coverage",
             "populations_served",
             "impact_metrics",
+            "beneficiaries_served",
             "leadership",
             # Donation info
             "donation_methods",
+            "donation_page_url",
             "volunteer_opportunities",
+            "volunteer_page_url",
             "annual_revenue",
             "annual_expenses",
             # Note: Zakat fields handled by discover.py, not website extraction
+            # Transparency
+            "annual_report_url",
+            "transparency_info",
             # Other
             "additional_info",
             "logo_url",
             "founded_year",
             "tax_deductible",
+            "ein_mentioned",
             "contact_email",
             "contact_phone",
             "address",
@@ -1684,6 +1714,34 @@ class WebsiteCollector(BaseCollector):
         for field in rich_fields:
             if field in llm_data and llm_data[field]:
                 merged[field] = llm_data[field]
+
+        # H6 end-to-end: reconcile prompt vocabulary with schema vocabulary.
+        # The ensemble prompt asks for "beneficiaries" (a populations list) and
+        # "mission_statement", but WebsiteProfile stores them as
+        # "populations_served" and "mission". This is the single mapping point —
+        # an explicit rename at the merge boundary, not a blind alias — so
+        # verifier-confirmed ensemble values actually reach the profile.
+        prompt_to_schema = {
+            "beneficiaries": "populations_served",
+            "mission_statement": "mission",
+        }
+        for prompt_key, schema_field in prompt_to_schema.items():
+            if llm_data.get(prompt_key) and not llm_data.get(schema_field):
+                merged[schema_field] = llm_data[prompt_key]
+
+        # Deliberately dropped at this boundary (no WebsiteProfile field to
+        # hold them — H6 Task 14 classification; WebsiteProfile(extra="ignore")
+        # would silently discard them anyway). If a schema home is added later,
+        # extend rich_fields / prompt_to_schema above rather than relying on
+        # the extra="ignore" behavior:
+        #   accepts_stock_donations, stock_donation_url, accepts_crypto,
+        #   accepts_daf, matching_gift_info, recurring_donation_available,
+        #   minimum_donation, staff_count, volunteer_count, board_size,
+        #   years_operating, accreditations, newsletter_signup_url,
+        #   events_page_url, careers_page_url, form_990_url,
+        #   financial_statements_url, audit_report_url, policy_influence
+        #   (charity_data has a policy_influence column, but no WebsiteProfile
+        #   field or aggregator path exists yet — needs its own end-to-end task).
 
         # Merge contact info (prefer LLM if available, otherwise keep regex)
         if "contact" in llm_data and llm_data["contact"]:

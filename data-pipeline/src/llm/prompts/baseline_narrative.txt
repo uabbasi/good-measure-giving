@@ -1,7 +1,7 @@
 # PROMPT: baseline_narrative
-# VERSION: 1.1.0
-# LAST_UPDATED: 2026-03-15
-# DESCRIPTION: Baseline narrative with inline citations - concise charity summary
+# VERSION: 2.0.0
+# LAST_UPDATED: 2026-07-18
+# DESCRIPTION: Baseline narrative with inline citations - v1.1.0 style rules merged with live data placeholders (rendered via .format in baseline.py)
 # ---PROMPT_START---
 Generate a baseline narrative for this charity with Wikipedia-style inline citations.
 
@@ -13,13 +13,45 @@ Write like a journalist, not a chatbot.
 Use specific numbers, dates, and percentages from the data provided. Cite sources
 with [N] markers that match the available sources listed below.
 
+## Charity Information
+- Name: {charity_name}
+- EIN: {ein}
+- Mission: {mission}
+- Programs: {programs}
+
+## Financial Data
+- Total Revenue: {revenue}
+- Program Expense Ratio: {ratio}
+- Charity Navigator Score: {cn_score}
+- Working Capital: {working_capital}
+- Fundraising Efficiency: {fundraising_efficiency}
+
+## MANDATORY VALUES (USE EXACTLY AS PROVIDED - DO NOT CALCULATE OR INVENT)
+When mentioning these metrics in the narrative, you MUST use the EXACT values below.
+Do NOT round differently, do NOT calculate your own values, do NOT invent numbers.
+
+- Program Expense Ratio: {ratio} (use this exact percentage everywhere)
+- Total Revenue: {revenue} (use this exact amount everywhere)
+- Working Capital: {working_capital} (use this exact value everywhere)
+- Fundraising Efficiency: {fundraising_efficiency} (use this exact value everywhere)
+
+If a value is "N/A", do NOT mention that metric in the narrative at all.
+
+## ZAKAT ELIGIBILITY CONSTRAINT (CRITICAL)
+Wallet Tag: {wallet_tag}
+{zakat_constraint_text}
+
+## REVENUE GROWTH CONSTRAINT (CRITICAL)
+Do NOT mention 3-year revenue CAGR, compound annual growth rate, or multi-year revenue growth percentages.
+This data is not provided in the baseline context. Only mention single-year revenue if available.
+
 ## CRITICAL: Do NOT reveal internal assessment scores
 
-The pre-computed scores (AMAL score, impact score, alignment score, etc.) are
+The pre-computed scores below (GMG score, impact score, alignment score) are
 provided as CONTEXT for your analysis. They help you calibrate your tone. But do
 NOT include these internal rating numbers in the narrative.
 
-- BAD: "The charity earned an 81/100 AMAL score" or "Impact score of 37/50"
+- BAD: "The charity earned an 81/100 GMG score" or "Impact score of 37/50"
 - BAD: "Alignment score of 44 out of 50" or "scored 81/100"
 - GOOD: "This charity shows strong financial health but limited geographic reach"
 - GOOD: "Donors can trust this group's spending, though it lacks outcome data"
@@ -30,20 +62,55 @@ Real financial data IS encouraged — use specific numbers from the data:
 
 Explain the SUBSTANCE behind the assessments — what's strong, what's weak, and why.
 
-## Output Format
-Return ONLY a valid JSON object:
+## Pre-computed Scores (context only - do NOT quote these numbers)
+- GMG Score: {amal_score}/100
+- Wallet Tag: {wallet_tag}
+- Impact: {impact_score}/50 (Directness: {impact_directness}, Cost per beneficiary: {impact_cpb})
+- Alignment: {alignment_score}/50 (Donor fit: {alignment_fit}, Cause urgency: {alignment_urgency})
+- Data Confidence: {data_confidence} ({data_confidence_badge})
 
-{
+## SCORE/RATIONALE CONSISTENCY (CRITICAL)
+Your dimension_explanations MUST be consistent with the scores above:
+- If a score is LOW (0-15): Explain what's MISSING or CONCERNING (e.g., "Limited data available", "No third-party verification")
+- If a score is MEDIUM (16-33): Balanced explanation of strengths and gaps
+- If a score is HIGH (34+): Can highlight strengths
+
+DO NOT invent positive data to justify low scores:
+- If Impact is low, do NOT claim the organization "demonstrates effectiveness"
+- If Alignment is low, do NOT claim strong Muslim donor fit
+- Only mention ratings/scores that are explicitly provided in the source data above
+
+## Available Sources for Citations (EXACTLY {num_sources} sources)
+{sources_list}
+
+## Citation Rules (CRITICAL - follow exactly)
+1. You have EXACTLY {num_sources} sources available, numbered [1] through [{num_sources}]
+2. ONLY use citation numbers that exist in the list above - do NOT use [N] where N > {num_sources}
+3. For EVERY [N] citation you use in text, you MUST include a matching entry in all_citations
+4. Format: [N] where N is the source number (e.g., [1], [2])
+5. Example: "The charity maintains strong financial accountability [1]."
+
+## Output Format
+Return ONLY a valid JSON object (no markdown code blocks):
+
+{{
   "headline": "One compelling sentence about the charity",
   "summary": "2-3 sentences with citations like [1] and [2]",
   "strengths": ["strength 1", "strength 2"],
   "areas_for_improvement": ["area 1"],
   "amal_score_rationale": "1-2 sentences explaining the assessment without revealing numeric scores",
-  "dimension_explanations": {
-    "impact": "Explain impact assessment without revealing the score number",
-    "alignment": "Explain alignment assessment without revealing the score number"
-  },
+  "dimension_explanations": {{
+    "impact": "Plain English with citations about program effectiveness, financial health, and evidence quality - do not reveal the score number",
+    "alignment": "Plain English with citations about donor fit, cause urgency, and track record - do not reveal the score number"
+  }},
   "all_citations": [
-    {"id": "[1]", "source_name": "Source Name", "source_url": "https://...", "claim": "What this source supports"}
+    {{
+      "id": "[1]",
+      "source_name": "Source name from list above",
+      "source_url": "URL from source list (or null if not available)",
+      "claim": "The specific claim this citation supports"
+    }}
   ]
-}
+}}
+
+Generate the narrative JSON:

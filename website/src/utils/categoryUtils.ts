@@ -91,11 +91,30 @@ export const CAUSE_CATEGORIES: CauseCategoryInfo[] = [
   },
 ];
 
-// Build reverse lookup map: raw cause_area -> normalized category
+/**
+ * Canonicalize a cause_area label for tolerant matching.
+ *
+ * Upstream labels arrive in inconsistent separator/casing forms
+ * (e.g. "GLOBAL_HEALTH" vs "GLOBAL HEALTH" vs "RELIGIOUS-CULTURAL"), which
+ * silently dropped space/hyphen variants out of the browse filter buckets.
+ * Collapsing spaces/underscores/hyphens and normalizing apostrophe/ampersand
+ * variants maps those forms to the same bucket key. This is matching
+ * tolerance only — it does not add or change any bucket.
+ */
+function canonicalKey(raw: string): string {
+  return raw
+    .toUpperCase()
+    .replace(/['‘’]/g, '') // strip apostrophes (straight + curly)
+    .replace(/&/g, ' AND ')          // normalize ampersand variants
+    .replace(/[\s_-]+/g, ' ')        // collapse spaces/underscores/hyphens
+    .trim();
+}
+
+// Build reverse lookup map: canonical cause_area -> normalized category
 const RAW_TO_CATEGORY_MAP = new Map<string, CauseCategory>();
 for (const category of CAUSE_CATEGORIES) {
   for (const rawValue of category.rawValues) {
-    RAW_TO_CATEGORY_MAP.set(rawValue.toUpperCase(), category.id);
+    RAW_TO_CATEGORY_MAP.set(canonicalKey(rawValue), category.id);
   }
 }
 
@@ -105,7 +124,7 @@ for (const category of CAUSE_CATEGORIES) {
  */
 export function normalizeCauseArea(rawCauseArea: string | null | undefined): CauseCategory | null {
   if (!rawCauseArea) return null;
-  return RAW_TO_CATEGORY_MAP.get(rawCauseArea.toUpperCase()) ?? null;
+  return RAW_TO_CATEGORY_MAP.get(canonicalKey(rawCauseArea)) ?? null;
 }
 
 /**

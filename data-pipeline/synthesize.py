@@ -31,12 +31,13 @@ load_dotenv(Path(__file__).parent.parent / ".env")
 sys.path.insert(0, str(Path(__file__).parent))
 
 from src.db import CharityData, CharityDataRepository, CharityRepository, PhaseCacheRepository, RawDataRepository
-from src.db.dolt_client import dolt
+from src.db.dolt_client import dolt, tables_for_phases
 from src.llm.category_classifier import get_category_info, get_charity_category
 from src.llm.llm_client import LLMClient, LLMTask
 from src.parsers.charity_metrics_aggregator import CharityMetricsAggregator
 from src.scorers.strategic_classifier import classification_to_dict, classify_charity
 from src.scorers.strategic_evidence import compute_strategic_evidence
+from src.services.beneficiary_semantics_verifier import verify_beneficiary_semantics
 from src.utils.deep_link_resolver import choose_website_evidence_url
 from src.utils.evaluation_tracks import is_new_org
 from src.utils.logger import PipelineLogger
@@ -1336,6 +1337,31 @@ def update_charities_table(
     return len(updates)
 
 
+def _neighbor_metric_keys(website_profile: Any, source_path: str | None) -> list[str]:
+    """Best-effort sibling metric keys for the beneficiary count, for LLM context.
+
+    The source_path is a dotted path into website_profile (e.g.
+    "website_profile.impact_metrics.metrics.people_served_annually"). Navigate to
+    the container the value came from and return its other keys. Any miss (path
+    not into website_profile, missing container, wrong type) yields []. Never raises.
+    """
+    if not isinstance(source_path, str) or not source_path.startswith("website_profile."):
+        return []
+    try:
+        segments = source_path.split(".")
+        container_path, final_key = segments[1:-1], segments[-1]
+        node: Any = website_profile
+        for seg in container_path:
+            if not isinstance(node, dict):
+                return []
+            node = node.get(seg)
+        if not isinstance(node, dict):
+            return []
+        return [k for k in node if k != final_key]
+    except Exception:  # noqa: BLE001 - context is best-effort, never crash synthesize
+        return []
+
+
 def synthesize_charity(
     ein: str,
     raw_repo: RawDataRepository,
@@ -1683,6 +1709,19 @@ def synthesize_charity(
             "source_path": beneficiary_attr.get("source_path"),
             "method": beneficiary_attr.get("method", "selection"),
         }
+        # Metric-semantics gate (one cheap LLM call): stamp whether this count is
+        # genuinely "annual people served". export.py refuses to publish a count
+        # unless semantics.verified is True — closing the class of cited-but-
+        # semantically-wrong figures (dollars-as-people, cumulative totals,
+        # geographic/year subsets, families-vs-people, reach/impressions).
+        source_attribution["beneficiaries_served_annually"]["semantics"] = verify_beneficiary_semantics(
+            charity_name=name,
+            mission=mission,
+            value=synthesized.beneficiaries_served_annually,
+            program_expenses=metrics.program_expenses,
+            source_path=beneficiary_attr.get("source_path"),
+            metric_context=_neighbor_metric_keys(website_profile, beneficiary_attr.get("source_path")),
+        )
 
     # =========================================================================
     # New fields from spec (synthesize.md lines 106-119)
@@ -2146,7 +2185,10 @@ def main():
 
     # Commit changes to DoltDB
     if success_count > 0:
-        commit_hash = dolt.commit(f"Synthesize: {success_count} charities, {total_fields} fields computed")
+        commit_hash = dolt.commit(
+            f"Synthesize: {success_count} charities, {total_fields} fields computed",
+            tables=tables_for_phases("synthesize"),
+        )
         if commit_hash:
             print(f"\n✓ Committed to DoltDB: {commit_hash[:8]}")
 

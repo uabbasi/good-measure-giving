@@ -54,7 +54,7 @@ export interface CharitySummary {
   foundedYear?: number | null;
   /** Beneficiary count (self-reported) and provenance trust status */
   beneficiariesServedAnnually?: number | null;
-  beneficiariesConfidence?: 'verified' | 'needs_review' | 'uncorroborated' | 'implausible' | null;
+  beneficiariesConfidence?: 'cited' | 'needs_review' | 'unverified' | null;
   beneficiariesExcludedFromScoring?: boolean;
   /** Hide from default browse view (still searchable via direct URL) */
   hideFromCurated?: boolean;

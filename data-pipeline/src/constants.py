@@ -47,6 +47,15 @@ RETRY_BACKOFF_HOURS = {
 # This prevents a transient outage from permanently blocking a charity/source pair.
 FAILURE_TTL_DAYS = 30
 
+# H5: Crawl politeness
+PER_DOMAIN_CONCURRENCY = 2  # Max simultaneous requests per website domain
+CRAWL_JITTER_RANGE_SECONDS = (0.5, 1.5)  # Random pre-request delay for uncached fetches
+
+# H5: Terminal failure classes — CAPTCHA walls and hard 404s don't heal in days.
+# Skip retries for TERMINAL_FAILURE_TTL_DAYS instead of the normal FAILURE_TTL_DAYS.
+TERMINAL_FAILURE_TTL_DAYS = 180
+TERMINAL_FAILURE_MARKERS = ("captcha_blocked", "challenge page", "not found", "not_found")
+
 # Validation Thresholds
 MIN_DATA_COMPLETENESS_THRESHOLD = 0.5  # Minimum 50% data completeness required
 

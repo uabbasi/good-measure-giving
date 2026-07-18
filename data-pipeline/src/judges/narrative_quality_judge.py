@@ -361,6 +361,7 @@ class NarrativeQualityJudge(BaseJudge):
         client = self.get_llm_client()
         response = client.generate(
             prompt=prompt,
+            json_mode=True,
             json_schema=NarrativeQualityResult.model_json_schema(),
         )
 
@@ -378,6 +379,7 @@ class NarrativeQualityJudge(BaseJudge):
                 evidence=issue.suggestion,
             )
             issues.append(vi)
+        issues = self.dedupe_exact_issues(issues)
 
         return LLMNarrativeQualityResult(
             issues=issues,

@@ -4,26 +4,51 @@ Charity evaluation pipeline with 2 scored dimensions + data confidence signal. U
 
 ## Pipeline Phases
 
+Canonical runner — all 8 phases per charity, parallel, cached:
+
 ```bash
-# Phase 1: Crawl - FETCH raw data (no parsing)
-uv run python crawl.py --ein 95-4453134
-uv run python crawl.py --charities pilot_charities.txt
-
-# Phase 2: Extract - PARSE raw_html into validated schemas
-uv run python extract.py --ein 95-4453134
-uv run python extract.py --charities pilot_charities.txt
-
-# Phase 3: Synthesize - Aggregate and derive fields
-uv run python synthesize.py --ein 95-4453134
-uv run python synthesize.py --charities pilot_charities.txt
-
-# Phase 4: Baseline - Generate AMAL scores and narratives
-uv run python baseline.py --ein 95-4453134
-uv run python baseline.py --charities pilot_charities.txt --workers 10
-
-# Phase 5: Export - Export to website
-uv run python export.py
+uv run python streaming_runner.py --ein 95-4453134
+uv run python streaming_runner.py --charities pilot_charities.txt --workers 10
+# --force-phase baseline   selectively re-run a phase (repeatable)
+# --checkpoint 10          Dolt commit every 10 charities
+# --budget 5.0             hard cap on LLM spend, USD (default: 10.0; 0 = uncapped)
+# --no-judge-gate          escape hatch: publish regardless of judge errors / hash freshness
 ```
+
+Phases: **crawl → extract → discover → synthesize → baseline → rich → judge → export**
+
+Standalone phase scripts (same phases, one at a time; all take `--ein` / `--charities`):
+
+```bash
+uv run python crawl.py --ein 95-4453134          # 1 FETCH raw data (no parsing)
+uv run python extract.py --ein 95-4453134        # 2 PARSE raw_html into schemas
+# 3 discover: streaming_runner only (agent discovery services)
+uv run python synthesize.py --ein 95-4453134     # 4 Aggregate + derive fields
+uv run python baseline.py --ein 95-4453134       # 5 GMG scores + narratives
+uv run python rich_phase.py --ein 95-4453134     # 6 Rich narratives (+ rich_strategic_phase.py)
+uv run python judge_phase.py --ein 95-4453134    # 7 LLM-judge validation
+uv run python export.py                          # 8 Export to website/data/
+```
+
+Export applies the publication gate (Option A): a charity ships only if its
+deduped `judge_error_count == 0` **and** `evaluations.judge_content_hash` matches
+a recomputation over current content. Stale/missing hashes and missing counts
+fail closed until the charity is re-judged; excluded charities are recorded in
+the `export_exclusions` table. Warnings **never** gate publication — they feed
+`reports/editorial-queue.json` (a ranked editorial work list, internal-only and
+gitignored, never under `website/data`). `judge_score` stays computed and
+persisted as an internal metric only. `--no-judge-gate` bypasses the gate.
+(The `--judge-threshold` flag was removed; the 0=disable semantics went with it.)
+In the "3 gates" spirit: deterministic integrity judges + truth/consistency
+judges gate publication via errors; the craft judge (`narrative_quality`) never
+gates — its warnings only inform the editorial queue. (Splitting these into 3
+physical gate modules is deferred to v5.3.0.) Pruning previously-exported
+charities never happens implicitly: it requires an explicit `--prune`, and never
+runs with `--ein`.
+
+BBB is a frozen source by default (H12): `crawl.py --sources bbb` is the only
+opt-in; `streaming_runner.py` has no equivalent flag, so streaming runs never
+fetch BBB.
 
 ## DoltDB (Version-Controlled Database)
 
@@ -187,20 +212,6 @@ uv run python synthesize.py --charities pilot_charities.txt
 uv run python baseline.py --charities pilot_charities.txt --workers 10
 ```
 
-## Data Quality Check
-
-Run between pipeline phases to validate scraped data:
-
-```bash
-uv run python data_quality_check.py                     # Check all charities
-uv run python data_quality_check.py --ein 95-4453134   # Check single charity
-uv run python data_quality_check.py --source propublica # Check single source
-uv run python data_quality_check.py --verbose           # Show per-field details
-uv run python data_quality_check.py --json              # Output JSON report
-```
-
-Reports: field coverage, validation errors, success rates by source.
-
 ## Testing
 
 ```bash
@@ -212,21 +223,23 @@ ruff check . --fix                      # Lint
 ## Key Files
 
 ```
-pilot_charities.txt           # Source of truth for EINs (173 charities, organized by category)
+pilot_charities.txt           # Source of truth for EINs (167 charities, organized by category)
+streaming_runner.py           # Canonical runner: all 8 phases, cached, parallel
 crawl.py                      # Phase 1: FETCH raw data (no parsing)
 extract.py                    # Phase 2: PARSE raw_html → parsed_json
-synthesize.py                 # Phase 3: Aggregate + derive
-baseline.py                   # Phase 4: AMAL scores + narratives
-export.py                     # Phase 5: Export to website
-data_quality_check.py         # Validate scraped data quality between phases
-src/db/                       # DoltDB repositories + version control
-src/db/dolt_client.py         # Git-like operations (commit, branch, diff)
+synthesize.py                 # Phase 4: Aggregate + derive (phase 3 discover = streaming_runner only)
+baseline.py                   # Phase 5: GMG scores + narratives
+rich_phase.py                 # Phase 6: Rich narratives (+ rich_strategic_phase.py)
+judge_phase.py                # Phase 7: LLM-judge validation
+export.py                     # Phase 8: Export to website (judge-gated)
+src/db/repository.py          # Repository pattern (Charity/RawData/CharityData/Evaluation/…)
+src/db/dolt_client.py         # Git-like operations (commit, branch, diff, tables_for_phases)
 src/collectors/               # ProPublica, CN, Candid, Web (fetch + parse methods)
-src/scorers/v2_scorers.py     # Impact, Alignment, Risk, DataConfidence (rubric v5.0.0)
+src/scorers/v2_scorers.py     # Impact, Alignment, Risk, DataConfidence (rubric v5.2.0)
 src/parsers/charity_metrics_aggregator.py  # Data aggregation
 ```
 
-## Scoring Dimensions (GMG Score, rubric v5.0.0, 100 pts total)
+## Scoring Dimensions (GMG Score, rubric v5.2.0, 100 pts total)
 
 1. **Impact** (50 pts): Weights vary by archetype (DIRECT_SERVICE, SYSTEMIC_CHANGE, EDUCATION, COMMUNITY, MULTIPLIER). See `config/rubric_archetypes.yaml`.
 2. **Alignment** (50 pts): Muslim donor fit(19) + cause urgency(13) + underserved space(7) + track record(6) + funding gap(5)
@@ -246,8 +259,14 @@ DoltDB tags (`rubric-v4.0.0`) cross-reference git tags with the same name.
 
 ## Hallucination-Prone Fields
 
-These fields are known to be unreliable when extracted by LLMs. They require
-explicit verification before being used in scoring. See `src/validators/hallucination_denylist.py`.
+These fields are known to be unreliable when extracted by LLMs. **Actual
+enforcement is cross-source corroboration + ensemble verification** during
+extraction (`CrossSourceCorroborator` in `src/parsers/charity_metrics_aggregator.py`;
+multi-model ensemble checks in `src/collectors/web_collector.py` /
+`src/llm/website_extractor.py`) — not `src/validators/hallucination_denylist.py`.
+`synthesize.py` calls `flag_unverified_fields()` from that module and logs
+which fields lack corroboration, but the result is informational only: it is
+not attached to the synthesized data and does not block scoring or export.
 
 | Field | Why Prone | Verification |
 |-------|-----------|--------------|
@@ -260,7 +279,7 @@ explicit verification before being used in scoring. See `src/validators/hallucin
 | `impact_multiplier` | Assigns based on cause stereotypes | Only accept from GiveWell/Open Phil |
 | `evidence_quality` | Assigns grades from marketing copy | Require citation to actual studies |
 
-Usage:
+Usage (informational logging only — does not gate scoring or export):
 ```python
 from src.validators import flag_unverified_fields, is_hallucination_prone
 
@@ -268,7 +287,7 @@ from src.validators import flag_unverified_fields, is_hallucination_prone
 if is_hallucination_prone("accepts_zakat"):
     print("Requires verification")
 
-# Flag unverified fields in extracted data
+# synthesize.py logs unverified fields; nothing downstream blocks on this
 flagged = flag_unverified_fields({"accepts_zakat": True})
 # Returns: {"accepts_zakat_unverified": True}
 ```

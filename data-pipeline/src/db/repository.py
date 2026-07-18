@@ -179,7 +179,7 @@ class Evaluation:
     judge_score: int | None = None
     information_density: float | None = None
     rubric_version: str | None = None
-    state: str = "pending"
+    state: str | None = None  # None = don't write state on upsert; DB column default is 'pending'
 
 
 class CharityRepository:
@@ -255,7 +255,13 @@ class RawDataRepository:
         raw_content: str | None = None,
         reset_retry: bool = True,
     ) -> None:
-        """Insert or update raw data for a source."""
+        """Insert or update raw data for a source.
+
+        Failure writes (success=False) never overwrite parsed_json or
+        raw_content of a previously successful row: the failure is recorded
+        via success/error_message/last_failure_reason/retry_count while the
+        last-good content is preserved (C1 data-safety fix).
+        """
         data = {
             "charity_ein": charity_ein,
             "source": source,
@@ -267,11 +273,19 @@ class RawDataRepository:
             data["raw_content"] = raw_content
         if success and reset_retry:
             data["retry_count"] = 0
+        if not success:
+            data["last_failure_reason"] = error_message
 
         # Check if row exists
         existing = self.get_by_source(charity_ein, source)
 
         if existing:
+            if not success:
+                data["retry_count"] = (existing.get("retry_count") or 0) + 1
+                if existing.get("success"):
+                    # Never clobber last-good content with a failure record
+                    data.pop("parsed_json", None)
+                    data.pop("raw_content", None)
             # Update existing row
             set_clause = ", ".join([f"{k} = %s" for k in data.keys() if k not in ("charity_ein", "source")])
             values = [v for k, v in data.items() if k not in ("charity_ein", "source")]
@@ -283,6 +297,8 @@ class RawDataRepository:
                 fetch="none",
             )
         else:
+            if not success:
+                data["retry_count"] = 1
             # Insert new row
             data["id"] = _generate_uuid()
             columns = list(data.keys())
@@ -297,19 +313,19 @@ class RawDataRepository:
     def increment_retry_count(self, ein: str, source: str, error_message: str) -> int:
         """Increment retry count for a failed source and return new count."""
         existing = self.get_by_source(ein, source)
-        current_count = existing.get("retry_count", 0) if existing else 0
+        current_count = (existing.get("retry_count") or 0) if existing else 0
         new_count = current_count + 1
 
         if existing:
             execute_query(
-                "UPDATE raw_scraped_data SET retry_count = %s, success = FALSE, error_message = %s WHERE charity_ein = %s AND source = %s",
-                (new_count, error_message, ein, source),
+                "UPDATE raw_scraped_data SET retry_count = %s, success = FALSE, error_message = %s, last_failure_reason = %s WHERE charity_ein = %s AND source = %s",
+                (new_count, error_message, error_message, ein, source),
                 fetch="none",
             )
         else:
             execute_query(
-                "INSERT INTO raw_scraped_data (id, charity_ein, source, success, error_message, retry_count, parsed_json) VALUES (%s, %s, %s, FALSE, %s, %s, %s)",
-                (_generate_uuid(), ein, source, error_message, new_count, "{}"),
+                "INSERT INTO raw_scraped_data (id, charity_ein, source, success, error_message, last_failure_reason, retry_count, parsed_json) VALUES (%s, %s, %s, FALSE, %s, %s, %s, %s)",
+                (_generate_uuid(), ein, source, error_message, error_message, new_count, "{}"),
                 fetch="none",
             )
 
@@ -642,6 +658,9 @@ class EvaluationRepository:
         "rich_strategic_narrative",
         "zakat_narrative",
         "judge_score",
+        "judge_content_hash",  # sha256-hex16 of the judged projection (content-bound gate)
+        "judge_error_count",  # deduped judge ERROR count (Option A gate: ==0 to publish)
+        "judge_warning_count",  # deduped judge WARNING count (editorial queue only; never gates)
         "information_density",
         "rubric_version",
         "state",
@@ -649,16 +668,17 @@ class EvaluationRepository:
     }
 
     def upsert(self, evaluation: Evaluation | dict) -> None:
-        """Insert or update evaluation."""
+        """Insert or update evaluation.
+
+        Preserve-unless-provided (C6): only columns present with non-None
+        values are written. Baseline re-writes therefore never NULL
+        rich_narrative/rich_strategic_narrative, and `state` is only written
+        when a caller sets it explicitly. Use clear_rich_narrative() to
+        explicitly discard failed rich content.
+        """
         data = evaluation.__dict__ if isinstance(evaluation, Evaluation) else evaluation
         # Filter to known columns only (prevents SQL injection via dict keys)
         data = {k: v for k, v in data.items() if k in self.COLUMNS and v is not None}
-
-        # Baseline and rich are serial: whenever baseline_narrative is updated,
-        # clear stale rich fields unless this write explicitly provides them.
-        if "baseline_narrative" in data:
-            data.setdefault("rich_narrative", None)
-            data.setdefault("rich_strategic_narrative", None)
 
         if not data.get("charity_ein"):
             raise ValueError("charity_ein is required for evaluation upsert")
@@ -739,13 +759,33 @@ class EvaluationRepository:
         """Get all approved evaluations."""
         return self.get_by_state("approved")
 
-    def update_judge_result(self, ein: str, judge_score: int, judge_issues: list[dict] | None = None) -> None:
+    def update_judge_result(
+        self,
+        ein: str,
+        judge_score: int,
+        judge_issues: list[dict] | None = None,
+        content_hash: str | None = None,
+        error_count: int | None = None,
+        warning_count: int | None = None,
+    ) -> None:
         """Update judge validation results for an evaluation.
 
         Args:
             ein: Charity EIN
-            judge_score: Judge score (0-100, higher = fewer issues)
+            judge_score: Judge score (0-100, higher = fewer issues) — internal metric only
             judge_issues: List of validation issues found by judges
+            content_hash: sha256-hex16 of the judged projection. Written
+                UNCONDITIONALLY (including None) so score + hash stay atomic:
+                a legacy caller omitting it produces NULL → the export gate
+                fails closed, never a stale hash paired with a new score. This
+                method touches only judge_issues (excluded from the hash),
+                judge_score, judge_content_hash, judge_error/warning_count,
+                updated_at — none hashed — so a post-persistence recomputation
+                still matches.
+            error_count: Deduped judge ERROR count (Option A publication gate).
+            warning_count: Deduped judge WARNING count (editorial queue only).
+                Both counts are written UNCONDITIONALLY alongside the hash so the
+                gate never reads a stale mix; None (legacy callers) fails closed.
         """
         parts = ["judge_score = %s", "updated_at = CURRENT_TIMESTAMP"]
         values: list = [judge_score]
@@ -761,6 +801,15 @@ class EvaluationRepository:
             score_details["judge_issues"] = judge_issues
             parts.append("score_details = %s")
             values.append(_serialize_json(score_details))
+
+        # Unconditional: keeps judge_score, its content binding, and the deduped
+        # counts in lockstep so the gate never reads a stale mix.
+        parts.append("judge_content_hash = %s")
+        values.append(content_hash)
+        parts.append("judge_error_count = %s")
+        values.append(error_count)
+        parts.append("judge_warning_count = %s")
+        values.append(warning_count)
 
         values.append(ein)
         execute_query(
@@ -1506,3 +1555,50 @@ class PhaseCacheRepository:
         """
         rows = execute_query("SELECT phase, COUNT(*) as count FROM phase_cache GROUP BY phase") or []
         return {row["phase"]: row["count"] for row in rows}
+
+
+class ExportExclusionRepository:
+    """Audit trail of charities excluded from export by the judge-score publish gate.
+
+    Append-only: PK (charity_ein, excluded_at) keeps one row per gate event.
+    Table is created lazily (memoized per process); the same DDL must appear in
+    the generated dolt_schema.sql.
+    """
+
+    _table_ensured = False
+
+    def ensure_table(self) -> None:
+        if ExportExclusionRepository._table_ensured:
+            return
+        execute_query(
+            """
+            CREATE TABLE IF NOT EXISTS export_exclusions (
+                charity_ein VARCHAR(12) NOT NULL,
+                judge_score INT,
+                reason TEXT,
+                excluded_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (charity_ein, excluded_at)
+            )
+            """,
+            fetch="none",
+        )
+        ExportExclusionRepository._table_ensured = True
+
+    def record(self, ein: str, judge_score: int | None, reason: str) -> None:
+        """Record one exclusion event for a charity."""
+        self.ensure_table()
+        execute_query(
+            "INSERT INTO export_exclusions (charity_ein, judge_score, reason) VALUES (%s, %s, %s)",
+            (ein, judge_score, reason),
+            fetch="none",
+        )
+
+    def get_for_charity(self, ein: str) -> list[dict]:
+        """Return exclusion history for a charity, newest first."""
+        return (
+            execute_query(
+                "SELECT * FROM export_exclusions WHERE charity_ein = %s ORDER BY excluded_at DESC",
+                (ein,),
+            )
+            or []
+        )

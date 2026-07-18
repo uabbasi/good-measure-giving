@@ -35,7 +35,7 @@ Respond with a JSON object:
     {
       "field": "strategic_narrative.strengths",
       "severity": "warning",
-      "message": "Strengths are generic — could apply to any charity",
+      "message": "Strengths cite no program names, beneficiary counts, or geographies specific to this charity",
       "suggestion": "Include specific numbers, programs, or geographic details"
     }
   ],
@@ -45,6 +45,8 @@ Respond with a JSON object:
   "summary": "Brief quality assessment"
 }
 ```
+
+Report each distinct quality defect ONCE. If the same defect appears in multiple lenses (e.g., generic strengths in both the strategic and zakat narratives), emit a SINGLE issue whose field names all affected lenses (e.g., "strategic+zakat.strengths") — do not repeat the issue per lens.
 
 ## Severity Guidelines
 - **warning**: Narrative quality issue that reduces usefulness for donors

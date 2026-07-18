@@ -1,0 +1,77 @@
+# Curation overlay for export.py (loaded via load_curation_overrides()).
+# Hand-curated exceptions the deterministic derivations cannot reproduce.
+#
+# Curation surface definition: a hand-edit is a committed
+# website/data/charities.json value that differs from what the pipeline
+# itself emitted -- DB evaluations.rich_narrative.donor_fit_matrix.cause_area
+# for causeArea, charities.name for names, plus the 2 pre-2026-07 export.py
+# _CAUSE_AREA_OVERRIDES (13-1760110 -> HUMANITARIAN, 85-3547280 -> EDUCATION).
+# Verified by full 169-EIN sweep 2026-07-18: 14 causeArea hand-edits and
+# 13 name-casing hand-edits (incl. 4 mangled/non-intent: Unrwa/Imrc/Imana
+# title-case artifacts + 'CAIR Foundation INC'); all captured here or
+# provably redundant under src/utils/display_name.py + src/utils/cause_area.py.
+#
+# Explicit decision: committed values that differ from the NEW
+# derive_cause_area() output but MATCH the old pipeline output are NOT
+# curation -- they are legacy LLM freeform labels that the closed-taxonomy
+# canonicalization intentionally replaces, applied only under per-EIN diff
+# review (Phase 3 subset now; full population in the v5.3.0 run).
+#
+# Entries here WIN over generated values at export; entries equal to the
+# generated value are redundant and should be pruned (the export logs
+# "override redundant").
+version: 1
+
+names:
+  "13-1685039": "CARE USA"
+  "13-1760110": "UNICEF USA"
+  # 2026-07-18 re-crawl reconciled the raw name to short-form "UNRWA";
+  # the display intent is the affiliate's full name:
+  "20-2714426": "UNRWA USA"
+  "31-1267559": "MCA"
+  "76-0656947": "SIUT"
+  "77-0411194": "Council on American-Islamic Relations California"
+  "77-0412815": "ING"
+  "81-2169685": "ICNAB"
+  "82-1670588": "BASMAH"
+  "83-3464851": "SAPA"
+  # Omitted as redundant (to_display_name(db_raw) already reproduces
+  # the true name -- IMRC/IMANA are literal ACRONYMS entries):
+  #   27-0058132 -> 'IMRC'
+  #   36-4166125 -> 'IMANA'
+
+cause_areas:
+  "13-1760110": "HUMANITARIAN"
+  "13-1837442": "GLOBAL HEALTH / CANCER RESEARCH"
+  # Pinned pending v5.3.0 primary_category fixes (B21): these three derive
+  # from misclassified categories today (Feeding America/IMRC via
+  # CIVIL_RIGHTS_LEGAL -> ADVOCACY; AMF via PHILANTHROPY_GRANTMAKING).
+  # Reviewed at Phase 3 reconciliation 2026-07-18:
+  "20-3069841": "GLOBAL HEALTH"
+  "27-0058132": "HUMANITARIAN"
+  "36-3673599": "FOOD_SECURITY"
+  "20-0310701": "RELIGIOUS EDUCATION"
+  "20-5509305": "ADVOCACY & PROFESSIONAL NETWORKING"
+  "26-0906163": "Domestic Violence & Poverty"
+  "26-1441032": "CIVIC ENGAGEMENT"
+  "26-3342933": "CRIMINAL JUSTICE & EDUCATION"
+  "36-3200165": "RELIGIOUS & EDUCATIONAL"
+  "47-5015710": "ADVOCACY & LEGAL AID"
+  "52-2283398": "ADVOCACY & PROFESSIONAL DEVELOPMENT"
+  "80-0508709": "ADVOCACY & SOCIAL JUSTICE"
+  "83-2403741": "HUMANITARIAN & RELIGIOUS"
+  "88-0405956": "EDUCATION & RELIGIOUS SERVICES"
+  # Omitted as derivable by derive_cause_area (no redundant overrides):
+  #   11-3013369 -> 'HUMANITARIAN'
+  #   38-3633581 -> 'RESEARCH & EDUCATION'
+  #   85-3547280 -> 'EDUCATION'
+
+# CRI's 9,000,000 is an annual-report "reach" claim; misleading as
+# "beneficiaries served annually" for a research funder (Phase 3 review).
+# Emgage's 1,086,087 cites a 2013 annual report (Emerge-USA-2013-Annual-
+# Report-Final.pdf) -- a 13-year-old figure; the year lives in the source
+# URL, which the source_path blacklist cannot see (batch-2 review
+# 2026-07-18; URL-year staleness detection is a v5.3.0 candidate).
+beneficiaries_suppress:
+  - "13-1837442"
+  - "26-1441032"

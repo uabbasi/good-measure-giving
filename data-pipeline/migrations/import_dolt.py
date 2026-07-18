@@ -58,6 +58,13 @@ def execute_schema(conn: pymysql.Connection, schema_path: Path) -> None:
 
     cursor = conn.cursor()
 
+    # Strip full-line comments BEFORE splitting: naive ';'-splitting would
+    # otherwise (a) skip any CREATE sharing a chunk with a preceding comment
+    # and (b) break on semicolons inside comment text.
+    schema_sql = "\n".join(
+        line for line in schema_sql.splitlines() if not line.lstrip().startswith("--")
+    )
+
     # Split by semicolon and execute each statement
     statements = [s.strip() for s in schema_sql.split(";") if s.strip()]
 

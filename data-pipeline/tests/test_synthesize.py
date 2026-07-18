@@ -18,10 +18,43 @@ from synthesize import (
     compute_transparency_score,
     extract_financials,
     muslim_org_override,
+    _neighbor_metric_keys,
     ISLAMIC_IDENTITY_KEYWORDS,
     ISLAMIC_NAME_ONLY_KEYWORDS,
     MUSLIM_REGION_KEYWORDS,
 )
+
+
+class TestNeighborMetricKeys:
+    """Test _neighbor_metric_keys() - best-effort LLM context, never raises."""
+
+    _PROFILE = {
+        "impact_metrics": {
+            "metrics": {
+                "people_served_annually": 11_413,
+                "meals_distributed": 50_000,
+                "value_added_usd": 2_000_000,
+            }
+        }
+    }
+
+    def test_returns_sibling_keys_excluding_self(self):
+        keys = _neighbor_metric_keys(
+            self._PROFILE, "website_profile.impact_metrics.metrics.people_served_annually"
+        )
+        assert set(keys) == {"meals_distributed", "value_added_usd"}
+
+    def test_non_website_path_returns_empty(self):
+        assert _neighbor_metric_keys(self._PROFILE, "candid_profile.metrics.people") == []
+
+    def test_missing_container_returns_empty(self):
+        assert _neighbor_metric_keys(self._PROFILE, "website_profile.nonexistent.people") == []
+
+    def test_none_profile_returns_empty(self):
+        assert _neighbor_metric_keys(None, "website_profile.impact_metrics.metrics.x") == []
+
+    def test_none_source_path_returns_empty(self):
+        assert _neighbor_metric_keys(self._PROFILE, None) == []
 
 
 class TestHasIslamicIdentity:
@@ -570,6 +603,22 @@ class TestZakatDenylistInCorroboration:
 
 class TestBeneficiariesStringParsing:
     """Test beneficiaries extraction from impact_metrics handles various string formats."""
+
+    def test_explicit_null_metrics_does_not_crash(self):
+        """Regression (83-2403741): extractor emitted {"metrics": null} — must not crash."""
+        from src.parsers.charity_metrics_aggregator import CharityMetricsAggregator
+
+        for website_profile in (
+            {"impact_metrics": {"metrics": None}},
+            {"impact_metrics": None},
+        ):
+            metrics = CharityMetricsAggregator.aggregate(
+                charity_id=0,
+                ein="12-3456789",
+                cn_profile={"name": "Test Charity"},
+                website_profile=website_profile,
+            )
+            assert metrics.beneficiaries_served_annually is None
 
     def test_numeric_with_trailing_text(self):
         """'1,000,000 annually' should parse correctly."""

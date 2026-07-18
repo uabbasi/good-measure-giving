@@ -1288,8 +1288,10 @@ class CharityMetricsAggregator:
 
         # 4) Extract from impact_metrics.metrics (pattern matching)
         if beneficiaries is None and website_profile:
-            impact = website_profile.get("impact_metrics", {})
-            metrics_dict = impact.get("metrics", {})
+            # Extractor may emit explicit nulls ("impact_metrics": null or
+            # "metrics": null), which .get(key, {}) passes through as None.
+            impact = website_profile.get("impact_metrics") or {}
+            metrics_dict = impact.get("metrics") or {}
 
             annual_patterns = ["annually", "annual", "per_year", "yearly"]
             people_patterns = [
@@ -1401,7 +1403,7 @@ class CharityMetricsAggregator:
         # ====================================================================
         metrics_data["outcomes"] = candid_profile.get("outcomes", []) if candid_profile else []
 
-        metrics_data["impact_metrics"] = website_profile.get("impact_metrics", {}) if website_profile else {}
+        metrics_data["impact_metrics"] = (website_profile.get("impact_metrics") or {}) if website_profile else {}
 
         # ====================================================================
         # Aggregate PDF-Extracted Data (Form 990s, Annual Reports, etc.)

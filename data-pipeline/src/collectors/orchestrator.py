@@ -4,6 +4,7 @@ Data collection orchestrator - coordinates all 6 data sources.
 Manages the complete data collection pipeline and stores results in DoltDB.
 """
 
+import threading
 import time
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Set, Tuple
@@ -14,6 +15,8 @@ from ..constants import (
     FAILURE_TTL_DAYS,
     RETRY_BACKOFF_HOURS,
     SOURCE_TTL_DAYS,
+    TERMINAL_FAILURE_MARKERS,
+    TERMINAL_FAILURE_TTL_DAYS,
 )
 from ..db import CharityRepository, RawDataRepository
 from ..db.dolt_client import execute_query
@@ -27,6 +30,7 @@ from .charity_navigator import CharityNavigatorCollector
 from .form990_grants import Form990GrantsCollector
 from .propublica import ProPublicaCollector
 from .web_collector import WebsiteCollector
+
 
 def count_filled_fields(data: Dict[str, Any], prefix: str = "") -> Tuple[Set[str], int]:
     """
@@ -128,6 +132,40 @@ def compute_field_delta(old_data: Optional[Dict], new_data: Dict) -> Dict[str, A
     }
 
 
+WEBSITE_OPTIONAL_DEMOTION_MARKERS = ("no data found on any pages",)
+
+
+def classify_failure(error: Optional[str]) -> Optional[str]:
+    """Return the terminal-failure marker contained in error, or None if transient (H5)."""
+    if not error:
+        return None
+    lower = error.lower()
+    for marker in TERMINAL_FAILURE_MARKERS:
+        if marker in lower:
+            return marker
+    return None
+
+
+def is_optional_website_failure(candidates: List[str]) -> bool:
+    """True only for genuinely-optional no-data failures. CAPTCHA no longer demotes (H5)."""
+    for candidate in candidates:
+        if any(marker in candidate.lower() for marker in WEBSITE_OPTIONAL_DEMOTION_MARKERS):
+            return True
+    return False
+
+
+# H12: sources frozen out of the default crawl. Existing DB rows are kept as-is;
+# re-enable per-run with crawl.py --sources bbb.
+FROZEN_SOURCES = {"bbb"}
+
+
+def resolve_skip_sources(
+    skip_sources: Optional[List[str]], include_sources: Optional[List[str]] = None
+) -> Set[str]:
+    """Effective skip set: explicit skips + frozen sources not explicitly included."""
+    return set(skip_sources or []) | (FROZEN_SOURCES - set(include_sources or []))
+
+
 class DataCollectionOrchestrator:
     """
     Orchestrate data collection from all 6 sources.
@@ -150,6 +188,7 @@ class DataCollectionOrchestrator:
         logger: Optional[PipelineLogger] = None,
         max_pdf_downloads: int = 0,
         skip_sources: Optional[List[str]] = None,
+        include_sources: Optional[List[str]] = None,
     ):
         """
         Initialize orchestrator.
@@ -160,9 +199,15 @@ class DataCollectionOrchestrator:
             logger: Logger instance
             max_pdf_downloads: Max PDFs to download per charity (default 0 = disabled)
             skip_sources: List of source names to skip (e.g., ['causeiq', 'website'])
+            include_sources: Frozen sources to re-enable for this run (e.g. ['bbb'])
         """
         self.logger = logger or PipelineLogger(name="orchestrator")
-        self.skip_sources = set(skip_sources or [])
+        self.skip_sources = resolve_skip_sources(skip_sources, include_sources)
+        self.frozen_sources = FROZEN_SOURCES - set(include_sources or [])
+
+        # H5: CAPTCHA/anti-bot blocked sites collected for the run-end report
+        self.blocked_sites: List[Dict[str, Any]] = []
+        self._blocked_sites_lock = threading.Lock()
 
         # Initialize collectors (6 sources per spec)
         self.candid = CandidCollector(logger=self.logger)  # Uses BeautifulSoup, no API key needed
@@ -289,6 +334,27 @@ class DataCollectionOrchestrator:
             return False, ""
 
         retry_count = row.get("retry_count", 0)
+
+        # H5: terminal failure classes (CAPTCHA, not-found) — long TTL, don't re-hammer
+        failure_text = " | ".join(
+            str(row.get(f) or "") for f in ("last_failure_reason", "error_message")
+        )
+        terminal_marker = classify_failure(failure_text)
+        if terminal_marker:
+            scraped_at = row.get("scraped_at")
+            if scraped_at:
+                try:
+                    if isinstance(scraped_at, str):
+                        scraped_dt = datetime.fromisoformat(scraped_at.replace("Z", "+00:00"))
+                    else:
+                        scraped_dt = scraped_at
+                    failure_age = datetime.now(scraped_dt.tzinfo) - scraped_dt
+                    if failure_age < timedelta(days=TERMINAL_FAILURE_TTL_DAYS):
+                        return True, f"terminal failure ({terminal_marker}), TTL {TERMINAL_FAILURE_TTL_DAYS}d"
+                    self.raw_data_repo.reset_retry_count(ein, source)
+                    return False, ""
+                except (ValueError, TypeError):
+                    pass
 
         # FIX #10: Permanent failure with TTL — after FAILURE_TTL_DAYS, reset and allow retry
         if retry_count >= CRAWL_MAX_RETRIES:
@@ -582,7 +648,8 @@ class DataCollectionOrchestrator:
         for source_name, fetch_func in sources:
             # Skip if source is in skip list
             if source_name in self.skip_sources:
-                self.logger.info(f"Skipping {source_name} (--skip flag)")
+                label = "frozen" if source_name in self.frozen_sources else "--skip flag"
+                self.logger.info(f"Skipping {source_name} ({label})")
                 report["sources_skipped"] = report.get("sources_skipped", [])
                 report["sources_skipped"].append(source_name)
                 continue
@@ -669,7 +736,11 @@ class DataCollectionOrchestrator:
 
         website_url = normalize_website_url(website_url)
         if website_url and "website" not in self.skip_sources:
-            if not self._is_data_fresh(ein, "website"):
+            should_skip_site, site_skip_reason = self._should_skip_failed_source(ein, "website")
+            if should_skip_site:
+                report["sources_failed"]["website"] = site_skip_reason
+                report.setdefault("sources_skipped", []).append(f"website ({site_skip_reason})")
+            elif not self._is_data_fresh(ein, "website"):
                 report["sources_attempted"].append("website")
                 try:
                     success, data, error = self.website.collect_multi_page(website_url, ein)
@@ -687,13 +758,18 @@ class DataCollectionOrchestrator:
                     else:
                         report["sources_failed"]["website"] = error
                         self.logger.log_data_source_fetch(0, ein, "website", success=False, error=error)
-                        # Store failed attempt in DB to track captcha blocking
+                        # Store failed attempt in DB to track captcha blocking.
+                        # upsert(success=False) already increments retry_count and
+                        # records last_failure_reason (Task 1) — no explicit
+                        # increment_retry_count here or retry_count advances twice.
                         self._store_failed_crawl(ein, "website", error or "Unknown error")
+                        self._record_blocked_site(ein, website_url, error)
                 except Exception as e:
                     report["sources_failed"]["website"] = str(e)
                     self.logger.error("Website fetch failed", exception=e, ein=ein)
-                    # Store failed attempt in DB
+                    # Store failed attempt in DB (upsert increments retry_count once)
                     self._store_failed_crawl(ein, "website", str(e))
+                    self._record_blocked_site(ein, website_url, str(e))
             else:
                 report["sources_skipped"] = report.get("sources_skipped", [])
                 report["sources_skipped"].append("website (cached)")
@@ -890,7 +966,8 @@ class DataCollectionOrchestrator:
             # Skip if source is in skip list
             if source_name in self.skip_sources:
                 if self.logger:
-                    self.logger.info(f"Skipping {source_name} (--skip flag)")
+                    label = "frozen" if source_name in self.frozen_sources else "--skip flag"
+                    self.logger.info(f"Skipping {source_name} ({label})")
                 report["sources_skipped"] = report.get("sources_skipped", [])
                 report["sources_skipped"].append(source_name)
                 continue
@@ -1016,9 +1093,13 @@ class DataCollectionOrchestrator:
                     else:
                         report["sources_failed"]["website"] = error
                         self.logger.log_data_source_fetch(0, ein, "website", success=False, error=error)
+                        self.raw_data_repo.increment_retry_count(ein, "website", error or "Unknown error")
+                        self._record_blocked_site(ein, discovered_url, error)
                 except Exception as e:
                     report["sources_failed"]["website"] = str(e)
                     self.logger.error("Website collection failed", exception=e, ein=ein)
+                    self.raw_data_repo.increment_retry_count(ein, "website", str(e))
+                    self._record_blocked_site(ein, discovered_url, str(e))
 
         # Strict completeness requirement:
         # collection is successful only when all required sources succeed.
@@ -1211,6 +1292,17 @@ class DataCollectionOrchestrator:
             raw_content=None,
         )
 
+    def _record_blocked_site(self, ein: str, url: Optional[str], error: Optional[str]) -> None:
+        """Track CAPTCHA/anti-bot blocked sites for the run-end report (H5)."""
+        if not error or "captcha_blocked" not in error.lower():
+            return
+        with self._blocked_sites_lock:
+            self.blocked_sites.append({"ein": ein, "url": url, "reason": error})
+
+    def get_blocked_sites(self) -> List[Dict[str, Any]]:
+        with self._blocked_sites_lock:
+            return list(self.blocked_sites)
+
     def _is_retryable_error(self, error: str) -> bool:
         """
         Check if an error is transient and worth retrying.
@@ -1293,12 +1385,8 @@ class DataCollectionOrchestrator:
                 if isinstance(value, str):
                     candidates.append(value)
 
-        infra_markers = ("captcha_blocked", "no data found on any pages", "challenge page", "http 429")
-        for candidate in candidates:
-            lower = candidate.lower()
-            if any(marker in lower for marker in infra_markers):
-                return True
-        return False
+        # H5: only genuine no-data cases demote website to optional; CAPTCHA fails loudly
+        return is_optional_website_failure(candidates)
 
     def _aggregate_metrics(self, ein: str, raw_data: Dict[str, Any]) -> CharityMetrics:
         """

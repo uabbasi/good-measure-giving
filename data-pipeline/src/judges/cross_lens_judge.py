@@ -28,6 +28,7 @@ class CrossLensIssue(BaseModel):
 
     field: str = Field(description="The field(s) with the inconsistency")
     severity: str = Field(description="warning or info")
+    category: str = Field("factual", description="Issue category: factual | score_alignment | wallet_tag")
     message: str = Field(description="Description of the inconsistency")
     lens_a: str = Field(description="First lens involved (e.g., 'baseline')")
     lens_b: str = Field(description="Second lens involved (e.g., 'zakat')")
@@ -193,12 +194,14 @@ class CrossLensJudge(BaseJudge):
         if wallet_tag == "SADAQAH-ELIGIBLE" and "zakat" in narratives:
             zakat_text = json.dumps(narratives["zakat"]).lower()
             if "zakat-eligible" in zakat_text or "eligible for zakat" in zakat_text:
-                self.add_issue(
-                    issues,
-                    Severity.WARNING,
-                    "zakat_narrative.wallet_tag",
-                    "Zakat narrative claims zakat eligibility but wallet tag is SADAQAH-ELIGIBLE",
-                    details={"wallet_tag": wallet_tag},
+                issues.append(
+                    ValidationIssue(
+                        severity=Severity.WARNING,
+                        field="zakat_narrative.wallet_tag",
+                        message="Zakat narrative claims zakat eligibility but wallet tag is SADAQAH-ELIGIBLE",
+                        details={"wallet_tag": wallet_tag},
+                        issue_key="wallet_tag_consistency",
+                    )
                 )
 
         return issues
@@ -228,6 +231,7 @@ class CrossLensJudge(BaseJudge):
         client = self.get_llm_client()
         response = client.generate(
             prompt=prompt,
+            json_mode=True,
             json_schema=CrossLensResult.model_json_schema(),
         )
 
@@ -242,8 +246,10 @@ class CrossLensJudge(BaseJudge):
                 field=issue.field,
                 message=f"[{issue.lens_a} vs {issue.lens_b}] {issue.message}",
                 evidence=issue.evidence,
+                issue_key="wallet_tag_consistency" if issue.category == "wallet_tag" else None,
             )
             issues.append(vi)
+        issues = self.dedupe_exact_issues(issues)
 
         return LLMCrossLensResult(
             issues=issues,

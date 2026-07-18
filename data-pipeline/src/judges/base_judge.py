@@ -20,7 +20,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
-from src.llm.llm_client import LLMClient, LLMTask
+from src.llm.llm_client import TASK_MODELS, LLMClient, LLMTask
 
 from .schemas.config import JudgeConfig
 from .schemas.verdict import JudgeVerdict, Severity, ValidationIssue
@@ -94,12 +94,23 @@ class BaseJudge(ABC):
         return PROMPTS_DIR / f"{self.name}_judge.txt"
 
     def get_llm_client(self) -> LLMClient:
-        """Get or create the LLM client for this judge."""
+        """Get or create the LLM client for this judge.
+
+        Passing model= to LLMClient zeroes the fallback chain, so we only
+        pass it for a non-default judge_model override — and then restore
+        the LLM_JUDGE task-chain fallbacks explicitly.
+        """
         if self._llm_client is None:
-            self._llm_client = LLMClient(
-                task=LLMTask.LLM_JUDGE,
-                model=self.config.judge_model,
-            )
+            default_primary, default_fallbacks = TASK_MODELS[LLMTask.LLM_JUDGE]
+            if self.config.judge_model != default_primary:
+                client = LLMClient(task=LLMTask.LLM_JUDGE, model=self.config.judge_model)
+                client.fallback_models = [
+                    m for m in [default_primary, *default_fallbacks]
+                    if m != self.config.judge_model
+                ]
+            else:
+                client = LLMClient(task=LLMTask.LLM_JUDGE)
+            self._llm_client = client
         return self._llm_client
 
     def load_prompt_template(self) -> str:
@@ -205,6 +216,18 @@ class BaseJudge(ABC):
     def compute_prompt_hash(self, prompt: str) -> str:
         """Compute a hash of the prompt for tracking/caching."""
         return hashlib.sha256(prompt.encode()).hexdigest()[:12]
+
+    @staticmethod
+    def dedupe_exact_issues(issues: list[ValidationIssue]) -> list[ValidationIssue]:
+        """Drop exact-duplicate issues (same field, severity, message), preserving order."""
+        seen: set[tuple] = set()
+        out: list[ValidationIssue] = []
+        for issue in issues:
+            key = (issue.field, issue.severity, issue.message)
+            if key not in seen:
+                seen.add(key)
+                out.append(issue)
+        return out
 
     @staticmethod
     def strip_markdown_json(text: str) -> str:

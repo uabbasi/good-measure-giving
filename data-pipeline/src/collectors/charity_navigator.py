@@ -226,33 +226,45 @@ class CharityNavigatorCollector(BaseCollector):
             "severity": "high",  # Name, rating, URL
         },
         "beacon_scores": {
-            "pattern": r"accountability_finance|impact_measurement|culture_community|leadership_adaptability",
-            "description": "Beacon score slugs",
+            # Matches old slugs OR new (2026-07) beacon keys.
+            "pattern": (
+                r"accountability_finance|impact_measurement|culture_community|leadership_adaptability"
+                r"|accountabilityAndFinance|impactAndMeasurement|cultureAndCompensation|leadershipAndPlanning"
+            ),
+            "description": "Beacon score slugs/keys",
             "severity": "high",  # Rating system
         },
         "financial_slugs": {
-            "pattern": r"calc_fund_eff_ratio|calc_wkg_cap_ratio|avg_program_expense_ratio",
-            "description": "Financial ratio slugs",
+            # Matches old ratio slugs OR new (2026-07) rating.metrics keys.
+            "pattern": (
+                r"calc_fund_eff_ratio|calc_wkg_cap_ratio|avg_program_expense_ratio"
+                r"|programExpenseRatio|workingCapital|fundraisingEfficiency"
+            ),
+            "description": "Financial ratio slugs/keys",
             "severity": "high",  # Key financial metrics
         },
+        # New (2026-07 redesign) structured rating object markers.
+        "rating_object": {
+            "pattern": r"scoreDisplay|evaluationAreas",
+            "description": "Structured rating object (2026-07 format)",
+            "severity": "high",  # Overall + beacon scores
+        },
         "revenue_field": {
-            "pattern": r'"totalRevenue"',
+            "pattern": r"totalRevenue",
             "description": "Revenue data field",
             "severity": "medium",
         },
     }
 
-    def _check_format_integrity(self, html: str, ein: str) -> None:
+    def _check_format_integrity(self, html: str, ein: str) -> list:
         """
-        FIX #11: Check for expected structural markers in CN HTML.
+        FIX #11 / H11: Check for expected structural markers in CN HTML.
 
-        Emits warnings when expected patterns are missing, indicating
-        CN may have changed their page format.
+        Logs warnings for missing markers and RETURNS the names of missing
+        CRITICAL markers so parse() can fail closed on format drift.
         """
-        if not self.logger:
-            return
-
         missing_critical = []
+        missing_critical_names = []
         missing_high = []
         missing_medium = []
 
@@ -261,29 +273,32 @@ class CharityNavigatorCollector(BaseCollector):
                 entry = f"{marker_info['description']} ({marker_name})"
                 if marker_info["severity"] == "critical":
                     missing_critical.append(entry)
+                    missing_critical_names.append(marker_name)
                 elif marker_info["severity"] == "high":
                     missing_high.append(entry)
                 else:
                     missing_medium.append(entry)
 
-        if missing_critical:
-            self.logger.error(
-                f"[CN FORMAT CHANGE] CRITICAL markers missing for {ein}: "
-                f"{', '.join(missing_critical)}. "
-                f"Charity Navigator may have changed their page structure. "
-                f"Financial data extraction is likely broken."
-            )
-        if missing_high:
-            self.logger.warning(
-                f"[CN FORMAT CHANGE] High-severity markers missing for {ein}: "
-                f"{', '.join(missing_high)}. "
-                f"Some CN data extraction may be affected."
-            )
-        if missing_medium:
-            self.logger.debug(
-                f"[CN FORMAT CHANGE] Minor markers missing for {ein}: "
-                f"{', '.join(missing_medium)}"
-            )
+        if self.logger:
+            if missing_critical:
+                self.logger.error(
+                    f"[CN FORMAT CHANGE] CRITICAL markers missing for {ein}: "
+                    f"{', '.join(missing_critical)}. "
+                    f"Charity Navigator may have changed their page structure. "
+                    f"Financial data extraction is likely broken."
+                )
+            if missing_high:
+                self.logger.warning(
+                    f"[CN FORMAT CHANGE] High-severity markers missing for {ein}: "
+                    f"{', '.join(missing_high)}. "
+                    f"Some CN data extraction may be affected."
+                )
+            if missing_medium:
+                self.logger.debug(
+                    f"[CN FORMAT CHANGE] Minor markers missing for {ein}: {', '.join(missing_medium)}"
+                )
+
+        return missing_critical_names
 
     def parse(self, raw_data: str, ein: str, **kwargs) -> ParseResult:
         """
@@ -297,8 +312,16 @@ class CharityNavigatorCollector(BaseCollector):
             ParseResult with {"cn_profile": {...}}
         """
         try:
-            # FIX #11: Check format integrity before parsing
-            self._check_format_integrity(raw_data, ein)
+            # H11: fail closed on format drift — never store a silently-degraded profile
+            missing_critical = self._check_format_integrity(raw_data, ein)
+            if missing_critical:
+                ein_digits = ein.replace("-", "")
+                ein_fmt = f"{ein_digits[:2]}-{ein_digits[2:]}" if len(ein_digits) == 9 else ein
+                return ParseResult(
+                    success=False,
+                    parsed_data={self.schema_key: {"ein": ein_fmt, "quality_flag": "format_drift"}},
+                    error=f"cn_format_drift: missing critical markers: {', '.join(missing_critical)}",
+                )
 
             soup = BeautifulSoup(raw_data, "html.parser")
 
@@ -605,6 +628,278 @@ class CharityNavigatorCollector(BaseCollector):
     def _extract_nextjs_data(self, html: str) -> Dict[str, Any]:
         """
         Extract embedded Next.js data from HTML.
+
+        Charity Navigator embeds page data in self.__next_f.push() flight
+        segments. Two on-page formats exist:
+
+        - NEW (2026-07 redesign): a single structured ``"nonprofit":{...}``
+          object carrying ``rating`` (scoreDisplay, evaluationAreas, metrics,
+          taxReturns). Parsed structurally in ``_extract_nextjs_data_new``.
+        - OLD (pre-2026-03): flat ``"slug":"calc_fund_eff_ratio"`` /
+          ``accountability_finance`` key-order fields. Parsed by regex in
+          ``_extract_nextjs_data_legacy``.
+
+        The new structured object is preferred; if absent (older stored HTML)
+        we fall back to the legacy regex path so previously-scraped
+        raw_content still re-extracts offline. Both paths return the same
+        cn_profile key set.
+
+        Args:
+            html: Full page HTML
+
+        Returns:
+            Dictionary with extracted data
+        """
+        nonprofit = self._extract_nonprofit_object(html)
+        if nonprofit is not None:
+            try:
+                return self._extract_nextjs_data_new(nonprofit)
+            except Exception as e:  # pragma: no cover - defensive
+                if self.logger:
+                    self.logger.warning(f"New-format CN extraction failed, trying legacy: {e}")
+        return self._extract_nextjs_data_legacy(html)
+
+    @staticmethod
+    def _extract_balanced_object(text: str, start_key: str) -> Optional[str]:
+        """Return the balanced ``{...}`` JSON object that follows ``start_key``.
+
+        Walks braces while respecting string literals/escapes so nested
+        objects and braces inside strings don't terminate the scan early.
+        """
+        i = text.find(start_key)
+        if i < 0:
+            return None
+        j = i + len(start_key)
+        while j < len(text) and text[j] != "{":
+            j += 1
+        if j >= len(text):
+            return None
+        depth = 0
+        in_str = False
+        esc = False
+        k = j
+        while k < len(text):
+            c = text[k]
+            if in_str:
+                if esc:
+                    esc = False
+                elif c == "\\":
+                    esc = True
+                elif c == '"':
+                    in_str = False
+            else:
+                if c == '"':
+                    in_str = True
+                elif c == "{":
+                    depth += 1
+                elif c == "}":
+                    depth -= 1
+                    if depth == 0:
+                        return text[j : k + 1]
+            k += 1
+        return None
+
+    def _extract_nonprofit_object(self, html: str) -> Optional[Dict[str, Any]]:
+        """Locate and parse the NEW-format ``nonprofit`` object.
+
+        Decodes each ``self.__next_f.push`` flight segment, finds the one
+        carrying ``"nonprofit":``, extracts that balanced JSON object and
+        returns it as a dict. Returns None for old-format HTML (no such
+        object), so callers can fall back to legacy parsing.
+        """
+        segments = re.findall(r'self\.__next_f\.push\(\[1,"(.*?)"\]\)</script>', html, re.DOTALL)
+        for seg in segments:
+            if "nonprofit" not in seg:
+                continue
+            try:
+                decoded = json.loads('"' + seg + '"')
+            except Exception:
+                continue
+            obj_str = self._extract_balanced_object(decoded, '"nonprofit":')
+            if not obj_str:
+                continue
+            try:
+                nonprofit = json.loads(obj_str)
+            except Exception:
+                continue
+            if isinstance(nonprofit, dict) and isinstance(nonprofit.get("rating"), dict):
+                return nonprofit
+        return None
+
+    @staticmethod
+    def _to_float(value: Any) -> Optional[float]:
+        """Coerce to float, returning None on failure."""
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return None
+
+    @staticmethod
+    def _first_number(text: Any) -> Optional[float]:
+        """Return the first numeric token in a display string (e.g. '80.33%')."""
+        if not isinstance(text, str):
+            return None
+        match = re.search(r"[0-9]+\.?[0-9]*", text.replace(",", ""))
+        return float(match.group()) if match else None
+
+    def _extract_nextjs_data_new(self, nonprofit: Dict[str, Any]) -> Dict[str, Any]:
+        """Map the NEW-format ``nonprofit`` object to the cn_profile contract.
+
+        Structural key-path walk over the 2026-07 redesigned payload.
+        Produces the same metric keys the legacy path did so downstream
+        consumers see no schema change.
+        """
+        metrics: Dict[str, Any] = {}
+        rating = nonprofit.get("rating") or {}
+
+        # Overall score (0-100): prefer CN's own scoreDisplay, else score*100.
+        overall = self._to_float(rating.get("scoreDisplay"))
+        if overall is None:
+            raw_score = self._to_float(rating.get("score"))
+            if raw_score is not None:
+                overall = raw_score * 100
+        if overall is not None:
+            metrics["overall_score"] = overall
+
+        stars = self._to_float(rating.get("stars"))
+        if stars is not None:
+            metrics["star_rating"] = stars
+
+        # Beacon scores are reconstructed as referenceWeight-weighted averages
+        # of their constituent evaluation areas (CN's own aggregation basis).
+        areas = rating.get("evaluationAreas") or {}
+
+        def beacon_score(area_names: list) -> Optional[float]:
+            num = 0.0
+            den = 0.0
+            for name in area_names:
+                area = areas.get(name) or {}
+                score = self._to_float(area.get("score"))
+                if score is None:
+                    continue
+                weight = self._to_float(area.get("referenceWeight")) or 0.0
+                if weight <= 0:
+                    weight = 1.0
+                num += score * weight
+                den += weight
+            return (num / den) * 100 if den > 0 else None
+
+        financial = beacon_score(["accountability", "financialHealth"])
+        if financial is not None:
+            metrics["financial_score"] = financial
+            metrics["accountability_score"] = financial
+        impact = beacon_score(["measurement", "learning", "impact"])
+        if impact is not None:
+            metrics["impact_score"] = impact
+        leadership = beacon_score(["leadership", "programPlanning", "governance"])
+        if leadership is not None:
+            metrics["leadership_score"] = leadership
+        culture = beacon_score(["compensationPractices", "workplacePolicies"])
+        if culture is not None:
+            metrics["culture_score"] = culture
+
+        # Rating status from completed beacons.
+        beacons = rating.get("beacons") or {}
+        complete = [k for k, v in beacons.items() if isinstance(v, dict) and v.get("isComplete")]
+        metrics["cn_beacon_count"] = len(complete)
+        metrics["cn_is_rated"] = bool(rating.get("isEligible")) and overall is not None
+        metrics["cn_has_encompass_award"] = complete == ["cultureAndCompensation"]
+
+        # Financial ratios: parse CN's 3-year-average display values.
+        rating_metrics = rating.get("metrics") or {}
+
+        def metric_display(name: str) -> Optional[float]:
+            metadata = (rating_metrics.get(name) or {}).get("metadata") or {}
+            return self._first_number(metadata.get("value"))
+
+        program_ratio = metric_display("programExpenseRatio")
+        if program_ratio is not None:
+            metrics["program_expense_ratio"] = program_ratio / 100
+        working_capital = metric_display("workingCapital")
+        if working_capital is not None:
+            metrics["working_capital_ratio"] = working_capital * 12  # years -> months
+        fundraising_eff = metric_display("fundraisingEfficiency")
+        if fundraising_eff is not None:
+            metrics["fundraising_efficiency"] = fundraising_eff
+
+        # Revenue/expense amounts from the most recent tax return.
+        tax_return = (rating.get("taxReturns") or {}).get("first") or {}
+        total_revenue = self._to_float(tax_return.get("totalRevenue")) or self._to_float(
+            tax_return.get("summaryCyTotalRevenueAmt")
+        )
+        if total_revenue is not None:
+            metrics["total_revenue"] = total_revenue
+        total_expenses = self._to_float(tax_return.get("tfeTotalAmt"))
+        if total_expenses is not None:
+            metrics["total_expenses"] = total_expenses
+        for field, key in (
+            ("tfeProgramServiceAmt", "program_expenses"),
+            ("tfeManagementAndGeneralAmt", "admin_expenses"),
+            ("tfeFundraisingAmt", "fundraising_expenses"),
+            ("summaryTotalAssetsEoyAmt", "total_assets"),
+            ("summaryTotalLiabEoyAmt", "total_liabilities"),
+            ("summaryNetAssetsOrFundBalsEoyAmt", "net_assets"),
+        ):
+            value = self._to_float(tax_return.get(field))
+            if value is not None:
+                metrics[key] = value
+
+        # Expense ratios computed from dollars (CN no longer publishes these
+        # as standalone metrics in the new format).
+        if total_expenses:
+            if metrics.get("admin_expenses") is not None:
+                metrics["admin_expense_ratio"] = metrics["admin_expenses"] / total_expenses
+            if metrics.get("fundraising_expenses") is not None:
+                metrics["fundraising_expense_ratio"] = metrics["fundraising_expenses"] / total_expenses
+
+        period_end = tax_return.get("taxPeriodEndDt")
+        if isinstance(period_end, str):
+            year_match = re.match(r"(\d{4})", period_end)
+            if year_match:
+                metrics["fiscal_year"] = int(year_match.group(1))
+
+        # IRS ruling year.
+        bmf = nonprofit.get("irsBusinessMasterFile") or {}
+        ruling = bmf.get("ruling")
+        if ruling and str(ruling).isdigit():
+            metrics["irs_ruling_year"] = int(ruling)
+
+        # Address.
+        addresses = nonprofit.get("addresses") or []
+        physical = next((a for a in addresses if a.get("type") == "physical"), addresses[0] if addresses else None)
+        if physical:
+            for field, key in (("city", "city"), ("state", "state"), ("zip", "zip")):
+                if physical.get(field):
+                    metrics[key] = physical[field]
+
+        # CEO/President name and compensation.
+        for person in nonprofit.get("staff") or []:
+            title = person.get("title") or ""
+            if re.search(r"president|ceo|chief executive|executive director", title, re.I):
+                metrics["ceo_name"] = person.get("name")
+                metrics["ceo_compensation"] = self._to_float(
+                    person.get("compensationReportableTotal") or person.get("compensationReportable")
+                )
+                break
+
+        # Authoritative name/mission/website from the structured object.
+        if nonprofit.get("name"):
+            metrics["name"] = nonprofit["name"]
+        if nonprofit.get("website"):
+            metrics["website_url"] = nonprofit["website"]
+        if nonprofit.get("mission"):
+            metrics["mission"] = nonprofit["mission"]
+
+        if self.logger:
+            self.logger.debug(
+                f"Extracted {len(metrics)} fields from CN new-format nonprofit object "
+                f"(overall={metrics.get('overall_score')}, beacons={metrics.get('cn_beacon_count')})"
+            )
+        return metrics
+
+    def _extract_nextjs_data_legacy(self, html: str) -> Dict[str, Any]:
+        """
+        Extract embedded Next.js data from OLD-format (pre-2026-03) HTML.
 
         Next.js embeds data in self.__next_f.push() calls in the HTML.
 

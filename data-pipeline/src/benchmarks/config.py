@@ -57,9 +57,8 @@ BENCHMARK_EINS = [ein for _, ein in BENCHMARK_CHARITIES]
 BENCHMARK_MODELS = [
     # Google Gemini
     "gemini-3-flash-preview",   # Current production (best value)
-    "gemini-3-pro-preview",     # Premium Gemini
+    "gemini-3.1-pro-preview",   # Premium Gemini
     "gemini-2.5-flash",         # Previous gen mid-tier
-    "gemini-2.0-flash",         # Budget Gemini
     "gemini-2.5-flash-lite",    # Cheapest Gemini
 
     # Anthropic Claude
@@ -76,9 +75,8 @@ BENCHMARK_MODELS = [
 # Model metadata for reporting
 MODEL_INFO = {
     "gemini-3-flash-preview": {"provider": "Google", "tier": "mid", "cost_in": 0.50, "cost_out": 3.00},
-    "gemini-3-pro-preview": {"provider": "Google", "tier": "premium", "cost_in": 2.00, "cost_out": 12.00},
+    "gemini-3.1-pro-preview": {"provider": "Google", "tier": "premium", "cost_in": 2.00, "cost_out": 12.00},
     "gemini-2.5-flash": {"provider": "Google", "tier": "mid", "cost_in": 0.15, "cost_out": 0.60},
-    "gemini-2.0-flash": {"provider": "Google", "tier": "budget", "cost_in": 0.10, "cost_out": 0.40},
     "gemini-2.5-flash-lite": {"provider": "Google", "tier": "budget", "cost_in": 0.10, "cost_out": 0.40},
     "claude-sonnet-4-5": {"provider": "Anthropic", "tier": "premium", "cost_in": 3.00, "cost_out": 15.00},
     "claude-haiku-4-5": {"provider": "Anthropic", "tier": "mid", "cost_in": 1.00, "cost_out": 5.00},

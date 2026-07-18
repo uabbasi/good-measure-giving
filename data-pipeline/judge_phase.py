@@ -13,6 +13,8 @@ Usage:
     result = judge_charity(ein, eval_repo, data_repo, raw_repo)
 """
 
+import hashlib
+import json
 import sys
 from pathlib import Path
 from typing import Any
@@ -37,6 +39,55 @@ from src.utils.phase_cache_helper import check_phase_cache, update_phase_cache
 ERROR_PENALTY = 20  # Points deducted per error
 WARNING_PENALTY = 5  # Points deducted per warning
 MAX_JUDGE_SCORE = 100
+
+# Content-binding: the exact evaluation surface the judges read. judge_score is
+# only valid for the content it judged; the gate recomputes this hash and
+# fails closed on mismatch.
+JUDGE_PROJECTION_FIELDS = (
+    "amal_score",
+    "wallet_tag",
+    "confidence_tier",
+    "impact_tier",
+    "zakat_classification",
+    "baseline_narrative",
+    "strategic_narrative",
+    "strategic_score",
+    "zakat_narrative",
+    "zakat_score",
+    "rich_strategic_narrative",
+    "score_details",
+)
+
+
+def build_judge_projection(evaluation: dict) -> dict:
+    """The evaluation surface judges read (charity_dict['evaluation']).
+
+    score_details.judge_issues is judge OUTPUT (merged in by
+    update_judge_result), not judged content — it is stripped so persisting
+    a verdict does not invalidate its own content hash.
+    """
+    projection = {field: evaluation.get(field) for field in JUDGE_PROJECTION_FIELDS}
+    score_details = projection.get("score_details")
+    if isinstance(score_details, dict):
+        projection["score_details"] = {k: v for k, v in score_details.items() if k != "judge_issues"}
+    return projection
+
+
+def compute_judge_content_hash(evaluation: dict) -> str:
+    """sha256/hex16 over canonical JSON of the judge projection.
+
+    Both sides of the comparison (judge time, gate time) MUST hash a row read
+    via EvaluationRepository.get() (SELECT * + JSON deserialization), never a
+    pre-write in-memory object — this guarantees round-trip symmetry.
+    """
+    canonical = json.dumps(
+        build_judge_projection(evaluation),
+        sort_keys=True,
+        ensure_ascii=True,
+        separators=(",", ":"),
+        default=str,
+    )
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:16]
 
 
 def judge_charity(
@@ -113,15 +164,10 @@ def judge_charity(
         "ein": ein,
         "name": charity.get("name") if charity else ein,  # Name is in charities table
         "tier": tier,  # Required by ExportQualityJudge
-        "evaluation": {
-            "amal_score": evaluation.get("amal_score"),
-            "wallet_tag": evaluation.get("wallet_tag"),
-            "confidence_tier": evaluation.get("confidence_tier"),
-            "impact_tier": evaluation.get("impact_tier"),
-            "zakat_classification": evaluation.get("zakat_classification"),
-            "baseline_narrative": evaluation.get("baseline_narrative"),
-            "score_details": evaluation.get("score_details"),
-        },
+        # Single source of truth: the judged surface is exactly what the content
+        # hash covers (cross_lens + narrative_quality read the multi-lens fields;
+        # score_details.judge_issues is stripped — see build_judge_projection).
+        "evaluation": build_judge_projection(evaluation),
         "data": charity_data or {},
     }
 
@@ -187,6 +233,9 @@ def judge_charity(
         result["error_count"] = error_count
         result["warning_count"] = warning_count
         result["cost_usd"] = validation_result.total_cost_usd
+        # Bind the score to the content it judged (recomputed from the same
+        # evaluation row the gate reads back → round-trip symmetric).
+        result["content_hash"] = compute_judge_content_hash(evaluation)
 
     except Exception as e:
         result["error"] = str(e)
@@ -194,10 +243,15 @@ def judge_charity(
     return result
 
 
-if __name__ == "__main__":
+def main(argv: list[str] | None = None) -> int:
+    """Standalone judge phase CLI.
+
+    Persists judge_score via EvaluationRepository.update_judge_result (matching
+    streaming_runner behavior) and returns exit code 1 if any EIN failed.
+    """
     import argparse
 
-    from src.db.dolt_client import dolt
+    from src.db.dolt_client import dolt, tables_for_phases
     from src.utils.charity_loader import load_pilot_eins
 
     parser = argparse.ArgumentParser(description="Run all judges on a charity")
@@ -205,7 +259,7 @@ if __name__ == "__main__":
     ein_group.add_argument("--ein", help="Single charity EIN to judge")
     ein_group.add_argument("--charities", help="Path to charities file")
     parser.add_argument("--force", action="store_true", help="Force re-judge even if cache is valid")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     # Initialize repos
     eval_repo = EvaluationRepository()
@@ -214,14 +268,16 @@ if __name__ == "__main__":
     charity_repo = CharityRepository()
     cache_repo = PhaseCacheRepository()
 
-    # Determine EINs to process
+    # Determine EINs to process (normalized so persistence/cache keys match)
     if args.ein:
         eins = [args.ein]
     else:
         eins = load_pilot_eins(args.charities)
+    eins = [normalize_ein(e) or e for e in eins]
 
     success_count = 0
     skipped_count = 0
+    failed_count = 0
     total_cost = 0.0
 
     for i, ein in enumerate(eins, 1):
@@ -236,6 +292,16 @@ if __name__ == "__main__":
         result = judge_charity(ein, eval_repo, data_repo, raw_repo, charity_repo)
 
         if result["success"]:
+            # Persist judge_score + issues + deduped counts (the same counts
+            # judge_score is computed from; the gate reads error_count, not the score).
+            eval_repo.update_judge_result(
+                ein,
+                result["judge_score"],
+                result.get("issues", []),
+                content_hash=result.get("content_hash"),
+                error_count=result.get("error_count"),
+                warning_count=result.get("warning_count"),
+            )
             update_phase_cache(ein, "judge", cache_repo, result.get("cost_usd", 0.0))
             success_count += 1
             total_cost += result.get("cost_usd", 0.0)
@@ -249,11 +315,15 @@ if __name__ == "__main__":
                 for issue in result["issues"]:
                     print(f"    [{issue['severity']}] {issue['judge']}: {issue['message']}")
         else:
+            failed_count += 1
             print(f"  Failed: {result.get('error')}")
 
     # Commit to DoltDB
     if success_count > 0:
-        commit_hash = dolt.commit(f"Judge: {success_count} charities validated")
+        commit_hash = dolt.commit(
+            f"Judge: {success_count} charities validated",
+            tables=tables_for_phases("judge"),
+        )
         if commit_hash:
             print(f"\n✓ Committed to DoltDB: {commit_hash[:8]}")
 
@@ -261,5 +331,13 @@ if __name__ == "__main__":
     print(f"\nSuccess: {success_count}/{len(eins)}")
     if skipped_count:
         print(f"Cached: {skipped_count}/{len(eins)}")
+    if failed_count:
+        print(f"Failed: {failed_count}/{len(eins)}")
     if total_cost > 0:
         print(f"Total cost: ${total_cost:.4f}")
+
+    return 1 if failed_count else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

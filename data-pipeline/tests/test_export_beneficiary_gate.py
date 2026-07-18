@@ -1,0 +1,190 @@
+"""Tests for export.py beneficiary publish gate (contract #4).
+
+The gate runs on the ORIGINAL source_attribution (pre URL-normalization) and
+publishes a count only when confidence == 'cited'.
+"""
+
+import sys
+from pathlib import Path
+
+# Add parent directory to path for imports (convention from tests/test_export.py)
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from export import (
+    _beneficiary_cost_exceeds_upper_bound,
+    _beneficiary_source_path_is_suspect,
+    _derive_beneficiary_confidence,
+    _public_beneficiary_fields,
+)
+
+# Synthetic EIN not present in the curation beneficiaries_suppress overlay.
+_EIN = "00-0000000"
+
+
+_VERIFIED_SEMANTICS = {"category": "annual_people_served", "confident": True, "verified": True}
+
+
+def _attr(
+    source_path="website_profile.impact_metrics.metrics.people_served_annually",
+    source_url="https://example.org/annual-report",
+    semantics=_VERIFIED_SEMANTICS,
+):
+    meta = {
+        "method": "pattern_match",
+        "source_name": "Charity Website",
+        "source_path": source_path,
+        "source_url": source_url,
+    }
+    if semantics is not None:
+        meta["semantics"] = semantics
+    return {"beneficiaries_served_annually": meta}
+
+
+class TestDeriveBeneficiaryConfidence:
+    def test_healthy_cited_plausible_is_cited(self):
+        charity_data = {"program_expenses": 100_000}
+        assert _derive_beneficiary_confidence(1_000, _attr(), charity_data) == "cited"
+
+    def test_upper_bound_unrwa_case_needs_review(self):
+        # UNRWA shape: 100 beneficiaries vs $46.6M program spend -> $466k/beneficiary
+        charity_data = {"program_expenses": 46_600_000}
+        assert _derive_beneficiary_confidence(100, _attr(), charity_data) == "needs_review"
+
+    def test_semantic_blacklist_bloom_case_needs_review(self):
+        # Bloom shape: source_path names a dollar figure, not a headcount
+        attr = _attr(
+            source_path="website_profile.impact_metrics.metrics.orphanage_infrastructure_value_added_usd"
+        )
+        charity_data = {"program_expenses": 2_000_000}
+        assert _derive_beneficiary_confidence(1_500_000, attr, charity_data) == "needs_review"
+
+    def test_year_suffix_source_path_needs_review(self):
+        attr = _attr(source_path="website_profile.impact_metrics.metrics.scholarship_beneficiaries_2021")
+        charity_data = {"program_expenses": 500_000}
+        assert _derive_beneficiary_confidence(1_000, attr, charity_data) == "needs_review"
+
+    def test_year_prefix_after_dot_needs_review(self):
+        # Real evasion case (UNRWA USA, 2026-07): year token after "." not "_".
+        attr = _attr(source_path="website_profile.impact_metrics.metrics.2021_refugee_families_served_gaza")
+        charity_data = {"program_expenses": 46_600_000}
+        assert _derive_beneficiary_confidence(11_413, attr, charity_data) == "needs_review"
+
+    def test_cumulative_source_path_needs_review(self):
+        attr = _attr(source_path="website_profile.impact_metrics.metrics.students_impacted_to_date")
+        charity_data = {"program_expenses": 500_000}
+        assert _derive_beneficiary_confidence(1_000, attr, charity_data) == "needs_review"
+
+    def test_uncited_is_unverified(self):
+        attr = {"beneficiaries_served_annually": {"source_url": None, "source_name": "Charity Website"}}
+        assert _derive_beneficiary_confidence(1_000, attr, {"program_expenses": 100_000}) == "unverified"
+
+    def test_missing_attribution_is_unverified(self):
+        assert _derive_beneficiary_confidence(1_000, None, {"program_expenses": 100_000}) == "unverified"
+
+    def test_grounding_redirect_url_still_counts_as_citation(self):
+        # Contract: gate on the ORIGINAL URL; redirect URLs are real citations.
+        attr = _attr(source_url="https://vertexaisearch.cloud.google.com/grounding-api-redirect/abc")
+        assert _derive_beneficiary_confidence(1_000, attr, {"program_expenses": 100_000}) == "cited"
+
+    def test_no_count_is_none(self):
+        assert _derive_beneficiary_confidence(None, _attr(), {}) is None
+
+    def test_missing_semantics_fails_closed_needs_review(self):
+        # Cited + all bounds pass, but no semantics stamp -> must NOT publish.
+        attr = _attr(semantics=None)
+        assert _derive_beneficiary_confidence(1_000, attr, {"program_expenses": 100_000}) == "needs_review"
+
+    def test_semantics_verified_false_needs_review(self):
+        attr = _attr(semantics={"category": "annual_people_served", "confident": False, "verified": False})
+        assert _derive_beneficiary_confidence(1_000, attr, {"program_expenses": 100_000}) == "needs_review"
+
+    def test_semantics_non_annual_category_needs_review(self):
+        # Verifier said it's a cumulative total -> verified False -> suppressed.
+        attr = _attr(semantics={"category": "cumulative_total", "confident": True, "verified": False})
+        assert _derive_beneficiary_confidence(1_000, attr, {"program_expenses": 100_000}) == "needs_review"
+
+    def test_semantics_verified_true_is_cited(self):
+        assert _derive_beneficiary_confidence(1_000, _attr(), {"program_expenses": 100_000}) == "cited"
+
+    def test_legacy_attribution_without_semantics_key_fails_closed(self):
+        # A pre-verifier row: canonical citation, no "semantics" key at all.
+        attr = {
+            "beneficiaries_served_annually": {
+                "source_name": "Charity Website",
+                "source_url": "https://example.org/annual-report",
+                "source_path": "website_profile.impact_metrics.metrics.people_served_annually",
+            }
+        }
+        assert _derive_beneficiary_confidence(1_000, attr, {"program_expenses": 100_000}) == "needs_review"
+
+
+class TestPublicationRequiresVerifiedSemantics:
+    """Structural guarantee: no count publishes without verified semantics."""
+
+    def test_publication_impossible_without_verified_semantics(self):
+        # Everything else is publishable; only semantics is missing.
+        charity_data = {
+            "beneficiaries_served_annually": 1_000,
+            "program_expenses": 100_000,
+            "source_attribution": _attr(semantics=None),
+        }
+        public_count, confidence, excluded = _public_beneficiary_fields(_EIN, charity_data)
+        assert public_count is None
+        assert confidence == "needs_review"
+        assert excluded is True
+
+    def test_publication_allowed_with_verified_semantics(self):
+        charity_data = {
+            "beneficiaries_served_annually": 1_000,
+            "program_expenses": 100_000,
+            "source_attribution": _attr(),  # verified semantics by default
+        }
+        assert _public_beneficiary_fields(_EIN, charity_data) == (1_000, "cited", False)
+
+
+class TestGateHelpers:
+    def test_suspect_path_regex_matches_dollar_paths(self):
+        assert _beneficiary_source_path_is_suspect(
+            _attr(source_path="website_profile.impact_metrics.metrics.value_added_usd")
+        )
+
+    def test_clean_path_not_suspect(self):
+        assert not _beneficiary_source_path_is_suspect(_attr())
+
+    def test_upper_bound_trips_above_10k_per_beneficiary(self):
+        assert _beneficiary_cost_exceeds_upper_bound(100, {"program_expenses": 46_600_000})
+
+    def test_upper_bound_ok_below_10k_per_beneficiary(self):
+        assert not _beneficiary_cost_exceeds_upper_bound(1_000, {"program_expenses": 100_000})
+
+    def test_upper_bound_no_expenses_data_passes(self):
+        assert not _beneficiary_cost_exceeds_upper_bound(1_000, {})
+
+
+class TestPublicBeneficiaryFields:
+    def test_cited_count_is_published(self):
+        charity_data = {
+            "beneficiaries_served_annually": 1_000,
+            "program_expenses": 100_000,
+            "source_attribution": _attr(),
+        }
+        assert _public_beneficiary_fields(_EIN, charity_data) == (1_000, "cited", False)
+
+    def test_needs_review_count_is_nulled_but_confidence_kept(self):
+        charity_data = {
+            "beneficiaries_served_annually": 100,
+            "program_expenses": 46_600_000,
+            "source_attribution": _attr(),
+        }
+        assert _public_beneficiary_fields(_EIN, charity_data) == (None, "needs_review", True)
+
+    def test_unverified_count_is_nulled(self):
+        charity_data = {
+            "beneficiaries_served_annually": 5_000,
+            "program_expenses": 1_000_000,
+            "source_attribution": {},
+        }
+        assert _public_beneficiary_fields(_EIN, charity_data) == (None, "unverified", True)
+
+    def test_none_charity_data(self):
+        assert _public_beneficiary_fields(_EIN, None) == (None, None, False)

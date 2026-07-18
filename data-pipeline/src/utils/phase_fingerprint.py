@@ -78,7 +78,7 @@ PHASE_CODE_FILES: dict[str, list[str]] = {
         # Main files
         "baseline.py",
         "src/scorers/v2_scorers.py",
-        # Baseline prompt is now inline in baseline.py (lines 324-412)
+        "src/llm/prompts/baseline_narrative.txt",
         # Schemas
         "src/llm/schemas/baseline.py",
         "src/llm/schemas/common.py",

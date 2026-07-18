@@ -1112,7 +1112,7 @@ export interface CharityProfile {
   // New pipeline fields surfaced for donor value
   beneficiariesServedAnnually?: number | null; // Self-reported
   beneficiariesSource?: Record<string, unknown> | null; // Source metadata for beneficiary count
-  beneficiariesConfidence?: 'verified' | 'needs_review' | 'uncorroborated' | 'implausible' | null; // Citation trust state
+  beneficiariesConfidence?: 'cited' | 'needs_review' | 'unverified' | null; // Citation trust state
   beneficiariesExcludedFromScoring?: boolean; // True when beneficiary count is not eligible for CPB scoring
   zakatClaimEvidence?: string[] | null; // Corroborated evidence
   archetype?: string | null; // Strategic archetype (e.g., RESILIENCE, LEVERAGE)

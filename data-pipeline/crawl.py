@@ -33,7 +33,7 @@ sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 from src.collectors.orchestrator import DataCollectionOrchestrator
 from src.db import PhaseCacheRepository
-from src.db.dolt_client import dolt
+from src.db.dolt_client import dolt, tables_for_phases
 from src.utils.charity_loader import load_charities_from_file
 from src.utils.ein_utils import validate_and_format
 from src.utils.logger import PipelineLogger
@@ -151,6 +151,13 @@ def main():
         help="Skip specific data sources (can be used multiple times). Options: propublica, charity_navigator, candid, form990_grants, website, bbb",
     )
     parser.add_argument(
+        "--sources",
+        type=str,
+        action="append",
+        default=[],
+        help="Explicitly re-enable a frozen source for this run (currently frozen: bbb)",
+    )
+    parser.add_argument(
         "--phase", type=str, default="P1:Collect", help="Pipeline phase identifier for logging (default: P1:Collect)"
     )
     parser.add_argument("--force", action="store_true", help="Force re-crawl even if cache is valid")
@@ -188,6 +195,7 @@ def main():
         logger=logger,
         max_pdf_downloads=args.pdf_downloads,
         skip_sources=args.skip or [],
+        include_sources=args.sources or [],
     )
 
     # Load charities from file if not in single EIN mode
@@ -331,9 +339,24 @@ def main():
             f"  Success rate: {pool_stats['total_successful']}/{pool_stats['total_completed']} ({pool_stats['total_successful'] / pool_stats['total_completed'] * 100:.1f}%)"
         )
 
+    # H5: blocked-sites report
+    blocked = orchestrator.get_blocked_sites()
+    if blocked:
+        print(f"\nBlocked sites (CAPTCHA/anti-bot): {len(blocked)}")
+        for b in blocked:
+            print(f"  ✗ {b['ein']}: {b['url']} — {b['reason']}")
+
+    if orchestrator.frozen_sources:
+        frozen_str = ", ".join(sorted(orchestrator.frozen_sources))
+        print(f"\nNote: frozen sources skipped this run: {frozen_str} "
+              f"(existing rows kept; pass --sources {frozen_str} to re-enable)")
+
     # Commit changes to DoltDB
     if success_count > 0:
-        commit_hash = dolt.commit(f"Crawl: {success_count} charities fetched, {total_sources} sources")
+        commit_hash = dolt.commit(
+            f"Crawl: {success_count} charities fetched, {total_sources} sources",
+            tables=tables_for_phases("crawl"),
+        )
         if commit_hash:
             print(f"\n✓ Committed to DoltDB: {commit_hash[:8]}")
 

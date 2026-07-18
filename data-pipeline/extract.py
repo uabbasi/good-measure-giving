@@ -36,7 +36,7 @@ from src.collectors.form990_grants import Form990GrantsCollector
 from src.collectors.propublica import ProPublicaCollector
 from src.collectors.web_collector import WebsiteCollector
 from src.db import PhaseCacheRepository
-from src.db.dolt_client import dolt
+from src.db.dolt_client import dolt, tables_for_phases
 from src.db.repository import RawDataRepository
 from src.utils.ein_utils import validate_and_format
 from src.utils.logger import PipelineLogger
@@ -165,6 +165,11 @@ def extract_row(
             )
             return True, None
         else:
+            # H11: record CN format drift as a cross-run source failure.
+            # increment_retry_count preserves the last-good parsed_json (no clobber)
+            # and writes error_message, which backoff/inspection helpers read.
+            if result.error and result.error.startswith("cn_format_drift"):
+                repo.increment_retry_count(ein, source, result.error)
             return False, result.error
 
     except Exception as e:
@@ -390,7 +395,10 @@ def main():
 
     # Commit changes to DoltDB
     if success_count > 0:
-        commit_hash = dolt.commit(f"Extract: {success_count} rows parsed from {len(rows)} total")
+        commit_hash = dolt.commit(
+            f"Extract: {success_count} rows parsed from {len(rows)} total",
+            tables=tables_for_phases("extract"),
+        )
         if commit_hash:
             print(f"\n✓ Committed to DoltDB: {commit_hash[:8]}")
 

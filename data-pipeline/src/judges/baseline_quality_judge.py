@@ -32,6 +32,66 @@ REQUIRED_NARRATIVE_FIELDS = [
     "all_citations",
 ]
 
+# --- B-J-012: claim-currency check (stale fiscal-year references) ---------------
+# HIGH precision (ERROR): explicit FY tags and year-adjacent financial nouns.
+_CLAIM_FY_RE = re.compile(r"\bFY\s?(20\d\d)", re.IGNORECASE)
+_CLAIM_YEAR_FINANCE_RE = re.compile(r"\b(20\d\d)\s+(?:revenue|expenses|fiscal year)\b", re.IGNORECASE)
+# LOW precision (WARNING): any 20xx sitting within ±60 chars of a trend word.
+_CLAIM_YEAR_RE = re.compile(r"\b(20\d\d)\b")
+_CLAIM_TREND_RE = re.compile(r"\b(grew|increased|declined|revenue|expenses)\b", re.IGNORECASE)
+# Founding/history contexts to exclude (preceding-words guard).
+_CLAIM_FOUNDING_RE = re.compile(
+    r"\b(founded|since|established|incorporated|inception|founding|began|launched|started|opened|circa)\b",
+    re.IGNORECASE,
+)
+_CLAIM_TREND_WINDOW = 60
+_CLAIM_FOUNDING_WINDOW = 40
+
+# Narrative keys/subtrees that carry citation metadata (urls, ids, source labels)
+# rather than prose. Year tokens there are citation dates, not trend claims.
+_CLAIM_SKIP_KEYS = frozenset(
+    {"all_citations", "citations", "links", "source_url", "url", "href", "id", "source_name", "citation_ids", "source"}
+)
+
+
+def _latest_fiscal_year(charity_data: Any) -> int | None:
+    """Latest known fiscal year for the charity (financial_data_tax_year).
+
+    Lives inside metrics_json in the live schema; tolerate a top-level column too.
+    Returns None (=> check is a no-op) when unknown or unparseable.
+    """
+    if not isinstance(charity_data, dict):
+        return None
+    fy = charity_data.get("financial_data_tax_year")
+    if fy is None:
+        metrics = charity_data.get("metrics_json")
+        if isinstance(metrics, dict):
+            fy = metrics.get("financial_data_tax_year")
+    try:
+        return int(fy) if fy is not None else None
+    except (ValueError, TypeError):
+        return None
+
+
+def _iter_narrative_prose(node: Any, path: str = "") -> Any:
+    """Yield (field_path, text) for every prose string leaf, skipping citation subtrees."""
+    if isinstance(node, dict):
+        for key, value in node.items():
+            if key in _CLAIM_SKIP_KEYS:
+                continue
+            yield from _iter_narrative_prose(value, f"{path}.{key}" if path else key)
+    elif isinstance(node, list):
+        for i, value in enumerate(node):
+            yield from _iter_narrative_prose(value, f"{path}[{i}]")
+    elif isinstance(node, str):
+        yield path, node
+
+
+def _is_founding_context(text: str, year_start: int) -> bool:
+    """True when a founding/history keyword precedes the year within the guard window."""
+    window = text[max(0, year_start - _CLAIM_FOUNDING_WINDOW) : year_start]
+    return bool(_CLAIM_FOUNDING_RE.search(window))
+
 
 class BaselineQualityJudge(BaseJudge):
     """Judge that validates baseline-phase data quality.
@@ -102,6 +162,9 @@ class BaselineQualityJudge(BaseJudge):
 
         # B-J-011: Strategic narrative consistency
         issues.extend(self._check_strategic_narrative_consistency(ein, output))
+
+        # B-J-012: Claim currency (stale fiscal-year references in the narrative)
+        issues.extend(self._check_claim_currency(ein, evaluation, context))
 
         # Determine pass/fail - ERROR severity fails
         has_errors = any(i.severity == Severity.ERROR for i in issues)
@@ -606,5 +669,87 @@ class BaselineQualityJudge(BaseJudge):
                     },
                 )
             )
+
+        return issues
+
+    def _check_claim_currency(self, ein: str, evaluation: dict, context: dict) -> list[ValidationIssue]:  # noqa: ARG002
+        """B-J-012: Flag narratives citing stale fiscal years as current financials.
+
+        Two precision tiers keyed per stale year (so an error masks a same-year
+        warning under dedupe):
+          HIGH -> ERROR   : `FY20xx` or `20xx (revenue|expenses|fiscal year)` older
+                            than the latest fiscal year (founding contexts excluded).
+          LOW  -> WARNING : any other older `20xx` within ±60 chars of a trend word
+                            (grew/increased/declined/revenue/expenses), not already
+                            caught above, founding contexts excluded.
+
+        No-op when the latest fiscal year is unknown.
+        """
+        issues: list[ValidationIssue] = []
+
+        fiscal_year = _latest_fiscal_year((context or {}).get("charity_data"))
+        if fiscal_year is None:
+            return issues
+
+        narrative = evaluation.get("baseline_narrative")
+        if not isinstance(narrative, dict):
+            return issues
+
+        for path, text in _iter_narrative_prose(narrative):
+            high_spans: list[tuple[int, int]] = []
+            errored_years: set[int] = set()
+
+            # HIGH precision -> ERROR
+            for rx in (_CLAIM_FY_RE, _CLAIM_YEAR_FINANCE_RE):
+                for m in rx.finditer(text):
+                    year = int(m.group(1))
+                    if year >= fiscal_year:
+                        continue
+                    high_spans.append((m.start(1), m.end(1)))
+                    if _is_founding_context(text, m.start(1)):
+                        continue
+                    if year in errored_years:
+                        continue
+                    errored_years.add(year)
+                    issues.append(
+                        ValidationIssue(
+                            severity=Severity.ERROR,
+                            field=f"baseline_narrative.{path}",
+                            message=(
+                                f"Narrative cites FY{year} financials as current, but the latest "
+                                f"fiscal year on record is {fiscal_year}"
+                            ),
+                            details={"year": year, "latest_fiscal_year": fiscal_year, "rule": "B-J-012"},
+                            issue_key=f"claim_currency_stale_fy:{year}",
+                        )
+                    )
+
+            # LOW precision -> WARNING
+            warned_years: set[int] = set()
+            for m in _CLAIM_YEAR_RE.finditer(text):
+                year = int(m.group(1))
+                if year >= fiscal_year or year in warned_years:
+                    continue
+                start, end = m.start(1), m.end(1)
+                if any(hs <= start < he or hs < end <= he for hs, he in high_spans):
+                    continue
+                if _is_founding_context(text, start):
+                    continue
+                window = text[max(0, start - _CLAIM_TREND_WINDOW) : end + _CLAIM_TREND_WINDOW]
+                if not _CLAIM_TREND_RE.search(window):
+                    continue
+                warned_years.add(year)
+                issues.append(
+                    ValidationIssue(
+                        severity=Severity.WARNING,
+                        field=f"baseline_narrative.{path}",
+                        message=(
+                            f"Narrative references {year} near trend language, but the latest "
+                            f"fiscal year on record is {fiscal_year}; verify it is not stated as current"
+                        ),
+                        details={"year": year, "latest_fiscal_year": fiscal_year, "rule": "B-J-012"},
+                        issue_key=f"claim_currency_stale_fy:{year}",
+                    )
+                )
 
         return issues
