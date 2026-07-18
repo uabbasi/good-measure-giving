@@ -120,6 +120,8 @@ CITED_ATTR = {
         "source_url": "https://example.org/impact",
         "source_name": "Charity Website",
         "source_path": "website_profile.impact_metrics.metrics.people_served",
+        # Semantics verifier confirmed this is an annual people-served count.
+        "semantics": {"category": "annual_people_served", "confident": True, "verified": True},
     }
 }
 

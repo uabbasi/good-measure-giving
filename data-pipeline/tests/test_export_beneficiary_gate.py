@@ -21,18 +21,23 @@ from export import (
 _EIN = "00-0000000"
 
 
+_VERIFIED_SEMANTICS = {"category": "annual_people_served", "confident": True, "verified": True}
+
+
 def _attr(
     source_path="website_profile.impact_metrics.metrics.people_served_annually",
     source_url="https://example.org/annual-report",
+    semantics=_VERIFIED_SEMANTICS,
 ):
-    return {
-        "beneficiaries_served_annually": {
-            "method": "pattern_match",
-            "source_name": "Charity Website",
-            "source_path": source_path,
-            "source_url": source_url,
-        }
+    meta = {
+        "method": "pattern_match",
+        "source_name": "Charity Website",
+        "source_path": source_path,
+        "source_url": source_url,
     }
+    if semantics is not None:
+        meta["semantics"] = semantics
+    return {"beneficiaries_served_annually": meta}
 
 
 class TestDeriveBeneficiaryConfidence:
@@ -83,6 +88,58 @@ class TestDeriveBeneficiaryConfidence:
 
     def test_no_count_is_none(self):
         assert _derive_beneficiary_confidence(None, _attr(), {}) is None
+
+    def test_missing_semantics_fails_closed_needs_review(self):
+        # Cited + all bounds pass, but no semantics stamp -> must NOT publish.
+        attr = _attr(semantics=None)
+        assert _derive_beneficiary_confidence(1_000, attr, {"program_expenses": 100_000}) == "needs_review"
+
+    def test_semantics_verified_false_needs_review(self):
+        attr = _attr(semantics={"category": "annual_people_served", "confident": False, "verified": False})
+        assert _derive_beneficiary_confidence(1_000, attr, {"program_expenses": 100_000}) == "needs_review"
+
+    def test_semantics_non_annual_category_needs_review(self):
+        # Verifier said it's a cumulative total -> verified False -> suppressed.
+        attr = _attr(semantics={"category": "cumulative_total", "confident": True, "verified": False})
+        assert _derive_beneficiary_confidence(1_000, attr, {"program_expenses": 100_000}) == "needs_review"
+
+    def test_semantics_verified_true_is_cited(self):
+        assert _derive_beneficiary_confidence(1_000, _attr(), {"program_expenses": 100_000}) == "cited"
+
+    def test_legacy_attribution_without_semantics_key_fails_closed(self):
+        # A pre-verifier row: canonical citation, no "semantics" key at all.
+        attr = {
+            "beneficiaries_served_annually": {
+                "source_name": "Charity Website",
+                "source_url": "https://example.org/annual-report",
+                "source_path": "website_profile.impact_metrics.metrics.people_served_annually",
+            }
+        }
+        assert _derive_beneficiary_confidence(1_000, attr, {"program_expenses": 100_000}) == "needs_review"
+
+
+class TestPublicationRequiresVerifiedSemantics:
+    """Structural guarantee: no count publishes without verified semantics."""
+
+    def test_publication_impossible_without_verified_semantics(self):
+        # Everything else is publishable; only semantics is missing.
+        charity_data = {
+            "beneficiaries_served_annually": 1_000,
+            "program_expenses": 100_000,
+            "source_attribution": _attr(semantics=None),
+        }
+        public_count, confidence, excluded = _public_beneficiary_fields(_EIN, charity_data)
+        assert public_count is None
+        assert confidence == "needs_review"
+        assert excluded is True
+
+    def test_publication_allowed_with_verified_semantics(self):
+        charity_data = {
+            "beneficiaries_served_annually": 1_000,
+            "program_expenses": 100_000,
+            "source_attribution": _attr(),  # verified semantics by default
+        }
+        assert _public_beneficiary_fields(_EIN, charity_data) == (1_000, "cited", False)
 
 
 class TestGateHelpers:

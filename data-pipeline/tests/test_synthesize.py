@@ -18,10 +18,43 @@ from synthesize import (
     compute_transparency_score,
     extract_financials,
     muslim_org_override,
+    _neighbor_metric_keys,
     ISLAMIC_IDENTITY_KEYWORDS,
     ISLAMIC_NAME_ONLY_KEYWORDS,
     MUSLIM_REGION_KEYWORDS,
 )
+
+
+class TestNeighborMetricKeys:
+    """Test _neighbor_metric_keys() - best-effort LLM context, never raises."""
+
+    _PROFILE = {
+        "impact_metrics": {
+            "metrics": {
+                "people_served_annually": 11_413,
+                "meals_distributed": 50_000,
+                "value_added_usd": 2_000_000,
+            }
+        }
+    }
+
+    def test_returns_sibling_keys_excluding_self(self):
+        keys = _neighbor_metric_keys(
+            self._PROFILE, "website_profile.impact_metrics.metrics.people_served_annually"
+        )
+        assert set(keys) == {"meals_distributed", "value_added_usd"}
+
+    def test_non_website_path_returns_empty(self):
+        assert _neighbor_metric_keys(self._PROFILE, "candid_profile.metrics.people") == []
+
+    def test_missing_container_returns_empty(self):
+        assert _neighbor_metric_keys(self._PROFILE, "website_profile.nonexistent.people") == []
+
+    def test_none_profile_returns_empty(self):
+        assert _neighbor_metric_keys(None, "website_profile.impact_metrics.metrics.x") == []
+
+    def test_none_source_path_returns_empty(self):
+        assert _neighbor_metric_keys(self._PROFILE, None) == []
 
 
 class TestHasIslamicIdentity:

@@ -1307,6 +1307,24 @@ def _beneficiary_source_path_is_suspect(source_attribution: Any) -> bool:
     return isinstance(source_path, str) and bool(_SUSPECT_BENEFICIARY_SOURCE_PATH_RE.search(source_path))
 
 
+def _beneficiary_semantics_verified(source_attribution: Any) -> bool:
+    """True only when synthesize's semantics verifier stamped verified=True.
+
+    The stamp lives at source_attribution['beneficiaries_served_annually']['semantics'].
+    Missing/legacy attribution, a missing 'semantics' key, or verified != True all
+    return False so the gate fails closed (count suppressed until re-verified).
+    """
+    if not isinstance(source_attribution, dict):
+        return False
+    meta = source_attribution.get("beneficiaries_served_annually")
+    if not isinstance(meta, dict):
+        return False
+    semantics = meta.get("semantics")
+    if not isinstance(semantics, dict):
+        return False
+    return semantics.get("verified") is True
+
+
 def _beneficiary_cost_exceeds_upper_bound(beneficiaries: Any, charity_data: dict | None) -> bool:
     """True when program spend implies > $10k per claimed beneficiary (no category exemptions)."""
     if not isinstance(beneficiaries, (int, float)) or beneficiaries <= 0:
@@ -1324,8 +1342,9 @@ def _derive_beneficiary_confidence(beneficiaries: Any, source_attribution: Any, 
 
     Gate on the ORIGINAL source_attribution (never post-URL-normalization).
     States:
-      - cited: canonical citation + every plausibility check passes (publishable)
-      - needs_review: cited but a semantic/plausibility check failed (suppressed)
+      - cited: canonical citation + every plausibility check passes + LLM
+        semantics verified the count is annual people served (publishable)
+      - needs_review: cited but a semantic/plausibility/semantics check failed (suppressed)
       - unverified: no canonical citation (suppressed)
     """
     if not isinstance(beneficiaries, (int, float)) or beneficiaries <= 0:
@@ -1337,6 +1356,11 @@ def _derive_beneficiary_confidence(beneficiaries: Any, source_attribution: Any, 
     if not _is_beneficiary_count_plausible(beneficiaries, charity_data):
         return "needs_review"
     if _beneficiary_cost_exceeds_upper_bound(beneficiaries, charity_data):
+        return "needs_review"
+    # Metric-semantics gate (synthesize-time LLM verifier): publication of a count
+    # is structurally impossible unless semantics.verified is True. Missing/legacy
+    # attribution without a semantics stamp fails closed.
+    if not _beneficiary_semantics_verified(source_attribution):
         return "needs_review"
     return "cited"
 
