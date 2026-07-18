@@ -58,6 +58,12 @@ class TestDeriveBeneficiaryConfidence:
         charity_data = {"program_expenses": 500_000}
         assert _derive_beneficiary_confidence(1_000, attr, charity_data) == "needs_review"
 
+    def test_year_prefix_after_dot_needs_review(self):
+        # Real evasion case (UNRWA USA, 2026-07): year token after "." not "_".
+        attr = _attr(source_path="website_profile.impact_metrics.metrics.2021_refugee_families_served_gaza")
+        charity_data = {"program_expenses": 46_600_000}
+        assert _derive_beneficiary_confidence(11_413, attr, charity_data) == "needs_review"
+
     def test_cumulative_source_path_needs_review(self):
         attr = _attr(source_path="website_profile.impact_metrics.metrics.students_impacted_to_date")
         charity_data = {"program_expenses": 500_000}

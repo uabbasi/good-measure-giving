@@ -25,6 +25,9 @@ version: 1
 names:
   "13-1685039": "CARE USA"
   "13-1760110": "UNICEF USA"
+  # 2026-07-18 re-crawl reconciled the raw name to short-form "UNRWA";
+  # the display intent is the affiliate's full name:
+  "20-2714426": "UNRWA USA"
   "31-1267559": "MCA"
   "76-0656947": "SIUT"
   "77-0411194": "Council on American-Islamic Relations California"
@@ -33,14 +36,20 @@ names:
   "82-1670588": "BASMAH"
   "83-3464851": "SAPA"
   # Omitted as redundant (to_display_name(db_raw) already reproduces
-  # the true name -- UNRWA/IMRC/IMANA are literal ACRONYMS entries):
-  #   20-2714426 -> 'UNRWA'
+  # the true name -- IMRC/IMANA are literal ACRONYMS entries):
   #   27-0058132 -> 'IMRC'
   #   36-4166125 -> 'IMANA'
 
 cause_areas:
   "13-1760110": "HUMANITARIAN"
   "13-1837442": "GLOBAL HEALTH / CANCER RESEARCH"
+  # Pinned pending v5.3.0 primary_category fixes (B21): these three derive
+  # from misclassified categories today (Feeding America/IMRC via
+  # CIVIL_RIGHTS_LEGAL -> ADVOCACY; AMF via PHILANTHROPY_GRANTMAKING).
+  # Reviewed at Phase 3 reconciliation 2026-07-18:
+  "20-3069841": "GLOBAL HEALTH"
+  "27-0058132": "HUMANITARIAN"
+  "36-3673599": "FOOD_SECURITY"
   "20-0310701": "RELIGIOUS EDUCATION"
   "20-5509305": "ADVOCACY & PROFESSIONAL NETWORKING"
   "26-0906163": "Domestic Violence & Poverty"
@@ -57,4 +66,7 @@ cause_areas:
   #   38-3633581 -> 'RESEARCH & EDUCATION'
   #   85-3547280 -> 'EDUCATION'
 
-beneficiaries_suppress: []
+# CRI's 9,000,000 is an annual-report "reach" claim; misleading as
+# "beneficiaries served annually" for a research funder (Phase 3 review).
+beneficiaries_suppress:
+  - "13-1837442"

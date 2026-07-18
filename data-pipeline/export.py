@@ -1286,7 +1286,8 @@ def _is_beneficiary_count_plausible(beneficiaries: Any, charity_data: dict | Non
 
 
 # Source paths that name dollar figures / cumulative totals, not annual headcounts. [C4]
-_SUSPECT_BENEFICIARY_SOURCE_PATH_RE = re.compile(r"(_usd|_dollars|cumulative|_to_date|total_since|_20\d\d)")
+# Year tokens match after "_" or "." (e.g. "metrics.2021_refugee_families_served_gaza").
+_SUSPECT_BENEFICIARY_SOURCE_PATH_RE = re.compile(r"(_usd|_dollars|cumulative|_to_date|total_since|[._]20\d\d)")
 _MAX_PLAUSIBLE_DOLLARS_PER_BENEFICIARY = 10_000.0
 
 
