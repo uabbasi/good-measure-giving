@@ -21,6 +21,9 @@ class TestDeriveCauseArea:
     def test_humanitarian_refined_to_extreme_poverty(self):
         assert derive_cause_area("HUMANITARIAN", "EXTREME_POVERTY") == "EXTREME_POVERTY"
 
+    def test_detected_cause_area_normalized(self):
+        assert derive_cause_area("HUMANITARIAN", "  extreme_poverty ") == "EXTREME_POVERTY"
+
     def test_refinement_only_applies_to_humanitarian(self):
         # UNICEF USA's real DB shape: EDUCATION_INTERNATIONAL + detected EXTREME_POVERTY
         assert derive_cause_area("EDUCATION_INTERNATIONAL", "EXTREME_POVERTY") == "EDUCATION_GLOBAL"

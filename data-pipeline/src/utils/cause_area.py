@@ -1,7 +1,11 @@
 """Deterministic causeArea derivation from the pipeline's primary_category.
 
 Maps the 16 category keys in config/charity_categories.yaml onto the site's
-existing causeArea display vocabulary (see committed website/data/charities.json).
+committed causeArea display vocabulary (see website/data/charities.json).
+Labels are chosen for display consistency with that vocabulary where a
+dominant form exists; where no dominant/clean form exists (ENVIRONMENT_CLIMATE,
+WOMENS_SERVICES, SOCIAL_SERVICES) the label is an editorial canonical choice,
+overridable per-EIN via config/curation_overrides.yaml.
 Hand-curated exceptions live in config/curation_overrides.yaml (contract #1);
 this module is the generated-value side of that overlay (contract #3).
 """
@@ -9,7 +13,8 @@ this module is the generated-value side of that overlay (contract #3).
 DEFAULT_CAUSE_AREA = "GENERAL"
 
 # Literal 16-entry map: charity_categories.yaml category -> display label.
-# Labels follow the dominant committed causeArea for each category.
+# Labels follow the dominant committed causeArea where one exists; see the
+# module docstring for the editorial-choice categories.
 CATEGORY_TO_CAUSE_AREA: dict[str, str] = {
     "HUMANITARIAN": "HUMANITARIAN",
     "MEDICAL_HEALTH": "GLOBAL HEALTH",
@@ -44,6 +49,7 @@ def derive_cause_area(primary_category: str | None, detected_cause_area: str | N
     label = CATEGORY_TO_CAUSE_AREA.get(key)
     if label is None:
         return DEFAULT_CAUSE_AREA
-    if key == "HUMANITARIAN" and detected_cause_area == _EXTREME_POVERTY:
+    detected = detected_cause_area.strip().upper() if detected_cause_area else None
+    if key == "HUMANITARIAN" and detected == _EXTREME_POVERTY:
         return _EXTREME_POVERTY
     return label
