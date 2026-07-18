@@ -42,6 +42,7 @@ from src.db.dolt_client import dolt
 from src.judges.base_judge import JudgeConfig
 from src.judges.export_quality_judge import ExportQualityJudge
 from src.judges.schemas.verdict import Severity
+from src.llm.prompt_loader import load_prompt
 from src.utils.cause_area import derive_cause_area
 from src.utils.display_name import to_display_name
 
@@ -1942,95 +1943,6 @@ class PilotCharityFlags:
 # PROMPT EXPORT
 # =============================================================================
 
-# The baseline prompt template (from baseline.py lines 324-412)
-# This is extracted here to avoid importing the full baseline module
-BASELINE_PROMPT_TEMPLATE = """Generate a baseline narrative for this charity with Wikipedia-style inline citations.
-
-## Charity Information
-- Name: {charity_name}
-- EIN: {ein}
-- Mission: {mission}
-- Programs: {programs}
-
-## Financial Data
-- Total Revenue: {revenue}
-- Program Expense Ratio: {ratio}
-- Charity Navigator Score: {cn_score}
-- Working Capital: {working_capital}
-- Fundraising Efficiency: {fundraising_efficiency}
-
-## MANDATORY VALUES (USE EXACTLY AS PROVIDED - DO NOT CALCULATE OR INVENT)
-When mentioning these metrics in the narrative, you MUST use the EXACT values below.
-Do NOT round differently, do NOT calculate your own values, do NOT invent numbers.
-
-- Program Expense Ratio: {ratio} (use this exact percentage everywhere)
-- Total Revenue: {revenue} (use this exact amount everywhere)
-- Working Capital: {working_capital} (use this exact value everywhere)
-- Fundraising Efficiency: {fundraising_efficiency} (use this exact value everywhere)
-
-If a value is "N/A", do NOT mention that metric in the narrative at all.
-
-## ZAKAT ELIGIBILITY CONSTRAINT (CRITICAL)
-Wallet Tag: {wallet_tag}
-{zakat_constraint_text}
-
-## REVENUE GROWTH CONSTRAINT (CRITICAL)
-Do NOT mention 3-year revenue CAGR, compound annual growth rate, or multi-year revenue growth percentages.
-This data is not provided in the baseline context. Only mention single-year revenue if available.
-
-## Pre-computed Scores (for context only - explain in plain English)
-- GMG Score: {amal_score}/100
-- Wallet Tag: {wallet_tag}
-- Impact: {impact_score}/50 (Directness: {impact_directness}, Cost per beneficiary: {impact_cpb})
-- Alignment: {alignment_score}/50 (Donor fit: {alignment_fit}, Cause urgency: {alignment_urgency})
-- Data Confidence: {data_confidence} ({data_confidence_badge})
-
-## SCORE/RATIONALE CONSISTENCY (CRITICAL)
-Your dimension_explanations MUST be consistent with the scores above:
-- If a score is LOW (0-15): Explain what's MISSING or CONCERNING (e.g., "Limited data available", "No third-party verification")
-- If a score is MEDIUM (16-33): Balanced explanation of strengths and gaps
-- If a score is HIGH (34+): Can highlight strengths
-
-DO NOT invent positive data to justify low scores:
-- If Impact is low, do NOT claim the organization "demonstrates effectiveness"
-- If Alignment is low, do NOT claim strong Muslim donor fit
-- Only mention ratings/scores that are explicitly provided in the source data above
-
-## Available Sources for Citations (EXACTLY {num_sources} sources)
-{sources_list}
-
-## Citation Rules (CRITICAL - follow exactly)
-1. You have EXACTLY {num_sources} sources available, numbered [1] through [{num_sources}]
-2. ONLY use citation numbers that exist in the list above - do NOT use [N] where N > {num_sources}
-3. For EVERY [N] citation you use in text, you MUST include a matching entry in all_citations
-4. Format: [N] where N is the source number (e.g., [1], [2])
-5. Example: "The charity maintains strong financial accountability [1]."
-
-## Output Format
-Return ONLY a valid JSON object (no markdown code blocks):
-
-{
-  "headline": "One compelling sentence about the charity",
-  "summary": "2-3 sentences with citations like [1] and [2]",
-  "strengths": ["strength 1", "strength 2"],
-  "areas_for_improvement": ["area 1"],
-  "amal_score_rationale": "1-2 sentences explaining the overall score",
-  "dimension_explanations": {
-    "impact": "Plain English with citations about program effectiveness, financial health, and evidence quality",
-    "alignment": "Plain English with citations about donor fit, cause urgency, and track record"
-  },
-  "all_citations": [
-    {
-      "id": "[1]",
-      "source_name": "Source name from list above",
-      "source_url": "URL from source list (or null if not available)",
-      "claim": "The specific claim this citation supports"
-    }
-  ]
-}
-
-Generate the narrative JSON:"""
-
 
 def export_prompts(output_dir: Path) -> dict[str, Any]:
     """Export all LLM prompts to website/data/prompts/ for transparency.
@@ -2139,9 +2051,12 @@ def export_prompts(output_dir: Path) -> dict[str, Any]:
             )
             exported_count += 1
 
-    # Export baseline narrative prompt (inline template)
+    # Export baseline narrative prompt (canonical versioned file — H4)
     if "baseline_narrative" in annotations:
         meta = annotations["baseline_narrative"]
+        baseline_info = load_prompt("baseline_narrative", check_version=False)
+        # Un-double the .format() escape braces for public display
+        baseline_content = baseline_info.content.replace("{{", "{").replace("}}", "}")
         prompt_data = {
             "id": "baseline_narrative",
             "name": meta["name"],
@@ -2149,7 +2064,9 @@ def export_prompts(output_dir: Path) -> dict[str, Any]:
             "description": meta["description"],
             "status": meta["status"],
             "source_file": meta["source_file"],
-            "content": BASELINE_PROMPT_TEMPLATE,
+            "version": baseline_info.version,
+            "placeholder_note": "Values in {braces} are placeholders filled per-charity at generation time.",
+            "content": baseline_content,
             "annotations": meta.get("annotations", []),
         }
         with open(prompts_dir / "baseline_narrative.json", "w") as f:

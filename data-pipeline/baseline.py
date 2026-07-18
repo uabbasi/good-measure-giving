@@ -42,6 +42,7 @@ from src.db import (
 from src.db.dolt_client import dolt
 from src.db.client import execute_query
 from src.llm.llm_client import LLMClient, LLMTask
+from src.llm.prompt_loader import PromptInfo, load_prompt
 from src.parsers.charity_metrics_aggregator import CharityMetrics, CharityMetricsAggregator
 from src.scorers.v2_scorers import RUBRIC_VERSION, AmalScorerV2, impact_tier_from_amal_score
 from src.services.citation_service import CitationService
@@ -549,6 +550,71 @@ def build_charity_metrics(
     return _apply_synth_overrides(metrics, charity_data)
 
 
+_ZAKAT_CONSTRAINT_SADAQAH = (
+    "⚠️ This charity is SADAQAH-ELIGIBLE (NOT zakat-eligible). DO NOT mention zakat eligibility, "
+    "zakat policies, zakat pathways, fuqara, masakin, or any implication that donations qualify as "
+    "zakat. Only mention sadaqah or general charitable giving."
+)
+_ZAKAT_CONSTRAINT_ZAKAT = (
+    "✓ This charity is ZAKAT-ELIGIBLE. You MAY mention zakat eligibility if supported by source data."
+)
+
+
+def _baseline_prompt_kwargs(metrics: CharityMetrics, scores: Any, num_sources: int, sources_list: str) -> dict:
+    """Build the .format() kwargs for the baseline_narrative prompt template.
+
+    Keys here MUST match the {placeholders} in src/llm/prompts/baseline_narrative.txt
+    (drift-guarded by tests/test_baseline_prompt.py).
+    """
+    revenue_str = f"${metrics.total_revenue:,.0f}" if metrics.total_revenue else "N/A"
+    ratio_str = f"{metrics.program_expense_ratio:.1%}" if metrics.program_expense_ratio else "N/A"
+    cn_score_str = f"{metrics.cn_overall_score}/100" if metrics.cn_overall_score else "N/A"
+    programs_str = ", ".join(metrics.programs[:3]) if metrics.programs else "Not available"
+    working_capital_str = f"{metrics.working_capital_ratio:.1f} months" if metrics.working_capital_ratio else "N/A"
+
+    fundraising_efficiency_str = "N/A"
+    if metrics.fundraising_expenses is not None and metrics.total_revenue and metrics.total_revenue > 0:
+        efficiency = metrics.fundraising_expenses / metrics.total_revenue
+        fundraising_efficiency_str = f"${efficiency:.2f} per $1 raised"
+
+    zakat_constraint_text = (
+        _ZAKAT_CONSTRAINT_SADAQAH if scores.wallet_tag == "SADAQAH-ELIGIBLE" else _ZAKAT_CONSTRAINT_ZAKAT
+    )
+
+    return {
+        "charity_name": metrics.name,
+        "ein": metrics.ein,
+        "mission": metrics.mission or "Not available",
+        "programs": programs_str,
+        "revenue": revenue_str,
+        "ratio": ratio_str,
+        "cn_score": cn_score_str,
+        "working_capital": working_capital_str,
+        "fundraising_efficiency": fundraising_efficiency_str,
+        "wallet_tag": scores.wallet_tag,
+        "zakat_constraint_text": zakat_constraint_text,
+        "amal_score": scores.amal_score,
+        "impact_score": scores.impact.score,
+        "impact_directness": scores.impact.directness_level,
+        "impact_cpb": scores.impact.cost_per_beneficiary or "N/A",
+        "alignment_score": scores.alignment.score,
+        "alignment_fit": scores.alignment.muslim_donor_fit_level,
+        "alignment_urgency": scores.alignment.cause_urgency_label,
+        "data_confidence": scores.data_confidence.overall,
+        "data_confidence_badge": scores.data_confidence.badge,
+        "num_sources": num_sources,
+        "sources_list": sources_list,
+    }
+
+
+def build_baseline_prompt(
+    metrics: CharityMetrics, scores: Any, num_sources: int, sources_list: str
+) -> tuple[str, PromptInfo]:
+    """Render the canonical baseline_narrative prompt (H4: single source of truth)."""
+    info = load_prompt("baseline_narrative")
+    return info.content.format(**_baseline_prompt_kwargs(metrics, scores, num_sources, sources_list)), info
+
+
 def generate_baseline_narrative(
     metrics: CharityMetrics,
     scores: Any,
@@ -570,108 +636,8 @@ def generate_baseline_narrative(
     sources_list = citation_registry.get_sources_for_prompt()
     num_sources = len(citation_registry.sources)
 
-    # Format values for prompt
-    revenue_str = f"${metrics.total_revenue:,.0f}" if metrics.total_revenue else "N/A"
-    ratio_str = f"{metrics.program_expense_ratio:.1%}" if metrics.program_expense_ratio else "N/A"
-    cn_score_str = f"{metrics.cn_overall_score}/100" if metrics.cn_overall_score else "N/A"
-    programs_str = ", ".join(metrics.programs[:3]) if metrics.programs else "Not available"
-
-    # Pre-calculate additional financial metrics for consistency
-    working_capital_str = f"{metrics.working_capital_ratio:.1f} months" if metrics.working_capital_ratio else "N/A"
-
-    # Calculate fundraising efficiency if data available
-    fundraising_efficiency_str = "N/A"
-    if metrics.fundraising_expenses is not None and metrics.total_revenue and metrics.total_revenue > 0:
-        efficiency = metrics.fundraising_expenses / metrics.total_revenue
-        fundraising_efficiency_str = f"${efficiency:.2f} per $1 raised"
-
-    # Build prompt with charity data and scores
-    prompt = f"""Generate a baseline narrative for this charity with Wikipedia-style inline citations.
-
-## Charity Information
-- Name: {metrics.name}
-- EIN: {metrics.ein}
-- Mission: {metrics.mission or "Not available"}
-- Programs: {programs_str}
-
-## Financial Data
-- Total Revenue: {revenue_str}
-- Program Expense Ratio: {ratio_str}
-- Charity Navigator Score: {cn_score_str}
-- Working Capital: {working_capital_str}
-- Fundraising Efficiency: {fundraising_efficiency_str}
-
-## MANDATORY VALUES (USE EXACTLY AS PROVIDED - DO NOT CALCULATE OR INVENT)
-When mentioning these metrics in the narrative, you MUST use the EXACT values below.
-Do NOT round differently, do NOT calculate your own values, do NOT invent numbers.
-
-- Program Expense Ratio: {ratio_str} (use this exact percentage everywhere)
-- Total Revenue: {revenue_str} (use this exact amount everywhere)
-- Working Capital: {working_capital_str} (use this exact value everywhere)
-- Fundraising Efficiency: {fundraising_efficiency_str} (use this exact value everywhere)
-
-If a value is "N/A", do NOT mention that metric in the narrative at all.
-
-## ZAKAT ELIGIBILITY CONSTRAINT (CRITICAL)
-Wallet Tag: {scores.wallet_tag}
-{"⚠️ This charity is SADAQAH-ELIGIBLE (NOT zakat-eligible). DO NOT mention zakat eligibility, zakat policies, zakat pathways, fuqara, masakin, or any implication that donations qualify as zakat. Only mention sadaqah or general charitable giving." if scores.wallet_tag == "SADAQAH-ELIGIBLE" else "✓ This charity is ZAKAT-ELIGIBLE. You MAY mention zakat eligibility if supported by source data."}
-
-## REVENUE GROWTH CONSTRAINT (CRITICAL)
-⚠️ DO NOT mention 3-year revenue CAGR, compound annual growth rate, or multi-year revenue growth percentages.
-This data is not provided in the baseline context. Only mention single-year revenue if available.
-
-## Pre-computed Scores (for context only - explain in plain English)
-- GMG Score: {scores.amal_score}/100
-- Wallet Tag: {scores.wallet_tag}
-- Impact: {scores.impact.score}/50 (Directness: {scores.impact.directness_level}, Cost per beneficiary: {scores.impact.cost_per_beneficiary or "N/A"})
-- Alignment: {scores.alignment.score}/50 (Donor fit: {scores.alignment.muslim_donor_fit_level}, Cause urgency: {scores.alignment.cause_urgency_label})
-- Data Confidence: {scores.data_confidence.overall} ({scores.data_confidence.badge})
-
-## SCORE/RATIONALE CONSISTENCY (CRITICAL)
-Your dimension_explanations MUST be consistent with the scores above:
-- If a score is LOW (0-15): Explain what's MISSING or CONCERNING (e.g., "Limited data available", "No third-party verification")
-- If a score is MEDIUM (16-33): Balanced explanation of strengths and gaps
-- If a score is HIGH (34+): Can highlight strengths
-
-DO NOT invent positive data to justify low scores:
-- If Impact is low, do NOT claim the organization "demonstrates effectiveness"
-- If Alignment is low, do NOT claim strong Muslim donor fit
-- Only mention ratings/scores that are explicitly provided in the source data above
-
-## Available Sources for Citations (EXACTLY {num_sources} sources)
-{sources_list}
-
-## Citation Rules (CRITICAL - follow exactly)
-1. You have EXACTLY {num_sources} sources available, numbered [1] through [{num_sources}]
-2. ONLY use citation numbers that exist in the list above - do NOT use [N] where N > {num_sources}
-3. For EVERY [N] citation you use in text, you MUST include a matching entry in all_citations
-4. Format: [N] where N is the source number (e.g., [1], [2])
-5. Example: "The charity maintains strong financial accountability [1]."
-
-## Output Format
-Return ONLY a valid JSON object (no markdown code blocks):
-
-{{
-  "headline": "One compelling sentence about the charity",
-  "summary": "2-3 sentences with citations like [1] and [2]",
-  "strengths": ["strength 1", "strength 2"],
-  "areas_for_improvement": ["area 1"],
-  "amal_score_rationale": "1-2 sentences explaining the overall score",
-  "dimension_explanations": {{
-    "impact": "Plain English with citations about program effectiveness, financial health, and evidence quality",
-    "alignment": "Plain English with citations about donor fit, cause urgency, and track record"
-  }},
-  "all_citations": [
-    {{
-      "id": "[1]",
-      "source_name": "Source name from list above",
-      "source_url": "URL from source list (or null if not available)",
-      "claim": "The specific claim this citation supports"
-    }}
-  ]
-}}
-
-Generate the narrative JSON:"""
+    # Build prompt from the canonical versioned template (H4)
+    prompt, prompt_info = build_baseline_prompt(metrics, scores, num_sources, sources_list)
 
     # Extract citation sources for validation and repair
     citation_sources = citation_registry.sources  # Full CitationSource objects for repair
@@ -715,6 +681,7 @@ Generate the narrative JSON:"""
                 prompt=prompt,
                 max_tokens=1500,
                 temperature=0.3,
+                prompt_version=prompt_info.version,
             )
             total_cost += response.cost_usd
             if not response.text or not response.text.strip():
@@ -765,6 +732,7 @@ Generate the corrected narrative JSON:"""
             prompt=fix_prompt,
             max_tokens=1500,
             temperature=0.3,
+            prompt_version=prompt_info.version,
         )
         total_cost += response.cost_usd
         narrative = parse_llm_response(response.text)
@@ -1312,7 +1280,7 @@ def main():
     raw_repo = RawDataRepository()
     data_repo = CharityDataRepository()
     eval_repo = EvaluationRepository()
-    llm_client = LLMClient()
+    llm_client = LLMClient(task=LLMTask.NARRATIVE_GENERATION)
     scorer = AmalScorerV2()
 
     print(f"\n{'=' * 60}")
