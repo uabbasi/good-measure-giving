@@ -41,12 +41,14 @@ from src.db.dolt_client import dolt
 from src.judges.base_judge import JudgeConfig
 from src.judges.export_quality_judge import ExportQualityJudge
 from src.judges.schemas.verdict import Severity
+from src.utils.display_name import to_display_name
 
 # Output directory
 WEBSITE_DATA_DIR = Path(__file__).parent.parent / "website" / "data"
 WEBSITE_PUBLIC_DATA_DIR = Path(__file__).parent.parent / "website" / "public" / "data"
 PILOT_CHARITIES_FILE = Path(__file__).parent / "pilot_charities.txt"
 UI_SIGNALS_CONFIG_FILE = Path(__file__).parent / "config" / "ui_signals.yaml"
+CURATION_OVERRIDES_FILE = Path(__file__).parent / "config" / "curation_overrides.yaml"
 
 # Beacons to exclude (not really awards)
 # - "Profile Managed" = just means nonprofit manages their CN profile
@@ -73,6 +75,42 @@ def _compute_config_hash(cfg: dict[str, Any]) -> str:
     """Compute deterministic config hash for auditability."""
     canonical = json.dumps(cfg, sort_keys=True, separators=(",", ":"))
     return f"sha256:{hashlib.sha256(canonical.encode('utf-8')).hexdigest()}"
+
+
+def load_curation_overrides() -> dict[str, Any]:
+    """Load the hand-curation overlay (names, cause areas, beneficiary suppressions).
+
+    Missing file => empty overlay so export still runs. [contract #1]
+    """
+    if not CURATION_OVERRIDES_FILE.exists():
+        return {"names": {}, "cause_areas": {}, "beneficiaries_suppress": []}
+    with open(CURATION_OVERRIDES_FILE) as f:
+        raw = yaml.safe_load(f) or {}
+    return {
+        "names": raw.get("names") or {},
+        "cause_areas": raw.get("cause_areas") or {},
+        "beneficiaries_suppress": list(raw.get("beneficiaries_suppress") or []),
+    }
+
+
+_CURATION_OVERRIDES = load_curation_overrides()
+
+
+def _apply_curation_override(ein: str, field: str, generated: Any, overrides: dict) -> Any:
+    """Override wins; log when it merely duplicates the generated value (prunable later)."""
+    if ein not in overrides:
+        return generated
+    override = overrides[ein]
+    if override == generated:
+        print(f"  [curation] override redundant for {ein}.{field}: {override!r}")
+    return override
+
+
+def _display_name_for(charity: dict) -> str:
+    """Single source of the exported display name (index/detail/amalEvaluation agree)."""
+    ein = charity["ein"]
+    raw = charity.get("name") or ein
+    return _apply_curation_override(ein, "name", to_display_name(raw), _CURATION_OVERRIDES["names"])
 
 
 def _mirror_export_to_public_data(output_dir: Path) -> None:
@@ -1453,7 +1491,7 @@ def build_charity_summary(
     return {
         "id": charity["ein"],
         "ein": charity["ein"],
-        "name": charity.get("name") or charity["ein"],
+        "name": _display_name_for(charity),
         "tier": tier,
         "mission": best_mission,
         "headline": headline,  # Fallback description from baseline/rich narrative
@@ -1584,7 +1622,7 @@ def build_charity_detail(
     detail = {
         "id": charity["ein"],
         "ein": charity["ein"],
-        "name": charity.get("name") or charity["ein"],
+        "name": _display_name_for(charity),
         "tier": tier,
         "mission": best_mission,
         "programs": programs,
@@ -1752,7 +1790,7 @@ def build_charity_detail(
     if evaluation:
         detail["amalEvaluation"] = {
             "charity_ein": charity["ein"],
-            "charity_name": charity.get("name"),
+            "charity_name": _display_name_for(charity),
             "amal_score": _public_amal_score(evaluation, charity_data),
             "wallet_tag": evaluation.get("wallet_tag"),
             "evaluation_date": evaluation.get("evaluated_at"),
