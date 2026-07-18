@@ -255,7 +255,13 @@ class RawDataRepository:
         raw_content: str | None = None,
         reset_retry: bool = True,
     ) -> None:
-        """Insert or update raw data for a source."""
+        """Insert or update raw data for a source.
+
+        Failure writes (success=False) never overwrite parsed_json or
+        raw_content of a previously successful row: the failure is recorded
+        via success/error_message/last_failure_reason/retry_count while the
+        last-good content is preserved (C1 data-safety fix).
+        """
         data = {
             "charity_ein": charity_ein,
             "source": source,
@@ -267,11 +273,19 @@ class RawDataRepository:
             data["raw_content"] = raw_content
         if success and reset_retry:
             data["retry_count"] = 0
+        if not success:
+            data["last_failure_reason"] = error_message
 
         # Check if row exists
         existing = self.get_by_source(charity_ein, source)
 
         if existing:
+            if not success:
+                data["retry_count"] = (existing.get("retry_count") or 0) + 1
+                if existing.get("success"):
+                    # Never clobber last-good content with a failure record
+                    data.pop("parsed_json", None)
+                    data.pop("raw_content", None)
             # Update existing row
             set_clause = ", ".join([f"{k} = %s" for k in data.keys() if k not in ("charity_ein", "source")])
             values = [v for k, v in data.items() if k not in ("charity_ein", "source")]
@@ -283,6 +297,8 @@ class RawDataRepository:
                 fetch="none",
             )
         else:
+            if not success:
+                data["retry_count"] = 1
             # Insert new row
             data["id"] = _generate_uuid()
             columns = list(data.keys())
@@ -297,19 +313,19 @@ class RawDataRepository:
     def increment_retry_count(self, ein: str, source: str, error_message: str) -> int:
         """Increment retry count for a failed source and return new count."""
         existing = self.get_by_source(ein, source)
-        current_count = existing.get("retry_count", 0) if existing else 0
+        current_count = (existing.get("retry_count") or 0) if existing else 0
         new_count = current_count + 1
 
         if existing:
             execute_query(
-                "UPDATE raw_scraped_data SET retry_count = %s, success = FALSE, error_message = %s WHERE charity_ein = %s AND source = %s",
-                (new_count, error_message, ein, source),
+                "UPDATE raw_scraped_data SET retry_count = %s, success = FALSE, error_message = %s, last_failure_reason = %s WHERE charity_ein = %s AND source = %s",
+                (new_count, error_message, error_message, ein, source),
                 fetch="none",
             )
         else:
             execute_query(
-                "INSERT INTO raw_scraped_data (id, charity_ein, source, success, error_message, retry_count, parsed_json) VALUES (%s, %s, %s, FALSE, %s, %s, %s)",
-                (_generate_uuid(), ein, source, error_message, new_count, "{}"),
+                "INSERT INTO raw_scraped_data (id, charity_ein, source, success, error_message, last_failure_reason, retry_count, parsed_json) VALUES (%s, %s, %s, FALSE, %s, %s, %s, %s)",
+                (_generate_uuid(), ein, source, error_message, error_message, new_count, "{}"),
                 fetch="none",
             )
 
