@@ -179,7 +179,7 @@ class Evaluation:
     judge_score: int | None = None
     information_density: float | None = None
     rubric_version: str | None = None
-    state: str = "pending"
+    state: str | None = None  # None = don't write state on upsert; DB column default is 'pending'
 
 
 class CharityRepository:
@@ -665,16 +665,17 @@ class EvaluationRepository:
     }
 
     def upsert(self, evaluation: Evaluation | dict) -> None:
-        """Insert or update evaluation."""
+        """Insert or update evaluation.
+
+        Preserve-unless-provided (C6): only columns present with non-None
+        values are written. Baseline re-writes therefore never NULL
+        rich_narrative/rich_strategic_narrative, and `state` is only written
+        when a caller sets it explicitly. Use clear_rich_narrative() to
+        explicitly discard failed rich content.
+        """
         data = evaluation.__dict__ if isinstance(evaluation, Evaluation) else evaluation
         # Filter to known columns only (prevents SQL injection via dict keys)
         data = {k: v for k, v in data.items() if k in self.COLUMNS and v is not None}
-
-        # Baseline and rich are serial: whenever baseline_narrative is updated,
-        # clear stale rich fields unless this write explicitly provides them.
-        if "baseline_narrative" in data:
-            data.setdefault("rich_narrative", None)
-            data.setdefault("rich_strategic_narrative", None)
 
         if not data.get("charity_ein"):
             raise ValueError("charity_ein is required for evaluation upsert")
