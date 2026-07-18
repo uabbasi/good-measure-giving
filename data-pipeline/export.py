@@ -1310,17 +1310,19 @@ def _derive_beneficiary_confidence(beneficiaries: Any, source_attribution: Any, 
     return "cited"
 
 
-def _public_beneficiary_fields(charity_data: dict | None) -> tuple[int | float | None, str | None, bool]:
+def _public_beneficiary_fields(ein: str, charity_data: dict | None) -> tuple[int | float | None, str | None, bool]:
     """Gate beneficiary counts for publication (shared by index and detail builders).
 
     Returns (public_count, confidence, excluded_from_scoring): counts that are
     not 'cited' are emitted as null; the confidence string is always emitted so
-    the frontend can explain the suppression. [C4]
+    the frontend can explain the suppression. The curation overlay can force-null
+    any EIN's count (Phase 3 review backlog) without changing its confidence. [C4]
     """
     beneficiaries = charity_data.get("beneficiaries_served_annually") if charity_data else None
     source_attribution = charity_data.get("source_attribution") if charity_data else None
     confidence = _derive_beneficiary_confidence(beneficiaries, source_attribution, charity_data)
-    public_count = beneficiaries if confidence == "cited" else None
+    suppressed = ein in _CURATION_OVERRIDES["beneficiaries_suppress"]
+    public_count = beneficiaries if (confidence == "cited" and not suppressed) else None
     excluded = confidence in {"needs_review", "unverified"}
     return public_count, confidence, excluded
 
@@ -1486,7 +1488,7 @@ def build_charity_summary(
     )
 
     beneficiaries_served_annually, beneficiaries_confidence, beneficiaries_excluded_from_scoring = (
-        _public_beneficiary_fields(charity_data)
+        _public_beneficiary_fields(charity["ein"], charity_data)
     )
 
     return {
@@ -1617,7 +1619,7 @@ def build_charity_detail(
         else None
     )
     beneficiaries_served_annually, beneficiaries_confidence, beneficiaries_excluded_from_scoring = (
-        _public_beneficiary_fields(charity_data)
+        _public_beneficiary_fields(charity["ein"], charity_data)
     )
 
     detail = {
@@ -1757,9 +1759,11 @@ def build_charity_detail(
         # P0: Working capital months (balance sheet derived)
         # P0: Beneficiaries served annually (self-reported)
         "beneficiariesServedAnnually": beneficiaries_served_annually,
+        # Provenance ships only when the count itself is published; a gated/suppressed
+        # count must not leak its failed source dict. [C4 / Task 8 handoff]
         "beneficiariesSource": (
             normalized_source_attribution.get("beneficiaries_served_annually")
-            if isinstance(normalized_source_attribution, dict)
+            if beneficiaries_served_annually is not None and isinstance(normalized_source_attribution, dict)
             else None
         ),
         "beneficiariesConfidence": beneficiaries_confidence,

@@ -113,3 +113,105 @@ class TestCauseArea:
 
     def test_legacy_cause_area_overrides_dict_deleted(self):
         assert not hasattr(export, "_CAUSE_AREA_OVERRIDES")
+
+
+CITED_ATTR = {
+    "beneficiaries_served_annually": {
+        "source_url": "https://example.org/impact",
+        "source_name": "Charity Website",
+        "source_path": "website_profile.impact_metrics.metrics.people_served",
+    }
+}
+
+
+class TestBeneficiaryGate:
+    def test_cited_and_plausible_is_cited(self):
+        conf = export._derive_beneficiary_confidence(10_000, CITED_ATTR, _charity_data())
+        assert conf == "cited"
+
+    def test_uncited_is_unverified(self):
+        assert export._derive_beneficiary_confidence(10_000, {}, _charity_data()) == "unverified"
+
+    def test_blacklisted_source_path_needs_review(self):
+        attribution = {
+            "beneficiaries_served_annually": {
+                "source_url": "https://example.org/impact",
+                "source_path": "website_profile.impact_metrics.metrics.meals_served_cumulative",
+            }
+        }
+        assert export._derive_beneficiary_confidence(10_000, attribution, _charity_data()) == "needs_review"
+
+    def test_year_suffixed_source_path_needs_review(self):
+        attribution = {
+            "beneficiaries_served_annually": {
+                "source_url": "https://example.org/impact",
+                "source_path": "website_profile.impact_metrics.metrics.people_reached_2023",
+            }
+        }
+        assert export._derive_beneficiary_confidence(10_000, attribution, _charity_data()) == "needs_review"
+
+    def test_over_10k_dollars_per_beneficiary_needs_review(self):
+        # $1M program expenses / 50 beneficiaries = $20k/beneficiary
+        conf = export._derive_beneficiary_confidence(50, CITED_ATTR, _charity_data(program_expenses=1_000_000))
+        assert conf == "needs_review"
+
+
+class TestBeneficiaryPublication:
+    def test_non_cited_count_nulled_in_index_and_detail(self, empty_overrides):
+        data = _charity_data(beneficiaries_served_annually=10_000, source_attribution={})
+        summary = build_charity_summary(_charity(), data, _evaluation())
+        detail = build_charity_detail(_charity(), data, _evaluation(), {})
+        assert summary["beneficiariesConfidence"] == "unverified"
+        assert summary["beneficiariesServedAnnually"] is None
+        assert detail["beneficiariesConfidence"] == "unverified"
+        assert detail["beneficiariesServedAnnually"] is None
+        assert summary["beneficiariesExcludedFromScoring"] is True
+
+    def test_cited_count_published(self, empty_overrides):
+        data = _charity_data(beneficiaries_served_annually=10_000, source_attribution=CITED_ATTR)
+        summary = build_charity_summary(_charity(), data, _evaluation())
+        assert summary["beneficiariesConfidence"] == "cited"
+        assert summary["beneficiariesServedAnnually"] == 10_000
+        assert summary["beneficiariesExcludedFromScoring"] is False
+
+    def test_suppress_overlay_nulls_even_cited(self, monkeypatch):
+        monkeypatch.setattr(
+            export,
+            "_CURATION_OVERRIDES",
+            {"names": {}, "cause_areas": {}, "beneficiaries_suppress": [EIN]},
+            raising=False,
+        )
+        data = _charity_data(beneficiaries_served_annually=10_000, source_attribution=CITED_ATTR)
+        summary = build_charity_summary(_charity(), data, _evaluation())
+        detail = build_charity_detail(_charity(), data, _evaluation(), {})
+        assert summary["beneficiariesServedAnnually"] is None
+        assert detail["beneficiariesServedAnnually"] is None
+        assert summary["beneficiariesConfidence"] == "cited"
+
+    def test_detail_source_present_when_cited(self, empty_overrides):
+        data = _charity_data(beneficiaries_served_annually=10_000, source_attribution=CITED_ATTR)
+        detail = build_charity_detail(_charity(), data, _evaluation(), {})
+        assert detail["beneficiariesServedAnnually"] == 10_000
+        assert detail["beneficiariesSource"] is not None
+
+    def test_detail_source_suppressed_when_count_gated(self, empty_overrides):
+        # cited citation present but $20k/beneficiary -> needs_review -> count AND source nulled
+        data = _charity_data(
+            beneficiaries_served_annually=50, program_expenses=1_000_000, source_attribution=CITED_ATTR
+        )
+        detail = build_charity_detail(_charity(), data, _evaluation(), {})
+        assert detail["beneficiariesConfidence"] == "needs_review"
+        assert detail["beneficiariesServedAnnually"] is None
+        assert detail["beneficiariesSource"] is None
+
+    def test_detail_source_suppressed_when_overlay_suppresses(self, monkeypatch):
+        monkeypatch.setattr(
+            export,
+            "_CURATION_OVERRIDES",
+            {"names": {}, "cause_areas": {}, "beneficiaries_suppress": [EIN]},
+            raising=False,
+        )
+        data = _charity_data(beneficiaries_served_annually=10_000, source_attribution=CITED_ATTR)
+        detail = build_charity_detail(_charity(), data, _evaluation(), {})
+        assert detail["beneficiariesServedAnnually"] is None
+        assert detail["beneficiariesSource"] is None

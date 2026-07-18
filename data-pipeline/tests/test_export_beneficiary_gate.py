@@ -17,6 +17,9 @@ from export import (
     _public_beneficiary_fields,
 )
 
+# Synthetic EIN not present in the curation beneficiaries_suppress overlay.
+_EIN = "00-0000000"
+
 
 def _attr(
     source_path="website_profile.impact_metrics.metrics.people_served_annually",
@@ -102,7 +105,7 @@ class TestPublicBeneficiaryFields:
             "program_expenses": 100_000,
             "source_attribution": _attr(),
         }
-        assert _public_beneficiary_fields(charity_data) == (1_000, "cited", False)
+        assert _public_beneficiary_fields(_EIN, charity_data) == (1_000, "cited", False)
 
     def test_needs_review_count_is_nulled_but_confidence_kept(self):
         charity_data = {
@@ -110,7 +113,7 @@ class TestPublicBeneficiaryFields:
             "program_expenses": 46_600_000,
             "source_attribution": _attr(),
         }
-        assert _public_beneficiary_fields(charity_data) == (None, "needs_review", True)
+        assert _public_beneficiary_fields(_EIN, charity_data) == (None, "needs_review", True)
 
     def test_unverified_count_is_nulled(self):
         charity_data = {
@@ -118,7 +121,7 @@ class TestPublicBeneficiaryFields:
             "program_expenses": 1_000_000,
             "source_attribution": {},
         }
-        assert _public_beneficiary_fields(charity_data) == (None, "unverified", True)
+        assert _public_beneficiary_fields(_EIN, charity_data) == (None, "unverified", True)
 
     def test_none_charity_data(self):
-        assert _public_beneficiary_fields(None) == (None, None, False)
+        assert _public_beneficiary_fields(_EIN, None) == (None, None, False)
