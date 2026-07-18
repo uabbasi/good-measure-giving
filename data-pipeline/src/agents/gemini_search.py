@@ -17,6 +17,7 @@ from google.genai import types
 
 from ..llm.budget_tracker import add_cost as _budget_add_cost
 from ..llm.budget_tracker import check_budget as _budget_check
+from ..llm.llm_client import MODEL_REGISTRY
 from ..models.agent_discovery import (
     GroundingChunk,
     GroundingMetadata,
@@ -253,12 +254,10 @@ class GeminiSearchClient:
     # Default model for search grounding - use same as main LLM client
     DEFAULT_MODEL = "gemini-3-flash-preview"
 
-    # Cost per million tokens (Jan 2026 pricing)
-    COSTS = {
-        "gemini-3-flash-preview": {"input": 0.10, "output": 0.40},
-        "gemini-2.5-flash": {"input": 0.30, "output": 2.50},
-        "gemini-2.5-pro": {"input": 1.25, "output": 10.00},
-    }
+    # Cost per million tokens, ONLY for models absent from llm_client.MODEL_REGISTRY.
+    # The registry is the single price source for shared models (H9 review) —
+    # do not duplicate registry models here.
+    COSTS: dict = {}
 
     def __init__(
         self,
@@ -436,11 +435,27 @@ class GeminiSearchClient:
         )
 
     def _calculate_cost(self, input_tokens: int, output_tokens: int) -> float:
-        """Calculate cost based on token usage."""
-        # D-002: Fallback to DEFAULT_MODEL costs, not hardcoded model
-        costs = self.COSTS.get(self.model, self.COSTS.get(self.DEFAULT_MODEL, {"input": 0.10, "output": 0.40}))
-        input_cost = (input_tokens / 1_000_000) * costs["input"]
-        output_cost = (output_tokens / 1_000_000) * costs["output"]
+        """Calculate cost based on token usage.
+
+        Prices come from the authoritative llm_client.MODEL_REGISTRY so discovery
+        spend is priced identically to LLMClient spend (H9 review — the old local
+        table undercounted gemini-3-flash-preview 5-7.5x, gutting the budget cap).
+        """
+        entry = MODEL_REGISTRY.get(self.model)
+        if entry is not None:
+            input_price = entry["cost_per_1m_input"]
+            output_price = entry["cost_per_1m_output"]
+        elif self.model in self.COSTS:
+            # Local COSTS is consulted only for models the registry doesn't know.
+            input_price = self.COSTS[self.model]["input"]
+            output_price = self.COSTS[self.model]["output"]
+        else:
+            # D-002: fall back to DEFAULT_MODEL pricing for unknown models
+            default = MODEL_REGISTRY[self.DEFAULT_MODEL]
+            input_price = default["cost_per_1m_input"]
+            output_price = default["cost_per_1m_output"]
+        input_cost = (input_tokens / 1_000_000) * input_price
+        output_cost = (output_tokens / 1_000_000) * output_price
         return input_cost + output_cost
 
 

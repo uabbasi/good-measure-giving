@@ -18,6 +18,7 @@ from ..agents.gemini_search import (
     calculate_grounding_confidence,
     extract_json_from_response,
 )
+from ..llm.budget_tracker import BudgetExceededError
 from ..schemas.discovery import TheoryOfChangeDict
 
 logger = logging.getLogger(__name__)
@@ -149,6 +150,9 @@ class TheoryOfChangeDiscoveryService:
 
             return discovery
 
+        except BudgetExceededError:
+            # H9: budget exhaustion must propagate to the runner, not degrade into an error result
+            raise
         except Exception as e:
             error_msg = f"ToC discovery failed for {charity_name}: {e}"
             logger.error(error_msg)

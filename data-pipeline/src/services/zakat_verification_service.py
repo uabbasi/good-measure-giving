@@ -24,6 +24,7 @@ from ..agents.gemini_search import (
     SearchGroundingResult,
     extract_json_from_response,
 )
+from ..llm.budget_tracker import BudgetExceededError
 from ..schemas.discovery import ZakatDict
 
 logger = logging.getLogger(__name__)
@@ -274,6 +275,9 @@ class ZakatVerificationService:
                 f"sources={verification.source_count}"
             )
 
+        except BudgetExceededError:
+            # H9: budget exhaustion must propagate to the runner, not degrade into an error result
+            raise
         except Exception as e:
             llm_error = f"Zakat verification (LLM) failed for {charity_name}: {e}"
             logger.error(llm_error)

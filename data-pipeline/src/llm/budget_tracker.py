@@ -52,7 +52,7 @@ def check_budget() -> None:
         if _limit_usd is not None and _spent_usd >= _limit_usd:
             raise BudgetExceededError(
                 f"LLM budget exhausted: ${_spent_usd:.4f} spent of "
-                f"${_limit_usd:.2f} cap. Increase --budget or narrow the run."
+                f"${_limit_usd:.2f} cap. Increase --budget or pass --budget 0 to run uncapped."
             )
 
 

@@ -738,6 +738,10 @@ def run_discovery_phase(
                         discovered_profile[service_name] = svc_result.to_dict()
                         queries_succeeded += 1
                     total_cost += getattr(svc_result, "cost_usd", 0.0)
+            except BudgetExceededError:
+                # H9: propagate — process_charity_full's handler records budget_exhausted once.
+                # Remaining in-flight futures fail fast at _budget_check() without spending.
+                raise
             except Exception as e:
                 error_msg = f"{service_name}: {e}"
                 if is_required:
