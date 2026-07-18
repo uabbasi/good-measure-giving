@@ -101,7 +101,9 @@ class WebsiteExtractor:
         # Load page-specific prompts from YAML (T051)
         self.page_prompts = self._load_page_prompts()
 
-    # Fields where Flash is known to hallucinate — require verifier confirmation
+    # Fields where Flash is known to hallucinate — require verifier confirmation.
+    # H6: includes every hallucination-prone key the main prompt actually emits,
+    # plus legacy keys still produced by the per-page-type extraction path.
     HALLUCINATION_PRONE_FIELDS = {
         "systemic_leverage_data",
         "absorptive_capacity_data",
@@ -109,34 +111,62 @@ class WebsiteExtractor:
         "evidence_of_impact_data",
         "geographic_coverage",
         "founded_year",
+        "years_operating",
+        # Beneficiary/impact claims (see hallucination_denylist)
+        "beneficiaries",
+        "beneficiaries_served",
+        "impact_metrics",
+        "policy_influence",
+        "accreditations",
+        # Per-page-type path only (not in the main prompt)
         "populations_served",
         "accepts_zakat",
         "zakat_evidence",
         "zakat_url",
     }
 
-    # Fields that are safe to trust from Flash alone (URLs, names, simple facts)
+    # Fields that are safe to trust from Flash alone (URLs, names, verbatim facts)
     TRUSTED_FIELDS = {
         "url",
         "ein",
         "ein_mentioned",
         "name",
         "mission",
+        "mission_statement",
         "vision_statement",
+        "programs",
+        "program_descriptions",
         "donate_url",
         "donation_page_url",
         "donation_methods",
         "tax_deductible",
+        "accepts_stock_donations",
+        "stock_donation_url",
+        "accepts_crypto",
+        "accepts_daf",
+        "matching_gift_info",
+        "recurring_donation_available",
+        "minimum_donation",
         "contact_email",
         "contact_phone",
         "address",
+        "staff_count",
+        "volunteer_count",
+        "board_size",
+        "leadership",
         "has_annual_report",
         "annual_report_url",
         "has_impact_report",
         "impact_report_url",
+        "form_990_url",
+        "financial_statements_url",
+        "audit_report_url",
         "transparency_info",
         "volunteer_opportunities",
         "volunteer_page_url",
+        "newsletter_signup_url",
+        "events_page_url",
+        "careers_page_url",
         "social_media",
         "llm_extracted_pdfs",
         "pdf_outcomes",
