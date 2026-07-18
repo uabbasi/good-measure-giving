@@ -1523,3 +1523,44 @@ class PhaseCacheRepository:
         """
         rows = execute_query("SELECT phase, COUNT(*) as count FROM phase_cache GROUP BY phase") or []
         return {row["phase"]: row["count"] for row in rows}
+
+
+class ExportExclusionRepository:
+    """Audit trail of charities excluded from export by the judge-score publish gate.
+
+    Append-only: PK (charity_ein, excluded_at) keeps one row per gate event.
+    Table is created lazily; the same DDL must appear in the generated dolt_schema.sql.
+    """
+
+    def ensure_table(self) -> None:
+        execute_query(
+            """
+            CREATE TABLE IF NOT EXISTS export_exclusions (
+                charity_ein VARCHAR(12) NOT NULL,
+                judge_score INT,
+                reason TEXT,
+                excluded_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (charity_ein, excluded_at)
+            )
+            """,
+            fetch="none",
+        )
+
+    def record(self, ein: str, judge_score: int | None, reason: str) -> None:
+        """Record one exclusion event for a charity."""
+        self.ensure_table()
+        execute_query(
+            "INSERT INTO export_exclusions (charity_ein, judge_score, reason) VALUES (%s, %s, %s)",
+            (ein, judge_score, reason),
+            fetch="none",
+        )
+
+    def get_for_charity(self, ein: str) -> list[dict]:
+        """Return exclusion history for a charity, newest first."""
+        return (
+            execute_query(
+                "SELECT * FROM export_exclusions WHERE charity_ein = %s ORDER BY excluded_at DESC",
+                (ein,),
+            )
+            or []
+        )

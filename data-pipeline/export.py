@@ -35,6 +35,7 @@ from src.db import (
     CharityDataRepository,
     CharityRepository,
     EvaluationRepository,
+    ExportExclusionRepository,
     RawDataRepository,
 )
 from src.db.dolt_client import dolt
@@ -2311,11 +2312,50 @@ def load_pilot_charities(file_path: str) -> dict[str, PilotCharityFlags]:
     return charities
 
 
-def main():
+def build_arg_parser() -> argparse.ArgumentParser:
+    """CLI surface for export runs (module-level for testability)."""
     parser = argparse.ArgumentParser(description="Export charity data to website JSON")
-    parser.add_argument("--ein", type=str, help="Single charity EIN to export")
+    scope = parser.add_mutually_exclusive_group()
+    scope.add_argument("--ein", type=str, help="Single charity EIN to export")
+    scope.add_argument(
+        "--prune",
+        action="store_true",
+        help="Remove stale charity detail files not in this export set (incompatible with --ein)",
+    )
     parser.add_argument("--charities", type=str, help="Path to charities file")
     parser.add_argument("--output", type=str, help="Output directory (default: ../website/data)")
+    parser.add_argument(
+        "--judge-threshold",
+        type=int,
+        default=80,
+        help="Min evaluations.judge_score required to publish (default: 80; missing score fails closed)",
+    )
+    parser.add_argument(
+        "--no-judge-gate",
+        action="store_true",
+        help="Escape hatch: publish regardless of judge score",
+    )
+    return parser
+
+
+def partition_by_judge_gate(
+    eins: list[str], eval_repo: EvaluationRepository, judge_threshold: int
+) -> tuple[list[str], list[tuple[str, int | None]]]:
+    """Split EINs into (exportable, excluded) by evaluations.judge_score; None fails closed."""
+    kept: list[str] = []
+    excluded: list[tuple[str, int | None]] = []
+    for ein in eins:
+        evaluation = eval_repo.get(ein)
+        judge_score = evaluation.get("judge_score") if evaluation else None
+        if judge_score is None or judge_score < judge_threshold:
+            excluded.append((ein, judge_score))
+        else:
+            kept.append(ein)
+    return kept, excluded
+
+
+def main():
+    parser = build_arg_parser()
     args = parser.parse_args()
 
     # Output directory
@@ -2352,6 +2392,24 @@ def main():
     eval_repo = EvaluationRepository()
     ui_signals_config = _load_ui_signals_config()
     config_hash = _compute_config_hash(ui_signals_config)
+
+    # Publish gate (C4): only judge-approved evaluations ship. None fails closed.
+    if not args.no_judge_gate and args.judge_threshold > 0:
+        exclusion_repo = ExportExclusionRepository()
+        eins, excluded = partition_by_judge_gate(eins, eval_repo, args.judge_threshold)
+        for ein, judge_score in excluded:
+            reason = (
+                f"judge_score {judge_score} < threshold {args.judge_threshold}"
+                if judge_score is not None
+                else f"judge_score missing (fails closed, threshold {args.judge_threshold})"
+            )
+            exclusion_repo.record(ein, judge_score, reason)
+            print(f"  ⛔ Excluded {ein}: {reason}")
+        if excluded:
+            print(f"  Publish gate: {len(excluded)} excluded, {len(eins)} remain (see export_exclusions table)")
+        if not eins:
+            print("No charities pass the judge gate; nothing to export")
+            return
 
     print(f"\n{'=' * 60}")
     print(f"EXPORT: {len(eins)} CHARITIES")
@@ -2415,10 +2473,11 @@ def main():
             default=str,
         )
 
-    kept_eins = {summary.get("ein") for summary in summaries if summary.get("ein")}
-    removed_details = prune_charity_detail_files(output_dir, kept_eins)
-    if removed_details:
-        print(f"  Pruned {removed_details} stale charity detail files")
+    if args.prune:
+        kept_eins = {summary.get("ein") for summary in summaries if summary.get("ein")}
+        removed_details = prune_charity_detail_files(output_dir, kept_eins)
+        if removed_details:
+            print(f"  Pruned {removed_details} stale charity detail files")
 
     # Write calibration report
     calibration_report = _build_calibration_report(
