@@ -218,6 +218,18 @@ class BaseJudge(ABC):
         return hashlib.sha256(prompt.encode()).hexdigest()[:12]
 
     @staticmethod
+    def dedupe_exact_issues(issues: list[ValidationIssue]) -> list[ValidationIssue]:
+        """Drop exact-duplicate issues (same field, severity, message), preserving order."""
+        seen: set[tuple] = set()
+        out: list[ValidationIssue] = []
+        for issue in issues:
+            key = (issue.field, issue.severity, issue.message)
+            if key not in seen:
+                seen.add(key)
+                out.append(issue)
+        return out
+
+    @staticmethod
     def strip_markdown_json(text: str) -> str:
         """Strip markdown code blocks from LLM response.
 

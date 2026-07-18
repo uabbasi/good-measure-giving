@@ -379,6 +379,7 @@ class NarrativeQualityJudge(BaseJudge):
                 evidence=issue.suggestion,
             )
             issues.append(vi)
+        issues = self.dedupe_exact_issues(issues)
 
         return LLMNarrativeQualityResult(
             issues=issues,

@@ -24,7 +24,7 @@ from src.parsers.charity_metrics_aggregator import CharityMetrics
 
 
 class FiqhComplianceAssessment(BaseModel):
-    """Fiqh Compliance dimension (30 pts max).
+    """Fiqh Compliance dimension (35 pts max).
 
     Does this charity align with traditional zakat fiqh requirements?
     """
@@ -87,7 +87,7 @@ class TraditionalZakatScores(BaseModel):
 
     zakat_score: int = Field(ge=0, le=100, description="Total Traditional Zakat score")
 
-    fiqh_compliance: FiqhComplianceAssessment = Field(description="Fiqh Compliance dimension (max 30)")
+    fiqh_compliance: FiqhComplianceAssessment = Field(description="Fiqh Compliance dimension (max 35)")
     directness: DirectnessAssessment = Field(description="Directness dimension (max 25)")
     community_identity: CommunityIdentityAssessment = Field(description="Community Identity dimension (max 25)")
     speed_of_delivery: SpeedOfDeliveryAssessment = Field(description="Speed of Delivery dimension (max 20)")

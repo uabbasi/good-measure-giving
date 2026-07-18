@@ -38,6 +38,8 @@ Do the narratives agree on the charity's zakat/sadaqah classification?
 - Different lenses SHOULD emphasize different things — that's the point
 - Only flag genuine FACTUAL contradictions, not different emphasis or perspective
 - All issues should be WARNING severity — inconsistencies are surfaced, not blocking
+- Set "category" on every issue: "factual", "score_alignment", or "wallet_tag". Any zakat/sadaqah eligibility inconsistency MUST use "wallet_tag".
+- Report each distinct inconsistency exactly ONCE — never emit two issues describing the same underlying inconsistency.
 
 ## Output Format
 
@@ -48,6 +50,7 @@ Respond with a JSON object:
     {
       "field": "narrative.financial_claims",
       "severity": "warning",
+      "category": "factual",
       "message": "Contradicting program expense ratio claims",
       "lens_a": "baseline",
       "lens_b": "strategic",

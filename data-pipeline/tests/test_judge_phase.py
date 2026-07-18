@@ -3,9 +3,18 @@
 from unittest.mock import Mock
 
 import judge_phase
-from src.judges.schemas.verdict import CharityValidationResult
+from src.judges.schemas.verdict import (
+    CharityValidationResult,
+    JudgeVerdict,
+    Severity,
+    ValidationIssue,
+)
 
 EIN = "13-5660870"
+
+
+def _w(field: str, msg: str) -> ValidationIssue:
+    return ValidationIssue(Severity.WARNING, field, msg)
 
 FULL_EVALUATION = {
     "amal_score": 82,
@@ -71,6 +80,62 @@ class TestLensProjection:
         assert projected["zakat_score"] == 76
         assert projected["rich_strategic_narrative"] == {"summary": "Rich strategic."}
         assert projected["wallet_tag"] == "ZAKAT-ELIGIBLE"
+
+
+class TestJudgeScoreDedupe:
+    def test_judge_score_uses_deduped_warning_count(self, monkeypatch):
+        """A verdict with per-lens copy-paste duplicates counts them once (score 85, not 80)."""
+
+        class DupeOrchestrator:
+            def __init__(self, config):
+                pass
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+            def validate_single(self, charity_dict, context):
+                return CharityValidationResult(
+                    ein=charity_dict["ein"],
+                    name="Test Charity",
+                    passed=True,
+                    verdicts=[
+                        JudgeVerdict(
+                            passed=True,
+                            judge_name="narrative_quality",
+                            issues=[
+                                _w("strategic.strengths", "Strengths are generic — could apply to any charity"),
+                                _w("zakat.strengths", "Strengths are generic — could apply to any charity"),
+                                _w(
+                                    "strategic_narrative.jargon",
+                                    "Jargon detected in strategic narrative: 'multiplier effect'",
+                                ),
+                            ],
+                        ),
+                        JudgeVerdict(
+                            passed=True,
+                            judge_name="synthesize_quality",
+                            issues=[
+                                _w(
+                                    "hallucination_denylist.third_party_evaluated",
+                                    "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+                                )
+                            ],
+                        ),
+                    ],
+                )
+
+        monkeypatch.setattr(judge_phase, "JudgeOrchestrator", DupeOrchestrator)
+        repos = _mock_repos(dict(FULL_EVALUATION))
+
+        result = judge_phase.judge_charity(EIN, *repos)
+
+        assert result["judge_score"] == 85
+        assert result["warning_count"] == 3
+        assert result["error_count"] == 0
+        assert len(result["issues"]) == 4
 
 
 class TestMainPersistenceAndExitCode:
