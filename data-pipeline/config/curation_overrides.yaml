@@ -1,7 +1,25 @@
 # Curation overlay for export.py (loaded via load_curation_overrides()).
 # Hand-curated exceptions the deterministic derivations cannot reproduce.
-# Override wins over the generated value; when override == generated value
-# the export logs "override redundant" (prunable later).
+#
+# Curation surface definition: a hand-edit is a committed
+# website/data/charities.json value that differs from what the pipeline
+# itself emitted -- DB evaluations.rich_narrative.donor_fit_matrix.cause_area
+# for causeArea, charities.name for names, plus the 2 pre-2026-07 export.py
+# _CAUSE_AREA_OVERRIDES (13-1760110 -> HUMANITARIAN, 85-3547280 -> EDUCATION).
+# Verified by full 169-EIN sweep 2026-07-18: 14 causeArea hand-edits and
+# 13 name-casing hand-edits (incl. 4 mangled/non-intent: Unrwa/Imrc/Imana
+# title-case artifacts + 'CAIR Foundation INC'); all captured here or
+# provably redundant under src/utils/display_name.py + src/utils/cause_area.py.
+#
+# Explicit decision: committed values that differ from the NEW
+# derive_cause_area() output but MATCH the old pipeline output are NOT
+# curation -- they are legacy LLM freeform labels that the closed-taxonomy
+# canonicalization intentionally replaces, applied only under per-EIN diff
+# review (Phase 3 subset now; full population in the v5.3.0 run).
+#
+# Entries here WIN over generated values at export; entries equal to the
+# generated value are redundant and should be pruned (the export logs
+# "override redundant").
 version: 1
 
 names:
