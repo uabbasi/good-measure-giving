@@ -1529,10 +1529,15 @@ class ExportExclusionRepository:
     """Audit trail of charities excluded from export by the judge-score publish gate.
 
     Append-only: PK (charity_ein, excluded_at) keeps one row per gate event.
-    Table is created lazily; the same DDL must appear in the generated dolt_schema.sql.
+    Table is created lazily (memoized per process); the same DDL must appear in
+    the generated dolt_schema.sql.
     """
 
+    _table_ensured = False
+
     def ensure_table(self) -> None:
+        if ExportExclusionRepository._table_ensured:
+            return
         execute_query(
             """
             CREATE TABLE IF NOT EXISTS export_exclusions (
@@ -1545,6 +1550,7 @@ class ExportExclusionRepository:
             """,
             fetch="none",
         )
+        ExportExclusionRepository._table_ensured = True
 
     def record(self, ein: str, judge_score: int | None, reason: str) -> None:
         """Record one exclusion event for a charity."""

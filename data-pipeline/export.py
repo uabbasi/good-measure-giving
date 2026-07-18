@@ -2328,7 +2328,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "--judge-threshold",
         type=int,
         default=80,
-        help="Min evaluations.judge_score required to publish (default: 80; missing score fails closed)",
+        help="Min evaluations.judge_score required to publish (default: 80, 0=export all; missing score fails closed)",
     )
     parser.add_argument(
         "--no-judge-gate",
@@ -2336,6 +2336,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help="Escape hatch: publish regardless of judge score",
     )
     return parser
+
+
+def exclusion_reason(judge_score: int | None, judge_threshold: int) -> str:
+    """Audit-table reason string for a judge-gate exclusion (single dialect for all writers)."""
+    if judge_score is None:
+        return f"judge_score missing (fails closed, threshold {judge_threshold})"
+    return f"judge_score {judge_score} < threshold {judge_threshold}"
 
 
 def partition_by_judge_gate(
@@ -2398,11 +2405,7 @@ def main():
         exclusion_repo = ExportExclusionRepository()
         eins, excluded = partition_by_judge_gate(eins, eval_repo, args.judge_threshold)
         for ein, judge_score in excluded:
-            reason = (
-                f"judge_score {judge_score} < threshold {args.judge_threshold}"
-                if judge_score is not None
-                else f"judge_score missing (fails closed, threshold {args.judge_threshold})"
-            )
+            reason = exclusion_reason(judge_score, args.judge_threshold)
             exclusion_repo.record(ein, judge_score, reason)
             print(f"  ⛔ Excluded {ein}: {reason}")
         if excluded:

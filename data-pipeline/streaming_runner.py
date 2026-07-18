@@ -111,6 +111,7 @@ build_charity_summary = _export_module.build_charity_summary
 load_ui_signals_config = _export_module._load_ui_signals_config
 compute_ui_signals_config_hash = _export_module._compute_config_hash
 prune_charity_detail_files = _export_module.prune_charity_detail_files
+exclusion_reason = _export_module.exclusion_reason
 
 # Thread-safe printing and progress tracking
 print_lock = Lock()
@@ -1398,9 +1399,13 @@ def process_charity_full(
                 judge_score = existing_eval.get("judge_score") if existing_eval else None
 
             if judge_threshold > 0 and (judge_score is None or judge_score < judge_threshold):
-                ExportExclusionRepository().record(
-                    ein, judge_score, f"judge_score {judge_score} < threshold {judge_threshold}"
-                )
+                # Audit write must never fail the charity: phases 1-6 already succeeded.
+                try:
+                    ExportExclusionRepository().record(
+                        ein, judge_score, exclusion_reason(judge_score, judge_threshold)
+                    )
+                except Exception as e:
+                    print(f"⚠ export_exclusions audit write failed for {ein}: {e}")
                 result["phases"]["export"] = {
                     "success": True,
                     "skipped": True,
@@ -1528,6 +1533,10 @@ def main():
     )
 
     args = parser.parse_args()
+
+    # --charities + --prune stays legal, so this can't live in the mutually-exclusive group.
+    if args.prune and args.ein:
+        parser.error("--prune cannot be combined with --ein")
 
     # Budget guardrail: enforced pre-call in LLMClient.generate()
     if args.budget is not None:
