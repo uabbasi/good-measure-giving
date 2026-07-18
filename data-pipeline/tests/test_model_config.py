@@ -10,7 +10,6 @@ from src.judges.schemas.config import JudgeConfig
 from src.llm.llm_client import (
     MODEL_REGISTRY,
     TASK_MODELS,
-    TIER_MODELS,
     LLMClient,
     LLMTask,
 )
@@ -31,10 +30,6 @@ class TestNoRetiredModels:
         for task, (primary, fallbacks) in TASK_MODELS.items():
             assert primary not in RETIRED_MODEL_IDS, task
             assert not RETIRED_MODEL_IDS & set(fallbacks), task
-
-    def test_tier_chains_have_no_retired_ids(self):
-        for tier, models in TIER_MODELS.items():
-            assert not RETIRED_MODEL_IDS & set(models), tier
 
 
 class TestChainIntegrity:

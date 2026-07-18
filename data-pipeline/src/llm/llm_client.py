@@ -239,26 +239,6 @@ TASK_MODELS: Dict[LLMTask, Tuple[str, List[str]]] = {
 
 
 # =============================================================================
-# BACKWARD COMPATIBILITY - Legacy tier system
-# =============================================================================
-
-
-class ModelTier(Enum):
-    """Legacy model tiers - prefer LLMTask for new code."""
-
-    BEST = "best"
-    BACKUP = "backup"
-    CHEAPEST = "cheapest"
-
-
-TIER_MODELS: Dict[ModelTier, List[str]] = {
-    ModelTier.BEST: [MODEL_GEMINI_31_PRO, MODEL_GEMINI_3_FLASH],
-    ModelTier.BACKUP: [MODEL_GEMINI_3_FLASH, MODEL_GPT4O_MINI],
-    ModelTier.CHEAPEST: [MODEL_GEMINI_3_FLASH, MODEL_GPT4O_MINI],
-}
-
-
-# =============================================================================
 # PROMPT VERSIONING
 # =============================================================================
 
@@ -347,15 +327,11 @@ class LLMClient:
 
         # Specific model
         client = LLMClient(model=MODEL_GEMINI_3_FLASH)
-
-        # Legacy tier-based
-        client = LLMClient(tier=ModelTier.CHEAPEST)
     """
 
     def __init__(
         self,
         task: Optional[LLMTask] = None,
-        tier: Optional[ModelTier] = None,
         model: Optional[str] = None,
         api_keys: Optional[Dict[str, str]] = None,
         db_snapshot_version: Optional[str] = None,
@@ -366,8 +342,7 @@ class LLMClient:
 
         Args:
             task: LLM task type (determines model and fallbacks)
-            tier: Legacy model tier (BEST, BACKUP, CHEAPEST)
-            model: Specific model name (overrides task/tier)
+            model: Specific model name (overrides task)
             api_keys: Dict of provider -> API key
             db_snapshot_version: Current database version for tracking
             logger: Optional logger instance
@@ -391,11 +366,6 @@ class LLMClient:
             self.model_name = primary
             self.model_config = MODEL_REGISTRY[primary]
             self.fallback_models = fallbacks
-        elif tier:
-            models = TIER_MODELS[tier]
-            self.model_name = models[0]
-            self.model_config = MODEL_REGISTRY[models[0]]
-            self.fallback_models = models[1:] if len(models) > 1 else []
         else:
             # Default to Gemini 3 Flash (fast, cost-effective)
             self.model_name = MODEL_GEMINI_3_FLASH
@@ -728,28 +698,3 @@ class LLMClient:
             "fallback_models": self.fallback_models,
             "task": self.task.value if self.task else None,
         }
-
-
-# =============================================================================
-# CONVENIENCE FUNCTIONS
-# =============================================================================
-
-
-def get_client_for_task(task: LLMTask, logger=None) -> LLMClient:
-    """Get an LLM client configured for a specific task."""
-    return LLMClient(task=task, logger=logger)
-
-
-def get_extraction_client(logger=None) -> LLMClient:
-    """Get a cheap client for extraction tasks."""
-    return LLMClient(task=LLMTask.WEBSITE_EXTRACTION, logger=logger)
-
-
-def get_narrative_client(logger=None) -> LLMClient:
-    """Get a high-quality client for narrative generation."""
-    return LLMClient(task=LLMTask.NARRATIVE_GENERATION, logger=logger)
-
-
-def get_premium_client(logger=None) -> LLMClient:
-    """Get the best client for top charity deep analysis."""
-    return LLMClient(task=LLMTask.PREMIUM_NARRATIVE, logger=logger)

@@ -2,6 +2,16 @@
 # Version: 0.1.0
 # Last Updated: 2025-11-16
 
+# ============================================================================
+# STATUS (2026-07 audit): MIXED. Only the `zakat:` block below is loaded by
+# code (src/services/zakat_eligibility_service.py reads
+# zakat.eligibility_verification). The impact: / confidence: /
+# tier_aggregation: / llm: / data_freshness: / pipeline: blocks are NOT
+# loaded — live weights are hardcoded in src/scorers/v2_scorers.py.
+# Do NOT delete the dead blocks: v5.3.0 B13 moves weights into config and
+# will reconcile this file. To change scoring today, edit v2_scorers.py.
+# ============================================================================
+
 # Impact Scoring Dimensions (5 dimensions)
 impact:
   problem_importance:
@@ -171,6 +181,7 @@ confidence:
         - "Generic or vague impact claims"
         - "No systematic tracking"
 
+# STATUS: LIVE — loaded by src/services/zakat_eligibility_service.py.
 # Zakat Alignment Categories
 zakat:
   eligible_categories:
