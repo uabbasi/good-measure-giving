@@ -1,0 +1,42 @@
+# Curation overlay for export.py (loaded via load_curation_overrides()).
+# Hand-curated exceptions the deterministic derivations cannot reproduce.
+# Override wins over the generated value; when override == generated value
+# the export logs "override redundant" (prunable later).
+version: 1
+
+names:
+  "13-1685039": "CARE USA"
+  "13-1760110": "UNICEF USA"
+  "31-1267559": "MCA"
+  "76-0656947": "SIUT"
+  "77-0411194": "Council on American-Islamic Relations California"
+  "77-0412815": "ING"
+  "81-2169685": "ICNAB"
+  "82-1670588": "BASMAH"
+  "83-3464851": "SAPA"
+  # Omitted as redundant (to_display_name(db_raw) already reproduces
+  # the true name -- UNRWA/IMRC/IMANA are literal ACRONYMS entries):
+  #   20-2714426 -> 'UNRWA'
+  #   27-0058132 -> 'IMRC'
+  #   36-4166125 -> 'IMANA'
+
+cause_areas:
+  "13-1760110": "HUMANITARIAN"
+  "13-1837442": "GLOBAL HEALTH / CANCER RESEARCH"
+  "20-0310701": "RELIGIOUS EDUCATION"
+  "20-5509305": "ADVOCACY & PROFESSIONAL NETWORKING"
+  "26-0906163": "Domestic Violence & Poverty"
+  "26-1441032": "CIVIC ENGAGEMENT"
+  "26-3342933": "CRIMINAL JUSTICE & EDUCATION"
+  "36-3200165": "RELIGIOUS & EDUCATIONAL"
+  "47-5015710": "ADVOCACY & LEGAL AID"
+  "52-2283398": "ADVOCACY & PROFESSIONAL DEVELOPMENT"
+  "80-0508709": "ADVOCACY & SOCIAL JUSTICE"
+  "83-2403741": "HUMANITARIAN & RELIGIOUS"
+  "88-0405956": "EDUCATION & RELIGIOUS SERVICES"
+  # Omitted as derivable by derive_cause_area (no redundant overrides):
+  #   11-3013369 -> 'HUMANITARIAN'
+  #   38-3633581 -> 'RESEARCH & EDUCATION'
+  #   85-3547280 -> 'EDUCATION'
+
+beneficiaries_suppress: []
