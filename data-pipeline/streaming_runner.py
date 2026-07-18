@@ -52,7 +52,7 @@ from src.db import (
     RawDataRepository,
 )
 from src.db.dolt_client import dolt
-from src.llm.budget_tracker import get_limit, get_spent, set_budget
+from src.llm.budget_tracker import BudgetExceededError, check_budget, get_limit, get_spent, set_budget
 from src.llm.llm_client import LLMClient
 from src.scorers.v2_scorers import AmalScorerV2
 from src.utils.charity_loader import load_charities_from_file, normalize_website_url
@@ -117,6 +117,18 @@ exclusion_reason = _export_module.exclusion_reason
 print_lock = Lock()
 progress_lock = Lock()
 progress = {"completed": 0, "failed": 0, "total": 0}
+
+DEFAULT_BUDGET_USD = 10.0
+
+
+def apply_budget_cap(budget_usd: float | None) -> None:
+    """--budget semantics (H9): 0 disables the cap, negative is an error, else cap in USD."""
+    if budget_usd is None or budget_usd == 0:
+        set_budget(None)
+        return
+    if budget_usd < 0:
+        raise ValueError(f"--budget must be >= 0, got {budget_usd}")
+    set_budget(budget_usd)
 
 # Map source names to collector classes
 COLLECTORS = {
@@ -824,6 +836,16 @@ def process_charity_full(
     # Track which phases actually ran (for cascade invalidation)
     phases_ran: set[str] = set()
 
+    # H9: don't start new charities once the cap is hit — quiet skip, no failure parade
+    try:
+        check_budget()
+    except BudgetExceededError as e:
+        result["error"] = str(e)
+        result["budget_exhausted"] = True
+        with print_lock:
+            print(f"[{index}/{total}] ⊘ {name[:40]} - skipped: budget exhausted")
+        return result
+
     try:
         worker_resources = _get_worker_resources(logger, llm_model)
         orchestrator: DataCollectionOrchestrator = worker_resources["orchestrator"]
@@ -1477,6 +1499,16 @@ def process_charity_full(
 
         return result
 
+    except BudgetExceededError as e:
+        logger.error(f"Budget exhausted while processing {ein}", exception=e)
+        result["error"] = str(e)
+        result["budget_exhausted"] = True
+        with print_lock:
+            print(f"[{index}/{total}] ✗ {name[:40]} - aborted: budget exhausted mid-charity")
+        with progress_lock:
+            progress["failed"] += 1
+        return result
+
     except Exception as e:
         logger.error(f"Pipeline failed for {ein}", exception=e)
         with print_lock:
@@ -1527,9 +1559,9 @@ def main():
     parser.add_argument(
         "--budget",
         type=float,
-        default=None,
+        default=DEFAULT_BUDGET_USD,
         metavar="USD",
-        help="Hard cap on LLM spend for this run; calls fail fast once reached (default: no cap)",
+        help=f"Hard cap on LLM spend for this run in USD (default: {DEFAULT_BUDGET_USD}; pass 0 to run uncapped)",
     )
 
     args = parser.parse_args()
@@ -1538,12 +1570,12 @@ def main():
     if args.prune and args.ein:
         parser.error("--prune cannot be combined with --ein")
 
-    # Budget guardrail: enforced pre-call in LLMClient.generate()
-    if args.budget is not None:
-        if args.budget <= 0:
-            print(f"Error: --budget must be positive, got {args.budget}")
-            sys.exit(1)
-        set_budget(args.budget)
+    # Budget guardrail: enforced pre-call in LLMClient.generate() and GeminiSearchClient.search()
+    try:
+        apply_budget_cap(args.budget)
+    except ValueError as e:
+        print(f"Error: {e}")
+        sys.exit(1)
 
     # Check environment
     required_vars = ["GOOGLE_API_KEY"]
@@ -1919,6 +1951,9 @@ def main():
     print(f"Total charities: {len(results)}")
     print(f"  ✓ Completed: {success_count}")
     print(f"  ✗ Failed: {len(results) - success_count}")
+    budget_hit = sum(1 for r in results if r.get("budget_exhausted"))
+    if budget_hit:
+        print(f"  ⊘ Budget-capped: {budget_hit} charities skipped/aborted after the cap was hit")
     print(f"Time: {elapsed:.1f}s ({elapsed / len(results):.1f}s per charity)")
     if get_limit() is not None:
         print(f"Budget: ${get_spent():.4f} spent of ${get_limit():.2f} cap")

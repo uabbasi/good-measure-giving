@@ -15,6 +15,8 @@ from typing import Any, Optional
 from google import genai
 from google.genai import types
 
+from ..llm.budget_tracker import add_cost as _budget_add_cost
+from ..llm.budget_tracker import check_budget as _budget_check
 from ..models.agent_discovery import (
     GroundingChunk,
     GroundingMetadata,
@@ -325,6 +327,8 @@ class GeminiSearchClient:
         )
 
         try:
+            # H9: same budget tracker as LLMClient — discovery spend counts too
+            _budget_check()
             response = self.client.models.generate_content(
                 model=self.model,
                 contents=contents,
@@ -345,6 +349,7 @@ class GeminiSearchClient:
                 output_tokens = getattr(response.usage_metadata, "candidates_token_count", 0) or 0
 
             cost = self._calculate_cost(input_tokens, output_tokens)
+            _budget_add_cost(cost)
 
             logger.info(
                 f"Search completed: {len(grounding_metadata.grounding_chunks)} sources, "
