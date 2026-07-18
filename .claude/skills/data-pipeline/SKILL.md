@@ -46,7 +46,7 @@ uv run python streaming_runner.py --charities pilot_charities.txt --workers 10
 #   --force-all              ignore cache entirely
 #   --checkpoint 10          Dolt commit every 10 charities
 #   --budget 5.0             hard cap on LLM spend, USD (default: 10.0; 0 = uncapped)
-#   --judge-threshold 80     min judge score to export (0 = export all)
+#   --no-judge-gate          escape hatch: export despite judge errors / stale hash
 #   --skip-export            stop before export
 #   --dry-run / --cache-status
 

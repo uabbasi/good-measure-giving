@@ -55,9 +55,13 @@ Per charity the phases run in order; charities run in parallel
 
 ## Judge gate & export
 
-- The judge phase persists `judge_score` into `evaluations`.
-- Export excludes `judge_score < threshold` (default 80; `--judge-threshold 0`
-  or `--no-judge-gate` disables). Exclusions are written to the
+- The judge phase persists `judge_score` (internal metric only), the deduped
+  `judge_error_count`/`judge_warning_count`, and `judge_content_hash` into
+  `evaluations`.
+- Export excludes charities with judge errors > 0 or a stale/missing
+  `judge_content_hash` (NULL counts fail closed; `--no-judge-gate` is the
+  escape hatch). Warnings never gate — they feed
+  `data-pipeline/reports/editorial-queue.json`. Exclusions are written to the
   `export_exclusions` table (ein, judge_score, reason, excluded_at).
 - Pruning stale exported charities runs ONLY with an explicit `--prune`,
   and never when `--ein` was passed.

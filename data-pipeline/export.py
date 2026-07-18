@@ -2265,7 +2265,7 @@ def exclusion_reason(error_count: int | None, stale: bool = False) -> str:
         return "judge counts missing (fails closed)"
     if error_count > 0:
         return f"judge errors: {error_count} (publication blocked)"
-    return "judge_score stale (content changed since judged)"
+    return "judge verdict stale (content changed since judged)"
 
 
 def partition_by_judge_gate(

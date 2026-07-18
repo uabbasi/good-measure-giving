@@ -823,7 +823,7 @@ def process_charity_full(
     4. Baseline: Generate AMAL score and baseline narrative
     5. Rich: Generate rich investment memo narrative
     6. Judge: Validate evaluation quality
-    7. Export: Export to website JSON (if judge_score >= threshold)
+    7. Export: Export to website JSON (if judge errors == 0 and content hash fresh)
 
     Note: Discover phase runs in parallel with Extract (both are Phase 2).
     """

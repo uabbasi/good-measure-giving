@@ -159,7 +159,7 @@ class TestExclusionReason:
         assert exclusion_reason(None) == "judge counts missing (fails closed)"
 
     def test_stale_reason(self):
-        assert exclusion_reason(0, stale=True) == "judge_score stale (content changed since judged)"
+        assert exclusion_reason(0, stale=True) == "judge verdict stale (content changed since judged)"
 
 
 class TestEditorialQueue:
