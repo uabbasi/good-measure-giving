@@ -92,7 +92,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-18 08:35:05",
+  "lastUpdated": "2026-07-18 13:46:05",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -102,6 +102,13 @@
     },
     "beneficiaries_served_annually": {
       "method": "direct",
+      "semantics": {
+        "category": "annual_people_served",
+        "confident": true,
+        "model": "gemini-2.5-flash-lite",
+        "timestamp": "2026-07-18T22:23:06.013836+00:00",
+        "verified": true
+      },
       "source_name": "Charity Website",
       "source_path": "website_profile.beneficiaries_served",
       "source_url": "https://givedirectly.org/wp-content/uploads/2019/03/FY2015Form990.pdf",
@@ -380,6 +387,13 @@
   "beneficiariesServedAnnually": 2000000,
   "beneficiariesSource": {
     "method": "direct",
+    "semantics": {
+      "category": "annual_people_served",
+      "confident": true,
+      "model": "gemini-2.5-flash-lite",
+      "timestamp": "2026-07-18T22:23:06.013836+00:00",
+      "verified": true
+    },
     "source_name": "Charity Website",
     "source_path": "website_profile.beneficiaries_served",
     "source_url": "https://givedirectly.org/wp-content/uploads/2019/03/FY2015Form990.pdf",
@@ -617,37 +631,31 @@
         {
           "field": "strategic.strengths",
           "judge": "narrative_quality",
-          "message": "Strengths are generic \u2014 could apply to any charity",
+          "message": "Strengths cite no program names, beneficiary counts, or geographies specific to this charity",
           "severity": "warning"
         },
         {
           "field": "zakat.strengths",
           "judge": "narrative_quality",
-          "message": "Strengths are generic \u2014 could apply to any charity",
+          "message": "Strengths cite no program names, beneficiary counts, or geographies specific to this charity",
           "severity": "warning"
         },
         {
           "field": "strategic.ideal_donor_profile",
           "judge": "narrative_quality",
-          "message": "Ideal donor profile is not actionable \u2014 does not help donors decide if this charity is right for them",
+          "message": "Ideal donor profile is too generic and does not provide actionable insights for donors.",
           "severity": "warning"
         },
         {
           "field": "zakat.ideal_donor_profile",
           "judge": "narrative_quality",
-          "message": "Ideal donor profile is not actionable \u2014 does not help donors decide if this charity is right for them",
-          "severity": "warning"
-        },
-        {
-          "field": "strategic.case_against",
-          "judge": "narrative_quality",
-          "message": "Case against is not genuine \u2014 it's a softball that praises the charity",
+          "message": "Ideal donor profile is too generic and does not provide actionable insights for donors.",
           "severity": "warning"
         },
         {
           "field": "zakat.case_against",
           "judge": "narrative_quality",
-          "message": "Case against is not genuine \u2014 it's a softball that praises the charity",
+          "message": "The case against is too soft and does not present a genuine criticism.",
           "severity": "warning"
         },
         {
@@ -657,9 +665,15 @@
           "severity": "warning"
         },
         {
-          "field": "zakat_eligibility",
+          "field": "narrative.zakat_eligibility",
           "judge": "cross_lens",
-          "message": "[baseline vs zakat] The zakat lens explicitly states the charity is better suited for sadaqah, while the baseline lens mentions a 'Zakat' page on the charity's website without clarifying its zakat-eligibility status.",
+          "message": "[baseline vs zakat] Conflicting information on zakat eligibility.",
+          "severity": "warning"
+        },
+        {
+          "field": "narrative.financial_claims",
+          "judge": "cross_lens",
+          "message": "[baseline vs zakat] Discrepancy in program expense ratio.",
           "severity": "warning"
         }
       ],
