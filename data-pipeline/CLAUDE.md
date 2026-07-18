@@ -32,7 +32,9 @@ uv run python export.py                          # 8 Export to website/data/
 
 Export applies the judge gate: charities with `judge_score` below the threshold
 (default 80, `--no-judge-gate` to bypass) are excluded and recorded in the
-`export_exclusions` table. Pruning previously-exported charities never happens
+`export_exclusions` table. The gate also requires `evaluations.judge_content_hash`
+to match a recomputation over current content; stale or missing hashes fail closed
+until the charity is re-judged. Pruning previously-exported charities never happens
 implicitly: it requires an explicit `--prune`, and never runs with `--ein`.
 
 BBB is a frozen source by default (H12): `crawl.py --sources bbb` is the only

@@ -658,6 +658,7 @@ class EvaluationRepository:
         "rich_strategic_narrative",
         "zakat_narrative",
         "judge_score",
+        "judge_content_hash",  # sha256-hex16 of the judged projection (content-bound gate)
         "information_density",
         "rubric_version",
         "state",
@@ -756,13 +757,26 @@ class EvaluationRepository:
         """Get all approved evaluations."""
         return self.get_by_state("approved")
 
-    def update_judge_result(self, ein: str, judge_score: int, judge_issues: list[dict] | None = None) -> None:
+    def update_judge_result(
+        self,
+        ein: str,
+        judge_score: int,
+        judge_issues: list[dict] | None = None,
+        content_hash: str | None = None,
+    ) -> None:
         """Update judge validation results for an evaluation.
 
         Args:
             ein: Charity EIN
             judge_score: Judge score (0-100, higher = fewer issues)
             judge_issues: List of validation issues found by judges
+            content_hash: sha256-hex16 of the judged projection. Written
+                UNCONDITIONALLY (including None) so score + hash stay atomic:
+                a legacy caller omitting it produces NULL → the export gate
+                fails closed, never a stale hash paired with a new score. This
+                method touches only judge_issues (excluded from the hash),
+                judge_score, judge_content_hash, updated_at — none hashed — so
+                a post-persistence recomputation still matches.
         """
         parts = ["judge_score = %s", "updated_at = CURRENT_TIMESTAMP"]
         values: list = [judge_score]
@@ -778,6 +792,10 @@ class EvaluationRepository:
             score_details["judge_issues"] = judge_issues
             parts.append("score_details = %s")
             values.append(_serialize_json(score_details))
+
+        # Unconditional: keeps judge_score and its content binding in lockstep.
+        parts.append("judge_content_hash = %s")
+        values.append(content_hash)
 
         values.append(ein)
         execute_query(

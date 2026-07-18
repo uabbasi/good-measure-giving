@@ -81,6 +81,22 @@ class TestLensProjection:
         assert projected["rich_strategic_narrative"] == {"summary": "Rich strategic."}
         assert projected["wallet_tag"] == "ZAKAT-ELIGIBLE"
 
+    def test_judge_charity_returns_content_hash(self, monkeypatch):
+        monkeypatch.setattr(judge_phase, "JudgeOrchestrator", FakeOrchestrator)
+        repos = _mock_repos(dict(FULL_EVALUATION))
+
+        result = judge_phase.judge_charity(EIN, *repos)
+
+        assert result["content_hash"] == judge_phase.compute_judge_content_hash(FULL_EVALUATION)
+
+    def test_projection_matches_judge_surface(self, monkeypatch):
+        monkeypatch.setattr(judge_phase, "JudgeOrchestrator", FakeOrchestrator)
+        repos = _mock_repos(dict(FULL_EVALUATION))
+
+        judge_phase.judge_charity(EIN, *repos)
+
+        assert FakeOrchestrator.captured["evaluation"] == judge_phase.build_judge_projection(FULL_EVALUATION)
+
 
 class TestJudgeScoreDedupe:
     def test_judge_score_uses_deduped_warning_count(self, monkeypatch):
@@ -154,8 +170,8 @@ class TestMainPersistenceAndExitCode:
         persisted = []
 
         class FakeEvalRepo:
-            def update_judge_result(self, ein, judge_score, issues):
-                persisted.append((ein, judge_score, issues))
+            def update_judge_result(self, ein, judge_score, issues, content_hash=None):
+                persisted.append((ein, judge_score, issues, content_hash))
 
         self._patch_environment(
             monkeypatch, FakeEvalRepo, {"success": False, "error": "boom", "cost_usd": 0.0}
@@ -170,8 +186,8 @@ class TestMainPersistenceAndExitCode:
         persisted = []
 
         class FakeEvalRepo:
-            def update_judge_result(self, ein, judge_score, issues):
-                persisted.append((ein, judge_score, issues))
+            def update_judge_result(self, ein, judge_score, issues, content_hash=None):
+                persisted.append((ein, judge_score, issues, content_hash))
 
         self._patch_environment(
             monkeypatch,
@@ -184,10 +200,11 @@ class TestMainPersistenceAndExitCode:
                 "error_count": 0,
                 "warning_count": 3,
                 "cost_usd": 0.01,
+                "content_hash": "abc123abc123abc1",
             },
         )
 
         exit_code = judge_phase.main(["--ein", EIN])
 
         assert exit_code == 0
-        assert persisted == [(EIN, 85, [])]
+        assert persisted == [(EIN, 85, [], "abc123abc123abc1")]

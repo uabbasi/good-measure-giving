@@ -162,6 +162,7 @@ CREATE TABLE `evaluations` (
   `zakat_narrative` json DEFAULT NULL,
   `rich_strategic_narrative` json,
   `rubric_version` varchar(12) DEFAULT NULL,
+  `judge_content_hash` varchar(16),
   PRIMARY KEY (`charity_ein`),
   KEY `idx_evaluations_state` (`state`),
   KEY `idx_evaluations_wallet_tag` (`wallet_tag`),

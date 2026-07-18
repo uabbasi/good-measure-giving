@@ -9,19 +9,31 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from export import build_arg_parser, exclusion_reason, partition_by_judge_gate
+from judge_phase import compute_judge_content_hash
 from src.db.repository import ExportExclusionRepository
 
 DATA_PIPELINE_DIR = Path(__file__).parent.parent
 
 
+def fresh_row(ein, score):
+    """A full evaluations row whose judge_content_hash matches its judged content."""
+    row = {
+        "charity_ein": ein,
+        "judge_score": score,
+        "amal_score": 80,
+        "baseline_narrative": {"summary": "s"},
+        "score_details": {},
+    }
+    row["judge_content_hash"] = compute_judge_content_hash(row)
+    return row
+
+
 class FakeEvalRepo:
-    def __init__(self, scores):
-        self._scores = scores
+    def __init__(self, rows):
+        self._rows = rows
 
     def get(self, ein):
-        if ein not in self._scores:
-            return None
-        return {"charity_ein": ein, "judge_score": self._scores[ein]}
+        return self._rows.get(ein)
 
 
 class TestArgParser:
@@ -42,16 +54,62 @@ class TestArgParser:
 
 class TestJudgeGate:
     def test_partitions_by_threshold(self):
-        repo = FakeEvalRepo({"A": 90, "B": 79, "C": 80})
+        repo = FakeEvalRepo({"A": fresh_row("A", 90), "B": fresh_row("B", 79), "C": fresh_row("C", 80)})
         kept, excluded = partition_by_judge_gate(["A", "B", "C"], repo, 80)
         assert kept == ["A", "C"]
-        assert excluded == [("B", 79)]
+        assert excluded == [("B", 79, False)]
 
     def test_missing_score_fails_closed(self):
-        repo = FakeEvalRepo({"A": None})
+        repo = FakeEvalRepo({"A": {"charity_ein": "A", "judge_score": None}})
         kept, excluded = partition_by_judge_gate(["A", "B"], repo, 80)
         assert kept == []
-        assert excluded == [("A", None), ("B", None)]
+        assert excluded == [("A", None, False), ("B", None, False)]
+
+    def test_gate_keeps_fresh_hash(self):
+        repo = FakeEvalRepo({"A": fresh_row("A", 90)})
+        kept, excluded = partition_by_judge_gate(["A"], repo, 80)
+        assert kept == ["A"]
+        assert excluded == []
+
+    def test_gate_excludes_null_hash_as_stale(self):
+        row = fresh_row("A", 90)
+        row["judge_content_hash"] = None
+        repo = FakeEvalRepo({"A": row})
+        kept, excluded = partition_by_judge_gate(["A"], repo, 80)
+        assert kept == []
+        assert excluded == [("A", 90, True)]
+
+    def test_gate_excludes_mismatched_hash_as_stale(self):
+        row = fresh_row("A", 90)
+        row["judge_content_hash"] = "0" * 16
+        repo = FakeEvalRepo({"A": row})
+        kept, excluded = partition_by_judge_gate(["A"], repo, 80)
+        assert kept == []
+        assert excluded == [("A", 90, True)]
+
+    def test_gate_excludes_mutated_content_as_stale(self):
+        row = fresh_row("A", 90)
+        row["baseline_narrative"] = {"summary": "MUTATED AFTER JUDGING"}
+        repo = FakeEvalRepo({"A": row})
+        kept, excluded = partition_by_judge_gate(["A"], repo, 80)
+        assert kept == []
+        assert excluded == [("A", 90, True)]
+
+    def test_gate_hash_ignores_judge_issues_mutation(self):
+        row = fresh_row("A", 90)
+        row["score_details"]["judge_issues"] = [{"judge": "x", "severity": "warning"}]
+        repo = FakeEvalRepo({"A": row})
+        kept, excluded = partition_by_judge_gate(["A"], repo, 80)
+        assert kept == ["A"]
+        assert excluded == []
+
+    def test_score_check_precedes_hash_check(self):
+        row = fresh_row("A", 79)
+        row["judge_content_hash"] = None
+        repo = FakeEvalRepo({"A": row})
+        kept, excluded = partition_by_judge_gate(["A", "B"], repo, 80)
+        assert kept == []
+        assert excluded == [("A", 79, False), ("B", None, False)]
 
 
 class TestExclusionReason:
@@ -60,6 +118,30 @@ class TestExclusionReason:
 
     def test_missing_score_fails_closed(self):
         assert exclusion_reason(None, 80) == "judge_score missing (fails closed, threshold 80)"
+
+    def test_stale_reason(self):
+        assert exclusion_reason(90, 80, stale=True) == "judge_score stale (content changed since judged)"
+
+
+class TestPhaseArtifactsJudgeHash:
+    def test_phase_artifacts_judge_requires_fresh_hash(self):
+        from unittest.mock import Mock
+
+        import streaming_runner
+
+        eval_repo = Mock()
+
+        eval_repo.get.return_value = fresh_row("A", 90)
+        ok, reason = streaming_runner._phase_artifacts_exist("A", "judge", Mock(), Mock(), eval_repo)
+        assert ok is True
+        assert reason == ""
+
+        stale_row = fresh_row("A", 90)
+        stale_row["judge_content_hash"] = None
+        eval_repo.get.return_value = stale_row
+        ok, reason = streaming_runner._phase_artifacts_exist("A", "judge", Mock(), Mock(), eval_repo)
+        assert ok is False
+        assert reason == "evaluations row has stale/missing judge_content_hash"
 
 
 class TestExportExclusionRepository:

@@ -31,6 +31,9 @@ load_dotenv(Path(__file__).parent.parent / ".env")
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Sibling root module (data-pipeline is sys.path-bootstrapped above). No cycle:
+# judge_phase never imports export.
+from judge_phase import compute_judge_content_hash
 from src.db import (
     CharityDataRepository,
     CharityRepository,
@@ -2246,7 +2249,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "--judge-threshold",
         type=int,
         default=80,
-        help="Min evaluations.judge_score required to publish (default: 80, 0=export all; missing score fails closed)",
+        help="Min evaluations.judge_score required to publish (default: 80, 0=export all; missing score fails closed; stale/missing content hash also fails closed)",
     )
     parser.add_argument(
         "--no-judge-gate",
@@ -2256,8 +2259,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def exclusion_reason(judge_score: int | None, judge_threshold: int) -> str:
+def exclusion_reason(judge_score: int | None, judge_threshold: int, stale: bool = False) -> str:
     """Audit-table reason string for a judge-gate exclusion (single dialect for all writers)."""
+    if stale:
+        return "judge_score stale (content changed since judged)"
     if judge_score is None:
         return f"judge_score missing (fails closed, threshold {judge_threshold})"
     return f"judge_score {judge_score} < threshold {judge_threshold}"
@@ -2265,17 +2270,21 @@ def exclusion_reason(judge_score: int | None, judge_threshold: int) -> str:
 
 def partition_by_judge_gate(
     eins: list[str], eval_repo: EvaluationRepository, judge_threshold: int
-) -> tuple[list[str], list[tuple[str, int | None]]]:
-    """Split EINs into (exportable, excluded) by evaluations.judge_score; None fails closed."""
+) -> tuple[list[str], list[tuple[str, int | None, bool]]]:
+    """Split EINs into (exportable, excluded); None score or stale/NULL content hash fails closed."""
     kept: list[str] = []
-    excluded: list[tuple[str, int | None]] = []
+    excluded: list[tuple[str, int | None, bool]] = []
     for ein in eins:
         evaluation = eval_repo.get(ein)
         judge_score = evaluation.get("judge_score") if evaluation else None
         if judge_score is None or judge_score < judge_threshold:
-            excluded.append((ein, judge_score))
-        else:
-            kept.append(ein)
+            excluded.append((ein, judge_score, False))
+            continue
+        stored_hash = evaluation.get("judge_content_hash")
+        if stored_hash is None or stored_hash != compute_judge_content_hash(evaluation):
+            excluded.append((ein, judge_score, True))
+            continue
+        kept.append(ein)
     return kept, excluded
 
 
@@ -2322,8 +2331,8 @@ def main():
     if not args.no_judge_gate and args.judge_threshold > 0:
         exclusion_repo = ExportExclusionRepository()
         eins, excluded = partition_by_judge_gate(eins, eval_repo, args.judge_threshold)
-        for ein, judge_score in excluded:
-            reason = exclusion_reason(judge_score, args.judge_threshold)
+        for ein, judge_score, stale in excluded:
+            reason = exclusion_reason(judge_score, args.judge_threshold, stale=stale)
             exclusion_repo.record(ein, judge_score, reason)
             print(f"  ⛔ Excluded {ein}: {reason}")
         if excluded:

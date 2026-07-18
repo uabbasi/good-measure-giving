@@ -78,7 +78,7 @@ import importlib.util
 
 from baseline import evaluate_charity
 from extract import extract_row
-from judge_phase import judge_charity
+from judge_phase import compute_judge_content_hash, judge_charity
 from rich_phase import generate_rich_for_pipeline
 
 # Quality judges for inline validation after each phase
@@ -303,6 +303,10 @@ def _phase_artifacts_exist(
             return False, "missing evaluations row"
         if evaluation.get("judge_score") is None:
             return False, "evaluations row missing judge_score"
+        # Content-bound: a valid cached judge score must match current content.
+        # Stale/NULL hash → re-judge (self-healing) instead of silent export exclusion.
+        if evaluation.get("judge_content_hash") != compute_judge_content_hash(evaluation):
+            return False, "evaluations row has stale/missing judge_content_hash"
         return True, ""
 
     return True, ""
@@ -1385,7 +1389,12 @@ def process_charity_full(
 
             if judge_result.get("success"):
                 # Store judge results in database
-                eval_repo.update_judge_result(ein, judge_result["judge_score"], judge_result.get("issues", []))
+                eval_repo.update_judge_result(
+                    ein,
+                    judge_result["judge_score"],
+                    judge_result.get("issues", []),
+                    content_hash=judge_result.get("content_hash"),
+                )
                 result["phases"]["judge"] = {
                     "success": True,
                     "judge_score": judge_result["judge_score"],
@@ -1424,24 +1433,29 @@ def process_charity_full(
                 "reason": "Baseline failed - nothing to export",
             }
         else:
-            # Get judge score (from result or re-fetch from DB)
+            # Get judge score (from result or re-fetch from DB); hash check always needs the row
+            evaluation = eval_repo.get(ein)
             judge_score = result.get("judge_score")
             if judge_score is None:
-                existing_eval = eval_repo.get(ein)
-                judge_score = existing_eval.get("judge_score") if existing_eval else None
+                judge_score = evaluation.get("judge_score") if evaluation else None
 
-            if judge_threshold > 0 and (judge_score is None or judge_score < judge_threshold):
+            stale = False
+            if judge_threshold > 0 and judge_score is not None and judge_score >= judge_threshold:
+                stored_hash = evaluation.get("judge_content_hash") if evaluation else None
+                stale = stored_hash is None or stored_hash != compute_judge_content_hash(evaluation)
+
+            if judge_threshold > 0 and (judge_score is None or judge_score < judge_threshold or stale):
                 # Audit write must never fail the charity: phases 1-6 already succeeded.
                 try:
                     ExportExclusionRepository().record(
-                        ein, judge_score, exclusion_reason(judge_score, judge_threshold)
+                        ein, judge_score, exclusion_reason(judge_score, judge_threshold, stale=stale)
                     )
                 except Exception as e:
                     print(f"⚠ export_exclusions audit write failed for {ein}: {e}")
                 result["phases"]["export"] = {
                     "success": True,
                     "skipped": True,
-                    "reason": f"Judge score {judge_score} < threshold {judge_threshold}",
+                    "reason": exclusion_reason(judge_score, judge_threshold, stale=stale),
                 }
             else:
                 # Export the charity
@@ -1847,6 +1861,11 @@ def main():
                 continue
             judge_score = evaluation.get("judge_score")
             if args.judge_threshold > 0 and (judge_score is None or judge_score < args.judge_threshold):
+                continue
+            stored_hash = evaluation.get("judge_content_hash")
+            if args.judge_threshold > 0 and (
+                stored_hash is None or stored_hash != compute_judge_content_hash(evaluation)
+            ):
                 continue
             exportable_eins.append(ein)
 
