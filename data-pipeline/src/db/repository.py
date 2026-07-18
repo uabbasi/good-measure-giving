@@ -659,6 +659,8 @@ class EvaluationRepository:
         "zakat_narrative",
         "judge_score",
         "judge_content_hash",  # sha256-hex16 of the judged projection (content-bound gate)
+        "judge_error_count",  # deduped judge ERROR count (Option A gate: ==0 to publish)
+        "judge_warning_count",  # deduped judge WARNING count (editorial queue only; never gates)
         "information_density",
         "rubric_version",
         "state",
@@ -763,20 +765,27 @@ class EvaluationRepository:
         judge_score: int,
         judge_issues: list[dict] | None = None,
         content_hash: str | None = None,
+        error_count: int | None = None,
+        warning_count: int | None = None,
     ) -> None:
         """Update judge validation results for an evaluation.
 
         Args:
             ein: Charity EIN
-            judge_score: Judge score (0-100, higher = fewer issues)
+            judge_score: Judge score (0-100, higher = fewer issues) — internal metric only
             judge_issues: List of validation issues found by judges
             content_hash: sha256-hex16 of the judged projection. Written
                 UNCONDITIONALLY (including None) so score + hash stay atomic:
                 a legacy caller omitting it produces NULL → the export gate
                 fails closed, never a stale hash paired with a new score. This
                 method touches only judge_issues (excluded from the hash),
-                judge_score, judge_content_hash, updated_at — none hashed — so
-                a post-persistence recomputation still matches.
+                judge_score, judge_content_hash, judge_error/warning_count,
+                updated_at — none hashed — so a post-persistence recomputation
+                still matches.
+            error_count: Deduped judge ERROR count (Option A publication gate).
+            warning_count: Deduped judge WARNING count (editorial queue only).
+                Both counts are written UNCONDITIONALLY alongside the hash so the
+                gate never reads a stale mix; None (legacy callers) fails closed.
         """
         parts = ["judge_score = %s", "updated_at = CURRENT_TIMESTAMP"]
         values: list = [judge_score]
@@ -793,9 +802,14 @@ class EvaluationRepository:
             parts.append("score_details = %s")
             values.append(_serialize_json(score_details))
 
-        # Unconditional: keeps judge_score and its content binding in lockstep.
+        # Unconditional: keeps judge_score, its content binding, and the deduped
+        # counts in lockstep so the gate never reads a stale mix.
         parts.append("judge_content_hash = %s")
         values.append(content_hash)
+        parts.append("judge_error_count = %s")
+        values.append(error_count)
+        parts.append("judge_warning_count = %s")
+        values.append(warning_count)
 
         values.append(ein)
         execute_query(

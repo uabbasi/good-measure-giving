@@ -170,8 +170,10 @@ class TestMainPersistenceAndExitCode:
         persisted = []
 
         class FakeEvalRepo:
-            def update_judge_result(self, ein, judge_score, issues, content_hash=None):
-                persisted.append((ein, judge_score, issues, content_hash))
+            def update_judge_result(
+                self, ein, judge_score, issues, content_hash=None, error_count=None, warning_count=None
+            ):
+                persisted.append((ein, judge_score, issues, content_hash, error_count, warning_count))
 
         self._patch_environment(
             monkeypatch, FakeEvalRepo, {"success": False, "error": "boom", "cost_usd": 0.0}
@@ -186,8 +188,10 @@ class TestMainPersistenceAndExitCode:
         persisted = []
 
         class FakeEvalRepo:
-            def update_judge_result(self, ein, judge_score, issues, content_hash=None):
-                persisted.append((ein, judge_score, issues, content_hash))
+            def update_judge_result(
+                self, ein, judge_score, issues, content_hash=None, error_count=None, warning_count=None
+            ):
+                persisted.append((ein, judge_score, issues, content_hash, error_count, warning_count))
 
         self._patch_environment(
             monkeypatch,
@@ -207,4 +211,4 @@ class TestMainPersistenceAndExitCode:
         exit_code = judge_phase.main(["--ein", EIN])
 
         assert exit_code == 0
-        assert persisted == [(EIN, 85, [], "abc123abc123abc1")]
+        assert persisted == [(EIN, 85, [], "abc123abc123abc1", 0, 3)]

@@ -52,6 +52,8 @@ from src.utils.display_name import to_display_name
 # Output directory
 WEBSITE_DATA_DIR = Path(__file__).parent.parent / "website" / "data"
 WEBSITE_PUBLIC_DATA_DIR = Path(__file__).parent.parent / "website" / "public" / "data"
+# Internal pipeline artifacts (gitignored, NEVER under website/data which ships whole).
+REPORTS_DIR = Path(__file__).parent / "reports"
 PILOT_CHARITIES_FILE = Path(__file__).parent / "pilot_charities.txt"
 UI_SIGNALS_CONFIG_FILE = Path(__file__).parent / "config" / "ui_signals.yaml"
 CURATION_OVERRIDES_FILE = Path(__file__).parent / "config" / "curation_overrides.yaml"
@@ -2246,46 +2248,107 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--charities", type=str, help="Path to charities file")
     parser.add_argument("--output", type=str, help="Output directory (default: ../website/data)")
     parser.add_argument(
-        "--judge-threshold",
-        type=int,
-        default=80,
-        help="Min evaluations.judge_score required to publish (default: 80, 0=export all; missing score fails closed; stale/missing content hash also fails closed)",
-    )
-    parser.add_argument(
         "--no-judge-gate",
         action="store_true",
-        help="Escape hatch: publish regardless of judge score",
+        help="Escape hatch: publish regardless of judge errors / content-hash freshness",
     )
     return parser
 
 
-def exclusion_reason(judge_score: int | None, judge_threshold: int, stale: bool = False) -> str:
-    """Audit-table reason string for a judge-gate exclusion (single dialect for all writers)."""
-    if stale:
-        return "judge_score stale (content changed since judged)"
-    if judge_score is None:
-        return f"judge_score missing (fails closed, threshold {judge_threshold})"
-    return f"judge_score {judge_score} < threshold {judge_threshold}"
+def exclusion_reason(error_count: int | None, stale: bool = False) -> str:
+    """Audit-table reason string for a judge-gate exclusion (single dialect for all writers).
+
+    Option A: publication is gated on deduped judge ERRORS, not judge_score.
+    Precedence mirrors the gate: missing counts (fail closed) → errors → stale.
+    """
+    if error_count is None:
+        return "judge counts missing (fails closed)"
+    if error_count > 0:
+        return f"judge errors: {error_count} (publication blocked)"
+    return "judge_score stale (content changed since judged)"
 
 
 def partition_by_judge_gate(
-    eins: list[str], eval_repo: EvaluationRepository, judge_threshold: int
-) -> tuple[list[str], list[tuple[str, int | None, bool]]]:
-    """Split EINs into (exportable, excluded); None score or stale/NULL content hash fails closed."""
+    eins: list[str], eval_repo: EvaluationRepository
+) -> tuple[list[str], list[tuple[str, int | None, int | None, bool]]]:
+    """Split EINs into (exportable, excluded).
+
+    Publication gate = deduped judge_error_count == 0 AND fresh judge_content_hash.
+    NULL error_count fails closed (legacy rows predate the counts and are stale).
+    Warnings never gate. Excluded entries are (ein, judge_score, error_count, stale).
+    """
     kept: list[str] = []
-    excluded: list[tuple[str, int | None, bool]] = []
+    excluded: list[tuple[str, int | None, int | None, bool]] = []
     for ein in eins:
         evaluation = eval_repo.get(ein)
         judge_score = evaluation.get("judge_score") if evaluation else None
-        if judge_score is None or judge_score < judge_threshold:
-            excluded.append((ein, judge_score, False))
+        error_count = evaluation.get("judge_error_count") if evaluation else None
+        if error_count is None:
+            excluded.append((ein, judge_score, None, False))
+            continue
+        if error_count > 0:
+            excluded.append((ein, judge_score, error_count, False))
             continue
         stored_hash = evaluation.get("judge_content_hash")
         if stored_hash is None or stored_hash != compute_judge_content_hash(evaluation):
-            excluded.append((ein, judge_score, True))
+            excluded.append((ein, judge_score, error_count, True))
             continue
         kept.append(ein)
     return kept, excluded
+
+
+def build_editorial_queue(charity_repo: CharityRepository, eval_repo: EvaluationRepository) -> list[dict]:
+    """Editorial work list: every evaluated charity with fresh deduped counts.
+
+    Warnings never gate publication — this artifact is where they surface. A
+    charity is listed only when its counts are present AND its content hash is
+    fresh (stale counts don't describe current content). Sorted by deduped
+    warning count desc, ties broken by EIN for determinism.
+    """
+    queue: list[dict] = []
+    for charity in charity_repo.get_all():
+        ein = charity.get("ein")
+        if not ein:
+            continue
+        evaluation = eval_repo.get(ein)
+        if not evaluation:
+            continue
+        error_count = evaluation.get("judge_error_count")
+        warning_count = evaluation.get("judge_warning_count")
+        if error_count is None or warning_count is None:
+            continue
+        stored_hash = evaluation.get("judge_content_hash")
+        if stored_hash is None or stored_hash != compute_judge_content_hash(evaluation):
+            continue
+        queue.append(
+            {
+                "ein": ein,
+                "name": charity.get("name") or ein,
+                "judge_warning_count": warning_count,
+                "judge_error_count": error_count,
+                "judge_score": evaluation.get("judge_score"),
+                "judged_at": evaluation.get("updated_at"),
+            }
+        )
+    queue.sort(key=lambda row: (-row["judge_warning_count"], row["ein"]))
+    return queue
+
+
+def write_editorial_queue(queue: list[dict], reports_dir: Path = REPORTS_DIR) -> Path:
+    """Write the editorial queue to reports/editorial-queue.json and print a one-line summary."""
+    reports_dir.mkdir(parents=True, exist_ok=True)
+    path = reports_dir / "editorial-queue.json"
+    with open(path, "w") as f:
+        json.dump(queue, f, indent=2, default=str)
+    if queue:
+        top = queue[0]
+        print(
+            f"  editorial queue: {len(queue)} charities, "
+            f"top: {top['name']} ({top['judge_warning_count']} warnings)"
+        )
+    else:
+        print("  editorial queue: 0 charities (no fresh judged counts)")
+    return path
 
 
 def main():
@@ -2327,12 +2390,13 @@ def main():
     ui_signals_config = _load_ui_signals_config()
     config_hash = _compute_config_hash(ui_signals_config)
 
-    # Publish gate (C4): only judge-approved evaluations ship. None fails closed.
-    if not args.no_judge_gate and args.judge_threshold > 0:
+    # Publish gate (Option A): a charity ships only if its deduped judge_error_count
+    # == 0 AND its content hash is fresh. Warnings never gate. NULL fails closed.
+    if not args.no_judge_gate:
         exclusion_repo = ExportExclusionRepository()
-        eins, excluded = partition_by_judge_gate(eins, eval_repo, args.judge_threshold)
-        for ein, judge_score, stale in excluded:
-            reason = exclusion_reason(judge_score, args.judge_threshold, stale=stale)
+        eins, excluded = partition_by_judge_gate(eins, eval_repo)
+        for ein, judge_score, error_count, stale in excluded:
+            reason = exclusion_reason(error_count, stale=stale)
             exclusion_repo.record(ein, judge_score, reason)
             print(f"  ⛔ Excluded {ein}: {reason}")
         if excluded:
@@ -2425,6 +2489,10 @@ def main():
     calibration_file = output_dir / "calibration-report.json"
     with open(calibration_file, "w") as f:
         json.dump(calibration_report, f, indent=2, default=str)
+
+    # Editorial queue: warnings never gate publication — they surface here for
+    # human review (internal artifact under data-pipeline/reports/, gitignored).
+    write_editorial_queue(build_editorial_queue(charity_repo, eval_repo))
 
     # Export prompts for transparency page
     print("\n  Exporting prompts...")

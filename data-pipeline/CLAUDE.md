@@ -12,7 +12,7 @@ uv run python streaming_runner.py --charities pilot_charities.txt --workers 10
 # --force-phase baseline   selectively re-run a phase (repeatable)
 # --checkpoint 10          Dolt commit every 10 charities
 # --budget 5.0             hard cap on LLM spend, USD (default: 10.0; 0 = uncapped)
-# --judge-threshold 80     min judge score to export (default 80; 0 = export all)
+# --no-judge-gate          escape hatch: publish regardless of judge errors / hash freshness
 ```
 
 Phases: **crawl → extract → discover → synthesize → baseline → rich → judge → export**
@@ -30,12 +30,21 @@ uv run python judge_phase.py --ein 95-4453134    # 7 LLM-judge validation
 uv run python export.py                          # 8 Export to website/data/
 ```
 
-Export applies the judge gate: charities with `judge_score` below the threshold
-(default 80, `--no-judge-gate` to bypass) are excluded and recorded in the
-`export_exclusions` table. The gate also requires `evaluations.judge_content_hash`
-to match a recomputation over current content; stale or missing hashes fail closed
-until the charity is re-judged. Pruning previously-exported charities never happens
-implicitly: it requires an explicit `--prune`, and never runs with `--ein`.
+Export applies the publication gate (Option A): a charity ships only if its
+deduped `judge_error_count == 0` **and** `evaluations.judge_content_hash` matches
+a recomputation over current content. Stale/missing hashes and missing counts
+fail closed until the charity is re-judged; excluded charities are recorded in
+the `export_exclusions` table. Warnings **never** gate publication — they feed
+`reports/editorial-queue.json` (a ranked editorial work list, internal-only and
+gitignored, never under `website/data`). `judge_score` stays computed and
+persisted as an internal metric only. `--no-judge-gate` bypasses the gate.
+(The `--judge-threshold` flag was removed; the 0=disable semantics went with it.)
+In the "3 gates" spirit: deterministic integrity judges + truth/consistency
+judges gate publication via errors; the craft judge (`narrative_quality`) never
+gates — its warnings only inform the editorial queue. (Splitting these into 3
+physical gate modules is deferred to v5.3.0.) Pruning previously-exported
+charities never happens implicitly: it requires an explicit `--prune`, and never
+runs with `--ein`.
 
 BBB is a frozen source by default (H12): `crawl.py --sources bbb` is the only
 opt-in; `streaming_runner.py` has no equivalent flag, so streaming runs never

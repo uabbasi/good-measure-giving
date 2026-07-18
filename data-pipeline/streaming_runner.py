@@ -118,6 +118,8 @@ load_ui_signals_config = _export_module._load_ui_signals_config
 compute_ui_signals_config_hash = _export_module._compute_config_hash
 prune_charity_detail_files = _export_module.prune_charity_detail_files
 exclusion_reason = _export_module.exclusion_reason
+build_editorial_queue = _export_module.build_editorial_queue
+write_editorial_queue = _export_module.write_editorial_queue
 
 # Thread-safe printing and progress tracking
 print_lock = Lock()
@@ -804,7 +806,7 @@ def process_charity_full(
     logger: PipelineLogger,
     verbose: bool = False,
     skip_export: bool = False,
-    judge_threshold: int = 80,
+    judge_gate_enabled: bool = True,
     output_dir: Path | None = None,
     ui_signals_config: dict | None = None,
     config_hash: str = "",
@@ -1388,12 +1390,15 @@ def process_charity_full(
             result["costs"]["judge"] = judge_cost
 
             if judge_result.get("success"):
-                # Store judge results in database
+                # Store judge results in database (score + deduped counts; the
+                # gate reads error_count, not the score).
                 eval_repo.update_judge_result(
                     ein,
                     judge_result["judge_score"],
                     judge_result.get("issues", []),
                     content_hash=judge_result.get("content_hash"),
+                    error_count=judge_result.get("error_count"),
+                    warning_count=judge_result.get("warning_count"),
                 )
                 result["phases"]["judge"] = {
                     "success": True,
@@ -1419,7 +1424,8 @@ def process_charity_full(
                 return result
 
         # ========== PHASE 7: EXPORT ==========
-        # Export to website JSON if judge score passes threshold
+        # Export to website JSON only if the publication gate passes (Option A):
+        # deduped judge_error_count == 0 AND fresh content hash. Warnings never gate.
         if skip_export:
             result["phases"]["export"] = {
                 "success": True,
@@ -1433,29 +1439,37 @@ def process_charity_full(
                 "reason": "Baseline failed - nothing to export",
             }
         else:
-            # Get judge score (from result or re-fetch from DB); hash check always needs the row
+            # Refetch the row: the gate reads error_count + content hash, not the score.
             evaluation = eval_repo.get(ein)
             judge_score = result.get("judge_score")
             if judge_score is None:
                 judge_score = evaluation.get("judge_score") if evaluation else None
+            error_count = evaluation.get("judge_error_count") if evaluation else None
 
-            stale = False
-            if judge_threshold > 0 and judge_score is not None and judge_score >= judge_threshold:
-                stored_hash = evaluation.get("judge_content_hash") if evaluation else None
-                stale = stored_hash is None or stored_hash != compute_judge_content_hash(evaluation)
+            gate_blocked = False
+            reason = ""
+            if judge_gate_enabled:
+                if error_count is None:
+                    gate_blocked, stale = True, False
+                elif error_count > 0:
+                    gate_blocked, stale = True, False
+                else:
+                    stored_hash = evaluation.get("judge_content_hash") if evaluation else None
+                    stale = stored_hash is None or stored_hash != compute_judge_content_hash(evaluation)
+                    gate_blocked = stale
+                if gate_blocked:
+                    reason = exclusion_reason(error_count, stale=stale)
 
-            if judge_threshold > 0 and (judge_score is None or judge_score < judge_threshold or stale):
+            if gate_blocked:
                 # Audit write must never fail the charity: phases 1-6 already succeeded.
                 try:
-                    ExportExclusionRepository().record(
-                        ein, judge_score, exclusion_reason(judge_score, judge_threshold, stale=stale)
-                    )
+                    ExportExclusionRepository().record(ein, judge_score, reason)
                 except Exception as e:
                     print(f"⚠ export_exclusions audit write failed for {ein}: {e}")
                 result["phases"]["export"] = {
                     "success": True,
                     "skipped": True,
-                    "reason": exclusion_reason(judge_score, judge_threshold, stale=stale),
+                    "reason": reason,
                 }
             else:
                 # Export the charity
@@ -1555,7 +1569,9 @@ def main():
     parser.add_argument("--tag", type=str, metavar="NAME", help="Custom tag name (default: auto-generated timestamp)")
     parser.add_argument("--no-tag", action="store_true", help="Skip tagging this run")
     parser.add_argument(
-        "--judge-threshold", type=int, default=80, help="Min judge score to export (default: 80, 0=export all)"
+        "--no-judge-gate",
+        action="store_true",
+        help="Escape hatch: publish regardless of judge errors / content-hash freshness",
     )
     parser.add_argument("--skip-export", action="store_true", help="Skip export phase")
     parser.add_argument(
@@ -1713,7 +1729,12 @@ def main():
     print(f"  Caching: {cache_info}")
     checkpoint_info = f"every {args.checkpoint} charities" if args.checkpoint > 0 else "at end only"
     print(f"  Checkpoints: {checkpoint_info}")
-    export_info = "(disabled)" if args.skip_export else f"(threshold: {args.judge_threshold})"
+    if args.skip_export:
+        export_info = "(disabled)"
+    elif args.no_judge_gate:
+        export_info = "(judge gate: off)"
+    else:
+        export_info = "(judge gate: errors==0 + fresh hash)"
     print(f"  Phases: Crawl → Extract → Discover → Synthesize → Baseline → Rich → Judge → Export {export_info}")
     print(f"  UI config: v{ui_signals_config.get('config_version', 'unknown')} ({config_hash[:20]}...)")
     print("=" * 80)
@@ -1737,7 +1758,7 @@ def main():
                     logger,
                     args.verbose,
                     args.skip_export,
-                    args.judge_threshold,
+                    not args.no_judge_gate,
                     WEBSITE_DATA_DIR,
                     ui_signals_config,
                     config_hash,
@@ -1859,14 +1880,15 @@ def main():
             evaluation = eval_repo.get(ein)
             if not evaluation:
                 continue
-            judge_score = evaluation.get("judge_score")
-            if args.judge_threshold > 0 and (judge_score is None or judge_score < args.judge_threshold):
-                continue
-            stored_hash = evaluation.get("judge_content_hash")
-            if args.judge_threshold > 0 and (
-                stored_hash is None or stored_hash != compute_judge_content_hash(evaluation)
-            ):
-                continue
+            # Publication gate (Option A): deduped errors == 0 AND fresh content
+            # hash. NULL error_count fails closed. Warnings never gate.
+            if not args.no_judge_gate:
+                error_count = evaluation.get("judge_error_count")
+                if error_count is None or error_count > 0:
+                    continue
+                stored_hash = evaluation.get("judge_content_hash")
+                if stored_hash is None or stored_hash != compute_judge_content_hash(evaluation):
+                    continue
             exportable_eins.append(ein)
 
         summaries = []
@@ -1950,6 +1972,11 @@ def main():
             f"✓ Updated charities.json: {len(merged_summaries)} charities "
             f"(eligible={len(set(exportable_eins))}, rebuilt={len(summaries)}, failed={len(rebuild_failures)})"
         )
+
+        # Editorial queue: warnings never gate publication — they surface here
+        # for human review (internal artifact under data-pipeline/reports/).
+        write_editorial_queue(build_editorial_queue(charity_repo, eval_repo))
+
         if args.prune:
             kept_eins = {summary.get("ein") for summary in merged_summaries if summary.get("ein")}
             removed_details = prune_charity_detail_files(WEBSITE_DATA_DIR, kept_eins)
@@ -2000,7 +2027,7 @@ def main():
     if not args.skip_export:
         exported_count = sum(1 for r in results if r.get("exported"))
         skipped_judge = sum(
-            1 for r in results if r.get("phases", {}).get("export", {}).get("reason", "").startswith("Judge score")
+            1 for r in results if r.get("phases", {}).get("export", {}).get("reason", "").startswith("judge")
         )
         print("\nExport summary:")
         print(f"  Exported in this run: {exported_count}")
@@ -2008,7 +2035,7 @@ def main():
             f"  Comprehensive index size: {comprehensive_export_count} "
             f"(eligible={comprehensive_export_eligible}, failed={comprehensive_export_failed})"
         )
-        print(f"  Skipped (judge < {args.judge_threshold}): {skipped_judge}")
+        print(f"  Skipped (judge gate): {skipped_judge}")
 
     # Cost summary
     print("\n" + "=" * 80)

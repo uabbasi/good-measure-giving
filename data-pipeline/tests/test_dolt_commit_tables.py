@@ -137,7 +137,7 @@ class TestExportCommitsExclusionsBeforeStamp:
         # Neutralize the heavy/irrelevant parts of export.main().
         monkeypatch.setattr(
             export_module, "partition_by_judge_gate",
-            lambda eins, repo, thr: (["11-1111111"], [("22-2222222", 50, False)]),
+            lambda eins, repo: (["11-1111111"], [("22-2222222", 50, 1, False)]),
         )
         monkeypatch.setattr(
             export_module, "export_charity",

@@ -292,9 +292,15 @@ def main(argv: list[str] | None = None) -> int:
         result = judge_charity(ein, eval_repo, data_repo, raw_repo, charity_repo)
 
         if result["success"]:
-            # Persist judge_score + issues (previously computed and thrown away)
+            # Persist judge_score + issues + deduped counts (the same counts
+            # judge_score is computed from; the gate reads error_count, not the score).
             eval_repo.update_judge_result(
-                ein, result["judge_score"], result.get("issues", []), content_hash=result.get("content_hash")
+                ein,
+                result["judge_score"],
+                result.get("issues", []),
+                content_hash=result.get("content_hash"),
+                error_count=result.get("error_count"),
+                warning_count=result.get("warning_count"),
             )
             update_phase_cache(ein, "judge", cache_repo, result.get("cost_usd", 0.0))
             success_count += 1
