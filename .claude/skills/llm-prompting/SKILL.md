@@ -12,7 +12,7 @@ Deep expertise on the prompting infrastructure, patterns, and conventions used i
 ## When This Skill Activates
 
 - Writing or modifying prompts in `data-pipeline/src/llm/prompts/`
-- Working on `NarrativeEvaluator`, `NarrativeJudge`, or scoring evaluators
+- Working on narrative generation (`baseline.py`, `rich_phase.py`, `src/services/rich_narrative_generator.py`) or the judges in `src/judges/`
 - Debugging LLM outputs or schema validation
 - Adding new LLM-powered features
 - Optimizing prompt performance or cost
@@ -47,10 +47,13 @@ Deep expertise on the prompting infrastructure, patterns, and conventions used i
 
 | File | Version | Purpose |
 |------|---------|---------|
-| `baseline_narrative.txt` | v3.0.0 | 150-200 word summaries |
-| `rich_narrative.txt` | v1.3.0 | 500-800 word deep dives |
-| `zakat_alignment.txt` | v1.0.0 | Zakat classification |
+| `baseline_narrative.txt` | v2.0.0 | Baseline narrative with inline citations |
+| `rich_narrative_v2.txt` | v3.1.0 | Investment-memo rich narrative |
+| `rich_strategic_narrative.txt` | v1.0.0 | Deep strategic analysis narrative |
+| `charity_navigator_financials.txt` | v1.0.0 | CN financial extraction |
 | `categories/*.txt` | varies | 16 category calibrations |
+
+Versions drift — trust the file frontmatter (`head -4 <file>`), not this table.
 
 ---
 
@@ -58,19 +61,12 @@ Deep expertise on the prompting infrastructure, patterns, and conventions used i
 
 ### File: `data-pipeline/src/llm/llm_client.py`
 
-**Multi-provider via LiteLLM**:
-- Primary: Gemini 3.0 Pro/Flash
-- Fallback: Claude 3.5 Sonnet, GPT-4
-
-**Task-based model selection** (`LLMTask` enum):
-
-| Task | Model | Reason |
-|------|-------|--------|
-| `NARRATIVE_GENERATION` | Gemini 3 Flash | Best quality/cost |
-| `WEBSITE_EXTRACTION` | Gemini 3 Flash | Fast, cheap |
-| `PDF_EXTRACTION` | Gemini 3 Flash | Document handling |
-| `PREMIUM_NARRATIVE` | Gemini 3 Flash | Top charities |
-| `EVALUATION_SCORING` | Gemini 3 Flash | LLM-as-judge |
+**Multi-provider via LiteLLM.** Models, prices, and fallback chains are
+defined in `MODEL_REGISTRY` and `TASK_MODELS` in `llm_client.py` — check
+there; doc snapshots of model names go stale. Task selection is via the
+`LLMTask` enum (`NARRATIVE_GENERATION`, `WEBSITE_EXTRACTION`,
+`PDF_EXTRACTION`, `PREMIUM_NARRATIVE`, `PREMIUM_PDF_EXTRACTION`,
+`EVALUATION_SCORING`, `RICH_STRATEGIC_NARRATIVE`, `LLM_JUDGE`).
 
 **Fallback logic**:
 - Transient errors (429, 503, rate limits): Try fallback model
@@ -94,7 +90,7 @@ safety_settings = [
 All LLM outputs use **Pydantic models** with Gemini JSON schema enforcement:
 
 ```python
-# In narrative_evaluator.py
+# e.g., in src/services/rich_narrative_generator.py
 response = llm_client.generate(
     prompt=formatted_prompt,
     json_schema={
@@ -226,7 +222,7 @@ formatted_prompt = prompt_template.format(
 **Critical pattern**: Some scores are calculated deterministically, not by LLM.
 
 ```python
-# In narrative_evaluator.py after LLM generation:
+# In src/services/rich_narrative_generator.py after LLM generation:
 
 # Override LLM scores with deterministic values
 narrative.tier_2_execution.operational_capability.governance = deterministic_governance
@@ -244,7 +240,7 @@ narrative.recalculate_totals()
 
 ## Zakat Classification: Self-Assertion
 
-### Prompt: `zakat_alignment.txt`
+### Code: `src/services/zakat_eligibility_service.py` (self-assertion) + `src/judges/zakat_judge.py`
 
 **Pattern**: Trust what the charity claims, don't make independent rulings.
 
@@ -270,7 +266,7 @@ SADAQAH_ONLY: No zakat claim AND tier_1_strategic_fit.subtotal <= 35
 
 ## LLM-as-Judge Quality Gating
 
-### File: `narrative_judge.py`
+### Files: `src/judges/` — `base_judge.py` plus specialized judges (factual, citation, score, zakat, narrative-quality, cross-lens, per-phase quality)
 
 **5 dimensions** (each 0-100):
 
@@ -376,9 +372,9 @@ class LLMResponse:
 |------|---------|
 | `prompt_loader.py` | Load/validate/version prompts |
 | `llm_client.py` | Unified LLM interface + model registry |
-| `narrative_evaluator.py` | Generate narratives with schema enforcement |
-| `narrative_judge.py` | Quality gating (metrics only) |
-| `baseline_narrative.txt` | Main prompt (v3.0.0) |
+| `src/services/rich_narrative_generator.py` | Narrative generation with schema enforcement |
+| `src/judges/` | LLM-as-judge quality gating (judge_phase.py) |
+| `baseline_narrative.txt` | Main prompt (v2.0.0) |
 | `categories/*.txt` | 16 category calibrations |
 | `schemas/baseline.py` | BaselineNarrative Pydantic model |
 | `schemas/judge.py` | JudgeResult model |

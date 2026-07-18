@@ -1,5 +1,10 @@
 # Logging Standards
 
+> **STATUS (2026-07): aspirational.** The phase scripts (crawl.py, extract.py,
+> synthesize.py, baseline.py, streaming_runner.py, export.py) are print-based
+> today and do not follow these levels. NEW code SHOULD follow this document;
+> existing print-based output gets migrated opportunistically, not wholesale.
+
 ## Logging Level Guidelines
 
 Use the following guidelines when adding log statements to the codebase:

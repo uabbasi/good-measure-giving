@@ -15,7 +15,7 @@ Charity evaluation website informed by evidence-based altruism and long-term thi
 ## Commands
 ```bash
 uv sync                        # Setup Python deps
-uv run z                       # Interactive pipeline wizard
+cd data-pipeline && uv run python streaming_runner.py --charities pilot_charities.txt   # Full pipeline
 ruff check . --fix             # Lint
 cd website && npm run dev      # Frontend dev server
 ```

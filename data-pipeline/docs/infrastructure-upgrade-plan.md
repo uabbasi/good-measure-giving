@@ -7,16 +7,17 @@
 > | **Phase 1 — Crawl4AI** | ❌ **DROPPED** | Speculative ~30% token saving, unproven; current requests+BS4+Playwright crawl works. Not worth the rewrite. |
 > | **Phase 2 — Dagster** | ❌ **DROPPED** | Large rewrite of a working ~1400-line `streaming_runner.py` for marginal observability gain. No. |
 > | **Phase 3 — LiteLLM Router** | ⏸️ **DEFERRED (trigger-based)** | Its only unique value is cross-thread rate-limit governance + key rotation. We are **not** hitting 429 storms or cost surprises today, so it doesn't earn the rewrite of the pipeline's most central file. Revisit *only if* real rate-limit/cost pain shows up. |
-> | **Budget guardrail** | ✅ **ACCEPTED (cheap win)** | A pre-call cost check in `LLMClient.generate()` (~20 lines, no Router dependency) that hard-stops a run when it exceeds a `--budget` cap. The one piece worth doing. See below. |
+> | **Budget guardrail** | ✅ **BUILT (2026-07, commit `6fbcffe`)** | Shipped as designed: pre-call `_budget_check()` in `LLMClient.generate()` (llm_client.py:474) + `src/llm/budget_tracker.py` + `--budget` flag on `streaming_runner.py`. Default is now capped at $10.0 (0 = uncapped) — the "capped default" follow-up below has also landed. |
 >
 > The original three-phase plan text is retained below for reference only.
 >
-> ## ✅ Accepted: standalone budget guardrail (no Router)
+> ## ✅ BUILT: standalone budget guardrail (no Router) — commit `6fbcffe`, 2026-07
 >
 > - Add a `--budget <usd>` flag to `streaming_runner.py`.
 > - Thread-safe running-cost accumulator (cost already available via `completion_cost` in `LLMResponse`).
 > - In `LLMClient.generate()`, **before** each call: if accumulated cost ≥ budget, raise `BudgetExceededError` (fail fast).
 > - Do **not** use LiteLLM success_callback for this — it swallows exceptions raised in callbacks (confirmed in the Phase 3 notes below).
+> - **Status**: implemented exactly this way, including the E4 follow-up — `streaming_runner.py --budget` now defaults to $10.0 USD (capped) instead of uncapped; pass `--budget 0` to run uncapped.
 
 ---
 
