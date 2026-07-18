@@ -1682,18 +1682,25 @@ class WebsiteCollector(BaseCollector):
             "geographic_coverage",
             "populations_served",
             "impact_metrics",
+            "beneficiaries_served",
             "leadership",
             # Donation info
             "donation_methods",
+            "donation_page_url",
             "volunteer_opportunities",
+            "volunteer_page_url",
             "annual_revenue",
             "annual_expenses",
             # Note: Zakat fields handled by discover.py, not website extraction
+            # Transparency
+            "annual_report_url",
+            "transparency_info",
             # Other
             "additional_info",
             "logo_url",
             "founded_year",
             "tax_deductible",
+            "ein_mentioned",
             "contact_email",
             "contact_phone",
             "address",
@@ -1707,6 +1714,34 @@ class WebsiteCollector(BaseCollector):
         for field in rich_fields:
             if field in llm_data and llm_data[field]:
                 merged[field] = llm_data[field]
+
+        # H6 end-to-end: reconcile prompt vocabulary with schema vocabulary.
+        # The ensemble prompt asks for "beneficiaries" (a populations list) and
+        # "mission_statement", but WebsiteProfile stores them as
+        # "populations_served" and "mission". This is the single mapping point —
+        # an explicit rename at the merge boundary, not a blind alias — so
+        # verifier-confirmed ensemble values actually reach the profile.
+        prompt_to_schema = {
+            "beneficiaries": "populations_served",
+            "mission_statement": "mission",
+        }
+        for prompt_key, schema_field in prompt_to_schema.items():
+            if llm_data.get(prompt_key) and not llm_data.get(schema_field):
+                merged[schema_field] = llm_data[prompt_key]
+
+        # Deliberately dropped at this boundary (no WebsiteProfile field to
+        # hold them — H6 Task 14 classification; WebsiteProfile(extra="ignore")
+        # would silently discard them anyway). If a schema home is added later,
+        # extend rich_fields / prompt_to_schema above rather than relying on
+        # the extra="ignore" behavior:
+        #   accepts_stock_donations, stock_donation_url, accepts_crypto,
+        #   accepts_daf, matching_gift_info, recurring_donation_available,
+        #   minimum_donation, staff_count, volunteer_count, board_size,
+        #   years_operating, accreditations, newsletter_signup_url,
+        #   events_page_url, careers_page_url, form_990_url,
+        #   financial_statements_url, audit_report_url, policy_influence
+        #   (charity_data has a policy_influence column, but no WebsiteProfile
+        #   field or aggregator path exists yet — needs its own end-to-end task).
 
         # Merge contact info (prefer LLM if available, otherwise keep regex)
         if "contact" in llm_data and llm_data["contact"]:
