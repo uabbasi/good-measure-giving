@@ -604,6 +604,22 @@ class TestZakatDenylistInCorroboration:
 class TestBeneficiariesStringParsing:
     """Test beneficiaries extraction from impact_metrics handles various string formats."""
 
+    def test_explicit_null_metrics_does_not_crash(self):
+        """Regression (83-2403741): extractor emitted {"metrics": null} — must not crash."""
+        from src.parsers.charity_metrics_aggregator import CharityMetricsAggregator
+
+        for website_profile in (
+            {"impact_metrics": {"metrics": None}},
+            {"impact_metrics": None},
+        ):
+            metrics = CharityMetricsAggregator.aggregate(
+                charity_id=0,
+                ein="12-3456789",
+                cn_profile={"name": "Test Charity"},
+                website_profile=website_profile,
+            )
+            assert metrics.beneficiaries_served_annually is None
+
     def test_numeric_with_trailing_text(self):
         """'1,000,000 annually' should parse correctly."""
         from src.parsers.charity_metrics_aggregator import CharityMetricsAggregator
