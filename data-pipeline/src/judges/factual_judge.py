@@ -228,6 +228,7 @@ class FactualJudge(BaseJudge):
             client = self.get_llm_client()
             response = client.generate(
                 prompt=prompt,
+                json_mode=True,
                 json_schema=FactualVerificationResult.model_json_schema(),
             )
 

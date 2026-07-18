@@ -172,6 +172,7 @@ class ZakatJudge(BaseJudge):
             client = self.get_llm_client()
             response = client.generate(
                 prompt=prompt,
+                json_mode=True,
                 json_schema=ZakatVerificationResult.model_json_schema(),
             )
 

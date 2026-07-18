@@ -361,6 +361,7 @@ class NarrativeQualityJudge(BaseJudge):
         client = self.get_llm_client()
         response = client.generate(
             prompt=prompt,
+            json_mode=True,
             json_schema=NarrativeQualityResult.model_json_schema(),
         )
 

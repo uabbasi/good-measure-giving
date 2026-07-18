@@ -228,6 +228,7 @@ class CrossLensJudge(BaseJudge):
         client = self.get_llm_client()
         response = client.generate(
             prompt=prompt,
+            json_mode=True,
             json_schema=CrossLensResult.model_json_schema(),
         )
 

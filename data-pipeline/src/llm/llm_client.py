@@ -587,7 +587,18 @@ class LLMClient:
         # JSON mode
         if json_mode and model_config.get("supports_json_mode"):
             if json_schema:
-                kwargs["response_format"] = {"type": "json_schema", "json_schema": json_schema}
+                # litellm/OpenAI convention: the schema must be nested under
+                # json_schema.schema — Gemini's transformer reads exactly that
+                # key and silently drops a bare schema dict.
+                schema_name = (
+                    json_schema.get("title", "structured_response")
+                    if isinstance(json_schema, dict)
+                    else "structured_response"
+                )
+                kwargs["response_format"] = {
+                    "type": "json_schema",
+                    "json_schema": {"name": schema_name, "schema": json_schema},
+                }
             else:
                 kwargs["response_format"] = {"type": "json_object"}
 
