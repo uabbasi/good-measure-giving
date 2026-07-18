@@ -215,3 +215,26 @@ class TestBeneficiaryPublication:
         detail = build_charity_detail(_charity(), data, _evaluation(), {})
         assert detail["beneficiariesServedAnnually"] is None
         assert detail["beneficiariesSource"] is None
+
+
+class TestAsnafSanitization:
+    def test_stale_amil_and_muallaf_nulled_in_detail(self, empty_overrides):
+        evaluation = _evaluation(
+            score_details={"zakat": {"asnaf_category": "amil", "charity_claims_zakat": True}},
+            rich_narrative={
+                "headline": "x",
+                "zakat_guidance": {"eligibility": "ZAKAT-ELIGIBLE", "classification": "muallaf"},
+            },
+        )
+        detail = build_charity_detail(_charity(), _charity_data(), evaluation, {})
+        amal = detail["amalEvaluation"]
+        assert amal["score_details"]["zakat"]["asnaf_category"] is None
+        assert amal["rich_narrative"]["zakat_guidance"]["classification"] is None
+        # DB-side dicts untouched (export-boundary sanitization only)
+        assert evaluation["score_details"]["zakat"]["asnaf_category"] == "amil"
+        assert evaluation["rich_narrative"]["zakat_guidance"]["classification"] == "muallaf"
+
+    def test_legitimate_asnaf_preserved(self, empty_overrides):
+        evaluation = _evaluation(score_details={"zakat": {"asnaf_category": "fuqara"}})
+        detail = build_charity_detail(_charity(), _charity_data(), evaluation, {})
+        assert detail["amalEvaluation"]["score_details"]["zakat"]["asnaf_category"] == "fuqara"

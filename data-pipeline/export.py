@@ -1142,6 +1142,29 @@ def _normalize_score_details_zakat_sources(
     return normalized
 
 
+_STALE_ASNAF_VALUES = {"amil", "muallaf"}
+
+
+def _sanitize_stale_asnaf(amal_evaluation: dict[str, Any]) -> None:
+    """Null stale pre-fix asnaf labels at the export boundary (DB untouched).
+
+    The asnaf matcher's substring bug ('amil' ⊂ 'family'; loose 'muallaf' hits)
+    mislabeled charities before the word-boundary fix in v2_scorers; correct
+    re-classification lands with the v5.3.0 run. Until then never publish them.
+    """
+    score_details = amal_evaluation.get("score_details")
+    if isinstance(score_details, dict):
+        zakat = score_details.get("zakat")
+        if isinstance(zakat, dict) and str(zakat.get("asnaf_category") or "").lower() in _STALE_ASNAF_VALUES:
+            zakat["asnaf_category"] = None  # safe: zakat block is a copy from _normalize_score_details_zakat_sources
+    rich = amal_evaluation.get("rich_narrative")
+    if isinstance(rich, dict):
+        guidance = rich.get("zakat_guidance")
+        if isinstance(guidance, dict) and str(guidance.get("classification") or "").lower() in _STALE_ASNAF_VALUES:
+            # copy-on-write: never mutate the evaluation dict the summary builder also reads
+            amal_evaluation["rich_narrative"] = {**rich, "zakat_guidance": {**guidance, "classification": None}}
+
+
 def _is_truncated_text(value: str | None) -> bool:
     """Detect text that is likely UI-truncated."""
     return isinstance(value, str) and value.rstrip().endswith("...")
@@ -1809,6 +1832,9 @@ def build_charity_detail(
         # Include rich_narrative whenever it exists in the database
         if evaluation.get("rich_narrative"):
             detail["amalEvaluation"]["rich_narrative"] = evaluation.get("rich_narrative")
+
+        # Null stale amil/muallaf asnaf labels at the export boundary (DB untouched). [Cycle D]
+        _sanitize_stale_asnaf(detail["amalEvaluation"])
 
         # Strategic/Zakat lens evaluations removed from export (pipeline still calculates them)
         # Frontend shows AMAL-only scoring framework
