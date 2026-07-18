@@ -83,3 +83,33 @@ class TestCurationLoader:
         overlay = export.load_curation_overrides()
         assert set(overlay) == {"names", "cause_areas", "beneficiaries_suppress"}
         assert overlay["cause_areas"].get("13-1760110") == "HUMANITARIAN"
+
+
+class TestCauseArea:
+    def test_derived_from_primary_category(self, empty_overrides):
+        summary = build_charity_summary(_charity(), _charity_data(primary_category="HUMANITARIAN"), _evaluation())
+        assert summary["causeArea"] == "HUMANITARIAN"
+
+    def test_extreme_poverty_refinement_from_narrative(self, empty_overrides):
+        evaluation = _evaluation(
+            rich_narrative={"headline": "x", "donor_fit_matrix": {"cause_area": "EXTREME_POVERTY"}}
+        )
+        summary = build_charity_summary(_charity(), _charity_data(primary_category="HUMANITARIAN"), evaluation)
+        assert summary["causeArea"] == "EXTREME_POVERTY"
+
+    def test_unknown_category_maps_to_general(self, empty_overrides):
+        summary = build_charity_summary(_charity(), _charity_data(primary_category=None), _evaluation())
+        assert summary["causeArea"] == "GENERAL"
+
+    def test_cause_area_override_wins(self, monkeypatch):
+        monkeypatch.setattr(
+            export,
+            "_CURATION_OVERRIDES",
+            {"names": {}, "cause_areas": {EIN: "EDUCATION"}, "beneficiaries_suppress": []},
+            raising=False,
+        )
+        summary = build_charity_summary(_charity(), _charity_data(primary_category="HUMANITARIAN"), _evaluation())
+        assert summary["causeArea"] == "EDUCATION"
+
+    def test_legacy_cause_area_overrides_dict_deleted(self):
+        assert not hasattr(export, "_CAUSE_AREA_OVERRIDES")

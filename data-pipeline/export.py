@@ -41,6 +41,7 @@ from src.db.dolt_client import dolt
 from src.judges.base_judge import JudgeConfig
 from src.judges.export_quality_judge import ExportQualityJudge
 from src.judges.schemas.verdict import Severity
+from src.utils.cause_area import derive_cause_area
 from src.utils.display_name import to_display_name
 
 # Output directory
@@ -1394,12 +1395,6 @@ def _public_score_summary(evaluation: dict | None, charity_data: dict | None) ->
 
 _IMPACT_TIER_THRESHOLDS = ((80, "HIGH"), (65, "ABOVE_AVERAGE"), (50, "AVERAGE"))
 
-# Hand-curated cause areas the deterministic derivation can't reproduce (preserve committed). [#8]
-_CAUSE_AREA_OVERRIDES = {
-    "13-1760110": "HUMANITARIAN",  # derivation yields EXTREME_POVERTY
-    "85-3547280": "EDUCATION",  # derivation yields "EDUCATION & HUMANITARIAN"
-}
-
 
 def _derive_impact_tier(amal_score: int | float | None) -> str | None:
     """Categorical impact tier derived from the public GMG score.
@@ -1439,8 +1434,9 @@ def build_charity_summary(
     # E-002: Use shared tier determination logic
     tier = _determine_tier(evaluation, charity_data)
 
-    # Extract causeArea from rich_narrative (if available)
-    cause_area = None
+    # causeArea: deterministic derivation from primary_category; the narrative's
+    # cause_area is used only as the EXTREME_POVERTY refinement signal. [contract #3]
+    detected_cause_area = None
     headline = None
     if evaluation:
         rich_narrative = evaluation.get("rich_narrative")
@@ -1448,12 +1444,17 @@ def build_charity_summary(
         if rich_narrative and isinstance(rich_narrative, dict):
             donor_fit = rich_narrative.get("donor_fit_matrix")
             if donor_fit and isinstance(donor_fit, dict):
-                cause_area = donor_fit.get("cause_area")
+                detected_cause_area = donor_fit.get("cause_area")
             headline = rich_narrative.get("headline")
         if not headline and baseline_narrative and isinstance(baseline_narrative, dict):
             headline = baseline_narrative.get("headline")
-    # Preserve hand-curated cause areas the deterministic derivation can't reproduce. [#8]
-    cause_area = _CAUSE_AREA_OVERRIDES.get(charity["ein"], cause_area)
+    cause_area = derive_cause_area(
+        charity_data.get("primary_category") if charity_data else None,
+        detected_cause_area,
+    )
+    cause_area = _apply_curation_override(
+        charity["ein"], "causeArea", cause_area, _CURATION_OVERRIDES["cause_areas"]
+    )
 
     website_profile = {}
     candid_profile = {}
