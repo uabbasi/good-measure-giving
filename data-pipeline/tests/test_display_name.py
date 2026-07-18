@@ -34,6 +34,24 @@ class TestAllCapsNormalization:
     def test_parenthesized_token_gets_titled_at_first_alpha(self):
         assert to_display_name("UNITED RELIEF (GROUP)") == "United Relief (Group)"
 
+    def test_possessive_apostrophe_s_lowercased(self):
+        assert (
+            to_display_name("PALESTINE CHILDREN'S RELIEF FUND")
+            == "Palestine Children's Relief Fund"
+        )
+
+    def test_possessive_apostrophe_first_token(self):
+        assert to_display_name("AMERICA'S CHARITIES") == "America's Charities"
+
+    def test_parenthesized_acronym_stays_uppercase(self):
+        assert to_display_name("HELPING HAND (HHRD)") == "Helping Hand (HHRD)"
+
+    def test_acronym_with_trailing_period_stays_uppercase(self):
+        assert to_display_name("FEEDING AMERICA USA.") == "Feeding America USA."
+
+    def test_apostrophe_multichar_segment_still_title_cased(self):
+        assert to_display_name("O'BRIEN FOUNDATION") == "O'Brien Foundation"
+
 
 class TestPassthrough:
     def test_mixed_case_input_unchanged(self):

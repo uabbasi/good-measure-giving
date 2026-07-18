@@ -31,11 +31,16 @@ def _title_segment(segment: str) -> str:
     return segment
 
 
+# Punctuation stripped from a token's edges before the ACRONYMS lookup.
+_EDGE_PUNCT = '()[]{}",;:.'
+
+
 def _convert_token(token: str, is_first: bool) -> str:
     upper = token.upper()
     if upper in SPECIAL:
         return SPECIAL[upper]
-    if upper in ACRONYMS:
+    # Acronyms match even when wrapped in punctuation: (HHRD), USA.
+    if upper.strip(_EDGE_PUNCT) in ACRONYMS:
         return upper
     # Tokens with digits (501(C)(3)) or internal periods (U.S.) pass through.
     if any(ch.isdigit() for ch in token):
@@ -44,9 +49,18 @@ def _convert_token(token: str, is_first: bool) -> str:
         return token
     if not is_first and token.lower() in PARTICLES:
         return token.lower()
-    # Title-case hyphen/apostrophe segments separately (Al-Anon, O'Brien).
+    # Title-case hyphen/apostrophe segments separately (Al-Anon, O'Brien),
+    # except a single letter after an apostrophe is possessive: CHILDREN'S -> Children's.
     parts = re.split(r"([-'])", token)
-    return "".join(part if part in {"-", "'"} else _title_segment(part) for part in parts)
+    out = []
+    for i, part in enumerate(parts):
+        if part in {"-", "'"}:
+            out.append(part)
+        elif i > 0 and parts[i - 1] == "'" and len(part) == 1 and part.isalpha():
+            out.append(part.lower())
+        else:
+            out.append(_title_segment(part))
+    return "".join(out)
 
 
 def to_display_name(raw: str) -> str:
