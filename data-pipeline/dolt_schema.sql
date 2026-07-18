@@ -163,6 +163,8 @@ CREATE TABLE `evaluations` (
   `rich_strategic_narrative` json,
   `rubric_version` varchar(12) DEFAULT NULL,
   `judge_content_hash` varchar(16),
+  `judge_error_count` int,
+  `judge_warning_count` int,
   PRIMARY KEY (`charity_ein`),
   KEY `idx_evaluations_state` (`state`),
   KEY `idx_evaluations_wallet_tag` (`wallet_tag`),
