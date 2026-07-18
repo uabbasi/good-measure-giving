@@ -10,6 +10,7 @@ on secondary pages (about, contact, donate, etc.).
 
 import asyncio
 import json
+import random
 import re
 import threading
 import time
@@ -30,6 +31,7 @@ try:
 except ImportError:
     HAS_CURL_CFFI = False
 
+from ..constants import CRAWL_JITTER_RANGE_SECONDS, PER_DOMAIN_CONCURRENCY
 from ..extractors.deterministic import DeterministicExtractor
 from ..extractors.page_classifier import PageClassifier
 from ..extractors.structured_data import StructuredDataExtractor
@@ -984,6 +986,19 @@ class WebsiteCollector(BaseCollector):
 
         return results
 
+    @staticmethod
+    def _per_domain_semaphores(limit: int = PER_DOMAIN_CONCURRENCY):
+        """Return a getter mapping URL -> per-domain asyncio.Semaphore (politeness, H5)."""
+        sems: Dict[str, asyncio.Semaphore] = {}
+
+        def get_sem(url: str) -> asyncio.Semaphore:
+            domain = urlparse(url).netloc.lower()
+            if domain not in sems:
+                sems[domain] = asyncio.Semaphore(limit)
+            return sems[domain]
+
+        return get_sem
+
     async def _fetch_url_async(
         self,
         client: httpx.AsyncClient,
@@ -1011,6 +1026,12 @@ class WebsiteCollector(BaseCollector):
                             self.logger.debug(f"Ignoring cached challenge page for {url}; refetching")
                     else:
                         return url, True, cached["html"], cached["final_url"], None
+
+                # Politeness (H5): robots.txt + jitter between same-domain requests
+                allowed = await asyncio.to_thread(self.robots_checker.can_fetch, url)
+                if not allowed:
+                    return url, False, None, None, "robots.txt disallowed"
+                await asyncio.sleep(random.uniform(*CRAWL_JITTER_RANGE_SECONDS))
 
                 response = await client.get(
                     url,
@@ -1149,13 +1170,14 @@ class WebsiteCollector(BaseCollector):
 
         Args:
             urls: List of URLs to crawl
-            max_concurrent: Maximum concurrent requests (default 10)
+            max_concurrent: Maximum concurrent requests (default 10); superseded by
+                per-domain limits (H5) — kept for call-site compatibility only.
             timeout_total: Total timeout for all requests
 
         Returns:
             Dict mapping URL -> (success, html, final_url, error)
         """
-        semaphore = asyncio.Semaphore(max_concurrent)
+        get_sem = self._per_domain_semaphores()
         results: Dict[str, Tuple[bool, Optional[str], Optional[str], Optional[str]]] = {}
 
         async with httpx.AsyncClient(
@@ -1163,7 +1185,7 @@ class WebsiteCollector(BaseCollector):
             follow_redirects=True,
             timeout=httpx.Timeout(15.0, connect=10.0),
         ) as client:
-            tasks = [self._fetch_url_async(client, url, semaphore) for url in urls]
+            tasks = [self._fetch_url_async(client, url, get_sem(url)) for url in urls]
 
             # Use asyncio.wait_for for overall timeout
             try:
@@ -1203,17 +1225,18 @@ class WebsiteCollector(BaseCollector):
         Returns:
             List of PageScore objects with content boosts applied
         """
-        semaphore = asyncio.Semaphore(max_concurrent)
+        get_sem = self._per_domain_semaphores()
         results: List[Any] = []
 
         async def fetch_and_score(page_score: Any) -> Any:
-            async with semaphore:
+            async with get_sem(str(page_score.url)):
                 try:
                     # Check cache first
                     cached = self.cache.get_cached_html(str(page_score.url))
                     if cached:
                         html = cached["html"]
                     else:
+                        await asyncio.sleep(random.uniform(*CRAWL_JITTER_RANGE_SECONDS))
                         async with httpx.AsyncClient(
                             headers=self.headers,
                             follow_redirects=True,

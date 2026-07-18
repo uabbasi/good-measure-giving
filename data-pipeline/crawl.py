@@ -331,6 +331,13 @@ def main():
             f"  Success rate: {pool_stats['total_successful']}/{pool_stats['total_completed']} ({pool_stats['total_successful'] / pool_stats['total_completed'] * 100:.1f}%)"
         )
 
+    # H5: blocked-sites report
+    blocked = orchestrator.get_blocked_sites()
+    if blocked:
+        print(f"\nBlocked sites (CAPTCHA/anti-bot): {len(blocked)}")
+        for b in blocked:
+            print(f"  ✗ {b['ein']}: {b['url']} — {b['reason']}")
+
     # Commit changes to DoltDB
     if success_count > 0:
         commit_hash = dolt.commit(f"Crawl: {success_count} charities fetched, {total_sources} sources")
