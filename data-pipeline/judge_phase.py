@@ -120,6 +120,13 @@ def judge_charity(
             "impact_tier": evaluation.get("impact_tier"),
             "zakat_classification": evaluation.get("zakat_classification"),
             "baseline_narrative": evaluation.get("baseline_narrative"),
+            # Multi-lens fields — cross_lens + narrative_quality judges read
+            # these; omitting them made cross_lens always skip (MIN_NARRATIVES=2)
+            "strategic_narrative": evaluation.get("strategic_narrative"),
+            "strategic_score": evaluation.get("strategic_score"),
+            "zakat_narrative": evaluation.get("zakat_narrative"),
+            "zakat_score": evaluation.get("zakat_score"),
+            "rich_strategic_narrative": evaluation.get("rich_strategic_narrative"),
             "score_details": evaluation.get("score_details"),
         },
         "data": charity_data or {},
@@ -194,7 +201,12 @@ def judge_charity(
     return result
 
 
-if __name__ == "__main__":
+def main(argv: list[str] | None = None) -> int:
+    """Standalone judge phase CLI.
+
+    Persists judge_score via EvaluationRepository.update_judge_result (matching
+    streaming_runner behavior) and returns exit code 1 if any EIN failed.
+    """
     import argparse
 
     from src.db.dolt_client import dolt
@@ -205,7 +217,7 @@ if __name__ == "__main__":
     ein_group.add_argument("--ein", help="Single charity EIN to judge")
     ein_group.add_argument("--charities", help="Path to charities file")
     parser.add_argument("--force", action="store_true", help="Force re-judge even if cache is valid")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     # Initialize repos
     eval_repo = EvaluationRepository()
@@ -214,14 +226,16 @@ if __name__ == "__main__":
     charity_repo = CharityRepository()
     cache_repo = PhaseCacheRepository()
 
-    # Determine EINs to process
+    # Determine EINs to process (normalized so persistence/cache keys match)
     if args.ein:
         eins = [args.ein]
     else:
         eins = load_pilot_eins(args.charities)
+    eins = [normalize_ein(e) or e for e in eins]
 
     success_count = 0
     skipped_count = 0
+    failed_count = 0
     total_cost = 0.0
 
     for i, ein in enumerate(eins, 1):
@@ -236,6 +250,8 @@ if __name__ == "__main__":
         result = judge_charity(ein, eval_repo, data_repo, raw_repo, charity_repo)
 
         if result["success"]:
+            # Persist judge_score + issues (previously computed and thrown away)
+            eval_repo.update_judge_result(ein, result["judge_score"], result.get("issues", []))
             update_phase_cache(ein, "judge", cache_repo, result.get("cost_usd", 0.0))
             success_count += 1
             total_cost += result.get("cost_usd", 0.0)
@@ -249,6 +265,7 @@ if __name__ == "__main__":
                 for issue in result["issues"]:
                     print(f"    [{issue['severity']}] {issue['judge']}: {issue['message']}")
         else:
+            failed_count += 1
             print(f"  Failed: {result.get('error')}")
 
     # Commit to DoltDB
@@ -261,5 +278,13 @@ if __name__ == "__main__":
     print(f"\nSuccess: {success_count}/{len(eins)}")
     if skipped_count:
         print(f"Cached: {skipped_count}/{len(eins)}")
+    if failed_count:
+        print(f"Failed: {failed_count}/{len(eins)}")
     if total_cost > 0:
         print(f"Total cost: ${total_cost:.4f}")
+
+    return 1 if failed_count else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
