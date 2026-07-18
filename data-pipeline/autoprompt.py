@@ -9,16 +9,16 @@ and only keeps changes that improve across ALL target models.
 Usage:
     # Universal: optimize across 3 models
     uv run python autoprompt.py \
-        --models gemini-3-pro-preview,claude-sonnet-4-5,gpt-5.2 \
+        --models gemini-3.1-pro-preview,claude-sonnet-4-5,gpt-5.2 \
         --iterations 20 --budget 10.00
 
     # Quick dev test: single model, 3 charities
     uv run python autoprompt.py \
-        --model gemini-3-pro-preview --eval-set mini --iterations 2 --dry-run
+        --model gemini-3.1-pro-preview --eval-set mini --iterations 2 --dry-run
 
     # Different optimizer LLM
     uv run python autoprompt.py \
-        --models gemini-3-pro-preview,claude-sonnet-4-5 \
+        --models gemini-3.1-pro-preview,claude-sonnet-4-5 \
         --optimizer-model claude-opus-4-5
 """
 

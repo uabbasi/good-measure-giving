@@ -281,7 +281,7 @@ class PairwiseEvaluator:
 
     def __init__(
         self,
-        judge_model: str = "claude-sonnet-4-5",
+        judge_model: str = "gemini-3-flash-preview",
         eval_eins: Optional[list[str]] = None,
     ):
         self.client = LLMClient(model=judge_model)
