@@ -165,6 +165,11 @@ def extract_row(
             )
             return True, None
         else:
+            # H11: record CN format drift as a cross-run source failure.
+            # increment_retry_count preserves the last-good parsed_json (no clobber)
+            # and writes error_message, which backoff/inspection helpers read.
+            if result.error and result.error.startswith("cn_format_drift"):
+                repo.increment_retry_count(ein, source, result.error)
             return False, result.error
 
     except Exception as e:

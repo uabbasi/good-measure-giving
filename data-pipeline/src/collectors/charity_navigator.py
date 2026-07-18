@@ -242,17 +242,15 @@ class CharityNavigatorCollector(BaseCollector):
         },
     }
 
-    def _check_format_integrity(self, html: str, ein: str) -> None:
+    def _check_format_integrity(self, html: str, ein: str) -> list:
         """
-        FIX #11: Check for expected structural markers in CN HTML.
+        FIX #11 / H11: Check for expected structural markers in CN HTML.
 
-        Emits warnings when expected patterns are missing, indicating
-        CN may have changed their page format.
+        Logs warnings for missing markers and RETURNS the names of missing
+        CRITICAL markers so parse() can fail closed on format drift.
         """
-        if not self.logger:
-            return
-
         missing_critical = []
+        missing_critical_names = []
         missing_high = []
         missing_medium = []
 
@@ -261,29 +259,32 @@ class CharityNavigatorCollector(BaseCollector):
                 entry = f"{marker_info['description']} ({marker_name})"
                 if marker_info["severity"] == "critical":
                     missing_critical.append(entry)
+                    missing_critical_names.append(marker_name)
                 elif marker_info["severity"] == "high":
                     missing_high.append(entry)
                 else:
                     missing_medium.append(entry)
 
-        if missing_critical:
-            self.logger.error(
-                f"[CN FORMAT CHANGE] CRITICAL markers missing for {ein}: "
-                f"{', '.join(missing_critical)}. "
-                f"Charity Navigator may have changed their page structure. "
-                f"Financial data extraction is likely broken."
-            )
-        if missing_high:
-            self.logger.warning(
-                f"[CN FORMAT CHANGE] High-severity markers missing for {ein}: "
-                f"{', '.join(missing_high)}. "
-                f"Some CN data extraction may be affected."
-            )
-        if missing_medium:
-            self.logger.debug(
-                f"[CN FORMAT CHANGE] Minor markers missing for {ein}: "
-                f"{', '.join(missing_medium)}"
-            )
+        if self.logger:
+            if missing_critical:
+                self.logger.error(
+                    f"[CN FORMAT CHANGE] CRITICAL markers missing for {ein}: "
+                    f"{', '.join(missing_critical)}. "
+                    f"Charity Navigator may have changed their page structure. "
+                    f"Financial data extraction is likely broken."
+                )
+            if missing_high:
+                self.logger.warning(
+                    f"[CN FORMAT CHANGE] High-severity markers missing for {ein}: "
+                    f"{', '.join(missing_high)}. "
+                    f"Some CN data extraction may be affected."
+                )
+            if missing_medium:
+                self.logger.debug(
+                    f"[CN FORMAT CHANGE] Minor markers missing for {ein}: {', '.join(missing_medium)}"
+                )
+
+        return missing_critical_names
 
     def parse(self, raw_data: str, ein: str, **kwargs) -> ParseResult:
         """
@@ -297,8 +298,16 @@ class CharityNavigatorCollector(BaseCollector):
             ParseResult with {"cn_profile": {...}}
         """
         try:
-            # FIX #11: Check format integrity before parsing
-            self._check_format_integrity(raw_data, ein)
+            # H11: fail closed on format drift — never store a silently-degraded profile
+            missing_critical = self._check_format_integrity(raw_data, ein)
+            if missing_critical:
+                ein_digits = ein.replace("-", "")
+                ein_fmt = f"{ein_digits[:2]}-{ein_digits[2:]}" if len(ein_digits) == 9 else ein
+                return ParseResult(
+                    success=False,
+                    parsed_data={self.schema_key: {"ein": ein_fmt, "quality_flag": "format_drift"}},
+                    error=f"cn_format_drift: missing critical markers: {', '.join(missing_critical)}",
+                )
 
             soup = BeautifulSoup(raw_data, "html.parser")
 
