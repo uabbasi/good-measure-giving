@@ -47,14 +47,54 @@ from src.utils.worker_pool import WorkerPool
 print_lock = Lock()
 
 
+def source_freshness_state(row: dict | None, ttl_days: int) -> str:
+    """
+    Classify a single raw_scraped_data row's freshness against a TTL.
+
+    The one shared pure helper for freshness age-math — mirrors
+    DataCollectionOrchestrator._is_data_fresh's tz-aware age math exactly
+    (fromisoformat with "Z" -> "+00:00", datetime.now(tz) - scraped_dt),
+    fail-closed on parse errors. Both select_stale_website_eins and
+    crawl_freshness_summary are built on top of this so the age math lives
+    in one place.
+
+    Args:
+        row: raw_scraped_data row dict (or None if no row exists)
+        ttl_days: TTL in days for this source
+
+    Returns:
+        One of "missing" (no row), "failed" (row.success is falsy),
+        "stale" (succeeded but scraped_at is older than ttl_days, missing,
+        or unparseable — fail closed), "fresh" (succeeded and within TTL).
+    """
+    if row is None:
+        return "missing"
+    if not row.get("success"):
+        return "failed"
+
+    scraped_at = row.get("scraped_at")
+    if not scraped_at:
+        return "stale"
+
+    try:
+        if isinstance(scraped_at, str):
+            scraped_dt = datetime.fromisoformat(scraped_at.replace("Z", "+00:00"))
+        else:
+            scraped_dt = scraped_at
+        age = datetime.now(scraped_dt.tzinfo) - scraped_dt
+    except (ValueError, TypeError):
+        return "stale"
+
+    return "stale" if age >= timedelta(days=ttl_days) else "fresh"
+
+
 def select_stale_website_eins(
     charity_repo: CharityRepository, raw_repo: RawDataRepository, older_than_days: int | None = None
 ) -> list[dict]:
     """
     Select charities whose 'website' raw_scraped_data row is missing,
-    failed (success=0), or older than the TTL — mirrors
-    DataCollectionOrchestrator._is_data_fresh's staleness math exactly, so
-    CLI selection and in-run freshness decisions agree.
+    failed (success=0), or older than the TTL — via source_freshness_state,
+    so CLI selection and in-run freshness decisions agree.
 
     Args:
         charity_repo: CharityRepository (injected for testability)
@@ -70,25 +110,46 @@ def select_stale_website_eins(
     for charity in charity_repo.get_all():
         ein = charity["ein"]
         row = raw_repo.get_by_source(ein, "website")
-
-        is_stale = True
-        if row and row.get("success"):
-            scraped_at = row.get("scraped_at")
-            if scraped_at:
-                try:
-                    if isinstance(scraped_at, str):
-                        scraped_dt = datetime.fromisoformat(scraped_at.replace("Z", "+00:00"))
-                    else:
-                        scraped_dt = scraped_at
-                    age = datetime.now(scraped_dt.tzinfo) - scraped_dt
-                    is_stale = age >= timedelta(days=ttl_days)
-                except (ValueError, TypeError):
-                    is_stale = True
-
-        if is_stale:
+        state = source_freshness_state(row, ttl_days)
+        if state in {"missing", "failed", "stale"}:
             stale.append({"name": charity.get("name"), "ein": ein, "website": charity.get("website")})
 
     return stale
+
+
+def crawl_freshness_summary(raw_repo: RawDataRepository, eins: list[str]) -> dict[str, dict]:
+    """
+    Per-source freshness counts across a set of EINs, for the run-end report.
+
+    For each of the 6 sources, counts how many of the given EINs have raw
+    data in each freshness state. The "website" entry additionally carries
+    "stale_eins": the website EINs in "failed" or "stale" state (the ones
+    a follow-up --refresh-stale run would pick back up).
+
+    Args:
+        raw_repo: RawDataRepository (injected for testability)
+        eins: EINs to summarize (typically the charities processed this run)
+
+    Returns:
+        {source: {"fresh": N, "stale": N, "failed": N, "missing": N, ...}, ...}
+        for each of propublica, charity_navigator, candid, form990_grants,
+        website, bbb.
+    """
+    summary = {}
+    for source, ttl_days in SOURCE_TTL_DAYS.items():
+        counts = {"fresh": 0, "stale": 0, "failed": 0, "missing": 0}
+        stale_eins = []
+        for ein in eins:
+            row = raw_repo.get_by_source(ein, source)
+            state = source_freshness_state(row, ttl_days)
+            counts[state] += 1
+            if source == "website" and state in {"failed", "stale"}:
+                stale_eins.append(ein)
+        if source == "website":
+            counts["stale_eins"] = stale_eins
+        summary[source] = counts
+
+    return summary
 
 
 def fetch_charity_data(charity, index, total, orchestrator, logger, verbose=False, force_sources=None):
@@ -286,15 +347,15 @@ def main():
 
     # Build sources list (6 sources per spec)
     all_sources = ["ProPublica", "Charity Navigator", "Candid", "Form 990 Grants", "Website", "BBB"]
+    source_map = {
+        "propublica": "ProPublica",
+        "charity_navigator": "Charity Navigator",
+        "candid": "Candid",
+        "form990_grants": "Form 990 Grants",
+        "website": "Website",
+        "bbb": "BBB",
+    }
     if args.skip:
-        source_map = {
-            "propublica": "ProPublica",
-            "charity_navigator": "Charity Navigator",
-            "candid": "Candid",
-            "form990_grants": "Form 990 Grants",
-            "website": "Website",
-            "bbb": "BBB",
-        }
         skipped_display = [source_map.get(s, s) for s in args.skip]
         active_sources = [s for s in all_sources if s not in skipped_display]
         sources_str = ", ".join(active_sources)
@@ -433,6 +494,19 @@ def main():
         print(f"\nBlocked sites (CAPTCHA/anti-bot): {len(blocked)}")
         for b in blocked:
             print(f"  ✗ {b['ein']}: {b['url']} — {b['reason']}")
+
+    # Per-source freshness report — surfaces staleness that a run summary
+    # otherwise hides (e.g. the 149 stale websites that went unnoticed).
+    freshness = crawl_freshness_summary(RawDataRepository(), [c["ein"] for c in charities_to_process])
+    print("\nSource Freshness:")
+    for source in SOURCE_TTL_DAYS:
+        counts = freshness[source]
+        display = source_map.get(source, source)
+        print(f"  {display}: {counts['fresh']} fresh / {counts['stale']} stale / {counts['failed']} failed / {counts['missing']} missing")
+
+    stale_website_eins = freshness["website"]["stale_eins"]
+    if stale_website_eins:
+        print(f"\nStale/failed website EINs ({len(stale_website_eins)}): {', '.join(stale_website_eins)}")
 
     if orchestrator.frozen_sources:
         frozen_str = ", ".join(sorted(orchestrator.frozen_sources))
