@@ -351,6 +351,118 @@ class TestGlobalFleetRateLimit:
 
         mock_limiter.wait.assert_called_once_with("website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS)
 
+    def test_curl_cffi_fetch_invokes_global_website_gate(self):
+        """The curl_cffi fallback issues its own outbound GET; it must pass
+        through the same process-wide gate. This is the worst place to skip
+        the throttle -- the fallback fires EXACTLY when a domain already
+        returned 429/503. The gate lives at the top of the sync
+        _curl_cffi_fetch (already on a worker thread), so it must fire before
+        the curl request regardless of the response outcome."""
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c.timeout = 10
+        c.cache = MagicMock()
+
+        curl_response = MagicMock()
+        curl_response.status_code = 503  # fail: no cache write, no 200 handling
+
+        with patch("src.collectors.web_collector.curl_requests") as mock_curl, patch(
+            "src.collectors.web_collector.global_rate_limiter"
+        ) as mock_limiter:
+            mock_curl.get.return_value = curl_response
+            mock_limiter.wait.return_value = 0.0
+            c._curl_cffi_fetch("https://example.org", "chrome120")
+
+        mock_limiter.wait.assert_called_once_with("website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS)
+
+    def test_curl_fallback_path_is_gated_end_to_end(self):
+        """Drive a real 429 -> curl_cffi fallback and prove the fallback GETs
+        route through the gate too (not just the primary httpx GET). Counting
+        the calls is what distinguishes this from
+        test_global_gate_still_invoked_on_non_200 (which stubs the fallback):
+        if the curl path were ungated, wait() would be called exactly once
+        (primary only) and this assertion would fail."""
+        c = self._collector()
+        c.cloudflare_domains = {}  # no known profile -> multi-profile loop runs
+
+        response = MagicMock()
+        response.status_code = 429
+        response.headers = {}
+        response.text = "Too Many Requests"
+
+        client = MagicMock()
+
+        async def fake_get(*args, **kwargs):
+            return response
+
+        client.get = fake_get
+
+        curl_response = MagicMock()
+        curl_response.status_code = 503  # every profile fails
+
+        semaphore = asyncio.Semaphore(1)
+
+        async def run():
+            return await c._fetch_url_async(client, "https://example.org", semaphore)
+
+        with patch("src.collectors.web_collector.curl_requests") as mock_curl, patch(
+            "src.collectors.web_collector.global_rate_limiter"
+        ) as mock_limiter:
+            mock_curl.get.return_value = curl_response
+            mock_limiter.wait.return_value = 0.0
+            url, success, html, final_url, error = asyncio.run(run())
+
+        # primary GET + at least one curl_cffi profile attempt, all gated
+        assert mock_limiter.wait.call_count >= 2
+        for call in mock_limiter.wait.call_args_list:
+            assert call.args == ("website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS)
+
+    def test_score_content_async_invokes_global_website_gate(self):
+        """The content-scoring fetch path (_score_content_async) opens its own
+        httpx client and issues a second class of outbound website request. It
+        must pass through the same gate."""
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c.headers = {}
+        c.cache = MagicMock()
+        c.cache.get_cached_html.return_value = None  # force the network path
+        c.page_classifier = MagicMock()
+        c.page_classifier.apply_content_boost.side_effect = lambda ps, html: ps
+
+        page_score = MagicMock()
+        page_score.url = "https://example.org"
+
+        response = MagicMock()
+        response.status_code = 200
+        response.text = "<html>hi</html>"
+        response.url = "https://example.org"
+
+        with patch(
+            "src.collectors.web_collector.httpx.AsyncClient",
+            return_value=_FakeAsyncClient(response),
+        ), patch("src.collectors.web_collector.global_rate_limiter") as mock_limiter:
+            mock_limiter.wait.return_value = 0.0
+            asyncio.run(c._score_content_async([page_score], timeout_total=5))
+
+        mock_limiter.wait.assert_called_once_with("website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS)
+
+
+class _FakeAsyncClient:
+    """Minimal async-context-manager stand-in for httpx.AsyncClient whose
+    .get() returns a canned response without touching the network."""
+
+    def __init__(self, response):
+        self._response = response
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, *exc):
+        return False
+
+    async def get(self, *args, **kwargs):
+        return self._response
+
 
 async def _failing_curl_cffi(url):
     return url, False, None, None, "curl_cffi fallback failed"

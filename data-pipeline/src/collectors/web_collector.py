@@ -1181,6 +1181,15 @@ class WebsiteCollector(BaseCollector):
         Called from thread pool by _try_curl_cffi_async.
         """
         try:
+            # Fleet-wide QPS ceiling (H5 follow-up): the curl_cffi fallback is a
+            # SECOND outbound website request path and fires exactly when a
+            # domain has already returned 429/503 — the worst moment to hammer
+            # it. Route it through the same process-wide gate as the primary
+            # httpx path. We are already on a worker thread here (called via
+            # asyncio.to_thread), so the blocking wait is fine directly — do
+            # NOT wrap in to_thread. This one point covers both the
+            # multi-profile fallback loop and the cached-profile direct path.
+            global_rate_limiter.wait("website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS)
             response = curl_requests.get(url, timeout=self.timeout, impersonate=profile)
 
             if response.status_code == 200:
@@ -1277,6 +1286,12 @@ class WebsiteCollector(BaseCollector):
                         html = cached["html"]
                     else:
                         await asyncio.sleep(random.uniform(*CRAWL_JITTER_RANGE_SECONDS))
+                        # Fleet-wide QPS ceiling (H5 follow-up): content-scoring
+                        # is a third outbound website request path; gate it
+                        # through the same process-wide limiter as _fetch_url_async.
+                        await asyncio.to_thread(
+                            global_rate_limiter.wait, "website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS
+                        )
                         async with httpx.AsyncClient(
                             headers=self.headers,
                             follow_redirects=True,
