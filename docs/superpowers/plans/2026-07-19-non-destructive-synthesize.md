@@ -215,7 +215,7 @@ def data_age_years(scraped_at, now=None) -> int | None:
 
 def parsed_json_is_meaningful(parsed_json: dict | None) -> bool:
     """True if any top-level value is a non-empty dict/list (mirrors
-    OrchestratorCollector._is_meaningful_data as a module-level pure fn)."""
+    DataCollectionOrchestrator._is_meaningful_data as a module-level pure fn)."""
     if not parsed_json:
         return False
     for value in parsed_json.values():
@@ -429,7 +429,7 @@ Append to `data-pipeline/tests/test_write_safety.py` (uses a fake `raw_data_repo
 ```python
 class TestStoreRawDataNonDowngrade:
     def _collector_with_fake_repo(self, existing_row):
-        from src.collectors.orchestrator import OrchestratorCollector
+        from src.collectors.orchestrator import DataCollectionOrchestrator
 
         calls = {"soft_fail": [], "upsert": []}
 
@@ -443,7 +443,7 @@ class TestStoreRawDataNonDowngrade:
             def upsert(self, **kwargs):
                 calls["upsert"].append(kwargs)
 
-        col = object.__new__(OrchestratorCollector)  # skip __init__
+        col = object.__new__(DataCollectionOrchestrator)  # skip __init__
         col.raw_data_repo = FakeRawRepo()
         import logging
 
