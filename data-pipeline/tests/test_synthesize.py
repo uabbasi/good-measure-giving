@@ -800,3 +800,32 @@ class TestPopulationsVerificationStatus:
         assert _populations_verification_status("website", ["communities"]) == "unverified"
         assert _populations_verification_status("website", ["underserved communities", "those in need"]) == "unverified"
         assert _populations_verification_status("website", ["people", "individuals", "everyone"]) == "unverified"
+
+
+class TestProgramRatioBulletproofFallback:
+    """program_expense_ratio computed from raw prog/total when no source supplies it
+    (Al-Furqaan 'mixed' financials regression: 0.85 -> None -> impact crash)."""
+
+    def test_ratio_computed_from_components(self):
+        from src.parsers.charity_metrics_aggregator import CharityMetricsAggregator
+
+        # PP gives prog + total expenses but no pre-computed ratio; no CN ratio.
+        metrics = CharityMetricsAggregator.aggregate(
+            charity_id=0,
+            ein="12-3456789",
+            cn_profile={"name": "Test"},
+            propublica_990={
+                "name": "Test",
+                "program_expenses": 900_000,
+                "total_expenses": 1_000_000,
+            },
+        )
+        assert metrics.program_expense_ratio == 0.9
+
+    def test_no_components_stays_none(self):
+        from src.parsers.charity_metrics_aggregator import CharityMetricsAggregator
+
+        metrics = CharityMetricsAggregator.aggregate(
+            charity_id=0, ein="12-3456789", cn_profile={"name": "Test"}
+        )
+        assert metrics.program_expense_ratio is None

@@ -429,6 +429,52 @@ class TestCitationJudgeStructural:
         assert "citation_2" in info_issues[0].field
 
 
+class TestScoreJudgeConsensus:
+    """k=3 majority consensus suppresses nondeterministic single-roll errors."""
+
+    def _judge_with_rolls(self, roll_error_flags):
+        """Build a ScoreJudge whose LLM rolls yield errors per roll_error_flags."""
+        from src.judges.score_judge import LLMScoreResult, ScoreJudge
+        from src.judges.schemas.verdict import ValidationIssue
+
+        judge = ScoreJudge(JudgeConfig())
+        seq = []
+        for has_err in roll_error_flags:
+            issues = []
+            if has_err:
+                issues.append(ValidationIssue(Severity.ERROR, "amal_score_rationale", "contradiction"))
+            seq.append(LLMScoreResult(issues=issues, scores_checked=1, rationales_valid=1, cost=0.0))
+        calls = {"n": 0}
+
+        def fake(output, context):
+            r = seq[calls["n"]]
+            calls["n"] += 1
+            return r
+
+        judge._verify_rationales_with_llm = fake
+        return judge
+
+    def _out(self):
+        return {"ein": "00-0000000", "evaluation": {"amal_score": 60}, "narrative": {}}
+
+    def test_single_roll_error_is_suppressed(self):
+        judge = self._judge_with_rolls([True, False, False])  # minority
+        verdict = judge.validate(self._out(), {})
+        assert verdict.passed is True
+        assert not any(i.severity == Severity.ERROR for i in verdict.issues)
+
+    def test_majority_error_stands(self):
+        judge = self._judge_with_rolls([True, True, False])  # majority
+        verdict = judge.validate(self._out(), {})
+        assert verdict.passed is False
+        assert any(i.severity == Severity.ERROR for i in verdict.issues)
+
+    def test_unanimous_clean_passes(self):
+        judge = self._judge_with_rolls([False, False, False])
+        verdict = judge.validate(self._out(), {})
+        assert verdict.passed is True
+
+
 class TestScoreJudgeQuickChecks:
     """Test score judge quick tone checks (no LLM)."""
 

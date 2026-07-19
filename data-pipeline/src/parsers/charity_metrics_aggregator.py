@@ -1706,6 +1706,17 @@ class CharityMetricsAggregator:
                             metrics_data["program_expenses"] = financials["program_expenses"]
                         break  # Use first available
 
+        # Bulletproof: no source supplied a pre-computed ratio, but we hold the
+        # raw components — compute it directly. A 'mixed' income statement
+        # (CN gap-fill) can leave prog/total present but ratio None; without
+        # this, program-ratio scoring silently collapses (Al-Furqaan regressed
+        # 0.85 -> None -> impact 8/50 on a fresh run).
+        if metrics_data.get("program_expense_ratio") is None:
+            prog = metrics_data.get("program_expenses")
+            total = metrics_data.get("total_expenses")
+            if isinstance(prog, (int, float)) and isinstance(total, (int, float)) and total > 0 and prog >= 0:
+                metrics_data["program_expense_ratio"] = round(min(1.0, prog / total), 4)
+
         # ====================================================================
         # GIK / Noncash contributions (Fix 1)
         # ====================================================================

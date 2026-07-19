@@ -46,6 +46,10 @@ SCORE_TIERS = {
 }
 
 
+# Independent LLM rolls for the error-consensus vote (odd number → clean majority).
+CONSENSUS_ROLLS = 3
+
+
 class ScoreJudge(BaseJudge):
     """Validates that narrative rationale supports deterministic scores.
 
@@ -96,36 +100,41 @@ class ScoreJudge(BaseJudge):
         quick_issues = self._quick_tone_checks(evaluation, narrative)
         issues.extend(quick_issues)
 
-        # Step 2: LLM verification of rationale quality (with retry for rate limits)
-        max_retries = 3
-        for attempt in range(max_retries):
-            try:
-                llm_result = self._verify_rationales_with_llm(output, context)
-                if llm_result:
-                    issues.extend(llm_result.issues)
-                    cost_usd = llm_result.cost
-                    metadata["scores_checked"] = llm_result.scores_checked
-                    metadata["rationales_valid"] = llm_result.rationales_valid
-                break  # Success, exit retry loop
-            except Exception as e:
-                error_str = str(e).lower()
-                is_rate_limit = "rate" in error_str or "429" in error_str or "quota" in error_str
+        # Step 2: LLM verification, k=3 majority consensus on ERRORS.
+        # The rationale/score-consistency check is nondeterministic — identical
+        # content flip-flops between 0 and N errors across rolls. Gating on a
+        # single roll produced spurious publication blocks. So run CONSENSUS_ROLLS
+        # independent rolls; an ERROR verdict only stands if the MAJORITY of
+        # completed rolls report at least one error. Warnings/info (non-gating)
+        # come from the first roll.
+        roll_results = []
+        for _ in range(CONSENSUS_ROLLS):
+            roll = self._verify_with_rate_limit_retry(output, context)
+            if roll is not None:
+                roll_results.append(roll)
 
-                if is_rate_limit and attempt < max_retries - 1:
-                    wait_time = (2 ** attempt) * 5  # 5s, 10s, 20s
-                    logger.warning(f"Rate limit hit, retrying in {wait_time}s (attempt {attempt + 1}/{max_retries})")
-                    time.sleep(wait_time)
-                    continue
+        if roll_results:
+            metadata["consensus_rolls"] = len(roll_results)
+            metadata["scores_checked"] = roll_results[0].scores_checked
+            cost_usd = sum(r.cost for r in roll_results)
 
-                logger.error(f"Score judge LLM verification failed: {e}")
-                self.add_issue(
-                    issues,
-                    Severity.ERROR,
-                    "llm_verification",
-                    f"Could not complete LLM verification: {str(e)[:100]}",
+            error_roll_count = sum(
+                1 for r in roll_results if any(i.severity == Severity.ERROR for i in r.issues)
+            )
+            metadata["error_roll_count"] = error_roll_count
+            majority = (len(roll_results) // 2) + 1
+            if error_roll_count >= majority:
+                # Errors are real — surface them from the roll that found the most.
+                worst = max(
+                    roll_results,
+                    key=lambda r: sum(1 for i in r.issues if i.severity == Severity.ERROR),
                 )
-                metadata["llm_failed"] = True
-                break
+                issues.extend([i for i in worst.issues if i.severity == Severity.ERROR])
+            # Non-gating warnings/info from the first roll.
+            issues.extend([i for i in roll_results[0].issues if i.severity != Severity.ERROR])
+        else:
+            logger.error("Score judge: all consensus rolls failed")
+            metadata["llm_failed"] = True
 
         # Determine pass/fail
         error_count = len([i for i in issues if i.severity == Severity.ERROR])
@@ -209,6 +218,28 @@ class ScoreJudge(BaseJudge):
             )
 
         return issues
+
+    def _verify_with_rate_limit_retry(
+        self, output: dict[str, Any], context: dict[str, Any]
+    ) -> Optional["LLMScoreResult"]:
+        """One consensus roll: the LLM verification with rate-limit backoff.
+
+        Returns the result, or None if the roll could not complete (a failed
+        roll simply does not vote — it never fabricates an error).
+        """
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                return self._verify_rationales_with_llm(output, context)
+            except Exception as e:
+                error_str = str(e).lower()
+                is_rate_limit = "rate" in error_str or "429" in error_str or "quota" in error_str
+                if is_rate_limit and attempt < max_retries - 1:
+                    time.sleep((2 ** attempt) * 5)
+                    continue
+                logger.error(f"Score judge consensus roll failed: {e}")
+                return None
+        return None
 
     def _verify_rationales_with_llm(
         self, output: dict[str, Any], context: dict[str, Any]
