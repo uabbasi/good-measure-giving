@@ -107,3 +107,26 @@ class TestSystemicFailure:
         assert skipped == 2
         assert processed == 0
         assert repo.upserts == []  # never upsert when we could not query history
+
+    def test_processed_zero_is_systemic_failure(self):
+        from bin.reconcile_charity_data import is_systemic_failure
+
+        assert is_systemic_failure(processed=0, skipped=3) is True
+
+    def test_skipped_greater_than_processed_is_systemic_failure(self):
+        # A mostly-broken run (more EINs failed history-load than succeeded)
+        # must not read as clean, even though processed > 0.
+        from bin.reconcile_charity_data import is_systemic_failure
+
+        assert is_systemic_failure(processed=2, skipped=3) is True
+
+    def test_skipped_less_than_or_equal_processed_is_partial_not_systemic(self):
+        from bin.reconcile_charity_data import is_systemic_failure
+
+        assert is_systemic_failure(processed=5, skipped=2) is False
+        assert is_systemic_failure(processed=5, skipped=5) is False
+
+    def test_no_skips_is_clean(self):
+        from bin.reconcile_charity_data import is_systemic_failure
+
+        assert is_systemic_failure(processed=5, skipped=0) is False

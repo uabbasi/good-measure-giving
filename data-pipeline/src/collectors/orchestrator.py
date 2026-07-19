@@ -9,11 +9,10 @@ import time
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Set, Tuple
 
-from src.constants import DATA_FULL_CONFIDENCE_MAX_AGE_YEARS
-
 from ..constants import (
     CRAWL_INITIAL_BACKOFF_SECONDS,
     CRAWL_MAX_RETRIES,
+    DATA_FULL_CONFIDENCE_MAX_AGE_YEARS,
     FAILURE_TTL_DAYS,
     RETRY_BACKOFF_HOURS,
     SOURCE_TTL_DAYS,

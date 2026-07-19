@@ -104,6 +104,17 @@ def reconcile(eins, data_repo, history_fn, apply: bool = False) -> tuple[list[di
     return all_flags, skipped, processed
 
 
+def is_systemic_failure(processed: int, skipped: int) -> bool:
+    """True when the run's results cannot be trusted as a clean read.
+
+    Two cases: nothing was successfully queried (processed == 0), or a
+    mostly-broken run — more EINs failed history-load than succeeded
+    (skipped > processed). Either must exit non-zero rather than silently
+    reporting an empty/partial candidate list as if it were complete.
+    """
+    return skipped > 0 and (processed == 0 or skipped > processed)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Reconcile regressed charity_data fields from Dolt history.")
     parser.add_argument("--ein", help="Limit to one EIN.")
@@ -116,16 +127,24 @@ def main() -> None:
     eins = [args.ein] if args.ein else [c["ein"] for c in charity_repo.get_all() if c.get("ein")]
     all_flags, skipped, processed = reconcile(eins, data_repo, load_history, apply=args.apply)
 
-    # Systemic-failure guard: a total history-query failure must NEVER read as
-    # "clean, 0 candidates." If nothing was successfully queried and at least one
-    # EIN failed, the tool did not actually run — say so loudly and exit non-zero
-    # WITHOUT overwriting the report with a misleading empty list.
-    if skipped and processed == 0:
-        print(
-            f"reconcile: history query FAILED for all {len(eins)} charities — "
-            "reconciliation did NOT run (no charity was successfully queried).",
-            file=sys.stderr,
-        )
+    # Systemic-failure guard: a total (or near-total) history-query failure must
+    # NEVER read as "clean" or "mostly fine." If nothing was successfully
+    # queried, OR more EINs failed than succeeded, the run cannot be trusted —
+    # say so loudly and exit non-zero WITHOUT overwriting the report with a
+    # misleading empty/partial list.
+    if is_systemic_failure(processed, skipped):
+        if processed == 0:
+            print(
+                f"reconcile: history query FAILED for all {len(eins)} charities — "
+                "reconciliation did NOT run (no charity was successfully queried).",
+                file=sys.stderr,
+            )
+        else:
+            print(
+                f"reconcile: history query FAILED for {skipped} of {len(eins)} charities "
+                f"(only {processed} succeeded) — reconciliation did NOT run reliably.",
+                file=sys.stderr,
+            )
         sys.exit(1)
 
     reports_dir = Path(__file__).parent.parent / "reports"

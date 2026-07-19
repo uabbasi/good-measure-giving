@@ -52,6 +52,20 @@ REPORTS_DIR = Path(__file__).parent / "reports"
 # therefore always a bug, not a genuine drop, so we restore the prior value and
 # flag it. Text/website-derived fields are deliberately excluded — those can
 # legitimately go absent year to year.
+#
+# Deliberately NOT guarded: the four metrics_json ratios (noncash_ratio,
+# cash_adjusted_program_ratio, domestic_burn_rate, reserves_months) derive from
+# OPTIONAL 990 data (foreign grants / Schedule F, noncash GIK contributions).
+# A charity that simply files no foreign grants this year has a genuinely None
+# domestic_burn_rate (see src/reconciliation/checks.py:147) — that non-null ->
+# null transition is a legitimate drop, not a computation gap, per the design's
+# known-absent-vs-unknown invariant (an observed-but-absent value must write
+# null). Guarding them would restore a stale value into metrics_json — the
+# scorer's source of truth — and score it as current, which is corruption in
+# the OTHER direction. Their real failure mode (a grants-fetch throttle losing
+# the underlying data mid-run) is already handled upstream by the raw-layer
+# non-downgrade carry-forward, which recomputes real ratios from carried
+# grants data rather than needing a post-hoc restore here.
 REGRESSION_GUARDED_FIELDS = frozenset(
     {
         "program_expense_ratio",
@@ -67,26 +81,14 @@ REGRESSION_GUARDED_FIELDS = frozenset(
     }
 )
 
-# Same recompute-gap class, but these live ONLY inside the metrics_json blob (the
-# scored single-source-of-truth), not as top-level CharityData columns. They are
-# CharityMetrics fields serialized via metrics.model_dump(), so the guard has to
-# reach into metrics_json to restore them.
-REGRESSION_GUARDED_METRICS_FIELDS = frozenset(
-    {
-        "noncash_ratio",
-        "cash_adjusted_program_ratio",
-        "domestic_burn_rate",
-        "reserves_months",
-    }
-)
-
 
 def apply_regression_guard(synthesized, prior_row: dict | None) -> list[dict]:
     """Restore guarded scalar fields that recomputed non-null -> null this run.
 
     Returns a list of flag dicts for the editorial/regressions report. Mutates
-    `synthesized` in place, restoring the prior value for each regressed field —
-    both top-level columns and fields nested inside the metrics_json blob.
+    `synthesized` in place, restoring the prior value for each regressed
+    top-level column. metrics_json-nested ratios are intentionally excluded —
+    see the comment above REGRESSION_GUARDED_FIELDS.
     """
     if not prior_row:
         return []
@@ -95,17 +97,6 @@ def apply_regression_guard(synthesized, prior_row: dict | None) -> list[dict]:
         prior_value = prior_row.get(field)
         if prior_value is not None and getattr(synthesized, field, None) is None:
             setattr(synthesized, field, prior_value)
-            flags.append(
-                {"charity_ein": synthesized.charity_ein, "field": field, "prior_value": prior_value}
-            )
-    # metrics_json-only fields (nested in the scored single-source-of-truth blob).
-    prior_metrics = prior_row.get("metrics_json") or {}
-    new_metrics = synthesized.metrics_json if isinstance(synthesized.metrics_json, dict) else {}
-    for field in REGRESSION_GUARDED_METRICS_FIELDS:
-        prior_value = prior_metrics.get(field)
-        if prior_value is not None and new_metrics.get(field) is None:
-            new_metrics[field] = prior_value
-            synthesized.metrics_json = new_metrics
             flags.append(
                 {"charity_ein": synthesized.charity_ein, "field": field, "prior_value": prior_value}
             )
