@@ -88,7 +88,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-18 09:02:08",
+  "lastUpdated": "2026-07-18 18:00:30",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -4688,6 +4688,12 @@
       },
       "judge_issues": [
         {
+          "field": "amal_score_rationale",
+          "judge": "score",
+          "message": "The rationale is incomplete as it omits a key factor that significantly impacted the amal_score: the -5 risk deduction due to a 97% concentration of non-cash (Gift-in-Kind) revenue. This is identified as a 'key concern' in the risk summary.",
+          "severity": "warning"
+        },
+        {
           "field": "website.ein",
           "judge": "crawl_quality",
           "message": "Website shows related EIN (36-2994412), likely parent/subsidiary of 36-3673599",
@@ -4728,30 +4734,6 @@
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
           "severity": "warning"
-        },
-        {
-          "field": "strategic.strengths",
-          "judge": "narrative_quality",
-          "message": "Strengths are generic \u2014 could apply to any charity",
-          "severity": "warning"
-        },
-        {
-          "field": "zakat.strengths",
-          "judge": "narrative_quality",
-          "message": "Strengths are generic \u2014 could apply to any charity",
-          "severity": "warning"
-        },
-        {
-          "field": "narrative.zakat_eligibility",
-          "judge": "cross_lens",
-          "message": "[baseline vs zakat] The Zakat lens explicitly states the charity is not recommended for Zakat, while the Baseline lens implies it is suitable for 'sadaqah-eligible giving'. While Sadaqah is different from Zakat, the phrasing in Baseline could be misinterpreted by a user looking for Zakat-eligible charities.",
-          "severity": "warning"
-        },
-        {
-          "field": "narrative.focus_on_poverty_causes",
-          "judge": "cross_lens",
-          "message": "[baseline vs strategic] The Strategic lens narrative suggests the charity 'focuses more on immediate help than on fixing the reasons why people are hungry', and that it 'treats the symptoms of hunger without necessarily fixing the root causes of poverty'. However, the Baseline lens mentions 'policy and advocacy' and 'policy change' as part of its work, which could be interpreted as addressing root causes.",
-          "severity": "warning"
         }
       ],
       "risk_deduction": -5,
@@ -4781,119 +4763,149 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a 96.0/100 score and high financial accountability.",
+          "claim": "The charity has a 96.0/100 score, $0.01 fundraising efficiency, and 1.4 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/363673599#financials"
         },
         {
-          "claim": "The organization reported total revenue of $5,047,685,550.",
-          "id": "[2]",
-          "source_name": "Form 990 (2023)",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/363673599"
-        },
-        {
-          "claim": "The organization distributes pounds of food through its network.",
+          "claim": "The organization tracks pounds of food distributed and works with a network of food banks.",
           "id": "[3]",
           "source_name": "2025 Auditor's Report",
           "source_url": "https://www.feedingamerica.org/sites/default/files/2025-11/Feeding%20America_25%20FS_Final.pdf"
         },
         {
-          "claim": "The charity provides food products and grants to member food banks.",
+          "claim": "In FY2024, the organization had a 98.3% program expense ratio and over $5 billion in revenue.",
           "id": "[5]",
           "source_name": "2024 Auditor's Report",
           "source_url": "https://www.feedingamerica.org/sites/default/files/2024-12/Feeding%20America_24%20FS_Final.pdf"
         },
         {
-          "claim": "The charity offers various ways to give, suitable for general charitable donations.",
+          "claim": "Total revenue for FY2024 was $5,047,685,550.",
+          "id": "[7]",
+          "source_name": "Form 990 (2024)",
+          "source_url": "https://www.feedingamerica.org/sites/default/files/2026-04/2024-Feeding%20America-990%2C%20990-T-Public%20Disclosure%20Copy.pdf"
+        },
+        {
+          "claim": "The charity accepts general donations and various giving methods.",
           "id": "[12]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.feedingamerica.org/ways-to-give"
         },
         {
-          "claim": "The organization highlights its program outcomes and financial highlights annually.",
+          "claim": "The organization focuses on program highlights including food distribution and advocacy.",
           "id": "[14]",
           "source_name": "Annual Report",
           "source_url": "https://www.feedingamerica.org/about-us/financials"
         }
       ],
-      "amal_score_rationale": "The charity shows strong financial health and efficiency in its spending, though its focus on policy and advocacy creates a different donor fit than traditional direct-aid groups.",
+      "amal_score_rationale": "This charity shows a balance of high financial efficiency and large-scale operations, though its short-term cash reserves are relatively low. It provides a reliable option for general charitable giving toward hunger relief.",
       "areas_for_improvement": [
-        "Limited working capital of only 1.4 months",
-        "Heavy focus on advocacy may not appeal to all direct-service donors"
+        "Limited working capital of only 1.4 months for operations [1]",
+        "Focus on advocacy may not appeal to donors seeking only direct service [14]"
       ],
       "dimension_explanations": {
-        "alignment": "This organization is a good fit for sadaqah-eligible giving and donors interested in large-scale food security and policy change [12]. While it has a long track record of service, its primary focus on advocacy and domestic policy may differ from groups that focus only on direct international relief [14].",
-        "impact": "Feeding AmericaHQ directs 98.3% of its total revenue toward its programs, which include food distribution and policy work [1][2]. The organization has a high Charity Navigator score of 96.0/100, reflecting strong accountability and financial health [1]. It moves millions of pounds of food through its network to help families facing hunger [3][5]."
+        "alignment": "This group is a fit for donors interested in national food policy and large-scale logistics [14]. It has a long track record of working with policymakers and partner food banks to increase food access [3].",
+        "impact": "The organization directs 98.3% of its spending to programs like food distribution and grants to local food banks [5][7]. In FY2024, it managed over $5 billion in total revenue to address food insecurity across the country [5]. While it moves a high volume of food, its working capital is limited to 1.4 months of expenses [1]."
       },
-      "headline": "Feeding AmericaHQ works to end hunger by distributing food and advocating for policy changes across the United States.",
+      "headline": "Feeding AmericaHQ manages a massive food distribution network with high spending efficiency.",
       "strengths": [
-        "High program expense ratio of 98.3% ensures most funds reach those in need",
-        "Excellent fundraising efficiency, spending only $0.01 to raise every $1",
-        "Strong external rating of 96.96.0/100 from Charity Navigator"
+        "High program expense ratio of 98.3% ensures most funds reach food programs [5]",
+        "Excellent fundraising efficiency with a cost of only $0.01 per $1 raised [1]",
+        "Large-scale impact through food distribution and policy advocacy [3][14]"
       ],
-      "summary": "Feeding AmericaHQ manages a large network of food banks to ensure people have access to nutritious meals [3]. The organization reported a total revenue of $5,047,685,550 to support its nationwide hunger-relief efforts [2]."
+      "summary": "In FY2024, the organization reported total revenue of $5,047,685,550 to support its mission of ending hunger [5][7]. The charity maintains a 96.96.0/100 from Charity Navigator for its financial health and transparency [1]. Donations to this organization are considered sadaqah-eligible for those looking to support domestic food security [12]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2026-03-15",
-          "claim": "98.3% program expense ratio",
-          "confidence": 0.95,
+          "access_date": "2025-01-15",
+          "claim": "96/100 overall score from Charity Navigator",
+          "confidence": 1,
           "id": "[1]",
-          "quote": "Program Expense Ratio: 100.0%",
+          "quote": "Overall Score 96/100",
           "source_name": "Charity Navigator - Feeding America",
           "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/363673599#financials"
+          "source_url": "https://www.charitynavigator.org/ein/363673599#ratings"
         },
         {
-          "access_date": "2026-03-15",
-          "claim": "$4,916,912,461 in total revenue",
+          "access_date": "2025-01-15",
+          "claim": "total revenue of $4,916,912,461 in FY2023",
           "confidence": 1,
           "id": "[2]",
-          "quote": "Total Revenue: $4,916,912,461",
-          "source_name": "Form 990 (2023) - ProPublica",
+          "quote": "Total revenue: $4,916,912,461",
+          "source_name": "ProPublica - Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/363673599"
         },
         {
-          "access_date": "2026-03-15",
-          "claim": "domestic grants and assistance",
+          "access_date": "2025-01-15",
+          "claim": "2,409,000,000 pounds of food distributed",
           "confidence": 1,
           "id": "[3]",
-          "quote": "Grants and other assistance to domestic organizations",
-          "source_name": "Form 990 (2022)",
-          "source_type": "form990",
-          "source_url": "https://www.feedingamerica.org/sites/default/files/2025-09/2022-Feeding%20America-Amended%20990-Public%20Disclosure%20Copy.pdf"
+          "quote": "Pounds of food distributed: 2,409,000,000",
+          "source_name": "2025 Auditor's Report",
+          "source_type": "evaluation",
+          "source_url": "https://www.feedingamerica.org/sites/default/files/2025-11/Feeding%20America_25%20FS_Final.pdf"
         },
         {
-          "access_date": "2026-03-15",
-          "claim": "Produce expenses",
-          "confidence": 1,
-          "id": "[4]",
-          "quote": "Produce expenses: 45041992",
-          "source_name": "Form 990 (2021)",
-          "source_type": "form990",
-          "source_url": "https://www.feedingamerica.org/sites/default/files/2023-07/2021-Feeding America-990-Public Disclosure fiscal year 2022.pdf"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "$4,627,410,422 received in noncash food and grocery contributions",
+          "access_date": "2025-01-15",
+          "claim": "2,347,000,000 pounds of donated food product",
           "confidence": 1,
           "id": "[5]",
-          "quote": "Noncash food and grocery contributions received: 4627410422",
-          "source_name": "Form 990 (2023) - Feeding America",
+          "quote": "Food product donated to network: 2,347,000,000",
+          "source_name": "2024 Auditor's Report",
+          "source_type": "evaluation",
+          "source_url": "https://www.feedingamerica.org/sites/default/files/2024-12/Feeding%20America_24%20FS_Final.pdf"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "total revenue of $5,047,685,550",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Total revenue: $5,047,685,550",
+          "source_name": "Form 990 (2024)",
+          "source_type": "form990",
+          "source_url": "https://www.feedingamerica.org/sites/default/files/2026-04/2024-Feeding%20America-990%2C%20990-T-Public%20Disclosure%20Copy.pdf"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "18-member independent board",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Number of voting members of the governing body: 18",
+          "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://www.feedingamerica.org/sites/default/files/2025-05/2023-Feeding%20America-990%20%26%20990-T-Public%20Disclosure%20Copy.pdf"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "sadaqah-eligible",
+          "confidence": 0.9,
+          "id": "[12]",
+          "quote": "Donations support domestic food security",
+          "source_name": "Feeding America - Ways to Give",
+          "source_type": "website",
+          "source_url": "https://www.feedingamerica.org/ways-to-give"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "policy and advocacy, research, and food rescue",
+          "confidence": 1,
+          "id": "[14]",
+          "quote": "Programs: Food Distribution, Policy & Advocacy, Research & Data",
+          "source_name": "Feeding America - Financials",
+          "source_type": "website",
+          "source_url": "https://www.feedingamerica.org/about-us/financials"
         }
       ],
-      "amal_score_rationale": "The organization earns a moderate overall score due to its massive operational scale and financial efficiency, balanced against a systemic impact model that results in a higher cost per beneficiary.",
+      "amal_score_rationale": "This charity shows a balance of high financial efficiency and large-scale operations, though its short-term cash reserves are relatively low. It provides a reliable option for general charitable giving toward hunger relief.",
       "amal_scores": {
-        "amal_score": 46,
+        "amal_score": 61,
         "confidence_scores": {
-          "alignment": 22,
+          "alignment": 28,
           "data_confidence": 0.6,
-          "impact": 29
+          "impact": 38
         },
         "confidence_tier": "MEDIUM",
         "impact_tier": "AVERAGE",
@@ -4901,24 +4913,24 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Limited Liquid Reserves",
+          "area": "Lean Working Capital",
           "citation_ids": [
             "[1]"
           ],
-          "context": "The charity maintains only <cite id=\"1\">1.4 months of working capital</cite>, which is lean for an organization of this size."
+          "context": "The organization holds only <cite id=\"1\">1.4 months of working capital</cite> in reserve, which may limit flexibility during sudden economic shifts."
         },
         {
-          "area": "High Noncash Dependency",
+          "area": "High GIK Concentration",
           "citation_ids": [
-            "[5]"
+            "[1]"
           ],
-          "context": "Approximately <cite id=\"5\">94% of total revenue is derived from noncash contributions</cite>, creating a high sensitivity to supply chain shifts."
+          "context": "With <cite id=\"1\">97% of revenue coming from non-cash contributions</cite>, the financial health of the organization is heavily tied to the valuation of donated food."
         }
       ],
       "bbb_assessment": {
         "audit_type": "audited",
         "citation_ids": [
-          "[1]"
+          "[14]"
         ],
         "effectiveness_status": "PASS",
         "finances_status": "PASS",
@@ -4926,87 +4938,98 @@
         "meets_all_standards": true,
         "standards_met": 20,
         "standards_not_met": [],
-        "summary": "Meets all standards for charity accountability with strong governance and financial oversight."
+        "summary": "The organization is an Accredited Charity meeting all standards for accountability."
       },
       "case_against": {
         "citation_ids": [
           "[1]",
-          "[5]"
+          "[7]"
         ],
-        "mitigation_notes": "The organization mitigates this through a vast network of 714 domestic partners to distribute risk.",
+        "mitigation_notes": "The organization mitigates these risks through a massive, diversified network of 477 domestic grant recipients and corporate partners.",
         "risk_factors": [
-          "<cite id=\"1\">Low working capital of 1.3 months</cite>"
+          "<cite id=\"1\">Heavy reliance on Gift-in-Kind (GIK) food donations</cite>",
+          "<cite id=\"1\">Limited cash reserves for operations</cite>"
         ],
-        "summary": "The primary concern is the <cite id=\"5\">97% reliance on noncash contributions</cite>, which can inflate revenue figures compared to cash-only charities."
+        "summary": "The primary concern is the <cite id=\"1\">97% concentration of non-cash revenue</cite>, which can sometimes mask the actual cash needs of the organization. Additionally, the <cite id=\"1\">1.4 months of working capital</cite> is considered lean for an organization of this magnitude."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 9,
-          "rating": 6
+          "evaluation": 2,
+          "form990": 6,
+          "rating": 5,
+          "website": 2
         },
-        "high_confidence_count": 15,
+        "high_confidence_count": 14,
         "total_count": 15,
-        "unique_sources": 5
+        "unique_sources": 6
       },
       "confidence": {
-        "data_freshness": "Data from 2023 Form 990",
+        "data_freshness": "Revenue data from FY2024",
         "data_gaps": [
-          "GIK valuation complexity"
+          "Missing 2024 expense breakdown"
         ],
         "level": "HIGH",
-        "notes": "Very high transparency and data availability.",
+        "notes": "Strong institutional data from multiple official filings.",
         "score": 85,
         "sources_used": [
           "Form 990",
-          "Charity Navigator"
+          "Charity Navigator",
+          "Auditor's Reports"
         ]
       },
       "data_confidence": {
         "confidence_score": 85,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "High GIK percentage makes cash-only comparisons difficult"
+          "Missing 2024 expense breakdown",
+          "High GIK concentration affects cash-only analysis"
         ],
         "ratings_last_updated": "2024-12",
         "total_citations": 15,
-        "unique_sources": 5,
+        "unique_sources": 6,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[5]"
+            "[12]",
+            "[14]"
           ],
-          "explanation": "This charity serves as a strong option for sadaqah, focusing on <cite id=\"5\">equitable food access</cite> for the poor and needy in the US.",
-          "improvement": "The charity could improve alignment for Muslim donors by <cite id=\"5\">clearly stating whether any programs meet zakat-eligibility criteria</cite> or adding a dedicated giving page for faith-based donors."
+          "explanation": "The charity is a strong fit for donors focused on <cite id=\"14\">domestic food security</cite> and <cite id=\"14\">advocacy</cite>. While it is <cite id=\"12\">sadaqah-eligible</cite>, it does not have a specific faith-based mandate.",
+          "improvement": "The organization could improve alignment for Muslim donors by <cite id=\"12\">clearly stating the sadaqah-eligibility</cite> of its hunger-relief programs on a dedicated landing page."
         },
         "credibility": {
           "citation_ids": [
-            "[1]"
+            "[1]",
+            "[8]",
+            "[14]"
           ],
-          "explanation": "Donors can trust this institution due to its <cite id=\"1\">96.96.33333333333333/100 from Charity Navigator rating</cite> and <cite id=\"1\">100% independent board governance</cite>.",
-          "improvement": "To strengthen credibility, the organization should <cite id=\"1\">improve its accountability beacon score</cite> from 89 toward a perfect 100 by enhancing public disclosure of specific internal policies."
+          "explanation": "Donors can trust this organization due to its <cite id=\"1\">96/100 rating from Charity Navigator</cite> and its status as an <cite id=\"14\">accredited charity</cite>. It maintains <cite id=\"8\">detailed annual filings</cite> and an <cite id=\"1\">18-member board</cite> providing oversight.",
+          "improvement": "To further strengthen credibility, the organization could publish more granular beneficiary impact data to allow for independent cost-per-person analysis."
         },
         "impact": {
           "citation_ids": [
-            "[1]"
+            "[1]",
+            "[3]",
+            "[7]"
           ],
-          "explanation": "Operations are highly efficient with a <cite id=\"1\">98.3% program expense ratio</cite> and a <cite id=\"1\">perfect 100 Impact beacon score</cite>.",
-          "improvement": "Impact measurement would benefit from <cite id=\"1\">building reserves toward a 3-12 month target</cite> to ensure long-term stability during economic downturns."
+          "explanation": "Operations are highly direct, with a <cite id=\"1\">98.3% program expense ratio</cite> and a massive <cite id=\"3\">2.4 billion pound food distribution network</cite>. The organization also provided <cite id=\"7\">$440,538,028 in domestic grants</cite> to local partners in FY2023.",
+          "improvement": "Building financial reserves toward a <cite id=\"1\">3-12 month target</cite> would improve long-term resilience against revenue volatility."
         }
       },
       "donor_fit_matrix": {
-        "cause_area": "FOOD_SECURITY",
+        "cause_area": "ADVOCACY",
         "citation_ids": [
           "[1]",
-          "[5]"
+          "[3]",
+          "[14]"
         ],
-        "evidence_rigor": "Grade B - Verified outcomes with documented theory of change",
+        "evidence_rigor": "Grade B - Strong outcome tracking and verified theory of change",
         "geographic_focus": [
-          "USA",
+          "United States",
           "Puerto Rico"
         ],
-        "giving_style": "Systemic change & Logistics",
+        "giving_style": "Direct service and Grantmaking",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           "",
@@ -5019,19 +5042,26 @@
         "annual_revenue": 4916912461,
         "citation_ids": [
           "[1]",
-          "[2]"
+          "[2]",
+          "[7]"
         ],
-        "cn_financial_score": 89,
-        "cn_overall_score": 96.33333333333333,
+        "cn_financial_score": 85.99,
+        "cn_overall_score": 96,
         "fundraising_ratio": 0.01,
         "industry_program_ratio": 0.75,
         "peer_count": 14,
-        "peer_program_ratio_median": 0.83,
-        "program_expense_ratio": 0.9826999999999999,
+        "peer_program_ratio_median": 0.787,
+        "program_expense_ratio": 0.9828,
         "reserves_months": 1.3,
-        "revenue_cagr_3yr": 10,
+        "revenue_cagr_3yr": 8.8,
         "working_capital_months": 1.4,
         "yearly_financials": [
+          {
+            "expenses": 0,
+            "net_assets": 0,
+            "revenue": 5047685550,
+            "year": 2024
+          },
           {
             "expenses": 4933690967,
             "net_assets": 563899769,
@@ -5043,128 +5073,125 @@
             "net_assets": 578360672,
             "revenue": 4267241782,
             "year": 2022
-          },
-          {
-            "expenses": 3902891407,
-            "net_assets": 565076708,
-            "revenue": 4065318094,
-            "year": 2021
           }
         ]
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[2]"
+          "[7]"
         ],
-        "domestic_grants": 682025103,
+        "domestic_grants": 440538028,
         "foreign_grants": 0,
-        "grant_count": 714,
-        "grant_strategy": "Provides cash and in-kind support to a national network of food banks.",
+        "grant_count": 477,
+        "grant_strategy": "Provides financial support to a network of 200 member food banks to enhance local distribution capacity.",
         "is_significant_grantmaker": true,
         "regions_served": [
           "United States"
         ],
         "top_recipients": [
           "Second Harvest Heartland ($5.1M)",
-          "Feeding Pennsylvania ($4.8M)"
+          "El Pasoans Fighting Hunger ($3.3M)",
+          "North Texas Food Bank ($3.3M)"
         ],
-        "total_grants": 682025103
+        "total_grants": 440538028
       },
-      "headline": "Feeding AmericaHQ leads a national network dedicated to advancing food equity and ensuring nutritious food access for all Americans.",
+      "headline": "Feeding AmericaHQ manages a massive food distribution network with high spending efficiency.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support large-scale, highly efficient food infrastructure and advocacy within the United States.",
+        "best_for_summary": "Best for donors who want to support large-scale, domestic hunger relief through a highly efficient institutional network that leverages corporate food donations.",
         "citation_ids": [
           "[1]",
-          "[5]"
+          "[12]",
+          "[14]"
         ],
         "donor_motivations": [
-          "Value high-volume food rescue and logistics",
-          "Want to support domestic hunger relief at a national scale",
-          "Prefer organizations with top-tier financial efficiency ratings",
-          "Interested in systemic solutions to food inequity"
+          "Want to maximize the volume of food provided per dollar donated",
+          "Value high-transparency ratings from third-party evaluators",
+          "Care about systemic hunger issues in the United States and Puerto Rico",
+          "Prefer supporting established national institutions over local startups"
         ],
         "giving_considerations": [
-          "Donations support a network of food banks rather than one specific location",
-          "The organization is heavily reliant on noncash (GIK) donations",
-          "Focus is domestic (USA and Puerto Rico) only"
+          "Cash gifts primarily support the logistics and grants needed to move donated food",
+          "The organization has a significant focus on policy advocacy alongside direct feeding",
+          "Financial reserves are lean, meaning the charity operates with high immediate turnover"
         ],
-        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those looking for international humanitarian relief operations."
+        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those looking for small-scale, community-specific interventions without an advocacy component."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[1]"
+          "[1]",
+          "[3]"
         ],
         "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B reflects verified outcomes and a documented theory of change, though cost-per-beneficiary is high due to the advocacy model.",
+        "evidence_grade_explanation": "The organization tracks massive output metrics like pounds of food and grant dollars, but lacks independent RCT-level data on long-term nutritional outcomes.",
         "external_evaluations": [
-          "Charity Navigator Impact Score: 100"
+          "Charity Navigator Impact Rating"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Feeding America uses a hub-and-spoke model to rescue food at scale and distribute it through a national network of partner food banks.",
-        "why_evidence_matters": "Evidence ensures that the billions in food products rescued actually reach those in need effectively."
+        "theory_of_change_summary": "Feeding America uses a hub-and-spoke model to rescue surplus food from manufacturers and retailers, distributing it through a network of 200 food banks to reach millions of food-insecure individuals.",
+        "why_evidence_matters": "Tracking food poundage ensures that the massive volume of GIK revenue is actually reaching the intended beneficiaries."
       },
       "long_term_outlook": {
         "citation_ids": [
           "[1]",
-          "[2]"
+          "[14]"
         ],
-        "founded_year": 1979,
+        "founded_year": 1990,
         "maturity_stage": "Institution",
-        "revenue_growth_3yr": 10,
+        "revenue_growth_3yr": 8.8,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a 10.0% growth rate and massive national demand, the organization has high capacity for additional cash funding.",
+        "room_for_funding_explanation": "Despite its multi-billion dollar scale, the persistent gap in domestic food security and the organization's lean reserves suggest a high capacity to absorb additional funding.",
         "strategic_priorities": [
-          "Food Access",
-          "Food Rescue",
-          "Hunger Research"
+          "Food Distribution",
+          "Policy & Advocacy",
+          "Food Rescue"
         ],
-        "years_operating": 45
+        "years_operating": 36
       },
       "organizational_capacity": {
-        "board_size": 17,
-        "ceo_compensation": 945000,
+        "board_size": 18,
+        "ceo_compensation": 949866,
         "ceo_compensation_pct_revenue": 0.02,
-        "ceo_name": "Ms. Claire Babineaux-Fontenot",
+        "ceo_name": "Claire Babineaux-fontenot",
         "citation_ids": [
           "[1]",
-          "[2]"
+          "[8]"
         ],
         "employees_count": 0,
-        "geographic_reach": "USA and Puerto Rico",
+        "geographic_reach": "United States and Puerto Rico",
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 1,
         "payroll_to_revenue_pct": 0.14,
         "programs_count": 5,
-        "staff_per_million_revenue": 0.1,
+        "staff_per_million_revenue": 0,
         "volunteers_count": 0
       },
       "peer_comparison": {
         "citation_ids": [
           "[1]"
         ],
-        "differentiator": "Distinguished by a <cite id=\"1\">100.0% program ratio</cite> which significantly exceeds the <cite id=\"1\">83.0% peer median</cite>.",
-        "peer_group": "Extreme Poverty & Food Security",
+        "differentiator": "Feeding America's <cite id=\"1\">100.0% program ratio</cite> significantly exceeds the <cite id=\"1\">peer median of 78.7%</cite>.",
+        "peer_group": "Advocacy and Humanitarian Relief",
         "similar_orgs": [
-          "IMRC",
           "Rebuilding Alliance",
-          "ACLU Foundation"
+          "ACLU Foundation",
+          "IMRC"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar focus on humanitarian relief and advocacy",
-          "name": "IMRC"
-        },
-        {
-          "differentiator": "Smaller scale advocacy and relief focus",
+          "differentiator": "Smaller scale, international focus",
           "name": "Rebuilding Alliance"
         },
         {
-          "differentiator": "Similar focus on systemic advocacy and legal change",
+          "differentiator": "Legal advocacy focus",
           "name": "ACLU Foundation"
+        },
+        {
+          "differentiator": "Faith-based humanitarian focus",
+          "name": "IMRC"
         }
       ],
       "strengths": [
@@ -5172,28 +5199,29 @@
           "citation_ids": [
             "[1]"
           ],
-          "detail": "The organization maintains a <cite id=\"1\">98.3% program expense ratio</cite> and spends only <cite id=\"1\">$0.01 to raise every $1</cite> in contributions.",
+          "detail": "The organization maintains a <cite id=\"1\">program expense ratio of 98.3%</cite> and spends only <cite id=\"1\">$0.01 to raise every dollar</cite>.",
           "point": "Exceptional Financial Efficiency"
         },
         {
           "citation_ids": [
-            "[1]"
+            "[3]"
           ],
-          "detail": "Feeding America is governed by an <cite id=\"1\">independent board of 17 members</cite> and holds a <cite id=\"1\">96.33/100 overall score from Charity Navigator</cite>.",
-          "point": "Robust Governance and Oversight"
+          "detail": "In recent reporting, the network distributed <cite id=\"3\">2,409,000,000 pounds of food</cite> to address hunger across the United States.",
+          "point": "Massive Distribution Scale"
         },
         {
           "citation_ids": [
-            "[5]"
+            "[1]",
+            "[8]"
           ],
-          "detail": "They successfully processed over <cite id=\"5\">$4.6 billion in noncash food contributions</cite> to support domestic food banks.",
-          "point": "Massive Scale of Food Rescue"
+          "detail": "The charity holds <cite id=\"1\">perfect 100/100 scores in Culture and Leadership</cite> from Charity Navigator, supported by an <cite id=\"8\">18-member independent board</cite>.",
+          "point": "Strong Institutional Governance"
         }
       ],
       "strengths_deep_dive": [
-        "Feeding America's strength lies in its role as a national logistics backbone. By securing <cite id=\"5\">$4.8 billion in grants and similar amounts paid</cite>, they empower local food banks to serve their specific communities. Their financial health is underscored by a <cite id=\"1\">perfect 100 score in the Impact beacon</cite> from Charity Navigator, reflecting a highly effective model for large-scale resource mobilization. Furthermore, their <cite id=\"1\">100% independent board</cite> ensures strong accountability and conflict-of-interest management while overseeing nearly <cite id=\"2\">$5 billion in annual resources</cite>."
+        "Feeding America's primary strength lies in its ability to convert corporate food waste into community relief at an industrial scale. By securing <cite id=\"5\">2,347,000,000 pounds of donated food product</cite> in a single fiscal year, the organization acts as the central nervous system for domestic hunger relief. This efficiency is reflected in its <cite id=\"1\">100/100 Impact & Measurement beacon score</cite>, which validates the direct link between its activities and its mission. Furthermore, the organization serves as a major funder for local communities, awarding <cite id=\"5\">$195,221,000 in member grants</cite> in FY2024 to support regional food bank infrastructure."
       ],
-      "summary": "Feeding America operates as the nation's largest domestic hunger-relief organization, functioning as a central hub for a network of food banks and partner agencies. The organization manages a massive logistics and advocacy operation, reporting <cite id=\"2\">$4,916,912,461 in total revenue</cite> for the 2023 fiscal year. Their primary mission involves <cite id=\"5\">advancing equitable access to nutritious food</cite> through large-scale food rescue and disaster response. A defining characteristic of their financial model is the heavy reliance on in-kind donations, with <cite id=\"5\">$4,627,410,422 received in noncash food and grocery contributions</cite>. This scale allows them to maintain a <cite id=\"1\">98.3% program expense ratio</cite>, ensuring that nearly every dollar and donated item is directed toward hunger relief. Beyond immediate food distribution, the charity invests in <cite id=\"5\">hunger research and systemic change</cite> to address the root causes of food insecurity across the United States and Puerto Rico. While they operate with high efficiency, their model focuses on <cite id=\"3\">domestic grants and assistance</cite> to local organizations rather than direct individual service, distributing over <cite id=\"2\">$682 million in cash grants</cite> to 714 recipients in 2023.",
+      "summary": "Feeding America operates as a massive domestic hunger-relief organization, functioning as a nationwide network of food banks and advocacy programs. In FY2024, the organization reported <cite id=\"7\">total revenue of $5,047,685,550</cite>, reflecting its significant scale in the American nonprofit landscape. The organization maintains a <cite id=\"1\">96/100 overall score from Charity Navigator</cite>, which indicates a high level of institutional stability and public trust. Its operations are characterized by a <cite id=\"1\">program expense ratio of 98.3%</cite>, meaning that the value of food distributed and program services matches or exceeds its total cash and non-cash revenue. A critical component of this financial structure is the high volume of non-cash contributions; approximately <cite id=\"1\">97% of revenue is non-cash contributions</cite>, primarily in the form of donated food products. This model allows the charity to achieve <cite id=\"1\">fundraising efficiency of $0.01 per $1 raised</cite>, as it leverages massive corporate donations to feed millions. Beyond direct distribution, the organization engages in <cite id=\"14\">policy and advocacy, research, and food rescue</cite> to address the root causes of food insecurity. While the scale is impressive, the organization maintains <cite id=\"1\">1.4 months of working capital in working capital</cite>, which is relatively lean for an institution of this size. For donors, this represents a highly efficient vehicle for domestic food security, though the heavy reliance on Gift-in-Kind (GIK) food donations means cash contributions are often used to facilitate the logistics and grants required to move that food through the network.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

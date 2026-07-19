@@ -1,5 +1,5 @@
 # PROMPT: baseline_narrative
-# VERSION: 2.2.0
+# VERSION: 2.2.1
 # LAST_UPDATED: 2026-07-18
 # DESCRIPTION: Baseline narrative with inline citations - v1.1.0 style rules merged with live data placeholders (rendered via .format in baseline.py); 2.1.0 adds the band tone contract; 2.2.0 adds the data-vintage disclosure rule
 # ---PROMPT_START---
@@ -106,6 +106,15 @@ DO NOT invent positive data to justify low scores:
 - If Impact is low, do NOT claim the organization "demonstrates effectiveness"
 - If Alignment is low, do NOT claim strong Muslim donor fit
 - Only mention ratings/scores that are explicitly provided in the source data above
+
+DO NOT invent negative explanations either. Attribute the score ONLY to
+factors present in the data provided:
+- Do NOT write generic filler like "lacks third-party evidence" or "limited
+  outcome data" unless the provided context actually says so — if the data
+  shows evidence as verified, that claim is false and blocks publication.
+- Keep arithmetic honest: a 75% program ratio leaves 25% ("a quarter"), not
+  "nearly half". Never characterize a percentage in words that contradict
+  the number.
 
 ## Available Sources for Citations (EXACTLY {num_sources} sources)
 {sources_list}

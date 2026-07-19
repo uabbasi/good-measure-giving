@@ -306,6 +306,22 @@ class RichNarrativeGenerator:
         if baseline_narrative.get("amal_score_rationale"):
             rich_content["amal_score_rationale"] = baseline_narrative["amal_score_rationale"]
 
+        # 9b. The model sometimes emits an empty explanation inside a dimension
+        # block (citations/improvement filled, explanation "") — a judge error.
+        # Backfill from the baseline's plain-text dimension explanation.
+        base_dims = baseline_narrative.get("dimension_explanations") or {}
+        rich_dims = rich_content.get("dimension_explanations")
+        if isinstance(rich_dims, dict):
+            for dim, block in rich_dims.items():
+                if (
+                    isinstance(block, dict)
+                    and not (block.get("explanation") or "").strip()
+                    and isinstance(base_dims.get(dim), str)
+                    and base_dims[dim].strip()
+                ):
+                    block["explanation"] = base_dims[dim]
+                    logger.warning(f"{ein}: backfilled empty rich {dim} explanation from baseline")
+
         # 10. Store results
         self._store_results(ein, rich_content, validation_result)
 

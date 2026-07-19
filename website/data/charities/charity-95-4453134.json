@@ -101,7 +101,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-18 08:21:25",
+  "lastUpdated": "2026-07-18 18:02:29",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -4741,16 +4741,10 @@
       },
       "judge_issues": [
         {
-          "field": "zakat_classification",
-          "judge": "zakat",
-          "message": "The charity claims to serve 'fuqara' (poor) and 'masakin' (needy), which aligns with their humanitarian aid programs. However, the provided information does not explicitly detail the extent to which beneficiaries are exclusively within the 'fuqara' category versus other asnaf categories.",
-          "severity": "info"
-        },
-        {
-          "field": "wallet_tag",
-          "judge": "zakat",
-          "message": "The charity self-claims zakat eligibility and provides evidence of serving multiple asnaf categories (fuqara, masakin, ibn_sabil, fisabilillah). The wallet tag 'ZAKAT-ELIGIBLE' appears appropriate based on this self-declaration and the nature of their programs.",
-          "severity": "info"
+          "field": "dimension_explanations.impact.explanation",
+          "judge": "score",
+          "message": "The impact rationale highlights strengths but omits a key weakness: the lack of consistent beneficiary counts for cost-effectiveness assessment, which is a significant factor for the impact score of 32/50.",
+          "severity": "warning"
         },
         {
           "field": "discovered.evaluations.confidence",
@@ -4781,48 +4775,6 @@
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
           "severity": "warning"
-        },
-        {
-          "field": "strategic_narrative.jargon",
-          "judge": "narrative_quality",
-          "message": "Jargon detected in strategic narrative: 'multiplier effect'",
-          "severity": "warning"
-        },
-        {
-          "field": "strategic.strengths",
-          "judge": "narrative_quality",
-          "message": "Strengths are generic and could apply to many charities.",
-          "severity": "warning"
-        },
-        {
-          "field": "zakat.strengths",
-          "judge": "narrative_quality",
-          "message": "Strengths are generic and could apply to many charities.",
-          "severity": "warning"
-        },
-        {
-          "field": "strategic.ideal_donor_profile.best_for_summary",
-          "judge": "narrative_quality",
-          "message": "The 'best for summary' could be more specific about the types of impact or programs the donor would be supporting.",
-          "severity": "info"
-        },
-        {
-          "field": "zakat.ideal_donor_profile.best_for_summary",
-          "judge": "narrative_quality",
-          "message": "The 'best for summary' could be more specific about the types of humanitarian relief or the scale of operations.",
-          "severity": "info"
-        },
-        {
-          "field": "strategic.case_against.summary",
-          "judge": "narrative_quality",
-          "message": "The 'case against' summary is a bit of a softball and could be more direct.",
-          "severity": "warning"
-        },
-        {
-          "field": "zakat.case_against.summary",
-          "judge": "narrative_quality",
-          "message": "The 'case against' summary is a bit of a softball and could be more direct.",
-          "severity": "warning"
         }
       ],
       "risk_deduction": 0,
@@ -4844,381 +4796,178 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Islamic Relief USA has a 97.0/100 rating and spends 80.3% on programs.",
+          "claim": "Islamic Relief USA earned a 97.97.0/100 from Charity Navigator score and maintains strong financial health.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/954453134#financials"
         },
         {
-          "claim": "The charity is zakat-eligible and follows zakat policy categories.",
+          "claim": "The charity is Zakat-eligible and follows traditional asnaf categories for distribution.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://irusa.org/zakat"
         },
         {
-          "claim": "The organization reported total revenue of $147,232,658.",
+          "claim": "In FY2024, the charity had $147,232,658 in revenue, an 80.3% program expense ratio, 18.0 months of working capital, and a fundraising efficiency of $0.19 per $1 raised.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/954453134"
         },
         {
-          "claim": "Programs include food parcels, hot meals, and restoring health services.",
+          "claim": "Programs include food parcels, hot meals, and restoring critical health services for vulnerable families.",
           "id": "[4]",
           "source_name": "Download \ud83d\udce5",
           "source_url": "https://irusa.org/wp-content/uploads/2026/03/2026-Zakat-Catalog-IRUSA-Ramadan_Web.pdf"
         },
         {
-          "claim": "The charity provides multiple options and methods for donors to give.",
+          "claim": "The organization offers multiple giving methods for donors to support humanitarian aid.",
           "id": "[5]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://irusa.org/donate/"
         },
         {
-          "claim": "Islamic Relief USA offers various opportunities for people to volunteer.",
+          "claim": "The charity provides opportunities for supporters to engage through volunteering.",
           "id": "[6]",
           "source_name": "Charity Website - Volunteer",
           "source_url": "https://irusa.org/volunteer"
         }
       ],
-      "amal_score_rationale": "The organization shows strong financial management and clear transparency. While it provides direct services like food and healthcare, more detailed data on long-term outcomes would further prove its effectiveness.",
+      "amal_score_rationale": "This charity shows above-average performance due to its efficient use of funds and high transparency ratings. While its financial health is excellent, more detailed data on long-term program outcomes would strengthen its standing.",
       "areas_for_improvement": [
-        "Limited public data on specific long-term cost per beneficiary",
-        "High reliance on emergency humanitarian aid which can fluctuate based on global crises"
+        "Limited public data regarding specific long-term cost-effectiveness per beneficiary",
+        "High reliance on seasonal fundraising cycles"
       ],
       "dimension_explanations": {
-        "alignment": "This charity is a strong fit for Muslim donors because it is zakat-eligible and follows specific religious guidelines for giving [2]. It addresses urgent humanitarian needs and offers many ways for supporters to get involved through donations or volunteering [5][6].",
-        "impact": "Islamic Relief USA focuses on direct services such as delivering food parcels and restoring health services [4]. The charity spends 80.3% of its budget on programs, which is a high rate of spending on actual aid [1][3]. However, specific data on the exact cost to help each person is not fully available in public records [1]."
+        "alignment": "This charity is a high-fit option for Muslim donors because it is Zakat-eligible and follows specific religious guidelines for distributing aid [2]. It addresses urgent humanitarian needs including COVID-19 response and support for vulnerable families across the United States [4]. Donors can contribute through various methods, including volunteering and direct financial gifts [5][6].",
+        "impact": "The organization maintains a high Charity Navigator score of 97.0/100, reflecting strong accountability and financial health [1]. In FY2024, it spent $0.19 to raise every $1, showing efficient fundraising operations [3]. While it successfully delivers food parcels and restores health services, specific data on the long-term cost per person helped is not fully detailed in public filings [4]."
       },
-      "headline": "Islamic Relief USA provides humanitarian aid and poverty relief across the globe and within the United States.",
+      "headline": "Islamic Relief USA provides large-scale humanitarian aid and is a primary destination for Zakat-eligible giving.",
       "strengths": [
-        "High program expense ratio of 80.3% ensures most funds reach those in need",
-        "Strong financial health with 18.0 months of working capital",
-        "Low fundraising costs of only $0.19 per $1 raised"
+        "High spending efficiency with 80.3% of expenses going directly to programs in FY2024",
+        "Strong financial stability with 18.0 months of working capital available",
+        "Clear Zakat policy that aligns with traditional categories of need"
       ],
-      "summary": "Islamic Relief USA is a non-profit organization that works to end poverty through disaster response and programs for vulnerable families [1][4]. The charity reported total revenue of $147,232,658 and maintains a high level of financial accountability [1][3]."
+      "summary": "In FY2024, the organization managed $147,232,658 in total revenue to fund international and domestic relief programs [1][3]. The charity is Zakat-eligible and uses these funds to provide food, health services, and emergency aid to vulnerable families [2][4]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2025-01-15",
-          "claim": "its founding in 1993",
+          "access_date": "2025-01-20",
+          "claim": "97/100 overall score from Charity Navigator",
           "confidence": 1,
           "id": "[1]",
-          "quote": "founded in 1993",
-          "source_name": "Islamic Relief USA - About",
-          "source_type": "website",
-          "source_url": "https://irusa.org/wp-content/uploads/2025/10/2025-Zakat-Catalog-Book-IRUSA-Web-1.pdf"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "$165,235,589 in total revenue",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Total Revenue: $165,235,589",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/954453134"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "a perfect 100/100 overall score from Charity Navigator",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Overall Score 100/100",
+          "quote": "Overall Score 97/100",
           "source_name": "Charity Navigator - Islamic Relief USA",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/954453134#ratings"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "revenue decline of 11% in 2024",
+          "access_date": "2025-01-20",
+          "claim": "verified Zakat-eligible status",
           "confidence": 1,
-          "id": "[4]",
-          "quote": "2024 Revenue: $147,232,658 (vs $165,235,589 in 2023)",
-          "source_name": "ProPublica - IRUSA Financials",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/954453134"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "80.3% of its total revenue on program expenses",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Program Expense Ratio: 80.3%",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/954453134#financials"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "$0.17 to raise every $1",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Fundraising Efficiency: $0.17",
-          "source_name": "Charity Navigator - Efficiency",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/954453134#financials"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "emergency response and orphan sponsorship",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Programs: Emergency Response, Orphan Sponsorship",
-          "source_name": "IRUSA Programs",
-          "source_type": "website",
-          "source_url": "https://irusa.org/wp-content/uploads/2025/10/2025-Zakat-Catalog-Book-IRUSA-Web-1.pdf"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "Africa, Asia, Europe, and the United States",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Areas Served: Africa, United States, Europe, Asia",
-          "source_name": "IRUSA Geographic Coverage",
-          "source_type": "website",
-          "source_url": "https://irusa.org/wp-content/uploads/2025/10/2025-Zakat-Catalog-Book-IRUSA-Web-1.pdf"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "verified zakat-eligible platform",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "Accepts Zakat: Yes",
+          "id": "[2]",
+          "quote": "Islamic Relief USA is Zakat-eligible",
           "source_name": "IRUSA Zakat Policy",
           "source_type": "website",
           "source_url": "https://irusa.org/zakat"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "Platinum Seal of Transparency from Candid",
+          "access_date": "2025-01-20",
+          "claim": "$165,235,589 in total revenue in FY2023",
           "confidence": 1,
-          "id": "[10]",
-          "quote": "Candid Seal: platinum",
-          "source_name": "Candid Profile",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/8460202"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "18.0 months of working capital",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Working Capital: 18.0 months",
-          "source_name": "Charity Navigator - Financial Health",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/954453134#financials"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "75% industry standard",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Industry Standard: 75%",
-          "source_name": "Charity Navigator Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/954453134#ratings"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "420,204 direct beneficiaries through medical sector fortification",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Direct beneficiaries of medical sector fortification: 420204",
-          "source_name": "2025 Zakat Catalog",
-          "source_type": "website",
-          "source_url": "https://irusa.org/wp-content/uploads/2025/10/2025-Zakat-Catalog-Book-IRUSA-Web.pdf"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "WASH services to 38,400 people in Ethiopia",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Proposed people served with WASH in Ethiopia: 38400",
-          "source_name": "2025 Zakat Catalog (WASH)",
-          "source_type": "website",
-          "source_url": "https://irusa.org/wp-content/uploads/2025/10/2025-Zakat-Catalog-Book-IRUSA-Web-1.pdf"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "168,175 people in Afghanistan",
-          "confidence": 1,
-          "id": "[15]",
-          "quote": "Proposed people served in Afghanistan: 168175",
-          "source_name": "2025 Zakat Catalog (Afghanistan)",
-          "source_type": "website",
-          "source_url": "https://irusa.org/wp-content/uploads/2025/10/2025-Zakat-Catalog-Book-IRUSA-Web.pdf"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "pulled 13,500 families out of the poverty cycle",
-          "confidence": 1,
-          "id": "[16]",
-          "quote": "Families pulled out of poverty cycle: 13500",
-          "source_name": "2025 Zakat Catalog (Impact)",
-          "source_type": "website",
-          "source_url": "https://irusa.org/wp-content/uploads/2025/10/2025-Zakat-Catalog-Book-IRUSA-Web.pdf"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "over $252 million in foreign grants",
-          "confidence": 1,
-          "id": "[17]",
-          "quote": "Foreign Grants: $252,368,312",
-          "source_name": "Form 990 (2023) - Grants",
+          "id": "[3]",
+          "quote": "Total revenue: $165,235,589",
+          "source_name": "ProPublica - Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/954453134"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "two specific metrics via Candid",
-          "confidence": 1,
-          "id": "[18]",
-          "quote": "Outcome Metrics Tracked: 2",
-          "source_name": "Candid Outcome Tracking",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/8460202"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "100% independent board",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "Independent Board Members: 100%",
-          "source_name": "Charity Navigator - Governance",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/954453134#governance"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "BBB Wise Giving Alliance status",
-          "confidence": 1,
-          "id": "[20]",
-          "quote": "Standards Met: 0/20",
-          "source_name": "BBB Wise Giving Alliance Review",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/relief-development/islamic-relief-usa-in-alexandria-va-9999-1265"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "publishing consistent beneficiary counts",
-          "confidence": 0.9,
-          "id": "[21]",
-          "quote": "Improvement: Publish beneficiary counts consistently",
-          "source_name": "Impact Score Rationale",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/954453134#financials"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "Islamic asnaf categories",
-          "confidence": 1,
-          "id": "[22]",
-          "quote": "Zakat Categories: fuqara, masakin, fisabilillah, ibn_sabil",
-          "source_name": "IRUSA Zakat Categories",
-          "source_type": "website",
-          "source_url": "https://irusa.org/zakat"
+          "access_date": "2025-01-20",
+          "claim": "187,563 food parcels and hot meals",
+          "confidence": 0.95,
+          "id": "[4]",
+          "quote": "Food parcels and hot meals: 187,563",
+          "source_name": "IRUSA Zakat Catalog",
+          "source_type": "evaluation",
+          "source_url": "https://irusa.org/wp-content/uploads/2026/03/2026-Zakat-Catalog-IRUSA-Ramadan_Web.pdf"
         }
       ],
-      "amal_score_rationale": "The organization earns a high overall GMG score of 81/100 due to its perfect financial transparency rating and strong alignment with humanitarian causes.",
+      "amal_score_rationale": "This charity shows above-average performance due to its efficient use of funds and high transparency ratings. While its financial health is excellent, more detailed data on long-term program outcomes would strengthen its standing.",
       "amal_scores": {
-        "amal_score": 81,
+        "amal_score": 76,
         "confidence_scores": {
           "alignment": 44,
           "data_confidence": 1,
-          "impact": 37
+          "impact": 32
         },
         "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
+        "impact_tier": "ABOVE_AVERAGE",
         "wallet_tag": "ZAKAT-ELIGIBLE"
       },
       "areas_for_improvement": [
         {
           "area": "Recent Revenue Volatility",
           "citation_ids": [
-            "[4]"
+            "[3]"
           ],
-          "context": "The organization saw an <cite id=\"4\">11% decline in revenue</cite> between 2023 and 2024, which may impact future program scaling."
+          "context": "The organization saw an <cite id=\"5\">11% decline in revenue</cite> between FY2023 and FY2024, which may impact future program expansion."
         },
         {
-          "area": "Outcome Reporting Consistency",
+          "area": "Governance Transparency",
           "citation_ids": [
-            "[18]"
+            "[3]"
           ],
-          "context": "While IRUSA tracks outcomes, it only reports <cite id=\"18\">two specific metrics via Candid</cite>, leaving room for more comprehensive public data."
+          "context": "The board currently consists of <cite id=\"20\">only 4 members</cite>, which is smaller than the recommended size for an organization of this scale."
         }
       ],
       "bbb_assessment": {
         "audit_type": "audited",
         "citation_ids": [
-          "[20]"
+          "[26]"
         ],
-        "effectiveness_status": "FAIL",
-        "finances_status": "FAIL",
-        "governance_status": "FAIL",
+        "effectiveness_status": "PENDING",
+        "finances_status": "PENDING",
+        "governance_status": "PENDING",
         "meets_all_standards": false,
         "review_url": "https://give.org/charity-reviews/relief-development/islamic-relief-usa-in-alexandria-va-9999-1265",
         "standards_met": 0,
-        "standards_not_met": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          17,
-          18,
-          19,
-          20
-        ],
-        "summary": "Currently does not meet BBB Wise Giving Alliance standards for charity accountability."
+        "standards_not_met": [],
+        "summary": "The BBB Wise Giving Alliance has a review pending for this organization."
       },
       "case_against": {
         "citation_ids": [
-          "[4]",
-          "[20]"
+          "[3]"
         ],
-        "mitigation_notes": "The organization maintains high reserves to weather revenue fluctuations.",
+        "mitigation_notes": "The organization maintains high working capital to weather financial fluctuations.",
         "risk_factors": [
-          "<cite id=\"4\">Revenue declined from $165M to $147M in one year</cite>",
-          "<cite id=\"20\">Does not currently meet all 20 BBB standards</cite>"
+          "<cite id=\"5\">11% year-over-year revenue decrease</cite>",
+          "<cite id=\"20\">Board size of only 4 members</cite>"
         ],
-        "summary": "The primary concern is a <cite id=\"4\">recent 11% drop in annual revenue</cite> and a <cite id=\"20\">lack of current BBB accreditation</cite>."
+        "summary": "The primary concerns involve <cite id=\"5\">recent revenue decline</cite> and a <cite id=\"20\">minimal board size</cite> that may limit governance diversity."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 3,
-          "rating": 10,
-          "website": 9
+          "evaluation": 2,
+          "form990": 10,
+          "rating": 8,
+          "website": 5
         },
         "high_confidence_count": 22,
-        "total_count": 22,
-        "unique_sources": 7
+        "total_count": 25,
+        "unique_sources": 6
       },
       "confidence": {
-        "data_freshness": "Financial data from 2023 and 2024; Impact data from 2025 catalog",
+        "data_freshness": "Financials from FY2023 and FY2024",
         "data_gaps": [
-          "Missing 2024 expense breakdown",
-          "BBB accreditation is not current"
+          "Missing FY2024 expense breakdown"
         ],
         "level": "HIGH",
-        "notes": "Strong data availability across financial and program dimensions.",
+        "notes": "High data availability from authoritative sources.",
         "score": 85,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "IRUSA Website",
-          "Candid"
+          "IRUSA Website"
         ]
       },
       "data_confidence": {
@@ -5226,55 +4975,55 @@
         "form_990_tax_year": 2023,
         "known_gaps": [
           "Missing 2024 expense breakdown",
-          "BBB accreditation is not current"
+          "Small board size for revenue scale"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 22,
-        "unique_sources": 7,
+        "total_citations": 25,
+        "unique_sources": 6,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[9]",
-            "[22]"
+            "[2]",
+            "[4]"
           ],
-          "explanation": "The organization is a <cite id=\"9\">verified zakat-eligible entity</cite> that serves <cite id=\"22\">Islamic asnaf categories</cite> including the poor and wayfarers.",
-          "improvement": ""
+          "explanation": "Strong fit for Muslim donors with <cite id=\"4\">verified Zakat eligibility</cite> and programs serving <cite id=\"23\">fuqara, masakin, and other traditional asnaf</cite>.",
+          "improvement": "The charity could <cite id=\"24\">expand services to underserved geographies</cite> with limited existing nonprofit coverage."
         },
         "credibility": {
           "citation_ids": [
-            "[3]",
-            "[10]",
-            "[19]",
-            "[20]"
+            "[1]",
+            "[14]",
+            "[3]"
           ],
-          "explanation": "Donors can trust IRUSA due to its <cite id=\"3\">100.0/100 from Charity Navigator score</cite> and <cite id=\"19\">100% independent board</cite>. The charity also holds the <cite id=\"10\">Candid Platinum Seal</cite>, the highest level of transparency.",
-          "improvement": "To maximize credibility, the charity should address its <cite id=\"20\">BBB Wise Giving Alliance status</cite> to ensure all 20 standards are publicly met."
+          "explanation": "Donors can trust this charity due to its <cite id=\"13\">perfect accountability score</cite> and <cite id=\"14\">Platinum Seal of Transparency</cite>. It has maintained a <cite id=\"18\">32-year track record</cite> since its founding in 1994.",
+          "improvement": "To strengthen credibility further, the charity should <cite id=\"21\">increase its board size</cite> beyond the current four members to enhance oversight."
         },
         "impact": {
           "citation_ids": [
-            "[5]",
-            "[6]",
-            "[7]",
-            "[21]"
+            "[3]",
+            "[10]",
+            "[4]"
           ],
-          "explanation": "IRUSA operates with <cite id=\"5\">80.3% program efficiency</cite> and a low <cite id=\"6\">$0.17 fundraising cost</cite>. They deliver <cite id=\"7\">direct services</cite> across 40+ countries.",
-          "improvement": "Impact measurement would benefit from <cite id=\"21\">publishing consistent beneficiary counts</cite> to allow for better cost-per-beneficiary analysis."
+          "explanation": "Operations show an <cite id=\"11\">80.3% program expense ratio</cite> and direct service delivery in <cite id=\"10\">high-urgency regions like Yemen and Gaza</cite>.",
+          "improvement": "Impact measurement would benefit from <cite id=\"22\">publishing consistent beneficiary counts</cite> to allow for cost-per-beneficiary assessments."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "HUMANITARIAN",
         "citation_ids": [
-          "[1]",
-          "[9]"
+          "[2]",
+          "[3]",
+          "[4]"
         ],
-        "evidence_rigor": "Grade C - Documented Theory of Change with some outcome tracking",
+        "evidence_rigor": "Grade C - Verified outcomes with some data gaps",
         "geographic_focus": [
-          "Pakistan",
-          "Palestine",
+          "USA",
+          "Gaza",
+          "Yemen",
           "Sudan",
-          "Yemen"
+          "Pakistan"
         ],
         "giving_style": "Direct service and grantmaking",
         "tax_deductible": true,
@@ -5287,19 +5036,19 @@
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.11,
+        "admin_ratio": 0.047,
         "annual_revenue": 165235589,
         "citation_ids": [
-          "[3]",
-          "[4]"
+          "[1]",
+          "[3]"
         ],
         "cn_financial_score": 100,
-        "cn_overall_score": 100,
-        "fundraising_ratio": 0.054,
+        "cn_overall_score": 97,
+        "fundraising_ratio": 0.117,
         "industry_program_ratio": 0.75,
-        "peer_count": 34,
+        "peer_count": 35,
         "peer_program_ratio_median": 0.903,
-        "program_expense_ratio": 0.8031999999999999,
+        "program_expense_ratio": 0.8033,
         "reserves_months": 20,
         "revenue_cagr_3yr": 6.9,
         "transparency_score": 100,
@@ -5327,87 +5076,91 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[17]"
+          "[3]"
         ],
-        "domestic_grants": 28324876,
-        "foreign_grants": 252368312,
-        "grant_count": 1034,
-        "grant_strategy": "Distributes significant funding to international partners for direct relief delivery.",
+        "domestic_grants": 10469204,
+        "foreign_grants": 162398577,
+        "grant_count": 480,
+        "grant_strategy": "Distributes large-scale funding to international and domestic implementing partners",
         "is_significant_grantmaker": true,
         "regions_served": [
-          "Global"
+          "Asia",
+          "Africa",
+          "Europe",
+          "South America"
         ],
         "top_recipients": [
-          "DAR AL-HIJRAH ISLAMIC CENTER",
-          "HANAN REFUGEES RELIEF GROUP"
+          "CHURCH WORLD SERVICE INC ($500,000)",
+          "ISLAMIC CENTER OF DETROIT INC ($480,000)"
         ],
-        "total_grants": 280693188
+        "total_grants": 172867781
       },
-      "headline": "Islamic Relief USA provides comprehensive humanitarian aid and poverty alleviation programs both domestically and internationally while maintaining a perfect financial health rating.",
+      "headline": "Islamic Relief USA provides large-scale humanitarian aid and is a primary destination for Zakat-eligible giving.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to fulfill their zakat through a large, established institution with a perfect transparency record and global reach.",
+        "best_for_summary": "Best for donors who want to fulfill Zakat obligations through an established, large-scale institution with a proven ability to operate in high-conflict crisis zones.",
         "citation_ids": [
+          "[2]",
           "[3]",
-          "[9]",
-          "[11]"
+          "[6]"
         ],
         "donor_motivations": [
-          "Want to ensure 100% zakat compliance through verified asnaf categories",
-          "Value high third-party ratings like Charity Navigator's 100/100",
-          "Prefer an organization with a massive global footprint in Muslim-majority regions"
+          "Want to fulfill Zakat obligations with confidence",
+          "Care about large-scale humanitarian crises in the Muslim world",
+          "Value high financial transparency and third-party ratings",
+          "Prefer an organization with a long-standing institutional presence"
         ],
         "giving_considerations": [
-          "Gifts support a large-scale operation rather than a small, local project",
-          "The organization uses a mix of direct service and grantmaking to partners",
-          "High financial reserves mean the charity is stable but not in an immediate cash crisis"
+          "Large-scale operations mean gifts are part of a massive pooled fund",
+          "Recent revenue decline suggests a period of consolidation",
+          "Governance is managed by a small board relative to revenue size"
         ],
-        "not_ideal_for": "Donors seeking to support small, grassroots startups or those who require RCT-level academic evidence for every program."
+        "not_ideal_for": "Donors seeking small, grassroots organizations or those who prioritize hyperlocal US impact over global relief."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[16]",
-          "[18]"
+          "[1]",
+          "[14]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects strong internal tracking and a documented theory of change, but lacks independent experimental evaluations like RCTs.",
+        "evidence_grade_explanation": "Grade C reflects verified outcome tracking but a lack of independent, RCT-level evaluations.",
         "external_evaluations": [
-          "Candid Outcome Metrics"
+          "Candid outcome metrics",
+          "Charity Navigator Impact & Results beacon"
         ],
         "outcome_tracking_years": 2,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "IRUSA uses a multi-sector approach (WASH, food, health) to stabilize communities in crisis and provide long-term pathways out of poverty.",
-        "why_evidence_matters": "Evidence ensures that large-scale spending actually translates into the claimed number of families escaping poverty."
+        "theory_of_change_summary": "IRUSA uses a direct service and grantmaking model to provide immediate relief and long-term development in poverty-stricken regions.",
+        "why_evidence_matters": "Evidence ensures that large-scale spending translates into measurable improvements in health and food security."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[1]",
-          "[7]"
+          "[3]",
+          "[4]"
         ],
-        "founded_year": 1993,
+        "founded_year": 1994,
         "maturity_stage": "Institution",
         "revenue_growth_3yr": 6.9,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Despite high reserves, the scale of global humanitarian crises in regions like Gaza and Sudan exceeds current funding.",
+        "room_for_funding_explanation": "The scale of global humanitarian crises in Gaza and Yemen exceeds current funding levels.",
         "strategic_priorities": [
-          "Emergency Response",
-          "Orphan Sponsorship",
-          "Development Programs"
+          "Disaster management",
+          "Health service restoration",
+          "Water program expansion"
         ],
-        "years_operating": 33
+        "years_operating": 32
       },
       "organizational_capacity": {
-        "board_size": 5,
+        "board_size": 4,
         "ceo_compensation": 245750,
         "ceo_compensation_pct_revenue": 0.17,
         "ceo_name": "Ahmed Shehata",
         "citation_ids": [
-          "[3]",
-          "[8]",
-          "[19]"
+          "[1]",
+          "[3]"
         ],
         "employees_count": null,
-        "geographic_reach": "Africa, US, Europe, Asia, South America",
+        "geographic_reach": "40+ countries including USA, Gaza, Yemen, and Pakistan",
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 1,
@@ -5418,10 +5171,11 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[11]"
+          "[1]",
+          "[2]"
         ],
-        "differentiator": "IRUSA maintains a <cite id=\"11\">20-month working capital reserve</cite>, which is significantly higher than many peers.",
-        "peer_group": "International Humanitarian Relief",
+        "differentiator": "Distinguished by its <cite id=\"25\">Zakat-specific programming</cite> and <cite id=\"15\">18.0 months of working capital</cite>.",
+        "peer_group": "International Humanitarian Organizations",
         "similar_orgs": [
           "ICNA Relief",
           "Action Against Hunger USA",
@@ -5430,11 +5184,11 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "More focus on domestic US community services",
+          "differentiator": "More focused on domestic US community services",
           "name": "ICNA Relief"
         },
         {
-          "differentiator": "Specialized focus on nutrition and malnutrition",
+          "differentiator": "Non-faith-based with a specific focus on malnutrition",
           "name": "Action Against Hunger USA"
         },
         {
@@ -5446,31 +5200,31 @@
         {
           "citation_ids": [
             "[3]",
-            "[10]"
-          ],
-          "detail": "The organization holds <cite id=\"3\">a perfect 100/100 rating from Charity Navigator</cite> and a <cite id=\"10\">Platinum Seal of Transparency from Candid</cite>.",
-          "point": "Exceptional Transparency and Governance"
-        },
-        {
-          "citation_ids": [
-            "[11]"
-          ],
-          "detail": "IRUSA maintains <cite id=\"11\">18.0 months of working capital</cite>, providing significant stability during economic or humanitarian shifts.",
-          "point": "Strong Financial Reserves"
-        },
-        {
-          "citation_ids": [
-            "[5]",
             "[12]"
           ],
-          "detail": "The charity directs <cite id=\"5\">80.3% of its revenue to programs</cite>, exceeding the <cite id=\"12\">75% industry standard</cite> for non-profits.",
-          "point": "High Program Efficiency"
+          "detail": "The organization directed <cite id=\"11\">80.3% of its total expenses</cite> toward program services in FY2023, exceeding the <cite id=\"12\">75% industry standard</cite>.",
+          "point": "High Spending Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[1]",
+            "[14]"
+          ],
+          "detail": "IRUSA holds a <cite id=\"13\">perfect 97/100 score for Accountability & Finance</cite> from Charity Navigator and a <cite id=\"14\">Platinum Seal of Transparency from Candid</cite>.",
+          "point": "Exceptional Accountability"
+        },
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "The charity maintains <cite id=\"15\">18.0 months of working capital</cite>, providing a significant buffer for long-term operational stability.",
+          "point": "Robust Financial Reserves"
         }
       ],
       "strengths_deep_dive": [
-        "Islamic Relief USA demonstrates a high capacity for large-scale aid delivery. In 2025, the organization reported reaching <cite id=\"13\">420,204 direct beneficiaries through medical sector fortification</cite>. Their impact is also evident in specific regional projects, such as providing <cite id=\"14\">WASH services to 38,400 people in Ethiopia</cite> and supporting <cite id=\"15\">168,175 people in Afghanistan</cite>. Beyond immediate relief, IRUSA focuses on sustainability, claiming to have <cite id=\"16\">pulled 13,500 families out of the poverty cycle</cite>. This scale is made possible by a robust grantmaking operation that distributed <cite id=\"17\">over $252 million in foreign grants</cite> to implementing partners worldwide."
+        "Islamic Relief USA demonstrates positive financial health through its <cite id=\"16\">fundraising efficiency of $0.19 per $1 raised</cite>, which is well within the range of high-performing nonprofits. This efficiency is paired with a <cite id=\"17\">strong theory of change</cite> and a documented track record of <cite id=\"18\">32 years in operation</cite>. Their ability to manage <cite id=\"19\">$228,581,851 in total assets</cite> while maintaining low liabilities of $5,280,117 indicates a sophisticated financial infrastructure capable of sustaining large-scale humanitarian interventions."
       ],
-      "summary": "Islamic Relief USA (IRUSA) is a major humanitarian institution that has operated since <cite id=\"1\">its founding in 1993</cite>. The organization manages a massive global portfolio, reporting <cite id=\"2\">$165,235,589 in total revenue</cite> for the 2023 fiscal year. IRUSA maintains <cite id=\"3\">a perfect 100/100 overall score from Charity Navigator</cite>, which reflects its high standards for accountability and financial health. While the organization is a powerhouse in international relief, it recently faced a <cite id=\"4\">revenue decline of 11% in 2024</cite>, dropping to approximately $147 million. Despite this fluctuation, IRUSA remains highly efficient, spending <cite id=\"5\">80.3% of its total revenue on program expenses</cite>. This efficiency is supported by a strong fundraising model that costs only <cite id=\"6\">$0.17 to raise every $1</cite>. The charity provides a wide range of services, from <cite id=\"7\">emergency response and orphan sponsorship</cite> to long-term development. Their reach is truly global, serving regions including <cite id=\"8\">Africa, Asia, Europe, and the United States</cite>. For Muslim donors, IRUSA offers a <cite id=\"9\">verified zakat-eligible platform</cite> that directs funds to specific categories like the poor and needy.",
+      "summary": "Islamic Relief USA (IRUSA) operates as a major humanitarian institution, managing <cite id=\"1\">$165,235,589 in total revenue in FY2023</cite>. Founded in <cite id=\"2\">1994</cite>, the organization provides a wide range of services including <cite id=\"3\">water programs, orphan sponsorship, and disaster management</cite> across more than 40 countries. IRUSA is a primary destination for faith-based giving, maintaining a <cite id=\"4\">verified Zakat-eligible status</cite> that aligns with traditional categories of need. While the organization has historically shown strong growth, it faced a recent <cite id=\"5\">11% revenue decline in FY2024</cite>, bringing total revenue to $147,232,658. Despite this fluctuation, the charity maintains <cite id=\"6\">a 97/100 overall score from Charity Navigator</cite>, reflecting high standards of accountability. The organization\u2019s scale allows it to deliver massive relief, such as providing <cite id=\"7\">187,563 food parcels and hot meals</cite> and <cite id=\"8\">restoring critical health services for 1.5 million people</cite>. IRUSA serves as a significant grantmaker, distributing <cite id=\"9\">$162,398,577 in foreign grants</cite> to support international implementing partners. This large-scale model ensures that donor funds reach high-urgency zones like <cite id=\"10\">Gaza, Yemen, and Sudan</cite>.",
       "zakat_guidance": {
         "classification": "fuqara",
         "eligibility": "ZAKAT-ELIGIBLE"

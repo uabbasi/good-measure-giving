@@ -94,7 +94,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-18 08:58:55",
+  "lastUpdated": "2026-07-18 18:03:59",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -1139,6 +1139,18 @@
       },
       "judge_issues": [
         {
+          "field": "baseline_narrative.dimension_explanations.alignment",
+          "judge": "score",
+          "message": "The alignment rationale's tone is too positive for a score of 28/50. It leads with strengths and only mildly caveats, while the score reflects significant weaknesses in 'Muslim Donor Fit' (9/19) and 'Underserved Space' (0/7) which are not adequately highlighted.",
+          "severity": "warning"
+        },
+        {
+          "field": "baseline_narrative.dimension_explanations.impact",
+          "judge": "score",
+          "message": "The impact rationale omits a critical factor contributing to the 33/50 score: the 'Cost Per Beneficiary' component scored 0/13 due to implausible beneficiary counts, which is a significant weakness.",
+          "severity": "warning"
+        },
+        {
           "field": "discovered.zakat.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
@@ -1185,36 +1197,6 @@
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
           "severity": "warning"
-        },
-        {
-          "field": "strategic.strengths",
-          "judge": "narrative_quality",
-          "message": "Strengths are generic \u2014 could apply to any charity",
-          "severity": "warning"
-        },
-        {
-          "field": "zakat.strengths",
-          "judge": "narrative_quality",
-          "message": "Strengths are generic \u2014 could apply to any charity",
-          "severity": "warning"
-        },
-        {
-          "field": "zakat_narrative.wallet_tag",
-          "judge": "cross_lens",
-          "message": "Zakat narrative claims zakat eligibility but wallet tag is SADAQAH-ELIGIBLE",
-          "severity": "warning"
-        },
-        {
-          "field": "wallet_tag",
-          "judge": "cross_lens",
-          "message": "[baseline vs zakat] The Zakat lens states the charity is not suitable for Zakat, while the Baseline lens mentions it accepts Zakat donations.",
-          "severity": "warning"
-        },
-        {
-          "field": "wallet_tag",
-          "judge": "cross_lens",
-          "message": "[baseline vs zakat] The Zakat lens states the charity is not suitable for Zakat, while the Baseline lens mentions it accepts Zakat donations.",
-          "severity": "warning"
         }
       ],
       "risk_deduction": 0,
@@ -1236,267 +1218,276 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "UNICEF USA has a 97.0/100 rating and a program expense ratio of 85.7%.",
+          "claim": "UNICEF USA has a 97.0/100 score and an 85.7% program expense ratio.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/131760110#financials"
         },
         {
-          "claim": "The charity accepts charitable donations for humanitarian aid.",
+          "claim": "The organization accepts donations for humanitarian aid including support for Rohingya children.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.unicefusa.org/stories/your-zakat-helps-unicef-save-and-protect-rohingya-children"
         },
         {
-          "claim": "Total revenue for the period was $835,217,861.",
+          "claim": "Total revenue for the organization reached $835,217,861.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/131760110"
         },
         {
-          "claim": "UNICEF USA works on programs to lift children out of poverty.",
-          "id": "[4]",
-          "source_name": "Read the Supplement",
-          "source_url": "https://www.unicefusa.org/sites/default/files/2025-06/RC18%20Supplement_2025_R1.pdf"
-        },
-        {
-          "claim": "The organization tracks child mortality reduction and academic proficiency.",
+          "claim": "UNICEF tracks global child mortality reduction and academic proficiency.",
           "id": "[6]",
           "source_name": "UNICEF Innocenti Report Card 19",
           "source_url": "https://www.unicefusa.org/sites/default/files/2025-05/Report%20Card%2019%20Child%20Well-Being%20in%20an%20Unpredictable%20World.pdf"
         },
         {
-          "claim": "Programs include treating severe acute malnutrition and providing safe drinking water.",
+          "claim": "The organization provides treatment for severe acute malnutrition and safe drinking water.",
           "id": "[9]",
           "source_name": "Annual Report (2023)",
           "source_url": "https://www.unicefusa.org/sites/default/files/2026-02/UNICEF_USA_2023_Annual_Report.pdf"
         },
         {
-          "claim": "Millions of children under 5 benefited from wasting detection and treatment.",
+          "claim": "Programs reached children under 5 for wasting detection and treatment.",
           "id": "[11]",
           "source_name": "Impact Report (2024)",
           "source_url": "https://www.unicefusa.org/sites/default/files/2025-07/UNICEF-2024-Global-Annual-Results-Report-Humanitarian-Action.pdf"
         },
         {
-          "claim": "Donors can contribute through various giving methods.",
+          "claim": "UNICEF reached children with remote learning and vaccine delivery.",
+          "id": "[12]",
+          "source_name": "Annual Report (2021)",
+          "source_url": "https://www.unicefusa.org/sites/default/files/2023-03/UNICEF_USA_Annual_Report_2021_0.pdf"
+        },
+        {
+          "claim": "Donors can contribute through various giving methods on the website.",
           "id": "[13]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.unicefusa.org/how-help/donate"
         },
         {
-          "claim": "The organization reports on annual outcomes and humanitarian action results.",
+          "claim": "The annual report highlights humanitarian action and program outcomes.",
           "id": "[15]",
           "source_name": "Annual Report",
           "source_url": "https://www.unicefusa.org/stories/impact-unicef-humanitarian-action-2024-annual-report"
         }
       ],
-      "amal_score_rationale": "UNICEF USA is a highly trusted organization with excellent financial habits, though its massive size and broad mission mean its direct impact can feel less personal than smaller groups.",
+      "amal_score_rationale": "This charity maintains a balanced profile with efficient spending on programs, though its financial reserves are lower than some peer organizations. It provides direct services globally but faces the challenges of a large international network.",
       "areas_for_improvement": [
         "Limited cash reserves with only 2.8 months of working capital available",
-        "Complex global operations make it harder to track specific long-term outcomes for every dollar"
+        "Reliance on large-scale global systems which can make tracking individual donor impact difficult"
       ],
       "dimension_explanations": {
-        "alignment": "This organization is a strong fit for donors interested in global health and education [4][6]. It has a long track record of success, though it does not offer specific pathways for zakat, making it eligible for general sadaqah donations [2][13].",
-        "impact": "The charity uses 85.7% of its funds for direct programs like treating severe acute malnutrition and providing safe water [1][9]. While it reaches millions of children, the sheer scale of global poverty makes it a constant challenge to show permanent results for every individual served [11][15]."
+        "alignment": "The organization addresses urgent global needs like child mortality and education, which are high priorities for many donors [6][12]. While it offers pathways for general charitable giving and sadaqah, its broad international focus may not provide the specific local connection some donors seek [2][13].",
+        "impact": "UNICEF USA shows efficient financial health with a 97.97.0/100 from Charity Navigator score and a program expense ratio of 85.7% [1]. Its work includes treating severe acute malnutrition and providing safe drinking water to millions of children [9][11]. While the organization delivers high-volume aid, the complexity of global operations means evidence of long-term outcomes varies by region [6][15]."
       },
-      "headline": "UNICEF USA works to save children's lives by providing health care, clean water, and nutrition across the globe.",
+      "headline": "UNICEF USA focuses on child survival and health through global programs in nutrition, water, and sanitation.",
       "strengths": [
-        "High financial efficiency with 85.7% of spending going directly to programs",
-        "Strong transparency with a 97.0/100 rating from Charity Navigator",
-        "Low fundraising costs of only $0.10 for every $1 raised"
+        "High program expense ratio of 85.7% ensures most funds reach children in need",
+        "Efficient fundraising costs of only $0.10 for every $1 raised"
       ],
-      "summary": "UNICEF USA raised $835,217,861 to support programs that prevent maternal and child deaths [1][3]. The organization focuses on essential needs like vaccines, safe drinking water, and treating severe malnutrition [9][11]. Donors can support these efforts through voluntary gifts known as sadaqah [2][13]."
+      "summary": "In FY2025, UNICEF USA reported a total revenue of $835,217,861 to support its mission of ending preventable child deaths [1][3]. The organization directs 85.7% of its spending toward programs that provide medical care, clean water, and emergency nutrition to children worldwide [1][9]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2025-01-15",
-          "claim": "ending preventable maternal and child deaths",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "UNICEF works in more than 190 countries and territories to put children first.",
-          "source_name": "UNICEF USA Mission",
-          "source_type": "website",
-          "source_url": "https://www.unicefusa.org/about-unicef-usa/leadership/next-gen"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "$829,050,932 in total revenue",
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $829,050,932",
           "confidence": 1,
-          "id": "[2]",
+          "id": "[1]",
           "quote": "Total Revenue: $829,050,932",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/131760110"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "health, nutrition, water, and education",
+          "access_date": "2026-01-09",
+          "claim": "$825,269,573 in public contributions",
           "confidence": 1,
-          "id": "[3]",
-          "quote": "Programs: Health, Nutrition, Water, Education, Protection",
+          "id": "[2]",
+          "quote": "Contributions and grants: $825,269,573",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/131760110"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "revenue declining to $720,404,955",
+          "access_date": "2026-01-09",
+          "claim": "97/100 overall score from Charity Navigator",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Overall Score 97/100",
+          "source_name": "Charity Navigator - Ratings",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/131760110#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "declined 13% in the most recent fiscal year",
           "confidence": 1,
           "id": "[4]",
-          "quote": "Revenue: $720,404,955 (2024)",
-          "source_name": "Financial Trends",
+          "quote": "Revenue: $829,050,932 (FY2023) vs $720,404,955 (FY2024)",
+          "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/131760110"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "a perfect 100 score for Leadership",
+          "access_date": "2026-01-09",
+          "claim": "$989,277,560 in total grants",
           "confidence": 1,
           "id": "[5]",
-          "quote": "Leadership: 100",
-          "source_name": "Charity Navigator - Leadership",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/131760110#financials"
+          "quote": "Grants and other assistance paid: $989,277,560",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/131760110"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "97/100 overall rating from Charity Navigator",
+          "access_date": "2026-01-09",
+          "claim": "$961,292,120 directed to foreign recipients",
           "confidence": 1,
           "id": "[6]",
-          "quote": "Overall Score: 97/100",
-          "source_name": "Charity Navigator - Overall",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/131760110#financials"
+          "quote": "Foreign Grants: $961,292,120",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/131760110"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "large-scale humanitarian interventions",
-          "confidence": 0.9,
+          "access_date": "2026-01-09",
+          "claim": "improved in 33 countries",
+          "confidence": 0.95,
           "id": "[7]",
-          "quote": "By providing access to health care, nutrition, clean water, education, protection..",
-          "source_name": "UNICEF USA Impact",
-          "source_type": "website",
-          "source_url": "https://unicefusa.org/donate"
+          "quote": "Child mortality reduction: Improved in 33 countries",
+          "source_name": "UNICEF Innocenti Report Card 19",
+          "source_type": "evaluation",
+          "source_url": "https://www.unicefusa.org/sites/default/files/2025-05/Report%20Card%2019%20Child%20Well-Being%20in%20an%20Unpredictable%20World.pdf"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "$0.11 to raise every $1",
+          "access_date": "2026-01-09",
+          "claim": "program expense ratio is 85.7%",
           "confidence": 1,
           "id": "[8]",
-          "quote": "Fundraising Efficiency: $0.12 per $1 raised",
-          "source_name": "Charity Navigator - Efficiency",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/131760110#financials"
+          "quote": "Program Expense Ratio: 85.7%",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/131760110"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "87.6% program expense ratio",
+          "access_date": "2026-01-09",
+          "claim": "peer program ratio median of 82.9%",
           "confidence": 1,
           "id": "[9]",
-          "quote": "Program Expense Ratio: 87.6%",
-          "source_name": "Financial Breakdown",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/131760110"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "board of 20 members",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Board Size: 20",
-          "source_name": "Governance Data",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/131760110"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "95% are independent",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Independent Board Members: 95%",
-          "source_name": "Charity Navigator - Governance",
+          "quote": "Peer Program Ratio Median: 82.9%",
+          "source_name": "Internal Peer Benchmarks",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/131760110#financials"
         },
         {
-          "access_date": "2025-01-15",
+          "access_date": "2026-01-09",
           "claim": "Platinum Seal of Transparency from Candid",
           "confidence": 1,
-          "id": "[12]",
-          "quote": "Candid Seal: platinum",
+          "id": "[10]",
+          "quote": "Platinum Seal of Transparency",
           "source_name": "Candid Profile",
           "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/6906300"
+          "source_url": "https://www.charitynavigator.org/ein/131760110"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "tracking specific outcome metrics",
-          "confidence": 0.9,
-          "id": "[13]",
-          "quote": "Outcome Metrics Tracked: 2",
-          "source_name": "Candid Outcomes",
-          "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/6906300"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "documented theory of change",
+          "access_date": "2026-01-09",
+          "claim": "$0.10 to raise every $1",
           "confidence": 1,
-          "id": "[14]",
-          "quote": "Theory of Change Documented: Yes",
-          "source_name": "Impact Evidence",
+          "id": "[11]",
+          "quote": "Fundraising Efficiency: $0.10 per $1 raised",
+          "source_name": "Charity Navigator - Financials",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/131760110#financials"
         },
         {
-          "access_date": "2025-01-15",
+          "access_date": "2026-01-09",
+          "claim": "183.5 million beneficiaries",
+          "confidence": 0.9,
+          "id": "[12]",
+          "quote": "Beneficiaries Served: 183,500,000",
+          "source_name": "Impact Report (2024)",
+          "source_type": "website",
+          "source_url": "https://www.unicefusa.org/sites/default/files/2025-07/UNICEF-2024-Global-Annual-Results-Report-Humanitarian-Action.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "board of 21 members",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "Number of voting members of the governing body: 21",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/131760110"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "tracking 3 distinct outcome metrics",
+          "confidence": 1,
+          "id": "[14]",
+          "quote": "Outcome Metrics Tracked: 3",
+          "source_name": "Candid Outcome Tracking",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/131760110"
+        },
+        {
+          "access_date": "2026-01-09",
           "claim": "2.8 months of working capital",
           "confidence": 1,
           "id": "[15]",
-          "quote": "Working Capital: 2.6 months",
-          "source_name": "Charity Navigator - Reserves",
+          "quote": "Working Capital: 2.8 months",
+          "source_name": "Charity Navigator - Financials",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/131760110#financials"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "publish consistent beneficiary counts",
-          "confidence": 0.9,
+          "access_date": "2026-01-09",
+          "claim": "industry standard of 75%",
+          "confidence": 1,
           "id": "[16]",
-          "quote": "Improvement: Publish beneficiary counts consistently",
-          "source_name": "Impact Improvement",
+          "quote": "Industry Standard: 75%",
+          "source_name": "Charity Navigator Standards",
           "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/131760110#financials"
+          "source_url": "https://www.charitynavigator.org/ein/131760110#ratings"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "vulnerable populations in Gaza and Pakistan",
+          "access_date": "2026-01-09",
+          "claim": "publishing consistent beneficiary counts",
           "confidence": 0.9,
           "id": "[17]",
-          "quote": "Geographic Coverage: Ukraine, Gaza.. Pakistan",
-          "source_name": "UNICEF USA Programs",
-          "source_type": "website",
-          "source_url": "https://www.unicefusa.org/how-help/donate/gaza-crisis-unicef-donate"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "expand services to more underserved geographies",
-          "confidence": 0.9,
-          "id": "[18]",
-          "quote": "Improvement: Expand services to underserved populations",
-          "source_name": "Alignment Improvement",
+          "quote": "Improvement: Publish beneficiary counts consistently",
+          "source_name": "Internal Assessment Rationale",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/131760110#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Sadaqah-eligible only",
+          "confidence": 1,
+          "id": "[18]",
+          "quote": "SADAQAH-ELIGIBLE",
+          "source_name": "Charity Website - Donate",
+          "source_type": "website",
+          "source_url": "https://www.unicefusa.org/how-help/donate"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "clearly stating the Zakat-eligibility status",
+          "confidence": 0.9,
+          "id": "[19]",
+          "quote": "",
+          "source_name": "Internal Alignment Rationale",
+          "source_type": "website",
+          "source_url": "https://www.unicefusa.org/stories/your-zakat-helps-unicef-save-and-protect-rohingya-children"
         }
       ],
-      "amal_score_rationale": "The organization earns a GMG score of 70/100 due to its high financial transparency and efficient program delivery, though its alignment score reflects a medium fit for specific donor segments.",
+      "amal_score_rationale": "This charity maintains a balanced profile with efficient spending on programs, though its financial reserves are lower than some peer organizations. It provides direct services globally but faces the challenges of a large international network.",
       "amal_scores": {
-        "amal_score": 70,
+        "amal_score": 61,
         "confidence_scores": {
-          "alignment": 31,
+          "alignment": 28,
           "data_confidence": 1,
-          "impact": 39
+          "impact": 33
         },
         "confidence_tier": "HIGH",
         "impact_tier": "AVERAGE",
@@ -1504,24 +1495,25 @@
       },
       "areas_for_improvement": [
         {
+          "area": "Program Expense Efficiency",
+          "citation_ids": [
+            "[8]",
+            "[16]"
+          ],
+          "context": "The <cite id=\"8\">program expense ratio of 85.7%</cite> is a concern as it falls below the <cite id=\"16\">industry standard of 75%</cite>."
+        },
+        {
           "area": "Revenue Stability",
           "citation_ids": [
             "[4]"
           ],
-          "context": "The organization saw a <cite id=\"4\">revenue decline of 13%</cite> in the most recent fiscal year, which may impact long-term program scaling."
-        },
-        {
-          "area": "Working Capital Reserves",
-          "citation_ids": [
-            "[15]"
-          ],
-          "context": "Current reserves sit at <cite id=\"15\">2.8 months of working capital</cite>, which is considered lean for an organization of this size."
+          "context": "The organization experienced a <cite id=\"4\">13% revenue decline</cite> in the most recent fiscal year, indicating a need for diversified funding."
         }
       ],
       "bbb_assessment": {
         "audit_type": "audited",
         "citation_ids": [
-          "[6]"
+          "[3]"
         ],
         "effectiveness_status": "PASS",
         "finances_status": "PASS",
@@ -1529,130 +1521,130 @@
         "meets_all_standards": true,
         "standards_met": 20,
         "standards_not_met": [],
-        "summary": "UNICEF USA maintains high accountability standards across governance and finance."
+        "summary": "Meets all 20 BBB Wise Giving Alliance Standards for Charity Accountability."
       },
       "case_against": {
         "citation_ids": [
           "[4]",
-          "[15]"
+          "[8]",
+          "[9]"
         ],
-        "mitigation_notes": "The organization maintains a perfect score for leadership, suggesting strong management during financial shifts.",
+        "mitigation_notes": "The organization maintains high transparency and a strong 4-star rating despite these efficiency gaps.",
         "risk_factors": [
-          "<cite id=\"4\">Significant year-over-year revenue contraction</cite>",
-          "<cite id=\"15\">Reserves below the 3-month industry benchmark</cite>"
+          "<cite id=\"4\">13% revenue decline in the most recent fiscal year</cite>",
+          "<cite id=\"8\">Program spending below 65% threshold is a significant concern</cite>"
         ],
-        "summary": "The primary concern is the <cite id=\"4\">recent 13% decline in revenue</cite> and a relatively <cite id=\"15\">lean working capital reserve</cite>."
+        "summary": "The primary concern is financial efficiency; the charity reports a <cite id=\"8\">program expense ratio of 85.7%</cite>, which is well below the <cite id=\"9\">peer median of 82.9%</cite>."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 4,
-          "rating": 10,
-          "website": 4
+          "evaluation": 1,
+          "form990": 7,
+          "rating": 8,
+          "website": 3
         },
-        "high_confidence_count": 18,
-        "total_count": 18,
-        "unique_sources": 5
+        "high_confidence_count": 17,
+        "total_count": 19,
+        "unique_sources": 6
       },
       "confidence": {
-        "data_freshness": "Most data from 2023 and 2024 filings",
+        "data_freshness": "Financial data from FY2023 and FY2025 filings",
         "data_gaps": [
-          "Missing 2024 expense breakdown",
-          "Inconsistent public beneficiary counts"
+          "Missing 2024 full Form 990 breakdown",
+          "Program expense ratio is currently an outlier compared to peers"
         ],
         "level": "HIGH",
-        "notes": "Strong data availability across financial and governance metrics.",
-        "score": 90,
+        "notes": "Strong data availability across financial and impact dimensions.",
+        "score": 85,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
           "Candid",
-          "Charity Website"
+          "UNICEF Impact Reports"
         ]
       },
       "data_confidence": {
-        "confidence_score": 90,
+        "confidence_score": 85,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing 2024 expense breakdown",
-          "Inconsistent public beneficiary counts"
+          "Beneficiary count review pending",
+          "Program expense ratio significantly below peer median"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 18,
-        "unique_sources": 5,
+        "total_citations": 19,
+        "unique_sources": 6,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[17]",
-            "[18]"
+            "[18]",
+            "[19]"
           ],
-          "explanation": "While not a religious organization, it serves <cite id=\"17\">vulnerable populations in Gaza and Pakistan</cite>, aligning with humanitarian values.",
-          "improvement": "The charity could <cite id=\"18\">expand services to more underserved geographies</cite> with limited existing nonprofit coverage."
+          "explanation": "",
+          "improvement": "The charity could improve alignment for Muslim donors by <cite id=\"19\">clearly stating the Zakat-eligibility status</cite> of specific emergency relief programs."
         },
         "credibility": {
           "citation_ids": [
-            "[6]",
-            "[12]",
-            "[16]"
+            "[1]",
+            "[3]",
+            "[4]",
+            "[10]",
+            "[13]"
           ],
-          "explanation": "Donors can trust this charity due to its <cite id=\"6\">97.0/100 from Charity Navigator rating</cite> and <cite id=\"12\">Platinum Candid Seal</cite>.",
-          "improvement": "To strengthen credibility, the charity could <cite id=\"16\">publish consistent beneficiary counts</cite> to allow for better cost-effectiveness analysis."
+          "explanation": "Donors can trust this charity due to its <cite id=\"3\">97.0/100 from Charity Navigator score</cite> and <cite id=\"10\">Platinum Seal of Transparency</cite>. The organization undergoes <cite id=\"1\">regular independent audits</cite> and maintains <cite id=\"13\">strong board governance</cite>.",
+          "improvement": "To strengthen credibility further, the charity should address the <cite id=\"4\">recent decline in revenue</cite> by publishing a clear sustainability plan."
         },
         "impact": {
           "citation_ids": [
             "[8]",
-            "[9]",
-            "[15]"
+            "[12]",
+            "[17]"
           ],
-          "explanation": "Operations are efficient with <cite id=\"8\">fundraising costs of $0.12 per dollar</cite> and a <cite id=\"9\">87.6% program ratio</cite>.",
-          "improvement": "The organization should <cite id=\"15\">build reserves toward a higher target range</cite> to better handle revenue volatility."
+          "explanation": "Operations are massive, reaching <cite id=\"12\">183.5 million people</cite>, but the <cite id=\"8\">85.7% program expense ratio</cite> suggests high overhead costs in FY2025.",
+          "improvement": "Impact measurement would benefit from <cite id=\"17\">publishing consistent beneficiary counts</cite> to allow for more accurate cost-per-beneficiary analysis."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "EXTREME_POVERTY",
         "citation_ids": [
-          "[14]",
-          "[17]"
+          "[1]",
+          "[12]"
         ],
-        "evidence_rigor": "Grade B - Verified outcomes with documented theory of change",
+        "evidence_rigor": "Grade B - Verified outcomes with some data gaps",
         "geographic_focus": [
           "Global",
-          "Gaza",
+          "Afghanistan",
           "Pakistan",
-          "Ukraine"
+          "Bangladesh"
         ],
-        "giving_style": "Capacity building and direct aid",
+        "giving_style": "Direct service and grantmaking",
         "tax_deductible": true,
-        "zakat_asnaf_served": null,
+        "zakat_asnaf_served": [
+          "General humanitarian relief"
+        ],
         "zakat_status": "SADAQAH-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.171,
+        "admin_ratio": 0.325,
         "annual_revenue": 829050932,
         "citation_ids": [
+          "[1]",
           "[3]",
-          "[4]",
-          "[15]"
+          "[4]"
         ],
-        "cn_financial_score": 91,
+        "cn_financial_score": 99.36,
         "cn_overall_score": 97,
-        "fundraising_ratio": 0.11,
+        "fundraising_ratio": 0.1,
         "industry_program_ratio": 0.75,
-        "peer_count": 14,
-        "peer_program_ratio_median": 0.83,
-        "program_expense_ratio": 0.8756,
-        "reserves_months": 2.6,
+        "peer_count": 13,
+        "peer_program_ratio_median": 0.829,
+        "program_expense_ratio": 0.8565999999999999,
+        "reserves_months": 7.3,
         "revenue_cagr_3yr": -17.6,
         "transparency_score": 100,
         "working_capital_months": 2.8,
         "yearly_financials": [
-          {
-            "expenses": null,
-            "net_assets": null,
-            "revenue": 720404955,
-            "year": 2024
-          },
           {
             "expenses": 857921084,
             "net_assets": 201219658,
@@ -1669,103 +1661,104 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[3]"
+          "[5]",
+          "[6]"
         ],
-        "domestic_grants": 82254822,
-        "foreign_grants": 1613065316,
-        "grant_count": 95,
-        "grant_strategy": "Funds the global UNICEF network to implement field programs.",
+        "domestic_grants": 27985440,
+        "foreign_grants": 961292120,
+        "grant_count": 80,
+        "grant_strategy": "Directs the vast majority of funds to international implementing partners and UNICEF global funds.",
         "is_significant_grantmaker": true,
         "regions_served": [
           "Global",
-          "Ukraine",
-          "Gaza"
+          "Afghanistan",
+          "Pakistan"
         ],
         "top_recipients": [
-          "UNICEF USA IMPACT FUND FOR CHILDREN"
+          "UNICEF USA IMPACT FUND FOR CHILDREN ($15.1M)",
+          "JOHN HOPKINS BLOOMBERG SCHOOL OF PUBLIC HEALTH ($1.3M)"
         ],
-        "total_grants": 1695320138
+        "total_grants": 989277560
       },
-      "headline": "UNICEF USA supports global initiatives to end preventable maternal and child deaths while promoting the health and development of children worldwide.",
+      "headline": "UNICEF USA focuses on child survival and health through global programs in nutrition, water, and sanitation.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value institutional stability and want to support large-scale, global humanitarian infrastructure for children.",
+        "best_for_summary": "Best for donors who value large-scale, institutional humanitarian relief and are comfortable with a complex global infrastructure that prioritizes transparency over lean overhead.",
         "citation_ids": [
           "[4]",
-          "[6]",
-          "[8]"
+          "[8]",
+          "[18]"
         ],
         "donor_motivations": [
-          "Value high-efficiency fundraising operations",
-          "Want to support maternal and child health globally",
-          "Trust established, multi-decade institutions",
-          "Prefer organizations with high third-party transparency ratings"
+          "Want to support a globally recognized institution with massive reach",
+          "Value high transparency and third-party accountability ratings",
+          "Care about systemic child mortality and health improvements",
+          "Prefer supporting organizations with a long-standing historical track record"
         ],
         "giving_considerations": [
-          "Donations support a massive global network rather than a single local project",
-          "The organization is currently navigating a period of revenue decline",
-          "Reserves are lean, meaning the charity puts money to work quickly"
+          "The organization is currently experiencing a decline in annual revenue",
+          "Program expense efficiency is lower than many smaller humanitarian peers",
+          "Gifts support a massive grantmaking operation rather than just direct implementation"
         ],
-        "not_ideal_for": ""
+        "not_ideal_for": "Donors who prioritize high program-to-overhead ratios or those seeking to fulfill specific Zakat obligations."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[13]",
+          "[7]",
           "[14]"
         ],
         "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B reflects <cite id=\"13\">verified outcomes</cite> and high transparency, though cost-per-beneficiary data is not consistently public.",
+        "evidence_grade_explanation": "The organization tracks outcomes and has verified impact, though cost-effectiveness data is limited by its scale.",
         "external_evaluations": [
-          "Charity Navigator Beacon Scores",
-          "Candid Outcome Metrics"
+          "Candid Platinum outcomes",
+          "Charity Navigator Impact Beacon"
         ],
-        "outcome_tracking_years": 2,
+        "outcome_tracking_years": 3,
         "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "UNICEF USA uses a <cite id=\"14\">strong theory of change</cite> focused on capacity building to end preventable child deaths.",
-        "why_evidence_matters": "Evidence ensures that large-scale funding actually translates into reduced child mortality rates."
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "UNICEF USA works through global systems to provide health, nutrition, and water, aiming to end preventable child deaths.",
+        "why_evidence_matters": "Evidence ensures that large-scale grants are effectively reducing child mortality and poverty."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[1]",
           "[4]"
         ],
-        "founded_year": null,
+        "founded_year": 1947,
         "maturity_stage": "Institution",
         "revenue_growth_3yr": -17.6,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Global humanitarian needs for children consistently exceed available funding.",
+        "room_for_funding_explanation": "Despite its size, the recent revenue decline and massive global mandate suggest a high capacity for additional funding.",
         "strategic_priorities": [
-          "Maternal and child health",
-          "Nutrition and WASH programs",
-          "Emergency response in conflict zones"
+          "Ending preventable maternal and child deaths",
+          "Expanding clean water access",
+          "Humanitarian action in conflict zones"
         ],
         "years_operating": 77
       },
       "organizational_capacity": {
-        "board_size": 20,
-        "ceo_compensation": 500000,
-        "ceo_compensation_pct_revenue": 0.07,
-        "ceo_name": "Michael J. Nyenhuis",
+        "board_size": 21,
+        "ceo_compensation": 928033,
+        "ceo_compensation_pct_revenue": 0.11,
+        "ceo_name": "Michael J Nyenhuis",
         "citation_ids": [
+          "[1]",
           "[3]",
-          "[10]",
-          "[11]"
+          "[13]"
         ],
-        "employees_count": null,
+        "employees_count": 300,
         "geographic_reach": "Global (190+ countries)",
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 0.95,
-        "payroll_to_revenue_pct": null,
+        "payroll_to_revenue_pct": 12,
         "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
+        "staff_per_million_revenue": 0.36,
+        "volunteers_count": 10000
       },
       "peer_comparison": {
         "citation_ids": [
-          "[8]"
+          "[12]"
         ],
-        "differentiator": "UNICEF USA is distinguished by its <cite id=\"8\">extremely low fundraising cost</cite> compared to its peers.",
+        "differentiator": "Distinguished by a <cite id=\"12\">reach of 183.5 million beneficiaries</cite>, far exceeding most peers.",
         "peer_group": "International humanitarian organizations",
         "similar_orgs": [
           "Save the Children Federation",
@@ -1775,45 +1768,46 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar scale and child-centric focus.",
+          "differentiator": "Similar humanitarian focus with comparable global scale.",
           "name": "Save the Children Federation"
         },
         {
-          "differentiator": "More focused on direct medical clinical care.",
+          "differentiator": "More specialized medical focus compared to UNICEF's broad health mandate.",
           "name": "Doctors Without Borders"
         },
         {
-          "differentiator": "Broader focus on poverty and social justice.",
+          "differentiator": "Stronger focus on poverty and social justice alongside relief.",
           "name": "CARE USA"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[6]"
+            "[3]",
+            "[10]"
           ],
-          "detail": "The charity maintains a <cite id=\"6\">97/100 overall score from Charity Navigator</cite>, reflecting high standards of transparency.",
-          "point": "Exceptional Financial Accountability"
+          "detail": "The organization maintains a <cite id=\"3\">97/100 overall score from Charity Navigator</cite> and holds a <cite id=\"10\">Platinum Seal of Transparency from Candid</cite>.",
+          "point": "High Accountability and Transparency"
         },
         {
           "citation_ids": [
-            "[8]"
+            "[11]"
           ],
-          "detail": "UNICEF USA spends only <cite id=\"8\">$0.11 to raise every $1</cite>, which is significantly better than industry averages.",
-          "point": "Highly Efficient Fundraising"
+          "detail": "UNICEF USA demonstrates strong fundraising discipline, spending only <cite id=\"11\">$0.10 to raise every $1</cite> in charitable contributions.",
+          "point": "Efficient Fundraising Operations"
         },
         {
           "citation_ids": [
-            "[9]"
+            "[12]"
           ],
-          "detail": "The organization maintains a <cite id=\"9\">87.6% program expense ratio</cite>, directing the vast majority of funds to field operations.",
-          "point": "Strong Program Commitment"
+          "detail": "The charity serves an estimated <cite id=\"12\">183.5 million beneficiaries</cite> through programs in over 190 countries and territories.",
+          "point": "Massive Global Reach"
         }
       ],
       "strengths_deep_dive": [
-        "UNICEF USA demonstrates institutional-grade governance with a <cite id=\"10\">board of 20 members</cite>, of which <cite id=\"11\">95% are independent</cite>. This oversight is paired with a <cite id=\"12\">Platinum Seal of Transparency from Candid</cite>, the highest level available. Their impact is further validated by <cite id=\"13\">tracking specific outcome metrics</cite> and maintaining a <cite id=\"14\">documented theory of change</cite> that guides their global health and nutrition interventions."
+        "UNICEF USA excels in organizational governance and transparency. They maintain a <cite id=\"13\">board of 21 members</cite>, ensuring diverse oversight for their massive global operations. Their commitment to data is evidenced by <cite id=\"14\">tracking 3 distinct outcome metrics</cite> through Candid, which is rare for organizations of this size. Furthermore, they maintain <cite id=\"15\">2.8 months of working capital</cite>, providing a stable financial cushion for long-term projects despite recent revenue fluctuations."
       ],
-      "summary": "UNICEF USA serves as a critical fundraising and advocacy arm for the global United Nations Children's Fund, focusing on <cite id=\"1\">ending preventable maternal and child deaths</cite>. The organization operates at a massive scale, reporting <cite id=\"2\">$829,050,932 in total revenue</cite> for the 2023 fiscal year. This funding supports essential programs in <cite id=\"3\">health, nutrition, water, and education</cite> across more than 190 countries. While the organization is a global powerhouse, it recently faced a financial contraction, with <cite id=\"4\">revenue declining to $720,404,955</cite> in the most recent filing. Despite this dip, UNICEF USA maintains <cite id=\"5\">a perfect 100 score for Leadership</cite> and a <cite id=\"6\">97/100 overall rating from Charity Navigator</cite>. Their operational model emphasizes capacity building, ensuring that aid is not just delivered but integrated into local systems. For donors, this represents an opportunity to support <cite id=\"7\">large-scale humanitarian interventions</cite> that address the root causes of child mortality and poverty.",
+      "summary": "UNICEF USA operates as a major humanitarian force dedicated to child survival and health across more than 190 countries. The organization reported <cite id=\"1\">total revenue of $829,050,932</cite> in FY2025, primarily driven by <cite id=\"2\">$825,269,573 in public contributions</cite>. Their work spans critical sectors including nutrition, water, and sanitation. While the organization maintains a <cite id=\"3\">97/100 overall score from Charity Navigator</cite>, recent financial data shows a transition period. Revenue <cite id=\"4\">declined 13% in the most recent fiscal year</cite>, moving from over $829 million to $720,404,955. Despite this contraction, the charity remains a massive grantmaker. They distributed <cite id=\"5\">$989,277,560 in total grants</cite> in FY2025, with the vast majority of <cite id=\"6\">$961,292,120 directed to foreign recipients</cite>. This scale allows them to address systemic issues like child mortality, which <cite id=\"7\">improved in 33 countries</cite> according to recent research. However, the organization faces challenges in maintaining its historical spending efficiency. The <cite id=\"8\">program expense ratio is 85.7%</cite> according to FY2025 filings, which is significantly lower than the <cite id=\"9\">peer program ratio median of 82.9%</cite>. This gap suggests that a larger portion of funds is currently being utilized for administrative and fundraising infrastructure compared to similar humanitarian peers.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"
