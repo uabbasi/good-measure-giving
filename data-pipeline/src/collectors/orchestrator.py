@@ -9,6 +9,8 @@ import time
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Set, Tuple
 
+from src.constants import DATA_FULL_CONFIDENCE_MAX_AGE_YEARS
+
 from ..constants import (
     CRAWL_INITIAL_BACKOFF_SECONDS,
     CRAWL_MAX_RETRIES,
@@ -1336,6 +1338,21 @@ class DataCollectionOrchestrator:
             from src.validators.bounds_validator import validate_dict_bounds
 
             parsed_json = validate_dict_bounds(parsed_json, ein=ein, log_warnings=True)
+
+        # Non-downgrade guard: never replace stored substantive content with a
+        # materially thinner/empty re-observation while the stored content is
+        # still within the freshness window. Preserves last-good (source keeps
+        # counting as succeeded) so the aggregator recomputes from it. Beyond
+        # the window, or with no prior, fall through and write normally.
+        existing = self.raw_data_repo.get_by_source(ein, source)
+        if existing and existing.get("success"):
+            age = data_age_years(existing.get("scraped_at"))
+            within_window = age is None or age <= DATA_FULL_CONFIDENCE_MAX_AGE_YEARS
+            if within_window and is_content_downgrade(source, parsed_json, raw_content, existing.get("parsed_json")):
+                reason = f"{source} re-observation thinner than last-good; preserved (age={age}y)"
+                self.logger.warning(f"{ein}: {reason}")
+                self.raw_data_repo.record_soft_fail(ein, source, reason)
+                return True
 
         # Check if data is meaningful
         is_meaningful = self._is_meaningful_data(parsed_json)

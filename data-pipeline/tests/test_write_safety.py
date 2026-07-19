@@ -78,6 +78,22 @@ class TestRawLayerPredicates:
 
         assert is_content_downgrade("website", {"crawl_stats": {"pages_crawled": 1}}, "x", {}) is False
 
+    def test_website_downgrade_thin_by_length(self):
+        from src.collectors.orchestrator import is_content_downgrade
+
+        # Page count unchanged (no page-loss signal) but raw content is thin.
+        prior = {"crawl_stats": {"pages_crawled": 10}}
+        new = {"crawl_stats": {"pages_crawled": 10}}
+        assert is_content_downgrade("website", new, "x" * 400, prior) is True
+
+    def test_generic_source_downgrade(self):
+        from src.collectors.orchestrator import is_content_downgrade
+
+        prior = {"cn_profile": {"score": 90}}
+        empty = {"cn_profile": {}}
+        assert is_content_downgrade("charity_navigator", empty, None, prior) is True
+        assert is_content_downgrade("charity_navigator", prior, None, prior) is False
+
 
 class TestRawDataRepoSoftFail:
     def test_record_soft_fail_preserves_content_and_timestamp(self, monkeypatch):
@@ -122,3 +138,74 @@ class TestRawDataRepoSoftFail:
         )
         assert "UPDATE raw_scraped_data" in captured["sql"]
         assert "scraped_at = CURRENT_TIMESTAMP" not in captured["sql"]
+
+
+class TestStoreRawDataNonDowngrade:
+    def _collector_with_fake_repo(self, existing_row):
+        from src.collectors.orchestrator import DataCollectionOrchestrator
+
+        calls = {"soft_fail": [], "upsert": []}
+
+        class FakeRawRepo:
+            def get_by_source(self, ein, source):
+                return existing_row
+
+            def record_soft_fail(self, ein, source, reason):
+                calls["soft_fail"].append((ein, source, reason))
+
+            def upsert(self, **kwargs):
+                calls["upsert"].append(kwargs)
+
+        col = object.__new__(DataCollectionOrchestrator)  # skip __init__
+        col.raw_data_repo = FakeRawRepo()
+        import logging
+
+        col.logger = logging.getLogger("test")
+        return col, calls
+
+    def test_thin_recrawl_preserves_recent_last_good(self):
+        from datetime import datetime
+
+        recent = datetime.now().replace(microsecond=0).isoformat(sep=" ")
+        existing = {
+            "success": 1,
+            "scraped_at": recent,
+            "parsed_json": {"website_profile": {"url": "x"}, "crawl_stats": {"pages_crawled": 25}},
+        }
+        col, calls = self._collector_with_fake_repo(existing)
+        thin = {
+            "raw_content": "x" * 100,  # below the 500 floor
+            "website_profile": {"url": "x", "ein": "12-3456789"},
+            "page_extractions": [],
+            "crawl_stats": {"pages_crawled": 1},
+        }
+        result = col._store_raw_data("12-3456789", "website", thin)
+        assert result is True
+        assert len(calls["soft_fail"]) == 1     # preserved
+        assert len(calls["upsert"]) == 0        # no overwrite
+
+    def test_thin_recrawl_aged_out_is_written(self):
+        existing = {
+            "success": 1,
+            "scraped_at": "2019-01-01 00:00:00",  # > 2 years old
+            "parsed_json": {"website_profile": {"url": "x"}, "crawl_stats": {"pages_crawled": 25}},
+        }
+        col, calls = self._collector_with_fake_repo(existing)
+        thin = {"raw_content": "x" * 100, "website_profile": {"url": "x"}, "crawl_stats": {"pages_crawled": 1}}
+        col._store_raw_data("12-3456789", "website", thin)
+        assert len(calls["soft_fail"]) == 0     # aged-out: allow the drop
+        assert len(calls["upsert"]) == 1
+
+    def test_empty_grants_preserved_when_prior_has_filings(self):
+        recent = "2026-01-01 00:00:00"
+        existing = {
+            "success": 1,
+            "scraped_at": recent,
+            "parsed_json": {"grants_profile": {"filing_years": [2022], "total_grants": 9000}},
+        }
+        col, calls = self._collector_with_fake_repo(existing)
+        empty = {"grants_profile": {"name": "Unknown (12-3456789)", "ein": "12-3456789"}}
+        result = col._store_raw_data("12-3456789", "form990_grants", empty)
+        assert result is True
+        assert len(calls["soft_fail"]) == 1
+        assert len(calls["upsert"]) == 0
