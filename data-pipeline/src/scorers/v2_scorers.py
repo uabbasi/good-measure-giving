@@ -69,7 +69,7 @@ from src.utils.scoring_audit import (
 #   2.0.0 — 4-dimension revised (reweighted, new components)
 #   3.0.0 — 3-dimension (Credibility/33 + Impact/33 + Alignment/34)
 #   4.0.0 — 2-dimension (Impact/50 + Alignment/50 + DataConfidence signal)
-RUBRIC_VERSION = "5.2.0"
+RUBRIC_VERSION = "5.3.0"
 
 # =============================================================================
 # Constants - 2-Dimension GMG Score
@@ -505,6 +505,11 @@ RISK_DEDUCTIONS = {
     "high_fundraising_ratio": -2,
     "excessive_reserves_non_zakat": -2,
     "geographic_mismatch": -1,
+    # Filing currency (rubric v5.3.0): 990 filings normally lag ~2 years;
+    # 3+ years without a data-bearing filing is a governance red flag, 5+ is
+    # severe (IRS auto-revokes after 3 consecutive missed years).
+    "stale_filings_3yr": -2,
+    "stale_filings_5yr": -4,
 }
 
 # Contradiction signals now captured in positive scoring components.
@@ -2110,6 +2115,7 @@ class RiskScorer:
         risks.extend(self._check_operational_risks(metrics))
         risks.extend(self._check_impact_risks(metrics, tier))
         risks.extend(self._check_governance_risks(metrics))
+        risks.extend(self._check_filing_currency(metrics))
         risks.extend(self._check_gik_risk(metrics))
         risks.extend(self._check_domestic_burn(metrics))
         risks.extend(self._check_zakat_hoarding(metrics))
@@ -2207,6 +2213,55 @@ class RiskScorer:
                 )
             )
 
+        return risks
+
+    @staticmethod
+    def _filing_age_years(metrics: CharityMetrics) -> Optional[int]:
+        """Age in years of the newest KNOWN filing (any source), or None.
+
+        Prefers latest_known_filing_year so a charity is never penalized for
+        our income-statement source selection; skips orgs legally exempt from
+        Form 990 filing (churches/mosques — form_990_exempt).
+        """
+        if metrics.form_990_exempt:
+            return None
+        fy = metrics.latest_known_filing_year or metrics.financial_data_tax_year
+        if not isinstance(fy, int):
+            return None
+        from datetime import date
+
+        return date.today().year - fy
+
+    def _check_filing_currency(self, metrics: CharityMetrics) -> list[RiskFactor]:
+        """Flag charities whose newest financial filing is 3+ years old.
+
+        990 filings normally run ~2 years behind; beyond that either the org
+        has stopped filing (the IRS auto-revokes after 3 consecutive missed
+        years) or is severely delinquent. Rubric v5.3.0.
+        """
+        risks = []
+        age = self._filing_age_years(metrics)
+        if age is None or age < 3:
+            return risks
+        fy = metrics.latest_known_filing_year or metrics.financial_data_tax_year
+        if age >= 5:
+            risks.append(
+                RiskFactor(
+                    category=RiskCategory.OPERATIONAL,
+                    description=f"No financial filing newer than FY{fy} ({age} years old) — filing compliance concern",
+                    severity=RiskSeverity.HIGH,
+                    data_source="ProPublica 990",
+                )
+            )
+        else:
+            risks.append(
+                RiskFactor(
+                    category=RiskCategory.OPERATIONAL,
+                    description=f"Latest available financial filing is FY{fy} ({age} years old)",
+                    severity=RiskSeverity.MEDIUM,
+                    data_source="ProPublica 990",
+                )
+            )
         return risks
 
     def _check_gik_risk(self, metrics: CharityMetrics) -> list[RiskFactor]:
@@ -2375,6 +2430,14 @@ class RiskScorer:
         cn_beacons = [b.lower() for b in (metrics.cn_beacons or [])]
         if any("advisory" in b or "concern" in b for b in cn_beacons):
             total += RISK_DEDUCTIONS["cn_advisory_flag"]
+
+        # Filing currency (rubric v5.3.0)
+        filing_age = self._filing_age_years(metrics)
+        if filing_age is not None:
+            if filing_age >= 5:
+                total += RISK_DEDUCTIONS["stale_filings_5yr"]  # -4
+            elif filing_age >= 3:
+                total += RISK_DEDUCTIONS["stale_filings_3yr"]  # -2
 
         # GIK inflation
         noncash_ratio = metrics.noncash_ratio

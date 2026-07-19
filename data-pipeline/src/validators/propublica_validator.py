@@ -66,6 +66,9 @@ class ProPublica990Profile(BaseModel):
     filing_type: Optional[str] = None
     foundation_code: Optional[str] = None  # Foundation type classification
     irs_ruling_year: Optional[int] = Field(None, ge=1800, le=2100)  # Year IRS granted tax-exempt status (per spec)
+    # IRS BMF exempt-organization status ("01" = unconditional exemption).
+    # A non-"01" code or absence from the BMF is a compliance red flag.
+    exempt_organization_status_code: Optional[str] = None
 
     # Filing history for trend analysis (up to 3 years)
     filing_history: List[Dict[str, Any]] = Field(

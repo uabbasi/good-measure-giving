@@ -300,6 +300,9 @@ class ProPublicaCollector(BaseCollector):
                 if org_data.get("foundation_code") is not None
                 else None,
                 "irs_ruling_year": self._extract_ruling_year(org_data.get("ruling_date")),
+            "exempt_organization_status_code": str(org_data.get("exempt_organization_status_code"))
+            if org_data.get("exempt_organization_status_code") is not None
+            else None,
                 "filing_history": [],
                 "no_filings": True,  # Flag to indicate this is a new org without 990s
                 "form_990_exempt": is_form_990_exempt,
@@ -378,6 +381,9 @@ class ProPublicaCollector(BaseCollector):
             if org_data.get("foundation_code") is not None
             else None,
             "irs_ruling_year": self._extract_ruling_year(org_data.get("ruling_date")),
+            "exempt_organization_status_code": str(org_data.get("exempt_organization_status_code"))
+            if org_data.get("exempt_organization_status_code") is not None
+            else None,
             "filing_history": filing_history,
             "no_filings": False,
             "form_990_exempt": is_form_990_exempt,

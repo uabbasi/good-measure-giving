@@ -290,6 +290,15 @@ class CharityMetrics(BaseModel):
     financial_data_tax_year: Optional[int] = Field(
         None, description="Tax year of the primary financial data (from ProPublica/IRS 990)"
     )
+    irs_ruling_year: Optional[int] = Field(
+        None, description="Year IRS granted current tax-exempt status (new ruling after reinstatement)"
+    )
+    latest_known_filing_year: Optional[int] = Field(
+        None, description="Newest filing year seen in ANY source (PP history, CN fiscal year) — filing-currency risk signal"
+    )
+    irs_exempt_status_code: Optional[str] = Field(
+        None, description="IRS BMF exempt-organization status code ('01' = unconditional exemption)"
+    )
     financial_data_source: Optional[str] = Field(
         None, description="Source of income statement financials: 'propublica', 'charity_navigator', or 'mixed'"
     )
@@ -1584,6 +1593,27 @@ class CharityMetricsAggregator:
             elif cn_profile and not propublica_990:
                 metrics_data["financial_data_source"] = "charity_navigator"
 
+        # Latest KNOWN filing year across all sources — distinct from
+        # financial_data_tax_year (the year of the data we chose to display).
+        # The filing-currency risk check keys on this, so a charity is never
+        # penalized for our income-statement source selection.
+        filing_year_candidates = [metrics_data.get("financial_data_tax_year")]
+        if propublica_990:
+            filing_year_candidates.append(propublica_990.get("tax_year"))
+            for entry in propublica_990.get("filing_history") or []:
+                filing_year_candidates.append(entry.get("tax_year"))
+        if cn_profile:
+            filing_year_candidates.append(cn_profile.get("fiscal_year"))
+        known_years = []
+        for y in filing_year_candidates:
+            try:
+                if y is not None:
+                    known_years.append(int(y))
+            except (ValueError, TypeError):
+                continue
+        if known_years:
+            metrics_data["latest_known_filing_year"] = max(known_years)
+
         # FIX #4: CN ratios are fallback, not overwrite — only set if not already present
         if cn_profile:
             if metrics_data.get("program_expense_ratio") is None and cn_profile.get("program_expense_ratio") is not None:
@@ -1998,6 +2028,17 @@ class CharityMetricsAggregator:
         if metrics_data.get("founded_year"):
             fy_src = "website" if website_profile and website_profile.get("founded_year") else "candid" if candid_profile and candid_profile.get("irs_ruling_year") else "propublica" if propublica_990 and propublica_990.get("irs_ruling_year") else "charity_navigator"
             _track("founded_year", fy_src, metrics_data["founded_year"])
+
+        # IRS compliance signals (kept raw, separate from the founded_year
+        # fallback): ruling year for revocation-reinstatement detection and
+        # the BMF exempt-organization status code.
+        if propublica_990:
+            if propublica_990.get("irs_ruling_year"):
+                metrics_data["irs_ruling_year"] = propublica_990["irs_ruling_year"]
+                _track("irs_ruling_year", "propublica", metrics_data["irs_ruling_year"])
+            if propublica_990.get("exempt_organization_status_code"):
+                metrics_data["irs_exempt_status_code"] = propublica_990["exempt_organization_status_code"]
+                _track("irs_exempt_status_code", "propublica", metrics_data["irs_exempt_status_code"])
 
         metrics_data["donation_methods"] = website_profile.get("donation_methods", []) if website_profile else []
 

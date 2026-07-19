@@ -554,6 +554,96 @@ class TestRiskScorer:
         # Total raw: -22, capped at -10
         assert deduction == -10
 
+    def test_stale_filings_3yr_deduction(self):
+        """Latest filing 3-4 years old → -2 (rubric v5.3.0)."""
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            financial_data_tax_year=date.today().year - 3,
+        )
+        _case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == -2
+        assert any("years old" in r.description for r in _case_against.risks)
+
+    def test_stale_filings_5yr_deduction(self):
+        """Latest filing 5+ years old → -4 (Al-Furqaan FY2020 case)."""
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            financial_data_tax_year=date.today().year - 6,
+        )
+        _case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == -4
+        assert any("filing compliance" in r.description for r in _case_against.risks)
+
+    def test_fresh_filing_no_deduction(self):
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            financial_data_tax_year=date.today().year - 2,
+        )
+        _case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == 0
+
+    def test_unknown_filing_year_no_deduction(self):
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+        )
+        assert m.financial_data_tax_year is None
+        _case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == 0
+
+    def test_form_990_exempt_org_never_deducted(self):
+        """Churches/mosques are legally exempt from filing — no staleness penalty."""
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            financial_data_tax_year=date.today().year - 6,
+            form_990_exempt=True,
+        )
+        _case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == 0
+
+    def test_latest_known_filing_year_overrides_display_year(self):
+        """BASMAH shape: we display FY(t-4) data but PP has a FY(t-3) filing — age keys on the newest."""
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            financial_data_tax_year=date.today().year - 6,
+            latest_known_filing_year=date.today().year - 3,
+        )
+        _case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == -2  # age 3, not age 6
+
     def test_emerging_org_no_toc_risk(self):
         """Emerging org (<$1M) → no deduction for missing TOC/outcomes."""
         m = _base_metrics(
