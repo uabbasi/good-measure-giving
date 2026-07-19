@@ -13,11 +13,16 @@ from unittest.mock import MagicMock
 from crawl import crawl_freshness_summary, source_freshness_state
 
 
-def _row(success=True, days_old=None, scraped_at=None):
-    """Fake raw_scraped_data row shape (success, scraped_at)."""
+def _row(success=True, days_old=None, scraped_at=None, error_message=None, last_failure_reason=None):
+    """Fake raw_scraped_data row shape (success, scraped_at, failure text)."""
     if scraped_at is None and days_old is not None:
         scraped_at = (datetime.now(timezone.utc) - timedelta(days=days_old)).isoformat().replace("+00:00", "Z")
-    return {"success": success, "scraped_at": scraped_at}
+    return {
+        "success": success,
+        "scraped_at": scraped_at,
+        "error_message": error_message,
+        "last_failure_reason": last_failure_reason,
+    }
 
 
 class TestSourceFreshnessState:
@@ -102,19 +107,55 @@ class TestCrawlFreshnessSummary:
             assert summary[source]["stale"] == 0
             assert summary[source]["failed"] == 0
 
-    def test_collects_failed_and_stale_website_eins(self):
-        eins = ["11-1111111", "22-2222222", "33-3333333", "44-4444444"]
+    def test_website_action_includes_missing_failed_stale_with_reasons(self):
+        eins = ["11-1111111", "22-2222222", "33-3333333", "44-4444444", "55-5555555"]
         rows = {
-            ("11-1111111", "website"): _row(success=True, days_old=5),  # fresh
+            ("11-1111111", "website"): _row(success=True, days_old=5),  # fresh -> excluded
             ("22-2222222", "website"): _row(success=True, days_old=40),  # stale
-            ("33-3333333", "website"): _row(success=False, days_old=1),  # failed
-            # 44-4444444 missing -> not in the failed/stale list
+            # failed with a terminal CAPTCHA marker -> classified reason
+            ("33-3333333", "website"): _row(
+                success=False, days_old=1, error_message="CAPTCHA_BLOCKED: challenge page (HTTP 200)"
+            ),
+            # failed transiently (rate-limited) -> no terminal marker -> reason None
+            ("44-4444444", "website"): _row(
+                success=False, days_old=1, error_message="RATE_LIMITED: HTTP 429 too many requests"
+            ),
+            # 55-5555555 missing (never crawled) -> the most actionable state
         }
         raw_repo = self._repo(rows)
 
         summary = crawl_freshness_summary(raw_repo, eins)
+        action = summary["website"]["website_action"]
+        by_ein = {e["ein"]: e for e in action}
 
-        assert set(summary["website"]["stale_eins"]) == {"22-2222222", "33-3333333"}
+        # fresh EINs never appear in the action list
+        assert "11-1111111" not in by_ein
+        # stale: actionable, no failure reason (it didn't fail with an error)
+        assert by_ein["22-2222222"]["state"] == "stale"
+        assert by_ein["22-2222222"]["reason"] is None
+        # failed + terminal marker: classified reason
+        assert by_ein["33-3333333"]["state"] == "failed"
+        assert by_ein["33-3333333"]["reason"] == "captcha_blocked"
+        # failed + transient: reason is None (no terminal marker matched)
+        assert by_ein["44-4444444"]["state"] == "failed"
+        assert by_ein["44-4444444"]["reason"] is None
+        # missing: actionable, no reason
+        assert by_ein["55-5555555"]["state"] == "missing"
+        assert by_ein["55-5555555"]["reason"] is None
+
+    def test_failed_reason_falls_back_to_last_failure_reason(self):
+        # When error_message is absent, classify_failure reads last_failure_reason.
+        eins = ["33-3333333"]
+        rows = {
+            ("33-3333333", "website"): _row(
+                success=False, days_old=1, error_message=None, last_failure_reason="page not found (HTTP 404)"
+            ),
+        }
+        raw_repo = self._repo(rows)
+
+        summary = crawl_freshness_summary(raw_repo, eins)
+        action = summary["website"]["website_action"]
+        assert action == [{"ein": "33-3333333", "state": "failed", "reason": "not found"}]
 
     def test_all_six_sources_present_in_summary(self):
         raw_repo = self._repo({})

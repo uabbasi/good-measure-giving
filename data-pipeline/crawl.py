@@ -32,7 +32,7 @@ from threading import Lock
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-from src.collectors.orchestrator import DataCollectionOrchestrator
+from src.collectors.orchestrator import DataCollectionOrchestrator, classify_failure
 from src.constants import SOURCE_TTL_DAYS
 from src.db import PhaseCacheRepository
 from src.db.dolt_client import dolt, tables_for_phases
@@ -123,8 +123,12 @@ def crawl_freshness_summary(raw_repo: RawDataRepository, eins: list[str]) -> dic
 
     For each of the 6 sources, counts how many of the given EINs have raw
     data in each freshness state. The "website" entry additionally carries
-    "stale_eins": the website EINs in "failed" or "stale" state (the ones
-    a follow-up --refresh-stale run would pick back up).
+    "website_action": the EINs a follow-up --refresh-stale run would pick
+    back up (state in {missing, failed, stale}), each as a dict
+    {"ein", "state", "reason"} where "reason" is the classify_failure()
+    terminal marker for a "failed" row (None if the failure was transient,
+    e.g. rate-limited) and None for "missing"/"stale" (those did not fail
+    with an error).
 
     Args:
         raw_repo: RawDataRepository (injected for testability)
@@ -138,15 +142,18 @@ def crawl_freshness_summary(raw_repo: RawDataRepository, eins: list[str]) -> dic
     summary = {}
     for source, ttl_days in SOURCE_TTL_DAYS.items():
         counts = {"fresh": 0, "stale": 0, "failed": 0, "missing": 0}
-        stale_eins = []
+        website_action = []
         for ein in eins:
             row = raw_repo.get_by_source(ein, source)
             state = source_freshness_state(row, ttl_days)
             counts[state] += 1
-            if source == "website" and state in {"failed", "stale"}:
-                stale_eins.append(ein)
+            if source == "website" and state in {"missing", "failed", "stale"}:
+                reason = None
+                if state == "failed" and row is not None:
+                    reason = classify_failure(row.get("error_message") or row.get("last_failure_reason"))
+                website_action.append({"ein": ein, "state": state, "reason": reason})
         if source == "website":
-            counts["stale_eins"] = stale_eins
+            counts["website_action"] = website_action
         summary[source] = counts
 
     return summary
@@ -504,9 +511,12 @@ def main():
         display = source_map.get(source, source)
         print(f"  {display}: {counts['fresh']} fresh / {counts['stale']} stale / {counts['failed']} failed / {counts['missing']} missing")
 
-    stale_website_eins = freshness["website"]["stale_eins"]
-    if stale_website_eins:
-        print(f"\nStale/failed website EINs ({len(stale_website_eins)}): {', '.join(stale_website_eins)}")
+    website_action = freshness["website"]["website_action"]
+    if website_action:
+        print(f"\nWebsite EINs needing refresh (missing/failed/stale): {len(website_action)}")
+        for entry in website_action:
+            reason = entry["reason"] or ""
+            print(f"  {entry['ein']}  [{entry['state']}]  {reason}")
 
     if orchestrator.frozen_sources:
         frozen_str = ", ".join(sorted(orchestrator.frozen_sources))
