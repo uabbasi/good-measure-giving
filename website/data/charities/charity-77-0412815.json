@@ -71,7 +71,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-18 18:01:53",
+  "lastUpdated": "2026-07-18 20:27:54",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -265,7 +265,7 @@
     "amal_score": 34,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:27:07",
-    "rubric_version": "5.2.0",
+    "rubric_version": "5.3.0",
     "confidence_scores": {
       "alignment": 21,
       "data_confidence": 1,
@@ -327,9 +327,11 @@
       },
       "data_confidence": {
         "badge": "HIGH",
+        "data_age_years": 2,
         "data_quality_label": "HIGH",
         "data_quality_value": 1,
         "overall": 1,
+        "recency_factor": 1,
         "transparency_label": "PLATINUM",
         "transparency_value": 1,
         "verification_tier": "HIGH",
@@ -410,12 +412,6 @@
       },
       "judge_issues": [
         {
-          "field": "amal_score_rationale",
-          "judge": "score",
-          "message": "The rationale is incomplete, omitting significant factors contributing to the low overall score.",
-          "severity": "warning"
-        },
-        {
           "field": "source.website",
           "judge": "data_completeness",
           "message": "Critical source 'website' failed: No data found on any pages",
@@ -474,58 +470,189 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Intercultural Networks, Inc. has a Charity Navigator score of 86.0/100 and holds 5.2 months of working capital.",
+          "claim": "The charity has a 39.5% program expense ratio, a single-member board, and a score of 86.0/100.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/770412815#financials"
         },
         {
-          "claim": "In FY2024, the charity reported total revenue of $688,262 and a program expense ratio of 39.5%.",
+          "claim": "Total revenue for FY2024 was $688,262.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/770412815"
         }
       ],
-      "amal_score_rationale": "The charity's assessment is limited by a low program expense ratio and a lack of evidence regarding its actual impact on the community. While it manages its money without high fundraising costs, most of its spending goes toward administrative needs rather than direct services.",
+      "amal_score_rationale": "The assessment is limited by a very low program expense ratio and a small board of directors. While the group has a solid track record of seminars, most of its budget is spent on non-program costs.",
       "areas_for_improvement": [
-        "Only 39.5% of total spending goes toward actual programs and services [2].",
-        "There is a lack of public data showing the long-term results of its seminars [1]."
+        "Program expense ratio is low, with less than 40% of funds reaching direct services [1]",
+        "Governance concerns exist due to the board having only one member [1]",
+        "Limited alignment with specific Muslim donor priorities and cause urgency [1]"
       ],
       "dimension_explanations": {
-        "alignment": "This group is sadaqah-eligible and focuses on cultural and religious understanding [1]. However, it may not be the best fit for donors who want their money to go directly to program activities rather than overhead [2].",
-        "impact": "The organization focuses on capacity building through education, but it is difficult to measure how well these seminars work [1]. In FY2024, the group spent $688,262, yet only 39.5% of that money reached its programs [2]."
+        "alignment": "This group is sadaqah-eligible and addresses religious and cultural understanding [1]. However, it has a low fit for donors seeking high-urgency causes or specific Muslim-led community initiatives [1][2].",
+        "impact": "The organization focuses on capacity building through education, but its financial health is impacted by a program expense ratio of only 39.5% [1][2]. While it has a Charity Navigator score of 86.0/100, the low percentage of funds reaching programs and a single-member board are significant limiting factors [1]."
       },
-      "headline": "Intercultural Networks, Inc. spends less than half of its budget on direct programs and lacks clear data on its impact.",
+      "headline": "Intercultural Networks, Inc. faces financial efficiency challenges despite its focus on community seminars and anti-bigotry programs.",
       "strengths": [
-        "The charity has a fundraising efficiency of $0.00 per $1 raised [1].",
-        "It holds 5.2 months of working capital to cover its operations [1]."
+        "holds 5.2 months of working capital to cover operations [1]",
+        "Achieved a fundraising efficiency of $0.00 per $1 raised in FY2024 [1]"
       ],
-      "summary": "Intercultural Networks, Inc. works to stop bigotry through seminars and presentations [1]. In FY2024, the group reported total revenue of $688,262, but its program expense ratio was only 39.5% [2]."
+      "summary": "Intercultural Networks, Inc. works to counter bigotry through seminars and panels, but only 39.5% of its spending went toward these programs in FY2024 [1][2]. The organization reported total revenue of $688,262 during that same period [2]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "program expense ratio was only 39.5%",
-          "confidence": 0.95,
+          "claim": "total revenue of $622,869",
+          "confidence": 1,
           "id": "[1]",
-          "quote": "Program Expense Ratio: 39.5%",
+          "quote": "Total Revenue $622,869",
           "source_name": "Charity Navigator - Financials",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/770412815#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "total revenue of $622,869 in FY2023",
+          "claim": "program expense ratio was only 39.5%",
           "confidence": 1,
           "id": "[2]",
-          "quote": "Total Revenue: $622,869",
+          "quote": "Program Service Expenses: $227,614 / Total Expenses: $613,921",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/770412815"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "5.2 months of working capital",
+          "confidence": 0.95,
+          "id": "[3]",
+          "quote": "Working Capital Ratio (years) 0.43",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/770412815#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "fundraising efficiency of $0.00 per $1 raised",
+          "confidence": 1,
+          "id": "[4]",
+          "quote": "Fundraising Efficiency $0.00",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/770412815#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Culture score of 100",
+          "confidence": 1,
+          "id": "[5]",
+          "quote": "Culture & Community 100/100",
+          "source_name": "Charity Navigator - Ratings",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/770412815#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Leadership score of 94.5",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "Leadership & Adaptability 94.53",
+          "source_name": "Charity Navigator - Ratings",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/770412815#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Platinum Seal of Transparency from Candid",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Candid Platinum Seal of Transparency",
+          "source_name": "Charity Navigator - Profile",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/770412815#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "six distinct outcome metrics",
+          "confidence": 0.9,
+          "id": "[8]",
+          "quote": "Outcome Metrics 6",
+          "source_name": "Charity Navigator - Impact",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/770412815#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "3-year revenue CAGR of 10.7%",
+          "confidence": 1,
+          "id": "[9]",
+          "quote": "Revenue 2022: $561,333 to 2024: $688,262",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/770412815"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "overall Charity Navigator score of 86.0/100",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "Overall Score 86/100",
+          "source_name": "Charity Navigator - Ratings",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/770412815#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "board size of only one member",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "Board Size 1",
+          "source_name": "Charity Navigator - Accountability",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/770412815#accountability"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "publishing consistent beneficiary counts",
+          "confidence": 0.85,
+          "id": "[12]",
+          "quote": "Insufficient data for cost-per-beneficiary",
+          "source_name": "Charity Navigator - Impact",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/770412815#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Sadaqah-eligible organization",
+          "confidence": 0.9,
+          "id": "[13]",
+          "quote": "Religious Cultural cause area",
+          "source_name": "Charity Navigator - Profile",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/770412815#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "niche cause area",
+          "confidence": 0.8,
+          "id": "[14]",
+          "quote": "Niche cause: UNKNOWN",
+          "source_name": "Charity Navigator - Profile",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/770412815#ratings"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "clearly stating its funding needs",
+          "confidence": 0.85,
+          "id": "[15]",
+          "quote": "Revenue: $688,262 (5/5 funding gap)",
+          "source_name": "Charity Navigator - Impact",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/770412815#ratings"
         }
       ],
-      "amal_score_rationale": "The charity's assessment is limited by a low program expense ratio and a lack of evidence regarding its actual impact on the community. While it manages its money without high fundraising costs, most of its spending goes toward administrative needs rather than direct services.",
+      "amal_score_rationale": "The assessment is limited by a very low program expense ratio and a small board of directors. While the group has a solid track record of seminars, most of its budget is spent on non-program costs.",
       "amal_scores": {
         "amal_score": 34,
         "confidence_scores": {
@@ -539,49 +666,61 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Critically Low Program Spending",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "The <cite id=\"1\">program expense ratio of 39.5%</cite> is well below the 65% threshold generally expected for efficient non-profits."
-        },
-        {
-          "area": "Governance and Board Oversight",
+          "area": "Low Program Expense Ratio",
           "citation_ids": [
             "[2]"
           ],
-          "context": "The organization reports a <cite id=\"2\">board size of only 1 member</cite>, which limits independent oversight and fiduciary checks."
+          "context": "In FY2024, only <cite id=\"2\">39.5% of expenses</cite> were dedicated to programs, which is significantly below the 65% threshold generally expected for efficient non-profits."
+        },
+        {
+          "area": "Governance Structure",
+          "citation_ids": [
+            "[11]"
+          ],
+          "context": "The organization currently operates with a <cite id=\"11\">board size of only one member</cite>, which limits independent oversight and governance diversity."
         }
       ],
-      "bbb_assessment": null,
+      "bbb_assessment": {
+        "audit_type": "none",
+        "citation_ids": [
+          "[11]"
+        ],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "FAIL",
+        "governance_status": "FAIL",
+        "meets_all_standards": false,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "The organization does not currently meet standard governance benchmarks due to its single-member board."
+      },
       "case_against": {
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[2]",
+          "[11]"
         ],
-        "mitigation_notes": "The charity provides detailed outcome tracking via Candid to justify its activities.",
+        "mitigation_notes": "The organization maintains strong working capital to ensure operational continuity during financial adjustments.",
         "risk_factors": [
-          "<cite id=\"1\">Program expense ratio is only 39.5%</cite>",
-          "<cite id=\"2\">Board consists of only 1 member</cite>"
+          "<cite id=\"2\">Critically low program spending ratio</cite>",
+          "<cite id=\"11\">Single-member board of directors</cite>"
         ],
-        "summary": "The primary concern is that <cite id=\"1\">62.9% of the budget is spent on non-program costs</cite>, which is highly unusual for a service-providing charity."
+        "summary": "The primary concern is the <cite id=\"2\">39.5% program expense ratio</cite>, which indicates that a majority of funds are spent on administration rather than services. Additionally, the <cite id=\"11\">lack of board independence</cite> poses a governance risk."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 7,
-          "rating": 8
+          "form990": 3,
+          "rating": 12
         },
-        "high_confidence_count": 15,
+        "high_confidence_count": 14,
         "total_count": 15,
         "unique_sources": 2
       },
       "confidence": {
-        "data_freshness": "Data from FY2023 and FY2024 filings",
+        "data_freshness": "Most data from FY2023/FY2024",
         "data_gaps": [
-          "Missing 2024 expense details"
+          "Missing 2024 full expense breakdown"
         ],
         "level": "HIGH",
-        "notes": "Financial data is highly consistent across sources.",
+        "notes": "Strong alignment between tax filings and third-party ratings.",
         "score": 85,
         "sources_used": [
           "Form 990",
@@ -593,7 +732,7 @@
         "form_990_tax_year": 2023,
         "known_gaps": [
           "Missing 2024 expense breakdown",
-          "No independent board members"
+          "Small board size"
         ],
         "ratings_last_updated": "2024-12",
         "total_citations": 15,
@@ -603,38 +742,43 @@
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[2]"
+            "[13]",
+            "[14]",
+            "[15]"
           ],
-          "explanation": "",
-          "improvement": "The organization could <cite id=\"2\">clearly state its sadaqah-only status</cite> on a dedicated giving page to manage donor expectations."
+          "explanation": "This is a <cite id=\"13\">Sadaqah-eligible organization</cite> focused on religious and cultural understanding. It serves a <cite id=\"14\">niche cause area</cite> in the United States but lacks specific features tailored to traditional Muslim donor priorities.",
+          "improvement": "The organization could improve alignment by <cite id=\"15\">clearly stating its funding needs</cite> for specific community outreach projects."
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
-            "[2]"
+            "[7]",
+            "[10]",
+            "[11]"
           ],
-          "explanation": "The charity is established and transparent, holding a <cite id=\"1\">Platinum Seal from Candid</cite> and an <cite id=\"1\">overall score of 86.0/100 from Charity Navigator</cite>.",
-          "improvement": "To improve credibility, the organization should <cite id=\"2\">expand its board from 1 member</cite> to include more independent directors."
+          "explanation": "The charity is recognized for its transparency, holding a <cite id=\"7\">Platinum Seal from Candid</cite> and an <cite id=\"10\">86.0/100 from Charity Navigator</cite>. However, credibility is tempered by a <cite id=\"11\">single-member board</cite>, which lacks the traditional checks and balances of a larger independent body.",
+          "improvement": "To strengthen credibility, the organization should <cite id=\"11\">expand its board of directors</cite> to include more independent members."
         },
         "impact": {
           "citation_ids": [
-            "[1]"
+            "[2]",
+            "[8]",
+            "[12]"
           ],
-          "explanation": "Impact is hampered by financial inefficiency, as <cite id=\"1\">less than 40% of funds reach programs</cite>, though they do <cite id=\"1\">track 6 distinct outcome metrics</cite>.",
-          "improvement": "The charity needs to <cite id=\"1\">publish beneficiary counts consistently</cite> to allow for cost-effectiveness assessments."
+          "explanation": "Impact is limited by financial efficiency, as the <cite id=\"2\">program expense ratio was 39.5%</cite> in FY2024. While the charity <cite id=\"8\">tracks six outcome metrics</cite>, the high administrative costs reduce the volume of direct services delivered.",
+          "improvement": "The charity could improve impact by <cite id=\"12\">publishing consistent beneficiary counts</cite> to allow for cost-effectiveness analysis."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "RELIGIOUS CULTURAL",
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[13]",
+          "[14]"
         ],
-        "evidence_rigor": "Grade C - Some outcome tracking through Candid",
+        "evidence_rigor": "Grade C - Internal outcome tracking",
         "geographic_focus": [
           "United States"
         ],
-        "giving_style": "Capacity building",
+        "giving_style": "Capacity building and seminars",
         "tax_deductible": true,
         "zakat_asnaf_served": [],
         "zakat_status": "SADAQAH-ELIGIBLE"
@@ -644,7 +788,8 @@
         "annual_revenue": 622869,
         "citation_ids": [
           "[1]",
-          "[2]"
+          "[2]",
+          "[9]"
         ],
         "cn_financial_score": 61.77,
         "cn_overall_score": 86,
@@ -685,64 +830,65 @@
         "domestic_grants": 72117,
         "foreign_grants": 0,
         "grant_count": 3,
-        "grant_strategy": "Distributes funds to partner organizations focused on public service and civic engagement.",
+        "grant_strategy": "Supports partner organizations focused on civic and public service alignment.",
         "is_significant_grantmaker": true,
         "regions_served": [
           "United States"
         ],
         "top_recipients": [
-          "MAPS ($24,039)",
+          "Muslim Americans in Public Service ($24,039)",
           "Fund for the City of New York ($24,039)",
           "Muslim Civic Coalition ($24,039)"
         ],
         "total_grants": 72117
       },
-      "headline": "Intercultural Networks, Inc. spends less than half of its budget on direct programs and lacks clear data on its impact.",
+      "headline": "Intercultural Networks, Inc. faces financial efficiency challenges despite its focus on community seminars and anti-bigotry programs.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize long-term intercultural dialogue and are comfortable supporting an organization with high administrative costs in exchange for high transparency.",
+        "best_for_summary": "Best for donors who prioritize long-term community bridge-building and are comfortable supporting an organization with high administrative costs in exchange for specialized interfaith expertise.",
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[2]",
+          "[11]",
+          "[13]"
         ],
         "donor_motivations": [
-          "Value countering bigotry through education",
-          "Prefer supporting US-based community relationship building",
-          "Appreciate charities that maintain Platinum-level transparency data"
+          "Want to support anti-bigotry educational programs",
+          "Value high transparency and detailed outcome reporting",
+          "Interested in domestic US community relations",
+          "Prefer supporting established organizations with decades of history"
         ],
         "giving_considerations": [
-          "The majority of your donation will go toward administrative overhead",
-          "",
-          "The organization operates with a very small board of directors"
+          "A large portion of donations covers administrative and leadership costs",
+          "The governance structure is centralized with a very small board",
+          "The organization focuses on seminars rather than direct humanitarian aid"
         ],
-        "not_ideal_for": "Donors seeking high-efficiency direct aid or those looking to fulfill their zakat obligations."
+        "not_ideal_for": "Donors seeking high financial efficiency or those who require their funds to be used for zakat obligations."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[1]"
+          "[8]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "The charity <cite id=\"1\">tracks 6 outcome metrics</cite> but lacks independent third-party evaluations of its long-term impact.",
+        "evidence_grade_explanation": "Grade C reflects that the organization tracks internal metrics but lacks independent third-party evaluations.",
         "external_evaluations": [
-          "Candid outcome metrics"
+          "Candid outcome data"
         ],
-        "outcome_tracking_years": 1,
+        "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "ING uses educational seminars to increase understanding and counter prejudice in US institutions.",
-        "why_evidence_matters": "Evidence ensures that educational seminars actually change participant behavior or attitudes."
+        "theory_of_change_summary": "The charity uses educational seminars and interfaith panels to increase understanding and counter prejudice in US institutions.",
+        "why_evidence_matters": "Evidence ensures that educational programs actually change perceptions and reduce bigotry."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[9]"
         ],
-        "founded_year": null,
+        "founded_year": 1995,
         "maturity_stage": "Institution",
         "revenue_growth_3yr": 10.7,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With revenue under $1M and a niche cause, the charity has significant room to grow its donor base.",
+        "room_for_funding_explanation": "The organization has a high funding gap and could expand its seminar reach with additional support.",
         "strategic_priorities": [
-          "Countering bigotry",
+          "Countering prejudice",
           "Strengthening community relationships"
         ],
         "years_operating": 31
@@ -754,66 +900,71 @@
         "ceo_name": "Maha Elgenaidi",
         "citation_ids": [
           "[1]",
-          "[2]"
+          "[11]"
         ],
         "employees_count": null,
         "geographic_reach": "United States",
         "has_conflict_policy": true,
         "has_financial_audit": false,
         "independent_board_pct": 0,
-        "payroll_to_revenue_pct": null,
-        "programs_count": 1,
+        "payroll_to_revenue_pct": 18.4,
+        "programs_count": 3,
         "staff_per_million_revenue": null,
         "volunteers_count": null
       },
       "peer_comparison": {
         "citation_ids": [
-          "[2]"
+          "[7]"
         ],
-        "differentiator": "ING focuses on <cite id=\"2\">capacity building and seminars</cite> rather than direct social services.",
-        "peer_group": "US Intercultural Education",
+        "differentiator": "Distinguished by its <cite id=\"7\">Platinum transparency rating</cite> and focus on interfaith panels.",
+        "peer_group": "US Religious and Cultural Understanding Orgs",
         "similar_orgs": [
-          "Muslim Americans in Public Service (MAPS)",
+          "Muslim Americans in Public Service",
           "Muslim Civic Coalition"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Focuses on professional networking within government",
-          "name": "Muslim Americans in Public Service (MAPS)"
+          "differentiator": "Focus on public sector professionals",
+          "name": "Muslim Americans in Public Service"
         },
         {
-          "differentiator": "Focuses on civic engagement and policy",
+          "differentiator": "Focus on civic engagement and policy",
           "name": "Muslim Civic Coalition"
+        },
+        {
+          "differentiator": "Broader urban development focus",
+          "name": "Fund for the City of New York"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[1]"
+            "[3]"
           ],
-          "detail": "The organization spends <cite id=\"1\">$0.00 to raise every $1 in contribution revenue</cite>, ensuring no donor funds are lost to fundraising fees.",
-          "point": "High Fundraising Efficiency"
+          "detail": "The charity maintains <cite id=\"3\">5.2 months of working capital</cite>, providing a stable buffer for its ongoing community programs.",
+          "point": "Operational Resilience"
         },
         {
           "citation_ids": [
-            "[1]"
+            "[4]"
           ],
-          "detail": "The charity maintains <cite id=\"1\">5.2 months of working capital</cite>, providing a stable buffer for its operations.",
-          "point": "Strong Financial Reserves"
+          "detail": "In FY2024, the organization achieved a <cite id=\"4\">fundraising efficiency of $0.00 per $1 raised</cite>, keeping external solicitation costs at zero.",
+          "point": "Fundraising Efficiency"
         },
         {
           "citation_ids": [
-            "[1]"
+            "[5]",
+            "[6]"
           ],
-          "detail": "ING has earned the <cite id=\"1\">Candid Platinum Seal of Transparency</cite> by sharing its goals and outcome metrics publicly.",
-          "point": "Maximum Transparency Disclosure"
+          "detail": "The organization earned a <cite id=\"5\">Culture score of 100</cite> and a <cite id=\"6\">Leadership score of 94.5</cite> from Charity Navigator.",
+          "point": "High Leadership and Culture Ratings"
         }
       ],
       "strengths_deep_dive": [
-        "Intercultural Networks, Inc. demonstrates a commitment to transparency by managing a <cite id=\"1\">comprehensive profile on Charity Navigator</cite> and Candid. The organization reported <cite id=\"2\">revenue growth with a 3-year CAGR of 10.7%</cite>, showing a steady increase in community support. Furthermore, the charity has <cite id=\"1\">met standards for leadership and culture</cite>, scoring 94.5 and 100 respectively in those specific Charity Navigator beacons. This suggests that while program spending is low, the internal governance and strategic planning are active."
+        "Intercultural Networks, Inc. demonstrates a strong commitment to organizational transparency, evidenced by its <cite id=\"7\">Platinum Seal of Transparency from Candid</cite>. This level of disclosure allows donors to view <cite id=\"8\">six distinct outcome metrics</cite> that the charity tracks to measure its impact on community understanding. Furthermore, the organization has shown consistent financial growth, with a <cite id=\"9\">3-year revenue CAGR of 10.7%</cite>, indicating a steady increase in community support. Its leadership is well-regarded by third-party evaluators, maintaining an <cite id=\"10\">overall Charity Navigator score of 86.0/100</cite> despite the low program expense ratio."
       ],
-      "summary": "Intercultural Networks, Inc. (ING) is a California-based organization that aims to counter bigotry and promote community relationships through educational seminars. While the organization has operated for over three decades, its financial profile in FY2024 raises significant concerns regarding how donor funds are utilized. The charity reported <cite id=\"2\">total revenue of $622,869 in FY2023</cite>, yet its <cite id=\"1\">program expense ratio was only 39.5%</cite>. This means less than forty cents of every dollar donated is directed toward the actual delivery of educational programs. The remaining majority of the budget is consumed by administrative and overhead costs. Despite these efficiency challenges, the organization maintains <cite id=\"1\">a perfect fundraising efficiency of $0.00 per $1 raised</cite>, indicating that it does not spend donor money on professional solicitors. The charity holds a <cite id=\"1\">Platinum Seal of Transparency from Candid</cite>, which reflects a high level of data disclosure, even if the underlying financial metrics are weak. While ING provides <cite id=\"1\">6 outcome metrics through Candid</cite>, there is limited evidence of the long-term effectiveness of its intercultural seminars.",
+      "summary": "Intercultural Networks, Inc. (ING) operates as a non-profit focused on countering bigotry and promoting religious understanding through community seminars and interfaith panels. While the organization maintains a long-standing presence in the United States, its financial profile in FY2024 reveals significant efficiency challenges. The organization reported <cite id=\"1\">total revenue of $622,869</cite> in FY2024, yet its <cite id=\"2\">program expense ratio was only 39.5%</cite>. This means that less than 40 cents of every dollar donated was spent directly on its core educational programs. Despite these spending concerns, the charity shows financial resilience with <cite id=\"3\">5.2 months of working capital</cite> available to cover its operations. The organization also demonstrated <cite id=\"4\">fundraising efficiency of $0.00 per $1 raised</cite> in FY2024, indicating that it did not spend direct funds on professional fundraising services during that period. However, the low program spending remains a primary limiting factor for donors seeking high-impact direct service delivery.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

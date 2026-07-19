@@ -93,7 +93,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-18 18:01:36",
+  "lastUpdated": "2026-07-18 20:30:37",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -286,7 +286,7 @@
     "amal_score": 76,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-02-04 20:48:04",
-    "rubric_version": "5.2.0",
+    "rubric_version": "5.3.0",
     "confidence_scores": {
       "alignment": 34,
       "data_confidence": 0.6,
@@ -348,9 +348,11 @@
       },
       "data_confidence": {
         "badge": "MEDIUM",
+        "data_age_years": 2,
         "data_quality_label": "MODERATE",
         "data_quality_value": 0.67,
         "overall": 0.6,
+        "recency_factor": 1,
         "transparency_label": "NONE",
         "transparency_value": 0,
         "verification_tier": "HIGH",
@@ -431,30 +433,6 @@
       },
       "judge_issues": [
         {
-          "field": "baseline_narrative.amal_score_rationale",
-          "judge": "score",
-          "message": "The overall rationale does not mention the minor risk deduction applied to the score, specifically the absence of a documented theory of change.",
-          "severity": "warning"
-        },
-        {
-          "field": "baseline_narrative.dimension_explanations.impact",
-          "judge": "score",
-          "message": "The rationale for the Impact dimension does not mention the absence of a documented theory of change, which received 0/5 points and significantly affected this dimension's score.",
-          "severity": "warning"
-        },
-        {
-          "field": "rich_narrative.amal_score_rationale",
-          "judge": "score",
-          "message": "The overall rationale does not mention the minor risk deduction applied to the score, specifically the absence of a documented theory of change.",
-          "severity": "warning"
-        },
-        {
-          "field": "rich_narrative.dimension_explanations.impact",
-          "judge": "score",
-          "message": "The rationale for the Impact dimension does not mention the absence of a documented theory of change, which received 0/5 points and significantly affected this dimension's score.",
-          "severity": "warning"
-        },
-        {
           "field": "discovered.evaluations.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
@@ -512,259 +490,289 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "IMRC reported total revenue of $10,004,213 and a mission to help India's minorities achieve security and rights.",
+          "claim": "The charity reported total revenue of $10,004,213 and a program expense ratio of 89.8% in FY2024.",
           "id": "[1]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/270058132"
         },
         {
-          "claim": "The charity is zakat-eligible and follows specific zakat policies.",
+          "claim": "The charity is zakat-eligible and follows specific policies for distribution.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.imrcusa.org/zakat"
         },
         {
-          "claim": "The charity has a 100/100 rating, an 89.8% program expense ratio, and 55.7 months of working capital.",
+          "claim": "The charity has a 100/100 rating, 55.7 months of working capital, and a fundraising efficiency of $0.02 per $1 raised.",
           "id": "[3]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/270058132#financials"
         },
         {
-          "claim": "IMRC tracks metrics for meals distributed, patients treated, and students supported.",
+          "claim": "The organization tracks metrics for meals distributed, patients treated, and students supported.",
           "id": "[4]",
           "source_name": "Snapshot 2023 1st page",
           "source_url": "https://www.imrcusa.org/wp-content/uploads/2025/02/IMRC-Snapshot-2023-for-Website-with-Original-Back-Cover.pdf"
         },
         {
-          "claim": "The organization provides access to clean water and medical treatments.",
-          "id": "[6]",
-          "source_name": "Snapshot 2022 cover",
-          "source_url": "https://www.imrcusa.org/wp-content/uploads/2025/02/Final-SnapShot-Report-Jan-Dec-2022-3.pdf"
+          "claim": "Recent program data includes numbers for meals served, wells built, and students benefited.",
+          "id": "[5]",
+          "source_name": "Mid Year Snapshot 2025",
+          "source_url": "https://www.imrcusa.org/wp-content/uploads/2025/08/final-snapshot-2025-suboohi.pdf"
         },
         {
-          "claim": "The charity reported statistics for beneficiaries receiving safe water and meals.",
-          "id": "[7]",
-          "source_name": "Annual Report (2021)",
-          "source_url": "https://www.imrcusa.org/wp-content/uploads/2025/02/2021-Annual-Report-opt-1.pdf"
+          "claim": "The charity has a long track record of providing Ramadan and Qurbani aid.",
+          "id": "[11]",
+          "source_name": "Annual Report (2016)",
+          "source_url": "https://www.imrcusa.org/wp-content/uploads/2025/02/2016-Annual-Report-optimized.pdf"
         },
         {
-          "claim": "The organization has a history of providing educational support and healthcare treatments.",
-          "id": "[9]",
-          "source_name": "Annual Report (2019)",
-          "source_url": "https://www.imrcusa.org/wp-content/uploads/2025/02/2019-Impact-Report.pdf"
+          "claim": "The organization has historically provided clean water access and hospital treatments.",
+          "id": "[12]",
+          "source_name": "Annual Report (2015)",
+          "source_url": "https://www.imrcusa.org/wp-content/uploads/2025/02/2015-Annual-Report.pdf"
         }
       ],
-      "amal_score_rationale": "This charity shows positive financial health and efficient spending, though its overall assessment is tempered by moderate data confidence. It successfully directs the vast majority of its funds toward direct services like healthcare and food aid.",
+      "amal_score_rationale": "This charity shows an above-average performance due to its excellent financial health and low overhead costs. While it delivers direct services effectively, it currently lacks a formal theory of change to guide its long-term impact.",
       "areas_for_improvement": [
-        "Limited geographic reach outside of India",
-        "Medium data confidence regarding long-term outcome tracking"
+        "Lack of a documented theory of change to explain long-term strategy",
+        "Reliance on advocacy in a challenging cause area"
       ],
       "dimension_explanations": {
-        "alignment": "The charity is a strong fit for donors looking to fulfill religious obligations, as it is zakat-eligible [2]. It has a long track record of serving marginalized communities in India through food distribution and educational initiatives [7][9]. The organization focuses on urgent advocacy and relief for minority rights [1].",
-        "impact": "IMRC operates with high efficiency, spending 89.8% of its budget on programs in FY2024 [1][3]. The organization provides direct services such as medical treatments, clean water wells, and student support [4][6]. With a working capital of 55.7 months, the charity has a very stable financial cushion to continue its operations [3]."
+        "alignment": "IMRC is a strong fit for Muslim donors as it is zakat-eligible and focuses on underserved minority populations in India [2]. It has a long track record of service dating back several years [11][12]. However, the focus on advocacy and the lack of a formal theory of change are factors that limit its alignment score.",
+        "impact": "The organization is highly efficient, spending 89.8% of its budget directly on programs like healthcare and education [1][3]. It maintains a perfect 100.0/100 from Charity Navigator score and has enough working capital to last 55.7 months [3]. The cost to help each person is low, and the group provides clear evidence of outcomes such as meals served and patients treated [4][5]."
       },
-      "headline": "Indian Muslim Relief and Charities provides essential aid and education to minorities in India with high financial efficiency.",
+      "headline": "Indian Muslim Relief and Charities provides direct aid to minorities in India through efficient healthcare and education programs.",
       "strengths": [
-        "High program expense ratio of 89.8% in FY2024",
-        "Strong fundraising efficiency of only $0.02 spent per $1 raised",
-        "Maintains a 100/100 rating from Charity Navigator"
+        "High program expense ratio of 89.8% ensures most funds reach those in need",
+        "Strong fundraising efficiency with only $0.02 spent to raise every $1",
+        "Direct service model with a low cost of approximately $26 per beneficiary"
       ],
-      "summary": "Indian Muslim Relief and Charities (IMRC) works to help India's Muslims and minorities achieve security, equality, and their rights as citizens [1]. In FY2024, the organization reported a total revenue of $10,004,213 to support its healthcare, education, and relief programs [1][3]. The charity is zakat-eligible and follows specific policies to distribute these funds to those in need [2]."
+      "summary": "Indian Muslim Relief and Charities (IMRC) works to protect the rights and security of Muslims and other minorities in India [1]. In fiscal year 2024, the organization reported total revenue of $10,004,213 to support its humanitarian missions [1]. The charity is zakat-eligible and follows specific policies to distribute these funds to those in need [2]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2025-05-20",
-          "claim": "founded in 1981",
-          "confidence": 1,
+          "access_date": "2025-01-15",
+          "claim": "security, freedom, and equality of Muslims and minorities in India",
+          "confidence": 0.9,
           "id": "[1]",
-          "quote": "founded in 1981",
-          "source_name": "IMRC Website - About",
+          "quote": "Help India's muslims and minorities achieve security, freedom, equality",
+          "source_name": "IMRC Mission",
           "source_type": "website",
           "source_url": "https://imrcusa.org/wp-content/uploads/2025/02/2015-Annual-Report.pdf"
         },
         {
-          "access_date": "2025-05-20",
-          "claim": "$10,004,213 in total revenue",
+          "access_date": "2025-01-15",
+          "claim": "founding in 1981",
           "confidence": 1,
           "id": "[2]",
-          "quote": "Total Revenue: $10,004,213",
-          "source_name": "Form 990 (2024)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/270058132"
+          "quote": "Founded: 1981",
+          "source_name": "IMRC About Us",
+          "source_type": "website",
+          "source_url": "https://imrcusa.org/wp-content/uploads/2025/02/2015-Annual-Report.pdf"
         },
         {
-          "access_date": "2025-05-20",
-          "claim": "28% decline from the previous year",
+          "access_date": "2025-01-15",
+          "claim": "total revenue of $13,833,809",
           "confidence": 1,
           "id": "[3]",
-          "quote": "Revenue: [13833809, 10004213]",
-          "source_name": "Financial Trends Data",
+          "quote": "Total Revenue: $13,833,809",
+          "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/270058132"
         },
         {
-          "access_date": "2025-05-20",
-          "claim": "perfect 100/100 rating from Charity Navigator",
+          "access_date": "2025-01-15",
+          "claim": "revenue decline to $10,004,213 in FY2024",
           "confidence": 1,
           "id": "[4]",
+          "quote": "Revenue: 10004213",
+          "source_name": "IMRC Financial Trends",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/270058132"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "perfect 100/100 overall score from Charity Navigator",
+          "confidence": 1,
+          "id": "[5]",
           "quote": "Overall Score: 100/100",
           "source_name": "Charity Navigator - IMRC",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/270058132#financials"
         },
         {
-          "access_date": "2025-05-20",
-          "claim": "$0.01 to raise every $1",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Fundraising Efficiency: $0.01",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/270058132#financials"
-        },
-        {
-          "access_date": "2025-05-20",
-          "claim": "educating 34,835 students",
+          "access_date": "2025-01-15",
+          "claim": "zakat-eligible",
           "confidence": 1,
           "id": "[6]",
-          "quote": "Students Educated: 34835",
-          "source_name": "Annual Report 2024",
-          "source_type": "website",
-          "source_url": "https://www.imrcusa.org/wp-content/uploads/2025/06/IMRC-Annual-Report-final-version.pdf"
-        },
-        {
-          "access_date": "2025-05-20",
-          "claim": "treating 118,908 patients",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Patients Treated: 118908",
-          "source_name": "Annual Report 2024",
-          "source_type": "website",
-          "source_url": "https://www.imrcusa.org/wp-content/uploads/2025/06/IMRC-Annual-Report-final-version.pdf"
-        },
-        {
-          "access_date": "2025-05-20",
-          "claim": "formally documented theory of change",
-          "confidence": 0.9,
-          "id": "[8]",
-          "quote": "Theory of change: ABSENT",
-          "source_name": "Internal Assessment",
-          "source_type": "website",
-          "source_url": "https://imrcusa.org/wp-content/uploads/2025/02/2015-Annual-Report.pdf"
-        },
-        {
-          "access_date": "2025-05-20",
-          "claim": "zakat-eligible platform",
-          "confidence": 1,
-          "id": "[9]",
           "quote": "Accepts Zakat: Yes",
           "source_name": "IMRC Zakat Policy",
           "source_type": "website",
           "source_url": "https://www.imrcusa.org/zakat"
         },
         {
-          "access_date": "2025-05-20",
-          "claim": "program expense ratio of 89.8%",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Program Expense Ratio: 89.8%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/270058132"
-        },
-        {
-          "access_date": "2025-05-20",
-          "claim": "distributed 10 million meals",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Meals distributed: 10000000",
-          "source_name": "Snapshot 2023",
-          "source_type": "website",
-          "source_url": "https://www.imrcusa.org/wp-content/uploads/2025/02/IMRC-Snapshot-2023-for-Website-with-Original-Back-Cover.pdf"
-        },
-        {
-          "access_date": "2025-05-20",
-          "claim": "direct service delivery model",
-          "confidence": 1,
-          "id": "[12]",
-          "quote": "Delivery model: Direct Service",
-          "source_name": "Internal Assessment",
-          "source_type": "website",
-          "source_url": "https://imrcusa.org/wp-content/uploads/2025/02/2015-Annual-Report.pdf"
-        },
-        {
-          "access_date": "2025-05-20",
-          "claim": "working capital ratio of 68 months",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Working Capital: 55.7 months",
-          "source_name": "Charity Navigator - Financials",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/270058132#financials"
-        },
-        {
-          "access_date": "2025-05-20",
-          "claim": "treated over 118,000 patients",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Patients Treated: 118908",
-          "source_name": "Annual Report 2024",
-          "source_type": "website",
-          "source_url": "https://www.imrcusa.org/wp-content/uploads/2025/06/IMRC-Annual-Report-final-version.pdf"
-        },
-        {
-          "access_date": "2025-05-20",
-          "claim": "zakat program is comprehensive",
-          "confidence": 1,
-          "id": "[15]",
+          "access_date": "2025-01-15",
+          "claim": "eight specific asnaf categories",
+          "confidence": 0.95,
+          "id": "[7]",
           "quote": "Zakat Categories: fuqara, masakin, amil, muallaf, riqab, gharimin, fisabilillah, ibn_sabil",
-          "source_name": "IMRC Zakat",
+          "source_name": "IMRC Zakat Categories",
           "source_type": "website",
           "source_url": "https://www.imrcusa.org/zakat"
         },
         {
-          "access_date": "2025-05-20",
-          "claim": "$26.11 per beneficiary",
+          "access_date": "2025-01-15",
+          "claim": "distributed 10 million meals",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Meals distributed: 10000000",
+          "source_name": "IMRC Snapshot 2023",
+          "source_type": "evaluation",
+          "source_url": "https://www.imrcusa.org/wp-content/uploads/2025/02/IMRC-Snapshot-2023-for-Website-with-Original-Back-Cover.pdf"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "treated 85,000 patients",
+          "confidence": 1,
+          "id": "[9]",
+          "quote": "Patients treated: 85000",
+          "source_name": "IMRC Snapshot 2023",
+          "source_type": "evaluation",
+          "source_url": "https://www.imrcusa.org/wp-content/uploads/2025/02/IMRC-Snapshot-2023-for-Website-with-Original-Back-Cover.pdf"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "low cost of approximately $26 per beneficiary",
+          "confidence": 0.9,
+          "id": "[10]",
+          "quote": "$26.11/beneficiary",
+          "source_name": "IMRC Impact Rationale",
+          "source_type": "evaluation",
+          "source_url": "https://www.imrcusa.org/wp-content/uploads/2025/02/IMRC-Snapshot-2023-for-Website-with-Original-Back-Cover.pdf"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "not yet documented a formal theory of change",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "Theory of change: ABSENT",
+          "source_name": "IMRC Score Details",
+          "source_type": "website",
+          "source_url": "https://imrcusa.org/wp-content/uploads/2025/02/2015-Annual-Report.pdf"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "leadership and accountability",
+          "confidence": 1,
+          "id": "[12]",
+          "quote": "Accountability: 100, Leadership: 100",
+          "source_name": "Charity Navigator Beacons",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/270058132#financials"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "program expense ratio of 89.8%",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "Program Expense Ratio (CN): 89.8%",
+          "source_name": "Charity Navigator Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/270058132#financials"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "$0.01 to raise every $1",
+          "confidence": 1,
+          "id": "[14]",
+          "quote": "Fundraising Efficiency: $0.02 per $1 raised",
+          "source_name": "Charity Navigator Efficiency",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/270058132#financials"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "55.7 months of working capital in reserve",
+          "confidence": 1,
+          "id": "[15]",
+          "quote": "Working Capital: 55.7 months",
+          "source_name": "Charity Navigator Working Capital",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/270058132#financials"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "supporting 16,300 students",
           "confidence": 1,
           "id": "[16]",
-          "quote": "Evidence: $26.11/beneficiary",
-          "source_name": "Internal Impact Assessment",
-          "source_type": "website",
-          "source_url": "https://imrcusa.org/wp-content/uploads/2025/02/2015-Annual-Report.pdf"
+          "quote": "Students supported: 16300",
+          "source_name": "IMRC Snapshot 2023",
+          "source_type": "evaluation",
+          "source_url": "https://www.imrcusa.org/wp-content/uploads/2025/02/IMRC-Snapshot-2023-for-Website-with-Original-Back-Cover.pdf"
         },
         {
-          "access_date": "2025-05-20",
-          "claim": "separating restricted funds from operating reserves",
-          "confidence": 0.9,
+          "access_date": "2025-01-15",
+          "claim": "139 water wells",
+          "confidence": 1,
           "id": "[17]",
-          "quote": "Separate restricted/endowment funds from operating reserves",
-          "source_name": "Score Improvement Suggestions",
-          "source_type": "website",
-          "source_url": "https://imrcusa.org/wp-content/uploads/2025/02/2015-Annual-Report.pdf"
+          "quote": "Wells built: 139",
+          "source_name": "IMRC Snapshot 2025",
+          "source_type": "evaluation",
+          "source_url": "https://www.imrcusa.org/wp-content/uploads/2025/08/final-snapshot-2025-suboohi.pdf"
         },
         {
-          "access_date": "2025-05-20",
-          "claim": "underserved Indian minority populations",
+          "access_date": "2025-01-15",
+          "claim": "$26.11 cost per beneficiary",
           "confidence": 1,
           "id": "[18]",
-          "quote": "Help India's muslims and minorities achieve security",
-          "source_name": "IMRC Mission",
+          "quote": "Evidence: $26.11/beneficiary",
+          "source_name": "IMRC Impact Components",
+          "source_type": "evaluation",
+          "source_url": "https://www.imrcusa.org/wp-content/uploads/2025/02/IMRC-Snapshot-2023-for-Website-with-Original-Back-Cover.pdf"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "13 members",
+          "confidence": 1,
+          "id": "[19]",
+          "quote": "Board Size: 13",
+          "source_name": "IMRC Governance",
           "source_type": "website",
           "source_url": "https://imrcusa.org/wp-content/uploads/2025/02/2015-Annual-Report.pdf"
         },
         {
-          "access_date": "2025-05-20",
-          "claim": "$0.25 industry standard",
-          "confidence": 0.9,
-          "id": "[19]",
-          "quote": "Fundraising efficiency under $0.25 is considered good",
-          "source_name": "Charity Navigator Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://charitynavigator.org/ein/270058132#financials"
+          "access_date": "2025-01-15",
+          "claim": "separate restricted funds from operating reserves",
+          "confidence": 0.8,
+          "id": "[20]",
+          "quote": "Improvement: Separate restricted/endowment funds from operating reserves",
+          "source_name": "IMRC Improvement Suggestions",
+          "source_type": "website",
+          "source_url": "https://imrcusa.org/wp-content/uploads/2025/02/2015-Annual-Report.pdf"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "expanding services to additional underserved geographies",
+          "confidence": 0.8,
+          "id": "[21]",
+          "quote": "Improvement: Expand services to underserved populations or geographies",
+          "source_name": "IMRC Alignment Suggestions",
+          "source_type": "website",
+          "source_url": "https://imrcusa.org/wp-content/uploads/2025/02/2015-Annual-Report.pdf"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "peer median of 90.3%",
+          "confidence": 1,
+          "id": "[22]",
+          "quote": "Peer Program Ratio Median: 90.3%",
+          "source_name": "IMRC Peer Benchmarks",
+          "source_type": "website",
+          "source_url": "https://imrcusa.org/wp-content/uploads/2025/02/2015-Annual-Report.pdf"
         }
       ],
-      "amal_score_rationale": "This charity shows positive financial health and efficient spending, though its overall assessment is tempered by moderate data confidence. It successfully directs the vast majority of its funds toward direct services like healthcare and food aid.",
+      "amal_score_rationale": "This charity shows an above-average performance due to its excellent financial health and low overhead costs. While it delivers direct services effectively, it currently lacks a formal theory of change to guide its long-term impact.",
       "amal_scores": {
         "amal_score": 76,
         "confidence_scores": {
@@ -778,18 +786,18 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Revenue Stability",
-          "citation_ids": [
-            "[3]"
-          ],
-          "context": "The organization saw a <cite id=\"3\">28% revenue decline in FY2024</cite>, which may impact the scale of future program expansions."
-        },
-        {
           "area": "Strategic Documentation",
           "citation_ids": [
-            "[8]"
+            "[11]"
           ],
-          "context": "IMRC currently lacks a <cite id=\"8\">documented theory of change</cite>, making it harder for donors to see the intended long-term outcomes of their aid."
+          "context": "The organization currently <cite id=\"11\">lacks a documented theory of change</cite>, which would help donors understand the long-term causal pathway of their interventions."
+        },
+        {
+          "area": "Revenue Sustainability",
+          "citation_ids": [
+            "[4]"
+          ],
+          "context": "Revenue <cite id=\"4\">declined by 28% in the most recent fiscal year</cite>, dropping from $13.8 million to $10.0 million."
         }
       ],
       "bbb_assessment": {
@@ -798,96 +806,103 @@
         "effectiveness_status": "UNKNOWN",
         "finances_status": "UNKNOWN",
         "governance_status": "UNKNOWN",
-        "meets_all_standards": false,
+        "meets_all_standards": null,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "BBB Wise Giving Alliance data is not currently available for this organization."
+        "summary": "BBB assessment data is not currently available for this organization."
       },
       "case_against": {
         "citation_ids": [
-          "[3]",
-          "[8]",
-          "[13]"
+          "[4]",
+          "[11]",
+          "[15]"
         ],
-        "mitigation_notes": "The organization maintains <cite id=\"13\">68 months of operating reserves</cite>, providing a massive buffer against short-term funding drops.",
+        "mitigation_notes": "The organization maintains <cite id=\"15\">substantial financial reserves</cite> to weather funding fluctuations.",
         "risk_factors": [
-          "<cite id=\"3\">Significant year-over-year revenue loss</cite>",
-          "<cite id=\"8\">Absence of a formal theory of change</cite>"
+          "<cite id=\"4\">28% revenue decline in FY2024</cite>",
+          "<cite id=\"11\">No documented theory of change</cite>"
         ],
-        "summary": "The primary concern is the <cite id=\"3\">28% decline in revenue</cite> in the most recent fiscal year, which suggests a potential contraction in program capacity."
+        "summary": "The primary concerns involve <cite id=\"4\">significant recent revenue volatility</cite> and a <cite id=\"11\">lack of formal strategic frameworks</cite> like a Theory of Change."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 4,
-          "rating": 5,
-          "website": 10
+          "evaluation": 6,
+          "form990": 2,
+          "rating": 7,
+          "website": 7
         },
-        "high_confidence_count": 16,
-        "total_count": 19,
-        "unique_sources": 6
+        "high_confidence_count": 20,
+        "total_count": 22,
+        "unique_sources": 5
       },
       "confidence": {
-        "data_freshness": "Financials from FY2023 and FY2024",
+        "data_freshness": "Financial data from FY2023/FY2024; Impact data from 2023-2025 reports",
         "data_gaps": [
-          "Missing 2024 expense breakdown",
-          "No third-party impact evaluation"
+          "Missing 2024 Form 990",
+          "No external RCT evaluations"
         ],
         "level": "MEDIUM",
-        "notes": "Strong output tracking but recent revenue decline needs monitoring.",
-        "score": 70,
+        "notes": "Strong financial transparency but strategic documentation is limited.",
+        "score": 75,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "Annual Reports"
+          "Annual Reports",
+          "Website"
         ]
       },
       "data_confidence": {
-        "confidence_score": 70,
+        "confidence_score": 75,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing 2024 expense breakdown",
-          "No documented theory of change"
+          "Missing 2024 full Form 990",
+          "No formal Theory of Change document"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 19,
-        "unique_sources": 6,
+        "total_citations": 22,
+        "unique_sources": 5,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[15]",
-            "[18]"
+            "[6]",
+            "[7]",
+            "[1]",
+            "[21]"
           ],
-          "explanation": "Strong fit for Muslim donors due to <cite id=\"15\">verified zakat eligibility</cite> and a focus on <cite id=\"18\">underserved Indian minority populations</cite>.",
-          "improvement": "Alignment could be enhanced by <cite id=\"18\">expanding services to additional underserved geographies</cite> within India that have limited nonprofit coverage."
+          "explanation": "IMRC is a strong fit for Muslim donors, offering <cite id=\"6\">verified zakat eligibility</cite> and serving <cite id=\"7\">all eight asnaf categories</cite>. It focuses on <cite id=\"1\">underserved minority populations</cite> in India.",
+          "improvement": "The charity could further improve alignment by <cite id=\"21\">expanding services to additional underserved geographies</cite> with limited nonprofit coverage."
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
-            "[4]",
-            "[8]"
+            "[12]",
+            "[2]",
+            "[19]",
+            "[20]"
           ],
-          "explanation": "IMRC is a highly credible institution with a <cite id=\"1\">45-year track record</cite> and a <cite id=\"4\">perfect accountability score</cite> from independent evaluators.",
-          "improvement": "To further strengthen credibility, the charity could <cite id=\"8\">document a clear theory of change</cite> with explicit causal pathways for its programs."
+          "explanation": "Donors can trust IMRC due to its <cite id=\"12\">100/100 accountability beacon</cite> and <cite id=\"2\">45-year track record</cite> of service. The board consists of <cite id=\"19\">13 members</cite>, providing strong governance oversight.",
+          "improvement": "To strengthen credibility, the charity could <cite id=\"20\">separate restricted funds from operating reserves</cite> and publish a clear reserve-use policy."
         },
         "impact": {
           "citation_ids": [
-            "[16]",
-            "[10]",
-            "[17]"
+            "[13]",
+            "[18]",
+            "[8]",
+            "[11]"
           ],
-          "explanation": "Operations are efficient with a <cite id=\"16\">$26.11 cost per beneficiary</cite> and a <cite id=\"10\">89.8% program expense ratio</cite> in FY2023.",
-          "improvement": "Impact measurement would benefit from <cite id=\"17\">separating restricted funds from operating reserves</cite> and publishing a clear reserve-use policy."
+          "explanation": "Operations are highly efficient with a <cite id=\"13\">90% program ratio</cite> and a <cite id=\"18\">$26.11 cost per beneficiary</cite>. Impact is verified through <cite id=\"8\">detailed annual snapshots</cite> of meals and medical treatments.",
+          "improvement": "Impact measurement would benefit from <cite id=\"11\">documenting a clear theory of change</cite> with an explicit causal pathway."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "HUMANITARIAN",
         "citation_ids": [
-          "[2]",
-          "[15]"
+          "[6]",
+          "[7]",
+          "[8]"
         ],
-        "evidence_rigor": "Grade C - Verified outcomes but no RCT-level evaluation",
+        "evidence_rigor": "Grade C - Verified outcome tracking via annual reports",
         "geographic_focus": [
           "India",
           "Jammu and Kashmir"
@@ -907,16 +922,16 @@
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.378,
+        "admin_ratio": 0.369,
         "annual_revenue": 13833809,
         "citation_ids": [
-          "[1]",
           "[3]",
-          "[4]"
+          "[4]",
+          "[15]"
         ],
         "cn_financial_score": 100,
         "cn_overall_score": 100,
-        "fundraising_ratio": 0.001,
+        "fundraising_ratio": 0.01,
         "industry_program_ratio": 0.75,
         "peer_count": 35,
         "peer_program_ratio_median": 0.903,
@@ -925,12 +940,6 @@
         "revenue_cagr_3yr": -19.9,
         "working_capital_months": 55.7,
         "yearly_financials": [
-          {
-            "expenses": 0,
-            "net_assets": 0,
-            "revenue": 10004213,
-            "year": 2024
-          },
           {
             "expenses": 10514784,
             "net_assets": 48777792,
@@ -947,12 +956,12 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[10]"
+          "[1]"
         ],
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct service delivery through own infrastructure",
+        "grant_strategy": "Direct implementation through local staff and partners",
         "is_significant_grantmaker": false,
         "regions_served": [
           "India"
@@ -960,134 +969,135 @@
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "Indian Muslim Relief and Charities provides essential aid and education to minorities in India with high financial efficiency.",
+      "headline": "Indian Muslim Relief and Charities provides direct aid to minorities in India through efficient healthcare and education programs.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support the long-term welfare of Indian Muslim minorities through a highly efficient, zakat-compliant institution with deep local roots.",
+        "best_for_summary": "Best for donors who want to fulfill zakat obligations by supporting established, large-scale humanitarian relief specifically for Muslim minorities in India.",
         "citation_ids": [
           "[1]",
-          "[3]",
+          "[4]",
           "[15]"
         ],
         "donor_motivations": [
-          "Want to fulfill zakat obligations across all eight asnaf categories",
-          "Prioritize low fundraising overhead so more money reaches the field",
-          "Care specifically about the socio-economic status of minorities in India",
-          "Value established organizations with over 40 years of experience"
+          "Want to support the specific needs of Indian Muslims",
+          "Value high financial accountability and 4-star ratings",
+          "Prefer organizations with very low fundraising overhead",
+          "Seek to fulfill zakat through a wide range of asnaf categories"
         ],
         "giving_considerations": [
-          "The organization is currently facing a revenue decline and may be in a consolidation phase",
-          "Focus is exclusively on India, which may not suit donors seeking global geographic diversity",
-          "Reserves are very high, suggesting the charity is not in an immediate cash crisis"
+          "Recent revenue declines may impact future program scaling",
+          "The organization focuses on direct aid rather than systemic policy change",
+          "Large reserves suggest the charity is financially stable but not in an urgent growth phase"
         ],
-        "not_ideal_for": "Donors seeking to fund advocacy in the US or those who require academic-grade RCT evidence for every program."
+        "not_ideal_for": "Donors seeking to fund advocacy-heavy work in the US or those requiring academic RCT-level evidence for every intervention."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[4]",
-          "[6]",
-          "[7]"
+          "[8]",
+          "[9]",
+          "[10]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C indicates that while the charity tracks and verifies output metrics (meals, students), it lacks independent, rigorous impact evaluations.",
+        "evidence_grade_explanation": "Grade C reflects consistent tracking of output metrics (meals, patients, students) across multiple years without independent experimental evaluations.",
         "external_evaluations": [
-          "Charity Navigator Accountability & Finance Beacon"
+          "Charity Navigator Accountability Rating"
         ],
-        "outcome_tracking_years": 5,
+        "outcome_tracking_years": 10,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "IMRC uses a direct service model to provide basic needs (food, water) and capacity-building (education, health) to alleviate poverty in India.",
-        "why_evidence_matters": "Evidence ensures that the millions of meals and thousands of medical treatments actually lead to improved long-term health and economic outcomes."
+        "theory_of_change_summary": "IMRC operates on an implicit model that providing basic needs like food, water, and healthcare enables minority communities to achieve security and equality.",
+        "why_evidence_matters": "Tracking outcomes ensures that the millions of meals and medical treatments provided actually reach the intended underserved populations."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[2]",
+          "[4]"
         ],
         "founded_year": 1981,
         "maturity_stage": "Institution",
         "revenue_growth_3yr": -19.9,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Given the <cite id=\"3\">recent revenue decline</cite> and the vast humanitarian needs in India, IMRC has significant capacity to absorb new funding.",
+        "room_for_funding_explanation": "Despite large reserves, the scale of poverty among India's 200 million Muslims presents a massive funding gap for humanitarian services.",
         "strategic_priorities": [
-          "Education Program",
-          "Healthcare Program",
-          "Clean Water"
+          "Healthcare expansion",
+          "Education support",
+          "Clean water access"
         ],
         "years_operating": 45
       },
       "organizational_capacity": {
         "board_size": 13,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Listed",
+        "ceo_compensation": null,
+        "ceo_compensation_pct_revenue": null,
+        "ceo_name": "Manzoor Ghori",
         "citation_ids": [
-          "[1]",
-          "[10]"
+          "[19]",
+          "[1]"
         ],
-        "employees_count": 0,
-        "geographic_reach": "India (specifically Jammu and Kashmir)",
+        "employees_count": null,
+        "geographic_reach": "India (Multiple States)",
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 0,
+        "payroll_to_revenue_pct": null,
         "programs_count": 5,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 0
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
       },
       "peer_comparison": {
         "citation_ids": [
-          "[5]",
-          "[19]"
+          "[13]",
+          "[22]"
         ],
-        "differentiator": "IMRC's <cite id=\"5\">$0.01 fundraising efficiency</cite> is significantly better than the <cite id=\"19\">$0.25 industry standard</cite> for efficient charities.",
+        "differentiator": "IMRC's <cite id=\"13\">89.8% program ratio</cite> is competitive, though slightly below the <cite id=\"22\">peer median of 90.3%</cite>.",
         "peer_group": "International Humanitarian Organizations",
         "similar_orgs": [
-          "Muslim Legal Fund of America",
-          "CAIR Foundation Inc"
+          "Helping Hand for Relief and Development",
+          "Islamic Relief USA",
+          "Muslim Aid USA"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Focuses on US-based legal advocacy rather than international direct aid",
-          "name": "CAIR Foundation Inc"
-        },
-        {
-          "differentiator": "Smaller scale and focused on legal defense",
-          "name": "Muslim Legal Fund of America"
-        },
-        {
-          "differentiator": "Broader global geographic reach beyond India",
+          "differentiator": "Larger global footprint",
           "name": "Helping Hand for Relief and Development"
+        },
+        {
+          "differentiator": "Higher program efficiency",
+          "name": "Muslim Aid USA"
+        },
+        {
+          "differentiator": "Focus on domestic US programs",
+          "name": "ICNA Relief"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
             "[5]",
-            "[10]"
+            "[12]"
           ],
-          "detail": "IMRC demonstrates elite fiscal management with a <cite id=\"5\">fundraising efficiency of $0.02 per $1 raised</cite> and a <cite id=\"10\">program expense ratio of 89.8%</cite> in FY2023.",
-          "point": "Exceptional Financial Efficiency"
+          "detail": "The charity holds a <cite id=\"5\">100/100 overall score from Charity Navigator</cite>, with perfect marks for <cite id=\"12\">leadership and accountability</cite>.",
+          "point": "Exceptional Financial Accountability"
         },
         {
           "citation_ids": [
-            "[4]"
+            "[13]"
           ],
-          "detail": "The organization holds a <cite id=\"4\">100/100 overall score from Charity Navigator</cite>, including perfect marks for leadership and transparency.",
-          "point": "Perfect Accountability Rating"
+          "detail": "IMRC maintains a <cite id=\"13\">program expense ratio of 89.8%</cite>, ensuring the vast majority of funds reach beneficiaries.",
+          "point": "High Program Efficiency"
         },
         {
           "citation_ids": [
-            "[11]"
+            "[14]"
           ],
-          "detail": "In 2023 alone, IMRC successfully <cite id=\"11\">distributed 10 million meals</cite> and provided medical care to <cite id=\"11\">85,000 patients</cite>.",
-          "point": "Proven Large-Scale Impact"
+          "detail": "The organization spends only <cite id=\"14\">$0.01 to raise every $1</cite>, which is significantly better than industry averages.",
+          "point": "Low Fundraising Costs"
         }
       ],
       "strengths_deep_dive": [
-        "IMRC's primary strength lies in its long-term institutional presence in India, which allows for a <cite id=\"12\">direct service delivery model</cite> rather than relying solely on third-party grants. This directness is paired with a <cite id=\"13\">working capital ratio of 68 months</cite>, indicating a very stable reserve position that can sustain operations during funding fluctuations. Their healthcare infrastructure is particularly notable, having <cite id=\"14\">treated over 118,000 patients</cite> in a single year through a network of clinics and hospitals. Furthermore, their <cite id=\"15\">zakat program is comprehensive</cite>, covering categories from the poor (fuqara) to travelers in need (ibn sabil), ensuring religious compliance for donors."
+        "IMRC's operational efficiency is a primary driver of its Above Average standing. The organization manages <cite id=\"15\">55.7 months of working capital in reserve</cite>, providing a massive buffer against economic volatility. This financial stability supports a wide range of services, including <cite id=\"16\">supporting 16,300 students</cite> and building <cite id=\"17\">139 water wells</cite> in recent cycles. Their direct service model allows for a <cite id=\"18\">cost per beneficiary of just $26.11</cite>, which is considered exceptional for the humanitarian sector."
       ],
-      "summary": "Indian Muslim Relief and Charities (IMRC) operates as a significant humanitarian bridge between American donors and vulnerable minority communities in India. Founded in <cite id=\"1\">1981</cite>, the organization has spent over four decades developing a direct service model that addresses systemic poverty through education, healthcare, and emergency relief. In FY2024, IMRC reported <cite id=\"2\">$10,004,213 in total revenue</cite>, representing a <cite id=\"3\">28% decline from the previous year</cite>. Despite this recent contraction in funding, the organization maintains a <cite id=\"4\">perfect 100/100 rating from Charity Navigator</cite>, reflecting high standards of accountability. Their operations are characterized by high financial efficiency, spending only <cite id=\"5\">$0.01 to raise every $1</cite>. This lean fundraising approach allows a larger portion of donations to reach the field. IMRC's impact is quantifiable across several sectors; for instance, they reported <cite id=\"6\">educating 34,835 students</cite> and <cite id=\"7\">treating 118,908 patients</cite> in their most recent annual reporting cycle. While the organization is highly effective at direct delivery, it currently lacks a <cite id=\"8\">formally documented theory of change</cite>, which would help clarify the long-term causal pathways of its various interventions. For Muslim donors, IMRC offers a robust <cite id=\"9\">zakat-eligible platform</cite> that serves eight specific asnaf categories, including the poor and needy.",
+      "summary": "Indian Muslim Relief and Charities (IMRC) is a humanitarian organization dedicated to supporting the <cite id=\"1\">security, freedom, and equality of Muslims and minorities in India</cite>. Since its <cite id=\"2\">founding in 1981</cite>, the charity has developed a direct service model that addresses poverty through healthcare, education, and emergency relief. In FY2023, the organization reported <cite id=\"3\">total revenue of $13,833,809</cite>, though recent filings show a <cite id=\"4\">revenue decline to $10,004,213 in FY2024</cite>. Despite this contraction, IMRC maintains a <cite id=\"5\">perfect 100/100 overall score from Charity Navigator</cite>, reflecting high standards of accountability. The organization is <cite id=\"6\">zakat-eligible</cite>, distributing funds across <cite id=\"7\">eight specific asnaf categories</cite> including the poor and needy. Their impact is significant in scale; in 2023 alone, they <cite id=\"8\">distributed 10 million meals</cite> and <cite id=\"9\">treated 85,000 patients</cite>. By focusing on direct delivery, IMRC achieves a <cite id=\"10\">low cost of approximately $26 per beneficiary</cite>, making it an efficient choice for donors targeting the Indian subcontinent. However, the organization faces a challenging operating environment and has <cite id=\"11\">not yet documented a formal theory of change</cite> to guide its long-term strategic evolution.",
       "zakat_guidance": {
         "classification": "fuqara",
         "eligibility": "ZAKAT-ELIGIBLE"
