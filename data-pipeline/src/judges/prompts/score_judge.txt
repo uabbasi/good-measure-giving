@@ -106,18 +106,39 @@ Respond with a JSON object:
 }
 ```
 
+## What is (and is NOT) an ERROR
+
+An ERROR is reserved for TWO things only:
+1. **Band/composite contradiction**: the rationale's overall verdict points the
+   opposite way from the composite 0-100 GMG band (e.g., glowing praise for a
+   40, or condemnation of an 85).
+2. **A factual or arithmetic falsehood**: a stated number or comparison that is
+   objectively wrong (e.g., "85.7% is lower than the 82.9% median" — 85.7 > 82.9;
+   "claims high transparency" when transparency is explicitly NONE/0).
+
+Everything else is NOT an error. In particular, a donor-facing rationale is a
+1-2 sentence SUMMARY, not a component-by-component audit. Do NOT raise an error
+(or a warning) merely because the narrative's emphasis differs from an
+INDIVIDUAL component's sub-score:
+- "strong program spending" alongside a Program Ratio of 3/5 is fine — the
+  narrative is characterizing, not quoting the sub-score.
+- "focus on underserved areas" alongside a low Underserved-Space component is
+  fine — the narrative describes the mission, the component measures a specific
+  rubric axis; they are different lenses, not a contradiction.
+- Mentioning a real limitation ("limited outcome tracking") even when the
+  Evidence component happens to score high is fine unless it is factually false.
+Only elevate to error when the mismatch is a BAND-level or FACTUAL falsehood
+per (1)/(2) above, never a component-emphasis difference.
+
 ## Severity Guidelines
-- **error**: Rationale contradicts the score (e.g., glowing praise for a 40 score)
+- **error**: Only (1) or (2) above.
 - **warning**: Rationale omits the DOMINANT limiting factor of a below-par
-  score, making it read more positive than the band warrants. Do NOT emit a
-  warning merely because a rationale doesn't list every component — that is
-  never a warning.
-- **info**: Minor tone mismatch, or a well-scored/secondary component the
-  rationale could have mentioned but didn't. Optional polish, not a defect.
+  score, making it read more positive than the band warrants. Never a warning
+  merely because a rationale doesn't list every component.
+- **info**: Minor tone/emphasis polish. Optional, not a defect.
 
 **Important**: Do NOT penalize the narrative for not mentioning data quality issues
 (EIN mismatches, low confidence discoveries, etc.) from the source data. The narrative
 is generated before quality validation runs, so it cannot anticipate these issues.
-Only flag issues where the narrative contradicts or misrepresents the SCORES themselves.
 
 Only report actual issues. If all rationales are appropriate, return empty issues array.
