@@ -242,16 +242,17 @@ class BaselineQualityJudge(BaseJudge):
             )
             return issues
 
-        # B-J-002b: Validate risk_deduction bounds [-10, 0]
-        if risk_deduction is not None and (risk_deduction < -10 or risk_deduction > 0):
+        # B-J-002b: Validate risk_deduction bounds [-14, 0]
+        # (-10 classic-risk cap + up to -4 filing-currency outside it, rubric v5.3.0)
+        if risk_deduction is not None and (risk_deduction < -14 or risk_deduction > 0):
             issues.append(
                 ValidationIssue(
                     severity=Severity.ERROR,
                     field="risk_deduction",
-                    message=f"risk_deduction={risk_deduction} outside valid range [-10, 0]",
+                    message=f"risk_deduction={risk_deduction} outside valid range [-14, 0]",
                     details={
                         "value": risk_deduction,
-                        "valid_range": [-10, 0],
+                        "valid_range": [-14, 0],
                         "rule": "B-J-002b",
                     },
                 )

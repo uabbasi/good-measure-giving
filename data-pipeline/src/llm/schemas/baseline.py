@@ -397,7 +397,8 @@ class AmalScoresV2(BaseModel):
 
     # Risk Assessment (Longview "Case Against")
     case_against: CaseAgainst = Field(description="Longview-style risk disclosure with deductions (up to -10)")
-    risk_deduction: int = Field(ge=-10, le=0, description="Total risk deduction (0 to -10)")
+    # -10 cap for classic risks + up to -4 filing-currency stacked outside it (rubric v5.3.0)
+    risk_deduction: int = Field(ge=-14, le=0, description="Total risk deduction (0 to -14)")
 
     # Wallet routing
     wallet_tag: str = Field(
