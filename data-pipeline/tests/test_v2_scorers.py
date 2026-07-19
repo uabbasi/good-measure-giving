@@ -1075,6 +1075,46 @@ class TestDataConfidence:
         result = scorer.evaluate(m)
         assert 0.0 <= result.data_confidence.overall <= 1.0
 
+    def test_recency_no_decay_within_leeway(self):
+        """Age <= 2 (normal 990 cycle + 1 year leeway) → no decay."""
+        from datetime import date
+
+        m = _base_metrics(cn_overall_score=92.0, candid_seal="Gold",
+                          financial_data_tax_year=date.today().year - 2)
+        fresh = AmalScorerV2().evaluate(m)
+        assert fresh.data_confidence.recency_factor == 1.0
+
+    def test_recency_decay_steps(self):
+        """-0.15/year beyond age 2, floored at 0.40."""
+        from src.scorers.v2_scorers import AmalScorerV2
+
+        f = AmalScorerV2._recency_factor
+        assert f(None) == 1.0
+        assert f(1) == 1.0
+        assert f(2) == 1.0
+        assert f(3) == 0.85
+        assert f(4) == 0.70
+        assert f(5) == 0.55
+        assert f(6) == 0.40
+        assert f(9) == 0.40  # floor
+
+    def test_recency_decay_lowers_overall_and_badge(self):
+        """Al-Furqaan shape: strong verification but 6-year-old data → decayed confidence."""
+        from datetime import date
+
+        year = date.today().year
+        m_fresh = _base_metrics(cn_overall_score=92.0, candid_seal="Gold",
+                                financial_data_tax_year=year - 1)
+        m_stale = _base_metrics(cn_overall_score=92.0, candid_seal="Gold",
+                                financial_data_tax_year=year - 6)
+        scorer = AmalScorerV2()
+        fresh = scorer.evaluate(m_fresh).data_confidence
+        stale = scorer.evaluate(m_stale).data_confidence
+        assert stale.recency_factor == 0.40
+        assert stale.data_age_years == 6
+        assert stale.overall == round(fresh.overall * 0.40, 2)
+        assert stale.badge != "HIGH"
+
     def test_confidence_components(self):
         """DataConfidence has all component breakdown fields."""
         m = _base_metrics(cn_overall_score=85.0)

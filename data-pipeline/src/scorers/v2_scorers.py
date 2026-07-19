@@ -2677,7 +2677,7 @@ class AmalScorerV2:
         total_score = max(0, min(100, total_score))
 
         # Data confidence signal (outside score)
-        data_confidence = self._compute_data_confidence(credibility)
+        data_confidence = self._compute_data_confidence(credibility, metrics)
 
         wallet_tag = "ZAKAT-ELIGIBLE" if zakat_bonus.charity_claims_zakat else "SADAQAH-ELIGIBLE"
 
@@ -2704,14 +2704,30 @@ class AmalScorerV2:
             score_summary=score_summary,
         )
 
+    @staticmethod
+    def _recency_factor(data_age_years: Optional[int]) -> float:
+        """Data-age multiplier for data confidence (rubric v5.3.0).
+
+        1.0 through age 2 (the normal 990 cycle plus 1 year of leeway), then
+        -0.15 per additional year, floored at 0.40. Unknown age = no decay
+        (absence of data is already penalized by the base components).
+        """
+        if data_age_years is None or data_age_years <= 2:
+            return 1.0
+        return max(0.40, round(1.0 - 0.15 * (data_age_years - 2), 2))
+
     def _compute_data_confidence(
         self,
         credibility: CredibilityAssessment,
+        metrics: Optional[CharityMetrics] = None,
     ) -> DataConfidence:
         """Compute data confidence from credibility data-availability signals.
 
-        Formula: confidence = ver*0.50 + trans*0.35 + dq*0.15
-        Returns DataConfidence with overall float + component breakdown.
+        Formula: confidence = (ver*0.50 + trans*0.35 + dq*0.15) * recency_factor
+        where recency_factor decays with the age of the DISPLAYED fiscal-year
+        data (financial_data_tax_year) — old data is less trustworthy no
+        matter how verified it once was. Applies to everyone, including
+        form_990_exempt orgs (this is about data age, not filing delinquency).
         """
         ver_value = VERIFICATION_CONFIDENCE.get(credibility.verification_tier, 0.0)
         trans_label = self._extract_transparency_label(credibility)
@@ -2719,12 +2735,21 @@ class AmalScorerV2:
         dq_label = self._extract_data_quality_label(credibility)
         dq_value = DATA_QUALITY_CONFIDENCE.get(dq_label, 0.0)
 
-        overall = round(
+        base = (
             ver_value * DC_VERIFICATION_WEIGHT
             + trans_value * DC_TRANSPARENCY_WEIGHT
-            + dq_value * DC_DATA_QUALITY_WEIGHT,
-            2,
+            + dq_value * DC_DATA_QUALITY_WEIGHT
         )
+
+        data_age_years: Optional[int] = None
+        fy = metrics.financial_data_tax_year if metrics is not None else None
+        if isinstance(fy, int):
+            from datetime import date
+
+            data_age_years = date.today().year - fy
+        recency_factor = self._recency_factor(data_age_years)
+
+        overall = round(base * recency_factor, 2)
 
         # Determine badge level
         if overall >= 0.75:
@@ -2743,6 +2768,8 @@ class AmalScorerV2:
             transparency_value=trans_value,
             data_quality_label=dq_label,
             data_quality_value=dq_value,
+            recency_factor=recency_factor,
+            data_age_years=data_age_years,
         )
 
     def _extract_transparency_label(self, credibility: CredibilityAssessment) -> str:
