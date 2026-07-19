@@ -245,11 +245,38 @@ class TestRegressionGuard:
         synthesized = CharityData(charity_ein="12-3456789")
         assert apply_regression_guard(synthesized, None) == []
 
+    def test_guard_restores_metrics_json_field(self):
+        from src.db import CharityData
+        from synthesize import apply_regression_guard
+
+        prior = {"metrics_json": {"noncash_ratio": 0.4}}
+        synthesized = CharityData(charity_ein="12-3456789")
+        synthesized.metrics_json = {"noncash_ratio": None}  # recomputed to None this run
+        flags = apply_regression_guard(synthesized, prior)
+
+        assert synthesized.metrics_json["noncash_ratio"] == 0.4  # restored inside the blob
+        assert flags == [{"charity_ein": "12-3456789", "field": "noncash_ratio", "prior_value": 0.4}]
+
+    def test_metrics_json_field_not_restored_when_present(self):
+        from src.db import CharityData
+        from synthesize import apply_regression_guard
+
+        prior = {"metrics_json": {"noncash_ratio": 0.4}}
+        synthesized = CharityData(charity_ein="12-3456789")
+        synthesized.metrics_json = {"noncash_ratio": 0.9}  # populated this run — do not touch
+        flags = apply_regression_guard(synthesized, prior)
+
+        assert synthesized.metrics_json["noncash_ratio"] == 0.9  # unchanged
+        assert flags == []
+
     def test_guarded_fields_are_required_source_derived(self):
-        from synthesize import REGRESSION_GUARDED_FIELDS
+        from synthesize import REGRESSION_GUARDED_FIELDS, REGRESSION_GUARDED_METRICS_FIELDS
 
         assert "program_expense_ratio" in REGRESSION_GUARDED_FIELDS
-        assert "noncash_ratio" in REGRESSION_GUARDED_FIELDS
+        # The metrics_json-only ratio fields live in their own set, NOT the top-level one.
+        assert "noncash_ratio" in REGRESSION_GUARDED_METRICS_FIELDS
+        for f in ("noncash_ratio", "cash_adjusted_program_ratio", "domestic_burn_rate", "reserves_months"):
+            assert f not in REGRESSION_GUARDED_FIELDS
         # website-derived text fields must NOT be guarded (legit drops)
         assert "theory_of_change" not in REGRESSION_GUARDED_FIELDS
         assert "populations_served" not in REGRESSION_GUARDED_FIELDS
