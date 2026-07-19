@@ -141,7 +141,7 @@ class TestCrawlDelayAndEmptyRetry:
         c._fetch_url = MagicMock(return_value=(False, None, None, "dead"))
         calls = []
 
-        def fake_crawl(urls, timeout_total, max_concurrent=10, force=False):
+        def fake_crawl(urls, timeout_total, max_concurrent=10, force=False, crawl_delay=0.0):
             calls.append(max_concurrent)
             return {}
 
@@ -157,7 +157,7 @@ class TestCrawlDelayAndEmptyRetry:
         c._fetch_url = MagicMock(return_value=(True, "<html>ok</html>", "https://x.org", None))
         calls = []
 
-        def fake_crawl(urls, timeout_total, max_concurrent=10, force=False):
+        def fake_crawl(urls, timeout_total, max_concurrent=10, force=False, crawl_delay=0.0):
             calls.append(max_concurrent)
             return {}
 
@@ -172,7 +172,7 @@ class TestCrawlDelayAndEmptyRetry:
         c._fetch_url = MagicMock(return_value=(True, "<html>ok</html>", "https://x.org", None))
         calls = []
 
-        def fake_crawl(urls, timeout_total, max_concurrent=10, force=False):
+        def fake_crawl(urls, timeout_total, max_concurrent=10, force=False, crawl_delay=0.0):
             # Simulate a CAPTCHA detected during the crawl (the real signal path)
             c._last_captcha_error = "CAPTCHA_BLOCKED: challenge page (HTTP 200)"
             calls.append(max_concurrent)
@@ -447,6 +447,107 @@ class TestGlobalFleetRateLimit:
         mock_limiter.wait.assert_called_once_with("website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS)
 
 
+class TestPerHostCrawlDelayGate:
+    """Task 8: an advertised robots.txt Crawl-delay must be enforced as a REAL
+    per-host inter-request delay, not just used to lower concurrency (the old
+    `polite_concurrency` toggle was a no-op against the delay itself — the
+    inner Semaphore(2) let requests through immediately). The delay is
+    enforced via the SAME global_rate_limiter used for the fleet-wide
+    "website" gate, keyed by the host domain instead of "website" — so a
+    request effectively waits for max(global interval, host crawl_delay)."""
+
+    def _collector(self):
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c.robots_checker = MagicMock()
+        c.robots_checker.can_fetch.return_value = True
+        c.cache = MagicMock()
+        c.cache.get_cached_html.return_value = None
+        return c
+
+    def test_fetch_url_async_invokes_per_host_gate_when_crawl_delay_set(self):
+        c = self._collector()
+
+        response = MagicMock()
+        response.status_code = 200
+        response.text = "<html>hi</html>"
+        response.url = "https://slow.org/page"
+
+        client = MagicMock()
+
+        async def fake_get(*args, **kwargs):
+            return response
+
+        client.get = fake_get
+
+        semaphore = asyncio.Semaphore(1)
+
+        async def run():
+            return await c._fetch_url_async(
+                client, "https://slow.org/page", semaphore, crawl_delay=10.0
+            )
+
+        with patch("src.collectors.web_collector.global_rate_limiter") as mock_limiter:
+            mock_limiter.wait.return_value = 0.0
+            asyncio.run(run())
+
+        # Both gates fire: the process-wide "website" QPS gate AND a distinct
+        # per-host gate keyed by the domain, using the advertised delay.
+        mock_limiter.wait.assert_any_call("website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS)
+        mock_limiter.wait.assert_any_call("slow.org", 10.0)
+        assert mock_limiter.wait.call_count == 2
+
+    def test_fetch_url_async_skips_per_host_gate_when_no_crawl_delay(self):
+        # No crawl_delay passed (default 0.0) -> only the global gate fires;
+        # a host with no advertised Crawl-delay must not get an extra wait.
+        c = self._collector()
+
+        response = MagicMock()
+        response.status_code = 200
+        response.text = "<html>hi</html>"
+        response.url = "https://example.org/page"
+
+        client = MagicMock()
+
+        async def fake_get(*args, **kwargs):
+            return response
+
+        client.get = fake_get
+
+        semaphore = asyncio.Semaphore(1)
+
+        async def run():
+            return await c._fetch_url_async(client, "https://example.org/page", semaphore)
+
+        with patch("src.collectors.web_collector.global_rate_limiter") as mock_limiter:
+            mock_limiter.wait.return_value = 0.0
+            asyncio.run(run())
+
+        mock_limiter.wait.assert_called_once_with("website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS)
+
+    def test_collect_multi_page_threads_crawl_delay_to_crawl_specific_urls(self):
+        """The advertised Crawl-delay from robots.txt must reach the async
+        crawler call (which forwards it to _fetch_url_async), not just gate
+        concurrency via polite_concurrency."""
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c.robots_checker = MagicMock()
+        c._last_captcha_error = None
+        c.robots_checker.get_crawl_delay.return_value = 10.0
+        c._discover_urls_from_sitemap = MagicMock(return_value=(True, ["https://slow.org/a"]))
+        c._fetch_url = MagicMock(return_value=(False, None, None, "dead"))
+        received = {}
+
+        def fake_crawl(urls, timeout_total, max_concurrent=10, force=False, crawl_delay=0.0):
+            received["crawl_delay"] = crawl_delay
+            return {}
+
+        c._crawl_specific_urls_async = fake_crawl
+        ok, data, err = c.collect_multi_page("https://slow.org", "00-0000000")
+        assert received["crawl_delay"] == 10.0
+        assert ok is False
+
+
 class _FakeAsyncClient:
     """Minimal async-context-manager stand-in for httpx.AsyncClient whose
     .get() returns a canned response without touching the network."""
@@ -485,7 +586,9 @@ class TestBfsEmptyRetry:
         c._fetch_url = MagicMock(return_value=(True, "<html>ok</html>", "https://amf.org", None))
         calls = []
 
-        def fake_bfs(start_url, max_depth, max_pages, timeout_total, max_concurrent=10, force=False):
+        def fake_bfs(
+            start_url, max_depth, max_pages, timeout_total, max_concurrent=10, force=False, crawl_delay=0.0
+        ):
             calls.append(max_concurrent)
             return {}
 
