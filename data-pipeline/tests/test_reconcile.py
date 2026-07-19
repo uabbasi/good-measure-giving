@@ -57,13 +57,13 @@ class TestApplyAccumulation:
 
         current = {
             "charity_ein": "12-3456789",
-            "program_expense_ratio": None,
+            "total_expenses": None,
             "total_revenue": None,
             "net_assets": 5,  # present -> not a regression
         }
         history = [
             {
-                "program_expense_ratio": 0.85,
+                "total_expenses": 800_000,
                 "total_revenue": 2000,
                 "net_assets": 5,
                 "commit_hash": "c2",
@@ -76,7 +76,7 @@ class TestApplyAccumulation:
 
         assert len(repo.upserts) == 1  # single upsert, NOT one-per-field
         persisted = repo.upserts[0]
-        assert persisted["program_expense_ratio"] == 0.85
+        assert persisted["total_expenses"] == 800_000
         assert persisted["total_revenue"] == 2000
         assert len(all_flags) == 2
         assert skipped == 0

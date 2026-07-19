@@ -45,36 +45,44 @@ from src.utils.phase_cache_helper import check_phase_cache, update_phase_cache
 
 REPORTS_DIR = Path(__file__).parent / "reports"
 
-# Scalar fields derived from REQUIRED sources (ProPublica / CN financials),
-# stored as top-level CharityData columns. These can only recompute to None via
-# a computation gap (all their inputs are required, so a source loss would have
-# aborted the charity before synthesize). A non-null -> null transition here is
-# therefore always a bug, not a genuine drop, so we restore the prior value and
-# flag it. Text/website-derived fields are deliberately excluded — those can
-# legitimately go absent year to year.
+# Scalar fields guarded here are limited to the top-line revenue/expense and
+# balance-sheet totals that are ALWAYS present on any valid 990 or 990-EZ
+# filing. Because every filer reports these, they can only recompute to None
+# via a computation gap (a source loss would have aborted the charity before
+# synthesize) — a non-null -> null transition here is therefore always a bug,
+# not a genuine drop, so we restore the prior value and flag it.
 #
-# Deliberately NOT guarded: the four metrics_json ratios (noncash_ratio,
+# Deliberately NOT guarded: the functional-expense breakdown
+# (program_expenses, admin_expenses, fundraising_expenses) and everything
+# derived from it (program_expense_ratio, working_capital_months) are
+# CONDITIONALLY present — 990-EZ and other small-org filings do not break out
+# functional expenses at all, so a genuinely-filed charity can legitimately
+# have these as None (verified: EIN 82-1670588 / BASMAH's raw ProPublica 990
+# has admin_expenses = fundraising_expenses = None; a prior "last-good" of
+# 10000/5000 for that charity was itself a stale placeholder, not a real
+# value). program_expense_ratio's real computation gap (the Al-Furqaan case)
+# is fixed at source: the aggregator now recomputes it from components
+# (charity_metrics_aggregator.py:1709-1718), so a null ratio today means the
+# components are genuinely absent, not lost — a valid drop, not a bug.
+#
+# Also NOT guarded: the four metrics_json ratios (noncash_ratio,
 # cash_adjusted_program_ratio, domestic_burn_rate, reserves_months) derive from
 # OPTIONAL 990 data (foreign grants / Schedule F, noncash GIK contributions).
 # A charity that simply files no foreign grants this year has a genuinely None
 # domestic_burn_rate (see src/reconciliation/checks.py:147) — that non-null ->
 # null transition is a legitimate drop, not a computation gap, per the design's
 # known-absent-vs-unknown invariant (an observed-but-absent value must write
-# null). Guarding them would restore a stale value into metrics_json — the
-# scorer's source of truth — and score it as current, which is corruption in
-# the OTHER direction. Their real failure mode (a grants-fetch throttle losing
-# the underlying data mid-run) is already handled upstream by the raw-layer
-# non-downgrade carry-forward, which recomputes real ratios from carried
-# grants data rather than needing a post-hoc restore here.
+# null). Guarding any of these conditionally-present fields would restore a
+# stale/placeholder value and score it as current — corruption in the OTHER
+# direction, which this guard exists to prevent, not cause. Their real failure
+# mode (a grants-fetch throttle losing the underlying data mid-run) is already
+# handled upstream by the raw-layer non-downgrade carry-forward, which
+# recomputes real ratios from carried grants data rather than needing a
+# post-hoc restore here.
 REGRESSION_GUARDED_FIELDS = frozenset(
     {
-        "program_expense_ratio",
-        "working_capital_months",
         "total_revenue",
         "total_expenses",
-        "program_expenses",
-        "admin_expenses",
-        "fundraising_expenses",
         "total_assets",
         "total_liabilities",
         "net_assets",

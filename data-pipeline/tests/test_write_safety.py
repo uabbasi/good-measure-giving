@@ -216,27 +216,36 @@ class TestRegressionGuard:
         from src.db import CharityData
         from synthesize import apply_regression_guard
 
-        prior = {"program_expense_ratio": 0.85, "total_revenue": 1_000_000}
+        prior = {"total_revenue": 1_000_000, "total_expenses": 800_000}
         synthesized = CharityData(charity_ein="12-3456789")
-        synthesized.total_revenue = 1_000_000
-        # program_expense_ratio recomputed to None this run (the Al-Furqaan gap)
+        synthesized.total_expenses = 800_000
+        # total_revenue recomputed to None this run (a genuine computation gap --
+        # total_revenue is always present on a valid 990/990-EZ)
         flags = apply_regression_guard(synthesized, prior)
 
-        assert synthesized.program_expense_ratio == 0.85  # restored
-        assert flags == [{"charity_ein": "12-3456789", "field": "program_expense_ratio", "prior_value": 0.85}]
+        assert synthesized.total_revenue == 1_000_000  # restored
+        assert flags == [{"charity_ein": "12-3456789", "field": "total_revenue", "prior_value": 1_000_000}]
 
     def test_guard_allows_observed_absent_and_unguarded_fields(self):
         from src.db import CharityData
         from synthesize import apply_regression_guard
 
-        prior = {"program_expense_ratio": 0.85, "theory_of_change": "old story"}
+        prior = {
+            "total_revenue": 1_000_000,
+            "theory_of_change": "old story",
+            "program_expense_ratio": 0.85,
+        }
         synthesized = CharityData(charity_ein="12-3456789")
-        synthesized.program_expense_ratio = 0.85  # unchanged
+        synthesized.total_revenue = 1_000_000  # unchanged
         # theory_of_change is NOT in the guarded set (website-derived, may legitimately drop)
+        # program_expense_ratio is conditionally present (990-EZ small filers don't
+        # break it out) -- no longer guarded, so a non-null -> null transition here
+        # is a legitimate drop, not a restore target
         flags = apply_regression_guard(synthesized, prior)
 
         assert flags == []
         assert synthesized.theory_of_change is None  # not restored
+        assert synthesized.program_expense_ratio is None  # not restored -- legitimate drop
 
     def test_guard_no_prior_row_is_noop(self):
         from src.db import CharityData
@@ -248,7 +257,25 @@ class TestRegressionGuard:
     def test_guarded_fields_are_required_source_derived(self):
         import synthesize
 
-        assert "program_expense_ratio" in synthesize.REGRESSION_GUARDED_FIELDS
+        # Only the always-present top-line/balance-sheet fields are guarded --
+        # every valid 990/990-EZ filing reports these, so a non-null -> null
+        # transition is unambiguously a computation bug, never a legitimate drop.
+        for f in ("total_revenue", "total_expenses", "total_assets", "total_liabilities", "net_assets"):
+            assert f in synthesize.REGRESSION_GUARDED_FIELDS
+        assert len(synthesize.REGRESSION_GUARDED_FIELDS) == 5
+
+        # Functional-expense breakdown + derived ratios are conditionally present
+        # on 990-EZ / small filers (not broken out there), so their nulls can be
+        # legitimate -- they must NOT be guarded.
+        for f in (
+            "program_expense_ratio",
+            "program_expenses",
+            "admin_expenses",
+            "fundraising_expenses",
+            "working_capital_months",
+        ):
+            assert f not in synthesize.REGRESSION_GUARDED_FIELDS
+
         # metrics_json-only ratios derive from OPTIONAL 990 data (foreign grants /
         # GIK) and can legitimately drop to null — they must NOT be guarded at all,
         # and the dedicated frozenset for them must no longer exist.
