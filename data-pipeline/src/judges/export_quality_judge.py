@@ -336,10 +336,11 @@ class ExportQualityJudge(BaseJudge):
         except (TypeError, ValueError):
             return issues  # Non-numeric values caught by E-J-004
 
-        # amal_score = pillar_sum + risk_deduction (risk is negative, max -10)
-        # So pillar_sum should be >= amal_score (within tolerance)
+        # amal_score = pillar_sum + risk_deduction (risk is negative; -10 cap
+        # for classic risks + up to -4 filing-currency outside it = -14 max,
+        # rubric v5.3.0). So pillar_sum should be >= amal_score (within tolerance)
         min_expected = amal_score  # With max risk deduction
-        max_expected = amal_score + 10  # With no risk deduction
+        max_expected = amal_score + 14  # With no risk deduction
 
         two_pillar_in_range = min_expected - 0.01 <= pillar_sum <= max_expected + 0.01
         three_pillar_in_range = (
