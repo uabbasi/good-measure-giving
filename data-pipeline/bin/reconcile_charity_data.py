@@ -41,8 +41,11 @@ def find_regressions(current_row: dict, history_rows: list[dict], fields) -> lis
     return out
 
 
+_HISTORY_COLUMNS = ["charity_ein", "commit_hash", "commit_date"] + sorted(REGRESSION_GUARDED_FIELDS)
+
+
 def load_history(ein: str) -> list[dict]:
-    """Load charity_data row history, newest-first (all top-level columns +
+    """Load charity_data row history, newest-first (metadata columns +
     commit_hash + commit_date).
 
     NOTE: deliberately NOT using get_dolt().history() — that shared helper
@@ -50,9 +53,17 @@ def load_history(ein: str) -> list[dict]:
     column. The proven column is `commit_date` (see
     src/judges/diff_validator.py:_get_score_history). Direct query here; the
     shared helper is left untouched (unknown other callers).
+
+    NOTE: `SELECT *` on dolt_history_charity_data triggers a server-side panic
+    in Dolt (`index out of range` in prolly_fields.go/historyIter) whenever
+    the table's schema changed across the queried history — a known Dolt bug
+    where `SELECT *` does positional field access that breaks across schema
+    versions. Naming columns explicitly avoids the positional path and maps
+    them correctly by name (fields missing in older commits come back NULL).
     """
+    cols = ", ".join(f"`{c}`" for c in _HISTORY_COLUMNS)
     return execute_query(
-        "SELECT * FROM dolt_history_charity_data WHERE charity_ein = %s "
+        f"SELECT {cols} FROM dolt_history_charity_data WHERE charity_ein = %s "
         "ORDER BY commit_date DESC LIMIT %s",
         (ein, 20),
     ) or []
