@@ -25,7 +25,6 @@ Usage:
 import argparse
 import os
 import sys
-from datetime import datetime, timedelta
 from pathlib import Path
 from threading import Lock
 
@@ -39,53 +38,13 @@ from src.db.dolt_client import dolt, tables_for_phases
 from src.db.repository import CharityRepository, RawDataRepository
 from src.utils.charity_loader import load_charities_from_file
 from src.utils.ein_utils import validate_and_format
+from src.utils.freshness import source_freshness_state
 from src.utils.logger import PipelineLogger
 from src.utils.phase_cache_helper import check_phase_cache, update_phase_cache
 from src.utils.worker_pool import WorkerPool
 
 # Thread-safe printing
 print_lock = Lock()
-
-
-def source_freshness_state(row: dict | None, ttl_days: int) -> str:
-    """
-    Classify a single raw_scraped_data row's freshness against a TTL.
-
-    The one shared pure helper for freshness age-math — mirrors
-    DataCollectionOrchestrator._is_data_fresh's tz-aware age math exactly
-    (fromisoformat with "Z" -> "+00:00", datetime.now(tz) - scraped_dt),
-    fail-closed on parse errors. Both select_stale_website_eins and
-    crawl_freshness_summary are built on top of this so the age math lives
-    in one place.
-
-    Args:
-        row: raw_scraped_data row dict (or None if no row exists)
-        ttl_days: TTL in days for this source
-
-    Returns:
-        One of "missing" (no row), "failed" (row.success is falsy),
-        "stale" (succeeded but scraped_at is older than ttl_days, missing,
-        or unparseable — fail closed), "fresh" (succeeded and within TTL).
-    """
-    if row is None:
-        return "missing"
-    if not row.get("success"):
-        return "failed"
-
-    scraped_at = row.get("scraped_at")
-    if not scraped_at:
-        return "stale"
-
-    try:
-        if isinstance(scraped_at, str):
-            scraped_dt = datetime.fromisoformat(scraped_at.replace("Z", "+00:00"))
-        else:
-            scraped_dt = scraped_at
-        age = datetime.now(scraped_dt.tzinfo) - scraped_dt
-    except (ValueError, TypeError):
-        return "stale"
-
-    return "stale" if age >= timedelta(days=ttl_days) else "fresh"
 
 
 def select_stale_website_eins(

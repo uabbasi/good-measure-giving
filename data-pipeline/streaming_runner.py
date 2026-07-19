@@ -43,6 +43,7 @@ from src.collectors.form990_grants import Form990GrantsCollector
 from src.collectors.orchestrator import DataCollectionOrchestrator
 from src.collectors.propublica import ProPublicaCollector
 from src.collectors.web_collector import WebsiteCollector
+from src.constants import SOURCE_TTL_DAYS
 from src.db import (
     CharityDataRepository,
     CharityRepository,
@@ -57,6 +58,7 @@ from src.llm.llm_client import LLMClient
 from src.scorers.v2_scorers import AmalScorerV2
 from src.utils.charity_loader import load_charities_from_file, normalize_website_url
 from src.utils.ein_utils import validate_and_format
+from src.utils.freshness import website_needs_recrawl
 from src.utils.logger import PipelineLogger
 from src.utils.phase_cache_helper import (
     check_phase_cache,
@@ -251,6 +253,8 @@ def _phase_artifacts_exist(
         has_successful_raw = any(row.get("success") for row in rows)
         if not has_successful_raw:
             return False, "no successful raw_scraped_data rows"
+        if website_needs_recrawl(rows, SOURCE_TTL_DAYS["website"]):
+            return False, "website stale/failed — re-crawl"
         return True, ""
 
     if phase == "extract":
