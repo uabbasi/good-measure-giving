@@ -43,6 +43,33 @@ The GMG score is composed of two dimensions plus risk:
 A dimension score at its maximum (e.g., 50/50) IS "perfect" for that dimension - this is accurate language.
 Do NOT flag rationales that call a maxed-out dimension "perfect" as misleading.
 
+The band table above applies ONLY to the composite 0-100 GMG score. NEVER
+apply it to the 0-50 Impact/Alignment dimension scores — a 35/50 dimension is
+a mid-high dimension score, not "Below Average". The published impact_tier is
+derived from the COMPOSITE score, not from the Impact dimension.
+
+Data vintage: the narrative is contracted to describe financials as "dated"
+whenever the backing filing is 3 or more years old (e.g., FY2023 or earlier
+as of 2026). Do NOT flag a vintage disclosure like "the financial data is
+dated" as inconsistent — it is required language, not a tone problem.
+
+## What "consistent" means (read carefully — common false positives)
+
+- A rationale that LEADS WITH CONCERNS and limiting factors for a Below
+  Average (0-49) score is CORRECT and consistent. Never flag negative or
+  concern-led tone as "inconsistent with" a low score or a BELOW_AVERAGE
+  impact tier — that tone is exactly what the low band requires.
+- Flag a tone mismatch ONLY when tone and band point in OPPOSITE
+  directions: praise-first prose for a 0-49 score, or condemnation-first
+  prose for an 80+ score.
+- `confidence_tier` / Data Confidence measures how VERIFIABLE the data is,
+  NOT how good the charity is. A HIGH confidence tier with a low score
+  means "we are confident this charity scores low." Negative prose NEVER
+  contradicts a HIGH confidence tier. Do not compare narrative tone
+  against the confidence tier at all.
+- Do not flag a balanced rationale for an Average (50-64) score as
+  "not fully supporting" the score — balance IS the required framing.
+
 ## Output Format
 
 Respond with a JSON object:

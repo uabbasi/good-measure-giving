@@ -93,6 +93,10 @@ class BaseJudge(ABC):
         """Path to the prompt template file for this judge."""
         return PROMPTS_DIR / f"{self.name}_judge.txt"
 
+    # Per-judge model override: set on a subclass when the shared judge_model
+    # is not reliable enough for that judge's task.
+    judge_model_override: Optional[str] = None
+
     def get_llm_client(self) -> LLMClient:
         """Get or create the LLM client for this judge.
 
@@ -101,12 +105,13 @@ class BaseJudge(ABC):
         the LLM_JUDGE task-chain fallbacks explicitly.
         """
         if self._llm_client is None:
+            model = self.judge_model_override or self.config.judge_model
             default_primary, default_fallbacks = TASK_MODELS[LLMTask.LLM_JUDGE]
-            if self.config.judge_model != default_primary:
-                client = LLMClient(task=LLMTask.LLM_JUDGE, model=self.config.judge_model)
+            if model != default_primary:
+                client = LLMClient(task=LLMTask.LLM_JUDGE, model=model)
                 client.fallback_models = [
                     m for m in [default_primary, *default_fallbacks]
-                    if m != self.config.judge_model
+                    if m != model
                 ]
             else:
                 client = LLMClient(task=LLMTask.LLM_JUDGE)
