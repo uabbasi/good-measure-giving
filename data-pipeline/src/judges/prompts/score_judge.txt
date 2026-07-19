@@ -21,7 +21,20 @@ The scores are deterministic (calculated by scoring algorithms). Your job is to 
 
 1. **Rationale Accuracy**: Does the narrative correctly explain WHY the score was assigned?
 2. **Consistency**: Is the rationale internally consistent with the score level?
-3. **Completeness**: Does the rationale mention the key factors that affected the score?
+3. **Completeness**: Does the rationale name the DECISIVE factor(s) — the one or
+   two components that most determined the band?
+
+**Completeness is deliberately narrow.** The rationale is a 1-2 sentence donor
+summary, NOT a component-by-component audit. It cannot and should not enumerate
+every dimension. Do NOT flag a rationale merely for omitting a component:
+- Omitting a component that scored WELL, or a minor/secondary factor, is FINE —
+  never flag it. A rationale that highlights the two biggest strengths and
+  skips the rest is complete.
+- The ONLY completeness gap worth flagging is when the rationale omits the
+  DOMINANT limiting factor of a below-par score — i.e. a Below Average or
+  Average score whose rationale reads positive because it left out the single
+  component that actually dragged the band down. That omission makes the
+  rationale misleading; flag it. Everything else is acceptable.
 
 Score interpretation (GMG score is 0-100; these are the PUBLISHED band
 thresholds donors see — the same bands the narrative generator is contracted
@@ -95,8 +108,12 @@ Respond with a JSON object:
 
 ## Severity Guidelines
 - **error**: Rationale contradicts the score (e.g., glowing praise for a 40 score)
-- **warning**: Rationale is incomplete (missing key factors that affected score)
-- **info**: Minor tone mismatch or could be clearer
+- **warning**: Rationale omits the DOMINANT limiting factor of a below-par
+  score, making it read more positive than the band warrants. Do NOT emit a
+  warning merely because a rationale doesn't list every component — that is
+  never a warning.
+- **info**: Minor tone mismatch, or a well-scored/secondary component the
+  rationale could have mentioned but didn't. Optional polish, not a defect.
 
 **Important**: Do NOT penalize the narrative for not mentioning data quality issues
 (EIN mismatches, low confidence discoveries, etc.) from the source data. The narrative

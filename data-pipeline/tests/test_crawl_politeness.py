@@ -177,3 +177,29 @@ class TestCrawlDelayAndEmptyRetry:
         assert calls == [10]  # terminal block → no serial retry
         assert ok is False
         assert "CAPTCHA" in err
+
+
+class TestBfsEmptyRetry:
+    """BFS-mode empty crawl (no sitemap) also retries serially — recovers AMF."""
+
+    def _collector(self):
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c.robots_checker = MagicMock()
+        c._last_captcha_error = None
+        return c
+
+    def test_bfs_empty_retries_serially(self):
+        c = self._collector()
+        c.robots_checker.get_crawl_delay.return_value = 10.0  # AMF advertises a delay
+        c._discover_urls_from_sitemap = MagicMock(return_value=(False, []))  # no sitemap → BFS
+        c._fetch_url = MagicMock(return_value=(True, "<html>ok</html>", "https://amf.org", None))
+        calls = []
+
+        def fake_bfs(start_url, max_depth, max_pages, timeout_total, max_concurrent=10):
+            calls.append(max_concurrent)
+            return {}
+
+        c._crawl_with_bfs_async = fake_bfs
+        ok, data, err = c.collect_multi_page("https://amf.org", "00-0000000")
+        assert calls == [2, 1]  # delay-lowered burst (2), then serial retry (1)

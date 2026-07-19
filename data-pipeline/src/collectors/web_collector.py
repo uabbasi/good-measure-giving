@@ -597,8 +597,10 @@ class WebsiteCollector(BaseCollector):
                 else:
                     # No cache but got 304, fetch fresh (with recursion limit)
                     return self._fetch_url(url, force=True, _recursion_depth=_recursion_depth + 1)
-            elif response.status_code in (403, 202, 503) and HAS_CURL_CFFI:
-                # Bot protection detected (403 = blocked, 202 = JS challenge pending, 503 = challenge page)
+            elif response.status_code in (403, 202, 503, 404) and HAS_CURL_CFFI:
+                # Bot protection detected (403 = blocked, 202 = JS challenge pending,
+                # 503 = challenge page, 404 = fingerprint block on IIS/ASP.NET hosts
+                # that 404 non-browser requests but serve 200 to real browsers).
                 # Try curl_cffi with multiple browser profiles
                 original_status = response.status_code
                 if self.logger:
@@ -1081,6 +1083,16 @@ class WebsiteCollector(BaseCollector):
                             return curl_result
                         # curl_cffi also failed, return original captcha error
 
+                    # Fingerprint bot-block via 404: some IIS/ASP.NET hosts return
+                    # 404 to non-browser TLS/header fingerprints while serving 200
+                    # to real browsers (e.g. againstmalaria.com). Try curl_cffi
+                    # impersonation; a genuine 404 stays a 404. NOT flagged captcha
+                    # (no terminal backoff).
+                    if response.status_code == 404 and HAS_CURL_CFFI:
+                        curl_result = await self._try_curl_cffi_async(url)
+                        if curl_result[1]:  # success → real browser gets the page
+                            return curl_result
+
                     return url, False, None, None, error_msg
 
             except httpx.TimeoutException:
@@ -1509,7 +1521,7 @@ class WebsiteCollector(BaseCollector):
         return results
 
     async def _crawl_bfs_async(
-        self, start_url: str, max_depth: int, max_pages: int, timeout_total: int
+        self, start_url: str, max_depth: int, max_pages: int, timeout_total: int, max_concurrent: int = 10
     ) -> Dict[str, Dict[str, Any]]:
         """
         Async BFS crawl - fetches each depth level in parallel for ~5x speedup.
@@ -1567,7 +1579,7 @@ class WebsiteCollector(BaseCollector):
             # Parallel fetch all URLs at this level
             url_list = [u for u, _ in urls_to_fetch]
             remaining_time = max(10, timeout_total - int(time.time() - start_time))
-            fetch_results = await self._crawl_urls_async(url_list, max_concurrent=10, timeout_total=remaining_time)
+            fetch_results = await self._crawl_urls_async(url_list, max_concurrent=max_concurrent, timeout_total=remaining_time)
 
             # Process fetched pages and collect links for next level
             next_level: List[Tuple[str, int]] = []
@@ -1637,7 +1649,7 @@ class WebsiteCollector(BaseCollector):
         return results
 
     def _crawl_with_bfs_async(
-        self, start_url: str, max_depth: int, max_pages: int, timeout_total: int
+        self, start_url: str, max_depth: int, max_pages: int, timeout_total: int, max_concurrent: int = 10
     ) -> Dict[str, Dict[str, Any]]:
         """
         Synchronous wrapper for async BFS crawl.
@@ -1653,7 +1665,9 @@ class WebsiteCollector(BaseCollector):
         Returns:
             Dictionary mapping URL -> extracted data
         """
-        return self._run_async(self._crawl_bfs_async(start_url, max_depth, max_pages, timeout_total))
+        return self._run_async(
+            self._crawl_bfs_async(start_url, max_depth, max_pages, timeout_total, max_concurrent=max_concurrent)
+        )
 
     def _merge_llm_data(self, regex_data: Dict[str, Any], llm_data: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -2370,22 +2384,33 @@ class WebsiteCollector(BaseCollector):
                     max_depth=CRAWLER_CONFIG["max_depth"],
                     max_pages=CRAWLER_CONFIG["max_pages"],
                     timeout_total=CRAWLER_CONFIG["timeout_total"],
+                    max_concurrent=polite_concurrency,
                 )
             timing["page_crawling"] = round(time.time() - crawl_phase_start, 1)
 
             # Empty batch against a live homepage is a throttle signal, not a
             # dead site. Retry once serially (concurrency 1) before giving up —
-            # skip only when a terminal block (CAPTCHA/challenge) was detected.
-            if not crawl_results and sitemap_used and not self._last_captcha_error:
+            # for BOTH sitemap and BFS paths; skip only when a terminal block
+            # (CAPTCHA/challenge) was detected.
+            if not crawl_results and not self._last_captcha_error:
                 homepage_ok = self._fetch_url(url, force=True)[0]
                 if homepage_ok:
                     if self.logger:
                         self.logger.info(f"Empty crawl for {url} but homepage is live — retrying serially")
-                    crawl_results = self._crawl_specific_urls_async(
-                        urls=target_urls,
-                        timeout_total=CRAWLER_CONFIG["timeout_total"],
-                        max_concurrent=1,
-                    )
+                    if sitemap_used:
+                        crawl_results = self._crawl_specific_urls_async(
+                            urls=target_urls,
+                            timeout_total=CRAWLER_CONFIG["timeout_total"],
+                            max_concurrent=1,
+                        )
+                    else:
+                        crawl_results = self._crawl_with_bfs_async(
+                            start_url=url,
+                            max_depth=CRAWLER_CONFIG["max_depth"],
+                            max_pages=CRAWLER_CONFIG["max_pages"],
+                            timeout_total=CRAWLER_CONFIG["timeout_total"],
+                            max_concurrent=1,
+                        )
 
             if not crawl_results:
                 # Return specific captcha error if detected, otherwise generic message
