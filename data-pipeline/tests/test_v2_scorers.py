@@ -1526,3 +1526,32 @@ class TestArchetypeScoring:
             assert total_possible == 50, (
                 f"{archetype_name}: sum of possible={total_possible}, expected 50"
             )
+
+
+class TestFilingCurrencyOutsideCap:
+    """Filing-currency deductions stack OUTSIDE the -10 cap (worst case -14)."""
+
+    def test_stale_filing_stacks_beyond_cap(self):
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.30,  # -5
+            board_size=1,  # -5
+            working_capital_ratio=0.5,  # -2
+            noncash_ratio=0.60,  # -5 GIK
+            financial_data_tax_year=date.today().year - 6,  # -4 stale, uncapped
+        )
+        _case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == -14  # -10 cap + -4 filing currency
+
+    def test_al_furqaan_shape(self):
+        """Other risks below cap: they cap at -10 only among themselves."""
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.30,  # -5
+            board_size=1,  # -5 -> capped -10
+            financial_data_tax_year=date.today().year - 3,  # -2 outside
+        )
+        _case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == -12

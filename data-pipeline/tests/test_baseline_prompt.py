@@ -60,15 +60,16 @@ class TestDataVintageNote:
 
         note = data_vintage_note(2024, today_year=2026)
         assert "fiscal year 2024" in note
-        assert "MUST disclose" not in note
+        assert "RED FLAG" not in note
 
     def test_stale_filing_requires_disclosure(self):
         from src.llm.prompt_loader import data_vintage_note
 
         note = data_vintage_note(2022, today_year=2026)
-        assert "MUST disclose" in note
+        assert "RED FLAG" in note
         assert "4 years old" in note
         assert "FY2022" in note
+        assert "caution" in note
 
     def test_unknown_year_forbids_attribution(self):
         from src.llm.prompt_loader import data_vintage_note
@@ -79,5 +80,5 @@ class TestDataVintageNote:
     def test_boundary_two_years_is_fresh(self):
         from src.llm.prompt_loader import data_vintage_note
 
-        assert "MUST disclose" not in data_vintage_note(2024, today_year=2026)
-        assert "MUST disclose" in data_vintage_note(2023, today_year=2026)
+        assert "RED FLAG" not in data_vintage_note(2024, today_year=2026)
+        assert "RED FLAG" in data_vintage_note(2023, today_year=2026)

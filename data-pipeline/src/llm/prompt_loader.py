@@ -246,11 +246,15 @@ def data_vintage_note(fiscal_year: Optional[int], today_year: Optional[int] = No
     if age >= DATA_VINTAGE_STALE_YEARS:
         return (
             f"The latest available financials are from fiscal year {fiscal_year} — "
-            f"{age} years old. The narrative MUST disclose this plainly, e.g. "
-            f'"based on the most recent available filings (FY{fiscal_year})", and '
-            f"note that more recent figures were not available. Dated financials "
-            f"are a mild transparency concern; treat them as such — do not present "
-            f"FY{fiscal_year} figures as if they were current."
+            f"{age} years old. This is a RED FLAG the narrative MUST surface "
+            f"prominently, not bury in a footnote: state plainly that no newer "
+            f"filings are available (e.g. \"No financial filings newer than "
+            f"FY{fiscal_year} are available — donors should treat this "
+            f"{age}-year-old financial picture with caution\"), list it among the "
+            f"concerns / areas for improvement, and never present FY{fiscal_year} "
+            f"figures as if they were current. An organization this far behind on "
+            f"public filings raises accountability questions the narrative should "
+            f"say out loud."
         )
     return (
         f"Financial figures come from fiscal year {fiscal_year} filings. When citing "

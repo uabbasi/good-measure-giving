@@ -2043,7 +2043,17 @@ class ZakatScorer:
         "riqab": ["riqab", "captive", "bondage", "enslaved", "incarcerated", "prisoner", "detained"],
         "gharimin": ["gharimin", "debt", "indebted", "debt relief", "debtor"],
         "ibn_sabil": ["ibn sabil", "wayfarer", "traveler", "refugee", "displaced", "stranded"],
-        "fi_sabilillah": ["fi sabil", "cause of allah", "dawah", "islamic education", "in allah's cause"],
+        "fi_sabilillah": [
+            "fi sabil",
+            "cause of allah",
+            "dawah",
+            "islamic education",
+            "in allah's cause",
+            "quran",
+            "qur'an",
+            "mosque",
+            "masjid",
+        ],
     }
 
     def evaluate(self, metrics: CharityMetrics) -> ZakatBonusAssessment:
@@ -2072,12 +2082,22 @@ class ZakatScorer:
             ]
         ).lower()
 
+        # Count distinct pattern hits per category and take the strongest
+        # signal — first-match-wins let a single 'prisoner' mention outrank a
+        # Quran-distribution org's entire dawah mission (Al-Furqaan: riqab
+        # over fi_sabilillah). Ties keep the declaration order.
+        counts: dict[str, int] = {}
         for category, patterns in self.ASNAF_PATTERNS.items():
+            hits = 0
             for pattern in patterns:
                 # Word-boundary match: a bare substring test matched 'amil' inside
                 # 'family' (and similar), mislabeling asnaf categories. [#8]
                 if re.search(rf"\b{re.escape(pattern)}\b", text):
-                    return category
+                    hits += 1
+            if hits:
+                counts[category] = hits
+        if counts:
+            return max(counts, key=lambda c: counts[c])
         return None
 
 
@@ -2087,11 +2107,15 @@ class ZakatScorer:
 
 
 class RiskScorer:
-    """Evaluates risks for deduction (-10 points max).
+    """Evaluates risks for deduction (-10 cap + uncapped filing-currency).
 
     Size-adjusted: Emerging orgs (<$1M) get no deduction for missing
     TOC or outcomes (already penalized in Credibility). Established
     orgs (>$10M) get full deductions — no excuses at that scale.
+
+    Filing-currency deductions (stale_filings_*) stack OUTSIDE the -10
+    cap (worst case -14): an org that stopped filing must feel it even
+    when other red flags saturate the cap. (Rubric v5.3.0.)
 
     Risk deductions (capped at -10 total):
     - program_ratio_under_50: -5 (ProPublica 990)
@@ -2431,14 +2455,6 @@ class RiskScorer:
         if any("advisory" in b or "concern" in b for b in cn_beacons):
             total += RISK_DEDUCTIONS["cn_advisory_flag"]
 
-        # Filing currency (rubric v5.3.0)
-        filing_age = self._filing_age_years(metrics)
-        if filing_age is not None:
-            if filing_age >= 5:
-                total += RISK_DEDUCTIONS["stale_filings_5yr"]  # -4
-            elif filing_age >= 3:
-                total += RISK_DEDUCTIONS["stale_filings_3yr"]  # -2
-
         # GIK inflation
         noncash_ratio = metrics.noncash_ratio
         if noncash_ratio is not None:
@@ -2479,7 +2495,19 @@ class RiskScorer:
                 total += deduction
                 _applied_checks.add(check_name)
 
-        return max(-10, total)
+        capped = max(-10, total)
+
+        # Filing currency (rubric v5.3.0) — applied OUTSIDE the -10 cap: an
+        # org that has stopped filing must feel this even when other red
+        # flags already saturate the cap. Worst case combined: -14.
+        filing_age = self._filing_age_years(metrics)
+        if filing_age is not None:
+            if filing_age >= 5:
+                capped += RISK_DEDUCTIONS["stale_filings_5yr"]  # -4
+            elif filing_age >= 3:
+                capped += RISK_DEDUCTIONS["stale_filings_3yr"]  # -2
+
+        return capped
 
     def _determine_risk_level(self, deduction: int) -> str:
         if deduction <= -8:
