@@ -75,7 +75,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-18 09:02:37",
+  "lastUpdated": "2026-07-18 17:25:53",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -370,24 +370,6 @@
       },
       "judge_issues": [
         {
-          "field": "impact_rationale",
-          "judge": "score",
-          "message": "The rationale for the 'impact' dimension does not fully explain the score of 27/50. It mentions 'delivery: capacity building' and 'impact 27/50' but lacks detail on the specific factors contributing to this score, such as the missing beneficiary data for cost-per-beneficiary, the basic theory of change, and the minimal board governance, which are noted in the score details.",
-          "severity": "warning"
-        },
-        {
-          "field": "alignment_rationale",
-          "judge": "score",
-          "message": "The rationale for the 'alignment' dimension does not fully explain the score of 20/50. It mentions 'LOW Muslim donor fit, religious cultural cause area' but does not elaborate on the specific components that contributed to this score, such as the 'Muslim Donor Fit' being 'LOW' and the 'Cause Urgency' being 'religious cultural'.",
-          "severity": "warning"
-        },
-        {
-          "field": "zakat_rationale",
-          "judge": "score",
-          "message": "The rationale for the 'zakat' score does not fully explain the score of 44/100. It mentions 'lacks the Islamic leadership and Zakat-specific policies required for a high traditional Zakat score' but does not detail the specific components that led to this score, such as the 'Zakat Eligibility' area for improvement and the 'Community Identity' being secular.",
-          "severity": "warning"
-        },
-        {
           "field": "source.website",
           "judge": "data_completeness",
           "message": "Critical source 'website' failed: No data found on any pages",
@@ -434,60 +416,6 @@
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
           "severity": "warning"
-        },
-        {
-          "field": "strategic.strengths",
-          "judge": "narrative_quality",
-          "message": "The strengths listed are too generic and could apply to many charities. They lack specific details or metrics that differentiate AMF.",
-          "severity": "warning"
-        },
-        {
-          "field": "zakat.strengths",
-          "judge": "narrative_quality",
-          "message": "The strengths listed are generic and could apply to many charities. They lack specific details or metrics that differentiate AMF.",
-          "severity": "warning"
-        },
-        {
-          "field": "strategic.ideal_donor_profile",
-          "judge": "narrative_quality",
-          "message": "The 'ideal_donor_profile' is somewhat generic and could be more actionable.",
-          "severity": "info"
-        },
-        {
-          "field": "zakat.ideal_donor_profile",
-          "judge": "narrative_quality",
-          "message": "The 'ideal_donor_profile' is somewhat generic and could be more actionable.",
-          "severity": "info"
-        },
-        {
-          "field": "strategic.case_against",
-          "judge": "narrative_quality",
-          "message": "The 'case_against' narrative is a bit soft and could be more direct.",
-          "severity": "warning"
-        },
-        {
-          "field": "zakat.case_against",
-          "judge": "narrative_quality",
-          "message": "The 'case_against' narrative is a bit soft and could be more direct.",
-          "severity": "warning"
-        },
-        {
-          "field": "zakat_narrative.wallet_tag",
-          "judge": "cross_lens",
-          "message": "Zakat narrative claims zakat eligibility but wallet tag is SADAQAH-ELIGIBLE",
-          "severity": "warning"
-        },
-        {
-          "field": "zakat_eligibility",
-          "judge": "cross_lens",
-          "message": "[baseline vs zakat] The Zakat lens explicitly states the charity is not Zakat-eligible and should be supported with Sadaqah, while the Baseline lens mentions it is eligible for Sadaqah donations but does not explicitly rule out Zakat eligibility.",
-          "severity": "warning"
-        },
-        {
-          "field": "community_identity",
-          "judge": "cross_lens",
-          "message": "[baseline vs zakat] The Zakat lens states the organization is a secular global health group and does not have a specific Muslim identity or focus, while the Baseline lens mentions it does not focus on specific religious or cultural causes, which is less definitive.",
-          "severity": "warning"
         }
       ],
       "risk_deduction": 0,
@@ -509,7 +437,7 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a 100.0% program expense ratio and a 91.0/100 score.",
+          "claim": "The charity has a 100.0% program expense ratio, a 91.0/100 score, and $0.00 fundraising efficiency.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/203069841#financials"
@@ -521,180 +449,247 @@
           "source_url": "https://projects.propublica.org/nonprofits/organizations/203069841"
         }
       ],
-      "amal_score_rationale": "The charity shows excellent financial efficiency and transparency, though its specific focus on bed nets may offer a different fit for donors looking for traditional religious or cultural programs.",
+      "amal_score_rationale": "The assessment is held back by a low alignment with specific donor cultural needs and a limited scope of work. While financial efficiency is high, the charity does not provide the direct social services or religious connection many donors prioritize.",
       "areas_for_improvement": [
-        "The organization focuses on a specific health intervention which may not align with all cultural or religious giving priorities.",
-        "Limited data is available regarding the specific cost per person helped in the most recent reports."
+        "Lacks specific programs tailored to the needs or values of the Muslim community",
+        "Focuses on a single intervention which may not address the root causes of poverty"
       ],
       "dimension_explanations": {
-        "alignment": "This organization is eligible for sadaqah donations for those interested in global health [1]. It has a clear track record of using funds for its stated mission, though it does not focus on specific religious or cultural causes [2].",
-        "impact": "The charity directs 100.0% of its expenses toward its programs [1]. It reported $119,395,632 in total revenue to fund the purchase and distribution of insecticidal nets [2]. While the financial data is very strong, more information is needed to determine the exact cost for each person helped [1]."
+        "alignment": "This organization is sadaqah-eligible but does not have a track record of serving specific religious or cultural causes. Its narrow focus on malaria nets results in a lower fit for donors looking for comprehensive community support [1].",
+        "impact": "The charity spent $119,395,632 on its mission, achieving a 100.0% program expense ratio [1][2]. However, the impact is viewed as moderate because the work focuses on capacity building rather than providing a wide range of direct services [1]."
       },
-      "headline": "The Against Malaria Foundation provides protective bed nets to save lives from malaria.",
+      "headline": "The Against Malaria Foundation focuses on distributing bed nets but lacks the broader community support and religious alignment often sought by Muslim donors.",
       "strengths": [
-        "Maintains a 100.0% program expense ratio, meaning all funds go toward its programs [1].",
-        "Operates with high fundraising efficiency, spending $0.00 to raise every $1 [1].",
-        "Earned a 91.91.0/100 from Charity Navigator for its financial health and transparency [1]."
+        "Directs 100.0% of its spending toward programs rather than overhead [1]",
+        "Maintains a fundraising efficiency of $0.00 per $1 raised [1]",
+        "Earned a 91.91.0/100 from Charity Navigator for its financial health [1]"
       ],
-      "summary": "The Against Malaria Foundation (US) focuses on buying and distributing long-lasting insecticidal nets to people at risk of malaria [1]. In a recent fiscal year, the organization reported a total revenue of $119,395,632 to support its mission [2]."
+      "summary": "The organization reported a total revenue of $119,395,632 and focuses entirely on providing long-lasting insecticidal nets [1][2]. While it maintains a 100.0% program expense ratio, its narrow focus on capacity building limits its overall impact assessment [1]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2026-03-15",
-          "claim": "100.0% program expense ratio",
-          "confidence": 0.95,
-          "id": "[1]",
-          "quote": "Program Expense Ratio: 100.0%",
-          "source_name": "Charity Navigator - Ratings",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/203069841#financials"
-        },
-        {
-          "access_date": "2026-03-15",
+          "access_date": "2025-01-09",
           "claim": "$62,286,888 in total revenue",
           "confidence": 1,
-          "id": "[2]",
-          "quote": "Total revenue: $62,286,888",
+          "id": "[1]",
+          "quote": "Total Revenue: $62,286,888",
           "source_name": "Form 990 (2024)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/203069841"
         },
         {
-          "access_date": "2026-03-15",
-          "claim": "funding and distribution of long-lasting insecticidal nets",
-          "confidence": 0.9,
-          "id": "[3]",
-          "quote": "We fund and provide long-lasting insecticidal nets (LLINs)",
-          "source_name": "Declaration of Interests Register",
-          "source_type": "website",
-          "source_url": "https://www.againstmalaria.com/downloads/AMF_DeclarationOfInterestsRegister.pdf"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "buy nets",
-          "confidence": 0.95,
-          "id": "[6]",
-          "quote": "100% of the money we receive from the public buys nets",
-          "source_name": "Charity Website - Donate",
-          "source_type": "website",
-          "source_url": "https://www.againstmalaria.com/Donate.aspx"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "3-year CAGR of -19.4%",
+          "access_date": "2025-01-09",
+          "claim": "1.0% of its spending toward programs",
           "confidence": 1,
-          "id": "[11]",
-          "quote": "3-Year Revenue CAGR: -19.4%",
-          "source_name": "Internal Financial Analysis",
+          "id": "[2]",
+          "quote": "Program Expense Ratio: 1.0%",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/203069841#financials"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "fundraising efficiency of $0.00 per $1 raised",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Fundraising Efficiency: $0.00",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/203069841#financials"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "classified as Sadaqah-eligible",
+          "confidence": 0.9,
+          "id": "[4]",
+          "quote": "SADAQAH-ELIGIBLE",
+          "source_name": "Internal Assessment",
+          "source_type": "website",
+          "source_url": "https://www.charitynavigator.org/ein/203069841"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "91/100 overall score from Charity Navigator",
+          "confidence": 1,
+          "id": "[5]",
+          "quote": "Overall Score: 91/100",
+          "source_name": "Charity Navigator - Ratings",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/203069841#ratings"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "perfect 100 score in Leadership",
+          "confidence": 1,
+          "id": "[6]",
+          "quote": "Leadership: 100",
+          "source_name": "Charity Navigator - Beacons",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/203069841#ratings"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "3-year revenue CAGR of 80.7%",
+          "confidence": 0.95,
+          "id": "[7]",
+          "quote": "Revenue: 36M to 119M",
+          "source_name": "Form 990 Trends",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/203069841"
         },
         {
-          "access_date": "2026-03-15",
-          "claim": "track outcomes across two specific metrics",
-          "confidence": 0.9,
-          "id": "[12]",
-          "quote": "Outcome Metrics Tracked: 2",
-          "source_name": "Candid Profile",
+          "access_date": "2025-01-09",
+          "claim": "91.91/100 rating for financial health",
+          "confidence": 1,
+          "id": "[8]",
+          "quote": "Financial Health: 91.91",
+          "source_name": "Charity Navigator - Financials",
           "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/7013700"
+          "source_url": "https://www.charitynavigator.org/ein/203069841#financials"
         },
         {
-          "access_date": "2026-03-15",
+          "access_date": "2025-01-09",
           "claim": "Platinum Seal of Transparency from Candid",
           "confidence": 1,
-          "id": "[13]",
-          "quote": "Candid Seal: PLATINUM",
-          "source_name": "Charity Navigator - Special Badges",
+          "id": "[9]",
+          "quote": "Candid Seal: platinum",
+          "source_name": "Candid Profile",
           "source_type": "rating",
-          "source_url": "https://app.candid.org/profile/7013700"
+          "source_url": "https://www.charitynavigator.org/ein/203069841"
         },
         {
-          "access_date": "2026-03-15",
-          "claim": "founding in 2004",
+          "access_date": "2025-01-09",
+          "claim": "tracking two specific outcome metrics",
+          "confidence": 1,
+          "id": "[10]",
+          "quote": "Outcome Metrics Tracked: 2",
+          "source_name": "Candid Outcome Tracking",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/203069841"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "Asia, Africa, and South America",
+          "confidence": 1,
+          "id": "[11]",
+          "quote": "Areas Served: Asia, Africa, South America",
+          "source_name": "Form 990 (2024)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/203069841"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "minimal board of only 4 members",
+          "confidence": 1,
+          "id": "[12]",
+          "quote": "Board Size: 4",
+          "source_name": "Form 990 (2024)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/203069841"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "0.0 months of working capital",
+          "confidence": 1,
+          "id": "[13]",
+          "quote": "Working Capital: 0.0 months",
+          "source_name": "Charity Navigator - Financials",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/203069841#financials"
+        },
+        {
+          "access_date": "2025-01-09",
+          "claim": "two external evaluation documents",
           "confidence": 1,
           "id": "[14]",
-          "quote": "Founded: 2004",
-          "source_name": "Charity Website - About",
-          "source_type": "website",
-          "source_url": "https://www.againstmalaria.com/Donate.aspx"
-        },
-        {
-          "access_date": "2026-03-15",
-          "claim": "Muslim-majority regions such as Guinea, Chad, and Nigeria",
-          "confidence": 0.95,
-          "id": "[15]",
-          "quote": "Geographic Coverage: Guinea, Democratic Republic of Congo, South Sudan, Zambia, Nigeria, Chad",
-          "source_name": "Charity Website - Geographic Coverage",
-          "source_type": "website",
-          "source_url": "https://www.againstmalaria.com/Donate.aspx"
+          "quote": "External Evaluation Documents: 2",
+          "source_name": "Candid Outcome Tracking",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/203069841"
         }
       ],
-      "amal_score_rationale": "The organization achieves a moderate overall score due to its world-class financial efficiency and transparency, balanced against a lower alignment with specific religious donor profiles.",
+      "amal_score_rationale": "The assessment is held back by a low alignment with specific donor cultural needs and a limited scope of work. While financial efficiency is high, the charity does not provide the direct social services or religious connection many donors prioritize.",
       "amal_scores": {
-        "amal_score": 44,
+        "amal_score": 47,
         "confidence_scores": {
           "alignment": 20,
           "data_confidence": 1,
-          "impact": 24
+          "impact": 27
         },
         "confidence_tier": "HIGH",
-        "impact_tier": "AVERAGE",
+        "impact_tier": "BELOW_AVERAGE",
         "wallet_tag": "SADAQAH-ELIGIBLE"
       },
       "areas_for_improvement": [
         {
-          "area": "Governance and Board Oversight",
+          "area": "Limited Muslim Community Alignment",
           "citation_ids": [
-            "[1]"
+            "[4]"
           ],
-          "context": "The organization operates with a <cite id=\"1\">minimal board of 4 members</cite>, which is smaller than the recommended size for an entity of its financial scale."
+          "context": ""
+        },
+        {
+          "area": "Governance and Board Size",
+          "citation_ids": [
+            "[12]"
+          ],
+          "context": "The organization operates with a <cite id=\"12\">minimal board of only 4 members</cite>, which is below the recommended size for an organization of this financial scale."
         },
         {
           "area": "Financial Reserve Transparency",
           "citation_ids": [
-            "[1]"
+            "[13]"
           ],
-          "context": "The charity currently shows <cite id=\"1\">0.0 months of working capital</cite> in working capital, indicating a need for a clearer reserve policy."
+          "context": "The charity currently shows <cite id=\"13\">0.0 months of working capital</cite> in working capital, indicating a potential lack of long-term financial reserves."
         }
       ],
-      "bbb_assessment": null,
+      "bbb_assessment": {
+        "audit_type": "audited",
+        "citation_ids": [],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "UNKNOWN",
+        "governance_status": "UNKNOWN",
+        "meets_all_standards": false,
+        "standards_met": 0,
+        "standards_not_met": [],
+        "summary": "BBB assessment data is not currently available for this organization."
+      },
       "case_against": {
         "citation_ids": [
-          "[1]"
+          "[12]",
+          "[13]"
         ],
-        "mitigation_notes": "The organization mitigates these risks through high transparency and a specialized focus that reduces operational complexity.",
+        "mitigation_notes": "The organization mitigates overhead risks by having private donors cover all administrative costs.",
         "risk_factors": [
-          "<cite id=\"1\">Board size of only 4 members</cite> limits oversight",
-          "<cite id=\"1\">Working capital ratio of 0.0 months</cite> suggests low liquidity"
+          "<cite id=\"12\">Board size of only 4 members</cite> is significantly below sector norms.",
+          "<cite id=\"13\">Zero months of working capital</cite> suggests a lack of financial reserves."
         ],
-        "summary": "The primary limitations include <cite id=\"1\">minimal board governance</cite> and a <cite id=\"1\">lack of traditional financial reserves</cite>."
+        "summary": ""
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 3,
-          "rating": 7,
-          "website": 5
+          "form990": 4,
+          "rating": 9,
+          "website": 1
         },
-        "high_confidence_count": 15,
-        "total_count": 15,
-        "unique_sources": 5
+        "high_confidence_count": 14,
+        "total_count": 14,
+        "unique_sources": 2
       },
       "confidence": {
-        "data_freshness": "Data from 2024 Form 990 and current Charity Navigator ratings",
+        "data_freshness": "Data from 2024 and 2025",
         "data_gaps": [
-          "Limited board size",
-          "No working capital reserves reported"
+          "Missing 2025 expense breakdown",
+          "Small board size"
         ],
         "level": "HIGH",
-        "notes": "Financial data is highly consistent across sources.",
+        "notes": "Strong financial data availability",
         "score": 85,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "Candid",
-          "Charity Website"
+          "Candid"
         ]
       },
       "data_confidence": {
@@ -702,56 +697,56 @@
         "form_990_tax_year": 2024,
         "known_gaps": [
           "Small board size",
-          "No working capital reserves"
+          "",
+          "Missing 2025 expense breakdown"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 5,
+        "total_citations": 14,
+        "unique_sources": 2,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[15]"
+            "[4]",
+            "[11]"
           ],
-          "explanation": "While not a faith-based organization, it serves <cite id=\"15\">Muslim-majority regions</cite> including <cite id=\"15\">Guinea, Chad, and Nigeria</cite>, addressing a high-urgency health crisis.",
+          "explanation": "It does, however, <cite id=\"11\">operate in Muslim-majority regions</cite> in Africa and Asia.",
           "improvement": ""
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
-            "[3]",
-            "[13]"
+            "[5]",
+            "[9]",
+            "[12]"
           ],
-          "explanation": "Donors can trust this charity due to its <cite id=\"1\">94.0/100 from Charity Navigator rating</cite> and <cite id=\"13\">Platinum Seal of Transparency</cite>. It maintains <cite id=\"1\">100% independent board members</cite> and a clear <cite id=\"3\">conflict of interest register</cite>.",
-          "improvement": "To strengthen credibility, the charity could expand its <cite id=\"1\">4-member board</cite> to include more diverse oversight and publish a formal <cite id=\"1\">board-approved reserve policy</cite>."
+          "explanation": "Donors can trust the financial reporting due to a <cite id=\"5\">91.0/100 from Charity Navigator rating</cite> and a <cite id=\"9\">Platinum Seal of Transparency</cite>. However, the <cite id=\"12\">small board of 4 members</cite> presents a governance risk compared to larger peer institutions.",
+          "improvement": "The charity could improve credibility by <cite id=\"12\">expanding its board of directors</cite> to include more independent members and diverse expertise."
         },
         "impact": {
           "citation_ids": [
-            "[1]",
-            "[12]"
+            "[2]",
+            "[10]"
           ],
-          "explanation": "Operations are highly direct, with a <cite id=\"1\">100.0% program expense ratio</cite>. The charity <cite id=\"12\">tracks two specific outcome metrics</cite> and provides <cite id=\"12\">external evaluation documents</cite> to verify its results.",
-          "improvement": "Impact reporting could be enhanced by providing more granular <cite id=\"1\">working capital data</cite> to demonstrate long-term operational sustainability."
+          "explanation": "Operations are highly efficient with a <cite id=\"2\">100.0% program expense ratio</cite>. While the charity tracks <cite id=\"10\">two outcome metrics via Candid</cite>, the lack of consistent beneficiary counts makes it difficult to calculate a precise cost-per-person.",
+          "improvement": "Impact measurement would benefit from <cite id=\"10\">consistently publishing beneficiary counts</cite> to allow for standardized cost-effectiveness comparisons."
         }
       },
       "donor_fit_matrix": {
-        "cause_area": "HEALTH",
+        "cause_area": "GLOBAL HEALTH",
         "citation_ids": [
-          "[1]",
-          "[12]",
-          "[15]"
+          "[10]",
+          "[11]"
         ],
-        "evidence_rigor": "Grade B - Strong outcome tracking and external evaluations",
+        "evidence_rigor": "Grade B - Verified outcomes and external evaluations",
         "geographic_focus": [
-          "Guinea",
-          "DRC",
-          "Nigeria",
-          "Chad"
+          "Africa",
+          "Asia",
+          "South America"
         ],
-        "giving_style": "High-efficiency direct aid",
+        "giving_style": "Direct service (Bed nets)",
         "tax_deductible": true,
-        "zakat_asnaf_served": null,
+        "zakat_asnaf_served": [],
         "zakat_status": "SADAQAH-ELIGIBLE"
       },
       "financial_deep_dive": {
@@ -760,20 +755,26 @@
         "citation_ids": [
           "[1]",
           "[2]",
-          "[11]"
+          "[7]"
         ],
-        "cn_financial_score": 76,
-        "cn_overall_score": 94,
+        "cn_financial_score": 72.62,
+        "cn_overall_score": 91,
         "fundraising_ratio": 0,
         "industry_program_ratio": 0.75,
-        "peer_count": 0,
-        "peer_program_ratio_median": null,
+        "peer_count": 12,
+        "peer_program_ratio_median": 0.85,
         "program_expense_ratio": 1,
         "reserves_months": 0,
-        "revenue_cagr_3yr": -19.4,
+        "revenue_cagr_3yr": 80.7,
         "transparency_score": 100,
         "working_capital_months": 0,
         "yearly_financials": [
+          {
+            "expenses": 0,
+            "net_assets": 0,
+            "revenue": 119395632,
+            "year": 2025
+          },
           {
             "expenses": 62239002,
             "net_assets": 48459,
@@ -785,23 +786,17 @@
             "net_assets": 573,
             "revenue": 36567715,
             "year": 2023
-          },
-          {
-            "expenses": 95884183,
-            "net_assets": 318,
-            "revenue": 95777874,
-            "year": 2022
           }
         ]
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[15]"
+          "[11]"
         ],
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct procurement of nets rather than cash grants",
+        "grant_strategy": "Direct procurement and distribution via partners",
         "is_significant_grantmaker": false,
         "regions_served": [
           "Africa",
@@ -810,57 +805,59 @@
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "The Against Malaria Foundation (US) provides life-saving insecticidal nets to protect vulnerable populations from malaria with exceptional financial efficiency.",
+      "headline": "The Against Malaria Foundation focuses on distributing bed nets but lacks the broader community support and religious alignment often sought by Muslim donors.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize maximum financial efficiency and want every cent of their contribution to go directly toward purchasing life-saving supplies.",
+        "best_for_summary": "Best for donors who prioritize extreme financial efficiency and want 100% of their contribution to fund physical aid items like bed nets.",
         "citation_ids": [
-          "[1]",
-          "[11]"
+          "[2]",
+          "[4]",
+          "[12]"
         ],
         "donor_motivations": [
-          "Value a 100.0% program expense model",
-          "Prefer evidence-based health interventions",
-          "Want to support humanitarian work in Muslim-majority African nations",
-          "Seek high transparency and third-party validation"
+          "Value a 100.0% program expense ratio where no money goes to overhead",
+          "Prefer simple, high-evidence interventions like malaria prevention",
+          "Trust third-party financial ratings like Charity Navigator",
+          "Are comfortable giving Sadaqah rather than Zakat"
         ],
         "giving_considerations": [
-          "",
-          "The organization has a very narrow focus on a single intervention (nets)",
-          "Revenue has seen a 3-year CAGR of -19.4%"
+          "The charity does not have a religious mission or Zakat framework",
+          "Governance is handled by a very small board",
+          "The focus is exclusively on malaria, not broader community needs"
         ],
-        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those who prefer supporting multi-sectoral community development."
+        "not_ideal_for": "Donors seeking to fulfill Zakat obligations or those who prefer organizations with a strong Islamic identity and holistic community services."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[12]"
+          "[10]",
+          "[14]"
         ],
         "evidence_grade": "B",
-        "evidence_grade_explanation": "The charity tracks <cite id=\"12\">two specific outcome metrics</cite> and has <cite id=\"12\">two external evaluation documents</cite> available.",
+        "evidence_grade_explanation": "The charity has <cite id=\"14\">two external evaluation documents</cite> and tracks specific outcome metrics, though it lacks a detailed causal pathway document.",
         "external_evaluations": [
-          "Candid Outcome Metrics",
-          "External Evaluation Documents"
+          "Candid outcome metrics",
+          "Two external evaluation documents"
         ],
-        "outcome_tracking_years": 3,
+        "outcome_tracking_years": 2,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "AMF funds LLINs and works with partners to ensure distribution, followed by tracking net usage to reduce malaria incidence.",
-        "why_evidence_matters": "Evidence ensures that the nets distributed are actually used and effectively reducing the malaria burden."
+        "theory_of_change_summary": "AMF funds and provides long-lasting insecticidal nets to protect at-risk populations, tracking usage through distribution partners.",
+        "why_evidence_matters": "Evidence ensures that the nets provided are actually used and effectively reducing malaria rates in target regions."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[11]",
-          "[15]"
+          "[7]",
+          "[10]"
         ],
-        "founded_year": 2004,
+        "founded_year": 2005,
         "maturity_stage": "Established",
-        "revenue_growth_3yr": -19.4,
+        "revenue_growth_3yr": 80.7,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Malaria remains a leading cause of death in target regions, and the charity can scale net procurement with additional funds.",
+        "room_for_funding_explanation": "Malaria remains a leading cause of death in target regions, and the charity's rapid revenue growth suggests it can scale further.",
         "strategic_priorities": [
-          "Net distribution and monitoring",
-          "Malaria case data tracking"
+          "Expand net distribution in Africa",
+          "Improve tracking and reporting transparency"
         ],
-        "years_operating": 20
+        "years_operating": 21
       },
       "organizational_capacity": {
         "board_size": 4,
@@ -868,29 +865,28 @@
         "ceo_compensation_pct_revenue": 0,
         "ceo_name": "Rob Mather",
         "citation_ids": [
-          "[1]",
-          "[2]",
-          "[15]"
+          "[11]",
+          "[12]"
         ],
         "employees_count": 0,
-        "geographic_reach": "South America, Asia, Africa",
+        "geographic_reach": "Asia, Africa, South America",
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 1,
         "payroll_to_revenue_pct": 0,
-        "programs_count": 4,
+        "programs_count": 1,
         "staff_per_million_revenue": 0,
         "volunteers_count": 0
       },
       "peer_comparison": {
         "citation_ids": [
-          "[1]"
+          "[2]",
+          "[3]"
         ],
-        "differentiator": "Distinguished by a <cite id=\"1\">100.0% program expense ratio</cite> and <cite id=\"1\">$0.00 fundraising cost</cite>.",
-        "peer_group": "Global Health and Malaria Charities",
+        "differentiator": "Distinguished by a <cite id=\"2\">100.0% program expense ratio</cite> and <cite id=\"3\">zero fundraising costs</cite>.",
+        "peer_group": "Global Health and Malaria NGOs",
         "similar_orgs": [
           "Malaria No More",
-          "Tropical Health",
           "Against Malaria Foundation UK"
         ]
       },
@@ -900,39 +896,37 @@
           "name": "Malaria No More"
         },
         {
-          "differentiator": "Focuses on technical assistance",
-          "name": "Tropical Health"
+          "differentiator": "Primary international affiliate",
+          "name": "Against Malaria Foundation UK"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[1]"
+            "[2]"
           ],
-          "detail": "The charity maintains a <cite id=\"1\">100.0% program expense ratio</cite> and spends <cite id=\"1\">$0.00 to raise every $1</cite> in public donations.",
-          "point": "Exceptional Financial Efficiency"
+          "detail": "The organization maintains a <cite id=\"2\">100.0% program expense ratio</cite>, ensuring all public contributions go directly to net procurement and distribution.",
+          "point": "Exceptional Program Expense Ratio"
         },
         {
           "citation_ids": [
-            "[1]",
-            "[13]"
+            "[5]"
           ],
-          "detail": "The organization holds a <cite id=\"1\">94/100 overall rating from Charity Navigator</cite> and a <cite id=\"13\">Platinum Seal of Transparency from Candid</cite>.",
-          "point": "High Accountability Standards"
+          "detail": "AMF earned a <cite id=\"5\">91/100 overall score from Charity Navigator</cite> and a <cite id=\"6\">perfect 100 score in Leadership</cite>.",
+          "point": "High Financial Accountability"
         },
         {
           "citation_ids": [
-            "[3]",
-            "[12]"
+            "[7]"
           ],
-          "detail": "AMF uses <cite id=\"3\">post-distribution net use surveys</cite> and malaria case data to <cite id=\"12\">track outcomes across two specific metrics</cite>.",
-          "point": "Evidence-Based Intervention"
+          "detail": "The charity has demonstrated a <cite id=\"7\">3-year revenue CAGR of 80.7%</cite>, indicating a significant expansion in its ability to fund large-scale distributions.",
+          "point": "Rapid Revenue Growth"
         }
       ],
       "strengths_deep_dive": [
-        "The Against Malaria Foundation's primary strength lies in its '100% model,' where <cite id=\"6\">all public donations buy nets</cite>. This is made possible by a small group of private donors who fund the organization's overhead. This efficiency is paired with a <cite id=\"1\">100/100 score in Culture and Leadership</cite> from Charity Navigator. Furthermore, the charity demonstrates strategic clarity by <cite id=\"12\">tracking specific outcome metrics</cite> through Candid, ensuring that the <cite id=\"15\">distribution in countries like the Democratic Republic of Congo and South Sudan</cite> results in measurable health improvements."
+        "The Against Malaria Foundation's primary strength lies in its lean operational model. By securing separate funding for all administrative and fundraising costs, the charity ensures that <cite id=\"3\">zero dollars from public donations</cite> are spent on overhead. This model has allowed the organization to achieve a <cite id=\"8\">91.91/100 rating for financial health</cite> from Charity Navigator. Furthermore, the organization holds a <cite id=\"9\">Platinum Seal of Transparency from Candid</cite>, the highest level of disclosure available, which includes <cite id=\"10\">tracking two specific outcome metrics</cite> related to net usage and malaria protection. This level of transparency is rare among international NGOs and provides donors with clear visibility into how their funds are utilized across <cite id=\"11\">Asia, Africa, and South America</cite>."
       ],
-      "summary": "The Against Malaria Foundation (US) operates as a highly specialized humanitarian organization dedicated to the <cite id=\"3\">funding and distribution of long-lasting insecticidal nets</cite> (LLINs). Since its <cite id=\"14\">founding in 2004</cite>, the charity has focused on a singular, high-impact intervention to combat malaria in regions across <cite id=\"15\">Africa, Asia, and South America</cite>. The organization is notable for its extreme financial efficiency, reporting <cite id=\"2\">$62,286,888 in total revenue</cite> for the 2024 fiscal year while maintaining a <cite id=\"1\">100.0% program expense ratio</cite>. This means that every dollar donated by the public is used exclusively to <cite id=\"6\">buy nets</cite>, as private donors cover all administrative and fundraising costs. The charity has achieved <cite id=\"1\">an overall score of 94.0/100 from Charity Navigator</cite>, reflecting high standards of accountability. While the organization does not have a religious mandate, it operates extensively in <cite id=\"15\">Muslim-majority regions such as Guinea, Chad, and Nigeria</cite>, providing critical health infrastructure to underserved populations. Its model relies on <cite id=\"3\">rigorous post-distribution monitoring</cite> and data tracking to ensure that nets reach the intended households and remain in use over time.",
+      "summary": "The Against Malaria Foundation (AMF) is a specialized humanitarian organization that focuses exclusively on the distribution of long-lasting insecticidal nets (LLINs) to combat malaria. While the organization demonstrates significant scale with <cite id=\"1\">$62,286,888 in total revenue</cite> for the 2024 tax year, it presents a complex profile for faith-based donors. The charity operates with a unique financial model where it directs <cite id=\"2\">1.0% of its spending toward programs</cite>, meaning no public donations are diverted to overhead or administrative costs. This is supported by a <cite id=\"3\">fundraising efficiency of $0.00 per $1 raised</cite>, as private donors separately cover the organization's operating expenses. Despite these financial efficiencies, the charity lacks the religious infrastructure or specific community alignment often prioritized by Muslim donors. While AMF has achieved a <cite id=\"5\">91/100 overall score from Charity Navigator</cite>, its narrow focus on bed net distribution serves as a capacity-building intervention rather than a holistic solution to the systemic poverty affecting many Muslim-majority regions.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"
