@@ -18,7 +18,7 @@ Pipeline:
   crawl.py (fetch) → extract.py (parse) → synthesize.py → baseline.py → export.py
 
 Usage:
-    uv run python crawl.py --charities pilot_charities.txt --workers 10
+    uv run python crawl.py --charities pilot_charities.txt --workers 6
     uv run python crawl.py --ein 95-4453134  # Single charity
 """
 
@@ -226,7 +226,7 @@ def main():
         default=None,
         help="Staleness TTL in days for --refresh-stale (default: SOURCE_TTL_DAYS['website'] = 30)",
     )
-    parser.add_argument("--workers", type=int, default=10, help="Number of parallel workers (default: 10)")
+    parser.add_argument("--workers", type=int, default=6, help="Number of parallel workers (default: 6)")
     parser.add_argument("--verbose", action="store_true", help="Show detailed output (default: concise progress only)")
     parser.add_argument(
         "--pdf-downloads", type=int, default=10, help="Maximum PDFs to download per charity website (default: 10)"

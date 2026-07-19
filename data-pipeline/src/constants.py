@@ -58,6 +58,16 @@ FAILURE_TTL_DAYS = 30
 PER_DOMAIN_CONCURRENCY = 2  # Max simultaneous requests per website domain
 CRAWL_JITTER_RANGE_SECONDS = (0.5, 1.5)  # Random pre-request delay for uncached fetches
 
+# Fleet-wide crawl politeness: the per-domain semaphore above is scoped to a
+# single asyncio event loop, but the streaming runner fans charities out
+# across a ThreadPoolExecutor — each charity gets its OWN loop, so N workers
+# each running their own Semaphore(2) still allows N*2 concurrent sockets
+# fleet-wide (this is what earned the 429s). This constant is the minimum
+# seconds between outbound website requests enforced through the process-wide
+# (cross-thread) global_rate_limiter, giving a real ceiling of ~5 req/s
+# across the whole fleet regardless of worker count.
+CRAWL_GLOBAL_MIN_INTERVAL_SECONDS = 0.2  # ~5 req/s ceiling, process-wide
+
 # H5: Terminal failure classes — CAPTCHA walls and hard 404s don't heal in days.
 # Skip retries for TERMINAL_FAILURE_TTL_DAYS instead of the normal FAILURE_TTL_DAYS.
 TERMINAL_FAILURE_TTL_DAYS = 180

@@ -31,7 +31,11 @@ try:
 except ImportError:
     HAS_CURL_CFFI = False
 
-from ..constants import CRAWL_JITTER_RANGE_SECONDS, PER_DOMAIN_CONCURRENCY
+from ..constants import (
+    CRAWL_GLOBAL_MIN_INTERVAL_SECONDS,
+    CRAWL_JITTER_RANGE_SECONDS,
+    PER_DOMAIN_CONCURRENCY,
+)
 from ..extractors.deterministic import DeterministicExtractor
 from ..extractors.page_classifier import PageClassifier
 from ..extractors.structured_data import StructuredDataExtractor
@@ -1037,6 +1041,17 @@ class WebsiteCollector(BaseCollector):
                 if not allowed:
                     return url, False, None, None, "robots.txt disallowed"
                 await asyncio.sleep(random.uniform(*CRAWL_JITTER_RANGE_SECONDS))
+
+                # Fleet-wide QPS ceiling (H5 follow-up): the per-domain semaphore
+                # above is scoped to this event loop, but the streaming runner
+                # gives each charity its own loop on its own thread, so a
+                # per-loop limit alone does not bound TOTAL website QPS across
+                # the fleet. global_rate_limiter is process-wide + thread-safe
+                # (blocking, so run off-loop) and enforces a real min-interval
+                # between outbound website requests across every worker thread.
+                await asyncio.to_thread(
+                    global_rate_limiter.wait, "website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS
+                )
 
                 response = await client.get(
                     url,

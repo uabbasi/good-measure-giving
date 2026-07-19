@@ -11,7 +11,7 @@ Benefits over batch-per-phase:
 - Progress visible per-charity
 
 Usage:
-    uv run python streaming_runner.py --charities pilot_charities.txt --workers 20
+    uv run python streaming_runner.py --charities pilot_charities.txt --workers 6
     uv run python streaming_runner.py --ein 95-4453134  # Single charity
 """
 
@@ -1590,7 +1590,7 @@ def main():
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--charities", type=str, help="Path to charity list file")
     group.add_argument("--ein", type=str, help="Single charity EIN")
-    parser.add_argument("--workers", type=int, default=20, help="Number of parallel workers (default: 20)")
+    parser.add_argument("--workers", type=int, default=6, help="Number of parallel workers (default: 6)")
     parser.add_argument("--verbose", action="store_true", help="Show detailed output")
     parser.add_argument("--clean", action="store_true", help="Delete existing data before processing (fresh start)")
     parser.add_argument("--model", type=str, help="Override LLM model (e.g., gpt-5.2, claude-sonnet-4-5)")

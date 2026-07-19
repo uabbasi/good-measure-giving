@@ -3,7 +3,7 @@
 import asyncio
 import threading
 from datetime import datetime, timedelta, timezone
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from src.collectors.orchestrator import (
     DataCollectionOrchestrator,
@@ -11,7 +11,11 @@ from src.collectors.orchestrator import (
     is_optional_website_failure,
 )
 from src.collectors.web_collector import WebsiteCollector
-from src.constants import PER_DOMAIN_CONCURRENCY, TERMINAL_FAILURE_TTL_DAYS
+from src.constants import (
+    CRAWL_GLOBAL_MIN_INTERVAL_SECONDS,
+    PER_DOMAIN_CONCURRENCY,
+    TERMINAL_FAILURE_TTL_DAYS,
+)
 
 
 class TestClassifyFailure:
@@ -260,6 +264,96 @@ class TestRateLimitNotTerminal:
         url, success, html, final_url, error = asyncio.run(run())
         assert success is False
         assert error == "RATE_LIMITED: HTTP 503"
+
+
+class TestGlobalFleetRateLimit:
+    """Fleet-wide QPS ceiling (Task 7).
+
+    A per-loop asyncio.Semaphore does NOT bound fleet concurrency: the
+    streaming runner gives each charity its own asyncio.run() on its own
+    ThreadPoolExecutor thread, so N workers each get their OWN semaphore
+    instance (N workers x limit, not a shared ceiling). The only lever that
+    bounds TOTAL website QPS across every worker thread is a process-wide,
+    cross-thread gate -- global_rate_limiter already is one (per-domain
+    threading.Lock + last-request timestamp), so _fetch_url_async must call
+    it before every outbound website request.
+    """
+
+    def test_min_interval_constant_is_conservative(self):
+        # ~5 req/s ceiling fleet-wide
+        assert CRAWL_GLOBAL_MIN_INTERVAL_SECONDS == 0.2
+
+    def _collector(self):
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c.robots_checker = MagicMock()
+        c.robots_checker.can_fetch.return_value = True
+        c.cache = MagicMock()
+        c.cache.get_cached_html.return_value = None
+        return c
+
+    def test_fetch_url_async_invokes_global_website_gate(self):
+        c = self._collector()
+
+        response = MagicMock()
+        response.status_code = 200
+        response.text = "<html>hi</html>"
+        response.url = "https://example.org"
+
+        client = MagicMock()
+
+        async def fake_get(*args, **kwargs):
+            return response
+
+        client.get = fake_get
+
+        semaphore = asyncio.Semaphore(1)
+
+        async def run():
+            return await c._fetch_url_async(client, "https://example.org", semaphore)
+
+        with patch("src.collectors.web_collector.global_rate_limiter") as mock_limiter:
+            mock_limiter.wait.return_value = 0.0
+            url, success, html, final_url, error = asyncio.run(run())
+
+        assert success is True
+        # Called with the "website" domain key + the process-wide min interval,
+        # matching how form990_grants and other collectors already use it.
+        mock_limiter.wait.assert_called_once_with("website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS)
+
+    def test_global_gate_still_invoked_on_non_200(self):
+        """The gate must fire before the request lands, regardless of the
+        response outcome -- a 429 must not have skipped past the throttle."""
+        c = self._collector()
+
+        response = MagicMock()
+        response.status_code = 429
+        response.headers = {}
+        response.text = "Too Many Requests"
+
+        client = MagicMock()
+
+        async def fake_get(*args, **kwargs):
+            return response
+
+        client.get = fake_get
+
+        c._try_curl_cffi_async = lambda url: _failing_curl_cffi(url)
+
+        semaphore = asyncio.Semaphore(1)
+
+        async def run():
+            return await c._fetch_url_async(client, "https://example.org", semaphore)
+
+        with patch("src.collectors.web_collector.global_rate_limiter") as mock_limiter:
+            mock_limiter.wait.return_value = 0.0
+            asyncio.run(run())
+
+        mock_limiter.wait.assert_called_once_with("website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS)
+
+
+async def _failing_curl_cffi(url):
+    return url, False, None, None, "curl_cffi fallback failed"
 
 
 class TestBfsEmptyRetry:
