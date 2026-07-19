@@ -21,6 +21,7 @@ LLM must NEVER do math or guess data.
 import re
 from typing import Optional
 
+from src.constants import DATA_FULL_CONFIDENCE_MAX_AGE_YEARS
 from src.llm.schemas.baseline import (
     AlignmentAssessment,
     AmalScoresV2,
@@ -2740,9 +2741,9 @@ class AmalScorerV2:
         -0.15 per additional year, floored at 0.40. Unknown age = no decay
         (absence of data is already penalized by the base components).
         """
-        if data_age_years is None or data_age_years <= 2:
+        if data_age_years is None or data_age_years <= DATA_FULL_CONFIDENCE_MAX_AGE_YEARS:
             return 1.0
-        return max(0.40, round(1.0 - 0.15 * (data_age_years - 2), 2))
+        return max(0.40, round(1.0 - 0.15 * (data_age_years - DATA_FULL_CONFIDENCE_MAX_AGE_YEARS), 2))
 
     def _compute_data_confidence(
         self,

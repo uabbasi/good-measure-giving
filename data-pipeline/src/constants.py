@@ -9,6 +9,13 @@ the pipeline for easier maintenance and tuning.
 CACHE_MAX_AGE_DAYS = 180  # Maximum age for cached data before re-fetching
 DATA_TOLERANCE_PERCENT = 0.05  # 5% tolerance for numeric data comparison
 
+# Data freshness — the window during which data keeps full confidence and a
+# missing/thin re-observation is carried forward from last-good rather than
+# dropped. Beyond this, unobserved data is aged-out to null. Matches the
+# 990 annual filing cycle plus one year of leeway; the -2 in _recency_factor
+# and the raw-layer carry-forward guard both key off this single value.
+DATA_FULL_CONFIDENCE_MAX_AGE_YEARS = 2
+
 # Thread and Concurrency
 WRITE_QUEUE_MAX_RETRIES = 5  # Maximum retries for database write operations
 WRITE_QUEUE_INITIAL_BACKOFF_SECONDS = 0.5  # Initial backoff for retry logic
