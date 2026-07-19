@@ -154,6 +154,89 @@ def is_optional_website_failure(candidates: List[str]) -> bool:
     return False
 
 
+def data_age_years(scraped_at, now=None) -> int | None:
+    """Whole years since a raw source was last successfully observed.
+
+    Accepts a datetime or an ISO-ish string (as the DB driver returns
+    `scraped_at`). Returns None when the timestamp is missing/unparseable so
+    callers treat unknown age as "not aged out" (absence is penalized elsewhere).
+    """
+    from datetime import datetime
+
+    if scraped_at is None:
+        return None
+    if now is None:
+        now = datetime.now()
+    if isinstance(scraped_at, str):
+        try:
+            scraped_at = datetime.fromisoformat(scraped_at.replace("Z", "+00:00"))
+        except ValueError:
+            try:
+                scraped_at = datetime.strptime(scraped_at[:19], "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                return None
+    if scraped_at.tzinfo is not None:
+        scraped_at = scraped_at.replace(tzinfo=None)
+    return (now - scraped_at).days // 365
+
+
+def parsed_json_is_meaningful(parsed_json: dict | None) -> bool:
+    """True if any top-level value is a non-empty dict/list (mirrors
+    DataCollectionOrchestrator._is_meaningful_data as a module-level pure fn)."""
+    if not parsed_json:
+        return False
+    for value in parsed_json.values():
+        if isinstance(value, dict) and len(value) > 0:
+            return True
+        if isinstance(value, list) and len(value) > 0:
+            return True
+    return False
+
+
+def grants_has_filings(parsed_json: dict | None) -> bool:
+    """True if a grants observation carries real filing/financial data (not the
+    empty NO_XML sentinel profile that only has name+ein)."""
+    gp = (parsed_json or {}).get("grants_profile") or {}
+    return bool(
+        gp.get("filing_years")
+        or gp.get("domestic_grants")
+        or gp.get("foreign_grants")
+        or gp.get("total_grants")
+        or gp.get("total_revenue")
+        or gp.get("total_expenses")
+    )
+
+
+def is_content_downgrade(
+    source: str,
+    new_parsed_json: dict | None,
+    new_raw_content: str | None,
+    prior_parsed_json: dict | None,
+) -> bool:
+    """True when the new observation is materially thinner than stored prior
+    content — the signal to preserve last-good instead of overwriting.
+
+    Only meaningful when a substantive prior exists; returns False otherwise
+    (a first/no-prior observation is never a downgrade).
+    """
+    new_parsed_json = new_parsed_json or {}
+    prior_parsed_json = prior_parsed_json or {}
+
+    if source == "website":
+        prior_pages = (prior_parsed_json.get("crawl_stats") or {}).get("pages_crawled") or 0
+        new_pages = (new_parsed_json.get("crawl_stats") or {}).get("pages_crawled") or 0
+        if prior_pages <= 0:
+            return False
+        thin_raw = not new_raw_content or len(new_raw_content.strip()) < 500
+        lost_pages = prior_pages >= 3 and new_pages <= max(1, prior_pages // 3)
+        return thin_raw or lost_pages
+
+    if source == "form990_grants":
+        return grants_has_filings(prior_parsed_json) and not grants_has_filings(new_parsed_json)
+
+    return parsed_json_is_meaningful(prior_parsed_json) and not parsed_json_is_meaningful(new_parsed_json)
+
+
 # H12: sources frozen out of the default crawl. Existing DB rows are kept as-is;
 # re-enable per-run with crawl.py --sources bbb.
 FROZEN_SOURCES = {"bbb"}
