@@ -77,3 +77,48 @@ class TestRawLayerPredicates:
         from src.collectors.orchestrator import is_content_downgrade
 
         assert is_content_downgrade("website", {"crawl_stats": {"pages_crawled": 1}}, "x", {}) is False
+
+
+class TestRawDataRepoSoftFail:
+    def test_record_soft_fail_preserves_content_and_timestamp(self, monkeypatch):
+        import src.db.repository as repo_mod
+
+        captured = {}
+
+        def fake_execute_query(sql, params=None, fetch="all"):
+            if sql.strip().upper().startswith("SELECT"):
+                return {"charity_ein": "12-3456789", "source": "website", "retry_count": 1, "success": 1}
+            captured["sql"] = sql
+            captured["params"] = params
+            return None
+
+        monkeypatch.setattr(repo_mod, "execute_query", fake_execute_query)
+        repo_mod.RawDataRepository().record_soft_fail("12-3456789", "website", "thin re-crawl; preserved")
+
+        assert "UPDATE raw_scraped_data" in captured["sql"]
+        assert "retry_count" in captured["sql"]
+        assert "last_failure_reason" in captured["sql"]
+        # Must NOT touch content or the observation timestamp
+        assert "parsed_json" not in captured["sql"]
+        assert "raw_content" not in captured["sql"]
+        assert "scraped_at" not in captured["sql"]
+        assert captured["params"][0] == 2  # retry_count incremented from 1
+
+    def test_c1_failure_write_no_longer_bumps_scraped_at(self, monkeypatch):
+        import src.db.repository as repo_mod
+
+        captured = {}
+
+        def fake_execute_query(sql, params=None, fetch="all"):
+            if sql.strip().upper().startswith("SELECT"):
+                return {"charity_ein": "12-3456789", "source": "website", "retry_count": 0, "success": 1}
+            captured["sql"] = sql
+            return None
+
+        monkeypatch.setattr(repo_mod, "execute_query", fake_execute_query)
+        # A failure write against a previously-successful row (C1 path)
+        repo_mod.RawDataRepository().upsert(
+            "12-3456789", "website", parsed_json={}, success=False, error_message="throttled"
+        )
+        assert "UPDATE raw_scraped_data" in captured["sql"]
+        assert "scraped_at = CURRENT_TIMESTAMP" not in captured["sql"]

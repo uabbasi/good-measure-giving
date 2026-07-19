@@ -280,19 +280,25 @@ class RawDataRepository:
         existing = self.get_by_source(charity_ein, source)
 
         if existing:
+            preserved_content = False
             if not success:
                 data["retry_count"] = (existing.get("retry_count") or 0) + 1
                 if existing.get("success"):
                     # Never clobber last-good content with a failure record
                     data.pop("parsed_json", None)
                     data.pop("raw_content", None)
+                    preserved_content = True
             # Update existing row
             set_clause = ", ".join([f"{k} = %s" for k in data.keys() if k not in ("charity_ein", "source")])
             values = [v for k, v in data.items() if k not in ("charity_ein", "source")]
             values.extend([charity_ein, source])
 
+            # Only advance the observation timestamp when we actually wrote new
+            # content; preserving last-good keeps scraped_at at the last
+            # successful observation so its age (carry-forward bound) stays true.
+            scraped_clause = "" if preserved_content else ", scraped_at = CURRENT_TIMESTAMP"
             execute_query(
-                f"UPDATE raw_scraped_data SET {set_clause}, scraped_at = CURRENT_TIMESTAMP WHERE charity_ein = %s AND source = %s",
+                f"UPDATE raw_scraped_data SET {set_clause}{scraped_clause} WHERE charity_ein = %s AND source = %s",
                 tuple(values),
                 fetch="none",
             )
@@ -309,6 +315,27 @@ class RawDataRepository:
                 tuple(data.values()),
                 fetch="none",
             )
+
+    def record_soft_fail(self, charity_ein: str, source: str, reason: str) -> None:
+        """Record a thin/empty re-observation without downgrading last-good.
+
+        Bumps retry_count and last_failure_reason but leaves parsed_json,
+        raw_content, success, and scraped_at untouched — the stored last-good
+        content stays authoritative and keeps its original observation age.
+        Used by the orchestrator when a re-crawl returns materially less than
+        the stored content and the stored content is still within the
+        freshness window.
+        """
+        existing = self.get_by_source(charity_ein, source)
+        if not existing:
+            return
+        retry = (existing.get("retry_count") or 0) + 1
+        execute_query(
+            "UPDATE raw_scraped_data SET retry_count = %s, last_failure_reason = %s "
+            "WHERE charity_ein = %s AND source = %s",
+            (retry, reason, charity_ein, source),
+            fetch="none",
+        )
 
     def increment_retry_count(self, ein: str, source: str, error_message: str) -> int:
         """Increment retry count for a failed source and return new count."""
