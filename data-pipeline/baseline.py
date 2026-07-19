@@ -585,9 +585,27 @@ def _baseline_prompt_kwargs(metrics: CharityMetrics, scores: Any, num_sources: i
         _ZAKAT_CONSTRAINT_SADAQAH if scores.wallet_tag == "SADAQAH-ELIGIBLE" else _ZAKAT_CONSTRAINT_ZAKAT
     )
 
+    def _assessment_notes(assessment: Any) -> str:
+        parts = []
+        if getattr(assessment, "rationale", ""):
+            parts.append(assessment.rationale)
+        components = getattr(assessment, "components", None) or []
+        if components:
+            parts.append(
+                "Components: " + ", ".join(f"{c.name} {c.scored}/{c.possible}" for c in components)
+            )
+        return " | ".join(parts) or "(no notes)"
+
+    case_against = getattr(scores, "case_against", None)
+    risk_descriptions = [r.description for r in (case_against.risks or [])] if case_against else []
+    risk_notes = "; ".join(risk_descriptions) or "none"
+
     return {
         "score_band": score_band_label(scores.amal_score),
         "data_vintage_note": data_vintage_note(metrics.financial_data_tax_year),
+        "impact_notes": _assessment_notes(scores.impact),
+        "alignment_notes": _assessment_notes(scores.alignment),
+        "risk_notes": risk_notes,
         "charity_name": metrics.name,
         "ein": metrics.ein,
         "mission": metrics.mission or "Not available",
