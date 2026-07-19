@@ -36,13 +36,13 @@ class ScoreVerificationResult(BaseModel):
     summary: str = Field("", description="Brief summary of results")
 
 
-# Score interpretation thresholds
+# Score interpretation thresholds — the PUBLISHED band thresholds
+# (v2_scorers.IMPACT_TIER_THRESHOLDS), shared with the narrative tone contract.
 SCORE_TIERS = {
-    "exceptional": (90, 100),
-    "good": (70, 89),
-    "average": (50, 69),
-    "below_average": (30, 49),
-    "poor": (0, 29),
+    "high": (80, 100),
+    "above_average": (65, 79),
+    "average": (50, 64),
+    "below_average": (0, 49),
 }
 
 
@@ -182,23 +182,23 @@ class ScoreJudge(BaseJudge):
         has_positive = any(word in rationale_lower for word in positive_words)
         has_negative = any(word in rationale_lower for word in negative_words)
 
-        # Poor score with glowing language
-        if tier == "poor" and has_positive and not has_negative:
+        # Below-average score with glowing language
+        if tier == "below_average" and has_positive and not has_negative:
             self.add_issue(
                 issues,
                 Severity.WARNING,
                 score_field,
-                f"Score is poor ({score}) but rationale uses positive language",
+                f"Score is below average ({score}) but rationale uses positive language",
                 details={"score": score, "tier": tier},
             )
 
-        # Exceptional score with negative language
-        if tier == "exceptional" and has_negative and not has_positive:
+        # High score with negative language
+        if tier == "high" and has_negative and not has_positive:
             self.add_issue(
                 issues,
                 Severity.WARNING,
                 score_field,
-                f"Score is exceptional ({score}) but rationale uses negative language",
+                f"Score is high ({score}) but rationale uses negative language",
                 details={"score": score, "tier": tier},
             )
 

@@ -39,16 +39,20 @@ from src.db import (
     PhaseCacheRepository,
     RawDataRepository,
 )
-from src.db.dolt_client import dolt, tables_for_phases
 from src.db.client import execute_query
+from src.db.dolt_client import dolt, tables_for_phases
 from src.llm.llm_client import LLMClient, LLMTask
 from src.llm.prompt_loader import PromptInfo, load_prompt
 from src.parsers.charity_metrics_aggregator import CharityMetrics, CharityMetricsAggregator
-from src.scorers.v2_scorers import RUBRIC_VERSION, AmalScorerV2, impact_tier_from_amal_score
+from src.scorers.v2_scorers import (
+    RUBRIC_VERSION,
+    AmalScorerV2,
+    impact_tier_from_amal_score,
+    score_band_label,
+)
 from src.services.citation_service import CitationService
 from src.utils.deep_link_resolver import upgrade_source_url
 from src.utils.phase_cache_helper import check_phase_cache, update_phase_cache
-
 
 SLUG_PROMPT = """\
 Generate a 3-word descriptive slug for a charity card.
@@ -582,6 +586,7 @@ def _baseline_prompt_kwargs(metrics: CharityMetrics, scores: Any, num_sources: i
     )
 
     return {
+        "score_band": score_band_label(scores.amal_score),
         "charity_name": metrics.name,
         "ein": metrics.ein,
         "mission": metrics.mission or "Not available",

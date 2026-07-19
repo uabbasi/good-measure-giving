@@ -23,6 +23,9 @@ FULL_EVALUATION = {
     "impact_tier": "gold",
     "zakat_classification": "ELIGIBLE",
     "baseline_narrative": {"summary": "Baseline summary."},
+    "rich_narrative": {"summary": "Rich summary."},
+    # Orphaned March-era lens artifacts: never exported, no active generator —
+    # must stay OUT of the judged/hashed surface.
     "strategic_narrative": {"summary": "Strategic summary."},
     "zakat_narrative": {"summary": "Zakat summary."},
     "rich_strategic_narrative": {"summary": "Rich strategic."},
@@ -66,7 +69,8 @@ class FakeOrchestrator:
 
 
 class TestLensProjection:
-    def test_projection_includes_all_lens_fields(self, monkeypatch):
+    def test_projection_is_the_published_surface(self, monkeypatch):
+        """Projection = what export.py ships: baseline + rich narratives, no orphaned lenses."""
         monkeypatch.setattr(judge_phase, "JudgeOrchestrator", FakeOrchestrator)
         repos = _mock_repos(dict(FULL_EVALUATION))
 
@@ -74,12 +78,15 @@ class TestLensProjection:
 
         assert result["success"] is True
         projected = FakeOrchestrator.captured["evaluation"]
-        assert projected["strategic_narrative"] == {"summary": "Strategic summary."}
-        assert projected["strategic_score"] == 71
-        assert projected["zakat_narrative"] == {"summary": "Zakat summary."}
-        assert projected["zakat_score"] == 76
-        assert projected["rich_strategic_narrative"] == {"summary": "Rich strategic."}
+        assert projected["baseline_narrative"] == {"summary": "Baseline summary."}
+        assert projected["rich_narrative"] == {"summary": "Rich summary."}
         assert projected["wallet_tag"] == "ZAKAT-ELIGIBLE"
+        # Unpublished orphaned lens artifacts must not be judged or hashed:
+        assert "strategic_narrative" not in projected
+        assert "zakat_narrative" not in projected
+        assert "rich_strategic_narrative" not in projected
+        assert "strategic_score" not in projected
+        assert "zakat_score" not in projected
 
     def test_judge_charity_returns_content_hash(self, monkeypatch):
         monkeypatch.setattr(judge_phase, "JudgeOrchestrator", FakeOrchestrator)

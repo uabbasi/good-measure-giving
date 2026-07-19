@@ -119,6 +119,22 @@ def impact_tier_from_amal_score(amal_score: Optional[float]) -> Optional[str]:
     return "BELOW_AVERAGE"
 
 
+# Donor-facing labels for the published impactTier bands (shared by the
+# baseline and rich narrative prompts' tone contract).
+_SCORE_BAND_LABELS = {
+    "HIGH": "High (80-100)",
+    "ABOVE_AVERAGE": "Above Average (65-79)",
+    "AVERAGE": "Average (50-64)",
+    "BELOW_AVERAGE": "Below Average (below 50)",
+}
+
+
+def score_band_label(amal_score: Optional[float]) -> str:
+    """Donor-facing band label for the composite GMG score."""
+    tier = impact_tier_from_amal_score(amal_score)
+    return _SCORE_BAND_LABELS.get(tier or "", "Unrated")
+
+
 def interpolate_score(value: float, knots: list) -> float:
     """Piecewise-linear interpolation between (value, score) knots.
 

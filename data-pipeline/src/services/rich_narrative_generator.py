@@ -689,9 +689,12 @@ class RichNarrativeGenerator:
         baseline_context = self._format_baseline_context(baseline)
 
         # Replace placeholders
+        from src.scorers.v2_scorers import score_band_label
+
         prompt = template.replace("{charity_data}", charity_data)
         prompt = prompt.replace("{citation_sources}", citation_sources)
         prompt = prompt.replace("{baseline_context}", baseline_context)
+        prompt = prompt.replace("{score_band}", score_band_label(baseline.get("amal_score")))
 
         return prompt
 

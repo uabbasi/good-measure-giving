@@ -7,13 +7,16 @@ Tests cover:
 - URL verifier caching
 """
 
-import json
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 import pytest
-
+from src.judges.citation_judge import CitationJudge
+from src.judges.cross_lens_judge import CrossLensJudge
+from src.judges.factual_judge import FactualJudge
+from src.judges.narrative_quality_judge import NarrativeQualityJudge
+from src.judges.orchestrator import BatchResult, JudgeOrchestrator
 from src.judges.schemas.config import JudgeConfig
 from src.judges.schemas.verdict import (
     CharityValidationResult,
@@ -21,15 +24,9 @@ from src.judges.schemas.verdict import (
     Severity,
     ValidationIssue,
 )
-from src.judges.factual_judge import FactualJudge
-from src.judges.citation_judge import CitationJudge
-from src.judges.cross_lens_judge import CrossLensJudge
-from src.judges.narrative_quality_judge import NarrativeQualityJudge
 from src.judges.score_judge import ScoreJudge
-from src.judges.zakat_judge import ZakatJudge
 from src.judges.url_verifier import FetchResult, URLCache, URLVerifier
-from src.judges.orchestrator import BatchResult, JudgeOrchestrator
-
+from src.judges.zakat_judge import ZakatJudge
 
 # =============================================================================
 # Schema Tests
@@ -435,14 +432,14 @@ class TestCitationJudgeStructural:
 class TestScoreJudgeQuickChecks:
     """Test score judge quick tone checks (no LLM)."""
 
-    def test_poor_score_with_positive_language(self):
-        """Test detection of tone mismatch."""
+    def test_below_average_score_with_positive_language(self):
+        """Test detection of tone mismatch (published bands: <50 = below average)."""
         from src.judges.score_judge import ScoreJudge
 
         config = JudgeConfig()
         judge = ScoreJudge(config)
 
-        evaluation = {"amal_score": 25}  # Poor tier
+        evaluation = {"amal_score": 34}  # Below-average band (ING case)
         narrative = {
             "trust_rationale": "This is an excellent organization with outstanding practices.",
         }
@@ -451,7 +448,7 @@ class TestScoreJudgeQuickChecks:
 
         assert len(issues) == 1
         assert issues[0].severity == Severity.WARNING
-        assert "poor" in issues[0].message.lower()
+        assert "below average" in issues[0].message.lower()
 
     def test_exceptional_score_with_negative_language(self):
         """Test detection of negative tone with high score."""

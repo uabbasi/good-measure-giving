@@ -21,6 +21,8 @@ FULL_EVALUATION = {
     "impact_tier": "gold",
     "zakat_classification": "ELIGIBLE",
     "baseline_narrative": {"summary": "Baseline summary."},
+    "rich_narrative": {"summary": "Rich summary."},
+    # Orphaned March-era lens artifacts — unpublished, outside the judged surface:
     "strategic_narrative": {"summary": "Strategic summary."},
     "zakat_narrative": {"summary": "Zakat summary."},
     "rich_strategic_narrative": {"summary": "Rich strategic."},
@@ -42,6 +44,7 @@ class TestContentHash:
             "rich_strategic_narrative": {"summary": "Rich strategic."},
             "zakat_narrative": {"summary": "Zakat summary."},
             "strategic_narrative": {"summary": "Strategic summary."},
+            "rich_narrative": {"summary": "Rich summary."},
             "baseline_narrative": {"summary": "Baseline summary."},
             "zakat_classification": "ELIGIBLE",
             "impact_tier": "gold",
@@ -57,11 +60,11 @@ class TestContentHash:
         diff_narr = dict(FULL_EVALUATION, baseline_narrative={"summary": "Different."})
         assert compute_judge_content_hash(diff_narr) != base
 
+        diff_rich = dict(FULL_EVALUATION, rich_narrative={"summary": "Different rich."})
+        assert compute_judge_content_hash(diff_rich) != base
+
         diff_score = dict(FULL_EVALUATION, amal_score=83)
         assert compute_judge_content_hash(diff_score) != base
-
-        diff_zakat = dict(FULL_EVALUATION, zakat_score=77)
-        assert compute_judge_content_hash(diff_zakat) != base
 
     def test_hash_ignores_non_projection_fields(self):
         base = compute_judge_content_hash(FULL_EVALUATION)
@@ -72,8 +75,14 @@ class TestContentHash:
             llm_cost_usd=9.9,
             information_density=0.5,
             rubric_version="5.2.0",
-            rich_narrative={"x": 1},
             judge_content_hash="deadbeefdeadbeef",
+            # Orphaned lens artifacts changing must NOT invalidate the hash —
+            # they are unpublished and nothing can regenerate them:
+            strategic_narrative={"summary": "Mutated strategic."},
+            zakat_narrative={"summary": "Mutated zakat."},
+            rich_strategic_narrative={"summary": "Mutated rich strategic."},
+            strategic_score=1,
+            zakat_score=1,
         )
         assert compute_judge_content_hash(with_extras) == base
 
@@ -96,7 +105,7 @@ class TestContentHash:
         projection = build_judge_projection(FULL_EVALUATION)
         assert projection["score_details"] == {"impact": {"score": 40}}
         assert set(projection.keys()) == set(JUDGE_PROJECTION_FIELDS)
-        assert len(projection) == 12
+        assert len(projection) == 8
         # input dict not mutated
         assert "judge_issues" in FULL_EVALUATION["score_details"]
 

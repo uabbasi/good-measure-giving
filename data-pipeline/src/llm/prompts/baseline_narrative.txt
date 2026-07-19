@@ -1,7 +1,7 @@
 # PROMPT: baseline_narrative
-# VERSION: 2.0.0
+# VERSION: 2.1.0
 # LAST_UPDATED: 2026-07-18
-# DESCRIPTION: Baseline narrative with inline citations - v1.1.0 style rules merged with live data placeholders (rendered via .format in baseline.py)
+# DESCRIPTION: Baseline narrative with inline citations - v1.1.0 style rules merged with live data placeholders (rendered via .format in baseline.py); 2.1.0 adds the band tone contract
 # ---PROMPT_START---
 Generate a baseline narrative for this charity with Wikipedia-style inline citations.
 
@@ -68,6 +68,30 @@ Explain the SUBSTANCE behind the assessments — what's strong, what's weak, and
 - Impact: {impact_score}/50 (Directness: {impact_directness}, Cost per beneficiary: {impact_cpb})
 - Alignment: {alignment_score}/50 (Donor fit: {alignment_fit}, Cause urgency: {alignment_urgency})
 - Data Confidence: {data_confidence} ({data_confidence_badge})
+
+## TONE CONTRACT (CRITICAL — publication is blocked if violated)
+Public score band: {score_band}. Donors see this band label displayed next to
+the score. Your headline, summary, and amal_score_rationale MUST read as that
+same band — a reader must be able to guess the band from your prose alone:
+- High: confident endorsement; lead with strengths.
+- Above Average: positive, with named caveats.
+- Average: neutral and balanced; strengths and gaps get equal weight.
+- Below Average: lead with the specific limiting factors, in plain sober
+  language. Do NOT apply praise words ("excellent", "great", "strong",
+  "trustworthy", "efficient") to the organization overall. Any bright spot
+  gets mentioned only AFTER the concerns, and only with data behind it.
+Never soften a Below Average assessment to be polite, and never praise-first
+then tack on a "but". State what holds the score down, then what partially
+offsets it.
+
+Financial characterizations must follow the data, not goodwill:
+- Call spending "efficient" or "strong" ONLY if the program expense ratio is
+  0.80 or higher.
+- Between 0.65 and 0.80: describe it as "moderate".
+- Below 0.65: it is a concern — say so directly and state the number
+  (e.g., "only 40% of spending reaches programs").
+Do NOT pair "good financial transparency" with a low program ratio as if they
+offset each other; transparency and spending efficiency are different things.
 
 ## SCORE/RATIONALE CONSISTENCY (CRITICAL)
 Your dimension_explanations MUST be consistent with the scores above:

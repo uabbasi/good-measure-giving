@@ -43,6 +43,13 @@ MAX_JUDGE_SCORE = 100
 # Content-binding: the exact evaluation surface the judges read. judge_score is
 # only valid for the content it judged; the gate recomputes this hash and
 # fails closed on mismatch.
+#
+# Scope contract: the projection is the PUBLISHED surface (what export.py
+# ships). strategic_narrative / zakat_narrative / rich_strategic_narrative
+# and their lens scores are March-era artifacts with no active generator and
+# are never exported — judging them gated publication on prose donors never
+# see and nothing can regenerate (how ING 77-0412815 became permanently
+# unpublishable). rich_narrative, which IS published, was missing.
 JUDGE_PROJECTION_FIELDS = (
     "amal_score",
     "wallet_tag",
@@ -50,11 +57,7 @@ JUDGE_PROJECTION_FIELDS = (
     "impact_tier",
     "zakat_classification",
     "baseline_narrative",
-    "strategic_narrative",
-    "strategic_score",
-    "zakat_narrative",
-    "zakat_score",
-    "rich_strategic_narrative",
+    "rich_narrative",
     "score_details",
 )
 
