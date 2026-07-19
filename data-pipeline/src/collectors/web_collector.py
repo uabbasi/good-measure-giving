@@ -2539,6 +2539,33 @@ class WebsiteCollector(BaseCollector):
                 error_msg = self._last_captcha_error or "No data found on any pages"
                 return False, None, error_msg
 
+            # SPA recovery (Task 9): the async crawlers above never call
+            # Playwright themselves -- only the unused sync crawlers did.
+            # Escalate each page flagged js_rendering_needed (now computed
+            # regardless of use_llm, see _extract_page_data) through
+            # PlaywrightRenderer exactly once, then re-extract from the
+            # rendered HTML so a client-rendered SPA isn't stuck at {}.
+            js_needed_urls = [u for u, data in crawl_results.items() if data.get("js_rendering_needed")]
+            if js_needed_urls:
+                renderer = self._get_playwright_renderer()
+                if renderer:
+                    for page_url in js_needed_urls:
+                        try:
+                            rendered_html = renderer.render(page_url)
+                            if rendered_html:
+                                crawl_results[page_url] = self._extract_page_data(
+                                    rendered_html, page_url, use_llm=False
+                                )
+                                if self.logger:
+                                    self.logger.info(f"Playwright fallback successful (async path): {page_url}")
+                        except Exception as e:
+                            if self.logger:
+                                self.logger.warning(f"Playwright escalation failed for {page_url}: {e}")
+                elif self.logger:
+                    self.logger.debug(
+                        f"{len(js_needed_urls)} page(s) flagged js_rendering_needed but Playwright unavailable"
+                    )
+
             # Step 2: Aggregate data from all pages
             aggregated_data = self._aggregate_crawl_data(crawl_results, url)
 
@@ -3010,29 +3037,40 @@ class WebsiteCollector(BaseCollector):
         js_rendering_needed = False
         extraction_failure_reason = None
 
+        # T058: Clean text using TextCleaner and flag JS-rendered pages.
+        # Hoisted out of the `use_llm` branch (Task 9): the no-LLM async
+        # production crawl path (_crawl_specific_urls_async /
+        # _crawl_with_bfs_async) never set use_llm=True for most pages, so
+        # js_rendering_needed was never computed there and the existing
+        # Playwright escalation could never fire. This detection only needs
+        # self.text_cleaner, not the LLM extractor, so it can run always.
+        try:
+            # Try precision mode first, fallback to relaxed mode if empty
+            cleaned_text = self.text_cleaner.clean_for_llm(html, favor_precision=True)
+
+            if not cleaned_text or len(cleaned_text) <= 100:
+                # Precision mode too aggressive - try relaxed mode
+                cleaned_text = self.text_cleaner.clean_for_llm(html, favor_precision=False)
+
+            if not cleaned_text:
+                # No extractable content - likely JS-rendered page
+                js_rendering_needed = True
+                extraction_failure_reason = "empty_content"
+                if self.logger:
+                    self.logger.info(f"JS rendering needed (empty content): {url}")
+            elif len(cleaned_text) <= 100:
+                # Too short - could be JS-heavy or minimal content page
+                js_rendering_needed = True
+                extraction_failure_reason = "too_short"
+                if self.logger:
+                    self.logger.info(f"JS rendering needed (content too short: {len(cleaned_text)} chars): {url}")
+        except Exception as e:
+            cleaned_text = None
+            if self.logger:
+                self.logger.warning(f"Text cleaning failed for {url}: {e}")
+
         if use_llm and self.llm_extractor:
             try:
-                # T058: Clean text for LLM using TextCleaner
-                # Try precision mode first, fallback to relaxed mode if empty
-                cleaned_text = self.text_cleaner.clean_for_llm(html, favor_precision=True)
-
-                if not cleaned_text or len(cleaned_text) <= 100:
-                    # Precision mode too aggressive - try relaxed mode
-                    cleaned_text = self.text_cleaner.clean_for_llm(html, favor_precision=False)
-
-                if not cleaned_text:
-                    # No extractable content - likely JS-rendered page
-                    js_rendering_needed = True
-                    extraction_failure_reason = "empty_content"
-                    if self.logger:
-                        self.logger.info(f"JS rendering needed (empty content): {url}")
-                elif len(cleaned_text) <= 100:
-                    # Too short - could be JS-heavy or minimal content page
-                    js_rendering_needed = True
-                    extraction_failure_reason = "too_short"
-                    if self.logger:
-                        self.logger.info(f"JS rendering needed (content too short: {len(cleaned_text)} chars): {url}")
-
                 if cleaned_text and len(cleaned_text) > 100:
                     # Classify page type for appropriate prompt selection
                     from urllib.parse import urlparse
