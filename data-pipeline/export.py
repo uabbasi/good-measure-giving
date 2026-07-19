@@ -1563,6 +1563,9 @@ def build_charity_summary(
         "accountabilityScore": (cn_profile.get("accountability_score") or None) if cn_has_scores else None,
         "programExpenseRatio": charity_data.get("program_expense_ratio") if charity_data else None,
         "totalRevenue": charity_data.get("total_revenue") if charity_data else None,
+        # Data vintage: tax year of the financials backing this evaluation
+        # (same source as the detail file's financials.fiscalYear).
+        "fiscalYear": _get_metric(charity_data, "financial_data_tax_year") if charity_data else None,
         "beneficiariesServedAnnually": beneficiaries_served_annually,
         "beneficiariesConfidence": beneficiaries_confidence,
         "beneficiariesExcludedFromScoring": beneficiaries_excluded_from_scoring,
