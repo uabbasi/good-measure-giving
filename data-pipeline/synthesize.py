@@ -43,6 +43,51 @@ from src.utils.evaluation_tracks import is_new_org
 from src.utils.logger import PipelineLogger
 from src.utils.phase_cache_helper import check_phase_cache, update_phase_cache
 
+# Scalar fields derived from REQUIRED sources (ProPublica / CN financials).
+# These can only recompute to None via a computation gap (all their inputs are
+# required, so a source loss would have aborted the charity before synthesize).
+# A non-null -> null transition here is therefore always a bug, not a genuine
+# drop, so we restore the prior value and flag it. Text/website-derived fields
+# are deliberately excluded — those can legitimately go absent year to year.
+REGRESSION_GUARDED_FIELDS = frozenset(
+    {
+        "program_expense_ratio",
+        "noncash_ratio",
+        "cash_adjusted_program_ratio",
+        "domestic_burn_rate",
+        "reserves_months",
+        "working_capital_months",
+        "total_revenue",
+        "total_expenses",
+        "program_expenses",
+        "admin_expenses",
+        "fundraising_expenses",
+        "total_assets",
+        "total_liabilities",
+        "net_assets",
+    }
+)
+
+
+def apply_regression_guard(synthesized, prior_row: dict | None) -> list[dict]:
+    """Restore guarded scalar fields that recomputed non-null -> null this run.
+
+    Returns a list of flag dicts for the editorial/regressions report. Mutates
+    `synthesized` in place, restoring the prior value for each regressed field.
+    """
+    if not prior_row:
+        return []
+    flags: list[dict] = []
+    for field in REGRESSION_GUARDED_FIELDS:
+        prior_value = prior_row.get(field)
+        if prior_value is not None and getattr(synthesized, field, None) is None:
+            setattr(synthesized, field, prior_value)
+            flags.append(
+                {"charity_ein": synthesized.charity_ein, "field": field, "prior_value": prior_value}
+            )
+    return flags
+
+
 # Muslim charity classification keywords (deterministic, no LLM)
 ISLAMIC_IDENTITY_KEYWORDS = {
     # Primary religious terms
@@ -1367,6 +1412,7 @@ def synthesize_charity(
     raw_repo: RawDataRepository,
     charity_repo: CharityRepository,
     pilot_name: str | None = None,
+    data_repo: "CharityDataRepository | None" = None,
 ) -> dict[str, Any]:
     """Synthesize data for a single charity with source attribution.
 
@@ -2058,6 +2104,18 @@ def synthesize_charity(
         return result
     if synth_contract.warnings:
         logging.getLogger(__name__).info(f"EIN {ein} synthesize contract warnings: {synth_contract.warnings}")
+
+    # Non-destructive write: never let a guarded scalar regress non-null -> null.
+    if data_repo is None:
+        data_repo = CharityDataRepository()
+    prior_row = data_repo.get(ein)
+    regression_flags = apply_regression_guard(synthesized, prior_row)
+    if regression_flags:
+        logging.getLogger(__name__).warning(
+            f"{ein}: preserved {len(regression_flags)} regressed field(s): "
+            f"{[f['field'] for f in regression_flags]}"
+        )
+    result["regressions"] = regression_flags
 
     result["synthesized"] = synthesized
     result["fields_computed"] = fields_computed

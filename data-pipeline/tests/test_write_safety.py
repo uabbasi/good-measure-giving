@@ -209,3 +209,47 @@ class TestStoreRawDataNonDowngrade:
         assert result is True
         assert len(calls["soft_fail"]) == 1
         assert len(calls["upsert"]) == 0
+
+
+class TestRegressionGuard:
+    def test_guard_restores_nonnull_to_null(self):
+        from src.db import CharityData
+        from synthesize import apply_regression_guard
+
+        prior = {"program_expense_ratio": 0.85, "total_revenue": 1_000_000}
+        synthesized = CharityData(charity_ein="12-3456789")
+        synthesized.total_revenue = 1_000_000
+        # program_expense_ratio recomputed to None this run (the Al-Furqaan gap)
+        flags = apply_regression_guard(synthesized, prior)
+
+        assert synthesized.program_expense_ratio == 0.85  # restored
+        assert flags == [{"charity_ein": "12-3456789", "field": "program_expense_ratio", "prior_value": 0.85}]
+
+    def test_guard_allows_observed_absent_and_unguarded_fields(self):
+        from src.db import CharityData
+        from synthesize import apply_regression_guard
+
+        prior = {"program_expense_ratio": 0.85, "theory_of_change": "old story"}
+        synthesized = CharityData(charity_ein="12-3456789")
+        synthesized.program_expense_ratio = 0.85  # unchanged
+        # theory_of_change is NOT in the guarded set (website-derived, may legitimately drop)
+        flags = apply_regression_guard(synthesized, prior)
+
+        assert flags == []
+        assert synthesized.theory_of_change is None  # not restored
+
+    def test_guard_no_prior_row_is_noop(self):
+        from src.db import CharityData
+        from synthesize import apply_regression_guard
+
+        synthesized = CharityData(charity_ein="12-3456789")
+        assert apply_regression_guard(synthesized, None) == []
+
+    def test_guarded_fields_are_required_source_derived(self):
+        from synthesize import REGRESSION_GUARDED_FIELDS
+
+        assert "program_expense_ratio" in REGRESSION_GUARDED_FIELDS
+        assert "noncash_ratio" in REGRESSION_GUARDED_FIELDS
+        # website-derived text fields must NOT be guarded (legit drops)
+        assert "theory_of_change" not in REGRESSION_GUARDED_FIELDS
+        assert "populations_served" not in REGRESSION_GUARDED_FIELDS
