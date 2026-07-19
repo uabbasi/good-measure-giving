@@ -11,9 +11,10 @@ dead sync crawlers anyway -- could never fire. Client-rendered SPA sites
 therefore returned {} -> "no data found".
 """
 
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from src.collectors.web_collector import WebsiteCollector
+from src.constants import CRAWL_GLOBAL_MIN_INTERVAL_SECONDS
 from src.extractors.deterministic import DeterministicExtractor
 from src.extractors.page_classifier import PageClassifier
 from src.extractors.structured_data import StructuredDataExtractor
@@ -116,12 +117,50 @@ class TestPlaywrightAsyncEscalation:
         )
         c._extract_page_data = MagicMock(return_value=recovered)
 
-        ok, data, err = c.collect_multi_page(url, ein=None)
+        with patch("src.collectors.web_collector.global_rate_limiter") as mock_limiter:
+            mock_limiter.wait.return_value = 0.0
+            ok, data, err = c.collect_multi_page(url, ein=None)
 
         renderer.render.assert_called_once_with(url)
         c._extract_page_data.assert_called_once_with(rendered_html, url, use_llm=False)
         assert ok is True
         assert data["website_profile"]["ein"] == "12-3456789"
+        # FIX 1: the Playwright render must pass through the fleet-wide QPS
+        # gate. No robots Crawl-delay here (None) -> only the "website" gate
+        # fires, exactly once, no per-host gate.
+        mock_limiter.wait.assert_called_once_with("website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS)
+        # FIX 2: the per-URL cache is refreshed so it stops recording
+        # had_data:false for the page we just recovered.
+        c.cache.update_had_data.assert_called_once()
+        cache_call = c.cache.update_had_data.call_args
+        assert cache_call.args[0] == url
+        assert cache_call.args[1] is True  # had_data
+        assert "playwright" in cache_call.args[2]  # extraction methods
+
+    def test_rendered_page_honors_per_host_crawl_delay(self):
+        """FIX 1 (Task 8 politeness): when robots.txt advertises a Crawl-delay,
+        the Playwright render must ALSO wait on the per-host gate, not just the
+        fleet-wide 'website' gate."""
+        c = self._collector()
+        c.robots_checker.get_crawl_delay.return_value = 10.0  # advertised delay
+        url = "https://spa.org/"
+        c._crawl_specific_urls_async = MagicMock(return_value={url: self._thin_spa_page_data()})
+
+        renderer = MagicMock()
+        renderer.render.return_value = "<html><body>EIN: 12-3456789</body></html>"
+        c._get_playwright_renderer = MagicMock(return_value=renderer)
+
+        recovered = dict(self._thin_spa_page_data())
+        recovered.update({"ein": "12-3456789", "had_data": True, "js_rendering_needed": False})
+        c._extract_page_data = MagicMock(return_value=recovered)
+
+        with patch("src.collectors.web_collector.global_rate_limiter") as mock_limiter:
+            mock_limiter.wait.return_value = 0.0
+            c.collect_multi_page(url, ein=None)
+
+        # Both gates fire before the render: fleet-wide "website" + per-host.
+        mock_limiter.wait.assert_any_call("website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS)
+        mock_limiter.wait.assert_any_call("spa.org", 10.0)
 
     def test_no_renderer_available_is_a_graceful_noop(self):
         """_get_playwright_renderer() returning None (Playwright not

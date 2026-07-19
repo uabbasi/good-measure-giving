@@ -2551,10 +2551,31 @@ class WebsiteCollector(BaseCollector):
                 if renderer:
                     for page_url in js_needed_urls:
                         try:
+                            # Playwright issues its own outbound navigation, so it
+                            # must pass through the SAME politeness gates as every
+                            # other fetch on this path (Task 7 fleet-wide QPS +
+                            # Task 8 per-host Crawl-delay); render() bypasses the
+                            # async _fetch_url_async gate entirely. This loop runs
+                            # in collect_multi_page's sync body, so the blocking
+                            # limiter can be called directly.
+                            host = urlparse(page_url).netloc.lower()
+                            global_rate_limiter.wait("website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS)
+                            if crawl_delay and crawl_delay > 0:
+                                global_rate_limiter.wait(host, crawl_delay)
+
                             rendered_html = renderer.render(page_url)
                             if rendered_html:
-                                crawl_results[page_url] = self._extract_page_data(
-                                    rendered_html, page_url, use_llm=False
+                                recovered = self._extract_page_data(rendered_html, page_url, use_llm=False)
+                                crawl_results[page_url] = recovered
+                                # Refresh the on-disk per-URL cache so it no longer
+                                # records had_data:false for a page we just
+                                # recovered (mirrors the sync crawler at ~968-977).
+                                self.cache.update_had_data(
+                                    page_url,
+                                    recovered.get("had_data", False),
+                                    ["deterministic", "async", "playwright"],
+                                    js_rendering_needed=recovered.get("js_rendering_needed", False),
+                                    extraction_failure_reason=recovered.get("extraction_failure_reason"),
                                 )
                                 if self.logger:
                                     self.logger.info(f"Playwright fallback successful (async path): {page_url}")
