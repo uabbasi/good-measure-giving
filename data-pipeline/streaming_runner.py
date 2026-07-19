@@ -73,6 +73,29 @@ STREAMING_RUN_TABLES = tables_for_phases(
     "crawl", "extract", "discover", "synthesize", "baseline", "rich", "judge", "export"
 )
 
+
+def final_commit_message(
+    success_count: int,
+    total: int,
+    total_cost: float,
+    avg_cost: float,
+    checkpoint_count: int,
+) -> str:
+    """Build the message for the run-end Dolt commit.
+
+    The commit runs unconditionally (even when nothing succeeded) so an
+    all-failed or budget-capped run doesn't leave dirty crawl/extract
+    writes uncommitted for the next run to inherit. When success_count
+    is 0 the message is labeled PARTIAL so the commit history reads as
+    a partial run rather than a normal completed one.
+    """
+    checkpoint_note = f" ({checkpoint_count} checkpoints)" if checkpoint_count > 0 else ""
+    if success_count == 0:
+        label = f"Streaming run (PARTIAL, 0/{total} succeeded)"
+    else:
+        label = f"Streaming run: {success_count}/{total} charities"
+    return f"{label}. Cost: ${total_cost:.2f} (${avg_cost:.4f}/charity){checkpoint_note}"
+
 # Discovery services - use Gemini's search grounding feature
 DISCOVERY_ENABLED = True
 # Import from root export.py (not src/export.py)
@@ -1834,43 +1857,45 @@ def main():
     }
     avg_cost = total_cost / len(results) if results else 0
 
-    # Final commit to DoltDB (captures anything since last checkpoint)
+    # Final commit to DoltDB (captures anything since last checkpoint).
+    # Unconditional: an all-failed/budget-capped run still commits any
+    # dirty crawl/extract writes so the next run doesn't inherit a dirty
+    # working set (dolt.commit no-ops on an already-clean set, so this
+    # is safe even when there's nothing new to capture).
     success_count = sum(1 for r in results if r.get("success"))
-    if success_count > 0:
-        checkpoint_note = f" ({checkpoint_count} checkpoints)" if checkpoint_count > 0 else ""
-        commit_hash = dolt.commit(
-            f"Streaming run: {success_count}/{len(results)} charities. "
-            f"Cost: ${total_cost:.2f} (${avg_cost:.4f}/charity){checkpoint_note}",
-            tables=STREAMING_RUN_TABLES,
-        )
-        if commit_hash:
-            print(f"\n✓ Committed to DoltDB: {commit_hash[:8]}")
-        elif checkpoint_count > 0:
-            print(f"\n✓ All changes captured in {checkpoint_count} checkpoint(s)")
+    commit_hash = dolt.commit(
+        final_commit_message(success_count, len(results), total_cost, avg_cost, checkpoint_count),
+        tables=STREAMING_RUN_TABLES,
+    )
+    if commit_hash:
+        print(f"\n✓ Committed to DoltDB: {commit_hash[:8]}")
+    elif checkpoint_count > 0:
+        print(f"\n✓ All changes captured in {checkpoint_count} checkpoint(s)")
 
-        # Tag the run unless --no-tag specified
+    # Tag the run unless --no-tag specified. Don't tag a run where nothing
+    # succeeded — only the commit itself is unconditional.
+    if success_count > 0 and not args.no_tag:
         # Use the final commit hash, or the latest HEAD if all changes were in checkpoints
         tag_ref = commit_hash or "HEAD"
-        if not args.no_tag:
-            # Generate tag name
-            if args.tag:
-                tag_name = args.tag
-            else:
-                timestamp = datetime.now().strftime("%Y-%m-%d-%H%M%S")
-                tag_name = f"run-{timestamp}"
+        # Generate tag name
+        if args.tag:
+            tag_name = args.tag
+        else:
+            timestamp = datetime.now().strftime("%Y-%m-%d-%H%M%S")
+            tag_name = f"run-{timestamp}"
 
-            # Build tag message with run metadata
-            source = os.path.basename(args.charities) if args.charities else f"ein:{args.ein}"
-            scores = [r.get("amal_score") for r in results if r.get("amal_score")]
-            avg_score = sum(scores) / len(scores) if scores else 0
+        # Build tag message with run metadata
+        source = os.path.basename(args.charities) if args.charities else f"ein:{args.ein}"
+        scores = [r.get("amal_score") for r in results if r.get("amal_score")]
+        avg_score = sum(scores) / len(scores) if scores else 0
 
-            tag_message = (
-                f"Pipeline run: {success_count}/{len(results)} charities from {source}\n"
-                f"Cost: ${total_cost:.2f} (${avg_cost:.4f}/charity) | Avg score: {avg_score:.1f}"
-            )
+        tag_message = (
+            f"Pipeline run: {success_count}/{len(results)} charities from {source}\n"
+            f"Cost: ${total_cost:.2f} (${avg_cost:.4f}/charity) | Avg score: {avg_score:.1f}"
+        )
 
-            dolt.tag(tag_name, message=tag_message, ref=tag_ref)
-            print(f"✓ Tagged: {tag_name}")
+        dolt.tag(tag_name, message=tag_message, ref=tag_ref)
+        print(f"✓ Tagged: {tag_name}")
 
     comprehensive_export_count = 0
     comprehensive_export_eligible = 0
