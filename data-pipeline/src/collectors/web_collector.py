@@ -1056,7 +1056,16 @@ class WebsiteCollector(BaseCollector):
                     # Detect captcha/anti-bot blocking
                     error_msg = f"HTTP {response.status_code}"
                     is_captcha = False
-                    if response.status_code in (202, 403, 429, 503):
+                    if response.status_code in (429, 503):
+                        # Transient rate-limit / overload → graduated backoff, NOT a
+                        # 180d terminal block. Still worth a curl_cffi fingerprint retry,
+                        # but never emit the CAPTCHA_BLOCKED string (which is terminal),
+                        # and skip the header sniff below — cf-ray is present on ALL
+                        # Cloudflare responses (incl. legit ones) and would re-poison
+                        # every Cloudflare 429/503 back into a terminal captcha block.
+                        is_captcha = True
+                        error_msg = f"RATE_LIMITED: HTTP {response.status_code}"
+                    elif response.status_code in (202, 403):
                         # Treat these statuses as potential anti-bot blocks and try curl_cffi fallback.
                         is_captcha = True
                         error_msg = f"CAPTCHA_BLOCKED: HTTP {response.status_code}"

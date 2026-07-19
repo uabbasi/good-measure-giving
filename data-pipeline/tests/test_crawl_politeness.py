@@ -1,5 +1,6 @@
 """H5: crawl politeness + terminal failure classification (pure-function tests)."""
 
+import asyncio
 import threading
 from unittest.mock import MagicMock
 
@@ -177,6 +178,87 @@ class TestCrawlDelayAndEmptyRetry:
         assert calls == [10]  # terminal block → no serial retry
         assert ok is False
         assert "CAPTCHA" in err
+
+
+class TestRateLimitNotTerminal:
+    """H5 poison fix: transient 429/503 must never emit the CAPTCHA_BLOCKED
+    string (which is a TERMINAL_FAILURE_MARKER -> 180d skip). They must emit
+    RATE_LIMITED instead, which matches no terminal marker -> graduated
+    RETRY_BACKOFF_HOURS backoff."""
+
+    def test_rate_limited_string_is_transient(self):
+        # 429/503 must NOT classify as terminal (no 180d skip)
+        assert classify_failure("RATE_LIMITED: HTTP 429") is None
+        assert classify_failure("RATE_LIMITED: HTTP 503") is None
+        # genuine captcha stays terminal
+        assert classify_failure("CAPTCHA_BLOCKED: challenge page (HTTP 200)") == "captcha_blocked"
+
+    def _collector(self):
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c.robots_checker = MagicMock()
+        c.robots_checker.can_fetch.return_value = True
+        c.cache = MagicMock()
+        c.cache.get_cached_html.return_value = None
+        # is_captcha stays True for 429/503 (curl_cffi bypass is still attempted,
+        # per the brief) but it must fail here so the original RATE_LIMITED
+        # error surfaces rather than a real network call.
+        c._try_curl_cffi_async = self._failing_curl_cffi
+        return c
+
+    @staticmethod
+    async def _failing_curl_cffi(url):
+        return url, False, None, None, "curl_cffi fallback failed"
+
+    def test_429_response_yields_rate_limited_error(self):
+        c = self._collector()
+
+        response = MagicMock()
+        response.status_code = 429
+        response.headers = {"cf-ray": "abc123"}  # present on ALL Cloudflare responses
+        response.text = "Too Many Requests"
+
+        client = MagicMock()
+
+        async def fake_get(*args, **kwargs):
+            return response
+
+        client.get = fake_get
+
+        semaphore = asyncio.Semaphore(1)
+
+        async def run():
+            return await c._fetch_url_async(client, "https://example.org", semaphore)
+
+        url, success, html, final_url, error = asyncio.run(run())
+        assert success is False
+        assert error == "RATE_LIMITED: HTTP 429"
+        # cf-ray header must NOT re-poison a 429 into CAPTCHA_BLOCKED
+        assert "CAPTCHA_BLOCKED" not in error
+
+    def test_503_response_yields_rate_limited_error(self):
+        c = self._collector()
+
+        response = MagicMock()
+        response.status_code = 503
+        response.headers = {}
+        response.text = "Service Unavailable"
+
+        client = MagicMock()
+
+        async def fake_get(*args, **kwargs):
+            return response
+
+        client.get = fake_get
+
+        semaphore = asyncio.Semaphore(1)
+
+        async def run():
+            return await c._fetch_url_async(client, "https://example.org", semaphore)
+
+        url, success, html, final_url, error = asyncio.run(run())
+        assert success is False
+        assert error == "RATE_LIMITED: HTTP 503"
 
 
 class TestBfsEmptyRetry:
