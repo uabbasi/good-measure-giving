@@ -743,7 +743,11 @@ class DataCollectionOrchestrator:
             elif not self._is_data_fresh(ein, "website"):
                 report["sources_attempted"].append("website")
                 try:
-                    success, data, error = self.website.collect_multi_page(website_url, ein)
+                    # Reaching here means the current website data is stale or a
+                    # prior failure — force-bypass the HTTP cache so the re-crawl
+                    # actually hits the network (fingerprint-block fallback / fresh
+                    # content take effect instead of re-serving the stale shell).
+                    success, data, error = self.website.collect_multi_page(website_url, ein, force=True)
                     if success:
                         # FIX #14: Only mark as succeeded if DB write confirms
                         stored = self._store_raw_data(ein, "website", data)

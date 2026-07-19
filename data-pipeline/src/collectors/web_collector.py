@@ -1006,6 +1006,7 @@ class WebsiteCollector(BaseCollector):
         client: httpx.AsyncClient,
         url: str,
         semaphore: asyncio.Semaphore,
+        force: bool = False,
     ) -> Tuple[str, bool, Optional[str], Optional[str], Optional[str]]:
         """
         Async fetch a single URL with concurrency control.
@@ -1020,8 +1021,10 @@ class WebsiteCollector(BaseCollector):
         """
         async with semaphore:
             try:
-                # Check cache first (sync operation but fast)
-                cached = self.cache.get_cached_html(url)
+                # Check cache first (sync operation but fast) — unless force
+                # bypasses it (a forced re-crawl must actually hit the network so
+                # fingerprint-block fallbacks / fresh content take effect).
+                cached = None if force else self.cache.get_cached_html(url)
                 if cached:
                     if self._is_bot_challenge_html(cached.get("html", "")):
                         if self.logger:
@@ -1176,6 +1179,7 @@ class WebsiteCollector(BaseCollector):
         urls: List[str],
         max_concurrent: int = 10,
         timeout_total: int = 90,
+        force: bool = False,
     ) -> Dict[str, Tuple[bool, Optional[str], Optional[str], Optional[str]]]:
         """
         Crawl multiple URLs concurrently using async HTTP.
@@ -1197,7 +1201,7 @@ class WebsiteCollector(BaseCollector):
             follow_redirects=True,
             timeout=httpx.Timeout(15.0, connect=10.0),
         ) as client:
-            tasks = [self._fetch_url_async(client, url, get_sem(url)) for url in urls]
+            tasks = [self._fetch_url_async(client, url, get_sem(url), force=force) for url in urls]
 
             # Use asyncio.wait_for for overall timeout
             try:
@@ -1319,7 +1323,7 @@ class WebsiteCollector(BaseCollector):
         return results
 
     def _crawl_specific_urls_async(
-        self, urls: List[str], timeout_total: int, max_concurrent: int = 10
+        self, urls: List[str], timeout_total: int, max_concurrent: int = 10, force: bool = False
     ) -> Dict[str, Dict[str, Any]]:
         """
         Crawl URLs using async HTTP for ~5x speedup.
@@ -1343,7 +1347,7 @@ class WebsiteCollector(BaseCollector):
 
         # Run async crawl
         fetch_results = self._run_async(
-            self._crawl_urls_async(urls, max_concurrent=max_concurrent, timeout_total=timeout_total)
+            self._crawl_urls_async(urls, max_concurrent=max_concurrent, timeout_total=timeout_total, force=force)
         )
 
         fetch_time = time.time() - start_time
@@ -1521,7 +1525,7 @@ class WebsiteCollector(BaseCollector):
         return results
 
     async def _crawl_bfs_async(
-        self, start_url: str, max_depth: int, max_pages: int, timeout_total: int, max_concurrent: int = 10
+        self, start_url: str, max_depth: int, max_pages: int, timeout_total: int, max_concurrent: int = 10, force: bool = False
     ) -> Dict[str, Dict[str, Any]]:
         """
         Async BFS crawl - fetches each depth level in parallel for ~5x speedup.
@@ -1579,7 +1583,7 @@ class WebsiteCollector(BaseCollector):
             # Parallel fetch all URLs at this level
             url_list = [u for u, _ in urls_to_fetch]
             remaining_time = max(10, timeout_total - int(time.time() - start_time))
-            fetch_results = await self._crawl_urls_async(url_list, max_concurrent=max_concurrent, timeout_total=remaining_time)
+            fetch_results = await self._crawl_urls_async(url_list, max_concurrent=max_concurrent, timeout_total=remaining_time, force=force)
 
             # Process fetched pages and collect links for next level
             next_level: List[Tuple[str, int]] = []
@@ -1649,7 +1653,7 @@ class WebsiteCollector(BaseCollector):
         return results
 
     def _crawl_with_bfs_async(
-        self, start_url: str, max_depth: int, max_pages: int, timeout_total: int, max_concurrent: int = 10
+        self, start_url: str, max_depth: int, max_pages: int, timeout_total: int, max_concurrent: int = 10, force: bool = False
     ) -> Dict[str, Dict[str, Any]]:
         """
         Synchronous wrapper for async BFS crawl.
@@ -1666,7 +1670,7 @@ class WebsiteCollector(BaseCollector):
             Dictionary mapping URL -> extracted data
         """
         return self._run_async(
-            self._crawl_bfs_async(start_url, max_depth, max_pages, timeout_total, max_concurrent=max_concurrent)
+            self._crawl_bfs_async(start_url, max_depth, max_pages, timeout_total, max_concurrent=max_concurrent, force=force)
         )
 
     def _merge_llm_data(self, regex_data: Dict[str, Any], llm_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -2299,7 +2303,7 @@ class WebsiteCollector(BaseCollector):
         return pdf_data, total_llm_cost
 
     def collect_multi_page(
-        self, url: str, ein: Optional[str] = None
+        self, url: str, ein: Optional[str] = None, force: bool = False
     ) -> Tuple[bool, Optional[Dict[str, Any]], Optional[str]]:
         """
         Collect data from charity website using multi-page crawling.
@@ -2376,6 +2380,7 @@ class WebsiteCollector(BaseCollector):
                     urls=target_urls,
                     timeout_total=CRAWLER_CONFIG["timeout_total"],
                     max_concurrent=polite_concurrency,
+                    force=force,
                 )
             else:
                 # Fallback: Async BFS crawling (parallel level-by-level fetching)
@@ -2385,6 +2390,7 @@ class WebsiteCollector(BaseCollector):
                     max_pages=CRAWLER_CONFIG["max_pages"],
                     timeout_total=CRAWLER_CONFIG["timeout_total"],
                     max_concurrent=polite_concurrency,
+                    force=force,
                 )
             timing["page_crawling"] = round(time.time() - crawl_phase_start, 1)
 
@@ -2402,6 +2408,7 @@ class WebsiteCollector(BaseCollector):
                             urls=target_urls,
                             timeout_total=CRAWLER_CONFIG["timeout_total"],
                             max_concurrent=1,
+                            force=force,
                         )
                     else:
                         crawl_results = self._crawl_with_bfs_async(
@@ -2410,6 +2417,7 @@ class WebsiteCollector(BaseCollector):
                             max_pages=CRAWLER_CONFIG["max_pages"],
                             timeout_total=CRAWLER_CONFIG["timeout_total"],
                             max_concurrent=1,
+                            force=force,
                         )
 
             if not crawl_results:

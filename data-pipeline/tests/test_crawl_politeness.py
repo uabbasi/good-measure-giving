@@ -135,7 +135,7 @@ class TestCrawlDelayAndEmptyRetry:
         c._fetch_url = MagicMock(return_value=(False, None, None, "dead"))
         calls = []
 
-        def fake_crawl(urls, timeout_total, max_concurrent=10):
+        def fake_crawl(urls, timeout_total, max_concurrent=10, force=False):
             calls.append(max_concurrent)
             return {}
 
@@ -151,7 +151,7 @@ class TestCrawlDelayAndEmptyRetry:
         c._fetch_url = MagicMock(return_value=(True, "<html>ok</html>", "https://x.org", None))
         calls = []
 
-        def fake_crawl(urls, timeout_total, max_concurrent=10):
+        def fake_crawl(urls, timeout_total, max_concurrent=10, force=False):
             calls.append(max_concurrent)
             return {}
 
@@ -166,7 +166,7 @@ class TestCrawlDelayAndEmptyRetry:
         c._fetch_url = MagicMock(return_value=(True, "<html>ok</html>", "https://x.org", None))
         calls = []
 
-        def fake_crawl(urls, timeout_total, max_concurrent=10):
+        def fake_crawl(urls, timeout_total, max_concurrent=10, force=False):
             # Simulate a CAPTCHA detected during the crawl (the real signal path)
             c._last_captcha_error = "CAPTCHA_BLOCKED: challenge page (HTTP 200)"
             calls.append(max_concurrent)
@@ -196,7 +196,7 @@ class TestBfsEmptyRetry:
         c._fetch_url = MagicMock(return_value=(True, "<html>ok</html>", "https://amf.org", None))
         calls = []
 
-        def fake_bfs(start_url, max_depth, max_pages, timeout_total, max_concurrent=10):
+        def fake_bfs(start_url, max_depth, max_pages, timeout_total, max_concurrent=10, force=False):
             calls.append(max_concurrent)
             return {}
 
