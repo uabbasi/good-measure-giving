@@ -113,3 +113,67 @@ class TestSingleRetryIncrementPerWebsiteFailure:
         success, report = orch.fetch_charity_data("12-3456789", website_url="https://example.org")
         assert success is False
         assert self._retry_advancing_writes(orch.raw_data_repo) == 1
+
+
+class TestCrawlDelayAndEmptyRetry:
+    """Throttle-sensitive hosts (Crawl-delay) get lowered concurrency + a serial
+    retry when the batch comes back empty against a live homepage."""
+
+    def _collector(self):
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c.robots_checker = MagicMock()
+        c._last_captcha_error = None
+        return c
+
+    def test_crawl_delay_lowers_concurrency(self):
+        # Advertised Crawl-delay → initial concurrency 2; homepage not re-fetchable
+        # here (dead) so no serial retry — isolates the delay-lowering decision.
+        c = self._collector()
+        c.robots_checker.get_crawl_delay.return_value = 10.0
+        c._discover_urls_from_sitemap = MagicMock(return_value=(True, ["https://x.org/a", "https://x.org/b"]))
+        c._fetch_url = MagicMock(return_value=(False, None, None, "dead"))
+        calls = []
+
+        def fake_crawl(urls, timeout_total, max_concurrent=10):
+            calls.append(max_concurrent)
+            return {}
+
+        c._crawl_specific_urls_async = fake_crawl
+        ok, data, err = c.collect_multi_page("https://x.org", "00-0000000")
+        assert calls == [2]  # delay>=1 → concurrency 2; dead homepage → no retry
+        assert ok is False
+
+    def test_empty_batch_retries_serially_when_homepage_live(self):
+        c = self._collector()
+        c.robots_checker.get_crawl_delay.return_value = None
+        c._discover_urls_from_sitemap = MagicMock(return_value=(True, ["https://x.org/a"]))
+        c._fetch_url = MagicMock(return_value=(True, "<html>ok</html>", "https://x.org", None))
+        calls = []
+
+        def fake_crawl(urls, timeout_total, max_concurrent=10):
+            calls.append(max_concurrent)
+            return {}
+
+        c._crawl_specific_urls_async = fake_crawl
+        ok, data, err = c.collect_multi_page("https://x.org", "00-0000000")
+        assert calls == [10, 1]  # default burst, then serial retry against a live homepage
+
+    def test_empty_batch_no_retry_when_captcha(self):
+        c = self._collector()
+        c.robots_checker.get_crawl_delay.return_value = None
+        c._discover_urls_from_sitemap = MagicMock(return_value=(True, ["https://x.org/a"]))
+        c._fetch_url = MagicMock(return_value=(True, "<html>ok</html>", "https://x.org", None))
+        calls = []
+
+        def fake_crawl(urls, timeout_total, max_concurrent=10):
+            # Simulate a CAPTCHA detected during the crawl (the real signal path)
+            c._last_captcha_error = "CAPTCHA_BLOCKED: challenge page (HTTP 200)"
+            calls.append(max_concurrent)
+            return {}
+
+        c._crawl_specific_urls_async = fake_crawl
+        ok, data, err = c.collect_multi_page("https://x.org", "00-0000000")
+        assert calls == [10]  # terminal block → no serial retry
+        assert ok is False
+        assert "CAPTCHA" in err

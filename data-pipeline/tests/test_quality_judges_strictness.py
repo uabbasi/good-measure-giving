@@ -223,6 +223,81 @@ def test_synthesize_quality_ignores_false_third_party_evaluated():
     assert not any(i.field == "hallucination_denylist.third_party_evaluated" for i in verdict.issues)
 
 
+def test_synthesize_quality_reads_corroboration_nested_in_metrics_json():
+    """The live row carries corroboration_status inside metrics_json, not top-level.
+    An already-corroborated third_party_evaluated must NOT warn."""
+    judge = _synth_judge()
+    verdict = judge.validate(
+        output={
+            "ein": "47-0946122",
+            "charity_data": {
+                "third_party_evaluated": True,
+                "metrics_json": {
+                    "corroboration_status": {
+                        "third_party_evaluated": {"passed": True, "sources": ["charity_navigator_rated"]}
+                    }
+                },
+            },
+        },
+        context={},
+    )
+    assert not any(i.field == "hallucination_denylist.third_party_evaluated" for i in verdict.issues)
+
+
+def test_synthesize_quality_accepts_zakat_alias_to_zakat_claim_detected():
+    """accepts_zakat is enforced as zakat_claim_detected; the alias must clear it."""
+    judge = _synth_judge()
+    verdict = judge.validate(
+        output={
+            "ein": "47-0946122",
+            "charity_data": {
+                "accepts_zakat": True,
+                "corroboration_status": {"zakat_claim_detected": {"passed": True, "sources": ["website"]}},
+            },
+        },
+        context={},
+    )
+    assert not any(i.field == "hallucination_denylist.accepts_zakat" for i in verdict.issues)
+
+
+def test_synthesize_quality_populations_verified_via_source_attribution():
+    """A populations_served entry marked verified in source_attribution must not warn."""
+    judge = _synth_judge()
+    verdict = judge.validate(
+        output={
+            "ein": "47-0946122",
+            "charity_data": {
+                "populations_served": ["Refugees", "Orphans"],
+                "corroboration_status": {},
+                "source_attribution": {
+                    "populations_served": {"source_name": "candid", "verification_status": "verified"}
+                },
+            },
+        },
+        context={},
+    )
+    assert not any(i.field == "hallucination_denylist.populations_served" for i in verdict.issues)
+
+
+def test_synthesize_quality_generic_populations_still_flagged():
+    """Website generic-only populations stay flagged (unverified)."""
+    judge = _synth_judge()
+    verdict = judge.validate(
+        output={
+            "ein": "47-0946122",
+            "charity_data": {
+                "populations_served": ["communities"],
+                "corroboration_status": {},
+                "source_attribution": {
+                    "populations_served": {"source_name": "website", "verification_status": "unverified"}
+                },
+            },
+        },
+        context={},
+    )
+    assert any(i.field == "hallucination_denylist.populations_served" for i in verdict.issues)
+
+
 def test_extract_quality_checks_website_bounds_for_combined_mode_data():
     judge = _extract_judge()
     verdict = judge.validate(

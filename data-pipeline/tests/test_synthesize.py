@@ -777,3 +777,26 @@ class TestProgramDeduplication:
         assert len(metrics.programs) == 2
         assert "Food" in metrics.programs  # First occurrence kept
         assert "Medical" in metrics.programs
+
+
+class TestPopulationsVerificationStatus:
+    """Deterministic verifier for source_attribution['populations_served'] (S-J-006)."""
+
+    def test_candid_source_always_verified(self):
+        from src.parsers.charity_metrics_aggregator import _populations_verification_status
+
+        assert _populations_verification_status("candid", ["communities"]) == "verified"
+        assert _populations_verification_status("candid", ["Refugees", "Orphans"]) == "verified"
+
+    def test_website_specific_population_verified(self):
+        from src.parsers.charity_metrics_aggregator import _populations_verification_status
+
+        assert _populations_verification_status("website", ["Refugees", "communities"]) == "verified"
+        assert _populations_verification_status("website", ["Orphans"]) == "verified"
+
+    def test_website_generic_only_unverified(self):
+        from src.parsers.charity_metrics_aggregator import _populations_verification_status
+
+        assert _populations_verification_status("website", ["communities"]) == "unverified"
+        assert _populations_verification_status("website", ["underserved communities", "those in need"]) == "unverified"
+        assert _populations_verification_status("website", ["people", "individuals", "everyone"]) == "unverified"

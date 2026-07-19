@@ -133,6 +133,51 @@ def _first_non_none(*values):
     return None
 
 
+# Generic population phrases LLMs default to when specific data is missing
+# (hallucination-denylist S-J-006). A website populations_served list made up
+# only of these is not a verifiable claim.
+_GENERIC_POPULATIONS = frozenset(
+    {
+        "underserved communities",
+        "underserved",
+        "vulnerable populations",
+        "vulnerable",
+        "those in need",
+        "the needy",
+        "needy",
+        "communities",
+        "community",
+        "people",
+        "individuals",
+        "general public",
+        "public",
+        "everyone",
+        "anyone",
+        "all",
+        "beneficiaries",
+        "populations",
+        "humanity",
+        "society",
+    }
+)
+
+
+def _populations_verification_status(source: str, populations: list) -> str:
+    """Verification status for source_attribution['populations_served'].
+
+    Candid's structured population taxonomy is authoritative; website-scraped
+    populations are trusted only when at least one entry names a specific
+    population rather than generic filler.
+    """
+    if source == "candid":
+        return "verified"
+    specific = [
+        p for p in populations
+        if isinstance(p, str) and p.strip().lower() not in _GENERIC_POPULATIONS
+    ]
+    return "verified" if specific else "unverified"
+
+
 class CharityMetrics(BaseModel):
     """
     Canonical charity metrics aggregated from all 5 data sources.
@@ -1371,7 +1416,16 @@ class CharityMetricsAggregator:
             else []
         )
         if metrics_data["populations_served"]:
-            _track("populations_served", "candid" if candid_profile and candid_profile.get("populations_served") else "website", metrics_data["populations_served"])
+            _pops_source = "candid" if candid_profile and candid_profile.get("populations_served") else "website"
+            _track("populations_served", _pops_source, metrics_data["populations_served"])
+            # Verification (S-J-006): Candid's structured population taxonomy is
+            # authoritative; website copy is trusted only when it names a
+            # SPECIFIC population rather than generic filler. Writes into
+            # source_attribution only (not corroboration_status / the value),
+            # so scoring is untouched.
+            attr["populations_served"]["verification_status"] = _populations_verification_status(
+                _pops_source, metrics_data["populations_served"]
+            )
 
         metrics_data["geographic_coverage"] = (
             candid_profile.get("geographic_coverage", [])

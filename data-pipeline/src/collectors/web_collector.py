@@ -1306,7 +1306,9 @@ class WebsiteCollector(BaseCollector):
 
         return results
 
-    def _crawl_specific_urls_async(self, urls: List[str], timeout_total: int) -> Dict[str, Dict[str, Any]]:
+    def _crawl_specific_urls_async(
+        self, urls: List[str], timeout_total: int, max_concurrent: int = 10
+    ) -> Dict[str, Dict[str, Any]]:
         """
         Crawl URLs using async HTTP for ~5x speedup.
 
@@ -1315,6 +1317,8 @@ class WebsiteCollector(BaseCollector):
         Args:
             urls: List of URLs to crawl
             timeout_total: Total timeout in seconds
+            max_concurrent: Max concurrent requests (lowered for throttle-sensitive
+                hosts that advertise a Crawl-delay; a serial retry passes 1)
 
         Returns:
             Dictionary mapping URL -> extracted data for each page
@@ -1323,10 +1327,12 @@ class WebsiteCollector(BaseCollector):
         results: Dict[str, Dict[str, Any]] = {}
 
         if self.logger:
-            self.logger.info(f"Async crawling {len(urls)} URLs (max 10 concurrent)")
+            self.logger.info(f"Async crawling {len(urls)} URLs (max {max_concurrent} concurrent)")
 
         # Run async crawl
-        fetch_results = self._run_async(self._crawl_urls_async(urls, max_concurrent=10, timeout_total=timeout_total))
+        fetch_results = self._run_async(
+            self._crawl_urls_async(urls, max_concurrent=max_concurrent, timeout_total=timeout_total)
+        )
 
         fetch_time = time.time() - start_time
         if self.logger:
@@ -2342,12 +2348,20 @@ class WebsiteCollector(BaseCollector):
                 if self.logger:
                     self.logger.info("Using link-following mode (no sitemap found)")
 
+            # A host that advertises a Crawl-delay (AMF, Cloudflare-fronted ING)
+            # gets throttled to an empty batch by our default 10-way burst.
+            # Honor the delay by lowering concurrency up front.
+            crawl_delay = self.robots_checker.get_crawl_delay(url)
+            polite_concurrency = 2 if (crawl_delay and crawl_delay >= 1) else 10
+
             # Step 2: Crawl website (async for ~5x speedup)
             crawl_phase_start = time.time()
             if sitemap_used:
                 # Async crawl specific URLs from sitemap (parallel fetching)
                 crawl_results = self._crawl_specific_urls_async(
-                    urls=target_urls, timeout_total=CRAWLER_CONFIG["timeout_total"]
+                    urls=target_urls,
+                    timeout_total=CRAWLER_CONFIG["timeout_total"],
+                    max_concurrent=polite_concurrency,
                 )
             else:
                 # Fallback: Async BFS crawling (parallel level-by-level fetching)
@@ -2358,6 +2372,20 @@ class WebsiteCollector(BaseCollector):
                     timeout_total=CRAWLER_CONFIG["timeout_total"],
                 )
             timing["page_crawling"] = round(time.time() - crawl_phase_start, 1)
+
+            # Empty batch against a live homepage is a throttle signal, not a
+            # dead site. Retry once serially (concurrency 1) before giving up —
+            # skip only when a terminal block (CAPTCHA/challenge) was detected.
+            if not crawl_results and sitemap_used and not self._last_captcha_error:
+                homepage_ok = self._fetch_url(url, force=True)[0]
+                if homepage_ok:
+                    if self.logger:
+                        self.logger.info(f"Empty crawl for {url} but homepage is live — retrying serially")
+                    crawl_results = self._crawl_specific_urls_async(
+                        urls=target_urls,
+                        timeout_total=CRAWLER_CONFIG["timeout_total"],
+                        max_concurrent=1,
+                    )
 
             if not crawl_results:
                 # Return specific captcha error if detected, otherwise generic message

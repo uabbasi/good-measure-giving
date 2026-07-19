@@ -132,6 +132,20 @@ VERIFICATION_REQUIRED_FIELDS: Dict[str, str] = {
 }
 
 
+# A denylist field's verification is produced under the aggregator/verifier's
+# own key, which is not always the denylist name. The verification judge resolves
+# through this alias so an already-corroborated field stops false-warning.
+# (accepts_zakat is enforced as zakat_claim_detected by CrossSourceCorroborator.)
+CORROBORATION_KEY_ALIASES: Dict[str, str] = {
+    "accepts_zakat": "zakat_claim_detected",
+}
+
+
+def corroboration_key_for(field_name: str) -> str:
+    """The corroboration_status key that carries a prone field's verification."""
+    return CORROBORATION_KEY_ALIASES.get(field_name, field_name)
+
+
 def is_hallucination_prone(field_name: str) -> bool:
     """
     Check if a field is known to be hallucination-prone.
