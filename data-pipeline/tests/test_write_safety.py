@@ -280,3 +280,24 @@ class TestRegressionGuard:
         # website-derived text fields must NOT be guarded (legit drops)
         assert "theory_of_change" not in REGRESSION_GUARDED_FIELDS
         assert "populations_served" not in REGRESSION_GUARDED_FIELDS
+
+
+class TestRegressionReport:
+    def test_writes_regressions_json(self, tmp_path):
+        import json
+
+        from synthesize import write_synthesize_regressions
+
+        rows = [{"charity_ein": "12-3456789", "field": "program_expense_ratio", "prior_value": 0.85}]
+        path = write_synthesize_regressions(rows, reports_dir=tmp_path)
+        assert path.name == "synthesize-regressions.json"
+        written = json.loads(path.read_text())
+        assert written == rows
+
+    def test_empty_regressions_writes_empty_list(self, tmp_path):
+        import json
+
+        from synthesize import write_synthesize_regressions
+
+        path = write_synthesize_regressions([], reports_dir=tmp_path)
+        assert json.loads(path.read_text()) == []

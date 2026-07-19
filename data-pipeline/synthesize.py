@@ -43,6 +43,8 @@ from src.utils.evaluation_tracks import is_new_org
 from src.utils.logger import PipelineLogger
 from src.utils.phase_cache_helper import check_phase_cache, update_phase_cache
 
+REPORTS_DIR = Path(__file__).parent / "reports"
+
 # Scalar fields derived from REQUIRED sources (ProPublica / CN financials),
 # stored as top-level CharityData columns. These can only recompute to None via
 # a computation gap (all their inputs are required, so a source loss would have
@@ -2146,6 +2148,22 @@ def synthesize_charity(
     return result
 
 
+def write_synthesize_regressions(rows: list[dict], reports_dir: Path = REPORTS_DIR) -> Path:
+    """Write preserved-regression flags to reports/synthesize-regressions.json.
+
+    Each row: {charity_ein, field, prior_value}. Internal-only editorial signal
+    — a human confirms bug vs genuine drop. Never gates anything.
+    """
+    import json
+
+    reports_dir.mkdir(parents=True, exist_ok=True)
+    path = reports_dir / "synthesize-regressions.json"
+    with open(path, "w") as f:
+        json.dump(rows, f, indent=2, default=str)
+    print(f"  synthesize regressions: {len(rows)} field(s) preserved")
+    return path
+
+
 def load_pilot_charities(file_path: str) -> list[str]:
     """Load charities from pilot_charities.txt format (Name | EIN | URL | Comments)."""
     from src.utils.charity_loader import load_pilot_eins
@@ -2204,6 +2222,7 @@ def main():
     total_attributions = 0
     failed_charities: list[tuple[str, str]] = []
     successful_eins: list[str] = []
+    all_regressions: list[dict] = []
 
     for i, ein in enumerate(eins, 1):
         # Check cache
@@ -2223,6 +2242,8 @@ def main():
             print(f"Error: {e}")
             print("\nThis indicates a crawl phase bug. Debug and fix before continuing.")
             sys.exit(1)
+
+        all_regressions.extend(result.get("regressions") or [])
 
         if result["success"]:
             # Save to database
@@ -2271,6 +2292,8 @@ def main():
         )
         if commit_hash:
             print(f"\n✓ Committed to DoltDB: {commit_hash[:8]}")
+
+    write_synthesize_regressions(all_regressions)
 
     # Summary
     print(f"\n{'=' * 60}")

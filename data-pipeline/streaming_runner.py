@@ -105,7 +105,7 @@ from src.services.toc_discovery_service import TheoryOfChangeDiscoveryService
 from src.services.zakat_verification_service import ZakatVerificationService
 
 # Import phase functions
-from synthesize import synthesize_charity
+from synthesize import synthesize_charity, write_synthesize_regressions
 
 _export_spec = importlib.util.spec_from_file_location("root_export", Path(__file__).parent / "export.py")
 _export_module = importlib.util.module_from_spec(_export_spec)
@@ -1127,9 +1127,10 @@ def process_charity_full(
             result["cache_skips"].append("synthesize")
         else:
             phase_start = time.time()
-            synth_result = synthesize_charity(ein, raw_repo, charity_repo)
+            synth_result = synthesize_charity(ein, raw_repo, charity_repo, data_repo=data_repo)
             synth_cost = synth_result.get("cost_usd", 0.0)
             result["costs"]["synthesize"] = synth_cost
+            result["regressions"] = synth_result.get("regressions") or []
 
             if not synth_result.get("success"):
                 result["phases"]["synthesize"] = {
@@ -1806,6 +1807,13 @@ def main():
     finally:
         # Cleanup worker-local resources
         _cleanup_worker_resources()
+
+    # Regression flags: warnings from the non-destructive-write guard, surfaced
+    # for human review (internal artifact under data-pipeline/reports/). Never gates.
+    all_regressions: list[dict] = []
+    for r in results:
+        all_regressions.extend(r.get("regressions") or [])
+    write_synthesize_regressions(all_regressions)
 
     elapsed = time.time() - start_time
 
