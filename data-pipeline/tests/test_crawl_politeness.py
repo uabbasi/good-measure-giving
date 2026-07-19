@@ -2,6 +2,7 @@
 
 import asyncio
 import threading
+from datetime import datetime, timedelta, timezone
 from unittest.mock import MagicMock
 
 from src.collectors.orchestrator import (
@@ -285,3 +286,96 @@ class TestBfsEmptyRetry:
         c._crawl_with_bfs_async = fake_bfs
         ok, data, err = c.collect_multi_page("https://amf.org", "00-0000000")
         assert calls == [2, 1]  # delay-lowered burst (2), then serial retry (1)
+
+
+class TestForceSourcesOverride:
+    """Task 2: `force_sources` bypasses BOTH `_is_data_fresh` and
+    `_should_skip_failed_source` for the named sources only; every other
+    source's gating is unaffected."""
+
+    def _make_orchestrator(self):
+        orch = DataCollectionOrchestrator.__new__(DataCollectionOrchestrator)
+        orch.logger = MagicMock()
+        orch.skip_sources = {"propublica", "charity_navigator", "candid", "form990_grants", "bbb"}
+        orch.frozen_sources = set()
+        orch.blocked_sites = []
+        orch._blocked_sites_lock = threading.Lock()
+        orch.raw_data_repo = MagicMock()
+        orch.charity_repo = MagicMock()
+        orch.website = MagicMock()
+        orch._get_or_create_charity = lambda ein, name=None, website=None: ein
+        return orch
+
+    @staticmethod
+    def _fresh_success_row():
+        return {
+            "success": True,
+            "scraped_at": (datetime.now(timezone.utc) - timedelta(days=1)).isoformat(),
+        }
+
+    @staticmethod
+    def _terminal_failure_row():
+        return {
+            "success": False,
+            "retry_count": 1,
+            "last_failure_reason": "CAPTCHA_BLOCKED: challenge page (HTTP 200)",
+            "scraped_at": (datetime.now(timezone.utc) - timedelta(days=1)).isoformat(),
+        }
+
+    def test_fresh_website_not_recrawled_without_force(self):
+        orch = self._make_orchestrator()
+        orch.raw_data_repo.get_by_source.return_value = self._fresh_success_row()
+        orch.website.collect_multi_page.return_value = (False, None, "SIMULATED_FAILURE")
+
+        success, report = orch.fetch_charity_data("12-3456789", website_url="https://example.org")
+
+        orch.website.collect_multi_page.assert_not_called()
+        assert "website" in report["sources_succeeded"]
+
+    def test_fresh_website_recrawled_with_force(self):
+        orch = self._make_orchestrator()
+        orch.raw_data_repo.get_by_source.return_value = self._fresh_success_row()
+        orch.website.collect_multi_page.return_value = (False, None, "SIMULATED_FAILURE")
+
+        success, report = orch.fetch_charity_data(
+            "12-3456789", website_url="https://example.org", force_sources={"website"}
+        )
+
+        orch.website.collect_multi_page.assert_called_once()
+
+    def test_terminal_failed_website_skipped_without_force(self):
+        orch = self._make_orchestrator()
+        orch.raw_data_repo.get_by_source.return_value = self._terminal_failure_row()
+        orch.website.collect_multi_page.return_value = (False, None, "SIMULATED_FAILURE")
+
+        success, report = orch.fetch_charity_data("12-3456789", website_url="https://example.org")
+
+        orch.website.collect_multi_page.assert_not_called()
+        assert "website" in report["sources_failed"]
+
+    def test_terminal_failed_website_recrawled_with_force(self):
+        orch = self._make_orchestrator()
+        orch.raw_data_repo.get_by_source.return_value = self._terminal_failure_row()
+        orch.website.collect_multi_page.return_value = (False, None, "SIMULATED_FAILURE")
+
+        success, report = orch.fetch_charity_data(
+            "12-3456789", website_url="https://example.org", force_sources={"website"}
+        )
+
+        orch.website.collect_multi_page.assert_called_once()
+
+    def test_non_website_force_bypasses_freshness_and_backoff(self):
+        # Isolate propublica: skip every other source, including website, so
+        # only the propublica gate under test can invoke a fetch.
+        orch = self._make_orchestrator()
+        orch.skip_sources = {"charity_navigator", "candid", "form990_grants", "bbb", "website"}
+        orch.charity_repo.get.return_value = None
+        orch.raw_data_repo.get_by_source.return_value = self._fresh_success_row()
+        orch.propublica = MagicMock()
+        orch.propublica.fetch.return_value = MagicMock(success=False, error="SIMULATED_FAILURE")
+
+        success, report = orch.fetch_charity_data("12-3456789")
+        orch.propublica.fetch.assert_not_called()
+
+        success, report = orch.fetch_charity_data("12-3456789", force_sources={"propublica"})
+        orch.propublica.fetch.assert_called_once()

@@ -675,6 +675,7 @@ class DataCollectionOrchestrator:
         ein: str,
         website_url: Optional[str] = None,
         charity_name: Optional[str] = None,
+        force_sources: Optional[set[str]] = None,
     ) -> Tuple[bool, Dict[str, Any]]:
         """
         Fetch raw data from all sources WITHOUT parsing.
@@ -685,6 +686,10 @@ class DataCollectionOrchestrator:
             ein: EIN in format XX-XXXXXXX (required)
             website_url: Optional website URL for website source
             charity_name: Optional charity name (for BBB lookup)
+            force_sources: Optional set of source names for which BOTH the
+                freshness (TTL) gate and the failure-backoff gate are
+                bypassed, forcing a re-fetch regardless of cached/failed
+                state. Sources not in this set are gated as normal.
 
         Returns:
             Tuple of (success, report)
@@ -701,6 +706,8 @@ class DataCollectionOrchestrator:
         ein_clean = ein.replace("-", "")
         if len(ein_clean) != 9 or not ein_clean.isdigit():
             raise ValueError(f"Invalid EIN format: {ein}. Expected 9 digits (XX-XXXXXXX)")
+
+        force_sources = set(force_sources or ())
 
         website_url = normalize_website_url(website_url)
 
@@ -738,16 +745,18 @@ class DataCollectionOrchestrator:
                 report["sources_skipped"].append(source_name)
                 continue
 
-            # Check TTL - skip if data is fresh
-            if self._is_data_fresh(ein, source_name):
+            # Check TTL - skip if data is fresh (unless force-refreshing this source)
+            if source_name not in force_sources and self._is_data_fresh(ein, source_name):
                 self.logger.debug(f"Skipping {source_name} - data is fresh (within TTL)")
                 report["sources_skipped"] = report.get("sources_skipped", [])
                 report["sources_skipped"].append(f"{source_name} (cached)")
                 report["sources_succeeded"].append(source_name)
                 continue
 
-            # Check backoff for failed sources
-            should_skip, skip_reason = self._should_skip_failed_source(ein, source_name)
+            # Check backoff for failed sources (unless force-refreshing this source)
+            should_skip, skip_reason = (
+                (False, "") if source_name in force_sources else self._should_skip_failed_source(ein, source_name)
+            )
             if should_skip:
                 self.logger.debug(f"Skipping {source_name}: {skip_reason}")
                 report["sources_failed"][source_name] = skip_reason
@@ -820,11 +829,14 @@ class DataCollectionOrchestrator:
 
         website_url = normalize_website_url(website_url)
         if website_url and "website" not in self.skip_sources:
-            should_skip_site, site_skip_reason = self._should_skip_failed_source(ein, "website")
+            force_site = "website" in force_sources
+            should_skip_site, site_skip_reason = (
+                (False, "") if force_site else self._should_skip_failed_source(ein, "website")
+            )
             if should_skip_site:
                 report["sources_failed"]["website"] = site_skip_reason
                 report.setdefault("sources_skipped", []).append(f"website ({site_skip_reason})")
-            elif not self._is_data_fresh(ein, "website"):
+            elif force_site or not self._is_data_fresh(ein, "website"):
                 report["sources_attempted"].append("website")
                 try:
                     # Reaching here means the current website data is stale or a
