@@ -229,6 +229,7 @@ class RichNarrativeGenerator:
             charity_bundle=charity_bundle,
             citation_registry=citation_registry,
             investment_memo_data=investment_memo_data,
+            ein=ein,
         )
 
         # 6. Generate with LLM
@@ -672,6 +673,7 @@ class RichNarrativeGenerator:
         charity_bundle: Any,
         citation_registry: Any,
         investment_memo_data: Optional[dict] = None,
+        ein: Optional[str] = None,
     ) -> str:
         """Build the prompt for rich narrative generation."""
         # Load prompt template
@@ -689,12 +691,20 @@ class RichNarrativeGenerator:
         baseline_context = self._format_baseline_context(baseline)
 
         # Replace placeholders
+        from src.llm.prompt_loader import data_vintage_note
         from src.scorers.v2_scorers import score_band_label
+
+        fiscal_year = None
+        if ein:
+            vintage_metrics = self._load_metrics(ein)
+            if vintage_metrics:
+                fiscal_year = vintage_metrics.financial_data_tax_year
 
         prompt = template.replace("{charity_data}", charity_data)
         prompt = prompt.replace("{citation_sources}", citation_sources)
         prompt = prompt.replace("{baseline_context}", baseline_context)
         prompt = prompt.replace("{score_band}", score_band_label(baseline.get("amal_score")))
+        prompt = prompt.replace("{data_vintage_note}", data_vintage_note(fiscal_year))
 
         return prompt
 

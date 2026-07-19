@@ -20,7 +20,7 @@ def _fake_scores(wallet_tag="ZAKAT-ELIGIBLE"):
 
 def test_baseline_prompt_file_is_v2():
     info = load_prompt("baseline_narrative", check_version=False)
-    assert info.version == "2.1.0"
+    assert info.version == "2.2.0"
     assert "{charity_name}" in info.content
     assert "{zakat_constraint_text}" in info.content
     # v1.1.0 style rules survived the merge
@@ -38,7 +38,7 @@ def test_template_placeholders_match_format_kwargs(sample_charity_metrics):
 
 def test_build_baseline_prompt_renders_cleanly(sample_charity_metrics):
     prompt, info = build_baseline_prompt(sample_charity_metrics, _fake_scores(), 3, "[1] Charity Navigator")
-    assert info.version == "2.1.0"
+    assert info.version == "2.2.0"
     assert "Test Charity" in prompt
     assert "{charity_name}" not in prompt          # all placeholders resolved
     assert '"headline"' in prompt                   # JSON braces rendered as literals
@@ -52,3 +52,32 @@ def test_sadaqah_constraint_text(sample_charity_metrics):
 
 def test_prompt_file_in_baseline_fingerprint():
     assert "src/llm/prompts/baseline_narrative.txt" in PHASE_CODE_FILES["baseline"]
+
+
+class TestDataVintageNote:
+    def test_fresh_filing_attributes_year(self):
+        from src.llm.prompt_loader import data_vintage_note
+
+        note = data_vintage_note(2024, today_year=2026)
+        assert "fiscal year 2024" in note
+        assert "MUST disclose" not in note
+
+    def test_stale_filing_requires_disclosure(self):
+        from src.llm.prompt_loader import data_vintage_note
+
+        note = data_vintage_note(2022, today_year=2026)
+        assert "MUST disclose" in note
+        assert "4 years old" in note
+        assert "FY2022" in note
+
+    def test_unknown_year_forbids_attribution(self):
+        from src.llm.prompt_loader import data_vintage_note
+
+        note = data_vintage_note(None)
+        assert "unknown" in note
+
+    def test_boundary_two_years_is_fresh(self):
+        from src.llm.prompt_loader import data_vintage_note
+
+        assert "MUST disclose" not in data_vintage_note(2024, today_year=2026)
+        assert "MUST disclose" in data_vintage_note(2023, today_year=2026)

@@ -220,6 +220,45 @@ def get_prompt_version(name: str) -> str:
         return "0.0.0"
 
 
+# Filings older than this (in years) are "dated" — must be disclosed in prose.
+# Matches the website's dated-financials threshold (GmgCharityDetail).
+DATA_VINTAGE_STALE_YEARS = 3
+
+
+def data_vintage_note(fiscal_year: Optional[int], today_year: Optional[int] = None) -> str:
+    """Prompt text telling the narrative LLM how to attribute financial data.
+
+    Shared by the baseline and rich narrative prompts ({data_vintage_note}).
+    990 filings normally run ~2 years behind; 3+ years is a transparency
+    concern the prose must disclose rather than silently presenting old
+    figures as current.
+    """
+    if today_year is None:
+        from datetime import date
+
+        today_year = date.today().year
+    if not fiscal_year:
+        return (
+            "The fiscal year of the financial data is unknown. Do not attribute "
+            "financial figures to any specific year, and do not present them as current."
+        )
+    age = today_year - fiscal_year
+    if age >= DATA_VINTAGE_STALE_YEARS:
+        return (
+            f"The latest available financials are from fiscal year {fiscal_year} — "
+            f"{age} years old. The narrative MUST disclose this plainly, e.g. "
+            f'"based on the most recent available filings (FY{fiscal_year})", and '
+            f"note that more recent figures were not available. Dated financials "
+            f"are a mild transparency concern; treat them as such — do not present "
+            f"FY{fiscal_year} figures as if they were current."
+        )
+    return (
+        f"Financial figures come from fiscal year {fiscal_year} filings. When citing "
+        f'them, attribute them to that year (e.g. "in FY{fiscal_year}") rather than '
+        f"presenting them as this year's figures."
+    )
+
+
 def list_prompts(prompts_dir: Optional[Path] = None) -> list[PromptInfo]:
     """List all available prompts with their metadata."""
     if prompts_dir is None:

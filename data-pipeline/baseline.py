@@ -42,7 +42,7 @@ from src.db import (
 from src.db.client import execute_query
 from src.db.dolt_client import dolt, tables_for_phases
 from src.llm.llm_client import LLMClient, LLMTask
-from src.llm.prompt_loader import PromptInfo, load_prompt
+from src.llm.prompt_loader import PromptInfo, data_vintage_note, load_prompt
 from src.parsers.charity_metrics_aggregator import CharityMetrics, CharityMetricsAggregator
 from src.scorers.v2_scorers import (
     RUBRIC_VERSION,
@@ -587,6 +587,7 @@ def _baseline_prompt_kwargs(metrics: CharityMetrics, scores: Any, num_sources: i
 
     return {
         "score_band": score_band_label(scores.amal_score),
+        "data_vintage_note": data_vintage_note(metrics.financial_data_tax_year),
         "charity_name": metrics.name,
         "ein": metrics.ein,
         "mission": metrics.mission or "Not available",
