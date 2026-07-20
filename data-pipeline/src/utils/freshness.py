@@ -79,7 +79,7 @@ def website_needs_recrawl(rows: list[dict], ttl_days: int, backoff_days: int = 0
     state = source_freshness_state(website_row, ttl_days)
     if state == "fresh":
         return False
-    if state == "stale" and backoff_days:
+    if state == "stale" and backoff_days and website_row is not None:
         attempt_age = _age(website_row.get("last_attempt_at"))
         if attempt_age is not None and attempt_age < timedelta(days=backoff_days):
             return False
