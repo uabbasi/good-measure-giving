@@ -295,6 +295,42 @@ class TestRateLimitSurfacedInCollectMultiPage:
         assert c._last_rate_limit_error == "RATE_LIMITED: HTTP 429"
         assert c._last_captcha_error is None
 
+    def test_rate_limit_capture_in_sitemap_loop(self):
+        # Same signal, but exercised through the REAL _crawl_specific_urls_async
+        # (the structurally-preferred sitemap path), not a full mock of it --
+        # a fully-mocked _crawl_specific_urls_async gives false confidence
+        # this path is covered.
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c._last_captcha_error = None
+        c._last_rate_limit_error = None
+
+        async def fake_crawl_urls_async(url_list, max_concurrent, timeout_total, force, crawl_delay):
+            return {u: (False, None, None, "RATE_LIMITED: HTTP 429") for u in url_list}
+
+        c._crawl_urls_async = fake_crawl_urls_async
+        results = c._crawl_specific_urls_async(["https://x.org/a"], timeout_total=30)
+
+        assert results == {}
+        assert c._last_rate_limit_error == "RATE_LIMITED: HTTP 429"
+        assert c._last_captcha_error is None
+
+    def test_captcha_capture_in_sitemap_loop(self):
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c._last_captcha_error = None
+        c._last_rate_limit_error = None
+
+        async def fake_crawl_urls_async(url_list, max_concurrent, timeout_total, force, crawl_delay):
+            return {u: (False, None, None, "CAPTCHA_BLOCKED: challenge page (HTTP 200)") for u in url_list}
+
+        c._crawl_urls_async = fake_crawl_urls_async
+        results = c._crawl_specific_urls_async(["https://x.org/a"], timeout_total=30)
+
+        assert results == {}
+        assert c._last_captcha_error == "CAPTCHA_BLOCKED: challenge page (HTTP 200)"
+        assert c._last_rate_limit_error is None
+
     def _collector(self):
         c = WebsiteCollector.__new__(WebsiteCollector)
         c.logger = None

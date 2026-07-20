@@ -866,9 +866,12 @@ class DataCollectionOrchestrator:
                         # the same run. Preserve instead; terminal and
                         # first-time (no prior good row) failures fall
                         # through to the existing demotion path unchanged.
-                        existing = self.raw_data_repo.get_by_source(ein, "website")
                         is_transient = bool(error and error.startswith("RATE_LIMITED"))
-                        if is_transient and existing and existing.get("success"):
+                        if (
+                            is_transient
+                            and (existing := self.raw_data_repo.get_by_source(ein, "website"))
+                            and existing.get("success")
+                        ):
                             reason = f"website re-crawl transient ({error}); last-good preserved"
                             self.logger.warning(f"{ein}: {reason}")
                             self.raw_data_repo.record_soft_fail(ein, "website", reason)
