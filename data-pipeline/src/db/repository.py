@@ -261,6 +261,10 @@ class RawDataRepository:
         raw_content of a previously successful row: the failure is recorded
         via success/error_message/last_failure_reason/retry_count while the
         last-good content is preserved (C1 data-safety fix).
+
+        Every call advances last_attempt_at (the attempt clock) — even when
+        content is preserved — while scraped_at (the data-age clock) only
+        advances when new content is actually written (blocker 2A).
         """
         data = {
             "charity_ein": charity_ein,
@@ -298,7 +302,8 @@ class RawDataRepository:
             # successful observation so its age (carry-forward bound) stays true.
             scraped_clause = "" if preserved_content else ", scraped_at = CURRENT_TIMESTAMP"
             execute_query(
-                f"UPDATE raw_scraped_data SET {set_clause}{scraped_clause} WHERE charity_ein = %s AND source = %s",
+                f"UPDATE raw_scraped_data SET {set_clause}{scraped_clause}, last_attempt_at = CURRENT_TIMESTAMP "
+                "WHERE charity_ein = %s AND source = %s",
                 tuple(values),
                 fetch="none",
             )
@@ -307,8 +312,8 @@ class RawDataRepository:
                 data["retry_count"] = 1
             # Insert new row
             data["id"] = _generate_uuid()
-            columns = list(data.keys())
-            placeholders = ", ".join(["%s"] * len(columns))
+            columns = [*data.keys(), "last_attempt_at"]
+            placeholders = ", ".join(["%s"] * len(data)) + ", CURRENT_TIMESTAMP"
 
             execute_query(
                 f"INSERT INTO raw_scraped_data ({', '.join(columns)}) VALUES ({placeholders})",
@@ -319,19 +324,23 @@ class RawDataRepository:
     def record_soft_fail(self, charity_ein: str, source: str, reason: str) -> None:
         """Record a thin/empty re-observation without downgrading last-good.
 
-        Bumps retry_count and last_failure_reason but leaves parsed_json,
-        raw_content, success, and scraped_at untouched — the stored last-good
+        Bumps retry_count, last_failure_reason, and last_attempt_at (the
+        attempt clock) but leaves parsed_json, raw_content, success, and
+        scraped_at (the data-age clock) untouched — the stored last-good
         content stays authoritative and keeps its original observation age.
         Used by the orchestrator when a re-crawl returns materially less than
         the stored content and the stored content is still within the
-        freshness window.
+        freshness window. Advancing last_attempt_at lets the streaming
+        runner's re-crawl trigger back off instead of re-crawling this row on
+        every single run (blocker 2A).
         """
         existing = self.get_by_source(charity_ein, source)
         if not existing:
             return
         retry = (existing.get("retry_count") or 0) + 1
         execute_query(
-            "UPDATE raw_scraped_data SET retry_count = %s, last_failure_reason = %s "
+            "UPDATE raw_scraped_data SET retry_count = %s, last_failure_reason = %s, "
+            "last_attempt_at = CURRENT_TIMESTAMP "
             "WHERE charity_ein = %s AND source = %s",
             (retry, reason, charity_ein, source),
             fetch="none",

@@ -73,6 +73,13 @@ CRAWL_GLOBAL_MIN_INTERVAL_SECONDS = 0.2  # ~5 req/s ceiling, process-wide
 TERMINAL_FAILURE_TTL_DAYS = 180
 TERMINAL_FAILURE_MARKERS = ("captcha_blocked", "challenge page", "not found", "not_found")
 
+# Blocker 2A: the streaming runner's implicit re-crawl trigger skips a
+# stale-but-successful website re-attempted within this many days, so a
+# soft-failed (thin-content) re-observation doesn't force a full re-crawl on
+# every single run. Explicit `crawl.py --refresh-stale` ignores this and
+# always retries (operator intent).
+WEBSITE_RECRAWL_BACKOFF_DAYS = 7
+
 # Validation Thresholds
 MIN_DATA_COMPLETENESS_THRESHOLD = 0.5  # Minimum 50% data completeness required
 

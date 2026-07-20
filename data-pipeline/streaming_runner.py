@@ -43,7 +43,7 @@ from src.collectors.form990_grants import Form990GrantsCollector
 from src.collectors.orchestrator import DataCollectionOrchestrator
 from src.collectors.propublica import ProPublicaCollector
 from src.collectors.web_collector import WebsiteCollector
-from src.constants import SOURCE_TTL_DAYS
+from src.constants import SOURCE_TTL_DAYS, WEBSITE_RECRAWL_BACKOFF_DAYS
 from src.db import (
     CharityDataRepository,
     CharityRepository,
@@ -276,7 +276,7 @@ def _phase_artifacts_exist(
         has_successful_raw = any(row.get("success") for row in rows)
         if not has_successful_raw:
             return False, "no successful raw_scraped_data rows"
-        if website_needs_recrawl(rows, SOURCE_TTL_DAYS["website"]):
+        if website_needs_recrawl(rows, SOURCE_TTL_DAYS["website"], backoff_days=WEBSITE_RECRAWL_BACKOFF_DAYS):
             return False, "website stale/failed — re-crawl"
         return True, ""
 

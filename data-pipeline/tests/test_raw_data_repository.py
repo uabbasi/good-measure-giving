@@ -164,3 +164,69 @@ def test_increment_retry_count_writes_last_failure_reason():
         sql, params = mock_execute.call_args_list[1][0][0], mock_execute.call_args_list[1][0][1]
         assert "last_failure_reason = %s" in sql
         assert "BBB profile not found" in params
+
+
+def test_soft_fail_stamps_last_attempt_at_not_scraped_at():
+    """record_soft_fail advances the attempt clock but must never touch
+    scraped_at (the data-age clock the 2-year aged-out drop keys off)."""
+    repo = RawDataRepository()
+    with patch("src.db.repository.execute_query") as mock_execute:
+        mock_execute.side_effect = [_success_row(), None]
+        repo.record_soft_fail(EIN, "website", "thinner than last-good")
+        sql, params = mock_execute.call_args_list[1][0][0], mock_execute.call_args_list[1][0][1]
+        assert "last_attempt_at = CURRENT_TIMESTAMP" in sql
+        assert "scraped_at" not in sql
+        assert "thinner than last-good" in params
+
+
+def test_upsert_update_content_written_stamps_last_attempt_at():
+    repo = RawDataRepository()
+    with patch("src.db.repository.execute_query") as mock_execute:
+        mock_execute.side_effect = [_failed_row(retry_count=2), None]
+        repo.upsert(
+            charity_ein=EIN,
+            source="website",
+            parsed_json={"website_profile": {"mission": "x"}},
+            success=True,
+            raw_content="<html>fresh</html>",
+        )
+        sql = mock_execute.call_args_list[1][0][0]
+        assert "scraped_at = CURRENT_TIMESTAMP" in sql
+        assert "last_attempt_at = CURRENT_TIMESTAMP" in sql
+
+
+def test_upsert_update_preserved_content_still_stamps_last_attempt_at():
+    """The soft-fail (preserved-content) UPDATE path must not skip the
+    attempt-clock stamp just because scraped_at is intentionally untouched."""
+    repo = RawDataRepository()
+    with patch("src.db.repository.execute_query") as mock_execute:
+        mock_execute.side_effect = [_success_row(), None]
+        repo.upsert(
+            charity_ein=EIN,
+            source="website",
+            parsed_json={},
+            success=False,
+            error_message="thinner than last-good",
+        )
+        sql = mock_execute.call_args_list[1][0][0]
+        assert "scraped_at = CURRENT_TIMESTAMP" not in sql
+        assert "last_attempt_at = CURRENT_TIMESTAMP" in sql
+
+
+def test_upsert_insert_sets_last_attempt_at_as_literal_not_bound_value():
+    repo = RawDataRepository()
+    with patch("src.db.repository.execute_query") as mock_execute:
+        mock_execute.side_effect = [None, None]
+        repo.upsert(
+            charity_ein=EIN,
+            source="website",
+            parsed_json={"website_profile": {"mission": "x"}},
+            success=True,
+            raw_content="<html>new</html>",
+        )
+        sql, params = mock_execute.call_args_list[1][0][0], mock_execute.call_args_list[1][0][1]
+        assert sql.startswith("INSERT INTO raw_scraped_data")
+        assert "last_attempt_at" in sql
+        assert "CURRENT_TIMESTAMP" in sql
+        # Not bound as a %s param.
+        assert "CURRENT_TIMESTAMP" not in params
