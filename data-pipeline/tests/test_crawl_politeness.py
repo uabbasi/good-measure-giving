@@ -42,7 +42,9 @@ class TestOptionalDemotion:
         assert is_optional_website_failure(["CAPTCHA_BLOCKED: challenge page (HTTP 200)"]) is False
 
     def test_http_429_no_longer_demotes(self):
-        assert is_optional_website_failure(["CAPTCHA_BLOCKED: HTTP 429"]) is False
+        # Post poison-fix a 429 emits RATE_LIMITED (not CAPTCHA_BLOCKED); it is
+        # transient, so it must not demote website to optional either.
+        assert is_optional_website_failure(["RATE_LIMITED: HTTP 429"]) is False
 
     def test_genuine_no_data_still_demotes(self):
         assert is_optional_website_failure(["No data found on any pages"]) is True
