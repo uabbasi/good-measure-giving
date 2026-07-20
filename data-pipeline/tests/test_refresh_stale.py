@@ -7,7 +7,10 @@ staleness math so CLI selection and in-run skip decisions agree.
 from datetime import datetime, timedelta, timezone
 from unittest.mock import MagicMock
 
-from crawl import select_stale_website_eins
+import pytest
+from crawl import build_parser, parse_crawl_args, resolve_crawl_scope, select_stale_website_eins
+from src.constants import SOURCE_TTL_DAYS
+from src.utils.charity_loader import load_charities_from_file
 
 
 def _charity(ein, name="Test Charity", website="https://example.org"):
@@ -79,3 +82,117 @@ class TestSelectStaleWebsiteEins:
         # ...but stale once --older-than narrows the TTL to 7 days.
         result = select_stale_website_eins(charity_repo, raw_repo, older_than_days=7)
         assert [r["ein"] for r in result] == ["55-5555555"]
+
+
+class TestParseCrawlArgs:
+    """--refresh-stale must accept an optional --charities/--ein scope (Fix C,
+    Defect 1: it used to be crammed into a required mutually-exclusive group
+    with --charities/--ein, so the canary command
+    `--sources website --refresh-stale --charities <file>` was an argparse error."""
+
+    def test_refresh_stale_with_charities_parses(self, tmp_path):
+        charity_file = tmp_path / "charities.txt"
+        charity_file.write_text("Fresh Charity | 44-4444444 | https://fresh.example.org\n")
+
+        args = parse_crawl_args(["--refresh-stale", "--charities", str(charity_file)])
+
+        assert args.refresh_stale is True
+        assert args.charities == str(charity_file)
+        assert args.ein is None
+
+    def test_refresh_stale_with_ein_parses(self):
+        args = parse_crawl_args(["--refresh-stale", "--ein", "95-4453134"])
+
+        assert args.refresh_stale is True
+        assert args.ein == "95-4453134"
+        assert args.charities is None
+
+    def test_no_scope_args_errors(self):
+        with pytest.raises(SystemExit):
+            parse_crawl_args([])
+
+    def test_charities_and_ein_still_mutually_exclusive(self):
+        with pytest.raises(SystemExit):
+            build_parser().parse_args(["--charities", "x.txt", "--ein", "95-4453134"])
+
+    def test_plain_charities_still_works(self):
+        args = parse_crawl_args(["--charities", "pilot_charities.txt"])
+        assert args.charities == "pilot_charities.txt"
+        assert args.refresh_stale is False
+
+    def test_plain_ein_still_works(self):
+        args = parse_crawl_args(["--ein", "95-4453134"])
+        assert args.ein == "95-4453134"
+        assert args.refresh_stale is False
+
+
+class TestResolveCrawlScope:
+    """Pure arg->(scope, skip_sources) decision (Fix C, Defect 2): in
+    --refresh-stale mode, every non-website source must be skipped so the
+    orchestrator's required_sources collapses to {"website"} and nothing
+    else is fetched or can hard-fail the run (e.g. form990_grants, whose
+    TTL is 0 and is normally REQUIRED)."""
+
+    def test_refresh_stale_alone_is_stale_scan_and_skips_non_website(self):
+        args = parse_crawl_args(["--refresh-stale"])
+
+        scope, skip_sources = resolve_crawl_scope(args)
+
+        assert scope == "stale_scan"
+        for source in SOURCE_TTL_DAYS:
+            if source != "website":
+                assert source in skip_sources, f"{source} should be skipped in --refresh-stale mode"
+        assert "website" not in skip_sources
+        assert "form990_grants" in skip_sources  # TTL=0, normally always-required
+
+    def test_refresh_stale_with_charities_is_file_scope(self, tmp_path):
+        charity_file = tmp_path / "charities.txt"
+        charity_file.write_text(
+            "Missing Row | 12-3456789 | https://a.example.org\n"
+            "Fresh Row | 98-7654321 | https://fresh.example.org\n"
+        )
+        args = parse_crawl_args(["--refresh-stale", "--charities", str(charity_file)])
+
+        scope, skip_sources = resolve_crawl_scope(args)
+
+        assert scope == "file"  # exact file scope, NOT select_stale_website_eins's DB-wide scan
+        assert "form990_grants" in skip_sources
+        assert "website" not in skip_sources
+
+        # scope == "file" always loads via load_charities_from_file, which has
+        # no staleness filter — a fresh EIN in the file is selected too.
+        charities = load_charities_from_file(str(charity_file))
+        assert [c["ein"] for c in charities] == ["12-3456789", "98-7654321"]
+
+    def test_refresh_stale_with_ein_is_ein_scope(self):
+        args = parse_crawl_args(["--refresh-stale", "--ein", "95-4453134"])
+
+        scope, skip_sources = resolve_crawl_scope(args)
+
+        assert scope == "ein"
+        assert "form990_grants" in skip_sources
+        assert "website" not in skip_sources
+
+    def test_refresh_stale_preserves_user_supplied_skip(self):
+        args = parse_crawl_args(["--refresh-stale", "--skip", "candid"])
+
+        _scope, skip_sources = resolve_crawl_scope(args)
+
+        assert "candid" in skip_sources
+        assert "form990_grants" in skip_sources
+
+    def test_plain_charities_mode_does_not_restrict_sources(self):
+        args = parse_crawl_args(["--charities", "pilot_charities.txt"])
+
+        scope, skip_sources = resolve_crawl_scope(args)
+
+        assert scope == "file"
+        assert skip_sources == []
+
+    def test_plain_ein_mode_does_not_restrict_sources(self):
+        args = parse_crawl_args(["--ein", "95-4453134"])
+
+        scope, skip_sources = resolve_crawl_scope(args)
+
+        assert scope == "ein"
+        assert skip_sources == []

@@ -207,24 +207,28 @@ def fetch_charity_data(charity, index, total, orchestrator, logger, verbose=Fals
         return {"charity": charity_name, "ein": charity_ein, "status": "error", "error": str(e)}
 
 
-def main():
+def build_parser() -> argparse.ArgumentParser:
+    """Build the crawl.py CLI parser. Factored out of main() so both main()
+    and tests can parse argv without running the rest of the pipeline."""
     parser = argparse.ArgumentParser(description="Collect charity data from multiple sources (stored in DoltDB)")
-    group = parser.add_mutually_exclusive_group(required=True)
+    group = parser.add_mutually_exclusive_group(required=False)
     group.add_argument(
         "--charities", type=str, help="Path to charity list file (format: EIN # Name or Name | EIN | Website)"
     )
     group.add_argument("--ein", type=str, help="Single charity EIN to collect (format: XX-XXXXXXX)")
-    group.add_argument(
+    parser.add_argument(
         "--refresh-stale",
         action="store_true",
-        help="Re-crawl only the website source for EINs whose website raw data is missing, "
-        "failed, or stale (see --older-than)",
+        help="Force-refresh the website source only. Alone, scans the DB for EINs whose "
+        "website raw data is missing, failed, or stale (see --older-than). Combined with "
+        "--charities/--ein, force-refreshes the website for exactly that scope regardless "
+        "of freshness (staged rollout/canary).",
     )
     parser.add_argument(
         "--older-than",
         type=int,
         default=None,
-        help="Staleness TTL in days for --refresh-stale (default: SOURCE_TTL_DAYS['website'] = 30)",
+        help="Staleness TTL in days for --refresh-stale alone (default: SOURCE_TTL_DAYS['website'] = 30)",
     )
     parser.add_argument("--workers", type=int, default=6, help="Number of parallel workers (default: 6)")
     parser.add_argument("--verbose", action="store_true", help="Show detailed output (default: concise progress only)")
@@ -249,24 +253,64 @@ def main():
         "--phase", type=str, default="P1:Collect", help="Pipeline phase identifier for logging (default: P1:Collect)"
     )
     parser.add_argument("--force", action="store_true", help="Force re-crawl even if cache is valid")
+    return parser
 
-    args = parser.parse_args()
+
+def parse_crawl_args(argv=None) -> argparse.Namespace:
+    """Parse argv, enforcing that at least one of --charities/--ein/--refresh-stale is given."""
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    if not (args.charities or args.ein or args.refresh_stale):
+        parser.error("one of --charities/--ein/--refresh-stale is required")
+    return args
+
+
+def resolve_crawl_scope(args: argparse.Namespace) -> tuple[str, list[str]]:
+    """Pure decision: which charity-selection strategy applies for this run,
+    and the effective --skip source list for the orchestrator.
+
+    Returns (scope, skip_sources):
+      - scope "ein": single charity from --ein (with or without --refresh-stale).
+      - scope "file": exact charities from --charities (with or without
+        --refresh-stale) — no staleness filter applies even in --refresh-stale
+        mode; this is the staged-rollout/canary path.
+      - scope "stale_scan": --refresh-stale alone; DB-wide scan for
+        stale/missing/failed website rows via select_stale_website_eins.
+
+    In --refresh-stale mode (any scope), every non-website source is added to
+    skip_sources so the orchestrator's required_sources collapses to just
+    {"website"} and no other source is fetched or can hard-fail the run.
+    """
+    if args.ein:
+        scope = "ein"
+    elif args.charities:
+        scope = "file"
+    else:
+        scope = "stale_scan"
+
+    skip_sources = list(args.skip or [])
+    if args.refresh_stale:
+        skip_sources += [s for s in SOURCE_TTL_DAYS if s != "website"]
+    return scope, skip_sources
+
+
+def main():
+    args = parse_crawl_args()
+    scope, skip_sources = resolve_crawl_scope(args)
 
     # Handle single EIN mode
-    if args.ein:
+    if scope == "ein":
         is_valid, normalized_ein, error = validate_and_format(args.ein)
         if not is_valid:
             print(f"Error: Invalid EIN '{args.ein}': {error}")
             sys.exit(1)
         charities = [{"name": f"EIN {normalized_ein}", "ein": normalized_ein, "website": None}]
-    elif args.refresh_stale:
-        # Charity list is selected from the DB after the repos are available (see below).
-        pass
-    else:
+    elif scope == "file":
         # Validate charity file exists
         if not Path(args.charities).exists():
             print(f"Error: Charity file not found: {args.charities}")
             sys.exit(1)
+    # scope == "stale_scan": charity list is selected from the DB after the repos are available (see below).
 
     # Initialize logger with appropriate log level and phase
     log_level = "DEBUG" if args.verbose else "INFO"
@@ -285,12 +329,13 @@ def main():
     orchestrator = DataCollectionOrchestrator(
         logger=logger,
         max_pdf_downloads=args.pdf_downloads,
-        skip_sources=args.skip or [],
+        skip_sources=skip_sources,
         include_sources=args.sources or [],
     )
 
-    # Load charities: from the DB (--refresh-stale) or from file (default mode)
-    if args.refresh_stale:
+    # Load charities: from the DB (scope "stale_scan") or from file (scope "file").
+    # scope "ein": charities were already built above.
+    if scope == "stale_scan":
         charities = select_stale_website_eins(
             CharityRepository(), RawDataRepository(), older_than_days=args.older_than
         )
@@ -298,7 +343,7 @@ def main():
             print("✓ No stale/missing/failed website rows found. Nothing to refresh.")
             sys.exit(0)
         print(f"ℹ --refresh-stale selected {len(charities)} charities with stale/missing/failed website data")
-    elif not args.ein:
+    elif scope == "file":
         try:
             charities = load_charities_from_file(args.charities, logger=logger)
         except ValueError as e:
@@ -310,6 +355,10 @@ def main():
         if not charities:
             print(f"Error: No valid charities found in {args.charities}")
             sys.exit(1)
+        if args.refresh_stale:
+            print(f"ℹ --refresh-stale scoped to {len(charities)} charities from --charities (website only)")
+    elif args.refresh_stale:  # scope == "ein"
+        print("ℹ --refresh-stale scoped to 1 charity from --ein (website only)")
 
     # Build sources list (6 sources per spec)
     all_sources = ["ProPublica", "Charity Navigator", "Candid", "Form 990 Grants", "Website", "BBB"]
