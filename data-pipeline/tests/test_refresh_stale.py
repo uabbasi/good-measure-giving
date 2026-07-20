@@ -8,7 +8,13 @@ from datetime import datetime, timedelta, timezone
 from unittest.mock import MagicMock
 
 import pytest
-from crawl import build_parser, parse_crawl_args, resolve_crawl_scope, select_stale_website_eins
+from crawl import (
+    build_parser,
+    parse_crawl_args,
+    resolve_crawl_scope,
+    resolve_force_sources,
+    select_stale_website_eins,
+)
 from src.constants import SOURCE_TTL_DAYS
 from src.utils.charity_loader import load_charities_from_file
 
@@ -196,3 +202,35 @@ class TestResolveCrawlScope:
 
         assert scope == "ein"
         assert skip_sources == []
+
+
+class TestResolveForceSources:
+    """Pure arg->force_sources decision (blocker 2B follow-up): --refresh-stale
+    must force-bypass freshness/backoff for "website" regardless of scope
+    (stale_scan/file/ein) -- this is what lets the mode re-crawl a
+    terminally-failed (captcha) website row instead of respecting its 180-day
+    skip. main() wires this in unconditionally on args.refresh_stale; this
+    pure helper exists so that wiring is covered by a fast unit test instead
+    of only exercised at runtime."""
+
+    def test_refresh_stale_alone_forces_website(self):
+        args = parse_crawl_args(["--refresh-stale"])
+        assert resolve_force_sources(args) == {"website"}
+
+    def test_refresh_stale_with_charities_forces_website(self, tmp_path):
+        charity_file = tmp_path / "charities.txt"
+        charity_file.write_text("Row | 12-3456789 | https://a.example.org\n")
+        args = parse_crawl_args(["--refresh-stale", "--charities", str(charity_file)])
+        assert resolve_force_sources(args) == {"website"}
+
+    def test_refresh_stale_with_ein_forces_website(self):
+        args = parse_crawl_args(["--refresh-stale", "--ein", "95-4453134"])
+        assert resolve_force_sources(args) == {"website"}
+
+    def test_plain_charities_mode_does_not_force(self):
+        args = parse_crawl_args(["--charities", "pilot_charities.txt"])
+        assert resolve_force_sources(args) is None
+
+    def test_plain_ein_mode_does_not_force(self):
+        args = parse_crawl_args(["--ein", "95-4453134"])
+        assert resolve_force_sources(args) is None

@@ -294,6 +294,18 @@ def resolve_crawl_scope(args: argparse.Namespace) -> tuple[str, list[str]]:
     return scope, skip_sources
 
 
+def resolve_force_sources(args: argparse.Namespace) -> set[str] | None:
+    """Pure decision: which sources force-bypass freshness/backoff.
+
+    --refresh-stale always force-bypasses "website", regardless of scope
+    (ein/file/stale_scan) -- this is what lets the mode re-crawl a
+    terminally-failed (e.g. captcha) website row instead of respecting its
+    180-day skip. Kept as a separate pure function so main()'s wiring is
+    covered by a fast unit test instead of only exercised at runtime.
+    """
+    return {"website"} if args.refresh_stale else None
+
+
 def main():
     args = parse_crawl_args()
     scope, skip_sources = resolve_crawl_scope(args)
@@ -423,7 +435,7 @@ def main():
     worker_pool = WorkerPool(max_workers=args.workers, logger=logger)
 
     # Create worker function with fixed parameters
-    force_sources = {"website"} if args.refresh_stale else None
+    force_sources = resolve_force_sources(args)
 
     def process_charity(item):
         """Worker function for parallel processing."""

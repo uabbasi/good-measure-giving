@@ -858,17 +858,19 @@ class DataCollectionOrchestrator:
                     else:
                         report["sources_failed"]["website"] = error
                         self.logger.log_data_source_fetch(0, ein, "website", success=False, error=error)
-                        # Blocker 2B: a transient rate-limit re-crawl of a
-                        # source that already has good content must not
-                        # demote it to success=False -- that flip excludes
-                        # the still-valid last-good content from synthesize
-                        # and cascades into a degraded live export within
-                        # the same run. Preserve instead; terminal and
-                        # first-time (no prior good row) failures fall
+                        # Blocker 2B: ANY non-terminal re-crawl failure (rate
+                        # limit, timeout, generic no-data, ...) of a source
+                        # that already has good content must not demote it
+                        # to success=False -- that flip excludes the
+                        # still-valid last-good content from synthesize and
+                        # cascades into a degraded live export within the
+                        # same run. Preserve instead; TERMINAL failures
+                        # (captcha/not-found -> classify_failure non-None)
+                        # and first-time (no prior good row) failures fall
                         # through to the existing demotion path unchanged.
-                        is_transient = bool(error and error.startswith("RATE_LIMITED"))
+                        is_non_terminal = classify_failure(error) is None
                         if (
-                            is_transient
+                            is_non_terminal
                             and (existing := self.raw_data_repo.get_by_source(ein, "website"))
                             and existing.get("success")
                         ):

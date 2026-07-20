@@ -878,3 +878,58 @@ class TestTransientPreservesLastGoodWebsite:
         orch.raw_data_repo.record_soft_fail.assert_not_called()
         assert any(c.kwargs.get("success") is False for c in orch.raw_data_repo.upsert.call_args_list)
         assert "website" not in report["sources_succeeded"]
+
+    def test_timeout_recrawl_of_good_source_preserves_via_soft_fail(self):
+        # Non-RATE_LIMITED transient failure (network timeout) on a prior-good
+        # row must ALSO preserve -- 2B named "a 429, OR a network error", and
+        # classify_failure("Timeout") is None (not a terminal marker).
+        orch = self._make_orchestrator()
+        orch.raw_data_repo.get_by_source.return_value = self._prior_good_row()
+        orch.website.collect_multi_page.return_value = (False, None, "Timeout")
+
+        success, report = orch.fetch_charity_data(
+            "12-3456789", website_url="https://example.org", force_sources={"website"}
+        )
+
+        orch.raw_data_repo.record_soft_fail.assert_called_once()
+        assert not any(c.kwargs.get("success") is False for c in orch.raw_data_repo.upsert.call_args_list)
+        assert "website" in report["sources_succeeded"]
+        assert report.get("sources_soft_failed") == ["website (transient; last-good preserved)"]
+
+    def test_generic_no_data_recrawl_of_good_source_preserves_via_soft_fail(self):
+        # "No data found on any pages" is also non-terminal.
+        orch = self._make_orchestrator()
+        orch.raw_data_repo.get_by_source.return_value = self._prior_good_row()
+        orch.website.collect_multi_page.return_value = (False, None, "No data found on any pages")
+
+        success, report = orch.fetch_charity_data(
+            "12-3456789", website_url="https://example.org", force_sources={"website"}
+        )
+
+        orch.raw_data_repo.record_soft_fail.assert_called_once()
+        assert not any(c.kwargs.get("success") is False for c in orch.raw_data_repo.upsert.call_args_list)
+        assert "website" in report["sources_succeeded"]
+
+    def test_timeout_with_no_prior_good_row_still_demotes(self):
+        orch = self._make_orchestrator()
+        orch.raw_data_repo.get_by_source.return_value = None  # no prior row at all
+        orch.website.collect_multi_page.return_value = (False, None, "Timeout")
+
+        success, report = orch.fetch_charity_data("12-3456789", website_url="https://example.org")
+
+        orch.raw_data_repo.record_soft_fail.assert_not_called()
+        assert "website" in report["sources_failed"]
+        assert "website" not in report["sources_succeeded"]
+        assert any(c.kwargs.get("success") is False for c in orch.raw_data_repo.upsert.call_args_list)
+
+    def test_generic_no_data_with_no_prior_good_row_still_demotes(self):
+        orch = self._make_orchestrator()
+        orch.raw_data_repo.get_by_source.return_value = None  # no prior row at all
+        orch.website.collect_multi_page.return_value = (False, None, "No data found on any pages")
+
+        success, report = orch.fetch_charity_data("12-3456789", website_url="https://example.org")
+
+        orch.raw_data_repo.record_soft_fail.assert_not_called()
+        assert "website" in report["sources_failed"]
+        assert "website" not in report["sources_succeeded"]
+        assert any(c.kwargs.get("success") is False for c in orch.raw_data_repo.upsert.call_args_list)
