@@ -370,8 +370,8 @@ def main():
         "website": "Website",
         "bbb": "BBB",
     }
-    if args.skip:
-        skipped_display = [source_map.get(s, s) for s in args.skip]
+    if skip_sources:
+        skipped_display = [source_map.get(s, s) for s in skip_sources]
         active_sources = [s for s in all_sources if s not in skipped_display]
         sources_str = ", ".join(active_sources)
         skipped_str = f" (skipping: {', '.join(skipped_display)})"
