@@ -858,12 +858,31 @@ class DataCollectionOrchestrator:
                     else:
                         report["sources_failed"]["website"] = error
                         self.logger.log_data_source_fetch(0, ein, "website", success=False, error=error)
-                        # Store failed attempt in DB to track captcha blocking.
-                        # upsert(success=False) already increments retry_count and
-                        # records last_failure_reason (Task 1) — no explicit
-                        # increment_retry_count here or retry_count advances twice.
-                        self._store_failed_crawl(ein, "website", error or "Unknown error")
-                        self._record_blocked_site(ein, website_url, error)
+                        # Blocker 2B: a transient rate-limit re-crawl of a
+                        # source that already has good content must not
+                        # demote it to success=False -- that flip excludes
+                        # the still-valid last-good content from synthesize
+                        # and cascades into a degraded live export within
+                        # the same run. Preserve instead; terminal and
+                        # first-time (no prior good row) failures fall
+                        # through to the existing demotion path unchanged.
+                        existing = self.raw_data_repo.get_by_source(ein, "website")
+                        is_transient = bool(error and error.startswith("RATE_LIMITED"))
+                        if is_transient and existing and existing.get("success"):
+                            reason = f"website re-crawl transient ({error}); last-good preserved"
+                            self.logger.warning(f"{ein}: {reason}")
+                            self.raw_data_repo.record_soft_fail(ein, "website", reason)
+                            report["sources_succeeded"].append("website")
+                            report.setdefault("sources_soft_failed", []).append(
+                                "website (transient; last-good preserved)"
+                            )
+                        else:
+                            # Store failed attempt in DB to track captcha blocking.
+                            # upsert(success=False) already increments retry_count and
+                            # records last_failure_reason (Task 1) — no explicit
+                            # increment_retry_count here or retry_count advances twice.
+                            self._store_failed_crawl(ein, "website", error or "Unknown error")
+                            self._record_blocked_site(ein, website_url, error)
                 except Exception as e:
                     report["sources_failed"]["website"] = str(e)
                     self.logger.error("Website fetch failed", exception=e, ein=ein)

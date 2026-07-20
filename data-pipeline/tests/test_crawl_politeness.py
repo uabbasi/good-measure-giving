@@ -268,6 +268,81 @@ class TestRateLimitNotTerminal:
         assert error == "RATE_LIMITED: HTTP 503"
 
 
+class TestRateLimitSurfacedInCollectMultiPage:
+    """Blocker 2B: a transient rate-limit run must surface RATE_LIMITED
+    instead of masquerading as the generic 'No data found on any pages'
+    failure, so the orchestrator can tell it apart from a genuinely empty
+    site and preserve last-good content instead of demoting it."""
+
+    def test_rate_limit_capture_in_bfs_loop(self):
+        # Exercises the real capture site (web_collector.py ~1689) rather
+        # than faking the attribute directly.
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c._last_captcha_error = None
+        c._last_rate_limit_error = None
+        c.cache = MagicMock()
+        c._is_priority_url = lambda u: False
+        c._normalize_url = lambda u: u
+
+        async def fake_crawl_urls_async(url_list, max_concurrent, timeout_total, force, crawl_delay):
+            return {u: (False, None, None, "RATE_LIMITED: HTTP 429") for u in url_list}
+
+        c._crawl_urls_async = fake_crawl_urls_async
+        results = asyncio.run(c._crawl_bfs_async("https://x.org", max_depth=1, max_pages=5, timeout_total=30))
+
+        assert results == {}
+        assert c._last_rate_limit_error == "RATE_LIMITED: HTTP 429"
+        assert c._last_captcha_error is None
+
+    def _collector(self):
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c.robots_checker = MagicMock()
+        c.robots_checker.get_crawl_delay.return_value = None
+        c._last_captcha_error = None
+        c._last_rate_limit_error = None
+        c._discover_urls_from_sitemap = MagicMock(return_value=(True, ["https://x.org/a"]))
+        c._fetch_url = MagicMock(return_value=(False, None, None, "dead"))  # no live-homepage retry
+        return c
+
+    def test_rate_limited_no_data_surfaces_rate_limited_error(self):
+        c = self._collector()
+
+        def fake_crawl(urls, timeout_total, max_concurrent=10, force=False, crawl_delay=0.0):
+            c._last_rate_limit_error = "RATE_LIMITED: HTTP 429"
+            return {}
+
+        c._crawl_specific_urls_async = fake_crawl
+        ok, data, err = c.collect_multi_page("https://x.org", "00-0000000")
+        assert ok is False
+        assert err == "RATE_LIMITED: HTTP 429"
+
+    def test_captcha_still_takes_precedence_over_rate_limit(self):
+        c = self._collector()
+
+        def fake_crawl(urls, timeout_total, max_concurrent=10, force=False, crawl_delay=0.0):
+            c._last_captcha_error = "CAPTCHA_BLOCKED: challenge page (HTTP 200)"
+            c._last_rate_limit_error = "RATE_LIMITED: HTTP 429"
+            return {}
+
+        c._crawl_specific_urls_async = fake_crawl
+        ok, data, err = c.collect_multi_page("https://x.org", "00-0000000")
+        assert ok is False
+        assert "CAPTCHA_BLOCKED" in err
+
+    def test_generic_message_when_neither_signal_present(self):
+        c = self._collector()
+
+        def fake_crawl(urls, timeout_total, max_concurrent=10, force=False, crawl_delay=0.0):
+            return {}
+
+        c._crawl_specific_urls_async = fake_crawl
+        ok, data, err = c.collect_multi_page("https://x.org", "00-0000000")
+        assert ok is False
+        assert err == "No data found on any pages"
+
+
 class TestGlobalFleetRateLimit:
     """Fleet-wide QPS ceiling (Task 7).
 
@@ -690,3 +765,80 @@ class TestForceSourcesOverride:
 
         success, report = orch.fetch_charity_data("12-3456789", force_sources={"propublica"})
         orch.propublica.fetch.assert_called_once()
+
+
+class TestTransientPreservesLastGoodWebsite:
+    """Blocker 2B: a transient (RATE_LIMITED) re-crawl failure of a source
+    that already has good content must be preserved via record_soft_fail,
+    not demoted to success=False -- that flip excludes the still-valid
+    last-good content from synthesize and cascades into a degraded live
+    export within the same streaming_runner session. Terminal failures and
+    first-time failures (no prior good row) keep today's demotion path."""
+
+    def _make_orchestrator(self):
+        orch = DataCollectionOrchestrator.__new__(DataCollectionOrchestrator)
+        orch.logger = MagicMock()
+        orch.skip_sources = {"propublica", "charity_navigator", "candid", "form990_grants", "bbb"}
+        orch.frozen_sources = set()
+        orch.blocked_sites = []
+        orch._blocked_sites_lock = threading.Lock()
+        orch.raw_data_repo = MagicMock()
+        orch.charity_repo = MagicMock()
+        orch.website = MagicMock()
+        orch._get_or_create_charity = lambda ein, name=None, website=None: ein
+        return orch
+
+    @staticmethod
+    def _prior_good_row():
+        return {
+            "success": True,
+            "scraped_at": (datetime.now(timezone.utc) - timedelta(days=1)).isoformat(),
+        }
+
+    def test_rate_limited_recrawl_of_good_source_preserves_via_soft_fail(self):
+        orch = self._make_orchestrator()
+        orch.raw_data_repo.get_by_source.return_value = self._prior_good_row()
+        orch.website.collect_multi_page.return_value = (False, None, "RATE_LIMITED: HTTP 429")
+
+        success, report = orch.fetch_charity_data(
+            "12-3456789", website_url="https://example.org", force_sources={"website"}
+        )
+
+        orch.raw_data_repo.record_soft_fail.assert_called_once()
+        args = orch.raw_data_repo.record_soft_fail.call_args.args
+        assert args[0] == "12-3456789"
+        assert args[1] == "website"
+        # No demotion write: _store_failed_crawl (upsert(success=False)) must
+        # not fire for the preserved source.
+        assert not any(c.kwargs.get("success") is False for c in orch.raw_data_repo.upsert.call_args_list)
+        assert "website" in report["sources_succeeded"]
+        assert report.get("sources_soft_failed") == ["website (transient; last-good preserved)"]
+
+    def test_rate_limited_recrawl_with_no_prior_good_row_still_demotes(self):
+        orch = self._make_orchestrator()
+        orch.raw_data_repo.get_by_source.return_value = None  # no prior row at all
+        orch.website.collect_multi_page.return_value = (False, None, "RATE_LIMITED: HTTP 429")
+
+        success, report = orch.fetch_charity_data("12-3456789", website_url="https://example.org")
+
+        orch.raw_data_repo.record_soft_fail.assert_not_called()
+        assert "website" in report["sources_failed"]
+        assert "website" not in report["sources_succeeded"]
+        assert any(c.kwargs.get("success") is False for c in orch.raw_data_repo.upsert.call_args_list)
+
+    def test_terminal_captcha_recrawl_of_good_source_still_demotes(self):
+        orch = self._make_orchestrator()
+        orch.raw_data_repo.get_by_source.return_value = self._prior_good_row()
+        orch.website.collect_multi_page.return_value = (
+            False,
+            None,
+            "CAPTCHA_BLOCKED: challenge page (HTTP 200)",
+        )
+
+        success, report = orch.fetch_charity_data(
+            "12-3456789", website_url="https://example.org", force_sources={"website"}
+        )
+
+        orch.raw_data_repo.record_soft_fail.assert_not_called()
+        assert any(c.kwargs.get("success") is False for c in orch.raw_data_repo.upsert.call_args_list)
+        assert "website" not in report["sources_succeeded"]

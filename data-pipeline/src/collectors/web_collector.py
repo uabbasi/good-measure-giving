@@ -198,6 +198,10 @@ class WebsiteCollector(BaseCollector):
 
         # Track captcha/anti-bot errors for reporting
         self._last_captcha_error: Optional[str] = None
+        # Track transient rate-limit errors for reporting (blocker 2B): makes
+        # a 429/503 visible to the orchestrator instead of masquerading as a
+        # generic "No data found on any pages" failure.
+        self._last_rate_limit_error: Optional[str] = None
 
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -1688,6 +1692,9 @@ class WebsiteCollector(BaseCollector):
                     # Track captcha errors for reporting
                     if error and "CAPTCHA_BLOCKED" in error and not self._last_captcha_error:
                         self._last_captcha_error = error
+                    # Track rate-limit errors for reporting (blocker 2B)
+                    if error and "RATE_LIMITED" in error and not self._last_rate_limit_error:
+                        self._last_rate_limit_error = error
                     continue
 
                 try:
@@ -2437,8 +2444,9 @@ class WebsiteCollector(BaseCollector):
         if self.logger:
             self.logger.debug(f"Starting multi-page crawl: {url}")
 
-        # Reset captcha error tracking for this crawl
+        # Reset captcha/rate-limit error tracking for this crawl
         self._last_captcha_error = None
+        self._last_rate_limit_error = None
 
         # Timing trackers
         timing = {
@@ -2535,8 +2543,9 @@ class WebsiteCollector(BaseCollector):
                         )
 
             if not crawl_results:
-                # Return specific captcha error if detected, otherwise generic message
-                error_msg = self._last_captcha_error or "No data found on any pages"
+                # Precedence: captcha (terminal) first, then rate-limit
+                # (transient, blocker 2B), then generic message.
+                error_msg = self._last_captcha_error or self._last_rate_limit_error or "No data found on any pages"
                 return False, None, error_msg
 
             # SPA recovery (Task 9): the async crawlers above never call
