@@ -11,10 +11,11 @@ dead sync crawlers anyway -- could never fire. Client-rendered SPA sites
 therefore returned {} -> "no data found".
 """
 
+import time
 from unittest.mock import MagicMock, patch
 
 from src.collectors.web_collector import WebsiteCollector
-from src.constants import CRAWL_GLOBAL_MIN_INTERVAL_SECONDS
+from src.constants import CRAWL_GLOBAL_MIN_INTERVAL_SECONDS, PLAYWRIGHT_MAX_RENDER_PAGES
 from src.extractors.deterministic import DeterministicExtractor
 from src.extractors.page_classifier import PageClassifier
 from src.extractors.structured_data import StructuredDataExtractor
@@ -196,3 +197,106 @@ class TestPlaywrightAsyncEscalation:
         renderer.render.assert_not_called()
         assert ok is True
         assert data["website_profile"]["ein"] == "98-7654321"
+
+
+class TestPlaywrightEscalationBudget:
+    """Fix D: the SPA escalation loop must bound worker occupancy on
+    SPA-heavy sites with BOTH a page cap (PLAYWRIGHT_MAX_RENDER_PAGES) and
+    an aggregate wall-clock budget (PLAYWRIGHT_RENDER_BUDGET_SECONDS), and
+    must log once when either truncates the run (no silent truncation)."""
+
+    def _collector(self):
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = MagicMock()
+        c.use_llm = False
+        c.max_pdf_downloads = 0
+        c.robots_checker = MagicMock()
+        c.robots_checker.get_crawl_delay.return_value = None
+        c._last_captcha_error = None
+        c.cache = MagicMock()
+        c._cleanup_playwright = MagicMock()
+        c._discover_urls_from_sitemap = MagicMock(return_value=(True, ["https://spa.org/"]))
+        c._fetch_url = MagicMock(return_value=(True, "<html>homepage</html>", "https://spa.org/", None))
+        c._rate_limit = MagicMock()
+        return c
+
+    def test_escalation_capped_at_max_render_pages(self):
+        """More js-needed URLs than PLAYWRIGHT_MAX_RENDER_PAGES must not
+        all be rendered -- only the cap's worth."""
+        c = self._collector()
+        num_flagged = PLAYWRIGHT_MAX_RENDER_PAGES + 3
+        urls = [f"https://spa.org/page{i}" for i in range(num_flagged)]
+        c._crawl_specific_urls_async = MagicMock(
+            return_value={u: TestPlaywrightAsyncEscalation._thin_spa_page_data() for u in urls}
+        )
+        renderer = MagicMock()
+        renderer.render.return_value = "<html><body>EIN: 12-3456789</body></html>"
+        c._get_playwright_renderer = MagicMock(return_value=renderer)
+        c._extract_page_data = MagicMock(return_value=TestPlaywrightAsyncEscalation._thin_spa_page_data())
+
+        with patch("src.collectors.web_collector.global_rate_limiter") as mock_limiter:
+            mock_limiter.wait.return_value = 0.0
+            c.collect_multi_page("https://spa.org/", ein=None)
+
+        assert renderer.render.call_count == PLAYWRIGHT_MAX_RENDER_PAGES
+        c.logger.warning.assert_called_once()
+        warning_msg = c.logger.warning.call_args[0][0]
+        assert str(num_flagged) in warning_msg
+        assert str(PLAYWRIGHT_MAX_RENDER_PAGES) in warning_msg
+
+    def test_escalation_stops_when_budget_exceeded(self):
+        """A slow-to-settle renderer must not be allowed to burn the whole
+        loop -- the aggregate budget cuts it off even under the page cap."""
+        c = self._collector()
+        urls = [f"https://spa.org/page{i}" for i in range(3)]
+        c._crawl_specific_urls_async = MagicMock(
+            return_value={u: TestPlaywrightAsyncEscalation._thin_spa_page_data() for u in urls}
+        )
+
+        def slow_render(page_url):
+            time.sleep(0.05)
+            return "<html><body>EIN: 12-3456789</body></html>"
+
+        renderer = MagicMock()
+        renderer.render.side_effect = slow_render
+        c._get_playwright_renderer = MagicMock(return_value=renderer)
+        c._extract_page_data = MagicMock(return_value=TestPlaywrightAsyncEscalation._thin_spa_page_data())
+
+        with (
+            patch("src.collectors.web_collector.global_rate_limiter") as mock_limiter,
+            patch("src.collectors.web_collector.PLAYWRIGHT_RENDER_BUDGET_SECONDS", 0.02),
+        ):
+            mock_limiter.wait.return_value = 0.0
+            c.collect_multi_page("https://spa.org/", ein=None)
+
+        assert renderer.render.call_count < len(urls)
+        c.logger.warning.assert_called_once()
+        warning_msg = c.logger.warning.call_args[0][0].lower()
+        assert "budget" in warning_msg
+
+    def test_single_flagged_page_under_cap_and_budget_is_unaffected(self):
+        """The existing SPA-recovery happy path (one flagged page, well
+        under both bounds) must render and re-extract with no warning."""
+        c = self._collector()
+        url = "https://spa.org/"
+        c._crawl_specific_urls_async = MagicMock(return_value={url: TestPlaywrightAsyncEscalation._thin_spa_page_data()})
+
+        rendered_html = "<html><body>EIN: 12-3456789</body></html>"
+        renderer = MagicMock()
+        renderer.render.return_value = rendered_html
+        c._get_playwright_renderer = MagicMock(return_value=renderer)
+
+        recovered = dict(TestPlaywrightAsyncEscalation._thin_spa_page_data())
+        recovered.update(
+            {"ein": "12-3456789", "had_data": True, "js_rendering_needed": False, "extraction_failure_reason": None}
+        )
+        c._extract_page_data = MagicMock(return_value=recovered)
+
+        with patch("src.collectors.web_collector.global_rate_limiter") as mock_limiter:
+            mock_limiter.wait.return_value = 0.0
+            ok, data, err = c.collect_multi_page(url, ein=None)
+
+        renderer.render.assert_called_once_with(url)
+        assert ok is True
+        assert data["website_profile"]["ein"] == "12-3456789"
+        c.logger.warning.assert_not_called()

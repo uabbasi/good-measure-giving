@@ -68,6 +68,12 @@ CRAWL_JITTER_RANGE_SECONDS = (0.5, 1.5)  # Random pre-request delay for uncached
 # across the whole fleet regardless of worker count.
 CRAWL_GLOBAL_MIN_INTERVAL_SECONDS = 0.2  # ~5 req/s ceiling, process-wide
 
+# Playwright SPA-escalation bounds: a sitemap-driven SPA can flag dozens of
+# pages js_rendering_needed, each rendered serially in collect_multi_page's
+# escalation loop.
+PLAYWRIGHT_MAX_RENDER_PAGES = 8  # Max pages to Playwright-render per charity — bounds worker occupancy on SPA-heavy sites
+PLAYWRIGHT_RENDER_BUDGET_SECONDS = 60  # Aggregate wall-clock budget for the whole escalation loop — bounds worker occupancy on SPA-heavy sites
+
 # H5: Terminal failure classes — CAPTCHA walls and hard 404s don't heal in days.
 # Skip retries for TERMINAL_FAILURE_TTL_DAYS instead of the normal FAILURE_TTL_DAYS.
 TERMINAL_FAILURE_TTL_DAYS = 180

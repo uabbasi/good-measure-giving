@@ -35,6 +35,8 @@ from ..constants import (
     CRAWL_GLOBAL_MIN_INTERVAL_SECONDS,
     CRAWL_JITTER_RANGE_SECONDS,
     PER_DOMAIN_CONCURRENCY,
+    PLAYWRIGHT_MAX_RENDER_PAGES,
+    PLAYWRIGHT_RENDER_BUDGET_SECONDS,
 )
 from ..extractors.deterministic import DeterministicExtractor
 from ..extractors.page_classifier import PageClassifier
@@ -2564,7 +2566,20 @@ class WebsiteCollector(BaseCollector):
             if js_needed_urls:
                 renderer = self._get_playwright_renderer()
                 if renderer:
-                    for page_url in js_needed_urls:
+                    # Fix D: a sitemap-driven SPA can flag dozens of pages
+                    # js_rendering_needed, and each render() burns up to a
+                    # 15s network-idle timeout serially -- bound this loop
+                    # with BOTH a page cap and an aggregate wall-clock
+                    # budget so one SPA-heavy charity can't pin a fleet
+                    # worker for minutes.
+                    render_start = time.monotonic()
+                    attempted = 0
+                    budget_exceeded = False
+                    for page_url in js_needed_urls[:PLAYWRIGHT_MAX_RENDER_PAGES]:
+                        if time.monotonic() - render_start >= PLAYWRIGHT_RENDER_BUDGET_SECONDS:
+                            budget_exceeded = True
+                            break
+                        attempted += 1
                         try:
                             # Playwright issues its own outbound navigation, so it
                             # must pass through the SAME politeness gates as every
@@ -2597,6 +2612,13 @@ class WebsiteCollector(BaseCollector):
                         except Exception as e:
                             if self.logger:
                                 self.logger.warning(f"Playwright escalation failed for {page_url}: {e}")
+                    if attempted < len(js_needed_urls) and self.logger:
+                        reason = "budget exceeded" if budget_exceeded else "page cap reached"
+                        self.logger.warning(
+                            f"Playwright escalation truncated ({reason}): {len(js_needed_urls)} page(s) "
+                            f"flagged js_rendering_needed, only {attempted} rendered "
+                            f"(cap={PLAYWRIGHT_MAX_RENDER_PAGES}, budget={PLAYWRIGHT_RENDER_BUDGET_SECONDS}s)"
+                        )
                 elif self.logger:
                     self.logger.debug(
                         f"{len(js_needed_urls)} page(s) flagged js_rendering_needed but Playwright unavailable"
