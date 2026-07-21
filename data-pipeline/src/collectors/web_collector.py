@@ -37,6 +37,7 @@ from ..constants import (
     PER_DOMAIN_CONCURRENCY,
     PLAYWRIGHT_MAX_RENDER_PAGES,
     PLAYWRIGHT_RENDER_BUDGET_SECONDS,
+    SITEMAP_MIN_PAGES_FOR_COVERAGE,
 )
 from ..extractors.deterministic import DeterministicExtractor
 from ..extractors.page_classifier import PageClassifier
@@ -2471,6 +2472,7 @@ class WebsiteCollector(BaseCollector):
         try:
             # Step 1: Try sitemap-based URL discovery first (T044)
             sitemap_used = False
+            bfs_augmented = False
             target_urls = []
             pages_scored = 0
 
@@ -2555,6 +2557,31 @@ class WebsiteCollector(BaseCollector):
                 # (transient, blocker 2B), then generic message.
                 error_msg = self._last_captcha_error or self._last_rate_limit_error or "No data found on any pages"
                 return False, None, error_msg
+
+            # Coverage fix: a sitemap that only lists the homepage + dead
+            # links (e.g. KinderUSA) rides the crawl entirely on that thin
+            # set. Augment -- don't replace -- with a BFS pass from the
+            # homepage so sitemap pages are retained and BFS-discovered
+            # pages (/about, /programs, /donate, ...) are added.
+            if sitemap_used and len(crawl_results) < SITEMAP_MIN_PAGES_FOR_COVERAGE:
+                if self.logger:
+                    self.logger.info(
+                        f"Sitemap yielded only {len(crawl_results)} content page(s) "
+                        f"(<{SITEMAP_MIN_PAGES_FOR_COVERAGE}); augmenting with BFS from homepage"
+                    )
+                bfs_results = self._crawl_with_bfs_async(
+                    start_url=url,
+                    max_depth=CRAWLER_CONFIG["max_depth"],
+                    max_pages=CRAWLER_CONFIG["max_pages"],
+                    timeout_total=CRAWLER_CONFIG["timeout_total"],
+                    max_concurrent=polite_concurrency,
+                    force=force,
+                    crawl_delay=effective_crawl_delay,
+                )
+                bfs_augmented = True
+                for bfs_url, bfs_data in bfs_results.items():
+                    if bfs_url not in crawl_results:
+                        crawl_results[bfs_url] = bfs_data
 
             # SPA recovery (Task 9): the async crawlers above never call
             # Playwright themselves -- only the unused sync crawlers did.
@@ -2848,6 +2875,7 @@ class WebsiteCollector(BaseCollector):
                     "llm_cost": total_llm_cost,  # Total LLM cost (old + new)
                     "llm_calls_made": llm_calls_made,  # Number of LLM extraction calls (T063)
                     "sitemap_used": sitemap_used,  # T047
+                    "bfs_augmented": bfs_augmented,  # thin-sitemap coverage fallback
                     "pages_scored": pages_scored,  # T047
                     "pages_crawled": len(crawl_results),  # T063
                     "pdfs_discovered": pdf_count,  # T076: Number of PDFs found

@@ -76,6 +76,10 @@ class TestPlaywrightAsyncEscalation:
         c._discover_urls_from_sitemap = MagicMock(return_value=(True, ["https://spa.org/"]))
         c._fetch_url = MagicMock(return_value=(True, "<html>homepage</html>", "https://spa.org/", None))
         c._rate_limit = MagicMock()
+        # A 1-URL sitemap is thin (< SITEMAP_MIN_PAGES_FOR_COVERAGE) and
+        # triggers the BFS-coverage augmentation; these tests are about
+        # Playwright escalation, not coverage, so stub it to a no-op.
+        c._crawl_with_bfs_async = MagicMock(return_value={})
         return c
 
     @staticmethod
@@ -218,6 +222,10 @@ class TestPlaywrightEscalationBudget:
         c._discover_urls_from_sitemap = MagicMock(return_value=(True, ["https://spa.org/"]))
         c._fetch_url = MagicMock(return_value=(True, "<html>homepage</html>", "https://spa.org/", None))
         c._rate_limit = MagicMock()
+        # See TestPlaywrightAsyncEscalation._collector: a 1-URL sitemap is
+        # thin and triggers the BFS-coverage augmentation; stub it to a
+        # no-op since these tests are about the escalation loop, not coverage.
+        c._crawl_with_bfs_async = MagicMock(return_value={})
         return c
 
     def test_escalation_capped_at_max_render_pages(self):

@@ -710,6 +710,80 @@ class TestBfsEmptyRetry:
         assert calls == [2, 1]  # delay-lowered burst (2), then serial retry (1)
 
 
+class TestBfsFallbackForThinSitemap:
+    """A sitemap that only lists a homepage + dead links (KinderUSA:
+    75-2999028) rides the crawl entirely on the homepage. Coverage fix:
+    a sitemap-mode crawl yielding fewer than SITEMAP_MIN_PAGES_FOR_COVERAGE
+    content pages gets augmented with a BFS pass from the homepage,
+    merged in (sitemap pages retained, new BFS pages added)."""
+
+    def _collector(self):
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c.use_llm = False
+        c.max_pdf_downloads = 0
+        c.robots_checker = MagicMock()
+        c.robots_checker.get_crawl_delay.return_value = None
+        c._last_captcha_error = None
+        c.cache = MagicMock()
+        c._cleanup_playwright = MagicMock()
+        c._fetch_url = MagicMock(return_value=(True, "<html>homepage</html>", "https://x.org", None))
+        c._rate_limit = MagicMock()
+        return c
+
+    def test_thin_sitemap_augments_with_bfs(self):
+        c = self._collector()
+        c._discover_urls_from_sitemap = MagicMock(return_value=(True, ["https://x.org/", "https://x.org/cart"]))
+        c._crawl_specific_urls_async = MagicMock(return_value={"https://x.org/": {"ein": "12-3456789", "had_data": True}})
+        c._crawl_with_bfs_async = MagicMock(
+            return_value={
+                "https://x.org/about": {"mission": "Serving the community", "had_data": True},
+                "https://x.org/donate": {"donate_url": "https://x.org/donate", "had_data": True},
+            }
+        )
+
+        ok, data, err = c.collect_multi_page("https://x.org", "12-3456789")
+
+        assert ok is True
+        c._crawl_with_bfs_async.assert_called_once()
+        # Sitemap page retained + both BFS-discovered pages added.
+        assert data["crawl_stats"]["pages_visited"] == 3
+
+    def test_rich_sitemap_does_not_augment(self):
+        c = self._collector()
+        c._discover_urls_from_sitemap = MagicMock(
+            return_value=(True, ["https://x.org/a", "https://x.org/b", "https://x.org/c"])
+        )
+        c._crawl_specific_urls_async = MagicMock(
+            return_value={
+                "https://x.org/a": {"ein": "12-3456789", "had_data": True},
+                "https://x.org/b": {"mission": "Serving the community", "had_data": True},
+                "https://x.org/c": {"donate_url": "https://x.org/donate", "had_data": True},
+            }
+        )
+        c._crawl_with_bfs_async = MagicMock(return_value={})
+
+        ok, data, err = c.collect_multi_page("https://x.org", "12-3456789")
+
+        assert ok is True
+        assert c._crawl_with_bfs_async.call_count == 0
+        assert data["crawl_stats"]["pages_visited"] == 3
+
+    def test_no_sitemap_path_unchanged(self):
+        # Sitemap discovery fails entirely -> BFS is the primary crawl, not
+        # an augmentation -- it must run exactly once, never twice.
+        c = self._collector()
+        c._discover_urls_from_sitemap = MagicMock(return_value=(False, []))
+        c._crawl_with_bfs_async = MagicMock(
+            return_value={"https://x.org/": {"ein": "12-3456789", "had_data": True}}
+        )
+
+        ok, data, err = c.collect_multi_page("https://x.org", "12-3456789")
+
+        assert ok is True
+        assert c._crawl_with_bfs_async.call_count == 1
+
+
 class TestForceSourcesOverride:
     """Task 2: `force_sources` bypasses BOTH `_is_data_fresh` and
     `_should_skip_failed_source` for the named sources only; every other

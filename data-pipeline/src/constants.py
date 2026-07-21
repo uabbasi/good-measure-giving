@@ -74,6 +74,11 @@ CRAWL_GLOBAL_MIN_INTERVAL_SECONDS = 0.2  # ~5 req/s ceiling, process-wide
 PLAYWRIGHT_MAX_RENDER_PAGES = 8  # Max pages to Playwright-render per charity — bounds worker occupancy on SPA-heavy sites
 PLAYWRIGHT_RENDER_BUDGET_SECONDS = 60  # Aggregate wall-clock budget for the whole escalation loop — bounds worker occupancy on SPA-heavy sites
 
+# A sitemap crawl that yields fewer than this many content pages is treated
+# as thin/broken (e.g. a sitemap listing only the homepage + dead links) and
+# augmented with a BFS pass from the homepage.
+SITEMAP_MIN_PAGES_FOR_COVERAGE = 3
+
 # H5: Terminal failure classes — CAPTCHA walls and hard 404s don't heal in days.
 # Skip retries for TERMINAL_FAILURE_TTL_DAYS instead of the normal FAILURE_TTL_DAYS.
 TERMINAL_FAILURE_TTL_DAYS = 180
