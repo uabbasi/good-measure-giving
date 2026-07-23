@@ -264,20 +264,28 @@ class WebsiteCollector(BaseCollector):
                     logger.warning(f"Failed to initialize LLM extractor: {e}. Falling back to regex extraction.")
                 self.use_llm = False
 
-        # Initialize Playwright renderer for JS-heavy pages (lazy init on first use)
+        # Initialize Playwright renderer for JS-heavy pages (lazy init on first
+        # use). The orchestrator holds ONE WebsiteCollector shared across all
+        # worker threads (src/collectors/orchestrator.py), but Playwright's
+        # sync API is thread-affine -- a browser/renderer created on thread A
+        # crashes ("Cannot switch to a different thread") if thread B ever
+        # touches it. threading.local() gives each worker thread its own
+        # renderer instance on the same shared collector.
         self.use_playwright = use_playwright
-        self._playwright_renderer = None
+        self._playwright_local = threading.local()
 
     def _get_playwright_renderer(self):
-        """Get or create the Playwright renderer (lazy initialization)."""
+        """Get or create this thread's Playwright renderer (lazy per-thread init)."""
         if not self.use_playwright:
             return None
 
-        if self._playwright_renderer is None:
+        renderer = getattr(self._playwright_local, "renderer", None)
+        if renderer is None:
             try:
                 from src.utils.playwright_renderer import PlaywrightRenderer
 
-                self._playwright_renderer = PlaywrightRenderer(timeout_ms=15000)
+                renderer = PlaywrightRenderer(timeout_ms=15000)
+                self._playwright_local.renderer = renderer
                 if self.logger:
                     self.logger.info("Playwright renderer initialized for JS fallback")
             except Exception as e:
@@ -286,13 +294,14 @@ class WebsiteCollector(BaseCollector):
                 self.use_playwright = False
                 return None
 
-        return self._playwright_renderer
+        return renderer
 
     def _cleanup_playwright(self):
-        """Cleanup Playwright resources."""
-        if self._playwright_renderer:
-            self._playwright_renderer.close()
-            self._playwright_renderer = None
+        """Cleanup this thread's Playwright resources."""
+        renderer = getattr(self._playwright_local, "renderer", None)
+        if renderer:
+            renderer.close()
+            self._playwright_local.renderer = None
 
     def __enter__(self):
         """Context manager support for automatic cleanup."""

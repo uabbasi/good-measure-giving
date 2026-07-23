@@ -133,7 +133,7 @@ class TestCrawlDelayAndEmptyRetry:
         c.robots_checker = MagicMock()
         c._last_captcha_error = None
         c.use_playwright = False
-        c._playwright_renderer = None
+        c._playwright_local = threading.local()
         return c
 
     def test_crawl_delay_lowers_concurrency(self):
@@ -214,7 +214,7 @@ class TestPlaywrightCaptchaRescue:
         # a fully-blocked site fails that the same way (empty), not a crash.
         c._crawl_with_bfs_async = MagicMock(return_value={})
         c.use_playwright = True
-        c._playwright_renderer = None
+        c._playwright_local = threading.local()
         return c
 
     def _captcha_crawl(self, c):
@@ -307,6 +307,70 @@ class TestPlaywrightCaptchaRescue:
         assert ok is True
         assert c._last_captcha_error is None  # confirms this is the non-captcha trigger path
         renderer.render.assert_called_once_with("https://x.org/")
+
+
+class TestPlaywrightRendererThreadLocal:
+    """The orchestrator holds ONE WebsiteCollector shared across all worker
+    threads (src/collectors/orchestrator.py: self.website), but Playwright's
+    sync API is thread-affine — a renderer created on thread A crashes with
+    'Cannot switch to a different thread' if thread B ever touches it. This
+    broke a real fleet run (Sachse + Muslim Hands USA crawled concurrently,
+    one succeeded, the other hit the greenlet crash) before the fix.
+    _get_playwright_renderer must hand each thread its own instance."""
+
+    def test_each_thread_gets_its_own_renderer(self):
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c.use_playwright = True
+        c._playwright_local = threading.local()
+        renderers = {}
+
+        with patch("src.utils.playwright_renderer.PlaywrightRenderer", side_effect=lambda **kw: MagicMock()):
+            for name in ("a", "b"):
+                t = threading.Thread(target=lambda n=name: renderers.__setitem__(n, c._get_playwright_renderer()))
+                t.start()
+                t.join()  # sequential on purpose — isolation doesn't require a real race to prove
+
+        assert renderers["a"] is not None
+        assert renderers["b"] is not None
+        assert renderers["a"] is not renderers["b"]
+
+    def test_same_thread_reuses_its_renderer(self):
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c.use_playwright = True
+        c._playwright_local = threading.local()
+        calls = []
+
+        def worker():
+            calls.append(c._get_playwright_renderer())
+            calls.append(c._get_playwright_renderer())
+
+        with patch("src.utils.playwright_renderer.PlaywrightRenderer", side_effect=lambda **kw: MagicMock()):
+            t = threading.Thread(target=worker)
+            t.start()
+            t.join()
+
+        assert calls[0] is calls[1]
+
+    def test_cleanup_only_closes_calling_threads_renderer(self):
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c.use_playwright = True
+        c._playwright_local = threading.local()
+        thread_a_renderer = {}
+
+        with patch("src.utils.playwright_renderer.PlaywrightRenderer", side_effect=lambda **kw: MagicMock()):
+            t_a = threading.Thread(target=lambda: thread_a_renderer.__setitem__("r", c._get_playwright_renderer()))
+            t_a.start()
+            t_a.join()
+
+            # Different thread cleans up — must not touch thread A's renderer.
+            t_b = threading.Thread(target=c._cleanup_playwright)
+            t_b.start()
+            t_b.join()
+
+        thread_a_renderer["r"].close.assert_not_called()
 
 
 class TestRateLimitNotTerminal:
@@ -463,7 +527,7 @@ class TestRateLimitSurfacedInCollectMultiPage:
         c._discover_urls_from_sitemap = MagicMock(return_value=(True, ["https://x.org/a"]))
         c._fetch_url = MagicMock(return_value=(False, None, None, "dead"))  # no live-homepage retry
         c.use_playwright = False
-        c._playwright_renderer = None
+        c._playwright_local = threading.local()
         return c
 
     def test_rate_limited_no_data_surfaces_rate_limited_error(self):
@@ -815,7 +879,7 @@ class TestBfsEmptyRetry:
         c.robots_checker = MagicMock()
         c._last_captcha_error = None
         c.use_playwright = False
-        c._playwright_renderer = None
+        c._playwright_local = threading.local()
         return c
 
     def test_bfs_empty_retries_serially(self):
