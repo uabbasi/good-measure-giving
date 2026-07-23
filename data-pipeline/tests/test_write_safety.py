@@ -2,6 +2,7 @@
 import sys
 from datetime import datetime
 from pathlib import Path
+from unittest.mock import MagicMock
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -158,6 +159,8 @@ class TestStoreRawDataNonDowngrade:
 
         col = object.__new__(DataCollectionOrchestrator)  # skip __init__
         col.raw_data_repo = FakeRawRepo()
+        col.crawl_attempt_repo = MagicMock()
+        col.crawled_page_repo = MagicMock()
         import logging
 
         col.logger = logging.getLogger("test")
@@ -183,6 +186,14 @@ class TestStoreRawDataNonDowngrade:
         assert result is True
         assert len(calls["soft_fail"]) == 1     # preserved
         assert len(calls["upsert"]) == 0        # no overwrite
+        # A preserve is still a real attempt -- logged as such (success=True,
+        # since the source keeps counting as succeeded) with the preserve
+        # reason, so the durable history shows this attempt happened even
+        # though raw_scraped_data's current-state row didn't change.
+        col.crawl_attempt_repo.record.assert_called_once()
+        _, kwargs = col.crawl_attempt_repo.record.call_args
+        assert kwargs["success"] is True
+        assert "thinner than last-good" in kwargs["failure_reason"]
 
     def test_thin_recrawl_aged_out_is_written(self):
         existing = {
@@ -195,6 +206,25 @@ class TestStoreRawDataNonDowngrade:
         col._store_raw_data("12-3456789", "website", thin)
         assert len(calls["soft_fail"]) == 0     # aged-out: allow the drop
         assert len(calls["upsert"]) == 1
+
+    def test_website_crawl_records_page_history_on_success(self):
+        col, calls = self._collector_with_fake_repo(existing_row=None)  # no prior -> writes normally
+        data = {
+            "raw_content": "x" * 1000,
+            "website_profile": {"url": "x", "ein": "12-3456789"},
+            "page_extractions": [],
+            "crawl_stats": {"pages_crawled": 2},
+            "crawled_urls": [
+                {"url": "https://x.org/", "had_data": True},
+                {"url": "https://x.org/about", "had_data": False},
+            ],
+        }
+        col._store_raw_data("12-3456789", "website", data)
+        col.crawled_page_repo.record_pages.assert_called_once_with("12-3456789", data["crawled_urls"])
+        col.crawl_attempt_repo.record.assert_called_once()
+        _, kwargs = col.crawl_attempt_repo.record.call_args
+        assert kwargs["pages_found"] == 2
+        assert kwargs["pages_with_data"] == 1
 
     def test_empty_grants_preserved_when_prior_has_filings(self):
         recent = "2026-01-01 00:00:00"
@@ -209,6 +239,11 @@ class TestStoreRawDataNonDowngrade:
         assert result is True
         assert len(calls["soft_fail"]) == 1
         assert len(calls["upsert"]) == 0
+        # Non-website source: no page-level history, no page counts.
+        col.crawled_page_repo.record_pages.assert_not_called()
+        _, kwargs = col.crawl_attempt_repo.record.call_args
+        assert kwargs["pages_found"] is None
+        assert kwargs["pages_with_data"] is None
 
 
 class TestRegressionGuard:

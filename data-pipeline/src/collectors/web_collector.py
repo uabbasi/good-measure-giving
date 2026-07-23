@@ -2909,6 +2909,15 @@ class WebsiteCollector(BaseCollector):
             # Calculate total timing
             timing["total"] = round(time.time() - crawl_start, 1)
 
+            # Full page-visit manifest (every page attempted, incl. empty
+            # ones) for crawl-history tracking -- distinct from
+            # page_extractions above, which citation_service filters to
+            # only pages with real LLM-extracted content.
+            crawled_urls = [
+                {"url": page_url, "had_data": bool(page_data.get("had_data"))}
+                for page_url, page_data in crawl_results.items()
+            ]
+
             result = {
                 "website_profile": profile.model_dump(),
                 "raw_content": homepage_html or "",
@@ -2916,6 +2925,7 @@ class WebsiteCollector(BaseCollector):
                 "pdf_documents": pdf_documents,  # T076: PDF links discovered
                 "js_rendering_candidates": js_candidates,  # Pages needing Playwright
                 "page_extractions": page_extractions,  # Maps URLs to extracted fields for citations
+                "crawled_urls": crawled_urls,  # Every page visited, for crawl-history tracking
                 "crawl_stats": {
                     "pages_visited": len(crawl_results),
                     "pages_with_data": len([r for r in crawl_results.values() if any(r.values())]),

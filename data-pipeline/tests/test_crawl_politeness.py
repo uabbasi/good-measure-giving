@@ -89,6 +89,8 @@ class TestSingleRetryIncrementPerWebsiteFailure:
         orch.blocked_sites = []
         orch._blocked_sites_lock = threading.Lock()
         orch.raw_data_repo = MagicMock()
+        orch.crawl_attempt_repo = MagicMock()
+        orch.crawled_page_repo = MagicMock()
         # No prior row: not fresh, no backoff skip
         orch.raw_data_repo.get_by_source.return_value = None
         orch.charity_repo = MagicMock()
@@ -987,6 +989,8 @@ class TestForceSourcesOverride:
         orch.blocked_sites = []
         orch._blocked_sites_lock = threading.Lock()
         orch.raw_data_repo = MagicMock()
+        orch.crawl_attempt_repo = MagicMock()
+        orch.crawled_page_repo = MagicMock()
         orch.charity_repo = MagicMock()
         orch.website = MagicMock()
         orch._get_or_create_charity = lambda ein, name=None, website=None: ein
@@ -1083,6 +1087,8 @@ class TestTransientPreservesLastGoodWebsite:
         orch.blocked_sites = []
         orch._blocked_sites_lock = threading.Lock()
         orch.raw_data_repo = MagicMock()
+        orch.crawl_attempt_repo = MagicMock()
+        orch.crawled_page_repo = MagicMock()
         orch.charity_repo = MagicMock()
         orch.website = MagicMock()
         orch._get_or_create_charity = lambda ein, name=None, website=None: ein

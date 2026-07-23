@@ -1638,3 +1638,159 @@ class ExportExclusionRepository:
             )
             or []
         )
+
+
+class CrawlAttemptRepository:
+    """Append-only log of every collection attempt per (charity, source).
+
+    raw_scraped_data holds only current state (one row per charity+source,
+    overwritten on each attempt), so a failed-then-recovered attempt (or a
+    thin re-observation preserved by the non-downgrade guard) leaves no
+    trace once a later attempt succeeds. This table is the durable history:
+    one row per attempt, success or failure. Table is created lazily
+    (memoized per process); the same DDL must appear in dolt_schema.sql.
+    """
+
+    _table_ensured = False
+
+    def ensure_table(self) -> None:
+        if CrawlAttemptRepository._table_ensured:
+            return
+        execute_query(
+            """
+            CREATE TABLE IF NOT EXISTS crawl_attempts (
+                charity_ein VARCHAR(12) NOT NULL,
+                source VARCHAR(50) NOT NULL,
+                attempted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                success TINYINT(1) NOT NULL,
+                failure_reason TEXT,
+                pages_found INT,
+                pages_with_data INT,
+                PRIMARY KEY (charity_ein, source, attempted_at)
+            )
+            """,
+            fetch="none",
+        )
+        CrawlAttemptRepository._table_ensured = True
+
+    def record(
+        self,
+        ein: str,
+        source: str,
+        success: bool,
+        failure_reason: str | None = None,
+        pages_found: int | None = None,
+        pages_with_data: int | None = None,
+    ) -> None:
+        """Record one attempt. pages_found/pages_with_data only apply to
+        multi-page sources (website); leave None for single-document sources."""
+        self.ensure_table()
+        execute_query(
+            """
+            INSERT INTO crawl_attempts
+                (charity_ein, source, success, failure_reason, pages_found, pages_with_data)
+            VALUES (%s, %s, %s, %s, %s, %s)
+            """,
+            (ein, source, success, failure_reason, pages_found, pages_with_data),
+            fetch="none",
+        )
+
+    def get_for_charity(self, ein: str, source: str | None = None) -> list[dict]:
+        """Return attempt history for a charity, newest first."""
+        if source:
+            return (
+                execute_query(
+                    "SELECT * FROM crawl_attempts WHERE charity_ein = %s AND source = %s "
+                    "ORDER BY attempted_at DESC",
+                    (ein, source),
+                )
+                or []
+            )
+        return (
+            execute_query(
+                "SELECT * FROM crawl_attempts WHERE charity_ein = %s ORDER BY attempted_at DESC",
+                (ein,),
+            )
+            or []
+        )
+
+
+class CrawledPageRepository:
+    """Tracks per-page presence across website crawls, so a page appearing
+    or disappearing between runs is visible instead of silently lost when
+    the next crawl overwrites raw_scraped_data's current-state row.
+
+    One row per (charity_ein, url); last_seen_at advances on every crawl
+    that visits the page, times_seen counts how many crawls have. A page
+    absent from the latest crawl is detectable by comparing last_seen_at
+    against that crawl's crawl_attempts.attempted_at. Table is created
+    lazily (memoized per process); the same DDL must appear in
+    dolt_schema.sql.
+    """
+
+    _table_ensured = False
+
+    def ensure_table(self) -> None:
+        if CrawledPageRepository._table_ensured:
+            return
+        execute_query(
+            """
+            CREATE TABLE IF NOT EXISTS crawled_pages (
+                charity_ein VARCHAR(12) NOT NULL,
+                url VARCHAR(500) NOT NULL,
+                first_seen_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                last_seen_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                had_data TINYINT(1),
+                times_seen INT NOT NULL DEFAULT 1,
+                PRIMARY KEY (charity_ein, url)
+            )
+            """,
+            fetch="none",
+        )
+        CrawledPageRepository._table_ensured = True
+
+    def record_pages(self, ein: str, pages: list[dict]) -> None:
+        """Upsert one row per page: {"url": str, "had_data": bool}. New
+        pages get first_seen_at=now; previously-seen pages bump
+        last_seen_at + times_seen and refresh had_data."""
+        if not pages:
+            return
+        self.ensure_table()
+        for page in pages:
+            url = page.get("url")
+            if not url:
+                continue
+            execute_query(
+                """
+                INSERT INTO crawled_pages (charity_ein, url, had_data)
+                VALUES (%s, %s, %s)
+                ON DUPLICATE KEY UPDATE
+                    last_seen_at = CURRENT_TIMESTAMP,
+                    had_data = VALUES(had_data),
+                    times_seen = times_seen + 1
+                """,
+                (ein, url, bool(page.get("had_data"))),
+                fetch="none",
+            )
+
+    def get_for_charity(self, ein: str) -> list[dict]:
+        """Return every page ever seen for a charity, most recently seen first."""
+        return (
+            execute_query(
+                "SELECT * FROM crawled_pages WHERE charity_ein = %s ORDER BY last_seen_at DESC",
+                (ein,),
+            )
+            or []
+        )
+
+    def get_missing_since_last_crawl(self, ein: str, latest_attempted_at) -> list[dict]:
+        """Pages seen in a past crawl but not touched by the most recent one
+        (last_seen_at strictly before it) -- i.e. pages that disappeared."""
+        return (
+            execute_query(
+                "SELECT * FROM crawled_pages WHERE charity_ein = %s AND last_seen_at < %s "
+                "ORDER BY last_seen_at DESC",
+                (ein, latest_attempted_at),
+            )
+            or []
+        )

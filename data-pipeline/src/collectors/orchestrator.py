@@ -19,7 +19,7 @@ from ..constants import (
     TERMINAL_FAILURE_MARKERS,
     TERMINAL_FAILURE_TTL_DAYS,
 )
-from ..db import CharityRepository, RawDataRepository
+from ..db import CharityRepository, CrawlAttemptRepository, CrawledPageRepository, RawDataRepository
 from ..db.dolt_client import execute_query
 from ..db.repository import Charity
 from ..parsers.charity_metrics_aggregator import CharityMetrics, CharityMetricsAggregator
@@ -308,6 +308,8 @@ class DataCollectionOrchestrator:
         # DoltDB repositories
         self.charity_repo = CharityRepository()
         self.raw_data_repo = RawDataRepository()
+        self.crawl_attempt_repo = CrawlAttemptRepository()
+        self.crawled_page_repo = CrawledPageRepository()
 
     def _load_cached_data(self, ein: str, source: str) -> Optional[Dict[str, Any]]:
         """
@@ -1374,6 +1376,15 @@ class DataCollectionOrchestrator:
 
             parsed_json = validate_dict_bounds(parsed_json, ein=ein, log_warnings=True)
 
+        crawled_urls = data.get("crawled_urls", []) if source == "website" else []
+        pages_found = len(crawled_urls) if source == "website" else None
+        pages_with_data = sum(1 for p in crawled_urls if p.get("had_data")) if source == "website" else None
+        # Durable per-page history, independent of the attempt outcome below
+        # -- so a page disappearing between crawls is visible even when the
+        # overall attempt is a soft-fail/preserve or a hard failure.
+        if crawled_urls:
+            self.crawled_page_repo.record_pages(ein, crawled_urls)
+
         # Non-downgrade guard: never replace stored substantive content with a
         # materially thinner/empty re-observation while the stored content is
         # still within the freshness window. Preserves last-good (source keeps
@@ -1387,6 +1398,8 @@ class DataCollectionOrchestrator:
                 reason = f"{source} re-observation thinner than last-good; preserved (age={age}y)"
                 self.logger.warning(f"{ein}: {reason}")
                 self.raw_data_repo.record_soft_fail(ein, source, reason)
+                self.crawl_attempt_repo.record(ein, source, success=True, failure_reason=reason,
+                                                pages_found=pages_found, pages_with_data=pages_with_data)
                 return True
 
         # Check if data is meaningful
@@ -1402,9 +1415,16 @@ class DataCollectionOrchestrator:
                 error_message=None if is_meaningful else "Empty or failed data",
                 raw_content=raw_content,
             )
+            self.crawl_attempt_repo.record(
+                ein, source, success=is_meaningful,
+                failure_reason=None if is_meaningful else "Empty or failed data",
+                pages_found=pages_found, pages_with_data=pages_with_data,
+            )
             return is_meaningful
         except Exception as e:
             self.logger.error(f"Failed to store raw data for {source}/{ein}: {e}")
+            self.crawl_attempt_repo.record(ein, source, success=False, failure_reason=str(e),
+                                            pages_found=pages_found, pages_with_data=pages_with_data)
             return False
 
     def _store_failed_crawl(self, ein: str, source: str, error: str):
@@ -1430,6 +1450,7 @@ class DataCollectionOrchestrator:
             error_message=error,
             raw_content=None,
         )
+        self.crawl_attempt_repo.record(ein, source, success=False, failure_reason=error)
 
     def _record_blocked_site(self, ein: str, url: Optional[str], error: Optional[str]) -> None:
         """Track CAPTCHA/anti-bot blocked sites for the run-end report (H5)."""
