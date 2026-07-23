@@ -2528,9 +2528,10 @@ class WebsiteCollector(BaseCollector):
             # dead site. Retry once serially (concurrency 1) before giving up —
             # for BOTH sitemap and BFS paths; skip only when a terminal block
             # (CAPTCHA/challenge) was detected.
+            homepage_confirmed_live = False
             if not crawl_results and not self._last_captcha_error:
-                homepage_ok = self._fetch_url(url, force=True)[0]
-                if homepage_ok:
+                homepage_confirmed_live = self._fetch_url(url, force=True)[0]
+                if homepage_confirmed_live:
                     if self.logger:
                         self.logger.info(f"Empty crawl for {url} but homepage is live — retrying serially")
                     if sitemap_used:
@@ -2551,6 +2552,47 @@ class WebsiteCollector(BaseCollector):
                             force=force,
                             crawl_delay=effective_crawl_delay,
                         )
+
+            # Playwright rescue: httpx + curl_cffi (per-URL, inside
+            # _fetch_url_async) both failed to return real content -- either
+            # an explicit terminal bot-management block (CAPTCHA_BLOCKED) or
+            # a silent hang against a CONFIRMED-live homepage (the serial
+            # retry above still came back empty). Both shapes were observed
+            # from the SAME site (Muslim Hands USA) across different runs --
+            # a Cloudflare JS challenge that neither httpx nor curl_cffi's
+            # fingerprint impersonation can satisfy sometimes fails fast
+            # (403) and sometimes just hangs -- so both are treated as
+            # "needs a real browser", not "actually dead" (a dead/unreachable
+            # homepage never sets homepage_confirmed_live, so genuinely dead
+            # sites still fail fast without paying for a render attempt).
+            # Confirmed viable by manual testing against Sachse Muslim
+            # Society and Muslim Hands USA (both render cleanly under
+            # Playwright). Bounded by the same page cap + wall-clock budget
+            # as the SPA-recovery loop below, and deliberately serial:
+            # PlaywrightRenderer wraps Playwright's sync API, which is not
+            # safe to call concurrently from multiple threads, so this
+            # cannot run inside the async fetch loops above the way
+            # curl_cffi does.
+            if not crawl_results and (self._last_captcha_error or homepage_confirmed_live):
+                renderer = self._get_playwright_renderer()
+                if renderer:
+                    reason = self._last_captcha_error or "async crawl timed out against a live homepage"
+                    if self.logger:
+                        self.logger.info(f"{reason}; attempting Playwright rescue for {url}")
+                    rescue_urls = (target_urls or [url])[:PLAYWRIGHT_MAX_RENDER_PAGES]
+                    render_start = time.monotonic()
+                    for page_url in rescue_urls:
+                        if time.monotonic() - render_start >= PLAYWRIGHT_RENDER_BUDGET_SECONDS:
+                            break
+                        host = urlparse(page_url).netloc.lower()
+                        global_rate_limiter.wait("website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS)
+                        if effective_crawl_delay > 0:
+                            global_rate_limiter.wait(host, effective_crawl_delay)
+                        rendered_html = renderer.render(page_url)
+                        if rendered_html and not self._is_bot_challenge_html(rendered_html):
+                            crawl_results[page_url] = self._extract_page_data(rendered_html, page_url, use_llm=False)
+                    if crawl_results and self.logger:
+                        self.logger.info(f"Playwright rescue recovered {len(crawl_results)} page(s) for {url}")
 
             if not crawl_results:
                 # Precedence: captcha (terminal) first, then rate-limit

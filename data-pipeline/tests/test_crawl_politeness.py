@@ -132,6 +132,8 @@ class TestCrawlDelayAndEmptyRetry:
         c.logger = None
         c.robots_checker = MagicMock()
         c._last_captcha_error = None
+        c.use_playwright = False
+        c._playwright_renderer = None
         return c
 
     def test_crawl_delay_lowers_concurrency(self):
@@ -185,6 +187,126 @@ class TestCrawlDelayAndEmptyRetry:
         assert calls == [10]  # terminal block → no serial retry
         assert ok is False
         assert "CAPTCHA" in err
+
+
+class TestPlaywrightCaptchaRescue:
+    """A site fully CAPTCHA-blocked to httpx + curl_cffi (both exhausted
+    inside _fetch_url_async) gets one bounded, serial Playwright rescue
+    attempt before giving up. Confirmed viable by manual testing against
+    Sachse Muslim Society and Muslim Hands USA — both genuinely block the
+    async clients (a Cloudflare JS challenge neither httpx nor curl_cffi's
+    fingerprint impersonation can satisfy) but render cleanly under a real
+    browser."""
+
+    def _collector(self):
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c.use_llm = False
+        c.max_pdf_downloads = 0
+        c.robots_checker = MagicMock()
+        c.robots_checker.get_crawl_delay.return_value = None
+        c.cache = MagicMock()
+        c._cleanup_playwright = MagicMock()
+        c._discover_urls_from_sitemap = MagicMock(return_value=(True, ["https://x.org/"]))
+        c._fetch_url = MagicMock(return_value=(False, None, None, "dead"))  # no live-homepage retry
+        # A single rescued page is below SITEMAP_MIN_PAGES_FOR_COVERAGE, so
+        # the thin-sitemap coverage fix tries a BFS augmentation pass next —
+        # a fully-blocked site fails that the same way (empty), not a crash.
+        c._crawl_with_bfs_async = MagicMock(return_value={})
+        c.use_playwright = True
+        c._playwright_renderer = None
+        return c
+
+    def _captcha_crawl(self, c):
+        def fake_crawl(urls, timeout_total, max_concurrent=10, force=False, crawl_delay=0.0):
+            c._last_captcha_error = "CAPTCHA_BLOCKED: cf-ray (HTTP 403)"
+            return {}
+
+        c._crawl_specific_urls_async = fake_crawl
+
+    def test_rescue_recovers_when_playwright_available(self):
+        c = self._collector()
+        self._captcha_crawl(c)
+
+        renderer = MagicMock()
+        renderer.render.return_value = "<html>real content</html>"
+        c._get_playwright_renderer = MagicMock(return_value=renderer)
+        c._is_bot_challenge_html = MagicMock(return_value=False)
+        c._extract_page_data = MagicMock(return_value={"ein": "12-3456789", "had_data": True})
+
+        with patch("src.collectors.web_collector.global_rate_limiter"):
+            ok, data, err = c.collect_multi_page("https://x.org", "12-3456789")
+
+        assert ok is True
+        renderer.render.assert_called_once_with("https://x.org/")
+        assert data["crawl_stats"]["pages_visited"] == 1
+
+    def test_rescue_gives_up_when_playwright_also_challenged(self):
+        c = self._collector()
+        self._captcha_crawl(c)
+
+        renderer = MagicMock()
+        renderer.render.return_value = "<html>still a challenge</html>"
+        c._get_playwright_renderer = MagicMock(return_value=renderer)
+        c._is_bot_challenge_html = MagicMock(return_value=True)  # rendered page is STILL a challenge
+
+        with patch("src.collectors.web_collector.global_rate_limiter"):
+            ok, data, err = c.collect_multi_page("https://x.org", "12-3456789")
+
+        assert ok is False
+        assert "CAPTCHA_BLOCKED" in err
+
+    def test_rescue_skipped_when_playwright_unavailable(self):
+        c = self._collector()
+        c.use_playwright = False  # exercises the real _get_playwright_renderer guard
+        self._captcha_crawl(c)
+
+        with patch("src.collectors.web_collector.global_rate_limiter"):
+            ok, data, err = c.collect_multi_page("https://x.org", "12-3456789")
+
+        assert ok is False
+        assert "CAPTCHA_BLOCKED" in err
+
+    def test_rescue_not_attempted_for_non_captcha_empty_crawl(self):
+        # Dead site, no captcha signal at all — must not spin up Playwright.
+        c = self._collector()
+
+        def fake_crawl(urls, timeout_total, max_concurrent=10, force=False, crawl_delay=0.0):
+            return {}
+
+        c._crawl_specific_urls_async = fake_crawl
+        c._get_playwright_renderer = MagicMock()
+
+        ok, data, err = c.collect_multi_page("https://x.org", "12-3456789")
+
+        assert ok is False
+        c._get_playwright_renderer.assert_not_called()
+
+    def test_rescue_attempted_when_live_homepage_times_out_without_captcha(self):
+        # Muslim Hands USA in practice: no CAPTCHA_BLOCKED signal at all,
+        # just an async crawl that hangs until timeout against a confirmed-
+        # live homepage (both the initial batch and the serial retry come
+        # back empty). Must still trigger the rescue.
+        c = self._collector()
+        c._fetch_url = MagicMock(return_value=(True, "<html>homepage</html>", "https://x.org", None))
+
+        def fake_crawl(urls, timeout_total, max_concurrent=10, force=False, crawl_delay=0.0):
+            return {}  # empty on both the initial pass and the serial retry
+
+        c._crawl_specific_urls_async = fake_crawl
+
+        renderer = MagicMock()
+        renderer.render.return_value = "<html>real content</html>"
+        c._get_playwright_renderer = MagicMock(return_value=renderer)
+        c._is_bot_challenge_html = MagicMock(return_value=False)
+        c._extract_page_data = MagicMock(return_value={"ein": "12-3456789", "had_data": True})
+
+        with patch("src.collectors.web_collector.global_rate_limiter"):
+            ok, data, err = c.collect_multi_page("https://x.org", "12-3456789")
+
+        assert ok is True
+        assert c._last_captcha_error is None  # confirms this is the non-captcha trigger path
+        renderer.render.assert_called_once_with("https://x.org/")
 
 
 class TestRateLimitNotTerminal:
@@ -340,6 +462,8 @@ class TestRateLimitSurfacedInCollectMultiPage:
         c._last_rate_limit_error = None
         c._discover_urls_from_sitemap = MagicMock(return_value=(True, ["https://x.org/a"]))
         c._fetch_url = MagicMock(return_value=(False, None, None, "dead"))  # no live-homepage retry
+        c.use_playwright = False
+        c._playwright_renderer = None
         return c
 
     def test_rate_limited_no_data_surfaces_rate_limited_error(self):
@@ -690,6 +814,8 @@ class TestBfsEmptyRetry:
         c.logger = None
         c.robots_checker = MagicMock()
         c._last_captcha_error = None
+        c.use_playwright = False
+        c._playwright_renderer = None
         return c
 
     def test_bfs_empty_retries_serially(self):
