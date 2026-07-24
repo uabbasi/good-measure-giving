@@ -99,6 +99,7 @@ def judge_charity(
     data_repo: CharityDataRepository,
     raw_repo: RawDataRepository,
     charity_repo: CharityRepository | None = None,
+    _retry_attempted: bool = False,
 ) -> dict[str, Any]:
     """Run all judges on a charity's evaluation.
 
@@ -208,6 +209,29 @@ def judge_charity(
         with JudgeOrchestrator(config) as orchestrator:
             validation_result = orchestrator.validate_single(charity_dict, context)
 
+        # Rich-narrative auto-retry: the "score" judge checks whether the
+        # LLM-written rationale (incl. directional program-ratio comparisons,
+        # e.g. "82% is below the 75% benchmark") matches the actual data. That
+        # check is on nondeterministic prose — score_judge itself already runs
+        # 3 consensus rolls because identical narratives flip-flop between
+        # passing and failing. Regenerating the narrative and re-judging once
+        # is worth it when score is the ONLY judge with errors: a mix with
+        # e.g. crawl_quality means the narrative isn't the (only) problem, and
+        # regenerating it wouldn't fix that.
+        error_judges = {v.judge_name for v in validation_result.verdicts if v.errors}
+        if error_judges == {"score"} and not _retry_attempted:
+            from rich_phase import generate_rich_for_pipeline
+
+            rich_retry = generate_rich_for_pipeline(ein, eval_repo, force=True)
+            retry_rich_cost = rich_retry.get("cost_usd", 0.0)
+            if rich_retry.get("success") and not rich_retry.get("skipped"):
+                retried = judge_charity(
+                    ein, eval_repo, data_repo, raw_repo, charity_repo, _retry_attempted=True
+                )
+                retried["cost_usd"] = retried.get("cost_usd", 0.0) + retry_rich_cost
+                retried["rich_retried"] = True
+                return retried
+
         # J-003: Calculate judge_score using deduplicated issue counts
         # Issues sharing the same issue_key are counted only once (highest severity wins)
         deduped_errors, deduped_warnings = validation_result.deduplicated_issues
@@ -308,6 +332,8 @@ def main(argv: list[str] | None = None) -> int:
             update_phase_cache(ein, "judge", cache_repo, result.get("cost_usd", 0.0))
             success_count += 1
             total_cost += result.get("cost_usd", 0.0)
+            if result.get("rich_retried"):
+                print("  (rich narrative auto-retried after score-judge-only failure)")
             print(f"  Judge Score: {result['judge_score']}/100")
             print(f"  Passed: {result['passed']}")
             print(f"  Errors: {result['error_count']}")

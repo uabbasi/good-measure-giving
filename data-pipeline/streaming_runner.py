@@ -1434,6 +1434,7 @@ def process_charity_full(
                     "issues_count": len(judge_result.get("issues", [])),
                     "time": round(time.time() - phase_start, 1),
                     "cost": judge_cost,
+                    "rich_retried": judge_result.get("rich_retried", False),
                 }
                 result["judge_score"] = judge_result["judge_score"]
                 phases_ran.add("judge")

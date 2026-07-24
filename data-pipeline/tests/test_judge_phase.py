@@ -3,6 +3,7 @@
 from unittest.mock import Mock
 
 import judge_phase
+import rich_phase
 from src.judges.schemas.verdict import (
     CharityValidationResult,
     JudgeVerdict,
@@ -159,6 +160,127 @@ class TestJudgeScoreDedupe:
         assert result["warning_count"] == 3
         assert result["error_count"] == 0
         assert len(result["issues"]) == 4
+
+
+def _verdict_result(passed: bool, judge_issues: list[tuple[str, list[ValidationIssue]]]) -> CharityValidationResult:
+    return CharityValidationResult(
+        ein=EIN,
+        name="Test Charity",
+        passed=passed,
+        verdicts=[JudgeVerdict(passed=not issues, judge_name=name, issues=issues) for name, issues in judge_issues],
+    )
+
+
+class TestRichNarrativeAutoRetry:
+    """score_judge checks whether the LLM-written rationale (incl. directional
+    program-ratio comparisons) matches the data — a nondeterministic prose
+    check. When it's the ONLY judge with errors, judge_charity regenerates
+    the rich narrative once and re-judges before giving up."""
+
+    def test_retries_and_succeeds_when_only_score_judge_errors(self, monkeypatch):
+        responses = [
+            _verdict_result(False, [("score", [ValidationIssue(Severity.ERROR, "amal_score_rationale", "backwards")])]),
+            _verdict_result(True, []),
+        ]
+
+        class SeqOrchestrator:
+            def __init__(self, config):
+                pass
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+            def validate_single(self, charity_dict, context):
+                return responses.pop(0)
+
+        monkeypatch.setattr(judge_phase, "JudgeOrchestrator", SeqOrchestrator)
+        rich_retry_calls = []
+        monkeypatch.setattr(
+            rich_phase,
+            "generate_rich_for_pipeline",
+            lambda ein, eval_repo, force=False: rich_retry_calls.append(ein) or {"success": True, "cost_usd": 0.02},
+        )
+        repos = _mock_repos(dict(FULL_EVALUATION))
+
+        result = judge_phase.judge_charity(EIN, *repos)
+
+        assert rich_retry_calls == [EIN]
+        assert result["success"] is True
+        assert result["passed"] is True
+        assert result["error_count"] == 0
+        assert result["rich_retried"] is True
+        assert result["cost_usd"] == 0.02  # retry's rich-generation cost folded into the total
+
+    def test_no_retry_when_other_judges_also_error(self, monkeypatch):
+        class OnceOrchestrator:
+            def __init__(self, config):
+                pass
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+            def validate_single(self, charity_dict, context):
+                return _verdict_result(
+                    False,
+                    [
+                        ("score", [ValidationIssue(Severity.ERROR, "f", "m")]),
+                        ("crawl_quality", [ValidationIssue(Severity.ERROR, "f2", "m2")]),
+                    ],
+                )
+
+        monkeypatch.setattr(judge_phase, "JudgeOrchestrator", OnceOrchestrator)
+        rich_retry_calls = []
+        monkeypatch.setattr(
+            rich_phase,
+            "generate_rich_for_pipeline",
+            lambda *a, **kw: rich_retry_calls.append(1) or {"success": True, "cost_usd": 0.02},
+        )
+        repos = _mock_repos(dict(FULL_EVALUATION))
+
+        result = judge_phase.judge_charity(EIN, *repos)
+
+        assert rich_retry_calls == []
+        assert result["error_count"] == 2
+        assert "rich_retried" not in result
+
+    def test_retry_is_bounded_to_one_attempt(self, monkeypatch):
+        call_count = {"n": 0}
+
+        class AlwaysScoreErrorOrchestrator:
+            def __init__(self, config):
+                pass
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+            def validate_single(self, charity_dict, context):
+                call_count["n"] += 1
+                return _verdict_result(False, [("score", [ValidationIssue(Severity.ERROR, "f", "m")])])
+
+        monkeypatch.setattr(judge_phase, "JudgeOrchestrator", AlwaysScoreErrorOrchestrator)
+        rich_retry_calls = []
+        monkeypatch.setattr(
+            rich_phase,
+            "generate_rich_for_pipeline",
+            lambda *a, **kw: rich_retry_calls.append(1) or {"success": True, "cost_usd": 0.02},
+        )
+        repos = _mock_repos(dict(FULL_EVALUATION))
+
+        result = judge_phase.judge_charity(EIN, *repos)
+
+        assert rich_retry_calls == [1]  # exactly one retry, not a loop
+        assert call_count["n"] == 2  # original judge run + one re-judge after retry
+        assert result["passed"] is False
+        assert result["rich_retried"] is True
 
 
 class TestMainPersistenceAndExitCode:
