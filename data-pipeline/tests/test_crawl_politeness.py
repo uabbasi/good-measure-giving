@@ -243,6 +243,71 @@ class TestPlaywrightCaptchaRescue:
         renderer.render.assert_called_once_with("https://x.org/")
         assert data["crawl_stats"]["pages_visited"] == 1
 
+    def test_rescue_discovers_more_pages_from_rendered_links_when_sitemap_blocked(self):
+        """Real Heal Palestine (88-2454707) shape: Cloudflare blocks the whole
+        domain, so sitemap discovery (an httpx fetch) is 403'd right along
+        with everything else, leaving target_urls empty. Without link
+        discovery the rescue is stuck re-rendering only the homepage forever
+        — this confirms it instead follows same-domain links found in the
+        rendered homepage to reach more pages, up to the page cap."""
+        c = self._collector()
+        c._discover_urls_from_sitemap = MagicMock(return_value=(False, []))  # sitemap blocked too
+
+        # Sitemap failure routes through the BFS crawl path, not
+        # _crawl_specific_urls_async — CAPTCHA shows up there instead.
+        def fake_bfs_crawl(start_url, max_depth, max_pages, timeout_total, max_concurrent=10, force=False, crawl_delay=0.0):
+            c._last_captcha_error = "CAPTCHA_BLOCKED: cf-ray (HTTP 403)"
+            return {}
+
+        c._crawl_with_bfs_async = fake_bfs_crawl
+
+        homepage_html = (
+            '<html><body>'
+            '<a href="/about">About</a>'
+            '<a href="/programs">Programs</a>'
+            '<a href="https://external.org/other">External</a>'
+            '</body></html>'
+        )
+        renderer = MagicMock()
+        renderer.render.side_effect = [homepage_html, "<html>about page</html>", "<html>programs page</html>"]
+        c._get_playwright_renderer = MagicMock(return_value=renderer)
+        c._is_bot_challenge_html = MagicMock(return_value=False)
+        c._extract_page_data = MagicMock(return_value={"ein": "12-3456789", "had_data": True})
+
+        with patch("src.collectors.web_collector.global_rate_limiter"):
+            ok, data, err = c.collect_multi_page("https://x.org", "12-3456789")
+
+        assert ok is True
+        rendered_urls = [call.args[0] for call in renderer.render.call_args_list]
+        assert rendered_urls[0] == "https://x.org"
+        # Same-domain links discovered from the rendered homepage got queued;
+        # the external.org link must not have been followed.
+        assert "https://x.org/about" in rendered_urls
+        assert "https://x.org/programs" in rendered_urls
+        assert not any("external.org" in u for u in rendered_urls)
+        assert data["crawl_stats"]["pages_visited"] == 3
+
+    def test_rescue_does_not_discover_links_when_sitemap_already_found_urls(self):
+        """When the sitemap DID resolve (target_urls non-empty), the rescue
+        must stick to that list — link-discovery is only a fallback for the
+        fully-blocked-domain case, not a way to silently expand a working
+        sitemap crawl."""
+        c = self._collector()  # default fixture: sitemap succeeds with one URL
+        self._captcha_crawl(c)
+
+        homepage_html = '<html><body><a href="/about">About</a></body></html>'
+        renderer = MagicMock()
+        renderer.render.return_value = homepage_html
+        c._get_playwright_renderer = MagicMock(return_value=renderer)
+        c._is_bot_challenge_html = MagicMock(return_value=False)
+        c._extract_page_data = MagicMock(return_value={"ein": "12-3456789", "had_data": True})
+
+        with patch("src.collectors.web_collector.global_rate_limiter"):
+            ok, data, err = c.collect_multi_page("https://x.org", "12-3456789")
+
+        assert ok is True
+        renderer.render.assert_called_once_with("https://x.org/")
+
     def test_rescue_gives_up_when_playwright_also_challenged(self):
         c = self._collector()
         self._captcha_crawl(c)

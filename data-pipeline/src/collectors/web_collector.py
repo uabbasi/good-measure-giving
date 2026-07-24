@@ -2588,11 +2588,25 @@ class WebsiteCollector(BaseCollector):
                     reason = self._last_captcha_error or "async crawl timed out against a live homepage"
                     if self.logger:
                         self.logger.info(f"{reason}; attempting Playwright rescue for {url}")
-                    rescue_urls = (target_urls or [url])[:PLAYWRIGHT_MAX_RENDER_PAGES]
+                    # Sitemap discovery is an httpx fetch too -- on a site whose
+                    # Cloudflare challenge blocks the whole domain (not just
+                    # the homepage), it fails right alongside everything else,
+                    # leaving target_urls empty. Without this, rescue_urls
+                    # would be stuck at a single homepage URL forever, capped
+                    # at PLAYWRIGHT_MAX_RENDER_PAGES in name only. When that's
+                    # the situation, use the rendered page itself as the
+                    # source of URLs to discover more pages, the same way the
+                    # BFS crawler above does for non-blocked sites.
+                    discover_via_render = not target_urls
+                    rescue_urls = list((target_urls or [url])[:PLAYWRIGHT_MAX_RENDER_PAGES])
+                    seen_rescue_urls = set(rescue_urls)
                     render_start = time.monotonic()
-                    for page_url in rescue_urls:
+                    i = 0
+                    while i < len(rescue_urls):
                         if time.monotonic() - render_start >= PLAYWRIGHT_RENDER_BUDGET_SECONDS:
                             break
+                        page_url = rescue_urls[i]
+                        i += 1
                         host = urlparse(page_url).netloc.lower()
                         global_rate_limiter.wait("website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS)
                         if effective_crawl_delay > 0:
@@ -2600,6 +2614,15 @@ class WebsiteCollector(BaseCollector):
                         rendered_html = renderer.render(page_url)
                         if rendered_html and not self._is_bot_challenge_html(rendered_html):
                             crawl_results[page_url] = self._extract_page_data(rendered_html, page_url, use_llm=False)
+                            if discover_via_render and len(rescue_urls) < PLAYWRIGHT_MAX_RENDER_PAGES:
+                                soup = BeautifulSoup(rendered_html, "html.parser")
+                                for link in self._extract_links(soup, page_url):
+                                    if link in seen_rescue_urls:
+                                        continue
+                                    seen_rescue_urls.add(link)
+                                    rescue_urls.append(link)
+                                    if len(rescue_urls) >= PLAYWRIGHT_MAX_RENDER_PAGES:
+                                        break
                     if crawl_results and self.logger:
                         self.logger.info(f"Playwright rescue recovered {len(crawl_results)} page(s) for {url}")
 
