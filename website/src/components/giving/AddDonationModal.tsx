@@ -459,7 +459,7 @@ export function AddDonationModal({
  * should only invoke this when it already validated `uid` + profile
  * + matching assignment.
  */
-async function batchWriteDonationAndAssignment({
+export async function batchWriteDonationAndAssignment({
   uid, donation, matching, profile, updateProfile,
 }: {
   uid: string;

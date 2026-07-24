@@ -7,6 +7,7 @@ import {
   applyReceiptToggle,
   type AssignmentStatusState,
 } from './recordStatus';
+import { assertFirestoreWritable } from '../test-utils/assertFirestoreWritable';
 
 const INTENDED_AT = '2026-01-01T00:00:00.000Z';
 const SENT_AT = '2026-02-01T00:00:00.000Z';
@@ -132,6 +133,46 @@ describe('applyDonation', () => {
     expect(fromIntended.intendedAt).toBe(INTENDED_AT);
     expect(fromSent.intendedAt).toBe(INTENDED_AT);
     expect(fromConfirmed.intendedAt).toBe(INTENDED_AT);
+  });
+
+  // Regression tests for commit 8caccf5. `next.confirmedAt`/`next.sentAt`
+  // being `undefined` (asserted above via `.toBeUndefined()`) is not the
+  // same thing as the key being *absent* — Firestore's WriteBatch/updateDoc
+  // reject an explicit `undefined` field value, and the caller
+  // (AddDonationModal's batchWriteDonationAndAssignment) spreads this return
+  // value straight into a Firestore write. Every branch that can leave
+  // confirmedAt/sentAt unset must omit the key, not set it to undefined.
+  describe('never returns an explicit-undefined optional field (Firestore-writable)', () => {
+    it('intended -> sent, no receipt (confirmedAt stays unset)', () => {
+      const next = applyDonation(intended(0), {
+        amount: 50, receiptReceived: false, createdAt: NEW_EVENT_AT,
+      });
+      expect('confirmedAt' in next).toBe(false);
+      expect(() => assertFirestoreWritable(next)).not.toThrow();
+    });
+
+    it('sent -> sent, no receipt (confirmedAt stays unset)', () => {
+      const next = applyDonation(sent(100), {
+        amount: 40, receiptReceived: false, createdAt: NEW_EVENT_AT,
+      });
+      expect('confirmedAt' in next).toBe(false);
+      expect(() => assertFirestoreWritable(next)).not.toThrow();
+    });
+
+    it('every transition branch is Firestore-writable', () => {
+      const cases: [AssignmentStatusState, boolean][] = [
+        [intended(0), false],
+        [intended(0), true],
+        [sent(100), false],
+        [sent(100), true],
+        [confirmed(100), false],
+        [confirmed(100), true],
+      ];
+      for (const [state, receiptReceived] of cases) {
+        const next = applyDonation(state, { amount: 10, receiptReceived, createdAt: NEW_EVENT_AT });
+        expect(() => assertFirestoreWritable(next)).not.toThrow();
+      }
+    });
   });
 });
 
