@@ -221,7 +221,7 @@ export const GmgSignIn: React.FC<{
     borderRadius: 12,
     background: p.bg2,
     color: p.fg,
-    fontSize: 15,
+    fontSize: 16,
     fontFamily: FONT_TEXT,
     outline: 'none',
   };

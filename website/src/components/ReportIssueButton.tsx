@@ -230,7 +230,7 @@ export const ReportIssueButton: React.FC<ReportIssueButtonProps> = ({
         isDark ? 'text-slate-500 hover:text-slate-400' : 'text-slate-400 hover:text-slate-600'
       }`;
 
-  const inputClasses = `w-full px-3 py-2 rounded-lg text-sm border transition-colors ${
+  const inputClasses = `w-full px-3 py-2 rounded-lg text-base border transition-colors ${
     isDark
       ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-500 focus:border-emerald-500'
       : 'bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-emerald-500'

@@ -76,7 +76,7 @@ const FilterPills: React.FC<{
     background: p.bg,
     color: p.fg,
     fontFamily: FONT_TEXT,
-    fontSize: 13,
+    fontSize: 16,
     outline: 'none',
   };
   const pill = (active: boolean): React.CSSProperties => ({

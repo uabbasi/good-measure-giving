@@ -254,7 +254,7 @@ export const FeedbackButton: React.FC<FeedbackButtonProps> = ({ inline = false, 
 
   const isSuggest = feedbackType === 'suggest_charity';
 
-  const inputClasses = `w-full px-3 py-2 rounded-lg border text-sm transition-colors ${
+  const inputClasses = `w-full px-3 py-2 rounded-lg border text-base transition-colors ${
     isDark
       ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:border-emerald-500'
       : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-emerald-500'
