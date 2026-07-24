@@ -818,6 +818,27 @@ class RichNarrativeGenerator:
                 if hasattr(fin, "fundraising_expenses") and fin.fundraising_expenses is not None and fin.total_revenue:
                     efficiency = fin.fundraising_expenses / fin.total_revenue
                     lines.append(f"- Fundraising Efficiency: ${efficiency:.2f} per $1 raised (use this exact value)")
+
+                # The "Program Ratio" score component may use a cash-adjusted
+                # ratio instead of the raw filed ratio above (e.g. when GIK
+                # in-kind donations inflate revenue) — the narrative must
+                # describe the ratio that actually drove the score, not the
+                # raw one, or it contradicts its own score explanation.
+                program_ratio_component = next(
+                    (
+                        c
+                        for c in baseline.get("score_details", {}).get("impact", {}).get("components", [])
+                        if c.get("name") == "Program Ratio" and c.get("evidence")
+                    ),
+                    None,
+                )
+                if program_ratio_component:
+                    lines.append(
+                        f"- Program Ratio score ({program_ratio_component['scored']}/{program_ratio_component['possible']} pts): "
+                        f"{program_ratio_component['evidence']} — this is the ratio the score is based on; "
+                        "if it differs from the Program Expense Ratio above, describe THIS one when explaining the score."
+                    )
+
                 lines.append("\nIf a value is not listed above, do NOT mention that metric at all.\n")
 
             # Add ZAKAT ELIGIBILITY CONSTRAINT
