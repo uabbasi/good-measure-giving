@@ -620,6 +620,18 @@ class TestBeneficiariesStringParsing:
             )
             assert metrics.beneficiaries_served_annually is None
 
+    def test_explicit_null_ummah_gap_data_does_not_crash(self):
+        """Regression (88-2454707): extractor emitted {"ummah_gap_data": null} — must not crash."""
+        from src.parsers.charity_metrics_aggregator import CharityMetricsAggregator
+
+        metrics = CharityMetricsAggregator.aggregate(
+            charity_id=0,
+            ein="12-3456789",
+            cn_profile={"name": "Test Charity"},
+            website_profile={"ummah_gap_data": None},
+        )
+        assert metrics.beneficiaries_served_annually is None
+
     def test_numeric_with_trailing_text(self):
         """'1,000,000 annually' should parse correctly."""
         from src.parsers.charity_metrics_aggregator import CharityMetricsAggregator

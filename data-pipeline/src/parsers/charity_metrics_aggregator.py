@@ -1332,7 +1332,10 @@ class CharityMetricsAggregator:
 
         # 3) ummah_gap_data fallback (website extractor)
         if beneficiaries is None and website_profile:
-            ummah_gap = website_profile.get("ummah_gap_data", {})
+            # Extractor may emit an explicit null ("ummah_gap_data": null),
+            # which .get(key, {}) passes through as None (see 5ac26da for the
+            # same pattern on impact_metrics/metrics).
+            ummah_gap = website_profile.get("ummah_gap_data") or {}
             _set_beneficiary_value(
                 ummah_gap.get("beneficiary_count"),
                 source_name="Charity Website",
@@ -1683,7 +1686,9 @@ class CharityMetricsAggregator:
         # This is the bullet-proof fallback when CN data is missing
         if not metrics_data.get("program_expense_ratio") and website_profile:
             # Check financial_data from PDF extraction
-            pdf_financials = website_profile.get("financial_data", {})
+            # Extractor may emit an explicit null; .get(key, {}) would pass it
+            # through as None (see 5ac26da for the same pattern).
+            pdf_financials = website_profile.get("financial_data") or {}
             if pdf_financials.get("program_expense_ratio"):
                 metrics_data["program_expense_ratio"] = pdf_financials["program_expense_ratio"]
                 # Also grab the raw expense data if available
@@ -1698,8 +1703,8 @@ class CharityMetricsAggregator:
             llm_pdfs = website_profile.get("llm_extracted_pdfs", [])
             if not metrics_data.get("program_expense_ratio") and llm_pdfs:
                 for pdf in llm_pdfs:
-                    extracted = pdf.get("extracted_data", {})
-                    financials = extracted.get("financials", {})
+                    extracted = pdf.get("extracted_data") or {}
+                    financials = extracted.get("financials") or {}
                     if financials.get("program_expense_ratio"):
                         metrics_data["program_expense_ratio"] = financials["program_expense_ratio"]
                         if not metrics_data.get("program_expenses") and financials.get("program_expenses"):
@@ -1943,7 +1948,7 @@ class CharityMetricsAggregator:
         # Extract Evidence of Impact Data (from website extractor)
         # ====================================================================
         if website_profile:
-            evidence_data = website_profile.get("evidence_of_impact_data", {})
+            evidence_data = website_profile.get("evidence_of_impact_data") or {}
 
             # Outcome methodology
             if evidence_data.get("measurement_methodology"):
@@ -2001,7 +2006,7 @@ class CharityMetricsAggregator:
             )
 
             # Check for board/governance disclosure
-            absorptive_data = website_profile.get("absorptive_capacity_data", {})
+            absorptive_data = website_profile.get("absorptive_capacity_data") or {}
             has_board_info = bool(
                 absorptive_data.get("independent_board_members")
                 or absorptive_data.get("board_size")
@@ -2275,10 +2280,10 @@ class CharityMetricsAggregator:
             for pdf in metrics_data["pdf_extracted_data"]:
                 if not isinstance(pdf, dict):
                     continue
-                extracted = pdf.get("extracted_data", {})
+                extracted = pdf.get("extracted_data") or {}
 
                 # Check governance section
-                gov = extracted.get("governance", {})
+                gov = extracted.get("governance") or {}
                 if gov.get("employees_count"):
                     metrics_data["employees_count"] = gov.get("employees_count")
 
