@@ -32,6 +32,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Optional
 
+from src.utils.fiscal_year import filing_age_years
+
 logger = logging.getLogger(__name__)
 
 # Environment variable for version check mode
@@ -233,16 +235,12 @@ def data_vintage_note(fiscal_year: Optional[int], today_year: Optional[int] = No
     concern the prose must disclose rather than silently presenting old
     figures as current.
     """
-    if today_year is None:
-        from datetime import date
-
-        today_year = date.today().year
     if not fiscal_year:
         return (
             "The fiscal year of the financial data is unknown. Do not attribute "
             "financial figures to any specific year, and do not present them as current."
         )
-    age = today_year - fiscal_year
+    age = filing_age_years(fiscal_year, today_year)
     if age >= DATA_VINTAGE_STALE_YEARS:
         return (
             f"The latest available financials are from fiscal year {fiscal_year} — "

@@ -1412,6 +1412,13 @@ class WebsiteCollector(BaseCollector):
 
         return results
 
+    def _record_fetch_error(self, error: Optional[str]) -> None:
+        """Latch the first captcha/rate-limit error seen this crawl for reporting."""
+        if error and "CAPTCHA_BLOCKED" in error and not self._last_captcha_error:
+            self._last_captcha_error = error
+        if error and "RATE_LIMITED" in error and not self._last_rate_limit_error:
+            self._last_rate_limit_error = error
+
     def _crawl_specific_urls_async(
         self,
         urls: List[str],
@@ -1463,12 +1470,7 @@ class WebsiteCollector(BaseCollector):
             if not success or not html:
                 if self.logger and error:
                     self.logger.debug(f"Failed to fetch {url}: {error}")
-                # Track captcha errors for reporting
-                if error and "CAPTCHA_BLOCKED" in error and not self._last_captcha_error:
-                    self._last_captcha_error = error
-                # Track rate-limit errors for reporting (blocker 2B)
-                if error and "RATE_LIMITED" in error and not self._last_rate_limit_error:
-                    self._last_rate_limit_error = error
+                self._record_fetch_error(error)
                 continue
 
             try:
@@ -1720,12 +1722,7 @@ class WebsiteCollector(BaseCollector):
                 if not success or not html:
                     if self.logger and error:
                         self.logger.debug(f"Failed to fetch {url}: {error}")
-                    # Track captcha errors for reporting
-                    if error and "CAPTCHA_BLOCKED" in error and not self._last_captcha_error:
-                        self._last_captcha_error = error
-                    # Track rate-limit errors for reporting (blocker 2B)
-                    if error and "RATE_LIMITED" in error and not self._last_rate_limit_error:
-                        self._last_rate_limit_error = error
+                    self._record_fetch_error(error)
                     continue
 
                 try:

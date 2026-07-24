@@ -78,12 +78,10 @@ class TestCrawledPageRepository:
         ]
         with patch("src.db.repository.execute_query") as mock_exec:
             repo.record_pages(EIN, pages)
-        assert mock_exec.call_count == 2
-        first_sql, first_params = mock_exec.call_args_list[0].args
-        assert "ON DUPLICATE KEY UPDATE" in first_sql
-        assert first_params == (EIN, "https://x.org/", True)
-        second_params = mock_exec.call_args_list[1].args[1]
-        assert second_params == (EIN, "https://x.org/about", False)
+        assert mock_exec.call_count == 1
+        sql, params = mock_exec.call_args_list[0].args
+        assert "ON DUPLICATE KEY UPDATE" in sql
+        assert params == (EIN, "https://x.org/", True, EIN, "https://x.org/about", False)
 
     def test_record_pages_skips_entries_without_url(self):
         repo = CrawledPageRepository()

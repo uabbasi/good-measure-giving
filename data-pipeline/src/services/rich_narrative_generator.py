@@ -224,12 +224,13 @@ class RichNarrativeGenerator:
         investment_memo_data = self._assemble_investment_memo_data(ein, baseline)
 
         # 5. Build prompt
+        metrics = self._load_metrics(ein)
         prompt = self._build_prompt(
             baseline=baseline,
             charity_bundle=charity_bundle,
             citation_registry=citation_registry,
             investment_memo_data=investment_memo_data,
-            ein=ein,
+            metrics=metrics,
         )
 
         # 6. Generate with LLM
@@ -290,7 +291,6 @@ class RichNarrativeGenerator:
             return None
 
         # 9. Sanitize metrics in rich narrative (same safety net as baseline)
-        metrics = self._load_metrics(ein)
         if metrics:
             from baseline import sanitize_narrative_metrics
 
@@ -689,7 +689,7 @@ class RichNarrativeGenerator:
         charity_bundle: Any,
         citation_registry: Any,
         investment_memo_data: Optional[dict] = None,
-        ein: Optional[str] = None,
+        metrics: Optional[CharityMetrics] = None,
     ) -> str:
         """Build the prompt for rich narrative generation."""
         # Load prompt template
@@ -710,11 +710,7 @@ class RichNarrativeGenerator:
         from src.llm.prompt_loader import data_vintage_note
         from src.scorers.v2_scorers import score_band_label
 
-        fiscal_year = None
-        if ein:
-            vintage_metrics = self._load_metrics(ein)
-            if vintage_metrics:
-                fiscal_year = vintage_metrics.financial_data_tax_year
+        fiscal_year = metrics.financial_data_tax_year if metrics else None
 
         prompt = template.replace("{charity_data}", charity_data)
         prompt = prompt.replace("{citation_sources}", citation_sources)

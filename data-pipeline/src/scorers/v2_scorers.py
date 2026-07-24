@@ -52,6 +52,7 @@ from src.scorers.strategic_evidence import (  # noqa: F401
     StrategicEvidence,
     compute_strategic_evidence,
 )
+from src.utils.fiscal_year import filing_age_years
 from src.utils.scoring_audit import (
     ScoreImpact,
     ScoringAuditLog,
@@ -2251,11 +2252,7 @@ class RiskScorer:
         if metrics.form_990_exempt:
             return None
         fy = metrics.latest_known_filing_year or metrics.financial_data_tax_year
-        if not isinstance(fy, int):
-            return None
-        from datetime import date
-
-        return date.today().year - fy
+        return filing_age_years(fy)
 
     def _check_filing_currency(self, metrics: CharityMetrics) -> list[RiskFactor]:
         """Flag charities whose newest financial filing is 3+ years old.
@@ -2770,12 +2767,8 @@ class AmalScorerV2:
             + dq_value * DC_DATA_QUALITY_WEIGHT
         )
 
-        data_age_years: Optional[int] = None
         fy = metrics.financial_data_tax_year if metrics is not None else None
-        if isinstance(fy, int):
-            from datetime import date
-
-            data_age_years = date.today().year - fy
+        data_age_years = filing_age_years(fy)
         recency_factor = self._recency_factor(data_age_years)
 
         overall = round(base * recency_factor, 2)

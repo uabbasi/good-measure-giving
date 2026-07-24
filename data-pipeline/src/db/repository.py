@@ -1601,32 +1601,39 @@ class PhaseCacheRepository:
         return {row["phase"]: row["count"] for row in rows}
 
 
-class ExportExclusionRepository:
-    """Audit trail of charities excluded from export by the judge-score publish gate.
-
-    Append-only: PK (charity_ein, excluded_at) keeps one row per gate event.
-    Table is created lazily (memoized per process); the same DDL must appear in
-    the generated dolt_schema.sql.
+class _LazyTableRepository:
+    """Mixin for repositories whose table is created lazily on first use
+    instead of via migration (memoized per process, once per subclass).
+    Subclasses set _ddl to their CREATE TABLE IF NOT EXISTS statement; the
+    same DDL must appear in the generated dolt_schema.sql.
     """
 
     _table_ensured = False
+    _ddl: str = ""
 
     def ensure_table(self) -> None:
-        if ExportExclusionRepository._table_ensured:
+        cls = type(self)
+        if cls._table_ensured:
             return
-        execute_query(
-            """
-            CREATE TABLE IF NOT EXISTS export_exclusions (
-                charity_ein VARCHAR(12) NOT NULL,
-                judge_score INT,
-                reason TEXT,
-                excluded_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                PRIMARY KEY (charity_ein, excluded_at)
-            )
-            """,
-            fetch="none",
+        execute_query(cls._ddl, fetch="none")
+        cls._table_ensured = True
+
+
+class ExportExclusionRepository(_LazyTableRepository):
+    """Audit trail of charities excluded from export by the judge-score publish gate.
+
+    Append-only: PK (charity_ein, excluded_at) keeps one row per gate event.
+    """
+
+    _ddl = """
+        CREATE TABLE IF NOT EXISTS export_exclusions (
+            charity_ein VARCHAR(12) NOT NULL,
+            judge_score INT,
+            reason TEXT,
+            excluded_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (charity_ein, excluded_at)
         )
-        ExportExclusionRepository._table_ensured = True
+        """
 
     def record(self, ein: str, judge_score: int | None, reason: str) -> None:
         """Record one exclusion event for a charity."""
@@ -1648,38 +1655,28 @@ class ExportExclusionRepository:
         )
 
 
-class CrawlAttemptRepository:
+class CrawlAttemptRepository(_LazyTableRepository):
     """Append-only log of every collection attempt per (charity, source).
 
     raw_scraped_data holds only current state (one row per charity+source,
     overwritten on each attempt), so a failed-then-recovered attempt (or a
     thin re-observation preserved by the non-downgrade guard) leaves no
     trace once a later attempt succeeds. This table is the durable history:
-    one row per attempt, success or failure. Table is created lazily
-    (memoized per process); the same DDL must appear in dolt_schema.sql.
+    one row per attempt, success or failure.
     """
 
-    _table_ensured = False
-
-    def ensure_table(self) -> None:
-        if CrawlAttemptRepository._table_ensured:
-            return
-        execute_query(
-            """
-            CREATE TABLE IF NOT EXISTS crawl_attempts (
-                charity_ein VARCHAR(12) NOT NULL,
-                source VARCHAR(50) NOT NULL,
-                attempted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                success TINYINT(1) NOT NULL,
-                failure_reason TEXT,
-                pages_found INT,
-                pages_with_data INT,
-                PRIMARY KEY (charity_ein, source, attempted_at)
-            )
-            """,
-            fetch="none",
+    _ddl = """
+        CREATE TABLE IF NOT EXISTS crawl_attempts (
+            charity_ein VARCHAR(12) NOT NULL,
+            source VARCHAR(50) NOT NULL,
+            attempted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            success TINYINT(1) NOT NULL,
+            failure_reason TEXT,
+            pages_found INT,
+            pages_with_data INT,
+            PRIMARY KEY (charity_ein, source, attempted_at)
         )
-        CrawlAttemptRepository._table_ensured = True
+        """
 
     def record(
         self,
@@ -1723,7 +1720,7 @@ class CrawlAttemptRepository:
         )
 
 
-class CrawledPageRepository:
+class CrawledPageRepository(_LazyTableRepository):
     """Tracks per-page presence across website crawls, so a page appearing
     or disappearing between runs is visible instead of silently lost when
     the next crawl overwrites raw_scraped_data's current-state row.
@@ -1731,55 +1728,43 @@ class CrawledPageRepository:
     One row per (charity_ein, url); last_seen_at advances on every crawl
     that visits the page, times_seen counts how many crawls have. A page
     absent from the latest crawl is detectable by comparing last_seen_at
-    against that crawl's crawl_attempts.attempted_at. Table is created
-    lazily (memoized per process); the same DDL must appear in
-    dolt_schema.sql.
+    against that crawl's crawl_attempts.attempted_at.
     """
 
-    _table_ensured = False
-
-    def ensure_table(self) -> None:
-        if CrawledPageRepository._table_ensured:
-            return
-        execute_query(
-            """
-            CREATE TABLE IF NOT EXISTS crawled_pages (
-                charity_ein VARCHAR(12) NOT NULL,
-                url VARCHAR(500) NOT NULL,
-                first_seen_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                last_seen_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                had_data TINYINT(1),
-                times_seen INT NOT NULL DEFAULT 1,
-                PRIMARY KEY (charity_ein, url)
-            )
-            """,
-            fetch="none",
+    _ddl = """
+        CREATE TABLE IF NOT EXISTS crawled_pages (
+            charity_ein VARCHAR(12) NOT NULL,
+            url VARCHAR(500) NOT NULL,
+            first_seen_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            last_seen_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            had_data TINYINT(1),
+            times_seen INT NOT NULL DEFAULT 1,
+            PRIMARY KEY (charity_ein, url)
         )
-        CrawledPageRepository._table_ensured = True
+        """
 
     def record_pages(self, ein: str, pages: list[dict]) -> None:
         """Upsert one row per page: {"url": str, "had_data": bool}. New
         pages get first_seen_at=now; previously-seen pages bump
         last_seen_at + times_seen and refresh had_data."""
-        if not pages:
+        rows = [(ein, page["url"], bool(page.get("had_data"))) for page in pages if page.get("url")]
+        if not rows:
             return
         self.ensure_table()
-        for page in pages:
-            url = page.get("url")
-            if not url:
-                continue
-            execute_query(
-                """
-                INSERT INTO crawled_pages (charity_ein, url, had_data)
-                VALUES (%s, %s, %s)
-                ON DUPLICATE KEY UPDATE
-                    last_seen_at = CURRENT_TIMESTAMP,
-                    had_data = VALUES(had_data),
-                    times_seen = times_seen + 1
-                """,
-                (ein, url, bool(page.get("had_data"))),
-                fetch="none",
-            )
+        placeholders = ", ".join(["(%s, %s, %s)"] * len(rows))
+        params = tuple(value for row in rows for value in row)
+        execute_query(
+            f"""
+            INSERT INTO crawled_pages (charity_ein, url, had_data)
+            VALUES {placeholders}
+            ON DUPLICATE KEY UPDATE
+                last_seen_at = CURRENT_TIMESTAMP,
+                had_data = VALUES(had_data),
+                times_seen = times_seen + 1
+            """,
+            params,
+            fetch="none",
+        )
 
     def get_for_charity(self, ein: str) -> list[dict]:
         """Return every page ever seen for a charity, most recently seen first."""

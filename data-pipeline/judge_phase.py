@@ -225,6 +225,12 @@ def judge_charity(
             rich_retry = generate_rich_for_pipeline(ein, eval_repo, force=True)
             retry_rich_cost = rich_retry.get("cost_usd", 0.0)
             if rich_retry.get("success") and not rich_retry.get("skipped"):
+                # Keep phase_cache in sync with the regenerated content -- every
+                # other caller of generate_rich_for_pipeline (rich_phase.py's own
+                # main(), streaming_runner.py) does this immediately on success;
+                # skipping it here left the "rich" cache entry stale relative to
+                # what's actually stored.
+                update_phase_cache(ein, "rich", PhaseCacheRepository(), retry_rich_cost)
                 retried = judge_charity(
                     ein, eval_repo, data_repo, raw_repo, charity_repo, _retry_attempted=True
                 )

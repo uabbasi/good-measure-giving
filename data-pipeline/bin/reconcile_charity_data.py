@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.db import CharityDataRepository, CharityRepository  # noqa: E402
 from src.db.client import execute_query  # noqa: E402
-from synthesize import REGRESSION_GUARDED_FIELDS  # noqa: E402
+from synthesize import REGRESSION_GUARDED_FIELDS, REPORTS_DIR  # noqa: E402
 
 
 def find_regressions(current_row: dict, history_rows: list[dict], fields) -> list[dict]:
@@ -158,9 +158,8 @@ def main() -> None:
             )
         sys.exit(1)
 
-    reports_dir = Path(__file__).parent.parent / "reports"
-    reports_dir.mkdir(parents=True, exist_ok=True)
-    path = reports_dir / "data-recovery-candidates.json"
+    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+    path = REPORTS_DIR / "data-recovery-candidates.json"
     path.write_text(json.dumps(all_flags, indent=2, default=str))
 
     if skipped:

@@ -20,6 +20,8 @@ import logging
 import re
 from typing import Any
 
+from src.utils.fiscal_year import filing_age_years
+
 from .base_judge import BaseJudge, JudgeType
 from .schemas.verdict import JudgeVerdict, Severity, ValidationIssue
 
@@ -797,9 +799,8 @@ class BaselineQualityJudge(BaseJudge):
             ruling, founded = int(ruling), int(founded)
         except (TypeError, ValueError):
             return issues
-        from datetime import date
-
-        filing_gap = fiscal_year is not None and (date.today().year - fiscal_year) >= 3
+        age = filing_age_years(fiscal_year)
+        filing_gap = age is not None and age >= 3
         if ruling >= 2011 and (ruling - founded) >= 8 and filing_gap:
             issues.append(
                 ValidationIssue(
