@@ -117,6 +117,40 @@ def test_failure_over_failure_still_writes_parsed_json():
         assert m["retry_count"] == 2
 
 
+def test_failure_over_failure_preserves_content_that_survived_the_first_failure():
+    """Regression (real incident, EIN 11-3013369): a row can fail twice in a
+    row while still holding real content from an earlier success — the first
+    failure flips success to False but (correctly) leaves parsed_json/
+    raw_content untouched. A second consecutive failure must not then wipe
+    that surviving content just because success is already False."""
+    repo = RawDataRepository()
+    failed_but_has_content = {
+        "id": "uuid-1",
+        "charity_ein": EIN,
+        "source": "website",
+        "parsed_json": '{"website_profile": {"mission": "Feed people"}}',
+        "raw_content": "<html>good</html>",
+        "success": 0,
+        "error_message": "captcha_blocked (first attempt)",
+        "retry_count": 1,
+        "last_failure_reason": "captcha_blocked (first attempt)",
+    }
+    with patch("src.db.repository.execute_query") as mock_execute:
+        mock_execute.side_effect = [failed_but_has_content, None]
+        repo.upsert(
+            charity_ein=EIN,
+            source="website",
+            parsed_json={},
+            success=False,
+            error_message="captcha_blocked (second attempt)",
+        )
+        sql, params = mock_execute.call_args_list[1][0][0], mock_execute.call_args_list[1][0][1]
+        m = _set_clause_map(sql, params)
+        assert "parsed_json" not in m
+        assert "raw_content" not in m
+        assert m["retry_count"] == 2
+
+
 def test_failure_insert_sets_reason_and_retry():
     repo = RawDataRepository()
     with patch("src.db.repository.execute_query") as mock_execute:

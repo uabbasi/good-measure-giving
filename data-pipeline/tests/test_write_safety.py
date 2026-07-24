@@ -128,7 +128,14 @@ class TestRawDataRepoSoftFail:
 
         def fake_execute_query(sql, params=None, fetch="all"):
             if sql.strip().upper().startswith("SELECT"):
-                return {"charity_ein": "12-3456789", "source": "website", "retry_count": 0, "success": 1}
+                return {
+                    "charity_ein": "12-3456789",
+                    "source": "website",
+                    "retry_count": 0,
+                    "success": 1,
+                    "parsed_json": '{"website_profile": {"mission": "Feed people"}}',
+                    "raw_content": "<html>good</html>",
+                }
             captured["sql"] = sql
             return None
 

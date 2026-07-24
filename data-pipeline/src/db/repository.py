@@ -287,7 +287,15 @@ class RawDataRepository:
             preserved_content = False
             if not success:
                 data["retry_count"] = (existing.get("retry_count") or 0) + 1
-                if existing.get("success"):
+                # Check content itself, not the success flag: a PRIOR failure
+                # already flips success to False, so gating on existing.success
+                # only protects the first consecutive failure — a second
+                # failure in a row would then wipe parsed_json even though
+                # real content still sits in this row (real incident: EIN
+                # 11-3013369's 45-key website_profile got wiped to {} by a
+                # second CAPTCHA failure while raw_content, never gated on
+                # success, survived untouched).
+                if existing.get("parsed_json") or existing.get("raw_content"):
                     # Never clobber last-good content with a failure record
                     data.pop("parsed_json", None)
                     data.pop("raw_content", None)
