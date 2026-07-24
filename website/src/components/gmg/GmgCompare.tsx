@@ -218,6 +218,10 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
         </h1>
       </section>
 
+      {isMobile && subjects.length > 1 && (
+        <div style={{ padding: `6px ${padX}px 0`, fontSize: 11, color: p.sub2 }}>Swipe to see more →</div>
+      )}
+
       <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
         <table style={{ borderCollapse: 'collapse', fontSize: 12, minWidth: labelW + subjects.length * colW }}>
           <thead>

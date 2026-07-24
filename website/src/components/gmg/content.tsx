@@ -352,7 +352,7 @@ export const NumberField: React.FC<{
         border: `1px solid ${p.rule}`,
         color: p.fg,
         borderRadius: 10,
-        fontSize: 15,
+        fontSize: 16,
         fontFamily: FONT_TEXT,
         boxSizing: 'border-box',
       }}

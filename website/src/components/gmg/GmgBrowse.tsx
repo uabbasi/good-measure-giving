@@ -333,7 +333,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   aria-checked={selected.includes(row.ein)}
                   aria-label={`Select ${row.name} to compare`}
                   onClick={(e) => { e.stopPropagation(); toggleSelect(row.ein); }}
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: FONT_MONO, fontSize: 10, color: selected.includes(row.ein) ? p.accent : p.sub2, cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: FONT_MONO, fontSize: 10, color: selected.includes(row.ein) ? p.accent : p.sub2, cursor: 'pointer', background: 'none', border: 'none', padding: 12, margin: -12 }}
                 >
                   <span style={{ width: 15, height: 15, borderRadius: 4, border: `1px solid ${selected.includes(row.ein) ? p.accent : p.rule2}`, background: selected.includes(row.ein) ? p.accent : 'transparent', display: 'inline-block' }} />
                   Compare
