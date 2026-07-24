@@ -478,7 +478,10 @@ class WebsiteCollector(BaseCollector):
         global_rate_limiter.wait("website", self.rate_limit_delay)
 
     def _is_bot_challenge_html(self, html: str) -> bool:
-        """Detect anti-bot challenge pages that are sometimes returned with HTTP 200."""
+        """Detect anti-bot challenge pages that are sometimes returned with HTTP 200
+        (or, from a Playwright render, ANY status -- a JS puzzle page renders
+        "successfully" like any other page, so this is the only thing standing
+        between it and being treated as real site content)."""
         if not html:
             return False
 
@@ -487,6 +490,16 @@ class WebsiteCollector(BaseCollector):
             "/cdn-cgi/challenge-platform/",
             "__cf$cv$params",
             "cf-chl-",
+            # Vendor-agnostic markers -- this check used to be Cloudflare-only,
+            # which missed healpalestine.org's actual blocker (a ShieldSquare/
+            # Radware-style "sgcaptcha" puzzle page): real, well-formed HTML
+            # that renders fine under Playwright but whose <title> literally
+            # says "Robot Challenge Screen". Without this, that page was
+            # accepted as a successful rescue and would have been fed to the
+            # LLM extractor as if it were the charity's real site.
+            "sgcaptcha",
+            "robot challenge screen",
+            "verify you are human",
         ]
         if any(marker in body for marker in strong_markers):
             return True

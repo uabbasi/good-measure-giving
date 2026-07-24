@@ -191,6 +191,48 @@ class TestCrawlDelayAndEmptyRetry:
         assert "CAPTCHA" in err
 
 
+class TestBotChallengeDetection:
+    """_is_bot_challenge_html gates whether Playwright-rendered content gets
+    accepted as real site content. Real incident: healpalestine.org's
+    blocker is a ShieldSquare/Radware-style "sgcaptcha" puzzle page, not
+    Cloudflare -- the check used to only recognize Cloudflare markers, so
+    this real, well-formed HTML (title: "Robot Challenge Screen") was
+    accepted as a successful Playwright rescue and would have been fed to
+    the LLM extractor as the charity's actual website."""
+
+    def _collector(self):
+        return WebsiteCollector.__new__(WebsiteCollector)
+
+    def test_detects_sgcaptcha_robot_challenge_screen(self):
+        c = self._collector()
+        html = (
+            '<html><head><title>Robot Challenge Screen</title></head><body>'
+            '<script>const sgchallenge="21:...";const sgsubmit_url="/.well-known/sgcaptcha/?r=%2F";</script>'
+            '</body></html>'
+        )
+        assert c._is_bot_challenge_html(html) is True
+
+    def test_detects_verify_you_are_human(self):
+        c = self._collector()
+        html = "<html><body>Please verify you are human to continue.</body></html>"
+        assert c._is_bot_challenge_html(html) is True
+
+    def test_still_detects_cloudflare_challenge(self):
+        c = self._collector()
+        html = '<html><body>Just a moment... Checking with Cloudflare</body></html>'
+        assert c._is_bot_challenge_html(html) is True
+
+    def test_real_content_is_not_flagged(self):
+        c = self._collector()
+        html = "<html><body><h1>Welcome to Our Charity</h1><p>We help people.</p></body></html>"
+        assert c._is_bot_challenge_html(html) is False
+
+    def test_empty_html_is_not_flagged(self):
+        c = self._collector()
+        assert c._is_bot_challenge_html("") is False
+        assert c._is_bot_challenge_html(None) is False
+
+
 class TestPlaywrightCaptchaRescue:
     """A site fully CAPTCHA-blocked to httpx + curl_cffi (both exhausted
     inside _fetch_url_async) gets one bounded, serial Playwright rescue
