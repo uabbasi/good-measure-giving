@@ -268,6 +268,44 @@ class TestRegressionGuard:
         assert synthesized.total_revenue == 1_000_000  # restored
         assert flags == [{"charity_ein": "12-3456789", "field": "total_revenue", "prior_value": 1_000_000}]
 
+    def test_guard_restores_attribution_alongside_value(self):
+        """Real incident: EIN 31-1267559's total_revenue was restored by the
+        guard with no source_attribution entry, failing the synthesize
+        quality gate (S-J-002, 'has value but no source attribution')."""
+        from src.db import CharityData
+        from synthesize import apply_regression_guard
+
+        prior = {
+            "total_revenue": 1_000_000,
+            "source_attribution": {
+                "total_revenue": {"source_name": "Charity Navigator", "value": 1_000_000},
+            },
+        }
+        synthesized = CharityData(charity_ein="12-3456789")
+        synthesized.source_attribution = {}
+        flags = apply_regression_guard(synthesized, prior)
+
+        assert synthesized.total_revenue == 1_000_000
+        assert synthesized.source_attribution["total_revenue"] == {
+            "source_name": "Charity Navigator",
+            "value": 1_000_000,
+        }
+        assert flags == [{"charity_ein": "12-3456789", "field": "total_revenue", "prior_value": 1_000_000}]
+
+    def test_guard_restores_value_when_prior_attribution_missing(self):
+        """Prior row predates attribution tracking (or never had it) -- the
+        guard must still restore the value; it just can't add attribution
+        that was never there."""
+        from src.db import CharityData
+        from synthesize import apply_regression_guard
+
+        prior = {"total_revenue": 1_000_000}  # no source_attribution key at all
+        synthesized = CharityData(charity_ein="12-3456789")
+        flags = apply_regression_guard(synthesized, prior)
+
+        assert synthesized.total_revenue == 1_000_000
+        assert flags == [{"charity_ein": "12-3456789", "field": "total_revenue", "prior_value": 1_000_000}]
+
     def test_guard_allows_observed_absent_and_unguarded_fields(self):
         from src.db import CharityData
         from synthesize import apply_regression_guard

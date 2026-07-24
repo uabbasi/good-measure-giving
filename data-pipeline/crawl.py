@@ -461,8 +461,20 @@ def main():
     for success, (charity, index), result_or_error in parallel_results:
         if success:
             results.append(result_or_error)
-            # Update cache on successful crawl
-            if cache_enabled and result_or_error.get("status") == "success":
+            # Invalidate the extract-phase cache whenever this charity's crawl
+            # actually ran (status "success" or "failed") -- not just on overall
+            # success. Overall status is "failed" whenever any *required* source
+            # misses (e.g. website CAPTCHA-blocked), even though the other
+            # sources (CN/candid/form990_grants) can still have fetched genuinely
+            # fresh raw_content in the same run. Gating invalidation on overall
+            # success left that fresh content permanently unparsed: extract.py
+            # trusted the stale cache entry and silently skipped it (real
+            # incident: 5 charities in the 2026-07-23 tranche re-fetched fresh
+            # CN/candid/form990_grants content that sat with parsed_json=NULL
+            # until synthesize.py's empty-parsed_json guard caught it).
+            # "error" (unhandled exception) is excluded: too uncertain what, if
+            # anything, was actually written before the exception.
+            if cache_enabled and result_or_error.get("status") in ("success", "failed"):
                 update_phase_cache(result_or_error["ein"], "crawl", cache_repo)
         else:
             # Exception occurred - create error result

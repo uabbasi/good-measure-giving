@@ -97,14 +97,25 @@ def apply_regression_guard(synthesized, prior_row: dict | None) -> list[dict]:
     `synthesized` in place, restoring the prior value for each regressed
     top-level column. metrics_json-nested ratios are intentionally excluded —
     see the comment above REGRESSION_GUARDED_FIELDS.
+
+    Restoring a value without its source_attribution left the field
+    "has value but no source attribution" (S-J-002) — real incident: EIN
+    31-1267559's total_revenue was restored this way and failed the
+    synthesize quality gate. The prior attribution is still accurate
+    provenance for the restored value, so it's carried forward alongside it.
     """
     if not prior_row:
         return []
+    prior_attribution = prior_row.get("source_attribution") or {}
     flags: list[dict] = []
     for field in REGRESSION_GUARDED_FIELDS:
         prior_value = prior_row.get(field)
         if prior_value is not None and getattr(synthesized, field, None) is None:
             setattr(synthesized, field, prior_value)
+            if field in prior_attribution:
+                if synthesized.source_attribution is None:
+                    synthesized.source_attribution = {}
+                synthesized.source_attribution[field] = prior_attribution[field]
             flags.append(
                 {"charity_ein": synthesized.charity_ein, "field": field, "prior_value": prior_value}
             )
