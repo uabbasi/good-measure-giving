@@ -3,7 +3,6 @@
  *
  * Provides typed event tracking for:
  * - Page views
- * - Charity views (with view type)
  * - Outbound clicks
  * - User flow tracking (session-level journey)
  *
@@ -11,9 +10,6 @@
  */
 
 import type { CharityTier } from '../../types';
-
-// View type for charity detail pages (distinct from CharityTier which is data classification)
-export type CharityViewType = 'terminal';
 
 // Flow step names for journey tracking
 type FlowStep = 'landing' | 'browse' | 'search' | 'card_click' | 'charity_view' | 'donate' | 'sign_in';
@@ -197,26 +193,6 @@ export function trackPageView(path: string, title?: string): void {
   safeGtag('event', 'page_view', {
     page_path: path,
     page_title: title || document.title,
-    flow_id: flow.flowId,
-    flow_path: flow.flowPath,
-    flow_step: flow.flowStep,
-  });
-}
-
-/**
- * Track charity view event with view type information
- */
-export function trackCharityView(
-  charityId: string,
-  charityName: string,
-  viewType: CharityViewType
-): void {
-  const flow = addFlowStep('charity_view');
-
-  safeGtag('event', 'charity_view', {
-    charity_id: charityId,
-    charity_name: charityName,
-    view_type: viewType,
     flow_id: flow.flowId,
     flow_path: flow.flowPath,
     flow_step: flow.flowStep,
