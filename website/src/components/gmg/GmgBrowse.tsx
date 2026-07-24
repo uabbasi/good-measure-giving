@@ -49,9 +49,9 @@ const titleCaseCause = (s: string): string =>
 // gives them a new identity each render, which remounts the search input (dropping
 // focus on every keystroke). Kept out here so they're stable.
 
-const RatingCell: React.FC<{ rating: Rating; p: GmgPalette }> = ({ rating, p }) => (
+const RatingCell: React.FC<{ rating: Rating; p: GmgPalette; size?: number }> = ({ rating, p, size = 14 }) => (
   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-    <HarveyBall rating={rating} p={p} size={14} />
+    <HarveyBall rating={rating} p={p} size={size} />
     <span style={{ fontSize: 11.5, color: ratingColor(rating, p) }}>{rating}</span>
   </span>
 );
@@ -65,7 +65,9 @@ const FilterPills: React.FC<{
   setWallet: (v: WalletFilter) => void;
   total: number;
   zakatCount: number;
-}> = ({ p, padX, query, setQuery, wallet, setWallet, total, zakatCount }) => {
+  resultCount: number;
+  isMobile: boolean;
+}> = ({ p, padX, query, setQuery, wallet, setWallet, total, zakatCount, resultCount, isMobile }) => {
   const sectionBorder = `1px solid ${p.rule}`;
   const inputStyle: React.CSSProperties = {
     flex: '1 1 240px',
@@ -130,7 +132,7 @@ const FilterPills: React.FC<{
       </span>
       <span style={{ flex: 1 }} />
       <span style={{ fontFamily: FONT_MONO, fontSize: 9.5, letterSpacing: '0.06em', color: p.sub2, textTransform: 'uppercase' }}>
-        Click a column to sort
+        {resultCount} of {total}{!isMobile ? ' · Click a column to sort' : ''}
       </span>
     </section>
   );
@@ -314,6 +316,8 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
         setWallet={setWallet}
         total={allRows.length}
         zakatCount={zakatCount}
+        resultCount={rows.length}
+        isMobile={isMobile}
       />
 
       {isMobile ? (
@@ -356,7 +360,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                 {row.overall && (
                   <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <Kicker p={p}>GMG</Kicker>
-                    <HarveyBall rating={row.overall} p={p} size={20} />
+                    <RatingCell rating={row.overall} p={p} size={20} />
                   </span>
                 )}
                 <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -379,7 +383,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
         /* Desktop: dense, sortable table */
         <section style={{ padding: `0 ${padX}px 28px` }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5 }}>
-            <thead>
+            <thead style={{ position: 'sticky', top: 0, zIndex: 2, background: p.bg }}>
               <tr
                 style={{
                   borderBottom: sectionBorder,
@@ -447,7 +451,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   </td>
                   <td style={{ padding: '8px 6px', textAlign: 'center' }}>
                     {row.overall ? (
-                      <HarveyBall rating={row.overall} p={p} size={22} />
+                      <RatingCell rating={row.overall} p={p} size={22} />
                     ) : (
                       <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: p.sub2 }}>—</span>
                     )}
@@ -463,9 +467,6 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               ))}
             </tbody>
           </table>
-          <div style={{ marginTop: 12, fontFamily: FONT_MONO, fontSize: 10.5, color: p.sub, letterSpacing: '0.06em' }}>
-            Showing {rows.length} of {allRows.length}
-          </div>
         </section>
       )}
 

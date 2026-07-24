@@ -71,7 +71,7 @@ function TabButton({
       `}
     >
       {icon}
-      <span className="hidden sm:inline">{label}</span>
+      <span>{label}</span>
     </button>
   );
 }

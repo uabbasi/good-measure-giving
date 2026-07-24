@@ -485,7 +485,7 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities, hid
           </div>
         ) : (
           <div className="flex flex-wrap justify-center gap-3 pt-4 border-t" style={{ borderColor: p.rule }}>
-            {causeAggregates.slice(0, 6).map(cause => (
+            {causeAggregates.map(cause => (
               <button
                 key={cause.category}
                 onClick={() => {
