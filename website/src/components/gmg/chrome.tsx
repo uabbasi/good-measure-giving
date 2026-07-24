@@ -277,6 +277,7 @@ export const TypeSwitcher: React.FC<{ p: GmgPalette; variant: FontVariant; baseP
       <Link
         key={v}
         to={`${basePath}?type=${v}`}
+        rel="nofollow"
         style={{
           padding: '2px 8px',
           borderRadius: 99,
