@@ -223,7 +223,7 @@ ruff check . --fix                      # Lint
 ## Key Files
 
 ```
-pilot_charities.txt           # Source of truth for EINs (167 charities, organized by category)
+pilot_charities.txt           # Source of truth for EINs (166 active charities, organized by category)
 streaming_runner.py           # Canonical runner: all 8 phases, cached, parallel
 crawl.py                      # Phase 1: FETCH raw data (no parsing)
 extract.py                    # Phase 2: PARSE raw_html → parsed_json
