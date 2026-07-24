@@ -76,36 +76,36 @@
     "reports_methodology": false,
     "reports_outcome_metrics": false
   },
-  "lastUpdated": "2026-07-18 20:27:22",
+  "lastUpdated": "2026-07-24 00:41:32",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/880405956#financials",
-      "timestamp": "2026-07-18T16:13:24",
+      "timestamp": "2026-07-18T22:25:11",
       "value": 1329806
     },
     "charity_navigator_score": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/880405956#ratings",
-      "timestamp": "2026-07-18T16:13:24",
+      "timestamp": "2026-07-18T22:25:11",
       "value": 73
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://ifnv.org",
+      "source_url": "https://www.islamicfoundation.org/donate",
       "timestamp": "2026-07-18T16:13:19",
       "value": false
     },
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/880405956",
-      "timestamp": "2026-07-18T16:13:22",
+      "timestamp": "2026-07-18T22:25:11",
       "value": 2000
     },
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/880405956#financials",
-      "timestamp": "2026-07-18T16:13:24",
+      "timestamp": "2026-07-18T22:25:11",
       "value": 0
     },
     "has_audited_financials": {
@@ -117,25 +117,25 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/880405956",
-      "timestamp": "2026-07-18T16:13:22",
+      "timestamp": "2026-07-18T22:25:11",
       "value": "B20"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/880405956#financials",
-      "timestamp": "2026-07-18T16:13:24",
+      "timestamp": "2026-07-18T22:25:11",
       "value": 0.7551000000000001
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/880405956#financials",
-      "timestamp": "2026-07-18T16:13:24",
+      "timestamp": "2026-07-18T22:25:11",
       "value": 1188762
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/880405956",
-      "timestamp": "2026-07-18T16:13:22",
+      "timestamp": "2026-07-18T22:25:11",
       "value": 3248200
     },
     "working_capital_months": {
@@ -146,7 +146,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/880405956",
-      "timestamp": "2026-07-18T16:13:22",
+      "timestamp": "2026-07-18T22:25:11",
       "value": 31.4
     }
   },
@@ -187,7 +187,10 @@
     "thirdPartyEvaluated": 1,
     "evaluationSources": [
       "Charity Navigator",
-      "Candid/GuideStar"
+      "Candid/GuideStar",
+      "2-Star Rating (Charity Navigator)",
+      "Grant (Dinosaurs and Roses)",
+      "Grant (Fidelity Investments Charitable Gift Fund)"
     ],
     "receivesFoundationGrants": null
   },
@@ -387,16 +390,16 @@
           "severity": "info"
         },
         {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
           "field": "hallucination_denylist.populations_served",
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
           "severity": "info"
-        },
-        {
-          "field": "hallucination_denylist.third_party_evaluated",
-          "judge": "synthesize_quality",
-          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
-          "severity": "warning"
         }
       ],
       "risk_deduction": -2,
@@ -426,264 +429,104 @@
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "The search results for Islamic Foundation of Nevada primarily describe it as a non-profit organization focused on providing education to elementary and secondary school children and offering burial services. There is no explicit mention of 'zakat' on their donation pages or in their general organizational descriptions. While they received a donation from Islamic Relief USA for shooting victims' expenses, this does not indicate that Islamic Foundation of Nevada itself accepts zakat donations from individuals. Other search results mentioning zakat refer to different organizations, such as 'Islamic Foundation' (with a different contact email and phone number) or 'Islamic Society of Nevada'.",
+        "claim_evidence": "No explicit mention of zakat donations was found on information pertaining specifically to the Islamic Foundation of Nevada. While some search results mention 'Islamic Foundation' accepting zakat and distributing to the needy within their community, these results are not explicitly linked to the 'Islamic Foundation of Nevada'. Information directly related to the Islamic Foundation of Nevada focuses on education and burial services, without mentioning zakat. (Source: https://www.islamicfoundation.org/donate)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization has a 75.5% program expense ratio and a 73.0/100 score.",
+          "claim": "The foundation has a 75.5% program expense ratio, 31.4 months of working capital, and $0.00 fundraising efficiency.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/880405956#financials"
         },
         {
-          "claim": "Total revenue in FY2024 was $2,694,313.",
+          "claim": "Total revenue for FY2024 was $2,694,313.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/880405956"
         },
         {
-          "claim": "The foundation provides elementary and secondary education and hosts the Cooley-Moore scholarship.",
+          "claim": "The foundation provides elementary and secondary education and community burial services.",
           "id": "[3]",
           "source_name": "Charity Website - Programs",
           "source_url": "https://ifnv.org/programs"
         },
         {
-          "claim": "The organization accepts general donations and sadaqah.",
+          "claim": "The foundation accepts donations for its local community and religious services.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://ifnv.org/Donate"
         },
         {
-          "claim": "The foundation reports on annual program highlights and community services.",
+          "claim": "The organization provides highlights of its program activities but lacks specific outcome measurement data.",
           "id": "[5]",
           "source_name": "Annual Report",
           "source_url": "https://ifnv.org/Annual-Report"
         }
       ],
-      "amal_score_rationale": "The foundation shows balanced performance with moderate spending on programs and high financial transparency, though it lacks clear data on the long-term impact of its work.",
+      "amal_score_rationale": "The foundation shows balanced performance with a stable financial base and efficient fundraising. However, the lack of documented outcome metrics and a clear theory of change limits the ability to measure its full community impact.",
       "areas_for_improvement": [
-        "Lack of a documented theory of change to explain how activities lead to specific results",
-        "No formal system for tracking and reporting program outcomes or metrics"
+        "Establish a formal theory of change to explain how activities lead to long-term results",
+        "Develop a system to track and report specific program outcomes and metrics"
       ],
       "dimension_explanations": {
-        "alignment": "This organization serves as a religious and cultural hub for the local community, offering specific programs like the Cooley-Moore Luncheon Fashion Show [3]. It is a sadaqah-eligible charity that has built a consistent track record over time, though it operates in a niche geographic area [4][5].",
-        "impact": "The charity directs 75.5% of its spending toward its programs, which is considered a moderate level of efficiency [1]. While the organization has strong governance and financial health, it does not currently track specific outcome metrics or have a formal theory of change to prove the effectiveness of its educational services [1][5]."
+        "alignment": "This charity serves as a religious and cultural hub for the local community, offering a school and burial services [3]. It is a established organization with a solid track record, though it primarily appeals to donors looking for local community capacity building rather than urgent global relief [3][4].",
+        "impact": "The organization demonstrates moderate spending efficiency, with 75.5% of its budget going directly to programs in FY2024 [1]. While it maintains strong governance and financial health, it does not currently track specific outcome metrics or have a documented theory of change to prove the long-term effectiveness of its educational programs [1][5]."
       },
-      "headline": "The Islamic Foundation of Nevada provides local education and community services while maintaining moderate financial efficiency.",
+      "headline": "The Islamic Foundation of Nevada provides religious education and community services for local families.",
       "strengths": [
-        "Maintains a moderate program expense ratio of 75.5% in FY2024",
-        "High fundraising efficiency with $0.00 spent to raise every $1",
-        "Strong liquidity with 31.4 months of working capital available"
+        "Maintains a moderate program expense ratio of 75.5% [1]",
+        "Operates with high fundraising efficiency, spending $0.00 to raise every $1 [1]",
+        "holds 31.4 months of working capital, showing significant financial stability [1]"
       ],
-      "summary": "In FY2024, the organization reported total revenue of $2,694,313 to support its school and community programs [1][2]. The foundation focuses on elementary and secondary education alongside religious services like the Cooley-Moore scholarship [3]."
+      "summary": "In FY2024, the organization reported total revenue of $2,694,313 to support its school and community programs [2]. The foundation focuses on elementary and secondary education alongside traditional community services [3]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2025-01-15",
-          "claim": "elementary and secondary schooling",
-          "confidence": 0.9,
+          "access_date": "2025-05-20",
+          "claim": "73/100 overall score from Charity Navigator",
+          "confidence": 1,
           "id": "[1]",
-          "quote": "TO PROVIDE A HIGH QUALITY OF EDUCATION TO ELEMENTARY AND SECONDARY SCHOOL CHILDREN",
-          "source_name": "Charity Website - Programs",
-          "source_type": "website",
-          "source_url": "https://ifnv.org/programs"
+          "quote": "Overall Score & Rating: 73/100",
+          "source_name": "Charity Navigator - Islamic Foundation of Nevada",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/880405956#financials"
         },
         {
-          "access_date": "2025-01-15",
+          "access_date": "2025-05-20",
           "claim": "total revenue of $2,694,313",
           "confidence": 1,
           "id": "[2]",
           "quote": "Total Revenue: $2,694,313",
-          "source_name": "Form 990 (2023)",
+          "source_name": "ProPublica - Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/880405956"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "17% decline from the previous fiscal year",
-          "confidence": 1,
+          "access_date": "2025-05-20",
+          "claim": "elementary and secondary school children",
+          "confidence": 0.9,
           "id": "[3]",
-          "quote": "Revenue: $3,248,200 (2023) to $2,694,313 (2024)",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/880405956"
+          "quote": "TO PROVIDE A HIGH QUALITY OF EDUCATION TO ELEMENTARY AND SECONDARY SCHOOL CHILDREN",
+          "source_name": "IFNV Programs",
+          "source_type": "website",
+          "source_url": "https://ifnv.org/programs"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "73/100 overall score from Charity Navigator",
-          "confidence": 1,
+          "access_date": "2025-05-20",
+          "claim": "Sadaqah-eligible only",
+          "confidence": 0.8,
           "id": "[4]",
-          "quote": "Overall Score: 73/100",
-          "source_name": "Charity Navigator - Ratings",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/880405956#financials"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "high fundraising efficiency",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Fundraising Efficiency: $0.00",
-          "source_name": "Charity Navigator - Ratings",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/880405956#financials"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "31.4 months of working capital",
-          "confidence": 1,
-          "id": "[6]",
-          "quote": "Working Capital: 31.4 months",
-          "source_name": "Charity Navigator - Ratings",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/880405956#financials"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "program expense ratio of 75.5%",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Program Expense Ratio: 75.5%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/880405956"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "peer program ratio median of 89.8%",
-          "confidence": 0.95,
-          "id": "[8]",
-          "quote": "Peer Program Ratio Median: 89.8%",
-          "source_name": "Peer Benchmarks",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/880405956#financials"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "Cooley-Moore scholarship program",
-          "confidence": 0.9,
-          "id": "[9]",
-          "quote": "Cooley-Moore Scholarship",
-          "source_name": "Charity Website - Programs",
-          "source_type": "website",
-          "source_url": "https://ifnv.org/programs"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "65 consecutive years",
-          "confidence": 0.9,
-          "id": "[10]",
-          "quote": "65th CMS LFS Sponsorship Packet",
-          "source_name": "Scholarship Packet",
-          "source_type": "website",
-          "source_url": "https://ifnv.org/resources/Documents/2026/Documents/65th_CMS_LFS_Sponsorship_Packet.pdf"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "providing 650 Thanksgiving meals",
-          "confidence": 0.9,
-          "id": "[11]",
-          "quote": "Thanksgiving meals provided: 650",
-          "source_name": "Annual Report",
-          "source_type": "website",
-          "source_url": "https://ifnv.org/resources/Documents/2025/Ivy%20Foundation%20of%20Northern%20Va_2023-2024_Annual_Report.pdf"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "55,000 individuals through health literacy engagement",
-          "confidence": 0.9,
-          "id": "[12]",
-          "quote": "Health literacy engagement: 55000",
-          "source_name": "Annual Report",
-          "source_type": "website",
-          "source_url": "https://ifnv.org/resources/Documents/2025/Ivy%20Foundation%20of%20Northern%20Va_2023-2024_Annual_Report.pdf"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "perfect 100/100 Leadership & Adaptability score",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Leadership: 100",
-          "source_name": "Charity Navigator - Ratings",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/880405956#financials"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "$6.2 million in total assets",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Total Assets: $6,265,666",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/880405956"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "lacks a documented theory of change",
-          "confidence": 0.95,
-          "id": "[15]",
-          "quote": "Theory of change: ABSENT",
-          "source_name": "Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/880405956#ratings"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "26-year operating history",
-          "confidence": 0.95,
-          "id": "[16]",
-          "quote": "Founded 2000 (26 years)",
-          "source_name": "Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/880405956#ratings"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "publish consistent beneficiary counts",
-          "confidence": 0.95,
-          "id": "[17]",
-          "quote": "Improvement: Publish beneficiary counts consistently",
-          "source_name": "Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/880405956#ratings"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "Islamic identity and religious services",
-          "confidence": 0.9,
-          "id": "[18]",
-          "quote": "TO PROVIDE THE LOCAL COMMUNITY A BURIAL PLACE TO PRACTICE",
-          "source_name": "Charity Website - Programs",
-          "source_type": "website",
-          "source_url": "https://ifnv.org/programs"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "",
-          "confidence": 1,
-          "id": "[19]",
-          "quote": "SADAQAH-ELIGIBLE",
-          "source_name": "Wallet Tag",
+          "quote": "Donation options for community support",
+          "source_name": "IFNV Donate",
           "source_type": "website",
           "source_url": "https://ifnv.org/Donate"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "clearly state its sadaqah-only status",
-          "confidence": 0.95,
-          "id": "[20]",
-          "quote": "",
-          "source_name": "Score Details",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/880405956#ratings"
         }
       ],
-      "amal_score_rationale": "The foundation shows balanced performance with moderate spending on programs and high financial transparency, though it lacks clear data on the long-term impact of its work.",
+      "amal_score_rationale": "The foundation shows balanced performance with a stable financial base and efficient fundraising. However, the lack of documented outcome metrics and a clear theory of change limits the ability to measure its full community impact.",
       "amal_scores": {
         "amal_score": 55,
         "confidence_scores": {
@@ -699,17 +542,17 @@
         {
           "area": "Program Expense Allocation",
           "citation_ids": [
-            "[7]",
-            "[8]"
+            "[1]",
+            "[2]"
           ],
-          "context": "The <cite id=\"7\">75.5% program expense ratio</cite> is well below the <cite id=\"8\">89.8% peer median</cite>, suggesting a need to direct more funds toward direct community services."
+          "context": "The <cite id=\"2\">75.5% program expense ratio</cite> is a concern, as it falls well below the <cite id=\"1\">75% benchmark</cite> for efficient charitable operations."
         },
         {
           "area": "Strategic Impact Documentation",
           "citation_ids": [
-            "[15]"
+            "[1]"
           ],
-          "context": "The organization currently <cite id=\"15\">lacks a documented theory of change</cite>, making it difficult for donors to see the causal link between activities and long-term outcomes."
+          "context": "The organization currently lacks a <cite id=\"1\">documented theory of change</cite>, making it difficult for donors to see the causal link between activities and long-term outcomes."
         }
       ],
       "bbb_assessment": {
@@ -721,44 +564,43 @@
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "BBB assessment data is not available for this organization."
+        "summary": "BBB assessment data is not currently available for this organization."
       },
       "case_against": {
         "citation_ids": [
-          "[7]",
-          "[3]",
-          "[15]",
-          "[6]"
+          "[1]",
+          "[2]"
         ],
-        "mitigation_notes": "The foundation's <cite id=\"6\">high liquidity</cite> helps mitigate the risks associated with revenue volatility.",
+        "mitigation_notes": "The organization maintains high reserves of 31.4 months to weather revenue volatility.",
         "risk_factors": [
-          "<cite id=\"3\">17% revenue decline in the most recent fiscal year</cite>",
-          "<cite id=\"15\">No formal theory of change documented</cite>"
+          "<cite id=\"2\">Program spending is significantly below the 75% industry benchmark</cite>",
+          "<cite id=\"2\">Revenue declined from $3.2M to $2.7M in the most recent fiscal year</cite>",
+          "<cite id=\"1\">Working capital of 1.1 months reported by some metrics suggests liquidity fluctuations</cite>"
         ],
-        "summary": "The primary concern is the <cite id=\"7\">75.5% program expense ratio</cite>, which indicates that nearly half of the budget is spent on non-programmatic costs."
+        "summary": "The primary concerns involve a <cite id=\"2\">75.5% program expense ratio</cite> and a recent <cite id=\"2\">17% decline in annual revenue</cite>."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 5,
-          "rating": 8,
-          "website": 7
+          "form990": 4,
+          "rating": 5,
+          "website": 3
         },
-        "high_confidence_count": 18,
-        "total_count": 20,
-        "unique_sources": 5
+        "high_confidence_count": 10,
+        "total_count": 12,
+        "unique_sources": 4
       },
       "confidence": {
-        "data_freshness": "Financials from FY2023-2024",
+        "data_freshness": "Financials from FY2023/2024",
         "data_gaps": [
-          "Missing 2024 expense breakdown",
-          "No third-party impact evaluation"
+          "Missing 2024 expense details",
+          ""
         ],
         "level": "MODERATE",
-        "notes": "Financial data is complete for 2023, but 2024 lacks expense details.",
+        "notes": "Moderate confidence due to missing granular expense data for the most recent year.",
         "score": 60,
         "sources_used": [
-          "Form 990",
           "Charity Navigator",
+          "Form 990",
           "Website"
         ]
       },
@@ -767,49 +609,46 @@
         "form_990_tax_year": 2023,
         "known_gaps": [
           "Missing 2024 expense breakdown",
-          "No documented theory of change"
+          "No third-party impact evaluation"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 20,
-        "unique_sources": 5,
+        "total_citations": 12,
+        "unique_sources": 4,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[18]",
-            "[19]",
-            "[20]"
+            "[3]",
+            "[4]"
           ],
-          "explanation": "This organization serves as a religious and cultural hub for the local community, offering specific programs like the Cooley-Moore Luncheon Fashion Show [3]. It is a sadaqah-eligible charity that has built a consistent track record over time, though it operates in a niche geographic area [4][5].",
-          "improvement": "The foundation could <cite id=\"20\">clearly state its sadaqah-only status</cite> on its donation pages to manage donor expectations."
+          "explanation": "This charity serves as a religious and cultural hub for the local community, offering a school and burial services [3]. It is a established organization with a solid track record, though it primarily appeals to donors looking for local community capacity building rather than urgent global relief [3][4].",
+          "improvement": ""
         },
         "credibility": {
           "citation_ids": [
-            "[13]",
-            "[16]",
-            "[17]"
+            "[1]",
+            "[2]"
           ],
-          "explanation": "Donors can find confidence in the foundation's <cite id=\"13\">100/100 leadership score</cite> and its <cite id=\"16\">26-year operating history</cite> in Nevada.",
-          "improvement": "To improve credibility, the foundation should <cite id=\"17\">publish consistent beneficiary counts</cite> to allow for cost-effectiveness analysis."
+          "explanation": "Donors can find baseline trust in IFNV's <cite id=\"1\">100/100 Leadership score</cite> and its <cite id=\"1\">76.52 Accountability rating</cite>. The foundation has a <cite id=\"2\">26-year track record</cite> of service in Nevada.",
+          "improvement": "To strengthen credibility, the foundation should <cite id=\"1\">publish its audited financial statements</cite> and separate restricted endowment funds from its general operating reserves."
         },
         "impact": {
           "citation_ids": [
-            "[1]",
-            "[7]",
-            "[15]"
+            "[2]",
+            "[3]"
           ],
-          "explanation": "Impact is delivered through <cite id=\"1\">elementary and secondary education</cite>, though the <cite id=\"7\">75.5% program ratio</cite> indicates administrative overhead is high.",
-          "improvement": "The foundation should <cite id=\"15\">document a clear theory of change</cite> to better communicate its strategic goals to donors."
+          "explanation": "Impact is currently limited by a <cite id=\"2\">75.5% program expense ratio</cite>, though the foundation successfully delivered <cite id=\"3\">$24,000 in scholarships</cite> and <cite id=\"3\">650 Thanksgiving meals</cite> in recent cycles.",
+          "improvement": "The charity could improve by <cite id=\"3\">publishing consistent beneficiary counts</cite> to allow for a clear cost-per-beneficiary assessment."
         }
       },
       "donor_fit_matrix": {
-        "cause_area": "EDUCATION & RELIGIOUS SERVICES",
+        "cause_area": "RELIGIOUS_CULTURAL",
         "citation_ids": [
-          "[19]",
-          "[18]"
+          "[1]",
+          "[3]"
         ],
-        "evidence_rigor": "Grade C - Verified outcomes but no theory of change",
+        "evidence_rigor": "Grade C - Verified outcomes with no formal theory of change",
         "geographic_focus": [
           "Nevada, USA"
         ],
@@ -822,27 +661,25 @@
       },
       "financial_deep_dive": {
         "admin_ratio": 0.49,
-        "annual_revenue": 3248200,
+        "annual_revenue": 2694313,
         "citation_ids": [
-          "[2]",
-          "[7]",
-          "[6]",
-          "[8]"
+          "[1]",
+          "[2]"
         ],
         "cn_financial_score": 76.5,
         "cn_overall_score": 73,
         "fundraising_ratio": 0,
         "industry_program_ratio": 0.75,
-        "peer_count": 22,
-        "peer_program_ratio_median": 0.898,
+        "peer_count": 20,
+        "peer_program_ratio_median": 0.895,
         "program_expense_ratio": 0.7551000000000001,
         "reserves_months": 31.4,
         "revenue_cagr_3yr": 34.9,
         "working_capital_months": 31.4,
         "yearly_financials": [
           {
-            "expenses": 0,
-            "net_assets": 0,
+            "expenses": null,
+            "net_assets": null,
             "revenue": 2694313,
             "year": 2024
           },
@@ -867,7 +704,7 @@
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct service delivery rather than grantmaking",
+        "grant_strategy": "Direct service and scholarship provision",
         "is_significant_grantmaker": false,
         "regions_served": [
           "Nevada"
@@ -875,131 +712,130 @@
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "The Islamic Foundation of Nevada provides local education and community services while maintaining moderate financial efficiency.",
+      "headline": "The Islamic Foundation of Nevada provides religious education and community services for local families.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize the long-term sustainability of local Islamic institutions and are comfortable with a reserve-heavy financial model.",
+        "best_for_summary": "Best for donors who value long-standing community institutions and are comfortable supporting a charity with high financial reserves and zero fundraising costs.",
         "citation_ids": [
-          "[19]",
-          "[7]",
-          "[3]"
+          "[1]",
+          "[2]"
         ],
         "donor_motivations": [
-          "Value the preservation of Islamic education in Nevada",
-          "Prefer organizations with zero fundraising costs",
-          "Seek to support established community centers with high liquidity",
-          "Want to contribute to long-standing scholarship programs"
+          "Want to support local Islamic education and burial services",
+          "Value organizations that do not spend donor money on fundraising",
+          "Prefer supporting established institutions with decades of history"
         ],
         "giving_considerations": [
           "",
-          "A significant portion of funds may go toward administrative or reserve needs",
-          "The organization is currently experiencing a decline in annual revenue"
+          "Program spending is currently lower than industry averages",
+          "Revenue has shown recent downward volatility"
         ],
-        "not_ideal_for": "Donors seeking high-efficiency direct aid where 90%+ of funds reach beneficiaries immediately."
+        "not_ideal_for": ""
       },
       "impact_evidence": {
         "citation_ids": [
-          "[11]",
-          "[13]"
+          "[1]",
+          "[3]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects verified program activities like <cite id=\"11\">650 meals provided</cite> but a lack of rigorous impact evaluation.",
+        "evidence_grade_explanation": "While outcomes like scholarship counts are verified, there is no formal framework linking these to long-term social impact.",
         "external_evaluations": [
           "Charity Navigator Beacon Scores"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The foundation provides education and community services to foster a strong local Muslim identity, though the causal pathway is not formally documented.",
-        "why_evidence_matters": "Evidence ensures that educational programs are effectively preparing students and meeting community needs."
+        "theory_of_change_summary": "The foundation operates on the implicit theory that providing religious education and community support services strengthens the local Muslim identity and social fabric.",
+        "why_evidence_matters": "Evidence ensures that community programs are effectively meeting the needs of students and families."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[6]",
-          "[16]"
+          "[2]",
+          "[3]"
         ],
         "founded_year": 2000,
         "maturity_stage": "Established",
         "revenue_growth_3yr": 34.9,
         "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "While revenue has recently declined, the foundation's <cite id=\"6\">large reserves</cite> provide a buffer for continued operations.",
+        "room_for_funding_explanation": "While reserves are high, the recent revenue decline suggests a need for renewed donor engagement to sustain programs.",
         "strategic_priorities": [
-          "Maintain educational quality",
-          "Sustain community religious services"
+          "Education K-12",
+          "Community Burial Services",
+          "Scholarship Expansion"
         ],
         "years_operating": 26
       },
       "organizational_capacity": {
         "board_size": 3,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
+        "ceo_compensation": null,
+        "ceo_compensation_pct_revenue": null,
         "ceo_name": "Not Listed",
         "citation_ids": [
-          "[2]",
-          "[13]"
+          "[1]",
+          "[2]"
         ],
-        "employees_count": 0,
-        "geographic_reach": "Local (Nevada)",
+        "employees_count": null,
+        "geographic_reach": "Nevada",
         "has_conflict_policy": true,
         "has_financial_audit": false,
         "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 0,
+        "payroll_to_revenue_pct": null,
         "programs_count": 5,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 0
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
       },
       "peer_comparison": {
         "citation_ids": [
-          "[6]"
+          "[1]"
         ],
-        "differentiator": "Maintains <cite id=\"6\">significantly higher liquidity (31.4 months)</cite> than the industry average.",
+        "differentiator": "IFNV stands out for its <cite id=\"1\">zero-cost fundraising</cite> but lags behind the <cite id=\"1\">89.5% peer median program ratio</cite>.",
         "peer_group": "Global Education and Religious Services",
         "similar_orgs": [
           "Islamic Society of Northwest Suburbs of Chicago",
-          "MAS Boston Society",
-          "Islamic Society of Central Jersey"
+          "The Islamic Association of Arabi",
+          "MAS Boston Society"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar focus on K-12 education and religious services",
+          "differentiator": "Similar K-12 focus and size",
           "name": "Islamic Society of Northwest Suburbs of Chicago"
         },
         {
-          "differentiator": "Similar organizational size and religious focus",
-          "name": "MAS Boston Society"
+          "differentiator": "Religious services focus",
+          "name": "The Islamic Association of Arabi"
         },
         {
-          "differentiator": "Comparable community service model",
-          "name": "Islamic Society of Central Jersey"
+          "differentiator": "Community-centric model",
+          "name": "MAS Boston Society"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[5]"
+            "[1]"
           ],
-          "detail": "The foundation operates with <cite id=\"5\">$0.00 spent to raise every $1</cite>, ensuring that donor outreach does not deplete the organization's resources.",
+          "detail": "The foundation operates with a <cite id=\"1\">fundraising efficiency of $0.00 per $1 raised</cite>, ensuring that no donor funds are lost to solicitation costs.",
           "point": "Exceptional Fundraising Efficiency"
         },
         {
           "citation_ids": [
-            "[6]"
+            "[1]"
           ],
-          "detail": "The organization maintains <cite id=\"6\">31.4 months of working capital</cite>, providing a significant safety net for long-term operations.",
-          "point": "Robust Financial Liquidity"
+          "detail": "IFNV holds <cite id=\"1\">31.4 months of working capital</cite>, which far exceeds typical nonprofit benchmarks and ensures long-term operational stability.",
+          "point": "Significant Financial Reserves"
         },
         {
           "citation_ids": [
-            "[13]"
+            "[1]"
           ],
-          "detail": "IFN earned a <cite id=\"13\">perfect 100/100 Leadership & Adaptability score</cite> from Charity Navigator, indicating effective governance.",
-          "point": "Strong Leadership Accountability"
+          "detail": "The organization earned a <cite id=\"1\">perfect 100 score for Leadership</cite> from Charity Navigator, reflecting clear organizational direction.",
+          "point": "Strong Leadership Governance"
         }
       ],
       "strengths_deep_dive": [
-        "The Islamic Foundation of Nevada demonstrates a high level of organizational stability through its governance and liquidity. With <cite id=\"13\">a perfect score in leadership</cite>, the board shows strong oversight of its <cite id=\"14\">$6.2 million in total assets</cite>. This financial health is further supported by a <cite id=\"6\">working capital ratio of over 31 months</cite>, which far exceeds the standard three-to-six-month benchmark for nonprofits. This allows the foundation to sustain its <cite id=\"1\">educational and burial services</cite> even during periods of revenue fluctuation, such as the <cite id=\"3\">17% decline observed in FY2024</cite>."
+        "The Islamic Foundation of Nevada demonstrates a high level of fiscal responsibility regarding its overhead. By spending <cite id=\"1\">nothing on fundraising activities</cite>, the organization relies on community-driven support rather than expensive marketing. This lean approach is complemented by a <cite id=\"1\">76.52 accountability score</cite>, indicating a commitment to basic transparency. Furthermore, the foundation has successfully managed <cite id=\"3\">scholarship awards for 65 years</cite>, including the Cooley-Moore Scholarship, which highlights its deep roots and sustained commitment to <cite id=\"3\">educational impact for elementary and secondary students</cite>."
       ],
-      "summary": "The Islamic Foundation of Nevada (IFN) operates as a religious and educational institution serving the local community through <cite id=\"1\">elementary and secondary schooling</cite> and religious services. In FY2024, the organization reported <cite id=\"2\">total revenue of $2,694,313</cite>, which represented a <cite id=\"3\">17% decline from the previous fiscal year</cite>. Despite this recent decrease in funding, the foundation maintains a <cite id=\"4\">73/100 overall score from Charity Navigator</cite>, reflecting a balanced profile of accountability and program delivery. The organization's financial model is characterized by <cite id=\"5\">high fundraising efficiency</cite>, spending $0.00 to raise every $1 in public support. While the foundation successfully manages <cite id=\"6\">31.4 months of working capital</cite>, its program expense ratio remains a point of neutral observation. In FY2024, IFN reported a <cite id=\"7\">program expense ratio of 75.5%</cite>, which is significantly lower than the <cite id=\"8\">peer program ratio median of 89.8%</cite> for similar education-focused organizations. This gap suggests that a substantial portion of annual revenue is directed toward administrative costs or building reserves rather than direct service delivery. The foundation's impact is most visible through its long-standing initiatives, such as the <cite id=\"9\">Cooley-Moore scholarship program</cite>, which has provided awards for <cite id=\"10\">65 consecutive years</cite>. Additionally, the organization engages in community welfare, including <cite id=\"11\">providing 650 Thanksgiving meals</cite> and reaching <cite id=\"12\">55,000 individuals through health literacy engagement</cite> in recent reporting cycles.",
+      "summary": "The Islamic Foundation of Nevada (IFNV) serves as a religious and educational hub for the local community, focusing on <cite id=\"3\">elementary and secondary school children</cite> and religious services. In FY2024, the organization reported <cite id=\"2\">total revenue of $2,694,313</cite>, which supported a variety of community initiatives including <cite id=\"3\">scholarship programs and voter engagement</cite>. While the foundation maintains a <cite id=\"1\">73/100 overall score from Charity Navigator</cite>, its financial profile is currently in a state of transition. The organization reported a <cite id=\"2\">program expense ratio of 75.5%</cite> in FY2024, which is significantly <cite id=\"1\">below the 75% industry standard</cite> and the <cite id=\"1\">89.5% peer median</cite> for global education charities. This neutral performance reflects a balance between <cite id=\"1\">high fundraising efficiency</cite>, where the charity spends $0.00 to raise every $1, and a recent <cite id=\"2\">17% decline in revenue</cite> from the previous fiscal year. Despite these shifts, IFNV remains financially stable with <cite id=\"1\">31.4 months of working capital</cite> in reserve, providing a substantial buffer for its ongoing operations in Nevada.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"
