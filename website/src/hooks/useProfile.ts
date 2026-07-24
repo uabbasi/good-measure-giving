@@ -37,6 +37,12 @@ interface ProfileUpdates {
  * Default-fill legacy assignment docs so the extended v2 shape is always present.
  * Tolerates pre-Milestone-1 docs that only have { charityEin, bucketId }.
  * Exported for unit tests.
+ *
+ * `sentAt`/`confirmedAt` are omitted (not set to `undefined`) when absent —
+ * Firestore's `updateDoc`/`WriteBatch.update()` reject any explicit `undefined`
+ * field value, and several call sites round-trip the *whole* assignments array
+ * back to Firestore (e.g. marking a different charity confirmed). An explicit
+ * `undefined` here on an untouched sibling would fail that unrelated write.
  */
 export function normalizeAssignment(
   raw: Partial<CharityBucketAssignment> & { charityEin: string; bucketId: string },
@@ -50,8 +56,8 @@ export function normalizeAssignment(
     intended: typeof raw.intended === 'number' ? raw.intended : 0,
     given: typeof raw.given === 'number' ? raw.given : 0,
     intendedAt: raw.intendedAt || fallbackIntendedAt,
-    sentAt: raw.sentAt,
-    confirmedAt: raw.confirmedAt,
+    ...(raw.sentAt !== undefined ? { sentAt: raw.sentAt } : {}),
+    ...(raw.confirmedAt !== undefined ? { confirmedAt: raw.confirmedAt } : {}),
   };
 }
 

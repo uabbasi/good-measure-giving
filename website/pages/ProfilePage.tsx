@@ -136,7 +136,6 @@ export function ProfilePage() {
     targetZakatAmount,
     zakatYear,
     overallProgress,
-    bucketProgress,
   } = useGivingDashboard(charitySummaries);
 
   // Giving plan tour
@@ -366,7 +365,7 @@ export function ProfilePage() {
             {/* Progress Dashboard — read-only top-of-record summary. Hidden
                 while CategorySplit is the active gate (no buckets yet means
                 there are no assignments to summarize). */}
-            {!showCategorySplit && <ProgressDashboard />}
+            {!showCategorySplit && <ProgressDashboard donations={donations} />}
 
             {showCategorySplit && profile?.targetZakatAmount != null && (
               <CategorySplit
@@ -497,7 +496,7 @@ export function ProfilePage() {
                 <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
                   <p className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Categories</p>
                   <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                    {bucketProgress.filter(bp => bp.allocationPercent > 0).length}
+                    {new Set((profile?.charityBucketAssignments || []).map(a => a.bucketId)).size}
                   </p>
                 </div>
                 <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>

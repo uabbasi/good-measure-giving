@@ -46,6 +46,23 @@ export interface DonationEvent {
 }
 
 /**
+ * Firestore rejects an explicit `undefined` field value. `sentAt`/`confirmedAt`
+ * are optional — omit the key entirely rather than setting it to `undefined`,
+ * so callers can spread the result straight into a Firestore write.
+ */
+function withOptionalTimestamps(
+  base: { status: AssignmentStatus; given: number; intendedAt: string },
+  sentAt: string | undefined,
+  confirmedAt: string | undefined,
+): StatusTransition {
+  return {
+    ...base,
+    ...(sentAt !== undefined ? { sentAt } : {}),
+    ...(confirmedAt !== undefined ? { confirmedAt } : {}),
+  };
+}
+
+/**
  * Apply a donation event to an assignment, returning the next state.
  *
  * - Never regresses status (confirmed stays confirmed; sent never drops to intended).
@@ -62,43 +79,35 @@ export function applyDonation(
   // From 'intended': first donation logged for this charity.
   if (current.status === 'intended') {
     const nextStatus: AssignmentStatus = donation.receiptReceived ? 'confirmed' : 'sent';
-    return {
-      status: nextStatus,
-      given: nextGiven,
-      intendedAt: current.intendedAt,
-      sentAt: donation.createdAt,
-      confirmedAt: donation.receiptReceived ? donation.createdAt : current.confirmedAt,
-    };
+    return withOptionalTimestamps(
+      { status: nextStatus, given: nextGiven, intendedAt: current.intendedAt },
+      donation.createdAt,
+      donation.receiptReceived ? donation.createdAt : current.confirmedAt,
+    );
   }
 
   // From 'sent': already had a sent donation. Preserve sentAt; bump to confirmed on receipt.
   if (current.status === 'sent') {
     if (donation.receiptReceived) {
-      return {
-        status: 'confirmed',
-        given: nextGiven,
-        intendedAt: current.intendedAt,
-        sentAt: current.sentAt ?? donation.createdAt,
-        confirmedAt: current.confirmedAt ?? donation.createdAt,
-      };
+      return withOptionalTimestamps(
+        { status: 'confirmed', given: nextGiven, intendedAt: current.intendedAt },
+        current.sentAt ?? donation.createdAt,
+        current.confirmedAt ?? donation.createdAt,
+      );
     }
-    return {
-      status: 'sent',
-      given: nextGiven,
-      intendedAt: current.intendedAt,
-      sentAt: current.sentAt ?? donation.createdAt,
-      confirmedAt: current.confirmedAt,
-    };
+    return withOptionalTimestamps(
+      { status: 'sent', given: nextGiven, intendedAt: current.intendedAt },
+      current.sentAt ?? donation.createdAt,
+      current.confirmedAt,
+    );
   }
 
   // From 'confirmed': increment given, preserve timestamps.
-  return {
-    status: 'confirmed',
-    given: nextGiven,
-    intendedAt: current.intendedAt,
-    sentAt: current.sentAt ?? donation.createdAt,
-    confirmedAt: current.confirmedAt ?? donation.createdAt,
-  };
+  return withOptionalTimestamps(
+    { status: 'confirmed', given: nextGiven, intendedAt: current.intendedAt },
+    current.sentAt ?? donation.createdAt,
+    current.confirmedAt ?? donation.createdAt,
+  );
 }
 
 /**

@@ -485,17 +485,13 @@ async function batchWriteDonationAndAssignment({
     },
   );
 
+  // Spread `next` rather than listing its fields explicitly — `sentAt`/
+  // `confirmedAt` are omitted (not `undefined`) from `next` when unset, and
+  // explicit `field: next.field` would re-introduce them as `undefined`
+  // (property access on a missing key still yields `undefined`), which
+  // Firestore rejects.
   const nextAssignments = (profile.charityBucketAssignments || []).map(a =>
-    a.charityEin === matching.charityEin
-      ? {
-          ...a,
-          status: next.status,
-          given: next.given,
-          intendedAt: next.intendedAt,
-          sentAt: next.sentAt,
-          confirmedAt: next.confirmedAt,
-        }
-      : a,
+    a.charityEin === matching.charityEin ? { ...a, ...next } : a,
   );
 
   const batch = writeBatch(db);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSharedPlans } from '../../hooks/useSharedPlans';
 
 export const PlanSwitcher: React.FC<{
@@ -6,12 +6,22 @@ export const PlanSwitcher: React.FC<{
   onSelect: (planId: string | null) => void;
 }> = ({ selected, onSelect }) => {
   const { plans, createPlan } = useSharedPlans();
+  // Guards against a fast double-click firing two concurrent createPlan()
+  // calls, which can race on the non-transactional read-modify-write of
+  // users/{uid}.sharedPlanIds and silently drop one of the two plan ids.
+  const [isCreating, setIsCreating] = useState(false);
 
   const onCreate = async () => {
+    if (isCreating) return;
     const name = window.prompt('Name this shared plan (e.g., "Khan Family")');
     if (!name) return;
-    const id = await createPlan(name);
-    onSelect(id);
+    setIsCreating(true);
+    try {
+      const id = await createPlan(name);
+      onSelect(id);
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   return (
@@ -26,7 +36,11 @@ export const PlanSwitcher: React.FC<{
           {p.name}
         </button>
       ))}
-      <button onClick={onCreate} className="px-3 py-1.5 rounded-full text-sm border border-dashed border-slate-300 text-slate-500">
+      <button
+        onClick={onCreate}
+        disabled={isCreating}
+        className="px-3 py-1.5 rounded-full text-sm border border-dashed border-slate-300 text-slate-500 disabled:opacity-50"
+      >
         + Shared plan
       </button>
     </div>

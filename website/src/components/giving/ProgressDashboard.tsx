@@ -18,12 +18,21 @@ import { useLandingTheme } from '../../../contexts/LandingThemeContext';
 import { useProfileState } from '../../contexts/UserFeaturesContext';
 import { useCharities } from '../../hooks/useCharities';
 import { formatCurrency } from '../../utils/formatters';
-import type { CharityBucketAssignment } from '../../../types';
+import type { CharityBucketAssignment, GivingHistoryEntry } from '../../../types';
 
 interface ProgressDashboardProps {
   /** Optional: callback to scroll the user to the target input when they
    *  haven't set one. Falls back to a scrollIntoView on `[data-tour="giving-target"]`. */
   onRequestSetTarget?: () => void;
+  /**
+   * Logged donations (giving_history). Only used to top up "Given" with
+   * donations that don't match any charity currently in the plan — e.g. an
+   * ad-hoc donation logged for a charity not (yet) added to a bucket.
+   * `assignments[].given` already covers matched donations, so those are
+   * excluded here to avoid double-counting. Optional/defaults to `[]` so
+   * existing callers that don't pass it keep today's behavior.
+   */
+  donations?: Pick<GivingHistoryEntry, 'charityEin' | 'amount'>[];
 }
 
 /** Pick the first non-confirmed assignment (ordered by `intendedAt` ascending). */
@@ -58,7 +67,7 @@ function focusTargetInput(): void {
   }
 }
 
-export function ProgressDashboard({ onRequestSetTarget }: ProgressDashboardProps = {}) {
+export function ProgressDashboard({ onRequestSetTarget, donations = [] }: ProgressDashboardProps = {}) {
   const { isDark } = useLandingTheme();
   const { profile } = useProfileState();
   // Pull `summaries` only to resolve the "Next up" charity name from its EIN.
@@ -71,10 +80,19 @@ export function ProgressDashboard({ onRequestSetTarget }: ProgressDashboardProps
     let allocated = 0;
     let given = 0;
     let confirmedCount = 0;
+    const assignedEins = new Set<string>();
     for (const a of assignments) {
       allocated += Number(a.intended) || 0;
       given += Number(a.given) || 0;
       if (a.status === 'confirmed') confirmedCount += 1;
+      assignedEins.add(a.charityEin);
+    }
+    // Top up with donations logged against a charity that isn't in the plan
+    // (no matching assignment), which `assignments[].given` never reflects.
+    for (const d of donations) {
+      if (!d.charityEin || !assignedEins.has(d.charityEin)) {
+        given += Number(d.amount) || 0;
+      }
     }
     return {
       allocated,
@@ -83,7 +101,7 @@ export function ProgressDashboard({ onRequestSetTarget }: ProgressDashboardProps
       confirmedCount,
       totalCount: assignments.length,
     };
-  }, [assignments, target]);
+  }, [assignments, target, donations]);
 
   const nextUp = useMemo(() => pickNextUp(assignments), [assignments]);
   const nextUpName = useMemo(() => {
