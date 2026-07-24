@@ -19,7 +19,11 @@ export const LandingThemeProvider: React.FC<{ children: ReactNode }> = ({ childr
       // Fall back to system preference
       return window.matchMedia('(prefers-color-scheme: dark)').matches;
     }
-    return true; // Default to dark
+    // SSR/prerender has no window, so this is what every static page ships with
+    // by default. Must match the client's own fallback for most visitors (no
+    // stored preference, light-mode OS) or the page flashes dark->light right
+    // after hydration. The site's actual default motif is light ("sage-on-bone").
+    return false;
   });
 
   // Persist to localStorage and sync browser-level color scheme
