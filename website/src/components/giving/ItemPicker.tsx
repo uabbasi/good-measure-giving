@@ -150,7 +150,7 @@ export function ItemPicker({ defaultCondition, onAdd }: ItemPickerProps) {
   }, [highlightIndex, showDropdown]);
 
   const inputClass = `
-    w-full px-3 py-2.5 rounded-lg border text-sm
+    w-full px-3 py-2.5 rounded-lg border text-base
     ${isDark
       ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-500 focus:border-emerald-500'
       : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-emerald-500'

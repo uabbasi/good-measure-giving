@@ -418,7 +418,7 @@ export function UnifiedAllocationView({
             onBlur={handleTargetBlur}
             onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
             onClick={e => e.stopPropagation()}
-            className={`font-semibold text-sm truncate bg-transparent border-0 focus:outline-none p-0 max-w-[14rem] ${isDark ? 'text-slate-100' : 'text-slate-800'}`}
+            className={`font-semibold text-base truncate bg-transparent border-0 focus:outline-none p-0 max-w-[14rem] ${isDark ? 'text-slate-100' : 'text-slate-800'}`}
             aria-label={`Rename ${b.label}`}
           />
           <span
@@ -683,7 +683,7 @@ export function UnifiedAllocationView({
                 onChange={e => setCharitySearchQuery(e.target.value)}
                 placeholder="Search charities to add..."
                 autoFocus
-                className={`w-full pl-9 pr-3 py-2 text-sm rounded-lg border shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${isDark ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-500 focus:border-blue-500' : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-blue-400'}`}
+                className={`w-full pl-9 pr-3 py-2 text-base rounded-lg border shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${isDark ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-500 focus:border-blue-500' : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-blue-400'}`}
                 aria-label="Search charities"
               />
               <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} />
@@ -725,7 +725,7 @@ export function UnifiedAllocationView({
               onChange={e => setCustomCategoryName(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') addCustomCategory(customCategoryName); }}
               placeholder="Type a custom category name..."
-              className={`flex-1 text-sm px-3 py-2 rounded-lg border shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 ${isDark ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-500 focus:border-emerald-500' : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-emerald-400'}`}
+              className={`flex-1 text-base px-3 py-2 rounded-lg border shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 ${isDark ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-500 focus:border-emerald-500' : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-emerald-400'}`}
               aria-label="Custom category name"
             />
             <button

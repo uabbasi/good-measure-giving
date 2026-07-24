@@ -153,7 +153,7 @@ export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
                     value={item.weight}
                     onChange={e => setWeight(item, parseFloat(e.target.value) || 0)}
                     aria-label={`Weight for ${rowLabel(item)}`}
-                    className="w-20 px-2 py-1 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+                    className="w-20 px-2 py-1 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-base text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
                   />
                 </td>
                 <td className="py-2">
@@ -235,7 +235,7 @@ const NoteCell: React.FC<{
           onBlur={() => { if (draft !== mine) onSave(draft); }}
           placeholder="Your reason for giving here…"
           aria-label={`Your reason for ${item.ref}`}
-          className="w-full max-w-xs px-2 py-1 text-xs rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+          className="w-full max-w-xs px-2 py-1 text-base rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500"
         />
       )}
     </div>

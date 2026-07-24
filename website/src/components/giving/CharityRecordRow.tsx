@@ -193,7 +193,7 @@ export function CharityRecordRow({
         onKeyDown={onKeyDown}
         placeholder="0"
         aria-label={`Intended amount for ${charity.name}`}
-        className={`w-20 text-right bg-transparent border-0 focus:outline-none focus:ring-0 p-0 text-sm tabular-nums ${
+        className={`w-20 text-right bg-transparent border-0 focus:outline-none focus:ring-0 p-0 text-base tabular-nums ${
           isDark ? 'text-slate-200 placeholder-slate-600' : 'text-slate-700 placeholder-slate-300'
         }`}
       />

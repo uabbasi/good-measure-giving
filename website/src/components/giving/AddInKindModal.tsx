@@ -134,7 +134,7 @@ export function AddInKindModal({
   };
 
   const inputClass = `
-    w-full px-3 py-2 rounded-lg border text-sm
+    w-full px-3 py-2 rounded-lg border text-base
     ${isDark
       ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-500 focus:border-emerald-500'
       : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-emerald-500'
@@ -377,7 +377,7 @@ export function AddInKindModal({
                       type="text"
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
-                      className={`w-full px-3 py-1.5 rounded-lg border text-xs ${
+                      className={`w-full px-3 py-1.5 rounded-lg border text-base ${
                         isDark
                           ? 'bg-slate-800 border-slate-700 text-slate-300 placeholder-slate-600'
                           : 'bg-slate-50 border-slate-200 text-slate-700 placeholder-slate-400'
@@ -422,7 +422,7 @@ function ItemRow({
     focus:outline-none focus:ring-1 focus:ring-emerald-500
   `;
   const miniInputClass = `
-    text-xs px-1.5 py-0.5 rounded border text-right w-full
+    text-base px-1.5 py-0.5 rounded border text-right w-full
     ${isDark
       ? 'bg-slate-800 border-slate-700 text-slate-300'
       : 'bg-slate-50 border-slate-200 text-slate-700'
