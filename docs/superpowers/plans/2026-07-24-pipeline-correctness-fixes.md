@@ -634,13 +634,79 @@ _HISTORY_COLUMNS = ["charity_ein", "commit_hash", "commit_date", "metrics_json",
 )
 ```
 
-- [ ] **Step 4: Carry attribution into the flag**
+- [ ] **Step 4: Carry attribution into the flag AND require it (guard 3)**
 
 In `find_regressions`, inside the appended dict, add:
 
 ```python
                     "last_good_attribution": (hrow.get("source_attribution") or {}).get(field),
 ```
+
+Then add **guard 3**: a historical value with no `source_attribution` entry for its field was never an observation — it is a seed/placeholder — and must not be offered as a restore candidate.
+
+**This guard is empirically grounded, not a guess.** After Task B1 the tool surfaced 5 live candidates, every one of them `100000`. Read-only history queries against those exact candidates:
+
+| EIN | field | history rows | with attribution | without | distinct values |
+|---|---|---|---|---|---|
+| 81-2566656 | net_assets | 23 | 0 | 23 | [100000] |
+| 83-1794093 | net_assets | 185 | 0 | 185 | [10222, 100000, 115000] |
+| 85-3964369 | total_expenses | 1 | 0 | 1 | [100000] |
+| 85-3964369 | total_revenue | 1 | **1** | 0 | [100000] |
+| 93-2136609 | total_revenue | 16 | 0 | 16 | [100000] |
+
+Contrast a real value: `81-2566656.total_revenue = 211877` carries attribution on **all 400** history rows sampled. So attribution is not simply missing from older rows — it tracks observed-versus-seeded. Guard 3 takes live candidates from 5 to 1.
+
+Add to the loop in `find_regressions`, after the `val is None` check and before the age check:
+
+```python
+            # Guard 3: no source_attribution for this field means the value was
+            # never observed — it is a seed/placeholder. Measured on live data:
+            # 4 of the 5 surviving candidates are 100000 with zero attribution
+            # across their entire history (23, 185, 1 and 16 rows), while a real
+            # value (81-2566656.total_revenue = 211877) carries attribution on
+            # every one of 400 rows.
+            if not (hrow.get("source_attribution") or {}).get(field):
+                continue
+```
+
+Use `continue`, not `break` — unlike the age check, an unattributed row says nothing about rows deeper in history.
+
+- [ ] **Step 4b: Add the guard-3 tests**
+
+```python
+def test_unattributed_historical_value_is_not_a_candidate():
+    """A value with no source_attribution was never observed — it's a seed.
+    Measured: 4 of 5 live candidates were 100000 with zero attribution."""
+    from bin.reconcile_charity_data import find_regressions
+
+    current = {"charity_ein": "93-2136609", "total_revenue": None, "metrics_json": {}}
+    history = [{"total_revenue": 100000, "commit_hash": "seed",
+                "commit_date": "2026-01-25", "source_attribution": {}}]
+
+    assert find_regressions(current, history, {"total_revenue"}) == []
+
+
+def test_an_unattributed_row_does_not_hide_an_attributed_one_deeper():
+    """continue, not break — an unattributed row says nothing about deeper rows."""
+    from bin.reconcile_charity_data import find_regressions
+
+    current = {"charity_ein": "12-3456789", "total_revenue": None, "metrics_json": {}}
+    history = [
+        {"total_revenue": 100000, "commit_hash": "seed", "commit_date": "2026-07-02",
+         "source_attribution": {}},
+        {"total_revenue": 5_000_000, "commit_hash": "real", "commit_date": "2026-07-01",
+         "source_attribution": {"total_revenue": {"source_name": "ProPublica"}}},
+    ]
+
+    flags = find_regressions(current, history, {"total_revenue"})
+
+    assert len(flags) == 1
+    assert flags[0]["last_good_commit"] == "real"
+```
+
+- [ ] **Step 4c: Re-verify against the live DB, read-only**
+
+Run `uv run python bin/reconcile_charity_data.py` (NEVER `--apply`) and confirm the candidate count drops from 5 to 1, with the survivor being `85-3964369 / total_revenue`. Report the actual output. If the count is not 1, investigate and report rather than adjusting the guard to force the number.
 
 - [ ] **Step 5: Apply the attribution in `reconcile`**
 
