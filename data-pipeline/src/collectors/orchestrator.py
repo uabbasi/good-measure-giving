@@ -7,7 +7,7 @@ Manages the complete data collection pipeline and stores results in DoltDB.
 import threading
 import time
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 
 from ..constants import (
     CRAWL_INITIAL_BACKOFF_SECONDS,
@@ -641,7 +641,7 @@ class DataCollectionOrchestrator:
         ein: str,
         source: str,
         existing: Optional[Dict[str, Any]],
-        is_downgrade: bool,
+        is_downgrade: Union[bool, Callable[[], bool]],
         pages_found: Optional[int] = None,
         pages_with_data: Optional[int] = None,
     ) -> bool:
@@ -657,6 +657,12 @@ class DataCollectionOrchestrator:
         window and the crawl_attempts bookkeeping -- is identical, so it
         lives here once.
 
+        `is_downgrade` may be a plain bool or a zero-arg callable. Passing a
+        callable keeps an expensive predicate (e.g. `is_content_downgrade`,
+        which walks both sides' parsed_json) behind the cheap `existing`/
+        `within_window` checks below instead of it being evaluated eagerly
+        by the caller regardless of whether it'll even be used.
+
         Returns True when the guard fired: last-good was preserved via
         `record_soft_fail` and the attempt was recorded, so the caller
         should stop and treat this as a successful (non-writing)
@@ -670,7 +676,9 @@ class DataCollectionOrchestrator:
             return False
         age = data_age_years(existing.get("scraped_at"))
         within_window = age is None or age <= DATA_FULL_CONFIDENCE_MAX_AGE_YEARS
-        if not (within_window and is_downgrade):
+        if not within_window:
+            return False
+        if not (is_downgrade() if callable(is_downgrade) else is_downgrade):
             return False
 
         reason = f"{source} re-observation thinner than last-good; preserved (age={age}y)"
@@ -689,6 +697,48 @@ class DataCollectionOrchestrator:
                 self.logger.debug(f"crawl history write failed for {ein}: {e}")
         return True
 
+    # Task C8 FIX 1: _has_content_substance's per-source minimum (500B for
+    # charity_navigator/candid, 50B for propublica/form990_grants) is a fixed
+    # floor -- it says nothing about the prior observation, so a thin
+    # throttle/interstitial body that happens to clear it can still replace
+    # an arbitrarily richer stored row. 2,000 chars is comfortably above the
+    # largest such floor (500) so a prior barely past its own substance
+    # check doesn't get flagged as "rich" by accident, while staying well
+    # below a real HTML profile (10K+) or JSON payload -- i.e. it marks
+    # "prior big enough that a >3x shrink is suspicious," not "prior exists."
+    _THIN_VS_PRIOR_FLOOR = 2_000
+    _THIN_VS_PRIOR_RATIO = 3  # new content at or below 1/3 of the prior counts as thinner
+
+    def _is_thinner_than_prior(
+        self, source: str, raw_content: Optional[str], existing: Optional[Dict[str, Any]]
+    ) -> bool:
+        """True when raw_content is a small fraction of the prior stored
+        raw_content -- the case `_has_content_substance`'s fixed floor can't
+        catch on its own, because a floor is absolute and this needs to be
+        relative to what's already there (a 1KB Cloudflare interstitial
+        clears charity_navigator's 500B floor but still guts an 80KB
+        profile page).
+
+        form990_grants gets its own rule instead of the generic ratio:
+        `NO_XML_SENTINEL` is a legitimate, deliberately short body that
+        `_has_content_substance` explicitly waves through as substance, but
+        a transition from a real filing to the sentinel is exactly the
+        downgrade `is_content_downgrade`'s `grants_has_filings` check exists
+        to catch for the parsed-data path, so it's preserved here too rather
+        than being let through because the sentinel "has substance."
+        """
+        prior_raw = ((existing or {}).get("raw_content") or "").strip()
+        new_raw = (raw_content or "").strip()
+
+        if source == "form990_grants":
+            prior_had_filings = bool(prior_raw) and prior_raw != Form990GrantsCollector.NO_XML_SENTINEL
+            new_is_sentinel_or_empty = not new_raw or new_raw == Form990GrantsCollector.NO_XML_SENTINEL
+            return prior_had_filings and new_is_sentinel_or_empty
+
+        if len(prior_raw) < self._THIN_VS_PRIOR_FLOOR:
+            return False
+        return len(new_raw) <= len(prior_raw) // self._THIN_VS_PRIOR_RATIO
+
     def _store_raw_content_only(self, ein: str, source: str, raw_content: str, content_type: str) -> bool:
         """
         Store raw HTML/JSON/XML without parsing (for fetch-only mode).
@@ -698,11 +748,14 @@ class DataCollectionOrchestrator:
         Task C8: this is the only store used for propublica/charity_navigator/
         candid/form990_grants on the production fetch path
         (`fetch_charity_data`) -- without a downgrade guard here, a throttled
-        fetch that reports success=True but returns thin/empty content could
-        silently overwrite good stored content, with nothing downstream
-        catching it (Spec B Vector 2). There's no parsed_json for the new
-        observation yet at this phase (extract.py hasn't run), so unlike
-        `_store_raw_data` this guards on raw content substance rather than
+        fetch that reports success=True but returns thin/empty content, or
+        content that clears `_has_content_substance`'s fixed floor but is
+        still a small fraction of what's already stored (e.g. a ~1KB
+        interstitial replacing an 80KB profile page), could silently
+        overwrite good stored content, with nothing downstream catching it
+        (Spec B Vector 2). There's no parsed_json for the new observation
+        yet at this phase (extract.py hasn't run), so unlike `_store_raw_data`
+        this guards on raw content substance and relative size rather than
         calling `is_content_downgrade`, which compares parsed_json on both
         sides and would always see this phase's parsed_json as empty.
 
@@ -720,11 +773,13 @@ class DataCollectionOrchestrator:
 
         existing = self.raw_data_repo.get_by_source(ein, source)
         has_substance = self._has_content_substance(raw_content, source)
+        is_downgrade = (not has_substance) or self._is_thinner_than_prior(source, raw_content, existing)
 
-        # Task C8: a thin/empty fetch never overwrites a good prior. If
-        # there's nothing to protect (no prior, or prior wasn't itself
-        # successful), fall through to the original reject-and-log path.
-        if self._guard_against_content_downgrade(ein, source, existing, is_downgrade=not has_substance):
+        # Task C8: a thin/empty fetch, or one thinner than what's already
+        # stored, never overwrites a good prior. If there's nothing to
+        # protect (no prior, or prior wasn't itself successful), fall
+        # through to the original reject-and-log path.
+        if self._guard_against_content_downgrade(ein, source, existing, is_downgrade=is_downgrade):
             return True
 
         # FIX #2: Reject empty/shell content
@@ -1493,7 +1548,11 @@ class DataCollectionOrchestrator:
         existing = self.raw_data_repo.get_by_source(ein, source)
         if self._guard_against_content_downgrade(
             ein, source, existing,
-            is_downgrade=is_content_downgrade(source, parsed_json, raw_content, (existing or {}).get("parsed_json")),
+            # Lazy: only walk both sides' parsed_json once the cheap
+            # existing/within_window checks above have already passed.
+            is_downgrade=lambda: is_content_downgrade(
+                source, parsed_json, raw_content, (existing or {}).get("parsed_json")
+            ),
             pages_found=pages_found, pages_with_data=pages_with_data,
         ):
             return True

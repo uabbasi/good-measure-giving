@@ -300,7 +300,13 @@ class TestStoreRawContentOnlyNonDowngrade:
         orch.raw_data_repo.get_by_source.return_value = {
             "source": "form990_grants",
             "success": 1,
-            "raw_content": "x" * 50_000,
+            # Size is arbitrary and not exercised by this scenario: the new
+            # fetch below is fully empty, which trips the guard on its own
+            # regardless of what the prior looked like. See
+            # test_thin_but_above_floor_json_does_not_overwrite_a_much_richer_prior
+            # and test_grants_sentinel_does_not_overwrite_prior_real_filings for
+            # cases where the prior's size/content is actually load-bearing.
+            "raw_content": "x" * 10,
         }
 
         # A thin, empty-but-successful re-fetch must NOT overwrite the good row.
@@ -327,6 +333,89 @@ class TestStoreRawContentOnlyNonDowngrade:
         orch._store_raw_content_only("12-3456789", "propublica", "y" * 50_000, "json")
 
         assert orch.raw_data_repo.upsert.called
+
+    def test_thin_but_above_floor_content_does_not_overwrite_a_much_richer_prior(self):
+        """FIX 1 (C8 review): `_has_content_substance`'s floor is fixed
+        (500B for charity_navigator) and absolute -- it doesn't compare
+        against the prior. A ~1KB Cloudflare interstitial clears that floor
+        easily but is still a tiny fraction of an 80KB stored profile page,
+        so it must be caught relative to the prior, not just against the
+        floor."""
+        from unittest.mock import MagicMock
+
+        from src.collectors.orchestrator import DataCollectionOrchestrator
+
+        orch = object.__new__(DataCollectionOrchestrator)
+        orch.logger = None
+        orch.raw_data_repo = MagicMock()
+        orch.crawl_attempt_repo = MagicMock()
+        orch.raw_data_repo.get_by_source.return_value = {
+            "source": "charity_navigator",
+            "success": 1,
+            "raw_content": "x" * 80_000,
+        }
+
+        orch._store_raw_content_only("12-3456789", "charity_navigator", "y" * 1030, "html")
+
+        assert orch.raw_data_repo.record_soft_fail.called, "thin-but-above-floor re-fetch must soft-fail, not overwrite"
+        assert not orch.raw_data_repo.upsert.called
+
+    def test_thin_but_above_floor_json_does_not_overwrite_a_much_richer_prior(self):
+        """Same as above for propublica's JSON floor (50B) -- a ~98B 'no
+        filings' stub clears the floor but is a tiny fraction of a 60KB
+        stored response."""
+        from unittest.mock import MagicMock
+
+        from src.collectors.orchestrator import DataCollectionOrchestrator
+
+        orch = object.__new__(DataCollectionOrchestrator)
+        orch.logger = None
+        orch.raw_data_repo = MagicMock()
+        orch.crawl_attempt_repo = MagicMock()
+        orch.raw_data_repo.get_by_source.return_value = {
+            "source": "propublica",
+            "success": 1,
+            "raw_content": "x" * 60_000,
+        }
+
+        thin_stub = (
+            '{"organization":{"ein":"12-3456789","name":"Example Org","city":"Anytown"},'
+            '"filings_with_data":[]}'
+        )
+        assert 50 < len(thin_stub) < 60_000 // 3, "fixture must clear the substance floor but stay a thin fraction of the prior"
+        orch._store_raw_content_only("12-3456789", "propublica", thin_stub, "json")
+
+        assert orch.raw_data_repo.record_soft_fail.called, "thin-but-above-floor re-fetch must soft-fail, not overwrite"
+        assert not orch.raw_data_repo.upsert.called
+
+    def test_grants_sentinel_does_not_overwrite_prior_real_filings(self):
+        """`_has_content_substance` explicitly waves the NO_XML_SENTINEL
+        through as substance (it's a legitimately short body), so the
+        generic floor/ratio check can't be what catches this. A sentinel
+        replacing a prior real filing must still be preserved, matching
+        `is_content_downgrade`'s `grants_has_filings` intent for the
+        parsed-data path."""
+        from unittest.mock import MagicMock
+
+        from src.collectors.form990_grants import Form990GrantsCollector
+        from src.collectors.orchestrator import DataCollectionOrchestrator
+
+        orch = object.__new__(DataCollectionOrchestrator)
+        orch.logger = None
+        orch.raw_data_repo = MagicMock()
+        orch.crawl_attempt_repo = MagicMock()
+        orch.raw_data_repo.get_by_source.return_value = {
+            "source": "form990_grants",
+            "success": 1,
+            "raw_content": "<real 990 xml with filings>" * 500,
+        }
+
+        orch._store_raw_content_only(
+            "12-3456789", "form990_grants", Form990GrantsCollector.NO_XML_SENTINEL, "xml"
+        )
+
+        assert orch.raw_data_repo.record_soft_fail.called, "sentinel must not overwrite a real prior filing"
+        assert not orch.raw_data_repo.upsert.called
 
     def test_first_observation_for_a_source_always_writes(self):
         """No prior row -> nothing to downgrade from, per the guard's contract."""
