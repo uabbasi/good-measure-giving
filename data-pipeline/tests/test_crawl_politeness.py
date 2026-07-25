@@ -229,6 +229,51 @@ class TestMaxConcurrentReachesTheSemaphore:
         assert self._observed_semaphore_value(10) == PER_DOMAIN_CONCURRENCY
 
 
+class TestScoreContentMaxConcurrentReachesTheSemaphore:
+    """_score_content_async had the identical bug as _crawl_urls_async: it
+    called self._per_domain_semaphores() with no argument, so its own
+    max_concurrent parameter was silently discarded. Unlike the crawl test
+    above, the semaphore acquire happens inline inside the un-stubbed method
+    (there's no separate _fetch_url_async to intercept), so this spies on
+    asyncio.Semaphore.acquire to read the real semaphore's pristine _value
+    before it gets decremented."""
+
+    def _collector(self):
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c.headers = {}
+        c.cache = MagicMock()
+        c.cache.get_cached_html.return_value = {"html": "<html></html>"}
+        c.page_classifier = MagicMock()
+        c.page_classifier.apply_content_boost.side_effect = lambda ps, html: ps
+        return c
+
+    def _observed_semaphore_value(self, max_concurrent):
+        c = self._collector()
+        captured = {}
+        real_acquire = asyncio.Semaphore.acquire
+
+        async def spy_acquire(sem_self):
+            captured["value"] = sem_self._value
+            return await real_acquire(sem_self)
+
+        page_score = MagicMock()
+        page_score.url = "https://example.org/a"
+
+        with patch.object(asyncio.Semaphore, "acquire", spy_acquire):
+            asyncio.run(c._score_content_async([page_score], max_concurrent=max_concurrent))
+        return captured["value"]
+
+    def test_requested_concurrency_below_ceiling_is_honored(self):
+        # Before the fix, max_concurrent was ignored entirely and the
+        # semaphore always got the module default (PER_DOMAIN_CONCURRENCY),
+        # never a genuinely lower, caller-requested value.
+        assert self._observed_semaphore_value(1) == 1
+
+    def test_requested_concurrency_never_exceeds_the_politeness_ceiling(self):
+        assert self._observed_semaphore_value(15) == PER_DOMAIN_CONCURRENCY
+
+
 class TestBotChallengeDetection:
     """_is_bot_challenge_html gates whether Playwright-rendered content gets
     accepted as real site content. Real incident: healpalestine.org's

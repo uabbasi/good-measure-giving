@@ -1329,7 +1329,9 @@ class WebsiteCollector(BaseCollector):
         Returns:
             List of PageScore objects with content boosts applied
         """
-        get_sem = self._per_domain_semaphores()
+        # Never exceed the per-domain politeness ceiling, but DO honor a
+        # caller asking for less (see the identical fix in _crawl_urls_async).
+        get_sem = self._per_domain_semaphores(min(max_concurrent, PER_DOMAIN_CONCURRENCY))
         results: List[Any] = []
 
         async def fetch_and_score(page_score: Any) -> Any:
