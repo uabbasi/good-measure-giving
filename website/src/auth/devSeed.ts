@@ -57,7 +57,10 @@ function activeDonorPayload(now: Timestamp, nowIso: string, year: number): SeedP
       charityBucketAssignments: [
         { charityEin: EIN_UNICEF, bucketId: BUCKET_GLOBAL, status: 'sent' as const, intended: 500, given: 250, intendedAt: nowIso, sentAt: nowIso },
         { charityEin: EIN_INTERNATIONAL_AID, bucketId: BUCKET_GLOBAL, status: 'intended' as const, intended: 300, given: 0, intendedAt: nowIso },
-        { charityEin: EIN_ICNA_RELIEF, bucketId: BUCKET_LOCAL, status: 'intended' as const, intended: 200, given: 0, intendedAt: nowIso },
+        // `given` must match this charity's donations below — the app keeps the
+        // two in sync with a batch write, so a fixture that disagrees makes the
+        // dashboard look broken during QA when it isn't.
+        { charityEin: EIN_ICNA_RELIEF, bucketId: BUCKET_LOCAL, status: 'sent' as const, intended: 200, given: 100, intendedAt: nowIso, sentAt: nowIso },
       ],
     },
     bookmarks: [
@@ -114,7 +117,7 @@ function zakatDonorPayload(now: Timestamp, nowIso: string, year: number): SeedPa
       charityBucketAssignments: [
         { charityEin: EIN_BAITULMAAL, bucketId: BUCKET_RELIEF, status: 'sent' as const, intended: 4000, given: 4000, intendedAt: nowIso, sentAt: nowIso },
         { charityEin: EIN_ICNA_RELIEF, bucketId: BUCKET_RELIEF, status: 'intended' as const, intended: 800, given: 0, intendedAt: nowIso },
-        { charityEin: EIN_SAMS, bucketId: BUCKET_MEDICAL, status: 'intended' as const, intended: 3200, given: 0, intendedAt: nowIso },
+        { charityEin: EIN_SAMS, bucketId: BUCKET_MEDICAL, status: 'sent' as const, intended: 3200, given: 1500, intendedAt: nowIso, sentAt: nowIso },
       ],
     },
     bookmarks: [

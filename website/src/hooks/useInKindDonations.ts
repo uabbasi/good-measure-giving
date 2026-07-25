@@ -7,6 +7,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, orderBy, query, Timestamp } from 'firebase/firestore';
 import { useFirebaseData } from '../auth/FirebaseProvider';
 import type { ItemCondition } from '../data/donationValueGuide';
+import { toCSV } from '../utils/csv';
 
 // --------------- Types ---------------
 
@@ -277,21 +278,21 @@ export function useInKindDonations(): UseInKindDonationsResult {
       d.items.forEach(item => {
         rows.push([
           d.date,
-          `"${d.recipientName.replace(/"/g, '""')}"`,
+          d.recipientName,
           d.recipientEin || '',
-          `"${item.itemName.replace(/"/g, '""')}"`,
+          item.itemName,
           item.category,
           item.condition,
           item.quantity.toString(),
           item.unitValue.toFixed(2),
           item.totalValue.toFixed(2),
           item.isManualValue ? 'Yes' : 'No',
-          d.notes ? `"${d.notes.replace(/"/g, '""')}"` : '',
+          d.notes || '',
         ]);
       });
     });
 
-    return [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    return toCSV(headers, rows);
   }, [donations]);
 
   return {

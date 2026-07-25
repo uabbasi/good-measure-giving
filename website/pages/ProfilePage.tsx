@@ -25,6 +25,7 @@ import { SignInButton } from '../src/auth/SignInButton';
 import {
   AddDonationModal,
   UnifiedAllocationView,
+  GivingHistoryTable,
   AddInKindModal,
   InKindHistoryTable,
   InKindSummaryCard,
@@ -92,6 +93,7 @@ export function ProfilePage() {
     isLoading: historyLoading,
     addDonation,
     updateDonation,
+    deleteDonation,
     getPaymentSources,
     exportCSV,
   } = useGivingHistory();
@@ -505,6 +507,26 @@ export function ProfilePage() {
                     {overallProgress.progressPercent}%
                   </p>
                 </div>
+              </div>
+            )}
+
+            {/* Donation ledger. Without this the cash-donation log was
+                write-only: donations could be added but never reviewed,
+                corrected, or deleted — a typo'd amount was permanent. */}
+            {donations.length > 0 && (
+              <div className={`rounded-xl border p-6 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+                <h2 className={`text-lg font-semibold mb-6 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  Donation history
+                </h2>
+                <GivingHistoryTable
+                  donations={donations}
+                  onEdit={(donation) => {
+                    setEditingDonation(donation);
+                    setShowDonationModal(true);
+                  }}
+                  onDelete={(id) => deleteDonation(id)}
+                  onExport={handleExport}
+                />
               </div>
             )}
               </>

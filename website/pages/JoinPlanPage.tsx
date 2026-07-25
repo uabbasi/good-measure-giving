@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Navigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../src/auth/firebase';
 import { useFirebaseData, useFirebaseAuth } from '../src/auth/FirebaseProvider';
 import { useSharedPlan } from '../src/hooks/useSharedPlan';
+import { SignInButton } from '../src/auth/SignInButton';
 import { useCharities } from '../src/hooks/useCharities';
 import { weightsToPercents } from '../src/lib/sharedPlanLogic';
 import { trackPlanPreview, trackPlanJoined } from '../src/utils/analytics';
@@ -40,7 +41,26 @@ export const JoinPlanPage: React.FC = () => {
     })();
   }, [planId, token]);
 
-  if (state === 'notfound') return <Navigate to="/" replace />;
+  // A revoked, expired, or mistyped invite used to redirect silently to the
+  // homepage, which reads as "the app is broken" rather than "this link is
+  // dead". Say so, and offer the way forward.
+  if (state === 'notfound') {
+    return (
+      <div className="min-h-screen max-w-2xl mx-auto px-4 py-12">
+        <h1 className="text-3xl font-semibold mb-2">This invite link isn't valid</h1>
+        <p className="text-slate-600 mb-8">
+          It may have been revoked, replaced by a newer link, or mistyped. Ask
+          whoever invited you to send a fresh one.
+        </p>
+        <Link
+          to="/browse/"
+          className="inline-block px-5 py-2.5 rounded-lg bg-emerald-600 text-white font-semibold"
+        >
+          Browse charities
+        </Link>
+      </div>
+    );
+  }
   if (state === 'loading' || !plan) {
     return (
       <div className="min-h-screen flex items-center justify-center text-slate-500">
@@ -56,7 +76,6 @@ export const JoinPlanPage: React.FC = () => {
     summaries.find(s => s.ein === ein)?.name ?? ein;
 
   const onJoin = async () => {
-    if (!userId) { navigate('/profile'); return; } // sign-in surface; returns here after auth
     await join(token!, user?.displayName || 'Family member');
     trackPlanJoined(planId!);
     navigate('/profile');
@@ -77,12 +96,26 @@ export const JoinPlanPage: React.FC = () => {
         ))}
       </ul>
 
-      <button
-        onClick={onJoin}
-        className="px-5 py-2.5 rounded-lg bg-emerald-600 text-white font-semibold"
-      >
-        {alreadyMember ? 'Open this plan' : userId ? 'Join your family' : 'Sign in to join your family'}
-      </button>
+      {/* Sign in *in place* rather than navigating to /profile — nothing was
+          holding the invite across that hop, so the link was silently lost.
+          Staying here means the button below becomes "Join your family" the
+          moment auth resolves. */}
+      {userId ? (
+        <button
+          onClick={onJoin}
+          className="px-5 py-2.5 rounded-lg bg-emerald-600 text-white font-semibold"
+        >
+          {alreadyMember ? 'Open this plan' : 'Join your family'}
+        </button>
+      ) : (
+        <SignInButton
+          variant="button"
+          context="plan-invite"
+          className="px-5 py-2.5 rounded-lg bg-emerald-600 text-white font-semibold"
+        >
+          Sign in to join your family
+        </SignInButton>
+      )}
     </div>
   );
 };

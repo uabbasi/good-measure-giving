@@ -18,6 +18,7 @@ import { useLandingTheme } from '../../../contexts/LandingThemeContext';
 import { useProfileState } from '../../contexts/UserFeaturesContext';
 import { useCharities } from '../../hooks/useCharities';
 import { formatCurrency } from '../../utils/formatters';
+import { offPlanDonationTotal } from '../../utils/offPlanGiving';
 import type { CharityBucketAssignment, GivingHistoryEntry } from '../../../types';
 
 interface ProgressDashboardProps {
@@ -89,11 +90,7 @@ export function ProgressDashboard({ onRequestSetTarget, donations = [] }: Progre
     }
     // Top up with donations logged against a charity that isn't in the plan
     // (no matching assignment), which `assignments[].given` never reflects.
-    for (const d of donations) {
-      if (!d.charityEin || !assignedEins.has(d.charityEin)) {
-        given += Number(d.amount) || 0;
-      }
-    }
+    given += offPlanDonationTotal(donations, assignedEins);
     return {
       allocated,
       given,

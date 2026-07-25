@@ -28,6 +28,8 @@ import { SHOW_AMAL_SCORE } from '../../featureFlags';
 import { useCharities } from '../../hooks/useCharities';
 import { ALL_TAGS, TAGS, pickBestTag } from '../../constants/givingTags';
 import { getWalletType } from '../../utils/walletUtils';
+import { sanitizeMoneyInput, parseMoneyInput } from '../../utils/moneyInput';
+import { offPlanDonationTotal } from '../../utils/offPlanGiving';
 import { StarterPlan } from './StarterPlan';
 import { ZakatEstimator } from './ZakatEstimator';
 import { CharityRecordRow } from './CharityRecordRow';
@@ -195,7 +197,7 @@ export function UnifiedAllocationView({
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
   }, []);
 
-  const targetNum = parseInt(target, 10) || 0;
+  const targetNum = parseMoneyInput(target);
 
   // Assignment maps --------------------------------------------------------
   const charityToBucket = useMemo(() => {
@@ -269,9 +271,14 @@ export function UnifiedAllocationView({
     () => visibleCharities.reduce((s, c) => s + (charityIntendedMap.get(c.ein) || 0), 0),
     [visibleCharities, charityIntendedMap],
   );
+  // Charities in the plan, plus donations logged against charities that aren't
+  // — otherwise this bar and the ProgressDashboard card above it report
+  // different totals for the same question.
   const totalGiven = useMemo(
-    () => visibleCharities.reduce((s, c) => s + (charityGivenMap.get(c.ein) || 0), 0),
-    [visibleCharities, charityGivenMap],
+    () =>
+      visibleCharities.reduce((s, c) => s + (charityGivenMap.get(c.ein) || 0), 0) +
+      offPlanDonationTotal(donations, new Set(initialAssignments.map(a => a.ein))),
+    [visibleCharities, charityGivenMap, donations, initialAssignments],
   );
   const unallocated = targetNum - totalIntended;
 
@@ -567,9 +574,9 @@ export function UnifiedAllocationView({
               <input
                 ref={targetInputRef}
                 type="text"
-                inputMode="numeric"
+                inputMode="decimal"
                 value={target}
-                onChange={e => setTarget(e.target.value.replace(/\D/g, ''))}
+                onChange={e => setTarget(sanitizeMoneyInput(e.target.value))}
                 onBlur={handleTargetBlur}
                 onKeyDown={handleTargetKey}
                 placeholder="e.g. 10,000"

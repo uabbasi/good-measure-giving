@@ -25,14 +25,16 @@ export const CharityDetailsPage: React.FC = () => {
 
   // Record view for anonymous users (progressive reveal).
   // GmgCharityDetail does NOT record views, so this must stay here.
+  // Gated on `charity` so a stale or mistyped link doesn't spend one of the
+  // three free views on a charity the visitor never got to see.
   useEffect(() => {
-    if (id && !isSignedIn) {
+    if (!id || !charity) return;
+    if (isSignedIn) {
+      incrementSignedInViews();
+    } else {
       recordView(id);
     }
-    if (id && isSignedIn) {
-      incrementSignedInViews();
-    }
-  }, [id, isSignedIn, recordView]);
+  }, [id, charity, isSignedIn, recordView]);
 
   if (loading) {
     return (

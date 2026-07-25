@@ -18,6 +18,7 @@ import { Link } from 'react-router-dom';
 import { charityPath } from '../../lib/paths';
 import { Check, ChevronRight, X } from 'lucide-react';
 import type { AssignmentStatus } from '../../utils/recordStatus';
+import { sanitizeMoneyInput, parseMoneyInput } from '../../utils/moneyInput';
 
 export interface CharityRecordRowData {
   ein: string;
@@ -113,7 +114,7 @@ export function CharityRecordRow({
   };
 
   const commit = () => {
-    const n = parseInt(localIntended.replace(/\D/g, ''), 10) || 0;
+    const n = parseMoneyInput(localIntended);
     if (n !== charity.intended) onSetIntended(charity.ein, n);
   };
 
@@ -185,10 +186,10 @@ export function CharityRecordRow({
       </span>
       <input
         type="text"
-        inputMode="numeric"
+        inputMode="decimal"
         data-testid={`record-intended-${charity.ein}`}
         value={localIntended}
-        onChange={e => setLocalIntended(e.target.value.replace(/\D/g, ''))}
+        onChange={e => setLocalIntended(sanitizeMoneyInput(e.target.value))}
         onBlur={commit}
         onKeyDown={onKeyDown}
         placeholder="0"

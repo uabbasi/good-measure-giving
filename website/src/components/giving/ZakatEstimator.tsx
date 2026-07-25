@@ -3,6 +3,7 @@ import { AnimatePresence, m } from 'motion/react';
 import { Calculator, X } from 'lucide-react';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
 import { calculateZakat, NISAB_USD } from '../../utils/zakatCalculator';
+import { sanitizeMoneyInput, parseMoneyInput } from '../../utils/moneyInput';
 import type { ZakatAssets, ZakatLiabilities } from '../../../types';
 
 interface ZakatEstimatorProps {
@@ -13,7 +14,7 @@ interface ZakatEstimatorProps {
 }
 
 function parseAmount(value: string): number {
-  return parseInt(value.replace(/\D/g, ''), 10) || 0;
+  return parseMoneyInput(value);
 }
 
 function formatUsd(n: number): string {
@@ -134,9 +135,9 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
                     <label className={labelClass}>Cash & savings *</label>
                     <input
                       type="text"
-                      inputMode="numeric"
+                      inputMode="decimal"
                       value={cash}
-                      onChange={e => setCash(e.target.value.replace(/\D/g, ''))}
+                      onChange={e => setCash(sanitizeMoneyInput(e.target.value))}
                       placeholder="0"
                       className={inputClass}
                       autoFocus
@@ -146,9 +147,9 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
                     <label className={labelClass}>Investments & stocks</label>
                     <input
                       type="text"
-                      inputMode="numeric"
+                      inputMode="decimal"
                       value={stocks}
-                      onChange={e => setStocks(e.target.value.replace(/\D/g, ''))}
+                      onChange={e => setStocks(sanitizeMoneyInput(e.target.value))}
                       placeholder="0"
                       className={inputClass}
                     />
@@ -157,9 +158,9 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
                     <label className={labelClass}>Gold & silver (market value)</label>
                     <input
                       type="text"
-                      inputMode="numeric"
+                      inputMode="decimal"
                       value={gold}
-                      onChange={e => setGold(e.target.value.replace(/\D/g, ''))}
+                      onChange={e => setGold(sanitizeMoneyInput(e.target.value))}
                       placeholder="0"
                       className={inputClass}
                     />
@@ -168,9 +169,9 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
                     <label className={labelClass}>Other zakatable assets</label>
                     <input
                       type="text"
-                      inputMode="numeric"
+                      inputMode="decimal"
                       value={other}
-                      onChange={e => setOther(e.target.value.replace(/\D/g, ''))}
+                      onChange={e => setOther(sanitizeMoneyInput(e.target.value))}
                       placeholder="0"
                       className={inputClass}
                     />
@@ -187,9 +188,9 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
                   <label className={labelClass}>Short-term debts</label>
                   <input
                     type="text"
-                    inputMode="numeric"
+                    inputMode="decimal"
                     value={debts}
-                    onChange={e => setDebts(e.target.value.replace(/\D/g, ''))}
+                    onChange={e => setDebts(sanitizeMoneyInput(e.target.value))}
                     placeholder="0"
                     className={inputClass}
                   />

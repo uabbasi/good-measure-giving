@@ -320,7 +320,27 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
         isMobile={isMobile}
       />
 
-      {isMobile ? (
+      {rows.length === 0 ? (
+        /* Without this, a search that matches nothing rendered bare column
+           headers above the footer — no explanation, no way back. */
+        <section style={{ padding: `48px ${padX}px 56px`, textAlign: 'center' }}>
+          <p style={{ fontFamily: FONT_MONO, fontSize: 12, color: p.sub, margin: 0, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+            No charities match
+          </p>
+          <p style={{ fontSize: 15, color: p.sub2, margin: '10px 0 20px' }}>
+            {query.trim()
+              ? <>Nothing in the index matches “{query.trim()}”.</>
+              : 'No charities match the current filter.'}
+          </p>
+          <button
+            type="button"
+            onClick={() => { setQuery(''); setWallet('all'); }}
+            style={{ fontFamily: FONT_MONO, fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', padding: '10px 18px', borderRadius: 999, border: `1px solid ${p.rule}`, background: 'transparent', color: p.fg, cursor: 'pointer' }}
+          >
+            Clear filters
+          </button>
+        </section>
+      ) : isMobile ? (
         /* Mobile: stacked cards. Container tap navigates; name is a real Link;
            compare control is a real checkbox. */
         <section style={{ padding: `12px ${padX}px 28px`, display: 'grid', gap: 10 }}>

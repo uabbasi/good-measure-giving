@@ -86,12 +86,16 @@ export function GivingHistoryTable({
     );
   }, [filteredDonations]);
 
+  // Show cents only when there are cents. This is the ledger a donor checks
+  // against a receipt, so $88.25 must not render as "$88" — but whole-dollar
+  // donations shouldn't gain a noisy ".00" either.
   const formatCurrency = (amount: number) => {
+    const hasCents = Math.round(amount * 100) % 100 !== 0;
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
+      minimumFractionDigits: hasCents ? 2 : 0,
+      maximumFractionDigits: hasCents ? 2 : 0,
     }).format(amount);
   };
 
@@ -203,6 +207,13 @@ export function GivingHistoryTable({
           </p>
         </div>
       ) : (
+        <>
+        {/* The table is 860px wide and scrolls inside its container, but on a
+            phone the Amount and Actions columns sit off-screen with nothing
+            saying so. Matches the hint on /compare. */}
+        <p className={`sm:hidden text-[11px] mb-2 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
+          Swipe to see more →
+        </p>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[860px] text-sm">
             <thead>
@@ -330,6 +341,7 @@ export function GivingHistoryTable({
             </tbody>
           </table>
         </div>
+        </>
       )}
     </div>
   );

@@ -199,21 +199,40 @@ export function useCharities() {
  * Hook to load a single charity's full details.
  * Cached per EIN so navigating between detail pages doesn't re-fetch.
  */
+/** Thrown for a 404 so retry logic can tell "missing" from "flaky network". */
+class CharityNotFoundError extends Error {}
+
 export function useCharity(ein: string) {
   const { data, isLoading, error } = useQuery({
     queryKey: ['charity', ein],
     queryFn: async () => {
       const response = await fetch(`/data/charities/charity-${ein}.json`);
+      if (response.status === 404) {
+        throw new CharityNotFoundError(`Charity not found: ${ein}`);
+      }
       if (!response.ok) {
         throw new Error(`Charity not found: ${ein}`);
       }
-      const charity = (await response.json()) as CharityProfile;
+      // A static JSON file that doesn't parse won't parse on a retry either —
+      // in dev this is how a missing charity shows up, since Vite's SPA
+      // fallback answers 200 with index.html instead of 404.
+      let charity: CharityProfile;
+      try {
+        charity = (await response.json()) as CharityProfile;
+      } catch {
+        throw new CharityNotFoundError(`Charity not found: ${ein}`);
+      }
       if (!charity.ui_signals_v1) {
         charity.ui_signals_v1 = deriveUISignalsFromCharity(charity);
       }
       return charity;
     },
     enabled: !!ein,
+    // A 404 is a settled answer, not a blip. Retrying it three times (the
+    // default) left a stale or mistyped charity link showing a blank skeleton
+    // for ~8 seconds before the "Charity not found" card appeared.
+    retry: (failureCount, err) =>
+      !(err instanceof CharityNotFoundError) && failureCount < 3,
   });
 
   return {

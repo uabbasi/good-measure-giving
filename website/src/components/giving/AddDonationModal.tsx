@@ -14,6 +14,7 @@ import { db } from '../../auth/firebase';
 import { useAuth } from '../../auth/useAuth';
 import { useProfileState } from '../../contexts/UserFeaturesContext';
 import { applyDonation } from '../../utils/recordStatus';
+import { MAX_MONEY_INPUT } from '../../utils/moneyInput';
 import type { GivingHistoryEntry, CharityBucketAssignment } from '../../../types';
 import type { DonationInput } from '../../hooks/useGivingHistory';
 
@@ -21,7 +22,10 @@ import type { DonationInput } from '../../hooks/useGivingHistory';
 const donationSchema = z.object({
   charityName: z.string().min(1, 'Charity name is required'),
   charityEin: z.string().optional().default(''),
-  amount: z.coerce.number().positive('Amount must be greater than 0'),
+  amount: z.coerce
+    .number()
+    .positive('Amount must be greater than 0')
+    .max(MAX_MONEY_INPUT, 'Amount is too large'),
   date: z.string().min(1, 'Date is required'),
   category: z.enum(['zakat', 'sadaqah', 'other']),
   zakatYear: z.string().optional().default(''),

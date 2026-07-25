@@ -7,6 +7,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, orderBy, query, Timestamp } from 'firebase/firestore';
 import { useFirebaseData } from '../auth/FirebaseProvider';
 import type { GivingHistoryEntry } from '../../types';
+import { toCSV } from '../utils/csv';
 
 export interface DonationInput {
   charityEin?: string | null;
@@ -314,7 +315,7 @@ export function useGivingHistory(): UseGivingHistoryResult {
 
     const rows = filtered.map(d => [
       d.date,
-      `"${d.charityName.replace(/"/g, '""')}"`,
+      d.charityName,
       d.charityEin || '',
       d.amount.toFixed(2),
       d.category,
@@ -325,10 +326,10 @@ export function useGivingHistory(): UseGivingHistoryResult {
       d.matchEligible ? 'Yes' : 'No',
       d.matchStatus || '',
       d.matchAmount?.toFixed(2) || '',
-      d.notes ? `"${d.notes.replace(/"/g, '""')}"` : '',
+      d.notes || '',
     ]);
 
-    return [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    return toCSV(headers, rows);
   }, [donations]);
 
   return {
