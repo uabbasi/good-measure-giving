@@ -165,12 +165,15 @@ def reconcile(eins, data_repo, history_fn, apply: bool = False) -> tuple[list[di
 def is_systemic_failure(processed: int, skipped: int) -> bool:
     """True when the run's results cannot be trusted as a clean read.
 
-    Two cases: nothing was successfully queried (processed == 0), or a
-    mostly-broken run — more EINs failed history-load than succeeded
-    (skipped > processed). Either must exit non-zero rather than silently
-    reporting an empty/partial candidate list as if it were complete.
+    Two cases: nothing was successfully queried (processed == 0 — including
+    when nothing was even attempted, e.g. a mistyped --ein), or a
+    mostly-broken run where more EINs failed than succeeded. Either must exit
+    non-zero rather than silently reporting an empty/partial candidate list as
+    if it were complete.
     """
-    return skipped > 0 and (processed == 0 or skipped > processed)
+    if processed == 0:
+        return True
+    return skipped > processed
 
 
 def main() -> None:
@@ -191,7 +194,13 @@ def main() -> None:
     # say so loudly and exit non-zero WITHOUT overwriting the report with a
     # misleading empty/partial list.
     if is_systemic_failure(processed, skipped):
-        if processed == 0:
+        if processed == 0 and skipped == 0:
+            print(
+                f"reconcile: NONE of the {len(eins)} requested charities had a "
+                "charity_data row — nothing was reconciled. Check the EIN(s).",
+                file=sys.stderr,
+            )
+        elif processed == 0:
             print(
                 f"reconcile: history query FAILED for all {len(eins)} charities — "
                 "reconciliation did NOT run (no charity was successfully queried).",

@@ -176,3 +176,13 @@ class TestSystemicFailure:
         from bin.reconcile_charity_data import is_systemic_failure
 
         assert is_systemic_failure(processed=5, skipped=0) is False
+
+    def test_processed_zero_is_systemic_even_with_no_skips(self):
+        """--ein with a typo queried nothing; exiting 0 read as a clean bill of health."""
+        from bin.reconcile_charity_data import is_systemic_failure
+
+        assert is_systemic_failure(processed=0, skipped=0) is True
+        assert is_systemic_failure(processed=0, skipped=5) is True
+        assert is_systemic_failure(processed=1, skipped=5) is True
+        assert is_systemic_failure(processed=10, skipped=0) is False
+        assert is_systemic_failure(processed=10, skipped=2) is False
