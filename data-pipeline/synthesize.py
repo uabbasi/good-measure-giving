@@ -40,6 +40,7 @@ from src.scorers.strategic_evidence import compute_strategic_evidence
 from src.services.beneficiary_semantics_verifier import verify_beneficiary_semantics
 from src.utils.deep_link_resolver import choose_website_evidence_url
 from src.utils.evaluation_tracks import is_new_org
+from src.utils.financial_coherence import FINANCIAL_FIELDS, restore_breaks_balance_sheet
 from src.utils.logger import PipelineLogger
 from src.utils.phase_cache_helper import check_phase_cache, update_phase_cache
 
@@ -123,6 +124,15 @@ def apply_regression_guard(synthesized, metrics, prior_row: dict | None) -> list
     31-1267559's total_revenue was restored this way and failed the
     synthesize quality gate. The prior attribution is still accurate
     provenance for the restored value, so it's carried forward alongside it.
+
+    A restore is refused, not restored-then-flagged, when it would produce a
+    row that cannot exist: a prior-year value combined with this run's other
+    financial fields can ship a balance sheet where net assets exceed total
+    assets (EIN 81-3451645), or invent financials for an org ProPublica shows
+    as never having filed (no_filings=1, e.g. 31-1267559). A missing value
+    renders as absent, which is honest; a mixed-vintage value renders as a
+    specific wrong number, which is not. Every refusal is still appended to
+    `flags` with `"rejected"` set so the regressions report records it.
     """
     if not prior_row:
         return []
@@ -134,6 +144,23 @@ def apply_regression_guard(synthesized, metrics, prior_row: dict | None) -> list
         prior_value = prior_row.get(field)
         if prior_value is None or getattr(metrics, field, None) is not None:
             continue
+        if field in FINANCIAL_FIELDS and getattr(synthesized, "no_filings", None):
+            flags.append(
+                {"charity_ein": synthesized.charity_ein, "field": field,
+                 "prior_value": prior_value, "rejected": "no_filings"}
+            )
+            continue
+        current_row = {
+            "total_assets": getattr(metrics, "total_assets", None),
+            "total_liabilities": getattr(metrics, "total_liabilities", None),
+            "net_assets": getattr(metrics, "net_assets", None),
+        }
+        if restore_breaks_balance_sheet(current_row, field, prior_value):
+            flags.append(
+                {"charity_ein": synthesized.charity_ein, "field": field,
+                 "prior_value": prior_value, "rejected": "balance_sheet_violation"}
+            )
+            continue
         setattr(metrics, field, prior_value)
         setattr(synthesized, field, prior_value)
         if field in prior_attribution:
@@ -141,7 +168,8 @@ def apply_regression_guard(synthesized, metrics, prior_row: dict | None) -> list
                 synthesized.source_attribution = {}
             synthesized.source_attribution[field] = prior_attribution[field]
         flags.append(
-            {"charity_ein": synthesized.charity_ein, "field": field, "prior_value": prior_value}
+            {"charity_ein": synthesized.charity_ein, "field": field,
+             "prior_value": prior_value, "rejected": None}
         )
     return flags
 

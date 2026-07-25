@@ -269,7 +269,7 @@ class TestRegressionGuard:
 
         assert metrics.total_revenue == 1_000_000  # restored into the object the scorer reads
         assert synthesized.total_revenue == 1_000_000  # restored
-        assert flags == [{"charity_ein": "12-3456789", "field": "total_revenue", "prior_value": 1_000_000}]
+        assert flags == [{"charity_ein": "12-3456789", "field": "total_revenue", "prior_value": 1_000_000, "rejected": None}]
 
     def test_guard_restores_attribution_alongside_value(self):
         """Real incident: EIN 31-1267559's total_revenue was restored by the
@@ -296,7 +296,7 @@ class TestRegressionGuard:
             "source_name": "Charity Navigator",
             "value": 1_000_000,
         }
-        assert flags == [{"charity_ein": "12-3456789", "field": "total_revenue", "prior_value": 1_000_000}]
+        assert flags == [{"charity_ein": "12-3456789", "field": "total_revenue", "prior_value": 1_000_000, "rejected": None}]
 
     def test_guard_restores_value_when_prior_attribution_missing(self):
         """Prior row predates attribution tracking (or never had it) -- the
@@ -312,7 +312,7 @@ class TestRegressionGuard:
 
         assert metrics.total_revenue == 1_000_000
         assert synthesized.total_revenue == 1_000_000
-        assert flags == [{"charity_ein": "12-3456789", "field": "total_revenue", "prior_value": 1_000_000}]
+        assert flags == [{"charity_ein": "12-3456789", "field": "total_revenue", "prior_value": 1_000_000, "rejected": None}]
 
     def test_guard_allows_observed_absent_and_unguarded_fields(self):
         from src.db import CharityData
@@ -455,6 +455,83 @@ def test_zero_financials_persist_as_zero_not_null():
     assert _coerce_financial_column(None) is None
     assert _coerce_financial_column(1131154) == 1131154
     assert _coerce_financial_column(11342603.0) == 11342603
+
+
+class TestFinancialCoherence:
+    def test_net_assets_above_total_assets_is_a_violation(self):
+        from src.utils.financial_coherence import balance_sheet_violations
+        assert balance_sheet_violations(5638, None, 10796)
+
+    def test_a_coherent_balance_sheet_has_no_violations(self):
+        from src.utils.financial_coherence import balance_sheet_violations
+        assert balance_sheet_violations(28413661, 1131154, 27282507) == []
+
+    def test_unknown_values_cannot_violate(self):
+        from src.utils.financial_coherence import balance_sheet_violations
+        assert balance_sheet_violations(None, None, None) == []
+        assert balance_sheet_violations(None, None, 10796) == []
+
+    def test_zero_liabilities_is_evaluated_not_skipped(self):
+        """A genuine 0 is a value — Task A2 made sure it survives."""
+        from src.utils.financial_coherence import balance_sheet_violations
+        assert balance_sheet_violations(5638, 0, 10796)
+        assert balance_sheet_violations(5638, 0, 5638) == []
+
+    def test_identity_allows_small_rounding_slack(self):
+        from src.utils.financial_coherence import balance_sheet_violations
+        assert balance_sheet_violations(1_000_000, 400_000, 600_001) == []
+        assert balance_sheet_violations(1_000_000, 400_000, 900_000)
+
+
+class TestGuardRejectsIncoherentRestores:
+    def _run(self, prior, current_metrics, no_filings=0):
+        from types import SimpleNamespace
+
+        from synthesize import apply_regression_guard
+        metrics = SimpleNamespace(source_attribution={}, **current_metrics)
+        synthesized = SimpleNamespace(charity_ein="81-3451645", source_attribution={},
+                                      no_filings=no_filings, **current_metrics)
+        flags = apply_regression_guard(synthesized, metrics, prior)
+        return metrics, flags
+
+    def test_restore_that_would_exceed_total_assets_is_rejected(self):
+        """EIN 81-3451645 publishes net_assets 10796 against total_assets 5638."""
+        metrics, flags = self._run(
+            prior={"charity_ein": "81-3451645", "net_assets": 10796, "source_attribution": {}},
+            current_metrics={"total_assets": 5638, "total_liabilities": None,
+                             "net_assets": None, "total_revenue": 32150,
+                             "total_expenses": None},
+        )
+        assert metrics.net_assets is None, "an incoherent restore must be refused"
+        assert any(f.get("rejected") for f in flags), "and must still be reported"
+
+    def test_a_coherent_restore_still_happens(self):
+        # total_liabilities=1638 makes this triple self-consistent with the
+        # restored net_assets=4000 (5638 - 1638 == 4000); the brief's original
+        # fixture used 1000, which doesn't satisfy the balance-sheet identity
+        # implemented in Step 3 and would make this "coherent" case spuriously
+        # rejected. Fixed to actually exercise the coherent path.
+        metrics, flags = self._run(
+            prior={"charity_ein": "x", "net_assets": 4000, "source_attribution": {}},
+            current_metrics={"total_assets": 5638, "total_liabilities": 1638,
+                             "net_assets": None, "total_revenue": 32150,
+                             "total_expenses": None},
+        )
+        assert metrics.net_assets == 4000
+        assert not any(f.get("rejected") for f in flags)
+
+    def test_no_filings_org_gets_no_financial_restore(self):
+        """31-1267559 and 88-2454707 carry financials with no_filings=1 today."""
+        metrics, flags = self._run(
+            prior={"charity_ein": "31-1267559", "total_revenue": 11342603,
+                   "source_attribution": {}},
+            current_metrics={"total_assets": None, "total_liabilities": None,
+                             "net_assets": None, "total_revenue": None,
+                             "total_expenses": None},
+            no_filings=1,
+        )
+        assert metrics.total_revenue is None
+        assert any(f.get("rejected") for f in flags)
 
 
 class TestSynthesizeCharityOrdering:
