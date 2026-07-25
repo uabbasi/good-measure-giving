@@ -133,6 +133,19 @@ def _first_non_none(*values):
     return None
 
 
+def _compute_cash_adjusted_ratio(program_expenses: float, total_expenses: float, noncash: float) -> float:
+    """GIK-adjusted program ratio, clamped to [0.0, 1.0].
+
+    Strips in-kind (noncash) contributions from both program and total
+    expenses before ratioing, so gift-in-kind inflation can't pad the
+    filed program ratio. Clamped at both ends — the raw ratio path clamps
+    with min(1.0, ...), and an unclamped ratio here rendered as e.g. "130%"
+    into the narrative prompt as a mandatory value.
+    """
+    adjusted = (program_expenses - noncash) / (total_expenses - noncash)
+    return max(0.0, min(1.0, adjusted))
+
+
 # Generic population phrases LLMs default to when specific data is missing
 # (hallucination-denylist S-J-006). A website populations_served list made up
 # only of these is not a verifiable claim.
@@ -1737,8 +1750,9 @@ class CharityMetricsAggregator:
                     prog_exp = metrics_data.get("program_expenses")
                     total_exp = metrics_data.get("total_expenses")
                     if prog_exp is not None and total_exp is not None and total_exp > noncash:
-                        adjusted = (prog_exp - noncash) / (total_exp - noncash)
-                        metrics_data["cash_adjusted_program_ratio"] = max(0.0, adjusted)
+                        metrics_data["cash_adjusted_program_ratio"] = _compute_cash_adjusted_ratio(
+                            prog_exp, total_exp, noncash
+                        )
 
         # ====================================================================
         # Domestic burn rate (Fix 2)

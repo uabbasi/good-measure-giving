@@ -1521,7 +1521,13 @@ class ImpactScorer:
         Uses cash-adjusted ratio when GIK is significant, falling back to
         the standard program_expense_ratio.
         """
-        ratio = metrics.cash_adjusted_program_ratio or metrics.program_expense_ratio
+        # `or` treated a real 0.0 (all program spend in-kind) as absent, so
+        # the worst GIK-inflation case scored on its filed ratio instead.
+        ratio = (
+            metrics.cash_adjusted_program_ratio
+            if metrics.cash_adjusted_program_ratio is not None
+            else metrics.program_expense_ratio
+        )
         if ratio is None or ratio < 0.01:
             return 0, "Program expense ratio: unknown"
 
@@ -2424,9 +2430,15 @@ class RiskScorer:
         """
         total = 0
 
-        # Program ratio check — use cash-adjusted ratio when GIK is significant
-        ratio = metrics.cash_adjusted_program_ratio or metrics.program_expense_ratio
-        if ratio is not None and ratio >= 0.01 and ratio < 0.50:
+        # Program ratio check — use cash-adjusted ratio when GIK is significant.
+        # `or` treated a real 0.0 (all program spend in-kind) as absent, so
+        # the worst GIK-inflation case never triggered this deduction.
+        ratio = (
+            metrics.cash_adjusted_program_ratio
+            if metrics.cash_adjusted_program_ratio is not None
+            else metrics.program_expense_ratio
+        )
+        if ratio is not None and ratio < 0.50:
             total += RISK_DEDUCTIONS["program_ratio_under_50"]
 
         wc = metrics.working_capital_ratio

@@ -209,6 +209,34 @@ class TestImpactScorer:
         pr_pts = _component_pts(result, "Program Ratio")
         assert 0 <= pr_pts <= 2
 
+    def test_a_fully_in_kind_charity_does_not_score_on_its_filed_ratio(self):
+        """cash_adjusted_program_ratio=0.0 is a real, valid value (all program
+        spend is in-kind) but is falsy, so `or metrics.program_expense_ratio`
+        silently discarded it and scored the worst GIK-inflation case on its
+        92% filed ratio instead."""
+        m = _base_metrics(program_expense_ratio=0.92, cash_adjusted_program_ratio=0.0)
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        assert _component_pts(result, "Program Ratio") == 0
+
+    def test_a_present_nonzero_cash_adjusted_ratio_still_wins(self):
+        """A genuine nonzero cash-adjusted ratio must still take priority
+        over the filed ratio (this was already correct — guards regression)."""
+        m = _base_metrics(program_expense_ratio=0.92, cash_adjusted_program_ratio=0.55)
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        comp = _component(result, "Program Ratio")
+        assert "55" in comp.evidence
+
+    def test_missing_cash_adjusted_ratio_falls_back_to_the_filed_ratio(self):
+        """cash_adjusted_program_ratio=None (not computed, e.g. no GIK) must
+        still fall back to the filed ratio."""
+        m = _base_metrics(program_expense_ratio=0.92, cash_adjusted_program_ratio=None)
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        comp = _component(result, "Program Ratio")
+        assert "92" in comp.evidence
+
     def test_cost_per_beneficiary_humanitarian(self):
         """$20/beneficiary in humanitarian → max CPB for archetype (exceptional, at top of knots)."""
         m = _base_metrics(
@@ -743,6 +771,40 @@ class TestGIKRisk:
         gik_risks = [r for r in case_against.risks if "GIK" in r.description]
         assert len(gik_risks) == 1
         assert "60%" in gik_risks[0].description
+
+    def test_risk_deduction_fires_on_a_zero_cash_adjusted_ratio(self):
+        """cash_adjusted_program_ratio=0.0 (all program spend in-kind) is the
+        worst GIK-inflation case — it must trigger the program_ratio_under_50
+        deduction, not be discarded by a falsy `or` fallback to the 92% filed
+        ratio."""
+        m = _base_metrics(
+            program_expense_ratio=0.92,
+            cash_adjusted_program_ratio=0.0,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+        )
+        scorer = RiskScorer()
+        _case_against, deduction = scorer.evaluate(m)
+        assert deduction <= -5
+
+
+class TestComputeCashAdjustedRatio:
+    """Clamp both ends of the cash-adjusted ratio — the raw path clamps with
+    min(1.0, ...) but the cash-adjusted path didn't, so a ratio of 1.3
+    rendered as 'Cash-adjusted program ratio: 130%' into the narrative
+    prompt as a mandatory value."""
+
+    def test_ratio_over_one_is_clamped_to_one(self):
+        from src.parsers.charity_metrics_aggregator import _compute_cash_adjusted_ratio
+
+        assert _compute_cash_adjusted_ratio(program_expenses=130, total_expenses=100, noncash=0) == 1.0
+
+    def test_ratio_at_zero_is_clamped_to_zero(self):
+        from src.parsers.charity_metrics_aggregator import _compute_cash_adjusted_ratio
+
+        assert _compute_cash_adjusted_ratio(program_expenses=0, total_expenses=100, noncash=0) == 0.0
 
 
 # ─── Domestic Burn Rate Risk ──────────────────────────────────────────────
