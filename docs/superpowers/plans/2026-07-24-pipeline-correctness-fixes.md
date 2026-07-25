@@ -2201,9 +2201,18 @@ class TestCnScoreSanitizationIsIdempotent:
                                   working_capital_ratio=None)
         return sanitize_narrative_metrics({"rationale": text}, metrics, None)["rationale"]
 
-    def test_already_correct_text_is_left_alone(self):
-        text = "The charity holds an overall score of 98.66666666666667/100 from Charity Navigator."
+    def test_the_rounded_value_is_left_alone(self):
+        """Idempotency: sanitizing already-correct text must be a no-op."""
+        text = "The charity holds an overall score of 98.7/100 from Charity Navigator."
         assert self._sanitize(text, 98.66666666666667) == text
+
+    def test_an_unrounded_value_is_replaced_not_doubled(self):
+        """The bug: \\d+/100 matched only '66666666666667', leaving the '98.' prefix."""
+        import re
+        out = self._sanitize(
+            "Scored 98.66666666666667/100 from Charity Navigator.", 98.66666666666667)
+        assert "98.7/100 from Charity Navigator" in out
+        assert not re.search(r"\d+\.\d+\.\d+/100", out)
 
     def test_sanitizing_twice_is_a_no_op(self):
         text = "Rated 87.5/100 from Charity Navigator."
@@ -2214,19 +2223,16 @@ class TestCnScoreSanitizationIsIdempotent:
         out = self._sanitize("Rated 42/100 from Charity Navigator.", 87.5)
         assert "87.5/100 from Charity Navigator" in out
         assert "42" not in out
-
-    def test_no_doubled_decimal_survives(self):
-        import re
-        out = self._sanitize("Scored 100.0/100 from Charity Navigator.", 100.0)
-        assert not re.search(r"\d+\.\d+\.\d+/100", out)
 ```
 
 Read `sanitize_narrative_metrics`'s real signature first and adapt the `_sanitize` helper — the assertions are what matter.
 
+**Note:** these tests target the FINAL behavior after both Step 3 and Step 4. Steps 3 and 4 are one logical change — the regex fix alone leaves a 17-digit decimal in donor prose, and the rounding alone still doubles. Make both edits before re-running.
+
 - [ ] **Step 2: Run to verify failure**
 
 Run: `cd data-pipeline && uv run pytest tests/test_baseline_prompt.py::TestCnScoreSanitizationIsIdempotent -v`
-Expected: FAIL — `test_already_correct_text_is_left_alone` produces `98.98.66666666666667/100`
+Expected: FAIL — `test_an_unrounded_value_is_replaced_not_doubled` produces `98.98.66666666666667/100`
 
 - [ ] **Step 3: Fix the regex**
 
@@ -2247,7 +2253,7 @@ A 17-digit repeating decimal in donor-facing text is wrong independent of this b
         correct_cn = f"{round(cn_score, 1)}/100"
 ```
 
-Apply the same rounding to the prompt values at `data-pipeline/baseline.py:575` and `data-pipeline/src/services/rich_narrative_generator.py:1274`, so the "use this exact value" instruction hands the model the rounded number in the first place. Update the test's expectations accordingly.
+Apply the same rounding to the prompt values at `data-pipeline/baseline.py:575` and `data-pipeline/src/services/rich_narrative_generator.py:1274`, so the "use this exact value" instruction hands the model the rounded number in the first place.
 
 - [ ] **Step 5: Run the tests, full suite, and commit**
 
