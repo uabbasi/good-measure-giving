@@ -228,9 +228,14 @@ def is_content_downgrade(
         new_pages = (new_parsed_json.get("crawl_stats") or {}).get("pages_crawled") or 0
         if prior_pages <= 0:
             return False
+        # raw_content is the HOMEPAGE only, fetched separately from the multi-page
+        # crawl — a Cloudflare-fronted site can serve pages fine via curl_cffi while
+        # the sync homepage fetch 403s. Thin homepage HTML is only a downgrade
+        # signal when the crawl did not otherwise improve; a crawl that found MORE
+        # pages than last time is strictly richer no matter what the homepage did.
         thin_raw = not new_raw_content or len(new_raw_content.strip()) < 500
         lost_pages = prior_pages >= 3 and new_pages <= max(1, prior_pages // 3)
-        return thin_raw or lost_pages
+        return lost_pages or (thin_raw and new_pages <= prior_pages)
 
     if source == "form990_grants":
         return grants_has_filings(prior_parsed_json) and not grants_has_filings(new_parsed_json)

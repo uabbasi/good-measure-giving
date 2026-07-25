@@ -95,6 +95,29 @@ class TestRawLayerPredicates:
         assert is_content_downgrade("charity_navigator", empty, None, prior) is True
         assert is_content_downgrade("charity_navigator", prior, None, prior) is False
 
+    def test_more_pages_with_an_empty_homepage_is_not_a_downgrade(self):
+        """new_raw_content is the homepage only; it can fail independently of the crawl."""
+        from src.collectors.orchestrator import is_content_downgrade
+
+        prior = {"crawl_stats": {"pages_crawled": 20}}
+        richer = {"crawl_stats": {"pages_crawled": 25}}
+        assert is_content_downgrade("website", richer, "", prior) is False
+        assert is_content_downgrade("website", richer, "x" * 400, prior) is False
+
+    def test_thin_homepage_with_no_page_improvement_is_still_a_downgrade(self):
+        from src.collectors.orchestrator import is_content_downgrade
+
+        prior = {"crawl_stats": {"pages_crawled": 20}}
+        fewer = {"crawl_stats": {"pages_crawled": 18}}
+        assert is_content_downgrade("website", fewer, "", prior) is True
+
+    def test_lost_pages_is_a_downgrade_regardless_of_homepage(self):
+        from src.collectors.orchestrator import is_content_downgrade
+
+        prior = {"crawl_stats": {"pages_crawled": 20}}
+        collapsed = {"crawl_stats": {"pages_crawled": 3}}
+        assert is_content_downgrade("website", collapsed, "x" * 5000, prior) is True
+
 
 class TestRawDataRepoSoftFail:
     def test_record_soft_fail_preserves_content_and_timestamp(self, monkeypatch):
