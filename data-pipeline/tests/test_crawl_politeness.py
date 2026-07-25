@@ -5,6 +5,7 @@ import threading
 from datetime import datetime, timedelta, timezone
 from unittest.mock import MagicMock, patch
 
+import pytest
 from src.collectors.orchestrator import (
     DataCollectionOrchestrator,
     classify_failure,
@@ -346,6 +347,74 @@ class TestTurnstileIsNotABotChallenge:
     def test_verify_you_are_human_in_title_is_still_detected(self):
         c = self._collector()
         html = "<html><head><title>Verify You Are Human</title></head><body>Loading...</body></html>"
+        assert c._is_bot_challenge_html(html) is True
+
+    @pytest.mark.parametrize(
+        "marker,marker_html",
+        [
+            ("challenge-running", '<div id="challenge-running"></div>'),
+            # Not "cf-chl-" (with trailing hyphen) -- that's also the
+            # unrelated top-level strong marker "cf-chl-", which would mask
+            # a dropped co-occurrence marker by returning True on its own.
+            ("cf-chl", "<p>ref=cf-chlxyz123</p>"),
+            ("_cf_chl_opt", "<script>window._cf_chl_opt={};</script>"),
+            ("cloudflare ray id", "<p>Cloudflare Ray ID: 89abc123def</p>"),
+        ],
+    )
+    def test_verify_you_are_human_with_a_single_vendor_marker_is_detected(
+        self, marker, marker_html
+    ):
+        """Each co-occurrence marker must independently flip the result --
+        a fixture that only carries one marker at a time, so a dropped or
+        typo'd marker fails this specific case rather than being masked by
+        another marker in the same fixture."""
+        c = self._collector()
+        html = f"""<html><head><title>Loading</title></head><body>
+        <p>Verify you are human to continue.</p>
+        {marker_html}
+        </body></html>"""
+        assert c._is_bot_challenge_html(html) is True, f"marker {marker!r} not detected"
+
+    def test_just_a_moment_in_title_with_verify_you_are_human_in_body_is_detected(self):
+        c = self._collector()
+        html = """<html><head><title>Just a moment...</title></head><body>
+        <p>Verify you are human to continue.</p>
+        </body></html>"""
+        assert c._is_bot_challenge_html(html) is True
+
+    def test_array_id_does_not_false_positive_as_ray_id(self):
+        """'ray id' as a bare substring hides inside 'array id'; the marker
+        must be the fuller 'cloudflare ray id' phrase."""
+        c = self._collector()
+        html = """<html><head><title>Donate</title></head><body>
+        <p>Verify you are human to continue.</p>
+        <script>var arrayId = [1, 2, 3]; /* the array id list */</script>
+        </body></html>"""
+        assert c._is_bot_challenge_html(html) is False
+
+    def test_just_a_moment_english_phrase_in_body_not_title_is_not_flagged(self):
+        """'just a moment' is ordinary English and shows up on real donate
+        copy; it only counts as a challenge signal when it's the page's
+        <title>, not anywhere in the body."""
+        c = self._collector()
+        html = """<html><head><title>Donate</title></head><body>
+        <p>Your donation is processed instantly -- it only takes just a moment.</p>
+        <div class="cf-turnstile" data-sitekey="0x4A"></div>
+        <label>Verify you are human</label>
+        </body></html>"""
+        assert c._is_bot_challenge_html(html) is False
+
+    def test_verify_you_are_human_title_with_internal_newlines_is_detected(self):
+        c = self._collector()
+        html = (
+            "<html><head><title>\n  Verify You\n  Are Human\n</title></head>"
+            "<body>Loading...</body></html>"
+        )
+        assert c._is_bot_challenge_html(html) is True
+
+    def test_verify_you_are_human_title_with_double_space_is_detected(self):
+        c = self._collector()
+        html = "<html><head><title>Verify You  Are Human</title></head><body>Loading...</body></html>"
         assert c._is_bot_challenge_html(html) is True
 
 

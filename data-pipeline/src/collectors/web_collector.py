@@ -510,18 +510,31 @@ class WebsiteCollector(BaseCollector):
         # co-occurs with a genuine challenge-vendor marker, or shows up in
         # the page's own <title> (real challenge pages title themselves
         # this way; a page merely hosting the widget doesn't).
-        if "verify you are human" in body:
+        #
+        # "just a moment" is excluded from the body-wide list below: it's
+        # ordinary English ("it only takes just a moment") that shows up on
+        # real donate pages too. It's only trustworthy as a challenge signal
+        # in the <title>, which is how Cloudflare actually renders it
+        # ("Just a moment..."). "ray id" is written as "cloudflare ray id"
+        # here, not the bare phrase, which also matches inside unrelated
+        # strings like "array id".
+        # Extracted (and whitespace-normalized) up front so pretty-printed
+        # or templated <title> markup -- newlines or repeated spaces inside
+        # the phrase -- can satisfy the co-occurrence gate below on its own,
+        # not just the vendor-marker check inside it.
+        title_match = re.search(r"<title[^>]*>(.*?)</title>", body, re.DOTALL)
+        title = " ".join(title_match.group(1).split()) if title_match else ""
+
+        if "verify you are human" in body or "verify you are human" in title:
             challenge_vendor_markers = [
                 "challenge-running",
                 "cf-chl",
-                "just a moment",
                 "_cf_chl_opt",
-                "ray id",
+                "cloudflare ray id",
             ]
             if any(marker in body for marker in challenge_vendor_markers):
                 return True
-            title_match = re.search(r"<title[^>]*>(.*?)</title>", body, re.DOTALL)
-            if title_match and "verify you are human" in title_match.group(1):
+            if "verify you are human" in title or "just a moment" in title:
                 return True
 
         # Fallback marker combination seen on Cloudflare interstitial pages.
