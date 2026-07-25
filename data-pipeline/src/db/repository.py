@@ -1713,6 +1713,7 @@ class CrawlAttemptRepository(_LazyTableRepository):
 
     def get_for_charity(self, ein: str, source: str | None = None) -> list[dict]:
         """Return attempt history for a charity, newest first."""
+        self.ensure_table()
         if source:
             return (
                 execute_query(
@@ -1785,6 +1786,7 @@ class CrawledPageRepository(_LazyTableRepository):
 
     def get_for_charity(self, ein: str) -> list[dict]:
         """Return every page ever seen for a charity, most recently seen first."""
+        self.ensure_table()
         return (
             execute_query(
                 "SELECT * FROM crawled_pages WHERE charity_ein = %s ORDER BY last_seen_at DESC",
@@ -1796,6 +1798,7 @@ class CrawledPageRepository(_LazyTableRepository):
     def get_missing_since_last_crawl(self, ein: str, latest_attempted_at) -> list[dict]:
         """Pages seen in a past crawl but not touched by the most recent one
         (last_seen_at strictly before it) -- i.e. pages that disappeared."""
+        self.ensure_table()
         return (
             execute_query(
                 "SELECT * FROM crawled_pages WHERE charity_ein = %s AND last_seen_at < %s "

@@ -117,3 +117,19 @@ class TestCrawledPageRepository:
         sql, params = mock_exec.call_args.args
         assert "last_seen_at < %s" in sql
         assert params == (EIN, "2026-07-23 12:00:00")
+
+
+def test_reads_ensure_the_table_exists_first():
+    """A read before any write in a fresh process must not raise "table
+    doesn't exist" -- ensure_table() should run first, same as every write
+    path already does."""
+    for cls, call in [
+        (CrawlAttemptRepository, lambda r: r.get_for_charity(EIN)),
+        (CrawledPageRepository, lambda r: r.get_for_charity(EIN)),
+        (CrawledPageRepository, lambda r: r.get_missing_since_last_crawl(EIN, "2026-07-23 12:00:00")),
+    ]:
+        cls._table_ensured = False
+        with patch("src.db.repository.execute_query", return_value=[]) as mock_exec:
+            call(cls())
+        sqls = [c.args[0] for c in mock_exec.call_args_list]
+        assert any("CREATE TABLE IF NOT EXISTS" in s for s in sqls), f"{cls.__name__} read did not ensure_table"
