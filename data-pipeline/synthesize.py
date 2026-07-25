@@ -80,15 +80,11 @@ REPORTS_DIR = Path(__file__).parent / "reports"
 # handled upstream by the raw-layer non-downgrade carry-forward, which
 # recomputes real ratios from carried grants data rather than needing a
 # post-hoc restore here.
-REGRESSION_GUARDED_FIELDS = frozenset(
-    {
-        "total_revenue",
-        "total_expenses",
-        "total_assets",
-        "total_liabilities",
-        "net_assets",
-    }
-)
+#
+# Aliased to financial_coherence.FINANCIAL_FIELDS rather than redefined here:
+# the two sets used to be independently maintained frozensets that happened to
+# agree, which meant either one could drift and silently stop gating a field.
+REGRESSION_GUARDED_FIELDS = FINANCIAL_FIELDS
 
 
 def _coerce_financial_column(value) -> int | None:
@@ -137,6 +133,13 @@ def apply_regression_guard(synthesized, metrics, prior_row: dict | None) -> list
     if not prior_row:
         return []
     prior_attribution = prior_row.get("source_attribution") or {}
+    # metrics.no_filings is authoritative here (set by the aggregator at
+    # aggregate() time, well before this call); synthesized.no_filings is not
+    # assigned until after this function returns, so reading only that field
+    # made this branch dead code in production (it always saw None). The
+    # `synthesized` fallback still matters when the ProPublica block is
+    # absent and metrics.no_filings is itself None.
+    no_filings = getattr(metrics, "no_filings", None) or getattr(synthesized, "no_filings", None)
     flags: list[dict] = []
     # sorted(): REGRESSION_GUARDED_FIELDS is a frozenset, so unsorted iteration
     # made the regressions report diff-noisy between runs.
@@ -144,7 +147,7 @@ def apply_regression_guard(synthesized, metrics, prior_row: dict | None) -> list
         prior_value = prior_row.get(field)
         if prior_value is None or getattr(metrics, field, None) is not None:
             continue
-        if field in FINANCIAL_FIELDS and getattr(synthesized, "no_filings", None):
+        if field in FINANCIAL_FIELDS and no_filings:
             flags.append(
                 {"charity_ein": synthesized.charity_ein, "field": field,
                  "prior_value": prior_value, "rejected": "no_filings"}
@@ -2088,9 +2091,11 @@ def synthesize_charity(
     prior_row = data_repo.get(ein)
     regression_flags = apply_regression_guard(synthesized, metrics, prior_row)
     if regression_flags:
+        restored = [f["field"] for f in regression_flags if not f.get("rejected")]
+        refused = [(f["field"], f["rejected"]) for f in regression_flags if f.get("rejected")]
         logging.getLogger(__name__).warning(
-            f"{ein}: preserved {len(regression_flags)} regressed field(s): "
-            f"{[f['field'] for f in regression_flags]}"
+            f"{ein}: preserved {len(restored)} regressed field(s): {restored}, "
+            f"refused {len(refused)}: {refused}"
         )
     result["regressions"] = regression_flags
 
@@ -2213,10 +2218,13 @@ def synthesize_charity(
 
 
 def write_synthesize_regressions(rows: list[dict], reports_dir: Path = REPORTS_DIR) -> Path:
-    """Write preserved-regression flags to reports/synthesize-regressions.json.
+    """Write regression-guard flags (restored AND refused) to
+    reports/synthesize-regressions.json.
 
-    Each row: {charity_ein, field, prior_value}. Internal-only editorial signal
-    — a human confirms bug vs genuine drop. Never gates anything.
+    Each row: {charity_ein, field, prior_value, rejected}. `rejected` is None
+    for a restored field and a reason string ("no_filings",
+    "balance_sheet_violation") for a refused one. Internal-only editorial
+    signal — a human confirms bug vs genuine drop. Never gates anything.
     """
     import json
 
@@ -2224,7 +2232,9 @@ def write_synthesize_regressions(rows: list[dict], reports_dir: Path = REPORTS_D
     path = reports_dir / "synthesize-regressions.json"
     with open(path, "w") as f:
         json.dump(rows, f, indent=2, default=str)
-    print(f"  synthesize regressions: {len(rows)} field(s) preserved")
+    preserved = sum(1 for r in rows if not r.get("rejected"))
+    refused = sum(1 for r in rows if r.get("rejected"))
+    print(f"  synthesize regressions: {preserved} field(s) preserved, {refused} refused")
     return path
 
 

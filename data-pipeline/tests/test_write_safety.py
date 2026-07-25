@@ -482,6 +482,24 @@ class TestFinancialCoherence:
         assert balance_sheet_violations(1_000_000, 400_000, 600_001) == []
         assert balance_sheet_violations(1_000_000, 400_000, 900_000)
 
+    def test_liabilities_exceeding_assets_is_not_a_violation(self):
+        """Ordinary insolvency (net assets negative), not an impossible
+        filing. Three live rows are exactly this, each with a perfect
+        accounting identity -- flagging them would make the reconcile tool
+        report correctly-filed data as incoherent."""
+        from src.utils.financial_coherence import balance_sheet_violations
+        assert balance_sheet_violations(551681, 575178, -23497) == []
+        assert balance_sheet_violations(74521, 276759, -202238) == []
+        assert balance_sheet_violations(306342, 548013, -241671) == []
+
+    def test_slack_calc_does_not_raise_on_decimal(self):
+        """DoltDB history rows (fed by the reconcile tool) can hand this a
+        Decimal; max(abs(x), 1.0) * ratio raised TypeError on that today."""
+        from decimal import Decimal
+
+        from src.utils.financial_coherence import balance_sheet_violations
+        assert balance_sheet_violations(Decimal("551681"), Decimal("575178"), Decimal("-23497")) == []
+
 
 class TestGuardRejectsIncoherentRestores:
     def _run(self, prior, current_metrics, no_filings=0):
@@ -532,6 +550,38 @@ class TestGuardRejectsIncoherentRestores:
         )
         assert metrics.total_revenue is None
         assert any(f.get("rejected") for f in flags)
+
+    def test_no_filings_gate_fires_off_metrics_in_production_shape(self):
+        """Real incident: guard call site reads `synthesized.no_filings`, but
+        `synthesized` is a bare CharityData(charity_ein=ein) at guard time --
+        the only assignment to synthesized.no_filings happens 55 lines later
+        in synthesize_charity(). At guard time it is always None, so the old
+        `getattr(synthesized, "no_filings", None)` branch was dead code in
+        production: the guard still restored $11.3M onto EIN 31-1267559 (a
+        no_filings=1 org), flagged `rejected: None`.
+
+        metrics.no_filings IS populated at guard time (aggregated well before
+        the guard call). This test builds `synthesized` as the real
+        src.db.repository.CharityData production uses -- not a SimpleNamespace
+        pre-seeded with no_filings, which is the shape production never
+        produces and the shape the old test fixture used to paper over this."""
+        from types import SimpleNamespace
+
+        from src.db.repository import CharityData
+        from synthesize import apply_regression_guard
+
+        synthesized = CharityData(charity_ein="31-1267559")  # no_filings NOT set -- production shape
+        metrics = SimpleNamespace(
+            no_filings=1, source_attribution={}, total_revenue=None, total_expenses=None,
+            total_assets=None, total_liabilities=None, net_assets=None,
+        )
+        prior = {"charity_ein": "31-1267559", "total_revenue": 11342603, "source_attribution": {}}
+
+        flags = apply_regression_guard(synthesized, metrics, prior)
+
+        assert metrics.total_revenue is None, "no_filings org must not get financials invented"
+        assert synthesized.total_revenue is None
+        assert any(f.get("rejected") == "no_filings" for f in flags)
 
 
 class TestSynthesizeCharityOrdering:
