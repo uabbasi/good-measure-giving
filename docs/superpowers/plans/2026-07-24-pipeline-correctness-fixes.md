@@ -2016,6 +2016,67 @@ Do NOT commit the report (it is gitignored). Report the top-line numbers in your
 
 ---
 
+### Task D4c: Feed the factual judge the keys its deterministic checks read
+
+**Why:** Task D4b measured the blast radius of the newly-activated judges and found **0 of 169** charities would newly fail — but the reason is not reassuring. `FactualJudge._quick_checks` contains six deterministic integrity checks, and **every one reads a key that is never supplied**:
+
+| Check | Reads | Supplied? |
+|---|---|---|
+| amal_score mismatch | `context["metrics"]` | ✗ |
+| wallet_tag mismatch | `context["metrics"]` | ✗ |
+| program_expense_ratio out of bounds | `output["financials"]` | ✗ |
+| strategic score mismatch | `context["metrics"]` | ✗ |
+| archetype mismatch | `context["metrics"]` | ✗ |
+| dimensions mismatch | `context["metrics"]` | ✗ |
+
+Verified: `judge_phase.py`'s `charity_dict` sets `ein / name / tier / evaluation / data / narrative` — no `financials`. Its `context` (`judge_phase.py:185-190`) sets `raw_sources / source_data / charity_data / charity` — no `metrics`.
+
+So the judge that exists to catch output-versus-source discrepancies has **never performed a single deterministic cross-check**. Task D4 got it past its early `if not narrative: return passed=True` guard, so its LLM path now runs; this task makes its cheap deterministic checks run too.
+
+These are exactly the checks that catch pipeline corruption: a published `amal_score` that disagrees with the scorer's own output, a `program_expense_ratio` outside [0, 1], a wallet tag that doesn't match source. All six emit `Severity.ERROR`.
+
+**Files:**
+- Modify: `data-pipeline/judge_phase.py` (charity_dict + context construction)
+- Test: `data-pipeline/tests/test_judge_phase.py`, `data-pipeline/tests/test_judges.py`
+
+- [ ] **Step 1: Establish what the checks actually expect**
+
+Read `FactualJudge._quick_checks` in full and determine the exact shape each key needs — `financials` must carry `program_expense_ratio`; `metrics` must carry `amal_score`, `wallet_tag`, and (for the strategic variant) `strategic_score`, `archetype`, `strategic_dimensions`.
+
+Then find where that data already exists. `charity_data["metrics_json"]` and the evaluation projection are the likely sources. **Do not invent or recompute values** — the whole point is comparing the output against its *source*, so if you populate `metrics` from the same object the output was derived from, the check compares a value to itself and can never fire. Identify the genuinely independent source and say in your report why it is independent.
+
+If no independent source exists for a given check, **say so and leave that check unfed** rather than wiring up a tautology. A check that structurally cannot fail is worse than a check that doesn't run, because it looks like coverage.
+
+- [ ] **Step 2: Write failing tests**
+
+For each check you can genuinely feed, write a test that a mismatch produces a `Severity.ERROR`. Each must fail before your change (the check never fires today).
+
+Also write the negative case — matching values produce no issue — so the check isn't trivially always-firing.
+
+- [ ] **Step 3: Supply the keys**
+
+Add `financials` to `charity_dict` and `metrics` to `context`, sourced per Step 1. Use the `or {}` idiom for nullable columns, consistent with the rest of this branch.
+
+- [ ] **Step 4: Measure the impact — this is required, not optional**
+
+These six checks emit publication-gating ERRORs and are fully deterministic, so unlike D4b you can measure them exactly. Extend or re-run `bin/judge_activation_blast_radius.py` against all charities and report **how many would newly fail, per check**.
+
+If the number is large, that is a finding about pipeline integrity, not a reason to soften the check — report it and stop rather than adjusting thresholds to get a comfortable number.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add data-pipeline/judge_phase.py data-pipeline/tests/
+git commit -m "fix(judge): supply the keys the factual judge's integrity checks read
+
+All six deterministic checks in FactualJudge._quick_checks read
+context['metrics'] or output['financials'], neither of which judge_phase
+has ever set. The judge that exists to catch output-vs-source
+discrepancies has never run a single deterministic cross-check."
+```
+
+---
+
 ### Task D5: Make B-J-013 a warning until the status-code distribution is known
 
 **Why:** `baseline_quality_judge.py:780-793` makes any non-`01` IRS `exempt_organization_status_code` a publication-blocking ERROR. The field was added in this same branch, so it is `None` on every existing row and the rule is inert today — but the moment a fleet run repopulates it, legitimate BMF codes (e.g. `12` for 4947(a)(2) trusts) hard-block publication, discovered only after export. The distribution across the 166 pilot charities has never been measured.
