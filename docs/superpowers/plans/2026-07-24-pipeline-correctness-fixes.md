@@ -312,6 +312,207 @@ metrics_json.total_liabilities=0 with a NULL column today."
 
 ---
 
+### Task A3: Never restore a value that contradicts the current row
+
+**Why:** The guard restores ONE field from the prior DB row — a prior fiscal year — while its siblings come from the current run. That produces balance sheets that cannot exist. Verified live on EIN `81-3451645`:
+
+| field | column | metrics_json | attributed |
+|---|---|---|---|
+| total_assets | 5638 | 5638 | no |
+| total_liabilities | None | 0 | no |
+| net_assets | **10796** | **None** | no |
+| total_revenue | 32150 | 32150 | yes |
+
+`net_assets` is `None` in `metrics_json` and `10796` on the column — i.e. restored — while `total_assets = 5638` is current. Net assets exceeding total assets is impossible with non-negative liabilities, and that row is **published today**. Task A1 widens the blast radius: the mixed-vintage value now reaches `metrics_json`, so the scorer sees it too.
+
+A second, related defect: **7 live charities carry financials while `no_filings = 1`** — `20-8085421`, `23-7065716`, `31-1267559`, `83-0668931`, `88-2454707`, `93-1556038`, `99-3373484`. ProPublica found no Form 990 at all for these, so there are no financials to restore; a restore invents revenue for an organization that never filed. Note `31-1267559` and `88-2454707` are two of the three EINs from the Task A1 finding — this is a real mechanism, not a hypothetical.
+
+**Design:** reject the restore rather than restoring-then-flagging. A missing value renders as absent, which is honest; a mixed-vintage value renders as a specific wrong number, which is not. Every rejection is still recorded in the regressions report so a human sees it.
+
+**Files:**
+- Create: `data-pipeline/src/utils/financial_coherence.py`
+- Modify: `data-pipeline/synthesize.py` (`apply_regression_guard`)
+- Test: `data-pipeline/tests/test_write_safety.py`
+
+**Interfaces (Task B4 consumes these — keep the names and signatures exactly):**
+- `FINANCIAL_FIELDS: frozenset[str]`
+- `balance_sheet_violations(total_assets, total_liabilities, net_assets) -> list[str]`
+- `restore_breaks_balance_sheet(row: dict, field: str, value) -> bool`
+
+- [ ] **Step 1: Write the failing tests**
+
+```python
+class TestFinancialCoherence:
+    def test_net_assets_above_total_assets_is_a_violation(self):
+        from src.utils.financial_coherence import balance_sheet_violations
+        assert balance_sheet_violations(5638, None, 10796)
+
+    def test_a_coherent_balance_sheet_has_no_violations(self):
+        from src.utils.financial_coherence import balance_sheet_violations
+        assert balance_sheet_violations(28413661, 1131154, 27282507) == []
+
+    def test_unknown_values_cannot_violate(self):
+        from src.utils.financial_coherence import balance_sheet_violations
+        assert balance_sheet_violations(None, None, None) == []
+        assert balance_sheet_violations(None, None, 10796) == []
+
+    def test_zero_liabilities_is_evaluated_not_skipped(self):
+        """A genuine 0 is a value — Task A2 made sure it survives."""
+        from src.utils.financial_coherence import balance_sheet_violations
+        assert balance_sheet_violations(5638, 0, 10796)
+        assert balance_sheet_violations(5638, 0, 5638) == []
+
+    def test_identity_allows_small_rounding_slack(self):
+        from src.utils.financial_coherence import balance_sheet_violations
+        assert balance_sheet_violations(1_000_000, 400_000, 600_001) == []
+        assert balance_sheet_violations(1_000_000, 400_000, 900_000)
+
+
+class TestGuardRejectsIncoherentRestores:
+    def _run(self, prior, current_metrics, no_filings=0):
+        from types import SimpleNamespace
+        from synthesize import apply_regression_guard
+        metrics = SimpleNamespace(source_attribution={}, **current_metrics)
+        synthesized = SimpleNamespace(charity_ein="81-3451645", source_attribution={},
+                                      no_filings=no_filings, **current_metrics)
+        flags = apply_regression_guard(synthesized, metrics, prior)
+        return metrics, flags
+
+    def test_restore_that_would_exceed_total_assets_is_rejected(self):
+        """EIN 81-3451645 publishes net_assets 10796 against total_assets 5638."""
+        metrics, flags = self._run(
+            prior={"charity_ein": "81-3451645", "net_assets": 10796, "source_attribution": {}},
+            current_metrics={"total_assets": 5638, "total_liabilities": None,
+                             "net_assets": None, "total_revenue": 32150,
+                             "total_expenses": None},
+        )
+        assert metrics.net_assets is None, "an incoherent restore must be refused"
+        assert any(f.get("rejected") for f in flags), "and must still be reported"
+
+    def test_a_coherent_restore_still_happens(self):
+        metrics, flags = self._run(
+            prior={"charity_ein": "x", "net_assets": 4000, "source_attribution": {}},
+            current_metrics={"total_assets": 5638, "total_liabilities": 1000,
+                             "net_assets": None, "total_revenue": 32150,
+                             "total_expenses": None},
+        )
+        assert metrics.net_assets == 4000
+        assert not any(f.get("rejected") for f in flags)
+
+    def test_no_filings_org_gets_no_financial_restore(self):
+        """31-1267559 and 88-2454707 carry financials with no_filings=1 today."""
+        metrics, flags = self._run(
+            prior={"charity_ein": "31-1267559", "total_revenue": 11342603,
+                   "source_attribution": {}},
+            current_metrics={"total_assets": None, "total_liabilities": None,
+                             "net_assets": None, "total_revenue": None,
+                             "total_expenses": None},
+            no_filings=1,
+        )
+        assert metrics.total_revenue is None
+        assert any(f.get("rejected") for f in flags)
+```
+
+- [ ] **Step 2: Run to verify failure**
+
+Run: `cd data-pipeline && uv run pytest tests/test_write_safety.py -k "FinancialCoherence or GuardRejectsIncoherent" -v`
+Expected: FAIL — `ModuleNotFoundError: src.utils.financial_coherence`
+
+- [ ] **Step 3: Create the shared module**
+
+```python
+"""Deterministic coherence checks on a charity's financial columns.
+
+Shared by synthesize's regression guard and the recovery tool: both restore a
+historical value onto a row whose other fields came from a different run, and
+both must refuse a restore that produces a balance sheet which cannot exist.
+"""
+
+from typing import Optional
+
+FINANCIAL_FIELDS = frozenset(
+    {"total_revenue", "total_expenses", "total_assets", "total_liabilities", "net_assets"}
+)
+
+# Sources round and restate; only flag a gap too large to be rounding.
+_IDENTITY_TOLERANCE_RATIO = 0.01
+
+
+def balance_sheet_violations(
+    total_assets: Optional[float],
+    total_liabilities: Optional[float],
+    net_assets: Optional[float],
+) -> list[str]:
+    """Names of balance-sheet invariants this triple breaks. Empty == coherent.
+
+    Unknown (None) values cannot violate anything — absence is not a
+    contradiction. A genuine 0 IS evaluated (Task A2 made zeros survive).
+    """
+    out: list[str] = []
+    if total_assets is not None and net_assets is not None and net_assets > total_assets:
+        out.append("net_assets_exceeds_total_assets")
+    if total_assets is not None and total_liabilities is not None and total_liabilities > total_assets:
+        out.append("total_liabilities_exceeds_total_assets")
+    if total_assets is not None and total_liabilities is not None and net_assets is not None:
+        expected = total_assets - total_liabilities
+        slack = max(abs(total_assets), 1.0) * _IDENTITY_TOLERANCE_RATIO
+        if abs(expected - net_assets) > slack:
+            out.append("assets_minus_liabilities_not_net_assets")
+    return out
+
+
+def restore_breaks_balance_sheet(row: dict, field: str, value) -> bool:
+    """True if writing `value` into `row[field]` would create a violation the
+    row does not already have.
+
+    Only NEW violations block a restore — a row that is already incoherent for
+    reasons of its own is a separate problem, and refusing to restore would not
+    fix it.
+    """
+    if field not in {"total_assets", "total_liabilities", "net_assets"}:
+        return False
+    current = {k: row.get(k) for k in ("total_assets", "total_liabilities", "net_assets")}
+    before = set(balance_sheet_violations(**current))
+    after = set(balance_sheet_violations(**{**current, field: value}))
+    return bool(after - before)
+```
+
+- [ ] **Step 4: Use it in the guard**
+
+In `synthesize.py`'s `apply_regression_guard`, before restoring a field:
+
+- skip when `getattr(synthesized, "no_filings", None)` is truthy and `field in FINANCIAL_FIELDS`;
+- skip when `restore_breaks_balance_sheet(<the current metrics values>, field, prior_value)`.
+
+In both cases append a flag carrying `"rejected": <reason>` instead of restoring, so the regressions report records the refusal. Restored (non-rejected) flags keep their existing shape — add `"rejected": None` to them so every flag has the same keys.
+
+Build the row passed to `restore_breaks_balance_sheet` from `metrics` (the authoritative object at that point), not from `synthesized`.
+
+- [ ] **Step 5: Run the tests and the full suite**
+
+Run: `cd data-pipeline && uv run pytest -q`
+Expected: green, and the count rises by the number of new tests. `TestSynthesizeCharityOrdering` must still pass — do not move the guard call.
+
+- [ ] **Step 6: Verify against live data, read-only**
+
+Query `charity_data` for the 7 `no_filings=1` EINs listed above and for `81-3451645`, and confirm your predicate would have refused the restores that produced their current state. This does not repair the published rows — that needs a re-synthesize the user has deferred — but it must demonstrate the fix would have prevented them. Report the real output.
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add data-pipeline/src/utils/financial_coherence.py data-pipeline/synthesize.py data-pipeline/tests/test_write_safety.py
+git commit -m "fix(synthesize): refuse restores that contradict the current row
+
+The guard restored one field from a prior fiscal year while its siblings
+came from the current run, publishing balance sheets that cannot exist --
+81-3451645 ships net_assets 10796 against total_assets 5638. It also
+restored financials onto orgs ProPublica shows as never having filed
+(7 live charities carry financials with no_filings=1). Refuse both, and
+report the refusal rather than silently shipping a wrong number."
+```
+
+---
+
 ## Group B — Recovery tool (`bin/reconcile_charity_data.py`)
 
 **Ordering:** Group A must be committed first. The window widening and the plausibility guard must land in the SAME commit (Task B1) — widening the history window without the guard turns a no-op tool into a corrupting one.
@@ -642,71 +843,98 @@ In `find_regressions`, inside the appended dict, add:
                     "last_good_attribution": (hrow.get("source_attribution") or {}).get(field),
 ```
 
-Then add **guard 3**: a historical value with no `source_attribution` entry for its field was never an observation — it is a seed/placeholder — and must not be offered as a restore candidate.
+Then add **guard 3**, from `src/utils/financial_coherence.py` (created in Task A3 — that task must land first).
 
-**This guard is empirically grounded, not a guess.** After Task B1 the tool surfaced 5 live candidates, every one of them `100000`. Read-only history queries against those exact candidates:
+**A rejected approach, recorded so nobody re-proposes it.** The obvious third guard is "require a `source_attribution` entry for the field." It is **wrong**. Measured across all 169 live `charity_data` rows:
 
-| EIN | field | history rows | with attribution | without | distinct values |
-|---|---|---|---|---|---|
-| 81-2566656 | net_assets | 23 | 0 | 23 | [100000] |
-| 83-1794093 | net_assets | 185 | 0 | 185 | [10222, 100000, 115000] |
-| 85-3964369 | total_expenses | 1 | 0 | 1 | [100000] |
-| 85-3964369 | total_revenue | 1 | **1** | 0 | [100000] |
-| 93-2136609 | total_revenue | 16 | 0 | 16 | [100000] |
+| field | attributed / non-null |
+|---|---|
+| total_revenue | **165 / 165** |
+| total_expenses | 0 / 165 |
+| total_assets | 0 / 161 |
+| total_liabilities | 0 / 136 |
+| net_assets | 0 / 156 |
 
-Contrast a real value: `81-2566656.total_revenue = 211877` carries attribution on **all 400** history rows sampled. So attribution is not simply missing from older rows — it tracks observed-versus-seeded. Guard 3 takes live candidates from 5 to 1.
+Attribution is populated for `total_revenue` and nothing else, so requiring it would reject **every legitimate restore** for four of the five guarded fields. Do not add it.
 
-Add to the loop in `find_regressions`, after the `val is None` check and before the age check:
+Use two deterministic checks against the **current** row instead — no new data, both columns already loaded:
 
 ```python
-            # Guard 3: no source_attribution for this field means the value was
-            # never observed — it is a seed/placeholder. Measured on live data:
-            # 4 of the 5 surviving candidates are 100000 with zero attribution
-            # across their entire history (23, 185, 1 and 16 rows), while a real
-            # value (81-2566656.total_revenue = 211877) carries attribution on
-            # every one of 400 rows.
-            if not (hrow.get("source_attribution") or {}).get(field):
-                continue
+        # Guard 3a: an organization with no Form 990 filings has no financials to
+        # restore. Measured live: 7 charities carry financials with no_filings=1
+        # (20-8085421, 23-7065716, 31-1267559, 83-0668931, 88-2454707, 93-1556038,
+        # 99-3373484) — restoring invents revenue for an org that never filed.
+        if current_row.get("no_filings") and field in FINANCIAL_FIELDS:
+            continue
 ```
 
-Use `continue`, not `break` — unlike the age check, an unattributed row says nothing about rows deeper in history.
+and, per candidate, before appending:
+
+```python
+            # Guard 3b: reject a candidate that would contradict the current row's
+            # own balance sheet — e.g. net_assets greater than total_assets, which
+            # is impossible with non-negative liabilities.
+            if restore_breaks_balance_sheet(current_row, field, val):
+                continue
+```
 
 - [ ] **Step 4b: Add the guard-3 tests**
 
 ```python
-def test_unattributed_historical_value_is_not_a_candidate():
-    """A value with no source_attribution was never observed — it's a seed.
-    Measured: 4 of 5 live candidates were 100000 with zero attribution."""
+def test_no_filings_org_gets_no_financial_restore():
+    """An org ProPublica shows as never having filed has no financials to restore."""
     from bin.reconcile_charity_data import find_regressions
 
-    current = {"charity_ein": "93-2136609", "total_revenue": None, "metrics_json": {}}
-    history = [{"total_revenue": 100000, "commit_hash": "seed",
-                "commit_date": "2026-01-25", "source_attribution": {}}]
+    current = {"charity_ein": "93-2136609", "total_revenue": None,
+               "metrics_json": {}, "no_filings": 1}
+    history = [{"total_revenue": 100000, "commit_hash": "cn",
+                "commit_date": "2026-01-25"}]
 
     assert find_regressions(current, history, {"total_revenue"}) == []
 
 
-def test_an_unattributed_row_does_not_hide_an_attributed_one_deeper():
-    """continue, not break — an unattributed row says nothing about deeper rows."""
+def test_candidate_exceeding_current_total_assets_is_rejected():
+    """net_assets > total_assets is impossible with non-negative liabilities."""
     from bin.reconcile_charity_data import find_regressions
 
-    current = {"charity_ein": "12-3456789", "total_revenue": None, "metrics_json": {}}
-    history = [
-        {"total_revenue": 100000, "commit_hash": "seed", "commit_date": "2026-07-02",
-         "source_attribution": {}},
-        {"total_revenue": 5_000_000, "commit_hash": "real", "commit_date": "2026-07-01",
-         "source_attribution": {"total_revenue": {"source_name": "ProPublica"}}},
-    ]
+    current = {"charity_ein": "81-2566656", "net_assets": None,
+               "metrics_json": {}, "no_filings": 0, "total_assets": 23205}
+    history = [{"net_assets": 100000, "commit_hash": "cn", "commit_date": "2026-02-08"}]
 
-    flags = find_regressions(current, history, {"total_revenue"})
+    assert find_regressions(current, history, {"net_assets"}) == []
 
-    assert len(flags) == 1
-    assert flags[0]["last_good_commit"] == "real"
+
+def test_a_coherent_in_window_candidate_still_survives():
+    """The guards must not reject everything — one real candidate must get through."""
+    from bin.reconcile_charity_data import find_regressions
+
+    current = {"charity_ein": "83-1794093", "net_assets": None,
+               "metrics_json": {}, "no_filings": 0, "total_assets": 116544}
+    history = [{"net_assets": 10222, "commit_hash": "real", "commit_date": "2026-03-07"}]
+
+    flags = find_regressions(current, history, {"net_assets"})
+    assert len(flags) == 1 and flags[0]["last_good_value"] == 10222
 ```
 
 - [ ] **Step 4c: Re-verify against the live DB, read-only**
 
-Run `uv run python bin/reconcile_charity_data.py` (NEVER `--apply`) and confirm the candidate count drops from 5 to 1, with the survivor being `85-3964369 / total_revenue`. Report the actual output. If the count is not 1, investigate and report rather than adjusting the guard to force the number.
+Run `uv run python bin/reconcile_charity_data.py` (NEVER `--apply`). Expect the candidate count to drop from **5 to 1**, the survivor being `83-1794093 / net_assets` — the one genuinely ambiguous case (the org files, `total_assets = 116544`, and history shows `115000 → 10222` overwritten by `100000`). Report the real output. If the count is not 1, investigate and report rather than tuning the guard to force the number.
+
+- [ ] **Step 4d: Replace the row LIMIT with a date bound**
+
+`HISTORY_SCAN_LIMIT = 2000` has only ~2x headroom (deepest real history is 1034 rows for `20-3069841`, accumulating ~170 rows/month/EIN), so it is exhausted around early 2027 — and it fails **silently**, reverting to "0 candidates," which is the exact bug Task B1 fixed. Replace the row limit with a date predicate using the same cutoff the age guard already computes:
+
+```python
+        f"SELECT {cols} FROM dolt_history_charity_data "
+        "WHERE charity_ein = %s AND commit_date >= %s "
+        "ORDER BY commit_date DESC",
+```
+
+This makes the window self-limiting and removes the duplicate expression of the same policy in two places. Delete `HISTORY_SCAN_LIMIT`.
+
+- [ ] **Step 4e: Drop `metrics_json` from `_HISTORY_COLUMNS`**
+
+Guard 1 reads `current_row["metrics_json"]` (from `data_repo.get(ein)`), never a history row's. The column is never read from history — verify with grep — and it materializes ~21MB of JSON per EIN. Remove it from `_HISTORY_COLUMNS`; keep `source_attribution` (Step 3 uses it for the restore's provenance).
 
 - [ ] **Step 5: Apply the attribution in `reconcile`**
 
