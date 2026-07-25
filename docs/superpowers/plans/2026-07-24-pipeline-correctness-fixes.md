@@ -1963,6 +1963,59 @@ band-tone backstop was dead code on every charity."
 
 ---
 
+### Task D4b: Measure the blast radius of the newly-activated judges
+
+**Why:** Task D4 added the `narrative` key to the judge input dict. That key is read by four judges, and two of them — `FactualJudge` and `CitationJudge` — have been **complete no-ops for the entire life of this code**, because the key never existed on `main` or anywhere on this branch:
+
+- `factual_judge.py:81-83` — `if not narrative: return create_verdict(passed=True, ...)`, an unconditional early pass.
+- `citation_judge.py:101-102` — `citations = narrative.get("all_citations", [])`, so it validated zero citations.
+
+Both are registered in the active gate (`orchestrator.py:229,232`) and both emit `Severity.ERROR`, which blocks publication. This also revises an earlier conclusion: the root-cause investigation into the `$0.00` fundraising hallucination reported that the factual judge classified it as a non-gating warning. It did not — **it never ran**.
+
+The user's decision was: activate them (D4, done), then measure the impact **before** authorizing any fleet run. This task is that measurement. It is **read-only and report-only** — it changes no pipeline behavior.
+
+**Files:**
+- Create: `data-pipeline/bin/judge_activation_blast_radius.py`
+- Report output: `data-pipeline/reports/judge-activation-blast-radius.json` (gitignored, like the other reports)
+
+- [ ] **Step 1: Establish what can be measured without network or LLM calls**
+
+Read `FactualJudge.validate` and `CitationJudge.validate` and classify each check as:
+- **deterministic** — pure logic over stored data, safe to run now
+- **LLM-dependent** — needs a model call
+- **network-dependent** — needs a live URL fetch (`CitationJudge`'s `url_verifier`)
+
+Record the classification. Only the deterministic checks get measured here; the others get **counted and named** so the report says plainly what it could not evaluate. A blast-radius report that silently omits half the checks is worse than none.
+
+- [ ] **Step 2: Build the read-only harness**
+
+For every charity in `evaluations` that currently has a `baseline_narrative`, construct the same `charity_dict` that `judge_phase.py` now builds (reuse its real construction code — do not reimplement it, or you will measure the wrong thing), and run only the deterministic checks identified in Step 1.
+
+Stub the `url_verifier` so no network call is made. Make no LLM calls. Read-only DoltDB queries only.
+
+- [ ] **Step 3: Report per-charity and in aggregate**
+
+Write `reports/judge-activation-blast-radius.json` with, for each charity: EIN, which judges would now emit ERRORs, the issue category and message for each, and whether that charity currently publishes. Aggregate at the top: how many charities newly fail, broken down by judge and by issue category.
+
+Print a short summary to stdout — the top-line number is "N of 166 charities would newly fail the gate."
+
+- [ ] **Step 4: Sanity-check the result against known data**
+
+Two cross-checks, because a measurement you can't sanity-check is not evidence:
+- The 34 charities carrying the hallucinated `$0.00` fundraising claim are known. Does the factual judge flag any of them? If it flags none, say so and explain why — that would mean this class of hallucination still isn't caught, which is important on its own.
+- The 35 charities with mangled Charity Navigator scores (`98.98.66666666666667/100`) are known. Does anything flag them?
+
+- [ ] **Step 5: Commit the tool**
+
+```bash
+git add data-pipeline/bin/judge_activation_blast_radius.py
+git commit -m "feat(judge): read-only blast-radius measurement for the newly-activated judges"
+```
+
+Do NOT commit the report (it is gitignored). Report the top-line numbers in your summary.
+
+---
+
 ### Task D5: Make B-J-013 a warning until the status-code distribution is known
 
 **Why:** `baseline_quality_judge.py:780-793` makes any non-`01` IRS `exempt_organization_status_code` a publication-blocking ERROR. The field was added in this same branch, so it is `None` on every existing row and the rule is inert today — but the moment a fleet run repopulates it, legitimate BMF codes (e.g. `12` for 4947(a)(2) trusts) hard-block publication, discovered only after export. The distribution across the 166 pilot charities has never been measured.
