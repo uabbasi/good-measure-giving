@@ -283,11 +283,16 @@ class RichNarrativeGenerator:
             logger.error(f"Consistency validation failed for {ein} (hard failure):")
             for v in validation_result.violations:
                 logger.error(f"  - {v.field}: {v.message}")
-            # Invalidate rich fields to avoid serving stale or hallucinated content.
-            try:
-                self.eval_repo.clear_rich_narrative(ein)
-            except Exception as e:
-                logger.error(f"Failed to clear rich narrative for {ein}: {e}")
+            # Leave any previously-stored, previously-validated rich narrative
+            # in place. A failed regeneration attempt says nothing about the
+            # validity of the content already stored -- it's the last content
+            # that DID pass validation, not stale content. Nothing downstream
+            # is protected by clearing it: the caller's error already blocks
+            # this attempt from being used, and (via judge_phase's retry) the
+            # standing score-judge error keeps the export gate closed either
+            # way. Clearing here only converts a recoverable state (existing
+            # narrative intact, retry can be attempted again later) into
+            # permanent content loss.
             return None
 
         # 9. Sanitize metrics in rich narrative (same safety net as baseline)

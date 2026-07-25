@@ -218,6 +218,10 @@ def judge_charity(
         # is worth it when score is the ONLY judge with errors: a mix with
         # e.g. crawl_quality means the narrative isn't the (only) problem, and
         # regenerating it wouldn't fix that.
+        # Bound outside the `if` below so the failure path can fold it into
+        # result["cost_usd"] too -- the retry spends money on the LLM call
+        # whether or not the regenerated narrative ends up passing.
+        retry_rich_cost = 0.0
         error_judges = {v.judge_name for v in validation_result.verdicts if v.errors}
         if error_judges == {"score"} and not _retry_attempted:
             from rich_phase import generate_rich_for_pipeline
@@ -273,7 +277,7 @@ def judge_charity(
         result["passed"] = validation_result.passed
         result["error_count"] = error_count
         result["warning_count"] = warning_count
-        result["cost_usd"] = validation_result.total_cost_usd
+        result["cost_usd"] = validation_result.total_cost_usd + retry_rich_cost
         # Bind the score to the content it judged (recomputed from the same
         # evaluation row the gate reads back → round-trip symmetric).
         result["content_hash"] = compute_judge_content_hash(evaluation)

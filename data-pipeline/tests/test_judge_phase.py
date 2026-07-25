@@ -319,6 +319,41 @@ class TestRichNarrativeAutoRetry:
         assert result["rich_retry_failed"]
         assert "retry failed" in capsys.readouterr().out
 
+    def test_failed_rich_retry_cost_survives_into_result(self, monkeypatch):
+        """The retry spends LLM money whether or not the regenerated
+        narrative ends up passing. Before the fix, `result["cost_usd"]` was
+        unconditionally overwritten with only the original judge run's cost
+        on the failure path, silently dropping the failed retry's spend."""
+        with_rich = dict(FULL_EVALUATION)
+        without_rich = {**with_rich, "rich_narrative": None}
+
+        class ScoreErrorOrchestrator:
+            def __init__(self, config):
+                pass
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+            def validate_single(self, charity_dict, context):
+                return _verdict_result(False, [("score", [ValidationIssue(Severity.ERROR, "f", "m")])])
+
+        monkeypatch.setattr(judge_phase, "JudgeOrchestrator", ScoreErrorOrchestrator)
+        monkeypatch.setattr(
+            rich_phase,
+            "generate_rich_for_pipeline",
+            lambda *a, **kw: {"success": False, "cost_usd": 0.37, "error": "consistency validation failed"},
+        )
+
+        eval_repo, data_repo, raw_repo, charity_repo = _mock_repos(with_rich)
+        eval_repo.get.side_effect = [with_rich, without_rich]
+
+        result = judge_phase.judge_charity(EIN, eval_repo, data_repo, raw_repo, charity_repo)
+
+        assert result["cost_usd"] == 0.37
+
 
 class TestMainPersistenceAndExitCode:
     def _patch_environment(self, monkeypatch, eval_repo_cls, judge_result):
