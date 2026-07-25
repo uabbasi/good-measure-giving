@@ -133,8 +133,9 @@ class TestFactualQuickCheckInputsWiring:
     than evaluations.wallet_tag, written by baseline.py) and the program_
     expense_ratio bounds check (a self-contained sanity check, not a
     source-vs-output comparison). amal_score/strategic_score/archetype/
-    strategic_dimensions stay unfed — see test_judges.py::
-    TestFactualJudgeQuickCheckSourcing docstring for why.
+    strategic_dimensions stay unfed — see the "metrics" comment in
+    judge_phase.py's judge_charity() or .superpowers/sdd/task-D4c-report.md
+    for why.
     """
 
     def _run_and_capture(self, monkeypatch, evaluation, charity_data):
@@ -226,12 +227,16 @@ class TestFactualQuickCheckInputsWiring:
 
     def test_missing_charity_data_row_does_not_crash(self, monkeypatch):
         """charity_data can be None (nullable) -- must use the `or {}` idiom,
-        not crash on .get()."""
+        not crash on .get(). And, since there is no source row at all,
+        claims_zakat_eligible is unknown -- this must NOT be coalesced into a
+        false SADAQAH-ELIGIBLE assertion that then mismatches the real
+        ZAKAT-ELIGIBLE output and gates publication on invented data."""
         charity_dict, context = self._run_and_capture(monkeypatch, FULL_EVALUATION, None)
 
         issues = FactualJudge(JudgeConfig())._quick_checks(charity_dict, context)
 
         assert isinstance(issues, list)
+        assert not [i for i in issues if i.severity == Severity.ERROR and "wallet_tag" in i.field]
 
     def test_unfed_checks_stay_unfed(self, monkeypatch):
         """amal_score/strategic_score/archetype/strategic_dimensions have no

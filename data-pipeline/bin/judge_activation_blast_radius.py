@@ -110,11 +110,18 @@ CHECK_CLASSIFICATION: dict[str, dict[str, dict[str, str]]] = {
         },
         "quick_checks.wallet_tag_mismatch": {
             "status": "deterministic",
-            "note": "Never fires: same context['metrics'] gap.",
+            "note": (
+                "Fires: judge_phase.py's charity_dict now feeds context['metrics']['wallet_tag'] "
+                "(from charity_data.claims_zakat_eligible) whenever that source is known. Not "
+                "measured by this harness's sanity checks; see judge_phase.py's task-D4c comments."
+            ),
         },
         "quick_checks.program_expense_ratio_bounds": {
             "status": "deterministic",
-            "note": "Never fires: requires output['financials'], which judge_phase.py's charity_dict never sets.",
+            "note": (
+                "Fires: judge_phase.py's charity_dict now sets output['financials']['program_expense_ratio'] "
+                "from charity_data. Not measured by this harness's sanity checks; see judge_phase.py."
+            ),
         },
         "quick_checks.strategic_score_mismatch": {
             "status": "deterministic",

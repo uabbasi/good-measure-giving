@@ -69,14 +69,15 @@ def _wallet_tag_from_zakat_claim(claims_zakat_eligible: bool | None) -> str:
     re-scored value.
 
     charity_data.claims_zakat_eligible is written by synthesize.py, a
-    different phase, a different table row, and typically an earlier pipeline
-    run than evaluations.wallet_tag (written by baseline.py). They agree
-    whenever synthesize and baseline ran together over the same data; they
-    can drift if baseline is re-run alone (`--force-phase baseline`) against
-    metrics_json that changed after claims_zakat_eligible was last written,
-    or via a manual data correction to one column but not the other. That
-    drift is exactly the class of pipeline-integrity bug this check exists
-    to catch. None is treated as False, matching the scorer's own
+    different phase and a different table row than evaluations.wallet_tag
+    (written by baseline.py). Within a single synthesize run they can't
+    drift from metrics_json -- synthesize.py sets the column and dumps
+    metrics_json from the same in-memory object in the same pass. What this
+    check actually catches is evaluations going stale relative to
+    charity_data: synthesize re-ran (writing a new claims_zakat_eligible)
+    but baseline did not re-run alongside it (`--force-phase baseline` was
+    never issued, or a manual data correction touched one row but not the
+    other). None is treated as False, matching the scorer's own
     `metrics.zakat_claim_detected or False` null-handling.
     """
     return "ZAKAT-ELIGIBLE" if claims_zakat_eligible else "SADAQAH-ELIGIBLE"
@@ -205,23 +206,44 @@ def judge_charity(
         "financials": {"program_expense_ratio": (charity_data or {}).get("program_expense_ratio")},
     }
 
-    # Build context with raw sources
+    # FactualJudge._quick_checks' wallet_tag check: only wallet_tag is fed
+    # here, from an independent source (see _wallet_tag_from_zakat_claim).
+    # amal_score/strategic_score/archetype/strategic_dimensions are
+    # deliberately NOT included — amal_score has no second copy anywhere
+    # in the schema (feeding it would compare evaluations.amal_score to
+    # itself), and the strategic fields can never appear in `evaluation`
+    # at all (JUDGE_PROJECTION_FIELDS excludes them), so feeding them
+    # would be inert. See task-D4c-report.md.
+    #
+    # claims_zakat_eligible is None in three distinct cases: the column is
+    # SQL NULL, the key is missing, or there is no charity_data row at all.
+    # All three mean "unknown", not "not claimed" -- omit the wallet_tag key
+    # entirely rather than coalescing to a positive SADAQAH-ELIGIBLE
+    # assertion, which _quick_checks would otherwise treat as a known source
+    # fact and use to gate publication on an invented value.
+    claims_zakat_eligible = (charity_data or {}).get("claims_zakat_eligible")
+    metrics = (
+        {}
+        if claims_zakat_eligible is None
+        else {"wallet_tag": _wallet_tag_from_zakat_claim(claims_zakat_eligible)}
+    )
+
+    # LLM-prompt exposure: base_judge.py's format_prompt() interpolates this
+    # whole dict into "{context}", which factual_judge.txt / zakat_judge.txt /
+    # score_judge.txt label "## Source Data (Ground Truth)" to their LLM
+    # judges -- so `metrics` above (derived here, not read from a database
+    # row) reaches those prompts as if it were ground truth, including the
+    # zakat judge, which itself adjudicates wallet_tag. Low actual risk: the
+    # prompt already carried charity_data.claims_zakat_eligible verbatim via
+    # "charity_data" below, and after the None-handling above, "metrics" now
+    # omits wallet_tag whenever the source is unknown rather than asserting
+    # one. Noted here so this isn't silently inherited by future readers.
     context = {
         "raw_sources": raw_sources,
         "source_data": raw_sources,  # Alias for crawl_quality_judge
         "charity_data": charity_data,
         "charity": charity,  # From charities table - has city, state, mission
-        # FactualJudge._quick_checks' wallet_tag check: only wallet_tag is fed
-        # here, from an independent source (see _wallet_tag_from_zakat_claim).
-        # amal_score/strategic_score/archetype/strategic_dimensions are
-        # deliberately NOT included — amal_score has no second copy anywhere
-        # in the schema (feeding it would compare evaluations.amal_score to
-        # itself), and the strategic fields can never appear in `evaluation`
-        # at all (JUDGE_PROJECTION_FIELDS excludes them), so feeding them
-        # would be inert. See task-D4c-report.md.
-        "metrics": {
-            "wallet_tag": _wallet_tag_from_zakat_claim((charity_data or {}).get("claims_zakat_eligible")),
-        },
+        "metrics": metrics,
     }
 
     # J-002: Configure all judges explicitly (sample_rate=1.0 for single charity)
