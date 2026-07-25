@@ -191,6 +191,44 @@ class TestCrawlDelayAndEmptyRetry:
         assert "CAPTCHA" in err
 
 
+class TestMaxConcurrentReachesTheSemaphore:
+    """_crawl_urls_async called self._per_domain_semaphores() with no argument,
+    so max_concurrent (polite_concurrency, the serial empty-batch retry) never
+    reached the semaphore that actually gates requests. The tests above only
+    assert the argument passed to a stubbed _crawl_specific_urls_async, which
+    stayed green the whole time the effect didn't exist. These assert the
+    real semaphore built inside the un-stubbed _crawl_urls_async."""
+
+    def _collector(self):
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c.headers = {}
+        return c
+
+    def _observed_semaphore_value(self, max_concurrent):
+        c = self._collector()
+        captured = {}
+
+        async def fake_fetch_url_async(client, url, semaphore, force=False, crawl_delay=0.0):
+            captured["value"] = semaphore._value
+            return (url, True, "<html></html>", url, None)
+
+        c._fetch_url_async = fake_fetch_url_async
+        asyncio.run(c._crawl_urls_async(["https://example.org/a"], max_concurrent=max_concurrent))
+        return captured["value"]
+
+    def test_serial_retry_concurrency_reaches_the_real_semaphore(self):
+        # The empty-batch retry passes max_concurrent=1 expecting a genuinely
+        # serial second pass. Before the fix this produced the module default
+        # (2) instead — an identical parallel retry, not a serial one.
+        assert self._observed_semaphore_value(1) == 1
+
+    def test_requested_concurrency_never_exceeds_the_politeness_ceiling(self):
+        # A caller asking for more than PER_DOMAIN_CONCURRENCY must not get
+        # more — the ceiling always wins, only a lower ask is honored.
+        assert self._observed_semaphore_value(10) == PER_DOMAIN_CONCURRENCY
+
+
 class TestBotChallengeDetection:
     """_is_bot_challenge_html gates whether Playwright-rendered content gets
     accepted as real site content. Real incident: healpalestine.org's

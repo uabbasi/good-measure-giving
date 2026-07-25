@@ -1275,7 +1275,10 @@ class WebsiteCollector(BaseCollector):
         Returns:
             Dict mapping URL -> (success, html, final_url, error)
         """
-        get_sem = self._per_domain_semaphores()
+        # Never exceed the per-domain politeness ceiling, but DO honor a caller
+        # asking for less — polite_concurrency (2 when the host publishes a
+        # Crawl-delay) and the serial empty-batch retry (1) both depend on this.
+        get_sem = self._per_domain_semaphores(min(max_concurrent, PER_DOMAIN_CONCURRENCY))
         results: Dict[str, Tuple[bool, Optional[str], Optional[str], Optional[str]]] = {}
 
         async with httpx.AsyncClient(
