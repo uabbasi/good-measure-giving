@@ -1,6 +1,8 @@
 """Tests for the IRS compliance checks (B-J-013/014) in BaselineQualityJudge.
 
-B-J-013 ERROR   : BMF exempt-organization status code present and not '01'.
+B-J-013 WARNING : BMF exempt-organization status code present and not '01'.
+                  (WARNING, not ERROR, until the real code distribution
+                  across the pilot set is measured — see D5.)
 B-J-014 WARNING : revocation-reinstatement signature — ruling year >= 2011,
                   8+ years after founding, with a 3+ year filing gap
                   (the Al-Furqaan pattern: founded 2003, ruling 2021, last
@@ -32,11 +34,25 @@ class TestExemptStatus:
     def test_status_1_unpadded_passes(self):
         assert _run({"irs_exempt_status_code": "1"}) == []
 
-    def test_non_exempt_status_is_error(self):
+    def test_non_exempt_status_warns_rather_than_blocking_publication(self):
+        """WARNING, not ERROR, until the real code distribution is measured.
+
+        This asserted ERROR before D5 — that encoded the pre-measurement
+        assumption. The field landed on this branch, so every existing row
+        is NULL and this rule has never fired against live data. Legitimate
+        BMF codes other than 01 exist (12 = 4947(a)(2) trust) and would have
+        hard-blocked publication for those charities the moment a fleet run
+        populated the column.
+        """
         issues = _run({"irs_exempt_status_code": "22"})
         assert len(issues) == 1
-        assert issues[0].severity == Severity.ERROR
+        assert issues[0].severity == Severity.WARNING
         assert issues[0].issue_key == "irs_exempt_status_not_current"
+
+    def test_legitimate_trust_code_warns_not_blocks(self):
+        issues = _run({"irs_exempt_status_code": "12"})
+        assert len(issues) == 1
+        assert issues[0].severity == Severity.WARNING
 
     def test_missing_status_is_noop(self):
         assert _run({}) == []

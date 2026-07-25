@@ -763,9 +763,11 @@ class BaselineQualityJudge(BaseJudge):
     def _check_irs_compliance(self, ein: str, context: dict) -> list[ValidationIssue]:  # noqa: ARG002
         """B-J-013/014: IRS exempt-status verification (rubric v5.3.0 companion).
 
-        B-J-013 ERROR   : BMF exempt-organization status code present and not
+        B-J-013 WARNING : BMF exempt-organization status code present and not
                           '01' (unconditional exemption) — the org may not be
-                          currently tax-exempt; publication blocked.
+                          currently tax-exempt. Feeds the editorial queue;
+                          does not block publication (see inline comment
+                          below for why this isn't ERROR yet).
         B-J-014 WARNING : revocation-reinstatement signature — IRS ruling year
                           in the auto-revocation era (>=2011), 8+ years after
                           founding, combined with a 3+ year filing gap. Feeds
@@ -779,9 +781,15 @@ class BaselineQualityJudge(BaseJudge):
 
         status = metrics.get("irs_exempt_status_code")
         if status is not None and str(status).lstrip("0") not in ("1", ""):
+            # WARNING, not ERROR, until the real distribution is measured. The field
+            # landed with this branch, so every existing row is NULL and the rule has
+            # never fired against live data. Legitimate BMF codes other than 01 exist
+            # (12 = 4947(a)(2) trust). Promote to ERROR for a specific denylist of
+            # codes after one fleet run populates the column and the editorial queue
+            # shows what actually appears.
             issues.append(
                 ValidationIssue(
-                    severity=Severity.ERROR,
+                    severity=Severity.WARNING,
                     field="charity_data.irs_exempt_status_code",
                     message=(
                         f"IRS exempt-organization status code is {status} (not '01' unconditional "
