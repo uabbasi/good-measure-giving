@@ -237,6 +237,14 @@ def judge_charity(
                 retried["cost_usd"] = retried.get("cost_usd", 0.0) + retry_rich_cost
                 retried["rich_retried"] = True
                 return retried
+            # The retry FAILED. rich_narrative_generator clears the stored narrative
+            # on a consistency-validation failure, so `evaluation` (read before the
+            # retry) may no longer describe the row. Re-read before hashing, or we
+            # persist a hash that can never match and the charity is excluded
+            # forever with nothing logged.
+            evaluation = eval_repo.get(ein) or evaluation
+            result["rich_retry_failed"] = rich_retry.get("error") or "rich regeneration failed"
+            print(f"  ⚠ {ein}: rich narrative retry failed — {result['rich_retry_failed']}")
 
         # J-003: Calculate judge_score using deduplicated issue counts
         # Issues sharing the same issue_key are counted only once (highest severity wins)
