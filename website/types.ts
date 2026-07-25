@@ -1109,7 +1109,9 @@ export interface CharityProfile {
   headline?: string | null; // Short headline from narrative
   slug?: string | null; // 3-word descriptive slug for card display
   totalRevenue?: number | null; // Annual revenue
-  fiscalYear?: number | null; // Tax year of the financials backing this evaluation (data vintage)
+  // Note: fiscalYear is NOT here — the detail export already carries it at
+  // financials.fiscalYear (see below). The index/summary field is typed on
+  // CharitySummary in src/hooks/useCharities.ts.
   // New pipeline fields surfaced for donor value
   beneficiariesServedAnnually?: number | null; // Self-reported
   beneficiariesSource?: Record<string, unknown> | null; // Source metadata for beneficiary count
