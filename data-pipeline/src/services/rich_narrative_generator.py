@@ -250,7 +250,7 @@ class RichNarrativeGenerator:
             return None
 
         # 7. Inject immutable fields from baseline
-        baseline_narrative = baseline.get("baseline_narrative", {})
+        baseline_narrative = baseline.get("baseline_narrative") or {}
         rich_content = self._inject_immutable_fields(rich_content, baseline_narrative, baseline)
         charity_data = self.charity_data_repo.get(ein) or {}
         source_attribution = charity_data.get("source_attribution", {})
@@ -307,7 +307,7 @@ class RichNarrativeGenerator:
 
         # 9a. Re-inject authoritative fields that sanitizer may have stripped
         # amal_score_rationale is from baseline scoring, not LLM — must survive sanitization
-        baseline_narrative = baseline.get("baseline_narrative", {})
+        baseline_narrative = baseline.get("baseline_narrative") or {}
         if baseline_narrative.get("amal_score_rationale"):
             rich_content["amal_score_rationale"] = baseline_narrative["amal_score_rationale"]
 
@@ -828,7 +828,7 @@ class RichNarrativeGenerator:
                 program_ratio_component = next(
                     (
                         c
-                        for c in baseline.get("score_details", {}).get("impact", {}).get("components", [])
+                        for c in (baseline.get("score_details") or {}).get("impact", {}).get("components", [])
                         if c.get("name") == "Program Ratio" and c.get("evidence")
                     ),
                     None,
@@ -1421,7 +1421,7 @@ class RichNarrativeGenerator:
         if not charity_data:
             return rich_content
 
-        source_attr = charity_data.get("source_attribution", {})
+        source_attr = charity_data.get("source_attribution") or {}
 
         # Helper to extract value from source attribution
         def get_source_value(key: str) -> Optional[float]:

@@ -79,3 +79,14 @@ class TestProgramRatioScoreSurfaced:
 
         assert "Program Ratio score" not in text
         assert "Program Expense Ratio: 83.0%" in text
+
+    def test_no_crash_when_score_details_is_explicitly_null(self):
+        """score_details is a nullable json column; .get(k, {}) returns None for an
+        explicit SQL NULL, so the default never applies."""
+        baseline = {"amal_score": 68, "score_details": None}
+        gen = _generator()
+
+        text = gen._format_charity_data(baseline, _charity_bundle(_financials()), None)
+
+        assert "Program Ratio score" not in text
+        assert "Program Expense Ratio: 83.0%" in text
