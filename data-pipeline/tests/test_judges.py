@@ -475,6 +475,32 @@ class TestScoreJudgeConsensus:
         assert verdict.passed is True
 
 
+class TestScoreJudgeFailsClosed:
+    """A judge that completed no consensus roll must never report a clean pass."""
+
+    def _minimal_score_judge_output(self):
+        return {"ein": "00-0000000", "evaluation": {"amal_score": 60}, "narrative": {}}
+
+    def _minimal_score_judge_context(self):
+        return {}
+
+    def test_all_rolls_failing_produces_an_error_not_a_pass(self):
+        """A judge that did no work must never report a clean pass."""
+        judge = ScoreJudge(JudgeConfig())
+        with patch.object(
+            ScoreJudge,
+            "_verify_rationales_with_llm",
+            side_effect=RuntimeError("gemini 500 internal error"),
+        ):
+            verdict = judge.validate(
+                self._minimal_score_judge_output(), self._minimal_score_judge_context()
+            )
+
+        assert verdict.passed is False
+        assert any(i.severity == Severity.ERROR for i in verdict.issues)
+        assert verdict.metadata.get("llm_failed") is True
+
+
 class TestScoreJudgeQuickChecks:
     """Test score judge quick tone checks (no LLM)."""
 

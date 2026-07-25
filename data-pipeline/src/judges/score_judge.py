@@ -133,8 +133,17 @@ class ScoreJudge(BaseJudge):
             # Non-gating warnings/info from the first roll.
             issues.extend([i for i in roll_results[0].issues if i.severity != Severity.ERROR])
         else:
+            # Fail CLOSED. A judge that completed no roll verified nothing, and
+            # reporting error_count == 0 opened the publication gate on an
+            # unchecked narrative. factual_judge.py does the same on this path.
             logger.error("Score judge: all consensus rolls failed")
             metadata["llm_failed"] = True
+            self.add_issue(
+                issues,
+                Severity.ERROR,
+                "llm_verification",
+                "Score judge could not complete any consensus roll",
+            )
 
         # Determine pass/fail
         error_count = len([i for i in issues if i.severity == Severity.ERROR])
