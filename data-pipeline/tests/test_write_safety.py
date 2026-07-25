@@ -641,7 +641,7 @@ class TestRegressionReport:
         written = json.loads(path.read_text())
         assert written["rows"] == rows
 
-    def test_empty_regressions_writes_empty_list(self, tmp_path):
+    def test_empty_regressions_writes_empty_rows(self, tmp_path):
         import json
 
         from synthesize import write_synthesize_regressions
@@ -662,10 +662,13 @@ class TestRegressionReport:
         assert written["scope"] == ["12-3456789"]
         assert "run_at" in written
 
-    def test_no_scope_defaults_to_fleet(self, tmp_path):
+    def test_no_scope_writes_null(self, tmp_path):
+        """scope is null (not the string "fleet") when absent, so a reader
+        never has to branch on list-vs-str to know whether a scope was
+        recorded."""
         import json
 
         from synthesize import write_synthesize_regressions
 
         path = write_synthesize_regressions([], reports_dir=tmp_path)
-        assert json.loads(path.read_text())["scope"] == "fleet"
+        assert json.loads(path.read_text())["scope"] is None

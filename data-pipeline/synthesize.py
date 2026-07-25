@@ -2229,6 +2229,11 @@ def write_synthesize_regressions(rows: list[dict], reports_dir: Path = REPORTS_D
     Wrapped with run provenance: a bare list let a later single-EIN run
     silently replace a fleet run's flags with an empty one, and the file is
     gitignored so nothing recovered them.
+
+    `scope` is `null` (not the string `"fleet"`) when absent, so a reader
+    never has to branch on `list` vs `str` — `null` unambiguously means "no
+    scope was recorded," and `for ein in payload["scope"]` never silently
+    iterates the characters of a string.
     """
     import json
     from datetime import datetime
@@ -2237,7 +2242,7 @@ def write_synthesize_regressions(rows: list[dict], reports_dir: Path = REPORTS_D
     path = reports_dir / "synthesize-regressions.json"
     payload = {
         "run_at": datetime.now().isoformat(timespec="seconds"),
-        "scope": list(scope) if scope is not None else "fleet",
+        "scope": list(scope) if scope is not None else None,
         "rows": rows,
     }
     with open(path, "w") as f:

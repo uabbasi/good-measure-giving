@@ -70,6 +70,7 @@ def find_regressions(current_row: dict, history_rows: list[dict], fields) -> lis
                 # newest-first, so everything deeper is older or equally unknown
             if restore_breaks_balance_sheet(current_row, field, val):
                 continue  # guard 3b: this candidate is incoherent; an older one might not be
+            trace, null_transitions = _value_trace(history_rows, field)
             out.append(
                 {
                     "charity_ein": current_row.get("charity_ein"),
@@ -79,10 +80,36 @@ def find_regressions(current_row: dict, history_rows: list[dict], fields) -> lis
                     "last_good_commit": hrow.get("commit_hash") or hrow.get("dolt_commit_hash"),
                     "last_good_commit_date": str(commit_date) if commit_date else None,
                     "last_good_attribution": (hrow.get("source_attribution") or {}).get(field),
+                    "value_trace": trace,
+                    "null_transitions": null_transitions,
                 }
             )
             break
     return out
+
+
+def _value_trace(history_rows: list[dict], field: str) -> tuple[list[dict], int]:
+    """Distinct (value, commit_date) trace of `field` across history_rows,
+    oldest to newest, collapsing consecutive commits with the same value.
+
+    So a human deciding whether a candidate is a real fix or a scrape
+    artifact doesn't have to hand-write a dolt_history_charity_data query to
+    see it — the whole trace this tool already loaded is right there in the
+    report. `null_transitions` counts how many times the value flipped
+    into or out of NULL, since a field that oscillates NULL<->value is a
+    different (and more suspicious) shape than one that changed once.
+    """
+    trace: list[dict] = []
+    for hrow in reversed(history_rows):  # history_rows is newest-first
+        val = hrow.get(field)
+        commit_date = hrow.get("commit_date")
+        if trace and trace[-1]["value"] == val:
+            continue  # collapse a run of unchanged commits
+        trace.append({"value": val, "commit_date": str(commit_date) if commit_date else None})
+    null_transitions = sum(
+        1 for prev, cur in zip(trace, trace[1:]) if (prev["value"] is None) != (cur["value"] is None)
+    )
+    return trace, null_transitions
 
 
 def _history_cutoff() -> date:
@@ -119,8 +146,35 @@ _HISTORY_COLUMNS = ["charity_ein", "commit_hash", "commit_date", "source_attribu
     REGRESSION_GUARDED_FIELDS
 )
 
+# Which of _HISTORY_COLUMNS are JSON-typed and need deserializing after a raw
+# query. Named explicitly (rather than inferred) so adding a second JSON
+# column to _HISTORY_COLUMNS is a one-line addition here, not a silent gap.
+_JSON_HISTORY_COLUMNS = {"source_attribution"}
 
-def load_history(ein: str) -> list[dict]:
+
+def _deserialize_json_columns(rows: list[dict]) -> list[dict]:
+    """Mutate rows in place: raw SQL (unlike CharityDataRepository.get())
+    doesn't deserialize JSON columns, so they come back as strings.
+
+    A dict value (already deserialized, e.g. from a test fixture) and a None
+    value both pass through unchanged. A malformed blob degrades that row's
+    column to `{}` rather than raising — one unreadable attribution string
+    should cost a human "no attribution for this row," not the whole EIN
+    getting dropped as skipped by reconcile()'s blanket except.
+    """
+    for row in rows:
+        for col in _JSON_HISTORY_COLUMNS:
+            raw = row.get(col)
+            if not isinstance(raw, str):
+                continue
+            try:
+                row[col] = json.loads(raw)
+            except (ValueError, TypeError):
+                row[col] = {}
+    return rows
+
+
+def load_history(ein: str, query_fn=execute_query) -> list[dict]:
     """Load charity_data row history, newest-first (metadata columns +
     commit_hash + commit_date).
 
@@ -143,10 +197,13 @@ def load_history(ein: str) -> list[dict]:
     phase per run, so history is dense with unchanged duplicates. A fixed
     LIMIT eventually falls short of that growth and fails silently (0
     candidates) — a date bound is self-limiting and never runs out.
+
+    `query_fn` defaults to the real execute_query but is injectable so tests
+    can exercise the SQL shape and deserialization without a live Dolt server.
     """
     cols = ", ".join(f"`{c}`" for c in _HISTORY_COLUMNS)
     rows = (
-        execute_query(
+        query_fn(
             f"SELECT {cols} FROM dolt_history_charity_data "
             "WHERE charity_ein = %s AND commit_date >= %s "
             "ORDER BY commit_date DESC",
@@ -154,13 +211,7 @@ def load_history(ein: str) -> list[dict]:
         )
         or []
     )
-    # Raw SQL (unlike CharityDataRepository.get()) doesn't deserialize JSON
-    # columns — source_attribution comes back as a string.
-    for row in rows:
-        raw = row.get("source_attribution")
-        if isinstance(raw, str):
-            row["source_attribution"] = json.loads(raw)
-    return rows
+    return _deserialize_json_columns(rows)
 
 
 def reconcile(eins, data_repo, history_fn, apply: bool = False) -> tuple[list[dict], int, int]:
@@ -227,15 +278,22 @@ def is_systemic_failure(processed: int, skipped: int) -> bool:
     return skipped > processed
 
 
-def build_report(flags: list[dict], scope, run_at: str) -> dict:
+def build_report(flags: list[dict], scope, run_at: str, processed: int, skipped: int) -> dict:
     """Wrap candidate rows with run provenance.
 
     The bare list was indistinguishable from a stale or single-EIN run: a
     fleet run flagging 12 fields could be silently replaced by a later
     `--ein` run's empty list, and the file is gitignored so there was no
     fallback.
+
+    `processed`/`skipped` are recorded here, not just printed to stderr:
+    is_systemic_failure only exits non-zero when skipped > processed, so a
+    run with (say) 80 skipped and 89 processed still writes a report — and
+    without these counts in the file itself, `scope` listing all 169
+    requested EINs would look like a complete run to anyone opening the
+    gitignored JSON after stderr scrolled away.
     """
-    return {"run_at": run_at, "scope": list(scope), "rows": flags}
+    return {"run_at": run_at, "scope": list(scope), "processed": processed, "skipped": skipped, "rows": flags}
 
 
 def main() -> None:
@@ -278,7 +336,9 @@ def main() -> None:
 
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     path = REPORTS_DIR / "data-recovery-candidates.json"
-    report = build_report(all_flags, eins, datetime.now().isoformat(timespec="seconds"))
+    report = build_report(
+        all_flags, eins, datetime.now().isoformat(timespec="seconds"), processed=processed, skipped=skipped
+    )
     path.write_text(json.dumps(report, indent=2, default=str))
 
     if skipped:
