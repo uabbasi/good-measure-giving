@@ -173,6 +173,12 @@ def judge_charity(
         # score_details.judge_issues is stripped — see build_judge_projection).
         "evaluation": build_judge_projection(evaluation),
         "data": charity_data or {},
+        # score/factual/citation/zakat judges all read output["narrative"] —
+        # in their prompt template's "## Narrative Rationale" section, and
+        # for score_judge, in the deterministic _quick_tone_checks backstop.
+        # Without this the prompt rendered that section as a literal "{}"
+        # and the tone-check backstop returned [] on every charity.
+        "narrative": evaluation.get("baseline_narrative") or {},
     }
 
     # Build context with raw sources

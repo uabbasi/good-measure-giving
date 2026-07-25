@@ -105,6 +105,20 @@ class TestLensProjection:
 
         assert FakeOrchestrator.captured["evaluation"] == judge_phase.build_judge_projection(FULL_EVALUATION)
 
+    def test_charity_dict_carries_the_narrative_key(self, monkeypatch):
+        """score_judge (and factual/citation/zakat judges) read
+        output["narrative"] — both in their prompt template's
+        '## Narrative Rationale' section and, for score_judge, in the
+        deterministic _quick_tone_checks backstop. Without this key the
+        prompt renders that section as a literal '{}' and the tone check
+        never sees real text."""
+        monkeypatch.setattr(judge_phase, "JudgeOrchestrator", FakeOrchestrator)
+        repos = _mock_repos(dict(FULL_EVALUATION))
+
+        judge_phase.judge_charity(EIN, *repos)
+
+        assert FakeOrchestrator.captured["narrative"] == {"summary": "Baseline summary."}
+
 
 class TestJudgeScoreDedupe:
     def test_judge_score_uses_deduped_warning_count(self, monkeypatch):

@@ -540,6 +540,42 @@ class TestScoreJudgeQuickChecks:
         assert issues[0].severity == Severity.WARNING
 
 
+class TestScoreJudgePromptCarriesTheNarrative:
+    """judge_phase.py built charity_dict with no 'narrative' key, so
+    output.get("narrative", {}) was always {} — the prompt's
+    '## Narrative Rationale' section rendered as a literal empty dict, and
+    _quick_tone_checks (which reads the same key) never saw real text."""
+
+    def test_prompt_contains_the_narrative_rationale(self):
+        from judge_phase import build_judge_projection
+        from src.judges.score_judge import ScoreJudge
+
+        evaluation = {
+            "amal_score": 42,
+            "baseline_narrative": {"summary": "This charity performs well."},
+        }
+        # Mirrors the charity_dict judge_phase.judge_charity() builds.
+        output = {
+            "evaluation": build_judge_projection(evaluation),
+            "narrative": evaluation.get("baseline_narrative") or {},
+        }
+
+        prompt = ScoreJudge(JudgeConfig()).format_prompt(output, {})
+
+        assert "This charity performs well." in prompt
+        assert "## Narrative Rationale\n{}" not in prompt
+
+    def test_quick_tone_checks_flag_praise_language_in_a_below_average_band(self):
+        from src.judges.score_judge import ScoreJudge
+
+        evaluation = {"amal_score": 42}  # Below-average band
+        narrative = {"summary": "An exceptional, outstanding organization."}
+
+        issues = ScoreJudge(JudgeConfig())._quick_tone_checks(evaluation, narrative)
+
+        assert issues, "below_average band + praise language must warn"
+
+
 class TestZakatJudgeQuickChecks:
     """Test zakat judge quick checks (no LLM)."""
 
