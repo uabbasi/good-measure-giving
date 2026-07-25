@@ -308,6 +308,7 @@ class TestPlaywrightEscalationBudget:
         renderer.render.assert_called_once_with(url)
         assert ok is True
         assert data["website_profile"]["ein"] == "12-3456789"
+        c.logger.warning.assert_not_called()
 
 
 class TestPlaywrightRendererRegistry:
@@ -392,6 +393,96 @@ class TestPlaywrightRendererRegistry:
 
         assert renderer is fake_renderer
         assert fake_renderer in c._renderer_registry
+
+    def test_cleanup_playwright_removes_its_renderer_from_the_registry(self):
+        """_cleanup_playwright closes the renderer and clears the
+        thread-local, but until now left the closed object sitting in
+        _renderer_registry forever -- close_all_renderers() would re-close
+        it a second time at run end for no reason."""
+        c = self._collector()
+        c.use_playwright = True
+        fake_renderer = MagicMock()
+        with patch("src.utils.playwright_renderer.PlaywrightRenderer", return_value=fake_renderer):
+            c._get_playwright_renderer()
+        assert fake_renderer in c._renderer_registry
+
+        c._cleanup_playwright()
+
+        assert c._renderer_registry == []
+        assert getattr(c._playwright_local, "renderer", None) is None
+
+    def test_registry_does_not_accumulate_dead_entries_across_many_charities(self):
+        """Simulates one worker thread processing many charities in a row:
+        each charity creates a renderer and cleans it up via
+        _cleanup_playwright (as collect_multi_page's finally does). The
+        registry must not keep growing -- 50 "charities" in, it should be
+        empty, not 50 stale entries all due for a redundant re-close."""
+        c = self._collector()
+        c.use_playwright = True
+        for _ in range(50):
+            fake_renderer = MagicMock()
+            with patch("src.utils.playwright_renderer.PlaywrightRenderer", return_value=fake_renderer):
+                c._get_playwright_renderer()
+            c._cleanup_playwright()
+
+        assert c._renderer_registry == []
+
+
+class TestCleanupPlaywrightNeverRaises:
+    """_cleanup_playwright now runs inside collect_multi_page's `finally`,
+    outside the impl's own try/except. If renderer.close() raised, Python
+    would discard the crawl's already-computed successful return value
+    entirely, and -- since the thread-local was only ever cleared *after* a
+    successful close() -- this thread would be stuck with an un-closable
+    renderer forever, poisoning every later charity on the same worker
+    thread. A raising close() must be swallowed."""
+
+    def _collector(self):
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = MagicMock()
+        c.use_llm = False
+        c.max_pdf_downloads = 0
+        c.robots_checker = MagicMock()
+        c.robots_checker.get_crawl_delay.return_value = None
+        c._init_failure_latches()
+        c._init_playwright_local()
+        c.cache = MagicMock()
+        c._discover_urls_from_sitemap = MagicMock(return_value=(True, ["https://spa.org/"]))
+        c._fetch_url = MagicMock(return_value=(True, "<html>homepage</html>", "https://spa.org/", None))
+        c._rate_limit = MagicMock()
+        c._crawl_with_bfs_async = MagicMock(return_value={})
+        return c
+
+    def test_raising_close_does_not_discard_a_successful_crawl_or_leak_the_thread_local(self):
+        c = self._collector()
+        url = "https://spa.org/"
+        c._crawl_specific_urls_async = MagicMock(
+            return_value={url: TestPlaywrightAsyncEscalation._thin_spa_page_data()}
+        )
+        renderer = MagicMock()
+        renderer.render.return_value = "<html><body>EIN: 12-3456789</body></html>"
+        renderer.close.side_effect = RuntimeError("Cannot switch to a different thread")
+        c._get_playwright_renderer = MagicMock(return_value=renderer)
+        # Simulate what the real _get_playwright_renderer would have done
+        # when it created this renderer earlier in the crawl.
+        c._playwright_local.renderer = renderer
+
+        recovered = dict(TestPlaywrightAsyncEscalation._thin_spa_page_data())
+        recovered.update(
+            {"ein": "12-3456789", "had_data": True, "js_rendering_needed": False, "extraction_failure_reason": None}
+        )
+        c._extract_page_data = MagicMock(return_value=recovered)
+
+        with patch("src.collectors.web_collector.global_rate_limiter") as mock_limiter:
+            mock_limiter.wait.return_value = 0.0
+            ok, data, err = c.collect_multi_page(url, ein=None)
+
+        assert ok is True, "a raising close() must not discard the crawl's own successful result"
+        assert data["website_profile"]["ein"] == "12-3456789"
+        renderer.close.assert_called_once()
+        assert getattr(c._playwright_local, "renderer", None) is None, (
+            "the un-closable renderer must not stay stuck in the thread-local"
+        )
 
 
 class TestCollectMultiPageAlwaysClosesRenderer:

@@ -318,14 +318,26 @@ class WebsiteCollector(BaseCollector):
     def _cleanup_playwright(self):
         """Close this thread's own Playwright renderer, if any.
 
-        Safe to call often (collect_multi_page does, once per charity): this
-        is the only place a real Playwright renderer is guaranteed to close
-        cleanly, because it runs on the same thread that created it.
+        Safe to call often (collect_multi_page does, once per charity, from
+        a `finally` that wraps the whole call outside any exception handler):
+        a raising close() must never escape here. If it did, it would
+        discard a successful crawl's already-computed return value (Python
+        drops a pending `return` when a `finally` raises) and, since the
+        thread-local is only cleared after a successful close(), leave this
+        thread stuck with an un-closable renderer forever -- poisoning every
+        later charity on this worker thread the same way.
         """
         renderer = getattr(self._playwright_local, "renderer", None)
         if renderer:
-            renderer.close()
-            self._playwright_local.renderer = None
+            try:
+                renderer.close()
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f"Playwright renderer cleanup failed: {e}")
+            finally:
+                self._playwright_local.renderer = None
+                with self._renderer_registry_lock:
+                    self._renderer_registry = [r for r in self._renderer_registry if r is not renderer]
 
     def close_all_renderers(self) -> None:
         """Best-effort close of every renderer this collector ever created,

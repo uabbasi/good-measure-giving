@@ -250,9 +250,9 @@ def _cleanup_worker_resources() -> None:
 
         collectors = resources.get("collectors", {})
         website_collector = collectors.get("website") if isinstance(collectors, dict) else None
-        if website_collector is not None and hasattr(website_collector, "_cleanup_playwright"):
+        if website_collector is not None and hasattr(website_collector, "close_all_renderers"):
             try:
-                website_collector._cleanup_playwright()
+                website_collector.close_all_renderers()
             except Exception:
                 pass
 
