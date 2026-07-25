@@ -445,6 +445,18 @@ class TestRegressionGuard:
         assert run() == sorted(run()), "flag order must be sorted, not frozenset iteration order"
 
 
+def test_zero_financials_persist_as_zero_not_null():
+    """A real 0 must reach the column. `int(x) if x else None` turned a debt-free
+    charity's total_liabilities=0 into NULL on 18 live EINs."""
+    from synthesize import _coerce_financial_column
+
+    assert _coerce_financial_column(0) == 0
+    assert _coerce_financial_column(0.0) == 0
+    assert _coerce_financial_column(None) is None
+    assert _coerce_financial_column(1131154) == 1131154
+    assert _coerce_financial_column(11342603.0) == 11342603
+
+
 class TestSynthesizeCharityOrdering:
     def test_regression_guard_runs_before_metrics_json_dump_and_size_tier(self):
         """apply_regression_guard() must run before metrics_json is dumped and

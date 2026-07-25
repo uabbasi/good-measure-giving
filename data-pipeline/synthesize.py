@@ -90,6 +90,16 @@ REGRESSION_GUARDED_FIELDS = frozenset(
 )
 
 
+def _coerce_financial_column(value) -> int | None:
+    """int() a financial value, preserving a genuine 0.
+
+    `int(x) if x else None` treated 0 as missing, so a debt-free charity wrote
+    NULL for total_liabilities and the regression guard then restored last
+    period's non-zero value over it.
+    """
+    return None if value is None else int(value)
+
+
 def apply_regression_guard(synthesized, metrics, prior_row: dict | None) -> list[dict]:
     """Restore guarded scalar fields that recomputed non-null -> null this run.
 
@@ -2079,14 +2089,14 @@ def synthesize_charity(
 
     # Persist individual scorer-critical columns (for DoltDB queryability)
     # Overwrite early financial columns with aggregator's fiscal-year-aware values
-    synthesized.total_revenue = int(metrics.total_revenue) if metrics.total_revenue else None
-    synthesized.total_expenses = int(metrics.total_expenses) if metrics.total_expenses else None
-    synthesized.program_expenses = int(metrics.program_expenses) if metrics.program_expenses else None
-    synthesized.admin_expenses = int(metrics.admin_expenses) if metrics.admin_expenses else None
-    synthesized.fundraising_expenses = int(metrics.fundraising_expenses) if metrics.fundraising_expenses else None
-    synthesized.total_assets = int(metrics.total_assets) if metrics.total_assets else None
-    synthesized.total_liabilities = int(metrics.total_liabilities) if metrics.total_liabilities else None
-    synthesized.net_assets = int(metrics.net_assets) if metrics.net_assets else None
+    synthesized.total_revenue = _coerce_financial_column(metrics.total_revenue)
+    synthesized.total_expenses = _coerce_financial_column(metrics.total_expenses)
+    synthesized.program_expenses = _coerce_financial_column(metrics.program_expenses)
+    synthesized.admin_expenses = _coerce_financial_column(metrics.admin_expenses)
+    synthesized.fundraising_expenses = _coerce_financial_column(metrics.fundraising_expenses)
+    synthesized.total_assets = _coerce_financial_column(metrics.total_assets)
+    synthesized.total_liabilities = _coerce_financial_column(metrics.total_liabilities)
+    synthesized.net_assets = _coerce_financial_column(metrics.net_assets)
     synthesized.cn_overall_score = metrics.cn_overall_score
     synthesized.cn_financial_score = metrics.cn_financial_score
     synthesized.cn_accountability_score = metrics.cn_accountability_score
