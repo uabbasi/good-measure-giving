@@ -90,13 +90,23 @@ REGRESSION_GUARDED_FIELDS = frozenset(
 )
 
 
-def apply_regression_guard(synthesized, prior_row: dict | None) -> list[dict]:
+def apply_regression_guard(synthesized, metrics, prior_row: dict | None) -> list[dict]:
     """Restore guarded scalar fields that recomputed non-null -> null this run.
 
     Returns a list of flag dicts for the editorial/regressions report. Mutates
-    `synthesized` in place, restoring the prior value for each regressed
-    top-level column. metrics_json-nested ratios are intentionally excluded —
-    see the comment above REGRESSION_GUARDED_FIELDS.
+    BOTH `metrics` and `synthesized` in place. Restoring into `metrics` is what
+    makes the restore real: metrics_json is dumped from it, the top-level
+    columns are overwritten from it, and nonprofit_size_tier is derived from
+    the result. Restoring only the column left metrics_json disagreeing with
+    the exported row (EIN 31-1267559 shipped $11.3M revenue while the scorer
+    saw None and tagged it small_nonprofit).
+
+    The null test reads `metrics`, which is authoritative at this point in
+    synthesize_charity; `synthesized`'s financial columns are still the early
+    pre-aggregator values and have not yet been overwritten.
+
+    metrics_json-nested ratios are intentionally excluded — see the comment
+    above REGRESSION_GUARDED_FIELDS.
 
     Restoring a value without its source_attribution left the field
     "has value but no source attribution" (S-J-002) — real incident: EIN
@@ -108,17 +118,21 @@ def apply_regression_guard(synthesized, prior_row: dict | None) -> list[dict]:
         return []
     prior_attribution = prior_row.get("source_attribution") or {}
     flags: list[dict] = []
-    for field in REGRESSION_GUARDED_FIELDS:
+    # sorted(): REGRESSION_GUARDED_FIELDS is a frozenset, so unsorted iteration
+    # made the regressions report diff-noisy between runs.
+    for field in sorted(REGRESSION_GUARDED_FIELDS):
         prior_value = prior_row.get(field)
-        if prior_value is not None and getattr(synthesized, field, None) is None:
-            setattr(synthesized, field, prior_value)
-            if field in prior_attribution:
-                if synthesized.source_attribution is None:
-                    synthesized.source_attribution = {}
-                synthesized.source_attribution[field] = prior_attribution[field]
-            flags.append(
-                {"charity_ein": synthesized.charity_ein, "field": field, "prior_value": prior_value}
-            )
+        if prior_value is None or getattr(metrics, field, None) is not None:
+            continue
+        setattr(metrics, field, prior_value)
+        setattr(synthesized, field, prior_value)
+        if field in prior_attribution:
+            if synthesized.source_attribution is None:
+                synthesized.source_attribution = {}
+            synthesized.source_attribution[field] = prior_attribution[field]
+        flags.append(
+            {"charity_ein": synthesized.charity_ein, "field": field, "prior_value": prior_value}
+        )
     return flags
 
 
@@ -2028,6 +2042,20 @@ def synthesize_charity(
     # Store source attribution
     synthesized.source_attribution = source_attribution
 
+    # Non-destructive write: never let a guarded scalar regress non-null -> null.
+    # MUST run before metrics_json is dumped (below) and before the size tier is
+    # derived — restoring after those left metrics_json and the column disagreeing.
+    if data_repo is None:
+        data_repo = CharityDataRepository()
+    prior_row = data_repo.get(ein)
+    regression_flags = apply_regression_guard(synthesized, metrics, prior_row)
+    if regression_flags:
+        logging.getLogger(__name__).warning(
+            f"{ein}: preserved {len(regression_flags)} regressed field(s): "
+            f"{[f['field'] for f in regression_flags]}"
+        )
+    result["regressions"] = regression_flags
+
     # =========================================================================
     # Persist full CharityMetrics blob (single source of truth for baseline)
     # Apply synthesis enrichments to metrics BEFORE serialization so baseline
@@ -2138,18 +2166,6 @@ def synthesize_charity(
         return result
     if synth_contract.warnings:
         logging.getLogger(__name__).info(f"EIN {ein} synthesize contract warnings: {synth_contract.warnings}")
-
-    # Non-destructive write: never let a guarded scalar regress non-null -> null.
-    if data_repo is None:
-        data_repo = CharityDataRepository()
-    prior_row = data_repo.get(ein)
-    regression_flags = apply_regression_guard(synthesized, prior_row)
-    if regression_flags:
-        logging.getLogger(__name__).warning(
-            f"{ein}: preserved {len(regression_flags)} regressed field(s): "
-            f"{[f['field'] for f in regression_flags]}"
-        )
-    result["regressions"] = regression_flags
 
     result["synthesized"] = synthesized
     result["fields_computed"] = fields_computed

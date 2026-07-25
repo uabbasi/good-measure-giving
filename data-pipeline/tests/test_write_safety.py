@@ -261,10 +261,13 @@ class TestRegressionGuard:
         prior = {"total_revenue": 1_000_000, "total_expenses": 800_000}
         synthesized = CharityData(charity_ein="12-3456789")
         synthesized.total_expenses = 800_000
+        metrics = CharityData(charity_ein="12-3456789")
+        metrics.total_expenses = 800_000
         # total_revenue recomputed to None this run (a genuine computation gap --
         # total_revenue is always present on a valid 990/990-EZ)
-        flags = apply_regression_guard(synthesized, prior)
+        flags = apply_regression_guard(synthesized, metrics, prior)
 
+        assert metrics.total_revenue == 1_000_000  # restored into the object the scorer reads
         assert synthesized.total_revenue == 1_000_000  # restored
         assert flags == [{"charity_ein": "12-3456789", "field": "total_revenue", "prior_value": 1_000_000}]
 
@@ -283,8 +286,11 @@ class TestRegressionGuard:
         }
         synthesized = CharityData(charity_ein="12-3456789")
         synthesized.source_attribution = {}
-        flags = apply_regression_guard(synthesized, prior)
+        metrics = CharityData(charity_ein="12-3456789")
+        metrics.source_attribution = {}
+        flags = apply_regression_guard(synthesized, metrics, prior)
 
+        assert metrics.total_revenue == 1_000_000
         assert synthesized.total_revenue == 1_000_000
         assert synthesized.source_attribution["total_revenue"] == {
             "source_name": "Charity Navigator",
@@ -301,8 +307,10 @@ class TestRegressionGuard:
 
         prior = {"total_revenue": 1_000_000}  # no source_attribution key at all
         synthesized = CharityData(charity_ein="12-3456789")
-        flags = apply_regression_guard(synthesized, prior)
+        metrics = CharityData(charity_ein="12-3456789")
+        flags = apply_regression_guard(synthesized, metrics, prior)
 
+        assert metrics.total_revenue == 1_000_000
         assert synthesized.total_revenue == 1_000_000
         assert flags == [{"charity_ein": "12-3456789", "field": "total_revenue", "prior_value": 1_000_000}]
 
@@ -317,11 +325,13 @@ class TestRegressionGuard:
         }
         synthesized = CharityData(charity_ein="12-3456789")
         synthesized.total_revenue = 1_000_000  # unchanged
+        metrics = CharityData(charity_ein="12-3456789")
+        metrics.total_revenue = 1_000_000  # unchanged
         # theory_of_change is NOT in the guarded set (website-derived, may legitimately drop)
         # program_expense_ratio is conditionally present (990-EZ small filers don't
         # break it out) -- no longer guarded, so a non-null -> null transition here
         # is a legitimate drop, not a restore target
-        flags = apply_regression_guard(synthesized, prior)
+        flags = apply_regression_guard(synthesized, metrics, prior)
 
         assert flags == []
         assert synthesized.theory_of_change is None  # not restored
@@ -332,7 +342,8 @@ class TestRegressionGuard:
         from synthesize import apply_regression_guard
 
         synthesized = CharityData(charity_ein="12-3456789")
-        assert apply_regression_guard(synthesized, None) == []
+        metrics = CharityData(charity_ein="12-3456789")
+        assert apply_regression_guard(synthesized, metrics, None) == []
 
     def test_guarded_fields_are_required_source_derived(self):
         import synthesize
@@ -365,6 +376,73 @@ class TestRegressionGuard:
         # website-derived text fields must NOT be guarded (legit drops)
         assert "theory_of_change" not in synthesize.REGRESSION_GUARDED_FIELDS
         assert "populations_served" not in synthesize.REGRESSION_GUARDED_FIELDS
+
+    def test_guard_restores_into_metrics_so_metrics_json_agrees_with_column(self):
+        """The guard must restore into `metrics`, not just the synthesized column.
+
+        Regression: EIN 31-1267559 shipped total_revenue=11342603 on the column
+        while metrics_json.total_revenue was None, so the scorer saw no revenue
+        and the size tier was derived as small_nonprofit on $11.3M.
+        """
+        from types import SimpleNamespace
+
+        from synthesize import apply_regression_guard
+
+        metrics = SimpleNamespace(total_revenue=None, total_expenses=None,
+                                  total_assets=None, total_liabilities=None,
+                                  net_assets=None, source_attribution={})
+        synthesized = SimpleNamespace(charity_ein="31-1267559", total_revenue=None,
+                                      total_expenses=None, total_assets=None,
+                                      total_liabilities=None, net_assets=None,
+                                      source_attribution={})
+        prior = {"charity_ein": "31-1267559", "total_revenue": 11342603,
+                 "source_attribution": {"total_revenue": {"source_name": "Charity Navigator"}}}
+
+        flags = apply_regression_guard(synthesized, metrics, prior)
+
+        assert metrics.total_revenue == 11342603, "restore must reach metrics (drives metrics_json + size tier)"
+        assert synthesized.total_revenue == 11342603, "restore must also reach the column"
+        assert [f["field"] for f in flags] == ["total_revenue"]
+
+    def test_guard_does_not_fire_on_a_genuine_zero_in_metrics(self):
+        """A real 0 is a value, not a regression -- the guard must leave it alone."""
+        from types import SimpleNamespace
+
+        from synthesize import apply_regression_guard
+
+        metrics = SimpleNamespace(total_revenue=None, total_expenses=None,
+                                  total_assets=None, total_liabilities=0,
+                                  net_assets=None, source_attribution={})
+        synthesized = SimpleNamespace(charity_ein="26-3342933", total_liabilities=None,
+                                      total_revenue=None, total_expenses=None,
+                                      total_assets=None, net_assets=None,
+                                      source_attribution={})
+        prior = {"charity_ein": "26-3342933", "total_liabilities": 861467, "source_attribution": {}}
+
+        flags = apply_regression_guard(synthesized, metrics, prior)
+
+        assert metrics.total_liabilities == 0, "a genuine 0 must survive"
+        assert flags == [], "0 is not a non-null -> null regression"
+
+    def test_guard_report_field_order_is_deterministic(self):
+        """REGRESSION_GUARDED_FIELDS is a frozenset; iterate sorted so the report doesn't churn."""
+        from types import SimpleNamespace
+
+        from synthesize import apply_regression_guard
+
+        def run():
+            metrics = SimpleNamespace(total_revenue=None, total_expenses=None, total_assets=None,
+                                      total_liabilities=None, net_assets=None, source_attribution={})
+            synthesized = SimpleNamespace(charity_ein="12-3456789", total_revenue=None,
+                                          total_expenses=None, total_assets=None,
+                                          total_liabilities=None, net_assets=None,
+                                          source_attribution={})
+            prior = {"charity_ein": "12-3456789", "total_revenue": 1, "total_expenses": 2,
+                     "total_assets": 3, "total_liabilities": 4, "net_assets": 5,
+                     "source_attribution": {}}
+            return [f["field"] for f in apply_regression_guard(synthesized, metrics, prior)]
+
+        assert run() == sorted(run()), "flag order must be sorted, not frozenset iteration order"
 
 
 class TestRegressionReport:
