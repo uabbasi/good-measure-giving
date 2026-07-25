@@ -96,6 +96,20 @@ class TestCrawledPageRepository:
             repo.record_pages(EIN, [])
         mock_exec.assert_not_called()
 
+    def test_record_pages_skips_a_url_too_long_for_the_column(self):
+        """crawled_pages.url is VARCHAR(500); a long sitemap query string must not
+        raise into the crawl's success path."""
+        repo = CrawledPageRepository()
+        CrawledPageRepository._table_ensured = True
+        pages = [
+            {"url": "https://x.org/" + "a" * 600, "had_data": True},
+            {"url": "https://x.org/ok", "had_data": True},
+        ]
+        with patch("src.db.repository.execute_query") as mock_exec:
+            repo.record_pages(EIN, pages)
+        _, params = mock_exec.call_args.args
+        assert params == (EIN, "https://x.org/ok", True)
+
     def test_get_missing_since_last_crawl_filters_on_last_seen_at(self):
         repo = CrawledPageRepository()
         with patch("src.db.repository.execute_query", return_value=[]) as mock_exec:

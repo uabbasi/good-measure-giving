@@ -1758,7 +1758,13 @@ class CrawledPageRepository(_LazyTableRepository):
         """Upsert one row per page: {"url": str, "had_data": bool}. New
         pages get first_seen_at=now; previously-seen pages bump
         last_seen_at + times_seen and refresh had_data."""
-        rows = [(ein, page["url"], bool(page.get("had_data"))) for page in pages if page.get("url")]
+        # crawled_pages.url is VARCHAR(500). A long sitemap/BFS query string
+        # would raise into the caller's success path and demote a good crawl.
+        rows = [
+            (ein, page["url"], bool(page.get("had_data")))
+            for page in pages
+            if page.get("url") and len(page["url"]) <= 500
+        ]
         if not rows:
             return
         self.ensure_table()

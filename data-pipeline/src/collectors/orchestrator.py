@@ -1384,9 +1384,15 @@ class DataCollectionOrchestrator:
         pages_with_data = sum(1 for p in crawled_urls if p.get("had_data")) if source == "website" else None
         # Durable per-page history, independent of the attempt outcome below
         # -- so a page disappearing between crawls is visible even when the
-        # overall attempt is a soft-fail/preserve or a hard failure.
+        # overall attempt is a soft-fail/preserve or a hard failure. Bookkeeping
+        # must never be able to change the crawl's outcome, so a write failure
+        # here (e.g. a URL too long for the column) is swallowed, not raised.
         if crawled_urls:
-            self.crawled_page_repo.record_pages(ein, crawled_urls)
+            try:
+                self.crawled_page_repo.record_pages(ein, crawled_urls)
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f"crawl history write failed for {ein}: {e}")
 
         # Non-downgrade guard: never replace stored substantive content with a
         # materially thinner/empty re-observation while the stored content is
@@ -1401,8 +1407,15 @@ class DataCollectionOrchestrator:
                 reason = f"{source} re-observation thinner than last-good; preserved (age={age}y)"
                 self.logger.warning(f"{ein}: {reason}")
                 self.raw_data_repo.record_soft_fail(ein, source, reason)
-                self.crawl_attempt_repo.record(ein, source, success=True, failure_reason=reason,
-                                                pages_found=pages_found, pages_with_data=pages_with_data)
+                # Bookkeeping must never be able to undo the preserve it's
+                # recording: a raise here must not fall through to the
+                # demotion path below.
+                try:
+                    self.crawl_attempt_repo.record(ein, source, success=True, failure_reason=reason,
+                                                    pages_found=pages_found, pages_with_data=pages_with_data)
+                except Exception as e:
+                    if self.logger:
+                        self.logger.debug(f"crawl history write failed for {ein}: {e}")
                 return True
 
         # Check if data is meaningful
@@ -1418,16 +1431,27 @@ class DataCollectionOrchestrator:
                 error_message=None if is_meaningful else "Empty or failed data",
                 raw_content=raw_content,
             )
-            self.crawl_attempt_repo.record(
-                ein, source, success=is_meaningful,
-                failure_reason=None if is_meaningful else "Empty or failed data",
-                pages_found=pages_found, pages_with_data=pages_with_data,
-            )
+            # The upsert already succeeded; a raise from this bookkeeping call
+            # must not be mistaken for a failed store (would demote a good
+            # write to failure via the except block below).
+            try:
+                self.crawl_attempt_repo.record(
+                    ein, source, success=is_meaningful,
+                    failure_reason=None if is_meaningful else "Empty or failed data",
+                    pages_found=pages_found, pages_with_data=pages_with_data,
+                )
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f"crawl history write failed for {ein}: {e}")
             return is_meaningful
         except Exception as e:
             self.logger.error(f"Failed to store raw data for {source}/{ein}: {e}")
-            self.crawl_attempt_repo.record(ein, source, success=False, failure_reason=str(e),
-                                            pages_found=pages_found, pages_with_data=pages_with_data)
+            try:
+                self.crawl_attempt_repo.record(ein, source, success=False, failure_reason=str(e),
+                                                pages_found=pages_found, pages_with_data=pages_with_data)
+            except Exception as e2:
+                if self.logger:
+                    self.logger.debug(f"crawl history write failed for {ein}: {e2}")
             return False
 
     def _store_failed_crawl(self, ein: str, source: str, error: str):

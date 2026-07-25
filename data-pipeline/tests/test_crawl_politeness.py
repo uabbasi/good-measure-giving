@@ -1462,3 +1462,79 @@ class TestCaptchaLatchIsThreadLocal:
 
         assert seen["a"] == "CAPTCHA_BLOCKED: challenge page (HTTP 200)"
         assert seen["b"] is None, "B must not inherit A's captcha"
+
+
+class TestHistoryBookkeepingNeverChangesOutcome:
+    """Task C5: crawl-history bookkeeping (crawled_page_repo.record_pages,
+    crawl_attempt_repo.record) must never be able to change a crawl's
+    recorded outcome. Each call site is exercised individually so a raise
+    from any one of them still leaves the real outcome (upsert + return
+    value) intact."""
+
+    def _make_orchestrator(self, logger=None):
+        orch = DataCollectionOrchestrator.__new__(DataCollectionOrchestrator)
+        orch.logger = logger if logger is not None else MagicMock()
+        orch.raw_data_repo = MagicMock()
+        orch.raw_data_repo.get_by_source.return_value = None
+        orch.crawled_page_repo = MagicMock()
+        orch.crawl_attempt_repo = MagicMock()
+        return orch
+
+    def test_history_write_failure_does_not_demote_a_successful_crawl(self):
+        """The record_pages call (which runs before the upsert) must not
+        prevent the upsert from happening, even with logger=None."""
+        orch = self._make_orchestrator(logger=None)
+        orch.crawled_page_repo.record_pages.side_effect = RuntimeError("Data too long for column 'url'")
+
+        result = orch._store_raw_data(
+            "12-3456789",
+            "website",
+            {
+                "website_profile": {"mission": "test"},
+                "crawled_urls": [{"url": "https://x.org/", "had_data": True}],
+            },
+        )
+
+        assert orch.raw_data_repo.upsert.called
+        assert orch.raw_data_repo.upsert.call_args.kwargs["success"] is True
+        assert result is True
+
+    def test_preserve_guards_own_record_call_does_not_undo_the_preserve(self):
+        """A raise from the preserve guard's own crawl_attempt_repo.record
+        must not fall through to the demotion path it's guarding against."""
+        orch = self._make_orchestrator()
+        orch.raw_data_repo.get_by_source.return_value = {
+            "success": True,
+            "scraped_at": datetime.now(timezone.utc).isoformat(),
+            "parsed_json": {"candid_profile": {"mission": "already have this"}},
+        }
+        orch.crawl_attempt_repo.record.side_effect = RuntimeError("boom")
+
+        result = orch._store_raw_data("12-3456789", "candid", {"candid_profile": {}})
+
+        assert result is True
+        orch.raw_data_repo.record_soft_fail.assert_called_once()
+        assert not orch.raw_data_repo.upsert.called
+
+    def test_post_upsert_record_failure_does_not_demote_a_successful_store(self):
+        """A raise from the success-path record() call (after the upsert
+        already succeeded) must not be mistaken for a store failure."""
+        orch = self._make_orchestrator()
+        orch.crawl_attempt_repo.record.side_effect = RuntimeError("boom")
+
+        result = orch._store_raw_data("12-3456789", "candid", {"candid_profile": {"mission": "test"}})
+
+        assert orch.raw_data_repo.upsert.called
+        assert orch.raw_data_repo.upsert.call_args.kwargs["success"] is True
+        assert result is True
+
+    def test_except_handlers_own_record_failure_does_not_escape(self):
+        """If the upsert itself fails, the except handler's own record()
+        call raising too must not escape _store_raw_data."""
+        orch = self._make_orchestrator()
+        orch.raw_data_repo.upsert.side_effect = RuntimeError("db down")
+        orch.crawl_attempt_repo.record.side_effect = RuntimeError("record also down")
+
+        result = orch._store_raw_data("12-3456789", "candid", {"candid_profile": {"mission": "test"}})
+
+        assert result is False
