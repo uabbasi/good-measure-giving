@@ -400,6 +400,28 @@ class DataCollectionOrchestrator:
 
         return age < timedelta(days=ttl_days)
 
+    @staticmethod
+    def _attempt_clock(row: dict):
+        """When this source was last ATTEMPTED, as a datetime (or None).
+
+        Prefers last_attempt_at over scraped_at. scraped_at is the DATA clock
+        and is deliberately frozen when a failed re-crawl preserves last-good
+        content, so using it for backoff meant the retry clock never advanced
+        for exactly the rows preservation protects — and made the 180d terminal
+        TTL measure time since last SUCCESS, so long-blocked sites read as
+        expired and were re-hammered every run. Falls back to scraped_at for
+        pre-migration rows where last_attempt_at is NULL.
+        """
+        raw = row.get("last_attempt_at") or row.get("scraped_at")
+        if not raw:
+            return None
+        if isinstance(raw, str):
+            try:
+                return datetime.fromisoformat(raw.replace("Z", "+00:00"))
+            except ValueError:
+                return None
+        return raw
+
     def _should_skip_failed_source(self, ein: str, source: str) -> Tuple[bool, str]:
         """
         Check if a failed source should be skipped due to backoff or permanent failure.
@@ -427,58 +449,36 @@ class DataCollectionOrchestrator:
         )
         terminal_marker = classify_failure(failure_text)
         if terminal_marker:
-            scraped_at = row.get("scraped_at")
-            if scraped_at:
-                try:
-                    if isinstance(scraped_at, str):
-                        scraped_dt = datetime.fromisoformat(scraped_at.replace("Z", "+00:00"))
-                    else:
-                        scraped_dt = scraped_at
-                    failure_age = datetime.now(scraped_dt.tzinfo) - scraped_dt
-                    if failure_age < timedelta(days=TERMINAL_FAILURE_TTL_DAYS):
-                        return True, f"terminal failure ({terminal_marker}), TTL {TERMINAL_FAILURE_TTL_DAYS}d"
-                    self.raw_data_repo.reset_retry_count(ein, source)
-                    return False, ""
-                except (ValueError, TypeError):
-                    pass
+            attempted_dt = self._attempt_clock(row)
+            if attempted_dt:
+                failure_age = datetime.now(attempted_dt.tzinfo) - attempted_dt
+                if failure_age < timedelta(days=TERMINAL_FAILURE_TTL_DAYS):
+                    return True, f"terminal failure ({terminal_marker}), TTL {TERMINAL_FAILURE_TTL_DAYS}d"
+                self.raw_data_repo.reset_retry_count(ein, source)
+                return False, ""
 
         # FIX #10: Permanent failure with TTL — after FAILURE_TTL_DAYS, reset and allow retry
         if retry_count >= CRAWL_MAX_RETRIES:
-            scraped_at = row.get("scraped_at")
-            if scraped_at:
-                try:
-                    if isinstance(scraped_at, str):
-                        scraped_dt = datetime.fromisoformat(scraped_at.replace("Z", "+00:00"))
-                    else:
-                        scraped_dt = scraped_at
-                    failure_age = datetime.now(scraped_dt.tzinfo) - scraped_dt
-                    if failure_age >= timedelta(days=FAILURE_TTL_DAYS):
-                        # Failure is stale — reset retry_count so source can be re-fetched
-                        self.raw_data_repo.reset_retry_count(ein, source)
-                        self.logger.info(
-                            f"Reset permanent failure for {source} (age: {failure_age.days}d, TTL: {FAILURE_TTL_DAYS}d)"
-                        )
-                        return False, ""
-                except (ValueError, TypeError):
-                    pass
+            attempted_dt = self._attempt_clock(row)
+            if attempted_dt:
+                failure_age = datetime.now(attempted_dt.tzinfo) - attempted_dt
+                if failure_age >= timedelta(days=FAILURE_TTL_DAYS):
+                    # Failure is stale — reset retry_count so source can be re-fetched
+                    self.raw_data_repo.reset_retry_count(ein, source)
+                    self.logger.info(
+                        f"Reset permanent failure for {source} (age: {failure_age.days}d, TTL: {FAILURE_TTL_DAYS}d)"
+                    )
+                    return False, ""
             return True, f"permanent failure (retry_count={retry_count})"
 
         # Check backoff window
-        scraped_at = row.get("scraped_at")
-        if not scraped_at:
-            return False, ""
-
-        try:
-            if isinstance(scraped_at, str):
-                scraped_dt = datetime.fromisoformat(scraped_at.replace("Z", "+00:00"))
-            else:
-                scraped_dt = scraped_at
-        except (ValueError, TypeError):
+        attempted_dt = self._attempt_clock(row)
+        if not attempted_dt:
             return False, ""
 
         # Get backoff hours for this retry count
         backoff_hours = RETRY_BACKOFF_HOURS.get(retry_count, 24)
-        age = datetime.now(scraped_dt.tzinfo) - scraped_dt
+        age = datetime.now(attempted_dt.tzinfo) - attempted_dt
 
         if age < timedelta(hours=backoff_hours):
             remaining = timedelta(hours=backoff_hours) - age

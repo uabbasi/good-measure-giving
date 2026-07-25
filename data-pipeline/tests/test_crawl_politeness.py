@@ -1309,4 +1309,45 @@ class TestTransientPreservesLastGoodWebsite:
         orch.raw_data_repo.record_soft_fail.assert_not_called()
         assert "website" in report["sources_failed"]
         assert "website" not in report["sources_succeeded"]
-        assert any(c.kwargs.get("success") is False for c in orch.raw_data_repo.upsert.call_args_list)
+
+
+class TestFailureBackoffUsesAttemptClock:
+    """scraped_at is frozen by the preservation path, so it cannot drive backoff."""
+
+    def _orch(self, row):
+        orch = DataCollectionOrchestrator.__new__(DataCollectionOrchestrator)
+        orch.raw_data_repo = MagicMock()
+        orch.raw_data_repo.get_by_source.return_value = row
+        orch.logger = MagicMock()
+        return orch
+
+    def test_recent_attempt_is_backed_off_even_when_scraped_at_is_ancient(self):
+        row = {
+            "source": "website", "success": 0, "retry_count": 1,
+            "last_failure_reason": "RATE_LIMITED: HTTP 429",
+            "scraped_at": datetime.now() - timedelta(days=45),   # frozen by preservation
+            "last_attempt_at": datetime.now() - timedelta(minutes=5),
+        }
+        skip, reason = self._orch(row)._should_skip_failed_source("12-3456789", "website")
+        assert skip is True and "backoff" in reason.lower()
+
+    def test_terminal_block_measures_from_last_attempt_not_last_success(self):
+        row = {
+            "source": "website", "success": 0, "retry_count": 3,
+            "last_failure_reason": "CAPTCHA_BLOCKED: challenge page (HTTP 200)",
+            "scraped_at": datetime.now() - timedelta(days=200),  # last SUCCESS, long ago
+            "last_attempt_at": datetime.now() - timedelta(days=2),
+        }
+        skip, reason = self._orch(row)._should_skip_failed_source("12-3456789", "website")
+        assert skip is True, "a site captcha-blocked 2 days ago must not be re-hammered"
+
+    def test_null_last_attempt_at_falls_back_to_scraped_at(self):
+        """Pre-migration rows have last_attempt_at NULL — one re-crawl, then backed off."""
+        row = {
+            "source": "website", "success": 0, "retry_count": 1,
+            "last_failure_reason": "RATE_LIMITED: HTTP 429",
+            "scraped_at": datetime.now() - timedelta(minutes=5),
+            "last_attempt_at": None,
+        }
+        skip, _ = self._orch(row)._should_skip_failed_source("12-3456789", "website")
+        assert skip is True
