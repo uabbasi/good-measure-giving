@@ -500,10 +500,29 @@ class WebsiteCollector(BaseCollector):
             # LLM extractor as if it were the charity's real site.
             "sgcaptcha",
             "robot challenge screen",
-            "verify you are human",
         ]
         if any(marker in body for marker in strong_markers):
             return True
+
+        # "verify you are human" is Cloudflare Turnstile's literal widget
+        # label -- an ordinary donate/contact page that embeds the widget
+        # says this too, and is not a challenge page. Only count it when it
+        # co-occurs with a genuine challenge-vendor marker, or shows up in
+        # the page's own <title> (real challenge pages title themselves
+        # this way; a page merely hosting the widget doesn't).
+        if "verify you are human" in body:
+            challenge_vendor_markers = [
+                "challenge-running",
+                "cf-chl",
+                "just a moment",
+                "_cf_chl_opt",
+                "ray id",
+            ]
+            if any(marker in body for marker in challenge_vendor_markers):
+                return True
+            title_match = re.search(r"<title[^>]*>(.*?)</title>", body, re.DOTALL)
+            if title_match and "verify you are human" in title_match.group(1):
+                return True
 
         # Fallback marker combination seen on Cloudflare interstitial pages.
         if "just a moment" in body and "cloudflare" in body:
@@ -1266,8 +1285,10 @@ class WebsiteCollector(BaseCollector):
 
         Args:
             urls: List of URLs to crawl
-            max_concurrent: Maximum concurrent requests (default 10); superseded by
-                per-domain limits (H5) — kept for call-site compatibility only.
+            max_concurrent: Caller-requested concurrency ceiling (default 10).
+                Combined with the per-domain politeness ceiling (H5) via
+                min(max_concurrent, PER_DOMAIN_CONCURRENCY): this can lower
+                per-domain concurrency below the ceiling, but never raise it.
             timeout_total: Total timeout for all requests
             crawl_delay: Advertised robots.txt Crawl-delay for this host, in
                 seconds (0 if none); forwarded to _fetch_url_async.

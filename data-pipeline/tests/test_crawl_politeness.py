@@ -295,11 +295,6 @@ class TestBotChallengeDetection:
         )
         assert c._is_bot_challenge_html(html) is True
 
-    def test_detects_verify_you_are_human(self):
-        c = self._collector()
-        html = "<html><body>Please verify you are human to continue.</body></html>"
-        assert c._is_bot_challenge_html(html) is True
-
     def test_still_detects_cloudflare_challenge(self):
         c = self._collector()
         html = '<html><body>Just a moment... Checking with Cloudflare</body></html>'
@@ -314,6 +309,44 @@ class TestBotChallengeDetection:
         c = self._collector()
         assert c._is_bot_challenge_html("") is False
         assert c._is_bot_challenge_html(None) is False
+
+
+class TestTurnstileIsNotABotChallenge:
+    """'Verify you are human' is Cloudflare Turnstile's literal widget label.
+    Treating it as a strong bot-challenge marker misread ordinary donate/
+    contact pages that embed the widget as challenge pages -- on a thin
+    sitemap where that page was the only one crawled, it became the
+    charity's 180-day terminal CAPTCHA_BLOCKED failure reason."""
+
+    def _collector(self):
+        return WebsiteCollector.__new__(WebsiteCollector)
+
+    def test_a_donate_page_embedding_turnstile_is_not_a_challenge(self):
+        c = self._collector()
+        html = """<html><head><title>Donate — Example Charity</title></head><body>
+        <h1>Support our work</h1><p>Your gift funds clean water.</p>
+        <form><div class="cf-turnstile" data-sitekey="0x4A"></div>
+        <label>Verify you are human</label><button>Give $50</button></form>
+        </body></html>"""
+        assert c._is_bot_challenge_html(html) is False
+
+    def test_a_real_challenge_page_is_still_detected(self):
+        c = self._collector()
+        html = """<html><head><title>Just a moment...</title></head><body>
+        <h1>Verify you are human</h1>
+        <p>example.org needs to review the security of your connection.</p>
+        <div id="challenge-running"></div></body></html>"""
+        assert c._is_bot_challenge_html(html) is True
+
+    def test_bare_verify_you_are_human_with_no_challenge_signal_is_not_flagged(self):
+        c = self._collector()
+        html = "<html><body>Please verify you are human to continue.</body></html>"
+        assert c._is_bot_challenge_html(html) is False
+
+    def test_verify_you_are_human_in_title_is_still_detected(self):
+        c = self._collector()
+        html = "<html><head><title>Verify You Are Human</title></head><body>Loading...</body></html>"
+        assert c._is_bot_challenge_html(html) is True
 
 
 class TestPlaywrightCaptchaRescue:
