@@ -445,6 +445,51 @@ class TestRegressionGuard:
         assert run() == sorted(run()), "flag order must be sorted, not frozenset iteration order"
 
 
+class TestSynthesizeCharityOrdering:
+    def test_regression_guard_runs_before_metrics_json_dump_and_size_tier(self):
+        """apply_regression_guard() must run before metrics_json is dumped and
+        before nonprofit_size_tier is derived, or the two disagree with each
+        other and with the exported column.
+
+        Real incident: EIN 31-1267559 published total_revenue=11342603 on the
+        column while metrics_json.total_revenue was None (the guard restored
+        the column but ran too late to affect the metrics_json blob), and the
+        size tier was derived as small_nonprofit on $11.3M of revenue. Moving
+        the guard call earlier fixed it (commit a41f032); this test pins the
+        ordering so it can't silently drift back.
+        """
+        import inspect
+
+        import synthesize
+
+        source = inspect.getsource(synthesize.synthesize_charity)
+
+        guard_marker = "apply_regression_guard("
+        metrics_json_marker = "metrics_json = metrics.model_dump("
+        size_tier_marker = "# Determine nonprofit size tier"
+
+        for marker in (guard_marker, metrics_json_marker, size_tier_marker):
+            assert source.count(marker) == 1, (
+                f"expected exactly one occurrence of {marker!r} in synthesize_charity; "
+                "found a different count -- update this test's markers if the code "
+                "was intentionally restructured"
+            )
+
+        guard_pos = source.index(guard_marker)
+        metrics_json_pos = source.index(metrics_json_marker)
+        size_tier_pos = source.index(size_tier_marker)
+
+        assert guard_pos < metrics_json_pos, (
+            "apply_regression_guard() must run before metrics_json is dumped, "
+            "or a restored value won't make it into the metrics_json blob"
+        )
+        assert guard_pos < size_tier_pos, (
+            "apply_regression_guard() must run before nonprofit_size_tier is "
+            "derived, or the tier is computed from a pre-restore (possibly None) "
+            "total_revenue"
+        )
+
+
 class TestRegressionReport:
     def test_writes_regressions_json(self, tmp_path):
         import json
