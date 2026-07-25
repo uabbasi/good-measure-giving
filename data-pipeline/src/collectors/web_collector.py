@@ -199,12 +199,13 @@ class WebsiteCollector(BaseCollector):
         self.cloudflare_domains: Dict[str, str] = {}  # domain -> profile
         self._cloudflare_lock = threading.Lock()  # Thread safety for cloudflare_domains
 
-        # Track captcha/anti-bot errors for reporting
-        self._last_captcha_error: Optional[str] = None
-        # Track transient rate-limit errors for reporting (blocker 2B): makes
-        # a 429/503 visible to the orchestrator instead of masquerading as a
-        # generic "No data found on any pages" failure.
-        self._last_rate_limit_error: Optional[str] = None
+        # Track captcha/anti-bot errors for reporting, and transient
+        # rate-limit errors (blocker 2B): makes a 429/503 visible to the
+        # orchestrator instead of masquerading as a generic "No data found
+        # on any pages" failure. Thread-local (see _init_failure_latches)
+        # because crawl.py shares ONE WebsiteCollector across all worker
+        # threads.
+        self._init_failure_latches()
 
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -1412,12 +1413,35 @@ class WebsiteCollector(BaseCollector):
 
         return results
 
+    def _init_failure_latches(self) -> None:
+        """Per-thread CAPTCHA / rate-limit latches.
+
+        crawl.py shares ONE orchestrator (and so one WebsiteCollector) across
+        every worker thread — the same sharing that forced the thread-local
+        Playwright renderer. As plain instance attributes these latched one
+        charity's CAPTCHA onto whichever charity happened to finish next,
+        writing an unearned 180-day terminal block.
+        """
+        self._failure_local = threading.local()
+
+    def _reset_failure_latches(self) -> None:
+        self._failure_local.captcha = None
+        self._failure_local.rate_limit = None
+
+    def _captcha_error(self) -> Optional[str]:
+        return getattr(self._failure_local, "captcha", None)
+
+    def _rate_limit_error(self) -> Optional[str]:
+        return getattr(self._failure_local, "rate_limit", None)
+
     def _record_fetch_error(self, error: Optional[str]) -> None:
-        """Latch the first captcha/rate-limit error seen this crawl for reporting."""
-        if error and "CAPTCHA_BLOCKED" in error and not self._last_captcha_error:
-            self._last_captcha_error = error
-        if error and "RATE_LIMITED" in error and not self._last_rate_limit_error:
-            self._last_rate_limit_error = error
+        """Latch the first captcha/rate-limit error seen this crawl, per thread."""
+        if not error:
+            return
+        if "CAPTCHA_BLOCKED" in error and self._captcha_error() is None:
+            self._failure_local.captcha = error
+        if "RATE_LIMITED" in error and self._rate_limit_error() is None:
+            self._failure_local.rate_limit = error
 
     def _crawl_specific_urls_async(
         self,
@@ -2473,8 +2497,7 @@ class WebsiteCollector(BaseCollector):
             self.logger.debug(f"Starting multi-page crawl: {url}")
 
         # Reset captcha/rate-limit error tracking for this crawl
-        self._last_captcha_error = None
-        self._last_rate_limit_error = None
+        self._reset_failure_latches()
 
         # Timing trackers
         timing = {
@@ -2548,7 +2571,7 @@ class WebsiteCollector(BaseCollector):
             # for BOTH sitemap and BFS paths; skip only when a terminal block
             # (CAPTCHA/challenge) was detected.
             homepage_confirmed_live = False
-            if not crawl_results and not self._last_captcha_error:
+            if not crawl_results and not self._captcha_error():
                 homepage_confirmed_live = self._fetch_url(url, force=True)[0]
                 if homepage_confirmed_live:
                     if self.logger:
@@ -2592,10 +2615,10 @@ class WebsiteCollector(BaseCollector):
             # safe to call concurrently from multiple threads, so this
             # cannot run inside the async fetch loops above the way
             # curl_cffi does.
-            if not crawl_results and (self._last_captcha_error or homepage_confirmed_live):
+            if not crawl_results and (self._captcha_error() or homepage_confirmed_live):
                 renderer = self._get_playwright_renderer()
                 if renderer:
-                    reason = self._last_captcha_error or "async crawl timed out against a live homepage"
+                    reason = self._captcha_error() or "async crawl timed out against a live homepage"
                     if self.logger:
                         self.logger.info(f"{reason}; attempting Playwright rescue for {url}")
                     # Sitemap discovery is an httpx fetch too -- on a site whose
@@ -2639,7 +2662,7 @@ class WebsiteCollector(BaseCollector):
             if not crawl_results:
                 # Precedence: captcha (terminal) first, then rate-limit
                 # (transient, blocker 2B), then generic message.
-                error_msg = self._last_captcha_error or self._last_rate_limit_error or "No data found on any pages"
+                error_msg = self._captcha_error() or self._rate_limit_error() or "No data found on any pages"
                 return False, None, error_msg
 
             # Coverage fix: a sitemap that only lists the homepage + dead

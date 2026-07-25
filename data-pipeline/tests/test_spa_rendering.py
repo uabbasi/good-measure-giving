@@ -70,7 +70,7 @@ class TestPlaywrightAsyncEscalation:
         c.max_pdf_downloads = 0
         c.robots_checker = MagicMock()
         c.robots_checker.get_crawl_delay.return_value = None
-        c._last_captcha_error = None
+        c._init_failure_latches()
         c.cache = MagicMock()
         c._cleanup_playwright = MagicMock()
         c._discover_urls_from_sitemap = MagicMock(return_value=(True, ["https://spa.org/"]))
@@ -216,7 +216,7 @@ class TestPlaywrightEscalationBudget:
         c.max_pdf_downloads = 0
         c.robots_checker = MagicMock()
         c.robots_checker.get_crawl_delay.return_value = None
-        c._last_captcha_error = None
+        c._init_failure_latches()
         c.cache = MagicMock()
         c._cleanup_playwright = MagicMock()
         c._discover_urls_from_sitemap = MagicMock(return_value=(True, ["https://spa.org/"]))

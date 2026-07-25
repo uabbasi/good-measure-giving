@@ -133,7 +133,7 @@ class TestCrawlDelayAndEmptyRetry:
         c = WebsiteCollector.__new__(WebsiteCollector)
         c.logger = None
         c.robots_checker = MagicMock()
-        c._last_captcha_error = None
+        c._init_failure_latches()
         c.use_playwright = False
         c._playwright_local = threading.local()
         return c
@@ -180,7 +180,7 @@ class TestCrawlDelayAndEmptyRetry:
 
         def fake_crawl(urls, timeout_total, max_concurrent=10, force=False, crawl_delay=0.0):
             # Simulate a CAPTCHA detected during the crawl (the real signal path)
-            c._last_captcha_error = "CAPTCHA_BLOCKED: challenge page (HTTP 200)"
+            c._record_fetch_error("CAPTCHA_BLOCKED: challenge page (HTTP 200)")
             calls.append(max_concurrent)
             return {}
 
@@ -259,11 +259,12 @@ class TestPlaywrightCaptchaRescue:
         c._crawl_with_bfs_async = MagicMock(return_value={})
         c.use_playwright = True
         c._playwright_local = threading.local()
+        c._init_failure_latches()
         return c
 
     def _captcha_crawl(self, c):
         def fake_crawl(urls, timeout_total, max_concurrent=10, force=False, crawl_delay=0.0):
-            c._last_captcha_error = "CAPTCHA_BLOCKED: cf-ray (HTTP 403)"
+            c._record_fetch_error("CAPTCHA_BLOCKED: cf-ray (HTTP 403)")
             return {}
 
         c._crawl_specific_urls_async = fake_crawl
@@ -298,7 +299,7 @@ class TestPlaywrightCaptchaRescue:
         # Sitemap failure routes through the BFS crawl path, not
         # _crawl_specific_urls_async — CAPTCHA shows up there instead.
         def fake_bfs_crawl(start_url, max_depth, max_pages, timeout_total, max_concurrent=10, force=False, crawl_delay=0.0):
-            c._last_captcha_error = "CAPTCHA_BLOCKED: cf-ray (HTTP 403)"
+            c._record_fetch_error("CAPTCHA_BLOCKED: cf-ray (HTTP 403)")
             return {}
 
         c._crawl_with_bfs_async = fake_bfs_crawl
@@ -414,7 +415,7 @@ class TestPlaywrightCaptchaRescue:
             ok, data, err = c.collect_multi_page("https://x.org", "12-3456789")
 
         assert ok is True
-        assert c._last_captcha_error is None  # confirms this is the non-captcha trigger path
+        assert c._captcha_error() is None  # confirms this is the non-captcha trigger path
         renderer.render.assert_called_once_with("https://x.org/")
 
 
@@ -574,8 +575,7 @@ class TestRateLimitSurfacedInCollectMultiPage:
         # than faking the attribute directly.
         c = WebsiteCollector.__new__(WebsiteCollector)
         c.logger = None
-        c._last_captcha_error = None
-        c._last_rate_limit_error = None
+        c._init_failure_latches()
         c.cache = MagicMock()
         c._is_priority_url = lambda u: False
         c._normalize_url = lambda u: u
@@ -587,8 +587,8 @@ class TestRateLimitSurfacedInCollectMultiPage:
         results = asyncio.run(c._crawl_bfs_async("https://x.org", max_depth=1, max_pages=5, timeout_total=30))
 
         assert results == {}
-        assert c._last_rate_limit_error == "RATE_LIMITED: HTTP 429"
-        assert c._last_captcha_error is None
+        assert c._rate_limit_error() == "RATE_LIMITED: HTTP 429"
+        assert c._captcha_error() is None
 
     def test_rate_limit_capture_in_sitemap_loop(self):
         # Same signal, but exercised through the REAL _crawl_specific_urls_async
@@ -597,8 +597,7 @@ class TestRateLimitSurfacedInCollectMultiPage:
         # this path is covered.
         c = WebsiteCollector.__new__(WebsiteCollector)
         c.logger = None
-        c._last_captcha_error = None
-        c._last_rate_limit_error = None
+        c._init_failure_latches()
 
         async def fake_crawl_urls_async(url_list, max_concurrent, timeout_total, force, crawl_delay):
             return {u: (False, None, None, "RATE_LIMITED: HTTP 429") for u in url_list}
@@ -607,14 +606,13 @@ class TestRateLimitSurfacedInCollectMultiPage:
         results = c._crawl_specific_urls_async(["https://x.org/a"], timeout_total=30)
 
         assert results == {}
-        assert c._last_rate_limit_error == "RATE_LIMITED: HTTP 429"
-        assert c._last_captcha_error is None
+        assert c._rate_limit_error() == "RATE_LIMITED: HTTP 429"
+        assert c._captcha_error() is None
 
     def test_captcha_capture_in_sitemap_loop(self):
         c = WebsiteCollector.__new__(WebsiteCollector)
         c.logger = None
-        c._last_captcha_error = None
-        c._last_rate_limit_error = None
+        c._init_failure_latches()
 
         async def fake_crawl_urls_async(url_list, max_concurrent, timeout_total, force, crawl_delay):
             return {u: (False, None, None, "CAPTCHA_BLOCKED: challenge page (HTTP 200)") for u in url_list}
@@ -623,16 +621,15 @@ class TestRateLimitSurfacedInCollectMultiPage:
         results = c._crawl_specific_urls_async(["https://x.org/a"], timeout_total=30)
 
         assert results == {}
-        assert c._last_captcha_error == "CAPTCHA_BLOCKED: challenge page (HTTP 200)"
-        assert c._last_rate_limit_error is None
+        assert c._captcha_error() == "CAPTCHA_BLOCKED: challenge page (HTTP 200)"
+        assert c._rate_limit_error() is None
 
     def _collector(self):
         c = WebsiteCollector.__new__(WebsiteCollector)
         c.logger = None
         c.robots_checker = MagicMock()
         c.robots_checker.get_crawl_delay.return_value = None
-        c._last_captcha_error = None
-        c._last_rate_limit_error = None
+        c._init_failure_latches()
         c._discover_urls_from_sitemap = MagicMock(return_value=(True, ["https://x.org/a"]))
         c._fetch_url = MagicMock(return_value=(False, None, None, "dead"))  # no live-homepage retry
         c.use_playwright = False
@@ -643,7 +640,7 @@ class TestRateLimitSurfacedInCollectMultiPage:
         c = self._collector()
 
         def fake_crawl(urls, timeout_total, max_concurrent=10, force=False, crawl_delay=0.0):
-            c._last_rate_limit_error = "RATE_LIMITED: HTTP 429"
+            c._record_fetch_error("RATE_LIMITED: HTTP 429")
             return {}
 
         c._crawl_specific_urls_async = fake_crawl
@@ -655,8 +652,8 @@ class TestRateLimitSurfacedInCollectMultiPage:
         c = self._collector()
 
         def fake_crawl(urls, timeout_total, max_concurrent=10, force=False, crawl_delay=0.0):
-            c._last_captcha_error = "CAPTCHA_BLOCKED: challenge page (HTTP 200)"
-            c._last_rate_limit_error = "RATE_LIMITED: HTTP 429"
+            c._record_fetch_error("CAPTCHA_BLOCKED: challenge page (HTTP 200)")
+            c._record_fetch_error("RATE_LIMITED: HTTP 429")
             return {}
 
         c._crawl_specific_urls_async = fake_crawl
@@ -942,7 +939,7 @@ class TestPerHostCrawlDelayGate:
         c = WebsiteCollector.__new__(WebsiteCollector)
         c.logger = None
         c.robots_checker = MagicMock()
-        c._last_captcha_error = None
+        c._init_failure_latches()
         c.robots_checker.get_crawl_delay.return_value = 10.0
         c._discover_urls_from_sitemap = MagicMock(return_value=(True, ["https://slow.org/a"]))
         c._fetch_url = MagicMock(return_value=(False, None, None, "dead"))
@@ -986,7 +983,7 @@ class TestBfsEmptyRetry:
         c = WebsiteCollector.__new__(WebsiteCollector)
         c.logger = None
         c.robots_checker = MagicMock()
-        c._last_captcha_error = None
+        c._init_failure_latches()
         c.use_playwright = False
         c._playwright_local = threading.local()
         return c
@@ -1023,7 +1020,7 @@ class TestBfsFallbackForThinSitemap:
         c.max_pdf_downloads = 0
         c.robots_checker = MagicMock()
         c.robots_checker.get_crawl_delay.return_value = None
-        c._last_captcha_error = None
+        c._init_failure_latches()
         c.cache = MagicMock()
         c._cleanup_playwright = MagicMock()
         c._fetch_url = MagicMock(return_value=(True, "<html>homepage</html>", "https://x.org", None))
@@ -1352,3 +1349,33 @@ class TestFailureBackoffUsesAttemptClock:
         }
         skip, _ = self._orch(row)._should_skip_failed_source("12-3456789", "website")
         assert skip is True
+
+
+class TestCaptchaLatchIsThreadLocal:
+    def test_one_threads_captcha_does_not_leak_into_another(self):
+        """Shared latch let charity B inherit A's CAPTCHA -> 180d terminal block."""
+        collector = WebsiteCollector.__new__(WebsiteCollector)
+        collector._init_failure_latches()
+
+        seen = {}
+        barrier = threading.Barrier(2)
+
+        def worker_a():
+            collector._reset_failure_latches()
+            collector._record_fetch_error("CAPTCHA_BLOCKED: challenge page (HTTP 200)")
+            barrier.wait()
+            seen["a"] = collector._captcha_error()
+
+        def worker_b():
+            collector._reset_failure_latches()
+            barrier.wait()
+            seen["b"] = collector._captcha_error()
+
+        ta, tb = threading.Thread(target=worker_a), threading.Thread(target=worker_b)
+        ta.start()
+        tb.start()
+        ta.join()
+        tb.join()
+
+        assert seen["a"] == "CAPTCHA_BLOCKED: challenge page (HTTP 200)"
+        assert seen["b"] is None, "B must not inherit A's captcha"
