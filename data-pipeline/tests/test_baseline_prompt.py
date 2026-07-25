@@ -82,3 +82,17 @@ class TestDataVintageNote:
 
         assert "RED FLAG" not in data_vintage_note(2024, today_year=2026)
         assert "RED FLAG" in data_vintage_note(2023, today_year=2026)
+
+    def test_non_int_fiscal_year_does_not_raise(self):
+        """A str fiscal_year (e.g. from a JSON round-trip) must not reach the
+        None >= int comparison inside filing_age_years' TypeError path."""
+        from src.llm.prompt_loader import data_vintage_note
+
+        note = data_vintage_note("2023")  # str, not int
+        assert isinstance(note, str) and note
+        assert "unknown" in note
+        assert "2023" not in note  # must not cite a year it can't trust
+
+        assert isinstance(data_vintage_note(None), str)
+        assert isinstance(data_vintage_note(0), str)
+        assert isinstance(data_vintage_note(2024, today_year=2026), str)

@@ -235,12 +235,19 @@ def data_vintage_note(fiscal_year: Optional[int], today_year: Optional[int] = No
     concern the prose must disclose rather than silently presenting old
     figures as current.
     """
+    unknown_vintage_note = (
+        "The fiscal year of the financial data is unknown. Do not attribute "
+        "financial figures to any specific year, and do not present them as current."
+    )
     if not fiscal_year:
-        return (
-            "The fiscal year of the financial data is unknown. Do not attribute "
-            "financial figures to any specific year, and do not present them as current."
-        )
+        return unknown_vintage_note
     age = filing_age_years(fiscal_year, today_year)
+    if age is None:
+        # fiscal_year was truthy but not a real int (e.g. a str from a JSON
+        # round-trip) — filing_age_years can't compute an age, so fall back
+        # to the same "don't cite a year" text rather than risk citing a
+        # value that isn't reliably a fiscal year at all.
+        return unknown_vintage_note
     if age >= DATA_VINTAGE_STALE_YEARS:
         return (
             f"The latest available financials are from fiscal year {fiscal_year} — "
