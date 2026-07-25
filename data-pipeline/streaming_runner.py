@@ -1841,7 +1841,7 @@ def main():
     all_regressions: list[dict] = []
     for r in results:
         all_regressions.extend(r.get("regressions") or [])
-    write_synthesize_regressions(all_regressions)
+    write_synthesize_regressions(all_regressions, scope=[c["ein"] for c in charities])
 
     elapsed = time.time() - start_time
 

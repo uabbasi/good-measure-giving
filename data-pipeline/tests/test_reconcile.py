@@ -10,8 +10,8 @@ class TestFindRegressions:
 
         current = {"charity_ein": "12-3456789", "program_expense_ratio": None, "total_revenue": 1000}
         history = [
-            {"program_expense_ratio": None, "total_revenue": 1000, "commit_hash": "c3"},
-            {"program_expense_ratio": 0.85, "total_revenue": 1000, "commit_hash": "c2"},
+            {"program_expense_ratio": None, "total_revenue": 1000, "commit_hash": "c3", "commit_date": "2026-07-01"},
+            {"program_expense_ratio": 0.85, "total_revenue": 1000, "commit_hash": "c2", "commit_date": "2026-06-01"},
         ]
         fields = {"program_expense_ratio", "total_revenue"}
         out = find_regressions(current, history, fields)
@@ -22,7 +22,8 @@ class TestFindRegressions:
                 "current_value": None,
                 "last_good_value": 0.85,
                 "last_good_commit": "c2",
-                "last_good_commit_date": None,
+                "last_good_commit_date": "2026-06-01",
+                "last_good_attribution": None,
             }
         ]
 
@@ -78,6 +79,60 @@ class TestFindRegressions:
 
         assert len(flags) == 1 and flags[0]["last_good_commit"] == "deep"
 
+    def test_restore_carries_source_attribution_from_the_same_commit(self):
+        from bin.reconcile_charity_data import find_regressions
+
+        current = {"charity_ein": "12-3456789", "total_revenue": None, "metrics_json": {},
+                   "source_attribution": {}}
+        history = [{"total_revenue": 5_000_000, "commit_hash": "abc", "commit_date": "2026-07-01",
+                    "source_attribution": {"total_revenue": {"source_name": "ProPublica"}}}]
+
+        flags = find_regressions(current, history, {"total_revenue"})
+
+        assert flags[0]["last_good_attribution"] == {"source_name": "ProPublica"}
+
+    def test_no_filings_org_gets_no_financial_restore(self):
+        """An org ProPublica shows as never having filed has no financials to restore."""
+        from bin.reconcile_charity_data import find_regressions
+
+        current = {"charity_ein": "93-2136609", "total_revenue": None,
+                   "metrics_json": {}, "no_filings": 1}
+        history = [{"total_revenue": 100000, "commit_hash": "cn",
+                    "commit_date": "2026-01-25"}]
+
+        assert find_regressions(current, history, {"total_revenue"}) == []
+
+    def test_candidate_exceeding_current_total_assets_is_rejected(self):
+        """net_assets > total_assets is impossible with non-negative liabilities."""
+        from bin.reconcile_charity_data import find_regressions
+
+        current = {"charity_ein": "81-2566656", "net_assets": None,
+                   "metrics_json": {}, "no_filings": 0, "total_assets": 23205}
+        history = [{"net_assets": 100000, "commit_hash": "cn", "commit_date": "2026-02-08"}]
+
+        assert find_regressions(current, history, {"net_assets"}) == []
+
+    def test_a_coherent_in_window_candidate_still_survives(self):
+        """The guards must not reject everything — one real candidate must get through."""
+        from bin.reconcile_charity_data import find_regressions
+
+        current = {"charity_ein": "83-1794093", "net_assets": None,
+                   "metrics_json": {}, "no_filings": 0, "total_assets": 116544}
+        history = [{"net_assets": 10222, "commit_hash": "real", "commit_date": "2026-03-07"}]
+
+        flags = find_regressions(current, history, {"net_assets"})
+        assert len(flags) == 1 and flags[0]["last_good_value"] == 10222
+
+
+def test_report_is_stamped_with_run_scope_and_time():
+    from bin.reconcile_charity_data import build_report
+
+    report = build_report(flags=[{"field": "total_revenue"}], scope=["12-3456789"], run_at="2026-07-24T12:00:00")
+
+    assert report["scope"] == ["12-3456789"]
+    assert report["run_at"] == "2026-07-24T12:00:00"
+    assert report["rows"] == [{"field": "total_revenue"}]
+
 
 class _FakeDataRepo:
     """Records upsert calls; returns a fixed current row per EIN."""
@@ -113,6 +168,7 @@ class TestApplyAccumulation:
                 "total_revenue": 2000,
                 "net_assets": 5,
                 "commit_hash": "c2",
+                "commit_date": "2026-06-01",
             }
         ]
         repo = _FakeDataRepo({"12-3456789": current})

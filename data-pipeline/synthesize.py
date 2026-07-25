@@ -2217,7 +2217,7 @@ def synthesize_charity(
     return result
 
 
-def write_synthesize_regressions(rows: list[dict], reports_dir: Path = REPORTS_DIR) -> Path:
+def write_synthesize_regressions(rows: list[dict], reports_dir: Path = REPORTS_DIR, scope=None) -> Path:
     """Write regression-guard flags (restored AND refused) to
     reports/synthesize-regressions.json.
 
@@ -2225,13 +2225,23 @@ def write_synthesize_regressions(rows: list[dict], reports_dir: Path = REPORTS_D
     for a restored field and a reason string ("no_filings",
     "balance_sheet_violation") for a refused one. Internal-only editorial
     signal — a human confirms bug vs genuine drop. Never gates anything.
+
+    Wrapped with run provenance: a bare list let a later single-EIN run
+    silently replace a fleet run's flags with an empty one, and the file is
+    gitignored so nothing recovered them.
     """
     import json
+    from datetime import datetime
 
     reports_dir.mkdir(parents=True, exist_ok=True)
     path = reports_dir / "synthesize-regressions.json"
+    payload = {
+        "run_at": datetime.now().isoformat(timespec="seconds"),
+        "scope": list(scope) if scope is not None else "fleet",
+        "rows": rows,
+    }
     with open(path, "w") as f:
-        json.dump(rows, f, indent=2, default=str)
+        json.dump(payload, f, indent=2, default=str)
     preserved = sum(1 for r in rows if not r.get("rejected"))
     refused = sum(1 for r in rows if r.get("rejected"))
     print(f"  synthesize regressions: {preserved} field(s) preserved, {refused} refused")
@@ -2367,7 +2377,7 @@ def main():
         if commit_hash:
             print(f"\n✓ Committed to DoltDB: {commit_hash[:8]}")
 
-    write_synthesize_regressions(all_regressions)
+    write_synthesize_regressions(all_regressions, scope=eins)
 
     # Summary
     print(f"\n{'=' * 60}")

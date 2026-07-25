@@ -7,7 +7,7 @@ no new storage. Same preserve+flag philosophy: a human confirms bug vs drop.
 import argparse
 import json
 import sys
-from datetime import date  # noqa: E402
+from datetime import date, datetime  # noqa: E402
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -15,6 +15,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from src.constants import DATA_FULL_CONFIDENCE_MAX_AGE_YEARS  # noqa: E402
 from src.db import CharityDataRepository, CharityRepository  # noqa: E402
 from src.db.client import execute_query  # noqa: E402
+from src.utils.financial_coherence import FINANCIAL_FIELDS, restore_breaks_balance_sheet  # noqa: E402
 from synthesize import REGRESSION_GUARDED_FIELDS, REPORTS_DIR  # noqa: E402
 
 
@@ -22,7 +23,7 @@ def find_regressions(current_row: dict, history_rows: list[dict], fields) -> lis
     """Pure: for each guarded field currently NULL, find the most recent
     plausible non-null value in history (history_rows newest-first).
 
-    Two guards keep this from fabricating data:
+    Four guards keep this from fabricating data:
 
     1. If the current metrics_json carries a value for the field — INCLUDING a
        genuine 0 — the column being NULL is not a regression. It is either the
@@ -30,30 +31,45 @@ def find_regressions(current_row: dict, history_rows: list[dict], fields) -> lis
        historical value would write a number nobody observed. ~15 of the 25
        live candidates were total_liabilities on charities whose real, current
        liabilities are 0.
-    2. A candidate older than DATA_FULL_CONFIDENCE_MAX_AGE_YEARS is rejected.
-       Deep history holds seed placeholders (total_revenue=100000,
-       net_assets=10) that predate real collection.
+    2. A candidate whose commit_date is older than
+       DATA_FULL_CONFIDENCE_MAX_AGE_YEARS, OR whose commit_date is missing or
+       unparseable, is rejected. Deep history holds seed placeholders
+       (total_revenue=100000, net_assets=10) that predate real collection, and
+       for a restoration tool an unknown age must fail closed, not open.
+    3. An organization with no Form 990 filings (guard 3a) has no financials
+       to restore, and a candidate that would contradict the current row's own
+       balance sheet (guard 3b) is rejected. `source_attribution` coverage is
+       deliberately NOT required here — it's populated for total_revenue on
+       165/165 live rows but 0/136-165 for the other four guarded fields, so
+       requiring it would reject nearly every legitimate restore.
 
-    Every surviving candidate carries its commit date so a human reviewing
-    reports/data-recovery-candidates.json can judge it.
+    Every surviving candidate carries its commit date and source attribution
+    (if any) so a human reviewing reports/data-recovery-candidates.json can
+    judge it.
     """
     out: list[dict] = []
     if not current_row:
         return out
     metrics_json = current_row.get("metrics_json") or {}
-    cutoff = date.today().year - DATA_FULL_CONFIDENCE_MAX_AGE_YEARS
+    cutoff = _history_cutoff()
     for field in sorted(fields):
         if current_row.get(field) is not None:
             continue
         if metrics_json.get(field) is not None:
             continue  # guard 1: observed value exists, column NULL is not a loss
+        if current_row.get("no_filings") and field in FINANCIAL_FIELDS:
+            continue  # guard 3a: no filings means no financials to restore
         for hrow in history_rows:
             val = hrow.get(field)
             if val is None:
                 continue
             commit_date = hrow.get("commit_date")
-            if _commit_year(commit_date) is not None and _commit_year(commit_date) < cutoff:
-                break  # guard 2: history newest-first, so everything deeper is older still
+            parsed_date = _parsed_commit_date(commit_date)
+            if parsed_date is None or parsed_date < cutoff:
+                break  # guard 2: unknown or too-old age fails closed; history
+                # newest-first, so everything deeper is older or equally unknown
+            if restore_breaks_balance_sheet(current_row, field, val):
+                continue  # guard 3b: this candidate is incoherent; an older one might not be
             out.append(
                 {
                     "charity_ein": current_row.get("charity_ein"),
@@ -62,33 +78,46 @@ def find_regressions(current_row: dict, history_rows: list[dict], fields) -> lis
                     "last_good_value": val,
                     "last_good_commit": hrow.get("commit_hash") or hrow.get("dolt_commit_hash"),
                     "last_good_commit_date": str(commit_date) if commit_date else None,
+                    "last_good_attribution": (hrow.get("source_attribution") or {}).get(field),
                 }
             )
             break
     return out
 
 
-def _commit_year(commit_date) -> int | None:
-    """Year of a dolt_history commit_date (datetime or 'YYYY-MM-DD...' string)."""
+def _history_cutoff() -> date:
+    """Oldest commit date treated as within the confidence window.
+
+    A real calendar date, not a bare year: `date.today().year - N` gives a
+    window that is 2-3 years wide depending on what day of the year this
+    runs, not exactly N years. Shared with load_history's SQL bound so the
+    same policy isn't expressed in two places.
+    """
+    today = date.today()
+    try:
+        return today.replace(year=today.year - DATA_FULL_CONFIDENCE_MAX_AGE_YEARS)
+    except ValueError:  # today is Feb 29 and the cutoff year has no Feb 29
+        return today.replace(month=2, day=28, year=today.year - DATA_FULL_CONFIDENCE_MAX_AGE_YEARS)
+
+
+def _parsed_commit_date(commit_date) -> date | None:
+    """Real date of a dolt_history commit_date (datetime/date or
+    'YYYY-MM-DD...' string). None when missing or unparseable."""
     if commit_date is None:
         return None
-    if hasattr(commit_date, "year"):
-        return commit_date.year
+    if isinstance(commit_date, datetime):
+        return commit_date.date()
+    if isinstance(commit_date, date):
+        return commit_date
     try:
-        return int(str(commit_date)[:4])
+        return date.fromisoformat(str(commit_date)[:10])
     except ValueError:
         return None
 
 
-_HISTORY_COLUMNS = ["charity_ein", "commit_hash", "commit_date", "metrics_json"] + sorted(REGRESSION_GUARDED_FIELDS)
-
-# dolt_history_charity_data emits a row per commit that touched the TABLE, not
-# the row, and the pipeline commits per phase per run — so history is dense with
-# unchanged duplicates. A 20-row window covered 2h40m of a 6-month history for
-# EIN 31-1267559 (1032 rows) and found 0 of 25 genuine candidates. Bound it high
-# enough to reach real history; the age guard in find_regressions is what keeps
-# deep placeholder values from being restored.
-HISTORY_SCAN_LIMIT = 2000
+_HISTORY_COLUMNS = ["charity_ein", "commit_hash", "commit_date", "source_attribution"] + sorted(
+    REGRESSION_GUARDED_FIELDS
+)
 
 
 def load_history(ein: str) -> list[dict]:
@@ -107,13 +136,31 @@ def load_history(ein: str) -> list[dict]:
     where `SELECT *` does positional field access that breaks across schema
     versions. Naming columns explicitly avoids the positional path and maps
     them correctly by name (fields missing in older commits come back NULL).
+
+    Bounded by the same confidence-window cutoff find_regressions' age guard
+    uses, rather than a row LIMIT: dolt_history_charity_data emits a row per
+    commit that touched the TABLE, not the row, and the pipeline commits per
+    phase per run, so history is dense with unchanged duplicates. A fixed
+    LIMIT eventually falls short of that growth and fails silently (0
+    candidates) — a date bound is self-limiting and never runs out.
     """
     cols = ", ".join(f"`{c}`" for c in _HISTORY_COLUMNS)
-    return execute_query(
-        f"SELECT {cols} FROM dolt_history_charity_data WHERE charity_ein = %s "
-        "ORDER BY commit_date DESC LIMIT %s",
-        (ein, HISTORY_SCAN_LIMIT),
-    ) or []
+    rows = (
+        execute_query(
+            f"SELECT {cols} FROM dolt_history_charity_data "
+            "WHERE charity_ein = %s AND commit_date >= %s "
+            "ORDER BY commit_date DESC",
+            (ein, _history_cutoff()),
+        )
+        or []
+    )
+    # Raw SQL (unlike CharityDataRepository.get()) doesn't deserialize JSON
+    # columns — source_attribution comes back as a string.
+    for row in rows:
+        raw = row.get("source_attribution")
+        if isinstance(raw, str):
+            row["source_attribution"] = json.loads(raw)
+    return rows
 
 
 def reconcile(eins, data_repo, history_fn, apply: bool = False) -> tuple[list[dict], int, int]:
@@ -155,9 +202,13 @@ def reconcile(eins, data_repo, history_fn, apply: bool = False) -> tuple[list[di
         all_flags.extend(flags)
         if apply:
             restored_row = dict(current)
+            attribution = dict(restored_row.get("source_attribution") or {})
             for f in flags:
                 restored_row[f["field"]] = f["last_good_value"]
+                if f.get("last_good_attribution"):
+                    attribution[f["field"]] = f["last_good_attribution"]
                 print(f"  restored {ein}.{f['field']} = {f['last_good_value']}")
+            restored_row["source_attribution"] = attribution
             data_repo.upsert(restored_row)  # ONE upsert per EIN, all fields at once
     return all_flags, skipped, processed
 
@@ -174,6 +225,17 @@ def is_systemic_failure(processed: int, skipped: int) -> bool:
     if processed == 0:
         return True
     return skipped > processed
+
+
+def build_report(flags: list[dict], scope, run_at: str) -> dict:
+    """Wrap candidate rows with run provenance.
+
+    The bare list was indistinguishable from a stale or single-EIN run: a
+    fleet run flagging 12 fields could be silently replaced by a later
+    `--ein` run's empty list, and the file is gitignored so there was no
+    fallback.
+    """
+    return {"run_at": run_at, "scope": list(scope), "rows": flags}
 
 
 def main() -> None:
@@ -216,7 +278,8 @@ def main() -> None:
 
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     path = REPORTS_DIR / "data-recovery-candidates.json"
-    path.write_text(json.dumps(all_flags, indent=2, default=str))
+    report = build_report(all_flags, eins, datetime.now().isoformat(timespec="seconds"))
+    path.write_text(json.dumps(report, indent=2, default=str))
 
     if skipped:
         print(

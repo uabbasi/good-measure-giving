@@ -639,7 +639,7 @@ class TestRegressionReport:
         path = write_synthesize_regressions(rows, reports_dir=tmp_path)
         assert path.name == "synthesize-regressions.json"
         written = json.loads(path.read_text())
-        assert written == rows
+        assert written["rows"] == rows
 
     def test_empty_regressions_writes_empty_list(self, tmp_path):
         import json
@@ -647,4 +647,25 @@ class TestRegressionReport:
         from synthesize import write_synthesize_regressions
 
         path = write_synthesize_regressions([], reports_dir=tmp_path)
-        assert json.loads(path.read_text()) == []
+        assert json.loads(path.read_text())["rows"] == []
+
+    def test_report_is_stamped_with_run_provenance(self, tmp_path):
+        """A bare list was indistinguishable from a stale or single-EIN run;
+        run_at/scope let a reader tell a fleet run apart from a later,
+        narrower one that would otherwise silently look like a replacement."""
+        import json
+
+        from synthesize import write_synthesize_regressions
+
+        path = write_synthesize_regressions([], reports_dir=tmp_path, scope=["12-3456789"])
+        written = json.loads(path.read_text())
+        assert written["scope"] == ["12-3456789"]
+        assert "run_at" in written
+
+    def test_no_scope_defaults_to_fleet(self, tmp_path):
+        import json
+
+        from synthesize import write_synthesize_regressions
+
+        path = write_synthesize_regressions([], reports_dir=tmp_path)
+        assert json.loads(path.read_text())["scope"] == "fleet"
