@@ -276,6 +276,96 @@ class TestStoreRawDataNonDowngrade:
         assert kwargs["pages_with_data"] is None
 
 
+class TestStoreRawContentOnlyNonDowngrade:
+    """Task C8: `_store_raw_content_only` is the only store used for
+    propublica/charity_navigator/candid/form990_grants on the production
+    fetch path (`fetch_charity_data`) -- unlike `_store_raw_data`, it never
+    parses, so it has no `parsed_json` for the new observation to compare
+    with `is_content_downgrade`. It guards on raw content substance instead
+    (see `_has_content_substance`), which is the signal actually available
+    at this phase.
+    """
+
+    def test_non_website_sources_are_downgrade_guarded_on_the_production_path(self):
+        """Only `website` was guarded; propublica/CN/candid/form990_grants went
+        through _store_raw_content_only unguarded (Spec B Vector 2)."""
+        from unittest.mock import MagicMock
+
+        from src.collectors.orchestrator import DataCollectionOrchestrator
+
+        orch = object.__new__(DataCollectionOrchestrator)
+        orch.logger = None
+        orch.raw_data_repo = MagicMock()
+        orch.crawl_attempt_repo = MagicMock()
+        orch.raw_data_repo.get_by_source.return_value = {
+            "source": "form990_grants",
+            "success": 1,
+            "raw_content": "x" * 50_000,
+        }
+
+        # A thin, empty-but-successful re-fetch must NOT overwrite the good row.
+        orch._store_raw_content_only("12-3456789", "form990_grants", "", "xml")
+
+        assert orch.raw_data_repo.record_soft_fail.called, "thin re-fetch must soft-fail, not overwrite"
+        assert not orch.raw_data_repo.upsert.called
+
+    def test_a_genuinely_richer_non_website_fetch_still_writes(self):
+        from unittest.mock import MagicMock
+
+        from src.collectors.orchestrator import DataCollectionOrchestrator
+
+        orch = object.__new__(DataCollectionOrchestrator)
+        orch.logger = None
+        orch.raw_data_repo = MagicMock()
+        orch.crawl_attempt_repo = MagicMock()
+        orch.raw_data_repo.get_by_source.return_value = {
+            "source": "propublica",
+            "success": 1,
+            "raw_content": "x" * 100,
+        }
+
+        orch._store_raw_content_only("12-3456789", "propublica", "y" * 50_000, "json")
+
+        assert orch.raw_data_repo.upsert.called
+
+    def test_first_observation_for_a_source_always_writes(self):
+        """No prior row -> nothing to downgrade from, per the guard's contract."""
+        from unittest.mock import MagicMock
+
+        from src.collectors.orchestrator import DataCollectionOrchestrator
+
+        orch = object.__new__(DataCollectionOrchestrator)
+        orch.logger = None
+        orch.raw_data_repo = MagicMock()
+        orch.crawl_attempt_repo = MagicMock()
+        orch.raw_data_repo.get_by_source.return_value = None
+
+        orch._store_raw_content_only("12-3456789", "candid", "z" * 600, "html")
+
+        assert orch.raw_data_repo.upsert.called
+        assert not orch.raw_data_repo.record_soft_fail.called
+
+    def test_crawl_attempt_recorded_on_the_content_only_path(self):
+        """Step 4: this store was previously website-only in the crawl_attempts
+        history despite its docstring; a plain successful write must record
+        one too."""
+        from unittest.mock import MagicMock
+
+        from src.collectors.orchestrator import DataCollectionOrchestrator
+
+        orch = object.__new__(DataCollectionOrchestrator)
+        orch.logger = None
+        orch.raw_data_repo = MagicMock()
+        orch.crawl_attempt_repo = MagicMock()
+        orch.raw_data_repo.get_by_source.return_value = None
+
+        orch._store_raw_content_only("12-3456789", "propublica", "y" * 500, "json")
+
+        orch.crawl_attempt_repo.record.assert_called_once()
+        _, kwargs = orch.crawl_attempt_repo.record.call_args
+        assert kwargs["success"] is True
+
+
 class TestRegressionGuard:
     def test_guard_restores_nonnull_to_null(self):
         from src.db import CharityData

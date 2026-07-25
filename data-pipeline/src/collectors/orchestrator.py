@@ -636,12 +636,75 @@ class DataCollectionOrchestrator:
 
         return True
 
+    def _guard_against_content_downgrade(
+        self,
+        ein: str,
+        source: str,
+        existing: Optional[Dict[str, Any]],
+        is_downgrade: bool,
+        pages_found: Optional[int] = None,
+        pages_with_data: Optional[int] = None,
+    ) -> bool:
+        """Shared "soft-fail instead of overwrite" half of the non-downgrade
+        guard, used by both `_store_raw_data` and `_store_raw_content_only`
+        (Task C8). Callers decide `is_downgrade` themselves: `_store_raw_data`
+        has real parsed_json for the new observation and uses
+        `is_content_downgrade` directly; `_store_raw_content_only` runs
+        before extract.py has parsed anything, so it compares raw content
+        substance instead (see that method for why). The two predicates
+        differ, but the "check the prior row, then soft-fail or let the
+        caller write" sequence around them -- including the freshness
+        window and the crawl_attempts bookkeeping -- is identical, so it
+        lives here once.
+
+        Returns True when the guard fired: last-good was preserved via
+        `record_soft_fail` and the attempt was recorded, so the caller
+        should stop and treat this as a successful (non-writing)
+        observation. Returns False when there's nothing to guard against --
+        no prior row, prior row itself not successful, prior past the
+        freshness window, or genuinely not a downgrade -- so the caller
+        should proceed to write. A missing prior is never a downgrade:
+        there's nothing to preserve.
+        """
+        if not existing or not existing.get("success"):
+            return False
+        age = data_age_years(existing.get("scraped_at"))
+        within_window = age is None or age <= DATA_FULL_CONFIDENCE_MAX_AGE_YEARS
+        if not (within_window and is_downgrade):
+            return False
+
+        reason = f"{source} re-observation thinner than last-good; preserved (age={age}y)"
+        if self.logger:
+            self.logger.warning(f"{ein}: {reason}")
+        self.raw_data_repo.record_soft_fail(ein, source, reason)
+        # Bookkeeping must never be able to undo the preserve it's
+        # recording: a raise here must not fall through to a demotion path.
+        try:
+            self.crawl_attempt_repo.record(
+                ein, source, success=True, failure_reason=reason,
+                pages_found=pages_found, pages_with_data=pages_with_data,
+            )
+        except Exception as e:
+            if self.logger:
+                self.logger.debug(f"crawl history write failed for {ein}: {e}")
+        return True
+
     def _store_raw_content_only(self, ein: str, source: str, raw_content: str, content_type: str) -> bool:
         """
         Store raw HTML/JSON/XML without parsing (for fetch-only mode).
 
         FIX #2: Checks content substance before storing.
         FIX #14: Returns success/failure so caller can confirm write.
+        Task C8: this is the only store used for propublica/charity_navigator/
+        candid/form990_grants on the production fetch path
+        (`fetch_charity_data`) -- without a downgrade guard here, a throttled
+        fetch that reports success=True but returns thin/empty content could
+        silently overwrite good stored content, with nothing downstream
+        catching it (Spec B Vector 2). There's no parsed_json for the new
+        observation yet at this phase (extract.py hasn't run), so unlike
+        `_store_raw_data` this guards on raw content substance rather than
+        calling `is_content_downgrade`, which compares parsed_json on both
+        sides and would always see this phase's parsed_json as empty.
 
         Args:
             ein: Charity EIN
@@ -655,9 +718,24 @@ class DataCollectionOrchestrator:
         if not ein:
             return False
 
+        existing = self.raw_data_repo.get_by_source(ein, source)
+        has_substance = self._has_content_substance(raw_content, source)
+
+        # Task C8: a thin/empty fetch never overwrites a good prior. If
+        # there's nothing to protect (no prior, or prior wasn't itself
+        # successful), fall through to the original reject-and-log path.
+        if self._guard_against_content_downgrade(ein, source, existing, is_downgrade=not has_substance):
+            return True
+
         # FIX #2: Reject empty/shell content
-        if not self._has_content_substance(raw_content, source):
-            self.logger.warning(f"Empty/shell content from {source} for {ein} — not marking as succeeded")
+        if not has_substance:
+            if self.logger:
+                self.logger.warning(f"Empty/shell content from {source} for {ein} — not marking as succeeded")
+            try:
+                self.crawl_attempt_repo.record(ein, source, success=False, failure_reason="empty or shell content")
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f"crawl history write failed for {ein}: {e}")
             return False
 
         # FIX #14: Wrap DB write in try/except to confirm success
@@ -670,9 +748,22 @@ class DataCollectionOrchestrator:
                 success=True,  # Fetch succeeded
                 error_message=None,
             )
+            # Task C8: record the attempt here too, so crawl_attempts matches
+            # its "every attempt" docstring instead of being website-only.
+            try:
+                self.crawl_attempt_repo.record(ein, source, success=True, failure_reason=None)
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f"crawl history write failed for {ein}: {e}")
             return True
         except Exception as e:
-            self.logger.error(f"Failed to store raw content for {source}/{ein}: {e}")
+            if self.logger:
+                self.logger.error(f"Failed to store raw content for {source}/{ein}: {e}")
+            try:
+                self.crawl_attempt_repo.record(ein, source, success=False, failure_reason=str(e))
+            except Exception as e2:
+                if self.logger:
+                    self.logger.debug(f"crawl history write failed for {ein}: {e2}")
             return False
 
     def fetch_charity_data(
@@ -1400,23 +1491,12 @@ class DataCollectionOrchestrator:
         # counting as succeeded) so the aggregator recomputes from it. Beyond
         # the window, or with no prior, fall through and write normally.
         existing = self.raw_data_repo.get_by_source(ein, source)
-        if existing and existing.get("success"):
-            age = data_age_years(existing.get("scraped_at"))
-            within_window = age is None or age <= DATA_FULL_CONFIDENCE_MAX_AGE_YEARS
-            if within_window and is_content_downgrade(source, parsed_json, raw_content, existing.get("parsed_json")):
-                reason = f"{source} re-observation thinner than last-good; preserved (age={age}y)"
-                self.logger.warning(f"{ein}: {reason}")
-                self.raw_data_repo.record_soft_fail(ein, source, reason)
-                # Bookkeeping must never be able to undo the preserve it's
-                # recording: a raise here must not fall through to the
-                # demotion path below.
-                try:
-                    self.crawl_attempt_repo.record(ein, source, success=True, failure_reason=reason,
-                                                    pages_found=pages_found, pages_with_data=pages_with_data)
-                except Exception as e:
-                    if self.logger:
-                        self.logger.debug(f"crawl history write failed for {ein}: {e}")
-                return True
+        if self._guard_against_content_downgrade(
+            ein, source, existing,
+            is_downgrade=is_content_downgrade(source, parsed_json, raw_content, (existing or {}).get("parsed_json")),
+            pages_found=pages_found, pages_with_data=pages_with_data,
+        ):
+            return True
 
         # Check if data is meaningful
         is_meaningful = self._is_meaningful_data(parsed_json)
