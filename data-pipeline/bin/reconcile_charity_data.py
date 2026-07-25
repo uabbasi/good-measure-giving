@@ -7,10 +7,12 @@ no new storage. Same preserve+flag philosophy: a human confirms bug vs drop.
 import argparse
 import json
 import sys
+from datetime import date  # noqa: E402
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from src.constants import DATA_FULL_CONFIDENCE_MAX_AGE_YEARS  # noqa: E402
 from src.db import CharityDataRepository, CharityRepository  # noqa: E402
 from src.db.client import execute_query  # noqa: E402
 from synthesize import REGRESSION_GUARDED_FIELDS, REPORTS_DIR  # noqa: E402
@@ -18,30 +20,75 @@ from synthesize import REGRESSION_GUARDED_FIELDS, REPORTS_DIR  # noqa: E402
 
 def find_regressions(current_row: dict, history_rows: list[dict], fields) -> list[dict]:
     """Pure: for each guarded field currently NULL, find the most recent
-    non-null value in history (history_rows newest-first)."""
+    plausible non-null value in history (history_rows newest-first).
+
+    Two guards keep this from fabricating data:
+
+    1. If the current metrics_json carries a value for the field — INCLUDING a
+       genuine 0 — the column being NULL is not a regression. It is either the
+       zero-coercion case or a live disagreement; either way, restoring a
+       historical value would write a number nobody observed. ~15 of the 25
+       live candidates were total_liabilities on charities whose real, current
+       liabilities are 0.
+    2. A candidate older than DATA_FULL_CONFIDENCE_MAX_AGE_YEARS is rejected.
+       Deep history holds seed placeholders (total_revenue=100000,
+       net_assets=10) that predate real collection.
+
+    Every surviving candidate carries its commit date so a human reviewing
+    reports/data-recovery-candidates.json can judge it.
+    """
     out: list[dict] = []
     if not current_row:
         return out
-    for field in fields:
+    metrics_json = current_row.get("metrics_json") or {}
+    cutoff = date.today().year - DATA_FULL_CONFIDENCE_MAX_AGE_YEARS
+    for field in sorted(fields):
         if current_row.get(field) is not None:
             continue
+        if metrics_json.get(field) is not None:
+            continue  # guard 1: observed value exists, column NULL is not a loss
         for hrow in history_rows:
             val = hrow.get(field)
-            if val is not None:
-                out.append(
-                    {
-                        "charity_ein": current_row.get("charity_ein"),
-                        "field": field,
-                        "current_value": None,
-                        "last_good_value": val,
-                        "last_good_commit": hrow.get("commit_hash") or hrow.get("dolt_commit_hash"),
-                    }
-                )
-                break
+            if val is None:
+                continue
+            commit_date = hrow.get("commit_date")
+            if _commit_year(commit_date) is not None and _commit_year(commit_date) < cutoff:
+                break  # guard 2: history newest-first, so everything deeper is older still
+            out.append(
+                {
+                    "charity_ein": current_row.get("charity_ein"),
+                    "field": field,
+                    "current_value": None,
+                    "last_good_value": val,
+                    "last_good_commit": hrow.get("commit_hash") or hrow.get("dolt_commit_hash"),
+                    "last_good_commit_date": str(commit_date) if commit_date else None,
+                }
+            )
+            break
     return out
 
 
-_HISTORY_COLUMNS = ["charity_ein", "commit_hash", "commit_date"] + sorted(REGRESSION_GUARDED_FIELDS)
+def _commit_year(commit_date) -> int | None:
+    """Year of a dolt_history commit_date (datetime or 'YYYY-MM-DD...' string)."""
+    if commit_date is None:
+        return None
+    if hasattr(commit_date, "year"):
+        return commit_date.year
+    try:
+        return int(str(commit_date)[:4])
+    except ValueError:
+        return None
+
+
+_HISTORY_COLUMNS = ["charity_ein", "commit_hash", "commit_date", "metrics_json"] + sorted(REGRESSION_GUARDED_FIELDS)
+
+# dolt_history_charity_data emits a row per commit that touched the TABLE, not
+# the row, and the pipeline commits per phase per run — so history is dense with
+# unchanged duplicates. A 20-row window covered 2h40m of a 6-month history for
+# EIN 31-1267559 (1032 rows) and found 0 of 25 genuine candidates. Bound it high
+# enough to reach real history; the age guard in find_regressions is what keeps
+# deep placeholder values from being restored.
+HISTORY_SCAN_LIMIT = 2000
 
 
 def load_history(ein: str) -> list[dict]:
@@ -65,7 +112,7 @@ def load_history(ein: str) -> list[dict]:
     return execute_query(
         f"SELECT {cols} FROM dolt_history_charity_data WHERE charity_ein = %s "
         "ORDER BY commit_date DESC LIMIT %s",
-        (ein, 20),
+        (ein, HISTORY_SCAN_LIMIT),
     ) or []
 
 

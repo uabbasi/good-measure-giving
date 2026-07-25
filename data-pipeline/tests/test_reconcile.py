@@ -22,6 +22,7 @@ class TestFindRegressions:
                 "current_value": None,
                 "last_good_value": 0.85,
                 "last_good_commit": "c2",
+                "last_good_commit_date": None,
             }
         ]
 
@@ -31,6 +32,51 @@ class TestFindRegressions:
         current = {"charity_ein": "12-3456789", "program_expense_ratio": 0.9}
         history = [{"program_expense_ratio": 0.85, "commit_hash": "c2"}]
         assert find_regressions(current, history, {"program_expense_ratio"}) == []
+
+    def test_find_regressions_skips_field_when_current_metrics_json_has_a_value(self):
+        """After the zero-coercion fix, a NULL column with metrics_json=0 is not a
+        regression — it's a correctly-observed zero. Restoring would fabricate debt."""
+        from bin.reconcile_charity_data import find_regressions
+
+        current = {"charity_ein": "26-3342933", "total_liabilities": None,
+                   "metrics_json": {"total_liabilities": 0}}
+        history = [{"total_liabilities": 861467, "commit_hash": "abc", "commit_date": "2026-03-09"}]
+
+        assert find_regressions(current, history, {"total_liabilities"}) == []
+
+    def test_find_regressions_rejects_a_candidate_older_than_the_confidence_window(self):
+        from bin.reconcile_charity_data import find_regressions
+
+        current = {"charity_ein": "93-2136609", "total_revenue": None, "metrics_json": {}}
+        history = [{"total_revenue": 100000, "commit_hash": "old", "commit_date": "2019-01-25"}]
+
+        assert find_regressions(current, history, {"total_revenue"}) == []
+
+    def test_find_regressions_reports_the_candidate_age_for_human_review(self):
+        from bin.reconcile_charity_data import find_regressions
+
+        current = {"charity_ein": "12-3456789", "total_revenue": None, "metrics_json": {}}
+        history = [{"total_revenue": 5_000_000, "commit_hash": "abc123", "commit_date": "2026-07-01"}]
+
+        flags = find_regressions(current, history, {"total_revenue"})
+
+        assert len(flags) == 1
+        assert flags[0]["last_good_value"] == 5_000_000
+        assert flags[0]["last_good_commit_date"] == "2026-07-01"
+
+    def test_find_regressions_scans_past_the_twentieth_history_row(self):
+        """The real last-good value sat at depth 437-1017 on live data; a 20-row
+        window found 0 of 25 genuine candidates."""
+        from bin.reconcile_charity_data import find_regressions
+
+        current = {"charity_ein": "12-3456789", "total_revenue": None, "metrics_json": {}}
+        history = [{"total_revenue": None, "commit_hash": f"h{i}", "commit_date": "2026-07-01"}
+                   for i in range(30)]
+        history[25] = {"total_revenue": 7_000_000, "commit_hash": "deep", "commit_date": "2026-06-01"}
+
+        flags = find_regressions(current, history, {"total_revenue"})
+
+        assert len(flags) == 1 and flags[0]["last_good_commit"] == "deep"
 
 
 class _FakeDataRepo:
