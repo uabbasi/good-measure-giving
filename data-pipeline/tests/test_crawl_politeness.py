@@ -1309,6 +1309,7 @@ class TestTransientPreservesLastGoodWebsite:
         orch.raw_data_repo.record_soft_fail.assert_not_called()
         assert "website" in report["sources_failed"]
         assert "website" not in report["sources_succeeded"]
+        assert any(c.kwargs.get("success") is False for c in orch.raw_data_repo.upsert.call_args_list)
 
 
 class TestFailureBackoffUsesAttemptClock:

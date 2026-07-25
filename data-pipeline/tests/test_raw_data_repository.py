@@ -200,6 +200,35 @@ def test_increment_retry_count_writes_last_failure_reason():
         assert "BBB profile not found" in params
 
 
+def test_increment_retry_count_update_stamps_last_attempt_at():
+    """Non-website sources fail via increment_retry_count alone (never through
+    upsert), so this is the only place that can advance the attempt clock for
+    them. Without it, _should_skip_failed_source() falls back to scraped_at —
+    the frozen data clock — forever (real incident: 39-2713494/charity_navigator
+    stuck in a perpetual re-crawl loop)."""
+    repo = RawDataRepository()
+    with patch("src.db.repository.execute_query") as mock_execute:
+        mock_execute.side_effect = [_failed_row(retry_count=1), None]
+        repo.increment_retry_count(EIN, "bbb", "BBB profile not found")
+        sql, params = mock_execute.call_args_list[1][0][0], mock_execute.call_args_list[1][0][1]
+        assert "last_attempt_at = CURRENT_TIMESTAMP" in sql
+        # Not bound as a %s param.
+        assert "CURRENT_TIMESTAMP" not in params
+
+
+def test_increment_retry_count_insert_stamps_last_attempt_at_as_literal():
+    repo = RawDataRepository()
+    with patch("src.db.repository.execute_query") as mock_execute:
+        mock_execute.side_effect = [None, None]
+        repo.increment_retry_count(EIN, "bbb", "BBB profile not found")
+        sql, params = mock_execute.call_args_list[1][0][0], mock_execute.call_args_list[1][0][1]
+        assert sql.startswith("INSERT INTO raw_scraped_data")
+        assert "last_attempt_at" in sql
+        assert "CURRENT_TIMESTAMP" in sql
+        # Not bound as a %s param.
+        assert "CURRENT_TIMESTAMP" not in params
+
+
 def test_soft_fail_stamps_last_attempt_at_not_scraped_at():
     """record_soft_fail advances the attempt clock but must never touch
     scraped_at (the data-age clock the 2-year aged-out drop keys off)."""

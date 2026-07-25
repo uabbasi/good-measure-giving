@@ -355,20 +355,31 @@ class RawDataRepository:
         )
 
     def increment_retry_count(self, ein: str, source: str, error_message: str) -> int:
-        """Increment retry count for a failed source and return new count."""
+        """Increment retry count for a failed source and return new count.
+
+        Stamps last_attempt_at (the attempt clock) on every write, matching
+        upsert() and record_soft_fail() — otherwise non-website source
+        failures (the only callers of this method) never advance the clock
+        that _should_skip_failed_source() backoff/TTL logic reads, and fall
+        back to scraped_at (the frozen data clock) forever.
+        """
         existing = self.get_by_source(ein, source)
         current_count = (existing.get("retry_count") or 0) if existing else 0
         new_count = current_count + 1
 
         if existing:
             execute_query(
-                "UPDATE raw_scraped_data SET retry_count = %s, success = FALSE, error_message = %s, last_failure_reason = %s WHERE charity_ein = %s AND source = %s",
+                "UPDATE raw_scraped_data SET retry_count = %s, success = FALSE, error_message = %s, "
+                "last_failure_reason = %s, last_attempt_at = CURRENT_TIMESTAMP "
+                "WHERE charity_ein = %s AND source = %s",
                 (new_count, error_message, error_message, ein, source),
                 fetch="none",
             )
         else:
             execute_query(
-                "INSERT INTO raw_scraped_data (id, charity_ein, source, success, error_message, last_failure_reason, retry_count, parsed_json) VALUES (%s, %s, %s, FALSE, %s, %s, %s, %s)",
+                "INSERT INTO raw_scraped_data (id, charity_ein, source, success, error_message, "
+                "last_failure_reason, retry_count, parsed_json, last_attempt_at) "
+                "VALUES (%s, %s, %s, FALSE, %s, %s, %s, %s, CURRENT_TIMESTAMP)",
                 (_generate_uuid(), ein, source, error_message, error_message, new_count, "{}"),
                 fetch="none",
             )

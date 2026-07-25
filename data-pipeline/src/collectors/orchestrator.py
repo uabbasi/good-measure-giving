@@ -401,7 +401,7 @@ class DataCollectionOrchestrator:
         return age < timedelta(days=ttl_days)
 
     @staticmethod
-    def _attempt_clock(row: dict):
+    def _attempt_clock(row: dict) -> Optional[datetime]:
         """When this source was last ATTEMPTED, as a datetime (or None).
 
         Prefers last_attempt_at over scraped_at. scraped_at is the DATA clock
@@ -442,6 +442,7 @@ class DataCollectionOrchestrator:
             return False, ""
 
         retry_count = row.get("retry_count", 0)
+        attempted_dt = self._attempt_clock(row)
 
         # H5: terminal failure classes (CAPTCHA, not-found) — long TTL, don't re-hammer
         failure_text = " | ".join(
@@ -449,7 +450,6 @@ class DataCollectionOrchestrator:
         )
         terminal_marker = classify_failure(failure_text)
         if terminal_marker:
-            attempted_dt = self._attempt_clock(row)
             if attempted_dt:
                 failure_age = datetime.now(attempted_dt.tzinfo) - attempted_dt
                 if failure_age < timedelta(days=TERMINAL_FAILURE_TTL_DAYS):
@@ -459,7 +459,6 @@ class DataCollectionOrchestrator:
 
         # FIX #10: Permanent failure with TTL — after FAILURE_TTL_DAYS, reset and allow retry
         if retry_count >= CRAWL_MAX_RETRIES:
-            attempted_dt = self._attempt_clock(row)
             if attempted_dt:
                 failure_age = datetime.now(attempted_dt.tzinfo) - attempted_dt
                 if failure_age >= timedelta(days=FAILURE_TTL_DAYS):
@@ -472,7 +471,6 @@ class DataCollectionOrchestrator:
             return True, f"permanent failure (retry_count={retry_count})"
 
         # Check backoff window
-        attempted_dt = self._attempt_clock(row)
         if not attempted_dt:
             return False, ""
 
