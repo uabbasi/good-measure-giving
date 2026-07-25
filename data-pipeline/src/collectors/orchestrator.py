@@ -1615,5 +1615,10 @@ class DataCollectionOrchestrator:
         return metrics
 
     def close(self):
-        """Cleanup method (no-op - DoltDB connections are per-query)."""
-        pass
+        """Release collector resources (DoltDB connections are per-query,
+        nothing to do there). crawl.py calls this once the worker pool has
+        been shut down, so this is the only chance to reach any Playwright
+        renderer a worker thread created and didn't already close itself."""
+        website = getattr(self, "website", None)
+        if website is not None and hasattr(website, "close_all_renderers"):
+            website.close_all_renderers()

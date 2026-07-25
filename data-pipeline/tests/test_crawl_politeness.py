@@ -617,7 +617,7 @@ class TestPlaywrightRendererThreadLocal:
         c = WebsiteCollector.__new__(WebsiteCollector)
         c.logger = None
         c.use_playwright = True
-        c._playwright_local = threading.local()
+        c._init_playwright_local()  # also sets up the renderer registry
         renderers = {}
 
         with patch("src.utils.playwright_renderer.PlaywrightRenderer", side_effect=lambda **kw: MagicMock()):
@@ -652,7 +652,7 @@ class TestPlaywrightRendererThreadLocal:
         c = WebsiteCollector.__new__(WebsiteCollector)
         c.logger = None
         c.use_playwright = True
-        c._playwright_local = threading.local()
+        c._init_playwright_local()  # also sets up the renderer registry
         thread_a_renderer = {}
 
         with patch("src.utils.playwright_renderer.PlaywrightRenderer", side_effect=lambda **kw: MagicMock()):
@@ -1123,6 +1123,8 @@ class TestPerHostCrawlDelayGate:
         concurrency via polite_concurrency."""
         c = WebsiteCollector.__new__(WebsiteCollector)
         c.logger = None
+        c.use_playwright = False
+        c._init_playwright_local()  # collect_multi_page's finally always calls _cleanup_playwright()
         c.robots_checker = MagicMock()
         c._init_failure_latches()
         c.robots_checker.get_crawl_delay.return_value = 10.0

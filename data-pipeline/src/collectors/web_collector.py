@@ -273,7 +273,24 @@ class WebsiteCollector(BaseCollector):
         # touches it. threading.local() gives each worker thread its own
         # renderer instance on the same shared collector.
         self.use_playwright = use_playwright
+        self._init_playwright_local()
+
+    def _init_playwright_local(self) -> None:
         self._playwright_local = threading.local()
+        # _cleanup_playwright() below can only reach the CALLING thread's own
+        # renderer. Both orchestrator.close() (crawl.py, shared collector) and
+        # streaming_runner.py's end-of-run cleanup call in from the main
+        # thread, after worker threads have already finished -- their
+        # thread-locals are gone by then. This registry is the only way to
+        # reach those renderers: every renderer this collector ever creates
+        # is appended here, and close_all_renderers() drains it from
+        # whatever thread calls it.
+        self._renderer_registry: list = []
+        self._renderer_registry_lock = threading.Lock()
+
+    def _register_renderer(self, renderer) -> None:
+        with self._renderer_registry_lock:
+            self._renderer_registry.append(renderer)
 
     def _get_playwright_renderer(self):
         """Get or create this thread's Playwright renderer (lazy per-thread init)."""
@@ -287,6 +304,7 @@ class WebsiteCollector(BaseCollector):
 
                 renderer = PlaywrightRenderer(timeout_ms=15000)
                 self._playwright_local.renderer = renderer
+                self._register_renderer(renderer)
                 if self.logger:
                     self.logger.info("Playwright renderer initialized for JS fallback")
             except Exception as e:
@@ -298,11 +316,41 @@ class WebsiteCollector(BaseCollector):
         return renderer
 
     def _cleanup_playwright(self):
-        """Cleanup this thread's Playwright resources."""
+        """Close this thread's own Playwright renderer, if any.
+
+        Safe to call often (collect_multi_page does, once per charity): this
+        is the only place a real Playwright renderer is guaranteed to close
+        cleanly, because it runs on the same thread that created it.
+        """
         renderer = getattr(self._playwright_local, "renderer", None)
         if renderer:
             renderer.close()
             self._playwright_local.renderer = None
+
+    def close_all_renderers(self) -> None:
+        """Best-effort close of every renderer this collector ever created,
+        callable from any thread (e.g. the main thread at run end, after
+        worker threads have already joined).
+
+        Real Playwright sync-API renderers are thread-affine (see the
+        "Cannot switch to a different thread" note above), so closing one
+        from a thread other than the one that created it is not guaranteed
+        to release the underlying browser/driver process -- collect_multi_page
+        closing its own thread's renderer via _cleanup_playwright() before
+        returning is the actual fix for the fleet-run browser leak. This is
+        the reachable-from-anywhere backstop: it drains whatever the registry
+        still holds (ideally nothing) and never lets one bad renderer's
+        close() stop the rest from being attempted.
+        """
+        with self._renderer_registry_lock:
+            renderers, self._renderer_registry = self._renderer_registry, []
+        for renderer in renderers:
+            try:
+                renderer.close()
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f"Playwright renderer cleanup failed: {e}")
+        self._playwright_local.renderer = None
 
     def __enter__(self):
         """Context manager support for automatic cleanup."""
@@ -2532,6 +2580,19 @@ class WebsiteCollector(BaseCollector):
                 - fetch_timestamp: When fetched
                 - crawl_stats: Statistics about the crawl
         """
+        try:
+            return self._collect_multi_page_impl(url, ein=ein, force=force)
+        finally:
+            # Guarantee this thread's own Playwright renderer (if the crawl
+            # created one) is closed before returning, on every exit path --
+            # including the early "no data found" return below, which used
+            # to skip cleanup entirely and could leak a renderer for the
+            # rest of this thread's lifetime.
+            self._cleanup_playwright()
+
+    def _collect_multi_page_impl(
+        self, url: str, ein: Optional[str] = None, force: bool = False
+    ) -> Tuple[bool, Optional[Dict[str, Any]], Optional[str]]:
         if self.logger:
             self.logger.debug(f"Starting multi-page crawl: {url}")
 
@@ -3051,16 +3112,11 @@ class WebsiteCollector(BaseCollector):
             # Save cache state for progressive exploration
             self.cache.save_state(url)
 
-            # Cleanup Playwright browser
-            self._cleanup_playwright()
-
             return True, result, None
 
         except Exception as e:
             if self.logger:
                 self.logger.error(f"Multi-page crawl failed: {str(e)}")
-            # Cleanup Playwright browser
-            self._cleanup_playwright()
             # Save cache state even on failure
             try:
                 self.cache.save_state(url)

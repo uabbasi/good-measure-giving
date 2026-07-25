@@ -11,6 +11,7 @@ dead sync crawlers anyway -- could never fire. Client-rendered SPA sites
 therefore returned {} -> "no data found".
 """
 
+import threading
 import time
 from unittest.mock import MagicMock, patch
 
@@ -307,4 +308,134 @@ class TestPlaywrightEscalationBudget:
         renderer.render.assert_called_once_with(url)
         assert ok is True
         assert data["website_profile"]["ein"] == "12-3456789"
-        c.logger.warning.assert_not_called()
+
+
+class TestPlaywrightRendererRegistry:
+    """_cleanup_playwright reads self._playwright_local (threading.local()),
+    so it only ever reaches the CALLING thread's own renderer. crawl.py's
+    orchestrator holds one WebsiteCollector shared across a worker-thread
+    pool, and calls orchestrator.close() only after that pool has been
+    shut down (from the main thread) -- at which point every worker
+    thread's own thread-local is unreachable, and up to one chromium +
+    one node driver per worker leaks for the process lifetime.
+
+    A lock-guarded registry, populated wherever a renderer is created,
+    is the only way to reach those renderers from a different (or later,
+    or already-dead) thread. close_all_renderers() drains it."""
+
+    def _collector(self):
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c._init_playwright_local()
+        return c
+
+    def test_close_all_renderers_closes_renderers_registered_on_other_threads(self):
+        c = self._collector()
+        made = []
+
+        def worker():
+            r = MagicMock()
+            c._register_renderer(r)
+            made.append(r)
+
+        threads = [threading.Thread(target=worker) for _ in range(3)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+
+        c.close_all_renderers()  # called from the MAIN thread, after workers joined
+
+        assert len(made) == 3
+        for r in made:
+            assert r.close.called, "every worker's renderer must be closed"
+        assert c._renderer_registry == []
+
+    def test_close_all_renderers_is_a_noop_when_nothing_was_created(self):
+        c = self._collector()
+
+        c.close_all_renderers()  # must not raise
+
+        assert c._renderer_registry == []
+
+    def test_close_all_renderers_is_idempotent(self):
+        c = self._collector()
+        r = MagicMock()
+        c._register_renderer(r)
+
+        c.close_all_renderers()
+        c.close_all_renderers()  # second call: nothing left to close
+
+        r.close.assert_called_once()
+
+    def test_one_renderer_raising_does_not_block_the_others(self):
+        c = self._collector()
+        bad = MagicMock()
+        bad.close.side_effect = RuntimeError("boom")
+        good1, good2 = MagicMock(), MagicMock()
+        c._register_renderer(good1)
+        c._register_renderer(bad)
+        c._register_renderer(good2)
+
+        c.close_all_renderers()  # must not raise, and must not skip the others
+
+        good1.close.assert_called_once()
+        bad.close.assert_called_once()
+        good2.close.assert_called_once()
+
+    def test_get_playwright_renderer_registers_the_renderer_it_creates(self):
+        c = self._collector()
+        c.use_playwright = True
+        fake_renderer = MagicMock()
+        with patch("src.utils.playwright_renderer.PlaywrightRenderer", return_value=fake_renderer):
+            renderer = c._get_playwright_renderer()
+
+        assert renderer is fake_renderer
+        assert fake_renderer in c._renderer_registry
+
+
+class TestCollectMultiPageAlwaysClosesRenderer:
+    """collect_multi_page had an early return (empty crawl_results, no
+    captcha/live-homepage signal) that skipped _cleanup_playwright()
+    entirely. If the Playwright rescue attempt just above it had created
+    a renderer on this thread and still came back empty, that renderer
+    was never closed by this call -- it would sit open until (if ever) a
+    later charity on the same worker thread happened to reach one of the
+    two cleanup call sites that did exist. Wrapping the method in
+    try/finally guarantees this thread's own renderer is always closed
+    before returning, on exactly the thread that owns it -- the only
+    thread real Playwright can safely close it from (see the
+    "Cannot switch to a different thread" note on _get_playwright_renderer)."""
+
+    def _collector(self):
+        c = WebsiteCollector.__new__(WebsiteCollector)
+        c.logger = None
+        c.use_llm = False
+        c.max_pdf_downloads = 0
+        c.robots_checker = MagicMock()
+        c.robots_checker.get_crawl_delay.return_value = None
+        c._init_failure_latches()
+        c.cache = MagicMock()
+        c._discover_urls_from_sitemap = MagicMock(return_value=(False, []))
+        c._fetch_url = MagicMock(return_value=(False, None, None, "boom"))
+        c._crawl_with_bfs_async = MagicMock(return_value={})
+        return c
+
+    def test_early_return_with_empty_results_still_cleans_up(self):
+        c = self._collector()
+        c._cleanup_playwright = MagicMock()
+
+        ok, data, err = c.collect_multi_page("https://dead.org/", ein=None)
+
+        assert ok is False
+        c._cleanup_playwright.assert_called_once()
+
+    def test_exception_path_still_cleans_up(self):
+        c = self._collector()
+        c._cleanup_playwright = MagicMock()
+        c._discover_urls_from_sitemap = MagicMock(side_effect=RuntimeError("boom"))
+
+        ok, data, err = c.collect_multi_page("https://dead.org/", ein=None)
+
+        assert ok is False
+        c._cleanup_playwright.assert_called_once()
