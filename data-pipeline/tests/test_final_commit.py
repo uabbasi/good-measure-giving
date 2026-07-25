@@ -23,3 +23,22 @@ class TestFinalCommitMessage:
         assert "$5.00" in message
         assert "$0.3300" in message
         assert "2 checkpoints" in message
+
+
+def test_crawl_history_tables_are_registered_for_staging():
+    """Unregistered tables are never staged, so 'durable' crawl history lived
+    only in the working set and left the tree permanently dirty."""
+    from src.db.dolt_client import PHASE_TABLES, VALID_TABLES
+
+    assert "crawl_attempts" in VALID_TABLES
+    assert "crawled_pages" in VALID_TABLES
+    assert "crawl_attempts" in PHASE_TABLES["crawl"]
+    assert "crawled_pages" in PHASE_TABLES["crawl"]
+
+
+def test_schema_file_declares_every_column_the_repositories_write():
+    """A column written but not declared breaks a fresh bootstrap."""
+    from pathlib import Path
+
+    schema = (Path(__file__).parent.parent / "dolt_schema.sql").read_text()
+    assert "last_attempt_at" in schema

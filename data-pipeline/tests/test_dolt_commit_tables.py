@@ -19,7 +19,9 @@ class TestPhaseTables:
                 assert table in VALID_TABLES, f"{phase}: {table!r} not in VALID_TABLES"
 
     def test_pinned_phase_contracts(self):
-        assert tables_for_phases("crawl") == ("raw_scraped_data", "charities", "phase_cache")
+        assert tables_for_phases("crawl") == (
+            "raw_scraped_data", "charities", "phase_cache", "crawl_attempts", "crawled_pages",
+        )
         assert tables_for_phases("extract") == ("raw_scraped_data", "phase_cache")
         assert tables_for_phases("synthesize") == ("charity_data", "citations", "phase_cache")
         assert tables_for_phases("baseline") == ("evaluations", "judge_verdicts", "phase_cache")
