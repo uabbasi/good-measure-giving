@@ -62,6 +62,26 @@ JUDGE_PROJECTION_FIELDS = (
 )
 
 
+def _wallet_tag_from_zakat_claim(claims_zakat_eligible: bool | None) -> str:
+    """Mirror the wallet_tag derivation in src/scorers/v2_scorers.py
+    (`"ZAKAT-ELIGIBLE" if zakat_bonus.charity_claims_zakat else "SADAQAH-ELIGIBLE"`),
+    applied to charity_data.claims_zakat_eligible instead of a freshly
+    re-scored value.
+
+    charity_data.claims_zakat_eligible is written by synthesize.py, a
+    different phase, a different table row, and typically an earlier pipeline
+    run than evaluations.wallet_tag (written by baseline.py). They agree
+    whenever synthesize and baseline ran together over the same data; they
+    can drift if baseline is re-run alone (`--force-phase baseline`) against
+    metrics_json that changed after claims_zakat_eligible was last written,
+    or via a manual data correction to one column but not the other. That
+    drift is exactly the class of pipeline-integrity bug this check exists
+    to catch. None is treated as False, matching the scorer's own
+    `metrics.zakat_claim_detected or False` null-handling.
+    """
+    return "ZAKAT-ELIGIBLE" if claims_zakat_eligible else "SADAQAH-ELIGIBLE"
+
+
 def build_judge_projection(evaluation: dict) -> dict:
     """The evaluation surface judges read (charity_dict['evaluation']).
 
@@ -179,6 +199,10 @@ def judge_charity(
         # Without this the prompt rendered that section as a literal "{}"
         # and the tone-check backstop returned [] on every charity.
         "narrative": evaluation.get("baseline_narrative") or {},
+        # FactualJudge._quick_checks' program_expense_ratio bounds check
+        # reads output["financials"] — a standalone sanity check (0<=ratio<=1),
+        # not a source-vs-output comparison, so no independence concern.
+        "financials": {"program_expense_ratio": (charity_data or {}).get("program_expense_ratio")},
     }
 
     # Build context with raw sources
@@ -187,6 +211,17 @@ def judge_charity(
         "source_data": raw_sources,  # Alias for crawl_quality_judge
         "charity_data": charity_data,
         "charity": charity,  # From charities table - has city, state, mission
+        # FactualJudge._quick_checks' wallet_tag check: only wallet_tag is fed
+        # here, from an independent source (see _wallet_tag_from_zakat_claim).
+        # amal_score/strategic_score/archetype/strategic_dimensions are
+        # deliberately NOT included — amal_score has no second copy anywhere
+        # in the schema (feeding it would compare evaluations.amal_score to
+        # itself), and the strategic fields can never appear in `evaluation`
+        # at all (JUDGE_PROJECTION_FIELDS excludes them), so feeding them
+        # would be inert. See task-D4c-report.md.
+        "metrics": {
+            "wallet_tag": _wallet_tag_from_zakat_claim((charity_data or {}).get("claims_zakat_eligible")),
+        },
     }
 
     # J-002: Configure all judges explicitly (sample_rate=1.0 for single charity)

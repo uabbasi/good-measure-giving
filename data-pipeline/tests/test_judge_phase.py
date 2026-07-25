@@ -4,6 +4,8 @@ from unittest.mock import Mock
 
 import judge_phase
 import rich_phase
+from src.judges.factual_judge import FactualJudge
+from src.judges.schemas.config import JudgeConfig
 from src.judges.schemas.verdict import (
     CharityValidationResult,
     JudgeVerdict,
@@ -49,9 +51,10 @@ def _mock_repos(evaluation):
 
 
 class FakeOrchestrator:
-    """Captures the charity_dict that judge_charity projects."""
+    """Captures the charity_dict (and context) that judge_charity projects."""
 
     captured: dict = {}
+    captured_context: dict = {}
 
     def __init__(self, config):
         pass
@@ -64,6 +67,7 @@ class FakeOrchestrator:
 
     def validate_single(self, charity_dict, context):
         FakeOrchestrator.captured = charity_dict
+        FakeOrchestrator.captured_context = context
         return CharityValidationResult(
             ein=charity_dict["ein"], name="Test Charity", passed=True, verdicts=[]
         )
@@ -118,6 +122,130 @@ class TestLensProjection:
         judge_phase.judge_charity(EIN, *repos)
 
         assert FakeOrchestrator.captured["narrative"] == {"summary": "Baseline summary."}
+
+
+class TestFactualQuickCheckInputsWiring:
+    """D4c: FactualJudge._quick_checks reads context['metrics'] and
+    output['financials'], neither of which judge_charity ever populated
+    (verified: it never has). This wires up the two checks that have a
+    genuinely independent source — wallet_tag (from charity_data.claims_
+    zakat_eligible, written by synthesize.py, a different phase/row/time
+    than evaluations.wallet_tag, written by baseline.py) and the program_
+    expense_ratio bounds check (a self-contained sanity check, not a
+    source-vs-output comparison). amal_score/strategic_score/archetype/
+    strategic_dimensions stay unfed — see test_judges.py::
+    TestFactualJudgeQuickCheckSourcing docstring for why.
+    """
+
+    def _run_and_capture(self, monkeypatch, evaluation, charity_data):
+        monkeypatch.setattr(judge_phase, "JudgeOrchestrator", FakeOrchestrator)
+        eval_repo, data_repo, raw_repo, charity_repo = _mock_repos(dict(evaluation))
+        data_repo.get.return_value = charity_data
+        judge_phase.judge_charity(EIN, eval_repo, data_repo, raw_repo, charity_repo)
+        return FakeOrchestrator.captured, FakeOrchestrator.captured_context
+
+    def test_wallet_tag_mismatch_is_caught(self, monkeypatch):
+        """Output says ZAKAT-ELIGIBLE; the independently-written source
+        (charity_data.claims_zakat_eligible) says False -- a real drift the
+        judge should catch."""
+        evaluation = {**FULL_EVALUATION, "wallet_tag": "ZAKAT-ELIGIBLE"}
+        charity_dict, context = self._run_and_capture(
+            monkeypatch, evaluation, {"claims_zakat_eligible": False}
+        )
+
+        issues = FactualJudge(JudgeConfig())._quick_checks(charity_dict, context)
+
+        errors = [i for i in issues if i.severity == Severity.ERROR]
+        assert any("wallet_tag" in i.field for i in errors)
+
+    def test_wallet_tag_match_produces_no_issue(self, monkeypatch):
+        """Same output, source now agrees -- must NOT fire (rules out an
+        always-firing check)."""
+        evaluation = {**FULL_EVALUATION, "wallet_tag": "ZAKAT-ELIGIBLE"}
+        charity_dict, context = self._run_and_capture(
+            monkeypatch, evaluation, {"claims_zakat_eligible": True}
+        )
+
+        issues = FactualJudge(JudgeConfig())._quick_checks(charity_dict, context)
+
+        assert not [i for i in issues if i.severity == Severity.ERROR and "wallet_tag" in i.field]
+
+    def test_null_claims_zakat_eligible_matches_sadaqah(self, monkeypatch):
+        """A charity_data row with claims_zakat_eligible=NULL (never
+        determined) must not spuriously mismatch a SADAQAH-ELIGIBLE output --
+        mirrors the scorer's own `metrics.zakat_claim_detected or False`
+        null-handling (src/scorers/v2_scorers.py)."""
+        evaluation = {**FULL_EVALUATION, "wallet_tag": "SADAQAH-ELIGIBLE"}
+        charity_dict, context = self._run_and_capture(
+            monkeypatch, evaluation, {"claims_zakat_eligible": None}
+        )
+
+        issues = FactualJudge(JudgeConfig())._quick_checks(charity_dict, context)
+
+        assert not [i for i in issues if i.severity == Severity.ERROR and "wallet_tag" in i.field]
+
+    def test_perturbing_only_the_source_changes_the_verdict(self, monkeypatch):
+        """Structural guard against a tautology: hold the OUTPUT
+        (evaluation.wallet_tag) fixed and change only the SOURCE
+        (charity_data.claims_zakat_eligible). If the verdict didn't change,
+        context['metrics'] would have been fed from the same object the
+        output was derived from."""
+        evaluation = {**FULL_EVALUATION, "wallet_tag": "ZAKAT-ELIGIBLE"}
+
+        charity_dict, context = self._run_and_capture(
+            monkeypatch, evaluation, {"claims_zakat_eligible": True}
+        )
+        passing_issues = FactualJudge(JudgeConfig())._quick_checks(charity_dict, context)
+
+        charity_dict, context = self._run_and_capture(
+            monkeypatch, evaluation, {"claims_zakat_eligible": False}
+        )
+        failing_issues = FactualJudge(JudgeConfig())._quick_checks(charity_dict, context)
+
+        assert not [i for i in passing_issues if i.severity == Severity.ERROR and "wallet_tag" in i.field]
+        assert any(i.severity == Severity.ERROR and "wallet_tag" in i.field for i in failing_issues)
+
+    def test_program_expense_ratio_out_of_bounds_is_caught(self, monkeypatch):
+        charity_dict, context = self._run_and_capture(
+            monkeypatch, FULL_EVALUATION, {"program_expense_ratio": 1.5}
+        )
+
+        issues = FactualJudge(JudgeConfig())._quick_checks(charity_dict, context)
+
+        errors = [i for i in issues if i.severity == Severity.ERROR]
+        assert any("program_expense_ratio" in i.field for i in errors)
+
+    def test_program_expense_ratio_in_bounds_produces_no_issue(self, monkeypatch):
+        charity_dict, context = self._run_and_capture(
+            monkeypatch, FULL_EVALUATION, {"program_expense_ratio": 0.82}
+        )
+
+        issues = FactualJudge(JudgeConfig())._quick_checks(charity_dict, context)
+
+        assert not [i for i in issues if i.severity == Severity.ERROR and "program_expense_ratio" in i.field]
+
+    def test_missing_charity_data_row_does_not_crash(self, monkeypatch):
+        """charity_data can be None (nullable) -- must use the `or {}` idiom,
+        not crash on .get()."""
+        charity_dict, context = self._run_and_capture(monkeypatch, FULL_EVALUATION, None)
+
+        issues = FactualJudge(JudgeConfig())._quick_checks(charity_dict, context)
+
+        assert isinstance(issues, list)
+
+    def test_unfed_checks_stay_unfed(self, monkeypatch):
+        """amal_score/strategic_score/archetype/strategic_dimensions have no
+        genuinely independent source (amal_score) or can never appear in the
+        judged evaluation projection at all (the strategic fields -- see
+        JUDGE_PROJECTION_FIELDS). Feeding them would either be a tautology or
+        inert; context['metrics'] must not carry those keys."""
+        _charity_dict, context = self._run_and_capture(
+            monkeypatch, FULL_EVALUATION, {"claims_zakat_eligible": True, "program_expense_ratio": 0.5}
+        )
+
+        metrics = context["metrics"]
+        for unfed_key in ("amal_score", "strategic_score", "archetype", "strategic_dimensions"):
+            assert unfed_key not in metrics
 
 
 class TestJudgeScoreDedupe:
