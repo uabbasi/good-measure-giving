@@ -314,9 +314,9 @@ metrics_json.total_liabilities=0 with a NULL column today."
 
 ## Group B — Recovery tool (`bin/reconcile_charity_data.py`)
 
-**Ordering:** Group A must be committed first. B1 and B2 must land in the SAME commit — widening the history window without the plausibility guard turns a no-op tool into a corrupting one.
+**Ordering:** Group A must be committed first. The window widening and the plausibility guard must land in the SAME commit (Task B1) — widening the history window without the guard turns a no-op tool into a corrupting one.
 
-### Task B1+B2: Widen the history search AND add the provenance/plausibility guard
+### Task B1: Widen the history search AND add the provenance/plausibility guard
 
 **Why:** `LIMIT 20` covers 2h40m of a six-month history (EIN 31-1267559 has 1032 history rows), so the tool finds **0 of 25** real candidates. But `find_regressions` accepts any non-null as "last good" with no age or provenance check — the deeper candidates include seed placeholders (`total_revenue = 100000`, `net_assets = 10`), and ~15 are `total_liabilities` on exactly the EINs whose current `0` is correct after Task A2.
 
