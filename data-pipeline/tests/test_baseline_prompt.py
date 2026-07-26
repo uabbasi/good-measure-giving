@@ -548,3 +548,298 @@ class TestRemovalRuleFamilyClauseMatrix:
         once = _sanitize(text, metrics, wallet_tag=wallet_tag)
         twice = _sanitize(once, metrics, wallet_tag=wallet_tag)
         assert twice == once
+
+
+class TestCorrectionRulesPreserveSentenceInitialCase:
+    """G6 review Critical 1: `_match_case` (added in aa83a32) was applied to
+    only one correction rule (working capital's "holds X of working capital"
+    pattern), but every correction rule whose replacement is a fixed-case
+    literal beginning with a word is exposed to the same hazard: a removal
+    rule elsewhere in this function can leave that match sentence-initial
+    and capitalized, and a hardcoded lowercase replacement silently
+    re-lowercases it. Six more rules had this gap (all now wrapped in
+    `_preserve_case`): program-ratio patterns 2 and 3, the CN "scored X out
+    of 100 on Charity Navigator" pattern, the fundraising "fundraising costs
+    of $X per dollar" pattern, and both founded-year patterns. These tests
+    exercise each directly — no removal needed, just feeding the match at
+    the very start of a sentence — which is the simplest possible
+    reproduction of the hazard `_match_case` guards against."""
+
+    def test_working_capital_holds_pattern(self):
+        text = "Holds 3.0 months of working capital. It serves many families."
+        metrics = _metrics()
+        out = _sanitize(text, metrics)
+        assert out == "Holds 5.0 months of working capital. It serves many families."
+
+    def test_program_ratio_pattern2(self):
+        text = "Program ratio of 50% was reported. It serves many families."
+        metrics = _metrics()
+        out = _sanitize(text, metrics)
+        assert out == "Program expense ratio of 75.0% was reported. It serves many families."
+
+    def test_program_ratio_pattern3_directs(self):
+        text = "Directs 50% to programs. It serves many families."
+        metrics = _metrics()
+        out = _sanitize(text, metrics)
+        assert out == "Directs 75.0% to programs. It serves many families."
+
+    def test_cn_scored_pattern(self):
+        text = "Scored 80 out of 100 on Charity Navigator. It serves many families."
+        metrics = _metrics()
+        out = _sanitize(text, metrics)
+        assert out == "Scored 88.0/100 on Charity Navigator. It serves many families."
+
+    def test_fundraising_costs_pattern(self):
+        text = "Fundraising costs of $0.05 per dollar were reported. It serves many families."
+        metrics = _metrics()
+        out = _sanitize(text, metrics)
+        assert out == "Fundraising costs of $0.10 per dollar were reported. It serves many families."
+
+    def test_founded_in_pattern(self):
+        text = "Founded in 1980. It serves many families."
+        metrics = _metrics(founded_year=1985)
+        out = _sanitize(text, metrics)
+        assert out == "Founded in 1985. It serves many families."
+
+    def test_operating_since_pattern(self):
+        text = "Operating since 1980. It serves many families."
+        metrics = _metrics(founded_year=1985)
+        out = _sanitize(text, metrics)
+        assert out == "Operating since 1985. It serves many families."
+
+    @pytest.mark.parametrize(
+        "text,overrides",
+        [
+            ("Holds 3.0 months of working capital.", dict()),
+            ("Program ratio of 50% was reported.", dict()),
+            ("Directs 50% to programs.", dict()),
+            ("Scored 80 out of 100 on Charity Navigator.", dict()),
+            ("Fundraising costs of $0.05 per dollar were reported.", dict()),
+            ("Founded in 1980.", dict(founded_year=1985)),
+            ("Operating since 1980.", dict(founded_year=1985)),
+        ],
+    )
+    def test_sentence_initial_correction_is_idempotent(self, text, overrides):
+        metrics = _metrics(**overrides)
+        once = _sanitize(text, metrics)
+        twice = _sanitize(once, metrics)
+        assert twice == once
+
+
+class TestCnConnectorSurvivesASecondPass:
+    """G6 review Critical 1 (the idempotency-breaking half): the CN "X/100
+    ... Charity Navigator" correction rule used to hardcode "from Charity
+    Navigator" in its replacement regardless of which connector ("on", "by",
+    "from") the match actually used. That's fine on the first pass — the
+    "scored X out of 100 on Charity Navigator" rule produces "on", and this
+    rule never got a chance to fire on the original "80 out of 100" text.
+    But sanitize_narrative_metrics runs twice on the citation-repair retry
+    path, and on the second pass the already-correct "X/100 ... Charity
+    Navigator" text now matches this rule for the first time — which used
+    to silently swap "on" to "from". Fixed by capturing and echoing back
+    whatever connector was actually present."""
+
+    def test_on_connector_survives_a_second_pass(self):
+        metrics = _metrics(working_capital_ratio=None, cn_overall_score=88.0)
+        text = "It holds 4.2 months of working capital, and scored 80 out of 100 on Charity Navigator."
+        once = _sanitize(text, metrics)
+        twice = _sanitize(once, metrics)
+        assert once == "Scored 88.0/100 on Charity Navigator."
+        assert twice == once
+
+    def test_by_connector_is_not_forced_to_from(self):
+        metrics = _metrics(cn_overall_score=88.0)
+        text = "Rated 87/100 by Charity Navigator."
+        out = _sanitize(text, metrics)
+        assert out == "Rated 88.0/100 by Charity Navigator."
+
+    def test_bare_no_connector_still_defaults_to_from(self):
+        """When the original prose has no connector at all, "from" remains
+        the sensible default — nothing regresses for the common case."""
+        metrics = _metrics(cn_overall_score=88.0)
+        text = "Rated 87/100 Charity Navigator."
+        out = _sanitize(text, metrics)
+        assert out == "Rated 88.0/100 from Charity Navigator."
+
+
+# Critical 1 matrix: each (removal family, correction family) pair where the
+# removal rule runs *earlier* in sanitize_narrative_metrics's internal rules
+# list than the correction rule — the only pairs where a removal's repair
+# pass can expose a match to a later correction rule sentence-initially and
+# capitalized, which is exactly the composition the review found broken.
+# Pairs where the correction rule runs earlier than the removal rule aren't
+# reachable via this mechanism (the correction already ran against the
+# original, unmodified text by the time the removal fires), so they're
+# excluded — not because they're untested, but because they're a different,
+# unrelated question already covered by
+# TestCorrectionRulesPreserveSentenceInitialCase above.
+_CROSS_FAMILY_IDEMPOTENCY = [
+    ("working_capital", "program_ratio",
+     "Holds 4.2 months of working capital, and directs 50% to programs.",
+     dict(working_capital_ratio=None), "Directs 75.0% to programs."),
+    ("working_capital", "cn_score",
+     "Holds 4.2 months of working capital, and scored 80 out of 100 on Charity Navigator.",
+     dict(working_capital_ratio=None), "Scored 88.0/100 on Charity Navigator."),
+    ("working_capital", "fundraising",
+     "Holds 4.2 months of working capital, and spends $0.05 per $1 raised.",
+     dict(working_capital_ratio=None), "Spends $0.10 per $1 raised."),
+    ("working_capital", "founded_year",
+     "Holds 4.2 months of working capital, and founded in 1980.",
+     dict(working_capital_ratio=None), "Founded in 1985."),
+    ("program_ratio", "cn_score",
+     "Has a program expense ratio of 91.1%, and scored 80 out of 100 on Charity Navigator.",
+     dict(program_expense_ratio=None), "Scored 88.0/100 on Charity Navigator."),
+    ("program_ratio", "fundraising",
+     "Has a program expense ratio of 91.1%, and spends $0.05 per $1 raised.",
+     dict(program_expense_ratio=None), "Spends $0.10 per $1 raised."),
+    ("program_ratio", "founded_year",
+     "Has a program expense ratio of 91.1%, and founded in 1980.",
+     dict(program_expense_ratio=None), "Founded in 1985."),
+    ("cn_score", "fundraising",
+     "Scored 87/100 from Charity Navigator, and spends $0.05 per $1 raised.",
+     dict(cn_overall_score=None), "Spends $0.10 per $1 raised."),
+    ("cn_score", "founded_year",
+     "Scored 87/100 from Charity Navigator, and founded in 1980.",
+     dict(cn_overall_score=None), "Founded in 1985."),
+    ("cn_accountability", "fundraising",
+     "Has an accountability score of 87, and spends $0.05 per $1 raised.",
+     dict(cn_accountability_score=None), "Spends $0.10 per $1 raised."),
+    ("cn_accountability", "founded_year",
+     "Has an accountability score of 87, and founded in 1980.",
+     dict(cn_accountability_score=None), "Founded in 1985."),
+    ("cn_financial", "fundraising",
+     "Has a financial score of 82, and spends $0.05 per $1 raised.",
+     dict(cn_financial_score=None), "Spends $0.10 per $1 raised."),
+    ("cn_financial", "founded_year",
+     "Has a financial score of 82, and founded in 1980.",
+     dict(cn_financial_score=None), "Founded in 1985."),
+    ("fundraising", "founded_year",
+     "Spends $0.00 per $1 raised, and founded in 1980.",
+     dict(fundraising_expenses=None), "Founded in 1985."),
+    ("zakat", "founded_year",
+     "Is zakat-eligible, and founded in 1980.",
+     dict(), "Founded in 1985."),
+]
+
+
+class TestCrossFamilyRemovalCorrectionIdempotency:
+    """Requirement: 'for each removal family crossed with each correction
+    family, run two passes and assert byte-identical output.' Every case
+    here has a null metric whose removal rule fires first and exposes a
+    *different*, present metric's correction rule to sentence-initial,
+    capitalized text — the exact composition Critical 1 was found in."""
+
+    @pytest.mark.parametrize(
+        "removal_family,correction_family,text,overrides,expected",
+        _CROSS_FAMILY_IDEMPOTENCY,
+        ids=[f"{r}-x-{c}" for r, c, *_rest in _CROSS_FAMILY_IDEMPOTENCY],
+    )
+    def test_pair_produces_expected_output(self, removal_family, correction_family, text, overrides, expected):
+        metrics = _metrics(founded_year=1985, **overrides)
+        wallet_tag = "SADAQAH-ELIGIBLE" if removal_family == "zakat" else "ZAKAT-ELIGIBLE"
+        out = _sanitize(text, metrics, wallet_tag=wallet_tag)
+        assert out == expected
+
+    @pytest.mark.parametrize(
+        "removal_family,correction_family,text,overrides,expected",
+        _CROSS_FAMILY_IDEMPOTENCY,
+        ids=[f"{r}-x-{c}" for r, c, *_rest in _CROSS_FAMILY_IDEMPOTENCY],
+    )
+    def test_pair_is_idempotent(self, removal_family, correction_family, text, overrides, expected):
+        metrics = _metrics(founded_year=1985, **overrides)
+        wallet_tag = "SADAQAH-ELIGIBLE" if removal_family == "zakat" else "ZAKAT-ELIGIBLE"
+        once = _sanitize(text, metrics, wallet_tag=wallet_tag)
+        twice = _sanitize(once, metrics, wallet_tag=wallet_tag)
+        assert twice == once
+
+
+# Critical 2 matrix: the same false-clause-first arrangement as
+# _FAMILY_MATRIX, but joined by a *bare* comma instead of ", and" — the
+# review found this wiped the true clause to '' for every family because
+# `_clause_trail` treated any bare comma as staying inside the same
+# fabricated claim. The true companion clause is always verb-led (elided
+# subject, matching the corpus style used throughout this file), which is
+# exactly the signal `_clause_trail` now uses to tell an independent clause
+# from a fabricated claim's own appositive tail.
+_BARE_COMMA_FALSE_FIRST = [
+    ("working_capital",
+     "It holds 4.2 months of working capital, spends $0.10 per $1 raised on overhead.",
+     dict(working_capital_ratio=None), "Spends $0.10 per $1 raised on overhead."),
+    ("program_ratio",
+     "The charity has a program expense ratio of 91.1%, spends $0.10 per $1 raised on overhead.",
+     dict(program_expense_ratio=None), "Spends $0.10 per $1 raised on overhead."),
+    ("cn_score",
+     "It scored 87/100 from Charity Navigator, holds 4.2 months of working capital.",
+     dict(cn_overall_score=None), "Holds 5.0 months of working capital."),
+    ("cn_accountability",
+     "The charity has an accountability score of 87, spends $0.10 per $1 raised.",
+     dict(cn_accountability_score=None), "Spends $0.10 per $1 raised."),
+    ("cn_financial",
+     "The charity has a financial score of 82, spends $0.10 per $1 raised.",
+     dict(cn_financial_score=None), "Spends $0.10 per $1 raised."),
+    ("fundraising",
+     "The charity spends $0.00 per $1 raised, holds 4.2 months of working capital.",
+     dict(fundraising_expenses=None), "Holds 5.0 months of working capital."),
+    ("zakat",
+     "The charity is zakat-eligible, spends $0.10 per $1 raised.",
+     dict(), "Spends $0.10 per $1 raised."),
+]
+
+
+class TestClauseTrailBareCommaBoundary:
+    """G6 review Critical 2: with the false (unsupported) clause first and a
+    *bare* comma joining it to a true clause, the whole sentence wiped to
+    ''. Resolved by having `_clause_trail` stop at a bare comma when what
+    follows it leads with a finite verb (an independent clause) and keep
+    consuming when it doesn't (a noun-phrase appositive, still part of the
+    same fabricated claim)."""
+
+    @pytest.mark.parametrize(
+        "family,text,overrides,expected",
+        _BARE_COMMA_FALSE_FIRST,
+        ids=[f"{family}" for family, *_rest in _BARE_COMMA_FALSE_FIRST],
+    )
+    def test_true_clause_survives_bare_comma_false_first(self, family, text, overrides, expected):
+        metrics = _metrics(**overrides)
+        wallet_tag = "SADAQAH-ELIGIBLE" if family == "zakat" else "ZAKAT-ELIGIBLE"
+        out = _sanitize(text, metrics, wallet_tag=wallet_tag)
+        assert out == expected
+
+    @pytest.mark.parametrize(
+        "family,text,overrides,expected",
+        _BARE_COMMA_FALSE_FIRST,
+        ids=[f"{family}" for family, *_rest in _BARE_COMMA_FALSE_FIRST],
+    )
+    def test_bare_comma_false_first_is_idempotent(self, family, text, overrides, expected):
+        metrics = _metrics(**overrides)
+        wallet_tag = "SADAQAH-ELIGIBLE" if family == "zakat" else "ZAKAT-ELIGIBLE"
+        once = _sanitize(text, metrics, wallet_tag=wallet_tag)
+        twice = _sanitize(once, metrics, wallet_tag=wallet_tag)
+        assert twice == once
+
+    def test_true_clause_first_bare_comma_still_works(self):
+        """Regression: this ordering already worked before Critical 2's fix
+        (via `_clause_lead`'s existing bare-comma handling on the leading
+        edge) and must keep working."""
+        metrics = _metrics(working_capital_ratio=None)
+        text = "The charity spends $0.10 per $1 raised, holds 4.2 months of working capital."
+        out = _sanitize(text, metrics)
+        assert out == "The charity spends $0.10 per $1 raised."
+
+    def test_appositive_tail_still_fully_removed_with_bare_comma(self):
+        """The other half of the tension: a fabricated claim's own
+        appositive tail (a noun phrase, not an independent clause) must
+        still be swallowed whole, not preserved as a dangling fragment."""
+        metrics = _metrics(cn_overall_score=None)
+        text = "The charity earned a perfect score from Charity Navigator, its highest rating."
+        out = _sanitize(text, metrics)
+        assert out == ""
+
+    def test_second_appositive_phrasing_still_fully_removed(self):
+        """A determiner+adjective+noun appositive ("a strong reserve
+        position"), not just a possessive-pronoun one — the brief's own
+        example of the noun-phrase side of the boundary."""
+        metrics = _metrics(working_capital_ratio=None)
+        text = "The charity holds 4.2 months of working capital, a strong reserve position."
+        out = _sanitize(text, metrics)
+        assert out == ""

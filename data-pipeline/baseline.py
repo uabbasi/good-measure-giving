@@ -825,6 +825,20 @@ def _match_case(match: "re.Match[str]", replacement: str) -> str:
     return replacement
 
 
+def _preserve_case(replacement: str) -> Callable[["re.Match[str]"], str]:
+    """Wrap a fixed-case literal correction so it goes through `_match_case`.
+
+    Every correction rule below whose replacement is a literal string that
+    begins with a word (not a digit, not an already-all-caps token like
+    "Charity Navigator"/"AMAL" whose case never changes with position) is
+    exposed to the same hazard `_match_case` was written for: a removal rule
+    earlier in this function can leave that match sentence-initial and
+    capitalized, and re-stamping a lowercase literal over it would silently
+    lowercase it again.
+    """
+    return lambda m: _match_case(m, replacement)
+
+
 def _repair_removal_artifacts(text: str) -> str:
     """Clean up what a clause-scoped removal leaves behind.
 
@@ -908,20 +922,34 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # / ", " so the removed span cleanly eats the connective tissue too,
     # rather than leaving a dangling comma at the front of what remains.
     _clause_lead = r"(?:,\s*(?:and\s+)?)?" + r"(?:[^.,]|(?<=\d)\.(?=\d))*"
-    # Used for the OUTER trailing edge of every removal rule. A plain comma
-    # (not followed by "and") is treated as *inside* the same claim — e.g.
-    # "a perfect score from Charity Navigator, its highest rating" is one
-    # fabricated claim with an appositive tail, and clause-scoping the tail
-    # would leave that dangling fragment behind, still implying a rating
-    # that doesn't exist. A comma that IS followed by "and" is treated as a
-    # clause boundary instead, because every reproduced case of a *true*
-    # claim being swallowed had the true clause coordinated onto the false
-    # one with ", and ...". Deliberately does not also match a bare trailing
-    # `\.` — the terminal period is left for `_repair_removal_artifacts` to
-    # clean up, so a removal that empties its whole sentence doesn't strand
-    # an orphan period, and a removal that leaves a real clause behind
-    # doesn't eat that clause's own closing period.
-    _clause_trail = r"(?:[^.,]|(?<=\d)\.(?=\d)|,(?!\s*and\b))*"
+    # Used for the OUTER trailing edge of every removal rule. Whether a comma
+    # is a clause boundary is decided by what follows it, not by the comma
+    # alone: an appositive tail ("its highest rating", "a strong reserve
+    # position") is a noun phrase and stays *inside* the fabricated claim —
+    # e.g. "a perfect score from Charity Navigator, its highest rating" is
+    # one fabricated claim with an appositive tail, and clause-scoping the
+    # tail would leave that dangling fragment behind, still implying a
+    # rating that doesn't exist. An independent clause leads with a finite
+    # verb ("spends", "holds", "scored", "is", ...) and IS a clause boundary
+    # — every reproduced case of a *true* claim being swallowed had the true
+    # clause coordinated onto the false one this way, whether joined by
+    # ", and ..." or a bare ", ...". The verb list below is exactly the verb
+    # vocabulary the rules elsewhere in this function already use for these
+    # same clauses (holds/maintains/has, directs/allocates/dedicates/
+    # channels/devotes, scores/rates/receives), plus "spends" and the copula
+    # ("is"/"are"/"was"/"were"), which the true-clause examples also use.
+    # Deliberately does not also match a bare trailing `\.` — the terminal
+    # period is left for `_repair_removal_artifacts` to clean up, so a
+    # removal that empties its whole sentence doesn't strand an orphan
+    # period, and a removal that leaves a real clause behind doesn't eat
+    # that clause's own closing period.
+    _trail_verb_lead = (
+        r"(?:spends?|holds?|maintains?|has|have|had"
+        r"|scores?d?|rates?d?|receives?d?"
+        r"|directs?|allocates?|dedicates?|channels?|devotes?"
+        r"|is|are|was|were)\b"
+    )
+    _clause_trail = rf"(?:[^.,]|(?<=\d)\.(?=\d)|,(?!\s*(?:and\b|{_trail_verb_lead})))*"
 
     # Working capital  (e.g. "8.3 months of working capital" or "8.3 years of reserves")
     # LLM variants: "holds X years of expenses", "maintains X years in reserves",
@@ -987,19 +1015,22 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 False,
             )
         )
-        # Pattern 2: program expense ratio of <number>%
+        # Pattern 2: program expense ratio of <number>%. Case-preserving (see
+        # _preserve_case) — a preceding clause's removal can leave this one
+        # sentence-initial and capitalized ("Program expense ratio ...").
         rules.append(
             (
                 r"program\s+(?:expense\s+)?ratio\s+(?:of\s+)?\d+\.?\d*\s*%",
-                f"program expense ratio of {correct_ratio}",
+                _preserve_case(f"program expense ratio of {correct_ratio}"),
                 False,
             )
         )
-        # Pattern 3: directs/allocates X% to programs/programmatic
+        # Pattern 3: directs/allocates X% to programs/programmatic.
+        # Case-preserving for the same reason as pattern 2.
         rules.append(
             (
                 r"(?:directs?|allocates?|dedicates?|channels?|devotes?)\s+\d+\.?\d*\s*%\s+(?:of\s+\w+\s+)?(?:to|toward)\s+(?:programs?|programmatic\s+(?:work|activities|expenses?))",
-                f"directs {correct_ratio} to programs",
+                _preserve_case(f"directs {correct_ratio} to programs"),
                 False,
             )
         )
@@ -1040,10 +1071,22 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # CN's beacon sub-scores, so it carries repeating decimals
         # (98.66666666666667). One decimal place is what a donor should read.
         correct_cn = f"{round(cn_score, 1)}/100"
+        # The connector before "Charity Navigator" is captured and echoed
+        # back, not hardcoded to "from" — this rule only exists to fix the
+        # *number*, but a hardcoded connector silently rewrites "on"/"by"
+        # text to "from" too. That's not just cosmetic: the "scored X out of
+        # 100 on Charity Navigator" rule below stamps "... on Charity
+        # Navigator", and on a second sanitize pass (the citation-repair
+        # retry path) this rule fires on that already-correct output for the
+        # first time, since only now does it contain a literal "X/100" — a
+        # hardcoded "from" here would silently swap "on" to "from" on that
+        # second pass, breaking idempotency without ever failing case-
+        # insensitivity. Falls back to "from " only when no connector was
+        # present at all (bare "X/100 Charity Navigator").
         rules.append(
             (
-                r"\d+\.?\d*/100\s+(?:from\s+|by\s+|on\s+|score\s+(?:from\s+|on\s+)?)?(?:Charity\s+Navigator)",
-                f"{correct_cn} from Charity Navigator",
+                r"\d+\.?\d*/100\s+(from\s+|by\s+|on\s+|score\s+(?:from\s+|on\s+)?)?(?:Charity\s+Navigator)",
+                lambda m: f"{correct_cn} {m.group(1) or 'from '}Charity Navigator",
                 False,
             )
         )
@@ -1055,11 +1098,13 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 False,
             )
         )
-        # "scored X out of 100 on Charity Navigator"
+        # "scored X out of 100 on Charity Navigator". Case-preserving (see
+        # _preserve_case) — a preceding clause's removal can leave this one
+        # sentence-initial and capitalized ("Scored ...").
         rules.append(
             (
                 r"(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+)?\d+\.?\d*\s+(?:out\s+of\s+100|/100)\s+(?:on|from|by)\s+Charity\s+Navigator",
-                f"scored {correct_cn} on Charity Navigator",
+                _preserve_case(f"scored {correct_cn} on Charity Navigator"),
                 False,
             )
         )
@@ -1173,11 +1218,14 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 False,
             )
         )
-        # Pattern 2: "fundraising costs/expenses of $X.XX per dollar"
+        # Pattern 2: "fundraising costs/expenses of $X.XX per dollar".
+        # Case-preserving (see _preserve_case) — a preceding clause's removal
+        # can leave this one sentence-initial and capitalized ("Fundraising
+        # costs ...").
         rules.append(
             (
                 r"fundraising\s+(?:costs?|expenses?)\s+(?:of\s+)?\$\d+\.?\d*\s+per\s+(?:dollar|every\s+dollar)",
-                f"fundraising costs of {correct_fr} per dollar",
+                _preserve_case(f"fundraising costs of {correct_fr} per dollar"),
                 False,
             )
         )
@@ -1263,19 +1311,23 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # Founded year — correct wrong years in narrative
     founded_year = getattr(metrics, "founded_year", None)
     if founded_year:
-        # "founded in XXXX" / "established in XXXX" / "since XXXX" / "incorporated in XXXX"
+        # "founded in XXXX" / "established in XXXX" / "since XXXX" / "incorporated
+        # in XXXX". Case-preserving (see _preserve_case) — a preceding clause's
+        # removal can leave this one sentence-initial and capitalized
+        # ("Founded in ...").
         rules.append(
             (
                 r"(?:founded|established|incorporated|started|began(?:\s+operations)?)\s+in\s+\d{4}",
-                f"founded in {founded_year}",
+                _preserve_case(f"founded in {founded_year}"),
                 False,
             )
         )
-        # "since XXXX" when referring to founding (e.g. "operating since 1985")
+        # "since XXXX" when referring to founding (e.g. "operating since 1985").
+        # Case-preserving for the same reason.
         rules.append(
             (
                 r"(?:operating|serving|active|working)\s+since\s+\d{4}",
-                f"operating since {founded_year}",
+                _preserve_case(f"operating since {founded_year}"),
                 False,
             )
         )
