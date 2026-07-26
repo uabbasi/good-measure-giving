@@ -1338,11 +1338,23 @@ class TestClauseLeadBareAndBoundary:
         own compound phrasing ("accountability and finance") sitting BEFORE
         the real "and" that joins it to a fabricated clause must not be
         mistaken for that boundary — the search must advance past it to the
-        real connector, which sits immediately before the fabricated core."""
+        real connector, which sits immediately before the fabricated core.
+
+        The numeral is deliberately the fixture's own stored
+        cn_accountability_score (90, formatted "90/100" — see
+        TestCnSubScoreCorrections for why this fixture's plain `int` default
+        rounds to a bare "90" rather than "90.0"), not an arbitrary
+        placeholder: task G8 added a correction rule for this exact
+        "accountability and finance score of X" phrasing, so a wrong
+        number here would now get corrected — coupling this test to that
+        rule's behavior instead of the `_clause_lead` boundary placement it
+        exists to check. Pinning the already-correct value keeps this test
+        about boundary placement only; correction is exercised separately
+        in TestCnSubScoreCorrections."""
         metrics = _metrics(program_expense_ratio=None)
-        text = "It has a strong accountability and finance score of 87 and a program expense ratio of 91.1%."
+        text = "It has a strong accountability and finance score of 90/100 and a program expense ratio of 91.1%."
         out = _sanitize(text, metrics)
-        assert out == "It has a strong accountability and finance score of 87."
+        assert out == "It has a strong accountability and finance score of 90/100."
 
     def test_second_intra_claim_and_trap_months_and_rising(self):
         metrics = _metrics(cn_overall_score=None)
@@ -1366,10 +1378,20 @@ class TestClauseLeadBareAndBoundary:
         """The team-lead's own exact wording, standalone: with nothing null
         (no removal rule firing at all), a metric's own "and"-joined
         phrasing must be a pure no-op — not just survive alongside an
-        unrelated removal, but never be touched in the first place."""
+        unrelated removal, but never be touched in the first place.
+
+        The accountability numeral is deliberately the fixture's own
+        stored cn_accountability_score (90, formatted "90/100" — the
+        fixture's plain `int` default), not an arbitrary placeholder: task
+        G8 added a correction rule for "accountability and finance score of
+        X", so a wrong number here would now get corrected, coupling this
+        test to that rule instead of the no-op-when-nothing's-null
+        behavior it exists to check. Pinning the already-correct value
+        keeps this test about the no-op only; correction is exercised
+        separately in TestCnSubScoreCorrections."""
         metrics = _metrics()
         for text in [
-            "It has an accountability and finance score of 87.",
+            "It has an accountability and finance score of 90/100.",
             "It holds 8.3 months and rising in reserves.",
         ]:
             out = _sanitize(text, metrics)
@@ -1378,9 +1400,295 @@ class TestClauseLeadBareAndBoundary:
     def test_intra_claim_and_no_removal_case_is_idempotent(self):
         metrics = _metrics()
         for text in [
-            "It has an accountability and finance score of 87.",
+            "It has an accountability and finance score of 90/100.",
             "It holds 8.3 months and rising in reserves.",
         ]:
             once = _sanitize(text, metrics)
             twice = _sanitize(once, metrics)
             assert twice == once
+
+
+class TestCnSubScoreCorrections:
+    """Task G8: cn_accountability_score and cn_financial_score previously had
+    only removal rules (strip the claim when null) — a wrong-but-real number
+    was published verbatim, the same "corrected number, not just a stripped
+    claim" gap `cn_overall_score` already had a fix for. Covers, for each
+    metric: a wrong number gets corrected, an already-correct number is left
+    alone, a null value still strips the claim in full (existing behavior,
+    proven unbroken), and 2-pass idempotency for every case. Also covers the
+    number-before phrasing ("X/100 accountability score") and the combined
+    "Accountability & Finance score" phrasing Charity Navigator itself uses
+    for this beacon — the collector deliberately duplicates one shared value
+    into both cn_accountability_score and cn_financial_score (see
+    src/collectors/charity_navigator.py:790,978, "# Same score"), so
+    correcting the combined phrasing from cn_accountability_score alone is
+    safe: there is no second, independent value it could disagree with."""
+
+    # --- accountability, number-after ("accountability score of X") ---
+
+    def test_accountability_wrong_number_is_corrected(self):
+        metrics = _metrics(cn_accountability_score=91.0)
+        text = "It has an accountability score of 70."
+        out = _sanitize(text, metrics)
+        assert out == "It has an accountability score of 91.0/100."
+
+    def test_accountability_already_correct_survives_unchanged(self):
+        metrics = _metrics(cn_accountability_score=91.0)
+        text = "It has an accountability score of 91.0/100."
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_accountability_null_still_strips_claim(self):
+        metrics = _metrics(cn_accountability_score=None)
+        text = "It has an accountability score of 70."
+        out = _sanitize(text, metrics)
+        assert out == ""
+
+    def test_accountability_correction_is_idempotent(self):
+        metrics = _metrics(cn_accountability_score=91.0)
+        text = "It has an accountability score of 70."
+        once = _sanitize(text, metrics)
+        twice = _sanitize(once, metrics)
+        assert twice == once == "It has an accountability score of 91.0/100."
+
+    # --- financial, number-after ("financial score of X" / "financial
+    # health score of X") ---
+
+    def test_financial_wrong_number_is_corrected(self):
+        metrics = _metrics(cn_financial_score=91.0)
+        text = "It has a financial score of 60."
+        out = _sanitize(text, metrics)
+        assert out == "It has a financial score of 91.0/100."
+
+    def test_financial_health_wrong_number_is_corrected(self):
+        """The "health" variant — the exact phrasing named in the brief.
+        Echoes "financial health score" back verbatim (only the number is
+        fixed), matching the same echo-the-noun-phrase approach used for
+        accountability/governance above."""
+        metrics = _metrics(cn_financial_score=91.0)
+        text = "It has a financial health score of 60."
+        out = _sanitize(text, metrics)
+        assert out == "It has a financial health score of 91.0/100."
+
+    def test_financial_already_correct_survives_unchanged(self):
+        metrics = _metrics(cn_financial_score=91.0)
+        text = "It has a financial score of 91.0/100."
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_financial_null_still_strips_claim(self):
+        metrics = _metrics(cn_financial_score=None)
+        text = "It has a financial score of 60."
+        out = _sanitize(text, metrics)
+        assert out == ""
+
+    def test_financial_correction_is_idempotent(self):
+        metrics = _metrics(cn_financial_score=91.0)
+        text = "It has a financial score of 60."
+        once = _sanitize(text, metrics)
+        twice = _sanitize(once, metrics)
+        assert twice == once == "It has a financial score of 91.0/100."
+
+    def test_financial_number_before_is_not_recognized_yet(self):
+        """Documented gap, not a defect: unlike accountability, financial's
+        number-before shape ("X/100 financial score") has zero live
+        occurrences (checked website/data/charities/, 0/166) and isn't named
+        in the G8 brief's required-phrasing list, so no rule was added for
+        it. Pins the current (unhandled) behavior so a future change doesn't
+        silently start altering it without a deliberate decision."""
+        metrics = _metrics(cn_financial_score=91.0)
+        text = "It earned a 91/100 financial score."
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    # --- accountability, number-before ("X/100 accountability score/rating")
+    # — a shape with NO removal counterpart before this task, since the old
+    # removal rule only matched the number-after "accountability score of X"
+    # shape. Closing the correction side without also closing removal would
+    # have left a null accountability score with this phrasing completely
+    # unhandled — neither corrected nor stripped. ---
+
+    def test_accountability_number_before_wrong_is_corrected(self):
+        metrics = _metrics(cn_accountability_score=91.0)
+        text = "It has a 70/100 accountability score."
+        out = _sanitize(text, metrics)
+        assert out == "It has a 91.0/100 accountability score."
+
+    def test_accountability_number_before_rating_variant(self):
+        """"rating" (not just "score") and "governance" (not just
+        "accountability") both occur in real published prose for this
+        shape — see charity-95-4453134.json ("97/100 accountability
+        rating"). The noun and score/rating word are echoed back verbatim,
+        not canonicalized to "accountability score" — see
+        test_governance_article_is_not_broken_by_canonicalization for why
+        that matters (a hardcoded "accountability" would silently produce
+        a grammar error for a preceding article chosen for "governance")."""
+        metrics = _metrics(cn_accountability_score=91.0)
+        text = "It earned a perfect 97/100 governance rating."
+        out = _sanitize(text, metrics)
+        assert out == "It earned a perfect 91.0/100 governance rating."
+
+    def test_governance_article_is_not_broken_by_canonicalization(self):
+        """Hand-probed failure mode: a version of this rule that hardcoded
+        "accountability" in its replacement turned "a governance score of
+        60" into "a accountability score of ..." — grammatically wrong,
+        since "accountability" starts with a vowel sound and needs "an".
+        Echoing the original noun phrase back (see baseline.py's
+        `_acc_name` comment) leaves the article, which was already correct
+        for the original word, untouched."""
+        metrics = _metrics(cn_accountability_score=91.0)
+        text = "It has a governance score of 60."
+        out = _sanitize(text, metrics)
+        assert out == "It has a governance score of 91.0/100."
+
+    def test_accountability_score_percent_suffix_is_consumed_not_stranded(self):
+        """Hand-probed failure mode: the optional trailing suffix group
+        didn't include "%", so "accountability score of 87%" left the "%"
+        outside the match — the correction (which already ends in "/100")
+        then produced the garbled "91.0/100%". Fixed by adding "%" to the
+        optional suffix alternation."""
+        metrics = _metrics(cn_accountability_score=91.0)
+        text = "It has an accountability score of 87%."
+        out = _sanitize(text, metrics)
+        assert out == "It has an accountability score of 91.0/100."
+
+    def test_financial_score_percent_suffix_is_consumed_not_stranded(self):
+        metrics = _metrics(cn_financial_score=91.0)
+        text = "It has a financial score of 60%."
+        out = _sanitize(text, metrics)
+        assert out == "It has a financial score of 91.0/100."
+
+    def test_accountability_number_before_already_correct_survives_unchanged(self):
+        metrics = _metrics(cn_accountability_score=91.0)
+        text = "It has a 91.0/100 accountability score."
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_accountability_number_before_null_still_strips_claim(self):
+        metrics = _metrics(cn_accountability_score=None)
+        text = "It has a 70/100 accountability score."
+        out = _sanitize(text, metrics)
+        assert out == ""
+
+    def test_accountability_number_before_is_idempotent(self):
+        metrics = _metrics(cn_accountability_score=91.0)
+        text = "It has a 70/100 accountability score."
+        once = _sanitize(text, metrics)
+        twice = _sanitize(once, metrics)
+        assert twice == once == "It has a 91.0/100 accountability score."
+
+    # --- combined "Accountability & Finance score" phrasing (CN's own name
+    # for this beacon; see class docstring for why cn_accountability_score
+    # alone is a safe anchor for it) ---
+
+    def test_combined_ampersand_wrong_is_corrected(self):
+        """Echoes "Accountability & Finance" back verbatim rather than
+        canonicalizing to plain "accountability" — same echo-the-noun-
+        phrase reasoning as the governance/article case above; there is no
+        grammar hazard here, but preserving the source's own phrasing is
+        the more conservative fix, and it's what the shared `_acc_name`
+        capture group produces either way."""
+        metrics = _metrics(cn_accountability_score=91.0, cn_financial_score=91.0)
+        text = "It has an Accountability & Finance score of 70."
+        out = _sanitize(text, metrics)
+        assert out == "It has an Accountability & Finance score of 91.0/100."
+
+    def test_combined_and_wrong_is_corrected(self):
+        metrics = _metrics(cn_accountability_score=91.0, cn_financial_score=91.0)
+        text = "It has an accountability and finance score of 70."
+        out = _sanitize(text, metrics)
+        assert out == "It has an accountability and finance score of 91.0/100."
+
+    def test_combined_number_before_wrong_is_corrected(self):
+        metrics = _metrics(cn_accountability_score=91.0, cn_financial_score=91.0)
+        text = "It holds a perfect 70/100 Accountability & Finance score."
+        out = _sanitize(text, metrics)
+        assert out == "It holds a perfect 91.0/100 Accountability & Finance score."
+
+    def test_combined_null_still_strips_claim(self):
+        metrics = _metrics(cn_accountability_score=None, cn_financial_score=None)
+        text = "It has an accountability and finance score of 70."
+        out = _sanitize(text, metrics)
+        assert out == ""
+
+    def test_combined_is_idempotent(self):
+        metrics = _metrics(cn_accountability_score=91.0, cn_financial_score=91.0)
+        for text in [
+            "It has an Accountability & Finance score of 70.",
+            "It holds a perfect 70/100 Accountability & Finance score.",
+        ]:
+            once = _sanitize(text, metrics)
+            twice = _sanitize(once, metrics)
+            assert twice == once
+
+    # --- sentence-initial capitalization hazard (Critical 1's class): a
+    # preceding removal from a DIFFERENT metric family exposes the new
+    # accountability/financial correction rules sentence-initially. ---
+
+    def test_working_capital_removal_exposes_accountability_correction(self):
+        metrics = _metrics(working_capital_ratio=None, cn_accountability_score=91.0)
+        text = "It holds 4.2 months of working capital, and has an accountability score of 70."
+        out = _sanitize(text, metrics)
+        assert out == "Has an accountability score of 91.0/100."
+
+    def test_program_ratio_removal_exposes_financial_correction(self):
+        metrics = _metrics(program_expense_ratio=None, cn_financial_score=91.0)
+        text = "Has a program expense ratio of 91.1%, and has a financial score of 60."
+        out = _sanitize(text, metrics)
+        assert out == "Has a financial score of 91.0/100."
+
+    def test_cn_score_removal_exposes_accountability_correction(self):
+        metrics = _metrics(cn_overall_score=None, cn_accountability_score=91.0)
+        text = "Scored 87/100 from Charity Navigator, and has an accountability score of 70."
+        out = _sanitize(text, metrics)
+        assert out == "Has an accountability score of 91.0/100."
+
+    def test_accountability_removal_exposes_financial_correction(self):
+        metrics = _metrics(cn_accountability_score=None, cn_financial_score=91.0)
+        text = "Has an accountability score of 70, and has a financial score of 60."
+        out = _sanitize(text, metrics)
+        assert out == "Has a financial score of 91.0/100."
+
+    def test_cross_family_exposure_is_idempotent(self):
+        cases = [
+            ("It holds 4.2 months of working capital, and has an accountability score of 70.",
+             _metrics(working_capital_ratio=None, cn_accountability_score=91.0)),
+            ("Has a program expense ratio of 91.1%, and has a financial score of 60.",
+             _metrics(program_expense_ratio=None, cn_financial_score=91.0)),
+            ("Scored 87/100 from Charity Navigator, and has an accountability score of 70.",
+             _metrics(cn_overall_score=None, cn_accountability_score=91.0)),
+            ("Has an accountability score of 70, and has a financial score of 60.",
+             _metrics(cn_accountability_score=None, cn_financial_score=91.0)),
+        ]
+        for text, metrics in cases:
+            once = _sanitize(text, metrics)
+            twice = _sanitize(once, metrics)
+            assert twice == once
+
+    def test_brief_worked_example(self):
+        """The exact repro from the G8 brief: cn_accountability_score=91.0,
+        input states 70 — must now be corrected, not published verbatim."""
+        metrics = _metrics(working_capital_ratio=None, cn_accountability_score=91.0)
+        text = "It holds 4.2 months of working capital, and accountability score of 70."
+        out = _sanitize(text, metrics)
+        assert out == "Accountability score of 91.0/100."
+
+    def test_charity_36_3673599_malformed_string_is_left_as_is(self):
+        """charity-36-3673599.json (read-only — never modified by this
+        test) carries a known, pre-existing mangled-CN-score artifact
+        awaiting regeneration, not repair-in-place: "Strong external
+        accountability rating of 96.96.0/100 from Charity Navigator" (a
+        double-decimal corruption, phrased as "accountability rating" —
+        not "score" — while the number is actually the CN *overall* score,
+        not the accountability sub-score; stored accountability is 86.0,
+        stored overall is 96). Neither new rule touches it: both require
+        the literal word "score" (not "rating") immediately adjacent to
+        "accountability"/"governance" for the number-after and
+        number-before shapes alike, and the corrupted leading "96." isn't
+        part of any recognized numeric shape either. Documented so it's
+        clear regeneration — not this sanitizer — is what will fix that
+        page; this task neither fixes nor worsens it."""
+        metrics = _metrics(cn_accountability_score=86.0, cn_overall_score=96.0)
+        text = "Strong external accountability rating of 96.96.0/100 from Charity Navigator"
+        out = _sanitize(text, metrics)
+        assert out == text

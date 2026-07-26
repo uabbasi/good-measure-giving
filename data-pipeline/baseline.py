@@ -1294,22 +1294,89 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
             )
         )
 
-    # CN accountability/financial sub-scores — strip if null. Same
-    # bare-trailing-number risk as the CN rule above: the "/100" suffix is
-    # optional, so `\d+(?:\.\d+)?` guards against eating a sentence-ending
-    # period when it's absent.
-    if cn_accountability is None:
+    # CN accountability/financial sub-scores. Same bare-trailing-number risk
+    # as the CN rule above: the "/100" suffix is optional, so
+    # `\d+(?:\.\d+)?` guards against eating a sentence-ending period when
+    # it's absent (also now tolerates a bare "%" suffix — "score of 87%" —
+    # so that gets consumed by the match and cleanly replaced instead of
+    # stranding a "%" after the correction's own "/100"). Unlike
+    # cn_overall_score, these previously had ONLY removal rules — a wrong
+    # (but non-null) number was published verbatim instead of corrected.
+    # `_acc_name` also covers "Accountability & Finance score", the name
+    # Charity Navigator itself uses for this exact beacon; the collector
+    # deliberately duplicates one shared score into both
+    # cn_accountability_score and cn_financial_score (see
+    # src/collectors/charity_navigator.py:790,978, "# Same score"), so
+    # correcting the combined phrasing from cn_accountability_score alone is
+    # safe — there is no second, independent value it could disagree with.
+    #
+    # Both correction patterns capture the noun phrase actually used
+    # ("accountability", "governance", "Accountability & Finance") and echo
+    # it back rather than hardcoding "accountability" — the same
+    # capture-and-echo principle the cn_overall_score connector rule above
+    # uses for "from"/"by"/"on". Hardcoding it here has a real failure mode
+    # a hand-probe caught: "a governance score of 60" would become "a
+    # accountability score of 91.0/100" — grammatically wrong (a vowel-
+    # initial replacement after an article chosen for the original,
+    # consonant-initial word). Echoing the original noun phrase leaves
+    # whatever article preceded it untouched and therefore still correct.
+    _acc_name = r"accountability(?:\s*(?:&|and)\s*finance)?|governance"
+    if cn_accountability is not None:
+        correct_acc = f"{round(cn_accountability, 1)}/100"
+        # Pattern 1: <accountability/governance/& finance> score of X
+        # (number-after). Case-preserving (see _preserve_case) — a
+        # preceding clause's removal can leave this sentence-initial
+        # ("Accountability score ...").
         rules.append(
             (
-                rf"{_clause_lead}(?:accountability|governance)\s+score\s+(?:of\s+)?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100)?{_clause_trail}",
+                rf"({_acc_name})\s+score\s+(?:of\s+)?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?",
+                lambda m: _match_case(m, f"{m.group(1)} score of {correct_acc}"),
+                False,
+            )
+        )
+        # Pattern 2: X/100 <accountability/governance/& finance>
+        # score/rating (number-before). No _preserve_case needed — the
+        # replacement starts with a digit, so there's no letter for a
+        # preceding removal to strand capitalized.
+        rules.append(
+            (
+                rf"\d+(?:\.\d+)?/100\s+({_acc_name})\s+(score|rating)",
+                lambda m: f"{correct_acc} {m.group(1)} {m.group(2)}",
+                False,
+            )
+        )
+    else:
+        rules.append(
+            (
+                rf"{_clause_lead}(?:{_acc_name})\s+score\s+(?:of\s+)?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?{_clause_trail}",
                 None,
                 True,
             )
         )
-    if cn_financial is None:
         rules.append(
             (
-                rf"{_clause_lead}financial\s+(?:health\s+)?score\s+(?:of\s+)?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100)?{_clause_trail}",
+                rf"{_clause_lead}\d+(?:\.\d+)?/100\s+(?:{_acc_name})\s+(?:score|rating){_clause_trail}",
+                None,
+                True,
+            )
+        )
+    if cn_financial is not None:
+        correct_fin = f"{round(cn_financial, 1)}/100"
+        # Same echo-the-noun-phrase approach as accountability's Pattern 1
+        # above (captures "financial score" vs "financial health score" and
+        # echoes it back rather than always dropping "health"). Case-
+        # preserving for the same reason as the accountability pattern.
+        rules.append(
+            (
+                r"(financial\s+(?:health\s+)?score)\s+(?:of\s+)?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?",
+                lambda m: _match_case(m, f"{m.group(1)} of {correct_fin}"),
+                False,
+            )
+        )
+    else:
+        rules.append(
+            (
+                rf"{_clause_lead}financial\s+(?:health\s+)?score\s+(?:of\s+)?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?{_clause_trail}",
                 None,
                 True,
             )
