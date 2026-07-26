@@ -1115,3 +1115,103 @@ class TestNumberBeforeProgramRatioRemoval:
         text = "The charity spends 45.0% on programs."
         out = _sanitize(text, metrics)
         assert out == text
+
+
+# Each case: fabricated clause first, joined to a true clause by a bare
+# " and " with no comma. The fabricated clause's own metric is nulled out;
+# the true clause after "and" must survive in full, exact digits and all —
+# in particular the thousands-separator comma in "4,000" must not be
+# mistaken for a clause boundary the way it was before this fix.
+_BARE_AND_CLAUSE_BOUNDARY_CASES = [
+    (
+        "program_ratio_then_serves_thousands_separator",
+        "The charity has a program expense ratio of 91.1% and serves 4,000 families.",
+        dict(program_expense_ratio=None),
+        "Serves 4,000 families.",
+    ),
+    (
+        "charity_navigator_then_runs_clinics",
+        "It scored 87/100 from Charity Navigator and runs 12 clinics.",
+        dict(cn_overall_score=None),
+        "Runs 12 clinics.",
+    ),
+    (
+        "working_capital_then_employs_staff",
+        "It holds 4.2 months of working capital and employs 45 staff.",
+        dict(working_capital_ratio=None),
+        "Employs 45 staff.",
+    ),
+]
+
+
+class TestClauseTrailBareAndBoundary:
+    """Fixes a defect found while probing task G7: `_clause_trail` treated
+    ", and" (comma + and) as a clause boundary but not a bare " and " with no
+    comma, so the trailing scan ran straight through it into the next
+    clause and stopped only at whatever comma or period turned up first in
+    THAT clause — including a thousands-separator comma ("4,000") or a
+    decimal point, truncating mid-number instead of stopping at the real
+    clause boundary. Unlike the bare-comma case (genuinely ambiguous between
+    an appositive and an independent clause), "and" is an unambiguous
+    coordinating conjunction, so it is always a boundary — no
+    continuation-lead exception needed, and the existing ", and" handling is
+    untouched."""
+
+    @pytest.mark.parametrize(
+        "name,text,overrides,expected", _BARE_AND_CLAUSE_BOUNDARY_CASES,
+        ids=[n for n, *_ in _BARE_AND_CLAUSE_BOUNDARY_CASES])
+    def test_bare_and_is_a_clause_boundary(self, name, text, overrides, expected):
+        metrics = _metrics(**overrides)
+        out = _sanitize(text, metrics)
+        assert out == expected
+
+    @pytest.mark.parametrize(
+        "name,text,overrides,expected", _BARE_AND_CLAUSE_BOUNDARY_CASES,
+        ids=[n for n, *_ in _BARE_AND_CLAUSE_BOUNDARY_CASES])
+    def test_bare_and_case_is_idempotent(self, name, text, overrides, expected):
+        metrics = _metrics(**overrides)
+        once = _sanitize(text, metrics)
+        twice = _sanitize(once, metrics)
+        assert twice == once == expected
+
+    def test_and_inside_the_removed_claims_own_cooccurrence_gap_is_unaffected(self):
+        """The intra-claim "and" trap, first form: an "and" that sits
+        *inside* the fabricated claim's own `_decimal_safe` co-occurrence gap
+        (a separate regex fragment from `_clause_trail`, unrelated to this
+        fix) must still be swallowed along with the rest of the claim — only
+        an "and" *after* the claim's core match is a boundary."""
+        metrics = _metrics(cn_overall_score=None)
+        text = "Charity Navigator rated it 82 and awarded 87/100 and serves 500 clients."
+        out = _sanitize(text, metrics)
+        assert out == "Serves 500 clients."
+
+    def test_and_inside_the_surviving_true_clause_is_left_alone(self):
+        """The intra-claim "and" trap, second form: once the boundary has
+        correctly stopped at the first " and " after the fabricated core, a
+        second, later "and" belonging to the surviving true clause's own
+        phrasing (a metric's own compound name, e.g. "accountability and
+        finance") must not be re-split or truncated."""
+        metrics = _metrics(program_expense_ratio=None)
+        text = "The charity has a program expense ratio of 91.1% and strong accountability and finance oversight."
+        out = _sanitize(text, metrics)
+        assert out == "Strong accountability and finance oversight."
+
+    def test_multiple_and_joined_true_clauses_after_removal_all_survive(self):
+        metrics = _metrics(working_capital_ratio=None)
+        text = "It holds 8.3 months of working capital and rising reserves and growing donor support."
+        out = _sanitize(text, metrics)
+        assert out == "Rising reserves and growing donor support."
+
+    def test_and_trap_cases_are_idempotent(self):
+        metrics_and_cases = [
+            (_metrics(cn_overall_score=None),
+             "Charity Navigator rated it 82 and awarded 87/100 and serves 500 clients."),
+            (_metrics(program_expense_ratio=None),
+             "The charity has a program expense ratio of 91.1% and strong accountability and finance oversight."),
+            (_metrics(working_capital_ratio=None),
+             "It holds 8.3 months of working capital and rising reserves and growing donor support."),
+        ]
+        for metrics, text in metrics_and_cases:
+            once = _sanitize(text, metrics)
+            twice = _sanitize(once, metrics)
+            assert twice == once

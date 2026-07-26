@@ -868,8 +868,14 @@ def _repair_removal_artifacts(text: str) -> str:
     # can't reach into unrelated text).
     text = re.sub(r"(^|[.!?]\s+)\s*,\s*(?:and\s+)?", r"\1", text)
     # A bare "and " stranded at a sentence start with no comma of its own
-    # (the comma was itself part of the removed span).
-    text = re.sub(r"(^|[.!?]\s+)and\s+", r"\1", text, flags=re.IGNORECASE)
+    # (the comma was itself part of the removed span). The leading `\s*`
+    # also covers the case where the removed span was the very start of the
+    # string (or immediately follows the previous sentence with nothing to
+    # collapse): _clause_trail now stops right before " and " rather than
+    # consuming into it, so the boundary space itself is left dangling in
+    # front of "and" instead of already being absorbed by the multi-space
+    # collapse above.
+    text = re.sub(r"(^|[.!?]\s+)\s*and\s+", r"\1", text, flags=re.IGNORECASE)
     text = re.sub(r",\s*,", ",", text)  # doubled comma
     text = re.sub(r",\s*([.!?])", r"\1", text)  # comma stranded right before terminal punctuation
     text = re.sub(r",\s*$", "", text)  # trailing dangling comma
@@ -993,7 +999,26 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         r"|among\b"
         r"|second\s+only\s+to\b"
     )
-    _clause_trail = rf"(?:[^.,]|(?<=\d)\.(?=\d)|,(?=\s*(?:{_trail_same_claim_lead})))*"
+    # A bare " and " (no comma) is a second, simpler boundary shape: unlike
+    # the bare-comma case above, "and" is an unambiguous coordinating
+    # conjunction — there's no appositive reading to protect, so it's always
+    # a boundary, never a continuation. Without this, `[^.,]` (which doesn't
+    # exclude the letters "a"/"n"/"d") happily scans straight through " and "
+    # and on into the next clause, stopping only at that clause's own first
+    # comma or period — which is exactly what let the scan run into a
+    # thousands-separator comma ("4,000") or a decimal point mid-number and
+    # truncate there instead of at the real clause boundary. The negative
+    # lookahead only blocks *consuming into* " and "; it doesn't touch the
+    # comma-continuation alternative below, so ", and" (a bare comma directly
+    # followed by "and") still resolves the same way it already did — "and"
+    # was never on `_trail_same_claim_lead`, so that comma was already a
+    # boundary. `\band\b` also means this can't misfire on "and" as a
+    # substring of a longer word ("demand", "sandwich"), and it only ever
+    # fires on text *after* a rule's core match — an "and" inside the core's
+    # own `_decimal_safe` co-occurrence gap (e.g. between a Charity Navigator
+    # mention and its score) is untouched, since that gap is a separate
+    # regex fragment this lookahead isn't part of.
+    _clause_trail = rf"(?:(?!\s+and\b)(?:[^.,]|(?<=\d)\.(?=\d))|,(?=\s*(?:{_trail_same_claim_lead})))*"
 
     # Working capital  (e.g. "8.3 months of working capital" or "8.3 years of reserves")
     # LLM variants: "holds X years of expenses", "maintains X years in reserves",
