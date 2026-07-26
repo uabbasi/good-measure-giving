@@ -274,6 +274,25 @@ class TestCompleteness:
         # (800K - 500K) / (1M - 500K) = 300K / 500K = 0.6
         assert abs(m.cash_adjusted_program_ratio - 0.6) < 0.01
 
+    def test_degenerate_cash_adjusted_ratio_is_not_rederived_as_zero(self):
+        """Direct Relief-shaped case: donated goods received exceed program
+        expenses, so the numerator is negative. This call site used to
+        reimplement the ratio formula inline (without the degenerate guard
+        added to _compute_cash_adjusted_ratio), so it would silently
+        re-derive a bogus 0.0 here even after the primary synthesize path
+        left the field None on purpose. Must stay None and report a gap
+        instead of patching a fabricated zero."""
+        m = _make_metrics(
+            noncash_ratio=0.996,
+            noncash_contributions=2_298_781_077,
+            program_expenses=2_291_611_627,
+            total_expenses=2_307_002_152,
+        )
+        patched, gaps = patch_completeness(m)
+        assert "cash_adjusted_program_ratio" not in patched
+        assert m.cash_adjusted_program_ratio is None
+        assert any("cash_adjusted_program_ratio" in g for g in gaps)
+
     def test_reserves_months_rederived(self):
         m = _make_metrics(net_assets=2_000_000, total_expenses=1_000_000)
         patched, gaps = patch_completeness(m)

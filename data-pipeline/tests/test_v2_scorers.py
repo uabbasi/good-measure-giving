@@ -806,6 +806,68 @@ class TestComputeCashAdjustedRatio:
 
         assert _compute_cash_adjusted_ratio(program_expenses=0, total_expenses=100, noncash=0) == 0.0
 
+    def test_genuine_zero_with_healthy_denominator_still_returns_zero(self):
+        """program_expenses == noncash against a healthy denominator (50% of
+        total expenses) is a real 0.0 -- all program spend is in-kind -- and
+        must still be returned as a measurable 0.0, not degraded to None."""
+        from src.parsers.charity_metrics_aggregator import _compute_cash_adjusted_ratio
+
+        result = _compute_cash_adjusted_ratio(program_expenses=500, total_expenses=1000, noncash=500)
+        assert result == 0.0
+
+    def test_negative_numerator_is_degenerate_not_zero(self):
+        """Direct Relief (EIN 95-1831116): donated goods/services received
+        ($2.30B) exceed program expenses ($2.29B), driving the quotient
+        negative. That isn't "spends 0% on programs" -- it means noncash
+        contributions dominate the cost structure so the subtraction no
+        longer measures cash program spend at all. Must return None and
+        fall back to the filed ratio, not clamp to 0.0."""
+        from src.parsers.charity_metrics_aggregator import _compute_cash_adjusted_ratio
+
+        result = _compute_cash_adjusted_ratio(
+            program_expenses=2_291_611_627,
+            total_expenses=2_307_002_152,
+            noncash=2_298_781_077,
+        )
+        assert result is None
+
+    def test_tiny_denominator_is_degenerate_even_with_a_positive_numerator(self):
+        """A residual cash-expense denominator under 2% of total expenses is
+        too small a base to trust, even when the quotient happens to come
+        out positive (Direct Relief's own denominator is 0.36% of total
+        expenses -- this is a much larger, still-excluded case)."""
+        from src.parsers.charity_metrics_aggregator import _compute_cash_adjusted_ratio
+
+        # denominator = 15 = 1.5% of total_expenses (1000) -- below the 2% floor
+        result = _compute_cash_adjusted_ratio(program_expenses=990, total_expenses=1000, noncash=985)
+        assert result is None
+
+    def test_denominator_just_above_the_two_percent_floor_is_measurable(self):
+        """Once the denominator clears the 2% floor, a positive ratio is a
+        real signal and must be returned, not discarded."""
+        from src.parsers.charity_metrics_aggregator import _compute_cash_adjusted_ratio
+
+        # denominator = 25 = 2.5% of total_expenses (1000) -- above the floor
+        result = _compute_cash_adjusted_ratio(program_expenses=980, total_expenses=1000, noncash=975)
+        assert result == 0.2
+
+    def test_united_muslim_relief_denominator_is_not_degenerate(self):
+        """United Muslim Relief (EIN 27-3175543): denominator is 4.87% of
+        total expenses -- small, but a real, live, currently-published
+        ratio (48% cash-adjusted). A 5% floor would have wrongly zeroed
+        this out too, swinging its published Impact score (Program Ratio
+        component 0/5 -> 5/5, amal_score 69 -> 74); the 2% floor must
+        leave it alone."""
+        from src.parsers.charity_metrics_aggregator import _compute_cash_adjusted_ratio
+
+        result = _compute_cash_adjusted_ratio(
+            program_expenses=146_501_155,
+            total_expenses=150_339_501,
+            noncash=143_021_451,
+        )
+        assert result is not None
+        assert abs(result - 0.4754960679415965) < 1e-9
+
 
 # ─── Domestic Burn Rate Risk ──────────────────────────────────────────────
 

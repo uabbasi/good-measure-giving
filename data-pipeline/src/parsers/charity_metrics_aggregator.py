@@ -133,16 +133,47 @@ def _first_non_none(*values):
     return None
 
 
-def _compute_cash_adjusted_ratio(program_expenses: float, total_expenses: float, noncash: float) -> float:
-    """GIK-adjusted program ratio, clamped to [0.0, 1.0].
+def _compute_cash_adjusted_ratio(program_expenses: float, total_expenses: float, noncash: float) -> Optional[float]:
+    """GIK-adjusted program ratio, clamped to [0.0, 1.0], or None when the
+    ratio is not a measurable signal.
 
     Strips in-kind (noncash) contributions from both program and total
     expenses before ratioing, so gift-in-kind inflation can't pad the
     filed program ratio. Clamped at both ends — the raw ratio path clamps
     with min(1.0, ...), and an unclamped ratio here rendered as e.g. "130%"
     into the narrative prompt as a mandatory value.
+
+    Returns None (not measurable — falls back to the filed ratio) rather
+    than 0.0 when:
+      - the numerator is negative, i.e. donated goods/services received
+        exceed program expenses. That's not "spends 0% on programs" — it's
+        a sign the noncash figure is dominating the charity's whole cost
+        structure, so the subtraction no longer measures programmatic cash
+        spend at all (e.g. Direct Relief EIN 95-1831116: noncash $2.30B
+        against $2.31B total expenses).
+      - the residual cash-expense denominator is under 2% of total
+        expenses. Below that the denominator is nearly all noise: for
+        Direct Relief the denominator is 0.36% of total expenses, and a
+        ratio built on a base that small swings wildly for reasons
+        unrelated to program spending. 2% clears that noise floor with
+        room to spare while staying below live, legitimately-small-but-real
+        cases — e.g. United Muslim Relief (EIN 27-3175543) sits at 4.87%
+        (a $150M charity whose GIK-heavy accounting leaves a $7.3M cash
+        base) and must keep scoring on its measured 48% cash-adjusted
+        ratio rather than falling back to its 96% filed ratio, which would
+        swing its published score. 2% is a conservative line — it only
+        excludes ratios computed on residual bases an order of magnitude
+        smaller than any live case with real signal.
+    A genuine 0.0 (numerator exactly 0, e.g. program_expenses == noncash,
+    against a healthy denominator) is still returned as 0.0.
     """
-    adjusted = (program_expenses - noncash) / (total_expenses - noncash)
+    denominator = total_expenses - noncash
+    if denominator <= 0 or denominator / total_expenses < 0.02:
+        return None
+    numerator = program_expenses - noncash
+    if numerator < 0:
+        return None
+    adjusted = numerator / denominator
     return max(0.0, min(1.0, adjusted))
 
 
@@ -1750,9 +1781,9 @@ class CharityMetricsAggregator:
                     prog_exp = metrics_data.get("program_expenses")
                     total_exp = metrics_data.get("total_expenses")
                     if prog_exp is not None and total_exp is not None and total_exp > noncash:
-                        metrics_data["cash_adjusted_program_ratio"] = _compute_cash_adjusted_ratio(
-                            prog_exp, total_exp, noncash
-                        )
+                        adjusted_ratio = _compute_cash_adjusted_ratio(prog_exp, total_exp, noncash)
+                        if adjusted_ratio is not None:
+                            metrics_data["cash_adjusted_program_ratio"] = adjusted_ratio
 
         # ====================================================================
         # Domestic burn rate (Fix 2)

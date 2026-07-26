@@ -6,7 +6,7 @@ that remain null despite source data being available.
 
 import logging
 
-from src.parsers.charity_metrics_aggregator import CharityMetrics
+from src.parsers.charity_metrics_aggregator import CharityMetrics, _compute_cash_adjusted_ratio
 
 logger = logging.getLogger(__name__)
 
@@ -33,17 +33,29 @@ def patch_completeness(metrics: CharityMetrics) -> tuple[list[str], list[str]]:
         # else: no noncash data at all — not a gap, just absent
 
     # --- cash_adjusted_program_ratio ---
+    # Delegates to _compute_cash_adjusted_ratio rather than re-deriving the
+    # formula inline: this call site used to reimplement it without the
+    # negative-numerator/tiny-denominator degenerate guard, so it silently
+    # re-derived a bogus 0.0 for cases like Direct Relief (donated goods
+    # exceeding program expenses) even after the primary aggregator path
+    # was fixed to return None for that case.
     if metrics.cash_adjusted_program_ratio is None:
         noncash_ratio = metrics.noncash_ratio
         if noncash_ratio is not None and noncash_ratio > 0.10:
             program_exp = metrics.program_expenses
             total_exp = metrics.total_expenses
             noncash = metrics.noncash_contributions
-            if program_exp is not None and total_exp and total_exp > 0 and noncash is not None:
-                adjusted = (program_exp - noncash) / (total_exp - noncash) if total_exp > noncash else 0.0
-                metrics.cash_adjusted_program_ratio = max(0.0, adjusted)
-                patched.append("cash_adjusted_program_ratio")
-                logger.debug(f"Re-derived cash_adjusted_program_ratio={metrics.cash_adjusted_program_ratio:.3f}")
+            if program_exp is not None and total_exp and noncash is not None:
+                adjusted = _compute_cash_adjusted_ratio(program_exp, total_exp, noncash)
+                if adjusted is not None:
+                    metrics.cash_adjusted_program_ratio = adjusted
+                    patched.append("cash_adjusted_program_ratio")
+                    logger.debug(f"Re-derived cash_adjusted_program_ratio={adjusted:.3f}")
+                else:
+                    gaps.append(
+                        "cash_adjusted_program_ratio: computed ratio is degenerate (negative numerator or "
+                        "residual denominator too small to trust) — falling back to filed ratio"
+                    )
             else:
                 gaps.append(
                     "cash_adjusted_program_ratio: noncash_ratio significant but missing expenses data"
