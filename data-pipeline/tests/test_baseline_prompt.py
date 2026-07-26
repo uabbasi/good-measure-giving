@@ -2709,6 +2709,151 @@ class TestFundraisingBareCommaBindsToNearestDollarFigure:
         assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
 
 
+class TestDollarFirstRuleDoesNotAnchorOnATrueFigureAcrossABareComma:
+    """Gap 1, round 2: excluding `$` from `_fr_gap` stops the rule from
+    reaching PAST an adjacent `$0.00` to a farther true figure, but it
+    doesn't stop the *dollar-first* rule's own core (`\\$\\d+\\.?\\d*` followed
+    by the literal "fundraising efficiency") from anchoring directly on a
+    true dollar figure in the first place — no second `$` needs crossing,
+    since the rule's suffix is satisfied by the bare words "fundraising
+    efficiency" with no number of its own required. A bare comma (no "and")
+    joining a true dollar clause to any mention of "fundraising efficiency"
+    destroyed the true clause even when nothing resembling a hallucinated
+    value was present at all.
+
+    Fixed by giving the dollar-first rule its own gap
+    (`_fr_gap_dollar_first`) that additionally treats a bare (non-thousands)
+    comma as a boundary — mirroring `_clause_lead`/`_clause_trail`'s own
+    digit-sandwich exception. The *phrase*-first rule keeps the original
+    `_fr_gap`, unchanged: its anchor is the unambiguous literal "fundraising
+    efficiency", which a true dollar figure can never masquerade as, and the
+    real, pinned hallucination ("high fundraising efficiency, spending
+    $0.00...") needs its own gap to cross exactly that kind of bare comma.
+
+    An UNCONDITIONAL bare-comma boundary on the dollar-first gap was tried
+    first and rejected: hand-probing found it reopens a false negative for a
+    genuine, natural two-sided fabrication — "The charity spent $0.00, an
+    indication of poor fundraising efficiency." (the SAME $0.00 figure,
+    commented on across the comma) went unstripped. So `_fr_gap_dollar_first`
+    instead reuses `_trail_same_claim_lead` (the exact same appositive-vs-
+    independent-clause question `_clause_trail` already answers): a bare
+    comma is a boundary UNLESS what follows opens with a determiner/
+    possessive/comparative lead-in, in which case it's still the same claim.
+    This closes the determiner-led hallucination shape while still blocking
+    both true-fact cases above. It does NOT close a gerund-led continuation
+    of the same claim ("$0.00, reflecting strong fundraising efficiency") —
+    see `test_gerund_led_appositive_of_the_same_figure_is_a_known_residual_gap`
+    below — for the same reason `_trail_same_claim_lead` was never given a
+    verb list: the set of participles that can lead a same-claim appositive
+    is exactly as unbounded as the set of verbs that can lead an independent
+    clause. Reported as a known gap rather than forced further."""
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "Total revenue was $141,261, fundraising efficiency was mentioned.",
+            "Total revenue was $141,261, though fundraising efficiency could not "
+            "be determined.",
+        ],
+    )
+    def test_true_dollar_figure_survives_a_bare_comma_into_a_bare_mention(self, text):
+        """No hallucinated value anywhere in these sentences at all — the
+        bare mention of "fundraising efficiency" alone must not detonate
+        the null-fundraising rule against an unrelated true dollar figure."""
+        metrics = _metrics(total_revenue=141_261, fundraising_expenses=None)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_and_joined_variant_still_survives_no_regression(self):
+        """The "and"-joined sibling of the bare-comma case above, already
+        fixed by the "and" exclusion — re-asserted here since it shares this
+        test class's fixture and framing."""
+        metrics = _metrics(total_revenue=141_261, fundraising_expenses=None)
+        text = "Total revenue was $141,261, and fundraising efficiency data is unavailable."
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "The charity spent $0.00, an indication of poor fundraising efficiency.",
+            "The organization reported $0.00 in costs, a sign of excellent "
+            "fundraising efficiency.",
+        ],
+    )
+    def test_determiner_led_appositive_of_the_same_figure_still_strips(self, text):
+        """A bare comma joining $0.00 to a determiner-led appositive
+        ("an indication of...", "a sign of...") is a genuine, natural
+        two-sided fabrication about the SAME figure — an unconditional
+        bare-comma boundary would have left this unstripped (verified
+        against a monkeypatched unconditional-boundary version before
+        choosing the `_trail_same_claim_lead` reuse instead). Must still be
+        fully removed, same as the pinned `REAL_HALLUCINATIONS` cases."""
+        metrics = _metrics(total_revenue=141_261, fundraising_expenses=None)
+        out = _sanitize(text, metrics)
+        assert "$0.00" not in out
+
+    def test_gerund_led_appositive_of_the_same_figure_is_a_known_residual_gap(self):
+        """Documents, rather than hides, the one shape `_trail_same_claim_lead`
+        reuse does not close: a gerund-led continuation of the same claim
+        ("reflecting...") is indistinguishable in shape from an independent
+        clause, for the same reason `_trail_same_claim_lead` was never given
+        a verb/participle list. This assertion pins the CURRENT (imperfect)
+        behavior so a future change to this shape is a deliberate decision,
+        not a silent regression."""
+        metrics = _metrics(total_revenue=141_261, fundraising_expenses=None)
+        text = "It spent just $0.00, reflecting strong fundraising efficiency."
+        out = _sanitize(text, metrics)
+        assert out == text  # known gap: the $0.00 hallucination is NOT stripped here
+
+    def test_every_real_hallucination_still_strips_with_the_bare_comma_exclusion(self):
+        """Re-verifies all three `REAL_HALLUCINATIONS` once more: the
+        phrase-first rule's gap is untouched by this fix, and the third
+        entry (dollar-first, "a $0.00 fundraising efficiency rate") has no
+        comma at all between the dollar figure and the phrase, so neither
+        is affected by the new boundary."""
+        real_hallucinations = [
+            "Exceptional fundraising efficiency of $0.00 spent per $1 raised [1].",
+            "Operates with high fundraising efficiency, spending $0.00 to raise every $1 in FY2025.",
+            "The charity has a 91.1% program expense ratio, and a $0.00 fundraising efficiency rate.",
+        ]
+        metrics = _metrics(fundraising_expenses=None, total_revenue=604_759,
+                            cn_overall_score=None, cn_accountability_score=None,
+                            cn_financial_score=None, program_expense_ratio=0.911,
+                            working_capital_ratio=None)
+        for text in real_hallucinations:
+            out = _sanitize(text, metrics)
+            assert "$0.00" not in out, f"not stripped: {text!r}"
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "Total revenue was $141,261, fundraising efficiency was mentioned.",
+            "Total revenue was $141,261, though fundraising efficiency could not "
+            "be determined.",
+            "Total revenue was $141,261, and fundraising efficiency data is unavailable.",
+        ],
+    )
+    def test_bare_comma_survival_cases_are_five_pass_stable(self, text):
+        metrics = _metrics(total_revenue=141_261, fundraising_expenses=None)
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == text
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "The charity spent $0.00, an indication of poor fundraising efficiency.",
+            "The organization reported $0.00 in costs, a sign of excellent "
+            "fundraising efficiency.",
+            "It spent just $0.00, reflecting strong fundraising efficiency.",
+        ],
+    )
+    def test_determiner_and_gerund_appositive_cases_are_five_pass_stable(self, text):
+        metrics = _metrics(total_revenue=141_261, fundraising_expenses=None)
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+
 # Defect 3: semicolon, colon, question mark, and exclamation mark were
 # admitted freely by `_clause_lead`/`_clause_trail`'s character classes, so a
 # removal ran straight through a genuine independent-clause separator (or,

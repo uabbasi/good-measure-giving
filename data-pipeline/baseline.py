@@ -1746,9 +1746,53 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # exactly the resolution needed, and verified against all three
         # `REAL_HALLUCINATIONS` entries plus both new pinned cases below.
         _fr_gap = r"(?:(?!\s+and\b)(?:[^.$]|(?<=\d)\.(?=\d)))*"
+        # Task G12 follow-up (gap 1, round 2): excluding `$` closes the
+        # far-figure defect but not a related one on the *dollar-first* rule
+        # only: `\$\d+\.?\d*` can itself anchor on a truncated PREFIX of an
+        # unrelated true dollar figure with nothing else needed on the far
+        # side — the literal phrase "fundraising efficiency" needs no dollar
+        # amount of its own to satisfy this rule's suffix, so a bare comma
+        # joining a true "$141,261" to a plain mention of "fundraising
+        # efficiency" ("...$141,261, fundraising efficiency was mentioned.")
+        # still destroys the true clause even with no second `$` in sight.
+        # The *phrase*-first rule below doesn't have this problem — its own
+        # anchor is the unambiguous literal "fundraising efficiency", so a
+        # true dollar figure can never masquerade as it — and it must keep
+        # tolerating a bare comma regardless: the real, pinned hallucination
+        # "high fundraising efficiency, spending $0.00 to raise every $1"
+        # needs its gap to cross exactly that comma.
+        #
+        # An unconditional bare-comma boundary on the dollar-first gap fixes
+        # the true-fact case above, but hand-probing found it reopens a
+        # false negative: "The charity spent $0.00, an indication of poor
+        # fundraising efficiency." is a genuine, natural two-sided
+        # fabrication (the SAME $0.00 figure, commented on across the
+        # comma) that an unconditional boundary would leave unstripped. So
+        # `_fr_gap_dollar_first` reuses `_trail_same_claim_lead` — the exact
+        # question that already distinguishes an appositive of the same
+        # claim from an independent clause for `_clause_trail` — rather than
+        # inventing a second mechanism: a bare comma is a boundary UNLESS
+        # what follows reads as a continuation of the same dollar figure
+        # (determiner/possessive/comparative lead-in). This closes the
+        # determiner-led hallucination shape above while still blocking both
+        # true-fact cases (neither "fundraising efficiency was mentioned"
+        # nor "though fundraising efficiency..." opens with anything on
+        # that list). It does NOT close every shape: a gerund-led
+        # continuation of the same claim ("$0.00, reflecting strong
+        # fundraising efficiency") still fails to strip, for the same
+        # reason `_trail_same_claim_lead` was deliberately never given a
+        # verb list — the set of participles that can lead a same-claim
+        # appositive is exactly as unbounded as the set of verbs that can
+        # lead an independent clause, so there's no way to add "reflecting"
+        # without every other participle needing the same treatment.
+        # Reported as a known residual gap rather than forced further.
+        _fr_gap_dollar_first = (
+            r"(?:(?!\s+and\b)(?:[^.,$]|(?<=\d)\.(?=\d)|(?<=\d),(?=\d))"
+            rf"|,(?=\s*(?:{_trail_same_claim_lead})))*"
+        )
         rules.append(
             (
-                rf"{_clause_lead}\$\d+\.?\d*{_fr_gap}(?:{_fr_phrasing}|fundraising\s+efficiency){_clause_trail}",
+                rf"{_clause_lead}\$\d+\.?\d*{_fr_gap_dollar_first}(?:{_fr_phrasing}|fundraising\s+efficiency){_clause_trail}",
                 None,
                 True,
             )
@@ -1759,7 +1803,13 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # Same `_fr_gap` swap as above, and for the same reason: the trailing
         # `\$\d+(?:\.\d+)?` here can just as easily truncate-bind to an
         # unrelated true dollar figure that follows "fundraising efficiency"
-        # later in the sentence.
+        # later in the sentence. Deliberately still `_fr_gap`, not
+        # `_fr_gap_dollar_first`: this rule's own anchor is the unambiguous
+        # literal "fundraising efficiency", so it never suffers the dollar-
+        # first rule's "a true figure alone satisfies the whole core"
+        # failure mode, and the real pinned hallucination
+        # ("high fundraising efficiency, spending $0.00...") needs the bare
+        # comma tolerated here too.
         rules.append(
             (
                 rf"{_clause_lead}fundraising\s+efficiency{_fr_gap}\$\d+(?:\.\d+)?{_clause_trail}",
