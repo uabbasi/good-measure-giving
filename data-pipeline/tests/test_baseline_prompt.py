@@ -4269,3 +4269,232 @@ class TestLabelColonValueGoesFullyEmpty:
         text = "It holds 8.3 months of working capital: it also scored 87/100 on Charity Navigator."
         out = _sanitize(text, metrics)
         assert out == "It holds 8.3 months of working capital."
+
+
+class TestOverallGuardFailsSafeOnAnyUnrecognizedName:
+    """Task G16: `_sub_score_lead_re` (the guard that stops the generic
+    cn_overall_score rule from claiming a span whose number is actually
+    named by a *different* metric) worked by ENUMERATING the sub-score
+    vocabulary it must refuse — names ("accountability", "financial",
+    "governance") and nouns ("score", "rating"). Escaped three times by
+    three different routes (a new noun word, a hedge defeating the anchor,
+    the guard's own hedge bound expiring before the rule it guards) — and,
+    live in the corpus, by a fourth beacon name ("Leadership") the guard's
+    vocabulary never enumerated at all (charity-26-0906163.json's
+    rich_narrative, "a Leadership score of 20/100 from Charity Navigator",
+    inert on disk only because a citation tag breaks the match; the same
+    claim shape appears elsewhere without one).
+
+    Fixed by INVERTING the guard: instead of a closed list of names to
+    REFUSE (open-ended, always escapable — any new beacon name or noun is
+    a fresh bypass), it is now a closed list of names the overall rule may
+    CLAIM (`_overall_name` — "overall" and "Charity Navigator" itself,
+    the metric's own two ways of referring to itself). Everything else —
+    any other named metric, known or not, however it's phrased — declines
+    by default via `_named_metric_claim_lead_re`, whose only job is
+    detecting *that* a number is named by *something* (via an open, un-
+    enumerated noun match once a connector word is present, so "grade"/
+    "index"/"mark"/"quotient"/anything else works with no vocabulary to
+    keep pace with) — not identifying *what*. The failure mode inverts
+    correctly: an unrecognized name now leaves the text alone rather than
+    stamping a different metric's value into it."""
+
+    # --- the exact leak lines from the report, name-noun matrix ---
+
+    @pytest.mark.parametrize(
+        "noun", ["score", "rating", "grade", "index", "mark"],
+        ids=["score", "rating", "grade", "index", "mark"],
+    )
+    def test_accountability_with_any_noun_is_never_misattributed_to_overall(self, noun):
+        metrics = _metrics(cn_overall_score=75.0, cn_accountability_score=90.0, cn_financial_score=40.0)
+        text = f"an accountability {noun} of 55/100 from Charity Navigator."
+        out = _sanitize(text, metrics)
+        assert "75.0" not in out
+        if noun in ("score", "rating"):
+            # These two are still corrected, by accountability's own rule,
+            # to accountability's real value — not left alone, and
+            # certainly not misattributed to overall.
+            assert out == f"an accountability {noun} of 90.0/100 from Charity Navigator."
+        else:
+            # No rule anywhere in this function knows what an
+            # "accountability grade/index/mark" is, so it's an honest
+            # residual gap (left completely alone) — not a misattribution.
+            assert out == text
+
+    @pytest.mark.parametrize(
+        "name", ["financial", "finance", "fiscal"],
+        ids=["financial", "finance", "fiscal"],
+    )
+    def test_financial_name_variant_with_score_is_never_misattributed_to_overall(self, name):
+        metrics = _metrics(cn_overall_score=75.0, cn_accountability_score=90.0, cn_financial_score=40.0)
+        text = f"a {name} score of 55/100 from Charity Navigator."
+        out = _sanitize(text, metrics)
+        assert "75.0" not in out
+        if name == "financial":
+            assert out == "a financial score of 40.0/100 from Charity Navigator."
+        else:
+            # "finance"/"fiscal" aren't `_fin_name` (only "financial" is),
+            # so financial's own rule can't correct them either — left
+            # alone, not misattributed.
+            assert out == text
+
+    def test_fiscal_health_score_is_never_misattributed_to_overall(self):
+        metrics = _metrics(cn_overall_score=75.0, cn_accountability_score=90.0, cn_financial_score=40.0)
+        text = "a fiscal health score of 55/100 from Charity Navigator."
+        out = _sanitize(text, metrics)
+        assert "75.0" not in out
+        assert out == text
+
+    # --- the live corpus leak: a beacon name never enumerated at all ---
+
+    def test_leadership_beacon_score_is_never_misattributed_to_overall(self):
+        """Reproduces charity-26-0906163.json's rich_narrative claim shape
+        (citation tag stripped, matching the un-tagged form that appears
+        elsewhere in the corpus): a real Charity Navigator Encompass
+        beacon this function has no correction rule for at all. Must be
+        left completely alone, not stamped with the overall score."""
+        metrics = _metrics(cn_overall_score=64.0, cn_accountability_score=90.0, cn_financial_score=40.0)
+        text = ("The organization received a Leadership score of 20/100 from Charity "
+                "Navigator, indicating a need for better board oversight.")
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_adaptability_beacon_score_is_never_misattributed_to_overall(self):
+        """Charity Navigator's fourth Encompass beacon is named
+        "Leadership & Adaptability" in some published prose and just
+        "Adaptability" in others."""
+        metrics = _metrics(cn_overall_score=64.0)
+        text = "It earned an Adaptability score of 20/100 from Charity Navigator."
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    # --- invented names/nouns nowhere in this codebase's vocabulary ---
+
+    def test_invented_fictional_beacon_name_is_never_misattributed(self):
+        """A beacon name that doesn't exist, invented for this test — proves
+        the guard's safety doesn't depend on recognizing any particular
+        name, only on recognizing that a name is present at all."""
+        metrics = _metrics(cn_overall_score=64.0)
+        text = "It received a Zephyr Integrity score of 30/100 from Charity Navigator."
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_invented_unusual_noun_is_never_misattributed(self):
+        """"quotient" is not "score"/"rating"/any noun this function has
+        ever enumerated anywhere."""
+        metrics = _metrics(cn_overall_score=64.0, cn_accountability_score=90.0)
+        text = "It has an accountability quotient of 30/100 from Charity Navigator."
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_invented_unusual_name_form_is_never_misattributed(self):
+        """A hyphenated, invented compound name form."""
+        metrics = _metrics(cn_overall_score=64.0)
+        text = "It earned a Donor-Trust rating of 45/100 from Charity Navigator."
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    # --- genuine overall-score claims must still be corrected ---
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "an overall score of 55/100 from Charity Navigator.",
+            "an overall rating of 55/100 from Charity Navigator.",
+            "a Charity Navigator score of 55/100.",
+            "Charity Navigator score of 55/100.",
+            "the Charity Navigator's overall score of 55/100 from Charity Navigator.",
+        ],
+        ids=["overall_score", "overall_rating", "a_cn_score", "bare_cn_score", "cn_possessive_overall"],
+    )
+    def test_explicitly_labelled_overall_claims_are_still_corrected(self, text):
+        metrics = _metrics(cn_overall_score=94.0, cn_accountability_score=60.0, cn_financial_score=55.0)
+        out = _sanitize(text, metrics)
+        assert "94.0" in out
+        assert "60.0" not in out and "55.0" not in out
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "It maintains a 94.0/100 from Charity Navigator.",
+            "The charity has earned a 94.0/100 score from Charity Navigator [1].",
+            "Donors can trust this charity due to its 94.0/100 from Charity Navigator.",
+            "The organization holds a perfect 94.0/100 from Charity Navigator.",
+        ],
+        ids=["maintains_a", "earned_a", "due_to_its", "perfect"],
+    )
+    def test_genuinely_unlabelled_claims_still_get_corrected(self, text):
+        """No named-metric noun sits between the determiner/verb and the
+        number at all — this is the shape 94/166 real published files use
+        (a bare number, no "score of"/"rating of" construction), and it
+        must remain correctable exactly as before the inversion."""
+        metrics = _metrics(cn_overall_score=71.0, cn_accountability_score=60.0, cn_financial_score=55.0)
+        out = _sanitize(text, metrics)
+        assert "71.0" in out
+
+    def test_wrong_overall_number_with_no_label_at_all_is_still_corrected(self):
+        metrics = _metrics(cn_overall_score=71.0)
+        text = "It scored 55/100 from Charity Navigator."
+        out = _sanitize(text, metrics)
+        assert "71.0" in out
+
+    # --- accountability/financial/governance still correct to their OWN values ---
+
+    def test_accountability_score_still_corrects_to_its_own_value(self):
+        metrics = _metrics(cn_overall_score=94.0, cn_accountability_score=60.0, cn_financial_score=55.0)
+        text = "an accountability score of 10/100 from Charity Navigator."
+        out = _sanitize(text, metrics)
+        assert out == "an accountability score of 60.0/100 from Charity Navigator."
+
+    def test_financial_score_still_corrects_to_its_own_value(self):
+        metrics = _metrics(cn_overall_score=94.0, cn_accountability_score=60.0, cn_financial_score=55.0)
+        text = "a financial score of 10/100 from Charity Navigator."
+        out = _sanitize(text, metrics)
+        assert out == "a financial score of 55.0/100 from Charity Navigator."
+
+    def test_governance_score_still_corrects_to_its_own_value(self):
+        metrics = _metrics(cn_overall_score=94.0, cn_accountability_score=60.0, cn_financial_score=55.0)
+        text = "a governance score of 10/100 from Charity Navigator."
+        out = _sanitize(text, metrics)
+        assert out == "a governance score of 60.0/100 from Charity Navigator."
+
+    def test_linking_verb_sub_score_claim_still_guarded_not_misattributed(self):
+        """G11's pinned decision, re-verified under the new guard: "is X"
+        phrasing is a shape no sub-score rule parses, so it stays
+        uncorrected — but it must never be misattributed to overall
+        either, and the new guard's mandatory-connector branch
+        (score|rating with optional of/is/was) still catches this."""
+        metrics = _metrics(cn_overall_score=94.0, cn_financial_score=55.0)
+        text = "the financial rating is 40/100 from Charity Navigator."
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    # --- five-pass idempotency across everything above ---
+
+    @pytest.mark.parametrize(
+        "text,metrics",
+        [
+            ("an accountability grade of 55/100 from Charity Navigator.",
+             _metrics(cn_overall_score=75.0, cn_accountability_score=90.0)),
+            ("a fiscal health score of 55/100 from Charity Navigator.",
+             _metrics(cn_overall_score=75.0, cn_financial_score=40.0)),
+            ("The organization received a Leadership score of 20/100 from Charity "
+             "Navigator, indicating a need for better board oversight.",
+             _metrics(cn_overall_score=64.0)),
+            ("It received a Zephyr Integrity score of 30/100 from Charity Navigator.",
+             _metrics(cn_overall_score=64.0)),
+            ("an overall score of 55/100 from Charity Navigator.",
+             _metrics(cn_overall_score=94.0, cn_accountability_score=60.0)),
+            ("It maintains a 94.0/100 from Charity Navigator.",
+             _metrics(cn_overall_score=71.0)),
+            ("an accountability score of 10/100 from Charity Navigator.",
+             _metrics(cn_overall_score=94.0, cn_accountability_score=60.0)),
+        ],
+        ids=[
+            "accountability_grade", "fiscal_health_score", "leadership", "invented_beacon",
+            "overall_score", "unlabelled_bare", "accountability_score",
+        ],
+    )
+    def test_five_pass_stable(self, text, metrics):
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]

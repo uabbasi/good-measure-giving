@@ -1354,6 +1354,14 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         r"|amal|founded|established|incorporated|started|began"
         r"|operating|serving|active|working|capital|reserve|reserves"
         r"|fundraising|efficiency|zakat"
+        # Task G16: Charity Navigator's fourth Encompass beacon ("Leadership
+        # & Adaptability") was missing from this boundary entirely, so a
+        # hedge/guard gap could walk straight through either word as if it
+        # were harmless filler. Added as defense-in-depth alongside the
+        # guard inversion below (`_overall_name`/`_named_metric_claim_lead_
+        # re`) — the inversion is what actually makes the Leadership case
+        # safe (see its own comment), not this addition on its own.
+        r"|leadership|adaptability"
     )
     # A linking verb ("is"/"was") is a second, DIFFERENT anchor shape this
     # function already made a deliberate, pinned decision about (task
@@ -1641,42 +1649,72 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # The generic "X/100 ... Charity Navigator" pattern a few lines down
     # corrects cn_overall_score no matter what noun precedes the number —
     # on its own it can't tell "50/100 from Charity Navigator" apart from
-    # "accountability rating of 50/100 from Charity Navigator", so it was
-    # stamping the *overall* score into prose that named a specific
-    # sub-score (only the literal word "score", not "rating", was ever
-    # anchored to the sub-score-specific rules below, so "rating" phrasing
-    # fell through to this generic rule unopposed). Used by that rule's
-    # replacement — a plain callable, not a regex lookbehind, since the noun
-    # phrases it must recognize vary in length ("accountability", "governance",
-    # "financial health") and Python's `re` only supports fixed-width
-    # lookbehind — to refuse to claim a span whose number is actually named
-    # by a sub-score, leaving it for that metric's own rule to correct with
-    # the right value instead. Checked as a plain substring match ending
-    # exactly where the number starts, so it's independent of rule order.
+    # "accountability rating of 50/100 from Charity Navigator", so without a
+    # guard it would stamp the *overall* score into prose that names a
+    # specific sub-score instead.
     #
-    # Also recognizes a linking verb ("is"/"was") in place of "of" —
-    # hand-probed and found live: "the financial rating is 40/100 from
-    # Charity Navigator" is a different phrasing shape than "of X" (neither
-    # accountability's nor financial's own correction rules parse "is X"
-    # either, so this specific shape stays uncorrected either way — that's
-    # unchanged, pre-existing, and out of this task's scope), but without
-    # this the generic overall rule still claimed it and mislabeled the
-    # *overall* score as the financial one, which is exactly the failure
-    # mode this guard exists to prevent regardless of which preposition or
-    # verb sits between the noun and the number.
+    # Task G16: this guard used to work the other way around — a closed
+    # list of sub-score names to REFUSE (`accountability|financial|
+    # governance`) paired with a closed list of nouns to REFUSE
+    # (`score|rating`). Both axes are open vocabulary, and each was escaped
+    # in turn: a new noun ("rating"), a hedge word defeating the anchor,
+    # the guard's own hedge bound expiring before the rule it guards — and,
+    # live in the published corpus, a fourth Charity Navigator beacon name
+    # ("Leadership") the list never enumerated at all
+    # (charity-26-0906163.json's rich_narrative: "a Leadership score of
+    # 20/100 from Charity Navigator" — inert on disk only because a
+    # citation tag breaks the match; the same claim shape exists elsewhere
+    # without one). Enumerating more names/nouns each time just narrows the
+    # next gap, it can never close it.
     #
-    # Task G14: a gap before the trailing `$` closes the actual worst bug
-    # this task found — "an accountability score of roughly 40/100" used
-    # to fail this guard (the hedge word "roughly" sat between "of" and
-    # the position the lookbehind checks, so the `$`-anchored match never
-    # fired), letting the generic overall rule below claim the span and
-    # stamp the *overall* score into text explicitly labelled
-    # accountability's. Uses `_guard_gap` (unbounded), not `_hedge_gap`
-    # (bounded to `_hedge_max_words`) — see `_guard_gap`'s own definition
-    # above for why a guard must stay permissive even where the rule it
-    # guards stays conservative.
-    _sub_score_lead_re = re.compile(
-        rf"(?:{_acc_name}|{_fin_name})\s+(?:score|rating)\s+(?:of|is|was)?\s*{_guard_gap}$",
+    # INVERTED: instead of a list of names to refuse, this is now a closed
+    # list of names the overall rule may CLAIM — `_overall_name`, the
+    # metric's own two ways of referring to itself ("overall", "Charity
+    # Navigator"). `_named_metric_claim_lead_re` detects whether the number
+    # is named by *something* at all — an open, un-enumerated noun (once a
+    # connector word confirms a real "NAME NOUN of/is/was" claim shape, so
+    # a bare "maintains a 91/100" never false-triggers on the verb+article
+    # in front of it) — without needing to know *what* that something is.
+    # If a name is detected and it ISN'T "overall"/"Charity Navigator", the
+    # rule declines regardless of the noun used ("grade", "index", "mark",
+    # "quotient", or anything else no one has enumerated yet) and
+    # regardless of the name ("Leadership", a typo, a beacon added after
+    # this code was written). If no name+noun claim is detected at all —
+    # the number is genuinely bare, which is what 94/166 real published
+    # files look like ("holds a 91/100 from Charity Navigator", "a perfect
+    # 100/100 from Charity Navigator") — the rule proceeds, exactly as
+    # before. The failure mode inverts correctly: an unrecognized name now
+    # leaves the text alone rather than misattributing a different
+    # metric's value to it. See
+    # `TestOverallGuardFailsSafeOnAnyUnrecognizedName`.
+    _overall_name = r"overall|Charity\s+Navigator(?:'s)?"
+    # Common English determiners never constitute a metric NAME on their
+    # own ("a 91/100", "its 91/100") — excluding this small, closed,
+    # grammatical class (not a domain vocabulary) is what keeps a bare
+    # "maintains a 91/100" from being misread as NAME="maintains" simply
+    # because two content-ish words happen to sit in front of the number.
+    _determiner = r"a|an|the|its|this|that|our|their|his|her"
+    _metric_name_atom = (
+        rf"(?:Charity\s+Navigator(?:'s)?"
+        rf"|(?!(?:{_determiner})\b)[A-Za-z]+(?:\s*(?:&|and)\s*[A-Za-z]+)?)"
+    )
+    _named_metric_claim_lead_re = re.compile(
+        rf"({_metric_name_atom})\s+(?:"
+        # This codebase's own long-standing noun pair for a metric claim —
+        # connector ("of"/"is"/"was") stays optional here, matching every
+        # existing accountability/financial/overall rule elsewhere in this
+        # function, so a "NAME score 40/100" with no "of" at all is still
+        # recognized as named.
+        rf"(?:score|rating)\s+(?:of|is|was)?"
+        # Any OTHER noun ("grade", "index", "mark", "quotient", ...) — kept
+        # deliberately open, but the connector is now MANDATORY. Without a
+        # literal "of"/"is"/"was" immediately after it, two ordinary words
+        # in front of a bare number ("maintains a", "holds a", "due to
+        # its") would otherwise look identical to a genuine "NAME NOUN of"
+        # claim; requiring the connector is what tells them apart without
+        # having to enumerate which nouns are "real" ones.
+        rf"|[A-Za-z]+\s+(?:of|is|was)"
+        rf")\s*{_guard_gap}$",
         re.IGNORECASE,
     )
     if cn_score is not None:
@@ -1697,14 +1735,18 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # insensitivity. Falls back to "from " only when no connector was
         # present at all (bare "X/100 Charity Navigator").
         #
-        # `_sub_score_lead_re` guard: don't claim a number that's actually
-        # named by a sub-score (see its definition above) — leave it
-        # untouched here so the accountability/financial rules further down
-        # correct it with their own value instead. `_number_not_malformed`
-        # guard: don't touch a malformed multi-decimal numeral at all (see
-        # that variable's definition above).
+        # `_named_metric_claim_lead_re` guard: don't claim a number that's
+        # named by ANYTHING other than the overall score itself (see its
+        # definition above) — leave it untouched here so that metric's own
+        # rule (if one exists — accountability/financial do, an unrecognized
+        # beacon like "Leadership" doesn't) can correct it instead, or it
+        # stays an honest residual gap rather than a misattribution.
+        # `_number_not_malformed` guard: don't touch a malformed
+        # multi-decimal numeral at all (see that variable's definition
+        # above).
         def _correct_cn_overall_number_before(m: "re.Match[str]") -> str:
-            if _sub_score_lead_re.search(m.string[: m.start()]):
+            named = _named_metric_claim_lead_re.search(m.string[: m.start()])
+            if named and not re.fullmatch(_overall_name, named.group(1), re.IGNORECASE):
                 return m.group(0)
             return f"{correct_cn} {m.group(1) or 'from '}Charity Navigator"
 
