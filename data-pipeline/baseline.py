@@ -1213,6 +1213,179 @@ def _repair_removal_artifacts(text: str, joints: list[int] | None = None) -> str
     return "".join(pieces)
 
 
+# ── Taxonomy of boundary/gap primitives (sanitize_narrative_metrics) ──
+#
+# sanitize_narrative_metrics (below) is long and its inline comments are the
+# real documentation of WHY each regex piece exists — this block doesn't
+# replace them. What it adds is a single map from primitive -> what it
+# excludes/permits -> which rules use it, so a newcomer doesn't have to
+# reconstruct that map by reading ~1600 lines end to end. Read a primitive's
+# own definition/call sites before changing it; this is a map, not a spec.
+#
+# GOVERNING TRADEOFF. When a fix has to choose, this function's standing
+# tie-break is: a surviving fabrication is worse than an over-removed true
+# clause (see `_clause_trail`'s own comment) — EXCEPT that silently
+# destroying a substantive true fact is worse than leaving a dangling
+# qualitative fragment behind (see `_clause_trail_same_claim_lead`'s comment:
+# "a visible, fabrication-adjacent stray fragment is preferable to silently
+# erasing a true, substantive fact"). That exception exists because an
+# earlier version of `_clause_trail` got this backwards — a determiner-led
+# continuation rule was erasing ordinary true sentences ("The organization
+# has trained...") that merely happened to follow a bare comma after a
+# removed claim — so "prefer removing more" is not an unconditional license;
+# it's bounded by "never at the cost of a real, substantive fact."
+#
+# OUTER leading/trailing edges (used by nearly every removal rule):
+#   - `_clause_lead`  — leading edge. Runs up to the nearest clause boundary
+#     (`.,;:?!—`), tolerating a decimal point/thousands-comma as non-
+#     boundaries and an optional leading connector (comma/em-dash/semicolon/
+#     colon, or a bare "and") so the removed span eats the connective tissue
+#     in front of it instead of leaving it stranded. `_label_colon_lead`
+#     (below) is folded into it.
+#   - `_clause_trail` — trailing edge. Same boundary set, but a bare comma/
+#     em-dash/semicolon/colon only continues the match when what follows
+#     opens with `_clause_trail_same_claim_lead` (an appositive/comparison of
+#     the SAME claim); anything else, including any verb, is an independent-
+#     clause boundary and stops the match there. Never eats a bare trailing
+#     `.` itself — that's left for `_repair_removal_artifacts`.
+#   - `_label_colon_lead` — optional group inside `_clause_lead`: at a true
+#     sentence start, a colon-terminated label with no digit of its own
+#     ("Fundraising Efficiency: ") is swallowed together with the value that
+#     follows, instead of surviving alone, stranded.
+#   - `_cn_number_lead` — a `_clause_lead` variant used only by the null-CN
+#     rules whose own core is a bare `\d+\.?\d*/100`: adds one more
+#     exclusion (never consume into such a span as filler) so the leading
+#     run can't eat into a real number's leading digits before the capture
+#     group gets to it.
+#
+# The `_trail_same_claim_lead` / `_clause_trail_same_claim_lead` pair (the
+# important divergence — read both comments in full before touching either):
+#   - `_clause_trail_same_claim_lead` backs the GENERIC `_clause_trail` above
+#     (used by nearly every removal rule). It is exactly
+#     `_comparative_tail_lead` — 8 markers ("up/down from", "compared to",
+#     "versus", "vs.", "well above/below/over/under", a closed comparative/
+#     superlative set, "among", "second only to") — with NO determiner/
+#     possessive/quantifier branch. That branch was deliberately dropped
+#     (Task G15): "a/an/the/its/their/his/her"/"one of" also opens the
+#     subject of an ordinary TRUE independent clause, so keeping it in the
+#     generic trailing edge silently erased real sentences.
+#   - `_trail_same_claim_lead` backs ONLY `_fr_gap_dollar_first` (the
+#     dollar-first null-fundraising rule). It is `_comparative_tail_lead`
+#     PLUS the determiner/possessive/quantifier branch, kept here
+#     deliberately: `_fr_gap_dollar_first` only ever fires already anchored
+#     to a null dollar figure, so a determiner-led tail after it is never a
+#     candidate true-clause subject — it's always still describing the same
+#     fabricated figure — and the false-erasure risk that got the branch
+#     dropped from `_clause_trail` doesn't apply here.
+#   - `_comparative_tail_lead` is the shared factor both build from (Task
+#     G19 — previously hand-copied into both, unenforced).
+#
+# Hedge/guard word-count gaps (tolerate filler between an anchor and its
+# number, without crossing into a different metric's own claim):
+#   - `_hedge_gap` — 0 to `_hedge_max_words` (3) bare-letter words, excluding
+#     `_metric_noun_boundary` words, linking verbs (is/was/are/were), and
+#     "and". Always sits inside an optional connector group (e.g.
+#     `(?:of\s+{_hedge_gap})?`) so it can only activate once that literal
+#     connector has actually matched. Used by most correction rules (program
+#     expense ratio patterns 2/3/5, CN overall's "score of X"/"scored X out
+#     of 100", CN accountability/financial correction, AMAL correction, and
+#     founded-year correction) and by the matching null-branch removal rules
+#     (program expense, CN accountability/financial, AMAL, founded-year),
+#     plus `_other_metric_lead_re`'s own connector.
+#   - `_guard_gap` — same exclusions as `_hedge_gap` but UNBOUNDED. Backs
+#     `_named_metric_claim_lead_re` and `_other_metric_lead_re` — guards
+#     that decide whether a bare number is already named by something else.
+#     Unbounded on purpose: a guard firing too often just makes its rule
+#     over-cautious (declines to fix a legitimate claim), never corrupting,
+#     so there's no safety reason to bound it the way a correction is.
+#
+# Middle (co-occurrence) gaps — sandwiched between two already-fixed literal
+# anchors, so a per-character exclusion is safe here (unlike on a leading
+# run, where the regex engine can just retry one position later):
+#   - `_cn_gap` — backs the null-CN-overall removal rules. Decimal-point-
+#     safe; excludes `_other_metric_claim` and a bare `\d+\.?\d*/100` span
+#     (so it can't bridge over, or eat into, a DIFFERENT metric's own
+#     number).
+#   - `_fr_gap` — backs the phrase-first null-fundraising removal rules
+#     ("fundraising efficiency ... $X"). Decimal-safe; excludes crossing a
+#     bare "and", `$` (so it always binds to the NEAREST dollar figure, not
+#     a farther true one), and `_other_metric_claim`.
+#   - `_fr_gap_dollar_first` — backs the dollar-first null-fundraising rule
+#     ("$X ... fundraising efficiency"/phrasing). Same base exclusions as
+#     `_fr_gap`, plus: a bare comma is a boundary UNLESS followed by
+#     `_trail_same_claim_lead` (see above) — needed because this rule's own
+#     "$X" core, unlike `_fr_gap`'s, can satisfy the whole match with
+#     nothing required on the far side, so an unconditional comma-
+#     continuation would let it destroy a true clause sitting after a real
+#     dollar figure.
+#   - `_decimal_safe` no longer exists as a variable — it's the name this
+#     function's own comments still use for the SHAPE these three gaps
+#     share (tolerate `(?<=\d)\.(?=\d)` so a real decimal point isn't
+#     mistaken for a sentence end). Task G18 split the one shared variable
+#     into these three per-family locals so each could add its OWN
+#     additional exclusion without leaking into families that don't need it.
+#
+# Cross-metric / naming vocabulary:
+#   - `_metric_noun_boundary` — the master closed list of metric-family
+#     words (score/rating/ratio/percent/program(s)/programmatic/expense(s)/
+#     accountability/governance/financial/navigator/amal/founded and its
+#     synonyms/operating and its synonyms/capital/reserve(s)/fundraising/
+#     efficiency/zakat/leadership/adaptability). Backs `_hedge_gap`/
+#     `_guard_gap`'s exclusion and is folded into `_other_metric_noun`.
+#   - `_other_metric_noun` / `_other_metric_claim` — "what a DIFFERENT
+#     metric's own claim looks like," built entirely from
+#     `_metric_noun_boundary` plus `_fr_phrasing` (the fundraising family's
+#     own dollar-phrasing, since `_metric_noun_boundary` only partly covers
+#     it). Used inside `_cn_gap`/`_fr_gap`/`_fr_gap_dollar_first` and
+#     `_other_metric_lead_re`/`_other_metric_trail_re` (the guards backing
+#     the two bare-`\d+/100`-core null-CN rules) so none of them can bind to
+#     or bridge over a genuinely different metric's own number.
+#   - `_overall_name` — the closed set of names ("overall", "Charity
+#     Navigator('s)") the generic CN-overall CORRECTION rule may claim a
+#     number under.
+#   - `_named_metric_claim_lead_re` — detects, backward from a bare number,
+#     whether ANYTHING names it as "NAME NOUN of/is/was" — an open,
+#     unenumerated noun is fine, since this detects the SHAPE, not a noun
+#     vocabulary. Guards the CN-overall correction rule: a detected name not
+#     in `_overall_name` makes it decline, so an unrecognized/future beacon
+#     name fails safe instead of getting the overall score misattributed to
+#     it.
+#   - `_number_not_malformed` — zero-width guard at the start of a numeric
+#     correction core; refuses to match inside, or immediately after, a
+#     malformed multi-decimal run (e.g. "96.96.0", a corrupted regeneration
+#     artifact), so no correction rule can produce a phantom or spliced
+#     value from it. Used by the CN-overall number-before rule and the CN
+#     accountability/financial correction rules.
+#
+# Other primitives:
+#   - `_wc_num_unit` — the working-capital number+unit core. Leading `-?`
+#     permits a genuine negative (working_capital_ratio has no zero floor,
+#     unlike every other metric here); `(?<!\d)` stops that `-?` from
+#     misreading a number-range hyphen ("6-41.7 months") as a minus sign.
+#   - `_preserve_case` / `_match_case` — `_match_case` upper-cases a fixed
+#     replacement's first letter when the ORIGINAL match started uppercase,
+#     so a removal earlier in the same pass leaving a correction's target
+#     sentence-initial doesn't get silently lowercased; `_preserve_case`
+#     wraps a literal replacement string into a `_match_case`-backed
+#     callable. Used wherever a correction's replacement is a fixed literal
+#     that could plausibly open a sentence (working capital pattern 2,
+#     program-expense-ratio patterns 2/3/5, CN "scored X out of 100", CN
+#     accountability/financial correction, founded-year correction).
+#   - `_repair_removal_artifacts` (with `_repair_span`/`_joint_windows`/
+#     `_run_start`/`_run_end`) — the post-removal cleanup pass: fixes
+#     stranded leading connectives, a stranded bare "and", doubled/stranded
+#     commas, doubled/mixed terminal punctuation, a stray orphan terminal
+#     mark, and re-capitalizes a new sentence start — scoped (Task G17) to
+#     just the character window around each removal joint, so it can't
+#     mistake an ordinary sentence boundary elsewhere in the field for
+#     removal debris. Runs only when a removal rule actually matched
+#     something.
+#   - `_abbreviation_before_stray_comma` (and `_boundary_is_abbreviation`,
+#     sharing the same closed `_ABBREVIATIONS_BEFORE_COMMA` set) — declines
+#     to "fix" a bare `.,`/sentence boundary when the text before it is a
+#     known sentence-ending abbreviation ("Inc.", "U.S.", "et al."), so
+#     ordinary correctly-punctuated English isn't mistaken for removal
+#     debris.
 def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", scores: Any) -> dict:
     """Deterministically stamp correct metric values into LLM-generated narrative.
 
@@ -1221,6 +1394,11 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
       1. Wrong number (e.g. "3 months" when source says 8.3 months)
       2. Wrong unit  (e.g. "years" when source is months)
       3. Phantom mention of an N/A metric (e.g. citing CN score when it's null)
+
+    See the "Taxonomy of boundary/gap primitives" comment block immediately
+    above this function for a map of the regex building blocks it's built
+    from — what each one excludes/permits and which rules use it — before
+    changing or extending any rule below.
     """
 
     # ── Build the ground-truth lookup ──
@@ -1239,6 +1417,19 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
             Callable[["re.Match[str]"], bool] | None,
         ]
     ] = []
+
+    # INVARIANT: registration order is semantically load-bearing. Rules are
+    # appended to this list in the order they appear below, and `_apply_rules`
+    # (at the bottom of this function) runs every rule over the WHOLE field,
+    # in that same order, one after another — so a later rule's pattern can
+    # see and act on an EARLIER rule's removal output mid-pass, not just the
+    # original narrative text. Reordering rule families, or inserting a new
+    # rule between two existing ones, can change what a downstream rule
+    # matches against. This is why, e.g., the CN-family rules further down
+    # are built after `_fr_phrasing`/`_other_metric_claim` are defined, and
+    # why `_hedge_gap`/`_guard_gap` are computed once up top rather than
+    # per-family: anything a later family's rules depend on has to already
+    # exist by the time that family's `rules.append(...)` calls run.
 
     # Removal rules scan "everything up to the sentence boundary" using a
     # `[^.]*`-shaped run. A literal `.` also shows up mid-number ("91.1%",
@@ -1418,10 +1609,19 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # ("lower their overhead", "better their outcomes") — but per the
     # standing tie-break an over-removed true clause is preferred to a
     # surviving fabrication-adjacent fragment, so both are included anyway.
-    _trail_same_claim_lead = (
-        r"(?:a|an|the|its|their|his|her)\b"
-        r"|one\s+of\b"
-        r"|(?:up|down)\s+from\b"
+    # Task G19: the eight comparative/comparison-tail alternatives below
+    # ("up from" through "second only to") are shared, byte-for-byte, with
+    # `_clause_trail_same_claim_lead` further down — they used to be
+    # hand-copied into both constants with nothing enforcing they stay in
+    # sync, so a later task adding a new comparative-tail marker to one and
+    # not the other would silently reintroduce an asymmetry between the two
+    # mechanisms. Factored out into `_comparative_tail_lead`, which both
+    # constants now build from; string-concatenation reproduces each one's
+    # pre-existing regex source exactly (verified by comparing the compiled
+    # patterns — see the task report), so this is pure de-duplication, not
+    # a behavior change.
+    _comparative_tail_lead = (
+        r"(?:up|down)\s+from\b"
         r"|compared\s+to\b"
         r"|versus\b"
         r"|vs\.?(?=\s)"
@@ -1430,6 +1630,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         r"|among\b"
         r"|second\s+only\s+to\b"
     )
+    _trail_same_claim_lead = r"(?:a|an|the|its|their|his|her)\b" r"|one\s+of\b" "|" + _comparative_tail_lead
     # A bare " and " (no comma) is a second, simpler boundary shape: unlike
     # the bare-comma case above, "and" is an unambiguous coordinating
     # conjunction — there's no appositive reading to protect, so it's always
@@ -1548,16 +1749,14 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # never removes anything that isn't already anchored to a null dollar
     # figure or the literal phrase "fundraising efficiency", so it isn't
     # exposed to this defect the way the generic `_clause_trail` is).
-    _clause_trail_same_claim_lead = (
-        r"(?:up|down)\s+from\b"
-        r"|compared\s+to\b"
-        r"|versus\b"
-        r"|vs\.?(?=\s)"
-        r"|well\s+(?:above|below|over|under)\b"
-        r"|(?:best|worst|higher|lower|better|stronger|weaker|highest|lowest|strongest)\b"
-        r"|among\b"
-        r"|second\s+only\s+to\b"
-    )
+    # Identical to `_comparative_tail_lead` (defined above, alongside
+    # `_trail_same_claim_lead`) — this constant keeps every OTHER
+    # continuation marker `_trail_same_claim_lead` had except the dropped
+    # determiner/possessive/quantifier branch, which is exactly what
+    # `_comparative_tail_lead` already is. Referencing it directly (Task
+    # G19) instead of a second hand-copied literal is what stops a future
+    # addition to one from silently omitting the other.
+    _clause_trail_same_claim_lead = _comparative_tail_lead
     _clause_trail = (
         rf"(?:(?!\s+and\b)(?:[^.,;:?!—]|(?<=\d)\.(?=\d)|(?<=\d),(?=\d))"
         rf"|[,;:—](?=\s*(?:{_clause_trail_same_claim_lead})))*"
