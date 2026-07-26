@@ -1153,6 +1153,23 @@ class TestNumberBeforeProgramRatioRemoval:
         twice = _sanitize(once, metrics)
         assert twice == once == "The charity spends 91.1% on programs."
 
+    def test_for_connector_is_deliberately_normalized_to_on(self):
+        """Pattern 5's replacement hardcodes "on" regardless of whether the
+        match used "on" or "for" — deliberate, mirroring pattern 3's own
+        precedent (which hardcodes "to" even when the match said "toward").
+        Unlike the CN rule's connector bug (fixed earlier: a *different*,
+        later-running rule silently rewrote an already-correct "on" from a
+        sibling rule's output back to "from" on a second pass), no sibling
+        rule in this family ever produces "for programs" text, so there's
+        no cross-rule idempotency hazard here — just a single rule
+        normalizing its own connector, stable across passes either way."""
+        metrics = _metrics(program_expense_ratio=0.911)
+        out = _sanitize("The charity spends 45.0% for programs.", metrics)
+        assert out == "The charity spends 91.1% on programs."
+        once = _sanitize("The charity spends 45.0% for programs.", metrics)
+        twice = _sanitize(once, metrics)
+        assert twice == once
+
 
 # Each case: fabricated clause first, joined to a true clause by a bare
 # " and " with no comma. The fabricated clause's own metric is nulled out;
@@ -1281,6 +1298,12 @@ _BARE_AND_LEADING_CLAUSE_BOUNDARY_CASES = [
         dict(working_capital_ratio=None),
         "It employs 45 staff.",
     ),
+    (
+        "distributed_meals_multi_comma_then_working_capital",
+        "It distributed 1,250,000 meals and holds 4.2 months of working capital.",
+        dict(working_capital_ratio=None),
+        "It distributed 1,250,000 meals.",
+    ),
 ]
 
 
@@ -1335,6 +1358,29 @@ class TestClauseLeadBareAndBoundary:
              "The charity has 8.3 months and rising in reserves and scored 87/100 from Charity Navigator."),
         ]
         for metrics, text in metrics_and_cases:
+            once = _sanitize(text, metrics)
+            twice = _sanitize(once, metrics)
+            assert twice == once
+
+    def test_intra_claim_and_survives_untouched_with_no_removal_pending(self):
+        """The team-lead's own exact wording, standalone: with nothing null
+        (no removal rule firing at all), a metric's own "and"-joined
+        phrasing must be a pure no-op — not just survive alongside an
+        unrelated removal, but never be touched in the first place."""
+        metrics = _metrics()
+        for text in [
+            "It has an accountability and finance score of 87.",
+            "It holds 8.3 months and rising in reserves.",
+        ]:
+            out = _sanitize(text, metrics)
+            assert out == text
+
+    def test_intra_claim_and_no_removal_case_is_idempotent(self):
+        metrics = _metrics()
+        for text in [
+            "It has an accountability and finance score of 87.",
+            "It holds 8.3 months and rising in reserves.",
+        ]:
             once = _sanitize(text, metrics)
             twice = _sanitize(once, metrics)
             assert twice == once
