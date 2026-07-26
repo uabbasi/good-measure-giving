@@ -1252,3 +1252,89 @@ class TestClauseTrailBareAndBoundary:
             once = _sanitize(text, metrics)
             twice = _sanitize(once, metrics)
             assert twice == once
+
+
+# Same defect class as TestClauseTrailBareAndBoundary, mirrored onto the
+# LEADING edge: a true clause can sit BEFORE an "and"-joined fabricated one
+# too, and `_clause_lead` had no bare-"and" boundary either — so the leading
+# scan ran straight through " and " into the fabricated clause's own
+# lead-in text, stopping only at whatever comma or period turned up there.
+# Found while hand-probing the trailing-edge fix (confirmed pre-existing
+# and byte-identical against unmodified df62b72); the team-lead widened the
+# brief to include this side too rather than filing it separately.
+_BARE_AND_LEADING_CLAUSE_BOUNDARY_CASES = [
+    (
+        "serves_thousands_then_program_ratio",
+        "It serves 4,000 families and has a program expense ratio of 91.1%.",
+        dict(program_expense_ratio=None),
+        "It serves 4,000 families.",
+    ),
+    (
+        "runs_clinics_then_charity_navigator",
+        "It runs 12 clinics and scored 87/100 from Charity Navigator.",
+        dict(cn_overall_score=None),
+        "It runs 12 clinics.",
+    ),
+    (
+        "employs_staff_then_working_capital",
+        "It employs 45 staff and holds 4.2 months of working capital.",
+        dict(working_capital_ratio=None),
+        "It employs 45 staff.",
+    ),
+]
+
+
+class TestClauseLeadBareAndBoundary:
+    """The leading-edge mirror of `TestClauseTrailBareAndBoundary`: a bare
+    " and " (no comma) is now a boundary on `_clause_lead` too, so a true
+    clause sitting BEFORE an "and"-joined fabricated one survives instead of
+    being truncated mid-number — e.g. "It serves 4,000 families and has a
+    program expense ratio of 91.1%." used to become "It serves 4." "and" is
+    an unambiguous coordinating conjunction on this side too; no
+    continuation-lead exception needed."""
+
+    @pytest.mark.parametrize(
+        "name,text,overrides,expected", _BARE_AND_LEADING_CLAUSE_BOUNDARY_CASES,
+        ids=[n for n, *_ in _BARE_AND_LEADING_CLAUSE_BOUNDARY_CASES])
+    def test_bare_and_is_a_leading_clause_boundary(self, name, text, overrides, expected):
+        metrics = _metrics(**overrides)
+        out = _sanitize(text, metrics)
+        assert out == expected
+
+    @pytest.mark.parametrize(
+        "name,text,overrides,expected", _BARE_AND_LEADING_CLAUSE_BOUNDARY_CASES,
+        ids=[n for n, *_ in _BARE_AND_LEADING_CLAUSE_BOUNDARY_CASES])
+    def test_bare_and_leading_case_is_idempotent(self, name, text, overrides, expected):
+        metrics = _metrics(**overrides)
+        once = _sanitize(text, metrics)
+        twice = _sanitize(once, metrics)
+        assert twice == once == expected
+
+    def test_and_inside_the_surviving_leading_clause_is_left_alone(self):
+        """The intra-claim "and" trap, leading-side form: a true clause's
+        own compound phrasing ("accountability and finance") sitting BEFORE
+        the real "and" that joins it to a fabricated clause must not be
+        mistaken for that boundary — the search must advance past it to the
+        real connector, which sits immediately before the fabricated core."""
+        metrics = _metrics(program_expense_ratio=None)
+        text = "It has a strong accountability and finance score of 87 and a program expense ratio of 91.1%."
+        out = _sanitize(text, metrics)
+        assert out == "It has a strong accountability and finance score of 87."
+
+    def test_second_intra_claim_and_trap_months_and_rising(self):
+        metrics = _metrics(cn_overall_score=None)
+        text = "The charity has 8.3 months and rising in reserves and scored 87/100 from Charity Navigator."
+        out = _sanitize(text, metrics)
+        assert out == "The charity has 8.3 months and rising in reserves."
+
+    def test_leading_and_trap_cases_are_idempotent(self):
+        metrics_and_cases = [
+            (_metrics(program_expense_ratio=None),
+             "It has a strong accountability and finance score of 87 and a program expense ratio of 91.1%."),
+            (_metrics(cn_overall_score=None),
+             "The charity has 8.3 months and rising in reserves and scored 87/100 from Charity Navigator."),
+        ]
+        for metrics, text in metrics_and_cases:
+            once = _sanitize(text, metrics)
+            twice = _sanitize(once, metrics)
+            assert twice == once

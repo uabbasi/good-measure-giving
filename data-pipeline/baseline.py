@@ -927,7 +927,32 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # fabricated one by "and a"/comma). Includes an optional leading ", and "
     # / ", " so the removed span cleanly eats the connective tissue too,
     # rather than leaving a dangling comma at the front of what remains.
-    _clause_lead = r"(?:,\s*(?:and\s+)?)?" + r"(?:[^.,]|(?<=\d)\.(?=\d))*"
+    #
+    # Mirrors the bare-"and" fix on the trailing edge below: a true clause
+    # can sit BEFORE an "and"-joined fabricated one too ("It serves 4,000
+    # families and has a program expense ratio of 91.1%."), and without a
+    # boundary here the leading scan ran straight through " and " and into
+    # the fabricated clause's own lead-in text, stopping only at whatever
+    # comma or period turned up there — the same mid-number truncation bug,
+    # approached from the other direction ("It serves 4,000 families and
+    # has..." truncating to "It serves 4."). The added `\s+and\s+`
+    # alternative lets the match start right at that connector (consuming
+    # its own leading space, so the removed span cleanly eats it the same
+    # way it already eats a leading comma) instead of only ever starting
+    # after "and", which would otherwise leave a stray space dangling in
+    # front of the surviving clause's own closing punctuation. The
+    # accompanying `(?!\s+and\b)` in the run below blocks the scan from
+    # ever crossing an "and" it hasn't matched as this connector; if the
+    # true clause's own phrasing has an earlier, unrelated "and" in it
+    # (e.g. "accountability and finance score"), attempting to start there
+    # fails to reach the fabricated core (blocked by the *next* "and" in
+    # turn), so the search naturally advances to the real, final connector
+    # instead — no special-casing needed, same self-correcting behavior as
+    # the trailing-edge fix.
+    _clause_lead = (
+        r"(?:,\s*(?:and\s+)?|\s+and\s+)?"
+        + r"(?:(?!\s+and\b)(?:[^.,]|(?<=\d)\.(?=\d)))*"
+    )
     # Used for the OUTER trailing edge of every removal rule. Whether a comma
     # is a clause boundary is decided by what follows it, not by the comma
     # alone: an appositive tail ("its highest rating", "a strong reserve
