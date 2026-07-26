@@ -839,6 +839,37 @@ def _preserve_case(replacement: str) -> Callable[["re.Match[str]"], str]:
     return lambda m: _match_case(m, replacement)
 
 
+_ABBREVIATIONS_BEFORE_COMMA = {
+    "inc", "corp", "ltd", "co", "jr", "sr", "dr", "mr", "mrs", "ms",
+    "st", "ave", "blvd", "vs", "etc", "al", "no", "vol", "fig",
+    "e.g", "i.e", "ph.d", "u.s", "u.k", "a.m", "p.m",
+}
+# Matches the run of letters (with internal abbreviation dots, e.g. "e.g")
+# immediately before a terminal-punctuation-then-comma with NO whitespace
+# between them. Non-letter characters right before the period (a citation
+# bracket, an HTML tag, a digit) simply leave the optional `abbr` group
+# empty rather than being swallowed into the match.
+_BARE_PERIOD_COMMA = re.compile(r"(?P<abbr>[A-Za-z]+(?:\.[A-Za-z]+)*)?(?P<punct>[.!?]),")
+
+
+def _abbreviation_before_stray_comma(match: "re.Match[str]") -> str:
+    """Leave a stray `.,` alone when it's really a sentence-ending
+    abbreviation immediately followed by a clause-continuing comma.
+
+    "U.S.," / "e.g.," / "et al.," are ordinary, correctly-punctuated
+    English — the period-then-comma-with-no-space shape isn't unique to
+    the removal artifact this function repairs. Unlike the open-ended
+    class of appositive lead-ins `_clause_trail` gave up on enumerating,
+    sentence-ending abbreviations are a small, closed, standard set (the
+    same kind of static list sentence-boundary detectors have always
+    used), so listing them here doesn't reproduce that problem.
+    """
+    abbr = match.group("abbr")
+    if abbr and abbr.lower() in _ABBREVIATIONS_BEFORE_COMMA:
+        return match.group(0)
+    return f"{abbr or ''}{match.group('punct')} ,"
+
+
 def _repair_removal_artifacts(text: str) -> str:
     """Clean up what a clause-scoped removal leaves behind.
 
@@ -853,14 +884,34 @@ def _repair_removal_artifacts(text: str) -> str:
       - removed clause was the whole sentence: its own terminal period is
         never part of the match (see `_clause_trail`'s docstring), so it's
         left as an orphan with nothing before it.
-    Both need cleanup that a simple `re.sub(pattern, "")` can't do inline,
-    which is why this runs as a separate pass after each removal instead of
-    being folded into the removal patterns themselves.
+      - removed clause was in the MIDDLE, joined to a surviving clause by a
+        bare comma with no continuation lead (see `_trail_same_claim_lead`):
+        the removal's own leading edge greedily starts as early as the
+        previous sentence's terminal period (the leftmost regex match wins),
+        swallowing the boundary space along with the removed text, so the
+        surviving comma-led fragment ends up directly touching that period
+        with no space at all — a literal `.,`. The fragment itself is never
+        dropped here (that would risk deleting a true, distinct fact that
+        happened to share the sentence with the fabricated one — verified
+        against nine real cases, two of which are exactly this: a genuine
+        working-capital figure and a genuine revenue-decline figure, both
+        would be lost by dropping instead of just re-punctuating). Handled
+        by `_abbreviation_before_stray_comma` below, which turns the bare
+        `.,` into `. ,` (inserting the missing space) so the existing
+        stray-comma repair a few lines down — already written for the
+        with-space case — picks it up and finishes the job unchanged,
+        except right after a sentence-ending abbreviation ("U.S.,",
+        "e.g.,"), where this exact shape is ordinary, correct punctuation
+        and must be left alone.
+    Both/all need cleanup that a simple `re.sub(pattern, "")` can't do
+    inline, which is why this runs as a separate pass after each removal
+    instead of being folded into the removal patterns themselves.
 
     Must be idempotent — sanitize_narrative_metrics runs twice on the
     citation-repair retry path, so re-running this on its own output has to
     be a byte-identical no-op.
     """
+    text = _BARE_PERIOD_COMMA.sub(_abbreviation_before_stray_comma, text)
     text = re.sub(r"\s{2,}", " ", text)
     # A leading connective stranded at the start of a sentence: ", and X" or
     # ", X" -> "X" (only at the very start of the string, or right after a

@@ -5,7 +5,12 @@ from string import Formatter
 from types import SimpleNamespace
 
 import pytest
-from baseline import _baseline_prompt_kwargs, build_baseline_prompt, sanitize_narrative_metrics
+from baseline import (
+    _baseline_prompt_kwargs,
+    _repair_removal_artifacts,
+    build_baseline_prompt,
+    sanitize_narrative_metrics,
+)
 from src.llm.prompt_loader import load_prompt
 from src.utils.phase_fingerprint import PHASE_CODE_FILES
 
@@ -312,6 +317,18 @@ def _metrics(**overrides):
     )
     base.update(overrides)
     return SimpleNamespace(**base)
+
+
+def _five_passes(text, metrics):
+    """Sanitize the same text five times in a row, feeding each pass's
+    output into the next. Two passes can't distinguish a fixed point from
+    a slow-settling bug (a defect that adds one artifact per pass would
+    still differ between pass 1 and pass 2); five passes, asserted
+    byte-identical from pass one, is what actually demonstrates one."""
+    passes = [text]
+    for _ in range(5):
+        passes.append(_sanitize(passes[-1], metrics))
+    return passes[1:]
 
 
 class TestClauseScopedRemovalPreservesSupportedClaims:
@@ -1784,3 +1801,264 @@ class TestNegativeWorkingCapitalDoesNotAccumulateDashes:
         assert passes[1] == passes[2] == passes[3] == passes[4] == passes[5]
         assert "-2.7 months" in passes[1]
         assert "--2.7" not in passes[1]
+
+
+class TestStrayCommaAfterPeriodIsRepunctuatedNotDropped:
+    """Task G10: `_clause_lead`'s leftmost-match search starts a removal's
+    leading edge as early as the previous sentence's own terminal period
+    (see its docstring), swallowing the boundary space along with the
+    fabricated clause. When the surviving fragment on the far side is
+    joined by a bare comma with no recognized continuation lead (see
+    `_trail_same_claim_lead`), that fragment ends up touching the previous
+    period with literally zero whitespace between them: a genuine `.,`
+    reads as "...administrative costs., as reported in its latest
+    filings." — visibly malformed prose, even though no number is wrong.
+
+    Nine real published narratives had this shape (all traced to the
+    `program_expense_ratio`/`fundraising_efficiency`/`working_capital`
+    removal rules leaving a trailing appositive- or coordinate-fragment
+    behind). The first hypothesis for fixing it — drop the whole
+    comma-led fragment, on the theory that it always belonged to the
+    removed claim — is correct for 7 of the 9, but was checked against
+    all nine before being built on, and breaks for 2: `56-2639095`'s
+    fragment is a real, distinct 99.7-months-of-reserves figure, and
+    `88-0405956`'s is a real, distinct 17%-revenue-decline figure —
+    neither restated anywhere else in those narratives, so dropping either
+    would silently delete a true fact. There's no mechanical way to tell
+    "gloss fragment, safe to drop" (leads with a participle/subordinator:
+    "meaning", "as", "which", "suggesting" — can't stand alone) apart from
+    "independent/coordinate clause carrying its own fact" (leads with its
+    own subject-and-verb, or a coordinating "and"/"but") without
+    reproducing the exact open-class verb/appositive-lead enumeration
+    problem `_clause_trail` already gave up on. So the fix never drops the
+    fragment at all: it inserts the one missing space so the fragment
+    starts a fresh, capitalized sentence instead of running on from a
+    comma. The trade is an occasional awkward-but-truthful fragment
+    sentence ("Meaning it does not spend donor funds...") in exchange for
+    a guarantee that no fact is ever silently lost — the same
+    over-preservation-beats-over-removal tie-break already documented
+    elsewhere in this function.
+
+    A tenth, previously-uncounted case turned up empirically while
+    checking `baseline_narrative` as well as `rich_narrative` — EIN
+    23-7065716 has the same artifact in `baseline_narrative` too (its own
+    prior task, G8, only checked `rich_narrative` for this category).
+    Covered here as the seventh distinct shape.
+    """
+
+    def test_meaning_gloss_becomes_its_own_sentence(self):
+        """Shape 1 of 7 — EINs 11-3013369, 46-3973114, 83-2222109: a
+        participial gloss ("meaning ...") that only restates the just-
+        removed fundraising claim, with nothing of its own to lose."""
+        metrics = _metrics(fundraising_expenses=None)
+        text = (
+            "It provides critical services in Pakistan. "
+            "The organization is notable for its fundraising efficiency of $0.00 per $1 raised, "
+            "meaning it does not spend donor funds on professional fundraising fees. "
+            "However, donors should note that the foundation holds significant reserves."
+        )
+        expected = (
+            "It provides critical services in Pakistan. "
+            "Meaning it does not spend donor funds on professional fundraising fees. "
+            "However, donors should note that the foundation holds significant reserves."
+        )
+        assert _sanitize(text, metrics) == expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+    def test_as_attribution_becomes_its_own_sentence(self):
+        """Shape 2 of 7 — EINs 20-3069841, 54-1674126 (the team-lead's own
+        worked example: "...costs., as reported..." -> "...costs.
+        Furthermore..." was the hypothesis that started this task; this is
+        the case where dropping and re-punctuating agree)."""
+        metrics = _metrics(fundraising_expenses=None)
+        text = (
+            "It achieved a lean financial model, ensuring that public donations are not diverted to administrative costs. "
+            "This is supported by fundraising efficiency of $0.00 per $1 raised, as reported in its latest filings. "
+            "Furthermore, the organization demonstrates strong outcomes."
+        )
+        expected = (
+            "It achieved a lean financial model, ensuring that public donations are not diverted to administrative costs. "
+            "As reported in its latest filings. "
+            "Furthermore, the organization demonstrates strong outcomes."
+        )
+        assert _sanitize(text, metrics) == expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+    def test_which_relative_clause_becomes_its_own_sentence(self):
+        """Shape 3 of 7 — EIN 23-7065716 (rich_narrative)."""
+        metrics = _metrics(working_capital_ratio=None)
+        text = (
+            "Operations appear efficient, but the lack of outcome tracking makes it difficult to verify actual results. "
+            "The organization currently has 1.2 months of working capital, which is considered lean."
+        )
+        expected = (
+            "Operations appear efficient, but the lack of outcome tracking makes it difficult to verify actual results. "
+            "Which is considered lean."
+        )
+        assert _sanitize(text, metrics) == expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+    def test_suggesting_inference_becomes_its_own_sentence(self):
+        """Shape 4 of 7 — EIN 26-3531888."""
+        metrics = _metrics(fundraising_expenses=None)
+        text = (
+            "It has achieved a strong growth rate over three years. "
+            "The organization is also noted for its fundraising efficiency of $0.00 per $1 raised, "
+            "suggesting that it relies on low-cost donor acquisition methods. "
+            "Furthermore, the charity holds significant total assets."
+        )
+        expected = (
+            "It has achieved a strong growth rate over three years. "
+            "Suggesting that it relies on low-cost donor acquisition methods. "
+            "Furthermore, the charity holds significant total assets."
+        )
+        assert _sanitize(text, metrics) == expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+    def test_it_holds_independent_clause_preserves_the_real_fact(self):
+        """Shape 5 of 7 — EIN 56-2639095. This is one of the two cases that
+        broke the team-lead's original "drop the fragment" hypothesis: what
+        follows the artifact isn't debris from the removed fundraising
+        claim, it's a real, distinct working-capital figure. Dropping it
+        would have deleted a true fact; it must survive, as its own
+        sentence."""
+        metrics = _metrics(fundraising_expenses=None, working_capital_ratio=99.7)
+        text = (
+            "The organization reported a revenue decline between 2022 and 2023, with total revenue falling to $461,841. "
+            "While the foundation maintains high fundraising efficiency, spending $0.00 to raise every $1, "
+            "it also holds 99.7 months of operating reserves. "
+            "For a zakat-collecting entity, this level of capital retention is unusual."
+        )
+        expected = (
+            "The organization reported a revenue decline between 2022 and 2023, with total revenue falling to $461,841. "
+            "It also holds 99.7 months of operating reserves. "
+            "For a zakat-collecting entity, this level of capital retention is unusual."
+        )
+        assert _sanitize(text, metrics) == expected
+        assert "99.7 months" in expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+    def test_and_coordinate_clause_preserves_the_real_fact(self):
+        """Shape 6 of 7 — EIN 88-0405956. The other case that broke "drop
+        the fragment": the 17%-revenue-decline figure is a real, distinct
+        fact joined via "and" as the second half of a "balance between X
+        and Y" construction, not commentary on the removed claim."""
+        metrics = _metrics(fundraising_expenses=None)
+        text = (
+            "The organization reported a program expense ratio in FY2024, which is below the industry standard. "
+            "This neutral performance reflects a balance between high fundraising efficiency, "
+            "where the charity spends $0.00 to raise every $1, and a recent 17% decline in revenue "
+            "from the previous fiscal year. Despite these shifts, the charity remains financially stable."
+        )
+        expected = (
+            "The organization reported a program expense ratio in FY2024, which is below the industry standard. "
+            "A recent 17% decline in revenue from the previous fiscal year. "
+            "Despite these shifts, the charity remains financially stable."
+        )
+        assert _sanitize(text, metrics) == expected
+        assert "17% decline" in expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+    def test_but_independent_clause_becomes_a_full_sentence(self):
+        """Shape 7 of 7 — EIN 23-7065716's `baseline_narrative` field, found
+        empirically while checking both fields rather than just
+        `rich_narrative` (not one of the team-lead's original nine — this
+        one wasn't counted until this task's own empirical check covered
+        both). "but the high amount of..." has its own subject and verb,
+        so it comes out as a complete, grammatical sentence rather than a
+        fragment — unlike the participial/subordinate-clause shapes above."""
+        metrics = _metrics(working_capital_ratio=None)
+        text = (
+            "However, there is no clear evidence or third-party data showing the long-term effectiveness of these services. "
+            "The organization holds 1.2 months of working capital available, "
+            "but the high amount of total reserves may conflict with the need to distribute zakat funds quickly."
+        )
+        expected = (
+            "However, there is no clear evidence or third-party data showing the long-term effectiveness of these services. "
+            "But the high amount of total reserves may conflict with the need to distribute zakat funds quickly."
+        )
+        assert _sanitize(text, metrics) == expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+    def test_repair_does_not_fire_without_a_stray_period_comma(self):
+        """Ordinary prose containing a period and a later, unrelated comma
+        must be left completely untouched — the repair only targets a
+        comma directly touching a period, not "any period somewhere before
+        any comma somewhere later." A `not in` assertion would pass even
+        against a mangled string, so this asserts the exact, full output."""
+        text = "The charity operates efficiently. Its revenue, however, remained flat this year."
+        assert _repair_removal_artifacts(text) == text
+
+    def test_repair_is_a_no_op_on_text_with_no_removal_artifact_at_all(self):
+        text = "The organization serves refugees in Jordan and Lebanon."
+        assert _repair_removal_artifacts(text) == text
+
+
+class TestAbbreviationBeforeCommaIsNotMistakenForARemovalArtifact:
+    """A bare `.,` isn't unique to the removal artifact above — "U.S.,",
+    "e.g.,", "Inc.,", "Jr.,", and "et al.," are all ordinary, correctly
+    punctuated English with the exact same zero-whitespace period-then-
+    comma shape. Unlike the open-ended appositive-lead-in class
+    `_clause_trail` gave up on enumerating, sentence-ending abbreviations
+    are a small, closed, standard set (the same kind of static list
+    sentence-boundary detectors have always used), so `_ABBREVIATIONS_
+    BEFORE_COMMA` is a bounded, defensible exception list, not a repeat of
+    that problem. `(e.g.,` and `U.S.,` are both real, live occurrences in
+    the corpus today (`charity-26-3531888.json` and `charity-23-2202414
+    .json`, among others) — this isn't a hypothetical hazard."""
+
+    def test_inc_before_comma_is_untouched(self):
+        text = "XYZ Foundation, Inc., is a 501(c)(3) charity."
+        assert _repair_removal_artifacts(text) == text
+
+    def test_jr_before_comma_is_untouched(self):
+        text = "Founded by John Smith Jr., the organization serves refugees."
+        assert _repair_removal_artifacts(text) == text
+
+    def test_e_g_before_comma_is_untouched(self):
+        """The real, live shape from charity-26-3531888.json."""
+        text = "It requires a high percentage of donations (e.g., >80%) to go directly to programs."
+        assert _repair_removal_artifacts(text) == text
+
+    def test_u_s_before_comma_is_untouched(self):
+        """The real, live shape from charity-23-2202414.json."""
+        text = "A potential concern for donors is that spending remains in the U.S., even though the mission is global."
+        assert _repair_removal_artifacts(text) == text
+
+    def test_et_al_before_comma_is_untouched(self):
+        text = "The report cites prior studies (et al., 2024) on donor behavior."
+        assert _repair_removal_artifacts(text) == text
+
+    def test_abbreviation_survives_even_when_a_real_removal_fires_elsewhere(self):
+        """The guard has to hold in the actual invocation path, not just in
+        isolation: `_repair_removal_artifacts` only runs at all when some
+        OTHER removal fired somewhere in the same text field, and then it
+        scans the whole field — so an unrelated "Inc.," sitting elsewhere
+        in that same string must survive a real removal happening nearby."""
+        metrics = _metrics(fundraising_expenses=None)
+        text = (
+            "XYZ Foundation, Inc., is a 501(c)(3) charity. "
+            "The organization is notable for its fundraising efficiency of $0.00 per $1 raised, "
+            "meaning it does not spend donor funds on professional fundraising fees. "
+            "It operates primarily in the U.S., serving refugees nationwide."
+        )
+        out = _sanitize(text, metrics)
+        assert out == (
+            "XYZ Foundation, Inc., is a 501(c)(3) charity. "
+            "Meaning it does not spend donor funds on professional fundraising fees. "
+            "It operates primarily in the U.S., serving refugees nationwide."
+        )
