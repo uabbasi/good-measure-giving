@@ -1125,13 +1125,24 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 False,
             )
         )
-        # Pattern 2: "holds/maintains X years of expenses". Case-preserving
-        # replacement (see _match_case) — a preceding clause's removal can
-        # leave this one sentence-initial and capitalized ("Holds ...").
+        # Pattern 2: "holds/maintains/has X years of expenses". Captures and
+        # echoes back whichever verb was actually matched instead of
+        # hardcoding "holds" — a real idempotency violation otherwise: text
+        # like "The charity has 5 years' worth of operating expenses saved."
+        # doesn't match this pattern on pass 1 (Pattern 3's "worth of" shape
+        # catches it instead, leaving the leading "has" untouched), but DOES
+        # match on pass 2 once Pattern 3 has already normalized the tail to
+        # "... of working capital" — and a hardcoded "holds" replacement
+        # would then silently rewrite "has" to "holds" on that second pass,
+        # so pass 1's output differs from pass 2's even though the value
+        # never changes. Echoing the matched verb keeps every pass a no-op
+        # once the value is already correct. Case-preserving (see
+        # _match_case) — a preceding clause's removal can leave this one
+        # sentence-initial and capitalized ("Holds ...").
         rules.append(
             (
-                rf"(?:holds?|maintains?|has)\s+{_wc_num_unit}\s+(?:of\s+)?{_wc_noun}",
-                lambda m: _match_case(m, f"holds {correct_wc} of working capital"),
+                rf"(holds?|maintains?|has)\s+{_wc_num_unit}\s+(?:of\s+)?{_wc_noun}",
+                lambda m: _match_case(m, f"{m.group(1)} {correct_wc} of working capital"),
                 False,
             )
         )
@@ -1184,12 +1195,24 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 False,
             )
         )
-        # Pattern 3: directs/allocates X% to programs/programmatic.
-        # Case-preserving for the same reason as pattern 2.
+        # Pattern 3: directs/allocates X% to programs/programmatic. Captures
+        # and echoes back the noun phrase actually matched instead of
+        # hardcoding "programs" — hardcoding it was a real bug: `programs?`
+        # matches just the word "program" inside the unrelated phrase
+        # "program expense" (its optional trailing "s?" doesn't require a
+        # word boundary before the next word), so "directs 50% to program
+        # expense." matched on "program" alone, then the hardcoded plural
+        # replacement produced "directs 91.1% to programs expense." — right
+        # number, doubled/garbled noun. Echoing back whatever text the noun
+        # group actually captured ("program", "programs", or
+        # "programmatic ...") leaves any unmatched tail (like " expense")
+        # exactly where it was, so it reattaches cleanly instead of
+        # colliding with a hardcoded plural. Case-preserving for the same
+        # reason as pattern 2.
         rules.append(
             (
-                r"(?:directs?|allocates?|dedicates?|channels?|devotes?)\s+\d+\.?\d*\s*%\s+(?:of\s+\w+\s+)?(?:to|toward)\s+(?:programs?|programmatic\s+(?:work|activities|expenses?))",
-                _preserve_case(f"directs {correct_ratio} to programs"),
+                r"(?:directs?|allocates?|dedicates?|channels?|devotes?)\s+\d+\.?\d*\s*%\s+(?:of\s+\w+\s+)?(?:to|toward)\s+(programs?|programmatic\s+(?:work|activities|expenses?))",
+                lambda m: _match_case(m, f"directs {correct_ratio} to {m.group(1)}"),
                 False,
             )
         )
@@ -1257,6 +1280,62 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     cn_score = getattr(metrics, "cn_overall_score", None)
     cn_accountability = getattr(metrics, "cn_accountability_score", None)
     cn_financial = getattr(metrics, "cn_financial_score", None)
+    # Hoisted above the cn_score block — needed here by the overall-score
+    # guard below, and again further down by the accountability/financial
+    # rules themselves (see their own comments for why each noun phrase is
+    # captured and echoed rather than canonicalized).
+    _acc_name = r"accountability(?:\s*(?:&|and)\s*finance)?|governance"
+    _fin_name = r"financial(?:\s+health)?"
+    # A malformed multi-decimal numeral (two or more embedded decimal points
+    # in one run — e.g. "96.96.0", a corrupted leftover from an earlier
+    # regeneration) has no single clean number any correction rule below can
+    # take without either (a) starting the match late, right after a stray
+    # leading "<digit>." that isn't part of the real number, which produces
+    # a phantom value that existed in neither the source data nor the
+    # corrupted input, or (b) starting on time but stopping short at the
+    # first embedded dot, splicing a correction onto a numeral that silently
+    # continues right after it. `(?<![\d.])` blocks every starting position
+    # that sits inside, or immediately after, such a run — not just a
+    # position immediately after a "<digit>." pair, which would still let
+    # the engine fall back to a later start inside the same corrupted run.
+    # `(?!\d+\.\d+\.\d)` blocks the one position the lookbehind can't reach:
+    # the very first digit of the run itself. Together they make every
+    # numeric correction pattern in this section refuse to match a malformed
+    # run at all, leaving it exactly as published — regeneration, not this
+    # sanitizer, is what fixes it (see
+    # test_charity_36_3673599_malformed_string_is_left_as_is and its
+    # siblings for the other two live EINs carrying the same artifact).
+    _number_not_malformed = r"(?<![\d.])(?!\d+\.\d+\.\d)"
+    # The generic "X/100 ... Charity Navigator" pattern a few lines down
+    # corrects cn_overall_score no matter what noun precedes the number —
+    # on its own it can't tell "50/100 from Charity Navigator" apart from
+    # "accountability rating of 50/100 from Charity Navigator", so it was
+    # stamping the *overall* score into prose that named a specific
+    # sub-score (only the literal word "score", not "rating", was ever
+    # anchored to the sub-score-specific rules below, so "rating" phrasing
+    # fell through to this generic rule unopposed). Used by that rule's
+    # replacement — a plain callable, not a regex lookbehind, since the noun
+    # phrases it must recognize vary in length ("accountability", "governance",
+    # "financial health") and Python's `re` only supports fixed-width
+    # lookbehind — to refuse to claim a span whose number is actually named
+    # by a sub-score, leaving it for that metric's own rule to correct with
+    # the right value instead. Checked as a plain substring match ending
+    # exactly where the number starts, so it's independent of rule order.
+    #
+    # Also recognizes a linking verb ("is"/"was") in place of "of" —
+    # hand-probed and found live: "the financial rating is 40/100 from
+    # Charity Navigator" is a different phrasing shape than "of X" (neither
+    # accountability's nor financial's own correction rules parse "is X"
+    # either, so this specific shape stays uncorrected either way — that's
+    # unchanged, pre-existing, and out of this task's scope), but without
+    # this the generic overall rule still claimed it and mislabeled the
+    # *overall* score as the financial one, which is exactly the failure
+    # mode this guard exists to prevent regardless of which preposition or
+    # verb sits between the noun and the number.
+    _sub_score_lead_re = re.compile(
+        rf"(?:{_acc_name}|{_fin_name})\s+(?:score|rating)\s+(?:of|is|was)?\s*$",
+        re.IGNORECASE,
+    )
     if cn_score is not None:
         # Round before it ever reaches prose — cn_overall_score is an average of
         # CN's beacon sub-scores, so it carries repeating decimals
@@ -1274,10 +1353,22 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # second pass, breaking idempotency without ever failing case-
         # insensitivity. Falls back to "from " only when no connector was
         # present at all (bare "X/100 Charity Navigator").
+        #
+        # `_sub_score_lead_re` guard: don't claim a number that's actually
+        # named by a sub-score (see its definition above) — leave it
+        # untouched here so the accountability/financial rules further down
+        # correct it with their own value instead. `_number_not_malformed`
+        # guard: don't touch a malformed multi-decimal numeral at all (see
+        # that variable's definition above).
+        def _correct_cn_overall_number_before(m: "re.Match[str]") -> str:
+            if _sub_score_lead_re.search(m.string[: m.start()]):
+                return m.group(0)
+            return f"{correct_cn} {m.group(1) or 'from '}Charity Navigator"
+
         rules.append(
             (
-                r"\d+\.?\d*/100\s+(from\s+|by\s+|on\s+|score\s+(?:from\s+|on\s+)?)?(?:Charity\s+Navigator)",
-                lambda m: f"{correct_cn} {m.group(1) or 'from '}Charity Navigator",
+                rf"{_number_not_malformed}\d+\.?\d*/100\s+(from\s+|by\s+|on\s+|score\s+(?:from\s+|on\s+)?)?(?:Charity\s+Navigator)",
+                _correct_cn_overall_number_before,
                 False,
             )
         )
@@ -1385,17 +1476,26 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # initial replacement after an article chosen for the original,
     # consonant-initial word). Echoing the original noun phrase leaves
     # whatever article preceded it untouched and therefore still correct.
-    _acc_name = r"accountability(?:\s*(?:&|and)\s*finance)?|governance"
+    #
+    # Pattern 1 (number-after) also captures and echoes the "score"/"rating"
+    # word itself, for the same reason: the claim can legitimately be
+    # phrased either way ("accountability rating of X" occurs in real
+    # published prose — see charity-95-4453134.json), and this rule used to
+    # require the literal word "score", so "rating" phrasing fell all the
+    # way through to the generic cn_overall_score rule above and got
+    # stamped with the *overall* score instead — the `_sub_score_lead_re`
+    # guard on that rule now leaves such spans alone specifically so this
+    # rule can correct them with the right sub-score value here.
     if cn_accountability is not None:
         correct_acc = f"{round(cn_accountability, 1)}/100"
-        # Pattern 1: <accountability/governance/& finance> score of X
+        # Pattern 1: <accountability/governance/& finance> score|rating of X
         # (number-after). Case-preserving (see _preserve_case) — a
         # preceding clause's removal can leave this sentence-initial
         # ("Accountability score ...").
         rules.append(
             (
-                rf"({_acc_name})\s+score\s+(?:of\s+)?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?",
-                lambda m: _match_case(m, f"{m.group(1)} score of {correct_acc}"),
+                rf"({_acc_name})\s+(score|rating)\s+(?:of\s+)?{_number_not_malformed}\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?",
+                lambda m: _match_case(m, f"{m.group(1)} {m.group(2)} of {correct_acc}"),
                 False,
             )
         )
@@ -1405,7 +1505,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # preceding removal to strand capitalized.
         rules.append(
             (
-                rf"\d+(?:\.\d+)?/100\s+({_acc_name})\s+(score|rating)",
+                rf"{_number_not_malformed}\d+(?:\.\d+)?/100\s+({_acc_name})\s+(score|rating)",
                 lambda m: f"{correct_acc} {m.group(1)} {m.group(2)}",
                 False,
             )
@@ -1413,7 +1513,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     else:
         rules.append(
             (
-                rf"{_clause_lead}(?:{_acc_name})\s+score\s+(?:of\s+)?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?{_clause_trail}",
+                rf"{_clause_lead}(?:{_acc_name})\s+(?:score|rating)\s+(?:of\s+)?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?{_clause_trail}",
                 None,
                 True,
             )
@@ -1428,12 +1528,13 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     if cn_financial is not None:
         correct_fin = f"{round(cn_financial, 1)}/100"
         # Same echo-the-noun-phrase approach as accountability's Pattern 1
-        # above (captures "financial score" vs "financial health score" and
-        # echoes it back rather than always dropping "health"). Case-
-        # preserving for the same reason as the accountability pattern.
+        # above (captures "financial score" vs "financial health score", and
+        # now "score" vs "rating" too, echoing whichever was actually used
+        # rather than canonicalizing). Case-preserving for the same reason
+        # as the accountability pattern.
         rules.append(
             (
-                r"(financial\s+(?:health\s+)?score)\s+(?:of\s+)?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?",
+                rf"({_fin_name}\s+(?:score|rating))\s+(?:of\s+)?{_number_not_malformed}\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?",
                 lambda m: _match_case(m, f"{m.group(1)} of {correct_fin}"),
                 False,
             )
@@ -1441,7 +1542,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     else:
         rules.append(
             (
-                rf"{_clause_lead}financial\s+(?:health\s+)?score\s+(?:of\s+)?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?{_clause_trail}",
+                rf"{_clause_lead}{_fin_name}\s+(?:score|rating)\s+(?:of\s+)?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?{_clause_trail}",
                 None,
                 True,
             )
