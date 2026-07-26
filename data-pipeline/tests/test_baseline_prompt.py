@@ -3144,3 +3144,236 @@ class TestCapitalizationRepairSeesThroughCitationMarkup:
         passes = _five_passes(text, metrics)
         assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
         assert passes[0] == '<cite id="2">Holds 8.3 months of working capital</cite>.'
+
+
+class TestFoundedYearRemovalWhenNull:
+    """Task G13: founded_year had only the correction half of the pair every
+    other metric family in this function carries — a null founded_year (no
+    filings, a brand-new organization) let a fabricated founding-year claim
+    survive verbatim. The removal rules mirror the two correction patterns
+    above, clause-scoped like every other null branch, plus a third phrasing
+    ("a 1985 organization") that has no correction counterpart."""
+
+    def test_founded_in_alone_is_removed(self):
+        text = "It was founded in 1985."
+        metrics = _metrics(founded_year=None)
+        out = _sanitize(text, metrics)
+        assert out == ""
+
+    def test_established_in_alone_is_removed(self):
+        text = "The nonprofit was established in 1990. It serves many families."
+        metrics = _metrics(founded_year=None)
+        out = _sanitize(text, metrics)
+        assert out == "It serves many families."
+
+    def test_since_phrasing_alone_is_removed(self):
+        text = "It has been operating since 1985. It serves many families."
+        metrics = _metrics(founded_year=None)
+        out = _sanitize(text, metrics)
+        assert out == "It serves many families."
+
+    def test_was_founded_in_phrasing_alone_is_removed(self):
+        text = "The charity was founded in 1985. It serves many families."
+        metrics = _metrics(founded_year=None)
+        out = _sanitize(text, metrics)
+        assert out == "It serves many families."
+
+    def test_a_year_organization_phrasing_alone_is_removed(self):
+        text = "This is a 1985 organization. It serves the local community."
+        metrics = _metrics(founded_year=None)
+        out = _sanitize(text, metrics)
+        assert out == "It serves the local community."
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "The organization hosted a 2020 charity gala that raised $50,000 for local families.",
+            "It ran a 1999 nonprofit fundraiser to support education.",
+            "It partnered with a 2015 charity initiative focused on clean water.",
+        ],
+    )
+    def test_a_year_organization_phrasing_does_not_swallow_a_compound_noun_phrase(self, text):
+        """Hand-probe found this: without a trailing boundary requirement,
+        "organization"/"nonprofit"/"charity" are common enough nouns to head
+        a compound noun phrase that has nothing to do with founding — the
+        removal used to swallow the entire sentence in each case (a real
+        over-removal, confirmed against the pre-fix version of this rule),
+        destroying an unrelated true fact. Must survive untouched."""
+        metrics = _metrics(founded_year=None)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    @pytest.mark.parametrize(
+        "text,overrides,expected",
+        [
+            ("It was founded in 1985.", dict(founded_year=None), ""),
+            (
+                "It was founded in 1985, and spends $0.10 per $1 raised.",
+                dict(founded_year=None),
+                "Spends $0.10 per $1 raised.",
+            ),
+            (
+                "The charity spends $0.10 per $1 raised, and was founded in 1985.",
+                dict(founded_year=None),
+                "The charity spends $0.10 per $1 raised.",
+            ),
+            (
+                "It was founded in 1985, and spends $0.00 per $1 raised.",
+                dict(founded_year=None, fundraising_expenses=None),
+                "",
+            ),
+        ],
+        ids=["alone", "unsupported_first", "supported_first", "both_unsupported"],
+    )
+    def test_family_matrix(self, text, overrides, expected):
+        """The same alone / unsupported-first / supported-first / both-null
+        shape TestRemovalRuleFamilyClauseMatrix already runs for every other
+        family, applied to founded_year now that it has a removal half."""
+        metrics = _metrics(**overrides)
+        out = _sanitize(text, metrics)
+        assert out == expected
+
+    @pytest.mark.parametrize(
+        "text,overrides",
+        [
+            ("It was founded in 1985.", dict(founded_year=None)),
+            ("It was founded in 1985, and spends $0.10 per $1 raised.", dict(founded_year=None)),
+            (
+                "The charity spends $0.10 per $1 raised, and was founded in 1985.",
+                dict(founded_year=None),
+            ),
+            (
+                "It was founded in 1985, and spends $0.00 per $1 raised.",
+                dict(founded_year=None, fundraising_expenses=None),
+            ),
+            ("This is a 1985 organization. It serves the local community.", dict(founded_year=None)),
+        ],
+    )
+    def test_family_matrix_is_idempotent(self, text, overrides):
+        metrics = _metrics(**overrides)
+        once = _sanitize(text, metrics)
+        twice = _sanitize(once, metrics)
+        assert twice == once
+
+
+class TestFoundedYearRemovalDoesNotTouchUnrelatedYears:
+    """The main hazard the brief calls out: a four-digit year is
+    indistinguishable from any other number, and these narratives are full
+    of dates that have nothing to do with founding. None of these anchor
+    words ("founded"/"established"/.../"in", "operating"/.../"since", or
+    "a YYYY organization") appear adjacent to the year in any of these, so
+    the removal rules must never fire on them."""
+
+    def test_beneficiary_count_year_survives(self):
+        text = "In 2024 it served 4,000 families across the region."
+        metrics = _metrics(founded_year=None)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_fiscal_year_filing_reference_survives(self):
+        text = "Its FY2023 filings show a strong balance sheet."
+        metrics = _metrics(founded_year=None)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_revenue_growth_years_survive(self):
+        text = "Revenue grew through 2022 and 2023."
+        metrics = _metrics(founded_year=None)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_unrelated_year_survives_alongside_a_real_removal(self):
+        text = "It was founded in 1985. In 2024 it served 4,000 families."
+        metrics = _metrics(founded_year=None)
+        out = _sanitize(text, metrics)
+        assert out == "In 2024 it served 4,000 families."
+
+    def test_unrelated_years_are_five_pass_stable(self):
+        text = "In 2024 it served 4,000 families. Its FY2023 filings show a strong balance sheet."
+        metrics = _metrics(founded_year=None)
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == text
+
+
+def _sanitize_scores(text, metrics, amal_score, wallet_tag="ZAKAT-ELIGIBLE"):
+    scores = SimpleNamespace(wallet_tag=wallet_tag, amal_score=amal_score)
+    return sanitize_narrative_metrics({"rationale": text}, metrics, scores)["rationale"]
+
+
+class TestAmalScoreRemovalWhenNull:
+    """Task G13: scores.amal_score had the same only-correction asymmetry as
+    founded_year. Null amal_score is the realistic path per the brief — an
+    evaluation that failed to score, not a missing scores object entirely —
+    but the existing guard (`scores and hasattr(...) and ... is not None`)
+    already covers all three falsy shapes uniformly, so the same else branch
+    fires whether scores is None, lacks the attribute, or has it as None."""
+
+    def test_number_before_amal_alone_is_removed(self):
+        text = "The charity earned a 70/100 AMAL score."
+        metrics = _metrics()
+        out = _sanitize_scores(text, metrics, amal_score=None)
+        assert out == ""
+
+    def test_amal_score_of_x_alone_is_removed(self):
+        text = "AMAL score of 70 was calculated. It serves many families."
+        metrics = _metrics()
+        out = _sanitize_scores(text, metrics, amal_score=None)
+        assert out == "It serves many families."
+
+    def test_scored_on_amal_index_alone_is_removed(self):
+        text = "This nonprofit scored 70 on the AMAL index. It serves many families."
+        metrics = _metrics()
+        out = _sanitize_scores(text, metrics, amal_score=None)
+        assert out == "It serves many families."
+
+    def test_missing_scores_object_entirely_also_strips(self):
+        """scores=None (no evaluation at all) must hit the same else branch
+        as an explicit amal_score=None — hasattr/None guard covers both."""
+        text = "The charity earned a 70/100 AMAL score."
+        metrics = _metrics()
+        out = sanitize_narrative_metrics({"rationale": text}, metrics, None)["rationale"]
+        assert out == ""
+
+    def test_real_amal_score_number_before_is_still_corrected(self):
+        text = "The charity earned a 70/100 AMAL score."
+        metrics = _metrics()
+        out = _sanitize_scores(text, metrics, amal_score=91)
+        assert out == "The charity earned a 91/100 AMAL score."
+
+    def test_real_amal_score_of_x_is_still_corrected(self):
+        text = "AMAL score of 70 was calculated for this charity."
+        metrics = _metrics()
+        out = _sanitize_scores(text, metrics, amal_score=91)
+        assert out == "AMAL score of 91/100 was calculated for this charity."
+
+    def test_amal_removal_exposes_founded_year_correction_sentence_initially(self):
+        """AMAL's rules run earlier in the internal rules list than
+        founded_year's — the same Critical-1-shaped composition prior tasks
+        in this series found broken elsewhere: an earlier removal can leave
+        a later correction's target sentence-initial and capitalized."""
+        text = "The charity earned a 70/100 AMAL score, and founded in 1980."
+        metrics = _metrics(founded_year=1985)
+        out = _sanitize_scores(text, metrics, amal_score=None)
+        assert out == "Founded in 1985."
+
+    def test_amal_removal_founded_year_correction_composition_is_idempotent(self):
+        text = "The charity earned a 70/100 AMAL score, and founded in 1980."
+        metrics = _metrics(founded_year=1985)
+        once = _sanitize_scores(text, metrics, amal_score=None)
+        twice = _sanitize_scores(once, metrics, amal_score=None)
+        assert twice == once
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "The charity earned a 70/100 AMAL score.",
+            "AMAL score of 70 was calculated. It serves many families.",
+            "This nonprofit scored 70 on the AMAL index. It serves many families.",
+        ],
+    )
+    def test_removal_is_five_pass_stable(self, text):
+        metrics = _metrics()
+        passes = [text]
+        for _ in range(5):
+            passes.append(_sanitize_scores(passes[-1], metrics, amal_score=None))
+        assert passes[1] == passes[2] == passes[3] == passes[4] == passes[5]

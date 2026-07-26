@@ -1844,6 +1844,38 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 False,
             )
         )
+    else:
+        # Task G13: this metric had only the correction half — a null
+        # amal_score (the guard above also covers scores being None or
+        # missing the attribute entirely, not just an explicit None value)
+        # let a fabricated AMAL score claim survive verbatim. Mirrors the
+        # two correction patterns above (number-before, number-after), plus
+        # a third phrasing ("scored X on the AMAL index") that has no
+        # correction counterpart today — same kind of asymmetry task G12
+        # found and fixed for program_expense_ratio's "spends X% on
+        # programs", left here since fixing it is a correction-side
+        # question outside this task's scope.
+        rules.append(
+            (
+                rf"{_clause_lead}(?:AMAL|Amal|amal)\s+score\s+(?:of\s+)?\d+\.?\d*(?:/100)?{_clause_trail}",
+                None,
+                True,
+            )
+        )
+        rules.append(
+            (
+                rf"{_clause_lead}\d+\.?\d*/100\s+(?:AMAL|Amal|amal){_clause_trail}",
+                None,
+                True,
+            )
+        )
+        rules.append(
+            (
+                rf"{_clause_lead}scored\s+\d+\.?\d*\s+on\s+the\s+(?:AMAL|Amal|amal)\s+index{_clause_trail}",
+                None,
+                True,
+            )
+        )
 
     # Zakat language — strip if charity is SADAQAH-ELIGIBLE (not zakat)
     wallet_tag = getattr(scores, "wallet_tag", None) if scores else None
@@ -1882,6 +1914,66 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 r"(?:operating|serving|active|working)\s+since\s+\d{4}",
                 _preserve_case(f"operating since {founded_year}"),
                 False,
+            )
+        )
+    else:
+        # Task G13: this metric had only the correction half — a null
+        # founded_year (no filings, a brand-new organization) let a
+        # fabricated founding-year claim survive verbatim. Mirrors the two
+        # correction patterns above, clause-scoped like every other null
+        # branch in this function.
+        #
+        # Anchored to the same founding-specific verbs the correction rules
+        # use — never a bare year. A four-digit year alone is indistinguishable
+        # from any other number, and these narratives are full of dates that
+        # have nothing to do with founding ("in 2024 it served 4,000
+        # families", "its FY2023 filings", "revenue grew through 2022 and
+        # 2023") — none of those carry "founded"/"established"/.../"in" or
+        # "operating"/.../"since" immediately adjacent to the year, so they
+        # never reach either pattern below.
+        rules.append(
+            (
+                rf"{_clause_lead}(?:founded|established|incorporated|started|began(?:\s+operations)?)\s+in\s+\d{{4}}{_clause_trail}",
+                None,
+                True,
+            )
+        )
+        rules.append(
+            (
+                rf"{_clause_lead}(?:operating|serving|active|working)\s+since\s+\d{{4}}{_clause_trail}",
+                None,
+                True,
+            )
+        )
+        # "a 1985 organization/nonprofit/charity" — number-before-noun
+        # phrasing with no correction counterpart above (same asymmetry
+        # task G12 fixed for program_expense_ratio's "spends X% on
+        # programs"); anchored to the same closed noun list, not a bare
+        # year, for the same reason as the two rules above.
+        #
+        # Hand-probed and found a real over-removal without the trailing
+        # lookahead: "organization"/"nonprofit"/"charity" are common enough
+        # nouns that they head compound noun phrases with nothing to do
+        # with founding — "a 2020 charity gala", "a 1999 nonprofit
+        # fundraiser", "a 2015 charity initiative". Without a boundary
+        # requirement right after the noun, `_clause_trail` freely swallows
+        # the rest of the sentence ("...gala that raised $50,000 for local
+        # families." -> ""), destroying an unrelated true fact — the exact
+        # "new fact-destroying bug" failure mode this task must not
+        # introduce. The lookahead requires the noun be immediately
+        # followed by an actual clause boundary (or the string end), the
+        # same boundary set `_clause_trail` itself treats as a stop —
+        # so a further noun continuing the same phrase blocks the match
+        # entirely, leaving the whole sentence untouched (an accepted
+        # under-removal; per this function's own standing tie-break, a
+        # surviving fabrication-adjacent fragment is preferred to deleting
+        # an unrelated true clause).
+        rules.append(
+            (
+                rf"{_clause_lead}a\s+\d{{4}}\s+(?:organization|nonprofit|non-profit|charity)"
+                rf"(?=[.,;:?!—]|\s+and\b|$){_clause_trail}",
+                None,
+                True,
             )
         )
 
