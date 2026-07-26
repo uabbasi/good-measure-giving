@@ -4,6 +4,7 @@ import re
 from string import Formatter
 from types import SimpleNamespace
 
+import pytest
 from baseline import _baseline_prompt_kwargs, build_baseline_prompt, sanitize_narrative_metrics
 from src.llm.prompt_loader import load_prompt
 from src.utils.phase_fingerprint import PHASE_CODE_FILES
@@ -283,3 +284,267 @@ class TestTinyRealFundraisingRatioIsNotRenderedAsZero:
         twice = sanitize_narrative_metrics({"rationale": once}, metrics, None)["rationale"]
         assert twice == once
         assert "<<" not in twice
+
+
+def _sanitize(text, metrics, wallet_tag="ZAKAT-ELIGIBLE"):
+    scores = SimpleNamespace(wallet_tag=wallet_tag, amal_score=None)
+    return sanitize_narrative_metrics({"rationale": text}, metrics, scores)["rationale"]
+
+
+def _metrics(**overrides):
+    """All metrics default to a real, present value; a test nulls out
+    whichever one its removal rule is meant to fire on."""
+    base = dict(
+        working_capital_ratio=5.0,
+        program_expense_ratio=0.75,
+        cn_overall_score=88.0,
+        cn_accountability_score=90,
+        cn_financial_score=85,
+        fundraising_expenses=10_000,
+        total_revenue=100_000,
+        founded_year=None,
+    )
+    base.update(overrides)
+    return SimpleNamespace(**base)
+
+
+class TestClauseScopedRemovalPreservesSupportedClaims:
+    """Task G6: a removal rule used to scan to the *sentence* boundary on
+    both sides ("everything up to the next period"), so removing one
+    fabricated claim deleted any true, supported claim sharing its sentence.
+    These are the four cases the controller reproduced by hand — the floor,
+    not the ceiling, per the task brief."""
+
+    def _null_program_and_working_capital(self, **overrides):
+        return _metrics(program_expense_ratio=None, working_capital_ratio=None, **overrides)
+
+    def test_null_ratio_then_tiny_real_fundraising_survives(self):
+        text = "The charity has a program expense ratio of 91.1%, and spends <$0.01 per $1 raised on overhead."
+        metrics = self._null_program_and_working_capital(fundraising_expenses=241666, total_revenue=79_600_000)
+        out = _sanitize(text, metrics)
+        assert out == "Spends <$0.01 per $1 raised on overhead."
+
+    def test_null_ratio_then_real_fundraising_survives(self):
+        text = "The charity has a program expense ratio of 91.1%, and spends $0.10 per $1 raised on overhead."
+        metrics = self._null_program_and_working_capital(fundraising_expenses=10_000, total_revenue=100_000)
+        out = _sanitize(text, metrics)
+        assert out == "Spends $0.10 per $1 raised on overhead."
+
+    def test_real_fundraising_then_null_ratio_survives(self):
+        text = "The charity spends $0.10 per $1 raised, and has a program expense ratio of 91.1%."
+        metrics = self._null_program_and_working_capital(fundraising_expenses=10_000, total_revenue=100_000)
+        out = _sanitize(text, metrics)
+        assert out == "The charity spends $0.10 per $1 raised."
+
+    def test_null_working_capital_then_real_fundraising_survives(self):
+        text = "It holds 4.2 months of working capital, and spends $0.10 per $1 raised."
+        metrics = self._null_program_and_working_capital(fundraising_expenses=10_000, total_revenue=100_000)
+        out = _sanitize(text, metrics)
+        assert out == "Spends $0.10 per $1 raised."
+
+    def test_all_four_are_idempotent(self):
+        cases = [
+            ("The charity has a program expense ratio of 91.1%, and spends <$0.01 per $1 raised on overhead.",
+             self._null_program_and_working_capital(fundraising_expenses=241666, total_revenue=79_600_000)),
+            ("The charity has a program expense ratio of 91.1%, and spends $0.10 per $1 raised on overhead.",
+             self._null_program_and_working_capital(fundraising_expenses=10_000, total_revenue=100_000)),
+            ("The charity spends $0.10 per $1 raised, and has a program expense ratio of 91.1%.",
+             self._null_program_and_working_capital(fundraising_expenses=10_000, total_revenue=100_000)),
+            ("It holds 4.2 months of working capital, and spends $0.10 per $1 raised.",
+             self._null_program_and_working_capital(fundraising_expenses=10_000, total_revenue=100_000)),
+        ]
+        for text, metrics in cases:
+            once = _sanitize(text, metrics)
+            twice = _sanitize(once, metrics)
+            assert twice == once, f"not idempotent: {once!r} -> {twice!r}"
+
+
+class TestClauseScopedRemovalStillRemovesFabricatedTails:
+    """The other half of the tension the brief calls out: clause-scoping
+    must not let a fabricated claim's own dangling tail survive just because
+    it sits after a comma. "a perfect score from Charity Navigator, its
+    highest rating" is one fabricated claim, not two — the appositive after
+    the comma is not an independent, potentially-true clause, so it must go
+    with the rest of it."""
+
+    def test_fabricated_score_and_its_appositive_are_both_removed(self):
+        text = "The charity earned a perfect score from Charity Navigator, its highest rating."
+        metrics = _metrics(cn_overall_score=None)
+        out = _sanitize(text, metrics)
+        assert out == ""
+
+    def test_true_clause_then_fabricated_score_with_appositive_survives(self):
+        """A true claim in front of the fabricated one must survive in
+        full, and the fabricated claim's appositive tail must not leak
+        through as a dangling fragment."""
+        text = (
+            "The charity spends $0.10 per $1 raised, and earned a perfect score "
+            "from Charity Navigator, its highest rating."
+        )
+        metrics = _metrics(cn_overall_score=None)
+        out = _sanitize(text, metrics)
+        assert out == "The charity spends $0.10 per $1 raised."
+        assert "highest rating" not in out
+
+    def test_appositive_case_is_idempotent(self):
+        text = "The charity earned a perfect score from Charity Navigator, its highest rating."
+        metrics = _metrics(cn_overall_score=None)
+        once = _sanitize(text, metrics)
+        twice = _sanitize(once, metrics)
+        assert twice == once == ""
+
+
+# Matrix: each removal-rule family x {unsupported alone, unsupported first +
+# supported second, supported first + unsupported second, both unsupported}.
+# The "supported" companion claim is fundraising for every family except
+# fundraising itself, which pairs with working capital instead. Exact
+# strings, not substring checks — a `not in` assertion would pass against an
+# empty string and hide exactly the bug this task fixes.
+_FAMILY_MATRIX = [
+    # (family, text, metrics_overrides, expected_output)
+    (
+        "working_capital", "It holds 4.2 months of working capital.",
+        dict(working_capital_ratio=None), "",
+    ),
+    (
+        "working_capital",
+        "It holds 4.2 months of working capital, and spends $0.10 per $1 raised.",
+        dict(working_capital_ratio=None), "Spends $0.10 per $1 raised.",
+    ),
+    (
+        "working_capital",
+        "The charity spends $0.10 per $1 raised, and holds 4.2 months of working capital.",
+        dict(working_capital_ratio=None), "The charity spends $0.10 per $1 raised.",
+    ),
+    (
+        "working_capital",
+        "It holds 4.2 months of working capital, and spends $0.00 per $1 raised.",
+        dict(working_capital_ratio=None, fundraising_expenses=None), "",
+    ),
+    (
+        "program_ratio", "The charity has a program expense ratio of 91.1%.",
+        dict(program_expense_ratio=None), "",
+    ),
+    (
+        "program_ratio",
+        "The charity has a program expense ratio of 91.1%, and spends $0.10 per $1 raised.",
+        dict(program_expense_ratio=None), "Spends $0.10 per $1 raised.",
+    ),
+    (
+        "program_ratio",
+        "The charity spends $0.10 per $1 raised, and has a program expense ratio of 91.1%.",
+        dict(program_expense_ratio=None), "The charity spends $0.10 per $1 raised.",
+    ),
+    (
+        "program_ratio",
+        "The charity has a program expense ratio of 91.1%, and spends $0.00 per $1 raised.",
+        dict(program_expense_ratio=None, fundraising_expenses=None), "",
+    ),
+    (
+        "charity_navigator", "The charity scored 87/100 from Charity Navigator.",
+        dict(cn_overall_score=None), "",
+    ),
+    (
+        "charity_navigator",
+        "The charity scored 87/100 from Charity Navigator, and spends $0.10 per $1 raised.",
+        dict(cn_overall_score=None), "Spends $0.10 per $1 raised.",
+    ),
+    (
+        "charity_navigator",
+        "The charity spends $0.10 per $1 raised, and scored 87/100 from Charity Navigator.",
+        dict(cn_overall_score=None), "The charity spends $0.10 per $1 raised.",
+    ),
+    (
+        "charity_navigator",
+        "The charity scored 87/100 from Charity Navigator, and spends $0.00 per $1 raised.",
+        dict(cn_overall_score=None, fundraising_expenses=None), "",
+    ),
+    (
+        "accountability_score", "The charity has an accountability score of 87.",
+        dict(cn_accountability_score=None), "",
+    ),
+    (
+        "accountability_score",
+        "The charity has an accountability score of 87, and spends $0.10 per $1 raised.",
+        dict(cn_accountability_score=None), "Spends $0.10 per $1 raised.",
+    ),
+    (
+        "accountability_score",
+        "The charity spends $0.10 per $1 raised, and has an accountability score of 87.",
+        dict(cn_accountability_score=None), "The charity spends $0.10 per $1 raised.",
+    ),
+    (
+        "accountability_score",
+        "The charity has an accountability score of 87, and spends $0.00 per $1 raised.",
+        dict(cn_accountability_score=None, fundraising_expenses=None), "",
+    ),
+    (
+        "fundraising", "The charity spends $0.00 per $1 raised.",
+        dict(fundraising_expenses=None), "",
+    ),
+    (
+        "fundraising",
+        "The charity spends $0.00 per $1 raised, and holds 5.0 months of working capital.",
+        dict(fundraising_expenses=None), "Holds 5.0 months of working capital.",
+    ),
+    (
+        "fundraising",
+        "The charity holds 5.0 months of working capital, and spends $0.00 per $1 raised.",
+        dict(fundraising_expenses=None), "The charity holds 5.0 months of working capital.",
+    ),
+    (
+        "fundraising",
+        "The charity spends $0.00 per $1 raised, and holds 4.2 months of working capital.",
+        dict(fundraising_expenses=None, working_capital_ratio=None), "",
+    ),
+    (
+        "zakat", "The charity is zakat-eligible.",
+        dict(), "",
+    ),
+    (
+        "zakat",
+        "The charity is zakat-eligible, and spends $0.10 per $1 raised.",
+        dict(), "Spends $0.10 per $1 raised.",
+    ),
+    (
+        "zakat",
+        "The charity spends $0.10 per $1 raised, and is zakat-eligible.",
+        dict(), "The charity spends $0.10 per $1 raised.",
+    ),
+    (
+        "zakat",
+        "The charity is zakat-eligible, and spends $0.00 per $1 raised.",
+        dict(fundraising_expenses=None), "",
+    ),
+]
+
+
+class TestRemovalRuleFamilyClauseMatrix:
+    """Requirement 5: every removal-rule family x every clause-sharing
+    arrangement. "zakat" always runs with wallet_tag=SADAQAH-ELIGIBLE (the
+    only wallet tag that triggers its removal rule); every other family runs
+    with the default ZAKAT-ELIGIBLE so the zakat rule never fires and
+    contaminates a result meant to isolate one family at a time."""
+
+    @pytest.mark.parametrize(
+        "family,text,overrides,expected",
+        _FAMILY_MATRIX,
+        ids=[f"{family}-{i}" for i, (family, *_rest) in enumerate(_FAMILY_MATRIX)],
+    )
+    def test_matrix_case(self, family, text, overrides, expected):
+        metrics = _metrics(**overrides)
+        wallet_tag = "SADAQAH-ELIGIBLE" if family == "zakat" else "ZAKAT-ELIGIBLE"
+        out = _sanitize(text, metrics, wallet_tag=wallet_tag)
+        assert out == expected
+
+    @pytest.mark.parametrize(
+        "family,text,overrides,expected",
+        _FAMILY_MATRIX,
+        ids=[f"{family}-{i}" for i, (family, *_rest) in enumerate(_FAMILY_MATRIX)],
+    )
+    def test_matrix_case_is_idempotent(self, family, text, overrides, expected):
+        metrics = _metrics(**overrides)
+        wallet_tag = "SADAQAH-ELIGIBLE" if family == "zakat" else "ZAKAT-ELIGIBLE"
+        once = _sanitize(text, metrics, wallet_tag=wallet_tag)
+        twice = _sanitize(once, metrics, wallet_tag=wallet_tag)
+        assert twice == once

@@ -22,7 +22,7 @@ import sys
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from dotenv import load_dotenv
 
@@ -806,6 +806,71 @@ Generate the corrected narrative JSON:"""
         return None, f"LLM generation failed: {str(e)}", total_cost
 
 
+def _match_case(match: "re.Match[str]", replacement: str) -> str:
+    """Preserve the matched text's leading capitalization in a correction
+    rule's replacement.
+
+    A few correction rules replace a verb-led match ("Holds"/"holds",
+    "Scored"/"scored", ...) with a fixed-case literal string. That's
+    harmless when the match is always mid-sentence, but a removal rule
+    elsewhere in this function can now leave such a clause at the very
+    start of a sentence (see the working-capital "holds" rule paired with
+    the null-fundraising removal rule) — re-running the same correction
+    rule on its own already-correct, now-capitalized output would silently
+    lowercase it again, which would break the idempotency every rule here
+    must have.
+    """
+    if replacement and match.group(0)[:1].isupper():
+        return replacement[0].upper() + replacement[1:]
+    return replacement
+
+
+def _repair_removal_artifacts(text: str) -> str:
+    """Clean up what a clause-scoped removal leaves behind.
+
+    A removal rule's leading/trailing edges (`_clause_lead` / `_clause_trail`
+    in `sanitize_narrative_metrics`) stop at a clause boundary instead of the
+    sentence boundary, on purpose — so a true claim sharing a sentence with a
+    fabricated one survives. That leaves two kinds of debris depending on
+    which side of the sentence the removed clause was on:
+      - removed clause was first: a leading ", and " / ", " connector is now
+        stranded at the front of what remains (and the word right after it
+        is no longer capitalized, since it used to be mid-sentence).
+      - removed clause was the whole sentence: its own terminal period is
+        never part of the match (see `_clause_trail`'s docstring), so it's
+        left as an orphan with nothing before it.
+    Both need cleanup that a simple `re.sub(pattern, "")` can't do inline,
+    which is why this runs as a separate pass after each removal instead of
+    being folded into the removal patterns themselves.
+
+    Must be idempotent — sanitize_narrative_metrics runs twice on the
+    citation-repair retry path, so re-running this on its own output has to
+    be a byte-identical no-op.
+    """
+    text = re.sub(r"\s{2,}", " ", text)
+    # A leading connective stranded at the start of a sentence: ", and X" or
+    # ", X" -> "X" (only at the very start of the string, or right after a
+    # previous sentence's terminal punctuation — never mid-sentence, so this
+    # can't reach into unrelated text).
+    text = re.sub(r"(^|[.!?]\s+)\s*,\s*(?:and\s+)?", r"\1", text)
+    # A bare "and " stranded at a sentence start with no comma of its own
+    # (the comma was itself part of the removed span).
+    text = re.sub(r"(^|[.!?]\s+)and\s+", r"\1", text, flags=re.IGNORECASE)
+    text = re.sub(r",\s*,", ",", text)  # doubled comma
+    text = re.sub(r",\s*([.!?])", r"\1", text)  # comma stranded right before terminal punctuation
+    text = re.sub(r",\s*$", "", text)  # trailing dangling comma
+    text = re.sub(r"([.!?])\s*\1+", r"\1", text)  # doubled terminal punctuation
+    # A stray terminal mark with nothing (or only whitespace) before it — the
+    # whole clause it used to close was removed.
+    text = re.sub(r"(^|[.!?]\s+)[.!?]\s*", r"\1", text)
+    text = re.sub(r"\s{2,}", " ", text).strip()
+    # Capitalize the first letter of the string and of each sentence start,
+    # since the word now beginning a sentence may have been lowercase and
+    # mid-sentence before its leading clause was removed.
+    text = re.sub(r"(^\s*|[.!?]\s+)([a-z])", lambda m: m.group(1) + m.group(2).upper(), text)
+    return text
+
+
 def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", scores: Any) -> dict:
     """Deterministically stamp correct metric values into LLM-generated narrative.
 
@@ -819,7 +884,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # ── Build the ground-truth lookup ──
     # Each entry: (regex pattern, correct replacement, remove_if_na)
     # For N/A metrics the pattern is used to strip the enclosing sentence.
-    rules: list[tuple[str, str | None, bool]] = []
+    rules: list[tuple[str, str | Callable[["re.Match[str]"], str] | None, bool]] = []
 
     # Removal rules scan "everything up to the sentence boundary" using a
     # `[^.]*`-shaped run. A literal `.` also shows up mid-number ("91.1%",
@@ -827,14 +892,36 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # at the real sentence end, and the trailing `\.?` then deletes into the
     # next clause starting mid-number. Fix: treat a period as a boundary only
     # when it is NOT sandwiched between two digits (a decimal point).
+    #
+    # `_decimal_safe` is still used for the INNER gaps inside a removal
+    # pattern (e.g. the "co-occurrence within one sentence" gap between
+    # "$0.00" and "fundraising efficiency") — that's about tolerating
+    # unrelated words *inside* one fabricated claim, not about where the
+    # claim's outer boundary sits, so it is unaffected by the clause-vs-
+    # sentence fix below.
     _decimal_safe = r"(?:[^.]|(?<=\d)\.(?=\d))*"
-    # Same, but also stops at a comma — used only for the leading scan in
-    # rules that must not swallow an adjacent, unrelated clause (e.g. a
-    # legitimate "91.1% program expense ratio" clause sitting in front of a
-    # fabricated one, joined by "and a"/comma). Includes an optional leading
-    # ", and " / ", " so the removed span cleanly eats the connective tissue
-    # too, rather than leaving a dangling comma.
+    # Used for the OUTER leading edge of every removal rule (not just
+    # fundraising) — also stops at a comma, so the removal can't swallow an
+    # adjacent, unrelated clause sitting in front of the fabricated one (e.g.
+    # a legitimate "91.1% program expense ratio" clause joined to a
+    # fabricated one by "and a"/comma). Includes an optional leading ", and "
+    # / ", " so the removed span cleanly eats the connective tissue too,
+    # rather than leaving a dangling comma at the front of what remains.
     _clause_lead = r"(?:,\s*(?:and\s+)?)?" + r"(?:[^.,]|(?<=\d)\.(?=\d))*"
+    # Used for the OUTER trailing edge of every removal rule. A plain comma
+    # (not followed by "and") is treated as *inside* the same claim — e.g.
+    # "a perfect score from Charity Navigator, its highest rating" is one
+    # fabricated claim with an appositive tail, and clause-scoping the tail
+    # would leave that dangling fragment behind, still implying a rating
+    # that doesn't exist. A comma that IS followed by "and" is treated as a
+    # clause boundary instead, because every reproduced case of a *true*
+    # claim being swallowed had the true clause coordinated onto the false
+    # one with ", and ...". Deliberately does not also match a bare trailing
+    # `\.` — the terminal period is left for `_repair_removal_artifacts` to
+    # clean up, so a removal that empties its whole sentence doesn't strand
+    # an orphan period, and a removal that leaves a real clause behind
+    # doesn't eat that clause's own closing period.
+    _clause_trail = r"(?:[^.,]|(?<=\d)\.(?=\d)|,(?!\s*and\b))*"
 
     # Working capital  (e.g. "8.3 months of working capital" or "8.3 years of reserves")
     # LLM variants: "holds X years of expenses", "maintains X years in reserves",
@@ -851,11 +938,13 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 False,
             )
         )
-        # Pattern 2: "holds/maintains X years of expenses"
+        # Pattern 2: "holds/maintains X years of expenses". Case-preserving
+        # replacement (see _match_case) — a preceding clause's removal can
+        # leave this one sentence-initial and capitalized ("Holds ...").
         rules.append(
             (
                 rf"(?:holds?|maintains?|has)\s+{_wc_num_unit}\s+(?:of\s+)?{_wc_noun}",
-                f"holds {correct_wc} of working capital",
+                lambda m: _match_case(m, f"holds {correct_wc} of working capital"),
                 False,
             )
         )
@@ -871,14 +960,14 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # Remove any mention of working capital with a number
         rules.append(
             (
-                rf"{_decimal_safe}{_wc_num_unit}\s+(?:of\s+)?{_wc_noun}{_decimal_safe}\.?",
+                rf"{_clause_lead}{_wc_num_unit}\s+(?:of\s+)?{_wc_noun}{_clause_trail}",
                 None,
                 True,
             )
         )
         rules.append(
             (
-                rf"{_decimal_safe}(?:holds?|maintains?|has)\s+{_wc_num_unit}\s+(?:of\s+)?{_wc_noun}{_decimal_safe}\.?",
+                rf"{_clause_lead}(?:holds?|maintains?|has)\s+{_wc_num_unit}\s+(?:of\s+)?{_wc_noun}{_clause_trail}",
                 None,
                 True,
             )
@@ -926,14 +1015,14 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # Remove sentences mentioning program expense ratio with a number
         rules.append(
             (
-                rf"{_decimal_safe}program\s+(?:expense\s+)?ratio\s+(?:of\s+)?\d+\.?\d*\s*%{_decimal_safe}\.?",
+                rf"{_clause_lead}program\s+(?:expense\s+)?ratio\s+(?:of\s+)?\d+\.?\d*\s*%{_clause_trail}",
                 None,
                 True,
             )
         )
         rules.append(
             (
-                rf"{_decimal_safe}(?:directs?|allocates?)\s+\d+\.?\d*\s*%\s+(?:of\s+\w+\s+)?(?:to|toward)\s+(?:programs?|programmatic){_decimal_safe}\.?",
+                rf"{_clause_lead}(?:directs?|allocates?)\s+\d+\.?\d*\s*%\s+(?:of\s+\w+\s+)?(?:to|toward)\s+(?:programs?|programmatic){_clause_trail}",
                 None,
                 True,
             )
@@ -975,17 +1064,20 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
             )
         )
     else:
-        # Strip any fabricated CN score claim — broad patterns
+        # Strip any fabricated CN score claim — broad patterns. The middle
+        # `_decimal_safe` gaps stay as-is (co-occurrence within one sentence,
+        # e.g. "scored 87/100 last year from Charity Navigator"); only the
+        # outer leading/trailing edges become clause-scoped.
         rules.append(
             (
-                rf"{_decimal_safe}\d+/100{_decimal_safe}Charity\s+Navigator{_decimal_safe}\.?",
+                rf"{_clause_lead}\d+/100{_decimal_safe}Charity\s+Navigator{_clause_trail}",
                 None,
                 True,
             )
         )
         rules.append(
             (
-                rf"{_decimal_safe}Charity\s+Navigator{_decimal_safe}\d+/100{_decimal_safe}\.?",
+                rf"{_clause_lead}Charity\s+Navigator{_decimal_safe}\d+/100{_clause_trail}",
                 None,
                 True,
             )
@@ -993,40 +1085,52 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # "scored/rates X out of 100 ... Charity Navigator"
         rules.append(
             (
-                rf"{_decimal_safe}(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+)?\d+\.?\d*\s+out\s+of\s+100{_decimal_safe}Charity\s+Navigator{_decimal_safe}\.?",
+                rf"{_clause_lead}(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+)?\d+\.?\d*\s+out\s+of\s+100{_decimal_safe}Charity\s+Navigator{_clause_trail}",
                 None,
                 True,
             )
         )
         # "Charity Navigator ... scored/rates X"
+        # The trailing "out of 100"/"/100" is optional, so when it's absent
+        # the number itself is the last thing the core pattern requires —
+        # `\d+(?:\.\d+)?` (not `\d+\.?\d*`) so a bare "87." at the true
+        # sentence end isn't misread as "87" plus an empty decimal point,
+        # which would swallow the period a surviving clause needs.
         rules.append(
             (
-                rf"{_decimal_safe}Charity\s+Navigator{_decimal_safe}(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+)?\d+\.?\d*(?:\s+out\s+of\s+100|/100)?{_decimal_safe}\.?",
+                rf"{_clause_lead}Charity\s+Navigator{_decimal_safe}(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+)?\d+(?:\.\d+)?(?:\s+out\s+of\s+100|/100)?{_clause_trail}",
                 None,
                 True,
             )
         )
-        # "perfect score/rating ... Charity Navigator" or vice versa
+        # "perfect score/rating ... Charity Navigator" or vice versa. This is
+        # the family that motivates keeping the trailing edge sentence-scoped
+        # rather than clause-scoped: "a perfect score from Charity Navigator,
+        # its highest rating." must lose the whole appositive tail, not just
+        # up to the comma.
         rules.append(
             (
-                rf"{_decimal_safe}(?:perfect|top|highest)\s+(?:score|rating|marks?){_decimal_safe}Charity\s+Navigator{_decimal_safe}\.?",
+                rf"{_clause_lead}(?:perfect|top|highest)\s+(?:score|rating|marks?){_decimal_safe}Charity\s+Navigator{_clause_trail}",
                 None,
                 True,
             )
         )
         rules.append(
             (
-                rf"{_decimal_safe}Charity\s+Navigator{_decimal_safe}(?:perfect|top|highest)\s+(?:score|rating|marks?){_decimal_safe}\.?",
+                rf"{_clause_lead}Charity\s+Navigator{_decimal_safe}(?:perfect|top|highest)\s+(?:score|rating|marks?){_clause_trail}",
                 None,
                 True,
             )
         )
 
-    # CN accountability/financial sub-scores — strip if null
+    # CN accountability/financial sub-scores — strip if null. Same
+    # bare-trailing-number risk as the CN rule above: the "/100" suffix is
+    # optional, so `\d+(?:\.\d+)?` guards against eating a sentence-ending
+    # period when it's absent.
     if cn_accountability is None:
         rules.append(
             (
-                rf"{_decimal_safe}(?:accountability|governance)\s+score\s+(?:of\s+)?\d+\.?\d*(?:/100|\s+out\s+of\s+100)?{_decimal_safe}\.?",
+                rf"{_clause_lead}(?:accountability|governance)\s+score\s+(?:of\s+)?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100)?{_clause_trail}",
                 None,
                 True,
             )
@@ -1034,7 +1138,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     if cn_financial is None:
         rules.append(
             (
-                rf"{_decimal_safe}financial\s+(?:health\s+)?score\s+(?:of\s+)?\d+\.?\d*(?:/100|\s+out\s+of\s+100)?{_decimal_safe}\.?",
+                rf"{_clause_lead}financial\s+(?:health\s+)?score\s+(?:of\s+)?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100)?{_clause_trail}",
                 None,
                 True,
             )
@@ -1043,7 +1147,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     if cn_score is None:
         rules.append(
             (
-                rf"{_decimal_safe}\d+-?\s*star\s+(?:rating|charity){_decimal_safe}Charity\s+Navigator{_decimal_safe}\.?",
+                rf"{_clause_lead}\d+-?\s*star\s+(?:rating|charity){_decimal_safe}Charity\s+Navigator{_clause_trail}",
                 None,
                 True,
             )
@@ -1090,18 +1194,24 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # cross a comma to swallow an unrelated clause sitting in front of the
         # fabricated one (e.g. "a 91.1% program expense ratio, and a $0.00
         # fundraising efficiency rate." must lose only the second clause).
-        # The middle/trailing scans use _decimal_safe so a decimal point
-        # elsewhere in the sentence is never mistaken for its end.
+        # The middle scan stays _decimal_safe (co-occurrence within one
+        # sentence — a decimal point elsewhere is never mistaken for the
+        # sentence's end). The trailing scan is now _clause_trail as well, so
+        # a *following* clause coordinated with ", and ..." (a true claim
+        # about a different metric) survives instead of being swallowed too.
         rules.append(
             (
-                rf"{_clause_lead}\$\d+\.?\d*{_decimal_safe}(?:{_fr_phrasing}|fundraising\s+efficiency){_decimal_safe}\.?",
+                rf"{_clause_lead}\$\d+\.?\d*{_decimal_safe}(?:{_fr_phrasing}|fundraising\s+efficiency){_clause_trail}",
                 None,
                 True,
             )
         )
+        # No suffix follows the dollar amount here, so it's the last thing
+        # the core requires — same bare-trailing-number risk as the CN/
+        # accountability/financial rules above; `\d+(?:\.\d+)?` guards it.
         rules.append(
             (
-                rf"{_clause_lead}fundraising\s+efficiency{_decimal_safe}\$\d+\.?\d*{_decimal_safe}\.?",
+                rf"{_clause_lead}fundraising\s+efficiency{_decimal_safe}\$\d+(?:\.\d+)?{_clause_trail}",
                 None,
                 True,
             )
@@ -1110,7 +1220,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # so it isn't covered by _fr_phrasing above)
         rules.append(
             (
-                rf"{_clause_lead}fundraising\s+(?:costs?|expenses?)\s+(?:of\s+)?\$\d+\.?\d*\s+per\s+(?:dollar|every\s+dollar){_decimal_safe}\.?",
+                rf"{_clause_lead}fundraising\s+(?:costs?|expenses?)\s+(?:of\s+)?\$\d+\.?\d*\s+per\s+(?:dollar|every\s+dollar){_clause_trail}",
                 None,
                 True,
             )
@@ -1144,7 +1254,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         )
         rules.append(
             (
-                rf"{_decimal_safe}{_zakat_keywords}{_decimal_safe}\.?",
+                rf"{_clause_lead}{_zakat_keywords}{_clause_trail}",
                 None,
                 True,
             )
@@ -1174,9 +1284,16 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     def _apply_rules(text: str) -> str:
         for pattern, replacement, is_removal in rules:
             if is_removal:
-                text = re.sub(pattern, "", text, flags=re.IGNORECASE)
-                text = re.sub(r"\s{2,}", " ", text)
-                text = re.sub(r"\.\s*\.", ".", text)
+                stripped = re.sub(pattern, "", text, flags=re.IGNORECASE)
+                # Only run the repair pass when this rule actually removed
+                # something. Every rule runs over every string field, so most
+                # (pattern, text) pairs never match at all — repairing
+                # unconditionally would "fix" (e.g. capitalize) text this
+                # rule never touched, which isn't this rule's to fix.
+                if stripped != text:
+                    text = _repair_removal_artifacts(stripped)
+            elif callable(replacement):
+                text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
             else:
                 text = re.sub(pattern, replacement or "", text, flags=re.IGNORECASE)
         return text.strip()
