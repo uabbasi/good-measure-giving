@@ -1286,6 +1286,29 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # number is correctly left untouched.
     _hedge_gap = rf"(?:(?!(?:{_metric_noun_boundary}|is|was|are|were|and)\b)[A-Za-z]+\s+){{0,{_hedge_max_words}}}"
 
+    # A guard must never be narrower than the rule it guards. `_sub_score_
+    # lead_re` below (not this correction gap) is what decides whether the
+    # generic CN-overall rule is allowed to claim a span — and it originally
+    # reused this same 3-word-bounded `_hedge_gap` for its own backward
+    # lookup. Past 3 hedge words, the sub-score correction rule correctly
+    # declines to fire (an honest, mild residual gap — the wrong number
+    # stays uncorrected), but the GUARD *also* declined at the same
+    # threshold, so the generic overall rule proceeded unguarded and
+    # stamped the overall score into a sub-score-labelled span — the exact
+    # severe misattribution this task exists to prevent, just relocated to
+    # 4+ words. `_guard_gap` is unbounded (no `{0,N}` cap) for exactly this
+    # reason: the correction rules stay conservative because touching too
+    # much text corrupts it, but the guard's only job is refusing to let a
+    # DIFFERENT rule act on a span — firing too often just means "the
+    # overall rule declines to fix a legitimate overall-score claim" (over-
+    # cautious, not corrupting), so there is no matching safety reason to
+    # bound it. It keeps the same digit/metric-noun/`and`/linking-verb
+    # exclusions as `_hedge_gap`, so it still can't reach across a genuine
+    # clause boundary or into a different metric's own number — those
+    # exclusions are what make an unbounded scan safe here, not the word
+    # count. See `TestSubScoreGuardStaysPermissiveBeyondTheCorrectionBound`.
+    _guard_gap = rf"(?:(?!(?:{_metric_noun_boundary}|is|was|are|were|and)\b)[A-Za-z]+\s+)*"
+
     # Working capital  (e.g. "8.3 months of working capital" or "8.3 years of reserves")
     # LLM variants: "holds X years of expenses", "maintains X years in reserves",
     # "X years' worth of operating", "expenses held in reserve"
@@ -1533,15 +1556,18 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # mode this guard exists to prevent regardless of which preposition or
     # verb sits between the noun and the number.
     #
-    # Task G14: `_hedge_gap` before the trailing `$` closes the actual
-    # worst bug this task found — "an accountability score of roughly
-    # 40/100" used to fail this guard (the hedge word "roughly" sat between
-    # "of" and the position the lookbehind checks, so the `$`-anchored
-    # match never fired), letting the generic overall rule below claim the
-    # span and stamp the *overall* score into text explicitly labelled
-    # accountability's.
+    # Task G14: a gap before the trailing `$` closes the actual worst bug
+    # this task found — "an accountability score of roughly 40/100" used
+    # to fail this guard (the hedge word "roughly" sat between "of" and
+    # the position the lookbehind checks, so the `$`-anchored match never
+    # fired), letting the generic overall rule below claim the span and
+    # stamp the *overall* score into text explicitly labelled
+    # accountability's. Uses `_guard_gap` (unbounded), not `_hedge_gap`
+    # (bounded to `_hedge_max_words`) — see `_guard_gap`'s own definition
+    # above for why a guard must stay permissive even where the rule it
+    # guards stays conservative.
     _sub_score_lead_re = re.compile(
-        rf"(?:{_acc_name}|{_fin_name})\s+(?:score|rating)\s+(?:of|is|was)?\s*{_hedge_gap}$",
+        rf"(?:{_acc_name}|{_fin_name})\s+(?:score|rating)\s+(?:of|is|was)?\s*{_guard_gap}$",
         re.IGNORECASE,
     )
     if cn_score is not None:

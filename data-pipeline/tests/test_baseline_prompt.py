@@ -3785,10 +3785,14 @@ class TestHedgeWordGapBoundedByCountNotVocabulary:
         assert out == "It has an accountability score of 60.0/100."
 
     def test_four_hedge_words_is_a_known_residual_gap(self):
-        """One word past the bound: the anchor fails to match at all, so
-        the wrong number (40/100) survives exactly as written — worse than
-        being corrected, but not mislabeled with a different metric's
-        value, which is the property this task actually guarantees."""
+        """One word past the bound, no "Charity Navigator" mention in this
+        specific text: the correction rule's anchor fails to match at all,
+        so the wrong number (40/100) survives exactly as written. Note:
+        this text alone does not exercise the sharper defect
+        `TestSubScoreGuardStaysPermissiveBeyondTheCorrectionBound` covers —
+        see that class for what actually happens once "Charity Navigator"
+        is in the sentence and the generic overall rule has something to
+        claim."""
         text = "It has an accountability score of a truly quite remarkable 40/100."
         metrics = _metrics(cn_accountability_score=60.0)
         out = _sanitize(text, metrics)
@@ -3806,6 +3810,73 @@ class TestHedgeWordGapBoundedByCountNotVocabulary:
     def test_five_pass_stable(self, text, metrics):
         passes = _five_passes(text, metrics)
         assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+
+class TestSubScoreGuardStaysPermissiveBeyondTheCorrectionBound:
+    """A guard must never be narrower than the rule it guards. `_sub_score_
+    lead_re` exists specifically to stop the generic CN-overall correction
+    rule from claiming a span whose noun names a sub-score — but it
+    originally reused `_hedge_gap`'s own 3-word bound to do its own
+    backward lookup. Past that bound, the SUB-SCORE rule's own correction
+    correctly declines to fire (an honest, mild residual gap: the wrong
+    number stays uncorrected) — but the GUARD *also* declined, at exactly
+    the same threshold, so the generic overall rule proceeded unguarded
+    and stamped the *overall* score into a span explicitly labelled a
+    sub-score's — the exact severe misattribution this whole task exists
+    to prevent, just relocated to 4+ words instead of eliminated.
+
+    Fixed by giving the guard's own backward lookup an unbounded gap
+    (`_guard_gap`, no `{0,N}` cap) while the correction rules keep the
+    conservative, bounded `_hedge_gap` — a deliberate asymmetry: the
+    correction only ever touches text it fully recognizes (bounded,
+    conservative), while the guard's only job is refusing to let a
+    DIFFERENT rule act on a span it doesn't own (permissive is safe here,
+    since a guard firing too often just means "the overall rule declines
+    to fix a legitimate overall-score claim" — over-cautious, not
+    corrupting). Now the correct behavior at 4+ words is: the wrong
+    number survives completely untouched — neither corrected (still
+    bounded) nor misattributed (guard no longer expires)."""
+
+    @pytest.mark.parametrize(
+        "hedge",
+        ["just a little over", "a bit more than roughly", "just a little bit more than roughly"],
+        ids=["4_words", "5_words", "6_plus_words"],
+    )
+    def test_accountability_wrong_number_is_never_misattributed_to_overall(self, hedge):
+        text = f"It has an accountability score of {hedge} 40/100 from Charity Navigator."
+        metrics = _metrics(cn_overall_score=94.0, cn_accountability_score=60.0)
+        out = _sanitize(text, metrics)
+        assert "94.0" not in out
+        assert out == text
+
+    @pytest.mark.parametrize(
+        "hedge",
+        ["just a little under", "a bit less than roughly", "just a little bit less than roughly"],
+        ids=["4_words", "5_words", "6_plus_words"],
+    )
+    def test_financial_wrong_number_is_never_misattributed_to_overall(self, hedge):
+        text = f"It has a financial score of {hedge} 40/100 from Charity Navigator."
+        metrics = _metrics(cn_overall_score=94.0, cn_financial_score=55.0)
+        out = _sanitize(text, metrics)
+        assert "94.0" not in out
+        assert out == text
+
+    @pytest.mark.parametrize(
+        "text,metrics",
+        [
+            ("It has an accountability score of just a little over 40/100 from Charity Navigator.",
+             _metrics(cn_overall_score=94.0, cn_accountability_score=60.0)),
+            ("It has an accountability score of a bit more than roughly 40/100 from Charity Navigator.",
+             _metrics(cn_overall_score=94.0, cn_accountability_score=60.0)),
+            ("It has a financial score of just a little under 40/100 from Charity Navigator.",
+             _metrics(cn_overall_score=94.0, cn_financial_score=55.0)),
+            ("It has a financial score of a bit less than roughly 40/100 from Charity Navigator.",
+             _metrics(cn_overall_score=94.0, cn_financial_score=55.0)),
+        ],
+    )
+    def test_five_pass_stable(self, text, metrics):
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == text
 
 
 class TestHedgeWordGapDoesNotReopenTheLinkingVerbGuard:
