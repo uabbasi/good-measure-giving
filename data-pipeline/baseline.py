@@ -929,27 +929,55 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # e.g. "a perfect score from Charity Navigator, its highest rating" is
     # one fabricated claim with an appositive tail, and clause-scoping the
     # tail would leave that dangling fragment behind, still implying a
-    # rating that doesn't exist. An independent clause leads with a finite
-    # verb ("spends", "holds", "scored", "is", ...) and IS a clause boundary
-    # — every reproduced case of a *true* claim being swallowed had the true
-    # clause coordinated onto the false one this way, whether joined by
-    # ", and ..." or a bare ", ...". The verb list below is exactly the verb
-    # vocabulary the rules elsewhere in this function already use for these
-    # same clauses (holds/maintains/has, directs/allocates/dedicates/
-    # channels/devotes, scores/rates/receives), plus "spends" and the copula
-    # ("is"/"are"/"was"/"were"), which the true-clause examples also use.
+    # rating that doesn't exist. An independent clause must NOT be
+    # swallowed the same way.
+    #
+    # An earlier version of this told the two apart by checking whether the
+    # text after the comma led with a finite verb ("spends", "holds",
+    # "scored", "is", ...), on the theory that an independent clause always
+    # opens with one. That enumerates the wrong side: the set of verbs a
+    # true clause can open with is unbounded (any verb at all — "reports",
+    # "serves", "operates", "distributed", "founded", ... none of which were
+    # on the list), so any verb missing from it reproduced the original bug
+    # of wiping the true clause along with the false one.
+    #
+    # The side that IS closed is the appositive lead: every appositive tail
+    # actually seen here ("its highest rating", "a strong reserve position",
+    # "the best in its class", "one of the highest in its cohort") opens
+    # with a determiner, possessive, or quantifier — never a verb. A
+    # genuine comparison of the SAME fabricated number ("up from 82 last
+    # year", "compared to last year") also belongs on the "still one claim"
+    # side despite carrying its own number — the trap a naive "does the
+    # tail contain a number" test would fall into, wrongly boundary-ing
+    # there and leaving a fabricated fragment like "Up from 82 last year."
+    # behind.
+    #
+    # So `_clause_trail` now swallows a bare comma ONLY when what follows it
+    # opens with one of these closed continuation markers, and treats
+    # everything else — any verb, known or not, "and", or anything
+    # unrecognized — as an independent-clause boundary and stops there.
+    # This is a deliberately asymmetric default: an appositive phrasing not
+    # in the list below will now be preserved as an orphan fragment rather
+    # than removed (over-preservation, the safer failure mode per the
+    # standing rule that a surviving fabrication is worse than a
+    # fabrication-adjacent leftover fragment of one) instead of silently
+    # deleting a true clause it can't recognize. This list — not a verb
+    # list — is what to extend if a new appositive phrasing turns up.
     # Deliberately does not also match a bare trailing `\.` — the terminal
     # period is left for `_repair_removal_artifacts` to clean up, so a
     # removal that empties its whole sentence doesn't strand an orphan
     # period, and a removal that leaves a real clause behind doesn't eat
     # that clause's own closing period.
-    _trail_verb_lead = (
-        r"(?:spends?|holds?|maintains?|has|have|had"
-        r"|scores?d?|rates?d?|receives?d?"
-        r"|directs?|allocates?|dedicates?|channels?|devotes?"
-        r"|is|are|was|were)\b"
+    _trail_same_claim_lead = (
+        r"(?:a|an|the|its|their|his|her)\b"
+        r"|one\s+of\b"
+        r"|(?:up|down)\s+from\b"
+        r"|compared\s+to\b"
+        r"|versus\b"
+        r"|vs\.?(?=\s)"
+        r"|well\s+(?:above|below|over|under)\b"
     )
-    _clause_trail = rf"(?:[^.,]|(?<=\d)\.(?=\d)|,(?!\s*(?:and\b|{_trail_verb_lead})))*"
+    _clause_trail = rf"(?:[^.,]|(?<=\d)\.(?=\d)|,(?=\s*(?:{_trail_same_claim_lead})))*"
 
     # Working capital  (e.g. "8.3 months of working capital" or "8.3 years of reserves")
     # LLM variants: "holds X years of expenses", "maintains X years in reserves",

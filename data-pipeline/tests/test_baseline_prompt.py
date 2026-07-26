@@ -843,3 +843,109 @@ class TestClauseTrailBareCommaBoundary:
         text = "The charity holds 4.2 months of working capital, a strong reserve position."
         out = _sanitize(text, metrics)
         assert out == ""
+
+
+# Re-review of `_clause_trail`: the finite-verb-lead heuristic ("spends",
+# "holds", "scored", "is", ...) enumerated the open class — any verb not on
+# the list reproduced the original bug. These are the exact verbs the
+# reviewer found missing, each paired with a true clause that must survive
+# a bare-comma join to the false clause in front of it.
+_OPEN_VERB_CLASS_GAP = [
+    ("reports",
+     "It holds 4.2 months of working capital, reports $2M in revenue this year.",
+     "Reports $2M in revenue this year."),
+    ("serves",
+     "It holds 4.2 months of working capital, serves over 10,000 families each year.",
+     "Serves over 10,000 families each year."),
+    ("operates",
+     "It holds 4.2 months of working capital, operates 12 clinics nationwide.",
+     "Operates 12 clinics nationwide."),
+    ("distributed",
+     "It holds 4.2 months of working capital, distributed 3M meals last year.",
+     "Distributed 3M meals last year."),
+]
+
+# The comparative-tail trap the brief warned about: a genuine comparison of
+# the SAME fabricated number carries its own digits too ("82"), so a naive
+# "does the tail have a number" boundary test would wrongly treat it as an
+# independent clause and leave a fabricated fragment ("Up from 82 last
+# year.") behind instead of removing the whole claim.
+_COMPARATIVE_TAIL_TRAP = [
+    ("up_from", "The charity scored 87/100 from Charity Navigator, up from 82 last year."),
+    ("compared_to", "The charity scored 87/100 from Charity Navigator, compared to last year."),
+]
+
+# Appositive phrasings beyond the possessive-pronoun one already covered —
+# these open with a determiner or quantifier, the closed class
+# `_trail_same_claim_lead` is built on, not a verb.
+_CLOSED_CLASS_APPOSITIVES = [
+    ("the_best_in_its_class",
+     "The charity holds 4.2 months of working capital, the best in its class."),
+    ("one_of_the_highest",
+     "The charity scored 87/100 from Charity Navigator, one of the highest in its cohort."),
+]
+
+
+class TestClauseTrailReplacesVerbListWithClosedContinuationLead:
+    """Re-review finding: `_clause_trail`'s bare-comma boundary must not be
+    decided by an open verb class. Resolved by inverting which side is
+    enumerated — a closed set of continuation markers (determiner/
+    possessive/quantifier appositive leads, plus comparative-tail
+    prepositions) decides when the comma is swallowed; everything else,
+    including any verb, is a boundary and stops there."""
+
+    @pytest.mark.parametrize("name,text,expected", _OPEN_VERB_CLASS_GAP, ids=[n for n, *_ in _OPEN_VERB_CLASS_GAP])
+    def test_true_clause_survives_previously_unlisted_verb(self, name, text, expected):
+        metrics = _metrics(working_capital_ratio=None)
+        out = _sanitize(text, metrics)
+        assert out == expected
+
+    @pytest.mark.parametrize("name,text,expected", _OPEN_VERB_CLASS_GAP, ids=[n for n, *_ in _OPEN_VERB_CLASS_GAP])
+    def test_previously_unlisted_verb_case_is_idempotent(self, name, text, expected):
+        metrics = _metrics(working_capital_ratio=None)
+        once = _sanitize(text, metrics)
+        twice = _sanitize(once, metrics)
+        assert twice == once
+
+    def test_founded_verb_missing_from_old_list_no_longer_wipes_the_correction(self):
+        """The sharpest instance from the review: 'founded' was on neither
+        the old verb list nor any list at all, so the ratio-removal rule
+        swallowed 'founded in 1980' along with the false ratio clause
+        before the founded-year correction rule ever got to run on it."""
+        metrics = _metrics(program_expense_ratio=None, founded_year=1985)
+        text = "The charity has a program expense ratio of 91.1%, founded in 1980."
+        out = _sanitize(text, metrics)
+        assert out == "Founded in 1985."
+
+    def test_founded_verb_case_is_idempotent(self):
+        metrics = _metrics(program_expense_ratio=None, founded_year=1985)
+        text = "The charity has a program expense ratio of 91.1%, founded in 1980."
+        once = _sanitize(text, metrics)
+        twice = _sanitize(once, metrics)
+        assert twice == once
+
+    @pytest.mark.parametrize("name,text", _COMPARATIVE_TAIL_TRAP, ids=[n for n, _ in _COMPARATIVE_TAIL_TRAP])
+    def test_comparative_tail_of_the_same_false_claim_is_not_left_as_a_fragment(self, name, text):
+        metrics = _metrics(cn_overall_score=None)
+        out = _sanitize(text, metrics)
+        assert out == ""
+
+    @pytest.mark.parametrize("name,text", _COMPARATIVE_TAIL_TRAP, ids=[n for n, _ in _COMPARATIVE_TAIL_TRAP])
+    def test_comparative_tail_trap_case_is_idempotent(self, name, text):
+        metrics = _metrics(cn_overall_score=None)
+        once = _sanitize(text, metrics)
+        twice = _sanitize(once, metrics)
+        assert twice == once
+
+    @pytest.mark.parametrize("name,text", _CLOSED_CLASS_APPOSITIVES, ids=[n for n, _ in _CLOSED_CLASS_APPOSITIVES])
+    def test_closed_class_appositive_still_fully_removed(self, name, text):
+        metrics = _metrics(working_capital_ratio=None, cn_overall_score=None)
+        out = _sanitize(text, metrics)
+        assert out == ""
+
+    @pytest.mark.parametrize("name,text", _CLOSED_CLASS_APPOSITIVES, ids=[n for n, _ in _CLOSED_CLASS_APPOSITIVES])
+    def test_closed_class_appositive_case_is_idempotent(self, name, text):
+        metrics = _metrics(working_capital_ratio=None, cn_overall_score=None)
+        once = _sanitize(text, metrics)
+        twice = _sanitize(once, metrics)
+        assert twice == once
