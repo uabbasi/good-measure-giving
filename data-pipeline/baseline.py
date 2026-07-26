@@ -572,7 +572,7 @@ def _baseline_prompt_kwargs(metrics: CharityMetrics, scores: Any, num_sources: i
     """
     revenue_str = f"${metrics.total_revenue:,.0f}" if metrics.total_revenue else "N/A"
     ratio_str = f"{metrics.program_expense_ratio:.1%}" if metrics.program_expense_ratio else "N/A"
-    cn_score_str = f"{metrics.cn_overall_score}/100" if metrics.cn_overall_score else "N/A"
+    cn_score_str = f"{round(metrics.cn_overall_score, 1)}/100" if metrics.cn_overall_score else "N/A"
     programs_str = ", ".join(metrics.programs[:3]) if metrics.programs else "Not available"
     working_capital_str = f"{metrics.working_capital_ratio:.1f} months" if metrics.working_capital_ratio else "N/A"
 
@@ -908,10 +908,13 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     cn_accountability = getattr(metrics, "cn_accountability_score", None)
     cn_financial = getattr(metrics, "cn_financial_score", None)
     if cn_score is not None:
-        correct_cn = f"{cn_score}/100"
+        # Round before it ever reaches prose — cn_overall_score is an average of
+        # CN's beacon sub-scores, so it carries repeating decimals
+        # (98.66666666666667). One decimal place is what a donor should read.
+        correct_cn = f"{round(cn_score, 1)}/100"
         rules.append(
             (
-                r"\d+/100\s+(?:from\s+|by\s+|on\s+|score\s+(?:from\s+|on\s+)?)?(?:Charity\s+Navigator)",
+                r"\d+\.?\d*/100\s+(?:from\s+|by\s+|on\s+|score\s+(?:from\s+|on\s+)?)?(?:Charity\s+Navigator)",
                 f"{correct_cn} from Charity Navigator",
                 False,
             )

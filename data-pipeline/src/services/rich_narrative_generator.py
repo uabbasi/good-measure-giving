@@ -1276,7 +1276,7 @@ class RichNarrativeGenerator:
 
             lines.append("\n## CHARITY NAVIGATOR RATING CONSTRAINT (CRITICAL)")
             if cn_is_rated and cn_score:
-                lines.append(f"✓ CN Overall Score: {cn_score}/100 — use this exact value.")
+                lines.append(f"✓ CN Overall Score: {round(cn_score, 1)}/100 — use this exact value.")
             else:
                 lines.append("⚠️ This charity is NOT fully rated by Charity Navigator.")
                 lines.append("DO NOT mention any Charity Navigator score, rating, or accountability rating")

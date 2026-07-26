@@ -1,9 +1,10 @@
 """H4: baseline prompt unification — drift guard between template and call site."""
 
+import re
 from string import Formatter
 from types import SimpleNamespace
 
-from baseline import _baseline_prompt_kwargs, build_baseline_prompt
+from baseline import _baseline_prompt_kwargs, build_baseline_prompt, sanitize_narrative_metrics
 from src.llm.prompt_loader import load_prompt
 from src.utils.phase_fingerprint import PHASE_CODE_FILES
 
@@ -96,3 +97,47 @@ class TestDataVintageNote:
         assert isinstance(data_vintage_note(None), str)
         assert isinstance(data_vintage_note(0), str)
         assert isinstance(data_vintage_note(2024, today_year=2026), str)
+
+
+class TestCnScoreSanitizationIsIdempotent:
+    """baseline.py's CN correction rule matched `\\d+/100` — no decimal, no left
+    anchor — while its replacement is the raw unrounded cn_overall_score (an
+    average of CN's beacon sub-scores, e.g. 98.66666666666667). The unanchored
+    `\\d+` matched only the digits after the decimal point, so re.sub re-inserted
+    the full value and left the integer prefix: 98. + 98.66666666666667/100.
+    Non-idempotent, and sanitize_narrative_metrics runs twice on the retry path."""
+
+    def _sanitize(self, text, cn_score):
+        metrics = SimpleNamespace(
+            cn_overall_score=cn_score,
+            cn_accountability_score=None,
+            cn_financial_score=None,
+            fundraising_expenses=1000,
+            total_revenue=100000,
+            program_expense_ratio=None,
+            working_capital_ratio=None,
+        )
+        return sanitize_narrative_metrics({"rationale": text}, metrics, None)["rationale"]
+
+    def test_the_rounded_value_is_left_alone(self):
+        """Idempotency: sanitizing already-correct text must be a no-op."""
+        text = "The charity holds an overall score of 98.7/100 from Charity Navigator."
+        assert self._sanitize(text, 98.66666666666667) == text
+
+    def test_an_unrounded_value_is_replaced_not_doubled(self):
+        """The bug: \\d+/100 matched only '66666666666667', leaving the '98.' prefix."""
+        out = self._sanitize(
+            "Scored 98.66666666666667/100 from Charity Navigator.", 98.66666666666667
+        )
+        assert "98.7/100 from Charity Navigator" in out
+        assert not re.search(r"\d+\.\d+\.\d+/100", out)
+
+    def test_sanitizing_twice_is_a_no_op(self):
+        text = "Rated 87.5/100 from Charity Navigator."
+        once = self._sanitize(text, 87.5)
+        assert self._sanitize(once, 87.5) == once
+
+    def test_a_wrong_value_is_replaced_not_concatenated(self):
+        out = self._sanitize("Rated 42/100 from Charity Navigator.", 87.5)
+        assert "87.5/100 from Charity Navigator" in out
+        assert "42" not in out
