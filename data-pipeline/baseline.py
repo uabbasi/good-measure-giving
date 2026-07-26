@@ -1102,6 +1102,26 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 True,
             )
         )
+        # Number-BEFORE-metric-name variants of the same fabrication (e.g.
+        # "has a 91.1% program expense ratio", "spends 91.1% on programs").
+        # The two rules above only catch the number-after shape; the
+        # correction rules for this metric (pattern 1 above) already handle
+        # number-before phrasing when the ratio is real, so this closes the
+        # matching gap on the removal side rather than duplicating it.
+        rules.append(
+            (
+                rf"{_clause_lead}\d+\.?\d*\s*%\s+program\s+(?:expense\s+)?ratio{_clause_trail}",
+                None,
+                True,
+            )
+        )
+        rules.append(
+            (
+                rf"{_clause_lead}spends?\s+\d+\.?\d*\s*%\s+(?:on|for)\s+(?:programs?|programmatic\s+(?:work|activities|expenses?)){_clause_trail}",
+                None,
+                True,
+            )
+        )
 
     # Charity Navigator score
     # LLM variants: "accountability score of X", "financial score of X",

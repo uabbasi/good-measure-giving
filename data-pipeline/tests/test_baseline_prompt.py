@@ -156,9 +156,15 @@ class TestFundraisingClaimIsStrippedWhenDataIsMissing:
     ]
 
     def _sanitize_with_null_fundraising(self, text):
+        # program_expense_ratio is real (0.911) here, not null: the two tests
+        # below assert the "91.1% program expense ratio" clause *survives* as
+        # a legitimate neighbor to the stripped fundraising claim. Under a
+        # null ratio that clause is itself an unsupported fabrication (task
+        # G7) — the fixture disagreed with what these tests' own docstrings
+        # already claimed about it.
         metrics = SimpleNamespace(fundraising_expenses=None, total_revenue=604759,
                                   cn_overall_score=None, cn_accountability_score=None,
-                                  cn_financial_score=None, program_expense_ratio=None,
+                                  cn_financial_score=None, program_expense_ratio=0.911,
                                   working_capital_ratio=None)
         return sanitize_narrative_metrics({"rationale": text}, metrics, None)["rationale"]
 
@@ -1053,3 +1059,59 @@ class TestClauseTrailBareComparativeAppositiveLead:
         once = _sanitize(text, metrics)
         twice = _sanitize(once, metrics)
         assert twice == once
+
+
+_NUMBER_BEFORE_PROGRAM_RATIO_FABRICATIONS = [
+    ("has_a_number_before", "The charity has a 91.1% program expense ratio.", ""),
+    ("with_a_leading_number_before",
+     "With a 91.1% program expense ratio, it is efficient.", "It is efficient."),
+    ("spends_on_programs", "The charity spends 91.1% on programs.", ""),
+    ("citation_marker", "The charity has a 91.1% program expense ratio [2].", ""),
+]
+
+
+class TestNumberBeforeProgramRatioRemoval:
+    """Task G7: the null-program-ratio removal rules only matched
+    number-after phrasing ("ratio of 91.1%") and the directs/allocates-to-
+    programs shape, so a fabricated ratio with the number BEFORE the metric
+    name ("has a 91.1% program expense ratio", "spends 91.1% on programs")
+    survived unchanged — a donor-facing fabrication. The correction rule for
+    the same metric already recognizes number-before phrasing when stamping
+    a correct value over a wrong one; only removal was missing it. Reuses
+    _clause_lead/_clause_trail, no new scoping idiom."""
+
+    @pytest.mark.parametrize(
+        "name,text,expected", _NUMBER_BEFORE_PROGRAM_RATIO_FABRICATIONS,
+        ids=[n for n, *_ in _NUMBER_BEFORE_PROGRAM_RATIO_FABRICATIONS])
+    def test_number_before_fabrication_is_removed(self, name, text, expected):
+        metrics = _metrics(program_expense_ratio=None)
+        out = _sanitize(text, metrics)
+        assert out == expected
+
+    @pytest.mark.parametrize(
+        "name,text,expected", _NUMBER_BEFORE_PROGRAM_RATIO_FABRICATIONS,
+        ids=[n for n, *_ in _NUMBER_BEFORE_PROGRAM_RATIO_FABRICATIONS])
+    def test_number_before_fabrication_is_idempotent(self, name, text, expected):
+        metrics = _metrics(program_expense_ratio=None)
+        once = _sanitize(text, metrics)
+        twice = _sanitize(once, metrics)
+        assert twice == once
+
+    def test_number_before_real_ratio_is_corrected_not_deleted(self):
+        """When program_expense_ratio IS real, the removal rules must not
+        fire — the existing number-before correction rule already stamps
+        the right value over a wrong one; this must keep working, not get
+        swallowed by the new removal rule."""
+        metrics = _metrics(program_expense_ratio=0.911)
+        text = "The charity has a 45.0% program expense ratio."
+        out = _sanitize(text, metrics)
+        assert out == "The charity has a 91.1% program expense ratio."
+
+    def test_spends_on_programs_with_real_ratio_survives_unremoved(self):
+        """'spends X% on programs' has no correction-side rule of its own (a
+        pre-existing, separately-scoped gap); the new removal rule must stay
+        gated strictly behind the null branch and leave this text alone."""
+        metrics = _metrics(program_expense_ratio=0.911)
+        text = "The charity spends 45.0% on programs."
+        out = _sanitize(text, metrics)
+        assert out == text
