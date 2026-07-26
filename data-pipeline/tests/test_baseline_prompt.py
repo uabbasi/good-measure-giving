@@ -3377,3 +3377,519 @@ class TestAmalScoreRemovalWhenNull:
         for _ in range(5):
             passes.append(_sanitize_scores(passes[-1], metrics, amal_score=None))
         assert passes[1] == passes[2] == passes[3] == passes[4] == passes[5]
+
+
+# Task G14: every correction/removal rule below anchors its number to one
+# specific word directly in front of it ("of", "in", "since", "a",
+# "directs", "spends", "scored") with nothing tolerated in between. A hedge
+# phrase ("roughly", "nearly", "only", "approximately", "an impressive", "a
+# mere") sitting between that word and the number defeated the anchor
+# entirely across six of the eight metric families this function handles
+# (working capital and fundraising are immune — they anchor on a noun/`$`
+# rather than a single word, so this task doesn't touch either). Three
+# distinct failure modes, all from the same root cause:
+#   1. The worst: a sub-score claim (accountability/financial) gets the
+#      *overall* score's value stamped into it, because `_sub_score_lead_re`
+#      itself used the same defeated anchor and so failed to recognize the
+#      claim as a sub-score at all — this is what let the generic overall
+#      rule claim and mislabel it.
+#   2. A null metric survives as a clean-looking fabrication (the removal
+#      rule's anchor is defeated, so it never matches, so nothing is
+#      stripped).
+#   3. A real-but-wrong number survives uncorrected (the correction rule's
+#      anchor is defeated the same way).
+#
+# Fixed with `_hedge_gap` in baseline.py: a bounded run of up to
+# `_hedge_max_words` bare words, blocked from ever consuming a digit or a
+# word from this function's own closed set of metric nouns (so a
+# permissive gap can never reach PAST its own metric's number to one
+# belonging to a different metric — the same technique a prior task used
+# to stop the fundraising gap from reaching a farther "$").
+def _sanitize_amal(text, metrics, amal_score, wallet_tag="ZAKAT-ELIGIBLE"):
+    return _sanitize_scores(text, metrics, amal_score, wallet_tag)
+
+
+class TestHedgeWordGapCnOverallScore:
+    """`_hedge_gap` closes the gap for the CN overall score family: the
+    "Charity Navigator score/rating of X" correction pattern and the
+    "scored X ... Charity Navigator" removal pattern both anchored the
+    number directly to the preceding word, with no hedge tolerated."""
+
+    def test_null_hedged_claim_is_removed(self):
+        text = "It scored a truly remarkable 87 out of 100 from Charity Navigator. It serves many families."
+        metrics = _metrics(cn_overall_score=None)
+        out = _sanitize(text, metrics)
+        assert out == "It serves many families."
+
+    def test_wrong_hedged_number_is_corrected(self):
+        """Note: the trailing "." is consumed by the match here (`\\d+\\.?\\d*`
+        reads it as a would-be decimal point with nothing after it) and
+        does not survive in the output — confirmed pre-existing,
+        independent of the hedge fix: unhedged "Charity Navigator score of
+        60." on unmodified `771f51d` produces the same missing period.
+        Out of scope for this task; pinned as-is, not fixed here."""
+        text = "Charity Navigator score of roughly 60."
+        metrics = _metrics(cn_overall_score=94.0)
+        out = _sanitize(text, metrics)
+        assert out == "Charity Navigator score of 94.0/100"
+
+    def test_right_unhedged_number_survives_unchanged(self):
+        text = "Charity Navigator score of 94.0/100."
+        metrics = _metrics(cn_overall_score=94.0)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_right_hedged_number_has_its_hedge_dropped_not_left_wrong(self):
+        """Documented side effect, not a defect: the correction rule
+        replaces the whole matched span with a fixed template (it always
+        has — every other rule in this function does the same for its own
+        connectors/verbs), so a hedge word sitting in front of an
+        already-correct number gets consumed and dropped rather than
+        preserved. The number is right either way; nothing is fabricated
+        or misattributed by dropping it."""
+        text = "Charity Navigator score of roughly 94.0/100."
+        metrics = _metrics(cn_overall_score=94.0)
+        out = _sanitize(text, metrics)
+        assert out == "Charity Navigator score of 94.0/100."
+
+    def test_malformed_multi_decimal_number_stays_untouched_even_with_a_hedge(self):
+        """Task G11's malformed-number guard must still hold: a hedge word
+        must not open a back door around `_number_not_malformed`."""
+        text = "Strong external accountability rating of roughly 96.96.0/100 from Charity Navigator."
+        metrics = _metrics(cn_accountability_score=86.0, cn_overall_score=96.0)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    @pytest.mark.parametrize(
+        "text,metrics",
+        [
+            ("It scored a truly remarkable 87 out of 100 from Charity Navigator. It serves many families.",
+             _metrics(cn_overall_score=None)),
+            ("Charity Navigator score of roughly 60.", _metrics(cn_overall_score=94.0)),
+        ],
+    )
+    def test_five_pass_stable(self, text, metrics):
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+
+class TestHedgeWordGapCnAccountabilityScore:
+    """The worst bug this task found: the generic overall-score rule
+    guarded itself against claiming a sub-score-labelled span via
+    `_sub_score_lead_re` — but that guard used the same defeated anchor, so
+    a hedge word ("of roughly 40/100") let the guard fail silently and the
+    overall score got stamped into text explicitly labelled
+    accountability's, not just left uncorrected."""
+
+    def test_null_hedged_claim_is_removed(self):
+        text = "It has an accountability score of roughly 40/100 from Charity Navigator."
+        metrics = _metrics(cn_accountability_score=None, cn_overall_score=94.0)
+        out = _sanitize(text, metrics)
+        assert out == ""
+
+    def test_wrong_hedged_number_is_corrected_to_its_own_value_not_overall(self):
+        """The exact worst-bug repro: cn_overall_score=94.0 must NOT leak
+        into accountability's slot; the number must become 60.0, not 94.0."""
+        text = "The charity has an accountability score of roughly 40/100 from Charity Navigator."
+        metrics = _metrics(cn_overall_score=94.0, cn_accountability_score=60.0)
+        out = _sanitize(text, metrics)
+        assert out == "The charity has an accountability score of 60.0/100 from Charity Navigator."
+
+    def test_right_unhedged_number_survives_unchanged(self):
+        text = "It has an accountability score of 60.0/100."
+        metrics = _metrics(cn_accountability_score=60.0)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    @pytest.mark.parametrize(
+        "text,metrics",
+        [
+            ("It has an accountability score of roughly 40/100 from Charity Navigator.",
+             _metrics(cn_accountability_score=None, cn_overall_score=94.0)),
+            ("The charity has an accountability score of roughly 40/100 from Charity Navigator.",
+             _metrics(cn_overall_score=94.0, cn_accountability_score=60.0)),
+        ],
+    )
+    def test_five_pass_stable(self, text, metrics):
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+
+class TestHedgeWordGapCnFinancialScore:
+    """Same worst-bug shape as accountability, for the financial sub-score:
+    "financial score of nearly 40/100 from Charity Navigator" used to get
+    the *overall* score (94.0) stamped in, not financial's own value."""
+
+    def test_null_hedged_claim_is_removed(self):
+        text = "It has a financial score of nearly 40/100 from Charity Navigator."
+        metrics = _metrics(cn_financial_score=None, cn_overall_score=94.0)
+        out = _sanitize(text, metrics)
+        assert out == ""
+
+    def test_wrong_hedged_number_is_corrected_to_its_own_value_not_overall(self):
+        text = "The charity has a financial score of nearly 40/100 from Charity Navigator."
+        metrics = _metrics(cn_overall_score=94.0, cn_financial_score=55.0)
+        out = _sanitize(text, metrics)
+        assert out == "The charity has a financial score of 55.0/100 from Charity Navigator."
+
+    def test_right_unhedged_number_survives_unchanged(self):
+        text = "It has a financial score of 55.0/100."
+        metrics = _metrics(cn_financial_score=55.0)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    @pytest.mark.parametrize(
+        "text,metrics",
+        [
+            ("It has a financial score of nearly 40/100 from Charity Navigator.",
+             _metrics(cn_financial_score=None, cn_overall_score=94.0)),
+            ("The charity has a financial score of nearly 40/100 from Charity Navigator.",
+             _metrics(cn_overall_score=94.0, cn_financial_score=55.0)),
+        ],
+    )
+    def test_five_pass_stable(self, text, metrics):
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+
+class TestHedgeWordGapProgramExpenseRatio:
+    """Two anchor shapes for this metric, both defeated by a hedge: "ratio
+    of X%" (anchored on "of") and "directs X% to programs" (anchored on the
+    verb) — both the correction and null-removal sides of each."""
+
+    def test_null_hedged_claim_directs_verb_is_removed(self):
+        """The brief's own repro line."""
+        text = "The organization directs an impressive 91% to programs, a strong showing."
+        metrics = _metrics(program_expense_ratio=None)
+        out = _sanitize(text, metrics)
+        assert out == ""
+
+    def test_null_hedged_claim_ratio_of_is_removed(self):
+        text = "It has a program expense ratio of only 91% this year."
+        metrics = _metrics(program_expense_ratio=None)
+        out = _sanitize(text, metrics)
+        assert out == ""
+
+    def test_wrong_hedged_ratio_of_is_corrected(self):
+        text = "It has a program expense ratio of only 50%."
+        metrics = _metrics(program_expense_ratio=0.914)
+        out = _sanitize(text, metrics)
+        assert out == "It has a program expense ratio of 91.4%."
+
+    def test_wrong_hedged_directs_verb_is_corrected(self):
+        text = "The organization directs an impressive 50% to programs."
+        metrics = _metrics(program_expense_ratio=0.914)
+        out = _sanitize(text, metrics)
+        assert out == "The organization directs 91.4% to programs."
+
+    def test_right_unhedged_survives_unchanged(self):
+        text = "The organization directs 91.4% to programs."
+        metrics = _metrics(program_expense_ratio=0.914)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_right_hedged_spends_number_has_its_hedge_dropped_not_left_wrong(self):
+        """Pinned from the live corpus (charity-56-2500794.json): "spends an
+        efficient 88.7% on programs" (already the correct value) loses its
+        hedge "an efficient" the same documented way CN overall's own
+        already-correct hedge gets dropped — the number is right either
+        way, nothing is fabricated or misattributed."""
+        text = "It spends an efficient 88.7% on programs."
+        metrics = _metrics(program_expense_ratio=0.887)
+        out = _sanitize(text, metrics)
+        assert out == "It spends 88.7% on programs."
+
+    @pytest.mark.parametrize(
+        "text,metrics",
+        [
+            ("The organization directs an impressive 91% to programs, a strong showing.",
+             _metrics(program_expense_ratio=None)),
+            ("It has a program expense ratio of only 91% this year.",
+             _metrics(program_expense_ratio=None)),
+            ("It has a program expense ratio of only 50%.", _metrics(program_expense_ratio=0.914)),
+            ("The organization directs an impressive 50% to programs.",
+             _metrics(program_expense_ratio=0.914)),
+            ("It spends an efficient 88.7% on programs.", _metrics(program_expense_ratio=0.887)),
+        ],
+    )
+    def test_five_pass_stable(self, text, metrics):
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+
+class TestHedgeWordGapAmalScore:
+    """"AMAL score of roughly 72/100" — anchored on "of", same defeated
+    anchor as the CN sub-scores."""
+
+    def test_null_hedged_claim_is_removed(self):
+        text = "The AMAL score of roughly 72/100 reflects strong impact."
+        metrics = _metrics()
+        out = _sanitize_amal(text, metrics, amal_score=None)
+        assert out == ""
+
+    def test_wrong_hedged_number_is_corrected(self):
+        text = "The AMAL score of roughly 72/100 reflects strong impact."
+        metrics = _metrics()
+        out = _sanitize_amal(text, metrics, amal_score=88)
+        assert out == "The AMAL score of 88/100 reflects strong impact."
+
+    def test_right_unhedged_number_survives_unchanged(self):
+        text = "AMAL score of 88/100 reflects strong impact."
+        metrics = _metrics()
+        out = _sanitize_amal(text, metrics, amal_score=88)
+        assert out == text
+
+    @pytest.mark.parametrize(
+        "amal_score,text",
+        [
+            (None, "The AMAL score of roughly 72/100 reflects strong impact."),
+            (88, "The AMAL score of roughly 72/100 reflects strong impact."),
+        ],
+    )
+    def test_five_pass_stable(self, amal_score, text):
+        metrics = _metrics()
+        passes = [text]
+        for _ in range(5):
+            passes.append(_sanitize_amal(passes[-1], metrics, amal_score=amal_score))
+        assert passes[1] == passes[2] == passes[3] == passes[4] == passes[5]
+
+
+class TestHedgeWordGapFoundedYear:
+    """Two anchors, both defeated by a hedge: "founded in X" and "operating
+    since X". The brief's own repro line is the "in" shape; "since" gets
+    the identical fix for the same reason."""
+
+    def test_null_hedged_claim_is_removed(self):
+        """The brief's own repro line."""
+        text = "The organization was founded in approximately 1975 and has grown since."
+        metrics = _metrics(founded_year=None)
+        out = _sanitize(text, metrics)
+        assert out == "Has grown since."
+
+    def test_wrong_hedged_in_is_corrected(self):
+        text = "The organization was founded in approximately 1975 and has grown since."
+        metrics = _metrics(founded_year=1990)
+        out = _sanitize(text, metrics)
+        assert out == "The organization was founded in 1990 and has grown since."
+
+    def test_wrong_hedged_since_is_corrected(self):
+        text = "It has been operating since approximately 1975."
+        metrics = _metrics(founded_year=1990)
+        out = _sanitize(text, metrics)
+        assert out == "It has been operating since 1990."
+
+    def test_right_unhedged_survives_unchanged(self):
+        text = "The organization was founded in 1990."
+        metrics = _metrics(founded_year=1990)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    @pytest.mark.parametrize(
+        "text,metrics",
+        [
+            ("The organization was founded in approximately 1975 and has grown since.",
+             _metrics(founded_year=None)),
+            ("The organization was founded in approximately 1975 and has grown since.",
+             _metrics(founded_year=1990)),
+            ("It has been operating since approximately 1975.", _metrics(founded_year=1990)),
+        ],
+    )
+    def test_five_pass_stable(self, text, metrics):
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+
+class TestHedgeWordGapCrossMetricTrap:
+    """A permissive gap risks reaching PAST its own metric's number to one
+    belonging to a DIFFERENT metric. Blocked by forbidding `_hedge_gap` from
+    consuming a digit (so the match always binds to the nearest number) or
+    a word from this function's own closed set of metric nouns (so it can't
+    cross into a different metric's named phrase even when that phrase has
+    no digit of its own standing in the way). Both orders tested; both are
+    synthetic probes built to isolate the noun-boundary defense specifically
+    — see the task report for a direct regex-level proof that these exact
+    strings WOULD misattribute without the metric-noun exclusion."""
+
+    def test_accountability_does_not_reach_past_program_expense_ratio(self):
+        """No digit sits between "of" and "50%" other than through the
+        words "program expense" — without the metric-noun exclusion,
+        accountability's own hedge_gap could walk right through them and
+        stamp its own value (60.0) onto program expense's "50%". Must stay
+        completely untouched: neither rule can safely resolve this
+        (accountability's own anchor never finds a number of its own to
+        correct, and program's rule doesn't recognize this exact phrasing
+        either), which is the correct, safe outcome — an under-match, not
+        a misattribution."""
+        text = "It has an accountability score of program expense 50%."
+        metrics = _metrics(cn_accountability_score=60.0, program_expense_ratio=0.914)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_program_expense_ratio_does_not_reach_past_accountability_score(self):
+        """Reversed order: program-expense-ratio's own "ratio of X%" gap
+        must not walk through "accountability score" to reach a number
+        that isn't its own. What actually happens: program's rule never
+        matches (blocked at "accountability"), and accountability's own
+        rule legitimately claims "accountability score 60%" as its own
+        claim and corrects it to its own real value — not program's
+        91.4%. Confirms no cross-metric value ever leaks either way."""
+        text = "It has a program expense ratio of accountability score 60%."
+        metrics = _metrics(cn_accountability_score=60.0, program_expense_ratio=0.914)
+        out = _sanitize(text, metrics)
+        assert out == "It has a program expense ratio of accountability score of 60.0/100."
+        assert "91.4" not in out
+
+    def test_natural_no_hedge_sentence_still_binds_nearest_not_farthest(self):
+        """No-regression control: without any hedge at all, both numbers
+        in one sentence must resolve independently to their own metric's
+        value — the pre-existing, already-correct behavior this task must
+        not disturb."""
+        text = "It has an accountability score of 40/100 and a program expense ratio of 50%."
+        metrics = _metrics(cn_accountability_score=60.0, program_expense_ratio=0.5)
+        out = _sanitize(text, metrics)
+        assert out == "It has an accountability score of 60.0/100 and a program expense ratio of 50.0%."
+
+    @pytest.mark.parametrize(
+        "text,metrics",
+        [
+            ("It has an accountability score of program expense 50%.",
+             _metrics(cn_accountability_score=60.0, program_expense_ratio=0.914)),
+            ("It has a program expense ratio of accountability score 60%.",
+             _metrics(cn_accountability_score=60.0, program_expense_ratio=0.914)),
+            ("It has an accountability score of 40/100 and a program expense ratio of 50%.",
+             _metrics(cn_accountability_score=60.0, program_expense_ratio=0.5)),
+        ],
+    )
+    def test_five_pass_stable(self, text, metrics):
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+
+class TestHedgeWordGapBoundedByCountNotVocabulary:
+    """`_hedge_gap` is bounded by count (`_hedge_max_words = 3`), not by
+    enumerating hedge vocabulary — the open-class trap this function has
+    been burned by three times already (a verb list, an appositive-lead
+    list, a participle list). 3 was chosen to cover every hedge in the
+    reported defect ("roughly"/"nearly"/"only"/"approximately" are 1 word;
+    "an impressive"/"a mere"/"just over"/"a strong" are 2) with one word of
+    headroom. A hedge phrase longer than 3 words still defeats the anchor —
+    an honest, bounded residual gap, not silently unhandled: the anchor
+    simply fails to match at all, so the rule neither corrects the wrong
+    number nor (critically) misattributes a different metric's value to
+    it — the failure mode stays "safe", just incomplete."""
+
+    def test_exactly_three_hedge_words_is_still_corrected(self):
+        text = "It has an accountability score of a truly remarkable 40/100."
+        metrics = _metrics(cn_accountability_score=60.0)
+        out = _sanitize(text, metrics)
+        assert out == "It has an accountability score of 60.0/100."
+
+    def test_four_hedge_words_is_a_known_residual_gap(self):
+        """One word past the bound: the anchor fails to match at all, so
+        the wrong number (40/100) survives exactly as written — worse than
+        being corrected, but not mislabeled with a different metric's
+        value, which is the property this task actually guarantees."""
+        text = "It has an accountability score of a truly quite remarkable 40/100."
+        metrics = _metrics(cn_accountability_score=60.0)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    @pytest.mark.parametrize(
+        "text,metrics",
+        [
+            ("It has an accountability score of a truly remarkable 40/100.",
+             _metrics(cn_accountability_score=60.0)),
+            ("It has an accountability score of a truly quite remarkable 40/100.",
+             _metrics(cn_accountability_score=60.0)),
+        ],
+    )
+    def test_five_pass_stable(self, text, metrics):
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+
+class TestHedgeWordGapDoesNotReopenTheLinkingVerbGuard:
+    """Task G11 deliberately left "the financial rating IS 40/100" (a
+    linking verb, not "of") uncorrected — the guard only stops it from
+    being mislabeled as the overall score, it was never meant to correct
+    it, since neither sub-score rule parses "is X" as a phrasing shape at
+    all (see `test_linking_verb_is_also_guarded_not_just_of`, pinned
+    before this task). `_hedge_gap` must not silently reopen that: "is"/
+    "was" are excluded from what counts as a hedge word specifically so
+    this stays exactly as G11 left it."""
+
+    def test_linking_verb_phrasing_is_still_completely_unchanged(self):
+        text = "The accountability rating is 50/100 and the financial rating is 40/100 from Charity Navigator."
+        metrics = _metrics(cn_overall_score=96.0, cn_accountability_score=86.0, cn_financial_score=88.0)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+
+class TestHedgeGapDoesNotCrossAnAbsentConnectorIntoAnUnrelatedNumber:
+    """Two real regressions the empirical corpus check caught that no
+    synthetic test above did — both from `website/data/charities/`, both
+    fixed by requiring the literal connector word ("of"/"a") to actually be
+    present before `_hedge_gap` is allowed to activate at all
+    (`(?:of\\s+{_hedge_gap})?`, not `(?:of\\s+)?{_hedge_gap}`): when the
+    connector is absent, the whole group is skipped and the number must sit
+    immediately adjacent to the anchor, exactly as before this task —
+    closing the exposure without enumerating the open-ended set of
+    "different referent" words ("median", "peer", "falls below", ...) that
+    a word-list approach would have needed instead.
+
+    1. charity-13-1760110.json (and 5 other files): "Charity Navigator
+       score and an 85.7% program expense ratio" — two unrelated clauses
+       joined by bare "and", no "of" anywhere — used to have the CN
+       correction rule's gap walk straight through "and an" and stamp the
+       *CN* value into the *program-ratio* clause's number.
+    2. charity-06-0726487.json (and 5 other files): "peer program ratio
+       median of 90.0%" — a PEER benchmark statistic, not the charity's
+       own value — used to have the program-ratio correction rule's gap
+       walk through "median" (which sits BEFORE "of", not after it) and
+       overwrite the peer figure with the charity's own ratio.
+
+    Both are pinned here as permanent regressions, not just caught once by
+    the read-only corpus check — a future edit to `_hedge_gap` or its call
+    sites must keep failing loudly if either reopens."""
+
+    def test_and_joined_clauses_with_no_of_stay_untouched(self):
+        """Simplified from charity-13-1760110.json. The malformed CN
+        number stays untouched (task G11's guard) AND the unrelated
+        program-ratio clause must not be corrupted by CN's own value."""
+        text = "UNICEF USA has a 97.97.0/100 from Charity Navigator score and an 85.7% program expense ratio."
+        metrics = _metrics(cn_overall_score=97.0, program_expense_ratio=0.857)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_peer_median_statistic_is_not_overwritten_with_own_value(self):
+        """Simplified from charity-06-0726487.json. "median" sits between
+        "ratio" and "of" — the connector "of" is never immediately after
+        "ratio", so the correction rule must not activate at all."""
+        text = "Its program expense ratio sits below the peer program ratio median of 90.0% for similar groups."
+        metrics = _metrics(program_expense_ratio=0.849)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_comparison_verb_phrasing_with_no_of_at_all_stays_untouched(self):
+        """Simplified from charity-91-1914868.json: "falls below" is a
+        comparison verb, not a hedge on the metric's OWN number, and there
+        is no "of" anywhere in this shape at all."""
+        text = "Program ratio falls below the 81.4% peer median when adjusted for non-cash items."
+        metrics = _metrics(program_expense_ratio=0.775)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    @pytest.mark.parametrize(
+        "text,metrics",
+        [
+            ("UNICEF USA has a 97.97.0/100 from Charity Navigator score and an 85.7% program expense ratio.",
+             _metrics(cn_overall_score=97.0, program_expense_ratio=0.857)),
+            ("Its program expense ratio sits below the peer program ratio median of 90.0% for similar groups.",
+             _metrics(program_expense_ratio=0.849)),
+            ("Program ratio falls below the 81.4% peer median when adjusted for non-cash items.",
+             _metrics(program_expense_ratio=0.775)),
+        ],
+    )
+    def test_five_pass_stable(self, text, metrics):
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == text

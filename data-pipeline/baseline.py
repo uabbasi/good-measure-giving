@@ -1196,6 +1196,96 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         rf"|[,;:—](?=\s*(?:{_trail_same_claim_lead})))*"
     )
 
+    # Task G14: every correction/removal rule below (except working capital
+    # and fundraising, which anchor on a noun/dollar sign rather than a
+    # single word right before the number, and so are immune) anchors its
+    # number to one specific preceding word — "of", "in", "since", "a",
+    # "directs", "spends", "scored" — with nothing tolerated in between. A
+    # hedge phrase ("roughly", "nearly", "only", "approximately", "an
+    # impressive", "a mere") sitting between that word and the number
+    # defeats the anchor, and is an open vocabulary class — enumerating it
+    # is exactly the trap this function has been burned by three times
+    # already (a verb list, an appositive-lead list, a participle list).
+    #
+    # Bounded by COUNT instead: up to _hedge_max_words bare words may sit
+    # between an anchor and the number it introduces. 3 covers every
+    # hedge in the reported defect ("roughly", "nearly", "only",
+    # "approximately" are 1 word; "an impressive", "a mere", "just over",
+    # "a strong" are 2) with one word of headroom for something like "a
+    # truly remarkable" — chosen deliberately small, not because 3 is
+    # theoretically complete: a hedge phrase longer than 3 words still
+    # defeats the anchor (see the pinned N+1 test), same as any bounded
+    # scheme. Reported as a residual gap rather than pushed higher, since
+    # a bigger N only shrinks the gap, it can't close it (the vocabulary
+    # is still open) and makes the cross-metric hazard below worse the
+    # further it reaches.
+    #
+    # That hazard: a permissive gap can reach PAST its own metric's number
+    # to one belonging to a DIFFERENT metric ("an accountability score of
+    # [gap] 50%" must not let the gap skip over "program expense ratio" to
+    # a program-expense value it was never meant to claim). Blocked the
+    # same way a prior task blocked the fundraising gap from reaching a
+    # farther "$": forbid the gap from ever consuming a digit — so the
+    # match always binds to the NEAREST number, never a farther one — or a
+    # word from this function's own closed set of metric nouns, so it
+    # can't cross into a different metric's named phrase even within
+    # budget, on the rare case that phrase has no digit of its own
+    # standing in the way (verified empirically; see the task report).
+    # Restricting each hedge "word" to bare letters (not `\S+`) is what
+    # keeps the digit exclusion airtight and, as a side effect, also stops
+    # the gap from ever crossing sentence-ending punctuation glued to a
+    # word ("Texas.") into a later, unrelated sentence's own number — a
+    # token that must swallow trailing punctuation to reach a digit
+    # already can't be a bare-letters-plus-whitespace token, so the
+    # repetition simply stops one word short instead.
+    _hedge_max_words = 3
+    _metric_noun_boundary = (
+        r"score|rating|ratio|percent|program|programs|programmatic|expense|expenses"
+        r"|accountability|governance|financial|navigator"
+        r"|amal|founded|established|incorporated|started|began"
+        r"|operating|serving|active|working|capital|reserve|reserves"
+        r"|fundraising|efficiency|zakat"
+    )
+    # A linking verb ("is"/"was") is a second, DIFFERENT anchor shape this
+    # function already made a deliberate, pinned decision about (task
+    # G11's `_sub_score_lead_re`, and
+    # `test_linking_verb_is_also_guarded_not_just_of`): "the financial
+    # rating is 40/100" is intentionally left uncorrected — the guard only
+    # stops it from being mislabeled as the overall score, it doesn't
+    # correct it, because neither sub-score rule parses "is X" as a
+    # phrasing shape at all. Excluding "is"/"was"/"are"/"were" here keeps
+    # that decision intact regardless of which anchor a given rule uses.
+    #
+    # "and" is excluded for the same reason every other removal/correction
+    # boundary in this function already treats it as an unconditional
+    # clause boundary (`(?!\s+and\b)` in `_clause_lead`/`_clause_trail`/
+    # `_fr_gap`) — without it, a hedge-tolerant anchor that has no literal
+    # connector to gate it (see the `directs`/`spends`/`scored` verbs
+    # below, which apply `_hedge_gap` unconditionally, not inside an
+    # optional group) could otherwise walk across "and" into a wholly
+    # unrelated clause's own number.
+    #
+    # The empirical corpus check for this task caught a second, sharper
+    # version of the same hazard that "and"/"is"/"was" alone don't cover:
+    # every occurrence of `_hedge_gap` below sits inside an optional
+    # connector group — `(?:of\s+{_hedge_gap})?` / `(?:a\s+{_hedge_gap})?`
+    # — so the gap can ONLY ever activate once that literal word ("of"/
+    # "a") has actually been matched; when the connector is absent, the
+    # whole group is skipped and the number must sit immediately adjacent
+    # to the anchor, exactly as before this task. Before this restructure,
+    # `(?:of\s+)?{_hedge_gap}` let the gap fire even with NO "of" present
+    # at all, which is what let "Charity Navigator score and an 85.7%
+    # program expense ratio" (two unrelated clauses joined by "and", no
+    # "of" anywhere) and "program ratio median of 90.0%" (a PEER
+    # statistic, "median" sitting between "ratio" and "of") both get
+    # misread as this metric's own hedged claim and overwritten with the
+    # wrong value — live, real regressions in the published corpus, not
+    # synthetic ones. Gating the whole connector+gap behind one optional
+    # group closes both: neither phrasing has the literal word "of"/"a"
+    # immediately after the anchor, so the group never activates and the
+    # number is correctly left untouched.
+    _hedge_gap = rf"(?:(?!(?:{_metric_noun_boundary}|is|was|are|were|and)\b)[A-Za-z]+\s+){{0,{_hedge_max_words}}}"
+
     # Working capital  (e.g. "8.3 months of working capital" or "8.3 years of reserves")
     # LLM variants: "holds X years of expenses", "maintains X years in reserves",
     # "X years' worth of operating", "expenses held in reserve"
@@ -1288,9 +1378,11 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # Pattern 2: program expense ratio of <number>%. Case-preserving (see
         # _preserve_case) — a preceding clause's removal can leave this one
         # sentence-initial and capitalized ("Program expense ratio ...").
+        # Task G14: `_hedge_gap` between "of" and the number tolerates a
+        # bounded hedge ("of only 50%") that used to defeat this anchor.
         rules.append(
             (
-                r"program\s+(?:expense\s+)?ratio\s+(?:of\s+)?\d+\.?\d*\s*%",
+                rf"program\s+(?:expense\s+)?ratio\s+(?:of\s+{_hedge_gap})?\d+\.?\d*\s*%",
                 _preserve_case(f"program expense ratio of {correct_ratio}"),
                 False,
             )
@@ -1309,9 +1401,12 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # exactly where it was, so it reattaches cleanly instead of
         # colliding with a hardcoded plural. Case-preserving for the same
         # reason as pattern 2.
+        # Task G14: `_hedge_gap` after the verb tolerates a bounded hedge
+        # ("directs an impressive 91% to programs") that used to defeat
+        # this anchor.
         rules.append(
             (
-                r"(?:directs?|allocates?|dedicates?|channels?|devotes?)\s+\d+\.?\d*\s*%\s+(?:of\s+\w+\s+)?(?:to|toward)\s+(programs?|programmatic\s+(?:work|activities|expenses?))",
+                rf"(?:directs?|allocates?|dedicates?|channels?|devotes?)\s+{_hedge_gap}\d+\.?\d*\s*%\s+(?:of\s+\w+\s+)?(?:to|toward)\s+(programs?|programmatic\s+(?:work|activities|expenses?))",
                 lambda m: _match_case(m, f"directs {correct_ratio} to {m.group(1)}"),
                 False,
             )
@@ -1329,25 +1424,30 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # counterpart, so a wrong number published verbatim whenever the
         # ratio was real instead of null. Case-preserving for the same
         # reason as patterns 2 and 3.
+        # Task G14: `_hedge_gap` after "spends" tolerates a bounded hedge.
         rules.append(
             (
-                r"spends?\s+\d+\.?\d*\s*%\s+(?:on|for)\s+(?:programs?|programmatic\s+(?:work|activities|expenses?))",
+                rf"spends?\s+{_hedge_gap}\d+\.?\d*\s*%\s+(?:on|for)\s+(?:programs?|programmatic\s+(?:work|activities|expenses?))",
                 _preserve_case(f"spends {correct_ratio} on programs"),
                 False,
             )
         )
     else:
-        # Remove sentences mentioning program expense ratio with a number
+        # Remove sentences mentioning program expense ratio with a number.
+        # Task G14: `_hedge_gap` in both rules below tolerates a bounded
+        # hedge between the anchor word and the number — without it, e.g.
+        # "directs an impressive 91% to programs" failed to match at all
+        # and the fabrication survived untouched.
         rules.append(
             (
-                rf"{_clause_lead}program\s+(?:expense\s+)?ratio\s+(?:of\s+)?\d+\.?\d*\s*%{_clause_trail}",
+                rf"{_clause_lead}program\s+(?:expense\s+)?ratio\s+(?:of\s+{_hedge_gap})?\d+\.?\d*\s*%{_clause_trail}",
                 None,
                 True,
             )
         )
         rules.append(
             (
-                rf"{_clause_lead}(?:directs?|allocates?)\s+\d+\.?\d*\s*%\s+(?:of\s+\w+\s+)?(?:to|toward)\s+(?:programs?|programmatic){_clause_trail}",
+                rf"{_clause_lead}(?:directs?|allocates?)\s+{_hedge_gap}\d+\.?\d*\s*%\s+(?:of\s+\w+\s+)?(?:to|toward)\s+(?:programs?|programmatic){_clause_trail}",
                 None,
                 True,
             )
@@ -1367,7 +1467,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         )
         rules.append(
             (
-                rf"{_clause_lead}spends?\s+\d+\.?\d*\s*%\s+(?:on|for)\s+(?:programs?|programmatic\s+(?:work|activities|expenses?)){_clause_trail}",
+                rf"{_clause_lead}spends?\s+{_hedge_gap}\d+\.?\d*\s*%\s+(?:on|for)\s+(?:programs?|programmatic\s+(?:work|activities|expenses?)){_clause_trail}",
                 None,
                 True,
             )
@@ -1432,8 +1532,16 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # *overall* score as the financial one, which is exactly the failure
     # mode this guard exists to prevent regardless of which preposition or
     # verb sits between the noun and the number.
+    #
+    # Task G14: `_hedge_gap` before the trailing `$` closes the actual
+    # worst bug this task found — "an accountability score of roughly
+    # 40/100" used to fail this guard (the hedge word "roughly" sat between
+    # "of" and the position the lookbehind checks, so the `$`-anchored
+    # match never fired), letting the generic overall rule below claim the
+    # span and stamp the *overall* score into text explicitly labelled
+    # accountability's.
     _sub_score_lead_re = re.compile(
-        rf"(?:{_acc_name}|{_fin_name})\s+(?:score|rating)\s+(?:of|is|was)?\s*$",
+        rf"(?:{_acc_name}|{_fin_name})\s+(?:score|rating)\s+(?:of|is|was)?\s*{_hedge_gap}$",
         re.IGNORECASE,
     )
     if cn_score is not None:
@@ -1472,20 +1580,22 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 False,
             )
         )
-        # "Charity Navigator ... score/rating of X"
+        # "Charity Navigator ... score/rating of X". Task G14: `_hedge_gap`
+        # after "of" tolerates a bounded hedge ("score of roughly 60").
         rules.append(
             (
-                r"(?:Charity\s+Navigator)\s+(?:overall\s+)?(?:score|rating)\s+(?:of\s+)?\d+\.?\d*(?:/100)?",
+                rf"(?:Charity\s+Navigator)\s+(?:overall\s+)?(?:score|rating)\s+(?:of\s+{_hedge_gap})?\d+\.?\d*(?:/100)?",
                 f"Charity Navigator score of {correct_cn}",
                 False,
             )
         )
         # "scored X out of 100 on Charity Navigator". Case-preserving (see
         # _preserve_case) — a preceding clause's removal can leave this one
-        # sentence-initial and capitalized ("Scored ...").
+        # sentence-initial and capitalized ("Scored ..."). Task G14:
+        # `_hedge_gap` after the optional "a" tolerates a bounded hedge.
         rules.append(
             (
-                r"(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+)?\d+\.?\d*\s+(?:out\s+of\s+100|/100)\s+(?:on|from|by)\s+Charity\s+Navigator",
+                rf"(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+{_hedge_gap})?\d+\.?\d*\s+(?:out\s+of\s+100|/100)\s+(?:on|from|by)\s+Charity\s+Navigator",
                 _preserve_case(f"scored {correct_cn} on Charity Navigator"),
                 False,
             )
@@ -1509,10 +1619,11 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 True,
             )
         )
-        # "scored/rates X out of 100 ... Charity Navigator"
+        # "scored/rates X out of 100 ... Charity Navigator". Task G14:
+        # `_hedge_gap` after the optional "a" tolerates a bounded hedge.
         rules.append(
             (
-                rf"{_clause_lead}(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+)?\d+\.?\d*\s+out\s+of\s+100{_decimal_safe}Charity\s+Navigator{_clause_trail}",
+                rf"{_clause_lead}(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+{_hedge_gap})?\d+\.?\d*\s+out\s+of\s+100{_decimal_safe}Charity\s+Navigator{_clause_trail}",
                 None,
                 True,
             )
@@ -1522,10 +1633,12 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # the number itself is the last thing the core pattern requires —
         # `\d+(?:\.\d+)?` (not `\d+\.?\d*`) so a bare "87." at the true
         # sentence end isn't misread as "87" plus an empty decimal point,
-        # which would swallow the period a surviving clause needs.
+        # which would swallow the period a surviving clause needs. Task
+        # G14: `_hedge_gap` after the optional "a" tolerates a bounded
+        # hedge.
         rules.append(
             (
-                rf"{_clause_lead}Charity\s+Navigator{_decimal_safe}(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+)?\d+(?:\.\d+)?(?:\s+out\s+of\s+100|/100)?{_clause_trail}",
+                rf"{_clause_lead}Charity\s+Navigator{_decimal_safe}(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+{_hedge_gap})?\d+(?:\.\d+)?(?:\s+out\s+of\s+100|/100)?{_clause_trail}",
                 None,
                 True,
             )
@@ -1592,9 +1705,12 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # (number-after). Case-preserving (see _preserve_case) — a
         # preceding clause's removal can leave this sentence-initial
         # ("Accountability score ...").
+        # Task G14: `_hedge_gap` after "of" tolerates a bounded hedge
+        # ("accountability score of only 40/100") that used to defeat this
+        # anchor and leave a wrong-but-real number uncorrected.
         rules.append(
             (
-                rf"({_acc_name})\s+(score|rating)\s+(?:of\s+)?{_number_not_malformed}\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?",
+                rf"({_acc_name})\s+(score|rating)\s+(?:of\s+{_hedge_gap})?{_number_not_malformed}\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?",
                 lambda m: _match_case(m, f"{m.group(1)} {m.group(2)} of {correct_acc}"),
                 False,
             )
@@ -1611,9 +1727,12 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
             )
         )
     else:
+        # Task G14: `_hedge_gap` after "of" — a null accountability score
+        # phrased with a hedge ("accountability score of roughly 40") used
+        # to fail this removal entirely, so the fabrication survived.
         rules.append(
             (
-                rf"{_clause_lead}(?:{_acc_name})\s+(?:score|rating)\s+(?:of\s+)?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?{_clause_trail}",
+                rf"{_clause_lead}(?:{_acc_name})\s+(?:score|rating)\s+(?:of\s+{_hedge_gap})?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?{_clause_trail}",
                 None,
                 True,
             )
@@ -1631,18 +1750,21 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # above (captures "financial score" vs "financial health score", and
         # now "score" vs "rating" too, echoing whichever was actually used
         # rather than canonicalizing). Case-preserving for the same reason
-        # as the accountability pattern.
+        # as the accountability pattern. Task G14: `_hedge_gap` after "of"
+        # tolerates a bounded hedge ("financial score of nearly 40/100").
         rules.append(
             (
-                rf"({_fin_name}\s+(?:score|rating))\s+(?:of\s+)?{_number_not_malformed}\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?",
+                rf"({_fin_name}\s+(?:score|rating))\s+(?:of\s+{_hedge_gap})?{_number_not_malformed}\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?",
                 lambda m: _match_case(m, f"{m.group(1)} of {correct_fin}"),
                 False,
             )
         )
     else:
+        # Task G14: `_hedge_gap` after "of" — same reasoning as
+        # accountability's null branch above.
         rules.append(
             (
-                rf"{_clause_lead}{_fin_name}\s+(?:score|rating)\s+(?:of\s+)?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?{_clause_trail}",
+                rf"{_clause_lead}{_fin_name}\s+(?:score|rating)\s+(?:of\s+{_hedge_gap})?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?{_clause_trail}",
                 None,
                 True,
             )
@@ -1837,9 +1959,11 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 False,
             )
         )
+        # Task G14: `_hedge_gap` after "of" tolerates a bounded hedge
+        # ("AMAL score of roughly 72").
         rules.append(
             (
-                r"(?:AMAL|Amal|amal)\s+score\s+(?:of\s+)?\d+\.?\d*(?:/100)?",
+                rf"(?:AMAL|Amal|amal)\s+score\s+(?:of\s+{_hedge_gap})?\d+\.?\d*(?:/100)?",
                 f"AMAL score of {correct_amal}",
                 False,
             )
@@ -1855,9 +1979,12 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # found and fixed for program_expense_ratio's "spends X% on
         # programs", left here since fixing it is a correction-side
         # question outside this task's scope.
+        # Task G14: `_hedge_gap` after "of" — a null amal_score phrased
+        # with a hedge ("AMAL score of roughly 72") used to fail this
+        # removal entirely, so the fabrication survived.
         rules.append(
             (
-                rf"{_clause_lead}(?:AMAL|Amal|amal)\s+score\s+(?:of\s+)?\d+\.?\d*(?:/100)?{_clause_trail}",
+                rf"{_clause_lead}(?:AMAL|Amal|amal)\s+score\s+(?:of\s+{_hedge_gap})?\d+\.?\d*(?:/100)?{_clause_trail}",
                 None,
                 True,
             )
@@ -1871,7 +1998,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         )
         rules.append(
             (
-                rf"{_clause_lead}scored\s+\d+\.?\d*\s+on\s+the\s+(?:AMAL|Amal|amal)\s+index{_clause_trail}",
+                rf"{_clause_lead}scored\s+{_hedge_gap}\d+\.?\d*\s+on\s+the\s+(?:AMAL|Amal|amal)\s+index{_clause_trail}",
                 None,
                 True,
             )
@@ -1900,18 +2027,21 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # in XXXX". Case-preserving (see _preserve_case) — a preceding clause's
         # removal can leave this one sentence-initial and capitalized
         # ("Founded in ...").
+        # Task G14: `_hedge_gap` after "in" tolerates a bounded hedge
+        # ("founded in approximately 1975").
         rules.append(
             (
-                r"(?:founded|established|incorporated|started|began(?:\s+operations)?)\s+in\s+\d{4}",
+                rf"(?:founded|established|incorporated|started|began(?:\s+operations)?)\s+in\s+{_hedge_gap}\d{{4}}",
                 _preserve_case(f"founded in {founded_year}"),
                 False,
             )
         )
         # "since XXXX" when referring to founding (e.g. "operating since 1985").
-        # Case-preserving for the same reason.
+        # Case-preserving for the same reason. Task G14: `_hedge_gap` after
+        # "since" tolerates a bounded hedge the same way.
         rules.append(
             (
-                r"(?:operating|serving|active|working)\s+since\s+\d{4}",
+                rf"(?:operating|serving|active|working)\s+since\s+{_hedge_gap}\d{{4}}",
                 _preserve_case(f"operating since {founded_year}"),
                 False,
             )
@@ -1931,16 +2061,19 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # 2023") — none of those carry "founded"/"established"/.../"in" or
         # "operating"/.../"since" immediately adjacent to the year, so they
         # never reach either pattern below.
+        # Task G14: `_hedge_gap` after "in" — a null founded_year phrased
+        # with a hedge ("founded in approximately 1975") used to fail this
+        # removal entirely, so the fabrication survived.
         rules.append(
             (
-                rf"{_clause_lead}(?:founded|established|incorporated|started|began(?:\s+operations)?)\s+in\s+\d{{4}}{_clause_trail}",
+                rf"{_clause_lead}(?:founded|established|incorporated|started|began(?:\s+operations)?)\s+in\s+{_hedge_gap}\d{{4}}{_clause_trail}",
                 None,
                 True,
             )
         )
         rules.append(
             (
-                rf"{_clause_lead}(?:operating|serving|active|working)\s+since\s+\d{{4}}{_clause_trail}",
+                rf"{_clause_lead}(?:operating|serving|active|working)\s+since\s+{_hedge_gap}\d{{4}}{_clause_trail}",
                 None,
                 True,
             )
