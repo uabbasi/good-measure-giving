@@ -141,3 +141,43 @@ class TestCnScoreSanitizationIsIdempotent:
         out = self._sanitize("Rated 42/100 from Charity Navigator.", 87.5)
         assert "87.5/100 from Charity Navigator" in out
         assert "42" not in out
+
+
+class TestFundraisingClaimIsStrippedWhenDataIsMissing:
+    """The model hallucinates $0.00 despite an N/A prompt; the deterministic
+    strip is the safety net, and its adjacency requirement made it miss every
+    real phrasing. Fixtures below are verbatim from published charities."""
+
+    REAL_HALLUCINATIONS = [
+        "Exceptional fundraising efficiency of $0.00 spent per $1 raised [1].",
+        "Operates with high fundraising efficiency, spending $0.00 to raise every $1 in FY2025.",
+        "The charity has a 91.1% program expense ratio, and a $0.00 fundraising efficiency rate.",
+    ]
+
+    def _sanitize_with_null_fundraising(self, text):
+        metrics = SimpleNamespace(fundraising_expenses=None, total_revenue=604759,
+                                  cn_overall_score=None, cn_accountability_score=None,
+                                  cn_financial_score=None, program_expense_ratio=None,
+                                  working_capital_ratio=None)
+        return sanitize_narrative_metrics({"rationale": text}, metrics, None)["rationale"]
+
+    def test_every_real_hallucination_is_stripped(self):
+        for text in self.REAL_HALLUCINATIONS:
+            out = self._sanitize_with_null_fundraising(text)
+            assert "$0.00" not in out, f"not stripped: {text!r}"
+
+    def test_unrelated_sentences_survive(self):
+        text = "The charity has a 91.1% program expense ratio. It serves 4,000 families."
+        out = self._sanitize_with_null_fundraising(text)
+        assert "91.1% program expense ratio" in out
+        assert "4,000 families" in out
+
+    def test_strengths_array_entries_are_stripped_too(self):
+        metrics = SimpleNamespace(fundraising_expenses=None, total_revenue=604759,
+                                  cn_overall_score=None, cn_accountability_score=None,
+                                  cn_financial_score=None, program_expense_ratio=None,
+                                  working_capital_ratio=None)
+        out = sanitize_narrative_metrics(
+            {"strengths": ["Exceptional fundraising efficiency of $0.00 spent per $1 raised [1]."]},
+            metrics, None)
+        assert "$0.00" not in str(out["strengths"])

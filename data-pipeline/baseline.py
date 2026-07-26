@@ -1034,13 +1034,29 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
             )
         )
     else:
+        # The model hallucinates a $0.00 efficiency claim even when the prompt
+        # says N/A, so this deterministic strip is the real safety net. The old
+        # rules required the dollar amount to sit IMMEDIATELY before the
+        # phrasing, which missed every real phrasing observed in production
+        # ("$0.00 spent per $1 raised", "spending $0.00 to raise every $1",
+        # "a $0.00 fundraising efficiency rate"). Match on co-occurrence within
+        # one sentence instead of adjacency.
         rules.append(
             (
-                rf"[^.]*\$\d+\.?\d*\s+{_fr_phrasing}[^.]*\.?",
+                rf"[^.]*\$\d+\.?\d*[^.]*(?:{_fr_phrasing}|fundraising\s+efficiency)[^.]*\.?",
                 None,
                 True,
             )
         )
+        rules.append(
+            (
+                r"[^.]*fundraising\s+efficiency[^.]*\$\d+\.?\d*[^.]*\.?",
+                None,
+                True,
+            )
+        )
+        # "fundraising costs/expenses of $X.XX per dollar" (no "raised" suffix,
+        # so it isn't covered by _fr_phrasing above)
         rules.append(
             (
                 r"[^.]*fundraising\s+(?:costs?|expenses?)\s+(?:of\s+)?\$\d+\.?\d*\s+per\s+(?:dollar|every\s+dollar)[^.]*\.?",
