@@ -885,6 +885,41 @@ _CLOSED_CLASS_APPOSITIVES = [
      "The charity scored 87/100 from Charity Navigator, one of the highest in its cohort."),
 ]
 
+# Follow-up gap (found after 048c6b4 shipped): an appositive tail with no
+# determiner at all ("best in its class", "higher than most peers") wasn't on
+# `_trail_same_claim_lead`, so it defaulted to a clause boundary and stranded
+# a comparison whose basis (the just-deleted fabricated number) no longer
+# exists. Bare comparative/superlative leads close that gap.
+_BARE_COMPARATIVE_APPOSITIVES = [
+    ("best", "It scored 87/100 from Charity Navigator, best in its class."),
+    ("worst", "It scored 87/100 from Charity Navigator, worst in its cohort."),
+    ("higher", "It scored 87/100 from Charity Navigator, higher than most peers."),
+    ("lower", "It scored 87/100 from Charity Navigator, lower than its closest competitor."),
+    ("better", "It scored 87/100 from Charity Navigator, better than its regional peers."),
+    ("stronger", "It scored 87/100 from Charity Navigator, stronger than most peers its size."),
+    ("weaker", "It scored 87/100 from Charity Navigator, weaker than average for its sector."),
+    ("highest", "It scored 87/100 from Charity Navigator, highest among comparable nonprofits."),
+    ("lowest", "It scored 87/100 from Charity Navigator, lowest among comparable nonprofits."),
+    ("strongest", "It scored 87/100 from Charity Navigator, strongest in its peer group."),
+    ("among", "It scored 87/100 from Charity Navigator, among the best in its sector."),
+    ("second_only_to", "It scored 87/100 from Charity Navigator, second only to one other nonprofit."),
+]
+
+# `lower` and `better` can each lead either a bare-comparative appositive
+# (above) or a genuine independent clause with a verb of the same spelling
+# ("lower their overhead", "better their outcomes"). Widening the
+# continuation list to catch the appositive reading also catches this verb
+# reading, over-consuming it. Per the standing tie-break (a surviving
+# fabrication-adjacent fragment is worse than an over-removed true clause)
+# this is accepted, not fixed — documented here rather than silently left
+# untested.
+_AMBIGUOUS_CONTINUATION_LEAD_COLLISION = [
+    ("lower_as_verb",
+     "It holds 4.2 months of working capital, lower their overhead each year."),
+    ("better_as_verb",
+     "It holds 4.2 months of working capital, better their outcomes every quarter."),
+]
+
 
 class TestClauseTrailReplacesVerbListWithClosedContinuationLead:
     """Re-review finding: `_clause_trail`'s bare-comma boundary must not be
@@ -946,6 +981,75 @@ class TestClauseTrailReplacesVerbListWithClosedContinuationLead:
     @pytest.mark.parametrize("name,text", _CLOSED_CLASS_APPOSITIVES, ids=[n for n, _ in _CLOSED_CLASS_APPOSITIVES])
     def test_closed_class_appositive_case_is_idempotent(self, name, text):
         metrics = _metrics(working_capital_ratio=None, cn_overall_score=None)
+        once = _sanitize(text, metrics)
+        twice = _sanitize(once, metrics)
+        assert twice == once
+
+
+class TestClauseTrailBareComparativeAppositiveLead:
+    """Closes the determiner-less appositive gap left by 048c6b4: an
+    appositive tail with no leading determiner/possessive/quantifier
+    ("best in its class", "higher than most peers") defaulted to a clause
+    boundary and stranded a comparison whose basis was just deleted as
+    unsupported. `_trail_same_claim_lead` gains a closed set of bare
+    comparative/superlative continuation leads to catch these too."""
+
+    @pytest.mark.parametrize(
+        "name,text", _BARE_COMPARATIVE_APPOSITIVES, ids=[n for n, _ in _BARE_COMPARATIVE_APPOSITIVES]
+    )
+    def test_bare_comparative_appositive_fully_removed(self, name, text):
+        metrics = _metrics(cn_overall_score=None)
+        out = _sanitize(text, metrics)
+        assert out == ""
+
+    @pytest.mark.parametrize(
+        "name,text", _BARE_COMPARATIVE_APPOSITIVES, ids=[n for n, _ in _BARE_COMPARATIVE_APPOSITIVES]
+    )
+    def test_bare_comparative_appositive_is_idempotent(self, name, text):
+        metrics = _metrics(cn_overall_score=None)
+        once = _sanitize(text, metrics)
+        twice = _sanitize(once, metrics)
+        assert twice == once
+
+    def test_open_verb_class_floor_cases_still_survive(self):
+        """048c6b4's four open-class-verb regressions (the reason the
+        continuation list was inverted at all) must not be reopened by
+        widening it further here."""
+        metrics = _metrics(working_capital_ratio=None)
+        cases = [
+            ("It holds 4.2 months of working capital, disbursed $4M in grants.",
+             "Disbursed $4M in grants."),
+            ("It holds 4.2 months of working capital, trains 200 midwives annually.",
+             "Trains 200 midwives annually."),
+            ("It holds 4.2 months of working capital, vaccinated 1.2M children.",
+             "Vaccinated 1.2M children."),
+            ("It holds 4.2 months of working capital, employs 45 staff.",
+             "Employs 45 staff."),
+        ]
+        for text, expected in cases:
+            assert _sanitize(text, metrics) == expected
+
+    @pytest.mark.parametrize(
+        "name,text",
+        _AMBIGUOUS_CONTINUATION_LEAD_COLLISION,
+        ids=[n for n, _ in _AMBIGUOUS_CONTINUATION_LEAD_COLLISION],
+    )
+    def test_verb_collision_words_resolve_by_consuming(self, name, text):
+        """`lower`/`better` can lead either a bare-comparative appositive or
+        a genuine verb clause of the same spelling. The ambiguity resolves
+        toward consuming (over-removal), per the standing tie-break — an
+        accepted trade-off, not a bug."""
+        metrics = _metrics(working_capital_ratio=None)
+        out = _sanitize(text, metrics)
+        assert out == ""
+
+    @pytest.mark.parametrize(
+        "name,text",
+        _AMBIGUOUS_CONTINUATION_LEAD_COLLISION,
+        ids=[n for n, _ in _AMBIGUOUS_CONTINUATION_LEAD_COLLISION],
+    )
+    def test_verb_collision_case_is_idempotent(self, name, text):
+        metrics = _metrics(working_capital_ratio=None)
         once = _sanitize(text, metrics)
         twice = _sanitize(once, metrics)
         assert twice == once

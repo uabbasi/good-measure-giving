@@ -943,9 +943,12 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     #
     # The side that IS closed is the appositive lead: every appositive tail
     # actually seen here ("its highest rating", "a strong reserve position",
-    # "the best in its class", "one of the highest in its cohort") opens
-    # with a determiner, possessive, or quantifier — never a verb. A
-    # genuine comparison of the SAME fabricated number ("up from 82 last
+    # "the best in its class", "one of the highest in its cohort", or a bare
+    # comparative/superlative with no determiner at all like "best in its
+    # class", "higher than most peers") opens with a determiner, possessive,
+    # quantifier, or comparative/superlative adjective — never a verb (with
+    # two knowingly ambiguous exceptions, see below). A genuine comparison of
+    # the SAME fabricated number ("up from 82 last
     # year", "compared to last year") also belongs on the "still one claim"
     # side despite carrying its own number — the trap a naive "does the
     # tail contain a number" test would fall into, wrongly boundary-ing
@@ -968,6 +971,16 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # removal that empties its whole sentence doesn't strand an orphan
     # period, and a removal that leaves a real clause behind doesn't eat
     # that clause's own closing period.
+    # Extended once more (still no verb added) to also catch an appositive
+    # tail with no leading determiner/possessive/quantifier at all — a bare
+    # comparative or superlative ("best in its class", "higher than most
+    # peers", "among the best in its sector"). Without a determiner these
+    # used to default to a clause boundary and strand the comparison after
+    # its basis (the fabricated number) was removed. `lower` and `better`
+    # are knowingly ambiguous — each can also lead a genuine verb clause
+    # ("lower their overhead", "better their outcomes") — but per the
+    # standing tie-break an over-removed true clause is preferred to a
+    # surviving fabrication-adjacent fragment, so both are included anyway.
     _trail_same_claim_lead = (
         r"(?:a|an|the|its|their|his|her)\b"
         r"|one\s+of\b"
@@ -976,6 +989,9 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         r"|versus\b"
         r"|vs\.?(?=\s)"
         r"|well\s+(?:above|below|over|under)\b"
+        r"|(?:best|worst|higher|lower|better|stronger|weaker|highest|lowest|strongest)\b"
+        r"|among\b"
+        r"|second\s+only\s+to\b"
     )
     _clause_trail = rf"(?:[^.,]|(?<=\d)\.(?=\d)|,(?=\s*(?:{_trail_same_claim_lead})))*"
 
