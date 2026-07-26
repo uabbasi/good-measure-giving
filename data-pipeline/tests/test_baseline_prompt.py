@@ -569,7 +569,11 @@ class TestCorrectionRulesPreserveSentenceInitialCase:
     of $X per dollar" pattern, and both founded-year patterns. These tests
     exercise each directly — no removal needed, just feeding the match at
     the very start of a sentence — which is the simplest possible
-    reproduction of the hazard `_match_case` guards against."""
+    reproduction of the hazard `_match_case` guards against.
+
+    A later addition, the program-ratio "spends X% on programs" correction
+    rule (pattern 5), was wrapped in `_preserve_case` from the start for the
+    same reason and is exercised here too."""
 
     def test_working_capital_holds_pattern(self):
         text = "Holds 3.0 months of working capital. It serves many families."
@@ -613,6 +617,15 @@ class TestCorrectionRulesPreserveSentenceInitialCase:
         out = _sanitize(text, metrics)
         assert out == "Operating since 1985. It serves many families."
 
+    def test_spends_on_programs_pattern(self):
+        """Follow-up fix: the new "spends X% on programs" correction rule
+        (pattern 5) needed the same _preserve_case wrapping as its siblings
+        — a preceding clause's removal can leave it sentence-initial."""
+        text = "Spends 45.0% on programs. It serves many families."
+        metrics = _metrics()
+        out = _sanitize(text, metrics)
+        assert out == "Spends 75.0% on programs. It serves many families."
+
     @pytest.mark.parametrize(
         "text,overrides",
         [
@@ -623,6 +636,7 @@ class TestCorrectionRulesPreserveSentenceInitialCase:
             ("Fundraising costs of $0.05 per dollar were reported.", dict()),
             ("Founded in 1980.", dict(founded_year=1985)),
             ("Operating since 1980.", dict(founded_year=1985)),
+            ("Spends 45.0% on programs.", dict()),
         ],
     )
     def test_sentence_initial_correction_is_idempotent(self, text, overrides):
@@ -1107,14 +1121,37 @@ class TestNumberBeforeProgramRatioRemoval:
         out = _sanitize(text, metrics)
         assert out == "The charity has a 91.1% program expense ratio."
 
-    def test_spends_on_programs_with_real_ratio_survives_unremoved(self):
-        """'spends X% on programs' has no correction-side rule of its own (a
-        pre-existing, separately-scoped gap); the new removal rule must stay
-        gated strictly behind the null branch and leave this text alone."""
+    def test_spends_on_programs_with_real_ratio_is_corrected_not_left_wrong(self):
+        """Follow-up fix: 'spends X% on programs' now has a correction-side
+        rule of its own — a wrong number publishing verbatim next to it was
+        the exact defect this closes, not a phrasing to leave alone. (This
+        test previously asserted the opposite, `out == text`, with a
+        docstring calling the gap "pre-existing, separately-scoped" — i.e.
+        documenting the bug, not protecting a feature. The removal-side gate
+        this test used to half-protect is still covered independently by
+        `test_number_before_fabrication_is_removed[spends_on_programs]`
+        above, which asserts this same phrasing is fully removed when
+        `program_expense_ratio` is null.)"""
         metrics = _metrics(program_expense_ratio=0.911)
         text = "The charity spends 45.0% on programs."
         out = _sanitize(text, metrics)
+        assert out == "The charity spends 91.1% on programs."
+
+    def test_spends_on_programs_already_correct_survives_unchanged(self):
+        """The other correction polarity: when the number already matches
+        the stored ratio, the rule must be a no-op, not re-stamp (and
+        potentially reformat) text that was already right."""
+        metrics = _metrics(program_expense_ratio=0.911)
+        text = "The charity spends 91.1% on programs."
+        out = _sanitize(text, metrics)
         assert out == text
+
+    def test_spends_on_programs_correction_is_idempotent(self):
+        metrics = _metrics(program_expense_ratio=0.911)
+        text = "The charity spends 45.0% on programs."
+        once = _sanitize(text, metrics)
+        twice = _sanitize(once, metrics)
+        assert twice == once == "The charity spends 91.1% on programs."
 
 
 # Each case: fabricated clause first, joined to a true clause by a bare

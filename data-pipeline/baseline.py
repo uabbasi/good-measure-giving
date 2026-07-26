@@ -1111,6 +1111,18 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 False,
             )
         )
+        # Pattern 5: spends X% on/for programs. The removal-side rule for
+        # this exact phrasing (below, in the null branch) had no correction
+        # counterpart, so a wrong number published verbatim whenever the
+        # ratio was real instead of null. Case-preserving for the same
+        # reason as patterns 2 and 3.
+        rules.append(
+            (
+                r"spends?\s+\d+\.?\d*\s*%\s+(?:on|for)\s+(?:programs?|programmatic\s+(?:work|activities|expenses?))",
+                _preserve_case(f"spends {correct_ratio} on programs"),
+                False,
+            )
+        )
     else:
         # Remove sentences mentioning program expense ratio with a number
         rules.append(
