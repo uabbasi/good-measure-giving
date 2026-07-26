@@ -2466,3 +2466,376 @@ class TestWorkingCapitalVerbIsEchoedNotHardcodedToHolds:
         text = "It scored 87/100 from Charity Navigator, and has 3.0 months of reserves."
         out = _sanitize(text, metrics)
         assert out == "Has 8.3 months of working capital."
+
+
+# Task G12: four defects found by an adversarial probe of
+# `sanitize_narrative_metrics`, all in the same clause-scoped-removal
+# machinery task G6-G11 built up (`_clause_lead`/`_clause_trail`/
+# `_decimal_safe`/`_repair_removal_artifacts`). Three destroy true, cited
+# financial facts; the fourth is a latent capitalization gap.
+class TestThousandsSeparatorCommaIsNotAClauseBoundary:
+    """Defects 1 & 2: a thousands comma ("$141,261", "4,000 families") was
+    treated as a clause boundary by `_clause_lead`/`_clause_trail` — the same
+    defect shape `_decimal_safe` was written for originally (a digit-
+    sandwiched decimal point mistaken for a *sentence* boundary), just never
+    mirrored onto the comma exclusion that guards *clause* boundaries.
+    `(?<=\\d),(?=\\d)` closes it, the same lookaround idiom already used for
+    the decimal point."""
+
+    def test_true_number_survives_a_semicolon_clause_boundary(self):
+        """Defect 2's exact repro: the true beneficiary count used to be
+        destroyed down to "The charity has 4." because `_clause_lead`'s
+        leading scan was blocked at the thousands comma and found a later
+        valid start right at that comma, swallowing everything after it —
+        including the "000" and the whole fabricated CN-score clause."""
+        metrics = _metrics(cn_overall_score=None)
+        text = "The charity has 4,000 beneficiaries; it also scored 87/100 on Charity Navigator."
+        out = _sanitize(text, metrics)
+        assert out == "The charity has 4,000 beneficiaries."
+
+    def test_true_number_with_thousands_comma_leads_the_whole_string(self):
+        """The thousands comma sits at the very start of the string this
+        time (not mid-sentence) — a different position for the same trap."""
+        metrics = _metrics(cn_overall_score=None)
+        text = "4,000 families were served; it also scored 87/100 on Charity Navigator."
+        out = _sanitize(text, metrics)
+        assert out == "4,000 families were served."
+
+    def test_thousands_comma_inside_the_fabricated_claim_is_fully_removed(self):
+        """The comma sandwiched between digits sits *inside* the fabricated
+        claim's own number this time. It must not confuse the removal into
+        stopping early (leaving a fragment) or matching too little."""
+        metrics = _metrics(fundraising_expenses=None)
+        text = "The charity reports a $1,234.00 per $1 raised inefficiency, which is a red flag."
+        out = _sanitize(text, metrics)
+        assert out == "Which is a red flag."
+
+    def test_several_thousands_commas_in_one_sentence_all_survive(self):
+        """Two independent true facts, each with their own thousands-comma
+        number, sit on either side of one fabricated claim joined by "and"
+        and a trailing comma. Both numbers must survive exactly; only the
+        fabricated fundraising claim goes."""
+        metrics = _metrics(total_revenue=141_261, fundraising_expenses=None)
+        text = (
+            "Total revenue was $141,261 and it served 4,000 people, "
+            "but fundraising efficiency was $0.00 per $1 raised."
+        )
+        out = _sanitize(text, metrics)
+        assert out == "Total revenue was $141,261 and it served 4,000 people."
+
+    def test_combined_thousands_comma_and_decimal_point_survives_intact(self):
+        """$1,250,000.50 — two thousands commas AND a decimal point in one
+        number, all digit-sandwiched. Every one of the three punctuation
+        marks must be recognized as "not a boundary" for the true clause to
+        survive byte-exact."""
+        metrics = _metrics(cn_overall_score=None)
+        text = (
+            "The organization manages $1,250,000.50 in total assets; "
+            "it also scored 87/100 on Charity Navigator."
+        )
+        out = _sanitize(text, metrics)
+        assert out == "The organization manages $1,250,000.50 in total assets."
+
+    @pytest.mark.parametrize(
+        "text,overrides",
+        [
+            (
+                "The charity has 4,000 beneficiaries; it also scored 87/100 on Charity Navigator.",
+                dict(cn_overall_score=None),
+            ),
+            (
+                "4,000 families were served; it also scored 87/100 on Charity Navigator.",
+                dict(cn_overall_score=None),
+            ),
+            (
+                "The charity reports a $1,234.00 per $1 raised inefficiency, which is a red flag.",
+                dict(fundraising_expenses=None),
+            ),
+            (
+                "Total revenue was $141,261 and it served 4,000 people, "
+                "but fundraising efficiency was $0.00 per $1 raised.",
+                dict(total_revenue=141_261, fundraising_expenses=None),
+            ),
+            (
+                "The organization manages $1,250,000.50 in total assets; "
+                "it also scored 87/100 on Charity Navigator.",
+                dict(cn_overall_score=None),
+            ),
+        ],
+    )
+    def test_thousands_comma_cases_are_five_pass_stable(self, text, overrides):
+        metrics = _metrics(**overrides)
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+
+class TestFundraisingDollarFigureDoesNotBindToAnUnrelatedTrueNumber:
+    """Defect 1's actual mechanism, distinct from the boundary-scan fix
+    above: the null-fundraising removal's own core (`\\$\\d+\\.?\\d*`) can match
+    a truncated PREFIX of an unrelated true dollar figure elsewhere in the
+    sentence (its `\\d+` simply stops at that number's own thousands comma —
+    e.g. grabbing "$141" out of "$141,261"), and the permissive
+    "co-occurrence within one sentence" gap between the number and the
+    phrase then bridges straight across " and " to reach "fundraising
+    efficiency" — bringing the true revenue clause along with it.
+
+    Fixed with a fundraising-specific gap (`_fr_gap`) that additionally
+    excludes a bare " and ", *not* by tightening the shared `_decimal_safe`
+    — an existing, deliberately-pinned test
+    (`TestClauseTrailBareAndBoundary.
+    test_and_inside_the_removed_claims_own_cooccurrence_gap_is_unaffected`)
+    relies on `_decimal_safe` tolerating "and" inside a claim's own
+    phrasing for the CN/accountability/financial rules, none of which
+    anchor on a truncatable `$` number and so were never exposed to this
+    defect in the first place."""
+
+    def test_leading_true_dollar_figure_with_thousands_comma_survives(self):
+        """The brief's own repro, verbatim."""
+        metrics = _metrics(total_revenue=141_261, fundraising_expenses=None)
+        text = (
+            "Total revenue was $141,261 and fundraising efficiency was "
+            "$0.00 per $1 raised, but filings are delayed."
+        )
+        out = _sanitize(text, metrics)
+        assert out == "Total revenue was $141,261, but filings are delayed."
+
+    def test_trailing_dollar_anchor_does_not_reach_across_and_for_an_unrelated_number(self):
+        """Mirrors the leading-side defect onto the *other* null-fundraising
+        rule (fixed phrase first, bare `$` number second, `_fr_gap` again):
+        pre-fix, this rule's own `\\$\\d+(?:\\.\\d+)?` reached forward across
+        an "and" to bind to an unrelated true revenue figure, truncating it
+        at its own thousands comma ("...total revenue reached $141,261 this
+        year." -> "261 this year." — verified against unmodified HEAD).
+        There is no actual number attached to "fundraising efficiency" here
+        (the LLM only named the concept), so once the "and" correctly blocks
+        the reach, nothing is left to remove and the whole sentence must
+        survive untouched."""
+        metrics = _metrics(total_revenue=141_261, fundraising_expenses=None)
+        text = "Fundraising efficiency was mentioned and total revenue reached $141,261 this year."
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_and_inside_one_cn_claims_own_phrasing_is_still_unaffected(self):
+        """No-regression check: `_fr_gap`'s "and"-exclusion is scoped to the
+        two fundraising rules only. The shared `_decimal_safe` used by the
+        CN/accountability/financial rules must still tolerate a bare "and"
+        *inside* one fabricated claim's own phrasing, exactly as
+        task G7 pinned it."""
+        metrics = _metrics(cn_overall_score=None)
+        text = "Charity Navigator rated it 82 and awarded 87/100 and serves 500 clients."
+        out = _sanitize(text, metrics)
+        assert out == "Serves 500 clients."
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "Total revenue was $141,261 and fundraising efficiency was "
+            "$0.00 per $1 raised, but filings are delayed.",
+            "Fundraising efficiency was mentioned and total revenue reached "
+            "$141,261 this year.",
+        ],
+    )
+    def test_dollar_figure_truncation_cases_are_five_pass_stable(self, text):
+        metrics = _metrics(total_revenue=141_261, fundraising_expenses=None)
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+
+# Defect 3: semicolon, colon, question mark, and exclamation mark were
+# admitted freely by `_clause_lead`/`_clause_trail`'s character classes, so a
+# removal ran straight through a genuine independent-clause separator (or,
+# for `?`/`!`, straight across what is really the end of the PRECEDING true
+# sentence). All four are unambiguous — they separate independent clauses by
+# definition — so, unlike the bare comma, they get no appositive-continuation
+# exception: always a boundary, both directions.
+_FOUR_UNAMBIGUOUS_JOINER_CASES = [
+    (
+        "semicolon_fabricated_leads",
+        "It scored 87/100 on Charity Navigator; it also holds 8.3 months of working capital.",
+        "It also holds 8.3 months of working capital.",
+    ),
+    (
+        "semicolon_true_leads",
+        "It holds 8.3 months of working capital; it also scored 87/100 on Charity Navigator.",
+        "It holds 8.3 months of working capital.",
+    ),
+    (
+        "colon_fabricated_leads",
+        "It scored 87/100 on Charity Navigator: it also holds 8.3 months of working capital.",
+        "It also holds 8.3 months of working capital.",
+    ),
+    (
+        "colon_true_leads",
+        "It holds 8.3 months of working capital: it also scored 87/100 on Charity Navigator.",
+        "It holds 8.3 months of working capital.",
+    ),
+    (
+        "question_mark_fabricated_leads",
+        "Did it score 87/100 on Charity Navigator? It also holds 8.3 months of working capital.",
+        "It also holds 8.3 months of working capital.",
+    ),
+    (
+        "question_mark_true_leads",
+        "Is the working capital position strong? It also scored 87/100 on Charity Navigator.",
+        "Is the working capital position strong?",
+    ),
+    (
+        "exclamation_mark_fabricated_leads",
+        "It scored 87/100 on Charity Navigator! It also holds 8.3 months of working capital.",
+        "It also holds 8.3 months of working capital.",
+    ),
+    (
+        "exclamation_mark_true_leads",
+        "The working capital position is excellent! It also scored 87/100 on Charity Navigator.",
+        "The working capital position is excellent!",
+    ),
+]
+
+
+class TestFourUnambiguousJoinersAreNowClauseBoundaries:
+    """Defect 3 (four of the five joiners — em dash is its own class below,
+    since it isn't unambiguous). Both polarities per joiner, per the brief:
+    a true clause on the far side of the joiner survives in full, and a
+    fabricated claim genuinely spanning the joiner is removed in full with
+    no surviving fragment that still asserts the metric."""
+
+    @pytest.mark.parametrize(
+        "name,text,expected", _FOUR_UNAMBIGUOUS_JOINER_CASES,
+        ids=[n for n, *_ in _FOUR_UNAMBIGUOUS_JOINER_CASES])
+    def test_joiner_boundary_both_polarities(self, name, text, expected):
+        metrics = _metrics(cn_overall_score=None, working_capital_ratio=8.3)
+        out = _sanitize(text, metrics)
+        assert out == expected
+
+    @pytest.mark.parametrize(
+        "name,text,expected", _FOUR_UNAMBIGUOUS_JOINER_CASES,
+        ids=[n for n, *_ in _FOUR_UNAMBIGUOUS_JOINER_CASES])
+    def test_joiner_boundary_cases_are_five_pass_stable(self, name, text, expected):
+        metrics = _metrics(cn_overall_score=None, working_capital_ratio=8.3)
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == expected
+
+
+class TestEmDashGetsTheSameAppositiveVsClauseTreatmentAsABareComma:
+    """Defect 3's fifth joiner, and the doubtful one (the brief's own
+    framing): an em dash introduces an appositive of the SAME claim about as
+    often as it introduces a genuine independent clause
+    ("scored 87/100 — its best result yet" vs. "scored 87/100 — it also
+    holds 8.3 months of working capital"). Tested both readings before
+    choosing:
+
+    - Making it an unconditional boundary strands a fabrication-referencing
+      appositive behind ("A great achievement!" — still about a score that
+      no longer exists — a surviving fabrication-adjacent fragment, the
+      worse failure mode per the standing tie-break).
+    - Making it an unconditional continuation instead risks swallowing a
+      genuine independent clause that just happens to be dash-joined
+      instead of semicolon-joined.
+
+    Resolved by giving the em dash the exact same context-sensitive
+    treatment already built for the bare comma — reusing
+    `_trail_same_claim_lead` rather than inventing a second mechanism, since
+    the same question (does what follows read as an appositive of the same
+    claim, or as its own clause?) is what actually distinguishes the two
+    cases for a dash exactly as it does for a comma."""
+
+    def test_appositive_of_the_fabricated_claim_is_removed_in_full(self):
+        """The brief's own em-dash repro: the appositive ("a great
+        achievement") is commentary ABOUT the fabricated score, not an
+        independent fact, so over-removing it is correct — nothing survives
+        that still references the fabricated score."""
+        metrics = _metrics(cn_overall_score=None, working_capital_ratio=8.3)
+        text = (
+            "It scored 87/100 on Charity Navigator — a great achievement! "
+            "It also holds 8.3 months of working capital."
+        )
+        out = _sanitize(text, metrics)
+        assert out == "It also holds 8.3 months of working capital."
+
+    def test_genuine_independent_clause_after_the_dash_survives(self):
+        """No appositive lead here ("it also holds...") — `_trail_same_claim_lead`
+        doesn't recognize it, so the dash is a hard boundary and the true
+        clause after it survives, cleanly repunctuated."""
+        metrics = _metrics(cn_overall_score=None, working_capital_ratio=8.3)
+        text = "It scored 87/100 on Charity Navigator — it also holds 8.3 months of working capital."
+        out = _sanitize(text, metrics)
+        assert out == "It also holds 8.3 months of working capital."
+
+    def test_true_clause_survives_when_the_dash_leads_into_the_fabricated_one(self):
+        """The mirrored, leading-edge polarity: a true clause sits BEFORE an
+        em-dash-joined fabricated one. Also confirms the leading space
+        conventional before an em dash ("capital — it") is consumed cleanly,
+        with no stray space left in front of the surviving clause's own
+        terminal period."""
+        metrics = _metrics(cn_overall_score=None, working_capital_ratio=8.3)
+        text = "It holds 8.3 months of working capital — it also scored 87/100 on Charity Navigator."
+        out = _sanitize(text, metrics)
+        assert out == "It holds 8.3 months of working capital."
+
+    def test_true_clause_with_its_own_appositive_before_the_dash_survives_whole(self):
+        """The true clause's own comma-led appositive (", and rising") must
+        not be mistaken for a boundary either — only the em dash further
+        along is."""
+        metrics = _metrics(cn_overall_score=None, working_capital_ratio=8.3)
+        text = (
+            "It holds 8.3 months of working capital, and rising — "
+            "it also scored 87/100 on Charity Navigator."
+        )
+        out = _sanitize(text, metrics)
+        assert out == "It holds 8.3 months of working capital, and rising."
+
+    @pytest.mark.parametrize(
+        "text,expected",
+        [
+            (
+                "It scored 87/100 on Charity Navigator — a great achievement! "
+                "It also holds 8.3 months of working capital.",
+                "It also holds 8.3 months of working capital.",
+            ),
+            (
+                "It scored 87/100 on Charity Navigator — it also holds 8.3 months of working capital.",
+                "It also holds 8.3 months of working capital.",
+            ),
+            (
+                "It holds 8.3 months of working capital — it also scored 87/100 on Charity Navigator.",
+                "It holds 8.3 months of working capital.",
+            ),
+            (
+                "It holds 8.3 months of working capital, and rising — "
+                "it also scored 87/100 on Charity Navigator.",
+                "It holds 8.3 months of working capital, and rising.",
+            ),
+        ],
+    )
+    def test_em_dash_cases_are_five_pass_stable(self, text, expected):
+        metrics = _metrics(cn_overall_score=None, working_capital_ratio=8.3)
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == expected
+
+
+class TestCapitalizationRepairSeesThroughCitationMarkup:
+    """Defect 4 (latent): `_repair_removal_artifacts`'s capitalization regex
+    expected a letter immediately at the sentence boundary and found `<`
+    instead whenever a removal left a surviving clause's own `<cite
+    id="...">` wrapper sentence-initial, silently leaving the visible word
+    lowercase. Zero live instances when found (needs one unlucky clause
+    ordering), but `<cite>` markup appears in all 166 published files."""
+
+    def test_cite_tag_immediately_after_a_removed_clause_is_still_capitalized(self):
+        metrics = _metrics(cn_overall_score=None, working_capital_ratio=8.3)
+        text = (
+            'The charity <cite id="1">scored 87/100 on Charity Navigator</cite> '
+            'and <cite id="2">holds 8.3 months of working capital</cite>.'
+        )
+        out = _sanitize(text, metrics)
+        assert out == '<cite id="2">Holds 8.3 months of working capital</cite>.'
+
+    def test_cite_tag_capitalization_is_five_pass_stable(self):
+        metrics = _metrics(cn_overall_score=None, working_capital_ratio=8.3)
+        text = (
+            'The charity <cite id="1">scored 87/100 on Charity Navigator</cite> '
+            'and <cite id="2">holds 8.3 months of working capital</cite>.'
+        )
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+        assert passes[0] == '<cite id="2">Holds 8.3 months of working capital</cite>.'

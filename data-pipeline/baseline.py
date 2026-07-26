@@ -916,8 +916,13 @@ def _repair_removal_artifacts(text: str) -> str:
     # A leading connective stranded at the start of a sentence: ", and X" or
     # ", X" -> "X" (only at the very start of the string, or right after a
     # previous sentence's terminal punctuation — never mid-sentence, so this
-    # can't reach into unrelated text).
-    text = re.sub(r"(^|[.!?]\s+)\s*,\s*(?:and\s+)?", r"\1", text)
+    # can't reach into unrelated text). Task G12: also strips a stray leading
+    # semicolon/colon/em-dash left behind when a FIRST-clause removal's own
+    # trailing edge (`_clause_trail`) stopped right before one of those three
+    # joiners instead of consuming it — mirrors `_clause_lead`'s own leading
+    # connector alternation for the same three characters, so either side of
+    # a removal leaves the same, already-handled artifact shape.
+    text = re.sub(r"(^|[.!?]\s+)\s*(?:[,;:]|—)\s*(?:and\s+)?", r"\1", text)
     # A bare "and " stranded at a sentence start with no comma of its own
     # (the comma was itself part of the removed span). The leading `\s*`
     # also covers the case where the removed span was the very start of the
@@ -930,15 +935,38 @@ def _repair_removal_artifacts(text: str) -> str:
     text = re.sub(r",\s*,", ",", text)  # doubled comma
     text = re.sub(r",\s*([.!?])", r"\1", text)  # comma stranded right before terminal punctuation
     text = re.sub(r",\s*$", "", text)  # trailing dangling comma
-    text = re.sub(r"([.!?])\s*\1+", r"\1", text)  # doubled terminal punctuation
+    # Doubled terminal punctuation. Task G12: generalized from `\1+` (only
+    # the identical mark repeated, e.g. ".." -> ".") to any run of terminal
+    # marks, since a removal can now glue two *different* ones together —
+    # e.g. "...position strong? It also scored 87/100..." with the second
+    # sentence removed leaves "...strong?" directly touching the first
+    # sentence's own untouched "." with no space between (the leading `?`/
+    # `!` exclusion added to `_clause_lead` stops the removal from crossing
+    # the true sentence's own terminal mark, but the removed clause's own
+    # trailing period is — by design, see `_clause_trail`'s docstring —
+    # never part of the match either, so it survives as an orphan glued
+    # right onto the true mark: "strong?."). The first mark is always the
+    # real one (it belongs to the surviving clause); every mark after it in
+    # the same run is an orphan from whatever was removed.
+    text = re.sub(r"([.!?])\s*[.!?]+", r"\1", text)
     # A stray terminal mark with nothing (or only whitespace) before it — the
     # whole clause it used to close was removed.
     text = re.sub(r"(^|[.!?]\s+)[.!?]\s*", r"\1", text)
     text = re.sub(r"\s{2,}", " ", text).strip()
     # Capitalize the first letter of the string and of each sentence start,
     # since the word now beginning a sentence may have been lowercase and
-    # mid-sentence before its leading clause was removed.
-    text = re.sub(r"(^\s*|[.!?]\s+)([a-z])", lambda m: m.group(1) + m.group(2).upper(), text)
+    # mid-sentence before its leading clause was removed. Task G12: an
+    # optional `<cite id="...">` tag is allowed to sit between the sentence
+    # start and the first letter — a removal can leave a surviving clause's
+    # own citation wrapper sentence-initial (`<cite id="2">holds ...`), and
+    # without this the capitalization regex looked for a letter immediately
+    # at the boundary, found `<` instead, and silently skipped it, leaving
+    # the visible word lowercase.
+    text = re.sub(
+        r"(^\s*|[.!?]\s+)(<[^>]+>\s*)?([a-z])",
+        lambda m: m.group(1) + (m.group(2) or "") + m.group(3).upper(),
+        text,
+    )
     return text
 
 
@@ -1000,9 +1028,35 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # turn), so the search naturally advances to the real, final connector
     # instead — no special-casing needed, same self-correcting behavior as
     # the trailing-edge fix.
+    #
+    # Task G12: a thousands-separator comma ("$141,261", "4,000 families")
+    # is not a clause boundary any more than a decimal point is — it's the
+    # same defect shape `_decimal_safe` was written for originally (a digit-
+    # sandwiched punctuation mark mistaken for a boundary), just never
+    # mirrored onto the comma exclusion here. `(?<=\d),(?=\d)` added
+    # alongside the existing `(?<=\d)\.(?=\d)` closes it. Also extended the
+    # excluded-boundary set from `.,` to also include `;:?!—` — semicolon,
+    # colon, question mark, and exclamation mark are unrecognized today and
+    # admitted freely by `[^.,]`, letting a removal's leading scan run
+    # straight across a genuine independent-clause separator (or, for `?`/
+    # `!`, straight across what is really the END of the PRECEDING true
+    # sentence) and swallow a true clause that has nothing to do with the
+    # fabricated one. Em dash (`—`) is included here on the *leading* side
+    # unconditionally (mirroring how a bare comma is always a leading
+    # boundary, with no appositive-continuation exception on this side
+    # either) — the appositive-vs-clause ambiguity the brief flags for em
+    # dash only matters on the *trailing* side (see `_clause_trail` below),
+    # where the text instead of the position is what decides. The leading
+    # `\s*` (new here — comma's own version never needed it) matters
+    # specifically for the em dash: unlike a comma/semicolon/colon, which is
+    # never preceded by a space in ordinary prose, an em dash conventionally
+    # IS ("capital — it also..."), and without consuming that space here too
+    # the leftmost successful match starts right at the dash itself, leaving
+    # the space before it stranded in front of the surviving clause's own
+    # terminal punctuation ("...capital ." — a real, hand-probed artifact).
     _clause_lead = (
-        r"(?:,\s*(?:and\s+)?|\s+and\s+)?"
-        + r"(?:(?!\s+and\b)(?:[^.,]|(?<=\d)\.(?=\d)))*"
+        r"(?:\s*(?:[,;:]|—)\s*(?:and\s+)?|\s+and\s+)?"
+        + r"(?:(?!\s+and\b)(?:[^.,;:?!—]|(?<=\d)\.(?=\d)|(?<=\d),(?=\d)))*"
     )
     # Used for the OUTER trailing edge of every removal rule. Whether a comma
     # is a clause boundary is decided by what follows it, not by the comma
@@ -1094,7 +1148,38 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # own `_decimal_safe` co-occurrence gap (e.g. between a Charity Navigator
     # mention and its score) is untouched, since that gap is a separate
     # regex fragment this lookahead isn't part of.
-    _clause_trail = rf"(?:(?!\s+and\b)(?:[^.,]|(?<=\d)\.(?=\d))|,(?=\s*(?:{_trail_same_claim_lead})))*"
+    #
+    # Task G12: two more boundary shapes, mirroring the leading edge above.
+    # First, a thousands-separator comma (`(?<=\d),(?=\d)`) is not a clause
+    # boundary — same fix as `_clause_lead`, same reasoning: a digit-
+    # sandwiched comma is part of a number, not punctuation.
+    #
+    # Second, semicolon/colon/question-mark/exclamation-mark are added to
+    # the excluded set alongside `.,`. All four separate grammatically
+    # independent clauses by definition (unlike a bare comma, which can
+    # introduce either an appositive of the same claim or an independent
+    # clause) — so, like `.`, they get no continuation-lead exception, and
+    # like the existing bare-trailing-`.` design, a stray trailing one is
+    # left for `_repair_removal_artifacts` rather than consumed here.
+    #
+    # Em dash is the doubtful one (the brief's own framing): it introduces
+    # an appositive of the same fabricated claim about as often as it
+    # introduces a genuine independent clause. Tested both readings: making
+    # it an unconditional boundary strands a fabrication-referencing
+    # appositive after it ("scored 87/100 ... — a great achievement!" would
+    # leave "A great achievement!" behind, still about a score that no
+    # longer exists); making it an unconditional continuation instead risks
+    # swallowing a genuine independent clause that just happens to be
+    # joined by a dash instead of a semicolon. Resolved by giving it the
+    # *same* context-sensitive treatment already built for the bare comma —
+    # reusing `_trail_same_claim_lead` rather than inventing a second
+    # mechanism — since the same test (does what follows read as an
+    # appositive of the same claim, or as its own clause?) is what actually
+    # distinguishes the two cases for a dash exactly as it does for a comma.
+    _clause_trail = (
+        rf"(?:(?!\s+and\b)(?:[^.,;:?!—]|(?<=\d)\.(?=\d)|(?<=\d),(?=\d))"
+        rf"|[,—](?=\s*(?:{_trail_same_claim_lead})))*"
+    )
 
     # Working capital  (e.g. "8.3 months of working capital" or "8.3 years of reserves")
     # LLM variants: "holds X years of expenses", "maintains X years in reserves",
@@ -1601,14 +1686,35 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # cross a comma to swallow an unrelated clause sitting in front of the
         # fabricated one (e.g. "a 91.1% program expense ratio, and a $0.00
         # fundraising efficiency rate." must lose only the second clause).
-        # The middle scan stays _decimal_safe (co-occurrence within one
-        # sentence — a decimal point elsewhere is never mistaken for the
+        # The middle scan stays _decimal_safe-shaped (co-occurrence within
+        # one sentence — a decimal point elsewhere is never mistaken for the
         # sentence's end). The trailing scan is now _clause_trail as well, so
         # a *following* clause coordinated with ", and ..." (a true claim
         # about a different metric) survives instead of being swallowed too.
+        #
+        # Task G12 (defect 1): the middle gap here is `_fr_gap`, not the
+        # shared `_decimal_safe` — it additionally excludes a bare " and " the
+        # same way `_clause_lead`/`_clause_trail` do. `\$\d+\.?\d*` can match
+        # a truncated PREFIX of an unrelated true dollar figure elsewhere in
+        # the sentence (its own `\d+` simply stops at that number's own
+        # thousands comma, e.g. grabbing "$141" out of "$141,261"), and
+        # `_decimal_safe`'s unconditional comma tolerance then let the middle
+        # gap bridge straight through "and" to reach "fundraising efficiency"
+        # — bringing the *true revenue clause* along for the ride. This
+        # doesn't fold into the shared `_decimal_safe`: a real, tested case
+        # (`TestClauseTrailBareAndBoundary.
+        # test_and_inside_the_removed_claims_own_cooccurrence_gap_is_unaffected`)
+        # deliberately relies on `_decimal_safe` tolerating a bare "and"
+        # *inside one claim's own phrasing* ("Charity Navigator rated it 82
+        # and awarded 87/100"), which only the CN/accountability/financial
+        # rules need (none of them anchor on a truncatable `\$` number, so
+        # they aren't exposed to this defect) — scoping the "and"-exclusion
+        # to just the two fundraising rules below fixes the real defect
+        # without reopening that.
+        _fr_gap = r"(?:(?!\s+and\b)(?:[^.]|(?<=\d)\.(?=\d)))*"
         rules.append(
             (
-                rf"{_clause_lead}\$\d+\.?\d*{_decimal_safe}(?:{_fr_phrasing}|fundraising\s+efficiency){_clause_trail}",
+                rf"{_clause_lead}\$\d+\.?\d*{_fr_gap}(?:{_fr_phrasing}|fundraising\s+efficiency){_clause_trail}",
                 None,
                 True,
             )
@@ -1616,9 +1722,13 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # No suffix follows the dollar amount here, so it's the last thing
         # the core requires — same bare-trailing-number risk as the CN/
         # accountability/financial rules above; `\d+(?:\.\d+)?` guards it.
+        # Same `_fr_gap` swap as above, and for the same reason: the trailing
+        # `\$\d+(?:\.\d+)?` here can just as easily truncate-bind to an
+        # unrelated true dollar figure that follows "fundraising efficiency"
+        # later in the sentence.
         rules.append(
             (
-                rf"{_clause_lead}fundraising\s+efficiency{_decimal_safe}\$\d+(?:\.\d+)?{_clause_trail}",
+                rf"{_clause_lead}fundraising\s+efficiency{_fr_gap}\$\d+(?:\.\d+)?{_clause_trail}",
                 None,
                 True,
             )
