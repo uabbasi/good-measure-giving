@@ -4811,3 +4811,238 @@ class TestRepairRemainsUnscopedWhenCalledWithoutJoints:
         once = _repair_removal_artifacts(text)
         twice = _repair_removal_artifacts(once)
         assert once == twice
+
+
+# Task G18: a null-metric removal rule anchors on two ends (e.g. "scored N out
+# of 100" ... "Charity Navigator") with a permissive gap between them, so
+# genuine same-claim co-occurrence within one sentence still matches ("scored
+# 87/100 last year from Charity Navigator"). That same gap tolerated commas
+# (and, for two rules, bound its own bare `/100` core) unconditionally — so it
+# would just as happily bridge over a comma-joined, UNRELATED, real claim
+# sitting in between, deleting it, or bind straight to a different metric's
+# own number. Both mechanisms are fixed the same way `_fr_gap` was fixed in
+# task G12: forbid the gap from reaching a DIFFERENT metric's own claim,
+# reusing this function's existing per-metric name/noun atoms rather than a
+# new vocabulary list.
+_CN_BRIDGING_REPRO_CASES = [
+    (
+        "accountability_between_score_and_navigator",
+        "It scored 87 out of 100, with an accountability rating of 91.0/100, from Charity Navigator.",
+        dict(cn_overall_score=None, cn_accountability_score=91.0),
+        "It scored 87 out of 100, with an accountability rating of 91.0/100, from Charity Navigator.",
+    ),
+    (
+        "financial_between_score_and_navigator",
+        "It scored 87 out of 100, with a financial score of 55.0/100, from Charity Navigator.",
+        dict(cn_overall_score=None, cn_financial_score=55.0),
+        "It scored 87 out of 100, with a financial score of 55.0/100, from Charity Navigator.",
+    ),
+    (
+        "accountability_before_navigator_name_first",
+        "Charity Navigator notes its 91.0/100 accountability score, and scored 87 out of 100 overall.",
+        dict(cn_overall_score=None, cn_accountability_score=91.0),
+        "Charity Navigator notes its 91.0/100 accountability score, and scored 87 out of 100 overall.",
+    ),
+    (
+        "working_capital_between_score_and_navigator",
+        "It scored 87 out of 100, holding 8.3 months of working capital, from Charity Navigator.",
+        dict(cn_overall_score=None, working_capital_ratio=8.3),
+        "It scored 87 out of 100, holding 8.3 months of working capital, from Charity Navigator.",
+    ),
+    (
+        "program_expense_between_score_and_navigator",
+        "It scored 87 out of 100, directing 91.4% to programs, from Charity Navigator.",
+        dict(cn_overall_score=None, program_expense_ratio=0.914),
+        "It scored 87 out of 100, directing 91.4% to programs, from Charity Navigator.",
+    ),
+]
+
+_CN_BRIDGING_CONTROL_CASES = [
+    (
+        "bare_score_last_year_still_removed",
+        "It scored 87/100 last year from Charity Navigator.",
+        dict(cn_overall_score=None),
+        "",
+    ),
+    (
+        "bare_score_out_of_100_with_year_still_removed",
+        "It scored 87 out of 100 in 2024 from Charity Navigator.",
+        dict(cn_overall_score=None),
+        "",
+    ),
+]
+
+_CN_BRIDGING_INVENTED_CASES = [
+    (
+        "governance_name_variant",
+        "It scored 87 out of 100, with a governance rating of 60.0/100, from Charity Navigator.",
+        dict(cn_overall_score=None, cn_accountability_score=60.0),
+        "It scored 87 out of 100, with a governance rating of 60.0/100, from Charity Navigator.",
+    ),
+    (
+        "perfect_score_rule_with_embedded_working_capital",
+        "It earned a perfect score, holding 8.3 months of working capital, from Charity Navigator.",
+        dict(cn_overall_score=None, working_capital_ratio=8.3),
+        "It earned a perfect score, holding 8.3 months of working capital, from Charity Navigator.",
+    ),
+    (
+        "star_rating_rule_with_embedded_program_expense",
+        "It has a 5-star rating, directing 91.4% to programs, from Charity Navigator.",
+        dict(cn_overall_score=None, program_expense_ratio=0.914),
+        "It has a 5-star rating, directing 91.4% to programs, from Charity Navigator.",
+    ),
+]
+
+
+class TestNullCnRemovalDoesNotBridgeOverAnotherMetricClaim:
+    """The five repros from the task brief: a null cn_overall_score removal
+    rule's gap bridged over an unrelated, TRUE claim about a different
+    metric sitting between its two anchors, deleting it (or, for the
+    name/number-adjacent shapes, binding its own bare `/100` core straight
+    to that different metric's number). Fixed by declining to remove at
+    all when doing so would require crossing another metric's own claim —
+    an accepted, safer trade: the null CN mention survives unstripped in
+    this narrower combined shape rather than risk deleting real content."""
+
+    @pytest.mark.parametrize(
+        "name,text,overrides,expected", _CN_BRIDGING_REPRO_CASES, ids=[c[0] for c in _CN_BRIDGING_REPRO_CASES]
+    )
+    def test_true_claim_survives_uncorrupted(self, name, text, overrides, expected):
+        metrics = _metrics(**overrides)
+        out = _sanitize(text, metrics)
+        assert out == expected
+
+    @pytest.mark.parametrize(
+        "name,text,overrides,expected", _CN_BRIDGING_REPRO_CASES, ids=[c[0] for c in _CN_BRIDGING_REPRO_CASES]
+    )
+    def test_true_claim_survival_is_five_pass_stable(self, name, text, overrides, expected):
+        metrics = _metrics(**overrides)
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == expected
+
+
+class TestNullCnRemovalControlsStillFullyStrip:
+    """The two controls the permissive gap exists FOR: genuine same-claim
+    co-occurrence within one sentence, with nothing else in between, must
+    still be removed in full — this task's fix must not turn into a new
+    under-removal regression for the ordinary case."""
+
+    @pytest.mark.parametrize(
+        "name,text,overrides,expected", _CN_BRIDGING_CONTROL_CASES, ids=[c[0] for c in _CN_BRIDGING_CONTROL_CASES]
+    )
+    def test_bare_claim_still_fully_removed(self, name, text, overrides, expected):
+        metrics = _metrics(**overrides)
+        out = _sanitize(text, metrics)
+        assert out == expected
+
+    @pytest.mark.parametrize(
+        "name,text,overrides,expected", _CN_BRIDGING_CONTROL_CASES, ids=[c[0] for c in _CN_BRIDGING_CONTROL_CASES]
+    )
+    def test_bare_claim_removal_is_five_pass_stable(self, name, text, overrides, expected):
+        metrics = _metrics(**overrides)
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == expected
+
+
+class TestNullCnRemovalInventedCoOccurrenceShapes:
+    """Three more co-occurrence shapes beyond the brief's own five repros,
+    each exercising a DIFFERENT one of the null-CN rules: the governance
+    name variant of the accountability rule, the "perfect score" rule with
+    an embedded working-capital claim, and the star-rating rule with an
+    embedded program-expense claim. All three must preserve the true
+    claim exactly as written."""
+
+    @pytest.mark.parametrize(
+        "name,text,overrides,expected", _CN_BRIDGING_INVENTED_CASES, ids=[c[0] for c in _CN_BRIDGING_INVENTED_CASES]
+    )
+    def test_true_claim_survives_uncorrupted(self, name, text, overrides, expected):
+        metrics = _metrics(**overrides)
+        out = _sanitize(text, metrics)
+        assert out == expected
+
+    @pytest.mark.parametrize(
+        "name,text,overrides,expected", _CN_BRIDGING_INVENTED_CASES, ids=[c[0] for c in _CN_BRIDGING_INVENTED_CASES]
+    )
+    def test_true_claim_survival_is_five_pass_stable(self, name, text, overrides, expected):
+        metrics = _metrics(**overrides)
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == expected
+
+
+class TestFundraisingGapsDoNotBridgeOverAnotherMetricClaim:
+    """Task G18 audit: the two null-fundraising removal rules (`_fr_gap`,
+    `_fr_gap_dollar_first`) have the identical permissive-middle-gap shape
+    the brief describes for the CN rules, and were independently confirmed
+    vulnerable to the same defect — an embedded true metric claim between
+    "fundraising efficiency" and its `$` figure was deleted along with the
+    fabrication. `_fr_gap_dollar_first`'s existing bare-comma-boundary-by-
+    default design (task G12 round 2) already blocked the comma-joined
+    shape, but not a SEMICOLON-joined one (`;` was never added to this
+    gap's excluded-boundary set the way task G12 added it to
+    `_clause_lead`/`_clause_trail`) — closed as a side effect of the same
+    `_other_metric_claim` exclusion, since it fires on the claim's own
+    wording, not on which punctuation joins it."""
+
+    def test_phrase_first_rule_preserves_embedded_working_capital(self):
+        text = "Fundraising efficiency was mentioned, with an accountability rating of 91.0/100, spending $0.00 to raise every $1."
+        metrics = _metrics(fundraising_expenses=None, total_revenue=141_261, cn_accountability_score=91.0)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_phrase_first_rule_preservation_is_five_pass_stable(self):
+        text = "Fundraising efficiency was mentioned, with an accountability rating of 91.0/100, spending $0.00 to raise every $1."
+        metrics = _metrics(fundraising_expenses=None, total_revenue=141_261, cn_accountability_score=91.0)
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == text
+
+    def test_dollar_first_rule_preserves_semicolon_joined_working_capital(self):
+        text = "The charity spent $0.00; holding 8.3 months of working capital; per $1 raised."
+        metrics = _metrics(fundraising_expenses=None, total_revenue=141_261, working_capital_ratio=8.3)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_dollar_first_rule_semicolon_preservation_is_five_pass_stable(self):
+        text = "The charity spent $0.00; holding 8.3 months of working capital; per $1 raised."
+        metrics = _metrics(fundraising_expenses=None, total_revenue=141_261, working_capital_ratio=8.3)
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == text
+
+    def test_phrase_first_control_with_no_embedded_claim_still_fully_removed(self):
+        """The permissive gap exists so genuine same-claim co-occurrence
+        keeps matching — control, no embedded claim to protect."""
+        text = "Exceptional fundraising efficiency of $0.00 spent per $1 raised last year."
+        metrics = _metrics(fundraising_expenses=None, total_revenue=141_261)
+        out = _sanitize(text, metrics)
+        assert out == ""
+
+    def test_dollar_first_control_with_no_embedded_claim_still_fully_removed(self):
+        text = "The charity spent $0.00 last year per $1 raised."
+        metrics = _metrics(fundraising_expenses=None, total_revenue=141_261)
+        out = _sanitize(text, metrics)
+        assert out == ""
+
+
+class TestCnBridgingGuardToleratesAHedgeBeforeTheOtherMetricNumber:
+    """Hand-probing found a real gap in the backward guard's first version:
+    a hedge word between "accountability rating of" and the number
+    ("...rating of ROUGHLY 91.0/100...") defeated the anchor the same way
+    every other anchor in this function has already had to be hardened
+    against (task G14) — the guard's `$`-anchored backward search never
+    reached the string end, so it silently declined to protect a real
+    accountability value and the CN rule deleted it. Fixed by reusing
+    `_hedge_gap` (already bounded, already excludes metric nouns and
+    digits) in the guard's own connector, the same fix G14 applied
+    everywhere else."""
+
+    def test_hedged_accountability_number_survives(self):
+        text = "It scored 87 out of 100, with an accountability rating of roughly 91.0/100, from Charity Navigator."
+        metrics = _metrics(cn_overall_score=None, cn_accountability_score=91.0)
+        out = _sanitize(text, metrics)
+        assert out == "It scored 87 out of 100, with an accountability rating of 91.0/100, from Charity Navigator."
+
+    def test_hedged_accountability_number_survival_is_five_pass_stable(self):
+        text = "It scored 87 out of 100, with an accountability rating of roughly 91.0/100, from Charity Navigator."
+        metrics = _metrics(cn_overall_score=None, cn_accountability_score=91.0)
+        expected = "It scored 87 out of 100, with an accountability rating of 91.0/100, from Charity Navigator."
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == expected

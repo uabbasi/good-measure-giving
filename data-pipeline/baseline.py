@@ -870,14 +870,28 @@ def _abbreviation_before_stray_comma(match: "re.Match[str]") -> str:
     return f"{abbr or ''}{match.group('punct')} ,"
 
 
-def _removed_span_joints(pattern: str, text: str) -> tuple[str, list[int]]:
+def _removed_span_joints(
+    pattern: str, text: str, guard: "Callable[[re.Match[str]], bool] | None" = None
+) -> tuple[str, list[int]]:
     """Remove every non-overlapping match of `pattern` from `text` — the
     same matches, in the same order, `re.sub(pattern, "", text, flags=re.
     IGNORECASE)` would remove — and also return, for each one, the
     position in the RESULT string where the two flanking pieces now touch.
     `_repair_removal_artifacts` uses these positions to scope its cleanup
-    to the removal site instead of the whole field (task G17)."""
+    to the removal site instead of the whole field (task G17).
+
+    `guard`, when given, is called with each match; a match it rejects
+    (returns False for) is left in place, not removed. Task G18: a
+    removal rule whose own core is a bare, unqualified number (so it can
+    bind to a DIFFERENT metric's own number, not just bridge over one) has
+    no reliable way to express "but not when it's named by something else"
+    as a per-character exclusion inside `pattern` itself — the exclusion
+    turned out to be escapable by the regex engine simply retrying the
+    match starting later (see the task report). A `guard` answers that
+    question directly against the already-matched span instead."""
     matches = list(re.finditer(pattern, text, flags=re.IGNORECASE))
+    if guard is not None:
+        matches = [m for m in matches if guard(m)]
     if not matches:
         return text, []
     parts: list[str] = []
@@ -1221,13 +1235,16 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # next clause starting mid-number. Fix: treat a period as a boundary only
     # when it is NOT sandwiched between two digits (a decimal point).
     #
-    # `_decimal_safe` is still used for the INNER gaps inside a removal
-    # pattern (e.g. the "co-occurrence within one sentence" gap between
-    # "$0.00" and "fundraising efficiency") — that's about tolerating
-    # unrelated words *inside* one fabricated claim, not about where the
-    # claim's outer boundary sits, so it is unaffected by the clause-vs-
-    # sentence fix below.
-    _decimal_safe = r"(?:[^.]|(?<=\d)\.(?=\d))*"
+    # The "co-occurrence within one sentence" INNER gap inside a removal
+    # pattern (e.g. between "$0.00" and "fundraising efficiency") is about
+    # tolerating unrelated words *inside* one fabricated claim, not about
+    # where the claim's outer boundary sits, so it is unaffected by the
+    # clause-vs-sentence fix below. That inner-gap shape used to be one
+    # shared `_decimal_safe` variable; Task G18 split it into per-rule-
+    # family local variants (`_cn_gap`, `_fr_gap`/`_fr_gap_dollar_first`,
+    # defined where each family builds its rules below) so each can also
+    # exclude bridging over a DIFFERENT metric's own claim without the
+    # exclusion leaking into families that don't need it.
     # Used for the OUTER leading edge of every removal rule (not just
     # fundraising) — also stops at a comma, so the removal can't swallow an
     # adjacent, unrelated clause sitting in front of the fabricated one (e.g.
@@ -1968,6 +1985,135 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         rf")\s*{_guard_gap}$",
         re.IGNORECASE,
     )
+
+    # Task G18: the null-CN removal rules below (the `else` branch a few
+    # lines down) anchor on two ends with a `_decimal_safe`-shaped gap
+    # between them so genuine same-claim co-occurrence still matches
+    # ("scored 87/100 last year from Charity Navigator") — but that same
+    # permissive gap will just as happily bridge over an unrelated, TRUE
+    # claim about a DIFFERENT metric sitting between the two anchors,
+    # deleting it as collateral (e.g. "scored 87 out of 100, holding 8.3
+    # months of working capital, from Charity Navigator" loses the
+    # working-capital clause too). A bare `\d+/100` core is a second,
+    # sharper version of the same hazard: with nothing to say otherwise, it
+    # binds to ANY `/100` number in the sentence, including one that is
+    # plainly named as a different metric's own score ("an accountability
+    # rating of 91.0/100" — the only `/100` in the sentence — gets treated
+    # as a leftover mention of the null overall score).
+    #
+    # `_other_metric_claim` names what "another metric's own claim" looks
+    # like, built entirely from atoms this function already defines for
+    # those metrics' own rules — not a new vocabulary list: `_acc_name`/
+    # `_fin_name`/`_wc_noun` (the exact noun phrases the accountability,
+    # financial, and working-capital rules already anchor on) plus the
+    # literal "program(s)/programmatic" root the program-expense rules
+    # already use throughout. `_cn_gap` is a local variant of
+    # `_decimal_safe`, scoped to just the null-CN rules' MIDDLE gap below —
+    # mirroring how `_fr_gap` was kept local to the fundraising rules
+    # rather than folded into the shared gap. Used only as a middle gap
+    # (sandwiched between two already-fixed anchors on both sides), never
+    # as a leading/trailing run: a leading run is searched at EVERY string
+    # position by the regex engine, and a per-character exclusion there
+    # turned out to be escapable — if the run can't advance PAST an
+    # excluded word, the engine simply retries the whole match starting
+    # one position later, which either lands mid-word (garbling real text;
+    # a bare word-boundary anchor closes that specific escape but doesn't
+    # fix the next one) or past the excluded word entirely by restarting
+    # at the very next token (confirmed empirically on both counts — see
+    # the task report). A middle gap has no such escape hatch: both ends
+    # are already fixed by the literal tokens on either side of it, so if
+    # the exclusion blocks it from reaching the far anchor, the whole rule
+    # simply fails to match rather than resuming somewhere else. The two
+    # rules whose OWN core is a bare, unqualified `\d+/100` (and so can be
+    # bound to a DIFFERENT metric's own number outright, not just bridge
+    # over one) are guarded separately below via `_removed_span_joints`'s
+    # optional per-match `guard`, reusing the exact backward/forward checks
+    # this function already has for that question.
+    _other_metric_noun = rf"(?:{_acc_name}|{_fin_name}|{_wc_noun}|programs?|programmatic)"
+    _other_metric_claim = (
+        rf"(?:{_other_metric_noun})\b"
+        rf"|\d+\.?\d*\s*(?:/\s*100|out\s+of\s+100|%)\s*(?:of\s+|to\s+|for\s+|on\s+|toward\s+)?(?:{_other_metric_noun})\b"
+    )
+    # `_cn_gap` also never consumes into a bare `\d+\.?\d*/100` span as
+    # ordinary filler — the same reason `_cn_number_lead` below doesn't:
+    # two of this gap's uses (the number-first and name-first rules) sit
+    # right next to a dedicated capture group for exactly that shape, and
+    # an unguarded greedy gap eats into it, leaving the capture group only
+    # the last digit or two (see the task report). Harmless for this
+    # gap's other uses (a fixed literal anchor, not a bare-number capture
+    # group, follows it there) — it just means the gap stops one number
+    # early in the rare case an unrelated `/100` figure sits inside it too.
+    _cn_gap = rf"(?:(?!{_other_metric_claim}|\d+\.?\d*/100)(?:[^.]|(?<=\d)\.(?=\d)))*"
+
+    # `_clause_lead`'s run is unbounded and greedy, so left unguarded it
+    # eats INTO a decimal number sitting right in front of a `/100` core —
+    # backtracking only gives back the one digit the core strictly needs
+    # (e.g. leaving "0/100" for the core out of a true "91.0/100"), which
+    # then feeds a truncated, wrong position into the backward-naming guard
+    # below. `_cn_number_lead` is `_clause_lead` with one added exclusion:
+    # never consume into a `\d+\.?\d*/100` span as ordinary filler — it
+    # doesn't matter whose number it is (this rule's own target or a
+    # different metric's), the run simply always stops right before ANY
+    # such number and leaves it whole for the dedicated capture group that
+    # follows, so the guard always sees the number's true start.
+    _cn_number_lead = (
+        rf"(?:{_label_colon_lead})?"
+        r"(?:\s*(?:[,;:]|—)\s*(?:and\s+)?|\s+and\s+)?"
+        r"(?:(?!\s+and\b|\d+\.?\d*/100)(?:[^.,;:?!—]|(?<=\d)\.(?=\d)|(?<=\d),(?=\d)))*"
+    )
+
+    # The two rules below with a bare `\d+/100` core (number-first and
+    # name-first) can bind that core directly to a DIFFERENT metric's own
+    # number when nothing else in the sentence has a `/100` to offer — no
+    # gap-crossing involved, the core itself is just ambiguous. Rather than
+    # try to block this with another per-character exclusion (the same
+    # escape hatch as above applies just as much to the core's own start),
+    # each rule below captures its number in group 1 and pairs it with a
+    # `guard(match) -> bool` — reusing the existing distinction between
+    # "named by something else" and "genuinely bare" this function already
+    # answers for the correction path just above (backward-search shape),
+    # but scoped to `_other_metric_noun`'s own closed set rather than the
+    # generic `_metric_name_atom`/`_named_metric_claim_lead_re` used there:
+    # that generic matcher accepts ANY non-determiner word as a candidate
+    # "name" (deliberately — it has to catch an unenumerated beacon like
+    # "Leadership" for the correction path's own guard), which also makes
+    # it accept ordinary PRONOUN subjects ("it", "he") in front of "score"
+    # used as a VERB, not a noun. Confirmed empirically: reusing it here
+    # broke a real, pinned test — "Did it score 87/100 on Charity
+    # Navigator?" read "it score" as NAME="it" and declined to remove the
+    # whole bare, unnamed claim. `_other_metric_noun`'s vocabulary
+    # (accountability/financial/working-capital/program) can never match a
+    # pronoun, so it doesn't have this failure mode.
+    # Task G14's `_hedge_gap` (a bounded, metric-noun-excluding word gap)
+    # is reused here too — hand-probing found a bare "of\s+|is\s+|was\s+"
+    # connector defeated by the exact same hedge-word shape every other
+    # anchor in this function already had to tolerate ("accountability
+    # rating of ROUGHLY 91.0/100" reached the string end without matching,
+    # so the guard wrongly declined to protect a real accountability value).
+    _other_metric_lead_re = re.compile(
+        rf"(?:{_acc_name}|{_fin_name})\s+(?:score|rating|ratio)\s+(?:(?:of|is|was)\s+{_hedge_gap})?$",
+        re.IGNORECASE,
+    )
+    _other_metric_trail_re = re.compile(
+        rf"^\s*(?:of\s+|to\s+|for\s+|on\s+|toward\s+)?(?:{_other_metric_noun})\b",
+        re.IGNORECASE,
+    )
+
+    def _bare_number_not_named_before(m: "re.Match[str]") -> bool:
+        """Guard for the number-first rule: decline to remove group 1 if
+        BACKWARD text names it as a different metric's own score ("an
+        accountability rating of 91.0/100" leading into a bare `\\d+/100`
+        core)."""
+        return not _other_metric_lead_re.search(m.string[: m.start(1)])
+
+    def _bare_number_not_named_after(m: "re.Match[str]") -> bool:
+        """Guard for the name-first rule: decline to remove group 1 if
+        FORWARD text immediately names it as a different metric's own
+        score ("Charity Navigator notes its 91.0/100 accountability
+        score" — the naming here trails the number instead of leading it,
+        so the backward check above can't see it)."""
+        return not _other_metric_trail_re.match(m.string[m.end(1) :])
+
     if cn_score is not None:
         # Round before it ever reaches prose — cn_overall_score is an average of
         # CN's beacon sub-scores, so it carries repeating decimals
@@ -2030,20 +2176,26 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         )
     else:
         # Strip any fabricated CN score claim — broad patterns. The middle
-        # `_decimal_safe` gaps stay as-is (co-occurrence within one sentence,
-        # e.g. "scored 87/100 last year from Charity Navigator"); only the
-        # outer leading/trailing edges become clause-scoped.
+        # `_cn_gap` (a `_decimal_safe`-shaped gap, see Task G18 above) stays
+        # permissive for co-occurrence within one sentence (e.g. "scored
+        # 87/100 last year from Charity Navigator"), just not permissive
+        # enough to reach past a DIFFERENT metric's own claim; the outer
+        # leading/trailing edges stay plain `_clause_lead`/`_clause_trail`.
+        # The two rules whose own core is a bare `\d+/100` additionally
+        # capture it (group 1) and pass a `guard` instead of `None` — see
+        # `_bare_number_not_named_before`/`_bare_number_not_named_after`
+        # above.
         rules.append(
             (
-                rf"{_clause_lead}\d+/100{_decimal_safe}Charity\s+Navigator{_clause_trail}",
-                None,
+                rf"{_cn_number_lead}(\d+\.?\d*/100){_cn_gap}Charity\s+Navigator{_clause_trail}",
+                _bare_number_not_named_before,
                 True,
             )
         )
         rules.append(
             (
-                rf"{_clause_lead}Charity\s+Navigator{_decimal_safe}\d+/100{_clause_trail}",
-                None,
+                rf"{_clause_lead}Charity\s+Navigator{_cn_gap}(\d+\.?\d*/100){_clause_trail}",
+                _bare_number_not_named_after,
                 True,
             )
         )
@@ -2051,7 +2203,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # `_hedge_gap` after the optional "a" tolerates a bounded hedge.
         rules.append(
             (
-                rf"{_clause_lead}(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+{_hedge_gap})?\d+\.?\d*\s+out\s+of\s+100{_decimal_safe}Charity\s+Navigator{_clause_trail}",
+                rf"{_clause_lead}(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+{_hedge_gap})?\d+\.?\d*\s+out\s+of\s+100{_cn_gap}Charity\s+Navigator{_clause_trail}",
                 None,
                 True,
             )
@@ -2066,7 +2218,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # hedge.
         rules.append(
             (
-                rf"{_clause_lead}Charity\s+Navigator{_decimal_safe}(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+{_hedge_gap})?\d+(?:\.\d+)?(?:\s+out\s+of\s+100|/100)?{_clause_trail}",
+                rf"{_clause_lead}Charity\s+Navigator{_cn_gap}(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+{_hedge_gap})?\d+(?:\.\d+)?(?:\s+out\s+of\s+100|/100)?{_clause_trail}",
                 None,
                 True,
             )
@@ -2078,14 +2230,14 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # up to the comma.
         rules.append(
             (
-                rf"{_clause_lead}(?:perfect|top|highest)\s+(?:score|rating|marks?){_decimal_safe}Charity\s+Navigator{_clause_trail}",
+                rf"{_clause_lead}(?:perfect|top|highest)\s+(?:score|rating|marks?){_cn_gap}Charity\s+Navigator{_clause_trail}",
                 None,
                 True,
             )
         )
         rules.append(
             (
-                rf"{_clause_lead}Charity\s+Navigator{_decimal_safe}(?:perfect|top|highest)\s+(?:score|rating|marks?){_clause_trail}",
+                rf"{_clause_lead}Charity\s+Navigator{_cn_gap}(?:perfect|top|highest)\s+(?:score|rating|marks?){_clause_trail}",
                 None,
                 True,
             )
@@ -2201,7 +2353,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     if cn_score is None:
         rules.append(
             (
-                rf"{_clause_lead}\d+-?\s*star\s+(?:rating|charity){_decimal_safe}Charity\s+Navigator{_clause_trail}",
+                rf"{_clause_lead}\d+-?\s*star\s+(?:rating|charity){_cn_gap}Charity\s+Navigator{_clause_trail}",
                 None,
                 True,
             )
@@ -2295,7 +2447,14 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # sign at all, so the core can only ever bind to the NEAREST one —
         # exactly the resolution needed, and verified against all three
         # `REAL_HALLUCINATIONS` entries plus both new pinned cases below.
-        _fr_gap = r"(?:(?!\s+and\b)(?:[^.$]|(?<=\d)\.(?=\d)))*"
+        # Task G18: this gap has the exact same cross-metric-claim hazard
+        # as the null-CN removal rules above (confirmed empirically — a
+        # true "8.3 months of working capital", "91.4% to programs", or
+        # "accountability rating of 91.0/100" clause sitting between
+        # "fundraising efficiency" and the `$` figure was deleted along
+        # with the fabrication). Reuses the same `_other_metric_claim`
+        # defined above rather than a new vocabulary list.
+        _fr_gap = rf"(?:(?!\s+and\b|{_other_metric_claim})(?:[^.$]|(?<=\d)\.(?=\d)))*"
         # Task G12 follow-up (gap 1, round 2): excluding `$` closes the
         # far-figure defect but not a related one on the *dollar-first* rule
         # only: `\$\d+\.?\d*` can itself anchor on a truncated PREFIX of an
@@ -2336,8 +2495,21 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # lead an independent clause, so there's no way to add "reflecting"
         # without every other participle needing the same treatment.
         # Reported as a known residual gap rather than forced further.
+        #
+        # Task G18: also add the `_other_metric_claim` exclusion (same as
+        # `_fr_gap` above). This gap's bare-comma-boundary-by-default
+        # design (the `,(?=...)` alternative just above) already stops it
+        # from bridging over an embedded true claim joined by a plain
+        # comma with no continuation marker — but a SEMICOLON-joined one
+        # ("spent $0.00; holding 8.3 months of working capital; per $1
+        # raised.") wasn't caught: `;` was never excluded from this gap's
+        # character class the way `_clause_lead`/`_clause_trail` exclude it
+        # (task G12 added that boundary to those two, never to the
+        # fundraising gaps). Confirmed empirically that adding
+        # `_other_metric_claim` closes it too, since the exclusion fires on
+        # the claim's own wording, not on which punctuation joins it.
         _fr_gap_dollar_first = (
-            r"(?:(?!\s+and\b)(?:[^.,$]|(?<=\d)\.(?=\d)|(?<=\d),(?=\d))"
+            rf"(?:(?!\s+and\b|{_other_metric_claim})(?:[^.,$]|(?<=\d)\.(?=\d)|(?<=\d),(?=\d))"
             rf"|,(?=\s*(?:{_trail_same_claim_lead})))*"
         )
         rules.append(
@@ -2542,7 +2714,13 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     def _apply_rules(text: str) -> str:
         for pattern, replacement, is_removal in rules:
             if is_removal:
-                stripped, joints = _removed_span_joints(pattern, text)
+                # Task G18: for a removal rule, `replacement` is normally
+                # unused (always `None`) — repurposed here as an optional
+                # per-match `guard` when it's callable, rather than adding a
+                # fourth tuple element to every one of this function's
+                # removal rules just for the two that need it.
+                guard = replacement if callable(replacement) else None
+                stripped, joints = _removed_span_joints(pattern, text, guard=guard)
                 # Only run the repair pass when this rule actually removed
                 # something. Every rule runs over every string field, so most
                 # (pattern, text) pairs never match at all — repairing
