@@ -564,6 +564,31 @@ _ZAKAT_CONSTRAINT_ZAKAT = (
 )
 
 
+def _fundraising_ratio_str(fundraising_expenses, total_revenue) -> str | None:
+    """Just the dollar-figure prefix (e.g. "$0.00", "<$0.01", "$0.10") for the
+    cost to raise $1, or None if it can't be computed.
+
+    A real-but-tiny ratio must not render as "$0.00": $241,666 against $79.6M
+    revenue is $0.003 per $1 — a real cost, and telling a donor it was zero is
+    wrong. Only a genuine 0 gets "$0.00". Shared by the prompt-construction
+    call site and the narrative sanitizer's correction path so both agree.
+    """
+    if fundraising_expenses is None or not total_revenue or total_revenue <= 0:
+        return None
+    efficiency = fundraising_expenses / total_revenue
+    if efficiency == 0:
+        return "$0.00"
+    if efficiency < 0.01:
+        return "<$0.01"
+    return f"${efficiency:.2f}"
+
+
+def _format_fundraising_efficiency(fundraising_expenses, total_revenue) -> str:
+    """Cost to raise $1, as prose. "N/A" when unknowable."""
+    ratio = _fundraising_ratio_str(fundraising_expenses, total_revenue)
+    return f"{ratio} per $1 raised" if ratio else "N/A"
+
+
 def _baseline_prompt_kwargs(metrics: CharityMetrics, scores: Any, num_sources: int, sources_list: str) -> dict:
     """Build the .format() kwargs for the baseline_narrative prompt template.
 
@@ -576,10 +601,9 @@ def _baseline_prompt_kwargs(metrics: CharityMetrics, scores: Any, num_sources: i
     programs_str = ", ".join(metrics.programs[:3]) if metrics.programs else "Not available"
     working_capital_str = f"{metrics.working_capital_ratio:.1f} months" if metrics.working_capital_ratio else "N/A"
 
-    fundraising_efficiency_str = "N/A"
-    if metrics.fundraising_expenses is not None and metrics.total_revenue and metrics.total_revenue > 0:
-        efficiency = metrics.fundraising_expenses / metrics.total_revenue
-        fundraising_efficiency_str = f"${efficiency:.2f} per $1 raised"
+    fundraising_efficiency_str = _format_fundraising_efficiency(
+        metrics.fundraising_expenses, metrics.total_revenue
+    )
 
     zakat_constraint_text = (
         _ZAKAT_CONSTRAINT_SADAQAH if scores.wallet_tag == "SADAQAH-ELIGIBLE" else _ZAKAT_CONSTRAINT_ZAKAT
@@ -1030,12 +1054,17 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # "fundraising costs of $X.XX"
     _fr_phrasing = r"(?:per\s+\$?1\s+raised|to\s+raise\s+(?:\$1|each\s+dollar|a\s+dollar)|per\s+dollar\s+raised|for\s+every\s+dollar\s+raised)"
     if metrics.fundraising_expenses is not None and metrics.total_revenue and metrics.total_revenue > 0:
-        eff = metrics.fundraising_expenses / metrics.total_revenue
-        correct_fr = f"${eff:.2f}"
+        correct_fr = _fundraising_ratio_str(metrics.fundraising_expenses, metrics.total_revenue)
         # Pattern 1: $X.XX per $1 raised / to raise $1 / per dollar raised
+        # Leading `<?` (no whitespace before it) also swallows a prior
+        # "<$0.01" correction so re-sanitizing already-correct tiny-ratio text
+        # is idempotent instead of duplicating the "<" (sanitize_narrative_metrics
+        # runs twice on the citation-repair retry path). Must stay glued to the
+        # "$" — a `\s*` here would let the match creep left and eat the space
+        # that precedes the dollar sign in ordinary prose.
         rules.append(
             (
-                rf"\$\d+\.?\d*\s+{_fr_phrasing}",
+                rf"<?\$\d+\.?\d*\s+{_fr_phrasing}",
                 f"{correct_fr} per $1 raised",
                 False,
             )

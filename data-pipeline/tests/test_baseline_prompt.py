@@ -215,3 +215,71 @@ class TestFundraisingClaimIsStrippedWhenDataIsMissing:
         )
         assert "$0.42" not in out
         assert "fundraising expenses" not in out
+
+
+class TestTinyRealFundraisingRatioIsNotRenderedAsZero:
+    """G4: 10 charities have real, non-null, non-zero fundraising_expenses whose
+    true ratio rounds to $0.00 under :.2f — e.g. $241,666 / $79.6M = $0.003 per
+    $1. The data is correct; :.2f made a real cost read as zero."""
+
+    def test_a_tiny_but_real_fundraising_ratio_is_not_rendered_as_zero(self):
+        """$241,666 / $79.6M = $0.003 per $1 — real, and not zero."""
+        from baseline import _format_fundraising_efficiency
+
+        assert _format_fundraising_efficiency(241666, 79_600_000) == "<$0.01 per $1 raised"
+        assert _format_fundraising_efficiency(0, 100_000) == "$0.00 per $1 raised"
+        assert _format_fundraising_efficiency(None, 100_000) == "N/A"
+        assert _format_fundraising_efficiency(10_000, 100_000) == "$0.10 per $1 raised"
+        assert _format_fundraising_efficiency(10_000, 0) == "N/A"
+        assert _format_fundraising_efficiency(10_000, None) == "N/A"
+
+    def test_prompt_kwargs_use_the_shared_formatter(self, sample_charity_metrics):
+        """The prompt-construction call site (_baseline_prompt_kwargs) must not
+        reimplement the raw :.2f formatting that caused the bug."""
+        sample_charity_metrics.fundraising_expenses = 241666
+        sample_charity_metrics.total_revenue = 79_600_000
+        kwargs = _baseline_prompt_kwargs(sample_charity_metrics, _fake_scores(), 3, "[1] Charity Navigator")
+        assert kwargs["fundraising_efficiency"] == "<$0.01 per $1 raised"
+
+    def test_tiny_ratio_string_survives_the_sanitizer(self):
+        """The new "<$0.01 per $1 raised" text must not get stripped by the
+        null-fundraising removal rules in sanitize_narrative_metrics, and must
+        not be clobbered back to "$0.00" by the sanitizer's own correction path
+        (a second, independent reimplementation of this same ratio)."""
+        metrics = SimpleNamespace(fundraising_expenses=241666, total_revenue=79_600_000,
+                                  cn_overall_score=None, cn_accountability_score=None,
+                                  cn_financial_score=None, program_expense_ratio=None,
+                                  working_capital_ratio=None)
+        text = "The charity spends <$0.01 per $1 raised on fundraising."
+        out = sanitize_narrative_metrics({"rationale": text}, metrics, None)["rationale"]
+        assert "<$0.01 per $1 raised" in out
+        assert "$0.00" not in out
+
+    def test_sanitizer_correction_path_also_avoids_stamping_zero(self):
+        """If the LLM writes a plausible-but-wrong dollar figure, the
+        sanitizer's own correction (not just the prompt kwargs) must replace it
+        with the tiny-but-real rendering, not silently round it to $0.00."""
+        metrics = SimpleNamespace(fundraising_expenses=241666, total_revenue=79_600_000,
+                                  cn_overall_score=None, cn_accountability_score=None,
+                                  cn_financial_score=None, program_expense_ratio=None,
+                                  working_capital_ratio=None)
+        text = "The charity spends $0.05 per $1 raised on fundraising."
+        out = sanitize_narrative_metrics({"rationale": text}, metrics, None)["rationale"]
+        assert "$0.00" not in out
+        assert "<$0.01 per $1 raised" in out
+
+    def test_sanitizing_the_tiny_ratio_twice_is_a_no_op(self):
+        """sanitize_narrative_metrics runs twice on the citation-repair retry
+        path (see TestCnScoreSanitizationIsIdempotent). The correction regex
+        for pattern 1 isn't anchored past a leading "<", so re-running it on
+        already-correct "<$0.01 per $1 raised" text must not duplicate the
+        "<" into "<<$0.01"."""
+        metrics = SimpleNamespace(fundraising_expenses=241666, total_revenue=79_600_000,
+                                  cn_overall_score=None, cn_accountability_score=None,
+                                  cn_financial_score=None, program_expense_ratio=None,
+                                  working_capital_ratio=None)
+        text = "The charity spends $0.05 per $1 raised on fundraising."
+        once = sanitize_narrative_metrics({"rationale": text}, metrics, None)["rationale"]
+        twice = sanitize_narrative_metrics({"rationale": once}, metrics, None)["rationale"]
+        assert twice == once
+        assert "<<" not in twice
