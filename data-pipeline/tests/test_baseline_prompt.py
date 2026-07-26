@@ -172,6 +172,18 @@ class TestFundraisingClaimIsStrippedWhenDataIsMissing:
         assert "91.1% program expense ratio" in out
         assert "4,000 families" in out
 
+    def test_decimal_before_the_claim_does_not_truncate_prose(self):
+        """G3 defect: `[^.]*` treats the decimal point in "91.1" as a sentence
+        boundary, so the strip starts mid-number. Must not end with a bare,
+        unclosed number — and the legitimate program-ratio clause (joined to
+        the fabricated one by a comma) must survive intact."""
+        text = "The charity has a 91.1% program expense ratio, and a $0.00 fundraising efficiency rate."
+        out = self._sanitize_with_null_fundraising(text)
+        assert "91.1% program expense ratio" in out, f"legit clause was mangled: {out!r}"
+        assert "$0.00" not in out
+        assert "fundraising efficiency" not in out
+        assert not re.search(r"\d+\.\s*$", out), f"truncated mid-number: {out!r}"
+
     def test_strengths_array_entries_are_stripped_too(self):
         metrics = SimpleNamespace(fundraising_expenses=None, total_revenue=604759,
                                   cn_overall_score=None, cn_accountability_score=None,
@@ -181,3 +193,25 @@ class TestFundraisingClaimIsStrippedWhenDataIsMissing:
             {"strengths": ["Exceptional fundraising efficiency of $0.00 spent per $1 raised [1]."]},
             metrics, None)
         assert "$0.00" not in str(out["strengths"])
+
+    def test_a_correct_real_efficiency_claim_survives_unchanged(self):
+        """When fundraising_expenses is known and the claim already matches it,
+        the correction-path rule should leave the text as-is (not the removal
+        path — that only fires when the metric is null/undetermined)."""
+        metrics = SimpleNamespace(fundraising_expenses=30000, total_revenue=600000,
+                                  cn_overall_score=None, cn_accountability_score=None,
+                                  cn_financial_score=None, program_expense_ratio=None,
+                                  working_capital_ratio=None)
+        text = "Spends $0.05 per $1 raised on fundraising."
+        out = sanitize_narrative_metrics({"rationale": text}, metrics, None)["rationale"]
+        assert out == text
+
+    def test_no_raised_suffix_fundraising_costs_phrasing_is_stripped(self):
+        """Rule kept beyond the original two ("fundraising costs/expenses of $X
+        per dollar", no "raised" suffix) had no direct test coverage — an
+        untested rule is exactly what a future edit deletes by accident."""
+        out = self._sanitize_with_null_fundraising(
+            "The nonprofit reports fundraising expenses of $0.42 per dollar in overhead."
+        )
+        assert "$0.42" not in out
+        assert "fundraising expenses" not in out

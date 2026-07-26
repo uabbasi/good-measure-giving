@@ -797,6 +797,21 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # For N/A metrics the pattern is used to strip the enclosing sentence.
     rules: list[tuple[str, str | None, bool]] = []
 
+    # Removal rules scan "everything up to the sentence boundary" using a
+    # `[^.]*`-shaped run. A literal `.` also shows up mid-number ("91.1%",
+    # "$0.00"), and `[^.]*` can't cross it — so the run stops there instead of
+    # at the real sentence end, and the trailing `\.?` then deletes into the
+    # next clause starting mid-number. Fix: treat a period as a boundary only
+    # when it is NOT sandwiched between two digits (a decimal point).
+    _decimal_safe = r"(?:[^.]|(?<=\d)\.(?=\d))*"
+    # Same, but also stops at a comma — used only for the leading scan in
+    # rules that must not swallow an adjacent, unrelated clause (e.g. a
+    # legitimate "91.1% program expense ratio" clause sitting in front of a
+    # fabricated one, joined by "and a"/comma). Includes an optional leading
+    # ", and " / ", " so the removed span cleanly eats the connective tissue
+    # too, rather than leaving a dangling comma.
+    _clause_lead = r"(?:,\s*(?:and\s+)?)?" + r"(?:[^.,]|(?<=\d)\.(?=\d))*"
+
     # Working capital  (e.g. "8.3 months of working capital" or "8.3 years of reserves")
     # LLM variants: "holds X years of expenses", "maintains X years in reserves",
     # "X years' worth of operating", "expenses held in reserve"
@@ -832,14 +847,14 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # Remove any mention of working capital with a number
         rules.append(
             (
-                rf"[^.]*{_wc_num_unit}\s+(?:of\s+)?{_wc_noun}[^.]*\.?",
+                rf"{_decimal_safe}{_wc_num_unit}\s+(?:of\s+)?{_wc_noun}{_decimal_safe}\.?",
                 None,
                 True,
             )
         )
         rules.append(
             (
-                rf"[^.]*(?:holds?|maintains?|has)\s+{_wc_num_unit}\s+(?:of\s+)?{_wc_noun}[^.]*\.?",
+                rf"{_decimal_safe}(?:holds?|maintains?|has)\s+{_wc_num_unit}\s+(?:of\s+)?{_wc_noun}{_decimal_safe}\.?",
                 None,
                 True,
             )
@@ -887,14 +902,14 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # Remove sentences mentioning program expense ratio with a number
         rules.append(
             (
-                r"[^.]*program\s+(?:expense\s+)?ratio\s+(?:of\s+)?\d+\.?\d*\s*%[^.]*\.?",
+                rf"{_decimal_safe}program\s+(?:expense\s+)?ratio\s+(?:of\s+)?\d+\.?\d*\s*%{_decimal_safe}\.?",
                 None,
                 True,
             )
         )
         rules.append(
             (
-                r"[^.]*(?:directs?|allocates?)\s+\d+\.?\d*\s*%\s+(?:of\s+\w+\s+)?(?:to|toward)\s+(?:programs?|programmatic)[^.]*\.?",
+                rf"{_decimal_safe}(?:directs?|allocates?)\s+\d+\.?\d*\s*%\s+(?:of\s+\w+\s+)?(?:to|toward)\s+(?:programs?|programmatic){_decimal_safe}\.?",
                 None,
                 True,
             )
@@ -939,14 +954,14 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # Strip any fabricated CN score claim — broad patterns
         rules.append(
             (
-                r"[^.]*\d+/100[^.]*Charity\s+Navigator[^.]*\.?",
+                rf"{_decimal_safe}\d+/100{_decimal_safe}Charity\s+Navigator{_decimal_safe}\.?",
                 None,
                 True,
             )
         )
         rules.append(
             (
-                r"[^.]*Charity\s+Navigator[^.]*\d+/100[^.]*\.?",
+                rf"{_decimal_safe}Charity\s+Navigator{_decimal_safe}\d+/100{_decimal_safe}\.?",
                 None,
                 True,
             )
@@ -954,7 +969,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # "scored/rates X out of 100 ... Charity Navigator"
         rules.append(
             (
-                r"[^.]*(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+)?\d+\.?\d*\s+out\s+of\s+100[^.]*Charity\s+Navigator[^.]*\.?",
+                rf"{_decimal_safe}(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+)?\d+\.?\d*\s+out\s+of\s+100{_decimal_safe}Charity\s+Navigator{_decimal_safe}\.?",
                 None,
                 True,
             )
@@ -962,7 +977,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # "Charity Navigator ... scored/rates X"
         rules.append(
             (
-                r"[^.]*Charity\s+Navigator[^.]*(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+)?\d+\.?\d*(?:\s+out\s+of\s+100|/100)?[^.]*\.?",
+                rf"{_decimal_safe}Charity\s+Navigator{_decimal_safe}(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+)?\d+\.?\d*(?:\s+out\s+of\s+100|/100)?{_decimal_safe}\.?",
                 None,
                 True,
             )
@@ -970,14 +985,14 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # "perfect score/rating ... Charity Navigator" or vice versa
         rules.append(
             (
-                r"[^.]*(?:perfect|top|highest)\s+(?:score|rating|marks?)[^.]*Charity\s+Navigator[^.]*\.?",
+                rf"{_decimal_safe}(?:perfect|top|highest)\s+(?:score|rating|marks?){_decimal_safe}Charity\s+Navigator{_decimal_safe}\.?",
                 None,
                 True,
             )
         )
         rules.append(
             (
-                r"[^.]*Charity\s+Navigator[^.]*(?:perfect|top|highest)\s+(?:score|rating|marks?)[^.]*\.?",
+                rf"{_decimal_safe}Charity\s+Navigator{_decimal_safe}(?:perfect|top|highest)\s+(?:score|rating|marks?){_decimal_safe}\.?",
                 None,
                 True,
             )
@@ -987,7 +1002,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     if cn_accountability is None:
         rules.append(
             (
-                r"[^.]*(?:accountability|governance)\s+score\s+(?:of\s+)?\d+\.?\d*(?:/100|\s+out\s+of\s+100)?[^.]*\.?",
+                rf"{_decimal_safe}(?:accountability|governance)\s+score\s+(?:of\s+)?\d+\.?\d*(?:/100|\s+out\s+of\s+100)?{_decimal_safe}\.?",
                 None,
                 True,
             )
@@ -995,7 +1010,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     if cn_financial is None:
         rules.append(
             (
-                r"[^.]*financial\s+(?:health\s+)?score\s+(?:of\s+)?\d+\.?\d*(?:/100|\s+out\s+of\s+100)?[^.]*\.?",
+                rf"{_decimal_safe}financial\s+(?:health\s+)?score\s+(?:of\s+)?\d+\.?\d*(?:/100|\s+out\s+of\s+100)?{_decimal_safe}\.?",
                 None,
                 True,
             )
@@ -1004,7 +1019,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     if cn_score is None:
         rules.append(
             (
-                r"[^.]*\d+-?\s*star\s+(?:rating|charity)[^.]*Charity\s+Navigator[^.]*\.?",
+                rf"{_decimal_safe}\d+-?\s*star\s+(?:rating|charity){_decimal_safe}Charity\s+Navigator{_decimal_safe}\.?",
                 None,
                 True,
             )
@@ -1041,16 +1056,23 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # ("$0.00 spent per $1 raised", "spending $0.00 to raise every $1",
         # "a $0.00 fundraising efficiency rate"). Match on co-occurrence within
         # one sentence instead of adjacency.
+        #
+        # The leading scan uses _clause_lead (not _decimal_safe) so it can't
+        # cross a comma to swallow an unrelated clause sitting in front of the
+        # fabricated one (e.g. "a 91.1% program expense ratio, and a $0.00
+        # fundraising efficiency rate." must lose only the second clause).
+        # The middle/trailing scans use _decimal_safe so a decimal point
+        # elsewhere in the sentence is never mistaken for its end.
         rules.append(
             (
-                rf"[^.]*\$\d+\.?\d*[^.]*(?:{_fr_phrasing}|fundraising\s+efficiency)[^.]*\.?",
+                rf"{_clause_lead}\$\d+\.?\d*{_decimal_safe}(?:{_fr_phrasing}|fundraising\s+efficiency){_decimal_safe}\.?",
                 None,
                 True,
             )
         )
         rules.append(
             (
-                r"[^.]*fundraising\s+efficiency[^.]*\$\d+\.?\d*[^.]*\.?",
+                rf"{_clause_lead}fundraising\s+efficiency{_decimal_safe}\$\d+\.?\d*{_decimal_safe}\.?",
                 None,
                 True,
             )
@@ -1059,7 +1081,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # so it isn't covered by _fr_phrasing above)
         rules.append(
             (
-                r"[^.]*fundraising\s+(?:costs?|expenses?)\s+(?:of\s+)?\$\d+\.?\d*\s+per\s+(?:dollar|every\s+dollar)[^.]*\.?",
+                rf"{_clause_lead}fundraising\s+(?:costs?|expenses?)\s+(?:of\s+)?\$\d+\.?\d*\s+per\s+(?:dollar|every\s+dollar){_decimal_safe}\.?",
                 None,
                 True,
             )
@@ -1093,7 +1115,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         )
         rules.append(
             (
-                rf"[^.]*{_zakat_keywords}[^.]*\.?",
+                rf"{_decimal_safe}{_zakat_keywords}{_decimal_safe}\.?",
                 None,
                 True,
             )
