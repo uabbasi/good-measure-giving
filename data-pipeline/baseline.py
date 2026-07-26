@@ -1049,7 +1049,21 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # LLM variants: "holds X years of expenses", "maintains X years in reserves",
     # "X years' worth of operating", "expenses held in reserve"
     _wc_noun = r"(?:working\s+capital|operating\s+(?:expenses?|costs?)|reserves?|expenses?\s+(?:held\s+)?in\s+reserve)"
-    _wc_num_unit = r"\d+\.?\d*\s*(?:months?|years?)"
+    # working_capital_ratio is net_assets / monthly_expenses with no floor at
+    # zero (net assets can be negative), so a negative figure is a real,
+    # legitimate value here — unlike every other metric this function
+    # corrects, all of which are non-negative by construction (Pydantic
+    # `ge=0` on the CN scores and program_expense_ratio, `max(0, ...)`
+    # clamping on the AMAL score; see the report for the full survey). The
+    # leading `-?` matters: without it, the match never consumes a minus
+    # sign already sitting in the text, but `correct_wc` below still
+    # produces one when the value is negative — so a second sanitize pass
+    # (the citation-repair retry path runs this twice for real) stamps a
+    # fresh "-2.7" right after whatever dash was already there instead of
+    # replacing it, adding one more dash forever. `-?` makes the match
+    # consume that sign too, so the correction fully replaces the old
+    # number (sign included) instead of appending next to it.
+    _wc_num_unit = r"-?\d+\.?\d*\s*(?:months?|years?)"
     if metrics.working_capital_ratio is not None:
         correct_wc = f"{metrics.working_capital_ratio:.1f} months"
         # Pattern 1: <number> <months|years> of <working capital|reserves|...>

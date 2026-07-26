@@ -1692,3 +1692,95 @@ class TestCnSubScoreCorrections:
         text = "Strong external accountability rating of 96.96.0/100 from Charity Navigator"
         out = _sanitize(text, metrics)
         assert out == text
+
+
+class TestNegativeWorkingCapitalDoesNotAccumulateDashes:
+    """Live, unbounded bug found while auditing G8 (not caused by it, and not
+    fixed by any prior task in this series — `_wc_num_unit` predates all of
+    them): working_capital_ratio is net_assets / monthly_expenses with no
+    floor at zero, so a negative value is a real, legitimate figure (unlike
+    every other metric this function corrects, all non-negative by
+    construction — see the report's survey of cn_overall_score/
+    cn_accountability_score/cn_financial_score (Pydantic `ge=0`),
+    program_expense_ratio (Pydantic `ge=0`), and amal_score (`max(0, ...)`
+    clamped in the scorer) — none of which needed this fix).
+
+    The old `_wc_num_unit` (`\\d+\\.?\\d*\\s*(?:months?|years?)`) never matched
+    a leading "-", so the match started at the digit, and `correct_wc`
+    (which does carry the sign when negative) got inserted right after
+    whatever dash was already sitting there instead of replacing it. Two
+    live published narratives (EIN 56-2392452 and 92-3079413, both citation
+    fields) already show "---2.7"/"---6.1" — three dashes deep, from
+    repeated sanitize passes (this runs twice for real on the citation-repair
+    retry path). Left as-is per instruction; not this task's job to repair
+    already-published text, only to stop the accumulation going forward."""
+
+    def test_correction_is_stable_across_five_passes(self):
+        """Two passes wouldn't have caught this (the bug adds one dash per
+        pass, so pass 2 already differs from pass 1) — five passes is what
+        actually demonstrates a fixed point rather than a slow leak."""
+        metrics = _metrics(working_capital_ratio=-2.7)
+        text = "The charity holds -2.7 months of working capital."
+        passes = [text]
+        for _ in range(5):
+            passes.append(_sanitize(passes[-1], metrics))
+        assert passes[1] == "The charity holds -2.7 months of working capital."
+        assert passes[1] == passes[2] == passes[3] == passes[4] == passes[5]
+
+    def test_wrong_negative_number_is_corrected_and_then_stable(self):
+        metrics = _metrics(working_capital_ratio=-6.1)
+        text = "The charity holds -2.7 months of working capital."
+        passes = [text]
+        for _ in range(5):
+            passes.append(_sanitize(passes[-1], metrics))
+        assert passes[1] == "The charity holds -6.1 months of working capital."
+        assert passes[1] == passes[2] == passes[3] == passes[4] == passes[5]
+
+    def test_already_mangled_multi_dash_text_does_not_grow_further(self):
+        """Does NOT repair the pre-existing artifact (still 3 dashes after
+        sanitizing) — only confirms it stops getting worse. Matches the
+        real shape published in EIN 56-2392452/92-3079413."""
+        metrics = _metrics(working_capital_ratio=-2.7)
+        text = "The charity holds ---2.7 months of working capital."
+        passes = [text]
+        for _ in range(5):
+            passes.append(_sanitize(passes[-1], metrics))
+        assert all(p == "The charity holds ---2.7 months of working capital." for p in passes)
+
+    def test_null_metric_still_fully_removes_a_negative_claim(self):
+        """Removal path, negative-value polarity: the claim must still be
+        stripped in full when the metric is null, exactly as it is for a
+        positive value — the sign is not special-cased for removal."""
+        metrics = _metrics(working_capital_ratio=None)
+        text = "It holds -2.7 months of working capital."
+        out = _sanitize(text, metrics)
+        assert out == ""
+        twice = _sanitize(out, metrics)
+        assert twice == out
+
+    def test_null_metric_removes_negative_claim_but_preserves_companion_clause(self):
+        metrics = _metrics(working_capital_ratio=None)
+        text = "It holds -2.7 months of working capital, and spends $0.10 per $1 raised."
+        out = _sanitize(text, metrics)
+        assert out == "Spends $0.10 per $1 raised."
+        twice = _sanitize(out, metrics)
+        assert twice == out
+
+    def test_reproduces_the_two_live_published_cases(self):
+        """The exact shapes published in EIN 56-2392452 and 92-3079413,
+        confirming the fix applies to the real citation-claim phrasing, not
+        just a simplified test sentence. Not asserting anything about the
+        already-published 3-dash text itself (not this task's job to
+        repair it) — only that a *fresh* sanitize of the correct, un-mangled
+        figure is stable."""
+        metrics = _metrics(working_capital_ratio=-2.7)
+        text = (
+            "In FY2024, the charity had a 90.3% program ratio, $4,309,990 in revenue, "
+            "-2.7 months of working capital, and $0.02 fundraising efficiency."
+        )
+        passes = [text]
+        for _ in range(5):
+            passes.append(_sanitize(passes[-1], metrics))
+        assert passes[1] == passes[2] == passes[3] == passes[4] == passes[5]
+        assert "-2.7 months" in passes[1]
+        assert "--2.7" not in passes[1]
