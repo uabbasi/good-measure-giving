@@ -816,9 +816,14 @@ class RichNarrativeGenerator:
                     )
                 if hasattr(fin, "working_capital_ratio") and fin.working_capital_ratio is not None:
                     lines.append(f"- Working Capital: {fin.working_capital_ratio:.1f} months (use this exact value)")
-                if hasattr(fin, "fundraising_expenses") and fin.fundraising_expenses is not None and fin.total_revenue:
-                    efficiency = fin.fundraising_expenses / fin.total_revenue
-                    lines.append(f"- Fundraising Efficiency: ${efficiency:.2f} per $1 raised (use this exact value)")
+                if hasattr(fin, "fundraising_expenses"):
+                    from baseline import _fundraising_ratio_str
+
+                    ratio_str = _fundraising_ratio_str(fin.fundraising_expenses, fin.total_revenue)
+                    if ratio_str:
+                        lines.append(
+                            f"- Fundraising Efficiency: {ratio_str} per $1 raised (use this exact value)"
+                        )
 
                 # The "Program Ratio" score component may use a cash-adjusted
                 # ratio instead of the raw filed ratio above (e.g. when GIK
