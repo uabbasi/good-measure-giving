@@ -870,7 +870,257 @@ def _abbreviation_before_stray_comma(match: "re.Match[str]") -> str:
     return f"{abbr or ''}{match.group('punct')} ,"
 
 
-def _repair_removal_artifacts(text: str) -> str:
+def _removed_span_joints(pattern: str, text: str) -> tuple[str, list[int]]:
+    """Remove every non-overlapping match of `pattern` from `text` — the
+    same matches, in the same order, `re.sub(pattern, "", text, flags=re.
+    IGNORECASE)` would remove — and also return, for each one, the
+    position in the RESULT string where the two flanking pieces now touch.
+    `_repair_removal_artifacts` uses these positions to scope its cleanup
+    to the removal site instead of the whole field (task G17)."""
+    matches = list(re.finditer(pattern, text, flags=re.IGNORECASE))
+    if not matches:
+        return text, []
+    parts: list[str] = []
+    joints: list[int] = []
+    last_end = 0
+    length_so_far = 0
+    for m in matches:
+        piece = text[last_end : m.start()]
+        parts.append(piece)
+        length_so_far += len(piece)
+        joints.append(length_so_far)
+        last_end = m.end()
+    parts.append(text[last_end:])
+    return "".join(parts), joints
+
+
+_NO_WORD_CHAR_RE = re.compile(r"[A-Za-z0-9]")
+
+
+def _run_start(text: str, idx: int) -> int:
+    """`idx` is the index of a terminal mark; walk backward through any
+    immediately-preceding run of more terminal marks separated only by
+    whitespace (e.g. the whole "..." in an ellipsis, or a doubled ". ."),
+    returning the index of the first mark in that run."""
+    p = idx
+    while True:
+        q = p - 1
+        while q >= 0 and text[q].isspace():
+            q -= 1
+        if q >= 0 and text[q] in ".!?":
+            p = q
+        else:
+            return p
+
+
+def _run_end(text: str, idx: int) -> int:
+    """`idx` is the index of a terminal mark; walk forward through any
+    immediately-following run of more terminal marks separated only by
+    whitespace, returning the index just past the last mark in the run."""
+    p = idx + 1
+    while True:
+        q = p
+        while q < len(text) and text[q].isspace():
+            q += 1
+        if q < len(text) and text[q] in ".!?":
+            p = q + 1
+        else:
+            return p
+
+
+def _joint_windows(text: str, joints: list[int]) -> list[tuple[int, int]]:
+    """The character range around each removal joint that `_repair_removal_
+    artifacts` is allowed to touch: from the nearest preceding sentence-
+    terminal mark (or the start of the string) through the nearest
+    following one (or the end of the string). Everything outside every
+    window is prose the removal never reached and must survive byte-
+    identical — text-that-was-never-touched, not "text that happens to
+    look fine right now".
+
+    A terminal mark right at a window's edge can itself be part of a
+    multi-mark run — an ellipsis, or a doubled mark left behind by a
+    different removal — and the whole run has to be in-window together,
+    not just the one mark nearest the joint: taking only the mark closest
+    to the joint left the REST of a run like "..." sitting just outside the
+    window, unrepaired debris (LIVE: charity-20-4097808's citation quote
+    produced ".. Zakat Categories..." — two of the ellipsis's three dots
+    fell outside the window and survived untouched). `_run_start`/`_run_end`
+    extend through the whole run before the window boundary is fixed.
+
+    One rule can also remove several separate matches in a single pass
+    (e.g. three distinct zakat-keyword phrases in one field), leaving
+    several joints close together with nothing but punctuation debris
+    between them ("Zakat-eligible... fuqara, masakin" -> "..." once each
+    keyword is gone). Two such windows are merged even when they don't
+    overlap, as long as the text between them contains no letter or digit
+    at all — a gap that's pure punctuation/whitespace can only be leftover
+    debris from the SAME removal, never genuine surviving prose (real
+    prose always has actual words), so treating it as one combined window
+    doesn't reach into anything the removal didn't touch.
+    """
+    windows: list[tuple[int, int]] = []
+    for j in joints:
+        before = max(text.rfind(".", 0, j), text.rfind("!", 0, j), text.rfind("?", 0, j))
+        start = _run_start(text, before) if before != -1 else 0
+        after = [i for i in (text.find(".", j), text.find("!", j), text.find("?", j)) if i != -1]
+        end = _run_end(text, min(after)) if after else len(text)
+        windows.append((start, end))
+    windows.sort()
+    merged: list[tuple[int, int]] = []
+    for s, e in windows:
+        if merged and (s <= merged[-1][1] or not _NO_WORD_CHAR_RE.search(text[merged[-1][1] : s])):
+            merged[-1] = (merged[-1][0], max(merged[-1][1], e))
+        else:
+            merged.append((s, e))
+    return merged
+
+
+_ABBREVIATION_TAIL_RE = re.compile(r"([A-Za-z]+(?:\.[A-Za-z]+)*)\Z")
+
+
+def _boundary_is_abbreviation(text_before_boundary: str) -> bool:
+    """True when the text immediately before a `[.!?]`-anchored boundary
+    ends in a known sentence-ending abbreviation ("Inc", "U.S", "Jr", "et
+    al" — the period itself is part of the boundary match, not this
+    string). Reuses `_ABBREVIATIONS_BEFORE_COMMA`, the same closed
+    vocabulary `_abbreviation_before_stray_comma` already uses for the
+    `.,` case, rather than a second, divergent list."""
+    m = _ABBREVIATION_TAIL_RE.search(text_before_boundary)
+    return bool(m and m.group(1).lower() in _ABBREVIATIONS_BEFORE_COMMA)
+
+
+def _repair_span(
+    text: str,
+    lookback: str = "",
+    strip_left: bool = True,
+    strip_right: bool = True,
+    at_field_start: bool = True,
+) -> str:
+    """The actual cleanup logic, applied to one contiguous span of text.
+
+    `lookback` is read-only context from just before `text` in the full
+    field — supplied only so a boundary sitting at the very start of a
+    window-scoped span (see `_joint_windows`) can still see the word
+    before it for the abbreviation check; it is never written back.
+    `strip_left`/`strip_right` gate the leading/trailing `.strip()` so a
+    window-scoped span only trims whitespace at an edge that's a real
+    field boundary, not at an edge that's actually the middle of the
+    untouched field either side of it.
+
+    `at_field_start` gates the `^` alternative in the boundary-anchored
+    patterns below. `^` is only a meaningful "sentence boundary" when it's
+    the true start of the whole field — the one case a removal can leave
+    a stranded connector or orphan mark with nothing at all before it. A
+    window-scoped span that starts mid-field always starts exactly AT a
+    real `[.!?]` character (see `_joint_windows` — that's how its `start`
+    is chosen), so its own position 0 is never actually the start of a
+    sentence; it just happens to be where this call's input string begins.
+    Leaving the `^` alternative enabled there would let e.g. the "stray
+    terminal mark" rule below misread "start of my slice, immediately
+    followed by a period" as "the whole clause before this mark was
+    removed" and delete a real, surviving terminal period. Task G17: found
+    via hand-probing after the initial scoping fix, not in the original
+    two repros.
+    """
+    _anchor = r"(^|[.!?]\s+)" if at_field_start else r"([.!?]\s+)"
+    _cap_anchor = r"(^\s*|[.!?]\s+)" if at_field_start else r"([.!?]\s+)"
+    text = _BARE_PERIOD_COMMA.sub(_abbreviation_before_stray_comma, text)
+    text = re.sub(r"\s{2,}", " ", text)
+
+    # A leading connective stranded at the start of a sentence: ", and X" or
+    # ", X" -> "X" (only at the very start of the string, or right after a
+    # previous sentence's terminal punctuation — never mid-sentence, so this
+    # can't reach into unrelated text). Task G12: also strips a stray leading
+    # semicolon/colon/em-dash left behind when a FIRST-clause removal's own
+    # trailing edge (`_clause_trail`) stopped right before one of those three
+    # joiners instead of consuming it — mirrors `_clause_lead`'s own leading
+    # connector alternation for the same three characters, so either side of
+    # a removal leaves the same, already-handled artifact shape.
+    #
+    # Task G17, defect 2: a `[.!?]` right here isn't always a sentence
+    # boundary — "Inc.", "U.S.", "et al." end in one too, and if what
+    # follows happens to be a stray connector this would otherwise strip a
+    # real, correctly-punctuated abbreviation's own continuation. Declines
+    # (returns the match unchanged) whenever the text right before the mark
+    # is one of the same closed abbreviations `_abbreviation_before_stray_
+    # comma` already guards.
+    def _strip_leading_connective(m: "re.Match[str]") -> str:
+        if _boundary_is_abbreviation(lookback + text[: m.start()]):
+            return m.group(0)
+        return m.group(1)
+
+    text = re.sub(rf"{_anchor}\s*(?:[,;:]|—)\s*(?:and\s+)?", _strip_leading_connective, text)
+
+    # A bare "and " stranded at a sentence start with no comma of its own
+    # (the comma was itself part of the removed span). The leading `\s*`
+    # also covers the case where the removed span was the very start of the
+    # string (or immediately follows the previous sentence with nothing to
+    # collapse): _clause_trail now stops right before " and " rather than
+    # consuming into it, so the boundary space itself is left dangling in
+    # front of "and" instead of already being absorbed by the multi-space
+    # collapse above. Task G17, defect 2: same abbreviation exception as
+    # above — "Example Corp. and abroad" is one sentence naming two objects
+    # of "works with", not a stray "and" left over from a removal.
+    def _strip_stranded_and(m: "re.Match[str]") -> str:
+        if _boundary_is_abbreviation(lookback + text[: m.start()]):
+            return m.group(0)
+        return m.group(1)
+
+    text = re.sub(rf"{_anchor}\s*and\s+", _strip_stranded_and, text, flags=re.IGNORECASE)
+    text = re.sub(r",\s*,", ",", text)  # doubled comma
+    text = re.sub(r",\s*([.!?])", r"\1", text)  # comma stranded right before terminal punctuation
+    text = re.sub(r",\s*$", "", text)  # trailing dangling comma
+    # Doubled terminal punctuation. Task G12: generalized from `\1+` (only
+    # the identical mark repeated, e.g. ".." -> ".") to any run of terminal
+    # marks, since a removal can now glue two *different* ones together —
+    # e.g. "...position strong? It also scored 87/100..." with the second
+    # sentence removed leaves "...strong?" directly touching the first
+    # sentence's own untouched "." with no space between (the leading `?`/
+    # `!` exclusion added to `_clause_lead` stops the removal from crossing
+    # the true sentence's own terminal mark, but the removed clause's own
+    # trailing period is — by design, see `_clause_trail`'s docstring —
+    # never part of the match either, so it survives as an orphan glued
+    # right onto the true mark: "strong?."). The first mark is always the
+    # real one (it belongs to the surviving clause); every mark after it in
+    # the same run is an orphan from whatever was removed.
+    text = re.sub(r"([.!?])\s*[.!?]+", r"\1", text)
+    # A stray terminal mark with nothing (or only whitespace) before it — the
+    # whole clause it used to close was removed.
+    text = re.sub(rf"{_anchor}[.!?]\s*", r"\1", text)
+    text = re.sub(r"\s{2,}", " ", text)
+    if strip_left:
+        text = text.lstrip()
+    if strip_right:
+        text = text.rstrip()
+    # Capitalize the first letter of the string and of each sentence start,
+    # since the word now beginning a sentence may have been lowercase and
+    # mid-sentence before its leading clause was removed. Task G12: an
+    # optional `<cite id="...">` tag is allowed to sit between the sentence
+    # start and the first letter — a removal can leave a surviving clause's
+    # own citation wrapper sentence-initial (`<cite id="2">holds ...`), and
+    # without this the capitalization regex looked for a letter immediately
+    # at the boundary, found `<` instead, and silently skipped it, leaving
+    # the visible word lowercase.
+    #
+    # Task G17, defect 2: the same abbreviation exception as the two
+    # connector-strip rules above — "Inc. is", "U.S. and", "Corp. was",
+    # "Jr. served", "et al. found" are ordinary sentence-internal prose,
+    # not a sentence start left lowercase by a removal, and must not be
+    # capitalized.
+    def _capitalize(m: "re.Match[str]") -> str:
+        if _boundary_is_abbreviation(lookback + text[: m.start()]):
+            return m.group(0)
+        return m.group(1) + (m.group(2) or "") + m.group(3).upper()
+
+    text = re.sub(
+        rf"{_cap_anchor}(<[^>]+>\s*)?([a-z])",
+        _capitalize,
+        text,
+    )
+    return text
+
+
+def _repair_removal_artifacts(text: str, joints: list[int] | None = None) -> str:
     """Clean up what a clause-scoped removal leaves behind.
 
     A removal rule's leading/trailing edges (`_clause_lead` / `_clause_trail`
@@ -910,64 +1160,43 @@ def _repair_removal_artifacts(text: str) -> str:
     Must be idempotent — sanitize_narrative_metrics runs twice on the
     citation-repair retry path, so re-running this on its own output has to
     be a byte-identical no-op.
+
+    Task G17, defect 2: the cleanup above used to run unconditionally over
+    the WHOLE field the instant any removal fired anywhere in it — not
+    scoped to where that removal actually happened — so an ordinary
+    sentence boundary anywhere else in the same field ("Inc. is a
+    501(c)(3)...", "the U.S. and abroad...") got misread as this removal's
+    own leftover debris: a real "and" silently deleted, a real word wrongly
+    capitalized. `joints` is the position, in `text`, of every place a
+    removal actually happened (see `_removed_span_joints`); when given,
+    cleanup is restricted to the character window around each one (see
+    `_joint_windows`) via `_repair_span`, and every character outside every
+    window is returned byte-identical to how it arrived. `joints=None`
+    (the default, used by direct callers/tests exercising this function in
+    isolation) keeps the original whole-string behavior.
     """
-    text = _BARE_PERIOD_COMMA.sub(_abbreviation_before_stray_comma, text)
-    text = re.sub(r"\s{2,}", " ", text)
-    # A leading connective stranded at the start of a sentence: ", and X" or
-    # ", X" -> "X" (only at the very start of the string, or right after a
-    # previous sentence's terminal punctuation — never mid-sentence, so this
-    # can't reach into unrelated text). Task G12: also strips a stray leading
-    # semicolon/colon/em-dash left behind when a FIRST-clause removal's own
-    # trailing edge (`_clause_trail`) stopped right before one of those three
-    # joiners instead of consuming it — mirrors `_clause_lead`'s own leading
-    # connector alternation for the same three characters, so either side of
-    # a removal leaves the same, already-handled artifact shape.
-    text = re.sub(r"(^|[.!?]\s+)\s*(?:[,;:]|—)\s*(?:and\s+)?", r"\1", text)
-    # A bare "and " stranded at a sentence start with no comma of its own
-    # (the comma was itself part of the removed span). The leading `\s*`
-    # also covers the case where the removed span was the very start of the
-    # string (or immediately follows the previous sentence with nothing to
-    # collapse): _clause_trail now stops right before " and " rather than
-    # consuming into it, so the boundary space itself is left dangling in
-    # front of "and" instead of already being absorbed by the multi-space
-    # collapse above.
-    text = re.sub(r"(^|[.!?]\s+)\s*and\s+", r"\1", text, flags=re.IGNORECASE)
-    text = re.sub(r",\s*,", ",", text)  # doubled comma
-    text = re.sub(r",\s*([.!?])", r"\1", text)  # comma stranded right before terminal punctuation
-    text = re.sub(r",\s*$", "", text)  # trailing dangling comma
-    # Doubled terminal punctuation. Task G12: generalized from `\1+` (only
-    # the identical mark repeated, e.g. ".." -> ".") to any run of terminal
-    # marks, since a removal can now glue two *different* ones together —
-    # e.g. "...position strong? It also scored 87/100..." with the second
-    # sentence removed leaves "...strong?" directly touching the first
-    # sentence's own untouched "." with no space between (the leading `?`/
-    # `!` exclusion added to `_clause_lead` stops the removal from crossing
-    # the true sentence's own terminal mark, but the removed clause's own
-    # trailing period is — by design, see `_clause_trail`'s docstring —
-    # never part of the match either, so it survives as an orphan glued
-    # right onto the true mark: "strong?."). The first mark is always the
-    # real one (it belongs to the surviving clause); every mark after it in
-    # the same run is an orphan from whatever was removed.
-    text = re.sub(r"([.!?])\s*[.!?]+", r"\1", text)
-    # A stray terminal mark with nothing (or only whitespace) before it — the
-    # whole clause it used to close was removed.
-    text = re.sub(r"(^|[.!?]\s+)[.!?]\s*", r"\1", text)
-    text = re.sub(r"\s{2,}", " ", text).strip()
-    # Capitalize the first letter of the string and of each sentence start,
-    # since the word now beginning a sentence may have been lowercase and
-    # mid-sentence before its leading clause was removed. Task G12: an
-    # optional `<cite id="...">` tag is allowed to sit between the sentence
-    # start and the first letter — a removal can leave a surviving clause's
-    # own citation wrapper sentence-initial (`<cite id="2">holds ...`), and
-    # without this the capitalization regex looked for a letter immediately
-    # at the boundary, found `<` instead, and silently skipped it, leaving
-    # the visible word lowercase.
-    text = re.sub(
-        r"(^\s*|[.!?]\s+)(<[^>]+>\s*)?([a-z])",
-        lambda m: m.group(1) + (m.group(2) or "") + m.group(3).upper(),
-        text,
-    )
-    return text
+    if joints is None:
+        return _repair_span(text)
+    windows = _joint_windows(text, joints)
+    if not windows:
+        return text
+    pieces: list[str] = []
+    prev_end = 0
+    for start, end in windows:
+        pieces.append(text[prev_end:start])
+        lookback = text[max(0, start - 30) : start]
+        pieces.append(
+            _repair_span(
+                text[start:end],
+                lookback=lookback,
+                strip_left=(start == 0),
+                strip_right=(end == len(text)),
+                at_field_start=(start == 0),
+            )
+        )
+        prev_end = end
+    pieces.append(text[prev_end:])
+    return "".join(pieces)
 
 
 def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", scores: Any) -> dict:
@@ -1444,7 +1673,29 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # replacing it, adding one more dash forever. `-?` makes the match
     # consume that sign too, so the correction fully replaces the old
     # number (sign included) instead of appending next to it.
-    _wc_num_unit = r"-?\d+\.?\d*\s*(?:months?|years?)"
+    #
+    # Task G17, defect 1: that same leading `-?` also matches a hyphen used
+    # as a number-RANGE separator in ordinary prose ("the standard 6-41.7
+    # months of working capital"), not just a genuine minus sign. Matching
+    # is leftmost-start-wins: at the digit before the hyphen ("6"), the
+    # unit doesn't follow immediately, so that start fails; the very next
+    # start position tried is the hyphen itself, where `-?` happily
+    # consumes it as a sign, `\d+\.?\d*` matches "41.7", and the whole
+    # match becomes "-41.7 months" — gluing the preceding digit onto the
+    # replacement (LIVE: "6-41.7" -> "641.7" on the first sanitize pass,
+    # then "41.7" on the second — a fabricated number in neither the data
+    # nor the source text, and not idempotent). A minus sign is only ever
+    # a minus sign when the character before it isn't itself a digit — a
+    # range hyphen always sits directly against the preceding number, a
+    # genuine negative sign never does (it's preceded by whitespace, a verb,
+    # or the start of the match). `(?<!\d)` expresses exactly that: it
+    # blocks the hyphen from being treated as a match start when a digit
+    # sits right before it, so matching falls through to the digit after
+    # the hyphen instead, leaving the range's leading number and its
+    # separator completely untouched. G9's negative-ratio cases are
+    # unaffected — the hyphen there is always preceded by whitespace, never
+    # a digit, so the lookbehind never blocks it.
+    _wc_num_unit = r"(?<!\d)-?\d+\.?\d*\s*(?:months?|years?)"
     if metrics.working_capital_ratio is not None:
         correct_wc = f"{metrics.working_capital_ratio:.1f} months"
         # Pattern 1: <number> <months|years> of <working capital|reserves|...>
@@ -2291,14 +2542,14 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     def _apply_rules(text: str) -> str:
         for pattern, replacement, is_removal in rules:
             if is_removal:
-                stripped = re.sub(pattern, "", text, flags=re.IGNORECASE)
+                stripped, joints = _removed_span_joints(pattern, text)
                 # Only run the repair pass when this rule actually removed
                 # something. Every rule runs over every string field, so most
                 # (pattern, text) pairs never match at all — repairing
                 # unconditionally would "fix" (e.g. capitalize) text this
                 # rule never touched, which isn't this rule's to fix.
                 if stripped != text:
-                    text = _repair_removal_artifacts(stripped)
+                    text = _repair_removal_artifacts(stripped, joints)
             elif callable(replacement):
                 text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
             else:

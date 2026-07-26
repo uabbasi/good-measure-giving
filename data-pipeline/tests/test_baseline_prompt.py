@@ -4498,3 +4498,316 @@ class TestOverallGuardFailsSafeOnAnyUnrecognizedName:
     def test_five_pass_stable(self, text, metrics):
         passes = _five_passes(text, metrics)
         assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+
+class TestWorkingCapitalRangeHyphenIsNotFabricatedIntoANumber:
+    """Task G17, defect 1. G9 gave `_wc_num_unit` a leading `-?` so a
+    genuinely negative working-capital ratio replaces cleanly instead of
+    accumulating dashes. That same `-?` also matches a hyphen used as an
+    ordinary number-RANGE separator ("the standard 6-41.7 months") — since
+    regex matching is leftmost-start-wins, the digit before the hyphen
+    fails to match alone (no unit immediately follows it), so the next
+    start position tried is the hyphen itself, where `-?` consumes it as a
+    sign and glues the preceding digit onto the replacement: "6-41.7" ->
+    "641.7" on the first pass, a number that exists in neither the source
+    data nor the source text, then a second, still-wrong number on the
+    next pass — not idempotent. `(?<!\\d)` fixes it: a hyphen directly
+    preceded by a digit is a range separator, never a sign, so matching
+    can no longer start there at all."""
+
+    def test_range_already_correct_is_left_completely_untouched(self):
+        """LIVE shape: charity-32-0077563, rich_narrative.case_against.
+        risk_factors[0]. The second number already equals the metric, so a
+        correct fix is invisible here — but the old bug still fabricated
+        "641.7" on pass one even when the eventual value was right."""
+        metrics = _metrics(working_capital_ratio=41.7)
+        text = "This is significantly higher than the standard 6-41.7 months of working capital."
+        assert _sanitize(text, metrics) == text
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == text
+
+    def test_range_second_number_is_corrected_without_touching_the_first(self):
+        metrics = _metrics(working_capital_ratio=12.0)
+        text = "A range of 3-12 months of working capital is typical."
+        expected = "A range of 3-12.0 months of working capital is typical."
+        assert _sanitize(text, metrics) == expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+    def test_range_second_number_is_corrected_with_reserves_noun(self):
+        metrics = _metrics(working_capital_ratio=10.0)
+        text = "The 2019-2024 period saw 5-10 months of reserves."
+        expected = "The 2019-2024 period saw 5-10.0 months of working capital."
+        assert _sanitize(text, metrics) == expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+    def test_control_case_stays_unmatched(self):
+        """The team-lead's own control case: "operating reserves" isn't a
+        recognized noun phrase (only "operating expenses/costs" or bare
+        "reserves" are), so this rule never fires here at all — confirms
+        the fix introduces no new false positive on an ordinary hyphenated
+        year/count range."""
+        metrics = _metrics(working_capital_ratio=9.0)
+        text = "Peers hold 6-9 years of operating reserves."
+        assert _sanitize(text, metrics) == text
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == text
+
+    def test_negative_ratio_with_no_range_still_corrects_normally(self):
+        """G9's own case, re-pinned here as a regression guard against this
+        specific fix: a genuine negative sign (always preceded by
+        whitespace or a verb, never a digit) must still be consumed by the
+        match exactly as G9 left it."""
+        metrics = _metrics(working_capital_ratio=-2.7)
+        text = "The charity holds -2.7 months of working capital."
+        assert _sanitize(text, metrics) == text
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == text
+
+
+class TestRepairIsScopedToTheRemovalSite:
+    """Task G17, defect 2 (root cause). `_repair_removal_artifacts`'s
+    cleanup used to run unconditionally over the WHOLE narrative field
+    whenever a removal fired anywhere in it — gated on "did a removal
+    happen at all," not on where it happened. An ordinary sentence
+    boundary sitting anywhere else in the same field ("Inc. is...", "the
+    U.S. and abroad...") got misread as this removal's own leftover
+    debris: a real "and" silently deleted, a real word wrongly
+    capitalized. Now scoped to a window around the actual removal joint
+    (see `_joint_windows`); text outside every window must survive byte-
+    identical."""
+
+    def test_abbreviation_far_from_the_removal_survives_untouched(self):
+        """LIVE shape: charity-83-1794093. "Inc." is nowhere near where the
+        fundraising claim was removed (the end of the field), so it must
+        not be touched at all."""
+        metrics = _metrics(fundraising_expenses=None)
+        text = (
+            "Hikma Health Inc. is an early-stage nonprofit. "
+            "It has a fundraising efficiency of $0.00 per $1 raised."
+        )
+        expected = "Hikma Health Inc. is an early-stage nonprofit."
+        assert _sanitize(text, metrics) == expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+    def test_second_abbreviation_case_far_from_the_removal_survives(self):
+        """LIVE shape: charity-88-2454707."""
+        metrics = _metrics(fundraising_expenses=None)
+        text = (
+            "HEAL Palestine Inc. is a relief org. "
+            "It has a fundraising efficiency of $0.00 per $1 raised."
+        )
+        expected = "HEAL Palestine Inc. is a relief org."
+        assert _sanitize(text, metrics) == expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+    def test_and_conjunction_far_from_the_removal_is_not_deleted(self):
+        """Worse than the capitalization case: the old bug didn't just
+        miscapitalize "abroad", it deleted the word "and" entirely, turning
+        one true sentence into a different, ungrammatical one."""
+        metrics = _metrics(fundraising_expenses=None)
+        text = (
+            "It works in the U.S. and abroad. "
+            "It has a fundraising efficiency of $0.00 per $1 raised."
+        )
+        expected = "It works in the U.S. and abroad."
+        assert _sanitize(text, metrics) == expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+    def test_sentence_initial_and_far_from_the_removal_is_not_deleted(self):
+        """The other case the team-lead called out: the same unscoped
+        mechanism silently drops a legitimate sentence-initial "And "
+        anywhere else in the field, not just after an abbreviation."""
+        metrics = _metrics(fundraising_expenses=None)
+        text = (
+            "Some fact holds true. And another true fact follows here. "
+            "It has a fundraising efficiency of $0.00 per $1 raised."
+        )
+        expected = "Some fact holds true. And another true fact follows here."
+        assert _sanitize(text, metrics) == expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+    def test_repair_still_cleans_up_its_own_actual_joint(self):
+        """Scoping must not turn into "never repair anything" — the
+        orphaned double period this removal itself creates, right where it
+        actually happened, must still be collapsed to one."""
+        metrics = _metrics(fundraising_expenses=None)
+        text = "It serves refugees. It has a fundraising efficiency of $0.00 per $1 raised."
+        expected = "It serves refugees."
+        assert _sanitize(text, metrics) == expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+
+class TestAbbreviationExceptionEvenWithinTheRemovalWindow:
+    """Task G17, defect 2, requirement 2. Scoping alone isn't enough when
+    the abbreviation sits directly AT the removal joint — e.g. `_clause_
+    lead`'s own leftmost-match search stops right at "Corp."'s period,
+    so the window legitimately includes it. Reuses `_ABBREVIATIONS_
+    BEFORE_COMMA`, the same closed vocabulary `_abbreviation_before_
+    stray_comma` already guards `.,` with, rather than a second list."""
+
+    def test_inc_directly_before_the_joint_is_not_a_boundary(self):
+        metrics = _metrics(fundraising_expenses=None)
+        text = "It partners with Example Inc. and abroad, spending $0.00 per $1 raised to help refugees."
+        expected = "It partners with Example Inc. and abroad."
+        assert _sanitize(text, metrics) == expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+    def test_corp_directly_before_the_joint_is_not_a_boundary(self):
+        metrics = _metrics(fundraising_expenses=None)
+        text = "It works with Example Corp. and abroad, spending $0.00 per $1 raised to help refugees."
+        expected = "It works with Example Corp. and abroad."
+        assert _sanitize(text, metrics) == expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+    def test_us_directly_before_the_joint_is_not_a_boundary(self):
+        metrics = _metrics(fundraising_expenses=None)
+        text = "It works in the U.S. and abroad, spending $0.00 per $1 raised to reach them."
+        expected = "It works in the U.S. and abroad."
+        assert _sanitize(text, metrics) == expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+    def test_corp_was_directly_before_the_joint_is_not_capitalized_wrong(self):
+        """`_clause_lead`'s greedy leftmost search reaches this far back
+        when nothing blocks it, stopping the removal's own leading edge
+        right at "Corp."'s period rather than after "founded"."""
+        metrics = _metrics(fundraising_expenses=None)
+        text = "It works with Example Corp. was founded to help refugees, spending $0.00 per $1 raised to reach them."
+        expected = "It works with Example Corp. was founded to help refugees."
+        assert _sanitize(text, metrics) == expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+    def test_jr_served_directly_before_the_joint_is_not_capitalized_wrong(self):
+        metrics = _metrics(fundraising_expenses=None)
+        text = "It was led by John Smith Jr. served as chair, spending $0.00 per $1 raised on outreach."
+        expected = "It was led by John Smith Jr. served as chair."
+        assert _sanitize(text, metrics) == expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+    def test_et_al_found_directly_before_the_joint_is_not_capitalized_wrong(self):
+        metrics = _metrics(fundraising_expenses=None)
+        text = "According to Smith et al. found major gains, spending $0.00 per $1 raised on outreach."
+        expected = "According to Smith et al. found major gains."
+        assert _sanitize(text, metrics) == expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+
+class TestScopedRepairHandlesMultipleRemovalsInOneField:
+    """Two separate removal rules firing on the same field, one after the
+    other (each gets its own `_repair_removal_artifacts` call per `_apply_
+    rules`'s loop) — confirms scoping composes correctly across rules
+    rather than only being tested one-removal-at-a-time."""
+
+    def test_two_independent_removals_each_scoped_to_their_own_joint(self):
+        metrics = _metrics(fundraising_expenses=None, founded_year=None)
+        text = (
+            "It works with Example Corp. and abroad, spending $0.00 per $1 raised. "
+            "It was founded in 1985. "
+            "It serves refugees."
+        )
+        expected = "It works with Example Corp. and abroad. It serves refugees."
+        assert _sanitize(text, metrics) == expected
+        passes = _five_passes(text, metrics)
+        assert passes[0] == expected
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+
+class TestScopedRepairHandlesSeveralMatchesFromOneRuleInOnePass:
+    """Task G17, hand-probing finding beyond the two assigned defects: one
+    removal rule's single `re.sub` call can itself remove several separate
+    matches from the same field ("Zakat-eligible... fuqara, masakin" for a
+    SADAQAH-ELIGIBLE charity strips all three zakat-keyword phrases in one
+    pass), leaving several joints close together with nothing but
+    punctuation debris between them. Windowing each joint independently
+    left that debris — "..." with the words gone from both sides — outside
+    every window, so it survived unrepaired (LIVE: charity-75-2352043's
+    citation quote produced ".." instead of fully empty). `_joint_windows`
+    now merges two windows whenever the gap between them has no letter or
+    digit at all, since such a gap can only be removal debris, never
+    genuine surviving prose."""
+
+    def test_three_keyword_matches_leave_no_punctuation_debris(self):
+        """LIVE shape: charity-75-2352043, rich_narrative.all_citations[2].
+        quote. Every word is a separate zakat-keyword match; only the
+        ellipsis and a comma separate them, and none of it is real prose."""
+        metrics = _metrics()
+        text = "Zakat-eligible... fuqara, masakin"
+        out = _sanitize(text, metrics, wallet_tag="SADAQAH-ELIGIBLE")
+        assert out == ""
+        twice = _sanitize(out, metrics, wallet_tag="SADAQAH-ELIGIBLE")
+        assert twice == out
+
+    def test_keyword_matches_with_real_prose_between_them_keep_that_prose(self):
+        """Control: when there IS real prose between two matches of the
+        same rule, it must survive — the merge only ever fires on a
+        punctuation-only gap, never on a gap containing actual words."""
+        metrics = _metrics()
+        text = "It is zakat-eligible. It also serves the poor and needy of Chicago. It is asnaf-recognized."
+        out = _sanitize(text, metrics, wallet_tag="SADAQAH-ELIGIBLE")
+        assert out == "It also serves the poor and needy of Chicago."
+        twice = _sanitize(out, metrics, wallet_tag="SADAQAH-ELIGIBLE")
+        assert twice == out
+
+
+class TestWindowExtendsThroughAWholeRunOfTerminalMarks:
+    """Task G17, hand-probing finding beyond the two assigned defects: a
+    window's edge search stopped at the FIRST terminal mark found, but
+    that mark can itself be the start of a multi-mark run (an ellipsis, or
+    a doubled mark from elsewhere) — leaving the REST of the run just
+    outside the window as unrepaired debris. LIVE: charity-20-4097808's
+    citation quote "The FYI is Zakat eligible... Zakat Categories:
+    fisabilillah" removed "Zakat eligible" (the whole leading clause),
+    leaving "..." as the joint's own orphaned trailer; taking only the
+    ellipsis's first dot left ".. Zakat Categories: fisabilillah" instead
+    of the correct "Zakat Categories: fisabilillah". `_run_start`/`_run_end`
+    now extend through the whole run before fixing the window boundary."""
+
+    def test_removal_leaves_a_full_ellipsis_orphan_which_is_fully_cleaned(self):
+        metrics = _metrics()
+        text = "The FYI is Zakat eligible... Zakat Categories: fisabilillah"
+        out = _sanitize(text, metrics, wallet_tag="SADAQAH-ELIGIBLE")
+        assert out == "Zakat Categories: fisabilillah"
+        twice = _sanitize(out, metrics, wallet_tag="SADAQAH-ELIGIBLE")
+        assert twice == out
+
+
+class TestRepairRemainsUnscopedWhenCalledWithoutJoints:
+    """`_repair_removal_artifacts(text)` with no second argument is the
+    direct, whole-string mode existing callers (and the tests above this
+    class in the file) already rely on — must be completely unchanged by
+    the G17 scoping work."""
+
+    def test_no_joints_still_repairs_the_whole_string_as_before(self):
+        text = ", and it also serves the community."
+        assert _repair_removal_artifacts(text) == "It also serves the community."
+
+    def test_no_joints_is_still_idempotent(self):
+        text = ", and it also serves the community."
+        once = _repair_removal_artifacts(text)
+        twice = _repair_removal_artifacts(once)
+        assert once == twice
