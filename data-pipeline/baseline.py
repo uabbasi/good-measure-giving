@@ -1054,8 +1054,51 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # the leftmost successful match starts right at the dash itself, leaving
     # the space before it stranded in front of the surviving clause's own
     # terminal punctuation ("...capital ." — a real, hand-probed artifact).
+    # Task G15 (defect 2): a structural "Label: value" quote (30+ live in
+    # `all_citations[].quote`, e.g. "Fundraising Efficiency: $0.00 per $1
+    # raised") lost both the colon and the value, not just the value. Cause:
+    # every removal rule's core anchors on the NUMBER, not the label, so the
+    # match can only start as far left as the colon (consumed as ordinary
+    # connective tissue by the alternation below, the same way it consumes
+    # ", and" between two clauses) — the label text sitting to the colon's
+    # left is never reachable by the match at all, so it survives alone,
+    # stranded and asserting nothing ("Fundraising Efficiency").
+    #
+    # `_label_colon_lead` closes this with a new, OPTIONAL leading group,
+    # tried before the existing connector: at the true start of a sentence
+    # (`^`, or right after a previous sentence's own terminal mark) a run of
+    # plain text with no digit of its own, ending in a literal colon, is
+    # swallowed as part of the SAME removal — so "Fundraising Efficiency: "
+    # goes with "$0.00 per $1 raised" as one unit, matching the existing,
+    # already-correct behavior of the short form with no trailing phrase
+    # ("Fundraising Efficiency: $0.00" already goes fully empty, via the
+    # phrase-first rule whose own core literally anchors on "fundraising
+    # efficiency"). Fully empty is chosen over stranding a bare "Label:"
+    # (colon kept, value gone) so both forms of the same defect land on one
+    # consistent, non-misleading result.
+    #
+    # The no-digit requirement is what keeps this mechanical rather than a
+    # label vocabulary to enumerate: it doesn't matter what the label SAYS,
+    # only that it asserts no number of its own. This is also what keeps it
+    # from reopening the existing colon_true_leads protection just below —
+    # "It holds 8.3 months of working capital: it also scored 87/100..." has
+    # its own digit (8.3) before the colon, so the new group can't match
+    # there and the existing, unconditional colon-as-connector behavior
+    # (protecting that true clause) is exactly what still applies. Sentence-
+    # anchoring (`^` / after `[.!?]\s`) additionally keeps this from ever
+    # reaching into the MIDDLE of an unrelated true clause.
+    #
+    # Accepted residual gap, narrow and documented rather than chased further:
+    # a genuine independent clause with no digit of its own, immediately
+    # before a "Label:"-shaped colon at a sentence's start ("The mission is
+    # clear: it scored 87/100 on Charity Navigator.") would be swallowed
+    # along with the label it's mistaken for. No live or reported instance of
+    # this shape; not pursued further per the standing instruction not to
+    # chase this function's defects with an ever-widening invariant.
+    _label_colon_lead = r"(?:^|(?<=[.!?]\s))[^\d.:!?]*:\s*"
     _clause_lead = (
-        r"(?:\s*(?:[,;:]|—)\s*(?:and\s+)?|\s+and\s+)?"
+        rf"(?:{_label_colon_lead})?"
+        + r"(?:\s*(?:[,;:]|—)\s*(?:and\s+)?|\s+and\s+)?"
         + r"(?:(?!\s+and\b)(?:[^.,;:?!—]|(?<=\d)\.(?=\d)|(?<=\d),(?=\d)))*"
     )
     # Used for the OUTER trailing edge of every removal rule. Whether a comma
@@ -1191,9 +1234,75 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # continuation exception; an independent clause after either (no
     # `_trail_same_claim_lead` lead-in) still stops the removal exactly as
     # before, since that case never reaches this alternative at all.
+    # Task G15 (defect 1): `_trail_same_claim_lead`'s determiner/possessive/
+    # quantifier branch (`a|an|the|its|their|his|her|one of`) was chosen on
+    # the theory that it identifies an appositive tail of the SAME fabricated
+    # claim. It doesn't — it identifies a noun phrase, and the subject of a
+    # true independent clause is a noun phrase too. Every one of those
+    # determiners is also the single most common way to open a sentence's
+    # subject ("The organization has trained...", "Its mission is...", "An
+    # independent audit confirmed..."), so the branch was silently erasing
+    # ordinary, well-formed true clauses that happened to follow a bare comma
+    # after a removed claim, not just the appositives it was built for.
+    #
+    # This is a deliberate reversal of that earlier decision, not a
+    # refinement of it: a bare comma is now the DEFAULT clause boundary for
+    # `_clause_trail`, full stop. The determiner/possessive/quantifier branch
+    # (and `one of`, the same partitive-quantifier shape — "One of the
+    # volunteers found it" is just as valid a clause subject) is dropped from
+    # the set `_clause_trail` consults. `_clause_trail_same_claim_lead` below
+    # keeps every OTHER continuation marker `_trail_same_claim_lead` had
+    # (comparative-tail prepositions and bare comparatives/superlatives),
+    # since none of those can open the subject of an independent clause the
+    # way a determiner can — "up from 82", "compared to last year", "versus",
+    # "among", or a bare "higher"/"best" cannot themselves BE a clause's
+    # subject, so they were never the mechanism behind this defect (`lower`/
+    # `better` keep their pre-existing, already-documented ambiguity with a
+    # verb reading — unrelated to this task, still accepted per the standing
+    # tie-break).
+    #
+    # A word-count or verb-presence invariant was considered and rejected:
+    # the appositive corpus this reversal now under-serves ("its highest
+    # rating", "a strong reserve position") and the true-clause corpus this
+    # reversal protects ("the organization has trained...", "an independent
+    # audit confirmed...") overlap in length at around six words, and "does
+    # the tail contain a verb" is the same open, unbounded vocabulary class
+    # this function has already been burned by three times (a verb list, an
+    # appositive-lead list, a participle list) — adding it a fourth time
+    # anywhere in this function is out of the question. No genuinely closed,
+    # mechanical invariant separates the two corpora better than the plain
+    # boundary, so the plain boundary is what ships. The accepted cost: a
+    # determiner-led appositive of a just-removed claim ("a perfect score
+    # from Charity Navigator, its highest rating") is no longer consumed —
+    # it strands as a dangling fragment instead of being erased with the
+    # claim it once modified. Per the brief's own standing instruction, that
+    # trade is intentional: a visible, fabrication-adjacent stray fragment is
+    # preferable to silently erasing a true, substantive fact, and stranded
+    # fragments are already a documented, accepted class in this codebase
+    # (see `_repair_removal_artifacts`).
+    #
+    # `_trail_same_claim_lead` itself (above) is untouched, deliberately: it
+    # still backs `_fr_gap_dollar_first` below, which has its own separate,
+    # already-tested reason to keep tolerating the determiner branch (a bare
+    # comma joining a null "$0.00" to "an indication of poor fundraising
+    # efficiency" is a genuine two-sided fabrication about the same figure,
+    # not a candidate true-clause subject — recall `_fr_gap_dollar_first`
+    # never removes anything that isn't already anchored to a null dollar
+    # figure or the literal phrase "fundraising efficiency", so it isn't
+    # exposed to this defect the way the generic `_clause_trail` is).
+    _clause_trail_same_claim_lead = (
+        r"(?:up|down)\s+from\b"
+        r"|compared\s+to\b"
+        r"|versus\b"
+        r"|vs\.?(?=\s)"
+        r"|well\s+(?:above|below|over|under)\b"
+        r"|(?:best|worst|higher|lower|better|stronger|weaker|highest|lowest|strongest)\b"
+        r"|among\b"
+        r"|second\s+only\s+to\b"
+    )
     _clause_trail = (
         rf"(?:(?!\s+and\b)(?:[^.,;:?!—]|(?<=\d)\.(?=\d)|(?<=\d),(?=\d))"
-        rf"|[,;:—](?=\s*(?:{_trail_same_claim_lead})))*"
+        rf"|[,;:—](?=\s*(?:{_clause_trail_same_claim_lead})))*"
     )
 
     # Task G14: every correction/removal rule below (except working capital

@@ -383,38 +383,48 @@ class TestClauseScopedRemovalPreservesSupportedClaims:
 
 
 class TestClauseScopedRemovalStillRemovesFabricatedTails:
-    """The other half of the tension the brief calls out: clause-scoping
-    must not let a fabricated claim's own dangling tail survive just because
-    it sits after a comma. "a perfect score from Charity Navigator, its
-    highest rating" is one fabricated claim, not two — the appositive after
-    the comma is not an independent, potentially-true clause, so it must go
-    with the rest of it."""
+    """Task G15 reversed the determiner-consumption behavior these tests
+    originally pinned: "a perfect score from Charity Navigator, its highest
+    rating" is one fabricated claim with an appositive tail, but consuming
+    determiner-led text after a bare comma to erase that tail also erased
+    ordinary true independent clauses whose subjects begin with "the"/"its"/
+    "an" — the determiner test can't tell the two apart, because it
+    identifies a noun phrase, not an appositive. What must never regress is
+    that the fabricated NUMBER itself is gone — that's still true here. What
+    used to also be true, and no longer is by deliberate choice, is that the
+    appositive tail vanished with it; it now strands as its own fragment
+    instead."""
 
-    def test_fabricated_score_and_its_appositive_are_both_removed(self):
+    def test_fabricated_score_is_removed_appositive_tail_now_strands(self):
         text = "The charity earned a perfect score from Charity Navigator, its highest rating."
         metrics = _metrics(cn_overall_score=None)
         out = _sanitize(text, metrics)
-        assert out == ""
+        assert out == "Its highest rating."
+        assert "Charity Navigator" not in out
+        assert "87" not in out
 
-    def test_true_clause_then_fabricated_score_with_appositive_survives(self):
+    def test_true_clause_survives_fabricated_score_removed_appositive_tail_strands(self):
         """A true claim in front of the fabricated one must survive in
-        full, and the fabricated claim's appositive tail must not leak
-        through as a dangling fragment."""
+        full, and the fabricated claim itself (the score, "Charity
+        Navigator") must be gone. Task G15: the appositive tail after it no
+        longer goes with it — it strands, joined to the true clause by the
+        comma that was already there."""
         text = (
             "The charity spends $0.10 per $1 raised, and earned a perfect score "
             "from Charity Navigator, its highest rating."
         )
         metrics = _metrics(cn_overall_score=None)
         out = _sanitize(text, metrics)
-        assert out == "The charity spends $0.10 per $1 raised."
-        assert "highest rating" not in out
+        assert out == "The charity spends $0.10 per $1 raised, its highest rating."
+        assert "Charity Navigator" not in out
+        assert "perfect score" not in out
 
     def test_appositive_case_is_idempotent(self):
         text = "The charity earned a perfect score from Charity Navigator, its highest rating."
         metrics = _metrics(cn_overall_score=None)
         once = _sanitize(text, metrics)
         twice = _sanitize(once, metrics)
-        assert twice == once == ""
+        assert twice == once == "Its highest rating."
 
 
 # Matrix: each removal-rule family x {unsupported alone, unsupported first +
@@ -863,23 +873,29 @@ class TestClauseTrailBareCommaBoundary:
         out = _sanitize(text, metrics)
         assert out == "The charity spends $0.10 per $1 raised."
 
-    def test_appositive_tail_still_fully_removed_with_bare_comma(self):
-        """The other half of the tension: a fabricated claim's own
-        appositive tail (a noun phrase, not an independent clause) must
-        still be swallowed whole, not preserved as a dangling fragment."""
+    def test_appositive_tail_now_strands_after_the_fabricated_score_is_removed(self):
+        """Task G15 reversed this: the appositive tail ("its highest
+        rating") opens with a determiner, exactly like the subject of an
+        ordinary true clause does, so treating a determiner as "same claim,
+        keep consuming" also erased true clauses that happened to be
+        phrased that way. The fabricated score itself must still be gone;
+        the appositive tail is no longer swallowed with it."""
         metrics = _metrics(cn_overall_score=None)
         text = "The charity earned a perfect score from Charity Navigator, its highest rating."
         out = _sanitize(text, metrics)
-        assert out == ""
+        assert out == "Its highest rating."
+        assert "Charity Navigator" not in out
 
-    def test_second_appositive_phrasing_still_fully_removed(self):
-        """A determiner+adjective+noun appositive ("a strong reserve
-        position"), not just a possessive-pronoun one — the brief's own
-        example of the noun-phrase side of the boundary."""
+    def test_second_appositive_phrasing_now_strands(self):
+        """Same reversal, a determiner+adjective+noun appositive ("a strong
+        reserve position") rather than a possessive pronoun. The fabricated
+        working-capital figure is gone; the appositive strands instead of
+        being consumed."""
         metrics = _metrics(working_capital_ratio=None)
         text = "The charity holds 4.2 months of working capital, a strong reserve position."
         out = _sanitize(text, metrics)
-        assert out == ""
+        assert out == "A strong reserve position."
+        assert "4.2" not in out
 
 
 # Re-review of `_clause_trail`: the finite-verb-lead heuristic ("spends",
@@ -913,13 +929,20 @@ _COMPARATIVE_TAIL_TRAP = [
 ]
 
 # Appositive phrasings beyond the possessive-pronoun one already covered —
-# these open with a determiner or quantifier, the closed class
-# `_trail_same_claim_lead` is built on, not a verb.
+# these open with a determiner or quantifier. Task G15 dropped the
+# determiner/quantifier branch from `_clause_trail`'s continuation set (it
+# was indistinguishable from an ordinary true-clause subject), so these two
+# no longer get swallowed with the fabricated claim in front of them — they
+# strand as their own fragment instead. What must still hold is that the
+# fabricated number/claim itself is gone (`absent`, checked in the text
+# that survives).
 _CLOSED_CLASS_APPOSITIVES = [
     ("the_best_in_its_class",
-     "The charity holds 4.2 months of working capital, the best in its class."),
+     "The charity holds 4.2 months of working capital, the best in its class.",
+     "The best in its class.", "4.2"),
     ("one_of_the_highest",
-     "The charity scored 87/100 from Charity Navigator, one of the highest in its cohort."),
+     "The charity scored 87/100 from Charity Navigator, one of the highest in its cohort.",
+     "One of the highest in its cohort.", "Charity Navigator"),
 ]
 
 # Follow-up gap (found after 048c6b4 shipped): an appositive tail with no
@@ -1009,14 +1032,24 @@ class TestClauseTrailReplacesVerbListWithClosedContinuationLead:
         twice = _sanitize(once, metrics)
         assert twice == once
 
-    @pytest.mark.parametrize("name,text", _CLOSED_CLASS_APPOSITIVES, ids=[n for n, _ in _CLOSED_CLASS_APPOSITIVES])
-    def test_closed_class_appositive_still_fully_removed(self, name, text):
+    @pytest.mark.parametrize(
+        "name,text,expected,absent", _CLOSED_CLASS_APPOSITIVES,
+        ids=[n for n, *_ in _CLOSED_CLASS_APPOSITIVES])
+    def test_closed_class_appositive_now_strands_fabricated_claim_still_gone(
+        self, name, text, expected, absent
+    ):
+        """Task G15 reversal: these are determiner/quantifier leads, so they
+        no longer get swallowed with the fabricated claim in front of them.
+        The fabricated claim itself must still be gone."""
         metrics = _metrics(working_capital_ratio=None, cn_overall_score=None)
         out = _sanitize(text, metrics)
-        assert out == ""
+        assert out == expected
+        assert absent not in out
 
-    @pytest.mark.parametrize("name,text", _CLOSED_CLASS_APPOSITIVES, ids=[n for n, _ in _CLOSED_CLASS_APPOSITIVES])
-    def test_closed_class_appositive_case_is_idempotent(self, name, text):
+    @pytest.mark.parametrize(
+        "name,text,expected,absent", _CLOSED_CLASS_APPOSITIVES,
+        ids=[n for n, *_ in _CLOSED_CLASS_APPOSITIVES])
+    def test_closed_class_appositive_case_is_idempotent(self, name, text, expected, absent):
         metrics = _metrics(working_capital_ratio=None, cn_overall_score=None)
         once = _sanitize(text, metrics)
         twice = _sanitize(once, metrics)
@@ -2934,36 +2967,35 @@ class TestEmDashGetsTheSameAppositiveVsClauseTreatmentAsABareComma:
     framing): an em dash introduces an appositive of the SAME claim about as
     often as it introduces a genuine independent clause
     ("scored 87/100 — its best result yet" vs. "scored 87/100 — it also
-    holds 8.3 months of working capital"). Tested both readings before
-    choosing:
+    holds 8.3 months of working capital"). Originally resolved by giving the
+    em dash the exact same context-sensitive treatment already built for the
+    bare comma — reusing `_trail_same_claim_lead`'s determiner/possessive
+    branch, so a determiner-led appositive ("a great achievement") was
+    swallowed with the fabricated score in front of it.
 
-    - Making it an unconditional boundary strands a fabrication-referencing
-      appositive behind ("A great achievement!" — still about a score that
-      no longer exists — a surviving fabrication-adjacent fragment, the
-      worse failure mode per the standing tie-break).
-    - Making it an unconditional continuation instead risks swallowing a
-      genuine independent clause that just happens to be dash-joined
-      instead of semicolon-joined.
+    Task G15 reversed that branch for `_clause_trail` (it identifies a noun
+    phrase, not an appositive — the same shape opens the subject of an
+    ordinary true clause, e.g. "a great achievement" vs. "a great fundraiser
+    joined the board"). So the determiner-led em-dash appositive below now
+    strands instead of being consumed, exactly like the bare-comma case.
+    What must never regress either way: the fabricated score itself is
+    gone."""
 
-    Resolved by giving the em dash the exact same context-sensitive
-    treatment already built for the bare comma — reusing
-    `_trail_same_claim_lead` rather than inventing a second mechanism, since
-    the same question (does what follows read as an appositive of the same
-    claim, or as its own clause?) is what actually distinguishes the two
-    cases for a dash exactly as it does for a comma."""
-
-    def test_appositive_of_the_fabricated_claim_is_removed_in_full(self):
+    def test_appositive_of_the_fabricated_claim_now_strands_score_still_gone(self):
         """The brief's own em-dash repro: the appositive ("a great
-        achievement") is commentary ABOUT the fabricated score, not an
-        independent fact, so over-removing it is correct — nothing survives
-        that still references the fabricated score."""
+        achievement") is a determiner-led noun phrase, the same shape Task
+        G15 stopped consuming after `_clause_trail`. It now strands as its
+        own sentence; the fabricated score ("87/100 on Charity Navigator")
+        must still be gone."""
         metrics = _metrics(cn_overall_score=None, working_capital_ratio=8.3)
         text = (
             "It scored 87/100 on Charity Navigator — a great achievement! "
             "It also holds 8.3 months of working capital."
         )
         out = _sanitize(text, metrics)
-        assert out == "It also holds 8.3 months of working capital."
+        assert out == "A great achievement! It also holds 8.3 months of working capital."
+        assert "Charity Navigator" not in out
+        assert "87" not in out
 
     def test_genuine_independent_clause_after_the_dash_survives(self):
         """No appositive lead here ("it also holds...") — `_trail_same_claim_lead`
@@ -3003,7 +3035,7 @@ class TestEmDashGetsTheSameAppositiveVsClauseTreatmentAsABareComma:
             (
                 "It scored 87/100 on Charity Navigator — a great achievement! "
                 "It also holds 8.3 months of working capital.",
-                "It also holds 8.3 months of working capital.",
+                "A great achievement! It also holds 8.3 months of working capital.",
             ),
             (
                 "It scored 87/100 on Charity Navigator — it also holds 8.3 months of working capital.",
@@ -3026,46 +3058,49 @@ class TestEmDashGetsTheSameAppositiveVsClauseTreatmentAsABareComma:
         assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == expected
 
 
-# Gap 2 left open by the task above: `;` and `:` were made unconditional
-# boundaries (no appositive-continuation exception), on the reasoning that
-# they separate independent clauses by definition. True of the clause they
-# introduce, but that clause can still be an appositive COMMENTING ON the
-# fabricated claim just removed rather than an independent fact of its own —
-# the exact ambiguity the em dash above already resolves via
-# `_trail_same_claim_lead`. Unconditional `;`/`:` boundaries stranded that
-# appositive as a surviving fragment still describing a metric that no
-# longer exists. Both joiners now reuse the identical mechanism the em dash
-# uses.
+# Gap 2 left open by the task above: `;` and `:` originally reused
+# `_trail_same_claim_lead`'s determiner/possessive branch, exactly like the
+# em dash and the bare comma, so a determiner/possessive/quantifier-led
+# appositive of the fabricated claim in front of it was consumed and removed
+# with it. Task G15 dropped that branch from `_clause_trail`'s continuation
+# set for the same reason it did everywhere else: a determiner identifies a
+# noun phrase, not an appositive, and the same shape opens the subject of a
+# true clause. So each of these four now strands as its own fragment instead
+# of being consumed. What must never regress: the fabricated score itself
+# ("87/100 on Charity Navigator") is gone either way.
 _SEMICOLON_COLON_APPOSITIVE_CASES = [
     (
         "semicolon_determiner_appositive",
         "It scored 87/100 on Charity Navigator; a truly remarkable result.",
-        "",
+        "A truly remarkable result.",
     ),
     (
         "colon_determiner_appositive",
         "It scored 87/100 on Charity Navigator: the best in its class.",
-        "",
+        "The best in its class.",
     ),
     (
         "semicolon_possessive_appositive",
         "It scored 87/100 on Charity Navigator; its highest rating.",
-        "",
+        "Its highest rating.",
     ),
     (
         "colon_one_of_appositive",
         "It scored 87/100 on Charity Navigator: one of the highest.",
-        "",
+        "One of the highest.",
     ),
 ]
 
 
 class TestSemicolonAndColonGetTheSameAppositiveVsClauseTreatmentAsEmDash:
-    """Gap 2: `;` and `:` reuse `_trail_same_claim_lead`, exactly like the
-    em dash. Both polarities per joiner: an appositive of the fabricated
-    claim is consumed and removed with it (no surviving fragment); a
-    genuine independent clause on the far side is untouched by this change
-    and still survives (already pinned by
+    """Gap 2: `;` and `:` reuse `_clause_trail_same_claim_lead`, exactly
+    like the em dash and the bare comma. Task G15 reversed the determiner/
+    possessive/quantifier branch of that continuation set (see the module
+    comment above `_SEMICOLON_COLON_APPOSITIVE_CASES`), so a
+    determiner-led appositive of the fabricated claim now strands instead of
+    being consumed with it — the fabricated score itself must still be
+    gone. A genuine independent clause on the far side is untouched by this
+    change either way and still survives (already pinned by
     `TestFourUnambiguousJoinersAreNowClauseBoundaries`'s
     `semicolon_true_leads` / `colon_true_leads` / `semicolon_fabricated_leads`
     / `colon_fabricated_leads` cases, re-asserted here as a no-regression
@@ -3074,10 +3109,14 @@ class TestSemicolonAndColonGetTheSameAppositiveVsClauseTreatmentAsEmDash:
     @pytest.mark.parametrize(
         "name,text,expected", _SEMICOLON_COLON_APPOSITIVE_CASES,
         ids=[n for n, *_ in _SEMICOLON_COLON_APPOSITIVE_CASES])
-    def test_appositive_of_the_fabricated_claim_is_removed_in_full(self, name, text, expected):
+    def test_appositive_of_the_fabricated_claim_now_strands_score_still_gone(
+        self, name, text, expected
+    ):
         metrics = _metrics(cn_overall_score=None)
         out = _sanitize(text, metrics)
         assert out == expected
+        assert "Charity Navigator" not in out
+        assert "87" not in out
 
     @pytest.mark.parametrize(
         "name,text,expected", _SEMICOLON_COLON_APPOSITIVE_CASES,
@@ -3557,12 +3596,18 @@ class TestHedgeWordGapProgramExpenseRatio:
     of X%" (anchored on "of") and "directs X% to programs" (anchored on the
     verb) — both the correction and null-removal sides of each."""
 
-    def test_null_hedged_claim_directs_verb_is_removed(self):
-        """The brief's own repro line."""
+    def test_null_hedged_claim_directs_verb_is_removed_appositive_now_strands(self):
+        """The brief's own repro line (task G14). Task G15 reversed
+        `_clause_trail`'s determiner branch, so the trailing appositive ("a
+        strong showing") — a determiner-led noun phrase, same shape as an
+        ordinary clause subject — no longer goes with the fabricated hedged
+        percentage; it strands as its own fragment. The fabricated
+        percentage itself must still be gone."""
         text = "The organization directs an impressive 91% to programs, a strong showing."
         metrics = _metrics(program_expense_ratio=None)
         out = _sanitize(text, metrics)
-        assert out == ""
+        assert out == "A strong showing."
+        assert "91" not in out
 
     def test_null_hedged_claim_ratio_of_is_removed(self):
         text = "It has a program expense ratio of only 91% this year."
@@ -3964,3 +4009,263 @@ class TestHedgeGapDoesNotCrossAnAbsentConnectorIntoAnUnrelatedNumber:
     def test_five_pass_stable(self, text, metrics):
         passes = _five_passes(text, metrics)
         assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == text
+
+
+# Task G15, defect 1: `_trail_same_claim_lead`'s determiner/possessive/
+# quantifier branch ("a", "an", "the", "its", "their", "his", "her", "one
+# of") does not identify an appositive of a removed claim — it identifies a
+# noun phrase, and the subject of a true independent clause is a noun phrase
+# too. This is a deliberate REVERSAL of the controller's earlier decision to
+# consume determiner-led text after a bare comma, not a refinement of it: a
+# bare comma is now the default clause boundary for `_clause_trail`, and the
+# determiner branch is dropped from the continuation set it consults
+# (`_clause_trail_same_claim_lead`). The non-determiner continuation markers
+# (comparative-tail prepositions, bare comparatives/superlatives) are kept
+# unchanged, since none of those can open the subject of an independent
+# clause the way a determiner can.
+_G15_TRUE_CLAUSE_SURVIVES_CASES = [
+    (
+        "founded_the_charity_serves",
+        "Founded in 1990, the charity serves 5,000 families each year.",
+        dict(founded_year=None),
+        "The charity serves 5,000 families each year.",
+    ),
+    (
+        "founded_the_organization_has_trained",
+        "Founded in 1990, the organization has trained over 200 volunteers.",
+        dict(founded_year=None),
+        "The organization has trained over 200 volunteers.",
+    ),
+    (
+        "founded_an_independent_audit",
+        "Founded in 1990, an independent audit confirmed its clean record.",
+        dict(founded_year=None),
+        "An independent audit confirmed its clean record.",
+    ),
+    (
+        "founded_its_mission",
+        "Founded in 1990, its mission is to provide clean water to villages.",
+        dict(founded_year=None),
+        "Its mission is to provide clean water to villages.",
+    ),
+    (
+        "working_capital_the_organization_also_serves",
+        "The charity holds 5.2 months of working capital, the organization "
+        "also serves 5,000 families annually.",
+        dict(working_capital_ratio=None),
+        "The organization also serves 5,000 families annually.",
+    ),
+    (
+        "cn_score_the_board_consists_of",
+        "Scored 87/100 on Charity Navigator, the board consists of nine "
+        "independent members.",
+        dict(cn_overall_score=None),
+        "The board consists of nine independent members.",
+    ),
+]
+
+# Control confirming the mechanism rather than coincidence: "this" is not on
+# `_clause_trail_same_claim_lead` either (it never was), so this case already
+# passed before task G15 and must keep passing unchanged.
+_G15_CONTROL_CASE = (
+    "founded_this_organization",
+    "Founded in 1990, this organization has won three national awards.",
+    dict(founded_year=None),
+    "This organization has won three national awards.",
+)
+
+# The other half of the reversal: a determiner-led appositive of a claim that
+# WAS just removed is no longer consumed with it — it strands as a dangling
+# fragment instead. Accepted per the brief's own standing instruction: a
+# visible, fabrication-adjacent fragment is preferable to silently erasing a
+# true clause, and stranded fragments are already a documented, accepted
+# artifact class (`_repair_removal_artifacts`). These pin the NEW behavior
+# deliberately, as a record of the trade, not as a claim it's an improvement
+# in isolation.
+_G15_APPOSITIVE_NOW_STRANDS_CASES = [
+    (
+        "its_highest_rating",
+        "The charity earned a perfect score from Charity Navigator, its highest rating.",
+        dict(cn_overall_score=None),
+        "Its highest rating.",
+    ),
+    (
+        "a_strong_reserve_position",
+        "The charity holds 4.2 months of working capital, a strong reserve position.",
+        dict(working_capital_ratio=None),
+        "A strong reserve position.",
+    ),
+    (
+        "the_best_in_its_class",
+        "The charity holds 4.2 months of working capital, the best in its class.",
+        dict(working_capital_ratio=None),
+        "The best in its class.",
+    ),
+    (
+        "one_of_the_highest_in_its_cohort",
+        "The charity scored 87/100 from Charity Navigator, one of the highest in its cohort.",
+        dict(cn_overall_score=None),
+        "One of the highest in its cohort.",
+    ),
+]
+
+
+class TestClauseTrailDeterminerLeadIsReversed:
+    """Task G15, defect 1. See the module-level comments above this class
+    for the reasoning; this class pins the observable behavior."""
+
+    def test_the_reversal_itself_a_determiner_led_true_clause_survives(self):
+        """The single case that most directly proves the reversal: if a
+        future change restores the determiner/possessive/quantifier branch
+        to `_clause_trail`'s continuation set, this is the case that must
+        fail. Kept as its own, unmistakably-named test rather than only a
+        parametrized row, so it can't be silently dropped alongside the rest
+        of `_G15_TRUE_CLAUSE_SURVIVES_CASES`."""
+        text = "Founded in 1990, the charity serves 5,000 families each year."
+        metrics = _metrics(founded_year=None)
+        out = _sanitize(text, metrics)
+        assert out == "The charity serves 5,000 families each year."
+
+    @pytest.mark.parametrize(
+        "name,text,overrides,expected", _G15_TRUE_CLAUSE_SURVIVES_CASES,
+        ids=[n for n, *_ in _G15_TRUE_CLAUSE_SURVIVES_CASES])
+    def test_true_independent_clause_now_survives(self, name, text, overrides, expected):
+        metrics = _metrics(**overrides)
+        out = _sanitize(text, metrics)
+        assert out == expected
+
+    @pytest.mark.parametrize(
+        "name,text,overrides,expected", _G15_TRUE_CLAUSE_SURVIVES_CASES,
+        ids=[n for n, *_ in _G15_TRUE_CLAUSE_SURVIVES_CASES])
+    def test_true_independent_clause_case_is_five_pass_stable(self, name, text, overrides, expected):
+        metrics = _metrics(**overrides)
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == expected
+
+    def test_control_case_this_was_never_on_the_list(self):
+        _, text, overrides, expected = _G15_CONTROL_CASE
+        metrics = _metrics(**overrides)
+        out = _sanitize(text, metrics)
+        assert out == expected
+
+    @pytest.mark.parametrize(
+        "name,text,overrides,expected", _G15_APPOSITIVE_NOW_STRANDS_CASES,
+        ids=[n for n, *_ in _G15_APPOSITIVE_NOW_STRANDS_CASES])
+    def test_determiner_led_appositive_now_strands_instead_of_being_consumed(
+        self, name, text, overrides, expected
+    ):
+        metrics = _metrics(**overrides)
+        out = _sanitize(text, metrics)
+        assert out == expected
+
+    @pytest.mark.parametrize(
+        "name,text,overrides,expected", _G15_APPOSITIVE_NOW_STRANDS_CASES,
+        ids=[n for n, *_ in _G15_APPOSITIVE_NOW_STRANDS_CASES])
+    def test_stranded_appositive_case_is_five_pass_stable(self, name, text, overrides, expected):
+        metrics = _metrics(**overrides)
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == expected
+
+
+class TestFrGapDollarFirstUnaffectedByTheDeterminerReversal:
+    """The coupling the brief calls out: `_fr_gap_dollar_first` reuses
+    `_trail_same_claim_lead` (unchanged, NOT `_clause_trail_same_claim_lead`)
+    for its own bare-comma test, so this rule keeps its separate, already-
+    documented reason to tolerate a determiner-led continuation: a bare
+    comma joining a null $0.00 to "an indication of poor fundraising
+    efficiency" is a genuine two-sided fabrication about the SAME figure, not
+    a candidate true-clause subject."""
+
+    def test_determiner_led_dollar_appositive_still_strips(self):
+        metrics = _metrics(total_revenue=141_261, fundraising_expenses=None)
+        text = "The charity spent $0.00, an indication of poor fundraising efficiency."
+        out = _sanitize(text, metrics)
+        assert "$0.00" not in out
+
+    def test_true_dollar_figure_with_hedge_still_survives(self):
+        metrics = _metrics(total_revenue=141_261, fundraising_expenses=None)
+        text = "Total revenue was $141,261, though fundraising efficiency could not be determined."
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_determiner_led_dollar_appositive_is_five_pass_stable(self):
+        metrics = _metrics(total_revenue=141_261, fundraising_expenses=None)
+        text = "The charity spent $0.00, an indication of poor fundraising efficiency."
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+    def test_true_dollar_figure_with_hedge_is_five_pass_stable(self):
+        metrics = _metrics(total_revenue=141_261, fundraising_expenses=None)
+        text = "Total revenue was $141,261, though fundraising efficiency could not be determined."
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == text
+
+
+# Task G15, defect 2: a structural "Label: value" quote lost both the colon
+# AND the value, stranding a bare label asserting nothing ("Fundraising
+# Efficiency"). Fixed with `_label_colon_lead`: at a true sentence start, a
+# digit-free run of text ending in a colon is swallowed as part of the same
+# removal, so the whole "Label: value" unit goes, matching the existing,
+# already-correct behavior of the short form with no trailing phrase.
+_G15_LABEL_COLON_CASES = [
+    (
+        "fundraising_efficiency_label",
+        "Fundraising Efficiency: $0.00 per $1 raised",
+        dict(fundraising_expenses=None),
+        "",
+    ),
+    (
+        "overall_score_and_rating_label",
+        "Overall Score & Rating: 92/100 from Charity Navigator",
+        dict(cn_overall_score=None),
+        "",
+    ),
+    (
+        "working_capital_label",
+        "Working Capital: 5.2 months of reserves",
+        dict(working_capital_ratio=None),
+        "",
+    ),
+]
+
+
+class TestLabelColonValueGoesFullyEmpty:
+    """Task G15, defect 2."""
+
+    @pytest.mark.parametrize(
+        "name,text,overrides,expected", _G15_LABEL_COLON_CASES,
+        ids=[n for n, *_ in _G15_LABEL_COLON_CASES])
+    def test_label_colon_value_removed_as_one_unit(self, name, text, overrides, expected):
+        metrics = _metrics(**overrides)
+        out = _sanitize(text, metrics)
+        assert out == expected
+
+    @pytest.mark.parametrize(
+        "name,text,overrides,expected", _G15_LABEL_COLON_CASES,
+        ids=[n for n, *_ in _G15_LABEL_COLON_CASES])
+    def test_label_colon_value_case_is_five_pass_stable(self, name, text, overrides, expected):
+        metrics = _metrics(**overrides)
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == expected
+
+    def test_short_form_with_no_trailing_phrase_unaffected(self):
+        """No-regression check: the short form ("Label: $0.00" with nothing
+        after) already went fully empty before this task, via the
+        phrase-first rule whose own core literally anchors on "fundraising
+        efficiency" — confirms defect 2's fix didn't change this path."""
+        metrics = _metrics(fundraising_expenses=None)
+        text = "Fundraising Efficiency: $0.00"
+        out = _sanitize(text, metrics)
+        assert out == ""
+
+    def test_colon_true_leads_still_protects_a_genuine_clause_with_its_own_digit(self):
+        """No-regression check for the existing `colon_true_leads` case
+        (`TestFourUnambiguousJoinersAreNowClauseBoundaries`): the text
+        before the colon has its own digit (8.3), so `_label_colon_lead`
+        cannot match there, and the pre-existing colon-as-connector
+        protection for a genuine true clause is exactly what still
+        applies."""
+        metrics = _metrics(cn_overall_score=None, working_capital_ratio=8.3)
+        text = "It holds 8.3 months of working capital: it also scored 87/100 on Charity Navigator."
+        out = _sanitize(text, metrics)
+        assert out == "It holds 8.3 months of working capital."
