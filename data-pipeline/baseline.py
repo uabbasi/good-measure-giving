@@ -1176,9 +1176,24 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # mechanism — since the same test (does what follows read as an
     # appositive of the same claim, or as its own clause?) is what actually
     # distinguishes the two cases for a dash exactly as it does for a comma.
+    #
+    # Task G12 gap 2: `;` and `:` were left as unconditional boundaries when
+    # first added (defect 3), on the reasoning that they "separate
+    # grammatically independent clauses by definition." That's true of the
+    # clause they introduce, but says nothing about whether that clause is
+    # its OWN independent fact or an appositive commentary on the claim just
+    # removed — the exact ambiguity the em dash already has to resolve, via
+    # `_trail_same_claim_lead`, one line above. Leaving `;`/`:` unconditional
+    # meant an appositive tail after either ("scored 87/100 on Charity
+    # Navigator; a truly remarkable result.") survived as a fragment still
+    # describing a score that no longer exists — precisely the failure mode
+    # the em-dash fix exists to prevent. `;`/`:` now get the identical
+    # continuation exception; an independent clause after either (no
+    # `_trail_same_claim_lead` lead-in) still stops the removal exactly as
+    # before, since that case never reaches this alternative at all.
     _clause_trail = (
         rf"(?:(?!\s+and\b)(?:[^.,;:?!—]|(?<=\d)\.(?=\d)|(?<=\d),(?=\d))"
-        rf"|[,—](?=\s*(?:{_trail_same_claim_lead})))*"
+        rf"|[,;:—](?=\s*(?:{_trail_same_claim_lead})))*"
     )
 
     # Working capital  (e.g. "8.3 months of working capital" or "8.3 years of reserves")
@@ -1711,7 +1726,26 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         # they aren't exposed to this defect) — scoping the "and"-exclusion
         # to just the two fundraising rules below fixes the real defect
         # without reopening that.
-        _fr_gap = r"(?:(?!\s+and\b)(?:[^.]|(?<=\d)\.(?=\d)))*"
+        #
+        # Task G12 follow-up (gap 1): excluding "and" isn't enough — a bare
+        # COMMA joining the null-fundraising clause to an unrelated true
+        # dollar clause exposes the same mechanism. `\$\d+\.?\d*` matches a
+        # truncated PREFIX of any dollar figure in the sentence (stopping at
+        # that number's own thousands comma), and because `_fr_gap*` is
+        # greedy, the regex engine tries the LONGEST possible gap first and
+        # only backtracks character-by-character from the end — so it binds
+        # to whichever `$` figure sits FARTHEST away, not nearest, if more
+        # than one is reachable. E.g. "Fundraising efficiency was $0.00,
+        # total revenue reached $141,261 this year." must bind to the
+        # adjacent "$0.00", but the greedy gap (tolerating the comma same as
+        # `_decimal_safe`) instead reaches across it to "$141,261",
+        # truncating to "$141" and dragging the entire true revenue clause
+        # into the removal. Excluding the literal `$` from the gap's
+        # character class makes it impossible to consume past any dollar
+        # sign at all, so the core can only ever bind to the NEAREST one —
+        # exactly the resolution needed, and verified against all three
+        # `REAL_HALLUCINATIONS` entries plus both new pinned cases below.
+        _fr_gap = r"(?:(?!\s+and\b)(?:[^.$]|(?<=\d)\.(?=\d)))*"
         rules.append(
             (
                 rf"{_clause_lead}\$\d+\.?\d*{_fr_gap}(?:{_fr_phrasing}|fundraising\s+efficiency){_clause_trail}",

@@ -2641,6 +2641,74 @@ class TestFundraisingDollarFigureDoesNotBindToAnUnrelatedTrueNumber:
         assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
 
 
+class TestFundraisingBareCommaBindsToNearestDollarFigure:
+    """Gap 1 left open by the task above: excluding "and" from `_fr_gap`
+    stops the reach when the two clauses are "and"-joined, but a BARE COMMA
+    joining them exposes the identical mechanism. `\\$\\d+\\.?\\d*` matches a
+    truncated prefix of any dollar figure in the sentence (stopping at that
+    number's own thousands comma), and because `_fr_gap*` is greedy, the
+    regex engine tries the longest possible gap first and only backtracks
+    from the end of the string — so, left unguarded, it binds to whichever
+    `$` figure is FARTHEST away that still lets the whole pattern match, not
+    the nearest one. Fixed by excluding the literal `$` from `_fr_gap`'s
+    character class, so the gap can never be consumed past any dollar sign:
+    the core can only ever bind to the nearest one."""
+
+    def test_leading_null_fundraising_no_longer_reaches_across_a_comma_to_a_true_figure(self):
+        """The exact destructive case: no "and" at all, just a bare comma.
+        Pre-fix this reached across the adjacent "$0.00" to bind to
+        "$141,261" instead, truncating it to "$141" and destroying the
+        entire true revenue clause."""
+        metrics = _metrics(total_revenue=141_261, fundraising_expenses=None)
+        text = "Fundraising efficiency was $0.00, total revenue reached $141,261 this year."
+        out = _sanitize(text, metrics)
+        assert out == "Total revenue reached $141,261 this year."
+
+    def test_leading_null_fundraising_with_per_dollar_phrasing_still_binds_correctly(self):
+        """Same shape, but the fundraising claim carries its own anchoring
+        phrase ("per $1 raised") ahead of the comma — confirms the fix
+        doesn't depend on that phrasing being absent."""
+        metrics = _metrics(total_revenue=141_261, fundraising_expenses=None)
+        text = (
+            "Fundraising efficiency was $0.00 per $1 raised, total revenue "
+            "reached $141,261 this year."
+        )
+        out = _sanitize(text, metrics)
+        assert out == "Total revenue reached $141,261 this year."
+
+    def test_every_real_hallucination_still_strips_with_the_dollar_exclusion(self):
+        """Re-verifies the fix against all three of `REAL_HALLUCINATIONS`
+        (see `TestFundraisingClaimIsStrippedWhenDataIsMissing`): none of
+        them require the gap to cross a second `$` sign to find the
+        hallucinated one, so excluding `$` from `_fr_gap` must not stop any
+        of them from being stripped."""
+        real_hallucinations = [
+            "Exceptional fundraising efficiency of $0.00 spent per $1 raised [1].",
+            "Operates with high fundraising efficiency, spending $0.00 to raise every $1 in FY2025.",
+            "The charity has a 91.1% program expense ratio, and a $0.00 fundraising efficiency rate.",
+        ]
+        metrics = _metrics(fundraising_expenses=None, total_revenue=604_759,
+                            cn_overall_score=None, cn_accountability_score=None,
+                            cn_financial_score=None, program_expense_ratio=0.911,
+                            working_capital_ratio=None)
+        for text in real_hallucinations:
+            out = _sanitize(text, metrics)
+            assert "$0.00" not in out, f"not stripped: {text!r}"
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "Fundraising efficiency was $0.00, total revenue reached $141,261 this year.",
+            "Fundraising efficiency was $0.00 per $1 raised, total revenue reached "
+            "$141,261 this year.",
+        ],
+    )
+    def test_bare_comma_cases_are_five_pass_stable(self, text):
+        metrics = _metrics(total_revenue=141_261, fundraising_expenses=None)
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4]
+
+
 # Defect 3: semicolon, colon, question mark, and exclamation mark were
 # admitted freely by `_clause_lead`/`_clause_trail`'s character classes, so a
 # removal ran straight through a genuine independent-clause separator (or,
@@ -2811,6 +2879,98 @@ class TestEmDashGetsTheSameAppositiveVsClauseTreatmentAsABareComma:
         metrics = _metrics(cn_overall_score=None, working_capital_ratio=8.3)
         passes = _five_passes(text, metrics)
         assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == expected
+
+
+# Gap 2 left open by the task above: `;` and `:` were made unconditional
+# boundaries (no appositive-continuation exception), on the reasoning that
+# they separate independent clauses by definition. True of the clause they
+# introduce, but that clause can still be an appositive COMMENTING ON the
+# fabricated claim just removed rather than an independent fact of its own —
+# the exact ambiguity the em dash above already resolves via
+# `_trail_same_claim_lead`. Unconditional `;`/`:` boundaries stranded that
+# appositive as a surviving fragment still describing a metric that no
+# longer exists. Both joiners now reuse the identical mechanism the em dash
+# uses.
+_SEMICOLON_COLON_APPOSITIVE_CASES = [
+    (
+        "semicolon_determiner_appositive",
+        "It scored 87/100 on Charity Navigator; a truly remarkable result.",
+        "",
+    ),
+    (
+        "colon_determiner_appositive",
+        "It scored 87/100 on Charity Navigator: the best in its class.",
+        "",
+    ),
+    (
+        "semicolon_possessive_appositive",
+        "It scored 87/100 on Charity Navigator; its highest rating.",
+        "",
+    ),
+    (
+        "colon_one_of_appositive",
+        "It scored 87/100 on Charity Navigator: one of the highest.",
+        "",
+    ),
+]
+
+
+class TestSemicolonAndColonGetTheSameAppositiveVsClauseTreatmentAsEmDash:
+    """Gap 2: `;` and `:` reuse `_trail_same_claim_lead`, exactly like the
+    em dash. Both polarities per joiner: an appositive of the fabricated
+    claim is consumed and removed with it (no surviving fragment); a
+    genuine independent clause on the far side is untouched by this change
+    and still survives (already pinned by
+    `TestFourUnambiguousJoinersAreNowClauseBoundaries`'s
+    `semicolon_true_leads` / `colon_true_leads` / `semicolon_fabricated_leads`
+    / `colon_fabricated_leads` cases, re-asserted here as a no-regression
+    check)."""
+
+    @pytest.mark.parametrize(
+        "name,text,expected", _SEMICOLON_COLON_APPOSITIVE_CASES,
+        ids=[n for n, *_ in _SEMICOLON_COLON_APPOSITIVE_CASES])
+    def test_appositive_of_the_fabricated_claim_is_removed_in_full(self, name, text, expected):
+        metrics = _metrics(cn_overall_score=None)
+        out = _sanitize(text, metrics)
+        assert out == expected
+
+    @pytest.mark.parametrize(
+        "name,text,expected", _SEMICOLON_COLON_APPOSITIVE_CASES,
+        ids=[n for n, *_ in _SEMICOLON_COLON_APPOSITIVE_CASES])
+    def test_appositive_cases_are_five_pass_stable(self, name, text, expected):
+        metrics = _metrics(cn_overall_score=None)
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == expected
+
+    @pytest.mark.parametrize(
+        "text,expected",
+        [
+            (
+                "It scored 87/100 on Charity Navigator; it also holds 8.3 months of working capital.",
+                "It also holds 8.3 months of working capital.",
+            ),
+            (
+                "It holds 8.3 months of working capital; it also scored 87/100 on Charity Navigator.",
+                "It holds 8.3 months of working capital.",
+            ),
+            (
+                "It scored 87/100 on Charity Navigator: it also holds 8.3 months of working capital.",
+                "It also holds 8.3 months of working capital.",
+            ),
+            (
+                "It holds 8.3 months of working capital: it also scored 87/100 on Charity Navigator.",
+                "It holds 8.3 months of working capital.",
+            ),
+        ],
+    )
+    def test_independent_clause_still_survives_no_regression(self, text, expected):
+        """Re-asserts the gap-3 (task G12) semicolon/colon independent-clause
+        cases still pass unchanged now that `;`/`:` have a continuation
+        exception — "it" never appears in `_trail_same_claim_lead`, so this
+        polarity never reaches the new alternative at all."""
+        metrics = _metrics(cn_overall_score=None, working_capital_ratio=8.3)
+        out = _sanitize(text, metrics)
+        assert out == expected
 
 
 class TestCapitalizationRepairSeesThroughCitationMarkup:
