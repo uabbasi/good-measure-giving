@@ -5046,3 +5046,78 @@ class TestCnBridgingGuardToleratesAHedgeBeforeTheOtherMetricNumber:
         expected = "It scored 87 out of 100, with an accountability rating of 91.0/100, from Charity Navigator."
         passes = _five_passes(text, metrics)
         assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == expected
+
+
+class TestOtherMetricClaimCoversEveryFamilyTheFunctionKnows:
+    """Team-lead follow-up review: `_other_metric_claim` was originally
+    built from only four families (accountability/financial/working-
+    capital/program-expense) even though the CN rules' gap can bridge over
+    ANY of this function's other metrics. Audited against every family —
+    fundraising, AMAL, founded year, and zakat-eligibility language — and
+    confirmed three of the four were ALSO vulnerable (fundraising, AMAL,
+    founded year); only zakat needed no fix (it already worked once the
+    other three were closed, since `_metric_noun_boundary` — now reused
+    wholesale for `_other_metric_noun` — already carried "zakat" as one of
+    its existing entries)."""
+
+    def test_fundraising_dollar_phrasing_survives_between_score_and_navigator(self):
+        """The exact case from the follow-up review: a bare "$X per $1
+        raised" phrasing (no literal word "fundraising" or "efficiency" in
+        it at all) used to destroy the true fundraising figure."""
+        text = "It scored 87 out of 100, spends $0.05 per $1 raised, and is from Charity Navigator."
+        metrics = _metrics(cn_overall_score=None, fundraising_expenses=30_000, total_revenue=600_000)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_fundraising_dollar_phrasing_survival_is_five_pass_stable(self):
+        text = "It scored 87 out of 100, spends $0.05 per $1 raised, and is from Charity Navigator."
+        metrics = _metrics(cn_overall_score=None, fundraising_expenses=30_000, total_revenue=600_000)
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == text
+
+    def test_amal_score_survives_between_score_and_navigator(self):
+        """AMAL uses the identical "/100" format the null-CN rule's own
+        bare-number core anchors on — the same "wrong anchor" hazard as
+        accountability/financial, not just a bridging one."""
+        text = "It scored 87 out of 100, with an AMAL score of 75/100, from Charity Navigator."
+        metrics = _metrics(cn_overall_score=None)
+        out = _sanitize_amal(text, metrics, amal_score=75)
+        assert out == text
+
+    def test_amal_score_survival_is_five_pass_stable(self):
+        text = "It scored 87 out of 100, with an AMAL score of 75/100, from Charity Navigator."
+        metrics = _metrics(cn_overall_score=None)
+        passes = [text]
+        for _ in range(5):
+            passes.append(_sanitize_amal(passes[-1], metrics, amal_score=75))
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == text
+
+    def test_founded_year_survives_between_score_and_navigator(self):
+        text = "It scored 87 out of 100, founded in 1985, from Charity Navigator."
+        metrics = _metrics(cn_overall_score=None, founded_year=1985)
+        out = _sanitize(text, metrics)
+        assert out == text
+
+    def test_founded_year_survival_is_five_pass_stable(self):
+        text = "It scored 87 out of 100, founded in 1985, from Charity Navigator."
+        metrics = _metrics(cn_overall_score=None, founded_year=1985)
+        passes = _five_passes(text, metrics)
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == text
+
+    def test_true_zakat_eligible_claim_survives_between_score_and_navigator(self):
+        """For a ZAKAT-ELIGIBLE charity (not SADAQAH-ELIGIBLE), a
+        zakat-eligible mention is a TRUE claim, not fabricated language to
+        strip — a positive case showing the reused `_metric_noun_boundary`
+        vocabulary (which already carried "zakat") protects it too."""
+        text = "It scored 87 out of 100, is zakat-eligible under its own criteria, from Charity Navigator."
+        metrics = _metrics(cn_overall_score=None)
+        out = _sanitize(text, metrics, wallet_tag="ZAKAT-ELIGIBLE")
+        assert out == text
+
+    def test_true_zakat_eligible_claim_survival_is_five_pass_stable(self):
+        text = "It scored 87 out of 100, is zakat-eligible under its own criteria, from Charity Navigator."
+        metrics = _metrics(cn_overall_score=None)
+        passes = [text]
+        for _ in range(5):
+            passes.append(_sanitize(passes[-1], metrics, wallet_tag="ZAKAT-ELIGIBLE"))
+        assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == text

@@ -1224,9 +1224,21 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     """
 
     # ── Build the ground-truth lookup ──
-    # Each entry: (regex pattern, correct replacement, remove_if_na)
+    # Each entry: (regex pattern, correct replacement, remove_if_na, guard)
     # For N/A metrics the pattern is used to strip the enclosing sentence.
-    rules: list[tuple[str, str | Callable[["re.Match[str]"], str] | None, bool]] = []
+    # `guard` (Task G18) is a separate, explicitly-typed field — not the
+    # `replacement` slot reused — so a removal rule's per-match guard
+    # (`Callable[[Match], bool]`) can never be confused with a correction
+    # rule's replacement (`Callable[[Match], str]`); every removal rule
+    # that doesn't need one passes `None` here.
+    rules: list[
+        tuple[
+            str,
+            str | Callable[["re.Match[str]"], str] | None,
+            bool,
+            Callable[["re.Match[str]"], bool] | None,
+        ]
+    ] = []
 
     # Removal rules scan "everything up to the sentence boundary" using a
     # `[^.]*`-shaped run. A literal `.` also shows up mid-number ("91.1%",
@@ -1721,6 +1733,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_wc_num_unit}\s+(?:of\s+)?{_wc_noun}",
                 correct_wc + " of working capital",
                 False,
+                None,
             )
         )
         # Pattern 2: "holds/maintains/has X years of expenses". Captures and
@@ -1742,6 +1755,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"(holds?|maintains?|has)\s+{_wc_num_unit}\s+(?:of\s+)?{_wc_noun}",
                 lambda m: _match_case(m, f"{m.group(1)} {correct_wc} of working capital"),
                 False,
+                None,
             )
         )
         # Pattern 3: "X years' worth of operating"
@@ -1750,6 +1764,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_wc_num_unit}['\u2019]?\s*worth\s+of\s+{_wc_noun}",
                 correct_wc + " of working capital",
                 False,
+                None,
             )
         )
     else:
@@ -1759,6 +1774,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}{_wc_num_unit}\s+(?:of\s+)?{_wc_noun}{_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
         rules.append(
@@ -1766,6 +1782,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}(?:holds?|maintains?|has)\s+{_wc_num_unit}\s+(?:of\s+)?{_wc_noun}{_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
 
@@ -1781,6 +1798,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 r"\d+\.?\d*\s*%\s+(?:of\s+)?(?:program\s+(?:expense|spending))",
                 f"{correct_ratio} program expense",
                 False,
+                None,
             )
         )
         # Pattern 2: program expense ratio of <number>%. Case-preserving (see
@@ -1793,6 +1811,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"program\s+(?:expense\s+)?ratio\s+(?:of\s+{_hedge_gap})?\d+\.?\d*\s*%",
                 _preserve_case(f"program expense ratio of {correct_ratio}"),
                 False,
+                None,
             )
         )
         # Pattern 3: directs/allocates X% to programs/programmatic. Captures
@@ -1817,6 +1836,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"(?:directs?|allocates?|dedicates?|channels?|devotes?)\s+{_hedge_gap}\d+\.?\d*\s*%\s+(?:of\s+\w+\s+)?(?:to|toward)\s+(programs?|programmatic\s+(?:work|activities|expenses?))",
                 lambda m: _match_case(m, f"directs {correct_ratio} to {m.group(1)}"),
                 False,
+                None,
             )
         )
         # Pattern 4: X% of expenses/budget/spending go to programs
@@ -1825,6 +1845,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 r"\d+\.?\d*\s*%\s+of\s+(?:its\s+)?(?:expenses?|budget|spending|revenue|funds?)\s+(?:goes?|go|is\s+directed|is\s+allocated)\s+(?:to|toward)\s+(?:programs?|programmatic)",
                 f"{correct_ratio} of expenses goes to programs",
                 False,
+                None,
             )
         )
         # Pattern 5: spends X% on/for programs. The removal-side rule for
@@ -1838,6 +1859,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"spends?\s+{_hedge_gap}\d+\.?\d*\s*%\s+(?:on|for)\s+(?:programs?|programmatic\s+(?:work|activities|expenses?))",
                 _preserve_case(f"spends {correct_ratio} on programs"),
                 False,
+                None,
             )
         )
     else:
@@ -1851,6 +1873,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}program\s+(?:expense\s+)?ratio\s+(?:of\s+{_hedge_gap})?\d+\.?\d*\s*%{_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
         rules.append(
@@ -1858,6 +1881,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}(?:directs?|allocates?)\s+{_hedge_gap}\d+\.?\d*\s*%\s+(?:of\s+\w+\s+)?(?:to|toward)\s+(?:programs?|programmatic){_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
         # Number-BEFORE-metric-name variants of the same fabrication (e.g.
@@ -1871,6 +1895,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}\d+\.?\d*\s*%\s+program\s+(?:expense\s+)?ratio{_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
         rules.append(
@@ -1878,6 +1903,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}spends?\s+{_hedge_gap}\d+\.?\d*\s*%\s+(?:on|for)\s+(?:programs?|programmatic\s+(?:work|activities|expenses?)){_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
 
@@ -2029,7 +2055,44 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # over one) are guarded separately below via `_removed_span_joints`'s
     # optional per-match `guard`, reusing the exact backward/forward checks
     # this function already has for that question.
-    _other_metric_noun = rf"(?:{_acc_name}|{_fin_name}|{_wc_noun}|programs?|programmatic)"
+    #
+    # Audited against every metric family this function knows, not just
+    # the ones the first repros happened to name. First pass only listed
+    # working capital/program expense/accountability/financial, reasoning
+    # by analogy that AMAL, founded year, and zakat "don't happen to graze"
+    # the CN rules' anchors in practice — checked that claim empirically
+    # and it was wrong for two of the three:
+    #   "It scored 87 out of 100, with an AMAL score of 75/100, from
+    #   Charity Navigator." -> "It scored 87 out of 100."          true AMAL score destroyed
+    #   "It scored 87 out of 100, founded in 1985, from Charity
+    #   Navigator." -> ""                              true founding year destroyed, whole sentence gone
+    #   "It scored 87 out of 100, operating since 1985, from Charity
+    #   Navigator." -> ""                              same, via the "operating since" phrasing
+    # `_metric_noun_boundary` (defined above, already the closed set
+    # `_hedge_gap`/`_guard_gap` use for the identical "don't cross into a
+    # different metric's own phrase" reason) already carries every one of
+    # these nouns — "amal", "founded", "established", "incorporated",
+    # "started", "began", "operating", "serving", "active", "working",
+    # "zakat" — audited there once already, so reused wholesale here
+    # instead of hand-picking a narrower list a second time. Including its
+    # "navigator" alternative is harmless: the gap this set guards is
+    # always positioned immediately before/after the literal `Charity\s+
+    # Navigator` text in the pattern itself, so the gap was never going to
+    # need to consume that word as filler regardless.
+    # Fundraising is the one family `_metric_noun_boundary` only partly
+    # covers — it has the bare words "fundraising"/"efficiency", but the
+    # repro'd shape ("spends $0.05 per $1 raised") uses neither word at
+    # all. `_fr_phrasing` (the fundraising rules' own dollar-phrasing
+    # patterns) closes that; its definition is moved up here from where
+    # the fundraising rules build themselves, further down, since it now
+    # needs to exist before the CN rules are built too. Confirmed
+    # vulnerable without it: "It scored 87 out of 100, spends $0.05 per $1
+    # raised, and is from Charity Navigator." destroyed the true
+    # fundraising figure.
+    # CN overall itself is the only family deliberately left out — it's
+    # this rule's own subject, not "another" metric.
+    _fr_phrasing = r"(?:per\s+\$?1\s+raised|to\s+raise\s+(?:\$1|each\s+dollar|a\s+dollar)|per\s+dollar\s+raised|for\s+every\s+dollar\s+raised)"
+    _other_metric_noun = rf"(?:{_metric_noun_boundary}|{_fr_phrasing})"
     _other_metric_claim = (
         rf"(?:{_other_metric_noun})\b"
         rf"|\d+\.?\d*\s*(?:/\s*100|out\s+of\s+100|%)\s*(?:of\s+|to\s+|for\s+|on\s+|toward\s+)?(?:{_other_metric_noun})\b"
@@ -2081,9 +2144,12 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # used as a VERB, not a noun. Confirmed empirically: reusing it here
     # broke a real, pinned test — "Did it score 87/100 on Charity
     # Navigator?" read "it score" as NAME="it" and declined to remove the
-    # whole bare, unnamed claim. `_other_metric_noun`'s vocabulary
-    # (accountability/financial/working-capital/program) can never match a
-    # pronoun, so it doesn't have this failure mode.
+    # whole bare, unnamed claim. `_other_metric_noun`'s vocabulary is a
+    # CLOSED set of specific metric words, never a pronoun, so it doesn't
+    # have this failure mode — confirmed this also closes the AMAL variant
+    # of the same "wrong anchor" hazard ("with an AMAL score of 75/100,
+    # from Charity Navigator" used to destroy the true AMAL score the same
+    # way accountability/financial did).
     # Task G14's `_hedge_gap` (a bounded, metric-noun-excluding word gap)
     # is reused here too — hand-probing found a bare "of\s+|is\s+|was\s+"
     # connector defeated by the exact same hedge-word shape every other
@@ -2091,7 +2157,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # rating of ROUGHLY 91.0/100" reached the string end without matching,
     # so the guard wrongly declined to protect a real accountability value).
     _other_metric_lead_re = re.compile(
-        rf"(?:{_acc_name}|{_fin_name})\s+(?:score|rating|ratio)\s+(?:(?:of|is|was)\s+{_hedge_gap})?$",
+        rf"(?:{_other_metric_noun})\s+(?:score|rating|ratio)\s+(?:(?:of|is|was)\s+{_hedge_gap})?$",
         re.IGNORECASE,
     )
     _other_metric_trail_re = re.compile(
@@ -2152,6 +2218,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_number_not_malformed}\d+\.?\d*/100\s+(from\s+|by\s+|on\s+|score\s+(?:from\s+|on\s+)?)?(?:Charity\s+Navigator)",
                 _correct_cn_overall_number_before,
                 False,
+                None,
             )
         )
         # "Charity Navigator ... score/rating of X". Task G14: `_hedge_gap`
@@ -2161,6 +2228,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"(?:Charity\s+Navigator)\s+(?:overall\s+)?(?:score|rating)\s+(?:of\s+{_hedge_gap})?\d+\.?\d*(?:/100)?",
                 f"Charity Navigator score of {correct_cn}",
                 False,
+                None,
             )
         )
         # "scored X out of 100 on Charity Navigator". Case-preserving (see
@@ -2172,6 +2240,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+{_hedge_gap})?\d+\.?\d*\s+(?:out\s+of\s+100|/100)\s+(?:on|from|by)\s+Charity\s+Navigator",
                 _preserve_case(f"scored {correct_cn} on Charity Navigator"),
                 False,
+                None,
             )
         )
     else:
@@ -2188,15 +2257,17 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
         rules.append(
             (
                 rf"{_cn_number_lead}(\d+\.?\d*/100){_cn_gap}Charity\s+Navigator{_clause_trail}",
-                _bare_number_not_named_before,
+                None,
                 True,
+                _bare_number_not_named_before,
             )
         )
         rules.append(
             (
                 rf"{_clause_lead}Charity\s+Navigator{_cn_gap}(\d+\.?\d*/100){_clause_trail}",
-                _bare_number_not_named_after,
+                None,
                 True,
+                _bare_number_not_named_after,
             )
         )
         # "scored/rates X out of 100 ... Charity Navigator". Task G14:
@@ -2206,6 +2277,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+{_hedge_gap})?\d+\.?\d*\s+out\s+of\s+100{_cn_gap}Charity\s+Navigator{_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
         # "Charity Navigator ... scored/rates X"
@@ -2221,6 +2293,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}Charity\s+Navigator{_cn_gap}(?:scores?d?|rates?d?|receives?d?)\s+(?:a\s+{_hedge_gap})?\d+(?:\.\d+)?(?:\s+out\s+of\s+100|/100)?{_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
         # "perfect score/rating ... Charity Navigator" or vice versa. This is
@@ -2233,6 +2306,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}(?:perfect|top|highest)\s+(?:score|rating|marks?){_cn_gap}Charity\s+Navigator{_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
         rules.append(
@@ -2240,6 +2314,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}Charity\s+Navigator{_cn_gap}(?:perfect|top|highest)\s+(?:score|rating|marks?){_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
 
@@ -2293,6 +2368,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"({_acc_name})\s+(score|rating)\s+(?:of\s+{_hedge_gap})?{_number_not_malformed}\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?",
                 lambda m: _match_case(m, f"{m.group(1)} {m.group(2)} of {correct_acc}"),
                 False,
+                None,
             )
         )
         # Pattern 2: X/100 <accountability/governance/& finance>
@@ -2304,6 +2380,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_number_not_malformed}\d+(?:\.\d+)?/100\s+({_acc_name})\s+(score|rating)",
                 lambda m: f"{correct_acc} {m.group(1)} {m.group(2)}",
                 False,
+                None,
             )
         )
     else:
@@ -2315,6 +2392,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}(?:{_acc_name})\s+(?:score|rating)\s+(?:of\s+{_hedge_gap})?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?{_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
         rules.append(
@@ -2322,6 +2400,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}\d+(?:\.\d+)?/100\s+(?:{_acc_name})\s+(?:score|rating){_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
     if cn_financial is not None:
@@ -2337,6 +2416,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"({_fin_name}\s+(?:score|rating))\s+(?:of\s+{_hedge_gap})?{_number_not_malformed}\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?",
                 lambda m: _match_case(m, f"{m.group(1)} of {correct_fin}"),
                 False,
+                None,
             )
         )
     else:
@@ -2347,6 +2427,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}{_fin_name}\s+(?:score|rating)\s+(?:of\s+{_hedge_gap})?\d+(?:\.\d+)?(?:/100|\s+out\s+of\s+100|%)?{_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
     # Strip "X-star rating" if no CN score at all
@@ -2356,13 +2437,17 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}\d+-?\s*star\s+(?:rating|charity){_cn_gap}Charity\s+Navigator{_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
 
     # Fundraising efficiency
     # LLM variants: "per dollar raised", "to raise each dollar", "for every dollar",
     # "fundraising costs of $X.XX"
-    _fr_phrasing = r"(?:per\s+\$?1\s+raised|to\s+raise\s+(?:\$1|each\s+dollar|a\s+dollar)|per\s+dollar\s+raised|for\s+every\s+dollar\s+raised)"
+    # `_fr_phrasing` itself is defined above, alongside `_other_metric_noun`
+    # (Task G18) — it needed to exist before the CN section builds its own
+    # rules, so the fundraising family could be included in what "another
+    # metric's claim" means there too.
     if metrics.fundraising_expenses is not None and metrics.total_revenue and metrics.total_revenue > 0:
         correct_fr = _fundraising_ratio_str(metrics.fundraising_expenses, metrics.total_revenue)
         # Pattern 1: $X.XX per $1 raised / to raise $1 / per dollar raised
@@ -2377,6 +2462,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"<?\$\d+\.?\d*\s+{_fr_phrasing}",
                 f"{correct_fr} per $1 raised",
                 False,
+                None,
             )
         )
         # Pattern 2: "fundraising costs/expenses of $X.XX per dollar".
@@ -2388,6 +2474,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 r"fundraising\s+(?:costs?|expenses?)\s+(?:of\s+)?\$\d+\.?\d*\s+per\s+(?:dollar|every\s+dollar)",
                 _preserve_case(f"fundraising costs of {correct_fr} per dollar"),
                 False,
+                None,
             )
         )
     else:
@@ -2517,6 +2604,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}\$\d+\.?\d*{_fr_gap_dollar_first}(?:{_fr_phrasing}|fundraising\s+efficiency){_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
         # No suffix follows the dollar amount here, so it's the last thing
@@ -2537,6 +2625,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}fundraising\s+efficiency{_fr_gap}\$\d+(?:\.\d+)?{_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
         # "fundraising costs/expenses of $X.XX per dollar" (no "raised" suffix,
@@ -2546,6 +2635,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}fundraising\s+(?:costs?|expenses?)\s+(?:of\s+)?\$\d+\.?\d*\s+per\s+(?:dollar|every\s+dollar){_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
 
@@ -2557,6 +2647,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 r"\d+\.?\d*/100\s+(?:AMAL|Amal|amal)",
                 f"{correct_amal} AMAL",
                 False,
+                None,
             )
         )
         # Task G14: `_hedge_gap` after "of" tolerates a bounded hedge
@@ -2566,6 +2657,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"(?:AMAL|Amal|amal)\s+score\s+(?:of\s+{_hedge_gap})?\d+\.?\d*(?:/100)?",
                 f"AMAL score of {correct_amal}",
                 False,
+                None,
             )
         )
     else:
@@ -2587,6 +2679,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}(?:AMAL|Amal|amal)\s+score\s+(?:of\s+{_hedge_gap})?\d+\.?\d*(?:/100)?{_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
         rules.append(
@@ -2594,6 +2687,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}\d+\.?\d*/100\s+(?:AMAL|Amal|amal){_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
         rules.append(
@@ -2601,6 +2695,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}scored\s+{_hedge_gap}\d+\.?\d*\s+on\s+the\s+(?:AMAL|Amal|amal)\s+index{_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
 
@@ -2617,6 +2712,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}{_zakat_keywords}{_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
 
@@ -2634,6 +2730,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"(?:founded|established|incorporated|started|began(?:\s+operations)?)\s+in\s+{_hedge_gap}\d{{4}}",
                 _preserve_case(f"founded in {founded_year}"),
                 False,
+                None,
             )
         )
         # "since XXXX" when referring to founding (e.g. "operating since 1985").
@@ -2644,6 +2741,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"(?:operating|serving|active|working)\s+since\s+{_hedge_gap}\d{{4}}",
                 _preserve_case(f"operating since {founded_year}"),
                 False,
+                None,
             )
         )
     else:
@@ -2669,6 +2767,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}(?:founded|established|incorporated|started|began(?:\s+operations)?)\s+in\s+{_hedge_gap}\d{{4}}{_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
         rules.append(
@@ -2676,6 +2775,7 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"{_clause_lead}(?:operating|serving|active|working)\s+since\s+{_hedge_gap}\d{{4}}{_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
         # "a 1985 organization/nonprofit/charity" — number-before-noun
@@ -2707,19 +2807,14 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 rf"(?=[.,;:?!—]|\s+and\b|$){_clause_trail}",
                 None,
                 True,
+                None,
             )
         )
 
     # ── Apply rules to every string in the narrative ──
     def _apply_rules(text: str) -> str:
-        for pattern, replacement, is_removal in rules:
+        for pattern, replacement, is_removal, guard in rules:
             if is_removal:
-                # Task G18: for a removal rule, `replacement` is normally
-                # unused (always `None`) — repurposed here as an optional
-                # per-match `guard` when it's callable, rather than adding a
-                # fourth tuple element to every one of this function's
-                # removal rules just for the two that need it.
-                guard = replacement if callable(replacement) else None
                 stripped, joints = _removed_span_joints(pattern, text, guard=guard)
                 # Only run the repair pass when this rule actually removed
                 # something. Every rule runs over every string field, so most
