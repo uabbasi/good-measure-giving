@@ -640,10 +640,17 @@ class BBBCollector(BaseCollector):
                 # Use actual status text from page as fallback
                 data["status_text"] = status_text
                 status_lower = status_text.lower()
-                if "meets standards" in status_lower and "does not" not in status_lower:
-                    data["meets_standards"] = True
-                elif "does not meet" in status_lower:
+                # Negatives are tested FIRST and cover both of BBB's phrasings.
+                # The live pages render a failure as "Standards Not Met", which
+                # is not a substring of "does not meet" — so the old ordering
+                # left meets_standards None for 5 charities BBB had actually
+                # FAILED, making them indistinguishable from ones it never
+                # reviewed. A failure must never be able to fall through to a
+                # pass or to silence.
+                if "standards not met" in status_lower or "does not meet" in status_lower:
                     data["meets_standards"] = False
+                elif "meets standards" in status_lower:
+                    data["meets_standards"] = True
                 elif "did not disclose" in status_lower:
                     data["meets_standards"] = None
                 elif "review in progress" in status_lower:

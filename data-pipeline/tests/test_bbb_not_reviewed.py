@@ -54,3 +54,43 @@ class TestNotReviewedIsAVerifiedNegative:
         result = c.parse("<html><body><h1>Example</h1></body></html>", "12-3456789")
         assert result.success is True
         assert result.parsed_data["bbb_profile"].get("not_reviewed") is False
+
+
+class TestStandardsNotMetIsAVerdict:
+    """BBB renders a failure as "Standards Not Met". None of the text-branch
+    checks matched that wording — "does not meet" is not a substring of
+    "standards not met" — so status_text was set while meets_standards stayed
+    None. Result: 5 charities BBB judged to FAIL were stored as unevaluated,
+    indistinguishable downstream from a charity BBB never reviewed.
+    """
+
+    def _status(self, label, classes="evaluation-status"):
+        from bs4 import BeautifulSoup
+        from src.collectors.bbb_collector import BBBCollector
+        html = (f'<div class="{classes}"><span class="status-value">{label}</span></div>')
+        soup = BeautifulSoup(html, "html.parser")
+        return BBBCollector()._extract_overall_status(soup)
+
+    def test_standards_not_met_is_recorded_as_a_failure(self):
+        d = self._status("Standards Not Met")
+        assert d["meets_standards"] is False
+        assert d["status_text"] == "Standards Not Met"
+
+    def test_does_not_meet_standards_phrasing_still_works(self):
+        d = self._status("Does Not Meet Standards")
+        assert d["meets_standards"] is False
+
+    def test_meets_standards_is_unaffected(self):
+        d = self._status("Meets Standards")
+        assert d["meets_standards"] is True
+
+    def test_did_not_disclose_has_no_verdict_but_keeps_its_status(self):
+        """Non-participation is neither pass nor fail — but it must not vanish."""
+        d = self._status("Did Not Disclose")
+        assert d["meets_standards"] is None
+        assert d["status_text"] == "Did Not Disclose"
+
+    def test_review_in_progress_has_no_verdict_but_keeps_its_status(self):
+        d = self._status("Review in Progress")
+        assert d["meets_standards"] is None
+        assert d["status_text"] == "Review in Progress"
