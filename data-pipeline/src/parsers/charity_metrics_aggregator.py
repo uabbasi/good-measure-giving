@@ -133,6 +133,66 @@ def _first_non_none(*values):
     return None
 
 
+EXPENSE_COMPONENTS = ("program_expenses", "admin_expenses", "fundraising_expenses")
+
+# A component reported as 0 is believed only if the others close against
+# total_expenses to within this fraction. 25 of the 35 affected charities close
+# at exactly 0.00%; the widest genuine rounding gap observed was 0.12%.
+ZERO_CORROBORATION_TOLERANCE = 0.02
+
+
+def zero_expense_component_is_corroborated(
+    field: str,
+    components: dict,
+    total_expenses: Optional[float],
+    tolerance: float = ZERO_CORROBORATION_TOLERANCE,
+) -> bool:
+    """Whether a functional-expense component reported as 0 is a genuine zero.
+
+    Charity Navigator emits 0 both for a real zero and for a figure the filing
+    never broke out, and the value alone cannot distinguish them. Cross-source
+    resolution does not work here: ProPublica does not expose the Part IX
+    functional-expense breakdown for these filings, so all 35 affected
+    charities have `fundraising_expenses=None` there.
+
+    Arithmetic does distinguish them. If the component truly is 0, its siblings
+    sum to total_expenses; if the 0 stands in for an unreported figure, they
+    fall short by exactly that figure. Measured across the 35: 25 close
+    exactly, 5 leave a residual (EIN 26-3531888 leaves 94% of expenses
+    unaccounted), 5 publish no breakdown to test against.
+
+    Returns True only on positive corroboration. A shortfall, an overshoot
+    (siblings exceeding the total — its own inconsistency), a missing sibling,
+    or an absent total all return False, and the caller then stores None rather
+    than publishing a "$0.00" it cannot stand behind. That matches the
+    pipeline's standing rule that missing data stays NULL.
+
+    KNOWN LIMIT: closure is necessary but not sufficient. If a source derived
+    its total_expenses BY SUMMING these components, the check is tautological
+    and corroborates nothing. We cannot currently falsify that per-source —
+    ProPublica reports a different fiscal year for the affected charities, so
+    its independently-filed total is not comparable. The evidence that the
+    check does discriminate is that a real case fails it (EIN 26-3531888,
+    94% of expenses unaccounted); a derived total would close every time.
+    Revisit if a same-year second source for total_expenses becomes available.
+    """
+    if components.get(field) != 0:
+        return False
+    if not total_expenses or total_expenses <= 0:
+        return False
+
+    sibling_total = 0.0
+    for sibling in EXPENSE_COMPONENTS:
+        if sibling == field:
+            continue
+        value = components.get(sibling)
+        if value is None:
+            return False
+        sibling_total += value
+
+    return abs(total_expenses - sibling_total) / total_expenses <= tolerance
+
+
 def _compute_cash_adjusted_ratio(program_expenses: float, total_expenses: float, noncash: float) -> Optional[float]:
     """GIK-adjusted program ratio, clamped to [0.0, 1.0], or None when the
     ratio is not a measurable signal.
@@ -1699,6 +1759,32 @@ class CharityMetricsAggregator:
             # Fallback tax year from CN if PP didn't provide one
             if metrics_data.get("financial_data_tax_year") is None and cn_fiscal_year is not None:
                 metrics_data["financial_data_tax_year"] = cn_fiscal_year
+
+        # ── Corroborate zero-valued expense components ──
+        # The income statement is now final. A component reported as 0 is
+        # ambiguous at the source: Charity Navigator emits 0 both for a genuine
+        # zero and for a figure the filing never broke out. Publishing the
+        # ambiguous case produced donor-facing claims like "spends $0.00 to
+        # raise every $1" for organizations that simply had not itemized.
+        #
+        # Cross-source resolution is unavailable — ProPublica does not expose
+        # the Part IX breakdown for these filings — so corroboration is
+        # arithmetic: the siblings must close against total_expenses. An
+        # uncorroborated 0 is stored as None, which is honest (missing data
+        # stays NULL) and lets the narrative sanitizer strip the claim instead
+        # of restating a number we cannot stand behind.
+        for _component in EXPENSE_COMPONENTS:
+            if metrics_data.get(_component) != 0:
+                continue
+            if zero_expense_component_is_corroborated(
+                _component, metrics_data, metrics_data.get("total_expenses")
+            ):
+                continue
+            metrics_data[_component] = None
+            logger.info(
+                f"Uncorroborated zero for {_component} on {ein}: siblings do not close "
+                f"against total_expenses={metrics_data.get('total_expenses')!r} — storing None"
+            )
 
         # Set financial_data_source if not set yet
         if not metrics_data.get("financial_data_source"):
