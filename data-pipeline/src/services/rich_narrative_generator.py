@@ -616,6 +616,35 @@ class RichNarrativeGenerator:
         if cn_data:
             cn = cn_data.get("cn_profile", {})
             cn_is_rated = cn.get("cn_is_rated") is True
+            # Income-statement figures are elected from ONE fiscal-year-coherent
+            # source (charity_metrics_aggregator._INCOME_STMT_FIELDS). When
+            # ProPublica wins that election, CN's figures describe a fiscal year
+            # we do not publish — yet they were still handed to the LLM, which
+            # would then write a correctly-cited claim about a number the
+            # pipeline had deliberately declined to use.
+            #
+            # SCOPE: this is NOT the cause of the 34 live "$0.00 per $1 raised"
+            # narratives. That was checked: 27 of those 35 charities have
+            # dataSource=charity_navigator, i.e. CN WON the election, so no
+            # year mismatch was involved. Their orphaned attribution
+            # (sourceAttribution says CN reported 0, elected value is None)
+            # points at two disagreeing profile snapshots rather than the
+            # fiscal-year election, and remains unexplained. This guard closes
+            # a real adjacent hole; it does not close that one.
+            _elected = self.charity_data_repo.get(ein) or {}
+            cn_financials_publishable = self._cn_financials_match_elected_year(
+                cn.get("fiscal_year"), _elected.get("financial_data_tax_year")
+            )
+            if not cn_financials_publishable:
+                logger.info(
+                    f"Withholding CN income-statement figures from narrative prompt for {ein}: "
+                    f"CN fiscal_year={cn.get('fiscal_year')} != elected "
+                    f"tax_year={_elected.get('financial_data_tax_year')}"
+                )
+
+            def _fy_bound(value: Any) -> Any:
+                """Fiscal-year-bound CN figure: offered only if CN won the year."""
+                return value if cn_financials_publishable else None
             data["cn_ratings"] = {
                 # Rating-state flags
                 "cn_is_rated": cn_is_rated,
@@ -629,22 +658,22 @@ class RichNarrativeGenerator:
                 "leadership_score": cn.get("leadership_score") if cn_is_rated else None,
                 # Special badges
                 "beacons": cn.get("beacons", []) if cn_is_rated else [],
-                # Efficiency metrics
-                "fundraising_efficiency": cn.get("fundraising_efficiency"),
-                "working_capital_ratio": cn.get("working_capital_ratio"),
-                # Expense ratios
-                "program_expense_ratio": cn.get("program_expense_ratio"),
-                "admin_expense_ratio": cn.get("admin_expense_ratio"),
-                "fundraising_expense_ratio": cn.get("fundraising_expense_ratio"),
+                # Efficiency metrics (fiscal-year-bound — see _fy_bound above)
+                "fundraising_efficiency": _fy_bound(cn.get("fundraising_efficiency")),
+                "working_capital_ratio": _fy_bound(cn.get("working_capital_ratio")),
+                # Expense ratios (fiscal-year-bound)
+                "program_expense_ratio": _fy_bound(cn.get("program_expense_ratio")),
+                "admin_expense_ratio": _fy_bound(cn.get("admin_expense_ratio")),
+                "fundraising_expense_ratio": _fy_bound(cn.get("fundraising_expense_ratio")),
                 # Governance
                 "independent_board_percentage": cn.get("independent_board_percentage"),
                 "board_size": cn.get("board_size"),
                 # Leadership compensation
                 "ceo_name": cn.get("ceo_name"),
                 "ceo_compensation": cn.get("ceo_compensation"),
-                # Financial totals
-                "total_revenue": cn.get("total_revenue"),
-                "total_expenses": cn.get("total_expenses"),
+                # Financial totals (fiscal-year-bound)
+                "total_revenue": _fy_bound(cn.get("total_revenue")),
+                "total_expenses": _fy_bound(cn.get("total_expenses")),
                 "fiscal_year": cn.get("fiscal_year"),
             }
 
@@ -679,6 +708,28 @@ class RichNarrativeGenerator:
                 }
 
         return data
+
+    @staticmethod
+    def _cn_financials_match_elected_year(cn_fiscal_year: Any, elected_tax_year: Any) -> bool:
+        """Whether CN's income-statement figures describe the year we publish.
+
+        The aggregator elects income-statement fields from ONE fiscal-year-
+        coherent source. When ProPublica wins and CN reports a different year,
+        CN's revenue/expense figures and every ratio derived from them belong
+        to a year absent from the published record — so they must not reach the
+        narrative prompt, or the LLM will write a correctly-cited claim about a
+        number the pipeline deliberately declined to use.
+
+        Permissive when either year is unknown: only a *provable* mismatch
+        withholds data, matching the equivalent guard in
+        ``baseline.sanitize_narrative_metrics``.
+        """
+        if cn_fiscal_year is None or elected_tax_year is None:
+            return True
+        try:
+            return int(cn_fiscal_year) == int(elected_tax_year)
+        except (TypeError, ValueError):
+            return True
 
     def _get_raw_source(self, ein: str, source: str) -> Optional[dict]:
         """Get parsed data from a specific raw data source."""
