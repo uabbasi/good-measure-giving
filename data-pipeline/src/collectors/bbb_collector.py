@@ -247,11 +247,16 @@ class BBBCollector(BaseCollector):
         # Search for charity
         review_url = self._search_charity(ein, name)
         if not review_url:
+            # BBB WGA reviews only a subset of US charities — 119 of this
+            # pipeline's 168 BBB rows are simply not in its registry. That is a
+            # VERIFIED NEGATIVE, not a fetch failure. Reporting it as a failure
+            # made a required source fail for 71% of charities and take each
+            # one's whole crawl down with it, which is why BBB ended up frozen
+            # (H12). Return the finding instead.
             return FetchResult(
-                success=False,
-                raw_data=None,
-                content_type="html",
-                error=f"Charity not found on BBB WGA: {ein}",
+                success=True,
+                raw_data=json.dumps({"bbb_not_reviewed": True, "ein": ein}),
+                content_type="json",
             )
 
         # Step 1: Fetch review page shell to get nonce and IDs
@@ -425,6 +430,27 @@ class BBBCollector(BaseCollector):
             ParseResult with {"bbb_profile": {...}}
         """
         try:
+            # Not-reviewed sentinel from fetch(): the lookup succeeded and found
+            # no BBB review. Emit a profile that says exactly that and nothing
+            # more — every verdict field stays unset so "not reviewed" can never
+            # be misread downstream as "reviewed and failed".
+            if raw_data and raw_data.lstrip().startswith("{"):
+                try:
+                    payload = json.loads(raw_data)
+                except json.JSONDecodeError:
+                    payload = None
+                if isinstance(payload, dict) and payload.get("bbb_not_reviewed"):
+                    profile = BBBProfile(
+                        ein=payload.get("ein") or ein,
+                        name="Unknown Organization",
+                        not_reviewed=True,
+                    )
+                    return ParseResult(
+                        success=True,
+                        parsed_data={self.schema_key: profile.model_dump()},
+                        error=None,
+                    )
+
             # Extract metadata from header
             review_url = None
             html = raw_data
@@ -614,10 +640,17 @@ class BBBCollector(BaseCollector):
                 # Use actual status text from page as fallback
                 data["status_text"] = status_text
                 status_lower = status_text.lower()
-                if "meets standards" in status_lower and "does not" not in status_lower:
-                    data["meets_standards"] = True
-                elif "does not meet" in status_lower:
+                # Negatives are tested FIRST and cover both of BBB's phrasings.
+                # The live pages render a failure as "Standards Not Met", which
+                # is not a substring of "does not meet" — so the old ordering
+                # left meets_standards None for 5 charities BBB had actually
+                # FAILED, making them indistinguishable from ones it never
+                # reviewed. A failure must never be able to fall through to a
+                # pass or to silence.
+                if "standards not met" in status_lower or "does not meet" in status_lower:
                     data["meets_standards"] = False
+                elif "meets standards" in status_lower:
+                    data["meets_standards"] = True
                 elif "did not disclose" in status_lower:
                     data["meets_standards"] = None
                 elif "review in progress" in status_lower:

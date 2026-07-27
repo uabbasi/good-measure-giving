@@ -46,9 +46,12 @@ physical gate modules is deferred to v5.3.0.) Pruning previously-exported
 charities never happens implicitly: it requires an explicit `--prune`, and never
 runs with `--ein`.
 
-BBB is a frozen source by default (H12): `crawl.py --sources bbb` is the only
-opt-in; `streaming_runner.py` has no equivalent flag, so streaming runs never
-fetch BBB.
+BBB Wise Giving Alliance reviews only a subset of US charities. A charity it
+does not review is a **verified negative**, not a fetch failure: the collector
+returns success with `bbb_profile.not_reviewed = True`, and every verdict field
+stays unset so "not reviewed" can never be read as "reviewed and failed". No
+source is frozen — the H12 freeze existed only because that negative was
+recorded as a failure, which failed a required source for 71% of charities.
 
 ## DoltDB (Version-Controlled Database)
 

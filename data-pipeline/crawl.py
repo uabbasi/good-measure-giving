@@ -243,13 +243,6 @@ def build_parser() -> argparse.ArgumentParser:
         help="Skip specific data sources (can be used multiple times). Options: propublica, charity_navigator, candid, form990_grants, website, bbb",
     )
     parser.add_argument(
-        "--sources",
-        type=str,
-        action="append",
-        default=[],
-        help="Explicitly re-enable a frozen source for this run (currently frozen: bbb)",
-    )
-    parser.add_argument(
         "--phase", type=str, default="P1:Collect", help="Pipeline phase identifier for logging (default: P1:Collect)"
     )
     parser.add_argument("--force", action="store_true", help="Force re-crawl even if cache is valid")
@@ -342,7 +335,6 @@ def main():
         logger=logger,
         max_pdf_downloads=args.pdf_downloads,
         skip_sources=skip_sources,
-        include_sources=args.sources or [],
     )
 
     # Load charities: from the DB (scope "stale_scan") or from file (scope "file").
@@ -549,11 +541,6 @@ def main():
         for entry in website_action:
             reason = entry["reason"] or ""
             print(f"  {entry['ein']}  [{entry['state']}]  {reason}")
-
-    if orchestrator.frozen_sources:
-        frozen_str = ", ".join(sorted(orchestrator.frozen_sources))
-        print(f"\nNote: frozen sources skipped this run: {frozen_str} "
-              f"(existing rows kept; pass --sources {frozen_str} to re-enable)")
 
     # Commit changes to DoltDB
     if success_count > 0:

@@ -752,19 +752,42 @@ def _build_awards(
     candid_seal = candid_seal_raw.title() if candid_seal_raw else None
     candid_url = candid_profile.get("candid_url") if candid_seal else None
 
-    # BBB Wise Giving Alliance status
-    bbb_meets_standards = bbb_profile.get("meets_standards") if bbb_profile else None
+    # BBB Wise Giving Alliance status.
+    # Publish the verdict BBB actually rendered rather than collapsing
+    # everything to "Meets Standards or nothing". BBB has four outcomes and
+    # only one was surviving export: 5 charities it judged "Standards Not Met"
+    # and 21 that "Did Not Disclose" were reaching the site indistinguishable
+    # from the 119 it never reviewed at all. `not_reviewed` profiles carry no
+    # status_text, so they stay blank — an absent review is not a verdict.
     bbb_review_url = bbb_profile.get("review_url") if bbb_profile else None
+
+    # Publish only verdicts BBB actually REACHED. `meets_standards is not None`
+    # is exactly that test: True = "Meets Standards" (19 charities), False =
+    # "Standards Not Met" (5). It is None for both non-conclusions — "Did Not
+    # Disclose" (21) and "Review in Progress" (4) — which stay unpublished.
+    #
+    # "Did Not Disclose" only means the charity declined a VOLUNTARY review
+    # (Doctors Without Borders USA is one). Rendered as a badge it reads as
+    # evasion, which is not what it says. A failure reached after actual
+    # evaluation is different, and donors should see it — that is a reversal of
+    # the previous behavior, which hid failures entirely.
+    bbb_meets_standards = bbb_profile.get("meets_standards") if bbb_profile else None
+    bbb_status = None
+    if bbb_meets_standards is not None:
+        # Rows stored before status_text was captured carry only the boolean.
+        bbb_status = bbb_profile.get("status_text") or (
+            "Meets Standards" if bbb_meets_standards else "Standards Not Met"
+        )
 
     # Only return if we have something to show
     # Always include bbbReviewUrl when available (for transparency, even if not accredited)
-    if cn_beacons or candid_seal or bbb_meets_standards or bbb_review_url:
+    if cn_beacons or candid_seal or bbb_status or bbb_review_url:
         return {
             "cnBeacons": cn_beacons if cn_beacons else None,
             "cnUrl": cn_url,  # Link to Charity Navigator profile
             "candidSeal": candid_seal,
             "candidUrl": candid_url,  # Link to Candid profile
-            "bbbStatus": "Meets Standards" if bbb_meets_standards else None,
+            "bbbStatus": bbb_status,
             "bbbReviewUrl": bbb_review_url,  # Always show when available
         }
     return None

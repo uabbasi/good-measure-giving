@@ -135,8 +135,13 @@ class TestBuildAwards:
         assert result is not None
         assert result["bbbStatus"] == "Meets Standards"
 
-    def test_bbb_does_not_meet_standards_excluded(self):
-        """BBB that doesn't meet standards should not show."""
+    def test_bbb_standards_not_met_is_published(self):
+        """REVERSAL: a failure BBB reached after evaluating is shown, not hidden.
+
+        This previously asserted `result is None` — a charity BBB judged to fail
+        produced no awards block at all, so the page looked identical to one BBB
+        had never reviewed. Absence stood in for an adverse finding.
+        """
         result = _build_awards(
             ein="12-3456789",
             cn_profile={},
@@ -144,8 +149,34 @@ class TestBuildAwards:
             bbb_profile={"meets_standards": False},
             cn_is_rated=False
         )
-        # Should return None since BBB doesn't meet standards
-        assert result is None
+        assert result is not None
+        assert result["bbbStatus"] == "Standards Not Met"
+
+    def test_bbb_did_not_disclose_is_not_published(self):
+        """Declining a voluntary review is a non-conclusion, not a verdict.
+
+        BBB reached no finding, so nothing is asserted about the charity. 21
+        charities are in this state, including Doctors Without Borders USA;
+        badging them reads as evasion, which is not what the status means.
+        """
+        result = _build_awards(
+            ein="12-3456789",
+            cn_profile={},
+            candid_profile={},
+            bbb_profile={"meets_standards": None, "status_text": "Did Not Disclose"},
+            cn_is_rated=False
+        )
+        assert result is None or result["bbbStatus"] is None
+
+    def test_bbb_review_in_progress_is_not_published(self):
+        result = _build_awards(
+            ein="12-3456789",
+            cn_profile={},
+            candid_profile={},
+            bbb_profile={"meets_standards": None, "status_text": "Review in Progress"},
+            cn_is_rated=False
+        )
+        assert result is None or result["bbbStatus"] is None
 
     def test_bbb_none_profile(self):
         """Should handle None bbb_profile gracefully."""
