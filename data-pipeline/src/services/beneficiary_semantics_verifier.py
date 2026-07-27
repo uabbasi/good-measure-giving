@@ -21,6 +21,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from pydantic import BaseModel, Field
+from src.llm.errors import LLMUnavailableError
 from src.llm.llm_client import LLMClient, LLMTask
 
 logger = logging.getLogger(__name__)
@@ -105,9 +106,13 @@ def verify_beneficiary_semantics(
       success  -> {category, confident, model, verified, timestamp}
       failure  -> {category:"other", confident:False, verified:False, error, timestamp}
 
-    Never raises: any exception is caught and turned into a fail-closed stamp.
+    Raises LLMUnavailableError when the model could not be REACHED. A stamp
+    means we asked and got an answer; an outage must not be able to mint one.
+    A response that arrives and then fails to parse is still an answer, and
+    stays fail-closed below.
     """
     timestamp = datetime.now(timezone.utc).isoformat()
+
     try:
         client = llm_client or LLMClient(task=LLMTask.LLM_JUDGE)
         expenses_str = f"{int(program_expenses):,}" if isinstance(program_expenses, (int, float)) else "unknown"
@@ -125,6 +130,11 @@ def verify_beneficiary_semantics(
             json_schema=BeneficiarySemanticsResult.model_json_schema(),
             temperature=0.0,
         )
+    except Exception as e:  # noqa: BLE001 - no answer was obtained; do not invent one
+        logger.error("beneficiary semantics verification unreachable: %s", e)
+        raise LLMUnavailableError(f"beneficiary semantics classifier unreachable: {e}") from e
+
+    try:
         parsed = BeneficiarySemanticsResult.model_validate_json(_strip_markdown_json(response.text))
         verified = parsed.category == _VERIFIED_CATEGORY and parsed.confident is True
         return {
