@@ -2113,6 +2113,46 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     cn_score = getattr(metrics, "cn_overall_score", None)
     cn_accountability = getattr(metrics, "cn_accountability_score", None)
     cn_financial = getattr(metrics, "cn_financial_score", None)
+
+    # Task G20: a CN sub-score we COMPUTED must never be quoted as one CN
+    # PUBLISHED. Charity Navigator publishes a single "Accountability &
+    # Finance" beacon, and the collector has two paths to it:
+    #   * _extract_nextjs_data_legacy reads CN's published number directly
+    #     (`"slug":"accountability_finance"..."score":([0-9]+)`)
+    #   * _extract_nextjs_data_new has no such field and instead recomputes a
+    #     weighted mean over CN's sub-areas (`beacon_score(...)`)
+    # The recomputation is a legitimate internal metric, but stamping it into
+    # prose that ends "from Charity Navigator" publishes a figure CN never
+    # stated under their name. 57 of 166 live charities carry such a value.
+    #
+    # Treat a non-publishable sub-score as ABSENT rather than correcting with
+    # it: the existing null branch strips the claim, which is the fail-safe
+    # outcome this function's governing tradeoff already prefers. Scoring,
+    # ranking and the exported `scores` block are untouched — this only
+    # governs what may be asserted in donor-facing prose.
+    def _cn_subscore_is_publishable(value: Any, provenance: Any) -> bool:
+        if value is None:
+            return False
+        if provenance == "computed_from_subareas":
+            return False
+        if provenance == "published_beacon":
+            return True
+        # Provenance absent — data crawled before the field existed. Fall back
+        # to a mechanical property rather than a label: CN's published beacon
+        # is captured by an INTEGER-only regex, so a non-integer value cannot
+        # have come from it and must be the recomputation. Integers are
+        # genuinely ambiguous and stay permissive, so this fallback only ever
+        # withholds a correction it can prove is unpublishable.
+        try:
+            return float(value).is_integer()
+        except (TypeError, ValueError):
+            return False
+
+    _cn_provenance = getattr(metrics, "cn_score_provenance", None)
+    if not _cn_subscore_is_publishable(cn_accountability, _cn_provenance):
+        cn_accountability = None
+    if not _cn_subscore_is_publishable(cn_financial, _cn_provenance):
+        cn_financial = None
     # Hoisted above the cn_score block — needed here by the overall-score
     # guard below, and again further down by the accountability/financial
     # rules themselves (see their own comments for why each noun phrase is

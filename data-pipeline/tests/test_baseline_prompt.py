@@ -2369,15 +2369,33 @@ class TestMalformedMultiDecimalNumberIsNeverSplicedWithANewValue:
             ("47-2864379",
              dict(cn_accountability_score=92, cn_overall_score=97.5, cn_financial_score=92),
              "Strong external accountability rating of 97.97.5/100 from Charity Navigator"),
-            ("36-3673599",
-             dict(cn_accountability_score=85.99555863262657, cn_overall_score=96, cn_financial_score=85.99555863262657),
-             "Strong external accountability rating of 96.96.0/100 from Charity Navigator"),
         ],
     )
     def test_live_malformed_narratives_are_left_untouched_pending_regeneration(self, ein, overrides, text):
         metrics = _metrics(**overrides)
         out = _sanitize(text, metrics)
         assert out == text, f"{ein}: malformed narrative should be left untouched, not repaired in place"
+
+    def test_36_3673599_malformed_text_is_removed_because_its_subscore_is_unpublishable(self):
+        """REVERSAL of this class's "left untouched" expectation for this one
+        EIN (Task G20). The other two EINs above keep it.
+
+        36-3673599's accountability value is 85.99555863262657 — a weighted
+        mean this pipeline computes over CN's sub-areas, not a number Charity
+        Navigator publishes (their beacon is read with an integer-only regex).
+        G20 treats such a value as absent, so the null branch strips the claim
+        rather than restating it "from Charity Navigator".
+
+        This class's actual invariant — a malformed multi-decimal number is
+        never SPLICED with a new value — still holds: removing is not
+        splicing. And removing beats the previous outcome, which shipped the
+        malformed "96.96.0/100" to donors verbatim.
+        """
+        metrics = _metrics(
+            cn_accountability_score=85.99555863262657, cn_overall_score=96, cn_financial_score=85.99555863262657
+        )
+        text = "Strong external accountability rating of 96.96.0/100 from Charity Navigator"
+        assert _sanitize(text, metrics) == ""
 
     def test_95_4453134_once_regenerated_to_clean_text_uses_true_accountability(self):
         """This EIN's malformed string can't be repaired in place (see
@@ -2399,13 +2417,25 @@ class TestMalformedMultiDecimalNumberIsNeverSplicedWithANewValue:
         out = _sanitize(text, metrics)
         assert out == "Strong external accountability rating of 92/100 from Charity Navigator"
 
-    def test_36_3673599_once_regenerated_to_clean_text_uses_true_accountability(self):
+    def test_36_3673599_once_regenerated_drops_the_claim_rather_than_citing_a_computed_score(self):
+        """REVERSAL of the G8-era expectation for this EIN (Task G20).
+
+        This previously asserted the claim was rewritten to "86.0/100 from
+        Charity Navigator" — publishing OUR weighted mean over CN's sub-areas
+        under CN's name, a figure they never stated. The two sibling tests
+        above keep their corrections because their values (100, 92) are real
+        published beacons.
+
+        Removal, not correction, is the fail-safe outcome the function's
+        governing tradeoff already prefers: better to drop an attributable
+        claim we cannot back than to assert a sourced-looking number we
+        invented the label for.
+        """
         metrics = _metrics(
             cn_accountability_score=85.99555863262657, cn_overall_score=96, cn_financial_score=85.99555863262657
         )
         text = "Strong external accountability rating of 96/100 from Charity Navigator"
-        out = _sanitize(text, metrics)
-        assert out == "Strong external accountability rating of 86.0/100 from Charity Navigator"
+        assert _sanitize(text, metrics) == ""
 
 
 class TestProgramExpenseNounIsEchoedNotHardcodedToProgramsPlural:
@@ -5121,3 +5151,72 @@ class TestOtherMetricClaimCoversEveryFamilyTheFunctionKnows:
         for _ in range(5):
             passes.append(_sanitize(passes[-1], metrics, wallet_tag="ZAKAT-ELIGIBLE"))
         assert passes[0] == passes[1] == passes[2] == passes[3] == passes[4] == text
+
+
+class TestCnSubScoreProvenanceGuard:
+    """Task G20: a CN sub-score this pipeline COMPUTED must never be quoted as
+    one Charity Navigator PUBLISHED.
+
+    CN publishes a single "Accountability & Finance" beacon. The collector has
+    two paths to it: `_extract_nextjs_data_legacy` reads CN's published number
+    directly, while `_extract_nextjs_data_new` has no such field and recomputes
+    a weighted mean over CN's sub-areas. Stamping the recomputation into prose
+    ending "from Charity Navigator" publishes a figure CN never stated. 57 of
+    166 live charities carry such a value.
+
+    An explicit `cn_score_provenance` decides it when present. When absent (all
+    data crawled before the field existed) the guard falls back to a mechanical
+    property rather than a label — CN's published beacon is captured by an
+    INTEGER-only regex, so a non-integer value cannot have come from it. That
+    fallback only ever withholds a correction it can prove is unpublishable;
+    integers are genuinely ambiguous and stay permissive.
+    """
+
+    TEXT = "It has an accountability score of 70."
+    FIN_TEXT = "It has a financial score of 70."
+
+    def test_explicit_published_provenance_corrects_even_a_non_integer(self):
+        """The label beats the heuristic: a real beacon that happens to be
+        non-integer must still be usable."""
+        metrics = _metrics(cn_accountability_score=85.5, cn_score_provenance="published_beacon")
+        assert _sanitize(self.TEXT, metrics) == "It has an accountability score of 85.5/100."
+
+    def test_explicit_computed_provenance_removes_even_an_integer(self):
+        """The label beats the heuristic in the other direction too: a
+        recomputation landing exactly on an integer is still unpublishable."""
+        metrics = _metrics(cn_accountability_score=86, cn_score_provenance="computed_from_subareas")
+        assert _sanitize(self.TEXT, metrics) == ""
+
+    def test_absent_provenance_with_integer_still_corrects(self):
+        """Permissive fallback — an integer could be a real beacon, so the
+        pre-G20 correction behavior is preserved."""
+        metrics = _metrics(cn_accountability_score=91.0)
+        assert _sanitize(self.TEXT, metrics) == "It has an accountability score of 91.0/100."
+
+    def test_absent_provenance_with_non_integer_removes(self):
+        """A non-integer cannot have come from the integer-only beacon regex."""
+        metrics = _metrics(cn_accountability_score=85.99555863262657)
+        assert _sanitize(self.TEXT, metrics) == ""
+
+    def test_financial_score_is_guarded_the_same_way(self):
+        metrics = _metrics(cn_financial_score=85.99555863262657, cn_accountability_score=None)
+        assert _sanitize(self.FIN_TEXT, metrics) == ""
+
+    def test_financial_score_integer_still_corrects(self):
+        metrics = _metrics(cn_financial_score=85)
+        assert _sanitize(self.FIN_TEXT, metrics) == "It has a financial score of 85/100."
+
+    def test_guard_does_not_touch_the_overall_score(self):
+        """cn_overall_score has its own single published value and is out of
+        scope — a non-integer overall must still be corrected, not removed."""
+        metrics = _metrics(cn_overall_score=97.5, cn_accountability_score=None, cn_financial_score=None)
+        text = "It scored 88/100 on Charity Navigator."
+        assert _sanitize(text, metrics) == "It scored 97.5/100 on Charity Navigator."
+
+    def test_removal_path_is_idempotent_across_five_passes(self):
+        metrics = _metrics(cn_accountability_score=85.99555863262657)
+        _five_passes(self.TEXT, metrics)
+
+    def test_correction_path_is_idempotent_across_five_passes(self):
+        metrics = _metrics(cn_accountability_score=85.5, cn_score_provenance="published_beacon")
+        _five_passes(self.TEXT, metrics)

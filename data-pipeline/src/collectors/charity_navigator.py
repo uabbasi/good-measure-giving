@@ -788,6 +788,12 @@ class CharityNavigatorCollector(BaseCollector):
         if financial is not None:
             metrics["financial_score"] = financial
             metrics["accountability_score"] = financial
+            # This is a weighted mean WE compute over CN's sub-areas — CN's
+            # newer payload has no single published "Accountability & Finance"
+            # score to read. Mark it so downstream prose never attributes the
+            # number to Charity Navigator as a published rating
+            # (baseline.sanitize_narrative_metrics, Task G20).
+            metrics["cn_score_provenance"] = "computed_from_subareas"
         impact = beacon_score(["measurement", "learning", "impact"])
         if impact is not None:
             metrics["impact_score"] = impact
@@ -976,6 +982,10 @@ class CharityNavigatorCollector(BaseCollector):
                         if fin_score_match:
                             metrics["financial_score"] = float(fin_score_match.group(1))
                             metrics["accountability_score"] = float(fin_score_match.group(1))  # Same score
+                            # Read straight off CN's payload — a number they
+                            # publish, so prose may attribute it to them
+                            # (baseline.sanitize_narrative_metrics, Task G20).
+                            metrics["cn_score_provenance"] = "published_beacon"
 
                         # 2. Impact & Measurement -> impact_score
                         impact_match = re.search(r'"slug":"impact_measurement"[^}]*?"score":([0-9]+)', decoded)

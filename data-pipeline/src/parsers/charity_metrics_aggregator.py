@@ -349,6 +349,19 @@ class CharityMetrics(BaseModel):
         None, ge=0, le=100, description="CN accountability & transparency score"
     )
     cn_beacons: List[str] = Field(default_factory=list, description="List of CN Beacons achieved")
+    cn_score_provenance: Optional[str] = Field(
+        None,
+        description=(
+            "How cn_financial_score/cn_accountability_score were obtained: "
+            "'published_beacon' (read off CN's payload) or "
+            "'computed_from_subareas' (weighted mean WE derive from CN's "
+            "evaluation areas, because CN's newer format publishes no single "
+            "Accountability & Finance score). Governs whether donor-facing "
+            "prose may attribute the number to Charity Navigator — see "
+            "baseline.sanitize_narrative_metrics, Task G20. None means the "
+            "data predates this field."
+        ),
+    )
 
     # ========================================================================
     # BBB Wise Giving Alliance (FIX #5)
@@ -1811,6 +1824,10 @@ class CharityMetricsAggregator:
                 metrics_data["cn_overall_score"] = cn_profile.get("overall_score")
                 metrics_data["cn_financial_score"] = cn_profile.get("financial_score")
                 metrics_data["cn_accountability_score"] = cn_profile.get("accountability_score")
+                # Carried alongside the two sub-scores it describes — without it
+                # narrative prose cannot tell a CN-published beacon from our own
+                # weighted recomputation (Task G20).
+                metrics_data["cn_score_provenance"] = cn_profile.get("cn_score_provenance")
             metrics_data["cn_beacons"] = cn_profile.get("beacons", [])
 
         # ====================================================================
