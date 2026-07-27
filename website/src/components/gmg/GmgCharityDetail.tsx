@@ -203,11 +203,19 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
     ['--gmg-arabic' as any]: ft.arabic,
   };
 
+  // Data vintage: 990 filings run ~2 years behind; older than that is a
+  // mild red flag worth surfacing to donors. Age comes from the pipeline's
+  // own data_age_years (computed once at evaluation time) rather than the
+  // wall clock, so a prerendered page never disagrees with itself at
+  // hydration as the calendar rolls forward.
+  const fyAge = c.dataAgeYears;
+  const fyDated = fyAge != null && fyAge >= 3;
+
   const statCells: [string, string, string][] = [
     ['Cost / benef.', c.costPerBeneficiary != null ? usdFull(c.costPerBeneficiary) : '—', c.costPerBeneficiary != null ? 'per person' : 'not reported'],
     ['Program ratio', c.programRatioPct != null ? `${c.programRatioPct}%` : '—', 'of expense'],
     ['Reserves', c.reserveMonths != null ? `${c.reserveMonths} mo` : '—', 'working capital'],
-    ['Revenue', usd(c.totalRevenue), c.fiscalYear ? `FY${c.fiscalYear}` : 'IRS 990'],
+    ['Revenue', usd(c.totalRevenue), c.fiscalYear ? `FY${c.fiscalYear}${fyDated ? ' · dated' : ''}` : 'IRS 990'],
     ['Track record', c.trackRecordYears != null ? `${c.trackRecordYears} yr` : '—', c.founded ? `est. ${c.founded}` : ''],
     ['Risk', c.riskLevel, 'overall'],
   ];
@@ -471,7 +479,38 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
         <div style={{ border: sectionBorder, borderRadius: 6, padding: 14 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 10 }}>
             <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, margin: 0, letterSpacing: '-0.02em' }}>Financials</h3>
-            <Kicker p={p}>{c.fiscalYear ? `FY${c.fiscalYear} · IRS 990` : 'IRS 990'}</Kicker>
+            {fyDated ? (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 3 }}>
+                <span
+                  aria-label={`Latest available financials are from FY${c.fiscalYear} — ${fyAge} years old`}
+                  style={{
+                    fontFamily: FONT_MONO,
+                    fontSize: 10,
+                    letterSpacing: '0.18em',
+                    textTransform: 'uppercase',
+                    color: p.caution,
+                    background: p.cautionBg,
+                    padding: '2px 6px',
+                    borderRadius: 4,
+                  }}
+                >
+                  FY{c.fiscalYear} · IRS 990 · DATED DATA
+                </span>
+                {/* Visible (not tooltip-only) explainer so touch-device donors — who never
+                    see a `title` attribute — understand why the chip appears. */}
+                {c.form990Exempt ? (
+                  <span style={{ fontFamily: FONT_MONO, fontSize: 9.5, color: p.sub2 }}>
+                    Not required to file — exempt from IRS 990
+                  </span>
+                ) : (
+                  <span style={{ fontFamily: FONT_MONO, fontSize: 9.5, color: p.sub2 }}>
+                    {fyAge} years since last filed 990
+                  </span>
+                )}
+              </div>
+            ) : (
+              <Kicker p={p}>{c.fiscalYear ? `FY${c.fiscalYear} · IRS 990` : 'IRS 990'}</Kicker>
+            )}
           </div>
           {c.programRatioPct != null && (() => {
             // Derive the split from the real filed expense figures when available

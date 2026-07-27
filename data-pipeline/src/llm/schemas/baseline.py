@@ -298,6 +298,11 @@ class DataConfidence(BaseModel):
     transparency_value: float = Field(default=0.0, ge=0.0, le=1.0, description="Transparency confidence value")
     data_quality_label: str = Field(default="LOW", description="HIGH/MODERATE/LOW/CONFLICTING")
     data_quality_value: float = Field(default=0.0, ge=0.0, le=1.0, description="Data quality confidence value")
+    # Recency decay (rubric v5.3.0): confidence in data erodes as the displayed
+    # fiscal year ages. 1.0 through age 2 (normal 990 cycle + 1 year leeway),
+    # then -0.15/year down to a 0.40 floor. overall = base * recency_factor.
+    recency_factor: float = Field(default=1.0, ge=0.0, le=1.0, description="Data-age multiplier applied to overall")
+    data_age_years: Optional[int] = Field(default=None, description="Age in years of the displayed fiscal-year data")
 
 
 class ImpactAssessment(BaseModel):
@@ -392,7 +397,8 @@ class AmalScoresV2(BaseModel):
 
     # Risk Assessment (Longview "Case Against")
     case_against: CaseAgainst = Field(description="Longview-style risk disclosure with deductions (up to -10)")
-    risk_deduction: int = Field(ge=-10, le=0, description="Total risk deduction (0 to -10)")
+    # -10 cap for classic risks + up to -4 filing-currency stacked outside it (rubric v5.3.0)
+    risk_deduction: int = Field(ge=-14, le=0, description="Total risk deduction (0 to -14)")
 
     # Wallet routing
     wallet_tag: str = Field(

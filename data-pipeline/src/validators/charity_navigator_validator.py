@@ -4,7 +4,7 @@ Pydantic validator for Charity Navigator data.
 Validates data from Charity Navigator web scraping (comprehensive extraction).
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from src.validators.base_validator import normalize_ein
@@ -47,6 +47,12 @@ class CharityNavigatorProfile(BaseModel):
     overall_score: Optional[float] = Field(None, ge=0, le=100)
     financial_score: Optional[float] = Field(None, ge=0, le=100)  # Legacy
     accountability_score: Optional[float] = Field(None, ge=0, le=100)  # Legacy or new beacon
+    # How financial_score/accountability_score were obtained. 'published_beacon'
+    # = read off CN's payload; 'computed_from_subareas' = weighted mean WE
+    # derive from CN's evaluation areas, because the newer format publishes no
+    # single Accountability & Finance score. Governs whether donor-facing prose
+    # may attribute the number to Charity Navigator (Task G20).
+    cn_score_provenance: Optional[Literal["published_beacon", "computed_from_subareas"]] = None
 
     # New 4 Beacon Scores (0-100)
     impact_score: Optional[float] = Field(None, ge=0, le=100)

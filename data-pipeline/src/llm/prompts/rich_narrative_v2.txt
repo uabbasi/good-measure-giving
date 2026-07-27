@@ -1,8 +1,8 @@
 ---
 name: rich_narrative_v3
-version: 3.1.0
-description: Investment memo-style rich narrative with inline citations
-last_updated: 2026-03-15
+version: 3.3.2
+description: Investment memo-style rich narrative with inline citations; 3.2.0 adds the band tone contract; 3.3.0 adds the data-vintage disclosure rule; 3.3.1 forbids invented negatives + dishonest arithmetic; 3.3.2 pins program-ratio source + directional comparisons
+last_updated: 2026-07-18
 ---
 
 # Rich Narrative with Citations
@@ -21,6 +21,53 @@ regenerated or modified. They will be injected after your generation:
 - zakat_guidance (use exactly as provided)
 
 DO NOT include these fields in your output. Focus only on the enhanced narrative sections.
+
+## TONE CONTRACT (CRITICAL — publication is blocked if violated)
+Public score band: {score_band}. Donors see this band label displayed next to
+the score. ALL prose you write (summary, strengths_deep_dive, impact_evidence,
+organizational_capacity, peer_comparison, long_term_outlook, ideal_donor_profile)
+MUST read as that same band:
+- High: confident endorsement; lead with strengths.
+- Above Average: positive, with named caveats.
+- Average: neutral and balanced; strengths and gaps get equal weight.
+- Below Average: lead with the specific limiting factors, in plain sober
+  language. Do NOT apply praise words ("excellent", "great", "strong",
+  "trustworthy", "efficient") to the organization overall. Any bright spot
+  gets mentioned only AFTER the concerns, and only with data behind it.
+Never soften a Below Average assessment to be polite. The case_against section
+must be direct, not hedged. Financial spending may only be called "efficient"
+or "strong" if the program expense ratio is 0.80 or higher; below 0.65 it is a
+concern — state the number.
+
+## DATA VINTAGE (CRITICAL)
+{data_vintage_note}
+
+## NO INVENTED WEAKNESSES, HONEST ARITHMETIC (CRITICAL)
+Attribute scores ONLY to factors present in the provided data:
+- Do NOT write generic filler like "lacks third-party evidence" or "limited
+  outcome data" unless the provided context actually says so — if the data
+  shows evidence as verified, that claim is false and blocks publication.
+- Keep arithmetic honest: a 75% program ratio leaves 25% ("a quarter"), not
+  "nearly half". Never characterize a percentage in words that contradict
+  the number.
+- PROGRAM EXPENSE RATIO: use ONLY the exact "Program Expense Ratio" value
+  provided above. NEVER substitute a website marketing claim like "100% to
+  programs", "100% donation policy", or "every dollar goes to programs" —
+  those are fundraising slogans, not the filed ratio, and stating them as
+  the ratio blocks publication.
+- If a "Program Ratio score" line is also provided, that — not the raw
+  Program Expense Ratio above it — is the number the score was actually
+  calculated from (e.g. a cash-adjusted ratio when in-kind donations inflate
+  revenue). When the two differ, describe the Program Ratio score value when
+  explaining WHY the score is what it is; a mismatch between the two blocks
+  publication.
+- DIRECTIONAL COMPARISONS must match the numbers. The program-ratio
+  benchmark is 75%: a ratio of 0.75 or higher is ABOVE / beats / exceeds the
+  benchmark (a strength); only a ratio under 0.75 is "below" it. Before
+  writing "above" or "below", check which number is larger. Same for any
+  peer-median comparison.
+- Every dimension explanation must contain real prose — never leave an
+  "explanation" field empty.
 
 ## Citation Requirements - Wikipedia Style
 

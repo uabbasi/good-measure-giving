@@ -209,6 +209,34 @@ class TestImpactScorer:
         pr_pts = _component_pts(result, "Program Ratio")
         assert 0 <= pr_pts <= 2
 
+    def test_a_fully_in_kind_charity_does_not_score_on_its_filed_ratio(self):
+        """cash_adjusted_program_ratio=0.0 is a real, valid value (all program
+        spend is in-kind) but is falsy, so `or metrics.program_expense_ratio`
+        silently discarded it and scored the worst GIK-inflation case on its
+        92% filed ratio instead."""
+        m = _base_metrics(program_expense_ratio=0.92, cash_adjusted_program_ratio=0.0)
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        assert _component_pts(result, "Program Ratio") == 0
+
+    def test_a_present_nonzero_cash_adjusted_ratio_still_wins(self):
+        """A genuine nonzero cash-adjusted ratio must still take priority
+        over the filed ratio (this was already correct — guards regression)."""
+        m = _base_metrics(program_expense_ratio=0.92, cash_adjusted_program_ratio=0.55)
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        comp = _component(result, "Program Ratio")
+        assert "55" in comp.evidence
+
+    def test_missing_cash_adjusted_ratio_falls_back_to_the_filed_ratio(self):
+        """cash_adjusted_program_ratio=None (not computed, e.g. no GIK) must
+        still fall back to the filed ratio."""
+        m = _base_metrics(program_expense_ratio=0.92, cash_adjusted_program_ratio=None)
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        comp = _component(result, "Program Ratio")
+        assert "92" in comp.evidence
+
     def test_cost_per_beneficiary_humanitarian(self):
         """$20/beneficiary in humanitarian → max CPB for archetype (exceptional, at top of knots)."""
         m = _base_metrics(
@@ -554,6 +582,96 @@ class TestRiskScorer:
         # Total raw: -22, capped at -10
         assert deduction == -10
 
+    def test_stale_filings_3yr_deduction(self):
+        """Latest filing 3-4 years old → -2 (rubric v5.3.0)."""
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            financial_data_tax_year=date.today().year - 3,
+        )
+        _case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == -2
+        assert any("years old" in r.description for r in _case_against.risks)
+
+    def test_stale_filings_5yr_deduction(self):
+        """Latest filing 5+ years old → -4 (Al-Furqaan FY2020 case)."""
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            financial_data_tax_year=date.today().year - 6,
+        )
+        _case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == -4
+        assert any("filing compliance" in r.description for r in _case_against.risks)
+
+    def test_fresh_filing_no_deduction(self):
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            financial_data_tax_year=date.today().year - 2,
+        )
+        _case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == 0
+
+    def test_unknown_filing_year_no_deduction(self):
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+        )
+        assert m.financial_data_tax_year is None
+        _case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == 0
+
+    def test_form_990_exempt_org_never_deducted(self):
+        """Churches/mosques are legally exempt from filing — no staleness penalty."""
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            financial_data_tax_year=date.today().year - 6,
+            form_990_exempt=True,
+        )
+        _case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == 0
+
+    def test_latest_known_filing_year_overrides_display_year(self):
+        """BASMAH shape: we display FY(t-4) data but PP has a FY(t-3) filing — age keys on the newest."""
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            financial_data_tax_year=date.today().year - 6,
+            latest_known_filing_year=date.today().year - 3,
+        )
+        _case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == -2  # age 3, not age 6
+
     def test_emerging_org_no_toc_risk(self):
         """Emerging org (<$1M) → no deduction for missing TOC/outcomes."""
         m = _base_metrics(
@@ -653,6 +771,102 @@ class TestGIKRisk:
         gik_risks = [r for r in case_against.risks if "GIK" in r.description]
         assert len(gik_risks) == 1
         assert "60%" in gik_risks[0].description
+
+    def test_risk_deduction_fires_on_a_zero_cash_adjusted_ratio(self):
+        """cash_adjusted_program_ratio=0.0 (all program spend in-kind) is the
+        worst GIK-inflation case — it must trigger the program_ratio_under_50
+        deduction, not be discarded by a falsy `or` fallback to the 92% filed
+        ratio."""
+        m = _base_metrics(
+            program_expense_ratio=0.92,
+            cash_adjusted_program_ratio=0.0,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+        )
+        scorer = RiskScorer()
+        _case_against, deduction = scorer.evaluate(m)
+        assert deduction <= -5
+
+
+class TestComputeCashAdjustedRatio:
+    """Clamp both ends of the cash-adjusted ratio — the raw path clamps with
+    min(1.0, ...) but the cash-adjusted path didn't, so a ratio of 1.3
+    rendered as 'Cash-adjusted program ratio: 130%' into the narrative
+    prompt as a mandatory value."""
+
+    def test_ratio_over_one_is_clamped_to_one(self):
+        from src.parsers.charity_metrics_aggregator import _compute_cash_adjusted_ratio
+
+        assert _compute_cash_adjusted_ratio(program_expenses=130, total_expenses=100, noncash=0) == 1.0
+
+    def test_ratio_at_zero_is_clamped_to_zero(self):
+        from src.parsers.charity_metrics_aggregator import _compute_cash_adjusted_ratio
+
+        assert _compute_cash_adjusted_ratio(program_expenses=0, total_expenses=100, noncash=0) == 0.0
+
+    def test_genuine_zero_with_healthy_denominator_still_returns_zero(self):
+        """program_expenses == noncash against a healthy denominator (50% of
+        total expenses) is a real 0.0 -- all program spend is in-kind -- and
+        must still be returned as a measurable 0.0, not degraded to None."""
+        from src.parsers.charity_metrics_aggregator import _compute_cash_adjusted_ratio
+
+        result = _compute_cash_adjusted_ratio(program_expenses=500, total_expenses=1000, noncash=500)
+        assert result == 0.0
+
+    def test_negative_numerator_is_degenerate_not_zero(self):
+        """Direct Relief (EIN 95-1831116): donated goods/services received
+        ($2.30B) exceed program expenses ($2.29B), driving the quotient
+        negative. That isn't "spends 0% on programs" -- it means noncash
+        contributions dominate the cost structure so the subtraction no
+        longer measures cash program spend at all. Must return None and
+        fall back to the filed ratio, not clamp to 0.0."""
+        from src.parsers.charity_metrics_aggregator import _compute_cash_adjusted_ratio
+
+        result = _compute_cash_adjusted_ratio(
+            program_expenses=2_291_611_627,
+            total_expenses=2_307_002_152,
+            noncash=2_298_781_077,
+        )
+        assert result is None
+
+    def test_tiny_denominator_is_degenerate_even_with_a_positive_numerator(self):
+        """A residual cash-expense denominator under 2% of total expenses is
+        too small a base to trust, even when the quotient happens to come
+        out positive (Direct Relief's own denominator is 0.36% of total
+        expenses -- this is a much larger, still-excluded case)."""
+        from src.parsers.charity_metrics_aggregator import _compute_cash_adjusted_ratio
+
+        # denominator = 15 = 1.5% of total_expenses (1000) -- below the 2% floor
+        result = _compute_cash_adjusted_ratio(program_expenses=990, total_expenses=1000, noncash=985)
+        assert result is None
+
+    def test_denominator_just_above_the_two_percent_floor_is_measurable(self):
+        """Once the denominator clears the 2% floor, a positive ratio is a
+        real signal and must be returned, not discarded."""
+        from src.parsers.charity_metrics_aggregator import _compute_cash_adjusted_ratio
+
+        # denominator = 25 = 2.5% of total_expenses (1000) -- above the floor
+        result = _compute_cash_adjusted_ratio(program_expenses=980, total_expenses=1000, noncash=975)
+        assert result == 0.2
+
+    def test_united_muslim_relief_denominator_is_not_degenerate(self):
+        """United Muslim Relief (EIN 27-3175543): denominator is 4.87% of
+        total expenses -- small, but a real, live, currently-published
+        ratio (48% cash-adjusted). A 5% floor would have wrongly zeroed
+        this out too, swinging its published Impact score (Program Ratio
+        component 0/5 -> 5/5, amal_score 69 -> 74); the 2% floor must
+        leave it alone."""
+        from src.parsers.charity_metrics_aggregator import _compute_cash_adjusted_ratio
+
+        result = _compute_cash_adjusted_ratio(
+            program_expenses=146_501_155,
+            total_expenses=150_339_501,
+            noncash=143_021_451,
+        )
+        assert result is not None
+        assert abs(result - 0.4754960679415965) < 1e-9
 
 
 # ─── Domestic Burn Rate Risk ──────────────────────────────────────────────
@@ -984,6 +1198,46 @@ class TestDataConfidence:
         scorer = AmalScorerV2()
         result = scorer.evaluate(m)
         assert 0.0 <= result.data_confidence.overall <= 1.0
+
+    def test_recency_no_decay_within_leeway(self):
+        """Age <= 2 (normal 990 cycle + 1 year leeway) → no decay."""
+        from datetime import date
+
+        m = _base_metrics(cn_overall_score=92.0, candid_seal="Gold",
+                          financial_data_tax_year=date.today().year - 2)
+        fresh = AmalScorerV2().evaluate(m)
+        assert fresh.data_confidence.recency_factor == 1.0
+
+    def test_recency_decay_steps(self):
+        """-0.15/year beyond age 2, floored at 0.40."""
+        from src.scorers.v2_scorers import AmalScorerV2
+
+        f = AmalScorerV2._recency_factor
+        assert f(None) == 1.0
+        assert f(1) == 1.0
+        assert f(2) == 1.0
+        assert f(3) == 0.85
+        assert f(4) == 0.70
+        assert f(5) == 0.55
+        assert f(6) == 0.40
+        assert f(9) == 0.40  # floor
+
+    def test_recency_decay_lowers_overall_and_badge(self):
+        """Al-Furqaan shape: strong verification but 6-year-old data → decayed confidence."""
+        from datetime import date
+
+        year = date.today().year
+        m_fresh = _base_metrics(cn_overall_score=92.0, candid_seal="Gold",
+                                financial_data_tax_year=year - 1)
+        m_stale = _base_metrics(cn_overall_score=92.0, candid_seal="Gold",
+                                financial_data_tax_year=year - 6)
+        scorer = AmalScorerV2()
+        fresh = scorer.evaluate(m_fresh).data_confidence
+        stale = scorer.evaluate(m_stale).data_confidence
+        assert stale.recency_factor == 0.40
+        assert stale.data_age_years == 6
+        assert stale.overall == round(fresh.overall * 0.40, 2)
+        assert stale.badge != "HIGH"
 
     def test_confidence_components(self):
         """DataConfidence has all component breakdown fields."""
@@ -1396,3 +1650,32 @@ class TestArchetypeScoring:
             assert total_possible == 50, (
                 f"{archetype_name}: sum of possible={total_possible}, expected 50"
             )
+
+
+class TestFilingCurrencyOutsideCap:
+    """Filing-currency deductions stack OUTSIDE the -10 cap (worst case -14)."""
+
+    def test_stale_filing_stacks_beyond_cap(self):
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.30,  # -5
+            board_size=1,  # -5
+            working_capital_ratio=0.5,  # -2
+            noncash_ratio=0.60,  # -5 GIK
+            financial_data_tax_year=date.today().year - 6,  # -4 stale, uncapped
+        )
+        _case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == -14  # -10 cap + -4 filing currency
+
+    def test_al_furqaan_shape(self):
+        """Other risks below cap: they cap at -10 only among themselves."""
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.30,  # -5
+            board_size=1,  # -5 -> capped -10
+            financial_data_tax_year=date.today().year - 3,  # -2 outside
+        )
+        _case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == -12

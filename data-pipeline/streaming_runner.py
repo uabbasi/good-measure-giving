@@ -11,7 +11,7 @@ Benefits over batch-per-phase:
 - Progress visible per-charity
 
 Usage:
-    uv run python streaming_runner.py --charities pilot_charities.txt --workers 20
+    uv run python streaming_runner.py --charities pilot_charities.txt --workers 6
     uv run python streaming_runner.py --ein 95-4453134  # Single charity
 """
 
@@ -43,6 +43,7 @@ from src.collectors.form990_grants import Form990GrantsCollector
 from src.collectors.orchestrator import DataCollectionOrchestrator
 from src.collectors.propublica import ProPublicaCollector
 from src.collectors.web_collector import WebsiteCollector
+from src.constants import SOURCE_TTL_DAYS, WEBSITE_RECRAWL_BACKOFF_DAYS
 from src.db import (
     CharityDataRepository,
     CharityRepository,
@@ -57,6 +58,7 @@ from src.llm.llm_client import LLMClient
 from src.scorers.v2_scorers import AmalScorerV2
 from src.utils.charity_loader import load_charities_from_file, normalize_website_url
 from src.utils.ein_utils import validate_and_format
+from src.utils.freshness import website_needs_recrawl
 from src.utils.logger import PipelineLogger
 from src.utils.phase_cache_helper import (
     check_phase_cache,
@@ -70,6 +72,29 @@ from src.utils.phase_fingerprint import get_ttl_days
 STREAMING_RUN_TABLES = tables_for_phases(
     "crawl", "extract", "discover", "synthesize", "baseline", "rich", "judge", "export"
 )
+
+
+def final_commit_message(
+    success_count: int,
+    total: int,
+    total_cost: float,
+    avg_cost: float,
+    checkpoint_count: int,
+) -> str:
+    """Build the message for the run-end Dolt commit.
+
+    The commit runs unconditionally (even when nothing succeeded) so an
+    all-failed or budget-capped run doesn't leave dirty crawl/extract
+    writes uncommitted for the next run to inherit. When success_count
+    is 0 the message is labeled PARTIAL so the commit history reads as
+    a partial run rather than a normal completed one.
+    """
+    checkpoint_note = f" ({checkpoint_count} checkpoints)" if checkpoint_count > 0 else ""
+    if success_count == 0:
+        label = f"Streaming run (PARTIAL, 0/{total} succeeded)"
+    else:
+        label = f"Streaming run: {success_count}/{total} charities"
+    return f"{label}. Cost: ${total_cost:.2f} (${avg_cost:.4f}/charity){checkpoint_note}"
 
 # Discovery services - use Gemini's search grounding feature
 DISCOVERY_ENABLED = True
@@ -105,7 +130,7 @@ from src.services.toc_discovery_service import TheoryOfChangeDiscoveryService
 from src.services.zakat_verification_service import ZakatVerificationService
 
 # Import phase functions
-from synthesize import synthesize_charity
+from synthesize import synthesize_charity, write_synthesize_regressions
 
 _export_spec = importlib.util.spec_from_file_location("root_export", Path(__file__).parent / "export.py")
 _export_module = importlib.util.module_from_spec(_export_spec)
@@ -225,9 +250,9 @@ def _cleanup_worker_resources() -> None:
 
         collectors = resources.get("collectors", {})
         website_collector = collectors.get("website") if isinstance(collectors, dict) else None
-        if website_collector is not None and hasattr(website_collector, "_cleanup_playwright"):
+        if website_collector is not None and hasattr(website_collector, "close_all_renderers"):
             try:
-                website_collector._cleanup_playwright()
+                website_collector.close_all_renderers()
             except Exception:
                 pass
 
@@ -251,6 +276,8 @@ def _phase_artifacts_exist(
         has_successful_raw = any(row.get("success") for row in rows)
         if not has_successful_raw:
             return False, "no successful raw_scraped_data rows"
+        if website_needs_recrawl(rows, SOURCE_TTL_DAYS["website"], backoff_days=WEBSITE_RECRAWL_BACKOFF_DAYS):
+            return False, "website stale/failed — re-crawl"
         return True, ""
 
     if phase == "extract":
@@ -1127,9 +1154,10 @@ def process_charity_full(
             result["cache_skips"].append("synthesize")
         else:
             phase_start = time.time()
-            synth_result = synthesize_charity(ein, raw_repo, charity_repo)
+            synth_result = synthesize_charity(ein, raw_repo, charity_repo, data_repo=data_repo)
             synth_cost = synth_result.get("cost_usd", 0.0)
             result["costs"]["synthesize"] = synth_cost
+            result["regressions"] = synth_result.get("regressions") or []
 
             if not synth_result.get("success"):
                 result["phases"]["synthesize"] = {
@@ -1406,6 +1434,7 @@ def process_charity_full(
                     "issues_count": len(judge_result.get("issues", [])),
                     "time": round(time.time() - phase_start, 1),
                     "cost": judge_cost,
+                    "rich_retried": judge_result.get("rich_retried", False),
                 }
                 result["judge_score"] = judge_result["judge_score"]
                 phases_ran.add("judge")
@@ -1562,7 +1591,7 @@ def main():
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--charities", type=str, help="Path to charity list file")
     group.add_argument("--ein", type=str, help="Single charity EIN")
-    parser.add_argument("--workers", type=int, default=20, help="Number of parallel workers (default: 20)")
+    parser.add_argument("--workers", type=int, default=6, help="Number of parallel workers (default: 6)")
     parser.add_argument("--verbose", action="store_true", help="Show detailed output")
     parser.add_argument("--clean", action="store_true", help="Delete existing data before processing (fresh start)")
     parser.add_argument("--model", type=str, help="Override LLM model (e.g., gpt-5.2, claude-sonnet-4-5)")
@@ -1807,6 +1836,13 @@ def main():
         # Cleanup worker-local resources
         _cleanup_worker_resources()
 
+    # Regression flags: warnings from the non-destructive-write guard, surfaced
+    # for human review (internal artifact under data-pipeline/reports/). Never gates.
+    all_regressions: list[dict] = []
+    for r in results:
+        all_regressions.extend(r.get("regressions") or [])
+    write_synthesize_regressions(all_regressions, scope=[c["ein"] for c in charities])
+
     elapsed = time.time() - start_time
 
     # Calculate cost totals
@@ -1822,43 +1858,45 @@ def main():
     }
     avg_cost = total_cost / len(results) if results else 0
 
-    # Final commit to DoltDB (captures anything since last checkpoint)
+    # Final commit to DoltDB (captures anything since last checkpoint).
+    # Unconditional: an all-failed/budget-capped run still commits any
+    # dirty crawl/extract writes so the next run doesn't inherit a dirty
+    # working set (dolt.commit no-ops on an already-clean set, so this
+    # is safe even when there's nothing new to capture).
     success_count = sum(1 for r in results if r.get("success"))
-    if success_count > 0:
-        checkpoint_note = f" ({checkpoint_count} checkpoints)" if checkpoint_count > 0 else ""
-        commit_hash = dolt.commit(
-            f"Streaming run: {success_count}/{len(results)} charities. "
-            f"Cost: ${total_cost:.2f} (${avg_cost:.4f}/charity){checkpoint_note}",
-            tables=STREAMING_RUN_TABLES,
-        )
-        if commit_hash:
-            print(f"\n✓ Committed to DoltDB: {commit_hash[:8]}")
-        elif checkpoint_count > 0:
-            print(f"\n✓ All changes captured in {checkpoint_count} checkpoint(s)")
+    commit_hash = dolt.commit(
+        final_commit_message(success_count, len(results), total_cost, avg_cost, checkpoint_count),
+        tables=STREAMING_RUN_TABLES,
+    )
+    if commit_hash:
+        print(f"\n✓ Committed to DoltDB: {commit_hash[:8]}")
+    elif checkpoint_count > 0:
+        print(f"\n✓ All changes captured in {checkpoint_count} checkpoint(s)")
 
-        # Tag the run unless --no-tag specified
+    # Tag the run unless --no-tag specified. Don't tag a run where nothing
+    # succeeded — only the commit itself is unconditional.
+    if success_count > 0 and not args.no_tag:
         # Use the final commit hash, or the latest HEAD if all changes were in checkpoints
         tag_ref = commit_hash or "HEAD"
-        if not args.no_tag:
-            # Generate tag name
-            if args.tag:
-                tag_name = args.tag
-            else:
-                timestamp = datetime.now().strftime("%Y-%m-%d-%H%M%S")
-                tag_name = f"run-{timestamp}"
+        # Generate tag name
+        if args.tag:
+            tag_name = args.tag
+        else:
+            timestamp = datetime.now().strftime("%Y-%m-%d-%H%M%S")
+            tag_name = f"run-{timestamp}"
 
-            # Build tag message with run metadata
-            source = os.path.basename(args.charities) if args.charities else f"ein:{args.ein}"
-            scores = [r.get("amal_score") for r in results if r.get("amal_score")]
-            avg_score = sum(scores) / len(scores) if scores else 0
+        # Build tag message with run metadata
+        source = os.path.basename(args.charities) if args.charities else f"ein:{args.ein}"
+        scores = [r.get("amal_score") for r in results if r.get("amal_score")]
+        avg_score = sum(scores) / len(scores) if scores else 0
 
-            tag_message = (
-                f"Pipeline run: {success_count}/{len(results)} charities from {source}\n"
-                f"Cost: ${total_cost:.2f} (${avg_cost:.4f}/charity) | Avg score: {avg_score:.1f}"
-            )
+        tag_message = (
+            f"Pipeline run: {success_count}/{len(results)} charities from {source}\n"
+            f"Cost: ${total_cost:.2f} (${avg_cost:.4f}/charity) | Avg score: {avg_score:.1f}"
+        )
 
-            dolt.tag(tag_name, message=tag_message, ref=tag_ref)
-            print(f"✓ Tagged: {tag_name}")
+        dolt.tag(tag_name, message=tag_message, ref=tag_ref)
+        print(f"✓ Tagged: {tag_name}")
 
     comprehensive_export_count = 0
     comprehensive_export_eligible = 0

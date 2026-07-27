@@ -211,3 +211,53 @@ def test_run_export_quality_check_fails_closed_when_judge_crashes(monkeypatch):
     assert issues
     assert issues[0]["severity"] == "error"
     assert issues[0]["field"] == "judge_execution"
+
+
+class TestPruneOrphanedSourceAttribution:
+    """Source attribution must never outlive the value it describes.
+
+    Income-statement fields are elected from ONE fiscal-year-coherent source
+    (charity_metrics_aggregator._INCOME_STMT_FIELDS). When ProPublica wins that
+    election and has no value for a field, a Charity Navigator attribution
+    written earlier survives while the value it describes is nulled — so the
+    export publishes provenance ("Charity Navigator said 0") for a number that
+    is absent from the file. 35 live charities carried exactly this for
+    fundraising_expenses.
+    """
+
+    def test_drops_attribution_when_elected_value_is_none(self):
+        from export import _prune_orphaned_source_attribution
+        attribution = {
+            "fundraising_expenses": {"source_name": "Charity Navigator", "value": 0},
+            "total_revenue": {"source_name": "ProPublica", "value": 141261},
+        }
+        charity_data = {"fundraising_expenses": None, "total_revenue": 141261}
+        result = _prune_orphaned_source_attribution(attribution, charity_data)
+        assert result == {
+            "total_revenue": {"source_name": "ProPublica", "value": 141261}
+        }
+
+    def test_keeps_attribution_for_a_surviving_zero(self):
+        """A real elected 0 is data, not absence — the guard must test None, not falsiness."""
+        from export import _prune_orphaned_source_attribution
+        attribution = {"fundraising_expenses": {"source_name": "ProPublica", "value": 0}}
+        charity_data = {"fundraising_expenses": 0}
+        result = _prune_orphaned_source_attribution(attribution, charity_data)
+        assert result == attribution
+
+    def test_keeps_attribution_keys_that_are_not_charity_data_fields(self):
+        """candid_seal / claims_zakat_eligible are not metrics keys — never prune them."""
+        from export import _prune_orphaned_source_attribution
+        attribution = {
+            "candid_seal": {"source_name": "Candid", "value": "platinum"},
+            "claims_zakat_eligible": {"source_name": "Charity Website", "value": True},
+        }
+        charity_data = {"total_revenue": 500}
+        result = _prune_orphaned_source_attribution(attribution, charity_data)
+        assert result == attribution
+
+    def test_passes_through_non_dict_inputs_unchanged(self):
+        from export import _prune_orphaned_source_attribution
+        assert _prune_orphaned_source_attribution(None, {"a": 1}) is None
+        attribution = {"total_revenue": {"value": 1}}
+        assert _prune_orphaned_source_attribution(attribution, None) == attribution

@@ -141,6 +141,15 @@ export interface GmgCharity {
   reserveMonths: number | null;
   totalRevenue: number | null;
   fiscalYear: number | null;
+  // Published data-vintage age (score_details.data_confidence.data_age_years).
+  // Computed once by the pipeline at evaluation time — the badge must use
+  // this, not `new Date()`, or every prerendered page recomputes a
+  // different age at hydration than the one baked into the SSR.
+  dataAgeYears: number | null;
+  // Form 990 filing is not required for churches/mosques; the scorer already
+  // exempts these orgs from filing-currency penalties (see
+  // `_check_filing_currency` in the pipeline). Exported as integer 0/1.
+  form990Exempt: boolean;
 
   // financials
   programExpenses: number | null;
@@ -278,6 +287,8 @@ export const adaptCharity = (c: any): GmgCharity => {
     })(),
     totalRevenue: numOrNull(fin?.totalRevenue ?? rn?.financial_deep_dive?.annual_revenue),
     fiscalYear: numOrNull(fin?.fiscalYear),
+    dataAgeYears: numOrNull(sd?.data_confidence?.data_age_years),
+    form990Exempt: !!c?.form990Exempt,
 
     programExpenses: numOrNull(fin?.programExpenses),
     adminExpenses: numOrNull(fin?.adminExpenses),

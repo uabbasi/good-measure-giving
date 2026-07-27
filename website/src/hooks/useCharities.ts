@@ -33,6 +33,8 @@ export interface CharitySummary {
   isMuslimCharity: boolean;
   programExpenseRatio: number | null;
   totalRevenue: number | null;
+  /** Tax year of the financials backing this evaluation (data vintage) */
+  fiscalYear?: number | null;
   lastUpdated: string;
   /** Raw cause area from rich_narrative (e.g., "HUMANITARIAN", "EDUCATION") */
   causeArea?: string | null;
@@ -101,6 +103,7 @@ function summaryToProfile(summary: CharitySummary): CharityProfile {
       adminExpenses: 0,
       fundraisingExpenses: 0,
       programExpenseRatio: summary.programExpenseRatio || 0,
+      fiscalYear: summary.fiscalYear ?? null,
     },
     rawData: {
       name: summary.name,

@@ -43,6 +43,13 @@ MAX_JUDGE_SCORE = 100
 # Content-binding: the exact evaluation surface the judges read. judge_score is
 # only valid for the content it judged; the gate recomputes this hash and
 # fails closed on mismatch.
+#
+# Scope contract: the projection is the PUBLISHED surface (what export.py
+# ships). strategic_narrative / zakat_narrative / rich_strategic_narrative
+# and their lens scores are March-era artifacts with no active generator and
+# are never exported — judging them gated publication on prose donors never
+# see and nothing can regenerate (how ING 77-0412815 became permanently
+# unpublishable). rich_narrative, which IS published, was missing.
 JUDGE_PROJECTION_FIELDS = (
     "amal_score",
     "wallet_tag",
@@ -50,13 +57,30 @@ JUDGE_PROJECTION_FIELDS = (
     "impact_tier",
     "zakat_classification",
     "baseline_narrative",
-    "strategic_narrative",
-    "strategic_score",
-    "zakat_narrative",
-    "zakat_score",
-    "rich_strategic_narrative",
+    "rich_narrative",
     "score_details",
 )
+
+
+def _wallet_tag_from_zakat_claim(claims_zakat_eligible: bool | None) -> str:
+    """Mirror the wallet_tag derivation in src/scorers/v2_scorers.py
+    (`"ZAKAT-ELIGIBLE" if zakat_bonus.charity_claims_zakat else "SADAQAH-ELIGIBLE"`),
+    applied to charity_data.claims_zakat_eligible instead of a freshly
+    re-scored value.
+
+    charity_data.claims_zakat_eligible is written by synthesize.py, a
+    different phase and a different table row than evaluations.wallet_tag
+    (written by baseline.py). Within a single synthesize run they can't
+    drift from metrics_json -- synthesize.py sets the column and dumps
+    metrics_json from the same in-memory object in the same pass. What this
+    check actually catches is evaluations going stale relative to
+    charity_data: synthesize re-ran (writing a new claims_zakat_eligible)
+    but baseline did not re-run alongside it (`--force-phase baseline` was
+    never issued, or a manual data correction touched one row but not the
+    other). None is treated as False, matching the scorer's own
+    `metrics.zakat_claim_detected or False` null-handling.
+    """
+    return "ZAKAT-ELIGIBLE" if claims_zakat_eligible else "SADAQAH-ELIGIBLE"
 
 
 def build_judge_projection(evaluation: dict) -> dict:
@@ -96,6 +120,7 @@ def judge_charity(
     data_repo: CharityDataRepository,
     raw_repo: RawDataRepository,
     charity_repo: CharityRepository | None = None,
+    _retry_attempted: bool = False,
 ) -> dict[str, Any]:
     """Run all judges on a charity's evaluation.
 
@@ -169,14 +194,56 @@ def judge_charity(
         # score_details.judge_issues is stripped — see build_judge_projection).
         "evaluation": build_judge_projection(evaluation),
         "data": charity_data or {},
+        # score/factual/citation/zakat judges all read output["narrative"] —
+        # in their prompt template's "## Narrative Rationale" section, and
+        # for score_judge, in the deterministic _quick_tone_checks backstop.
+        # Without this the prompt rendered that section as a literal "{}"
+        # and the tone-check backstop returned [] on every charity.
+        "narrative": evaluation.get("baseline_narrative") or {},
+        # FactualJudge._quick_checks' program_expense_ratio bounds check
+        # reads output["financials"] — a standalone sanity check (0<=ratio<=1),
+        # not a source-vs-output comparison, so no independence concern.
+        "financials": {"program_expense_ratio": (charity_data or {}).get("program_expense_ratio")},
     }
 
-    # Build context with raw sources
+    # FactualJudge._quick_checks' wallet_tag check: only wallet_tag is fed
+    # here, from an independent source (see _wallet_tag_from_zakat_claim).
+    # amal_score/strategic_score/archetype/strategic_dimensions are
+    # deliberately NOT included — amal_score has no second copy anywhere
+    # in the schema (feeding it would compare evaluations.amal_score to
+    # itself), and the strategic fields can never appear in `evaluation`
+    # at all (JUDGE_PROJECTION_FIELDS excludes them), so feeding them
+    # would be inert. See task-D4c-report.md.
+    #
+    # claims_zakat_eligible is None in three distinct cases: the column is
+    # SQL NULL, the key is missing, or there is no charity_data row at all.
+    # All three mean "unknown", not "not claimed" -- omit the wallet_tag key
+    # entirely rather than coalescing to a positive SADAQAH-ELIGIBLE
+    # assertion, which _quick_checks would otherwise treat as a known source
+    # fact and use to gate publication on an invented value.
+    claims_zakat_eligible = (charity_data or {}).get("claims_zakat_eligible")
+    metrics = (
+        {}
+        if claims_zakat_eligible is None
+        else {"wallet_tag": _wallet_tag_from_zakat_claim(claims_zakat_eligible)}
+    )
+
+    # LLM-prompt exposure: base_judge.py's format_prompt() interpolates this
+    # whole dict into "{context}", which factual_judge.txt / zakat_judge.txt /
+    # score_judge.txt label "## Source Data (Ground Truth)" to their LLM
+    # judges -- so `metrics` above (derived here, not read from a database
+    # row) reaches those prompts as if it were ground truth, including the
+    # zakat judge, which itself adjudicates wallet_tag. Low actual risk: the
+    # prompt already carried charity_data.claims_zakat_eligible verbatim via
+    # "charity_data" below, and after the None-handling above, "metrics" now
+    # omits wallet_tag whenever the source is unknown rather than asserting
+    # one. Noted here so this isn't silently inherited by future readers.
     context = {
         "raw_sources": raw_sources,
         "source_data": raw_sources,  # Alias for crawl_quality_judge
         "charity_data": charity_data,
         "charity": charity,  # From charities table - has city, state, mission
+        "metrics": metrics,
     }
 
     # J-002: Configure all judges explicitly (sample_rate=1.0 for single charity)
@@ -205,6 +272,47 @@ def judge_charity(
         with JudgeOrchestrator(config) as orchestrator:
             validation_result = orchestrator.validate_single(charity_dict, context)
 
+        # Rich-narrative auto-retry: the "score" judge checks whether the
+        # LLM-written rationale (incl. directional program-ratio comparisons,
+        # e.g. "82% is below the 75% benchmark") matches the actual data. That
+        # check is on nondeterministic prose — score_judge itself already runs
+        # 3 consensus rolls because identical narratives flip-flop between
+        # passing and failing. Regenerating the narrative and re-judging once
+        # is worth it when score is the ONLY judge with errors: a mix with
+        # e.g. crawl_quality means the narrative isn't the (only) problem, and
+        # regenerating it wouldn't fix that.
+        # Bound outside the `if` below so the failure path can fold it into
+        # result["cost_usd"] too -- the retry spends money on the LLM call
+        # whether or not the regenerated narrative ends up passing.
+        retry_rich_cost = 0.0
+        error_judges = {v.judge_name for v in validation_result.verdicts if v.errors}
+        if error_judges == {"score"} and not _retry_attempted:
+            from rich_phase import generate_rich_for_pipeline
+
+            rich_retry = generate_rich_for_pipeline(ein, eval_repo, force=True)
+            retry_rich_cost = rich_retry.get("cost_usd", 0.0)
+            if rich_retry.get("success") and not rich_retry.get("skipped"):
+                # Keep phase_cache in sync with the regenerated content -- every
+                # other caller of generate_rich_for_pipeline (rich_phase.py's own
+                # main(), streaming_runner.py) does this immediately on success;
+                # skipping it here left the "rich" cache entry stale relative to
+                # what's actually stored.
+                update_phase_cache(ein, "rich", PhaseCacheRepository(), retry_rich_cost)
+                retried = judge_charity(
+                    ein, eval_repo, data_repo, raw_repo, charity_repo, _retry_attempted=True
+                )
+                retried["cost_usd"] = retried.get("cost_usd", 0.0) + retry_rich_cost
+                retried["rich_retried"] = True
+                return retried
+            # The retry FAILED. rich_narrative_generator clears the stored narrative
+            # on a consistency-validation failure, so `evaluation` (read before the
+            # retry) may no longer describe the row. Re-read before hashing, or we
+            # persist a hash that can never match and the charity is excluded
+            # forever with nothing logged.
+            evaluation = eval_repo.get(ein) or evaluation
+            result["rich_retry_failed"] = rich_retry.get("error") or "rich regeneration failed"
+            print(f"  ⚠ {ein}: rich narrative retry failed — {result['rich_retry_failed']}")
+
         # J-003: Calculate judge_score using deduplicated issue counts
         # Issues sharing the same issue_key are counted only once (highest severity wins)
         deduped_errors, deduped_warnings = validation_result.deduplicated_issues
@@ -232,7 +340,7 @@ def judge_charity(
         result["passed"] = validation_result.passed
         result["error_count"] = error_count
         result["warning_count"] = warning_count
-        result["cost_usd"] = validation_result.total_cost_usd
+        result["cost_usd"] = validation_result.total_cost_usd + retry_rich_cost
         # Bind the score to the content it judged (recomputed from the same
         # evaluation row the gate reads back → round-trip symmetric).
         result["content_hash"] = compute_judge_content_hash(evaluation)
@@ -305,6 +413,8 @@ def main(argv: list[str] | None = None) -> int:
             update_phase_cache(ein, "judge", cache_repo, result.get("cost_usd", 0.0))
             success_count += 1
             total_cost += result.get("cost_usd", 0.0)
+            if result.get("rich_retried"):
+                print("  (rich narrative auto-retried after score-judge-only failure)")
             print(f"  Judge Score: {result['judge_score']}/100")
             print(f"  Passed: {result['passed']}")
             print(f"  Errors: {result['error_count']}")

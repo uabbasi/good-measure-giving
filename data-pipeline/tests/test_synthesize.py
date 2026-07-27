@@ -620,6 +620,18 @@ class TestBeneficiariesStringParsing:
             )
             assert metrics.beneficiaries_served_annually is None
 
+    def test_explicit_null_ummah_gap_data_does_not_crash(self):
+        """Regression (88-2454707): extractor emitted {"ummah_gap_data": null} — must not crash."""
+        from src.parsers.charity_metrics_aggregator import CharityMetricsAggregator
+
+        metrics = CharityMetricsAggregator.aggregate(
+            charity_id=0,
+            ein="12-3456789",
+            cn_profile={"name": "Test Charity"},
+            website_profile={"ummah_gap_data": None},
+        )
+        assert metrics.beneficiaries_served_annually is None
+
     def test_numeric_with_trailing_text(self):
         """'1,000,000 annually' should parse correctly."""
         from src.parsers.charity_metrics_aggregator import CharityMetricsAggregator
@@ -777,3 +789,55 @@ class TestProgramDeduplication:
         assert len(metrics.programs) == 2
         assert "Food" in metrics.programs  # First occurrence kept
         assert "Medical" in metrics.programs
+
+
+class TestPopulationsVerificationStatus:
+    """Deterministic verifier for source_attribution['populations_served'] (S-J-006)."""
+
+    def test_candid_source_always_verified(self):
+        from src.parsers.charity_metrics_aggregator import _populations_verification_status
+
+        assert _populations_verification_status("candid", ["communities"]) == "verified"
+        assert _populations_verification_status("candid", ["Refugees", "Orphans"]) == "verified"
+
+    def test_website_specific_population_verified(self):
+        from src.parsers.charity_metrics_aggregator import _populations_verification_status
+
+        assert _populations_verification_status("website", ["Refugees", "communities"]) == "verified"
+        assert _populations_verification_status("website", ["Orphans"]) == "verified"
+
+    def test_website_generic_only_unverified(self):
+        from src.parsers.charity_metrics_aggregator import _populations_verification_status
+
+        assert _populations_verification_status("website", ["communities"]) == "unverified"
+        assert _populations_verification_status("website", ["underserved communities", "those in need"]) == "unverified"
+        assert _populations_verification_status("website", ["people", "individuals", "everyone"]) == "unverified"
+
+
+class TestProgramRatioBulletproofFallback:
+    """program_expense_ratio computed from raw prog/total when no source supplies it
+    (Al-Furqaan 'mixed' financials regression: 0.85 -> None -> impact crash)."""
+
+    def test_ratio_computed_from_components(self):
+        from src.parsers.charity_metrics_aggregator import CharityMetricsAggregator
+
+        # PP gives prog + total expenses but no pre-computed ratio; no CN ratio.
+        metrics = CharityMetricsAggregator.aggregate(
+            charity_id=0,
+            ein="12-3456789",
+            cn_profile={"name": "Test"},
+            propublica_990={
+                "name": "Test",
+                "program_expenses": 900_000,
+                "total_expenses": 1_000_000,
+            },
+        )
+        assert metrics.program_expense_ratio == 0.9
+
+    def test_no_components_stays_none(self):
+        from src.parsers.charity_metrics_aggregator import CharityMetricsAggregator
+
+        metrics = CharityMetricsAggregator.aggregate(
+            charity_id=0, ein="12-3456789", cn_profile={"name": "Test"}
+        )
+        assert metrics.program_expense_ratio is None

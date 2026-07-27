@@ -18,7 +18,7 @@ Pipeline:
   crawl.py (fetch) → extract.py (parse) → synthesize.py → baseline.py → export.py
 
 Usage:
-    uv run python crawl.py --charities pilot_charities.txt --workers 10
+    uv run python crawl.py --charities pilot_charities.txt --workers 6
     uv run python crawl.py --ein 95-4453134  # Single charity
 """
 
@@ -31,11 +31,14 @@ from threading import Lock
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-from src.collectors.orchestrator import DataCollectionOrchestrator
+from src.collectors.orchestrator import DataCollectionOrchestrator, classify_failure
+from src.constants import SOURCE_TTL_DAYS
 from src.db import PhaseCacheRepository
 from src.db.dolt_client import dolt, tables_for_phases
+from src.db.repository import CharityRepository, RawDataRepository
 from src.utils.charity_loader import load_charities_from_file
 from src.utils.ein_utils import validate_and_format
+from src.utils.freshness import source_freshness_state
 from src.utils.logger import PipelineLogger
 from src.utils.phase_cache_helper import check_phase_cache, update_phase_cache
 from src.utils.worker_pool import WorkerPool
@@ -44,7 +47,78 @@ from src.utils.worker_pool import WorkerPool
 print_lock = Lock()
 
 
-def fetch_charity_data(charity, index, total, orchestrator, logger, verbose=False):
+def select_stale_website_eins(
+    charity_repo: CharityRepository, raw_repo: RawDataRepository, older_than_days: int | None = None
+) -> list[dict]:
+    """
+    Select charities whose 'website' raw_scraped_data row is missing,
+    failed (success=0), or older than the TTL — via source_freshness_state,
+    so CLI selection and in-run freshness decisions agree.
+
+    Args:
+        charity_repo: CharityRepository (injected for testability)
+        raw_repo: RawDataRepository (injected for testability)
+        older_than_days: TTL override in days (default: SOURCE_TTL_DAYS["website"])
+
+    Returns:
+        List of dicts: [{"name", "ein", "website"}, ...] for stale/missing/failed EINs
+    """
+    ttl_days = older_than_days if older_than_days is not None else SOURCE_TTL_DAYS["website"]
+    stale = []
+
+    for charity in charity_repo.get_all():
+        ein = charity["ein"]
+        row = raw_repo.get_by_source(ein, "website")
+        state = source_freshness_state(row, ttl_days)
+        if state in {"missing", "failed", "stale"}:
+            stale.append({"name": charity.get("name"), "ein": ein, "website": charity.get("website")})
+
+    return stale
+
+
+def crawl_freshness_summary(raw_repo: RawDataRepository, eins: list[str]) -> dict[str, dict]:
+    """
+    Per-source freshness counts across a set of EINs, for the run-end report.
+
+    For each of the 6 sources, counts how many of the given EINs have raw
+    data in each freshness state. The "website" entry additionally carries
+    "website_action": the EINs a follow-up --refresh-stale run would pick
+    back up (state in {missing, failed, stale}), each as a dict
+    {"ein", "state", "reason"} where "reason" is the classify_failure()
+    terminal marker for a "failed" row (None if the failure was transient,
+    e.g. rate-limited) and None for "missing"/"stale" (those did not fail
+    with an error).
+
+    Args:
+        raw_repo: RawDataRepository (injected for testability)
+        eins: EINs to summarize (typically the charities processed this run)
+
+    Returns:
+        {source: {"fresh": N, "stale": N, "failed": N, "missing": N, ...}, ...}
+        for each of propublica, charity_navigator, candid, form990_grants,
+        website, bbb.
+    """
+    summary = {}
+    for source, ttl_days in SOURCE_TTL_DAYS.items():
+        counts = {"fresh": 0, "stale": 0, "failed": 0, "missing": 0}
+        website_action = []
+        for ein in eins:
+            row = raw_repo.get_by_source(ein, source)
+            state = source_freshness_state(row, ttl_days)
+            counts[state] += 1
+            if source == "website" and state in {"missing", "failed", "stale"}:
+                reason = None
+                if state == "failed" and row is not None:
+                    reason = classify_failure(row.get("error_message") or row.get("last_failure_reason"))
+                website_action.append({"ein": ein, "state": state, "reason": reason})
+        if source == "website":
+            counts["website_action"] = website_action
+        summary[source] = counts
+
+    return summary
+
+
+def fetch_charity_data(charity, index, total, orchestrator, logger, verbose=False, force_sources=None):
     """
     Fetch raw data for a single charity (worker function for parallel execution).
 
@@ -57,6 +131,8 @@ def fetch_charity_data(charity, index, total, orchestrator, logger, verbose=Fals
         orchestrator: DataCollectionOrchestrator instance
         logger: PipelineLogger instance
         verbose: Show detailed output
+        force_sources: Optional set of source names to force-bypass the
+            freshness/failure gates for (e.g. {"website"} for --refresh-stale)
 
     Returns:
         dict: Result with status, charity info, and fetch report
@@ -75,7 +151,7 @@ def fetch_charity_data(charity, index, total, orchestrator, logger, verbose=Fals
     try:
         # Fetch raw data from all sources (no parsing)
         success, report = orchestrator.fetch_charity_data(
-            ein=charity_ein, website_url=charity_website, charity_name=charity_name
+            ein=charity_ein, website_url=charity_website, charity_name=charity_name, force_sources=force_sources
         )
 
         # FIX #24: Validate crawl output against phase contract
@@ -131,14 +207,30 @@ def fetch_charity_data(charity, index, total, orchestrator, logger, verbose=Fals
         return {"charity": charity_name, "ein": charity_ein, "status": "error", "error": str(e)}
 
 
-def main():
+def build_parser() -> argparse.ArgumentParser:
+    """Build the crawl.py CLI parser. Factored out of main() so both main()
+    and tests can parse argv without running the rest of the pipeline."""
     parser = argparse.ArgumentParser(description="Collect charity data from multiple sources (stored in DoltDB)")
-    group = parser.add_mutually_exclusive_group(required=True)
+    group = parser.add_mutually_exclusive_group(required=False)
     group.add_argument(
         "--charities", type=str, help="Path to charity list file (format: EIN # Name or Name | EIN | Website)"
     )
     group.add_argument("--ein", type=str, help="Single charity EIN to collect (format: XX-XXXXXXX)")
-    parser.add_argument("--workers", type=int, default=10, help="Number of parallel workers (default: 10)")
+    parser.add_argument(
+        "--refresh-stale",
+        action="store_true",
+        help="Force-refresh the website source only. Alone, scans the DB for EINs whose "
+        "website raw data is missing, failed, or stale (see --older-than). Combined with "
+        "--charities/--ein, force-refreshes the website for exactly that scope regardless "
+        "of freshness (staged rollout/canary).",
+    )
+    parser.add_argument(
+        "--older-than",
+        type=int,
+        default=None,
+        help="Staleness TTL in days for --refresh-stale alone (default: SOURCE_TTL_DAYS['website'] = 30)",
+    )
+    parser.add_argument("--workers", type=int, default=6, help="Number of parallel workers (default: 6)")
     parser.add_argument("--verbose", action="store_true", help="Show detailed output (default: concise progress only)")
     parser.add_argument(
         "--pdf-downloads", type=int, default=10, help="Maximum PDFs to download per charity website (default: 10)"
@@ -161,21 +253,76 @@ def main():
         "--phase", type=str, default="P1:Collect", help="Pipeline phase identifier for logging (default: P1:Collect)"
     )
     parser.add_argument("--force", action="store_true", help="Force re-crawl even if cache is valid")
+    return parser
 
-    args = parser.parse_args()
+
+def parse_crawl_args(argv=None) -> argparse.Namespace:
+    """Parse argv, enforcing that at least one of --charities/--ein/--refresh-stale is given."""
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    if not (args.charities or args.ein or args.refresh_stale):
+        parser.error("one of --charities/--ein/--refresh-stale is required")
+    return args
+
+
+def resolve_crawl_scope(args: argparse.Namespace) -> tuple[str, list[str]]:
+    """Pure decision: which charity-selection strategy applies for this run,
+    and the effective --skip source list for the orchestrator.
+
+    Returns (scope, skip_sources):
+      - scope "ein": single charity from --ein (with or without --refresh-stale).
+      - scope "file": exact charities from --charities (with or without
+        --refresh-stale) — no staleness filter applies even in --refresh-stale
+        mode; this is the staged-rollout/canary path.
+      - scope "stale_scan": --refresh-stale alone; DB-wide scan for
+        stale/missing/failed website rows via select_stale_website_eins.
+
+    In --refresh-stale mode (any scope), every non-website source is added to
+    skip_sources so the orchestrator's required_sources collapses to just
+    {"website"} and no other source is fetched or can hard-fail the run.
+    """
+    if args.ein:
+        scope = "ein"
+    elif args.charities:
+        scope = "file"
+    else:
+        scope = "stale_scan"
+
+    skip_sources = list(args.skip or [])
+    if args.refresh_stale:
+        skip_sources += [s for s in SOURCE_TTL_DAYS if s != "website"]
+    return scope, skip_sources
+
+
+def resolve_force_sources(args: argparse.Namespace) -> set[str] | None:
+    """Pure decision: which sources force-bypass freshness/backoff.
+
+    --refresh-stale always force-bypasses "website", regardless of scope
+    (ein/file/stale_scan) -- this is what lets the mode re-crawl a
+    terminally-failed (e.g. captcha) website row instead of respecting its
+    180-day skip. Kept as a separate pure function so main()'s wiring is
+    covered by a fast unit test instead of only exercised at runtime.
+    """
+    return {"website"} if args.refresh_stale else None
+
+
+def main():
+    args = parse_crawl_args()
+    scope, skip_sources = resolve_crawl_scope(args)
 
     # Handle single EIN mode
-    if args.ein:
+    if scope == "ein":
         is_valid, normalized_ein, error = validate_and_format(args.ein)
         if not is_valid:
             print(f"Error: Invalid EIN '{args.ein}': {error}")
             sys.exit(1)
         charities = [{"name": f"EIN {normalized_ein}", "ein": normalized_ein, "website": None}]
-    else:
+    elif scope == "file":
         # Validate charity file exists
         if not Path(args.charities).exists():
             print(f"Error: Charity file not found: {args.charities}")
             sys.exit(1)
+    # scope == "stale_scan": charity list is selected from the DB after the repos are available (see below).
 
     # Initialize logger with appropriate log level and phase
     log_level = "DEBUG" if args.verbose else "INFO"
@@ -194,12 +341,21 @@ def main():
     orchestrator = DataCollectionOrchestrator(
         logger=logger,
         max_pdf_downloads=args.pdf_downloads,
-        skip_sources=args.skip or [],
+        skip_sources=skip_sources,
         include_sources=args.sources or [],
     )
 
-    # Load charities from file if not in single EIN mode
-    if not args.ein:
+    # Load charities: from the DB (scope "stale_scan") or from file (scope "file").
+    # scope "ein": charities were already built above.
+    if scope == "stale_scan":
+        charities = select_stale_website_eins(
+            CharityRepository(), RawDataRepository(), older_than_days=args.older_than
+        )
+        if not charities:
+            print("✓ No stale/missing/failed website rows found. Nothing to refresh.")
+            sys.exit(0)
+        print(f"ℹ --refresh-stale selected {len(charities)} charities with stale/missing/failed website data")
+    elif scope == "file":
         try:
             charities = load_charities_from_file(args.charities, logger=logger)
         except ValueError as e:
@@ -211,19 +367,23 @@ def main():
         if not charities:
             print(f"Error: No valid charities found in {args.charities}")
             sys.exit(1)
+        if args.refresh_stale:
+            print(f"ℹ --refresh-stale scoped to {len(charities)} charities from --charities (website only)")
+    elif args.refresh_stale:  # scope == "ein"
+        print("ℹ --refresh-stale scoped to 1 charity from --ein (website only)")
 
     # Build sources list (6 sources per spec)
     all_sources = ["ProPublica", "Charity Navigator", "Candid", "Form 990 Grants", "Website", "BBB"]
-    if args.skip:
-        source_map = {
-            "propublica": "ProPublica",
-            "charity_navigator": "Charity Navigator",
-            "candid": "Candid",
-            "form990_grants": "Form 990 Grants",
-            "website": "Website",
-            "bbb": "BBB",
-        }
-        skipped_display = [source_map.get(s, s) for s in args.skip]
+    source_map = {
+        "propublica": "ProPublica",
+        "charity_navigator": "Charity Navigator",
+        "candid": "Candid",
+        "form990_grants": "Form 990 Grants",
+        "website": "Website",
+        "bbb": "BBB",
+    }
+    if skip_sources:
+        skipped_display = [source_map.get(s, s) for s in skip_sources]
         active_sources = [s for s in all_sources if s not in skipped_display]
         sources_str = ", ".join(active_sources)
         skipped_str = f" (skipping: {', '.join(skipped_display)})"
@@ -241,7 +401,10 @@ def main():
     # Smart caching: skip charities with valid cache.
     # Disable cache reads/writes when --skip is used so partial-source runs
     # cannot create cache entries that mask full-source requirements later.
-    cache_enabled = len(args.skip or []) == 0
+    # --refresh-stale also disables the gate: it force-bypasses freshness at the
+    # source level, so the charity-level phase cache must not re-skip the very
+    # EINs it selected as stale.
+    cache_enabled = len(args.skip or []) == 0 and not args.refresh_stale
     cache_repo = PhaseCacheRepository()
     cache_skipped = []
 
@@ -256,7 +419,10 @@ def main():
                 charities_to_process.append(charity)
     else:
         charities_to_process = list(charities)
-        print("ℹ Cache disabled for this run (--skip in use)")
+        if args.refresh_stale:
+            print("ℹ Cache disabled for this run (--refresh-stale in use)")
+        else:
+            print("ℹ Cache disabled for this run (--skip in use)")
 
     if cache_skipped:
         print(f"\nSkipped {len(cache_skipped)} charities (cache valid), processing {len(charities_to_process)}\n")
@@ -269,10 +435,20 @@ def main():
     worker_pool = WorkerPool(max_workers=args.workers, logger=logger)
 
     # Create worker function with fixed parameters
+    force_sources = resolve_force_sources(args)
+
     def process_charity(item):
         """Worker function for parallel processing."""
         charity, index = item
-        return fetch_charity_data(charity, index, len(charities_to_process), orchestrator, logger, verbose=args.verbose)
+        return fetch_charity_data(
+            charity,
+            index,
+            len(charities_to_process),
+            orchestrator,
+            logger,
+            verbose=args.verbose,
+            force_sources=force_sources,
+        )
 
     # Prepare items with indices
     charity_items = [(charity, i) for i, charity in enumerate(charities_to_process, 1)]
@@ -285,8 +461,20 @@ def main():
     for success, (charity, index), result_or_error in parallel_results:
         if success:
             results.append(result_or_error)
-            # Update cache on successful crawl
-            if cache_enabled and result_or_error.get("status") == "success":
+            # Invalidate the extract-phase cache whenever this charity's crawl
+            # actually ran (status "success" or "failed") -- not just on overall
+            # success. Overall status is "failed" whenever any *required* source
+            # misses (e.g. website CAPTCHA-blocked), even though the other
+            # sources (CN/candid/form990_grants) can still have fetched genuinely
+            # fresh raw_content in the same run. Gating invalidation on overall
+            # success left that fresh content permanently unparsed: extract.py
+            # trusted the stale cache entry and silently skipped it (real
+            # incident: 5 charities in the 2026-07-23 tranche re-fetched fresh
+            # CN/candid/form990_grants content that sat with parsed_json=NULL
+            # until synthesize.py's empty-parsed_json guard caught it).
+            # "error" (unhandled exception) is excluded: too uncertain what, if
+            # anything, was actually written before the exception.
+            if cache_enabled and result_or_error.get("status") in ("success", "failed"):
                 update_phase_cache(result_or_error["ein"], "crawl", cache_repo)
         else:
             # Exception occurred - create error result
@@ -345,6 +533,22 @@ def main():
         print(f"\nBlocked sites (CAPTCHA/anti-bot): {len(blocked)}")
         for b in blocked:
             print(f"  ✗ {b['ein']}: {b['url']} — {b['reason']}")
+
+    # Per-source freshness report — surfaces staleness that a run summary
+    # otherwise hides (e.g. the 149 stale websites that went unnoticed).
+    freshness = crawl_freshness_summary(RawDataRepository(), [c["ein"] for c in charities_to_process])
+    print("\nSource Freshness:")
+    for source in SOURCE_TTL_DAYS:
+        counts = freshness[source]
+        display = source_map.get(source, source)
+        print(f"  {display}: {counts['fresh']} fresh / {counts['stale']} stale / {counts['failed']} failed / {counts['missing']} missing")
+
+    website_action = freshness["website"]["website_action"]
+    if website_action:
+        print(f"\nWebsite EINs needing refresh (missing/failed/stale): {len(website_action)}")
+        for entry in website_action:
+            reason = entry["reason"] or ""
+            print(f"  {entry['ein']}  [{entry['state']}]  {reason}")
 
     if orchestrator.frozen_sources:
         frozen_str = ", ".join(sorted(orchestrator.frozen_sources))

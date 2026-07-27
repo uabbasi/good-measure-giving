@@ -224,11 +224,13 @@ class RichNarrativeGenerator:
         investment_memo_data = self._assemble_investment_memo_data(ein, baseline)
 
         # 5. Build prompt
+        metrics = self._load_metrics(ein)
         prompt = self._build_prompt(
             baseline=baseline,
             charity_bundle=charity_bundle,
             citation_registry=citation_registry,
             investment_memo_data=investment_memo_data,
+            metrics=metrics,
         )
 
         # 6. Generate with LLM
@@ -248,7 +250,7 @@ class RichNarrativeGenerator:
             return None
 
         # 7. Inject immutable fields from baseline
-        baseline_narrative = baseline.get("baseline_narrative", {})
+        baseline_narrative = baseline.get("baseline_narrative") or {}
         rich_content = self._inject_immutable_fields(rich_content, baseline_narrative, baseline)
         charity_data = self.charity_data_repo.get(ein) or {}
         source_attribution = charity_data.get("source_attribution", {})
@@ -281,15 +283,19 @@ class RichNarrativeGenerator:
             logger.error(f"Consistency validation failed for {ein} (hard failure):")
             for v in validation_result.violations:
                 logger.error(f"  - {v.field}: {v.message}")
-            # Invalidate rich fields to avoid serving stale or hallucinated content.
-            try:
-                self.eval_repo.clear_rich_narrative(ein)
-            except Exception as e:
-                logger.error(f"Failed to clear rich narrative for {ein}: {e}")
+            # Leave any previously-stored, previously-validated rich narrative
+            # in place. A failed regeneration attempt says nothing about the
+            # validity of the content already stored -- it's the last content
+            # that DID pass validation, not stale content. Nothing downstream
+            # is protected by clearing it: the caller's error already blocks
+            # this attempt from being used, and (via judge_phase's retry) the
+            # standing score-judge error keeps the export gate closed either
+            # way. Clearing here only converts a recoverable state (existing
+            # narrative intact, retry can be attempted again later) into
+            # permanent content loss.
             return None
 
         # 9. Sanitize metrics in rich narrative (same safety net as baseline)
-        metrics = self._load_metrics(ein)
         if metrics:
             from baseline import sanitize_narrative_metrics
 
@@ -301,9 +307,25 @@ class RichNarrativeGenerator:
 
         # 9a. Re-inject authoritative fields that sanitizer may have stripped
         # amal_score_rationale is from baseline scoring, not LLM — must survive sanitization
-        baseline_narrative = baseline.get("baseline_narrative", {})
+        baseline_narrative = baseline.get("baseline_narrative") or {}
         if baseline_narrative.get("amal_score_rationale"):
             rich_content["amal_score_rationale"] = baseline_narrative["amal_score_rationale"]
+
+        # 9b. The model sometimes emits an empty explanation inside a dimension
+        # block (citations/improvement filled, explanation "") — a judge error.
+        # Backfill from the baseline's plain-text dimension explanation.
+        base_dims = baseline_narrative.get("dimension_explanations") or {}
+        rich_dims = rich_content.get("dimension_explanations")
+        if isinstance(rich_dims, dict):
+            for dim, block in rich_dims.items():
+                if (
+                    isinstance(block, dict)
+                    and not (block.get("explanation") or "").strip()
+                    and isinstance(base_dims.get(dim), str)
+                    and base_dims[dim].strip()
+                ):
+                    block["explanation"] = base_dims[dim]
+                    logger.warning(f"{ein}: backfilled empty rich {dim} explanation from baseline")
 
         # 10. Store results
         self._store_results(ein, rich_content, validation_result)
@@ -594,6 +616,35 @@ class RichNarrativeGenerator:
         if cn_data:
             cn = cn_data.get("cn_profile", {})
             cn_is_rated = cn.get("cn_is_rated") is True
+            # Income-statement figures are elected from ONE fiscal-year-coherent
+            # source (charity_metrics_aggregator._INCOME_STMT_FIELDS). When
+            # ProPublica wins that election, CN's figures describe a fiscal year
+            # we do not publish — yet they were still handed to the LLM, which
+            # would then write a correctly-cited claim about a number the
+            # pipeline had deliberately declined to use.
+            #
+            # SCOPE: this is NOT the cause of the 34 live "$0.00 per $1 raised"
+            # narratives. That was checked: 27 of those 35 charities have
+            # dataSource=charity_navigator, i.e. CN WON the election, so no
+            # year mismatch was involved. Their orphaned attribution
+            # (sourceAttribution says CN reported 0, elected value is None)
+            # points at two disagreeing profile snapshots rather than the
+            # fiscal-year election, and remains unexplained. This guard closes
+            # a real adjacent hole; it does not close that one.
+            _elected = self.charity_data_repo.get(ein) or {}
+            cn_financials_publishable = self._cn_financials_match_elected_year(
+                cn.get("fiscal_year"), _elected.get("financial_data_tax_year")
+            )
+            if not cn_financials_publishable:
+                logger.info(
+                    f"Withholding CN income-statement figures from narrative prompt for {ein}: "
+                    f"CN fiscal_year={cn.get('fiscal_year')} != elected "
+                    f"tax_year={_elected.get('financial_data_tax_year')}"
+                )
+
+            def _fy_bound(value: Any) -> Any:
+                """Fiscal-year-bound CN figure: offered only if CN won the year."""
+                return value if cn_financials_publishable else None
             data["cn_ratings"] = {
                 # Rating-state flags
                 "cn_is_rated": cn_is_rated,
@@ -607,22 +658,22 @@ class RichNarrativeGenerator:
                 "leadership_score": cn.get("leadership_score") if cn_is_rated else None,
                 # Special badges
                 "beacons": cn.get("beacons", []) if cn_is_rated else [],
-                # Efficiency metrics
-                "fundraising_efficiency": cn.get("fundraising_efficiency"),
-                "working_capital_ratio": cn.get("working_capital_ratio"),
-                # Expense ratios
-                "program_expense_ratio": cn.get("program_expense_ratio"),
-                "admin_expense_ratio": cn.get("admin_expense_ratio"),
-                "fundraising_expense_ratio": cn.get("fundraising_expense_ratio"),
+                # Efficiency metrics (fiscal-year-bound — see _fy_bound above)
+                "fundraising_efficiency": _fy_bound(cn.get("fundraising_efficiency")),
+                "working_capital_ratio": _fy_bound(cn.get("working_capital_ratio")),
+                # Expense ratios (fiscal-year-bound)
+                "program_expense_ratio": _fy_bound(cn.get("program_expense_ratio")),
+                "admin_expense_ratio": _fy_bound(cn.get("admin_expense_ratio")),
+                "fundraising_expense_ratio": _fy_bound(cn.get("fundraising_expense_ratio")),
                 # Governance
                 "independent_board_percentage": cn.get("independent_board_percentage"),
                 "board_size": cn.get("board_size"),
                 # Leadership compensation
                 "ceo_name": cn.get("ceo_name"),
                 "ceo_compensation": cn.get("ceo_compensation"),
-                # Financial totals
-                "total_revenue": cn.get("total_revenue"),
-                "total_expenses": cn.get("total_expenses"),
+                # Financial totals (fiscal-year-bound)
+                "total_revenue": _fy_bound(cn.get("total_revenue")),
+                "total_expenses": _fy_bound(cn.get("total_expenses")),
                 "fiscal_year": cn.get("fiscal_year"),
             }
 
@@ -658,6 +709,28 @@ class RichNarrativeGenerator:
 
         return data
 
+    @staticmethod
+    def _cn_financials_match_elected_year(cn_fiscal_year: Any, elected_tax_year: Any) -> bool:
+        """Whether CN's income-statement figures describe the year we publish.
+
+        The aggregator elects income-statement fields from ONE fiscal-year-
+        coherent source. When ProPublica wins and CN reports a different year,
+        CN's revenue/expense figures and every ratio derived from them belong
+        to a year absent from the published record — so they must not reach the
+        narrative prompt, or the LLM will write a correctly-cited claim about a
+        number the pipeline deliberately declined to use.
+
+        Permissive when either year is unknown: only a *provable* mismatch
+        withholds data, matching the equivalent guard in
+        ``baseline.sanitize_narrative_metrics``.
+        """
+        if cn_fiscal_year is None or elected_tax_year is None:
+            return True
+        try:
+            return int(cn_fiscal_year) == int(elected_tax_year)
+        except (TypeError, ValueError):
+            return True
+
     def _get_raw_source(self, ein: str, source: str) -> Optional[dict]:
         """Get parsed data from a specific raw data source."""
         result = self.raw_data_repo.get_by_source(ein, source)
@@ -672,6 +745,7 @@ class RichNarrativeGenerator:
         charity_bundle: Any,
         citation_registry: Any,
         investment_memo_data: Optional[dict] = None,
+        metrics: Optional[CharityMetrics] = None,
     ) -> str:
         """Build the prompt for rich narrative generation."""
         # Load prompt template
@@ -689,9 +763,16 @@ class RichNarrativeGenerator:
         baseline_context = self._format_baseline_context(baseline)
 
         # Replace placeholders
+        from src.llm.prompt_loader import data_vintage_note
+        from src.scorers.v2_scorers import score_band_label
+
+        fiscal_year = metrics.financial_data_tax_year if metrics else None
+
         prompt = template.replace("{charity_data}", charity_data)
         prompt = prompt.replace("{citation_sources}", citation_sources)
         prompt = prompt.replace("{baseline_context}", baseline_context)
+        prompt = prompt.replace("{score_band}", score_band_label(baseline.get("amal_score")))
+        prompt = prompt.replace("{data_vintage_note}", data_vintage_note(fiscal_year))
 
         return prompt
 
@@ -786,9 +867,35 @@ class RichNarrativeGenerator:
                     )
                 if hasattr(fin, "working_capital_ratio") and fin.working_capital_ratio is not None:
                     lines.append(f"- Working Capital: {fin.working_capital_ratio:.1f} months (use this exact value)")
-                if hasattr(fin, "fundraising_expenses") and fin.fundraising_expenses is not None and fin.total_revenue:
-                    efficiency = fin.fundraising_expenses / fin.total_revenue
-                    lines.append(f"- Fundraising Efficiency: ${efficiency:.2f} per $1 raised (use this exact value)")
+                if hasattr(fin, "fundraising_expenses"):
+                    from baseline import _fundraising_ratio_str
+
+                    ratio_str = _fundraising_ratio_str(fin.fundraising_expenses, fin.total_revenue)
+                    if ratio_str:
+                        lines.append(
+                            f"- Fundraising Efficiency: {ratio_str} per $1 raised (use this exact value)"
+                        )
+
+                # The "Program Ratio" score component may use a cash-adjusted
+                # ratio instead of the raw filed ratio above (e.g. when GIK
+                # in-kind donations inflate revenue) — the narrative must
+                # describe the ratio that actually drove the score, not the
+                # raw one, or it contradicts its own score explanation.
+                program_ratio_component = next(
+                    (
+                        c
+                        for c in (baseline.get("score_details") or {}).get("impact", {}).get("components", [])
+                        if c.get("name") == "Program Ratio" and c.get("evidence")
+                    ),
+                    None,
+                )
+                if program_ratio_component:
+                    lines.append(
+                        f"- Program Ratio score ({program_ratio_component['scored']}/{program_ratio_component['possible']} pts): "
+                        f"{program_ratio_component['evidence']} — this is the ratio the score is based on; "
+                        "if it differs from the Program Expense Ratio above, describe THIS one when explaining the score."
+                    )
+
                 lines.append("\nIf a value is not listed above, do NOT mention that metric at all.\n")
 
             # Add ZAKAT ELIGIBILITY CONSTRAINT
@@ -1225,7 +1332,7 @@ class RichNarrativeGenerator:
 
             lines.append("\n## CHARITY NAVIGATOR RATING CONSTRAINT (CRITICAL)")
             if cn_is_rated and cn_score:
-                lines.append(f"✓ CN Overall Score: {cn_score}/100 — use this exact value.")
+                lines.append(f"✓ CN Overall Score: {round(cn_score, 1)}/100 — use this exact value.")
             else:
                 lines.append("⚠️ This charity is NOT fully rated by Charity Navigator.")
                 lines.append("DO NOT mention any Charity Navigator score, rating, or accountability rating")
@@ -1370,7 +1477,7 @@ class RichNarrativeGenerator:
         if not charity_data:
             return rich_content
 
-        source_attr = charity_data.get("source_attribution", {})
+        source_attr = charity_data.get("source_attribution") or {}
 
         # Helper to extract value from source attribution
         def get_source_value(key: str) -> Optional[float]:

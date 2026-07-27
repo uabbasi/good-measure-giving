@@ -7,18 +7,19 @@ Manages the complete data collection pipeline and stores results in DoltDB.
 import threading
 import time
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 
 from ..constants import (
     CRAWL_INITIAL_BACKOFF_SECONDS,
     CRAWL_MAX_RETRIES,
+    DATA_FULL_CONFIDENCE_MAX_AGE_YEARS,
     FAILURE_TTL_DAYS,
     RETRY_BACKOFF_HOURS,
     SOURCE_TTL_DAYS,
     TERMINAL_FAILURE_MARKERS,
     TERMINAL_FAILURE_TTL_DAYS,
 )
-from ..db import CharityRepository, RawDataRepository
+from ..db import CharityRepository, CrawlAttemptRepository, CrawledPageRepository, RawDataRepository
 from ..db.dolt_client import execute_query
 from ..db.repository import Charity
 from ..parsers.charity_metrics_aggregator import CharityMetrics, CharityMetricsAggregator
@@ -154,6 +155,94 @@ def is_optional_website_failure(candidates: List[str]) -> bool:
     return False
 
 
+def data_age_years(scraped_at, now=None) -> int | None:
+    """Whole years since a raw source was last successfully observed.
+
+    Accepts a datetime or an ISO-ish string (as the DB driver returns
+    `scraped_at`). Returns None when the timestamp is missing/unparseable so
+    callers treat unknown age as "not aged out" (absence is penalized elsewhere).
+    """
+    from datetime import datetime
+
+    if scraped_at is None:
+        return None
+    if now is None:
+        now = datetime.now()
+    if isinstance(scraped_at, str):
+        try:
+            scraped_at = datetime.fromisoformat(scraped_at.replace("Z", "+00:00"))
+        except ValueError:
+            try:
+                scraped_at = datetime.strptime(scraped_at[:19], "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                return None
+    if scraped_at.tzinfo is not None:
+        scraped_at = scraped_at.replace(tzinfo=None)
+    return (now - scraped_at).days // 365
+
+
+def parsed_json_is_meaningful(parsed_json: dict | None) -> bool:
+    """True if any top-level value is a non-empty dict/list (mirrors
+    DataCollectionOrchestrator._is_meaningful_data as a module-level pure fn)."""
+    if not parsed_json:
+        return False
+    for value in parsed_json.values():
+        if isinstance(value, dict) and len(value) > 0:
+            return True
+        if isinstance(value, list) and len(value) > 0:
+            return True
+    return False
+
+
+def grants_has_filings(parsed_json: dict | None) -> bool:
+    """True if a grants observation carries real filing/financial data (not the
+    empty NO_XML sentinel profile that only has name+ein)."""
+    gp = (parsed_json or {}).get("grants_profile") or {}
+    return bool(
+        gp.get("filing_years")
+        or gp.get("domestic_grants")
+        or gp.get("foreign_grants")
+        or gp.get("total_grants")
+        or gp.get("total_revenue")
+        or gp.get("total_expenses")
+    )
+
+
+def is_content_downgrade(
+    source: str,
+    new_parsed_json: dict | None,
+    new_raw_content: str | None,
+    prior_parsed_json: dict | None,
+) -> bool:
+    """True when the new observation is materially thinner than stored prior
+    content — the signal to preserve last-good instead of overwriting.
+
+    Only meaningful when a substantive prior exists; returns False otherwise
+    (a first/no-prior observation is never a downgrade).
+    """
+    new_parsed_json = new_parsed_json or {}
+    prior_parsed_json = prior_parsed_json or {}
+
+    if source == "website":
+        prior_pages = (prior_parsed_json.get("crawl_stats") or {}).get("pages_crawled") or 0
+        new_pages = (new_parsed_json.get("crawl_stats") or {}).get("pages_crawled") or 0
+        if prior_pages <= 0:
+            return False
+        # raw_content is the HOMEPAGE only, fetched separately from the multi-page
+        # crawl — a Cloudflare-fronted site can serve pages fine via curl_cffi while
+        # the sync homepage fetch 403s. Thin homepage HTML is only a downgrade
+        # signal when the crawl did not otherwise improve; a crawl that found MORE
+        # pages than last time is strictly richer no matter what the homepage did.
+        thin_raw = not new_raw_content or len(new_raw_content.strip()) < 500
+        lost_pages = prior_pages >= 3 and new_pages <= max(1, prior_pages // 3)
+        return lost_pages or (thin_raw and new_pages <= prior_pages)
+
+    if source == "form990_grants":
+        return grants_has_filings(prior_parsed_json) and not grants_has_filings(new_parsed_json)
+
+    return parsed_json_is_meaningful(prior_parsed_json) and not parsed_json_is_meaningful(new_parsed_json)
+
+
 # H12: sources frozen out of the default crawl. Existing DB rows are kept as-is;
 # re-enable per-run with crawl.py --sources bbb.
 FROZEN_SOURCES = {"bbb"}
@@ -224,6 +313,8 @@ class DataCollectionOrchestrator:
         # DoltDB repositories
         self.charity_repo = CharityRepository()
         self.raw_data_repo = RawDataRepository()
+        self.crawl_attempt_repo = CrawlAttemptRepository()
+        self.crawled_page_repo = CrawledPageRepository()
 
     def _load_cached_data(self, ein: str, source: str) -> Optional[Dict[str, Any]]:
         """
@@ -314,6 +405,28 @@ class DataCollectionOrchestrator:
 
         return age < timedelta(days=ttl_days)
 
+    @staticmethod
+    def _attempt_clock(row: dict) -> Optional[datetime]:
+        """When this source was last ATTEMPTED, as a datetime (or None).
+
+        Prefers last_attempt_at over scraped_at. scraped_at is the DATA clock
+        and is deliberately frozen when a failed re-crawl preserves last-good
+        content, so using it for backoff meant the retry clock never advanced
+        for exactly the rows preservation protects — and made the 180d terminal
+        TTL measure time since last SUCCESS, so long-blocked sites read as
+        expired and were re-hammered every run. Falls back to scraped_at for
+        pre-migration rows where last_attempt_at is NULL.
+        """
+        raw = row.get("last_attempt_at") or row.get("scraped_at")
+        if not raw:
+            return None
+        if isinstance(raw, str):
+            try:
+                return datetime.fromisoformat(raw.replace("Z", "+00:00"))
+            except ValueError:
+                return None
+        return raw
+
     def _should_skip_failed_source(self, ein: str, source: str) -> Tuple[bool, str]:
         """
         Check if a failed source should be skipped due to backoff or permanent failure.
@@ -334,6 +447,7 @@ class DataCollectionOrchestrator:
             return False, ""
 
         retry_count = row.get("retry_count", 0)
+        attempted_dt = self._attempt_clock(row)
 
         # H5: terminal failure classes (CAPTCHA, not-found) — long TTL, don't re-hammer
         failure_text = " | ".join(
@@ -341,58 +455,33 @@ class DataCollectionOrchestrator:
         )
         terminal_marker = classify_failure(failure_text)
         if terminal_marker:
-            scraped_at = row.get("scraped_at")
-            if scraped_at:
-                try:
-                    if isinstance(scraped_at, str):
-                        scraped_dt = datetime.fromisoformat(scraped_at.replace("Z", "+00:00"))
-                    else:
-                        scraped_dt = scraped_at
-                    failure_age = datetime.now(scraped_dt.tzinfo) - scraped_dt
-                    if failure_age < timedelta(days=TERMINAL_FAILURE_TTL_DAYS):
-                        return True, f"terminal failure ({terminal_marker}), TTL {TERMINAL_FAILURE_TTL_DAYS}d"
-                    self.raw_data_repo.reset_retry_count(ein, source)
-                    return False, ""
-                except (ValueError, TypeError):
-                    pass
+            if attempted_dt:
+                failure_age = datetime.now(attempted_dt.tzinfo) - attempted_dt
+                if failure_age < timedelta(days=TERMINAL_FAILURE_TTL_DAYS):
+                    return True, f"terminal failure ({terminal_marker}), TTL {TERMINAL_FAILURE_TTL_DAYS}d"
+                self.raw_data_repo.reset_retry_count(ein, source)
+                return False, ""
 
         # FIX #10: Permanent failure with TTL — after FAILURE_TTL_DAYS, reset and allow retry
         if retry_count >= CRAWL_MAX_RETRIES:
-            scraped_at = row.get("scraped_at")
-            if scraped_at:
-                try:
-                    if isinstance(scraped_at, str):
-                        scraped_dt = datetime.fromisoformat(scraped_at.replace("Z", "+00:00"))
-                    else:
-                        scraped_dt = scraped_at
-                    failure_age = datetime.now(scraped_dt.tzinfo) - scraped_dt
-                    if failure_age >= timedelta(days=FAILURE_TTL_DAYS):
-                        # Failure is stale — reset retry_count so source can be re-fetched
-                        self.raw_data_repo.reset_retry_count(ein, source)
-                        self.logger.info(
-                            f"Reset permanent failure for {source} (age: {failure_age.days}d, TTL: {FAILURE_TTL_DAYS}d)"
-                        )
-                        return False, ""
-                except (ValueError, TypeError):
-                    pass
+            if attempted_dt:
+                failure_age = datetime.now(attempted_dt.tzinfo) - attempted_dt
+                if failure_age >= timedelta(days=FAILURE_TTL_DAYS):
+                    # Failure is stale — reset retry_count so source can be re-fetched
+                    self.raw_data_repo.reset_retry_count(ein, source)
+                    self.logger.info(
+                        f"Reset permanent failure for {source} (age: {failure_age.days}d, TTL: {FAILURE_TTL_DAYS}d)"
+                    )
+                    return False, ""
             return True, f"permanent failure (retry_count={retry_count})"
 
         # Check backoff window
-        scraped_at = row.get("scraped_at")
-        if not scraped_at:
-            return False, ""
-
-        try:
-            if isinstance(scraped_at, str):
-                scraped_dt = datetime.fromisoformat(scraped_at.replace("Z", "+00:00"))
-            else:
-                scraped_dt = scraped_at
-        except (ValueError, TypeError):
+        if not attempted_dt:
             return False, ""
 
         # Get backoff hours for this retry count
         backoff_hours = RETRY_BACKOFF_HOURS.get(retry_count, 24)
-        age = datetime.now(scraped_dt.tzinfo) - scraped_dt
+        age = datetime.now(attempted_dt.tzinfo) - attempted_dt
 
         if age < timedelta(hours=backoff_hours):
             remaining = timedelta(hours=backoff_hours) - age
@@ -547,12 +636,128 @@ class DataCollectionOrchestrator:
 
         return True
 
+    def _guard_against_content_downgrade(
+        self,
+        ein: str,
+        source: str,
+        existing: Optional[Dict[str, Any]],
+        is_downgrade: Union[bool, Callable[[], bool]],
+        pages_found: Optional[int] = None,
+        pages_with_data: Optional[int] = None,
+    ) -> bool:
+        """Shared "soft-fail instead of overwrite" half of the non-downgrade
+        guard, used by both `_store_raw_data` and `_store_raw_content_only`
+        (Task C8). Callers decide `is_downgrade` themselves: `_store_raw_data`
+        has real parsed_json for the new observation and uses
+        `is_content_downgrade` directly; `_store_raw_content_only` runs
+        before extract.py has parsed anything, so it compares raw content
+        substance instead (see that method for why). The two predicates
+        differ, but the "check the prior row, then soft-fail or let the
+        caller write" sequence around them -- including the freshness
+        window and the crawl_attempts bookkeeping -- is identical, so it
+        lives here once.
+
+        `is_downgrade` may be a plain bool or a zero-arg callable. Passing a
+        callable keeps an expensive predicate (e.g. `is_content_downgrade`,
+        which walks both sides' parsed_json) behind the cheap `existing`/
+        `within_window` checks below instead of it being evaluated eagerly
+        by the caller regardless of whether it'll even be used.
+
+        Returns True when the guard fired: last-good was preserved via
+        `record_soft_fail` and the attempt was recorded, so the caller
+        should stop and treat this as a successful (non-writing)
+        observation. Returns False when there's nothing to guard against --
+        no prior row, prior row itself not successful, prior past the
+        freshness window, or genuinely not a downgrade -- so the caller
+        should proceed to write. A missing prior is never a downgrade:
+        there's nothing to preserve.
+        """
+        if not existing or not existing.get("success"):
+            return False
+        age = data_age_years(existing.get("scraped_at"))
+        within_window = age is None or age <= DATA_FULL_CONFIDENCE_MAX_AGE_YEARS
+        if not within_window:
+            return False
+        if not (is_downgrade() if callable(is_downgrade) else is_downgrade):
+            return False
+
+        reason = f"{source} re-observation thinner than last-good; preserved (age={age}y)"
+        if self.logger:
+            self.logger.warning(f"{ein}: {reason}")
+        self.raw_data_repo.record_soft_fail(ein, source, reason)
+        # Bookkeeping must never be able to undo the preserve it's
+        # recording: a raise here must not fall through to a demotion path.
+        try:
+            self.crawl_attempt_repo.record(
+                ein, source, success=True, failure_reason=reason,
+                pages_found=pages_found, pages_with_data=pages_with_data,
+            )
+        except Exception as e:
+            if self.logger:
+                self.logger.debug(f"crawl history write failed for {ein}: {e}")
+        return True
+
+    # Task C8 FIX 1: _has_content_substance's per-source minimum (500B for
+    # charity_navigator/candid, 50B for propublica/form990_grants) is a fixed
+    # floor -- it says nothing about the prior observation, so a thin
+    # throttle/interstitial body that happens to clear it can still replace
+    # an arbitrarily richer stored row. 2,000 chars is comfortably above the
+    # largest such floor (500) so a prior barely past its own substance
+    # check doesn't get flagged as "rich" by accident, while staying well
+    # below a real HTML profile (10K+) or JSON payload -- i.e. it marks
+    # "prior big enough that a >3x shrink is suspicious," not "prior exists."
+    _THIN_VS_PRIOR_FLOOR = 2_000
+    _THIN_VS_PRIOR_RATIO = 3  # new content at or below 1/3 of the prior counts as thinner
+
+    def _is_thinner_than_prior(
+        self, source: str, raw_content: Optional[str], existing: Optional[Dict[str, Any]]
+    ) -> bool:
+        """True when raw_content is a small fraction of the prior stored
+        raw_content -- the case `_has_content_substance`'s fixed floor can't
+        catch on its own, because a floor is absolute and this needs to be
+        relative to what's already there (a 1KB Cloudflare interstitial
+        clears charity_navigator's 500B floor but still guts an 80KB
+        profile page).
+
+        form990_grants gets its own rule instead of the generic ratio:
+        `NO_XML_SENTINEL` is a legitimate, deliberately short body that
+        `_has_content_substance` explicitly waves through as substance, but
+        a transition from a real filing to the sentinel is exactly the
+        downgrade `is_content_downgrade`'s `grants_has_filings` check exists
+        to catch for the parsed-data path, so it's preserved here too rather
+        than being let through because the sentinel "has substance."
+        """
+        prior_raw = ((existing or {}).get("raw_content") or "").strip()
+        new_raw = (raw_content or "").strip()
+
+        if source == "form990_grants":
+            prior_had_filings = bool(prior_raw) and prior_raw != Form990GrantsCollector.NO_XML_SENTINEL
+            new_is_sentinel_or_empty = not new_raw or new_raw == Form990GrantsCollector.NO_XML_SENTINEL
+            return prior_had_filings and new_is_sentinel_or_empty
+
+        if len(prior_raw) < self._THIN_VS_PRIOR_FLOOR:
+            return False
+        return len(new_raw) <= len(prior_raw) // self._THIN_VS_PRIOR_RATIO
+
     def _store_raw_content_only(self, ein: str, source: str, raw_content: str, content_type: str) -> bool:
         """
         Store raw HTML/JSON/XML without parsing (for fetch-only mode).
 
         FIX #2: Checks content substance before storing.
         FIX #14: Returns success/failure so caller can confirm write.
+        Task C8: this is the only store used for propublica/charity_navigator/
+        candid/form990_grants on the production fetch path
+        (`fetch_charity_data`) -- without a downgrade guard here, a throttled
+        fetch that reports success=True but returns thin/empty content, or
+        content that clears `_has_content_substance`'s fixed floor but is
+        still a small fraction of what's already stored (e.g. a ~1KB
+        interstitial replacing an 80KB profile page), could silently
+        overwrite good stored content, with nothing downstream catching it
+        (Spec B Vector 2). There's no parsed_json for the new observation
+        yet at this phase (extract.py hasn't run), so unlike `_store_raw_data`
+        this guards on raw content substance and relative size rather than
+        calling `is_content_downgrade`, which compares parsed_json on both
+        sides and would always see this phase's parsed_json as empty.
 
         Args:
             ein: Charity EIN
@@ -566,9 +771,26 @@ class DataCollectionOrchestrator:
         if not ein:
             return False
 
+        existing = self.raw_data_repo.get_by_source(ein, source)
+        has_substance = self._has_content_substance(raw_content, source)
+        is_downgrade = (not has_substance) or self._is_thinner_than_prior(source, raw_content, existing)
+
+        # Task C8: a thin/empty fetch, or one thinner than what's already
+        # stored, never overwrites a good prior. If there's nothing to
+        # protect (no prior, or prior wasn't itself successful), fall
+        # through to the original reject-and-log path.
+        if self._guard_against_content_downgrade(ein, source, existing, is_downgrade=is_downgrade):
+            return True
+
         # FIX #2: Reject empty/shell content
-        if not self._has_content_substance(raw_content, source):
-            self.logger.warning(f"Empty/shell content from {source} for {ein} — not marking as succeeded")
+        if not has_substance:
+            if self.logger:
+                self.logger.warning(f"Empty/shell content from {source} for {ein} — not marking as succeeded")
+            try:
+                self.crawl_attempt_repo.record(ein, source, success=False, failure_reason="empty or shell content")
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f"crawl history write failed for {ein}: {e}")
             return False
 
         # FIX #14: Wrap DB write in try/except to confirm success
@@ -581,9 +803,22 @@ class DataCollectionOrchestrator:
                 success=True,  # Fetch succeeded
                 error_message=None,
             )
+            # Task C8: record the attempt here too, so crawl_attempts matches
+            # its "every attempt" docstring instead of being website-only.
+            try:
+                self.crawl_attempt_repo.record(ein, source, success=True, failure_reason=None)
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f"crawl history write failed for {ein}: {e}")
             return True
         except Exception as e:
-            self.logger.error(f"Failed to store raw content for {source}/{ein}: {e}")
+            if self.logger:
+                self.logger.error(f"Failed to store raw content for {source}/{ein}: {e}")
+            try:
+                self.crawl_attempt_repo.record(ein, source, success=False, failure_reason=str(e))
+            except Exception as e2:
+                if self.logger:
+                    self.logger.debug(f"crawl history write failed for {ein}: {e2}")
             return False
 
     def fetch_charity_data(
@@ -591,6 +826,7 @@ class DataCollectionOrchestrator:
         ein: str,
         website_url: Optional[str] = None,
         charity_name: Optional[str] = None,
+        force_sources: Optional[set[str]] = None,
     ) -> Tuple[bool, Dict[str, Any]]:
         """
         Fetch raw data from all sources WITHOUT parsing.
@@ -601,6 +837,10 @@ class DataCollectionOrchestrator:
             ein: EIN in format XX-XXXXXXX (required)
             website_url: Optional website URL for website source
             charity_name: Optional charity name (for BBB lookup)
+            force_sources: Optional set of source names for which BOTH the
+                freshness (TTL) gate and the failure-backoff gate are
+                bypassed, forcing a re-fetch regardless of cached/failed
+                state. Sources not in this set are gated as normal.
 
         Returns:
             Tuple of (success, report)
@@ -617,6 +857,8 @@ class DataCollectionOrchestrator:
         ein_clean = ein.replace("-", "")
         if len(ein_clean) != 9 or not ein_clean.isdigit():
             raise ValueError(f"Invalid EIN format: {ein}. Expected 9 digits (XX-XXXXXXX)")
+
+        force_sources = set(force_sources or ())
 
         website_url = normalize_website_url(website_url)
 
@@ -654,16 +896,18 @@ class DataCollectionOrchestrator:
                 report["sources_skipped"].append(source_name)
                 continue
 
-            # Check TTL - skip if data is fresh
-            if self._is_data_fresh(ein, source_name):
+            # Check TTL - skip if data is fresh (unless force-refreshing this source)
+            if source_name not in force_sources and self._is_data_fresh(ein, source_name):
                 self.logger.debug(f"Skipping {source_name} - data is fresh (within TTL)")
                 report["sources_skipped"] = report.get("sources_skipped", [])
                 report["sources_skipped"].append(f"{source_name} (cached)")
                 report["sources_succeeded"].append(source_name)
                 continue
 
-            # Check backoff for failed sources
-            should_skip, skip_reason = self._should_skip_failed_source(ein, source_name)
+            # Check backoff for failed sources (unless force-refreshing this source)
+            should_skip, skip_reason = (
+                (False, "") if source_name in force_sources else self._should_skip_failed_source(ein, source_name)
+            )
             if should_skip:
                 self.logger.debug(f"Skipping {source_name}: {skip_reason}")
                 report["sources_failed"][source_name] = skip_reason
@@ -736,14 +980,21 @@ class DataCollectionOrchestrator:
 
         website_url = normalize_website_url(website_url)
         if website_url and "website" not in self.skip_sources:
-            should_skip_site, site_skip_reason = self._should_skip_failed_source(ein, "website")
+            force_site = "website" in force_sources
+            should_skip_site, site_skip_reason = (
+                (False, "") if force_site else self._should_skip_failed_source(ein, "website")
+            )
             if should_skip_site:
                 report["sources_failed"]["website"] = site_skip_reason
                 report.setdefault("sources_skipped", []).append(f"website ({site_skip_reason})")
-            elif not self._is_data_fresh(ein, "website"):
+            elif force_site or not self._is_data_fresh(ein, "website"):
                 report["sources_attempted"].append("website")
                 try:
-                    success, data, error = self.website.collect_multi_page(website_url, ein)
+                    # Reaching here means the current website data is stale or a
+                    # prior failure — force-bypass the HTTP cache so the re-crawl
+                    # actually hits the network (fingerprint-block fallback / fresh
+                    # content take effect instead of re-serving the stale shell).
+                    success, data, error = self.website.collect_multi_page(website_url, ein, force=True)
                     if success:
                         # FIX #14: Only mark as succeeded if DB write confirms
                         stored = self._store_raw_data(ein, "website", data)
@@ -758,12 +1009,36 @@ class DataCollectionOrchestrator:
                     else:
                         report["sources_failed"]["website"] = error
                         self.logger.log_data_source_fetch(0, ein, "website", success=False, error=error)
-                        # Store failed attempt in DB to track captcha blocking.
-                        # upsert(success=False) already increments retry_count and
-                        # records last_failure_reason (Task 1) — no explicit
-                        # increment_retry_count here or retry_count advances twice.
-                        self._store_failed_crawl(ein, "website", error or "Unknown error")
-                        self._record_blocked_site(ein, website_url, error)
+                        # Blocker 2B: ANY non-terminal re-crawl failure (rate
+                        # limit, timeout, generic no-data, ...) of a source
+                        # that already has good content must not demote it
+                        # to success=False -- that flip excludes the
+                        # still-valid last-good content from synthesize and
+                        # cascades into a degraded live export within the
+                        # same run. Preserve instead; TERMINAL failures
+                        # (captcha/not-found -> classify_failure non-None)
+                        # and first-time (no prior good row) failures fall
+                        # through to the existing demotion path unchanged.
+                        is_non_terminal = classify_failure(error) is None
+                        if (
+                            is_non_terminal
+                            and (existing := self.raw_data_repo.get_by_source(ein, "website"))
+                            and existing.get("success")
+                        ):
+                            reason = f"website re-crawl transient ({error}); last-good preserved"
+                            self.logger.warning(f"{ein}: {reason}")
+                            self.raw_data_repo.record_soft_fail(ein, "website", reason)
+                            report["sources_succeeded"].append("website")
+                            report.setdefault("sources_soft_failed", []).append(
+                                "website (transient; last-good preserved)"
+                            )
+                        else:
+                            # Store failed attempt in DB to track captcha blocking.
+                            # upsert(success=False) already increments retry_count and
+                            # records last_failure_reason (Task 1) — no explicit
+                            # increment_retry_count here or retry_count advances twice.
+                            self._store_failed_crawl(ein, "website", error or "Unknown error")
+                            self._record_blocked_site(ein, website_url, error)
                 except Exception as e:
                     report["sources_failed"]["website"] = str(e)
                     self.logger.error("Website fetch failed", exception=e, ein=ein)
@@ -1250,6 +1525,38 @@ class DataCollectionOrchestrator:
 
             parsed_json = validate_dict_bounds(parsed_json, ein=ein, log_warnings=True)
 
+        crawled_urls = data.get("crawled_urls", []) if source == "website" else []
+        pages_found = len(crawled_urls) if source == "website" else None
+        pages_with_data = sum(1 for p in crawled_urls if p.get("had_data")) if source == "website" else None
+        # Durable per-page history, independent of the attempt outcome below
+        # -- so a page disappearing between crawls is visible even when the
+        # overall attempt is a soft-fail/preserve or a hard failure. Bookkeeping
+        # must never be able to change the crawl's outcome, so a write failure
+        # here (e.g. a URL too long for the column) is swallowed, not raised.
+        if crawled_urls:
+            try:
+                self.crawled_page_repo.record_pages(ein, crawled_urls)
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f"crawl history write failed for {ein}: {e}")
+
+        # Non-downgrade guard: never replace stored substantive content with a
+        # materially thinner/empty re-observation while the stored content is
+        # still within the freshness window. Preserves last-good (source keeps
+        # counting as succeeded) so the aggregator recomputes from it. Beyond
+        # the window, or with no prior, fall through and write normally.
+        existing = self.raw_data_repo.get_by_source(ein, source)
+        if self._guard_against_content_downgrade(
+            ein, source, existing,
+            # Lazy: only walk both sides' parsed_json once the cheap
+            # existing/within_window checks above have already passed.
+            is_downgrade=lambda: is_content_downgrade(
+                source, parsed_json, raw_content, (existing or {}).get("parsed_json")
+            ),
+            pages_found=pages_found, pages_with_data=pages_with_data,
+        ):
+            return True
+
         # Check if data is meaningful
         is_meaningful = self._is_meaningful_data(parsed_json)
 
@@ -1263,9 +1570,27 @@ class DataCollectionOrchestrator:
                 error_message=None if is_meaningful else "Empty or failed data",
                 raw_content=raw_content,
             )
+            # The upsert already succeeded; a raise from this bookkeeping call
+            # must not be mistaken for a failed store (would demote a good
+            # write to failure via the except block below).
+            try:
+                self.crawl_attempt_repo.record(
+                    ein, source, success=is_meaningful,
+                    failure_reason=None if is_meaningful else "Empty or failed data",
+                    pages_found=pages_found, pages_with_data=pages_with_data,
+                )
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f"crawl history write failed for {ein}: {e}")
             return is_meaningful
         except Exception as e:
             self.logger.error(f"Failed to store raw data for {source}/{ein}: {e}")
+            try:
+                self.crawl_attempt_repo.record(ein, source, success=False, failure_reason=str(e),
+                                                pages_found=pages_found, pages_with_data=pages_with_data)
+            except Exception as e2:
+                if self.logger:
+                    self.logger.debug(f"crawl history write failed for {ein}: {e2}")
             return False
 
     def _store_failed_crawl(self, ein: str, source: str, error: str):
@@ -1291,6 +1616,7 @@ class DataCollectionOrchestrator:
             error_message=error,
             raw_content=None,
         )
+        self.crawl_attempt_repo.record(ein, source, success=False, failure_reason=error)
 
     def _record_blocked_site(self, ein: str, url: Optional[str], error: Optional[str]) -> None:
         """Track CAPTCHA/anti-bot blocked sites for the run-end report (H5)."""
@@ -1428,5 +1754,10 @@ class DataCollectionOrchestrator:
         return metrics
 
     def close(self):
-        """Cleanup method (no-op - DoltDB connections are per-query)."""
-        pass
+        """Release collector resources (DoltDB connections are per-query,
+        nothing to do there). crawl.py calls this once the worker pool has
+        been shut down, so this is the only chance to reach any Playwright
+        renderer a worker thread created and didn't already close itself."""
+        website = getattr(self, "website", None)
+        if website is not None and hasattr(website, "close_all_renderers"):
+            website.close_all_renderers()

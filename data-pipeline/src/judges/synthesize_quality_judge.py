@@ -398,6 +398,34 @@ class SynthesizeQualityJudge(BaseJudge):
 
         return issues
 
+    @staticmethod
+    def _resolve_corroboration_status(charity_data: dict) -> dict:
+        """corroboration_status lives inside metrics_json in the live row, but the
+        top-level projection the judge receives does not carry it. Resolve from
+        either location so an already-corroborated field is actually seen."""
+        cs = charity_data.get("corroboration_status")
+        if not cs:
+            metrics = charity_data.get("metrics_json")
+            if isinstance(metrics, dict):
+                cs = metrics.get("corroboration_status")
+        return cs if isinstance(cs, dict) else {}
+
+    def _is_field_verified(self, field_name: str, charity_data: dict, corroboration: dict) -> bool:
+        """True when any authoritative signal marks the prone field verified:
+        a passed corroboration entry (via the producer's key alias), a per-field
+        semantics verifier stamp, or an explicit verification_status."""
+        from src.validators.hallucination_denylist import corroboration_key_for
+
+        key = corroboration_key_for(field_name)
+        if corroboration.get(key, {}).get("passed"):
+            return True
+        attr = (charity_data.get("source_attribution") or {}).get(field_name) or {}
+        if attr.get("verification_status") == "verified":
+            return True
+        if (attr.get("semantics") or {}).get("verified") is True:
+            return True
+        return False
+
     def _check_hallucination_denylist(
         self, ein: str, charity_data: dict
     ) -> list[ValidationIssue]:
@@ -405,7 +433,7 @@ class SynthesizeQualityJudge(BaseJudge):
         from src.validators.hallucination_denylist import HALLUCINATION_PRONE_FIELDS
 
         issues = []
-        corroboration = charity_data.get("corroboration_status", {})
+        corroboration = self._resolve_corroboration_status(charity_data)
         warning_level_fields = {
             "accepts_zakat",
             "cost_per_beneficiary",
@@ -425,8 +453,7 @@ class SynthesizeQualityJudge(BaseJudge):
             if isinstance(value, (str, list, dict)) and not value:
                 continue
 
-            field_corroboration = corroboration.get(field_name, {})
-            if not field_corroboration.get("passed", False):
+            if not self._is_field_verified(field_name, charity_data, corroboration):
                 self.add_issue(
                     issues,
                     Severity.WARNING if field_name in warning_level_fields else Severity.INFO,

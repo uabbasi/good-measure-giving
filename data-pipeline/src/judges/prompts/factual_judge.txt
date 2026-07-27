@@ -51,6 +51,11 @@ Respond with a JSON object:
 ## Severity Guidelines
 - **error**: Claim significantly contradicts source data (>5% difference for percentages, >10% for dollar amounts)
   Examples: Narrative says 82.7% but source shows 75.2% (ERROR - 10% difference)
+- **error**: The narrative states a specific numeric value for a field that is
+  null or absent in the source data. This is fabrication, not an
+  unverifiable claim — a number that no source reported must never appear
+  in donor-facing prose, and a citation attributing it to a source that
+  did not report it is a compounding error.
 - **warning**: Claim can't be verified (no corresponding source data) OR minor discrepancy (1-5%)
 - **info**: Minor formatting/rounding difference (<1%) that doesn't change meaning
   Examples: 75.2% vs 75.21% (INFO - just rounding), $816K vs $816,038 (INFO)

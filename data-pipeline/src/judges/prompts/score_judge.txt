@@ -21,14 +21,29 @@ The scores are deterministic (calculated by scoring algorithms). Your job is to 
 
 1. **Rationale Accuracy**: Does the narrative correctly explain WHY the score was assigned?
 2. **Consistency**: Is the rationale internally consistent with the score level?
-3. **Completeness**: Does the rationale mention the key factors that affected the score?
+3. **Completeness**: Does the rationale name the DECISIVE factor(s) — the one or
+   two components that most determined the band?
 
-Score interpretation (GMG score is 0-100):
-- 75-100: Exceptional - rationale should highlight outstanding qualities
-- 60-74: Good - rationale should note strengths with minor concerns
-- 45-59: Average - rationale should be balanced, noting both strengths and weaknesses
-- 30-44: Below average - rationale should explain the concerns
-- 0-29: Poor - rationale should clearly explain the serious issues
+**Completeness is deliberately narrow.** The rationale is a 1-2 sentence donor
+summary, NOT a component-by-component audit. It cannot and should not enumerate
+every dimension. Do NOT flag a rationale merely for omitting a component:
+- Omitting a component that scored WELL, or a minor/secondary factor, is FINE —
+  never flag it. A rationale that highlights the two biggest strengths and
+  skips the rest is complete.
+- The ONLY completeness gap worth flagging is when the rationale omits the
+  DOMINANT limiting factor of a below-par score — i.e. a Below Average or
+  Average score whose rationale reads positive because it left out the single
+  component that actually dragged the band down. That omission makes the
+  rationale misleading; flag it. Everything else is acceptable.
+
+Score interpretation (GMG score is 0-100; these are the PUBLISHED band
+thresholds donors see — the same bands the narrative generator is contracted
+to match):
+- 80-100: High - rationale should highlight outstanding qualities
+- 65-79: Above Average - rationale should note strengths with named caveats
+- 50-64: Average - rationale should be balanced, noting both strengths and weaknesses
+- 0-49: Below Average - rationale must lead with the specific limiting factors;
+  praise-first framing contradicts the band
 
 ## GMG Score Dimensions (3-dimension framework)
 
@@ -40,6 +55,35 @@ The GMG score is composed of two dimensions plus risk:
 
 A dimension score at its maximum (e.g., 50/50) IS "perfect" for that dimension - this is accurate language.
 Do NOT flag rationales that call a maxed-out dimension "perfect" as misleading.
+
+The band table above applies ONLY to the composite 0-100 GMG score. NEVER
+apply it to the 0-50 Impact/Alignment dimension scores — a 35/50 dimension is
+a mid-high dimension score, not "Below Average". The published impact_tier is
+derived from the COMPOSITE score, not from the Impact dimension.
+
+Data vintage: the narrative is contracted to describe financials as "dated"
+whenever the backing filing is 3 or more years old (e.g., FY2023 or earlier
+as of 2026) — and to use deliberately ALARMED language for it ("red flag",
+"treat with caution", "raises accountability questions"). Do NOT flag
+vintage disclosures, however strongly worded, as inconsistent with the
+score or band — they are required language, not a tone problem.
+
+## What "consistent" means (read carefully — common false positives)
+
+- A rationale that LEADS WITH CONCERNS and limiting factors for a Below
+  Average (0-49) score is CORRECT and consistent. Never flag negative or
+  concern-led tone as "inconsistent with" a low score or a BELOW_AVERAGE
+  impact tier — that tone is exactly what the low band requires.
+- Flag a tone mismatch ONLY when tone and band point in OPPOSITE
+  directions: praise-first prose for a 0-49 score, or condemnation-first
+  prose for an 80+ score.
+- `confidence_tier` / Data Confidence measures how VERIFIABLE the data is,
+  NOT how good the charity is. A HIGH confidence tier with a low score
+  means "we are confident this charity scores low." Negative prose NEVER
+  contradicts a HIGH confidence tier. Do not compare narrative tone
+  against the confidence tier at all.
+- Do not flag a balanced rationale for an Average (50-64) score as
+  "not fully supporting" the score — balance IS the required framing.
 
 ## Output Format
 
@@ -62,14 +106,39 @@ Respond with a JSON object:
 }
 ```
 
+## What is (and is NOT) an ERROR
+
+An ERROR is reserved for TWO things only:
+1. **Band/composite contradiction**: the rationale's overall verdict points the
+   opposite way from the composite 0-100 GMG band (e.g., glowing praise for a
+   40, or condemnation of an 85).
+2. **A factual or arithmetic falsehood**: a stated number or comparison that is
+   objectively wrong (e.g., "85.7% is lower than the 82.9% median" — 85.7 > 82.9;
+   "claims high transparency" when transparency is explicitly NONE/0).
+
+Everything else is NOT an error. In particular, a donor-facing rationale is a
+1-2 sentence SUMMARY, not a component-by-component audit. Do NOT raise an error
+(or a warning) merely because the narrative's emphasis differs from an
+INDIVIDUAL component's sub-score:
+- "strong program spending" alongside a Program Ratio of 3/5 is fine — the
+  narrative is characterizing, not quoting the sub-score.
+- "focus on underserved areas" alongside a low Underserved-Space component is
+  fine — the narrative describes the mission, the component measures a specific
+  rubric axis; they are different lenses, not a contradiction.
+- Mentioning a real limitation ("limited outcome tracking") even when the
+  Evidence component happens to score high is fine unless it is factually false.
+Only elevate to error when the mismatch is a BAND-level or FACTUAL falsehood
+per (1)/(2) above, never a component-emphasis difference.
+
 ## Severity Guidelines
-- **error**: Rationale contradicts the score (e.g., glowing praise for a 40 score)
-- **warning**: Rationale is incomplete (missing key factors that affected score)
-- **info**: Minor tone mismatch or could be clearer
+- **error**: Only (1) or (2) above.
+- **warning**: Rationale omits the DOMINANT limiting factor of a below-par
+  score, making it read more positive than the band warrants. Never a warning
+  merely because a rationale doesn't list every component.
+- **info**: Minor tone/emphasis polish. Optional, not a defect.
 
 **Important**: Do NOT penalize the narrative for not mentioning data quality issues
 (EIN mismatches, low confidence discoveries, etc.) from the source data. The narrative
 is generated before quality validation runs, so it cannot anticipate these issues.
-Only flag issues where the narrative contradicts or misrepresents the SCORES themselves.
 
 Only report actual issues. If all rationales are appropriate, return empty issues array.

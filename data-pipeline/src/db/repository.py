@@ -261,6 +261,10 @@ class RawDataRepository:
         raw_content of a previously successful row: the failure is recorded
         via success/error_message/last_failure_reason/retry_count while the
         last-good content is preserved (C1 data-safety fix).
+
+        Every call advances last_attempt_at (the attempt clock) — even when
+        content is preserved — while scraped_at (the data-age clock) only
+        advances when new content is actually written (blocker 2A).
         """
         data = {
             "charity_ein": charity_ein,
@@ -280,19 +284,34 @@ class RawDataRepository:
         existing = self.get_by_source(charity_ein, source)
 
         if existing:
+            preserved_content = False
             if not success:
                 data["retry_count"] = (existing.get("retry_count") or 0) + 1
-                if existing.get("success"):
+                # Check content itself, not the success flag: a PRIOR failure
+                # already flips success to False, so gating on existing.success
+                # only protects the first consecutive failure — a second
+                # failure in a row would then wipe parsed_json even though
+                # real content still sits in this row (real incident: EIN
+                # 11-3013369's 45-key website_profile got wiped to {} by a
+                # second CAPTCHA failure while raw_content, never gated on
+                # success, survived untouched).
+                if existing.get("parsed_json") or existing.get("raw_content"):
                     # Never clobber last-good content with a failure record
                     data.pop("parsed_json", None)
                     data.pop("raw_content", None)
+                    preserved_content = True
             # Update existing row
             set_clause = ", ".join([f"{k} = %s" for k in data.keys() if k not in ("charity_ein", "source")])
             values = [v for k, v in data.items() if k not in ("charity_ein", "source")]
             values.extend([charity_ein, source])
 
+            # Only advance the observation timestamp when we actually wrote new
+            # content; preserving last-good keeps scraped_at at the last
+            # successful observation so its age (carry-forward bound) stays true.
+            scraped_clause = "" if preserved_content else ", scraped_at = CURRENT_TIMESTAMP"
             execute_query(
-                f"UPDATE raw_scraped_data SET {set_clause}, scraped_at = CURRENT_TIMESTAMP WHERE charity_ein = %s AND source = %s",
+                f"UPDATE raw_scraped_data SET {set_clause}{scraped_clause}, last_attempt_at = CURRENT_TIMESTAMP "
+                "WHERE charity_ein = %s AND source = %s",
                 tuple(values),
                 fetch="none",
             )
@@ -301,8 +320,8 @@ class RawDataRepository:
                 data["retry_count"] = 1
             # Insert new row
             data["id"] = _generate_uuid()
-            columns = list(data.keys())
-            placeholders = ", ".join(["%s"] * len(columns))
+            columns = [*data.keys(), "last_attempt_at"]
+            placeholders = ", ".join(["%s"] * len(data)) + ", CURRENT_TIMESTAMP"
 
             execute_query(
                 f"INSERT INTO raw_scraped_data ({', '.join(columns)}) VALUES ({placeholders})",
@@ -310,21 +329,57 @@ class RawDataRepository:
                 fetch="none",
             )
 
+    def record_soft_fail(self, charity_ein: str, source: str, reason: str) -> None:
+        """Record a thin/empty re-observation without downgrading last-good.
+
+        Bumps retry_count, last_failure_reason, and last_attempt_at (the
+        attempt clock) but leaves parsed_json, raw_content, success, and
+        scraped_at (the data-age clock) untouched — the stored last-good
+        content stays authoritative and keeps its original observation age.
+        Used by the orchestrator when a re-crawl returns materially less than
+        the stored content and the stored content is still within the
+        freshness window. Advancing last_attempt_at lets the streaming
+        runner's re-crawl trigger back off instead of re-crawling this row on
+        every single run (blocker 2A).
+        """
+        existing = self.get_by_source(charity_ein, source)
+        if not existing:
+            return
+        retry = (existing.get("retry_count") or 0) + 1
+        execute_query(
+            "UPDATE raw_scraped_data SET retry_count = %s, last_failure_reason = %s, "
+            "last_attempt_at = CURRENT_TIMESTAMP "
+            "WHERE charity_ein = %s AND source = %s",
+            (retry, reason, charity_ein, source),
+            fetch="none",
+        )
+
     def increment_retry_count(self, ein: str, source: str, error_message: str) -> int:
-        """Increment retry count for a failed source and return new count."""
+        """Increment retry count for a failed source and return new count.
+
+        Stamps last_attempt_at (the attempt clock) on every write, matching
+        upsert() and record_soft_fail() — otherwise non-website source
+        failures (the only callers of this method) never advance the clock
+        that _should_skip_failed_source() backoff/TTL logic reads, and fall
+        back to scraped_at (the frozen data clock) forever.
+        """
         existing = self.get_by_source(ein, source)
         current_count = (existing.get("retry_count") or 0) if existing else 0
         new_count = current_count + 1
 
         if existing:
             execute_query(
-                "UPDATE raw_scraped_data SET retry_count = %s, success = FALSE, error_message = %s, last_failure_reason = %s WHERE charity_ein = %s AND source = %s",
+                "UPDATE raw_scraped_data SET retry_count = %s, success = FALSE, error_message = %s, "
+                "last_failure_reason = %s, last_attempt_at = CURRENT_TIMESTAMP "
+                "WHERE charity_ein = %s AND source = %s",
                 (new_count, error_message, error_message, ein, source),
                 fetch="none",
             )
         else:
             execute_query(
-                "INSERT INTO raw_scraped_data (id, charity_ein, source, success, error_message, last_failure_reason, retry_count, parsed_json) VALUES (%s, %s, %s, FALSE, %s, %s, %s, %s)",
+                "INSERT INTO raw_scraped_data (id, charity_ein, source, success, error_message, "
+                "last_failure_reason, retry_count, parsed_json, last_attempt_at) "
+                "VALUES (%s, %s, %s, FALSE, %s, %s, %s, %s, CURRENT_TIMESTAMP)",
                 (_generate_uuid(), ein, source, error_message, error_message, new_count, "{}"),
                 fetch="none",
             )
@@ -1557,32 +1612,39 @@ class PhaseCacheRepository:
         return {row["phase"]: row["count"] for row in rows}
 
 
-class ExportExclusionRepository:
-    """Audit trail of charities excluded from export by the judge-score publish gate.
-
-    Append-only: PK (charity_ein, excluded_at) keeps one row per gate event.
-    Table is created lazily (memoized per process); the same DDL must appear in
-    the generated dolt_schema.sql.
+class _LazyTableRepository:
+    """Mixin for repositories whose table is created lazily on first use
+    instead of via migration (memoized per process, once per subclass).
+    Subclasses set _ddl to their CREATE TABLE IF NOT EXISTS statement; the
+    same DDL must appear in the generated dolt_schema.sql.
     """
 
     _table_ensured = False
+    _ddl: str = ""
 
     def ensure_table(self) -> None:
-        if ExportExclusionRepository._table_ensured:
+        cls = type(self)
+        if cls._table_ensured:
             return
-        execute_query(
-            """
-            CREATE TABLE IF NOT EXISTS export_exclusions (
-                charity_ein VARCHAR(12) NOT NULL,
-                judge_score INT,
-                reason TEXT,
-                excluded_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                PRIMARY KEY (charity_ein, excluded_at)
-            )
-            """,
-            fetch="none",
+        execute_query(cls._ddl, fetch="none")
+        cls._table_ensured = True
+
+
+class ExportExclusionRepository(_LazyTableRepository):
+    """Audit trail of charities excluded from export by the judge-score publish gate.
+
+    Append-only: PK (charity_ein, excluded_at) keeps one row per gate event.
+    """
+
+    _ddl = """
+        CREATE TABLE IF NOT EXISTS export_exclusions (
+            charity_ein VARCHAR(12) NOT NULL,
+            judge_score INT,
+            reason TEXT,
+            excluded_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (charity_ein, excluded_at)
         )
-        ExportExclusionRepository._table_ensured = True
+        """
 
     def record(self, ein: str, judge_score: int | None, reason: str) -> None:
         """Record one exclusion event for a charity."""
@@ -1599,6 +1661,149 @@ class ExportExclusionRepository:
             execute_query(
                 "SELECT * FROM export_exclusions WHERE charity_ein = %s ORDER BY excluded_at DESC",
                 (ein,),
+            )
+            or []
+        )
+
+
+class CrawlAttemptRepository(_LazyTableRepository):
+    """Append-only log of every collection attempt per (charity, source).
+
+    raw_scraped_data holds only current state (one row per charity+source,
+    overwritten on each attempt), so a failed-then-recovered attempt (or a
+    thin re-observation preserved by the non-downgrade guard) leaves no
+    trace once a later attempt succeeds. This table is the durable history:
+    one row per attempt, success or failure.
+    """
+
+    _ddl = """
+        CREATE TABLE IF NOT EXISTS crawl_attempts (
+            charity_ein VARCHAR(12) NOT NULL,
+            source VARCHAR(50) NOT NULL,
+            attempted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            success TINYINT(1) NOT NULL,
+            failure_reason TEXT,
+            pages_found INT,
+            pages_with_data INT,
+            PRIMARY KEY (charity_ein, source, attempted_at)
+        )
+        """
+
+    def record(
+        self,
+        ein: str,
+        source: str,
+        success: bool,
+        failure_reason: str | None = None,
+        pages_found: int | None = None,
+        pages_with_data: int | None = None,
+    ) -> None:
+        """Record one attempt. pages_found/pages_with_data only apply to
+        multi-page sources (website); leave None for single-document sources."""
+        self.ensure_table()
+        execute_query(
+            """
+            INSERT INTO crawl_attempts
+                (charity_ein, source, success, failure_reason, pages_found, pages_with_data)
+            VALUES (%s, %s, %s, %s, %s, %s)
+            """,
+            (ein, source, success, failure_reason, pages_found, pages_with_data),
+            fetch="none",
+        )
+
+    def get_for_charity(self, ein: str, source: str | None = None) -> list[dict]:
+        """Return attempt history for a charity, newest first."""
+        self.ensure_table()
+        if source:
+            return (
+                execute_query(
+                    "SELECT * FROM crawl_attempts WHERE charity_ein = %s AND source = %s "
+                    "ORDER BY attempted_at DESC",
+                    (ein, source),
+                )
+                or []
+            )
+        return (
+            execute_query(
+                "SELECT * FROM crawl_attempts WHERE charity_ein = %s ORDER BY attempted_at DESC",
+                (ein,),
+            )
+            or []
+        )
+
+
+class CrawledPageRepository(_LazyTableRepository):
+    """Tracks per-page presence across website crawls, so a page appearing
+    or disappearing between runs is visible instead of silently lost when
+    the next crawl overwrites raw_scraped_data's current-state row.
+
+    One row per (charity_ein, url); last_seen_at advances on every crawl
+    that visits the page, times_seen counts how many crawls have. A page
+    absent from the latest crawl is detectable by comparing last_seen_at
+    against that crawl's crawl_attempts.attempted_at.
+    """
+
+    _ddl = """
+        CREATE TABLE IF NOT EXISTS crawled_pages (
+            charity_ein VARCHAR(12) NOT NULL,
+            url VARCHAR(500) NOT NULL,
+            first_seen_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            last_seen_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            had_data TINYINT(1),
+            times_seen INT NOT NULL DEFAULT 1,
+            PRIMARY KEY (charity_ein, url)
+        )
+        """
+
+    def record_pages(self, ein: str, pages: list[dict]) -> None:
+        """Upsert one row per page: {"url": str, "had_data": bool}. New
+        pages get first_seen_at=now; previously-seen pages bump
+        last_seen_at + times_seen and refresh had_data."""
+        # crawled_pages.url is VARCHAR(500). A long sitemap/BFS query string
+        # would raise into the caller's success path and demote a good crawl.
+        rows = [
+            (ein, page["url"], bool(page.get("had_data")))
+            for page in pages
+            if page.get("url") and len(page["url"]) <= 500
+        ]
+        if not rows:
+            return
+        self.ensure_table()
+        placeholders = ", ".join(["(%s, %s, %s)"] * len(rows))
+        params = tuple(value for row in rows for value in row)
+        execute_query(
+            f"""
+            INSERT INTO crawled_pages (charity_ein, url, had_data)
+            VALUES {placeholders}
+            ON DUPLICATE KEY UPDATE
+                last_seen_at = CURRENT_TIMESTAMP,
+                had_data = VALUES(had_data),
+                times_seen = times_seen + 1
+            """,
+            params,
+            fetch="none",
+        )
+
+    def get_for_charity(self, ein: str) -> list[dict]:
+        """Return every page ever seen for a charity, most recently seen first."""
+        self.ensure_table()
+        return (
+            execute_query(
+                "SELECT * FROM crawled_pages WHERE charity_ein = %s ORDER BY last_seen_at DESC",
+                (ein,),
+            )
+            or []
+        )
+
+    def get_missing_since_last_crawl(self, ein: str, latest_attempted_at) -> list[dict]:
+        """Pages seen in a past crawl but not touched by the most recent one
+        (last_seen_at strictly before it) -- i.e. pages that disappeared."""
+        self.ensure_table()
+        return (
+            execute_query(
+                "SELECT * FROM crawled_pages WHERE charity_ein = %s AND last_seen_at < %s "
+                "ORDER BY last_seen_at DESC",
+                (ein, latest_attempted_at),
             )
             or []
         )

@@ -137,6 +137,27 @@ CREATE TABLE `citations` (
   CONSTRAINT `fk_citation_charity` FOREIGN KEY (`charity_ein`) REFERENCES `charities` (`ein`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_bin;
 
+CREATE TABLE `crawl_attempts` (
+  `charity_ein` varchar(12) NOT NULL,
+  `source` varchar(50) NOT NULL,
+  `attempted_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `success` tinyint(1) NOT NULL,
+  `failure_reason` text,
+  `pages_found` int,
+  `pages_with_data` int,
+  PRIMARY KEY (`charity_ein`,`source`,`attempted_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_bin;
+
+CREATE TABLE `crawled_pages` (
+  `charity_ein` varchar(12) NOT NULL,
+  `url` varchar(500) NOT NULL,
+  `first_seen_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_seen_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `had_data` tinyint(1),
+  `times_seen` int NOT NULL DEFAULT '1',
+  PRIMARY KEY (`charity_ein`,`url`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_bin;
+
 CREATE TABLE `evaluations` (
   `charity_ein` varchar(12) NOT NULL,
   `amal_score` int,
@@ -254,6 +275,7 @@ CREATE TABLE `raw_scraped_data` (
   `error_message` text,
   `retry_count` int DEFAULT '0',
   `last_failure_reason` text,
+  `last_attempt_at` timestamp,
   PRIMARY KEY (`id`),
   KEY `idx_raw_charity_ein` (`charity_ein`),
   KEY `idx_raw_source` (`source`),

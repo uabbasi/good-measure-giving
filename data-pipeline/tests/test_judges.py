@@ -7,13 +7,16 @@ Tests cover:
 - URL verifier caching
 """
 
-import json
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 import pytest
-
+from src.judges.citation_judge import CitationJudge
+from src.judges.cross_lens_judge import CrossLensJudge
+from src.judges.factual_judge import FactualJudge
+from src.judges.narrative_quality_judge import NarrativeQualityJudge
+from src.judges.orchestrator import BatchResult, JudgeOrchestrator
 from src.judges.schemas.config import JudgeConfig
 from src.judges.schemas.verdict import (
     CharityValidationResult,
@@ -21,15 +24,9 @@ from src.judges.schemas.verdict import (
     Severity,
     ValidationIssue,
 )
-from src.judges.factual_judge import FactualJudge
-from src.judges.citation_judge import CitationJudge
-from src.judges.cross_lens_judge import CrossLensJudge
-from src.judges.narrative_quality_judge import NarrativeQualityJudge
 from src.judges.score_judge import ScoreJudge
-from src.judges.zakat_judge import ZakatJudge
 from src.judges.url_verifier import FetchResult, URLCache, URLVerifier
-from src.judges.orchestrator import BatchResult, JudgeOrchestrator
-
+from src.judges.zakat_judge import ZakatJudge
 
 # =============================================================================
 # Schema Tests
@@ -432,17 +429,89 @@ class TestCitationJudgeStructural:
         assert "citation_2" in info_issues[0].field
 
 
+class TestScoreJudgeConsensus:
+    """k=3 majority consensus suppresses nondeterministic single-roll errors."""
+
+    def _judge_with_rolls(self, roll_error_flags):
+        """Build a ScoreJudge whose LLM rolls yield errors per roll_error_flags."""
+        from src.judges.score_judge import LLMScoreResult, ScoreJudge
+        from src.judges.schemas.verdict import ValidationIssue
+
+        judge = ScoreJudge(JudgeConfig())
+        seq = []
+        for has_err in roll_error_flags:
+            issues = []
+            if has_err:
+                issues.append(ValidationIssue(Severity.ERROR, "amal_score_rationale", "contradiction"))
+            seq.append(LLMScoreResult(issues=issues, scores_checked=1, rationales_valid=1, cost=0.0))
+        calls = {"n": 0}
+
+        def fake(output, context):
+            r = seq[calls["n"]]
+            calls["n"] += 1
+            return r
+
+        judge._verify_rationales_with_llm = fake
+        return judge
+
+    def _out(self):
+        return {"ein": "00-0000000", "evaluation": {"amal_score": 60}, "narrative": {}}
+
+    def test_single_roll_error_is_suppressed(self):
+        judge = self._judge_with_rolls([True, False, False])  # minority
+        verdict = judge.validate(self._out(), {})
+        assert verdict.passed is True
+        assert not any(i.severity == Severity.ERROR for i in verdict.issues)
+
+    def test_majority_error_stands(self):
+        judge = self._judge_with_rolls([True, True, False])  # majority
+        verdict = judge.validate(self._out(), {})
+        assert verdict.passed is False
+        assert any(i.severity == Severity.ERROR for i in verdict.issues)
+
+    def test_unanimous_clean_passes(self):
+        judge = self._judge_with_rolls([False, False, False])
+        verdict = judge.validate(self._out(), {})
+        assert verdict.passed is True
+
+
+class TestScoreJudgeFailsClosed:
+    """A judge that completed no consensus roll must never report a clean pass."""
+
+    def _minimal_score_judge_output(self):
+        return {"ein": "00-0000000", "evaluation": {"amal_score": 60}, "narrative": {}}
+
+    def _minimal_score_judge_context(self):
+        return {}
+
+    def test_all_rolls_failing_produces_an_error_not_a_pass(self):
+        """A judge that did no work must never report a clean pass."""
+        judge = ScoreJudge(JudgeConfig())
+        with patch.object(
+            ScoreJudge,
+            "_verify_rationales_with_llm",
+            side_effect=RuntimeError("gemini 500 internal error"),
+        ):
+            verdict = judge.validate(
+                self._minimal_score_judge_output(), self._minimal_score_judge_context()
+            )
+
+        assert verdict.passed is False
+        assert any(i.severity == Severity.ERROR for i in verdict.issues)
+        assert verdict.metadata.get("llm_failed") is True
+
+
 class TestScoreJudgeQuickChecks:
     """Test score judge quick tone checks (no LLM)."""
 
-    def test_poor_score_with_positive_language(self):
-        """Test detection of tone mismatch."""
+    def test_below_average_score_with_positive_language(self):
+        """Test detection of tone mismatch (published bands: <50 = below average)."""
         from src.judges.score_judge import ScoreJudge
 
         config = JudgeConfig()
         judge = ScoreJudge(config)
 
-        evaluation = {"amal_score": 25}  # Poor tier
+        evaluation = {"amal_score": 34}  # Below-average band (ING case)
         narrative = {
             "trust_rationale": "This is an excellent organization with outstanding practices.",
         }
@@ -451,7 +520,7 @@ class TestScoreJudgeQuickChecks:
 
         assert len(issues) == 1
         assert issues[0].severity == Severity.WARNING
-        assert "poor" in issues[0].message.lower()
+        assert "below average" in issues[0].message.lower()
 
     def test_exceptional_score_with_negative_language(self):
         """Test detection of negative tone with high score."""
@@ -469,6 +538,42 @@ class TestScoreJudgeQuickChecks:
 
         assert len(issues) == 1
         assert issues[0].severity == Severity.WARNING
+
+
+class TestScoreJudgePromptCarriesTheNarrative:
+    """judge_phase.py built charity_dict with no 'narrative' key, so
+    output.get("narrative", {}) was always {} — the prompt's
+    '## Narrative Rationale' section rendered as a literal empty dict, and
+    _quick_tone_checks (which reads the same key) never saw real text."""
+
+    def test_prompt_contains_the_narrative_rationale(self):
+        from judge_phase import build_judge_projection
+        from src.judges.score_judge import ScoreJudge
+
+        evaluation = {
+            "amal_score": 42,
+            "baseline_narrative": {"summary": "This charity performs well."},
+        }
+        # Mirrors the charity_dict judge_phase.judge_charity() builds.
+        output = {
+            "evaluation": build_judge_projection(evaluation),
+            "narrative": evaluation.get("baseline_narrative") or {},
+        }
+
+        prompt = ScoreJudge(JudgeConfig()).format_prompt(output, {})
+
+        assert "This charity performs well." in prompt
+        assert "## Narrative Rationale\n{}" not in prompt
+
+    def test_quick_tone_checks_flag_praise_language_in_a_below_average_band(self):
+        from src.judges.score_judge import ScoreJudge
+
+        evaluation = {"amal_score": 42}  # Below-average band
+        narrative = {"summary": "An exceptional, outstanding organization."}
+
+        issues = ScoreJudge(JudgeConfig())._quick_tone_checks(evaluation, narrative)
+
+        assert issues, "below_average band + praise language must warn"
 
 
 class TestZakatJudgeQuickChecks:

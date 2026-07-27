@@ -40,8 +40,142 @@ from src.scorers.strategic_evidence import compute_strategic_evidence
 from src.services.beneficiary_semantics_verifier import verify_beneficiary_semantics
 from src.utils.deep_link_resolver import choose_website_evidence_url
 from src.utils.evaluation_tracks import is_new_org
+from src.utils.financial_coherence import FINANCIAL_FIELDS, restore_breaks_balance_sheet
 from src.utils.logger import PipelineLogger
 from src.utils.phase_cache_helper import check_phase_cache, update_phase_cache
+
+REPORTS_DIR = Path(__file__).parent / "reports"
+
+# Scalar fields guarded here are limited to the top-line revenue/expense and
+# balance-sheet totals that are ALWAYS present on any valid 990 or 990-EZ
+# filing. Because every filer reports these, they can only recompute to None
+# via a computation gap (a source loss would have aborted the charity before
+# synthesize) — a non-null -> null transition here is therefore always a bug,
+# not a genuine drop, so we restore the prior value and flag it.
+#
+# Deliberately NOT guarded: the functional-expense breakdown
+# (program_expenses, admin_expenses, fundraising_expenses) and everything
+# derived from it (program_expense_ratio, working_capital_months) are
+# CONDITIONALLY present — 990-EZ and other small-org filings do not break out
+# functional expenses at all, so a genuinely-filed charity can legitimately
+# have these as None (verified: EIN 82-1670588 / BASMAH's raw ProPublica 990
+# has admin_expenses = fundraising_expenses = None; a prior "last-good" of
+# 10000/5000 for that charity was itself a stale placeholder, not a real
+# value). program_expense_ratio's real computation gap (the Al-Furqaan case)
+# is fixed at source: the aggregator now recomputes it from components
+# (charity_metrics_aggregator.py:1709-1718), so a null ratio today means the
+# components are genuinely absent, not lost — a valid drop, not a bug.
+#
+# Also NOT guarded: the four metrics_json ratios (noncash_ratio,
+# cash_adjusted_program_ratio, domestic_burn_rate, reserves_months) derive from
+# OPTIONAL 990 data (foreign grants / Schedule F, noncash GIK contributions).
+# A charity that simply files no foreign grants this year has a genuinely None
+# domestic_burn_rate (see src/reconciliation/checks.py:147) — that non-null ->
+# null transition is a legitimate drop, not a computation gap, per the design's
+# known-absent-vs-unknown invariant (an observed-but-absent value must write
+# null). Guarding any of these conditionally-present fields would restore a
+# stale/placeholder value and score it as current — corruption in the OTHER
+# direction, which this guard exists to prevent, not cause. Their real failure
+# mode (a grants-fetch throttle losing the underlying data mid-run) is already
+# handled upstream by the raw-layer non-downgrade carry-forward, which
+# recomputes real ratios from carried grants data rather than needing a
+# post-hoc restore here.
+#
+# Aliased to financial_coherence.FINANCIAL_FIELDS rather than redefined here:
+# the two sets used to be independently maintained frozensets that happened to
+# agree, which meant either one could drift and silently stop gating a field.
+REGRESSION_GUARDED_FIELDS = FINANCIAL_FIELDS
+
+
+def _coerce_financial_column(value) -> int | None:
+    """int() a financial value, preserving a genuine 0.
+
+    `int(x) if x else None` treated 0 as missing, so a debt-free charity wrote
+    NULL for total_liabilities and the regression guard then restored last
+    period's non-zero value over it.
+    """
+    return None if value is None else int(value)
+
+
+def apply_regression_guard(synthesized, metrics, prior_row: dict | None) -> list[dict]:
+    """Restore guarded scalar fields that recomputed non-null -> null this run.
+
+    Returns a list of flag dicts for the editorial/regressions report. Mutates
+    BOTH `metrics` and `synthesized` in place. Restoring into `metrics` is what
+    makes the restore real: metrics_json is dumped from it, the top-level
+    columns are overwritten from it, and nonprofit_size_tier is derived from
+    the result. Restoring only the column left metrics_json disagreeing with
+    the exported row (EIN 31-1267559 shipped $11.3M revenue while the scorer
+    saw None and tagged it small_nonprofit).
+
+    The null test reads `metrics`, which is authoritative at this point in
+    synthesize_charity; `synthesized`'s financial columns are still the early
+    pre-aggregator values and have not yet been overwritten.
+
+    metrics_json-nested ratios are intentionally excluded — see the comment
+    above REGRESSION_GUARDED_FIELDS.
+
+    Restoring a value without its source_attribution left the field
+    "has value but no source attribution" (S-J-002) — real incident: EIN
+    31-1267559's total_revenue was restored this way and failed the
+    synthesize quality gate. The prior attribution is still accurate
+    provenance for the restored value, so it's carried forward alongside it.
+
+    A restore is refused, not restored-then-flagged, when it would produce a
+    row that cannot exist: a prior-year value combined with this run's other
+    financial fields can ship a balance sheet where net assets exceed total
+    assets (EIN 81-3451645), or invent financials for an org ProPublica shows
+    as never having filed (no_filings=1, e.g. 31-1267559). A missing value
+    renders as absent, which is honest; a mixed-vintage value renders as a
+    specific wrong number, which is not. Every refusal is still appended to
+    `flags` with `"rejected"` set so the regressions report records it.
+    """
+    if not prior_row:
+        return []
+    prior_attribution = prior_row.get("source_attribution") or {}
+    # metrics.no_filings is authoritative here (set by the aggregator at
+    # aggregate() time, well before this call); synthesized.no_filings is not
+    # assigned until after this function returns, so reading only that field
+    # made this branch dead code in production (it always saw None). The
+    # `synthesized` fallback still matters when the ProPublica block is
+    # absent and metrics.no_filings is itself None.
+    no_filings = getattr(metrics, "no_filings", None) or getattr(synthesized, "no_filings", None)
+    flags: list[dict] = []
+    # sorted(): REGRESSION_GUARDED_FIELDS is a frozenset, so unsorted iteration
+    # made the regressions report diff-noisy between runs.
+    for field in sorted(REGRESSION_GUARDED_FIELDS):
+        prior_value = prior_row.get(field)
+        if prior_value is None or getattr(metrics, field, None) is not None:
+            continue
+        if field in FINANCIAL_FIELDS and no_filings:
+            flags.append(
+                {"charity_ein": synthesized.charity_ein, "field": field,
+                 "prior_value": prior_value, "rejected": "no_filings"}
+            )
+            continue
+        current_row = {
+            "total_assets": getattr(metrics, "total_assets", None),
+            "total_liabilities": getattr(metrics, "total_liabilities", None),
+            "net_assets": getattr(metrics, "net_assets", None),
+        }
+        if restore_breaks_balance_sheet(current_row, field, prior_value):
+            flags.append(
+                {"charity_ein": synthesized.charity_ein, "field": field,
+                 "prior_value": prior_value, "rejected": "balance_sheet_violation"}
+            )
+            continue
+        setattr(metrics, field, prior_value)
+        setattr(synthesized, field, prior_value)
+        if field in prior_attribution:
+            if synthesized.source_attribution is None:
+                synthesized.source_attribution = {}
+            synthesized.source_attribution[field] = prior_attribution[field]
+        flags.append(
+            {"charity_ein": synthesized.charity_ein, "field": field,
+             "prior_value": prior_value, "rejected": None}
+        )
+    return flags
+
 
 # Muslim charity classification keywords (deterministic, no LLM)
 ISLAMIC_IDENTITY_KEYWORDS = {
@@ -1367,6 +1501,7 @@ def synthesize_charity(
     raw_repo: RawDataRepository,
     charity_repo: CharityRepository,
     pilot_name: str | None = None,
+    data_repo: "CharityDataRepository | None" = None,
 ) -> dict[str, Any]:
     """Synthesize data for a single charity with source attribution.
 
@@ -1948,6 +2083,22 @@ def synthesize_charity(
     # Store source attribution
     synthesized.source_attribution = source_attribution
 
+    # Non-destructive write: never let a guarded scalar regress non-null -> null.
+    # MUST run before metrics_json is dumped (below) and before the size tier is
+    # derived — restoring after those left metrics_json and the column disagreeing.
+    if data_repo is None:
+        data_repo = CharityDataRepository()
+    prior_row = data_repo.get(ein)
+    regression_flags = apply_regression_guard(synthesized, metrics, prior_row)
+    if regression_flags:
+        restored = [f["field"] for f in regression_flags if not f.get("rejected")]
+        refused = [(f["field"], f["rejected"]) for f in regression_flags if f.get("rejected")]
+        logging.getLogger(__name__).warning(
+            f"{ein}: preserved {len(restored)} regressed field(s): {restored}, "
+            f"refused {len(refused)}: {refused}"
+        )
+    result["regressions"] = regression_flags
+
     # =========================================================================
     # Persist full CharityMetrics blob (single source of truth for baseline)
     # Apply synthesis enrichments to metrics BEFORE serialization so baseline
@@ -1971,14 +2122,14 @@ def synthesize_charity(
 
     # Persist individual scorer-critical columns (for DoltDB queryability)
     # Overwrite early financial columns with aggregator's fiscal-year-aware values
-    synthesized.total_revenue = int(metrics.total_revenue) if metrics.total_revenue else None
-    synthesized.total_expenses = int(metrics.total_expenses) if metrics.total_expenses else None
-    synthesized.program_expenses = int(metrics.program_expenses) if metrics.program_expenses else None
-    synthesized.admin_expenses = int(metrics.admin_expenses) if metrics.admin_expenses else None
-    synthesized.fundraising_expenses = int(metrics.fundraising_expenses) if metrics.fundraising_expenses else None
-    synthesized.total_assets = int(metrics.total_assets) if metrics.total_assets else None
-    synthesized.total_liabilities = int(metrics.total_liabilities) if metrics.total_liabilities else None
-    synthesized.net_assets = int(metrics.net_assets) if metrics.net_assets else None
+    synthesized.total_revenue = _coerce_financial_column(metrics.total_revenue)
+    synthesized.total_expenses = _coerce_financial_column(metrics.total_expenses)
+    synthesized.program_expenses = _coerce_financial_column(metrics.program_expenses)
+    synthesized.admin_expenses = _coerce_financial_column(metrics.admin_expenses)
+    synthesized.fundraising_expenses = _coerce_financial_column(metrics.fundraising_expenses)
+    synthesized.total_assets = _coerce_financial_column(metrics.total_assets)
+    synthesized.total_liabilities = _coerce_financial_column(metrics.total_liabilities)
+    synthesized.net_assets = _coerce_financial_column(metrics.net_assets)
     synthesized.cn_overall_score = metrics.cn_overall_score
     synthesized.cn_financial_score = metrics.cn_financial_score
     synthesized.cn_accountability_score = metrics.cn_accountability_score
@@ -2066,6 +2217,42 @@ def synthesize_charity(
     return result
 
 
+def write_synthesize_regressions(rows: list[dict], reports_dir: Path = REPORTS_DIR, scope=None) -> Path:
+    """Write regression-guard flags (restored AND refused) to
+    reports/synthesize-regressions.json.
+
+    Each row: {charity_ein, field, prior_value, rejected}. `rejected` is None
+    for a restored field and a reason string ("no_filings",
+    "balance_sheet_violation") for a refused one. Internal-only editorial
+    signal — a human confirms bug vs genuine drop. Never gates anything.
+
+    Wrapped with run provenance: a bare list let a later single-EIN run
+    silently replace a fleet run's flags with an empty one, and the file is
+    gitignored so nothing recovered them.
+
+    `scope` is `null` (not the string `"fleet"`) when absent, so a reader
+    never has to branch on `list` vs `str` — `null` unambiguously means "no
+    scope was recorded," and `for ein in payload["scope"]` never silently
+    iterates the characters of a string.
+    """
+    import json
+    from datetime import datetime
+
+    reports_dir.mkdir(parents=True, exist_ok=True)
+    path = reports_dir / "synthesize-regressions.json"
+    payload = {
+        "run_at": datetime.now().isoformat(timespec="seconds"),
+        "scope": list(scope) if scope is not None else None,
+        "rows": rows,
+    }
+    with open(path, "w") as f:
+        json.dump(payload, f, indent=2, default=str)
+    preserved = sum(1 for r in rows if not r.get("rejected"))
+    refused = sum(1 for r in rows if r.get("rejected"))
+    print(f"  synthesize regressions: {preserved} field(s) preserved, {refused} refused")
+    return path
+
+
 def load_pilot_charities(file_path: str) -> list[str]:
     """Load charities from pilot_charities.txt format (Name | EIN | URL | Comments)."""
     from src.utils.charity_loader import load_pilot_eins
@@ -2124,6 +2311,7 @@ def main():
     total_attributions = 0
     failed_charities: list[tuple[str, str]] = []
     successful_eins: list[str] = []
+    all_regressions: list[dict] = []
 
     for i, ein in enumerate(eins, 1):
         # Check cache
@@ -2143,6 +2331,8 @@ def main():
             print(f"Error: {e}")
             print("\nThis indicates a crawl phase bug. Debug and fix before continuing.")
             sys.exit(1)
+
+        all_regressions.extend(result.get("regressions") or [])
 
         if result["success"]:
             # Save to database
@@ -2191,6 +2381,8 @@ def main():
         )
         if commit_hash:
             print(f"\n✓ Committed to DoltDB: {commit_hash[:8]}")
+
+    write_synthesize_regressions(all_regressions, scope=eins)
 
     # Summary
     print(f"\n{'=' * 60}")

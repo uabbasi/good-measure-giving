@@ -20,6 +20,8 @@ import logging
 import re
 from typing import Any
 
+from src.utils.fiscal_year import filing_age_years
+
 from .base_judge import BaseJudge, JudgeType
 from .schemas.verdict import JudgeVerdict, Severity, ValidationIssue
 
@@ -166,6 +168,9 @@ class BaselineQualityJudge(BaseJudge):
         # B-J-012: Claim currency (stale fiscal-year references in the narrative)
         issues.extend(self._check_claim_currency(ein, evaluation, context))
 
+        # B-J-013/014: IRS exempt-status + revocation-reinstatement signature
+        issues.extend(self._check_irs_compliance(ein, context))
+
         # Determine pass/fail - ERROR severity fails
         has_errors = any(i.severity == Severity.ERROR for i in issues)
 
@@ -239,16 +244,17 @@ class BaselineQualityJudge(BaseJudge):
             )
             return issues
 
-        # B-J-002b: Validate risk_deduction bounds [-10, 0]
-        if risk_deduction is not None and (risk_deduction < -10 or risk_deduction > 0):
+        # B-J-002b: Validate risk_deduction bounds [-14, 0]
+        # (-10 classic-risk cap + up to -4 filing-currency outside it, rubric v5.3.0)
+        if risk_deduction is not None and (risk_deduction < -14 or risk_deduction > 0):
             issues.append(
                 ValidationIssue(
                     severity=Severity.ERROR,
                     field="risk_deduction",
-                    message=f"risk_deduction={risk_deduction} outside valid range [-10, 0]",
+                    message=f"risk_deduction={risk_deduction} outside valid range [-14, 0]",
                     details={
                         "value": risk_deduction,
-                        "valid_range": [-10, 0],
+                        "valid_range": [-14, 0],
                         "rule": "B-J-002b",
                     },
                 )
@@ -752,4 +758,69 @@ class BaselineQualityJudge(BaseJudge):
                     )
                 )
 
+        return issues
+
+    def _check_irs_compliance(self, ein: str, context: dict) -> list[ValidationIssue]:  # noqa: ARG002
+        """B-J-013/014: IRS exempt-status verification (rubric v5.3.0 companion).
+
+        B-J-013 WARNING : BMF exempt-organization status code present and not
+                          '01' (unconditional exemption) — the org may not be
+                          currently tax-exempt. Feeds the editorial queue;
+                          does not block publication (see inline comment
+                          below for why this isn't ERROR yet).
+        B-J-014 WARNING : revocation-reinstatement signature — IRS ruling year
+                          in the auto-revocation era (>=2011), 8+ years after
+                          founding, combined with a 3+ year filing gap. Feeds
+                          the editorial queue for manual verification.
+        """
+        issues: list[ValidationIssue] = []
+        charity_data = (context or {}).get("charity_data")
+        metrics = charity_data.get("metrics_json") if isinstance(charity_data, dict) else None
+        if not isinstance(metrics, dict):
+            metrics = charity_data if isinstance(charity_data, dict) else {}
+
+        status = metrics.get("irs_exempt_status_code")
+        if status is not None and str(status).lstrip("0") not in ("1", ""):
+            # WARNING, not ERROR, until the real distribution is measured. The field
+            # landed with this branch, so every existing row is NULL and the rule has
+            # never fired against live data. Legitimate BMF codes other than 01 exist
+            # (12 = 4947(a)(2) trust). Promote to ERROR for a specific denylist of
+            # codes after one fleet run populates the column and the editorial queue
+            # shows what actually appears.
+            issues.append(
+                ValidationIssue(
+                    severity=Severity.WARNING,
+                    field="charity_data.irs_exempt_status_code",
+                    message=(
+                        f"IRS exempt-organization status code is {status} (not '01' unconditional "
+                        f"exemption) — verify the organization is currently tax-exempt"
+                    ),
+                    details={"status_code": str(status), "rule": "B-J-013"},
+                    issue_key="irs_exempt_status_not_current",
+                )
+            )
+
+        ruling = metrics.get("irs_ruling_year")
+        founded = metrics.get("founded_year")
+        fiscal_year = _latest_fiscal_year(charity_data)
+        try:
+            ruling, founded = int(ruling), int(founded)
+        except (TypeError, ValueError):
+            return issues
+        age = filing_age_years(fiscal_year)
+        filing_gap = age is not None and age >= 3
+        if ruling >= 2011 and (ruling - founded) >= 8 and filing_gap:
+            issues.append(
+                ValidationIssue(
+                    severity=Severity.WARNING,
+                    field="charity_data.irs_ruling_year",
+                    message=(
+                        f"Possible auto-revocation/reinstatement history: IRS ruling year {ruling} "
+                        f"is {ruling - founded} years after founding ({founded}), and the latest "
+                        f"filing is FY{fiscal_year} — verify filing compliance"
+                    ),
+                    details={"ruling_year": ruling, "founded_year": founded, "rule": "B-J-014"},
+                    issue_key="irs_reinstatement_signature",
+                )
+            )
         return issues

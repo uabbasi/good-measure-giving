@@ -31,7 +31,14 @@ try:
 except ImportError:
     HAS_CURL_CFFI = False
 
-from ..constants import CRAWL_JITTER_RANGE_SECONDS, PER_DOMAIN_CONCURRENCY
+from ..constants import (
+    CRAWL_GLOBAL_MIN_INTERVAL_SECONDS,
+    CRAWL_JITTER_RANGE_SECONDS,
+    PER_DOMAIN_CONCURRENCY,
+    PLAYWRIGHT_MAX_RENDER_PAGES,
+    PLAYWRIGHT_RENDER_BUDGET_SECONDS,
+    SITEMAP_MIN_PAGES_FOR_COVERAGE,
+)
 from ..extractors.deterministic import DeterministicExtractor
 from ..extractors.page_classifier import PageClassifier
 from ..extractors.structured_data import StructuredDataExtractor
@@ -192,8 +199,13 @@ class WebsiteCollector(BaseCollector):
         self.cloudflare_domains: Dict[str, str] = {}  # domain -> profile
         self._cloudflare_lock = threading.Lock()  # Thread safety for cloudflare_domains
 
-        # Track captcha/anti-bot errors for reporting
-        self._last_captcha_error: Optional[str] = None
+        # Track captcha/anti-bot errors for reporting, and transient
+        # rate-limit errors (blocker 2B): makes a 429/503 visible to the
+        # orchestrator instead of masquerading as a generic "No data found
+        # on any pages" failure. Thread-local (see _init_failure_latches)
+        # because crawl.py shares ONE WebsiteCollector across all worker
+        # threads.
+        self._init_failure_latches()
 
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -253,20 +265,46 @@ class WebsiteCollector(BaseCollector):
                     logger.warning(f"Failed to initialize LLM extractor: {e}. Falling back to regex extraction.")
                 self.use_llm = False
 
-        # Initialize Playwright renderer for JS-heavy pages (lazy init on first use)
+        # Initialize Playwright renderer for JS-heavy pages (lazy init on first
+        # use). The orchestrator holds ONE WebsiteCollector shared across all
+        # worker threads (src/collectors/orchestrator.py), but Playwright's
+        # sync API is thread-affine -- a browser/renderer created on thread A
+        # crashes ("Cannot switch to a different thread") if thread B ever
+        # touches it. threading.local() gives each worker thread its own
+        # renderer instance on the same shared collector.
         self.use_playwright = use_playwright
-        self._playwright_renderer = None
+        self._init_playwright_local()
+
+    def _init_playwright_local(self) -> None:
+        self._playwright_local = threading.local()
+        # _cleanup_playwright() below can only reach the CALLING thread's own
+        # renderer. Both orchestrator.close() (crawl.py, shared collector) and
+        # streaming_runner.py's end-of-run cleanup call in from the main
+        # thread, after worker threads have already finished -- their
+        # thread-locals are gone by then. This registry is the only way to
+        # reach those renderers: every renderer this collector ever creates
+        # is appended here, and close_all_renderers() drains it from
+        # whatever thread calls it.
+        self._renderer_registry: list = []
+        self._renderer_registry_lock = threading.Lock()
+
+    def _register_renderer(self, renderer) -> None:
+        with self._renderer_registry_lock:
+            self._renderer_registry.append(renderer)
 
     def _get_playwright_renderer(self):
-        """Get or create the Playwright renderer (lazy initialization)."""
+        """Get or create this thread's Playwright renderer (lazy per-thread init)."""
         if not self.use_playwright:
             return None
 
-        if self._playwright_renderer is None:
+        renderer = getattr(self._playwright_local, "renderer", None)
+        if renderer is None:
             try:
                 from src.utils.playwright_renderer import PlaywrightRenderer
 
-                self._playwright_renderer = PlaywrightRenderer(timeout_ms=15000)
+                renderer = PlaywrightRenderer(timeout_ms=15000)
+                self._playwright_local.renderer = renderer
+                self._register_renderer(renderer)
                 if self.logger:
                     self.logger.info("Playwright renderer initialized for JS fallback")
             except Exception as e:
@@ -275,13 +313,56 @@ class WebsiteCollector(BaseCollector):
                 self.use_playwright = False
                 return None
 
-        return self._playwright_renderer
+        return renderer
 
     def _cleanup_playwright(self):
-        """Cleanup Playwright resources."""
-        if self._playwright_renderer:
-            self._playwright_renderer.close()
-            self._playwright_renderer = None
+        """Close this thread's own Playwright renderer, if any.
+
+        Safe to call often (collect_multi_page does, once per charity, from
+        a `finally` that wraps the whole call outside any exception handler):
+        a raising close() must never escape here. If it did, it would
+        discard a successful crawl's already-computed return value (Python
+        drops a pending `return` when a `finally` raises) and, since the
+        thread-local is only cleared after a successful close(), leave this
+        thread stuck with an un-closable renderer forever -- poisoning every
+        later charity on this worker thread the same way.
+        """
+        renderer = getattr(self._playwright_local, "renderer", None)
+        if renderer:
+            try:
+                renderer.close()
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f"Playwright renderer cleanup failed: {e}")
+            finally:
+                self._playwright_local.renderer = None
+                with self._renderer_registry_lock:
+                    self._renderer_registry = [r for r in self._renderer_registry if r is not renderer]
+
+    def close_all_renderers(self) -> None:
+        """Best-effort close of every renderer this collector ever created,
+        callable from any thread (e.g. the main thread at run end, after
+        worker threads have already joined).
+
+        Real Playwright sync-API renderers are thread-affine (see the
+        "Cannot switch to a different thread" note above), so closing one
+        from a thread other than the one that created it is not guaranteed
+        to release the underlying browser/driver process -- collect_multi_page
+        closing its own thread's renderer via _cleanup_playwright() before
+        returning is the actual fix for the fleet-run browser leak. This is
+        the reachable-from-anywhere backstop: it drains whatever the registry
+        still holds (ideally nothing) and never lets one bad renderer's
+        close() stop the rest from being attempted.
+        """
+        with self._renderer_registry_lock:
+            renderers, self._renderer_registry = self._renderer_registry, []
+        for renderer in renderers:
+            try:
+                renderer.close()
+            except Exception as e:
+                if self.logger:
+                    self.logger.debug(f"Playwright renderer cleanup failed: {e}")
+        self._playwright_local.renderer = None
 
     def __enter__(self):
         """Context manager support for automatic cleanup."""
@@ -458,7 +539,10 @@ class WebsiteCollector(BaseCollector):
         global_rate_limiter.wait("website", self.rate_limit_delay)
 
     def _is_bot_challenge_html(self, html: str) -> bool:
-        """Detect anti-bot challenge pages that are sometimes returned with HTTP 200."""
+        """Detect anti-bot challenge pages that are sometimes returned with HTTP 200
+        (or, from a Playwright render, ANY status -- a JS puzzle page renders
+        "successfully" like any other page, so this is the only thing standing
+        between it and being treated as real site content)."""
         if not html:
             return False
 
@@ -467,9 +551,51 @@ class WebsiteCollector(BaseCollector):
             "/cdn-cgi/challenge-platform/",
             "__cf$cv$params",
             "cf-chl-",
+            # Vendor-agnostic markers -- this check used to be Cloudflare-only,
+            # which missed healpalestine.org's actual blocker (a ShieldSquare/
+            # Radware-style "sgcaptcha" puzzle page): real, well-formed HTML
+            # that renders fine under Playwright but whose <title> literally
+            # says "Robot Challenge Screen". Without this, that page was
+            # accepted as a successful rescue and would have been fed to the
+            # LLM extractor as if it were the charity's real site.
+            "sgcaptcha",
+            "robot challenge screen",
         ]
         if any(marker in body for marker in strong_markers):
             return True
+
+        # "verify you are human" is Cloudflare Turnstile's literal widget
+        # label -- an ordinary donate/contact page that embeds the widget
+        # says this too, and is not a challenge page. Only count it when it
+        # co-occurs with a genuine challenge-vendor marker, or shows up in
+        # the page's own <title> (real challenge pages title themselves
+        # this way; a page merely hosting the widget doesn't).
+        #
+        # "just a moment" is excluded from the body-wide list below: it's
+        # ordinary English ("it only takes just a moment") that shows up on
+        # real donate pages too. It's only trustworthy as a challenge signal
+        # in the <title>, which is how Cloudflare actually renders it
+        # ("Just a moment..."). "ray id" is written as "cloudflare ray id"
+        # here, not the bare phrase, which also matches inside unrelated
+        # strings like "array id".
+        # Extracted (and whitespace-normalized) up front so pretty-printed
+        # or templated <title> markup -- newlines or repeated spaces inside
+        # the phrase -- can satisfy the co-occurrence gate below on its own,
+        # not just the vendor-marker check inside it.
+        title_match = re.search(r"<title[^>]*>(.*?)</title>", body, re.DOTALL)
+        title = " ".join(title_match.group(1).split()) if title_match else ""
+
+        if "verify you are human" in body or "verify you are human" in title:
+            challenge_vendor_markers = [
+                "challenge-running",
+                "cf-chl",
+                "_cf_chl_opt",
+                "cloudflare ray id",
+            ]
+            if any(marker in body for marker in challenge_vendor_markers):
+                return True
+            if "verify you are human" in title or "just a moment" in title:
+                return True
 
         # Fallback marker combination seen on Cloudflare interstitial pages.
         if "just a moment" in body and "cloudflare" in body:
@@ -597,8 +723,10 @@ class WebsiteCollector(BaseCollector):
                 else:
                     # No cache but got 304, fetch fresh (with recursion limit)
                     return self._fetch_url(url, force=True, _recursion_depth=_recursion_depth + 1)
-            elif response.status_code in (403, 202, 503) and HAS_CURL_CFFI:
-                # Bot protection detected (403 = blocked, 202 = JS challenge pending, 503 = challenge page)
+            elif response.status_code in (403, 202, 503, 404) and HAS_CURL_CFFI:
+                # Bot protection detected (403 = blocked, 202 = JS challenge pending,
+                # 503 = challenge page, 404 = fingerprint block on IIS/ASP.NET hosts
+                # that 404 non-browser requests but serve 200 to real browsers).
                 # Try curl_cffi with multiple browser profiles
                 original_status = response.status_code
                 if self.logger:
@@ -1004,6 +1132,8 @@ class WebsiteCollector(BaseCollector):
         client: httpx.AsyncClient,
         url: str,
         semaphore: asyncio.Semaphore,
+        force: bool = False,
+        crawl_delay: float = 0.0,
     ) -> Tuple[str, bool, Optional[str], Optional[str], Optional[str]]:
         """
         Async fetch a single URL with concurrency control.
@@ -1012,14 +1142,20 @@ class WebsiteCollector(BaseCollector):
             client: httpx async client
             url: URL to fetch
             semaphore: Semaphore for concurrency limiting
+            crawl_delay: Advertised robots.txt Crawl-delay for this host, in
+                seconds (0 if none advertised). Enforced as a real per-host
+                inter-request gate via global_rate_limiter, on top of the
+                fleet-wide "website" gate below.
 
         Returns:
             Tuple of (url, success, html_content, final_url, error_message)
         """
         async with semaphore:
             try:
-                # Check cache first (sync operation but fast)
-                cached = self.cache.get_cached_html(url)
+                # Check cache first (sync operation but fast) — unless force
+                # bypasses it (a forced re-crawl must actually hit the network so
+                # fingerprint-block fallbacks / fresh content take effect).
+                cached = None if force else self.cache.get_cached_html(url)
                 if cached:
                     if self._is_bot_challenge_html(cached.get("html", "")):
                         if self.logger:
@@ -1032,6 +1168,28 @@ class WebsiteCollector(BaseCollector):
                 if not allowed:
                     return url, False, None, None, "robots.txt disallowed"
                 await asyncio.sleep(random.uniform(*CRAWL_JITTER_RANGE_SECONDS))
+
+                # Fleet-wide QPS ceiling (H5 follow-up): the per-domain semaphore
+                # above is scoped to this event loop, but the streaming runner
+                # gives each charity its own loop on its own thread, so a
+                # per-loop limit alone does not bound TOTAL website QPS across
+                # the fleet. global_rate_limiter is process-wide + thread-safe
+                # (blocking, so run off-loop) and enforces a real min-interval
+                # between outbound website requests across every worker thread.
+                await asyncio.to_thread(
+                    global_rate_limiter.wait, "website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS
+                )
+
+                # Per-host Crawl-delay (Task 8 follow-up): a host advertising
+                # robots.txt Crawl-delay (e.g. AMF, Cloudflare-fronted ING)
+                # needs a real inter-request gate, not just a lower burst
+                # concurrency — the Semaphore(2) alone lets requests through
+                # immediately. Reuse the same process-wide limiter, keyed by
+                # the host domain instead of "website", so effective spacing
+                # becomes max(global interval, this host's crawl_delay).
+                if crawl_delay > 0:
+                    host = urlparse(url).netloc.lower()
+                    await asyncio.to_thread(global_rate_limiter.wait, host, crawl_delay)
 
                 response = await client.get(
                     url,
@@ -1051,7 +1209,16 @@ class WebsiteCollector(BaseCollector):
                     # Detect captcha/anti-bot blocking
                     error_msg = f"HTTP {response.status_code}"
                     is_captcha = False
-                    if response.status_code in (202, 403, 429, 503):
+                    if response.status_code in (429, 503):
+                        # Transient rate-limit / overload → graduated backoff, NOT a
+                        # 180d terminal block. Still worth a curl_cffi fingerprint retry,
+                        # but never emit the CAPTCHA_BLOCKED string (which is terminal),
+                        # and skip the header sniff below — cf-ray is present on ALL
+                        # Cloudflare responses (incl. legit ones) and would re-poison
+                        # every Cloudflare 429/503 back into a terminal captcha block.
+                        is_captcha = True
+                        error_msg = f"RATE_LIMITED: HTTP {response.status_code}"
+                    elif response.status_code in (202, 403):
                         # Treat these statuses as potential anti-bot blocks and try curl_cffi fallback.
                         is_captcha = True
                         error_msg = f"CAPTCHA_BLOCKED: HTTP {response.status_code}"
@@ -1080,6 +1247,16 @@ class WebsiteCollector(BaseCollector):
                         if curl_result[1]:  # success
                             return curl_result
                         # curl_cffi also failed, return original captcha error
+
+                    # Fingerprint bot-block via 404: some IIS/ASP.NET hosts return
+                    # 404 to non-browser TLS/header fingerprints while serving 200
+                    # to real browsers (e.g. againstmalaria.com). Try curl_cffi
+                    # impersonation; a genuine 404 stays a 404. NOT flagged captcha
+                    # (no terminal backoff).
+                    if response.status_code == 404 and HAS_CURL_CFFI:
+                        curl_result = await self._try_curl_cffi_async(url)
+                        if curl_result[1]:  # success → real browser gets the page
+                            return curl_result
 
                     return url, False, None, None, error_msg
 
@@ -1142,6 +1319,15 @@ class WebsiteCollector(BaseCollector):
         Called from thread pool by _try_curl_cffi_async.
         """
         try:
+            # Fleet-wide QPS ceiling (H5 follow-up): the curl_cffi fallback is a
+            # SECOND outbound website request path and fires exactly when a
+            # domain has already returned 429/503 — the worst moment to hammer
+            # it. Route it through the same process-wide gate as the primary
+            # httpx path. We are already on a worker thread here (called via
+            # asyncio.to_thread), so the blocking wait is fine directly — do
+            # NOT wrap in to_thread. This one point covers both the
+            # multi-profile fallback loop and the cached-profile direct path.
+            global_rate_limiter.wait("website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS)
             response = curl_requests.get(url, timeout=self.timeout, impersonate=profile)
 
             if response.status_code == 200:
@@ -1164,20 +1350,29 @@ class WebsiteCollector(BaseCollector):
         urls: List[str],
         max_concurrent: int = 10,
         timeout_total: int = 90,
+        force: bool = False,
+        crawl_delay: float = 0.0,
     ) -> Dict[str, Tuple[bool, Optional[str], Optional[str], Optional[str]]]:
         """
         Crawl multiple URLs concurrently using async HTTP.
 
         Args:
             urls: List of URLs to crawl
-            max_concurrent: Maximum concurrent requests (default 10); superseded by
-                per-domain limits (H5) — kept for call-site compatibility only.
+            max_concurrent: Caller-requested concurrency ceiling (default 10).
+                Combined with the per-domain politeness ceiling (H5) via
+                min(max_concurrent, PER_DOMAIN_CONCURRENCY): this can lower
+                per-domain concurrency below the ceiling, but never raise it.
             timeout_total: Total timeout for all requests
+            crawl_delay: Advertised robots.txt Crawl-delay for this host, in
+                seconds (0 if none); forwarded to _fetch_url_async.
 
         Returns:
             Dict mapping URL -> (success, html, final_url, error)
         """
-        get_sem = self._per_domain_semaphores()
+        # Never exceed the per-domain politeness ceiling, but DO honor a caller
+        # asking for less — polite_concurrency (2 when the host publishes a
+        # Crawl-delay) and the serial empty-batch retry (1) both depend on this.
+        get_sem = self._per_domain_semaphores(min(max_concurrent, PER_DOMAIN_CONCURRENCY))
         results: Dict[str, Tuple[bool, Optional[str], Optional[str], Optional[str]]] = {}
 
         async with httpx.AsyncClient(
@@ -1185,7 +1380,10 @@ class WebsiteCollector(BaseCollector):
             follow_redirects=True,
             timeout=httpx.Timeout(15.0, connect=10.0),
         ) as client:
-            tasks = [self._fetch_url_async(client, url, get_sem(url)) for url in urls]
+            tasks = [
+                self._fetch_url_async(client, url, get_sem(url), force=force, crawl_delay=crawl_delay)
+                for url in urls
+            ]
 
             # Use asyncio.wait_for for overall timeout
             try:
@@ -1225,7 +1423,9 @@ class WebsiteCollector(BaseCollector):
         Returns:
             List of PageScore objects with content boosts applied
         """
-        get_sem = self._per_domain_semaphores()
+        # Never exceed the per-domain politeness ceiling, but DO honor a
+        # caller asking for less (see the identical fix in _crawl_urls_async).
+        get_sem = self._per_domain_semaphores(min(max_concurrent, PER_DOMAIN_CONCURRENCY))
         results: List[Any] = []
 
         async def fetch_and_score(page_score: Any) -> Any:
@@ -1237,6 +1437,12 @@ class WebsiteCollector(BaseCollector):
                         html = cached["html"]
                     else:
                         await asyncio.sleep(random.uniform(*CRAWL_JITTER_RANGE_SECONDS))
+                        # Fleet-wide QPS ceiling (H5 follow-up): content-scoring
+                        # is a third outbound website request path; gate it
+                        # through the same process-wide limiter as _fetch_url_async.
+                        await asyncio.to_thread(
+                            global_rate_limiter.wait, "website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS
+                        )
                         async with httpx.AsyncClient(
                             headers=self.headers,
                             follow_redirects=True,
@@ -1306,7 +1512,44 @@ class WebsiteCollector(BaseCollector):
 
         return results
 
-    def _crawl_specific_urls_async(self, urls: List[str], timeout_total: int) -> Dict[str, Dict[str, Any]]:
+    def _init_failure_latches(self) -> None:
+        """Per-thread CAPTCHA / rate-limit latches.
+
+        crawl.py shares ONE orchestrator (and so one WebsiteCollector) across
+        every worker thread — the same sharing that forced the thread-local
+        Playwright renderer. As plain instance attributes these latched one
+        charity's CAPTCHA onto whichever charity happened to finish next,
+        writing an unearned 180-day terminal block.
+        """
+        self._failure_local = threading.local()
+
+    def _reset_failure_latches(self) -> None:
+        self._failure_local.captcha = None
+        self._failure_local.rate_limit = None
+
+    def _captcha_error(self) -> Optional[str]:
+        return getattr(self._failure_local, "captcha", None)
+
+    def _rate_limit_error(self) -> Optional[str]:
+        return getattr(self._failure_local, "rate_limit", None)
+
+    def _record_fetch_error(self, error: Optional[str]) -> None:
+        """Latch the first captcha/rate-limit error seen this crawl, per thread."""
+        if not error:
+            return
+        if "CAPTCHA_BLOCKED" in error and self._captcha_error() is None:
+            self._failure_local.captcha = error
+        if "RATE_LIMITED" in error and self._rate_limit_error() is None:
+            self._failure_local.rate_limit = error
+
+    def _crawl_specific_urls_async(
+        self,
+        urls: List[str],
+        timeout_total: int,
+        max_concurrent: int = 10,
+        force: bool = False,
+        crawl_delay: float = 0.0,
+    ) -> Dict[str, Dict[str, Any]]:
         """
         Crawl URLs using async HTTP for ~5x speedup.
 
@@ -1315,6 +1558,10 @@ class WebsiteCollector(BaseCollector):
         Args:
             urls: List of URLs to crawl
             timeout_total: Total timeout in seconds
+            max_concurrent: Max concurrent requests (lowered for throttle-sensitive
+                hosts that advertise a Crawl-delay; a serial retry passes 1)
+            crawl_delay: Advertised robots.txt Crawl-delay for this host, in
+                seconds (0 if none); forwarded to _crawl_urls_async.
 
         Returns:
             Dictionary mapping URL -> extracted data for each page
@@ -1323,10 +1570,18 @@ class WebsiteCollector(BaseCollector):
         results: Dict[str, Dict[str, Any]] = {}
 
         if self.logger:
-            self.logger.info(f"Async crawling {len(urls)} URLs (max 10 concurrent)")
+            self.logger.info(f"Async crawling {len(urls)} URLs (max {max_concurrent} concurrent)")
 
         # Run async crawl
-        fetch_results = self._run_async(self._crawl_urls_async(urls, max_concurrent=10, timeout_total=timeout_total))
+        fetch_results = self._run_async(
+            self._crawl_urls_async(
+                urls,
+                max_concurrent=max_concurrent,
+                timeout_total=timeout_total,
+                force=force,
+                crawl_delay=crawl_delay,
+            )
+        )
 
         fetch_time = time.time() - start_time
         if self.logger:
@@ -1338,6 +1593,7 @@ class WebsiteCollector(BaseCollector):
             if not success or not html:
                 if self.logger and error:
                     self.logger.debug(f"Failed to fetch {url}: {error}")
+                self._record_fetch_error(error)
                 continue
 
             try:
@@ -1503,7 +1759,14 @@ class WebsiteCollector(BaseCollector):
         return results
 
     async def _crawl_bfs_async(
-        self, start_url: str, max_depth: int, max_pages: int, timeout_total: int
+        self,
+        start_url: str,
+        max_depth: int,
+        max_pages: int,
+        timeout_total: int,
+        max_concurrent: int = 10,
+        force: bool = False,
+        crawl_delay: float = 0.0,
     ) -> Dict[str, Dict[str, Any]]:
         """
         Async BFS crawl - fetches each depth level in parallel for ~5x speedup.
@@ -1516,6 +1779,8 @@ class WebsiteCollector(BaseCollector):
             max_depth: Maximum depth to crawl
             max_pages: Maximum total pages to visit
             timeout_total: Total timeout in seconds
+            crawl_delay: Advertised robots.txt Crawl-delay for this host, in
+                seconds (0 if none); forwarded to _crawl_urls_async.
 
         Returns:
             Dictionary mapping URL -> extracted data for each page visited
@@ -1561,7 +1826,13 @@ class WebsiteCollector(BaseCollector):
             # Parallel fetch all URLs at this level
             url_list = [u for u, _ in urls_to_fetch]
             remaining_time = max(10, timeout_total - int(time.time() - start_time))
-            fetch_results = await self._crawl_urls_async(url_list, max_concurrent=10, timeout_total=remaining_time)
+            fetch_results = await self._crawl_urls_async(
+                url_list,
+                max_concurrent=max_concurrent,
+                timeout_total=remaining_time,
+                force=force,
+                crawl_delay=crawl_delay,
+            )
 
             # Process fetched pages and collect links for next level
             next_level: List[Tuple[str, int]] = []
@@ -1574,9 +1845,7 @@ class WebsiteCollector(BaseCollector):
                 if not success or not html:
                     if self.logger and error:
                         self.logger.debug(f"Failed to fetch {url}: {error}")
-                    # Track captcha errors for reporting
-                    if error and "CAPTCHA_BLOCKED" in error and not self._last_captcha_error:
-                        self._last_captcha_error = error
+                    self._record_fetch_error(error)
                     continue
 
                 try:
@@ -1631,7 +1900,14 @@ class WebsiteCollector(BaseCollector):
         return results
 
     def _crawl_with_bfs_async(
-        self, start_url: str, max_depth: int, max_pages: int, timeout_total: int
+        self,
+        start_url: str,
+        max_depth: int,
+        max_pages: int,
+        timeout_total: int,
+        max_concurrent: int = 10,
+        force: bool = False,
+        crawl_delay: float = 0.0,
     ) -> Dict[str, Dict[str, Any]]:
         """
         Synchronous wrapper for async BFS crawl.
@@ -1643,11 +1919,23 @@ class WebsiteCollector(BaseCollector):
             max_depth: Maximum depth to crawl
             max_pages: Maximum total pages
             timeout_total: Total timeout in seconds
+            crawl_delay: Advertised robots.txt Crawl-delay for this host, in
+                seconds (0 if none); forwarded to _crawl_bfs_async.
 
         Returns:
             Dictionary mapping URL -> extracted data
         """
-        return self._run_async(self._crawl_bfs_async(start_url, max_depth, max_pages, timeout_total))
+        return self._run_async(
+            self._crawl_bfs_async(
+                start_url,
+                max_depth,
+                max_pages,
+                timeout_total,
+                max_concurrent=max_concurrent,
+                force=force,
+                crawl_delay=crawl_delay,
+            )
+        )
 
     def _merge_llm_data(self, regex_data: Dict[str, Any], llm_data: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -2279,7 +2567,7 @@ class WebsiteCollector(BaseCollector):
         return pdf_data, total_llm_cost
 
     def collect_multi_page(
-        self, url: str, ein: Optional[str] = None
+        self, url: str, ein: Optional[str] = None, force: bool = False
     ) -> Tuple[bool, Optional[Dict[str, Any]], Optional[str]]:
         """
         Collect data from charity website using multi-page crawling.
@@ -2304,11 +2592,24 @@ class WebsiteCollector(BaseCollector):
                 - fetch_timestamp: When fetched
                 - crawl_stats: Statistics about the crawl
         """
+        try:
+            return self._collect_multi_page_impl(url, ein=ein, force=force)
+        finally:
+            # Guarantee this thread's own Playwright renderer (if the crawl
+            # created one) is closed before returning, on every exit path --
+            # including the early "no data found" return below, which used
+            # to skip cleanup entirely and could leak a renderer for the
+            # rest of this thread's lifetime.
+            self._cleanup_playwright()
+
+    def _collect_multi_page_impl(
+        self, url: str, ein: Optional[str] = None, force: bool = False
+    ) -> Tuple[bool, Optional[Dict[str, Any]], Optional[str]]:
         if self.logger:
             self.logger.debug(f"Starting multi-page crawl: {url}")
 
-        # Reset captcha error tracking for this crawl
-        self._last_captcha_error = None
+        # Reset captcha/rate-limit error tracking for this crawl
+        self._reset_failure_latches()
 
         # Timing trackers
         timing = {
@@ -2325,6 +2626,7 @@ class WebsiteCollector(BaseCollector):
         try:
             # Step 1: Try sitemap-based URL discovery first (T044)
             sitemap_used = False
+            bfs_augmented = False
             target_urls = []
             pages_scored = 0
 
@@ -2342,12 +2644,26 @@ class WebsiteCollector(BaseCollector):
                 if self.logger:
                     self.logger.info("Using link-following mode (no sitemap found)")
 
+            # A host that advertises a Crawl-delay (AMF, Cloudflare-fronted ING)
+            # gets throttled to an empty batch by our default 10-way burst.
+            # Honor the delay by lowering concurrency up front, AND (Task 8)
+            # by enforcing the advertised seconds as a real per-host
+            # inter-request gate down in _fetch_url_async — lowering
+            # concurrency alone never actually delayed anything.
+            crawl_delay = self.robots_checker.get_crawl_delay(url)
+            polite_concurrency = 2 if (crawl_delay and crawl_delay >= 1) else 10
+            effective_crawl_delay = crawl_delay or 0.0
+
             # Step 2: Crawl website (async for ~5x speedup)
             crawl_phase_start = time.time()
             if sitemap_used:
                 # Async crawl specific URLs from sitemap (parallel fetching)
                 crawl_results = self._crawl_specific_urls_async(
-                    urls=target_urls, timeout_total=CRAWLER_CONFIG["timeout_total"]
+                    urls=target_urls,
+                    timeout_total=CRAWLER_CONFIG["timeout_total"],
+                    max_concurrent=polite_concurrency,
+                    force=force,
+                    crawl_delay=effective_crawl_delay,
                 )
             else:
                 # Fallback: Async BFS crawling (parallel level-by-level fetching)
@@ -2356,13 +2672,203 @@ class WebsiteCollector(BaseCollector):
                     max_depth=CRAWLER_CONFIG["max_depth"],
                     max_pages=CRAWLER_CONFIG["max_pages"],
                     timeout_total=CRAWLER_CONFIG["timeout_total"],
+                    max_concurrent=polite_concurrency,
+                    force=force,
+                    crawl_delay=effective_crawl_delay,
                 )
             timing["page_crawling"] = round(time.time() - crawl_phase_start, 1)
 
+            # Empty batch against a live homepage is a throttle signal, not a
+            # dead site. Retry once serially (concurrency 1) before giving up —
+            # for BOTH sitemap and BFS paths; skip only when a terminal block
+            # (CAPTCHA/challenge) was detected.
+            homepage_confirmed_live = False
+            if not crawl_results and not self._captcha_error():
+                homepage_confirmed_live = self._fetch_url(url, force=True)[0]
+                if homepage_confirmed_live:
+                    if self.logger:
+                        self.logger.info(f"Empty crawl for {url} but homepage is live — retrying serially")
+                    if sitemap_used:
+                        crawl_results = self._crawl_specific_urls_async(
+                            urls=target_urls,
+                            timeout_total=CRAWLER_CONFIG["timeout_total"],
+                            max_concurrent=1,
+                            force=force,
+                            crawl_delay=effective_crawl_delay,
+                        )
+                    else:
+                        crawl_results = self._crawl_with_bfs_async(
+                            start_url=url,
+                            max_depth=CRAWLER_CONFIG["max_depth"],
+                            max_pages=CRAWLER_CONFIG["max_pages"],
+                            timeout_total=CRAWLER_CONFIG["timeout_total"],
+                            max_concurrent=1,
+                            force=force,
+                            crawl_delay=effective_crawl_delay,
+                        )
+
+            # Playwright rescue: httpx + curl_cffi (per-URL, inside
+            # _fetch_url_async) both failed to return real content -- either
+            # an explicit terminal bot-management block (CAPTCHA_BLOCKED) or
+            # a silent hang against a CONFIRMED-live homepage (the serial
+            # retry above still came back empty). Both shapes were observed
+            # from the SAME site (Muslim Hands USA) across different runs --
+            # a Cloudflare JS challenge that neither httpx nor curl_cffi's
+            # fingerprint impersonation can satisfy sometimes fails fast
+            # (403) and sometimes just hangs -- so both are treated as
+            # "needs a real browser", not "actually dead" (a dead/unreachable
+            # homepage never sets homepage_confirmed_live, so genuinely dead
+            # sites still fail fast without paying for a render attempt).
+            # Confirmed viable by manual testing against Sachse Muslim
+            # Society and Muslim Hands USA (both render cleanly under
+            # Playwright). Bounded by the same page cap + wall-clock budget
+            # as the SPA-recovery loop below, and deliberately serial:
+            # PlaywrightRenderer wraps Playwright's sync API, which is not
+            # safe to call concurrently from multiple threads, so this
+            # cannot run inside the async fetch loops above the way
+            # curl_cffi does.
+            if not crawl_results and (self._captcha_error() or homepage_confirmed_live):
+                renderer = self._get_playwright_renderer()
+                if renderer:
+                    reason = self._captcha_error() or "async crawl timed out against a live homepage"
+                    if self.logger:
+                        self.logger.info(f"{reason}; attempting Playwright rescue for {url}")
+                    # Sitemap discovery is an httpx fetch too -- on a site whose
+                    # Cloudflare challenge blocks the whole domain (not just
+                    # the homepage), it fails right alongside everything else,
+                    # leaving target_urls empty. Without this, rescue_urls
+                    # would be stuck at a single homepage URL forever, capped
+                    # at PLAYWRIGHT_MAX_RENDER_PAGES in name only. When that's
+                    # the situation, use the rendered page itself as the
+                    # source of URLs to discover more pages, the same way the
+                    # BFS crawler above does for non-blocked sites.
+                    discover_via_render = not target_urls
+                    rescue_urls = list((target_urls or [url])[:PLAYWRIGHT_MAX_RENDER_PAGES])
+                    seen_rescue_urls = set(rescue_urls)
+                    render_start = time.monotonic()
+                    i = 0
+                    while i < len(rescue_urls):
+                        if time.monotonic() - render_start >= PLAYWRIGHT_RENDER_BUDGET_SECONDS:
+                            break
+                        page_url = rescue_urls[i]
+                        i += 1
+                        host = urlparse(page_url).netloc.lower()
+                        global_rate_limiter.wait("website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS)
+                        if effective_crawl_delay > 0:
+                            global_rate_limiter.wait(host, effective_crawl_delay)
+                        rendered_html = renderer.render(page_url)
+                        if rendered_html and not self._is_bot_challenge_html(rendered_html):
+                            crawl_results[page_url] = self._extract_page_data(rendered_html, page_url, use_llm=False)
+                            if discover_via_render and len(rescue_urls) < PLAYWRIGHT_MAX_RENDER_PAGES:
+                                soup = BeautifulSoup(rendered_html, "html.parser")
+                                for link in self._extract_links(soup, page_url):
+                                    if link in seen_rescue_urls:
+                                        continue
+                                    seen_rescue_urls.add(link)
+                                    rescue_urls.append(link)
+                                    if len(rescue_urls) >= PLAYWRIGHT_MAX_RENDER_PAGES:
+                                        break
+                    if crawl_results and self.logger:
+                        self.logger.info(f"Playwright rescue recovered {len(crawl_results)} page(s) for {url}")
+
             if not crawl_results:
-                # Return specific captcha error if detected, otherwise generic message
-                error_msg = self._last_captcha_error or "No data found on any pages"
+                # Precedence: captcha (terminal) first, then rate-limit
+                # (transient, blocker 2B), then generic message.
+                error_msg = self._captcha_error() or self._rate_limit_error() or "No data found on any pages"
                 return False, None, error_msg
+
+            # Coverage fix: a sitemap that only lists the homepage + dead
+            # links (e.g. KinderUSA) rides the crawl entirely on that thin
+            # set. Augment -- don't replace -- with a BFS pass from the
+            # homepage so sitemap pages are retained and BFS-discovered
+            # pages (/about, /programs, /donate, ...) are added.
+            if sitemap_used and len(crawl_results) < SITEMAP_MIN_PAGES_FOR_COVERAGE:
+                if self.logger:
+                    self.logger.info(
+                        f"Sitemap yielded only {len(crawl_results)} content page(s) "
+                        f"(<{SITEMAP_MIN_PAGES_FOR_COVERAGE}); augmenting with BFS from homepage"
+                    )
+                bfs_results = self._crawl_with_bfs_async(
+                    start_url=url,
+                    max_depth=CRAWLER_CONFIG["max_depth"],
+                    max_pages=CRAWLER_CONFIG["max_pages"],
+                    timeout_total=CRAWLER_CONFIG["timeout_total"],
+                    max_concurrent=polite_concurrency,
+                    force=force,
+                    crawl_delay=effective_crawl_delay,
+                )
+                bfs_augmented = True
+                for bfs_url, bfs_data in bfs_results.items():
+                    if bfs_url not in crawl_results:
+                        crawl_results[bfs_url] = bfs_data
+
+            # SPA recovery (Task 9): the async crawlers above never call
+            # Playwright themselves -- only the unused sync crawlers did.
+            # Escalate each page flagged js_rendering_needed (now computed
+            # regardless of use_llm, see _extract_page_data) through
+            # PlaywrightRenderer exactly once, then re-extract from the
+            # rendered HTML so a client-rendered SPA isn't stuck at {}.
+            js_needed_urls = [u for u, data in crawl_results.items() if data.get("js_rendering_needed")]
+            if js_needed_urls:
+                renderer = self._get_playwright_renderer()
+                if renderer:
+                    # Fix D: a sitemap-driven SPA can flag dozens of pages
+                    # js_rendering_needed, and each render() burns up to a
+                    # 15s network-idle timeout serially -- bound this loop
+                    # with BOTH a page cap and an aggregate wall-clock
+                    # budget so one SPA-heavy charity can't pin a fleet
+                    # worker for minutes.
+                    render_start = time.monotonic()
+                    attempted = 0
+                    budget_exceeded = False
+                    for page_url in js_needed_urls[:PLAYWRIGHT_MAX_RENDER_PAGES]:
+                        if time.monotonic() - render_start >= PLAYWRIGHT_RENDER_BUDGET_SECONDS:
+                            budget_exceeded = True
+                            break
+                        attempted += 1
+                        try:
+                            # Playwright issues its own outbound navigation, so it
+                            # must pass through the SAME politeness gates as every
+                            # other fetch on this path (Task 7 fleet-wide QPS +
+                            # Task 8 per-host Crawl-delay); render() bypasses the
+                            # async _fetch_url_async gate entirely. This loop runs
+                            # in collect_multi_page's sync body, so the blocking
+                            # limiter can be called directly.
+                            host = urlparse(page_url).netloc.lower()
+                            global_rate_limiter.wait("website", CRAWL_GLOBAL_MIN_INTERVAL_SECONDS)
+                            if crawl_delay and crawl_delay > 0:
+                                global_rate_limiter.wait(host, crawl_delay)
+
+                            rendered_html = renderer.render(page_url)
+                            if rendered_html:
+                                recovered = self._extract_page_data(rendered_html, page_url, use_llm=False)
+                                crawl_results[page_url] = recovered
+                                # Refresh the on-disk per-URL cache so it no longer
+                                # records had_data:false for a page we just
+                                # recovered (mirrors the sync crawler at ~968-977).
+                                self.cache.update_had_data(
+                                    page_url,
+                                    recovered.get("had_data", False),
+                                    ["deterministic", "async", "playwright"],
+                                    js_rendering_needed=recovered.get("js_rendering_needed", False),
+                                    extraction_failure_reason=recovered.get("extraction_failure_reason"),
+                                )
+                                if self.logger:
+                                    self.logger.info(f"Playwright fallback successful (async path): {page_url}")
+                        except Exception as e:
+                            if self.logger:
+                                self.logger.warning(f"Playwright escalation failed for {page_url}: {e}")
+                    if attempted < len(js_needed_urls) and self.logger:
+                        reason = "budget exceeded" if budget_exceeded else "page cap reached"
+                        self.logger.warning(
+                            f"Playwright escalation truncated ({reason}): {len(js_needed_urls)} page(s) "
+                            f"flagged js_rendering_needed, only {attempted} rendered "
+                            f"(cap={PLAYWRIGHT_MAX_RENDER_PAGES}, budget={PLAYWRIGHT_RENDER_BUDGET_SECONDS}s)"
+                        )
+                elif self.logger:
+                    self.logger.debug(
+                        f"{len(js_needed_urls)} page(s) flagged js_rendering_needed but Playwright unavailable"
+                    )
 
             # Step 2: Aggregate data from all pages
             aggregated_data = self._aggregate_crawl_data(crawl_results, url)
@@ -2571,6 +3077,15 @@ class WebsiteCollector(BaseCollector):
             # Calculate total timing
             timing["total"] = round(time.time() - crawl_start, 1)
 
+            # Full page-visit manifest (every page attempted, incl. empty
+            # ones) for crawl-history tracking -- distinct from
+            # page_extractions above, which citation_service filters to
+            # only pages with real LLM-extracted content.
+            crawled_urls = [
+                {"url": page_url, "had_data": bool(page_data.get("had_data"))}
+                for page_url, page_data in crawl_results.items()
+            ]
+
             result = {
                 "website_profile": profile.model_dump(),
                 "raw_content": homepage_html or "",
@@ -2578,6 +3093,7 @@ class WebsiteCollector(BaseCollector):
                 "pdf_documents": pdf_documents,  # T076: PDF links discovered
                 "js_rendering_candidates": js_candidates,  # Pages needing Playwright
                 "page_extractions": page_extractions,  # Maps URLs to extracted fields for citations
+                "crawled_urls": crawled_urls,  # Every page visited, for crawl-history tracking
                 "crawl_stats": {
                     "pages_visited": len(crawl_results),
                     "pages_with_data": len([r for r in crawl_results.values() if any(r.values())]),
@@ -2588,6 +3104,7 @@ class WebsiteCollector(BaseCollector):
                     "llm_cost": total_llm_cost,  # Total LLM cost (old + new)
                     "llm_calls_made": llm_calls_made,  # Number of LLM extraction calls (T063)
                     "sitemap_used": sitemap_used,  # T047
+                    "bfs_augmented": bfs_augmented,  # thin-sitemap coverage fallback
                     "pages_scored": pages_scored,  # T047
                     "pages_crawled": len(crawl_results),  # T063
                     "pdfs_discovered": pdf_count,  # T076: Number of PDFs found
@@ -2607,16 +3124,11 @@ class WebsiteCollector(BaseCollector):
             # Save cache state for progressive exploration
             self.cache.save_state(url)
 
-            # Cleanup Playwright browser
-            self._cleanup_playwright()
-
             return True, result, None
 
         except Exception as e:
             if self.logger:
                 self.logger.error(f"Multi-page crawl failed: {str(e)}")
-            # Cleanup Playwright browser
-            self._cleanup_playwright()
             # Save cache state even on failure
             try:
                 self.cache.save_state(url)
@@ -2835,29 +3347,40 @@ class WebsiteCollector(BaseCollector):
         js_rendering_needed = False
         extraction_failure_reason = None
 
+        # T058: Clean text using TextCleaner and flag JS-rendered pages.
+        # Hoisted out of the `use_llm` branch (Task 9): the no-LLM async
+        # production crawl path (_crawl_specific_urls_async /
+        # _crawl_with_bfs_async) never set use_llm=True for most pages, so
+        # js_rendering_needed was never computed there and the existing
+        # Playwright escalation could never fire. This detection only needs
+        # self.text_cleaner, not the LLM extractor, so it can run always.
+        try:
+            # Try precision mode first, fallback to relaxed mode if empty
+            cleaned_text = self.text_cleaner.clean_for_llm(html, favor_precision=True)
+
+            if not cleaned_text or len(cleaned_text) <= 100:
+                # Precision mode too aggressive - try relaxed mode
+                cleaned_text = self.text_cleaner.clean_for_llm(html, favor_precision=False)
+
+            if not cleaned_text:
+                # No extractable content - likely JS-rendered page
+                js_rendering_needed = True
+                extraction_failure_reason = "empty_content"
+                if self.logger:
+                    self.logger.info(f"JS rendering needed (empty content): {url}")
+            elif len(cleaned_text) <= 100:
+                # Too short - could be JS-heavy or minimal content page
+                js_rendering_needed = True
+                extraction_failure_reason = "too_short"
+                if self.logger:
+                    self.logger.info(f"JS rendering needed (content too short: {len(cleaned_text)} chars): {url}")
+        except Exception as e:
+            cleaned_text = None
+            if self.logger:
+                self.logger.warning(f"Text cleaning failed for {url}: {e}")
+
         if use_llm and self.llm_extractor:
             try:
-                # T058: Clean text for LLM using TextCleaner
-                # Try precision mode first, fallback to relaxed mode if empty
-                cleaned_text = self.text_cleaner.clean_for_llm(html, favor_precision=True)
-
-                if not cleaned_text or len(cleaned_text) <= 100:
-                    # Precision mode too aggressive - try relaxed mode
-                    cleaned_text = self.text_cleaner.clean_for_llm(html, favor_precision=False)
-
-                if not cleaned_text:
-                    # No extractable content - likely JS-rendered page
-                    js_rendering_needed = True
-                    extraction_failure_reason = "empty_content"
-                    if self.logger:
-                        self.logger.info(f"JS rendering needed (empty content): {url}")
-                elif len(cleaned_text) <= 100:
-                    # Too short - could be JS-heavy or minimal content page
-                    js_rendering_needed = True
-                    extraction_failure_reason = "too_short"
-                    if self.logger:
-                        self.logger.info(f"JS rendering needed (content too short: {len(cleaned_text)} chars): {url}")
-
                 if cleaned_text and len(cleaned_text) > 100:
                     # Classify page type for appropriate prompt selection
                     from urllib.parse import urlparse

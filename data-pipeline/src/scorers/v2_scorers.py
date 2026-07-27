@@ -21,6 +21,7 @@ LLM must NEVER do math or guess data.
 import re
 from typing import Optional
 
+from src.constants import DATA_FULL_CONFIDENCE_MAX_AGE_YEARS
 from src.llm.schemas.baseline import (
     AlignmentAssessment,
     AmalScoresV2,
@@ -51,6 +52,7 @@ from src.scorers.strategic_evidence import (  # noqa: F401
     StrategicEvidence,
     compute_strategic_evidence,
 )
+from src.utils.fiscal_year import filing_age_years
 from src.utils.scoring_audit import (
     ScoreImpact,
     ScoringAuditLog,
@@ -69,7 +71,7 @@ from src.utils.scoring_audit import (
 #   2.0.0 — 4-dimension revised (reweighted, new components)
 #   3.0.0 — 3-dimension (Credibility/33 + Impact/33 + Alignment/34)
 #   4.0.0 — 2-dimension (Impact/50 + Alignment/50 + DataConfidence signal)
-RUBRIC_VERSION = "5.2.0"
+RUBRIC_VERSION = "5.3.0"
 
 # =============================================================================
 # Constants - 2-Dimension GMG Score
@@ -117,6 +119,22 @@ def impact_tier_from_amal_score(amal_score: Optional[float]) -> Optional[str]:
         if amal_score >= threshold:
             return label
     return "BELOW_AVERAGE"
+
+
+# Donor-facing labels for the published impactTier bands (shared by the
+# baseline and rich narrative prompts' tone contract).
+_SCORE_BAND_LABELS = {
+    "HIGH": "High (80-100)",
+    "ABOVE_AVERAGE": "Above Average (65-79)",
+    "AVERAGE": "Average (50-64)",
+    "BELOW_AVERAGE": "Below Average (below 50)",
+}
+
+
+def score_band_label(amal_score: Optional[float]) -> str:
+    """Donor-facing band label for the composite GMG score."""
+    tier = impact_tier_from_amal_score(amal_score)
+    return _SCORE_BAND_LABELS.get(tier or "", "Unrated")
 
 
 def interpolate_score(value: float, knots: list) -> float:
@@ -489,6 +507,11 @@ RISK_DEDUCTIONS = {
     "high_fundraising_ratio": -2,
     "excessive_reserves_non_zakat": -2,
     "geographic_mismatch": -1,
+    # Filing currency (rubric v5.3.0): 990 filings normally lag ~2 years;
+    # 3+ years without a data-bearing filing is a governance red flag, 5+ is
+    # severe (IRS auto-revokes after 3 consecutive missed years).
+    "stale_filings_3yr": -2,
+    "stale_filings_5yr": -4,
 }
 
 # Contradiction signals now captured in positive scoring components.
@@ -1498,7 +1521,13 @@ class ImpactScorer:
         Uses cash-adjusted ratio when GIK is significant, falling back to
         the standard program_expense_ratio.
         """
-        ratio = metrics.cash_adjusted_program_ratio or metrics.program_expense_ratio
+        # `or` treated a real 0.0 (all program spend in-kind) as absent, so
+        # the worst GIK-inflation case scored on its filed ratio instead.
+        ratio = (
+            metrics.cash_adjusted_program_ratio
+            if metrics.cash_adjusted_program_ratio is not None
+            else metrics.program_expense_ratio
+        )
         if ratio is None or ratio < 0.01:
             return 0, "Program expense ratio: unknown"
 
@@ -2022,7 +2051,17 @@ class ZakatScorer:
         "riqab": ["riqab", "captive", "bondage", "enslaved", "incarcerated", "prisoner", "detained"],
         "gharimin": ["gharimin", "debt", "indebted", "debt relief", "debtor"],
         "ibn_sabil": ["ibn sabil", "wayfarer", "traveler", "refugee", "displaced", "stranded"],
-        "fi_sabilillah": ["fi sabil", "cause of allah", "dawah", "islamic education", "in allah's cause"],
+        "fi_sabilillah": [
+            "fi sabil",
+            "cause of allah",
+            "dawah",
+            "islamic education",
+            "in allah's cause",
+            "quran",
+            "qur'an",
+            "mosque",
+            "masjid",
+        ],
     }
 
     def evaluate(self, metrics: CharityMetrics) -> ZakatBonusAssessment:
@@ -2051,12 +2090,22 @@ class ZakatScorer:
             ]
         ).lower()
 
+        # Count distinct pattern hits per category and take the strongest
+        # signal — first-match-wins let a single 'prisoner' mention outrank a
+        # Quran-distribution org's entire dawah mission (Al-Furqaan: riqab
+        # over fi_sabilillah). Ties keep the declaration order.
+        counts: dict[str, int] = {}
         for category, patterns in self.ASNAF_PATTERNS.items():
+            hits = 0
             for pattern in patterns:
                 # Word-boundary match: a bare substring test matched 'amil' inside
                 # 'family' (and similar), mislabeling asnaf categories. [#8]
                 if re.search(rf"\b{re.escape(pattern)}\b", text):
-                    return category
+                    hits += 1
+            if hits:
+                counts[category] = hits
+        if counts:
+            return max(counts, key=lambda c: counts[c])
         return None
 
 
@@ -2066,11 +2115,15 @@ class ZakatScorer:
 
 
 class RiskScorer:
-    """Evaluates risks for deduction (-10 points max).
+    """Evaluates risks for deduction (-10 cap + uncapped filing-currency).
 
     Size-adjusted: Emerging orgs (<$1M) get no deduction for missing
     TOC or outcomes (already penalized in Credibility). Established
     orgs (>$10M) get full deductions — no excuses at that scale.
+
+    Filing-currency deductions (stale_filings_*) stack OUTSIDE the -10
+    cap (worst case -14): an org that stopped filing must feel it even
+    when other red flags saturate the cap. (Rubric v5.3.0.)
 
     Risk deductions (capped at -10 total):
     - program_ratio_under_50: -5 (ProPublica 990)
@@ -2094,6 +2147,7 @@ class RiskScorer:
         risks.extend(self._check_operational_risks(metrics))
         risks.extend(self._check_impact_risks(metrics, tier))
         risks.extend(self._check_governance_risks(metrics))
+        risks.extend(self._check_filing_currency(metrics))
         risks.extend(self._check_gik_risk(metrics))
         risks.extend(self._check_domestic_burn(metrics))
         risks.extend(self._check_zakat_hoarding(metrics))
@@ -2191,6 +2245,51 @@ class RiskScorer:
                 )
             )
 
+        return risks
+
+    @staticmethod
+    def _filing_age_years(metrics: CharityMetrics) -> Optional[int]:
+        """Age in years of the newest KNOWN filing (any source), or None.
+
+        Prefers latest_known_filing_year so a charity is never penalized for
+        our income-statement source selection; skips orgs legally exempt from
+        Form 990 filing (churches/mosques — form_990_exempt).
+        """
+        if metrics.form_990_exempt:
+            return None
+        fy = metrics.latest_known_filing_year or metrics.financial_data_tax_year
+        return filing_age_years(fy)
+
+    def _check_filing_currency(self, metrics: CharityMetrics) -> list[RiskFactor]:
+        """Flag charities whose newest financial filing is 3+ years old.
+
+        990 filings normally run ~2 years behind; beyond that either the org
+        has stopped filing (the IRS auto-revokes after 3 consecutive missed
+        years) or is severely delinquent. Rubric v5.3.0.
+        """
+        risks = []
+        age = self._filing_age_years(metrics)
+        if age is None or age < 3:
+            return risks
+        fy = metrics.latest_known_filing_year or metrics.financial_data_tax_year
+        if age >= 5:
+            risks.append(
+                RiskFactor(
+                    category=RiskCategory.OPERATIONAL,
+                    description=f"No financial filing newer than FY{fy} ({age} years old) — filing compliance concern",
+                    severity=RiskSeverity.HIGH,
+                    data_source="ProPublica 990",
+                )
+            )
+        else:
+            risks.append(
+                RiskFactor(
+                    category=RiskCategory.OPERATIONAL,
+                    description=f"Latest available financial filing is FY{fy} ({age} years old)",
+                    severity=RiskSeverity.MEDIUM,
+                    data_source="ProPublica 990",
+                )
+            )
         return risks
 
     def _check_gik_risk(self, metrics: CharityMetrics) -> list[RiskFactor]:
@@ -2331,9 +2430,15 @@ class RiskScorer:
         """
         total = 0
 
-        # Program ratio check — use cash-adjusted ratio when GIK is significant
-        ratio = metrics.cash_adjusted_program_ratio or metrics.program_expense_ratio
-        if ratio is not None and ratio >= 0.01 and ratio < 0.50:
+        # Program ratio check — use cash-adjusted ratio when GIK is significant.
+        # `or` treated a real 0.0 (all program spend in-kind) as absent, so
+        # the worst GIK-inflation case never triggered this deduction.
+        ratio = (
+            metrics.cash_adjusted_program_ratio
+            if metrics.cash_adjusted_program_ratio is not None
+            else metrics.program_expense_ratio
+        )
+        if ratio is not None and ratio < 0.50:
             total += RISK_DEDUCTIONS["program_ratio_under_50"]
 
         wc = metrics.working_capital_ratio
@@ -2400,7 +2505,19 @@ class RiskScorer:
                 total += deduction
                 _applied_checks.add(check_name)
 
-        return max(-10, total)
+        capped = max(-10, total)
+
+        # Filing currency (rubric v5.3.0) — applied OUTSIDE the -10 cap: an
+        # org that has stopped filing must feel this even when other red
+        # flags already saturate the cap. Worst case combined: -14.
+        filing_age = self._filing_age_years(metrics)
+        if filing_age is not None:
+            if filing_age >= 5:
+                capped += RISK_DEDUCTIONS["stale_filings_5yr"]  # -4
+            elif filing_age >= 3:
+                capped += RISK_DEDUCTIONS["stale_filings_3yr"]  # -2
+
+        return capped
 
     def _determine_risk_level(self, deduction: int) -> str:
         if deduction <= -8:
@@ -2598,7 +2715,7 @@ class AmalScorerV2:
         total_score = max(0, min(100, total_score))
 
         # Data confidence signal (outside score)
-        data_confidence = self._compute_data_confidence(credibility)
+        data_confidence = self._compute_data_confidence(credibility, metrics)
 
         wallet_tag = "ZAKAT-ELIGIBLE" if zakat_bonus.charity_claims_zakat else "SADAQAH-ELIGIBLE"
 
@@ -2625,14 +2742,30 @@ class AmalScorerV2:
             score_summary=score_summary,
         )
 
+    @staticmethod
+    def _recency_factor(data_age_years: Optional[int]) -> float:
+        """Data-age multiplier for data confidence (rubric v5.3.0).
+
+        1.0 through age 2 (the normal 990 cycle plus 1 year of leeway), then
+        -0.15 per additional year, floored at 0.40. Unknown age = no decay
+        (absence of data is already penalized by the base components).
+        """
+        if data_age_years is None or data_age_years <= DATA_FULL_CONFIDENCE_MAX_AGE_YEARS:
+            return 1.0
+        return max(0.40, round(1.0 - 0.15 * (data_age_years - DATA_FULL_CONFIDENCE_MAX_AGE_YEARS), 2))
+
     def _compute_data_confidence(
         self,
         credibility: CredibilityAssessment,
+        metrics: Optional[CharityMetrics] = None,
     ) -> DataConfidence:
         """Compute data confidence from credibility data-availability signals.
 
-        Formula: confidence = ver*0.50 + trans*0.35 + dq*0.15
-        Returns DataConfidence with overall float + component breakdown.
+        Formula: confidence = (ver*0.50 + trans*0.35 + dq*0.15) * recency_factor
+        where recency_factor decays with the age of the DISPLAYED fiscal-year
+        data (financial_data_tax_year) — old data is less trustworthy no
+        matter how verified it once was. Applies to everyone, including
+        form_990_exempt orgs (this is about data age, not filing delinquency).
         """
         ver_value = VERIFICATION_CONFIDENCE.get(credibility.verification_tier, 0.0)
         trans_label = self._extract_transparency_label(credibility)
@@ -2640,12 +2773,17 @@ class AmalScorerV2:
         dq_label = self._extract_data_quality_label(credibility)
         dq_value = DATA_QUALITY_CONFIDENCE.get(dq_label, 0.0)
 
-        overall = round(
+        base = (
             ver_value * DC_VERIFICATION_WEIGHT
             + trans_value * DC_TRANSPARENCY_WEIGHT
-            + dq_value * DC_DATA_QUALITY_WEIGHT,
-            2,
+            + dq_value * DC_DATA_QUALITY_WEIGHT
         )
+
+        fy = metrics.financial_data_tax_year if metrics is not None else None
+        data_age_years = filing_age_years(fy)
+        recency_factor = self._recency_factor(data_age_years)
+
+        overall = round(base * recency_factor, 2)
 
         # Determine badge level
         if overall >= 0.75:
@@ -2664,6 +2802,8 @@ class AmalScorerV2:
             transparency_value=trans_value,
             data_quality_label=dq_label,
             data_quality_value=dq_value,
+            recency_factor=recency_factor,
+            data_age_years=data_age_years,
         )
 
     def _extract_transparency_label(self, credibility: CredibilityAssessment) -> str:

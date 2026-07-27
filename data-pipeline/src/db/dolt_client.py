@@ -21,7 +21,7 @@ from .client import execute_query, get_cursor
 VALID_TABLES = frozenset({
     "charities", "raw_scraped_data", "charity_data", "evaluations",
     "pdf_documents", "agent_discoveries", "citations", "phase_cache",
-    "judge_verdicts", "export_exclusions",
+    "judge_verdicts", "export_exclusions", "crawl_attempts", "crawled_pages",
 })
 
 # Which tables each pipeline phase writes — the explicit DOLT_ADD list.
@@ -30,7 +30,7 @@ VALID_TABLES = frozenset({
 # their own run cache (update_phase_cache) include phase_cache so the
 # standalone scripts leave a clean tree behind.
 PHASE_TABLES: dict[str, tuple[str, ...]] = {
-    "crawl": ("raw_scraped_data", "charities", "phase_cache"),
+    "crawl": ("raw_scraped_data", "charities", "phase_cache", "crawl_attempts", "crawled_pages"),
     "extract": ("raw_scraped_data", "phase_cache"),
     "discover": ("raw_scraped_data", "agent_discoveries", "charities"),
     "synthesize": ("charity_data", "citations", "phase_cache"),

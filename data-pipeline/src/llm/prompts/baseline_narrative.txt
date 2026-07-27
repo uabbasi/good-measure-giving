@@ -1,7 +1,7 @@
 # PROMPT: baseline_narrative
-# VERSION: 2.0.0
+# VERSION: 2.3.0
 # LAST_UPDATED: 2026-07-18
-# DESCRIPTION: Baseline narrative with inline citations - v1.1.0 style rules merged with live data placeholders (rendered via .format in baseline.py)
+# DESCRIPTION: Baseline narrative with inline citations - v1.1.0 style rules merged with live data placeholders (rendered via .format in baseline.py); 2.1.0 adds the band tone contract; 2.2.0 adds the data-vintage disclosure rule
 # ---PROMPT_START---
 Generate a baseline narrative for this charity with Wikipedia-style inline citations.
 
@@ -37,6 +37,9 @@ Do NOT round differently, do NOT calculate your own values, do NOT invent number
 
 If a value is "N/A", do NOT mention that metric in the narrative at all.
 
+## DATA VINTAGE (CRITICAL)
+{data_vintage_note}
+
 ## ZAKAT ELIGIBILITY CONSTRAINT (CRITICAL)
 Wallet Tag: {wallet_tag}
 {zakat_constraint_text}
@@ -69,6 +72,43 @@ Explain the SUBSTANCE behind the assessments — what's strong, what's weak, and
 - Alignment: {alignment_score}/50 (Donor fit: {alignment_fit}, Cause urgency: {alignment_urgency})
 - Data Confidence: {data_confidence} ({data_confidence_badge})
 
+## TONE CONTRACT (CRITICAL — publication is blocked if violated)
+Public score band: {score_band}. Donors see this band label displayed next to
+the score. Your headline, summary, and amal_score_rationale MUST read as that
+same band — a reader must be able to guess the band from your prose alone:
+- High: confident endorsement; lead with strengths.
+- Above Average: positive, with named caveats.
+- Average: neutral and balanced; strengths and gaps get equal weight.
+- Below Average: lead with the specific limiting factors, in plain sober
+  language. Do NOT apply praise words ("excellent", "great", "strong",
+  "trustworthy", "efficient") to the organization overall. Any bright spot
+  gets mentioned only AFTER the concerns, and only with data behind it.
+Never soften a Below Average assessment to be polite, and never praise-first
+then tack on a "but". State what holds the score down, then what partially
+offsets it.
+
+Financial characterizations must follow the data, not goodwill:
+- Call spending "efficient" or "strong" ONLY if the program expense ratio is
+  0.80 or higher.
+- Between 0.65 and 0.80: describe it as "moderate".
+- Below 0.65: it is a concern — say so directly and state the number
+  (e.g., "only 40% of spending reaches programs").
+Do NOT pair "good financial transparency" with a low program ratio as if they
+offset each other; transparency and spending efficiency are different things.
+
+## SCORER NOTES (the actual WHY behind the scores — draw your rationale from these)
+- Impact: {impact_notes}
+- Alignment: {alignment_notes}
+- Risk flags: {risk_notes}
+
+Your amal_score_rationale and dimension_explanations must cover the LARGEST
+factors in these notes — a rationale that omits the main driver of a score is
+incomplete. Never cite a weakness these notes contradict (e.g., never claim
+evidence is lacking when the Evidence & Outcomes component is at or near its
+maximum). Every risk flag listed above MUST be acknowledged somewhere in the
+narrative (areas_for_improvement or the relevant dimension explanation) —
+do not quote the internal point values.
+
 ## SCORE/RATIONALE CONSISTENCY (CRITICAL)
 Your dimension_explanations MUST be consistent with the scores above:
 - If a score is LOW (0-15): Explain what's MISSING or CONCERNING (e.g., "Limited data available", "No third-party verification")
@@ -79,6 +119,15 @@ DO NOT invent positive data to justify low scores:
 - If Impact is low, do NOT claim the organization "demonstrates effectiveness"
 - If Alignment is low, do NOT claim strong Muslim donor fit
 - Only mention ratings/scores that are explicitly provided in the source data above
+
+DO NOT invent negative explanations either. Attribute the score ONLY to
+factors present in the data provided:
+- Do NOT write generic filler like "lacks third-party evidence" or "limited
+  outcome data" unless the provided context actually says so — if the data
+  shows evidence as verified, that claim is false and blocks publication.
+- Keep arithmetic honest: a 75% program ratio leaves 25% ("a quarter"), not
+  "nearly half". Never characterize a percentage in words that contradict
+  the number.
 
 ## Available Sources for Citations (EXACTLY {num_sources} sources)
 {sources_list}

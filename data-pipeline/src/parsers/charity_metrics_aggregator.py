@@ -133,6 +133,95 @@ def _first_non_none(*values):
     return None
 
 
+def _compute_cash_adjusted_ratio(program_expenses: float, total_expenses: float, noncash: float) -> Optional[float]:
+    """GIK-adjusted program ratio, clamped to [0.0, 1.0], or None when the
+    ratio is not a measurable signal.
+
+    Strips in-kind (noncash) contributions from both program and total
+    expenses before ratioing, so gift-in-kind inflation can't pad the
+    filed program ratio. Clamped at both ends — the raw ratio path clamps
+    with min(1.0, ...), and an unclamped ratio here rendered as e.g. "130%"
+    into the narrative prompt as a mandatory value.
+
+    Returns None (not measurable — falls back to the filed ratio) rather
+    than 0.0 when:
+      - the numerator is negative, i.e. donated goods/services received
+        exceed program expenses. That's not "spends 0% on programs" — it's
+        a sign the noncash figure is dominating the charity's whole cost
+        structure, so the subtraction no longer measures programmatic cash
+        spend at all (e.g. Direct Relief EIN 95-1831116: noncash $2.30B
+        against $2.31B total expenses).
+      - the residual cash-expense denominator is under 2% of total
+        expenses. Below that the denominator is nearly all noise: for
+        Direct Relief the denominator is 0.36% of total expenses, and a
+        ratio built on a base that small swings wildly for reasons
+        unrelated to program spending. 2% clears that noise floor with
+        room to spare while staying below live, legitimately-small-but-real
+        cases — e.g. United Muslim Relief (EIN 27-3175543) sits at 4.87%
+        (a $150M charity whose GIK-heavy accounting leaves a $7.3M cash
+        base) and must keep scoring on its measured 48% cash-adjusted
+        ratio rather than falling back to its 96% filed ratio, which would
+        swing its published score. 2% is a conservative line — it only
+        excludes ratios computed on residual bases an order of magnitude
+        smaller than any live case with real signal.
+    A genuine 0.0 (numerator exactly 0, e.g. program_expenses == noncash,
+    against a healthy denominator) is still returned as 0.0.
+    """
+    denominator = total_expenses - noncash
+    if denominator <= 0 or denominator / total_expenses < 0.02:
+        return None
+    numerator = program_expenses - noncash
+    if numerator < 0:
+        return None
+    adjusted = numerator / denominator
+    return max(0.0, min(1.0, adjusted))
+
+
+# Generic population phrases LLMs default to when specific data is missing
+# (hallucination-denylist S-J-006). A website populations_served list made up
+# only of these is not a verifiable claim.
+_GENERIC_POPULATIONS = frozenset(
+    {
+        "underserved communities",
+        "underserved",
+        "vulnerable populations",
+        "vulnerable",
+        "those in need",
+        "the needy",
+        "needy",
+        "communities",
+        "community",
+        "people",
+        "individuals",
+        "general public",
+        "public",
+        "everyone",
+        "anyone",
+        "all",
+        "beneficiaries",
+        "populations",
+        "humanity",
+        "society",
+    }
+)
+
+
+def _populations_verification_status(source: str, populations: list) -> str:
+    """Verification status for source_attribution['populations_served'].
+
+    Candid's structured population taxonomy is authoritative; website-scraped
+    populations are trusted only when at least one entry names a specific
+    population rather than generic filler.
+    """
+    if source == "candid":
+        return "verified"
+    specific = [
+        p for p in populations
+        if isinstance(p, str) and p.strip().lower() not in _GENERIC_POPULATIONS
+    ]
+    return "verified" if specific else "unverified"
+
+
 class CharityMetrics(BaseModel):
     """
     Canonical charity metrics aggregated from all 5 data sources.
@@ -260,6 +349,19 @@ class CharityMetrics(BaseModel):
         None, ge=0, le=100, description="CN accountability & transparency score"
     )
     cn_beacons: List[str] = Field(default_factory=list, description="List of CN Beacons achieved")
+    cn_score_provenance: Optional[str] = Field(
+        None,
+        description=(
+            "How cn_financial_score/cn_accountability_score were obtained: "
+            "'published_beacon' (read off CN's payload) or "
+            "'computed_from_subareas' (weighted mean WE derive from CN's "
+            "evaluation areas, because CN's newer format publishes no single "
+            "Accountability & Finance score). Governs whether donor-facing "
+            "prose may attribute the number to Charity Navigator — see "
+            "baseline.sanitize_narrative_metrics, Task G20. None means the "
+            "data predates this field."
+        ),
+    )
 
     # ========================================================================
     # BBB Wise Giving Alliance (FIX #5)
@@ -289,6 +391,15 @@ class CharityMetrics(BaseModel):
     no_filings: Optional[bool] = Field(None, description="No Form 990 filings found in ProPublica")
     financial_data_tax_year: Optional[int] = Field(
         None, description="Tax year of the primary financial data (from ProPublica/IRS 990)"
+    )
+    irs_ruling_year: Optional[int] = Field(
+        None, description="Year IRS granted current tax-exempt status (new ruling after reinstatement)"
+    )
+    latest_known_filing_year: Optional[int] = Field(
+        None, description="Newest filing year seen in ANY source (PP history, CN fiscal year) — filing-currency risk signal"
+    )
+    irs_exempt_status_code: Optional[str] = Field(
+        None, description="IRS BMF exempt-organization status code ('01' = unconditional exemption)"
     )
     financial_data_source: Optional[str] = Field(
         None, description="Source of income statement financials: 'propublica', 'charity_navigator', or 'mixed'"
@@ -1278,7 +1389,10 @@ class CharityMetricsAggregator:
 
         # 3) ummah_gap_data fallback (website extractor)
         if beneficiaries is None and website_profile:
-            ummah_gap = website_profile.get("ummah_gap_data", {})
+            # Extractor may emit an explicit null ("ummah_gap_data": null),
+            # which .get(key, {}) passes through as None (see 5ac26da for the
+            # same pattern on impact_metrics/metrics).
+            ummah_gap = website_profile.get("ummah_gap_data") or {}
             _set_beneficiary_value(
                 ummah_gap.get("beneficiary_count"),
                 source_name="Charity Website",
@@ -1362,7 +1476,16 @@ class CharityMetricsAggregator:
             else []
         )
         if metrics_data["populations_served"]:
-            _track("populations_served", "candid" if candid_profile and candid_profile.get("populations_served") else "website", metrics_data["populations_served"])
+            _pops_source = "candid" if candid_profile and candid_profile.get("populations_served") else "website"
+            _track("populations_served", _pops_source, metrics_data["populations_served"])
+            # Verification (S-J-006): Candid's structured population taxonomy is
+            # authoritative; website copy is trusted only when it names a
+            # SPECIFIC population rather than generic filler. Writes into
+            # source_attribution only (not corroboration_status / the value),
+            # so scoring is untouched.
+            attr["populations_served"]["verification_status"] = _populations_verification_status(
+                _pops_source, metrics_data["populations_served"]
+            )
 
         metrics_data["geographic_coverage"] = (
             candid_profile.get("geographic_coverage", [])
@@ -1584,6 +1707,27 @@ class CharityMetricsAggregator:
             elif cn_profile and not propublica_990:
                 metrics_data["financial_data_source"] = "charity_navigator"
 
+        # Latest KNOWN filing year across all sources — distinct from
+        # financial_data_tax_year (the year of the data we chose to display).
+        # The filing-currency risk check keys on this, so a charity is never
+        # penalized for our income-statement source selection.
+        filing_year_candidates = [metrics_data.get("financial_data_tax_year")]
+        if propublica_990:
+            filing_year_candidates.append(propublica_990.get("tax_year"))
+            for entry in propublica_990.get("filing_history") or []:
+                filing_year_candidates.append(entry.get("tax_year"))
+        if cn_profile:
+            filing_year_candidates.append(cn_profile.get("fiscal_year"))
+        known_years = []
+        for y in filing_year_candidates:
+            try:
+                if y is not None:
+                    known_years.append(int(y))
+            except (ValueError, TypeError):
+                continue
+        if known_years:
+            metrics_data["latest_known_filing_year"] = max(known_years)
+
         # FIX #4: CN ratios are fallback, not overwrite — only set if not already present
         if cn_profile:
             if metrics_data.get("program_expense_ratio") is None and cn_profile.get("program_expense_ratio") is not None:
@@ -1599,7 +1743,9 @@ class CharityMetricsAggregator:
         # This is the bullet-proof fallback when CN data is missing
         if not metrics_data.get("program_expense_ratio") and website_profile:
             # Check financial_data from PDF extraction
-            pdf_financials = website_profile.get("financial_data", {})
+            # Extractor may emit an explicit null; .get(key, {}) would pass it
+            # through as None (see 5ac26da for the same pattern).
+            pdf_financials = website_profile.get("financial_data") or {}
             if pdf_financials.get("program_expense_ratio"):
                 metrics_data["program_expense_ratio"] = pdf_financials["program_expense_ratio"]
                 # Also grab the raw expense data if available
@@ -1614,13 +1760,24 @@ class CharityMetricsAggregator:
             llm_pdfs = website_profile.get("llm_extracted_pdfs", [])
             if not metrics_data.get("program_expense_ratio") and llm_pdfs:
                 for pdf in llm_pdfs:
-                    extracted = pdf.get("extracted_data", {})
-                    financials = extracted.get("financials", {})
+                    extracted = pdf.get("extracted_data") or {}
+                    financials = extracted.get("financials") or {}
                     if financials.get("program_expense_ratio"):
                         metrics_data["program_expense_ratio"] = financials["program_expense_ratio"]
                         if not metrics_data.get("program_expenses") and financials.get("program_expenses"):
                             metrics_data["program_expenses"] = financials["program_expenses"]
                         break  # Use first available
+
+        # Bulletproof: no source supplied a pre-computed ratio, but we hold the
+        # raw components — compute it directly. A 'mixed' income statement
+        # (CN gap-fill) can leave prog/total present but ratio None; without
+        # this, program-ratio scoring silently collapses (Al-Furqaan regressed
+        # 0.85 -> None -> impact 8/50 on a fresh run).
+        if metrics_data.get("program_expense_ratio") is None:
+            prog = metrics_data.get("program_expenses")
+            total = metrics_data.get("total_expenses")
+            if isinstance(prog, (int, float)) and isinstance(total, (int, float)) and total > 0 and prog >= 0:
+                metrics_data["program_expense_ratio"] = round(min(1.0, prog / total), 4)
 
         # ====================================================================
         # GIK / Noncash contributions (Fix 1)
@@ -1637,8 +1794,9 @@ class CharityMetricsAggregator:
                     prog_exp = metrics_data.get("program_expenses")
                     total_exp = metrics_data.get("total_expenses")
                     if prog_exp is not None and total_exp is not None and total_exp > noncash:
-                        adjusted = (prog_exp - noncash) / (total_exp - noncash)
-                        metrics_data["cash_adjusted_program_ratio"] = max(0.0, adjusted)
+                        adjusted_ratio = _compute_cash_adjusted_ratio(prog_exp, total_exp, noncash)
+                        if adjusted_ratio is not None:
+                            metrics_data["cash_adjusted_program_ratio"] = adjusted_ratio
 
         # ====================================================================
         # Domestic burn rate (Fix 2)
@@ -1666,6 +1824,10 @@ class CharityMetricsAggregator:
                 metrics_data["cn_overall_score"] = cn_profile.get("overall_score")
                 metrics_data["cn_financial_score"] = cn_profile.get("financial_score")
                 metrics_data["cn_accountability_score"] = cn_profile.get("accountability_score")
+                # Carried alongside the two sub-scores it describes — without it
+                # narrative prose cannot tell a CN-published beacon from our own
+                # weighted recomputation (Task G20).
+                metrics_data["cn_score_provenance"] = cn_profile.get("cn_score_provenance")
             metrics_data["cn_beacons"] = cn_profile.get("beacons", [])
 
         # ====================================================================
@@ -1848,7 +2010,7 @@ class CharityMetricsAggregator:
         # Extract Evidence of Impact Data (from website extractor)
         # ====================================================================
         if website_profile:
-            evidence_data = website_profile.get("evidence_of_impact_data", {})
+            evidence_data = website_profile.get("evidence_of_impact_data") or {}
 
             # Outcome methodology
             if evidence_data.get("measurement_methodology"):
@@ -1906,7 +2068,7 @@ class CharityMetricsAggregator:
             )
 
             # Check for board/governance disclosure
-            absorptive_data = website_profile.get("absorptive_capacity_data", {})
+            absorptive_data = website_profile.get("absorptive_capacity_data") or {}
             has_board_info = bool(
                 absorptive_data.get("independent_board_members")
                 or absorptive_data.get("board_size")
@@ -1998,6 +2160,17 @@ class CharityMetricsAggregator:
         if metrics_data.get("founded_year"):
             fy_src = "website" if website_profile and website_profile.get("founded_year") else "candid" if candid_profile and candid_profile.get("irs_ruling_year") else "propublica" if propublica_990 and propublica_990.get("irs_ruling_year") else "charity_navigator"
             _track("founded_year", fy_src, metrics_data["founded_year"])
+
+        # IRS compliance signals (kept raw, separate from the founded_year
+        # fallback): ruling year for revocation-reinstatement detection and
+        # the BMF exempt-organization status code.
+        if propublica_990:
+            if propublica_990.get("irs_ruling_year"):
+                metrics_data["irs_ruling_year"] = propublica_990["irs_ruling_year"]
+                _track("irs_ruling_year", "propublica", metrics_data["irs_ruling_year"])
+            if propublica_990.get("exempt_organization_status_code"):
+                metrics_data["irs_exempt_status_code"] = propublica_990["exempt_organization_status_code"]
+                _track("irs_exempt_status_code", "propublica", metrics_data["irs_exempt_status_code"])
 
         metrics_data["donation_methods"] = website_profile.get("donation_methods", []) if website_profile else []
 
@@ -2169,10 +2342,10 @@ class CharityMetricsAggregator:
             for pdf in metrics_data["pdf_extracted_data"]:
                 if not isinstance(pdf, dict):
                     continue
-                extracted = pdf.get("extracted_data", {})
+                extracted = pdf.get("extracted_data") or {}
 
                 # Check governance section
-                gov = extracted.get("governance", {})
+                gov = extracted.get("governance") or {}
                 if gov.get("employees_count"):
                     metrics_data["employees_count"] = gov.get("employees_count")
 

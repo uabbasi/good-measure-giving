@@ -79,6 +79,10 @@ PHASE_CODE_FILES: dict[str, list[str]] = {
         "baseline.py",
         "src/scorers/v2_scorers.py",
         "src/llm/prompts/baseline_narrative.txt",
+        # Prompt-bearing modules (vintage note, band labels, fiscal-year age)
+        "src/llm/prompt_loader.py",
+        "src/constants.py",
+        "src/utils/fiscal_year.py",
         # Schemas
         "src/llm/schemas/baseline.py",
         "src/llm/schemas/common.py",
@@ -92,6 +96,9 @@ PHASE_CODE_FILES: dict[str, list[str]] = {
         "src/services/rich_narrative_generator.py",
         # LLM prompts (rich_narrative.txt superseded by v2)
         "src/llm/prompts/rich_narrative_v2.txt",
+        # Prompt-bearing modules injected into the rich prompt
+        "src/llm/prompt_loader.py",
+        "src/scorers/v2_scorers.py",
         # Schemas
         "src/llm/schemas/rich.py",
         "src/llm/schemas/rich_v2.py",
