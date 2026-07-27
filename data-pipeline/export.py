@@ -1242,6 +1242,32 @@ def _normalize_source_attribution_urls(source_attribution: Any, fallback_website
     return normalized
 
 
+def _prune_orphaned_source_attribution(source_attribution: Any, charity_data: Any) -> Any:
+    """Drop attribution for fields whose elected value did not survive aggregation.
+
+    Income-statement fields are elected from ONE fiscal-year-coherent source
+    (``charity_metrics_aggregator._INCOME_STMT_FIELDS``). When ProPublica wins
+    that election and has no value for a field, an attribution written earlier
+    from Charity Navigator outlives the value it describes: the export ships
+    provenance for a number that is not in the file. 35 live charities carried
+    exactly this for ``fundraising_expenses`` (CN's 0, nulled by the election).
+
+    Only entries whose field is present-and-``None`` in ``charity_data`` are
+    dropped. Attribution keys that are not charity_data fields at all
+    (``candid_seal``, ``claims_zakat_eligible``) are left untouched, and a
+    surviving ``0`` is data rather than absence — hence the ``is None`` test
+    rather than a falsiness check.
+    """
+    if not isinstance(source_attribution, dict) or not isinstance(charity_data, dict):
+        return source_attribution
+
+    return {
+        field: meta
+        for field, meta in source_attribution.items()
+        if not (field in charity_data and charity_data[field] is None)
+    }
+
+
 def _has_cited_beneficiary_source(source_attribution: Any) -> bool:
     """Return True when beneficiaries_served_annually has a canonical source URL."""
     if not isinstance(source_attribution, dict):
@@ -1672,7 +1698,12 @@ def build_charity_detail(
         geographic = candid_profile["areas_served"]
 
     normalized_source_attribution = (
-        _normalize_source_attribution_urls(charity_data.get("source_attribution"), charity.get("website"))
+        _prune_orphaned_source_attribution(
+            _normalize_source_attribution_urls(
+                charity_data.get("source_attribution"), charity.get("website")
+            ),
+            charity_data,
+        )
         if charity_data
         else None
     )
